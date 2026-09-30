@@ -415,7 +415,7 @@ function handleTrackEvent(message: CashtagMessage) {
     trackEvent(
       createEventBuilder('Unified SwapBridge Page Viewed')
         .addCategory(MetaMetricsEventCategory.CrossChainSwaps)
-        .addProperties({ source: 'x_widget' })
+        .addProperties({ location: 'x_widget' })
         .build(),
     );
     return Promise.resolve();
@@ -442,7 +442,7 @@ function handleTrackEvent(message: CashtagMessage) {
       .addProperties({
         domain: 'x.com',
         token_symbol: tokenSymbol,
-        caip_asset_id: caipAssetId,
+        asset_id_caip: caipAssetId,
         chain_id: chainId,
         verified,
         similar_token_count: similarTokenCount,
