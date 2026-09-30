@@ -16,7 +16,7 @@ import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags
 import { ARBITRUM_USDC } from '../../constants/perps';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -36,16 +36,12 @@ jest.mock('./useTransactionPayAvailableTokens');
 jest.mock('./useWithdrawTokenFilter');
 jest.mock('./useIsMoneyAccountFlagDefault');
 jest.mock('../transactions/useTransactionAccountOverride');
+jest.mock('../../../../hooks/useIsHardwareWalletAccount');
 jest.mock('../../../../selectors', () => ({}));
 jest.mock('../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../selectors/feature-flags'),
   selectMinimumRequiredTokenBalance: jest.fn(),
 }));
-jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
-  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
-  getHardwareWalletType: jest.fn(),
-}));
-
 const TOKEN_ADDRESS_1_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 const TOKEN_ADDRESS_2_MOCK = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
 const TOKEN_ADDRESS_3_MOCK = '0xabc1234567890abcdef1234567890abcdef12345678';
@@ -163,7 +159,9 @@ describe('useAutomaticTransactionPayToken', () => {
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
-  const getHardwareWalletTypeMock = jest.mocked(getHardwareWalletType);
+  const useIsHardwareWalletAccountMock = jest.mocked(
+    useIsHardwareWalletAccount,
+  );
 
   const setPayTokenMock = jest.fn(async () => undefined);
 
@@ -193,7 +191,7 @@ describe('useAutomaticTransactionPayToken', () => {
       isTokenAllowed: () => false,
     });
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
-    getHardwareWalletTypeMock.mockReturnValue(undefined);
+    useIsHardwareWalletAccountMock.mockReturnValue(false);
   });
 
   afterEach(() => {
@@ -729,8 +727,22 @@ describe('useAutomaticTransactionPayToken', () => {
   });
 
   describe('money account deposit zero-balance tokens', () => {
+    it('checks whether the paying account is a hardware wallet', () => {
+      const accountOverride =
+        '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex;
+      useTransactionAccountOverrideMock.mockReturnValue(accountOverride);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      expect(useIsHardwareWalletAccountMock).toHaveBeenCalledWith(
+        accountOverride,
+      );
+    });
+
     it('selects a funded token for a hardware wallet deposit', () => {
-      getHardwareWalletTypeMock.mockReturnValue('ledger');
+      useIsHardwareWalletAccountMock.mockReturnValue(true);
       useTransactionPayAvailableTokensMock.mockReturnValue([
         {
           address: TOKEN_ADDRESS_1_MOCK,
@@ -755,7 +767,7 @@ describe('useAutomaticTransactionPayToken', () => {
     });
 
     it('prefers a funded token on a chain with native gas for a hardware wallet deposit', () => {
-      getHardwareWalletTypeMock.mockReturnValue('ledger');
+      useIsHardwareWalletAccountMock.mockReturnValue(true);
       useTransactionPayAvailableTokensMock.mockReturnValue([
         {
           address: TOKEN_ADDRESS_1_MOCK,
