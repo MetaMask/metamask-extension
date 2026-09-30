@@ -401,7 +401,6 @@
   "StaticAssetsController": {},
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
-  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "allDetectedTokens": {},
     "allIgnoredTokens": {},

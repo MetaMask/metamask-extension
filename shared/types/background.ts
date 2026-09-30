@@ -406,7 +406,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   Pick<TokenBalancesControllerState, 'tokenBalances'> &
   TokensControllerState &
   TokenListState &
-  TokenRatesControllerState &
+  Pick<TokenRatesControllerState, 'marketData'> &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &

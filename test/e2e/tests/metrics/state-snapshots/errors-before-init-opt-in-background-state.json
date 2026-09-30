@@ -294,7 +294,6 @@
     "SnapInterfaceController": { "interfaces": "object" },
     "SubjectMetadataController": {},
     "SubscriptionController": "object",
-    "TokenRatesController": { "marketData": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
