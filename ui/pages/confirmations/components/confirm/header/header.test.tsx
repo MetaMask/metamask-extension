@@ -21,6 +21,14 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }));
 
+jest.mock('../../../hooks/gas/useIsGasFeeSponsored', () => ({
+  useIsGasFeeSponsored: jest.fn(() => ({
+    isGasFeeSponsored: false,
+    isGasFeeSponsorshipEligible: false,
+    pending: false,
+  })),
+}));
+
 const render = (
   state: Parameters<typeof configureStore>[0] = getMockTypedSignConfirmState(),
 ) => {
