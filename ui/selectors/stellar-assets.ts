@@ -101,15 +101,8 @@ const selectAssetsBalance = getAssetsBalance as (
   state: unknown,
 ) => AssetsControllerState['assetsBalance'];
 
-/**
- * Reuses `getAssetsInfo` from the assets selector. Cast is confined here so
- * call sites can pass untyped `useSelector` state without annotations.
- */
-const selectAssetsInfo = getAssetsInfo as (
-  state: unknown,
-) => AssetsControllerState['assetsInfo'];
-
-type AssetBalanceEntry = AssetsControllerState['assetsBalance'][string][string];
+type AssetBalanceEntry =
+  AssetsControllerState['assetsBalance'][string][CaipAssetType];
 
 /**
  * Whether the asset supports trustline activation (Stellar classic assets).
