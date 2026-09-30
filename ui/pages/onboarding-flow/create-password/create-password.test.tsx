@@ -94,7 +94,6 @@ describe('Onboarding Create Password', () => {
         accounts: {},
         selectedAccount: '',
       },
-      analyticsId: '0x00000000',
     },
   };
 
