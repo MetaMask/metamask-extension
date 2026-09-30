@@ -8,6 +8,9 @@ import {
   IconName,
   IconSize,
   Input,
+} from '@metamask/design-system-react';
+import {
+  Box,
   Label,
   Popover,
   PopoverPosition,
@@ -208,12 +211,11 @@ export const DropdownEditor = <Item,>({
         renderItem(selectedItem, false)
       ) : (
         <Input
-          className="dropdown-editor__item-placeholder"
+          className="dropdown-editor__item-placeholder w-auto border-0 bg-transparent py-3"
           placeholder={placeholder}
-          readOnly
+          value=""
+          isReadOnly
           tabIndex={-1}
-          paddingTop={3}
-          paddingBottom={3}
         />
       )}
       <ButtonIcon
