@@ -23,6 +23,7 @@ import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransaction
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
+import * as useIsGasFeeSponsoredModule from '../../../hooks/gas/useIsGasFeeSponsored';
 import {
   CustomAmountInfo,
   CustomAmountInfoSkeleton,
@@ -41,6 +42,7 @@ jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/usePayWithNoFeeToken');
 jest.mock('../../../hooks/alerts/transactions/useAccountNoFundsAlert');
+jest.mock('../../../hooks/gas/useIsGasFeeSponsored');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
   CustomAmount: ({
     amountFiat,
@@ -306,6 +308,11 @@ function render(
   jest
     .mocked(useTransactionPayWithdrawModule.useTransactionPayWithdraw)
     .mockReturnValue(withdraw);
+  jest.mocked(useIsGasFeeSponsoredModule.useIsGasFeeSponsored).mockReturnValue({
+    isGasFeeSponsored: false,
+    isGasFeeSponsorshipEligible: false,
+    pending: false,
+  });
 
   const state = getMockConfirmStateForTransaction(transactionMeta);
 
