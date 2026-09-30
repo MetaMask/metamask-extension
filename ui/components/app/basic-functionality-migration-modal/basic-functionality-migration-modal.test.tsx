@@ -158,4 +158,18 @@ describe('BasicFunctionalityMigrationModal', () => {
 
     expect(hideMigrationModal).not.toHaveBeenCalled();
   });
+
+  it('renders title and body text with dir="auto" for bidirectional language support', () => {
+    const { getByText } = renderComponent();
+
+    const titleElement = getByText(
+      messages.basicFunctionalityMigrationSocialModalTitle.message,
+    );
+    const bodyElement1 = getByText(
+      messages.basicFunctionalityMigrationSocialModalBody1.message,
+    );
+
+    expect(titleElement).toHaveAttribute('dir', 'auto');
+    expect(bodyElement1).toHaveAttribute('dir', 'auto');
+  });
 });

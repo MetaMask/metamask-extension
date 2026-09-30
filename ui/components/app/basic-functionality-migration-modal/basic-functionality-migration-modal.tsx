@@ -89,7 +89,7 @@ export function BasicFunctionalityMigrationModal() {
             gap={2}
           >
             <Icon name={IconName.ShieldLock} size={IconSize.Xl} />
-            <Text variant={TextVariant.HeadingSm}>
+            <Text variant={TextVariant.HeadingSm} dir="auto">
               {t('basicFunctionalityMigrationSocialModalTitle')}
             </Text>
           </Box>
@@ -100,15 +100,16 @@ export function BasicFunctionalityMigrationModal() {
           flexDirection={BoxFlexDirection.Column}
           gap={4}
         >
-          <Text variant={TextVariant.BodyMd}>
+          <Text variant={TextVariant.BodyMd} dir="auto">
             {t('basicFunctionalityMigrationSocialModalBody1')}
           </Text>
-          <Text variant={TextVariant.BodyMd}>
+          <Text variant={TextVariant.BodyMd} dir="auto">
             {t('basicFunctionalityMigrationSocialModalBody2', [
               <TextButton
                 asChild
                 key="basic-functionality-migration-blog-post"
                 className={linkClassName}
+                dir="auto"
               >
                 <a
                   href={BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK}
@@ -122,6 +123,7 @@ export function BasicFunctionalityMigrationModal() {
                 asChild
                 key="basic-functionality-migration-privacy-notice"
                 className={linkClassName}
+                dir="auto"
               >
                 <a
                   href={BASIC_FUNCTIONALITY_MIGRATION_PRIVACY_NOTICE_LINK}
