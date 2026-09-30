@@ -35,14 +35,6 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
 };
 
 /**
- * The assets unified state is included in every build. This compatibility
- * helper remains while its callers are removed in the subsequent stack PR.
- */
-export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
-  return true;
-};
-
-/**
  * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`):
  * - Onboarding: assign new users to the consolidated experience (remote flags
  * are not reliable during onboarding).

@@ -23,7 +23,6 @@ import {
 } from '../../../../shared/lib/core-backend-api-urls';
 import {
   ASSETS_UNIFY_STATE_FLAG,
-  ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
@@ -122,7 +121,6 @@ function isAssetsControllerTracesEnabled(
       remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
         | AssetsUnifyStateFeatureFlag
         | undefined,
-      ASSETS_UNIFY_STATE_VERSION_1,
     );
   } catch {
     return false;
