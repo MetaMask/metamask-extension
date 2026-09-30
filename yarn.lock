@@ -48414,7 +48414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-middleware@npm:7.4.6":
+"webpack-dev-middleware@npm:7.4.6, webpack-dev-middleware@npm:^7.4.2":
   version: 7.4.6
   resolution: "webpack-dev-middleware@npm:7.4.6"
   dependencies:

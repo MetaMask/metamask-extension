@@ -249,7 +249,7 @@
     "path-to-regexp@~0.1.12": "1.9.0",
     "path-to-regexp@2.2.1": "1.9.0",
     "axios": "^1.18.1",
-    "webpack-dev-middleware": "7.4.6",
+    "@storybook/builder-webpack5/webpack-dev-middleware": "7.4.6",
     "@ledgerhq/hw-app-eth@npm:^6.42.0": "patch:@ledgerhq/hw-app-eth@npm%3A6.42.2#~/.yarn/patches/@ledgerhq-hw-app-eth-npm-6.42.2-46a44bfbf5.patch",
     "@ledgerhq/evm-tools@npm:^1.3.0": "patch:@ledgerhq/evm-tools@npm%3A1.3.0#~/.yarn/patches/@ledgerhq-evm-tools-npm-1.3.0-57435278f6.patch",
     "@sentry/minimal": "workspace:*",
