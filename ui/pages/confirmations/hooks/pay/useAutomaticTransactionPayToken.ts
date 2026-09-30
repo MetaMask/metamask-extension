@@ -6,7 +6,6 @@ import {
 } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionType,
   hasTransactionType,
@@ -31,7 +30,9 @@ import {
   getMoneyAccountPayToken,
   type MoneyAccountPayToken,
 } from '../../utils/money-account-pay-token';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
+import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
@@ -117,11 +118,8 @@ export function useAutomaticTransactionPayToken({
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
 
-  const hardwareWalletType = useSelector(getHardwareWalletType);
-  const isHardwareWallet = useMemo(
-    () => Boolean(hardwareWalletType),
-    [hardwareWalletType],
-  );
+  const payingAccount = useTransactionPayingAccount();
+  const isHardwareWallet = useIsHardwareWalletAccount(payingAccount);
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
