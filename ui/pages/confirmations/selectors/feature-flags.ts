@@ -171,7 +171,7 @@ export type PayHardwareConfig = {
 };
 
 type RawPayHardwareFlag = {
-  /** Legacy flat shape; applies to every transaction type. */
+  /** Legacy flat shape; applies to mUSD conversion only. */
   enabled?: boolean;
   default?: PayHardwareConfig;
   overrides?: Record<string, PayHardwareConfig>;
@@ -358,10 +358,17 @@ export const selectEnforcedSimulationsSlippage = createSelector(
 );
 
 /**
+ * The only transaction type the legacy flat `{ enabled }` value has ever
+ * gated. Other types need `default` or `overrides`, so serving the flat value
+ * never enables them.
+ */
+const LEGACY_PAY_HARDWARE_TRANSACTION_TYPE = 'musdConversion';
+
+/**
  * Resolves whether hardware wallets may pay for a transaction type from
  * `confirmations_pay_hardware`. Supports the per-type `default` / `overrides`
  * shape used by the other confirmations pay flags; the legacy flat
- * `{ enabled }` shape applies as the default for every type.
+ * `{ enabled }` value applies to mUSD conversion only.
  *
  * @param _state
  * @param transactionType
@@ -372,12 +379,18 @@ export const selectPayHardwareConfig = createSelector(
     (_state, transactionType?: string) => transactionType,
   ],
   (flag, transactionType): PayHardwareConfig => {
-    const defaultEnabled = flag?.default?.enabled ?? flag?.enabled ?? false;
     const override = transactionType
       ? flag?.overrides?.[transactionType]
       : undefined;
+    const legacyEnabled =
+      transactionType === LEGACY_PAY_HARDWARE_TRANSACTION_TYPE
+        ? flag?.enabled
+        : undefined;
 
-    return { enabled: override?.enabled ?? defaultEnabled };
+    return {
+      enabled:
+        override?.enabled ?? flag?.default?.enabled ?? legacyEnabled ?? false,
+    };
   },
 );
 

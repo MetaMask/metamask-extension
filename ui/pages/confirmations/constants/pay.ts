@@ -33,3 +33,10 @@ export const PAY_HARDWARE_FLAG_GATED_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.moneyAccountDeposit,
   TransactionType.musdConversion,
 ];
+
+/**
+ * Pay flows that cannot support interactive QR hardware wallet signing.
+ */
+export const PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES: TransactionType[] = [
+  TransactionType.moneyAccountDeposit,
+];

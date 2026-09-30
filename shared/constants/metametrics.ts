@@ -867,6 +867,7 @@ export enum MetaMetricsEventName {
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
   MoneySurfaceClicked = 'Money Surface Clicked',
   MoneySurfaceViewed = 'Money Surface Viewed',
   MoneyTooltipClicked = 'Money Tooltip Clicked',
@@ -1154,6 +1155,7 @@ export enum MetaMetricsEventName {
   SendAmountSelected = 'Send Amount Selected',
   SendAssetSelected = 'Send Asset Selected',
   SendRecipientSelected = 'Send Recipient Selected',
+  SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
@@ -1186,9 +1188,9 @@ export enum MetaMetricsEventName {
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
-  ShieldMembershipCancelled = 'Shield Membership Cancelled',
-  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart',
+  ShieldMembershipCancelled = 'Shield Membership Canceled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Changed',
   ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
   ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
   ShieldBillingHistoryOpened = 'Shield Billing History Opened',

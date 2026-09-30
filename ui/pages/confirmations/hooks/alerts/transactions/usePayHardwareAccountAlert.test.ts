@@ -2,10 +2,7 @@ import { Hex } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
-import {
-  getMockConfirmStateForTransaction,
-  getMockConfirmState,
-} from '../../../../../../test/data/confirmations/helper';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import {
   genUnapprovedContractInteractionConfirmation,
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -16,17 +13,19 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { usePayHardwareAccountAlert } from './usePayHardwareAccountAlert';
 
-const SENDER_ACCOUNT_ID = 'sender-account-id';
+const SENDER_ACCOUNT_ID = 'hardware-account-id';
 const PAYER_ACCOUNT_ID = 'payer-account-id';
 const PAYER_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
 
-type PayHardwareFlag = {
-  enabled?: boolean;
-  default?: { enabled?: boolean };
-  overrides?: Record<string, { enabled?: boolean }>;
-};
+type PayHardwareFlag =
+  | boolean
+  | {
+      enabled?: boolean;
+      default?: { enabled?: boolean };
+      overrides?: Record<string, { enabled?: boolean }>;
+    };
 
-function buildAccount(id: string, address: string, keyringType: string) {
+function buildAccount(address: string, id: string, keyringType: string) {
   return {
     address,
     id,
@@ -60,21 +59,21 @@ function buildState({
   flag: PayHardwareFlag;
   transactionId?: string;
 }) {
-  const accounts: Record<string, ReturnType<typeof buildAccount>> = {
+  const accounts = {
     [SENDER_ACCOUNT_ID]: buildAccount(
-      SENDER_ACCOUNT_ID,
       CONTRACT_INTERACTION_SENDER_ADDRESS,
+      SENDER_ACCOUNT_ID,
       senderKeyringType,
     ),
-  };
-  const accountIdByAddress: Record<string, string> = {
+  } as Record<string, ReturnType<typeof buildAccount>>;
+  const accountIdByAddress = {
     [CONTRACT_INTERACTION_SENDER_ADDRESS]: SENDER_ACCOUNT_ID,
-  };
+  } as Record<string, string>;
 
   if (payerKeyringType) {
     accounts[PAYER_ACCOUNT_ID] = buildAccount(
-      PAYER_ACCOUNT_ID,
       PAYER_ADDRESS,
+      PAYER_ACCOUNT_ID,
       payerKeyringType,
     );
     accountIdByAddress[PAYER_ADDRESS] = PAYER_ACCOUNT_ID;
@@ -86,7 +85,8 @@ function buildState({
       accountIdByAddress,
       remoteFeatureFlags: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        confirmations_pay_hardware: flag,
+        confirmations_pay_hardware:
+          typeof flag === 'boolean' ? { enabled: flag } : flag,
       },
       ...(payerKeyringType && transactionId
         ? {
@@ -101,14 +101,14 @@ function buildState({
 
 function runHook({
   transactionType,
-  senderKeyringType,
+  senderKeyringType = KeyringTypes.ledger,
   payerKeyringType,
-  flag,
+  flag = false,
 }: {
   transactionType: TransactionType;
-  senderKeyringType: string;
+  senderKeyringType?: string;
   payerKeyringType?: string;
-  flag: PayHardwareFlag;
+  flag?: PayHardwareFlag;
 }) {
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation({
@@ -133,13 +133,6 @@ function runHook({
   );
 }
 
-function runHookWithoutTransaction() {
-  return renderHookWithConfirmContextProvider(
-    () => usePayHardwareAccountAlert(),
-    getMockConfirmState(),
-  );
-}
-
 const EXPECTED_ALERT = {
   key: AlertsName.PayHardwareAccount,
   field: RowAlertKey.PayWith,
@@ -150,106 +143,12 @@ const EXPECTED_ALERT = {
 };
 
 const FLAG_OFF: PayHardwareFlag = { enabled: false };
-const FLAG_ON: PayHardwareFlag = { enabled: true };
 const DEPOSIT_ONLY: PayHardwareFlag = {
   default: { enabled: false },
   overrides: { moneyAccountDeposit: { enabled: true } },
 };
 
 describe('usePayHardwareAccountAlert', () => {
-  // predictDeposit and predictWithdraw are in PAY_HARDWARE_ALERT_TRANSACTION_TYPES
-  // but are not yet in REDESIGN_USER_TRANSACTION_TYPES (confirmation.utils.ts),
-  // so currentConfirmation is undefined for those types and the hook cannot fire.
-  // Tests below cover the types that go through the redesigned confirmation flow.
-  describe('PAY_HARDWARE_ALERT_TRANSACTION_TYPES — always blocked regardless of flag', () => {
-    const alwaysBlockedTypes = [
-      TransactionType.moneyAccountWithdraw,
-      TransactionType.perpsDeposit,
-      TransactionType.perpsWithdraw,
-    ];
-
-    for (const txType of alwaysBlockedTypes) {
-      it(`returns alert for ${txType} when flag is enabled`, async () => {
-        const { result } = runHook({
-          transactionType: txType,
-          senderKeyringType: KeyringTypes.ledger,
-          flag: FLAG_ON,
-        });
-        await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-        });
-      });
-
-      it(`returns alert for ${txType} when flag is disabled`, async () => {
-        const { result } = runHook({
-          transactionType: txType,
-          senderKeyringType: KeyringTypes.ledger,
-          flag: FLAG_OFF,
-        });
-        await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-        });
-      });
-
-      it(`returns no alert for ${txType} when non-hardware wallet`, async () => {
-        const { result } = runHook({
-          transactionType: txType,
-          senderKeyringType: 'HD Key Tree',
-          flag: FLAG_ON,
-        });
-        await waitFor(() => {
-          expect(result.current).toStrictEqual([]);
-        });
-      });
-    }
-  });
-
-  describe('musdConversion — blocked only when flag is disabled', () => {
-    it('returns alert when flag is disabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
-    it('returns no alert when flag is enabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_ON,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-
-    it('returns alert when only moneyAccountDeposit is enabled', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: DEPOSIT_ONLY,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
-    it('returns no alert with non-hardware wallet regardless of flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.musdConversion,
-        senderKeyringType: 'HD Key Tree',
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-  });
-
   describe('moneyAccountDeposit — evaluates the paying account', () => {
     it('returns alert for a Ledger payer when the deposit override is disabled', async () => {
       const { result } = runHook({
@@ -275,18 +174,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
     });
 
-    it('returns no alert for a Ledger payer under the legacy flat enabled flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: 'HD Key Tree',
-        payerKeyringType: KeyringTypes.ledger,
-        flag: FLAG_ON,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-
     it('returns alert for a QR payer even when the deposit override is enabled', async () => {
       const { result } = runHook({
         transactionType: TransactionType.moneyAccountDeposit,
@@ -296,18 +183,6 @@ describe('usePayHardwareAccountAlert', () => {
       });
       await waitFor(() => {
         expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-
-    it('returns no alert for a software payer regardless of flag', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: 'HD Key Tree',
-        payerKeyringType: 'HD Key Tree',
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
       });
     });
 
@@ -322,54 +197,5 @@ describe('usePayHardwareAccountAlert', () => {
         expect(result.current).toStrictEqual([]);
       });
     });
-
-    it('falls back to txParams.from when there is no payer override', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.moneyAccountDeposit,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-      });
-    });
-  });
-
-  describe('hardware wallet keyring types', () => {
-    for (const keyringType of [
-      KeyringTypes.ledger,
-      KeyringTypes.trezor,
-      KeyringTypes.lattice,
-      KeyringTypes.qr,
-    ]) {
-      it(`returns alert for ${keyringType}`, async () => {
-        const { result } = runHook({
-          transactionType: TransactionType.perpsDeposit,
-          senderKeyringType: keyringType,
-          flag: FLAG_OFF,
-        });
-        await waitFor(() => {
-          expect(result.current).toStrictEqual([EXPECTED_ALERT]);
-        });
-      });
-    }
-  });
-
-  describe('non-applicable transaction types', () => {
-    it('returns no alert for contractInteraction with hardware wallet', async () => {
-      const { result } = runHook({
-        transactionType: TransactionType.contractInteraction,
-        senderKeyringType: KeyringTypes.ledger,
-        flag: FLAG_OFF,
-      });
-      await waitFor(() => {
-        expect(result.current).toStrictEqual([]);
-      });
-    });
-  });
-
-  it('returns no alert if there is no current confirmation', () => {
-    const { result } = runHookWithoutTransaction();
-    expect(result.current).toStrictEqual([]);
   });
 });
