@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { useSelector, useStore } from 'react-redux';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -68,7 +68,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   DEFAULT_ROUTE,
-  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
@@ -143,23 +142,6 @@ const METRICS_PROPERTIES = {
   viewState: 'view_state',
 } as const;
 
-type TokenManagementRouteState = {
-  tokenManagementToast?: {
-    type: 'customTokenAdded';
-    symbol: string;
-  };
-};
-
-type TokenManagementPageToast =
-  | {
-      type: 'customTokenAdded';
-      symbol: string;
-    }
-  | {
-      type: 'networkAdded';
-      name: string;
-    };
-
 type TokenManagementListItem =
   | {
       type: 'managed';
@@ -169,22 +151,6 @@ type TokenManagementListItem =
       type: 'api-result';
       result: TokenSearchResult;
     };
-
-const getTokenManagementToastFromRouteState = (state: unknown) => {
-  if (!state || typeof state !== 'object') {
-    return null;
-  }
-
-  const routeToast = (state as TokenManagementRouteState).tokenManagementToast;
-  if (routeToast?.type !== 'customTokenAdded' || !routeToast.symbol) {
-    return null;
-  }
-
-  return {
-    type: 'customTokenAdded' as const,
-    symbol: routeToast.symbol,
-  };
-};
 
 const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   if (!assetId || typeof assetId !== 'string') {
@@ -407,7 +373,6 @@ export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const runCloseTransition = useGlobalMenuRouteTransition();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const enableFeaturedEvmNetwork = useEnableFeaturedEvmNetwork();
@@ -419,16 +384,12 @@ export const TokenManagementPage = () => {
     () => new Set<string>(),
   );
 
-  const showPageToast = useCallback(
-    (pageToast: TokenManagementPageToast) => {
-      const title =
-        pageToast.type === 'customTokenAdded'
-          ? t('newCustomTokenAdded', [pageToast.symbol])
-          : t('newNetworkAdded', [pageToast.name]);
+  const showNetworkAddedToast = useCallback(
+    (networkName: string) => {
       toast.success(
         <ToastContent
-          title={title}
-          dataTestId="token-management-custom-token-success-toast"
+          title={t('newNetworkAdded', [networkName])}
+          dataTestId="token-management-network-added-success-toast"
         />,
       );
     },
@@ -890,6 +851,8 @@ export const TokenManagementPage = () => {
   }, [commitStagedHides]);
 
   const networkFilterLabel = useNetworkFilterButtonLabel();
+  const isSingleNetworkFilterSelected =
+    allEnabledNetworksForAllNamespaces.length === 1;
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -902,16 +865,6 @@ export const TokenManagementPage = () => {
       isMountedRef.current = false;
     };
   }, []);
-
-  useEffect(() => {
-    const routeToast = getTokenManagementToastFromRouteState(location.state);
-    if (!routeToast) {
-      return;
-    }
-
-    showPageToast(routeToast);
-    navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
-  }, [location.state, navigate, showPageToast]);
 
   useEffect(() => {
     commitStagedHidesRef.current = async () => {
@@ -1151,10 +1104,7 @@ export const TokenManagementPage = () => {
               return;
             }
 
-            showPageToast({
-              type: 'networkAdded',
-              name: featuredNetwork.name,
-            });
+            showNetworkAddedToast(featuredNetwork.name);
             return;
           }
           const addedNetwork = await enableFeaturedEvmNetwork(payload.assetId);
@@ -1199,7 +1149,7 @@ export const TokenManagementPage = () => {
 
           trackEvent(tokenAddedEvent);
           if (addedNetwork) {
-            showPageToast({ type: 'networkAdded', name: addedNetwork.name });
+            showNetworkAddedToast(addedNetwork.name);
           }
           return;
         }
@@ -1240,7 +1190,7 @@ export const TokenManagementPage = () => {
       removePendingKey,
       removeCommittedHideKey,
       stageHide,
-      showPageToast,
+      showNetworkAddedToast,
       t,
       trackEvent,
       unstageHide,
@@ -1747,13 +1697,21 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          className="bg-default text-default border border-muted"
+          className={`bg-default border border-muted ${
+            isSingleNetworkFilterSelected
+              ? 'text-primary-default'
+              : 'text-default'
+          }`}
           onClick={handleOpenNetworkFilter}
         >
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={TextColor.TextDefault}
+            color={
+              isSingleNetworkFilterSelected
+                ? TextColor.PrimaryDefault
+                : TextColor.TextDefault
+            }
             ellipsis
           >
             {networkFilterLabel}

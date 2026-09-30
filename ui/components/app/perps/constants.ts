@@ -81,6 +81,14 @@ export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
 
 /**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
+
+/**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
  */
