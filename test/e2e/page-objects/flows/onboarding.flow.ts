@@ -13,6 +13,7 @@ import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/onboarding/login-page';
+import BasicFunctionalityMigrationModal from '../pages/dialog/basic-functionality-migration-modal';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 
@@ -242,12 +243,14 @@ export const importWalletWithSocialLoginOnboardingFlow = async ({
   await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
 
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     optedIn: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+
+  const basicFunctionalityMigrationModal = new BasicFunctionalityMigrationModal(
+    driver,
+  );
+  await basicFunctionalityMigrationModal.checkPageIsLoaded();
+  await basicFunctionalityMigrationModal.acceptAndClose();
 };
 
 /**

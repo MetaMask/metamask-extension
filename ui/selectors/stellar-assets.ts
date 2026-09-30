@@ -1,8 +1,4 @@
-import type {
-  AccountId,
-  AssetsControllerState,
-  Caip19AssetId,
-} from '@metamask/assets-controller';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import {
   type,
   string,
@@ -101,7 +97,7 @@ const selectAssetsBalance = getAssetsBalance as (
 ) => AssetsControllerState['assetsBalance'];
 
 type AssetBalanceEntry =
-  AssetsControllerState['assetsBalance'][AccountId][Caip19AssetId];
+  AssetsControllerState['assetsBalance'][string][CaipAssetType];
 
 /**
  * Whether the asset supports trustline activation (Stellar classic assets).
