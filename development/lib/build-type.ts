@@ -1,9 +1,7 @@
-// @ts-check
-
-const fs = require('fs');
-const { AssertionError } = require('assert');
-const path = require('path');
-const {
+import fs from 'node:fs';
+import path from 'node:path';
+import { AssertionError } from 'node:assert';
+import {
   array,
   boolean,
   coerce,
@@ -19,39 +17,27 @@ const {
   union,
   unknown,
   validate,
-} = require('@metamask/superstruct');
-const yaml = require('yaml');
-const { cloneDeep, merge, uniqWith } = require('lodash');
+  type Infer,
+  type Struct,
+  type StructError,
+} from '@metamask/superstruct';
+import yaml from 'yaml';
+import { cloneDeep, merge, uniqWith } from 'lodash';
 
 const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
 
-/**
- * @template {unknown} T
- * @typedef {import('@metamask/superstruct').Struct<T>} Struct
- */
-
-/**
- * @template {Struct<any>} T
- * @typedef {import('@metamask/superstruct').Infer<T>} Infer
- */
-
-/** @typedef {import('@metamask/superstruct').StructError} StructError */
-
-/**
- * @type {Infer<typeof BuildTypesStruct> | null}
- */
-let _cachedBuildTypes = null;
+let _cachedBuildTypes: BuildTypesConfig | null = null;
 
 /**
  * Given a source array and a set or array of its unique values, returns the elements
  * that are duplicated in the source array.
- *
- * @template {unknown} Element
- * @param {Element[]} source
- * @param {Set<Element> | Element[]} uniqueValues
- * @returns {Element[]}
+ * @param source
+ * @param uniqueValues
  */
-const getDuplicates = (source, uniqueValues) => {
+const getDuplicates = <Element>(
+  source: Element[],
+  uniqueValues: Set<Element> | Element[],
+): Element[] => {
   const uniqueValuesCopy = new Set(uniqueValues);
   return source.filter((item) => {
     if (uniqueValuesCopy.has(item)) {
@@ -63,14 +49,14 @@ const getDuplicates = (source, uniqueValues) => {
 };
 
 /**
- * Ensures that the array item contains only elements that are distinct from each other
- *
- * @template {unknown} Element
- * @param {Struct<Element[]>} struct
- * @param {(a: Element, b: Element) => boolean} [eq]
- * @returns {Struct<Element[]>}
+ * Ensures that the array item contains only elements that are distinct from each other.
+ * @param struct
+ * @param eq
  */
-const unique = (struct, eq) =>
+const unique = <Element>(
+  struct: Struct<Element[]>,
+  eq?: (a: Element, b: Element) => boolean,
+): Struct<Element[]> =>
   refine(struct, 'unique', (value) => {
     const uniqueValues = new Set(uniqWith(value, eq));
     if (uniqueValues.size === value.length) {
@@ -113,9 +99,6 @@ const RawEnvArrayStruct = unique(
 
 // The `env` field is parsed into an array of strings or objects with a single key.
 // This struct coerces this array into a single object.
-/**
- * @type {Struct<Record<string, unknown>>} EnvObjectStruct
- */
 const EnvObjectStruct = coerce(
   record(string(), unknown()),
   RawEnvArrayStruct,
@@ -131,12 +114,11 @@ const EnvObjectStruct = coerce(
 );
 
 /**
- * Ensures a number is within a given range
- *
- * @param {number} min
- * @param {number} max
+ * Ensures a number is within a given range.
+ * @param min
+ * @param max
  */
-const RangeStruct = (min, max) => {
+const RangeStruct = (min: number, max: number) => {
   return refine(
     integer(),
     'range',
@@ -146,17 +128,6 @@ const RangeStruct = (min, max) => {
   );
 };
 
-/**
- * @type {Struct<{
- *   id: number,
- *   extends?: string | undefined,
- *   features?: string[] | undefined,
- *   env?: Record<string, unknown> | undefined,
- *   isPrerelease?: boolean | undefined,
- *   manifestOverrides?: string | false | undefined,
- *   buildNameOverride?: string | false | undefined,
- * }>} BuildTypeStruct
- */
 const BuildTypeStruct = object({
   id: RangeStruct(10, 64),
   extends: optional(string()),
@@ -167,62 +138,28 @@ const BuildTypeStruct = object({
   buildNameOverride: optional(union([string(), literal(false)])),
 });
 
-/**
- * @typedef {Infer<typeof BuildTypeStruct>} BuildType
- */
+export type BuildType = Infer<typeof BuildTypeStruct>;
 
-/**
- * @type {Struct<{
- *   src: string,
- *   dest: string,
- * }>} CopyAssetStruct
- */
 const CopyAssetStruct = object({ src: string(), dest: string() });
 
-/**
- * @type {Struct<{
- *   exclusiveInclude: string,
- * }>} ExclusiveIncludeAssetStruct
- */
 const ExclusiveIncludeAssetStruct = coerce(
   object({ exclusiveInclude: string() }),
   string(),
   (exclusiveInclude) => ({ exclusiveInclude }),
 );
 
-/**
- * @type {Struct<
- *   Infer<typeof CopyAssetStruct> | Infer<typeof ExclusiveIncludeAssetStruct>
- * >} AssetStruct
- */
 const AssetStruct = union([CopyAssetStruct, ExclusiveIncludeAssetStruct]);
 
-/**
- * @type {Struct<{
- *   assets?: Infer<typeof AssetStruct>[] | undefined,
- * }>} FeatureStruct
- */
 const FeatureStruct = object({
   // TODO(ritave): Check if the paths exist
   assets: optional(array(AssetStruct)),
 });
 
-/**
- * @type {Struct<Record<string, Infer<typeof FeatureStruct>>>} FeaturesStruct
- */
 const FeaturesStruct = record(
   string(),
   coerce(FeatureStruct, nullable(never()), () => ({})),
 );
 
-/**
- * @type {Struct<{
- *   default: string,
- *   buildTypes: Record<string, BuildType>,
- *   features: Infer<typeof FeaturesStruct>,
- *   env: Infer<typeof EnvObjectStruct>,
- * }>} BuildTypesStruct
- */
 const BuildTypesStruct = refine(
   object({
     default: string(),
@@ -251,20 +188,18 @@ const BuildTypesStruct = refine(
   },
 );
 
-/**
- * @typedef {Infer<typeof BuildTypesStruct>} BuildTypesConfig
- */
+export type BuildTypesConfig = Infer<typeof BuildTypesStruct>;
 
 /**
  * Loads and parses the `builds.yml` file, which contains the definitions of
  * our build types.
  *
- * @param {BuildTypesConfig | null} cachedBuildTypes - The cached build types, if any.
- * @returns {BuildTypesConfig} The parsed builds configuration.
+ * @param cachedBuildTypes - The cached build types, if any.
+ * @returns The parsed builds configuration.
  */
-module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
-  cachedBuildTypes = _cachedBuildTypes,
-) {
+export function loadBuildTypesConfig(
+  cachedBuildTypes: BuildTypesConfig | null = _cachedBuildTypes,
+): BuildTypesConfig {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
@@ -282,15 +217,17 @@ module.exports.loadBuildTypesConfig = function loadBuildTypesConfig(
   applyBuildTypeExtensions(result);
   _cachedBuildTypes = result;
   return _cachedBuildTypes;
-};
+}
 
 /**
  * Extends any extended build types with their parent build types. This is accomplished
  * by merging the extending build type into a copy of its parent build type.
- *
- * @param {BuildTypesConfig} buildsConfig
+ * @param options0
+ * @param options0.buildTypes
  */
-function applyBuildTypeExtensions({ buildTypes }) {
+function applyBuildTypeExtensions({
+  buildTypes,
+}: Pick<BuildTypesConfig, 'buildTypes'>): void {
   for (const [buildType, config] of Object.entries(buildTypes)) {
     if (config.extends !== undefined) {
       const parentConfig = buildTypes[config.extends];
@@ -305,11 +242,9 @@ function applyBuildTypeExtensions({ buildTypes }) {
 
 /**
  * Creates a user readable error message about parse failure.
- *
- * @param {StructError} structError
- * @returns {string}
+ * @param structError
  */
-function constructFailureMessage(structError) {
+function constructFailureMessage(structError: StructError): string {
   return `Failed to parse builds.yml
   -> ${structError
     .failures()
