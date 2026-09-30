@@ -1,63 +1,42 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AlertsName } from '../constants';
-import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
-import { selectIsPayHardwareEnabled } from '../../../selectors/feature-flags';
+import { useIsPayHardwareBlocked } from '../../pay/useIsPayHardwareBlocked';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 
-const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
-  TransactionType.moneyAccountDeposit,
-  TransactionType.moneyAccountWithdraw,
-  TransactionType.perpsDeposit,
-  TransactionType.perpsWithdraw,
-  TransactionType.predictDeposit,
-  TransactionType.predictWithdraw,
-];
-
-const PAY_HARDWARE_FLAG_GATED_TYPES: TransactionType[] = [
-  TransactionType.musdConversion,
-];
-
+/**
+ * Blocking alert for a hardware account that is already funding a Pay flow
+ * that forbids hardware wallets.
+ *
+ * The account picker hides hardware accounts for these flows, so this is a
+ * backstop for the addresses the picker never vetted: `txParams.from` seeded
+ * at initiation from the globally selected account, deep links, and any other
+ * entry point that sets the funding account directly.
+ *
+ * @returns The blocking alert, or an empty array.
+ */
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequestOptional();
 
-  const isPayHardwareEnabled = useSelector(selectIsPayHardwareEnabled);
-  const fromAddress = currentConfirmation?.txParams?.from as Hex | undefined;
+  const isHardwareBlocked = useIsPayHardwareBlocked();
+  const fromAddress = transactionMeta?.txParams?.from as Hex | undefined;
 
   const account = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
-
-  const isAlwaysBlockedType = hasTransactionType(
-    currentConfirmation,
-    PAY_HARDWARE_ALERT_TRANSACTION_TYPES,
-  );
-
-  const isFlagGatedType = hasTransactionType(
-    currentConfirmation,
-    PAY_HARDWARE_FLAG_GATED_TYPES,
-  );
+  const shouldAlert = isHardwareWallet && isHardwareBlocked;
 
   return useMemo(() => {
-    if (!isHardwareWallet) {
-      return [];
-    }
-
-    const shouldAlert =
-      isAlwaysBlockedType || (isFlagGatedType && !isPayHardwareEnabled);
-
     if (!shouldAlert) {
       return [];
     }
@@ -72,11 +51,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [
-    isHardwareWallet,
-    isAlwaysBlockedType,
-    isFlagGatedType,
-    isPayHardwareEnabled,
-    t,
-  ]);
+  }, [shouldAlert, t]);
 }

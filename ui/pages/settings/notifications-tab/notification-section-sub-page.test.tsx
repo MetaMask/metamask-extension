@@ -20,6 +20,8 @@ import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();
 const mockSwitchAccountNotifications = jest.fn();
+const mockUpdateAccountSettings = jest.fn();
+const mockRefetchPreferences = jest.fn();
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -128,7 +130,7 @@ describe('NotificationSectionSubPage', () => {
       initialLoading: false,
       error: null,
       accountsBeingUpdated: [],
-      update: jest.fn(),
+      update: mockUpdateAccountSettings,
     });
     jest.mocked(useNotificationPreferences).mockReturnValue({
       preferences: createMockNotificationPreferences(),
@@ -136,7 +138,7 @@ describe('NotificationSectionSubPage', () => {
       isLoading: false,
       isUpdatingPreferences: false,
       error: null,
-      refetchPreferences: jest.fn(),
+      refetchPreferences: mockRefetchPreferences,
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -391,6 +393,16 @@ describe('NotificationSectionSubPage', () => {
         ? firstToggle
         : Promise.resolve(),
     );
+    jest.mocked(useAccountSettingsProps).mockReturnValue({
+      data: {
+        [account1.address.toLowerCase()]: true,
+        [account2.address.toLowerCase()]: true,
+      },
+      initialLoading: false,
+      error: null,
+      accountsBeingUpdated: [],
+      update: mockUpdateAccountSettings,
+    });
 
     renderWithProvider(
       <NotificationSectionSubPage sectionType="walletActivity" />,
@@ -584,6 +596,18 @@ describe('NotificationSectionSubPage', () => {
     const renderAggPage = (
       accounts: { address: `0x${string}`; enabled: boolean }[],
     ) => {
+      jest.mocked(useAccountSettingsProps).mockReturnValue({
+        data: Object.fromEntries(
+          accounts.map((account) => [
+            account.address.toLowerCase(),
+            account.enabled,
+          ]),
+        ),
+        initialLoading: false,
+        error: null,
+        accountsBeingUpdated: [],
+        update: mockUpdateAccountSettings,
+      });
       jest.mocked(useNotificationPreferences).mockReturnValue({
         preferences: createMockNotificationPreferences({
           walletActivity: {
@@ -596,7 +620,7 @@ describe('NotificationSectionSubPage', () => {
         isLoading: false,
         isUpdatingPreferences: false,
         error: null,
-        refetchPreferences: jest.fn(),
+        refetchPreferences: mockRefetchPreferences,
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -717,6 +741,7 @@ describe('NotificationSectionSubPage', () => {
           }),
         }),
       );
+      expect(mockRefetchPreferences).not.toHaveBeenCalled();
     });
 
     it('disables every account and tracks aggregate disabled when deselect all is clicked', async () => {
@@ -744,6 +769,7 @@ describe('NotificationSectionSubPage', () => {
           }),
         }),
       );
+      expect(mockRefetchPreferences).not.toHaveBeenCalled();
     });
 
     it('skips analytics when select all fails to persist', async () => {
@@ -763,6 +789,118 @@ describe('NotificationSectionSubPage', () => {
         expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
       });
       expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not refetch stored preferences after toggling an account', async () => {
+      renderAggPage([
+        { address: address1, enabled: true },
+        { address: address2, enabled: true },
+      ]);
+
+      fireEvent.click(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      );
+
+      await waitFor(() => {
+        expect(mockSwitchAccountNotifications).toHaveBeenCalledTimes(1);
+      });
+      expect(mockRefetchPreferences).not.toHaveBeenCalled();
+      expect(mockUpdateAccountSettings).toHaveBeenCalled();
+    });
+
+    it('ignores stale stored wallet-activity account flags', () => {
+      jest.mocked(useAccountSettingsProps).mockReturnValue({
+        data: {},
+        initialLoading: false,
+        error: null,
+        accountsBeingUpdated: [],
+        update: mockUpdateAccountSettings,
+      });
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        preferences: createMockNotificationPreferences({
+          walletActivity: {
+            pushNotificationsEnabled: true,
+            inAppNotificationsEnabled: true,
+            accounts: [
+              { address: address1, enabled: true },
+              { address: address2, enabled: true },
+            ],
+          },
+        }),
+        hasNotificationPreferences: true,
+        isLoading: false,
+        isUpdatingPreferences: false,
+        error: null,
+        refetchPreferences: mockRefetchPreferences,
+        updatePreference: jest.fn(),
+        updatePreferencesSection: jest.fn(),
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="walletActivity" />,
+        buildAggStore(),
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+
+      expect(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      ).toHaveTextContent('Select all');
+    });
+
+    it('surfaces a failed account-settings read with switches disabled', () => {
+      jest.mocked(useAccountSettingsProps).mockReturnValue({
+        data: {},
+        initialLoading: false,
+        error: 'Failed to get account settings',
+        accountsBeingUpdated: [],
+        update: mockUpdateAccountSettings,
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="walletActivity" />,
+        buildAggStore(),
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+
+      expect(
+        screen.getByText(
+          "We couldn't load your account notification settings. Try again later.",
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      ).toBeDisabled();
+      expect(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      ).toBeDisabled();
+    });
+
+    it('keeps switches interactive when a failed read has earlier settings to show', () => {
+      jest.mocked(useAccountSettingsProps).mockReturnValue({
+        data: { [address1]: true },
+        initialLoading: false,
+        error: 'Failed to get account settings',
+        accountsBeingUpdated: [],
+        update: mockUpdateAccountSettings,
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="walletActivity" />,
+        buildAggStore(),
+        NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+      );
+
+      expect(
+        screen.queryByText(
+          "We couldn't load your account notification settings. Try again later.",
+        ),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId('notifications-settings-toggle-all-accounts'),
+      ).not.toBeDisabled();
+      expect(
+        screen.getByTestId(`notifications-settings-account-${address1}`),
+      ).not.toBeDisabled();
     });
   });
   /* eslint-enable @typescript-eslint/naming-convention */
@@ -808,10 +946,6 @@ describe('NotificationSectionSubPage', () => {
       preferences: NotificationPreferences;
     }[] = [
       {
-        section: 'walletActivity',
-        preferences: createMockNotificationPreferences(),
-      },
-      {
         section: 'marketing',
         preferences: createMockNotificationPreferences(),
       },
@@ -834,6 +968,19 @@ describe('NotificationSectionSubPage', () => {
           ]
         : []),
     ];
+
+    it('omits the channel toggles for the wallet activity section', () => {
+      renderSection('walletActivity', createMockNotificationPreferences());
+
+      expect(
+        screen.queryByTestId(
+          'walletActivity-in-app-notifications-toggle-input',
+        ),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('walletActivity-push-notifications-toggle-input'),
+      ).not.toBeInTheDocument();
+    });
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(cases)(

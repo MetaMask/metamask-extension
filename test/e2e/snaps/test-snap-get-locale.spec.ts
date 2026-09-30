@@ -2,7 +2,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HomePage from '../page-objects/pages/home/homepage';
 import PreferencesAndDisplaySettings from '../page-objects/pages/settings/preferences-and-display-settings';
-import SnapListPage from '../page-objects/pages/snap-list-page';
+import SnapListPage from '../page-objects/pages/snaps/list-page';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { login } from '../page-objects/flows/login.flow';
 import { closeSettings } from '../page-objects/flows/settings.flow';

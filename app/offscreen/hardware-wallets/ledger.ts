@@ -70,7 +70,7 @@ function getSelectorWithLegacyFallback(tx: string): string | undefined {
  * Legacy Ledger handler using `@ledgerhq/hw-app-eth` + `TransportWebHID`.
  *
  * This is the original Ledger implementation, kept as a fallback for the
- * newer `LedgerDmkBridgeHandler` (in `./ledger-dmk.ts`). Selection between
+ * newer `LedgerDmkBridgeHandler` (in `./ledger-dmk-handler.ts`). Selection between
  * the two is driven by the `ledgerDmkBridge` remote feature flag.
  *
  * Handles Ledger communication in the offscreen document.
@@ -576,6 +576,11 @@ export class LedgerLegacyHandler {
           hdPath: params.hdPath,
           message: params.message,
         } as LedgerSignTypedDataParams);
+
+      case LedgerAction.signDelegationAuthorization:
+        throw new Error(
+          'Ledger delegation authorization signing is not supported',
+        );
 
       default:
         throw new Error(`Unknown Ledger action: ${action as string}`);

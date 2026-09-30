@@ -42,7 +42,7 @@ export type MusdConversionToastState =
  * Shows "in-progress" while a conversion is pending, "success" when confirmed,
  * and "failed" when the transaction fails or is dropped.
  *
- * Mirrors the `useMerklClaimStatus` hook behavior:
+ * Status → toast mapping:
  * - approved/signed/submitted → in-progress toast
  * - confirmed → success toast
  * - failed/dropped → failed toast
@@ -106,22 +106,26 @@ export const useMusdConversionToastStatus = (): {
   const [cachedSymbol, setCachedSymbol] = useState<string | undefined>(
     undefined,
   );
-  const prevActivePendingTxIdRef = useRef<string | undefined>(undefined);
+  const [prevActivePendingTxId, setPrevActivePendingTxId] =
+    useState(activePendingTxId);
+  const [prevPaymentTokenSymbol, setPrevPaymentTokenSymbol] = useState<
+    string | undefined
+  >(undefined);
 
   // Clear stale cache when a NEW pending conversion becomes active, but
   // preserve it when the current conversion completes (id → undefined).
-  useEffect(() => {
-    if (activePendingTxId !== prevActivePendingTxIdRef.current) {
-      if (activePendingTxId !== undefined) {
-        setCachedSymbol(undefined);
-      }
-      prevActivePendingTxIdRef.current = activePendingTxId;
+  if (activePendingTxId !== prevActivePendingTxId) {
+    setPrevActivePendingTxId(activePendingTxId);
+    if (activePendingTxId !== undefined) {
+      setCachedSymbol(paymentToken?.symbol);
+      setPrevPaymentTokenSymbol(paymentToken?.symbol);
     }
-
+  } else if (paymentToken?.symbol !== prevPaymentTokenSymbol) {
+    setPrevPaymentTokenSymbol(paymentToken?.symbol);
     if (paymentToken?.symbol) {
       setCachedSymbol(paymentToken.symbol);
     }
-  }, [activePendingTxId, paymentToken?.symbol]);
+  }
 
   const sourceTokenSymbol = paymentToken?.symbol ?? cachedSymbol;
 

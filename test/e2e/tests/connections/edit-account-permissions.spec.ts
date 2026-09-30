@@ -5,8 +5,8 @@ import {
 } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { getEditConnectedAccountsPageForHost } from '../../page-objects/flows/permissions.flow';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -23,6 +23,8 @@ describe('Edit Accounts Permissions', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2().build(),
+        // To investigate why is this error appearing (#46623)
+        ignoredConsoleErrors: ['[PerpsStreamManager] Failed to fetch account'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

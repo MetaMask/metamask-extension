@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   Box,
@@ -134,45 +134,57 @@ export const SendAlertModal = ({
   acknowledgeLabel,
 }: SendAlertModalProps) => {
   const t = useI18nContext();
+  const alertKeys = alerts.map((alert) => alert.key).join('|');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [viewedKeys, setViewedKeys] = useState<Set<string>>(() => new Set());
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevAlertKeys, setPrevAlertKeys] = useState(alertKeys);
+
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
+    setCurrentIndex(0);
+    setViewedKeys(new Set());
+  } else if (alertKeys !== prevAlertKeys) {
+    setPrevAlertKeys(alertKeys);
+    setCurrentIndex(0);
+  }
 
   const safeIndex = Math.min(currentIndex, Math.max(alerts.length - 1, 0));
   const currentAlert = alerts[safeIndex];
   const hasMultiple = alerts.length > 1;
 
+  const withCurrentViewed = useCallback(
+    (base: Set<string>) => {
+      const next = new Set(base);
+      if (currentAlert) {
+        next.add(currentAlert.key);
+      }
+      return next;
+    },
+    [currentAlert],
+  );
+
   const goToPrevious = useCallback(() => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
-  }, []);
+    const nextIndex = Math.max(safeIndex - 1, 0);
+    const nextViewed = withCurrentViewed(viewedKeys);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      nextViewed.add(destination.key);
+    }
+    setCurrentIndex(nextIndex);
+    setViewedKeys(nextViewed);
+  }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => Math.min(prev + 1, alerts.length - 1));
-  }, [alerts.length]);
-
-  const alertKeys = alerts.map((alert) => alert.key).join('|');
-
-  useEffect(() => {
-    setCurrentIndex(0);
-    setViewedKeys(new Set());
-  }, [isOpen]);
-
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [alertKeys]);
-
-  useEffect(() => {
-    if (!isOpen || !currentAlert) {
-      return;
+    const nextIndex = Math.min(safeIndex + 1, alerts.length - 1);
+    const nextViewed = withCurrentViewed(viewedKeys);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      nextViewed.add(destination.key);
     }
-    setViewedKeys((prev) => {
-      if (prev.has(currentAlert.key)) {
-        return prev;
-      }
-      const next = new Set(prev);
-      next.add(currentAlert.key);
-      return next;
-    });
-  }, [isOpen, currentAlert]);
+    setCurrentIndex(nextIndex);
+    setViewedKeys(nextViewed);
+  }, [alerts, safeIndex, viewedKeys, withCurrentViewed]);
 
   const isOnLastAlert = safeIndex >= Math.max(alerts.length - 1, 0);
 
@@ -180,14 +192,27 @@ export const SendAlertModal = ({
     if (!currentAlert) {
       return;
     }
+    const acknowledged = withCurrentViewed(viewedKeys);
     if (isOnLastAlert) {
-      const acknowledged = new Set(viewedKeys);
-      acknowledged.add(currentAlert.key);
       onAcknowledge(Array.from(acknowledged));
       return;
     }
-    goToNext();
-  }, [currentAlert, goToNext, isOnLastAlert, onAcknowledge, viewedKeys]);
+    const nextIndex = Math.min(safeIndex + 1, alerts.length - 1);
+    const destination = alerts[nextIndex];
+    if (destination) {
+      acknowledged.add(destination.key);
+    }
+    setCurrentIndex(nextIndex);
+    setViewedKeys(acknowledged);
+  }, [
+    alerts,
+    currentAlert,
+    isOnLastAlert,
+    onAcknowledge,
+    safeIndex,
+    viewedKeys,
+    withCurrentViewed,
+  ]);
 
   if (!currentAlert) {
     return null;

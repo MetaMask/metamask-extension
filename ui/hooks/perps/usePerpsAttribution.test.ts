@@ -46,6 +46,33 @@ describe('usePerpsAttribution', () => {
     });
   });
 
+  it('carries the input method that produced the amount', () => {
+    const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
+
+    const trackingData = result.current.buildTrackingData({
+      totalFee: 1.5,
+      marketPrice: 3000,
+      vipTier: null,
+      vipDiscount: undefined,
+      inputMethod: 'percentage',
+    });
+
+    expect(trackingData.inputMethod).toBe('percentage');
+  });
+
+  it('omits the input method when the caller does not report one', () => {
+    const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
+
+    const trackingData = result.current.buildTrackingData({
+      totalFee: 1.5,
+      marketPrice: 3000,
+      vipTier: null,
+      vipDiscount: undefined,
+    });
+
+    expect(trackingData).not.toHaveProperty('inputMethod');
+  });
+
   it('builds TP/SL tracking data with flow attribution', () => {
     const { result } = renderHook(() => usePerpsAttribution(), { wrapper });
 

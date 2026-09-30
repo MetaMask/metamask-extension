@@ -30,7 +30,7 @@ import {
 import {
   getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
@@ -75,7 +75,6 @@ import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -89,7 +88,6 @@ const MetaMaskWordMarkAnimation = lazy(
 
 const FoxAppearAnimation = lazy(
   () =>
-    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
       default: ComponentType<
         React.PropsWithChildren<{
@@ -109,9 +107,7 @@ export default function OnboardingWelcome() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
   const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
@@ -158,7 +154,7 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
         navigate(
-          completedMetaMetricsOnboarding
+          consentDecisionMade
             ? ONBOARDING_COMPLETION_ROUTE
             : ONBOARDING_METAMETRICS,
           { replace: true },
@@ -192,7 +188,7 @@ export default function OnboardingWelcome() {
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,

@@ -4,7 +4,7 @@ import type {
 } from '../../helpers/qr-sync/mobile-wallet-simulator';
 import { getServerMochaToBackground } from '../../background-socket/server-mocha-to-background';
 import { QR_SYNC_E2E_OTP, WALLET_PASSWORD } from '../../constants';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import SettingsPage from '../pages/settings/settings-page';
 import SyncAccountsSettingsPage from '../pages/settings/sync-accounts-settings-page';
 import { Driver } from '../../webdriver/driver';

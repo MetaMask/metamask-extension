@@ -1,4 +1,4 @@
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import HomePage from '../pages/home/homepage';
 import PrivacySettings from '../pages/settings/privacy-settings';
 import SettingsPage from '../pages/settings/settings-page';

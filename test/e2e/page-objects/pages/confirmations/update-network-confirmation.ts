@@ -25,6 +25,10 @@ class UpdateNetworkConfirmation {
 
   private readonly driver: Driver;
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -67,9 +71,12 @@ class UpdateNetworkConfirmation {
    */
   async checkPageIsLoaded(networkName: string): Promise<void> {
     try {
-      await this.driver.waitForSelector({
-        text: `Update ${networkName}`,
-      });
+      await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
+        {
+          text: `Update ${networkName}`,
+        },
+      ]);
     } catch (e) {
       console.log(
         `Timeout while waiting for Update network ${networkName} confirmation page to be loaded`,

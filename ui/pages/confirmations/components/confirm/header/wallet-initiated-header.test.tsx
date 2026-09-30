@@ -15,6 +15,22 @@ import * as ConfirmActions from '../../../hooks/useConfirmActions';
 import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
+const mockHandleShieldSubscriptionApprovalTransactionRejected = jest.fn();
+
+jest.mock('../../../hooks/transactions/useShieldConfirm', () => ({
+  useShieldConfirm: () => ({
+    handleShieldSubscriptionApprovalTransactionRejected:
+      mockHandleShieldSubscriptionApprovalTransactionRejected,
+  }),
+}));
+
+jest.mock('../../../hooks/useHasInsufficientBalance', () => ({
+  useHasInsufficientBalance: jest.fn(() => ({
+    hasInsufficientBalance: false,
+    isNativeBalanceKnown: true,
+  })),
+}));
+
 /** Build a confirm state for a perpsDeposit transaction. */
 const getPerpsDepositState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
@@ -25,12 +41,32 @@ const getPerpsDepositState = () => {
   } as TransactionMeta);
 };
 
+/** Build a confirm state for a moneyAccountWithdraw transaction. */
+const getMoneyAccountWithdrawState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.moneyAccountWithdraw,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
 /** Build a confirm state for a perpsWithdraw transaction. */
 const getPerpsWithdrawState = () => {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
   return getMockConfirmStateForTransaction({
     ...base,
     type: TransactionType.perpsWithdraw,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
+/** Build a confirm state for a Shield subscription approval transaction. */
+const getShieldSubscriptionApprovalState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.shieldSubscriptionApprove,
     origin: 'metamask',
   } as TransactionMeta);
 };
@@ -63,6 +99,30 @@ describe('<WalletInitiatedHeader />', () => {
     );
     fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
     expect(mockOnCancel).toHaveBeenCalled();
+  });
+
+  it('tracks Shield rejection when the back button is pressed', () => {
+    mockHandleShieldSubscriptionApprovalTransactionRejected.mockClear();
+    const mockOnCancel = jest.fn();
+    jest.spyOn(ConfirmActions, 'useConfirmActions').mockImplementation(() => ({
+      onCancel: mockOnCancel,
+      resetTransactionState: jest.fn(),
+    }));
+
+    const { getByTestId } = render(getShieldSubscriptionApprovalState());
+    fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
+
+    expect(
+      mockHandleShieldSubscriptionApprovalTransactionRejected,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: TransactionType.shieldSubscriptionApprove,
+      }),
+      false,
+    );
+    expect(mockOnCancel).toHaveBeenCalledWith({
+      location: 'confirmation',
+    });
   });
 
   it('calls onCancel with navigateBackToPreviousPage for musdClaim', () => {
@@ -112,6 +172,41 @@ describe('<WalletInitiatedHeader />', () => {
     expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
   });
 
+  it('shows sendToPerps as the header title for perpsDeposit from money account', () => {
+    const state = getPerpsDepositState();
+    const store = configureStore({
+      ...state,
+      metamask: {
+        ...state.metamask,
+        remoteFeatureFlags: {
+          ...state.metamask.remoteFeatureFlags,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          confirmations_pay_extended: {
+            enableMoneyAccountTransactions: { perpsDeposit: true },
+          },
+        },
+      },
+    });
+    const { getByText } = renderWithConfirmContextProvider(
+      <WalletInitiatedHeader />,
+      store,
+      '/?payWithOption=money_account',
+    );
+
+    expect(getByText(tEn('sendToPerps'))).toBeInTheDocument();
+  });
+
+  it('keeps perpsDepositFundsTitle when Money Account pay is not enabled for perps deposit', () => {
+    const store = configureStore(getPerpsDepositState());
+    const { getByText } = renderWithConfirmContextProvider(
+      <WalletInitiatedHeader />,
+      store,
+      '/?payWithOption=money_account',
+    );
+
+    expect(getByText(tEn('perpsDepositFundsTitle'))).toBeInTheDocument();
+  });
+
   it('hides AdvancedDetailsButton visually for perpsDeposit', () => {
     const { getByTestId } = render(getPerpsDepositState());
 
@@ -147,6 +242,12 @@ describe('<WalletInitiatedHeader />', () => {
     const { getByText } = render(getPerpsWithdrawState());
 
     expect(getByText(tEn('perpsWithdrawFundsTitle'))).toBeInTheDocument();
+  });
+
+  it('shows send as the header title for moneyAccountWithdraw', () => {
+    const { getByText } = render(getMoneyAccountWithdrawState());
+
+    expect(getByText(tEn('send'))).toBeInTheDocument();
   });
 
   it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {

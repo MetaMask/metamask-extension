@@ -3,7 +3,7 @@ import HomePage from '../pages/home/homepage';
 import SettingsPage from '../pages/settings/settings-page';
 import PreferencesAndDisplaySettings from '../pages/settings/preferences-and-display-settings';
 import NetworksPage from '../pages/networks/networks-page';
-import HeaderNavbar from '../pages/header-navbar';
+import HeaderNavbar from '../pages/home/header-navbar';
 import PrivacySettings from '../pages/settings/privacy-settings';
 import ChangePasswordPage from '../pages/settings/change-password-page';
 import { lockAndWaitForLoginPage } from './login.flow';

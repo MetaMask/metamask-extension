@@ -12,7 +12,6 @@ import {
   BoxFlexDirection,
   ButtonBase,
   FontWeight,
-  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -123,22 +122,6 @@ const getSecurityResultType = (securityData: TrendingAsset['securityData']) =>
   securityData?.resultType ??
   (securityData as { type?: SecurityResultType } | undefined)?.type;
 
-const getDiscoverSearchSecurityBadge = (
-  resultType: SecurityResultType | undefined,
-  t: SecurityTrustTranslate,
-) => {
-  const badge = getSecurityTrustBadgeConfig(resultType, t);
-
-  if (badge && (resultType === 'Warning' || resultType === 'Spam')) {
-    return {
-      ...badge,
-      icon: IconName.Danger,
-    };
-  }
-
-  return badge;
-};
-
 /**
  * Discover row for crypto / stocks: icon, name, security badge, cap·vol, price, 24h %.
  * @param options0
@@ -227,10 +210,7 @@ export const DiscoverAssetRow = ({
 
   const securityBadge = useMemo(
     () =>
-      getDiscoverSearchSecurityBadge(
-        getSecurityResultType(asset.securityData),
-        t,
-      ),
+      getSecurityTrustBadgeConfig(getSecurityResultType(asset.securityData), t),
     [asset.securityData, t],
   );
 

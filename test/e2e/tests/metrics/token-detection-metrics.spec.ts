@@ -5,10 +5,10 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { login } from '../../page-objects/flows/login.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PreferencesAndDisplaySettings from '../../page-objects/pages/settings/preferences-and-display-settings';
-import { waitForExpectedTraits } from './helpers';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { waitForSettingsUpdated } from './helpers';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -36,14 +36,26 @@ async function mockSegmentTrack(mockServer: Mockttp) {
   ];
 }
 
-async function mockSegmentIdentify(mockServer: Mockttp) {
+async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'identify' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Settings Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: 'basic_functionality',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
+            },
+          },
+        ],
       })
-      .always()
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -95,7 +107,7 @@ describe('Token detection event', function () {
     );
   });
 
-  it('sends identify trait when token detection is toggled in Assets settings', async function () {
+  it('sends Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
@@ -109,7 +121,7 @@ describe('Token detection event', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentIdentify,
+        testSpecificMock: mockBasicFunctionalityTurnedOff,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
@@ -119,21 +131,20 @@ describe('Token detection event', function () {
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToAssetsSettings();
+        await settingsPage.goToPrivacySettings();
 
-        const assetsSettings = new PreferencesAndDisplaySettings(driver);
-        await assetsSettings.checkAssetsPageIsLoaded();
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
 
-        await assetsSettings.toggleAutoDetectTokens();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
+        await privacySettings.toggleBasicFunctionalityOff();
+        await waitForSettingsUpdated(driver, mockedEndpoints, {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_detection_enabled: false,
-        });
-
-        await assetsSettings.toggleAutoDetectTokens();
-        await waitForExpectedTraits(driver, mockedEndpoints, {
+          settings_type: 'basic_functionality',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_detection_enabled: true,
+          old_value: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_value: false,
+          category: 'Settings',
         });
       },
     );

@@ -7,7 +7,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer

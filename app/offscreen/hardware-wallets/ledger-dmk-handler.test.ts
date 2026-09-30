@@ -113,6 +113,9 @@ describe('LedgerDmkBridgeHandler', () => {
     installWebHidNavigator();
     installChromeRuntime();
     delete mockChromeRuntime.onMessage;
+    mockHidGetDevices.mockResolvedValue([
+      { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+    ]);
     mockOnSessionStateChangeSubject = new Subject();
     (LedgerDmkBridge as jest.Mock).mockImplementation(() => createMockBridge());
     mockListenToAvailableDevices.mockReturnValue(
@@ -175,6 +178,39 @@ describe('LedgerDmkBridgeHandler', () => {
       await expectation;
       await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
       expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('fails fast when no permitted Ledger device is granted', async () => {
+      mockHidGetDevices.mockResolvedValue([]);
+
+      const actionPromise = handler.handleAction(LedgerAction.makeApp);
+      await expect(actionPromise).rejects.toMatchObject({
+        name: 'HardwareWalletError',
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.Connection,
+        message: 'No permitted Ledger device found',
+      });
+      await expect(actionPromise).rejects.toBeInstanceOf(HardwareWalletError);
+
+      expect(mockBridgeStartDiscovering).not.toHaveBeenCalled();
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips the permitted-device probe when WebHID is unavailable', async () => {
+      Object.defineProperty(globalThis, 'navigator', {
+        value: {},
+        writable: true,
+        configurable: true,
+      });
+
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+
+      // The probe is WebHID-only, so it must not touch `navigator.hid`.
+      expect(mockHidGetDevices).not.toHaveBeenCalled();
+      expect(mockBridgeStartDiscovering).toHaveBeenCalledTimes(1);
     });
 
     it('wraps discovery Errors as HardwareWalletError.Unknown', async () => {
@@ -486,21 +522,6 @@ describe('LedgerDmkBridgeHandler', () => {
         code: ErrorCode.Unknown,
       });
     });
-
-    it('throws for signDelegationAuthorization as an unknown action', async () => {
-      await expect(
-        handler.handleAction(LedgerAction.signDelegationAuthorization, {
-          hdPath: "m/44'/60'/0'/0/0",
-          chainId: 1,
-          contractAddress: '0x1234',
-          nonce: 2,
-        }),
-      ).rejects.toMatchObject({
-        name: 'HardwareWalletError',
-        message: `Unknown Ledger action: ${LedgerAction.signDelegationAuthorization}`,
-        code: ErrorCode.Unknown,
-      });
-    });
   });
 
   describe('init', () => {
@@ -734,6 +755,36 @@ describe('LedgerDmkBridgeHandler', () => {
       consoleLogSpy.mockRestore();
     });
 
+    it('forceReset clears bridge state synchronously so the next action rebuilds', async () => {
+      const handler = new LedgerDmkBridgeHandler();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await handler.handleAction(LedgerAction.makeApp);
+
+      let resolveDestroy: (() => void) | undefined;
+      mockBridgeDestroy.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveDestroy = resolve;
+          }),
+      );
+
+      handler.forceReset();
+      expect(mockBridgeDestroy).toHaveBeenCalledTimes(1);
+
+      (LedgerDmkBridge as jest.Mock).mockClear();
+      setTimeout(() => {
+        mockOnSessionStateChangeSubject.next({ connected: true });
+      }, 0);
+      await expect(handler.handleAction(LedgerAction.makeApp)).resolves.toBe(
+        true,
+      );
+      expect(LedgerDmkBridge).toHaveBeenCalledTimes(1);
+
+      resolveDestroy?.();
+    });
+
     it('preserves HID listeners on device disconnect (replug still notifies)', async () => {
       const handler = new LedgerDmkBridgeHandler();
       mockHidGetDevices.mockResolvedValue([]);
@@ -748,6 +799,9 @@ describe('LedgerDmkBridgeHandler', () => {
       expect(connectListener).toBeDefined();
       expect(disconnectListener).toBeDefined();
 
+      mockHidGetDevices.mockResolvedValue([
+        { vendorId: Number(LEDGER_USB_VENDOR_ID) },
+      ]);
       setTimeout(() => {
         mockOnSessionStateChangeSubject.next({ connected: true });
       }, 0);

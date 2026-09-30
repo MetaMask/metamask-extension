@@ -1,11 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   type CaipAssetType,
   type CaipChainId,
   type Hex,
   isCaipAssetType,
+  isStrictHexString,
 } from '@metamask/utils';
+import type { Asset } from '@metamask/assets-controllers';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import {
   Box,
@@ -20,11 +27,18 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDeferredValue } from '../../../../hooks/useDeferredValue';
+import { useTokenAssetSecurityResults } from '#ui/hooks/token-asset/useTokenAssetSecurityResults';
+import {
+  getNativeAssetId,
+  isEvmChainId,
+  isTronSpecialAsset,
+  normalizeTokenAssetId,
+} from '#shared/lib/asset-utils';
+import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
+import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
-  getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
@@ -47,15 +61,12 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
-import {
-  isEvmChainId,
-  isTronSpecialAsset,
-} from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
-import { isMusdToken } from '../../musd/constants';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useBoolean } from '../../../../hooks/useBoolean';
+import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 
 type TokenListProps = {
   onTokenClick: (
@@ -76,67 +87,27 @@ type TokenListDisplayItem =
       count: number;
     };
 
-const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
 let lowValueAssetsExpandedSessionValue = false;
 
-type CurrencyRate = {
-  conversionRate?: number | null;
-  usdConversionRate?: number | null;
-};
+const toCaipAssetId = (asset: Asset): CaipAssetType | undefined => {
+  const { assetId, chainId, isNative } = asset;
 
-type CurrencyRates = Record<string, CurrencyRate>;
-
-const getInitialLowValueAssetsExpanded = () => {
-  return lowValueAssetsExpandedSessionValue;
-};
-
-const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
-  lowValueAssetsExpandedSessionValue = isExpanded;
-};
-
-const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
-  const currencyRate = Object.values(currencyRates ?? {}).find(
-    ({ conversionRate, usdConversionRate }) =>
-      typeof conversionRate === 'number' &&
-      typeof usdConversionRate === 'number' &&
-      Number.isFinite(conversionRate) &&
-      Number.isFinite(usdConversionRate) &&
-      conversionRate > 0 &&
-      usdConversionRate > 0,
-  );
-
-  if (!currencyRate?.conversionRate || !currencyRate.usdConversionRate) {
-    return LOW_VALUE_ASSET_FIAT_THRESHOLD;
+  if (assetId && isCaipAssetType(assetId)) {
+    return normalizeTokenAssetId(assetId);
   }
 
-  return (
-    (LOW_VALUE_ASSET_FIAT_THRESHOLD * currencyRate.conversionRate) /
-    currencyRate.usdConversionRate
-  );
+  if (isNative) {
+    const nativeAssetId = getNativeAssetId(chainId as Hex | undefined);
+    return nativeAssetId ? normalizeTokenAssetId(nativeAssetId) : undefined;
+  }
+
+  const evmAddress = 'address' in asset ? asset.address : assetId;
+  if (evmAddress && isStrictHexString(chainId)) {
+    return buildEvmCaip19AssetId(evmAddress, chainId) as CaipAssetType;
+  }
+
+  return undefined;
 };
-
-const isLowValueAsset = (
-  token: TokenWithFiatAmount,
-  lowValueAssetFiatThreshold: number,
-) => {
-  const { tokenFiatAmount } = token;
-
-  return (
-    !token.isNative &&
-    !isMusdToken(token.address) &&
-    tokenFiatAmount !== null &&
-    tokenFiatAmount !== undefined &&
-    Number.isFinite(tokenFiatAmount) &&
-    tokenFiatAmount < lowValueAssetFiatThreshold
-  );
-};
-
-const isDecliningBalanceSort = (
-  tokenSortConfig: ReturnType<typeof getTokenSortConfig>,
-) =>
-  tokenSortConfig?.key === 'tokenFiatAmount' &&
-  tokenSortConfig?.order === 'dsc' &&
-  tokenSortConfig?.sortCallback === 'stringNumeric';
 
 const getTokenListItemKey = (item: TokenListDisplayItem, index: number) => {
   if (item.type === 'low-value-toggle') {
@@ -198,15 +169,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
-  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const [isLowValueAssetsExpanded, setIsLowValueAssetsExpanded] = useState(
-    getInitialLowValueAssetsExpanded,
-  );
+  const { value: isLowValueAssetsExpanded, toggle: toggleLowValueAssets } =
+    useBoolean(lowValueAssetsExpandedSessionValue);
+  const { isStockToken } = useRWAToken();
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
@@ -218,10 +188,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const useExternalServices = useSelector(getUseExternalServices);
-  const lowValueAssetFiatThreshold = useMemo(
-    () => getLowValueAssetFiatThreshold(currencyRates),
-    [currencyRates],
-  );
 
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -270,6 +236,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
+        caipAssetId: toCaipAssetId(asset),
       };
 
       return token;
@@ -284,38 +251,45 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     useExternalServices,
   ]);
 
-  const { visibleTokens, lowValueTokens } = useMemo(() => {
-    if (!isDecliningBalanceSort(tokenSortConfig)) {
-      return {
-        visibleTokens: sortedFilteredTokens,
-        lowValueTokens: [],
-      };
-    }
-
-    const highValueTokens: TokenWithFiatAmount[] = [];
-    const lowValueAssets: TokenWithFiatAmount[] = [];
-
-    sortedFilteredTokens.forEach((token) => {
-      if (isLowValueAsset(token, lowValueAssetFiatThreshold)) {
-        lowValueAssets.push(token);
-        return;
-      }
-      highValueTokens.push(token);
-    });
-
-    return {
-      visibleTokens: highValueTokens,
-      lowValueTokens: lowValueAssets,
-    };
-  }, [lowValueAssetFiatThreshold, sortedFilteredTokens, tokenSortConfig]);
+  // Low value collapse only applies to declining-balance sort.
+  const shouldPartitionLowValueTokens =
+    tokenSortConfig?.key === 'tokenFiatAmount' &&
+    tokenSortConfig?.order === 'dsc' &&
+    tokenSortConfig?.sortCallback === 'stringNumeric';
+  const { visibleTokens, lowValueTokens } = useLowValueTokenPartition({
+    tokens: sortedFilteredTokens,
+    enabled: shouldPartitionLowValueTokens,
+  });
 
   const lowValueAssetCount = lowValueTokens.length;
+
+  const displayedAssetIds = useMemo(
+    () =>
+      [
+        ...visibleTokens,
+        ...(isLowValueAssetsExpanded ? lowValueTokens : []),
+      ].flatMap((token) =>
+        token.caipAssetId && !isStockToken(token) ? [token.caipAssetId] : [],
+      ),
+    [isLowValueAssetsExpanded, isStockToken, lowValueTokens, visibleTokens],
+  );
+
+  const deferredDisplayedAssetIds = useDeferredValue(displayedAssetIds);
+
+  const securityResultByAssetId = useTokenAssetSecurityResults({
+    assetIds: deferredDisplayedAssetIds,
+  });
 
   const tokenListItems = useMemo<TokenListDisplayItem[]>(() => {
     const visibleTokenItems: TokenListDisplayItem[] = visibleTokens.map(
       (token) => ({
         type: 'token',
-        token,
+        token: {
+          ...token,
+          safetyResult: token.caipAssetId
+            ? securityResultByAssetId[token.caipAssetId]
+            : undefined,
+        },
       }),
     );
 
@@ -332,7 +306,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       ...(isLowValueAssetsExpanded
         ? lowValueTokens.map((token) => ({
             type: 'token' as const,
-            token,
+            token: {
+              ...token,
+              safetyResult: token.caipAssetId
+                ? securityResultByAssetId[token.caipAssetId]
+                : undefined,
+            },
           }))
         : []),
     ];
@@ -340,6 +319,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     isLowValueAssetsExpanded,
     lowValueAssetCount,
     lowValueTokens,
+    securityResultByAssetId,
     visibleTokens,
   ]);
 
@@ -387,15 +367,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const handleLowValueAssetsToggle = useCallback(() => {
-    const nextIsExpanded = !isLowValueAssetsExpanded;
-    setIsLowValueAssetsExpanded(nextIsExpanded);
-    setLowValueAssetsExpandedSessionValue(nextIsExpanded);
+    toggleLowValueAssets();
+    lowValueAssetsExpandedSessionValue = !isLowValueAssetsExpanded;
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.LowValueAssetsToggled)
         .addCategory(MetaMetricsEventCategory.Home)
         .addProperties({
-          state: nextIsExpanded ? 'expanded' : 'collapsed',
+          state: isLowValueAssetsExpanded ? 'collapsed' : 'expanded',
           count: lowValueAssetCount,
         })
         .build(),
@@ -404,6 +383,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     createEventBuilder,
     isLowValueAssetsExpanded,
     lowValueAssetCount,
+    toggleLowValueAssets,
     trackEvent,
   ]);
 

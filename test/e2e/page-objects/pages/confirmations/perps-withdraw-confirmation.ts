@@ -4,8 +4,13 @@ import { Driver } from '../../../webdriver/driver';
 // Settling the post-quote CTA (fetching the relay quote, rendering the
 // fee/receive rows and enabling the Withdraw button) and the post-submit
 // success toast can take longer than the default 10s wait on slower CI
-// browsers (e.g. Firefox), so give those quote/submit-dependent waits more room.
-const QUOTE_READY_TIMEOUT = 30_000;
+// browsers (e.g. Firefox), so give those quote/submit-dependent waits more
+// room. 30s was still hitting `submits a valid withdrawal from the
+// confirmation flow` timeouts on Firefox (the CTA never re-labelled to
+// "Withdraw" in time even though the receive/bridge rows had rendered), so
+// bumped to 60s — this test previously had a skip/re-enable history for the
+// same "timeout enabling form" symptom.
+const QUOTE_READY_TIMEOUT = 60_000;
 
 /**
  * The Perps Withdraw confirmation: quote-backed amount, fees, and confirm.
@@ -45,6 +50,10 @@ export class PerpsWithdrawConfirmation {
     xpath: `//*[@data-testid='wallet-initiated-header-back-button']/following-sibling::*[normalize-space(.)='${tEn(
       'perpsWithdrawFundsTitle',
     )}']`,
+  };
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-confirmation-page',
   };
 
   private readonly payWithRow = { testId: 'pay-with-row' };
@@ -97,6 +106,7 @@ export class PerpsWithdrawConfirmation {
 
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
+      this.parentSelector,
       this.headerBackButton,
       this.headerTitle,
       this.customAmountInfo,

@@ -5,6 +5,7 @@ import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
   Provider,
+  RampsToken,
   ResourceState,
   TokensResponse,
 } from '@metamask/ramps-controller';
@@ -26,6 +27,7 @@ import {
 } from '../../../selectors/rampsController';
 import useRamps from '../useRamps/useRamps';
 import { hasEverConnectedToPortfolio } from '../utils/portfolioConnection';
+import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -58,7 +60,10 @@ function isCatalogSettled(
     !providers.isLoading &&
     !tokens.isLoading &&
     !providers.error &&
-    !tokens.error
+    !tokens.error &&
+    tokens.data !== null &&
+    Array.isArray(tokens.data.topTokens) &&
+    Array.isArray(tokens.data.allTokens)
   );
 }
 
@@ -74,19 +79,21 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// True when `assetId` is present in a settled catalog and not flagged off.
-function isAssetSupported(
-  tokensData: TokensResponse,
+// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
+// asset ids from a checksummed address while the API returns a mix of
+// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+function findCatalogToken(
+  tokensData: TokensResponse | null,
   assetId: CaipAssetType,
-): boolean {
+): RampsToken | undefined {
   const catalog = [
-    ...(tokensData.topTokens ?? []),
-    ...(tokensData.allTokens ?? []),
+    ...(tokensData?.topTokens ?? []),
+    ...(tokensData?.allTokens ?? []),
   ];
-  const match = catalog.find(
-    (token) => token.assetId.toLowerCase() === assetId.toLowerCase(),
+  return catalog.find(
+    (token) =>
+      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
   );
-  return Boolean(match) && match?.tokenSupported !== false;
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
@@ -192,16 +199,28 @@ export default function useRampsNavigation() {
       // Resolve against the catalog. Only block on a settled catalog that
       // definitively lacks/unsupports the token — an unsettled catalog fails
       // open (proceed with it selected, page re-resolves).
-      if (catalogData && !isAssetSupported(catalogData, assetId)) {
+      const catalogToken = findCatalogToken(tokens.data, assetId);
+      if (
+        catalogData &&
+        (!catalogToken || catalogToken.tokenSupported === false)
+      ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
-      const didPreselect = await preselectToken(assetId);
+
+      // `setSelectedToken` looks the token up by exact assetId, so pre-select
+      // with the catalog's own spelling rather than the caller's checksummed
+      // one. Without a catalog to resolve against, the intent is all we have.
+      const selectedAssetId =
+        (catalogToken?.assetId as CaipAssetType | undefined) ?? assetId;
+      const didPreselect = await preselectToken(selectedAssetId);
       if (!didPreselect) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
         return false;
       }
-      navigate(RAMPS_BUILD_QUOTE_ROUTE, { state: { assetId } });
+      navigate(RAMPS_BUILD_QUOTE_ROUTE, {
+        state: { assetId: selectedAssetId },
+      });
       return true;
     },
     [

@@ -61,7 +61,8 @@ function setEnvironmentVariables({
     }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
-    DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
+    CANONICAL_DEEP_LINK_HOST: variables.getMaybe('CANONICAL_DEEP_LINK_HOST'),
+    DEEP_LINK_HOSTS: variables.getMaybe('DEEP_LINK_HOSTS'),
     DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
     SEEDLESS_ONBOARDING_ENABLED: isTestBuild
       ? 'true'
@@ -73,11 +74,7 @@ function setEnvironmentVariables({
     QR_SYNC_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('QR_SYNC_ENABLED'),
-    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
-      'ASSETS_UNIFIED_STATE_ENABLED',
-    ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
-    MM_PURE_BLACK_PREVIEW: variables.getMaybe('MM_PURE_BLACK_PREVIEW'),
   });
 }
 

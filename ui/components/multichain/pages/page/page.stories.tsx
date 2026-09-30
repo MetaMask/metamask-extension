@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, ButtonVariant } from '@metamask/design-system-react';
 import {
+  Button,
   ButtonIcon,
   ButtonIconSize,
+  ButtonVariant,
   IconName,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { Page, Header, Content, Footer } from '.';
 

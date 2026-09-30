@@ -57,5 +57,5 @@ export function determinePreferredProvider(
     return { provider: transakProvider, autoSelected: true };
   }
 
-  return null;
+  return { provider: providers[0], autoSelected: true };
 }

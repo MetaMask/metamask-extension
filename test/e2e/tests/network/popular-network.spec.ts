@@ -7,7 +7,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import AddEditBlockExplorerPage from '../../page-objects/pages/networks/add-edit-block-explorer-page';
 import AddEditNetworkPage from '../../page-objects/pages/networks/add-edit-network-page';
 import AddEditRpcUrlPage from '../../page-objects/pages/networks/add-edit-rpc-url-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkFilter from '../../page-objects/pages/networks/network-filter';
 import NetworksPage from '../../page-objects/pages/networks/networks-page';
@@ -180,7 +180,7 @@ describe('Popular Networks', function (this: Suite) {
     );
   });
 
-  it("when the network details validation toggle is turned off, don't validate user inserted details", async function () {
+  it("when basic functionality is turned off, don't validate user inserted details", async function () {
     async function mockRPCURLAndChainId(mockServer: MockttpServer) {
       return [
         await mockServer
@@ -212,7 +212,6 @@ describe('Popular Networks', function (this: Suite) {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
 
-        // navigate to security & privacy settings and toggle off network details check
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
@@ -220,7 +219,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleNetworkDetailsCheck();
+        await privacySettings.toggleBasicFunctionalityOff();
         await closeSettings(driver);
 
         // return to the home screen

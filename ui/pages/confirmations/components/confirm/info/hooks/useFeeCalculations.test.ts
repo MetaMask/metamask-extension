@@ -276,6 +276,25 @@ describe('useFeeCalculations', () => {
     `);
   });
 
+  it('uses txParams gas for balance checks without changing the estimated fee', () => {
+    const transactionMeta = genUnapprovedContractInteractionConfirmation({
+      address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    }) as TransactionMeta;
+
+    transactionMeta.gasUsed = toHex(37000);
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
+      mockState,
+    );
+
+    expect(result.current.estimatedFeeNativeHex).toBe('0x60183e087418');
+    expect(result.current.maxFeeHex).toBe('0x720087dcfc95');
+  });
+
   it('returns the correct estimate for a transaction with layer1GasFee', () => {
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -322,7 +341,7 @@ describe('useFeeCalculations', () => {
     expect(result.current.maxFeeNative).toBe('< 0.0001');
   });
 
-  it('returns the correct estimate if quoted swap is displayed in info', () => {
+  it('uses quoted gas for balance checks if a quoted swap is displayed', () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContextOptional').mockReturnValue({
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponseV1,
       setSelectedQuote: jest.fn(),
@@ -337,7 +356,10 @@ describe('useFeeCalculations', () => {
     transactionMeta.layer1GasFee = '0x10000000000000';
 
     const { result } = renderHookWithConfirmContextProvider(
-      () => useFeeCalculations(transactionMeta),
+      () =>
+        useFeeCalculations(transactionMeta, {
+          useBalanceCheckGasLimit: true,
+        }),
       mockState,
     );
 

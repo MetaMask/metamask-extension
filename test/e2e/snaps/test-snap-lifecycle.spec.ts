@@ -7,7 +7,7 @@ import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
-import LoginPage from '../page-objects/pages/login-page';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {

@@ -19,7 +19,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworkListMenu } from '.';
 
-const mockSetShowTestNetworks = jest.fn();
+const mockSetShowTestNetworksPreference = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
@@ -31,8 +31,8 @@ const mockAddPermittedChain = jest.fn();
 const mockSetEnabledNetworks = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
-  setShowTestNetworks: () => {
-    mockSetShowTestNetworks();
+  setShowTestNetworksPreference: () => {
+    mockSetShowTestNetworksPreference();
     return { type: 'SET_SHOW_TEST_NETWORKS' };
   },
   setActiveNetwork: () => {
@@ -258,25 +258,6 @@ describe('NetworkListMenu', () => {
     jest.clearAllMocks();
   });
 
-  it('renders properly', () => {
-    const { baseElement } = render();
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when adding a network', async () => {
-    const { baseElement } = render({
-      isAddingNewNetwork: true,
-    });
-    expect(baseElement).toMatchSnapshot();
-  });
-
-  it('should match snapshot when editing a network', async () => {
-    const { baseElement } = render({
-      editedNetwork: { chainId: 'eip155:1' },
-    });
-    expect(baseElement).toMatchSnapshot();
-  });
-
   it('displays important controls', () => {
     const { getByText, getByPlaceholderText } = render();
 
@@ -347,7 +328,7 @@ describe('NetworkListMenu', () => {
     const { queryAllByRole } = render();
     const [testNetworkToggle] = queryAllByRole('checkbox');
     fireEvent.click(testNetworkToggle);
-    expect(mockSetShowTestNetworks).toHaveBeenCalled();
+    expect(mockSetShowTestNetworksPreference).toHaveBeenCalled();
   });
 
   it('disables toggle when on test network', () => {

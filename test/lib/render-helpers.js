@@ -89,7 +89,17 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  connectToBackground(backgroundConnection, noop);
+  // Test background mocks typically only stub `onNotification`, but mounting
+  // the UI subscribes to messenger events through the real
+  // `subscribeToMessengerEvent`, which needs these RPC methods to exist.
+  connectToBackground(
+    {
+      messengerSubscribe: () => Promise.resolve(),
+      messengerUnsubscribe: () => Promise.resolve(),
+      ...backgroundConnection,
+    },
+    noop,
+  );
 
   const store = await setupInitialStore(preloadedState, activeTab);
 

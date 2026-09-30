@@ -65,7 +65,7 @@ const SnapList = () => {
   const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
 
   return (
-    <div className="snaps">
+    <div className="snaps" data-testid="parent-selector-snap-list-page">
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
         <Header
           backgroundColor={BackgroundColor.backgroundDefault}

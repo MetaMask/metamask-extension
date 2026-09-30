@@ -180,7 +180,9 @@ describe('SnapUIRenderer', () => {
     } = renderInterface(Box({ children: Input({ name: 'input' }) }));
 
     const input = getByRole('textbox');
-    input.focus();
+    act(() => {
+      input.focus();
+    });
     expect(input).toHaveFocus();
 
     await act(async () => {

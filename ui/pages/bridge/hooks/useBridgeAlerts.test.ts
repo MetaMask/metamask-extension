@@ -12,15 +12,18 @@ import {
   getActiveQuotePriceData,
   getBridgeQuotes,
   getBridgeUnavailableQuoteReason,
+  getDestAccountDisplayName,
   getFormattedPriceImpactFiat,
   getFormattedPriceImpactPercentage,
   getFromChain,
+  getIsDestSameAsActiveAccount,
   getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { isQuoteExpiredOrInvalid } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 import { useBridgeAlerts } from './useBridgeAlerts';
@@ -46,6 +49,15 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getActiveQuoteInsufficientNativeReserveError: jest.fn(),
   getBridgeQuotes: jest.fn(),
   getFromChain: jest.fn(),
+  getIsDestSameAsActiveAccount: jest.fn(),
+  getDestAccountDisplayName: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => ({ state: {}, pathname: '/', search: '' }),
 }));
 
 const MOCK_FROM_CHAIN_ID = 'eip155:1';
@@ -110,6 +122,14 @@ const MOCK_TO_TOKEN = toBridgeToken({
   name: 'USD Coin',
 });
 
+const MOCK_STELLAR_USDC = toBridgeToken({
+  symbol: 'USDC',
+  decimals: 7,
+  assetId:
+    'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const,
+  name: 'USD Coin',
+});
+
 describe('useBridgeAlerts', () => {
   const mockGoToBuy = jest.fn();
 
@@ -143,6 +163,8 @@ describe('useBridgeAlerts', () => {
     jest.mocked(isQuoteExpiredOrInvalid).mockReturnValue(false);
 
     jest.mocked(getValidationErrors).mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+    jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(true);
+    jest.mocked(getDestAccountDisplayName).mockReturnValue(null);
     jest
       .mocked(getBridgeUnavailableQuoteReason)
       .mockReturnValue('noOptionsAvailableMessage');
@@ -189,6 +211,58 @@ describe('useBridgeAlerts', () => {
       );
       expect(result.current.alertsById['market-closed']).toBeDefined();
       expect(result.current.confirmationAlerts).toHaveLength(0);
+    });
+  });
+
+  describe('off-hours alert', () => {
+    it('adds off-hours warning to bannerAlerts', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: true,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.bannerAlerts).toHaveLength(1);
+      expect(result.current.bannerAlerts[0]).toStrictEqual(
+        expect.objectContaining({
+          id: 'off-hours',
+          severity: 'warning',
+          isDismissable: false,
+          title: 'bridgeOffHoursTitle',
+          description: 'bridgeOffHoursDescription',
+          isConfirmationAlert: false,
+          bannerAlertProps: { severity: BannerAlertSeverity.Warning },
+        }),
+      );
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.confirmationAlerts).toHaveLength(0);
+    });
+
+    it('does not add off-hours alert when isInOffHoursTrading is false', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isInOffHoursTrading: false,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeUndefined();
+    });
+
+    it('shows only off-hours warning when market is tradable via off-hours', () => {
+      // Selectors keep these mutually exclusive: off-hours => not market-closed.
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isStockMarketClosed: false,
+        isInOffHoursTrading: true,
+      } as never);
+
+      const { result } = renderHook();
+
+      expect(result.current.alertsById['off-hours']).toBeDefined();
+      expect(result.current.alertsById['market-closed']).toBeUndefined();
+      expect(result.current.bannerAlerts).toHaveLength(1);
     });
   });
 
@@ -608,6 +682,51 @@ describe('useBridgeAlerts', () => {
       ).not.toContain('insufficient-gas');
     });
 
+    it('uses the insufficient-gas error when the Arc reserve would be depleted', () => {
+      jest
+        .mocked(getValidationErrors)
+        .mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+      jest
+        .mocked(getFromChain)
+        .mockReturnValue({ chainId: ARC_NATIVE_CAIP_CHAIN_ID } as never);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({
+        priceImpact: { amount: '0.05' },
+      });
+      jest
+        .mocked(getActiveQuoteInsufficientNativeReserveError)
+        .mockReturnValue({
+          minimumNativeBalanceToBeKeptInAccount: '0.05',
+          maxSwappableNativeBalance: '9.95',
+        });
+
+      const { result } = renderHook();
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
+
+      expect(bannerIds).toContain('insufficient-gas');
+      const alert = result.current.alertsById['insufficient-gas'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'insufficient-gas',
+          severity: 'danger',
+          title: 'bridgeValidationInsufficientGasTitle:ETH',
+          description: 'bridgeValidationInsufficientGasMessage:ETH',
+          isConfirmationAlert: false,
+          bannerAlertProps: expect.objectContaining({
+            severity: BannerAlertSeverity.Danger,
+            actionButtonLabel: 'buyMoreAsset:ETH',
+          }),
+        }),
+      );
+      expect(alert?.bannerAlertProps?.actionButtonOnClick).toBeInstanceOf(
+        Function,
+      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('insufficient-gas');
+    });
+
     it('uses the swap i18n key for same-chain quotes', () => {
       jest.mocked(getBridgeQuotes).mockReturnValue({
         ...MOCK_GET_BRIDGE_QUOTES,
@@ -670,6 +789,109 @@ describe('useBridgeAlerts', () => {
       expect(
         result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
       ).not.toContain('insufficient-gas');
+    });
+  });
+
+  describe('stellar-trustline alert', () => {
+    beforeEach(() => {
+      jest.mocked(getToToken).mockReturnValue(MOCK_STELLAR_USDC as never);
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
+      });
+    });
+
+    it('adds a non-blocking warning banner with activate CTA for cross-chain Stellar destinations that need a trustline', () => {
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).toContain('stellar-trustline');
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description: 'bridgeStellarTrustlineWarningMessage:USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual(
+        expect.objectContaining({
+          severity: BannerAlertSeverity.Warning,
+          actionButtonLabel: 'bridgeStellarTrustlineWarningCta:USDC',
+        }),
+      );
+      expect(
+        result.current.confirmationAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('navigates to the destination asset page when the activate CTA is clicked', () => {
+      const { result } = renderHook();
+
+      result.current.alertsById[
+        'stellar-trustline'
+      ]?.bannerAlertProps?.actionButtonOnClick?.();
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/asset/stellar:pubnet/${encodeURIComponent(MOCK_STELLAR_USDC.assetId)}`,
+      );
+    });
+
+    it('does not add stellar-trustline when the destination asset does not require activation', () => {
+      jest
+        .mocked(getValidationErrors)
+        .mockReturnValue(DEFAULT_VALIDATION_ERRORS);
+
+      const { result } = renderHook();
+
+      expect(
+        result.current.bannerAlerts.map((a: BridgeAlert) => a.id),
+      ).not.toContain('stellar-trustline');
+    });
+
+    it('uses different-account copy and omits the Activate CTA when dest differs from the active account', () => {
+      jest.mocked(getIsDestSameAsActiveAccount).mockReturnValue(false);
+      jest.mocked(getDestAccountDisplayName).mockReturnValue('Account 2');
+
+      const { result } = renderHook();
+
+      const alert = result.current.alertsById['stellar-trustline'];
+      expect(alert).toStrictEqual(
+        expect.objectContaining({
+          id: 'stellar-trustline',
+          severity: 'warning',
+          title: 'bridgeStellarTrustlineWarningTitle:USDC',
+          description:
+            'bridgeStellarTrustlineWarningMessageDifferentAccount:Account 2,USDC',
+          isConfirmationAlert: false,
+        }),
+      );
+      expect(alert?.bannerAlertProps).toStrictEqual({
+        severity: BannerAlertSeverity.Warning,
+      });
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonLabel');
+      expect(alert?.bannerAlertProps).not.toHaveProperty('actionButtonOnClick');
+    });
+
+    it('can appear alongside the insufficient-gas banner', () => {
+      jest.mocked(getValidationErrors).mockReturnValue({
+        ...DEFAULT_VALIDATION_ERRORS,
+        isDestAssetRequireActivate: true,
+        isInsufficientGasForQuote: true,
+      });
+      jest.mocked(getBridgeQuotes).mockReturnValue(MOCK_GET_BRIDGE_QUOTES);
+      jest.mocked(getActiveQuotePriceData).mockReturnValue({} as never);
+
+      const { result } = renderHook();
+
+      const bannerIds = result.current.bannerAlerts.map(
+        (a: BridgeAlert) => a.id,
+      );
+      expect(bannerIds).toContain('stellar-trustline');
+      expect(bannerIds).toContain('insufficient-gas');
     });
   });
 

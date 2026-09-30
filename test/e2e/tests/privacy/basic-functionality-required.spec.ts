@@ -9,7 +9,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import { openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage } from '../../page-objects/flows/basic-functionality-off.flow';
-import BasicFunctionalityOffPage from '../../page-objects/pages/basic-functionality-off-page';
+import BasicFunctionalityOffPage from '../../page-objects/pages/settings/basic-functionality-off-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import { SWAP_PATH } from '../../../../ui/helpers/constants/routes';

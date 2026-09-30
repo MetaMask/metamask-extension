@@ -8,9 +8,9 @@ import {
   enableNotificationsThroughSettingsPage,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
@@ -62,7 +62,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → General notifications: requires manual re-enable
      * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted in AUS from Part 1)
+     * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.

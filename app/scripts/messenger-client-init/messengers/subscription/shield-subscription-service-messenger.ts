@@ -32,13 +32,13 @@ export function getShieldSubscriptionServiceMessenger(
     actions: [
       'SubscriptionController:getPricing',
       'SubscriptionController:getSubscriptions',
-      'SubscriptionController:startShieldSubscriptionWithCard',
+      'SubscriptionController:startSubscriptionWithCard',
       'SubscriptionController:updatePaymentMethod',
       'SubscriptionController:getCryptoApproveTransactionParams',
       'SubscriptionController:getBillingPortalUrl',
       'SubscriptionController:submitSponsorshipIntents',
       'SubscriptionController:getState',
-      'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+      'SubscriptionController:submitSubscriptionCryptoApproval',
       'SubscriptionController:linkRewards',
       'SubscriptionController:clearLastSelectedPaymentMethod',
       'AppStateController:getState',
@@ -57,6 +57,8 @@ export function getShieldSubscriptionServiceMessenger(
       'RewardsController:getSeasonStatus',
       'RewardsController:getSeasonMetadata',
       'RewardsController:getHasAccountOptedIn',
+      // For metrics, to get the rewards subscription ID after checkout
+      'RewardsController:getActualSubscriptionId',
     ],
   });
   return serviceMessenger;

@@ -397,6 +397,50 @@ describe('useMusdConversionToastStatus', () => {
     expect(result.current.toastState).toBe('in-progress');
   });
 
+  it('preserves sourceTokenSymbol when a follow-up conversion uses the same payment token symbol', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+    );
+
+    const { result, rerender } = renderHook(() =>
+      useMusdConversionToastStatus(),
+    );
+
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.confirmed)],
+      undefined,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.submitted),
+      ],
+      MOCK_PAYMENT_TOKEN,
+    );
+    rerender();
+    expect(result.current.toastState).toBe('in-progress');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+
+    updateMock(
+      [
+        createMusdConversionTx('tx-1', TransactionStatus.confirmed),
+        createMusdConversionTx('tx-2', TransactionStatus.confirmed),
+      ],
+      undefined,
+    );
+    rerender();
+
+    expect(result.current.toastState).toBe('success');
+    expect(result.current.sourceTokenSymbol).toBe('USDC');
+  });
+
   it('does not leak previous conversion symbol to a new conversion whose payment token has not populated yet', () => {
     setupMock(
       [createMusdConversionTx('tx-1', TransactionStatus.submitted)],

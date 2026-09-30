@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { IconName, BadgeWrapperPosition } from '../../component-library';
+import { IconName } from '@metamask/design-system-react';
+import { BadgeWrapperPosition } from '../../component-library';
 import {
   NotificationListItemIcon,
   NotificationListItemIconType,

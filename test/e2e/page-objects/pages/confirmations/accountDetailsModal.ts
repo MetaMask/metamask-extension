@@ -25,6 +25,10 @@ class AccountDetailsModal extends Confirmation {
 
   private addressCopyButton: RawLocator;
 
+  private modalParentSelector: RawLocator = {
+    testId: 'parent-selector-account-details-modal',
+  };
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -54,6 +58,7 @@ class AccountDetailsModal extends Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.modalParentSelector,
         this.accountBalanceInfo,
         this.addressCopyButton,
         this.accountDetailsModalCloseButton,
@@ -74,11 +79,24 @@ class AccountDetailsModal extends Confirmation {
   }
 
   async clickAddressCopyButton() {
+    await this.driver.waitForElementToStopMoving(this.addressCopyButton);
     await this.driver.clickElement(this.addressCopyButton);
   }
 
   async waitForAddressCopied() {
-    await this.driver.waitForSelector(this.addressCopiedButton);
+    await this.driver.waitUntil(
+      async () => {
+        const copyButton = await this.driver.findElement(
+          this.addressCopyButton,
+        );
+        await this.driver.hoverElement(copyButton);
+        return await this.driver.isElementPresentAndVisible(
+          this.addressCopiedButton,
+          500,
+        );
+      },
+      { timeout: 5000, interval: 200 },
+    );
   }
 }
 

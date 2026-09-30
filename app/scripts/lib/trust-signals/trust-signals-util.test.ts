@@ -7,6 +7,10 @@ import {
   hasValidTypedDataParams,
   isConnected,
   connectScreenHasBeenPrompted,
+  getWrappedRequestMethod,
+  isCaipConnected,
+  isWalletSendCalls,
+  hasValidSendCallsParams,
 } from './trust-signals-util';
 
 describe('trust-signals-util', () => {
@@ -310,6 +314,166 @@ describe('trust-signals-util', () => {
         jsonrpc: '2.0',
       } as JsonRpcRequest;
       expect(connectScreenHasBeenPrompted(req)).toBe(false);
+    });
+  });
+
+  describe('isWalletSendCalls', () => {
+    it('returns true when the method is wallet_sendCalls', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(true);
+    });
+
+    it('returns false for other methods', () => {
+      const req: JsonRpcRequest = {
+        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+        id: 1,
+        jsonrpc: '2.0',
+      } as JsonRpcRequest;
+      expect(isWalletSendCalls(req)).toBe(false);
+    });
+  });
+
+  describe('hasValidSendCallsParams', () => {
+    const createRequest = (params?: unknown): JsonRpcRequest =>
+      ({
+        method: MESSAGE_TYPE.WALLET_SEND_CALLS,
+        params,
+        id: 1,
+        jsonrpc: '2.0',
+      }) as JsonRpcRequest;
+
+    it('returns true when params contain a calls array of objects', () => {
+      const req = createRequest([
+        {
+          version: '2.0.0',
+          chainId: '0x1',
+          calls: [{ to: '0x1234', data: '0x' }, { data: '0x' }],
+        },
+      ]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+
+    it('returns true when calls is empty', () => {
+      const req = createRequest([{ calls: [] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+
+    it('returns false when params are missing', () => {
+      const req = createRequest(undefined);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when params are an empty array', () => {
+      const req = createRequest([]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when the first param is not an object', () => {
+      const req = createRequest(['not-an-object']);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is missing', () => {
+      const req = createRequest([{ version: '2.0.0' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns false when calls is not an array', () => {
+      const req = createRequest([{ calls: 'not-an-array' }]);
+      expect(hasValidSendCallsParams(req)).toBe(false);
+    });
+
+    it('returns true when a call entry is not an object', () => {
+      // Entry-level validation is the caller's job (per-call skip), so one
+      // malformed entry does not invalidate the batch for scanning purposes.
+      const req = createRequest([{ calls: [{ to: '0x1234' }, null] }]);
+      expect(hasValidSendCallsParams(req)).toBe(true);
+    });
+  });
+
+  describe('getWrappedRequestMethod', () => {
+    const createRequest = (method: string, params: unknown) =>
+      ({
+        method,
+        params,
+        id: 1,
+        jsonrpc: '2.0',
+      }) as unknown as JsonRpcRequest;
+
+    it('returns the inner method of a wallet_invokeMethod request', () => {
+      const req = createRequest(MESSAGE_TYPE.WALLET_INVOKE_METHOD, {
+        scope: 'eip155:1',
+        request: { method: MESSAGE_TYPE.ETH_SEND_TRANSACTION, params: [] },
+      });
+      expect(getWrappedRequestMethod(req)).toBe(
+        MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+      );
+    });
+
+    it('returns undefined for any other method', () => {
+      const req = createRequest(MESSAGE_TYPE.ETH_SEND_TRANSACTION, []);
+      expect(getWrappedRequestMethod(req)).toBeUndefined();
+    });
+
+    (
+      [
+        ['missing params', undefined],
+        ['missing request', { scope: 'eip155:1' }],
+        ['missing inner method', { scope: 'eip155:1', request: {} }],
+        [
+          'non-string inner method',
+          { scope: 'eip155:1', request: { method: 42 } },
+        ],
+      ] as [string, unknown][]
+    ).forEach(([label, params]) => {
+      it(`returns undefined for a request with ${label}`, () => {
+        const req = createRequest(MESSAGE_TYPE.WALLET_INVOKE_METHOD, params);
+        expect(getWrappedRequestMethod(req)).toBeUndefined();
+      });
+    });
+  });
+
+  describe('isCaipConnected', () => {
+    const createRequest = (method: string, origin?: string) =>
+      ({
+        method,
+        params: [],
+        id: 1,
+        jsonrpc: '2.0',
+        origin,
+      }) as JsonRpcRequest & { origin?: string };
+
+    it('returns true for wallet_getSession when the origin holds a CAIP-25 permission', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_GET_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => true)).toBe(true);
+    });
+
+    it('returns false for wallet_getSession when the origin holds no CAIP-25 permission', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_GET_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => false)).toBe(false);
+    });
+
+    it('returns false when the request has no origin', () => {
+      const req = createRequest(MESSAGE_TYPE.WALLET_GET_SESSION);
+      expect(isCaipConnected(req, () => true)).toBe(false);
+    });
+
+    it('returns false for any other method', () => {
+      const req = createRequest(
+        MESSAGE_TYPE.WALLET_CREATE_SESSION,
+        'https://example.com',
+      );
+      expect(isCaipConnected(req, () => true)).toBe(false);
     });
   });
 });

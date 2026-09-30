@@ -1,12 +1,17 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useDeferredValue } from '../../hooks/useDeferredValue';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
-import { useFormatters } from '../../hooks/useFormatters';
+import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import { useEventListener } from '../../hooks/useEventListener';
@@ -48,7 +53,7 @@ export function ActivityList({
 } = {}) {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { formatMediumDate } = useFormatters();
+  const formatRelativeMediumDate = useRelativeMediumDate();
   const scrollContainerRef = useScrollContainer();
   const dialogRef = useRef<HTMLDialogElement>(null);
   // null = not yet initialised by AssetListControlBar; [] = no filter applied
@@ -61,7 +66,7 @@ export function ActivityList({
     networks: deferredNetworks ?? [],
   };
 
-  const { data, isInitialLoading, fetchNextVisiblePage } =
+  const { data, isLoading, fetchNextVisiblePage } =
     useTransactionsQuery(filters);
 
   const localItems = useLocalTransactions(filters);
@@ -85,7 +90,7 @@ export function ActivityList({
 
   useActivityScreenViewed({
     filter,
-    isSettled: networks !== null && !isInitialLoading,
+    isSettled: networks !== null && !isLoading,
     isEmpty: groupedItems.length === 0,
     pendingLength: [...localItems, ...nonEvmItems, ...rampsItems].filter(
       (item) => item.status === 'pending',
@@ -95,13 +100,19 @@ export function ActivityList({
 
   const itemRef = useItemInView({
     targetIndex: lastEvmItemIndex,
-    root: scrollContainerRef?.current ?? null,
+    rootRef: scrollContainerRef ?? undefined,
     onVisible: fetchNextVisiblePage,
   });
 
-  useEventListener('popstate', () => {
+  const handlePopState = useCallback(() => {
     dialogRef.current?.close?.();
-  });
+  }, []);
+
+  useEventListener('popstate', handlePopState);
+
+  const handleDialogBack = useCallback(() => {
+    dialogRef.current?.close?.();
+  }, []);
 
   const handleClick = (item: ActivityListItem) => {
     const identifier = getActivityItemIdentifier(item);
@@ -168,6 +179,7 @@ export function ActivityList({
           showSortControl={false}
           showImportTokenButton={false}
           onNetworkSelect={setNetworks}
+          data-testid="parent-selector-activity-tab"
         />
       )}
 
@@ -182,7 +194,7 @@ export function ActivityList({
         keyExtractor={getItemKey}
         itemRef={itemRef}
         listEmptyComponent={
-          isInitialLoading ? (
+          isLoading ? (
             <ActivityListSkeleton />
           ) : (
             <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
@@ -195,7 +207,7 @@ export function ActivityList({
           }
 
           if (row.type === 'date-header') {
-            return <SectionHeader label={formatMediumDate(row.date)} />;
+            return <SectionHeader label={formatRelativeMediumDate(row.date)} />;
           }
 
           return (
@@ -215,7 +227,7 @@ export function ActivityList({
         <TransactionDetails
           chainId={selectedItem?.chainId}
           txIdentifier={getActivityItemIdentifier(selectedItem)}
-          onBack={() => dialogRef.current?.close?.()}
+          onBack={handleDialogBack}
         />
       </dialog>
     </PendingTransactionCancelSpeedUpProvider>

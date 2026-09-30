@@ -1,14 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FileInput from 'react-simple-file-input';
+import { TextButton } from '@metamask/design-system-react';
+import { TextFieldSize, TextFieldType, Text } from '../../component-library';
 import {
-  ButtonLink,
-  TextFieldSize,
-  TextFieldType,
-  Text,
-} from '../../component-library';
-import {
-  Size,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -48,14 +43,15 @@ export default function JsonImportSubview({
     <>
       <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
         {t('usedByClients')}
-        <ButtonLink
-          size={Size.inherit}
-          href={ZENDESK_URLS.IMPORTED_ACCOUNT_JSON}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('fileImportFail')}
-        </ButtonLink>
+        <TextButton size="body-md" asChild className="inline">
+          <a
+            href={ZENDESK_URLS.IMPORTED_ACCOUNT_JSON}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('fileImportFail')}
+          </a>
+        </TextButton>
       </Text>
 
       <FileInput

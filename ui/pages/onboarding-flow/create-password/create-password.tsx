@@ -15,7 +15,7 @@ import {
 import {
   getFirstTimeFlowType,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getIsSocialLoginFlow,
   getIsPasskeyFeatureAvailable,
@@ -61,6 +61,7 @@ export default function CreatePassword({
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasCreationError, setHasCreationError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isFirefox = useIsFirefox();
@@ -76,14 +77,12 @@ export default function CreatePassword({
   const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const isOptedIn = useSelector(getOptedIn);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
   const shouldInjectMetametricsIframe = Boolean(
-    completedMetaMetricsOnboarding && isOptedIn && base64AnalyticsId,
+    consentDecisionMade && isOptedIn && base64AnalyticsId,
   );
   const analyticsIframeQuery = {
     mmi: base64AnalyticsId,
@@ -129,7 +128,7 @@ export default function CreatePassword({
           navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         } else {
           navigate(
-            completedMetaMetricsOnboarding
+            consentDecisionMade
               ? ONBOARDING_COMPLETION_ROUTE
               : ONBOARDING_METAMETRICS,
             { replace: true },
@@ -153,7 +152,7 @@ export default function CreatePassword({
     firstTimeFlowType,
     newAccountCreationInProgress,
     secretRecoveryPhrase,
-    completedMetaMetricsOnboarding,
+    consentDecisionMade,
     isWalletResetInProgress,
     isPasskeyFeatureAvailable,
   ]);
@@ -321,6 +320,7 @@ export default function CreatePassword({
     }
 
     setIsSubmitting(true);
+    setHasCreationError(false);
     try {
       // If secretRecoveryPhrase is defined we are in import wallet flow
       if (
@@ -340,7 +340,7 @@ export default function CreatePassword({
           .addCategory(MetaMetricsEventCategory.Onboarding)
           .build(),
       );
-      setNewAccountCreationInProgress(false);
+      setHasCreationError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -352,6 +352,7 @@ export default function CreatePassword({
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}
         onBack={handleBackClick}
+        error={hasCreationError}
         loading={isSubmitting}
       />
       {shouldInjectMetametricsIframe ? (

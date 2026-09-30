@@ -6,9 +6,14 @@ exports[`parseUserFacingError matches snapshot for supported error shapes 1`] = 
   "emptyResourceError": "fallback",
   "emptyString": "fallback",
   "errorWithMessage": "network down",
+  "fetchFailedWithStatus": "Failed to fetch quote.",
+  "fetchFailedWithStatusString": "Failed to fetch quote.",
   "nullError": "fallback",
   "resourceError": "invalid region",
+  "resourceFetchError": "fallback",
+  "statusCodeOnly": "fallback",
   "stringError": " provider unavailable ",
   "unknownError": "fallback",
+  "urlOnlyMessage": "fallback",
 }
 `;

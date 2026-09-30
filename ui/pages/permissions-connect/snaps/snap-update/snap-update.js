@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  IconColor,
+  IconName,
+} from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -11,7 +17,6 @@ import {
   FontWeight,
   JustifyContent,
   TextVariant,
-  IconColor,
   Display,
   BorderRadius,
   BlockSize,
@@ -24,12 +29,7 @@ import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import {
-  AvatarIcon,
-  Box,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -208,11 +208,11 @@ export default function SnapUpdate({
             <Box className="snap-update__scroll-button-area">
               {isScrollable && !hasScrolledToBottom && !showAllPermissions ? (
                 <AvatarIcon
-                  className="snap-install__scroll-button"
+                  className="snap-install__scroll-button bg-info-default"
                   data-testid="snap-update-scroll"
                   iconName={IconName.Arrow2Down}
-                  backgroundColor={BackgroundColor.infoDefault}
-                  color={IconColor.primaryInverse}
+                  severity={AvatarIconSeverity.Info}
+                  iconProps={{ color: IconColor.PrimaryInverse }}
                   onClick={scrollToBottom}
                   style={{ cursor: 'pointer' }}
                 />

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   createSearchParams,
   useNavigate,
@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Content, Footer, Header, Page } from '../page';
 import {
   Box,
   Button,
@@ -14,19 +13,13 @@ import {
   ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  IconColor,
   IconName,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
+import { Content, Footer, Header, Page } from '../page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PermissionsEmptyState } from '../gator-permissions/components';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Color,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
@@ -63,7 +56,6 @@ const PermissionsPage = () => {
       navigate(DEFAULT_ROUTE);
     }
   };
-  const [totalConnections, setTotalConnections] = useState(0);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
 
   const mergedConnectionsList = useSelector((state) => {
@@ -75,16 +67,15 @@ const PermissionsPage = () => {
 
   const subjects = useSelector(getPermissionSubjects);
 
-  useEffect(() => {
-    setTotalConnections(Object.keys(mergedConnectionsList).length);
+  const nonSnapConnections = useMemo(() => {
+    return Object.entries(mergedConnectionsList).filter(
+      ([origin]) => !isSnapId(origin),
+    );
   }, [mergedConnectionsList]);
 
   const handleDisconnectAll = useCallback(() => {
     const errors = [];
-    // Get all non-snap origins from the merged connections list
-    const origins = Object.keys(mergedConnectionsList).filter(
-      (origin) => !isSnapId(origin),
-    );
+    const origins = nonSnapConnections.map(([origin]) => origin);
 
     origins.forEach((origin) => {
       try {
@@ -116,7 +107,7 @@ const PermissionsPage = () => {
         id: 'disconnect-all-success-toast',
       });
     }
-  }, [dispatch, mergedConnectionsList, subjects, t]);
+  }, [dispatch, nonSnapConnections, subjects, t]);
 
   const handleConnectionClick = (connection) => {
     const hasOnlyAdvancedPermissions =
@@ -140,18 +131,15 @@ const PermissionsPage = () => {
     });
   };
 
-  const renderConnectionsList = (connectionList) =>
-    Object.entries(connectionList).map(([itemKey, connection]) => {
-      const isSnap = isSnapId(connection.origin);
-      return isSnap ? null : (
-        <ConnectionListItem
-          data-testid="connection-list-item"
-          key={itemKey}
-          connection={connection}
-          onClick={() => handleConnectionClick(connection)}
-        />
-      );
-    });
+  const renderConnectionsList = () =>
+    nonSnapConnections.map(([itemKey, connection]) => (
+      <ConnectionListItem
+        data-testid="connection-list-item"
+        key={itemKey}
+        connection={connection}
+        onClick={() => handleConnectionClick(connection)}
+      />
+    ));
 
   return (
     <Page
@@ -164,7 +152,7 @@ const PermissionsPage = () => {
           <ButtonIcon
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            color={Color.iconDefault}
+            iconProps={{ className: IconColor.IconDefault }}
             onClick={handleBack}
             size={ButtonIconSize.Md}
             data-testid="permissions-page-back"
@@ -174,37 +162,27 @@ const PermissionsPage = () => {
       >
         {t('permissions')}
       </Header>
-      <Content padding={0}>
-        <Box ref={headerRef}></Box>
-        {totalConnections > 0 ? (
-          renderConnectionsList(mergedConnectionsList)
+      <Content className="p-0">
+        <Box ref={headerRef} />
+        {nonSnapConnections.length > 0 ? (
+          renderConnectionsList()
         ) : (
           <Box
             data-testid="no-connections"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            height={BlockSize.Full}
-            padding={4}
+            className="flex h-full flex-col items-center justify-center p-4"
           >
             <PermissionsEmptyState />
           </Box>
         )}
       </Content>
-      {totalConnections > 0 && (
+      {nonSnapConnections.length > 0 && (
         <Footer>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            width={BlockSize.Full}
-            gap={2}
-            alignItems={AlignItems.center}
-          >
+          <Box className="flex w-full flex-col items-center gap-2">
             <Button
               size={ButtonSize.Lg}
-              block
+              isFullWidth
               variant={ButtonVariant.Secondary}
-              danger
+              isDanger
               onClick={() => setShowDisconnectAllModal(true)}
               data-testid="disconnect-all-button"
             >

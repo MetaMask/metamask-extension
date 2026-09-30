@@ -1,7 +1,6 @@
 export {
   getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
-  SecurityTrustVerifiedBadge,
 } from './security-trust-inline-badge';
 export type {
   SecurityTrustInlineBadgeConfig,

@@ -1,4 +1,5 @@
 import { zeroAddress } from 'ethereumjs-util';
+import { BigNumber } from 'bignumber.js';
 import {
   ChainId,
   type QuoteResponse,
@@ -25,15 +26,20 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { MOCK_ACCOUNT_TRON_MAINNET } from '../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_TRON_MAINNET,
+  MOCK_ACCOUNT_STELLAR_PUBNET,
+} from '../../../test/data/mock-accounts';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
-import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { getBatchSellQuotes } from '../batch-sell/selectors';
+import { ARC_ERC20_USDC_BRIDGE_ASSET } from '../../components/app/assets/enablement/arc';
+import * as stellarAssetsSelectors from '../../selectors/stellar-assets';
+import { resolveMinimumBalanceToKeep } from '../../pages/bridge/utils/minimum-reserve';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -67,6 +73,8 @@ import {
   getToAccounts,
   getHardwareWalletName,
   getActiveQuoteInsufficientNativeReserveError,
+  computeQuoteValidationErrors,
+  getFromBalances,
   getInsufficientNativeReserveError,
   getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
@@ -74,10 +82,12 @@ import {
   getValidatedFromValue,
   getPriceImpact,
   getIsStockMarketClosed,
+  getIsInOffHoursTrading,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
-  resolveMinimumBalanceToKeep,
   getChainValueOrderOverride,
+  getIsDestSameAsActiveAccount,
+  getDestAccountDisplayName,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -94,11 +104,13 @@ describe('Bridge selectors', () => {
     fromTokenInputValue = '1',
     fromNativeBalance = '1',
     nonEvmFeesInNative,
+    quoteNativeReserve,
     srcTokenAmount = '100000000',
   }: {
     fromTokenInputValue?: string;
     fromNativeBalance?: string;
     nonEvmFeesInNative?: string;
+    quoteNativeReserve?: string;
     srcTokenAmount?: string;
   } = {}) => {
     const btcAsset = getNativeAssetForChainId(ChainId.BTC);
@@ -135,6 +147,18 @@ describe('Bridge selectors', () => {
             estimatedProcessingTimeInSeconds: 600,
             nonEvmFeesInNative,
           };
+    const quote = btcQuote ? toQuoteResponseV2(btcQuote) : undefined;
+    if (quote && quoteNativeReserve) {
+      quote.quote.feeData.reserve = [
+        {
+          amount: new BigNumber(quoteNativeReserve)
+            .times(10 ** btcAsset.decimals)
+            .toFixed(0),
+          normalizedAmount: quoteNativeReserve,
+          asset: btcAsset,
+        },
+      ];
+    }
 
     return createBridgeMockStore({
       bridgeSliceOverrides: {
@@ -148,7 +172,7 @@ describe('Bridge selectors', () => {
           srcChainId: ChainId.BTC,
           srcTokenAmount,
         },
-        quotes: btcQuote ? [toQuoteResponseV2(btcQuote)] : [],
+        quotes: quote ? [quote] : [],
       },
       metamaskStateOverrides: {
         internalAccounts: {
@@ -269,7 +293,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromChain(state as never);
+      const result = getFromChain(state);
       expect(result).toStrictEqual({
         blockExplorerUrls: ['https://localhost/blockExplorer/0xa4b1'],
         chainId: 'eip155:42161',
@@ -308,7 +332,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromChain(state as never);
+      const result = getFromChain(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -330,7 +354,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getToChain(state as never);
+      const result = getToChain(state);
 
       expect(result).toStrictEqual({
         chainId: formatChainIdToCaip(ChainId.LINEA),
@@ -351,7 +375,7 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { toToken: null },
       });
 
-      const result = getToChain(state as never);
+      const result = getToChain(state);
 
       expect(result).toStrictEqual({
         chainId: 'eip155:1',
@@ -373,7 +397,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getChainValueOrderOverride(state as never)).toStrictEqual([
+      expect(getChainValueOrderOverride(state)).toStrictEqual([
         { chainId: 'eip155:8453', name: 'Base' },
         { chainId: 'eip155:1', name: 'Ethereum' },
       ]);
@@ -394,7 +418,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getChainValueOrderOverride(state as never)).toStrictEqual([]);
+      expect(getChainValueOrderOverride(state)).toStrictEqual([]);
     });
   });
 
@@ -417,7 +441,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result).toHaveLength(4);
       expect(
@@ -455,7 +479,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result.length).toBeGreaterThanOrEqual(15);
       expect(result.map(({ chainId }) => chainId)).toEqual(
@@ -521,7 +545,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
@@ -593,7 +617,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromChains(state as never);
+      const result = getFromChains(state);
 
       expect(result).toStrictEqual([
         { chainId: robinhoodCaipChainId, name: 'Robinhood' },
@@ -619,7 +643,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState(...FEATURED_RPCS),
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toHaveLength(5);
       expect(result).toMatchInlineSnapshot(`
@@ -658,7 +682,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toHaveLength(17);
       expect(result.map(({ name, chainId }) => ({ name, chainId })))
@@ -747,7 +771,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
 
       expect(result).toStrictEqual([
         { chainId: robinhoodCaipChainId, name: 'Robinhood' },
@@ -797,7 +821,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToChains(state as never);
+      const result = getToChains(state);
       const resultsInCaip = result
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
@@ -840,7 +864,7 @@ describe('Bridge selectors', () => {
           fromToken: { address: '0x123', symbol: 'TEST', chainId: 'eip155:1' },
         },
       });
-      const result = getFromToken(state as never);
+      const result = getFromToken(state);
 
       expect(result).toStrictEqual({
         address: '0x123',
@@ -855,7 +879,7 @@ describe('Bridge selectors', () => {
           fromToken: null,
         },
       });
-      const result = getFromToken(state as never);
+      const result = getFromToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -893,7 +917,7 @@ describe('Bridge selectors', () => {
           }),
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toMatchInlineSnapshot(`
         {
@@ -925,7 +949,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -993,7 +1017,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       // Should return ETH (native token) instead of mUSD for Bitcoin bridges
       expect(result).toStrictEqual({
@@ -1022,7 +1046,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToToken(state as never);
+      const result = getToToken(state);
 
       expect(result).toStrictEqual({
         accountType: undefined,
@@ -1048,7 +1072,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { fromTokenInputValue: '123' },
       });
-      const result = getFromAmount(state as never);
+      const result = getFromAmount(state);
 
       expect(result).toStrictEqual('123');
     });
@@ -1057,7 +1081,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { fromTokenInputValue: '' },
       });
-      const result = getFromAmount(state as never);
+      const result = getFromAmount(state);
 
       expect(result).toStrictEqual('');
     });
@@ -1149,7 +1173,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
       expect(result.sortedQuotes).toHaveLength(2);
       const { recommendedQuote, activeQuote, ...rest } = result;
       expect(recommendedQuote).toStrictEqual(activeQuote);
@@ -1244,7 +1268,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
@@ -1378,7 +1402,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result.sortedQuotes).toHaveLength(2);
 
@@ -1437,7 +1461,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: { quotes: [] },
       });
 
-      const result = getBridgeQuotes(state as never);
+      const result = getBridgeQuotes(state);
 
       expect(result).toStrictEqual({
         activeQuote: null,
@@ -1459,9 +1483,8 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
+      const { activeQuote, recommendedQuote, sortedQuotes } =
+        getBridgeQuotes(state);
 
       expect(activeQuote?.quote.requestId).toStrictEqual(
         '381c23bc-e3e4-48fe-bc53-257471e388ad',
@@ -1495,9 +1518,8 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
-        state as never,
-      );
+      const { activeQuote, recommendedQuote, sortedQuotes } =
+        getBridgeQuotes(state);
 
       expect(activeQuote?.quote.requestId).toStrictEqual('fastestQuote');
       expect(recommendedQuote?.quote.requestId).toStrictEqual('fastestQuote');
@@ -1579,7 +1601,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
       const { recommendedQuotes, ...rest } = result;
       expect(result.recommendedQuotes).toHaveLength(1);
       const recommendedQuote = recommendedQuotes[0] as QuoteResponse;
@@ -1708,7 +1730,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result.recommendedQuotes).toHaveLength(1);
       expect(result.recommendedQuotes[0]?.quote.priceData?.priceImpact)
@@ -1849,7 +1871,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result.recommendedQuotes).toHaveLength(1);
 
@@ -1931,7 +1953,7 @@ describe('Bridge selectors', () => {
         bridgeStateOverrides: { quotes: [] },
       });
 
-      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const result = getBatchSellQuotes(state, { requestCount: 1 });
 
       expect(result).toMatchInlineSnapshot(`
         {
@@ -2015,7 +2037,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getBatchSellQuotes(state as never, { requestCount: 4 });
+      const result = getBatchSellQuotes(state, { requestCount: 4 });
 
       expect(result.recommendedQuotes).toHaveLength(4);
       expect(result.recommendedQuotes[0]?.quote.priceData?.priceImpact)
@@ -2102,7 +2124,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(false);
     });
@@ -2127,7 +2149,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(true);
     });
@@ -2141,7 +2163,7 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isNoQuotesAvailable).toStrictEqual(false);
     });
@@ -2164,7 +2186,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
@@ -2190,7 +2212,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2230,7 +2252,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2277,7 +2299,7 @@ describe('Bridge selectors', () => {
           selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2323,7 +2345,7 @@ describe('Bridge selectors', () => {
           selectedMultichainNetworkChainId: formatChainIdToCaip(ChainId.SOLANA),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2338,7 +2360,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(false);
     });
@@ -2353,7 +2375,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(false);
     });
@@ -2371,7 +2393,7 @@ describe('Bridge selectors', () => {
           quoteRequest: { srcTokenAmount: '1000' },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientBalance).toStrictEqual(true);
     });
@@ -2389,7 +2411,7 @@ describe('Bridge selectors', () => {
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2433,7 +2455,7 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(true);
     });
@@ -2449,7 +2471,7 @@ describe('Bridge selectors', () => {
           quoteRequest: {},
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2466,7 +2488,7 @@ describe('Bridge selectors', () => {
           quotes: mockErc20Erc20Quotes,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
     });
@@ -2500,25 +2522,24 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.00000011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.relayer?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.relayer?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.001');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.sentAmount?.amount,
+        getBridgeQuotes(state).activeQuote?.sentAmount?.amount,
       ).toStrictEqual('0.01');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src
-          ?.normalizedAmount,
+        getBridgeQuotes(state).activeQuote?.quote.src?.normalizedAmount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
@@ -2531,8 +2552,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
-            chainId: 'eip155:1',
-            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
+            chainId: 'eip155:10',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
           },
           fromNativeBalance: '1000000000000000000',
         },
@@ -2541,32 +2562,31 @@ describe('Bridge selectors', () => {
           quotes: mockBridgeQuotesNativeErc20,
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0.00100011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.00000011265800784');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.relayer?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.relayer?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0.001');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src
-          ?.normalizedAmount,
+        getBridgeQuotes(state).activeQuote?.quote.src?.normalizedAmount,
       ).toStrictEqual('0.01');
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
 
     it('should return isNetworkFeeUnavailable=true for a BTC quote with zero network fee', () => {
       const state = createBtcZeroNetworkFeeQuoteState();
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.normalizedAmount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
@@ -2575,10 +2595,10 @@ describe('Bridge selectors', () => {
 
     it('should return isNetworkFeeUnavailable=true for a Tron quote with zero network fee', () => {
       const state = createTronZeroNetworkFeeQuoteState();
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
       expect(result.isInsufficientGasForQuote).toBe(false);
@@ -2586,10 +2606,10 @@ describe('Bridge selectors', () => {
 
     it('should return isNetworkFeeUnavailable=false for a Tron quote with a valid network fee', () => {
       const state = createTronBridgeState({ nonEvmFeesInNative: '1' });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee?.amount,
+        getBridgeQuotes(state).activeQuote?.totalNetworkFee?.amount,
       ).toStrictEqual('1');
       expect(result.isNetworkFeeUnavailable).toBe(false);
     });
@@ -2661,22 +2681,21 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.src?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.src?.valueInCurrency,
       ).toBe('25.2425');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.feeData?.network?.[0]
+        getBridgeQuotes(state).activeQuote?.quote.feeData?.network?.[0]
           ?.valueInCurrency,
       ).toBe('0.00028437697629012');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.dest
-          ?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.dest?.valueInCurrency,
       ).toBe('14.90773022');
       expect(
-        getBridgeQuotes(state as never).activeQuote?.quote.priceData
-          ?.adjustedReturn?.valueInCurrency,
+        getBridgeQuotes(state).activeQuote?.quote.priceData?.adjustedReturn
+          ?.valueInCurrency,
       ).toBe('12.38319584302370988');
       expect(result.isEstimatedReturnLow).toBe(true);
     });
@@ -2745,8 +2764,8 @@ describe('Bridge selectors', () => {
           ),
         },
       });
-      const result = getValidationErrors(state as never);
-      const { activeQuote } = getBridgeQuotes(state as never);
+      const result = getValidationErrors(state);
+      const { activeQuote } = getBridgeQuotes(state);
 
       expect(activeQuote?.quote.src?.valueInCurrency).toBe('25.2425');
       expect(activeQuote?.totalNetworkFee).toMatchInlineSnapshot(`
@@ -2817,9 +2836,9 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
-      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
+      expect(getBridgeQuotes(state).activeQuote).toStrictEqual(null);
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
 
@@ -2894,7 +2913,7 @@ describe('Bridge selectors', () => {
             },
           },
         });
-        const result = getValidationErrors(state as never);
+        const result = getValidationErrors(state);
 
         expect(result.isPriceImpactWarning).toBe(isPriceImpactWarning);
         expect(result.isPriceImpactError).toBe(isPriceImpactError);
@@ -2926,7 +2945,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientGasForQuote).toStrictEqual(true);
     });
@@ -2961,7 +2980,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
@@ -2994,7 +3013,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       // isInsufficientGasBalance is overshadowed by isInsufficientNativeReserve
@@ -3028,7 +3047,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientGasBalance).toStrictEqual(false);
@@ -3061,7 +3080,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(true);
@@ -3097,7 +3116,7 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 95 = 5 MON remaining, which is < 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(false);
@@ -3130,9 +3149,79 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Arc USDC when source amount leaves less than the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '10',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '10000000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+      const nativeReserveError = getInsufficientNativeReserveError(state);
+
+      expect(nativeReserveError).toStrictEqual({
+        minimumNativeBalanceToBeKeptInAccount: '0.05',
+        maxSwappableNativeBalance: '9.95',
+      });
+      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Arc USDC when source amount keeps the reserve', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          fromTokenInputValue: '9.95000',
+          fromToken: toBridgeToken(ARC_ERC20_USDC_BRIDGE_ASSET),
+          // 10 native Arc USDC in atomic units.
+          fromNativeBalance: '10000000000000000000',
+          fromTokenBalance: '10000000',
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: CHAIN_IDS.ARC,
+            srcTokenAmount: '9950000',
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+      });
+      const result = getValidationErrors(state);
+
+      expect(getInsufficientNativeReserveError(state)).toBeUndefined();
+      expect(getQuoteRequestInsufficientBal(state)).toBe(false);
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 
@@ -3142,7 +3231,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99999500',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // 1 - 0.999995 = 0.000005 BTC, which is < 0.00003 BTC reserve
       expect(result.isInsufficientNativeReserve).toBe(true);
@@ -3154,7 +3243,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
@@ -3174,17 +3263,17 @@ describe('Bridge selectors', () => {
       });
 
       expect(
-        getInsufficientNativeReserveError(stateWithSmallQuoteFee as never),
+        getInsufficientNativeReserveError(stateWithSmallQuoteFee),
       ).toBeUndefined();
       expect(
-        getInsufficientNativeReserveError(stateWithLargeQuoteFee as never),
+        getInsufficientNativeReserveError(stateWithLargeQuoteFee),
       ).toBeUndefined();
-      expect(
-        getQuoteRequestInsufficientBal(stateWithSmallQuoteFee as never),
-      ).toBe(false);
-      expect(
-        getQuoteRequestInsufficientBal(stateWithLargeQuoteFee as never),
-      ).toBe(false);
+      expect(getQuoteRequestInsufficientBal(stateWithSmallQuoteFee)).toBe(
+        false,
+      );
+      expect(getQuoteRequestInsufficientBal(stateWithLargeQuoteFee)).toBe(
+        false,
+      );
     });
 
     it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Bitcoin when the quote fee is payable but the reserve would be depleted', () => {
@@ -3194,12 +3283,11 @@ describe('Bridge selectors', () => {
         nonEvmFeesInNative: '0.00000001',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
-      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
-        state as never,
-      );
+      const result = getValidationErrors(state);
+      const nativeReserveError =
+        getActiveQuoteInsufficientNativeReserveError(state);
 
-      const { activeQuote } = getBridgeQuotes(state as never);
+      const { activeQuote } = getBridgeQuotes(state);
       expect(activeQuote?.totalNetworkFee).toMatchInlineSnapshot(`
         {
           "amount": "0.00000001",
@@ -3232,6 +3320,93 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasForQuote).toBe(false);
     });
 
+    it('uses a quote-carried reserve instead of the chain fallback', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.9',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00000001',
+        quoteNativeReserve: '0.1',
+        srcTokenAmount: '90000000',
+      });
+
+      const error = getActiveQuoteInsufficientNativeReserveError(state);
+
+      expect(error?.minimumNativeBalanceToBeKeptInAccount).toBe('0.1');
+      expect(error?.maxSwappableNativeBalance).toBe('0.89999999');
+    });
+
+    describe('with a quote-carried reserve on Stellar', () => {
+      const native = getNativeAssetForChainId(ChainId.STELLAR);
+      const usdcAssetId =
+        'stellar:pubnet/credit_alphanum4:USDC:GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as const;
+      const buildQuote = (srcAssetId: string, srcAmount: string) =>
+        ({
+          quote: {
+            src: {
+              normalizedAmount: srcAmount,
+              asset: { assetId: srcAssetId },
+            },
+            feeData: {
+              network: [
+                { amount: '100', normalizedAmount: '0.00001', asset: native },
+              ],
+              reserve: [
+                {
+                  amount: '15000000',
+                  normalizedAmount: '1.5',
+                  asset: native,
+                },
+              ],
+            },
+          },
+        }) as unknown as QuoteResponse;
+      const getReserveError = (
+        nativeBalance: string,
+        srcAmount: string,
+      ): ReturnType<typeof getActiveQuoteInsufficientNativeReserveError> =>
+        getActiveQuoteInsufficientNativeReserveError.resultFunc(
+          undefined,
+          toBridgeToken(native),
+          nativeBalance,
+          srcAmount,
+          {
+            activeQuote: buildQuote(native.assetId, srcAmount),
+          } as Parameters<
+            typeof getActiveQuoteInsufficientNativeReserveError.resultFunc
+          >[4],
+        );
+      const isInsufficientGasForTokenSource = (nativeBalance: string) =>
+        computeQuoteValidationErrors(buildQuote(usdcAssetId, '10'), {
+          priceImpactThresholds: { warning: 0.05, error: 0.25 },
+          isHardwareWalletAccount: false,
+          minimumBalanceForRentExemptionInLamports: null,
+          fromTokenInputValue: '10',
+          validatedSrcAmount: '10',
+          nativeBalance,
+          fromTokenBalance: '100',
+          balances: { [native.assetId]: nativeBalance, [usdcAssetId]: '100' },
+        }).isInsufficientGasForQuote;
+
+      it('shows the reserve banner for a native source', () => {
+        expect(getReserveError('10', '9')).toStrictEqual({
+          minimumNativeBalanceToBeKeptInAccount: '1.5',
+          maxSwappableNativeBalance: '8.49999',
+        });
+      });
+
+      it('shows the reserve banner when the balance cannot cover the reserve', () => {
+        expect(getReserveError('1', '0.2')).toStrictEqual({
+          minimumNativeBalanceToBeKeptInAccount: '1.5',
+          maxSwappableNativeBalance: '0',
+        });
+      });
+
+      it('flags insufficient gas for a token source that cannot cover fee + reserve', () => {
+        expect(isInsufficientGasForTokenSource('0.4')).toBe(true);
+        expect(isInsufficientGasForTokenSource('2')).toBe(false);
+      });
+    });
+
     it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Bitcoin when the quote fee cannot be paid', () => {
       const state = createBtcBridgeState({
         fromTokenInputValue: '0.99997',
@@ -3239,7 +3414,7 @@ describe('Bridge selectors', () => {
         nonEvmFeesInNative: '0.000031',
         srcTokenAmount: '99997000',
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       expect(result.isInsufficientNativeReserve).toBe(false);
       expect(result.isInsufficientGasForQuote).toBe(true);
@@ -3275,10 +3450,252 @@ describe('Bridge selectors', () => {
           gasFeesSponsoredNetwork: { [CHAIN_IDS.MONAD]: true },
         },
       });
-      const result = getValidationErrors(state as never);
+      const result = getValidationErrors(state);
 
       // We don't apply such logic in Solana because this is handled by another validator
       expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    describe('isDestAssetRequireActivate', () => {
+      const STELLAR_USDC_ASSET_ID =
+        'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+
+      const stellarUsdcToken = toBridgeToken({
+        symbol: 'USDC',
+        decimals: 7,
+        assetId: STELLAR_USDC_ASSET_ID,
+        name: 'USDC',
+      });
+
+      const createCrossChainToStellarState = (
+        overrides: {
+          destWalletAddress?: string;
+          fromToken?: ReturnType<typeof toBridgeToken>;
+          metamaskStateOverrides?: Record<string, unknown>;
+        } = {},
+      ) =>
+        createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken:
+              overrides.fromToken ??
+              toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+            toToken: stellarUsdcToken,
+          },
+          bridgeStateOverrides: {
+            quoteRequest: {
+              destWalletAddress:
+                overrides.destWalletAddress ??
+                MOCK_ACCOUNT_STELLAR_PUBNET.address,
+            },
+          },
+          metamaskStateOverrides: {
+            internalAccounts: {
+              accounts: {
+                [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+              },
+            },
+            ...overrides.metamaskStateOverrides,
+          },
+        });
+
+      afterEach(() => {
+        jest.restoreAllMocks();
+      });
+
+      it('returns true for cross-chain destinations that require Stellar trustline activation on the dest account', () => {
+        const requireActivateSpy = jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createCrossChainToStellarState();
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(true);
+        expect(requireActivateSpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            assetId: STELLAR_USDC_ASSET_ID,
+            accountId: MOCK_ACCOUNT_STELLAR_PUBNET.id,
+          }),
+        );
+      });
+
+      it('returns false for same-chain Stellar swaps even when activation is required', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createCrossChainToStellarState({
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.STELLAR),
+          ),
+        });
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
+      });
+
+      it('returns false when the destination does not require activation', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(false);
+
+        const state = createCrossChainToStellarState();
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
+      });
+
+      it('returns false when destWalletAddress is missing', () => {
+        jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: toBridgeToken(
+              getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+            ),
+            toToken: stellarUsdcToken,
+          },
+          bridgeStateOverrides: {
+            quoteRequest: {
+              destWalletAddress: undefined,
+            },
+          },
+        });
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
+      });
+
+      it('returns false for an external destWalletAddress with no internal account', () => {
+        const requireActivateSpy = jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createCrossChainToStellarState({
+          destWalletAddress:
+            'GDEXTERNALDESTADDR000000000000000000000000000000000000000',
+        });
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(false);
+        expect(requireActivateSpy).not.toHaveBeenCalled();
+      });
+
+      it('checks trustline for the destination account, not the selected account', () => {
+        const OTHER_STELLAR_ACCOUNT = {
+          ...MOCK_ACCOUNT_STELLAR_PUBNET,
+          id: 'other-stellar-account-id',
+          address: 'GBOTHERSTELLARACCOUNT00000000000000000000000000000000000',
+        };
+
+        const requireActivateSpy = jest
+          .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+          .mockReturnValue(true);
+
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            fromToken: toBridgeToken(
+              getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+            ),
+            toToken: stellarUsdcToken,
+          },
+          bridgeStateOverrides: {
+            quoteRequest: {
+              destWalletAddress: OTHER_STELLAR_ACCOUNT.address,
+            },
+          },
+          metamaskStateOverrides: {
+            internalAccounts: {
+              selectedAccount: MOCK_ACCOUNT_STELLAR_PUBNET.id,
+              accounts: {
+                [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+                [OTHER_STELLAR_ACCOUNT.id]: OTHER_STELLAR_ACCOUNT,
+              },
+            },
+          },
+        });
+
+        expect(
+          getValidationErrors(state as never).isDestAssetRequireActivate,
+        ).toBe(true);
+        expect(requireActivateSpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            accountId: OTHER_STELLAR_ACCOUNT.id,
+          }),
+        );
+        expect(requireActivateSpy).not.toHaveBeenCalledWith(
+          expect.anything(),
+          expect.objectContaining({
+            accountId: MOCK_ACCOUNT_STELLAR_PUBNET.id,
+          }),
+        );
+      });
+    });
+  });
+
+  describe('getIsDestSameAsActiveAccount', () => {
+    const STELLAR_USDC_ASSET_ID =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+
+    const stellarUsdcToken = toBridgeToken({
+      symbol: 'USDC',
+      decimals: 7,
+      assetId: STELLAR_USDC_ASSET_ID,
+      name: 'USDC',
+    });
+
+    it('defaults to true when destWalletAddress is missing', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: stellarUsdcToken,
+        },
+      });
+
+      expect(getIsDestSameAsActiveAccount(state as never)).toBe(true);
+    });
+
+    it('returns false when destWalletAddress is not the active dest-chain account', () => {
+      const OTHER_STELLAR_ACCOUNT = {
+        ...MOCK_ACCOUNT_STELLAR_PUBNET,
+        id: 'other-stellar-account-id',
+        address: 'GBOTHERSTELLARACCOUNT00000000000000000000000000000000000',
+        metadata: {
+          ...MOCK_ACCOUNT_STELLAR_PUBNET.metadata,
+          name: 'Other Stellar',
+        },
+      };
+
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toToken: stellarUsdcToken,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            destWalletAddress: OTHER_STELLAR_ACCOUNT.address,
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_EVM_ACCOUNT.id,
+            accounts: {
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+              [OTHER_STELLAR_ACCOUNT.id]: OTHER_STELLAR_ACCOUNT,
+            },
+          },
+        },
+      });
+
+      expect(getIsDestSameAsActiveAccount(state as never)).toBe(false);
+      expect(getDestAccountDisplayName(state as never)).toBe('Other Stellar');
     });
   });
 
@@ -3304,7 +3721,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromTokenBalance(state as never);
+      const result = getFromTokenBalance(state);
       expect(result).toBe('2');
     });
 
@@ -3319,7 +3736,7 @@ describe('Bridge selectors', () => {
           fromTokenBalance: '2000000',
         },
       });
-      const result = getFromTokenBalance(state as never);
+      const result = getFromTokenBalance(state);
       expect(result).toBe('2');
     });
   });
@@ -3346,7 +3763,7 @@ describe('Bridge selectors', () => {
         },
       });
 
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toMatchObject({
         id: MOCK_SOLANA_ACCOUNT.id,
         type: SolAccountType.DataAccount,
@@ -3356,7 +3773,7 @@ describe('Bridge selectors', () => {
 
     it('should return the selected EVM account', () => {
       const state = createBridgeMockStore({});
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           id: MOCK_EVM_ACCOUNT.id,
@@ -3397,12 +3814,12 @@ describe('Bridge selectors', () => {
         },
       });
 
-      expect(getFromChain(state as never)).toStrictEqual(
+      expect(getFromChain(state)).toStrictEqual(
         expect.objectContaining({
           chainId: 'eip155:1',
         }),
       );
-      const result = getFromAccount(state as never);
+      const result = getFromAccount(state);
       expect(result).toMatchObject({
         address: MOCK_EVM_ACCOUNT.address,
         id: MOCK_EVM_ACCOUNT.id,
@@ -3604,7 +4021,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { slippage: 0.5 },
       });
-      expect(getSlippage(state as never)).toBe(0.5);
+      expect(getSlippage(state)).toBe(0.5);
     });
   });
 
@@ -3620,7 +4037,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRequest(state as never);
+      const result = getQuoteRequest(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           srcChainId: ChainId.ETH,
@@ -3635,12 +4052,12 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { sortOrder: SortOrder.ETA_ASC },
       });
-      expect(getBridgeSortOrder(state as never)).toBe(SortOrder.ETA_ASC);
+      expect(getBridgeSortOrder(state)).toBe(SortOrder.ETA_ASC);
     });
 
     it('returns default sort order', () => {
       const state = createBridgeMockStore({});
-      expect(getBridgeSortOrder(state as never)).toBe('cost_ascending');
+      expect(getBridgeSortOrder(state)).toBe('cost_ascending');
     });
   });
 
@@ -3649,14 +4066,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { txAlert: { message: 'test alert' } },
       });
-      expect(getTxAlerts(state as never)).toStrictEqual({
+      expect(getTxAlerts(state)).toStrictEqual({
         message: 'test alert',
       });
     });
 
     it('returns undefined when no txAlert', () => {
       const state = createBridgeMockStore({});
-      expect(getTxAlerts(state as never)).toBeUndefined();
+      expect(getTxAlerts(state)).toBeUndefined();
     });
   });
 
@@ -3665,14 +4082,14 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { wasTxDeclined: true },
       });
-      expect(getWasTxDeclined(state as never)).toBe(true);
+      expect(getWasTxDeclined(state)).toBe(true);
     });
 
     it('returns false when tx was not declined', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { wasTxDeclined: false },
       });
-      expect(getWasTxDeclined(state as never)).toBe(false);
+      expect(getWasTxDeclined(state)).toBe(false);
     });
   });
 
@@ -3683,7 +4100,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getPriceImpactThresholds(state as never);
+      const result = getPriceImpactThresholds(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           warning: 0.055,
@@ -3700,7 +4117,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getPriceImpactThresholds(state as never);
+      const result = getPriceImpactThresholds(state);
       expect(result).toHaveProperty('warning');
       expect(result).toHaveProperty('error');
       expect(typeof result.warning).toBe('number');
@@ -3712,9 +4129,7 @@ describe('Bridge selectors', () => {
   describe('getTopAssetsFromFeatureFlags', () => {
     it('returns undefined when chainId is not provided', () => {
       const state = createBridgeMockStore({});
-      expect(
-        getTopAssetsFromFeatureFlags(state as never, undefined),
-      ).toBeUndefined();
+      expect(getTopAssetsFromFeatureFlags(state, undefined)).toBeUndefined();
     });
 
     it('returns topAssets for a given chainId', () => {
@@ -3732,7 +4147,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
+      const result = getTopAssetsFromFeatureFlags(state, 'eip155:1');
       expect(result).toStrictEqual(topAssets);
     });
 
@@ -3749,7 +4164,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getTopAssetsFromFeatureFlags(state as never, 'eip155:1');
+      const result = getTopAssetsFromFeatureFlags(state, 'eip155:1');
       expect(result).toBeUndefined();
     });
   });
@@ -3757,7 +4172,7 @@ describe('Bridge selectors', () => {
   describe('getBip44DefaultPairsConfig', () => {
     it('returns bip44DefaultPairs from feature flags', () => {
       const state = createBridgeMockStore({});
-      const result = getBip44DefaultPairsConfig(state as never);
+      const result = getBip44DefaultPairsConfig(state);
       expect(result).toStrictEqual(
         expect.objectContaining({
           bip122: expect.any(Object),
@@ -3784,7 +4199,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRefreshRate(state as never);
+      const result = getQuoteRefreshRate(state);
       expect(result).toBe(10000);
     });
 
@@ -3796,7 +4211,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getQuoteRefreshRate(state as never);
+      const result = getQuoteRefreshRate(state);
       expect(result).toBe(7000);
     });
   });
@@ -3804,7 +4219,7 @@ describe('Bridge selectors', () => {
   describe('selectNoFeeAssets', () => {
     it('returns empty array when no chainId is provided', () => {
       const state = createBridgeMockStore({});
-      expect(selectNoFeeAssets(state as never, undefined)).toStrictEqual([]);
+      expect(selectNoFeeAssets(state, undefined)).toStrictEqual([]);
     });
 
     it('returns noFeeAssets for a given chainId', () => {
@@ -3821,7 +4236,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = selectNoFeeAssets(state as never, 'eip155:1');
+      const result = selectNoFeeAssets(state, 'eip155:1');
       expect(result).toStrictEqual(['asset1', 'asset2']);
     });
 
@@ -3838,7 +4253,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = selectNoFeeAssets(state as never, 'eip155:1');
+      const result = selectNoFeeAssets(state, 'eip155:1');
       expect(result).toStrictEqual([]);
     });
   });
@@ -3855,7 +4270,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getLastSelectedChainId(state as never);
+      const result = getLastSelectedChainId(state);
       expect(result).toBe('eip155:1');
     });
   });
@@ -3876,7 +4291,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(true);
     });
 
@@ -3895,7 +4310,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(false);
     });
 
@@ -3911,7 +4326,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getIsToOrFromNonEvm(state as never);
+      const result = getIsToOrFromNonEvm(state);
       expect(result).toBe(false);
     });
   });
@@ -3947,7 +4362,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(true);
     });
 
@@ -3978,7 +4393,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(false);
     });
 
@@ -3997,7 +4412,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
         },
       });
-      const result = getIsSolanaSwap(state as never);
+      const result = getIsSolanaSwap(state);
       expect(result).toBe(false);
     });
   });
@@ -4174,7 +4589,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsStxEnabled(state as never);
+      const result = getIsStxEnabled(state);
       expect(result).toBe(true);
     });
 
@@ -4201,7 +4616,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getIsStxEnabled(state as never);
+      const result = getIsStxEnabled(state);
       expect(result).toBe(false);
     });
   });
@@ -4248,7 +4663,7 @@ describe('Bridge selectors', () => {
           toToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
         },
       });
-      const result = getToAccounts(state as never);
+      const result = getToAccounts(state);
       expect(result.length).toBeGreaterThan(0);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({
@@ -4269,7 +4684,7 @@ describe('Bridge selectors', () => {
           toToken: null,
         },
       });
-      const result = getToAccounts(state as never);
+      const result = getToAccounts(state);
       expect(result).toStrictEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -4289,13 +4704,13 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getHardwareWalletName(state as never);
+      const result = getHardwareWalletName(state);
       expect(result).toBe('Ledger');
     });
 
     it('returns undefined for non-hardware wallet', () => {
       const state = createBridgeMockStore({});
-      const result = getHardwareWalletName(state as never);
+      const result = getHardwareWalletName(state);
       expect(result).toBeUndefined();
     });
   });
@@ -4318,7 +4733,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromTokenBalanceInUsd(state as never);
+      const result = getFromTokenBalanceInUsd(state);
       expect(result).toBe(2000);
     });
 
@@ -4333,7 +4748,7 @@ describe('Bridge selectors', () => {
           marketData: {},
         },
       });
-      const result = getFromTokenBalanceInUsd(state as never);
+      const result = getFromTokenBalanceInUsd(state);
       expect(result).toBe(0);
     });
   });
@@ -4356,7 +4771,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(2000);
       expect(result.usd.toNumber()).toBe(2000);
     });
@@ -4372,7 +4787,7 @@ describe('Bridge selectors', () => {
           marketData: {},
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(0);
       expect(result.usd.toNumber()).toBe(0);
     });
@@ -4384,7 +4799,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: null,
         },
       });
-      const result = getFromAmountInCurrency(state as never);
+      const result = getFromAmountInCurrency(state);
       expect(result.valueInCurrency.toNumber()).toBe(0);
     });
   });
@@ -4397,7 +4812,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '1.5',
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBe('1500000000000000000');
     });
 
@@ -4407,7 +4822,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: null,
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBeUndefined();
     });
 
@@ -4423,7 +4838,7 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: '0.001',
         },
       });
-      const result = getValidatedFromValue(state as never);
+      const result = getValidatedFromValue(state);
       expect(result).toBe('1000');
     });
   });
@@ -4447,7 +4862,7 @@ describe('Bridge selectors', () => {
           })),
         },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBe(0.15);
     });
 
@@ -4455,7 +4870,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBeNull();
     });
 
@@ -4471,7 +4886,7 @@ describe('Bridge selectors', () => {
           })),
         },
       });
-      const result = getPriceImpact(state as never);
+      const result = getPriceImpact(state);
       expect(result).toBeNull();
     });
   });
@@ -4483,7 +4898,7 @@ describe('Bridge selectors', () => {
           bridgeConfig: {},
         },
       });
-      const result = getIsStockMarketClosed(state as never, Date.now());
+      const result = getIsStockMarketClosed(state, Date.now());
       expect(result).toBe(false);
     });
 
@@ -4494,7 +4909,7 @@ describe('Bridge selectors', () => {
           rwaTokensEnabled: true,
         } as never,
       });
-      const result = getIsStockMarketClosed(state as never, Date.now());
+      const result = getIsStockMarketClosed(state, Date.now());
       expect(result).toBe(false);
     });
 
@@ -4521,8 +4936,164 @@ describe('Bridge selectors', () => {
           }),
         },
       });
-      const result = getIsStockMarketClosed(state as never, now);
+      const result = getIsStockMarketClosed(state, now);
       expect(result).toBe(true);
+    });
+
+    it('returns false when regular market is closed but off-hours trading is open', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      expect(getIsStockMarketClosed(state as never, now)).toBe(false);
+      expect(getIsInOffHoursTrading(state as never, now)).toBe(true);
+    });
+  });
+
+  describe('getIsInOffHoursTrading', () => {
+    it('returns false when RWA is not enabled', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+        },
+      });
+      const result = getIsInOffHoursTrading(state as never, Date.now());
+      expect(result).toBe(false);
+    });
+
+    it('returns false when tokens have no rwaData', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+      });
+      const result = getIsInOffHoursTrading(state as never, Date.now());
+      expect(result).toBe(false);
+    });
+
+    it('returns true when fromToken is a stock in off-hours window', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      const result = getIsInOffHoursTrading(state as never, now);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when stock token has no offhours data', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      const result = getIsInOffHoursTrading(state as never, now);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when one stock leg is in off-hours and the other is fully closed', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock-aapl',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            },
+          }),
+          toToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock-tsla',
+            symbol: 'TSLA',
+            name: 'Tesla',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      expect(getIsStockMarketClosed(state as never, now)).toBe(true);
+      expect(getIsInOffHoursTrading(state as never, now)).toBe(false);
     });
   });
 
@@ -4531,7 +5102,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toStrictEqual([]);
     });
 
@@ -4555,7 +5126,7 @@ describe('Bridge selectors', () => {
           quotesRefreshCount: 1,
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('no_quotes');
     });
 
@@ -4576,7 +5147,7 @@ describe('Bridge selectors', () => {
           quotesLastFetched: Date.now(),
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('insufficient_balance');
     });
 
@@ -4592,20 +5163,20 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('tx_alert');
     });
 
     it('returns network_fee_unavailable when BTC network fee is unavailable', () => {
       const state = createBtcZeroNetworkFeeQuoteState();
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('network_fee_unavailable');
     });
 
     it('returns network_fee_unavailable when Tron network fee is unavailable', () => {
       const state = createTronZeroNetworkFeeQuoteState();
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('network_fee_unavailable');
     });
@@ -4616,7 +5187,7 @@ describe('Bridge selectors', () => {
         fromNativeBalance: '1',
         srcTokenAmount: '99999500',
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
 
       expect(result).toContain('insufficient_native_reserve');
     });
@@ -4645,8 +5216,124 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getWarningLabels(state as never);
+      const result = getWarningLabels(state);
       expect(result).toContain('price_impact');
+    });
+
+    it('returns dest_asset_require_activate when destination Stellar trustline is required', () => {
+      jest
+        .spyOn(stellarAssetsSelectors, 'getIsAssetRequireActivate')
+        .mockReturnValue(true);
+
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken({
+            symbol: 'USDC',
+            decimals: 7,
+            assetId:
+              'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+            name: 'USDC',
+          }),
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            destWalletAddress: MOCK_ACCOUNT_STELLAR_PUBNET.address,
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            accounts: {
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+            },
+          },
+        },
+      });
+
+      try {
+        expect(getWarningLabels(state as never)).toContain(
+          'dest_asset_require_activate',
+        );
+      } finally {
+        jest.restoreAllMocks();
+      }
+    });
+
+    it('returns off_hours without market_closed when off-hours trading is open', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      const result = getWarningLabels(state as never, now);
+      expect(result).toContain('off_hours');
+      expect(result).not.toContain('market_closed');
+    });
+
+    it('returns market_closed without off_hours when one stock is off-hours and the other is fully closed', () => {
+      const now = Date.now();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          rwaTokensEnabled: true,
+        } as never,
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock-aapl',
+            symbol: 'AAPL',
+            name: 'Apple',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+              offhours: {
+                nextOpen: new Date(now - 50000).toISOString(),
+                nextClose: new Date(now + 50000).toISOString(),
+              },
+            },
+          }),
+          toToken: toBridgeToken({
+            decimals: 18,
+            assetId: 'eip155:1/erc20:0xstock-tsla',
+            symbol: 'TSLA',
+            name: 'Tesla',
+            rwaData: {
+              instrumentType: 'stock',
+              market: {
+                nextOpen: new Date(now + 100000).toISOString(),
+                nextClose: new Date(now + 200000).toISOString(),
+              },
+            },
+          }),
+        },
+      });
+      const result = getWarningLabels(state as never, now);
+      expect(result).toContain('market_closed');
+      expect(result).not.toContain('off_hours');
     });
   });
 
@@ -4657,9 +5344,9 @@ describe('Bridge selectors', () => {
           quotes: [],
         },
       });
-      const result = getValidationErrors(state as never, Date.now());
+      const result = getValidationErrors(state, Date.now());
       expect(result.isQuoteExpired).toBe(
-        selectIsQuoteExpired(state.metamask as never, {}, Date.now()),
+        selectIsQuoteExpired(state.metamask, {}, Date.now()),
       );
     });
   });
@@ -4671,7 +5358,7 @@ describe('Bridge selectors', () => {
           quoteStreamComplete: null,
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
 
@@ -4684,7 +5371,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
 
@@ -4698,7 +5385,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteAmountTooHigh');
     });
 
@@ -4712,7 +5399,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteAmountTooLow');
     });
 
@@ -4726,7 +5413,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteRetry');
     });
 
@@ -4740,7 +5427,7 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('bridgeQuoteStreamCompleteTokenNotSupported');
     });
 
@@ -4753,34 +5440,43 @@ describe('Bridge selectors', () => {
           },
         },
       });
-      const result = getBridgeUnavailableQuoteReason(state as never);
+      const result = getBridgeUnavailableQuoteReason(state);
       expect(result).toBe('noOptionsAvailableMessage');
     });
   });
 
   describe('resolveMinimumBalanceToKeep', () => {
-    const SOL_RESERVE = '890880';
+    const LAMPORT_RESERVE = '890880';
 
     it('returns the SOL rent-exemption reserve for a Solana chain id', () => {
-      expect(resolveMinimumBalanceToKeep(SolScope.Mainnet, SOL_RESERVE)).toBe(
-        SOL_RESERVE,
-      );
-    });
-
-    it("returns '0' for a non-Solana EVM chain id", () => {
-      expect(resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, SOL_RESERVE)).toBe(
-        '0',
-      );
-    });
-
-    it("returns '0' for a non-Solana non-EVM (Bitcoin) chain id", () => {
       expect(
-        resolveMinimumBalanceToKeep(MultichainNetworks.BITCOIN, SOL_RESERVE),
-      ).toBe('0');
+        resolveMinimumBalanceToKeep(SolScope.Mainnet, LAMPORT_RESERVE),
+      ).toStrictEqual({
+        amount: LAMPORT_RESERVE,
+        normalizedAmount: '0.00089088',
+        asset: getNativeAssetForChainId(SolScope.Mainnet),
+      });
     });
 
-    it("returns '0' when the chain id is undefined", () => {
-      expect(resolveMinimumBalanceToKeep(undefined, SOL_RESERVE)).toBe('0');
+    it('returns undefined for a non-Solana EVM chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(CHAIN_IDS.MAINNET, LAMPORT_RESERVE),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined for a non-Solana non-EVM (Bitcoin) chain id', () => {
+      expect(
+        resolveMinimumBalanceToKeep(
+          MultichainNetworks.BITCOIN,
+          LAMPORT_RESERVE,
+        ),
+      ).toBe(undefined);
+    });
+
+    it('returns undefined when the chain id is undefined', () => {
+      expect(resolveMinimumBalanceToKeep(undefined, LAMPORT_RESERVE)).toBe(
+        undefined,
+      );
     });
   });
 });

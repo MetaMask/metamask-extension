@@ -18,7 +18,16 @@ import {
 } from '../../../shared/constants/metametrics';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { AssetType } from '../../../shared/constants/transaction';
+import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
 import { TokenManagementPage } from './token-management';
+
+jest.mock('../../hooks/token-asset/useTokenAssetSecurityResults', () => ({
+  useTokenAssetSecurityResults: jest.fn(() => ({})),
+}));
+
+const mockUseTokenAssetSecurityResults = jest.mocked(
+  useTokenAssetSecurityResults,
+);
 
 const METRICS_PROPERTIES = {
   assetType: 'asset_type',
@@ -48,9 +57,6 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-const mockTokenManagementLocationState = {
-  current: null as unknown,
-};
 const mockUseNavigate = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
@@ -64,7 +70,7 @@ jest.mock('react-router-dom', () => {
       pathname: '/token-management',
       search: '',
       hash: '',
-      state: mockTokenManagementLocationState.current,
+      state: null,
       key: 'token-management-test',
     }),
   };
@@ -379,9 +385,10 @@ describe('TokenManagementPage', () => {
   };
 
   beforeEach(() => {
-    mockTokenManagementLocationState.current = null;
     mockUseNavigate.mockClear();
     mockToastSuccess.mockClear();
+    mockUseTokenAssetSecurityResults.mockClear();
+    mockUseTokenAssetSecurityResults.mockReturnValue({});
     trackAnalyticsEventMock.mockClear();
     setBackgroundConnection(backgroundConnectionMock as never);
     resetTokenSearchState();
@@ -468,8 +475,7 @@ describe('TokenManagementPage', () => {
     },
   });
 
-  const renderPage = (state = createState(), routeState?: unknown) => {
-    mockTokenManagementLocationState.current = routeState ?? null;
+  const renderPage = (state = createState()) => {
     const store = configureStore({
       ...state,
     });
@@ -546,7 +552,9 @@ describe('TokenManagementPage', () => {
 
   it('renders without crashing', () => {
     renderPage();
-    expect(screen.getByTestId('token-management-page')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('parent-selector-token-management-page'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();
@@ -630,26 +638,6 @@ describe('TokenManagementPage', () => {
         sensitiveProperties: {},
       }),
       expect.anything(),
-    );
-  });
-
-  it('shows an animated custom token success toast from route state', async () => {
-    renderPage(createState(), {
-      tokenManagementToast: {
-        type: 'customTokenAdded',
-        symbol: 'APE',
-      },
-    });
-
-    await waitFor(() =>
-      expect(mockToastSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({
-          props: expect.objectContaining({
-            dataTestId: 'token-management-custom-token-success-toast',
-            title: expect.stringContaining('APE'),
-          }),
-        }),
-      ),
     );
   });
 
@@ -1259,7 +1247,7 @@ describe('TokenManagementPage', () => {
     expect(mockToastSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
         props: expect.objectContaining({
-          dataTestId: 'token-management-custom-token-success-toast',
+          dataTestId: 'token-management-network-added-success-toast',
           title: '“Base” was successfully added!',
         }),
       }),
@@ -1744,6 +1732,83 @@ describe('TokenManagementPage', () => {
     expect(
       screen.getByTestId(`token-management-cell-0x1:${usdcAddress}-toggle`),
     ).toBeInTheDocument();
+  });
+
+  const getSecurityLookupAssetIds = () =>
+    mockUseTokenAssetSecurityResults.mock.calls.at(-1)?.[0].assetIds;
+
+  const expectSecurityLookupToInclude = (assetId: string) => {
+    expect(getSecurityLookupAssetIds()).toContain(assetId);
+  };
+
+  it('renders a trust badge on an owned EVM token, whose assetId is a plain address', () => {
+    mockUseTokenAssetSecurityResults.mockReturnValue({
+      [`eip155:1/erc20:${mainnetToken.address}`]: 'Verified',
+    });
+
+    renderPage();
+
+    expectSecurityLookupToInclude(`eip155:1/erc20:${mainnetToken.address}`);
+    expect(
+      screen.getByLabelText(messages.securityTrustVerified.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a trust badge on a search result flagged as malicious', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+    mockUseTokenAssetSecurityResults.mockReturnValue({
+      [usdcAssetId]: 'Malicious',
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    expectSecurityLookupToInclude(usdcAssetId);
+    // Only search results render while a query is active, so owned tokens are
+    // not looked up: the ids follow the rendered list, not its sources.
+    expect(getSecurityLookupAssetIds()).not.toContain(
+      `eip155:1/erc20:${mainnetToken.address}`,
+    );
+    expect(
+      screen.getByText(messages.securityTrustMalicious.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders no trust badge on a search result with no security data', () => {
+    const usdcAssetId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    expect(screen.queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('shows a search result as ON when TokensController already holds the imported address (no balance yet)', () => {

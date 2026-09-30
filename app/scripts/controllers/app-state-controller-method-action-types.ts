@@ -65,6 +65,16 @@ export type AppStateControllerSetPasskeyAutoUnlockSuppressedAction = {
   handler: AppStateController['setPasskeyAutoUnlockSuppressed'];
 };
 
+/**
+ * Records when the legacy passkey PRF migration reminder was last shown.
+ *
+ * @param lastShown - Timestamp when the reminder was shown.
+ */
+export type AppStateControllerSetLastShownPrfMigrationReminderAtAction = {
+  type: `AppStateController:setLastShownPrfMigrationReminderAt`;
+  handler: AppStateController['setLastShownPrfMigrationReminderAt'];
+};
+
 export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
   type: `AppStateController:setNewPrivacyPolicyToastClickedOrClosed`;
   handler: AppStateController['setNewPrivacyPolicyToastClickedOrClosed'];
@@ -73,6 +83,11 @@ export type AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction = {
 export type AppStateControllerSetNewPrivacyPolicyToastShownDateAction = {
   type: `AppStateController:setNewPrivacyPolicyToastShownDate`;
   handler: AppStateController['setNewPrivacyPolicyToastShownDate'];
+};
+
+export type AppStateControllerSetArcUsageNoticeShownAction = {
+  type: `AppStateController:setArcUsageNoticeShown`;
+  handler: AppStateController['setArcUsageNoticeShown'];
 };
 
 export type AppStateControllerSetPna25AcknowledgedAction = {
@@ -387,6 +402,16 @@ export type AppStateControllerSetLastInteractedConfirmationInfoAction = {
 };
 
 /**
+ * Sets the entry point that initiated the last Perps deposit flow.
+ *
+ * @param entryPoint - The entry point identifier, or undefined to clear.
+ */
+export type AppStateControllerSetLastPerpsDepositEntryPointAction = {
+  type: `AppStateController:setLastPerpsDepositEntryPoint`;
+  handler: AppStateController['setLastPerpsDepositEntryPoint'];
+};
+
+/**
  * A getter to retrieve currentPopupId saved in the appState
  */
 export type AppStateControllerGetCurrentPopupIdAction = {
@@ -494,11 +519,6 @@ export type AppStateControllerSetPendingShieldCohortAction = {
   handler: AppStateController['setPendingShieldCohort'];
 };
 
-export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
-  type: `AppStateController:setCanTrackWalletFundsObtained`;
-  handler: AppStateController['setCanTrackWalletFundsObtained'];
-};
-
 export type AppStateControllerSetIsWalletResetInProgressAction = {
   type: `AppStateController:setIsWalletResetInProgress`;
   handler: AppStateController['setIsWalletResetInProgress'];
@@ -578,8 +598,10 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetOnboardingDateAction
   | AppStateControllerSetLastViewedUserSurveyAction
   | AppStateControllerSetPasskeyAutoUnlockSuppressedAction
+  | AppStateControllerSetLastShownPrfMigrationReminderAtAction
   | AppStateControllerSetNewPrivacyPolicyToastClickedOrClosedAction
   | AppStateControllerSetNewPrivacyPolicyToastShownDateAction
+  | AppStateControllerSetArcUsageNoticeShownAction
   | AppStateControllerSetPna25AcknowledgedAction
   | AppStateControllerSetShieldPausedToastLastClickedOrClosedAction
   | AppStateControllerSetShieldEndingToastLastClickedOrClosedAction
@@ -613,6 +635,7 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetCurrentPopupIdAction
   | AppStateControllerGetLastInteractedConfirmationInfoAction
   | AppStateControllerSetLastInteractedConfirmationInfoAction
+  | AppStateControllerSetLastPerpsDepositEntryPointAction
   | AppStateControllerGetCurrentPopupIdAction
   | AppStateControllerGetThrottledOriginStateAction
   | AppStateControllerUpdateThrottledOriginStateAction
@@ -625,7 +648,6 @@ export type AppStateControllerMethodActions =
   | AppStateControllerSetPendingRedirectRouteAction
   | AppStateControllerSetLastVisitedRouteAction
   | AppStateControllerSetPendingShieldCohortAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction
   | AppStateControllerSetIsWalletResetInProgressAction
   | AppStateControllerGetIsWalletResetInProgressAction
   | AppStateControllerSetDefaultSubscriptionPaymentOptionsAction

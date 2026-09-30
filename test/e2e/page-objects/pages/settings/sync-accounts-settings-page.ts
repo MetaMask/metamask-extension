@@ -32,7 +32,7 @@ class SyncAccountsSettingsPage {
 
   private readonly otpFirstInput = '[data-testid="qr-sync-otp-input-0"]';
 
-  private readonly page = '[data-testid="sync-accounts-page"]';
+  private readonly page = '[data-testid="parent-selector-sync-accounts-page"]';
 
   private readonly passwordContinue =
     '[data-testid="qr-sync-password-continue"]';
