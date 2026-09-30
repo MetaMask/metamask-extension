@@ -308,6 +308,13 @@
       "globals": {
         "PushManager": true
       }
+    },
+    "@metamask/design-system-react>@floating-ui/react-dom>@floating-ui/dom>@floating-ui/utils": {
+      "globals": {
+        "frameElement": true,
+        "parent": true,
+        "visualViewport": true
+      }
     }
   }
 }
