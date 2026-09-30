@@ -37,6 +37,10 @@ export async function measureStepWithLongTasks(
     longTaskTotalDuration: longTaskData?.totalDuration ?? 0,
     longTaskMaxDuration: longTaskData?.maxDuration ?? 0,
     tbt: longTaskData?.tbt ?? 0,
+    // `?? false` covers the hook being absent entirely; `observed` covers the
+    // hook being present while `observe({ type: 'longtask' })` was rejected.
+    // Both are absences and neither is a zero.
+    longTasksObserved: longTaskData?.observed ?? false,
   };
 }
 
@@ -52,6 +56,14 @@ export async function measureStepWithLongTasks(
 export function buildLongTaskTimerResults(
   steps: LongTaskStepResult[],
 ): TimerResult[] {
+  // Absent, not zero. Where no step had the observer attached, these four
+  // metrics are omitted from the artifact rather than reported as zeros, so a
+  // reader and V13 see a metric that does not apply on this browser instead of
+  // a quiet main thread. This is how `cls` already behaves where it is absent.
+  if (steps.length > 0 && !steps.some((step) => step.longTasksObserved)) {
+    return [];
+  }
+
   let totalCount = 0;
   let totalDuration = 0;
   let maxDuration = 0;
