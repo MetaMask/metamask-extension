@@ -50,7 +50,6 @@ import {
   TraceName,
   TraceOperation,
 } from '../../../../shared/lib/trace';
-import { MINUTE } from '../../../../shared/constants/time';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { PasskeyVerification } from '../../app/passkey-verification';
 import { useDispatch } from '../../../store/hooks';
@@ -93,6 +92,9 @@ const MultichainPrivateKeyList = ({
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
   const [reveal, setReveal] = useState<boolean>(false);
   const [privateKeys, setPrivateKeys] = useState<Record<string, string>>({});
+  const [copiedPrivateKeyRow, setCopiedPrivateKeyRow] = useState<string | null>(
+    null,
+  );
 
   const isPasskeyActive = useIsPasskeyActive();
   const isPasskeyIncompatibleInSidepanel =
@@ -106,6 +108,7 @@ const MultichainPrivateKeyList = ({
 
   const cleanStateVariables = useCallback(() => {
     setPrivateKeys({});
+    setCopiedPrivateKeyRow(null);
     setPassword('');
     setWrongPassword(false);
     setReveal(false);
@@ -121,7 +124,9 @@ const MultichainPrivateKeyList = ({
   );
 
   // useCopyToClipboard analysis: Copies one of your private keys
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: MINUTE });
+  const [, handleCopy, , sensitiveClipboard] = useCopyToClipboard({
+    sensitive: true,
+  });
 
   const accounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, groupId),
@@ -427,8 +432,13 @@ const MultichainPrivateKeyList = ({
   );
 
   const handlePrivateKeyCopy = useCallback(
-    (privateKey: string) => {
-      handleCopy(privateKey);
+    async (privateKey: string, rowId: string) => {
+      const copied = await handleCopy(privateKey);
+      if (!copied) {
+        return false;
+      }
+
+      setCopiedPrivateKeyRow(rowId);
       trackEvent(
         createEventBuilder(MetaMetricsEventName.KeyExportCopied)
           .addCategory(MetaMetricsEventCategory.Keys)
@@ -442,6 +452,8 @@ const MultichainPrivateKeyList = ({
           })
           .build(),
       );
+
+      return true;
     },
     [createEventBuilder, handleCopy, hdEntropyIndex, trackEvent],
   );
@@ -449,18 +461,34 @@ const MultichainPrivateKeyList = ({
   const renderedRows = useMemo(
     () =>
       privateKeySections.map(
-        ({ account, chainId, networkName, privateKey }) => (
-          <MultichainPrivateKeyRow
-            key={account.id}
-            address={account.address}
-            chainId={chainId}
-            networkName={networkName}
-            onCopy={() => handlePrivateKeyCopy(privateKey)}
-            privateKey={privateKey}
-          />
-        ),
+        ({ account, chainId, networkName, privateKey }) => {
+          const rowId = `${account.address}-${chainId}`;
+
+          return (
+            <MultichainPrivateKeyRow
+              key={account.id}
+              address={account.address}
+              chainId={chainId}
+              networkName={networkName}
+              onCopy={() => handlePrivateKeyCopy(privateKey, rowId)}
+              onClearClipboard={sensitiveClipboard.clear}
+              privateKey={privateKey}
+              sensitiveClipboardState={
+                copiedPrivateKeyRow === rowId
+                  ? sensitiveClipboard.state
+                  : 'idle'
+              }
+            />
+          );
+        },
       ),
-    [handlePrivateKeyCopy, privateKeySections],
+    [
+      copiedPrivateKeyRow,
+      handlePrivateKeyCopy,
+      privateKeySections,
+      sensitiveClipboard.clear,
+      sensitiveClipboard.state,
+    ],
   );
 
   useEffect(() => {

@@ -1,3 +1,9 @@
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import { ConnectionStatus } from '../../contexts/hardware-wallets';
 import {
   HardwareWalletSignatureEvent,
@@ -134,6 +140,32 @@ describe('useHwSwapConnectionMonitoring', () => {
     expect(mockDispatchSignatureEvent).toHaveBeenCalledWith({
       type: HardwareWalletSignatureEvent.DeviceDisconnected,
     });
+  });
+
+  it('does not dispatch when error code is DeviceStateEthAppClosed', () => {
+    const error = new HardwareWalletError('Ethereum app is not open', {
+      code: ErrorCode.DeviceStateEthAppClosed,
+      severity: Severity.Err,
+      category: Category.DeviceState,
+      userMessage: 'Ethereum app is not open',
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.ErrorState, error },
+    });
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue(null);
+
+    renderHookWithProvider(
+      () =>
+        useHwSwapConnectionMonitoring({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          dispatchSignatureEvent: mockDispatchSignatureEvent,
+        }),
+      {},
+    );
+
+    expect(mockDispatchSignatureEvent).not.toHaveBeenCalled();
   });
 
   it('dispatches TransactionRejected when user rejected error', () => {
