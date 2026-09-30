@@ -77,6 +77,42 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 }
 
 /**
+ * An entry that produced no statistics, and why.
+ */
+export type AbsentMeasurement = {
+  entryName: string;
+  file: string;
+  reason: string;
+};
+
+/**
+ * Whether a benchmark entry failed to produce a measurement, and why.
+ *
+ * Two shapes reach here. A flow that threw is serialized as `{ error }` with no
+ * statistics at all; a flow that ran but emitted nothing usable has the keys and
+ * no `p75`/`p95`. Both are absences, and neither may pass.
+ *
+ * @param entryName - the benchmark key inside the artifact.
+ * @param file - the artifact filename, for the report.
+ * @param results - the entry as parsed from the artifact.
+ * @returns the absence, or `undefined` when the entry carries statistics.
+ */
+function absentMeasurement(
+  entryName: string,
+  file: string,
+  results: BenchmarkResults,
+): AbsentMeasurement | undefined {
+  const errored = results as unknown as { error?: unknown };
+  if (errored.error !== undefined) {
+    return { entryName, file, reason: String(errored.error) };
+  }
+  if (!results.p75 || !results.p95) {
+    return { entryName, file, reason: 'no p75/p95 in the artifact' };
+  }
+  return undefined;
+}
+
+/**
  * Runs comparison for all loaded benchmarks.
  *
  * @param benchmarks - Loaded benchmark files.
@@ -85,18 +121,29 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
-): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
+): {
+  comparisons: BenchmarkEntryComparison[];
+  absent: AbsentMeasurement[];
+  anyFailed: boolean;
+} {
   const comparisons: BenchmarkEntryComparison[] = [];
+  const absent: AbsentMeasurement[] = [];
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
     const parsed = parseArtifactName(name);
 
     for (const [entryName, results] of Object.entries(data)) {
-      if (!results.p75 || !results.p95) {
-        console.warn(
-          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
-        );
+      // A flow that throws writes `{ error }` where its statistics belong. Skipping
+      // that entry is what let six benchmarks report no measurement while the gate
+      // printed PASS beside them (extension#46664): once an entry leaves the loop it
+      // is absent from `comparisons`, so it cannot fail, and it also leaves the
+      // `Total: N benchmarks` denominator, so the count shrinks without a reader
+      // seeing it. An absent measurement is not a passing one.
+      const failure = absentMeasurement(entryName, name, results);
+      if (failure) {
+        absent.push(failure);
+        anyFailed = true;
         continue;
       }
 
@@ -143,7 +190,7 @@ export function runComparison(
     }
   }
 
-  return { comparisons, anyFailed };
+  return { comparisons, absent, anyFailed };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -313,6 +360,7 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
+  absent: AbsentMeasurement[];
   anyFailed: boolean;
 }): void {
   console.log('\n═══════════════════════════════════════');
@@ -378,15 +426,28 @@ export function printReport(result: {
     }
   }
 
+  // Absences are printed before the counts, because a reader who sees the totals
+  // first reads a shrunken denominator as a smaller suite rather than as a gap.
+  for (const { entryName, file, reason } of result.absent) {
+    console.log(`\nNO MEASUREMENT  ${entryName}  (${file})`);
+    console.log(`      ${reason}`);
+  }
+
   const failCount = failed.length;
   const warnCount = warned.length;
+  const absentCount = result.absent.length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
-    `Total: ${result.comparisons.length} benchmarks | ${failCount} failed | ${warnCount} warnings`,
+    `Total: ${result.comparisons.length + absentCount} benchmarks | ` +
+      `${failCount} failed | ${warnCount} warnings | ${absentCount} produced no measurement`,
   );
 
-  if (result.anyFailed) {
+  if (absentCount > 0) {
+    console.log(
+      `\nRESULT: FAIL — ${absentCount} benchmark(s) produced no measurement`,
+    );
+  } else if (result.anyFailed) {
     console.log(
       '\nRESULT: FAIL — at least one benchmark exceeds constant fail limit',
     );

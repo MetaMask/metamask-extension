@@ -67,6 +67,75 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons.length).toBeGreaterThan(0);
     });
 
+    // extension#46664: six benchmarks emitted `{ error }` in place of their
+    // statistics, the loop skipped them, and the gate printed PASS. An absence
+    // is not a pass, and it must not leave the denominator either.
+    it('fails when an entry carries an error instead of statistics', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-userJourneyAssets',
+          data: {
+            assetDetails: {
+              error: 'This script should only be loaded in a browser extension.',
+            } as unknown as BenchmarkResults,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+
+      expect(result.anyFailed).toBe(true);
+      expect(result.absent).toStrictEqual([
+        {
+          entryName: 'assetDetails',
+          file: 'benchmark-chrome-webpack-userJourneyAssets',
+          reason: 'This script should only be loaded in a browser extension.',
+        },
+      ]);
+      expect(result.comparisons).toStrictEqual([]);
+    });
+
+    it('fails when an entry has no p75/p95 rather than skipping it', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-firefox-webpack-userJourneyAccountManagement',
+          data: {
+            importSrpHome: {
+              testTitle: 'importSrpHome',
+              mean: { showAccountList: 80 },
+            } as unknown as BenchmarkResults,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+
+      expect(result.anyFailed).toBe(true);
+      expect(result.absent).toHaveLength(1);
+      expect(result.absent[0].reason).toBe('no p75/p95 in the artifact');
+    });
+
+    it('an absent entry stays in the reported total', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-webpack-userJourneyAssets',
+          data: {
+            assetDetails: { error: 'threw' } as unknown as BenchmarkResults,
+            solanaAssetDetails: makeBenchmarkResults('assetDetails', {
+              p75: { assetDetails: 200 },
+              p95: { assetDetails: 260 },
+              mean: { assetDetails: 180 },
+            }),
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+
+      expect(result.comparisons.length + result.absent.length).toBe(2);
+      expect(result.anyFailed).toBe(true);
+    });
+
     it('sets source from artifact filename', () => {
       const benchmarks = [
         {
@@ -405,7 +474,11 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons).toHaveLength(0);
     });
 
-    it('skips entries from failed benchmark runs (missing p75/p95)', () => {
+    // This previously asserted the entry was SKIPPED with a warning, which is the
+    // behaviour extension#46664 reports: a crashed benchmark left the comparison
+    // set, so it could not fail and the gate printed PASS. The contract is now the
+    // opposite.
+    it('fails entries from crashed benchmark runs rather than skipping them', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
@@ -417,9 +490,14 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
-      expect(console.warn).toHaveBeenCalledWith(
-        expect.stringContaining('missing p75/p95'),
-      );
+      expect(result.anyFailed).toBe(true);
+      expect(result.absent).toStrictEqual([
+        {
+          entryName: 'startupStandardHome',
+          file: 'benchmark-chrome-webpack-startupStandardHome',
+          reason: 'Browser crashed',
+        },
+      ]);
     });
   });
 });
@@ -489,7 +567,7 @@ describe('printReport', () => {
   });
 
   it('prints PASS result when no comparison failed', () => {
-    printReport({ comparisons: [], anyFailed: false });
+    printReport({ comparisons: [], absent: [], anyFailed: false });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('PASS — all benchmarks within constant limits'),
@@ -498,6 +576,7 @@ describe('printReport', () => {
 
   it('prints FAIL result when anyFailed is true', () => {
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -514,6 +593,7 @@ describe('printReport', () => {
 
   it('shows passing comparison in grouped PASS section', () => {
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -532,6 +612,7 @@ describe('printReport', () => {
 
   it('shows failing comparison with source label and FAIL prefix', () => {
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -548,6 +629,7 @@ describe('printReport', () => {
 
   it('groups passing entries without baseline into PASS section', () => {
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
       ],
@@ -563,6 +645,7 @@ describe('printReport', () => {
       './comparison-utils',
     ) as typeof import('./comparison-utils');
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -598,6 +681,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -628,6 +712,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
         makeComparison({
@@ -656,6 +741,7 @@ describe('printReport', () => {
 
   it('groups multiple sources for the same benchmark name in PASS section', () => {
     printReport({
+      absent: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'startupStandardHome',
