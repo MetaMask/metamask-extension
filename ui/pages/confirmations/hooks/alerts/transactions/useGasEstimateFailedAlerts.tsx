@@ -7,7 +7,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import {
   AlertActionKey,
@@ -16,29 +15,16 @@ import {
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  hasMonadReserveBalanceRule,
-  simulationIndicatesMonadReserveBalanceViolation,
-} from '../../../../../../shared/lib/monad-reserve-balance';
 import { RevertReason } from '../../../components/revert-reason/revert-reason';
-import { useConfirmContext } from '../../../context/confirm';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
 import { useIsGasSponsored } from '../../gas/useIsGasSponsored';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const estimationFailed = useEstimationFailed();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, simulationData, simulationFails } =
-    currentConfirmation ?? {};
-
   const isGasSponsored = useIsGasSponsored();
-  const isMonadReserveViolation =
-    hasMonadReserveBalanceRule(chainId) &&
-    simulationIndicatesMonadReserveBalanceViolation({
-      simulationData,
-      simulationFails,
-    });
+  const isMonadReserveViolation = useIsMonadReserveViolation();
 
   return useMemo(() => {
     // Prefer the specific Monad reserve alert over a generic estimate-failed warning.
