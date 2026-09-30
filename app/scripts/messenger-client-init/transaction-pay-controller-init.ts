@@ -159,10 +159,7 @@ function getApi(
         }
       });
     },
-    setTransactionPayAtomic: (
-      transactionId: string,
-      isAllowed: boolean,
-    ) => {
+    setTransactionPayAtomic: (transactionId: string, isAllowed: boolean) => {
       messengerClient.setTransactionConfig(transactionId, (config) => {
         if (config.isMaxAmount) {
           config.atomic = isAllowed ? undefined : false;
