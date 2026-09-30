@@ -2,8 +2,7 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
-import { setEnvironmentVariables } from '../../build/set-environment-variables';
-import type { Variables } from '../../lib/variables';
+import { setEnvironmentVariables } from '../../build/set-environment-variables.js';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
@@ -131,7 +130,7 @@ export function getVariables(
       getMaybe(key: string): unknown {
         return variables.get(key);
       },
-    } as Variables,
+    },
   });
 
   // variables that are used in the webpack build's entry points. Our runtime

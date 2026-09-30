@@ -102,6 +102,11 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
+# Emitted by `tsc -p development/build/tsconfig.build.json` (see webpack:tsc)
+development/build/constants.js
+development/build/constants.d.ts
+development/build/set-environment-variables.js
+development/build/set-environment-variables.d.ts
 # Emitted by `tsc -p development/lib/tsconfig.json` (see webpack:tsc)
 development/lib/build-type.js
 development/lib/build-type.d.ts

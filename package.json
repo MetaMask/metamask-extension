@@ -26,7 +26,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "webpack:tsc": "tsc -p ./development/webpack/tsconfig.webpack.json",
+    "webpack:tsc": "tsc -p ./development/build/tsconfig.build.json && tsc -p ./development/webpack/tsconfig.webpack.json",
     "webpack:lavamoat": "NODE_OPTIONS=\"--no-deprecation --max-old-space-size=${WEBPACK_LAVAMOAT_HEAP:-8192}\" lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --mode production --no-cache",
     "webpack:lavamoat:build:mv2": "yarn webpack:lavamoat:build --browser firefox -v 2",
@@ -611,6 +611,7 @@
     "@babel/preset-react": "^7.25.9",
     "@babel/preset-typescript": "^7.25.9",
     "@babel/register": "^7.25.9",
+    "@babel/types": "7.29.7",
     "@google/genai": "^1.0.0",
     "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^5.0.1",
