@@ -5155,7 +5155,6 @@
       "globals": {
         "AbortController": true,
         "Blob": true,
-        "Buffer": true,
         "FormData": true,
         "ReadableStream": true,
         "URL": true,
@@ -5176,7 +5175,6 @@
         "setTimeout": true
       },
       "packages": {
-        "buffer": true,
         "core-js-pure": true,
         "process": true
       }
