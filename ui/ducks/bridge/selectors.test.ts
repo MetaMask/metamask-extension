@@ -14,6 +14,7 @@ import {
   toQuoteResponseV2,
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
+import type { CaipAssetType } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { setGlobalDevModeChecks } from 'reselect';
@@ -3197,7 +3198,7 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientNativeReserve=true on Arc ERC20 USDC when source amount leaves less than the reserve', () => {
       const arcErc20Usdc = {
-        assetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`,
+        assetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}` as CaipAssetType,
         address: ARC_USDC_TOKEN_ADDRESS,
         chainId: formatChainIdToCaip(CHAIN_IDS.ARC),
         decimals: 6,
