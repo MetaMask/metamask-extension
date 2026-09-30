@@ -2219,9 +2219,6 @@
   "bridgeLowestCost": {
     "message": "최저 비용"
   },
-  "bridgeMalicious": {
-    "message": "악성"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "악성 토큰"
   },
@@ -2501,9 +2498,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "먼저 Stellar에서 $1 활성화",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "의심됨"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "의심스러운 토큰"

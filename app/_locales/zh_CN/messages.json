@@ -2219,9 +2219,6 @@
   "bridgeLowestCost": {
     "message": "最低成本"
   },
-  "bridgeMalicious": {
-    "message": "恶意"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "恶意代币"
   },
@@ -2501,9 +2498,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "请先在 Stellar 上激活 $1",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "可疑"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "可疑代币"

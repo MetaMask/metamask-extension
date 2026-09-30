@@ -2219,9 +2219,6 @@
   "bridgeLowestCost": {
     "message": "Самая низкая стоимость"
   },
-  "bridgeMalicious": {
-    "message": "Вредоносный"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Вредоносный токен"
   },
@@ -2501,9 +2498,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Сначала активируйте $1 в сети Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Подозрительный"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Подозрительный токен"

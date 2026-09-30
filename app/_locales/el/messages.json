@@ -2219,9 +2219,6 @@
   "bridgeLowestCost": {
     "message": "Χαμηλότερο κόστος"
   },
-  "bridgeMalicious": {
-    "message": "Κακόβουλο"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Κακόβουλο token"
   },
@@ -2501,9 +2498,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Ενεργοποιήστε πρώτα τα $1 στο δίκτυο Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Ύποπτο"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Ύποπτο token"
