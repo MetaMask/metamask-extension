@@ -1,5 +1,6 @@
 import { BaseUrl } from '../../constants/urls';
-import type { Route, Destination } from './routes/route';
+import type { Destination } from './routes/route';
+import type { ParsedDeepLink } from './parse';
 import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './constants';
 
 /**
@@ -23,22 +24,15 @@ export function getBuyPortfolioRedirectDestination(query: URLSearchParams): {
  * redirect. Interstitial policy is unaffected: signature verification and
  * interstitial decisions happen before the destination is resolved.
  *
- * @param options - The parsed deep link and the unified buy flag state.
- * @param options.route
- * @param options.destination
- * @param options.isUnifiedBuyEnabled
+ * @param parsed - The parsed deep link (only its route and destination are used).
+ * @param isUnifiedBuyEnabled - Whether the unified buy (native in-app buy)
+ * feature is enabled.
  * @returns The destination to navigate to.
  */
-export function resolveBuyDeepLinkDestination({
-  route,
-  destination,
-  isUnifiedBuyEnabled,
-}: {
-  route: Pick<Route, 'pathname'>;
-  destination: Destination;
-  /** Whether the unified buy (native in-app buy) feature is enabled. */
-  isUnifiedBuyEnabled: boolean;
-}): Destination {
+export function resolveBuyDeepLinkDestination(
+  { route, destination }: Pick<ParsedDeepLink, 'route' | 'destination'>,
+  isUnifiedBuyEnabled: boolean,
+): Destination {
   if (
     !isUnifiedBuyEnabled ||
     route.pathname !== '/buy' ||

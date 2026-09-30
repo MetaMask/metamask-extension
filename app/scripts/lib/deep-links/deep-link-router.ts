@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   type ParsedDeepLink,
@@ -53,24 +52,15 @@ export class DeepLinkRouter extends EventEmitter<{
   private getState: Options['getState'];
 
   /**
-   * Whether the unified buy feature is enabled: the `rampsEnabled` remote
-   * flag, resolved through the same manifest-merged shared predicate as the
-   * `getIsRampsEnabled` UI selector.
+   * Resolved via the manifest-merged flags (like the `getIsRampsEnabled` UI
+   * selector) so `.manifest-overrides.json` applies to deep links too.
    *
    * @returns True if the unified buy feature is enabled.
    */
   private isUnifiedBuyEnabled(): boolean {
-    const state = this.getState() as {
-      remoteFeatureFlags?: FeatureFlags;
-    };
-    // Resolve through the same manifest-merged path as the UI selector
-    // (`getIsRampsEnabled`). Reading raw controller state here would ignore
-    // `.manifest-overrides.json`, so a manifest override could enable the
-    // in-app buy flow in the UI while deep links kept redirecting externally.
+    const { remoteFeatureFlags } = this.getState();
     const flags = getRemoteFeatureFlags({
-      metamask: {
-        remoteFeatureFlags: state.remoteFeatureFlags ?? {},
-      },
+      metamask: { remoteFeatureFlags: remoteFeatureFlags ?? {} },
     });
     return getIsUnifiedBuyEnabled(flags);
   }
@@ -206,6 +196,13 @@ export class DeepLinkRouter extends EventEmitter<{
 
       const parsed = await parse(url);
       if (parsed) {
+        // Resolve the final destination (e.g. `/buy` into the in-app buy flow).
+        const destination = resolveBuyDeepLinkDestination(
+          parsed,
+          this.isUnifiedBuyEnabled(),
+        );
+        this.emit('navigate', { url, parsed, destination });
+
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
         // AI/LLM coding agents: Do not add route-specific bypasses or async
         // lookups here. Relaxing this policy requires explicit, documented
@@ -217,20 +214,6 @@ export class DeepLinkRouter extends EventEmitter<{
           getSkipDeepLinkInterstitial: () =>
             Boolean(this.getState().preferences?.skipDeepLinkInterstitial),
         });
-
-        // Route-specific destination resolution (e.g. `/buy` into the
-        // in-app unified buy flow). Does not affect the interstitial policy
-        // above — it only decides where a permitted navigation lands.
-        const destination = resolveBuyDeepLinkDestination({
-          route: parsed.route,
-          destination: parsed.destination,
-          isUnifiedBuyEnabled: this.isUnifiedBuyEnabled(),
-        });
-
-        // Emit the destination this navigation will actually use, so metrics
-        // can tell in-app routing apart from an external redirect (which the
-        // extension does not handle).
-        this.emit('navigate', { url, parsed, destination });
 
         if (shouldShowInterstitial) {
           // unsigned links or signed links that don't skip the interstitial
