@@ -9,7 +9,10 @@ class RampsTokenSelectionPage {
   private driver: Driver;
 
   // Private selector properties (sorted alphabetically)
-  private readonly rampsTokenSelectionHashPath = '/ramps/token-selection';
+  private readonly rampsTokenSelectionBackButton =
+    '[data-testid="ramps-token-selection-back"]';
+
+  private readonly rampsTokenSelectionHashPath = '#/ramps/token-selection';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -17,13 +20,10 @@ class RampsTokenSelectionPage {
 
   // Public methods (sorted alphabetically)
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitUntil(
-      async () => {
-        const url = await this.driver.getCurrentUrl();
-        return new URL(url).hash.includes(this.rampsTokenSelectionHashPath);
-      },
-      { timeout: 15000, interval: 500 },
-    );
+    await this.driver.waitForUrlContaining({
+      url: this.rampsTokenSelectionHashPath,
+    });
+    await this.driver.waitForSelector(this.rampsTokenSelectionBackButton);
   }
 }
 

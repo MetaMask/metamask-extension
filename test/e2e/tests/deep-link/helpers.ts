@@ -315,9 +315,10 @@ export const REDIRECT_ROUTES = [
 ] as const;
 
 /**
- * Mocks the ramps catalog endpoints (region token and provider lists) with
- * empty results, so the buy flow's eligibility gate shows its unsupported
- * modal deterministically and no unmocked pass-through requests occur.
+ * Mocks the ramps catalog endpoints (countries, region tokens, providers and
+ * payment methods) with a populated US-TX catalog containing only DAI, so the
+ * `/buy` deep link can pre-select its token deterministically and no unmocked
+ * pass-through requests occur.
  * @param server - The Mockttp server instance.
  */
 export const mockRampsCatalog = async (server: Mockttp): Promise<void> => {
@@ -325,6 +326,7 @@ export const mockRampsCatalog = async (server: Mockttp): Promise<void> => {
   const hosts = [
     'on-ramp-cache.api.cx.metamask.io',
     'on-ramp-cache.uat-api.cx.metamask.io',
+    'on-ramp.dev-api.cx.metamask.io',
   ];
 
   // Overrides the empty countries list mocked globally in mock-e2e.js, so
