@@ -483,10 +483,10 @@ export function removeUrlsFromBreadCrumb(
   if (typeof data?.from === 'string') {
     data.from = hideUrlIfNotInternal(data.from);
   }
-  // Sanitize any account addresses or balance amounts that may appear in the
-  // breadcrumb message or remaining data values.
+  // Sanitize any account addresses that may appear in the breadcrumb message or
+  // remaining data values.
   if (typeof breadcrumb.message === 'string') {
-    breadcrumb.message = sanitizeSensitiveDataFromString(breadcrumb.message);
+    breadcrumb.message = sanitizeAddressesFromString(breadcrumb.message);
   }
   if (data) {
     breadcrumb.data = sanitizeAddressesFromObject(data);
@@ -636,57 +636,45 @@ function sanitizeUrlsFromErrorMessages(report: SentryReport): void {
 }
 
 /**
- * Receives a Sentry event object and modifies it so that account addresses and
- * balance amounts are removed from any of its error messages.
+ * Receives a Sentry event object and modifies it so that ethereum addresses are removed from
+ * any of its error messages.
  *
  * @param report - the report to modify
  */
 function sanitizeAddressesFromErrorMessages(report: SentryReport): void {
   rewriteErrorMessages(report, (errorMessage) =>
-    sanitizeSensitiveDataFromString(errorMessage),
+    sanitizeAddressesFromString(errorMessage),
   );
 }
 
-// Patterns for sanitizing sensitive data before sending events to Sentry.
+// Patterns for sanitizing account addresses before sending events to Sentry.
 // EVM is handled separately so it can keep its `0x**` replacement form.
 const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
-const SENSITIVE_DATA_REGEXES: [RegExp, string][] = [
+const NON_EVM_ADDRESS_REGEXES = [
   // Tron (base58, starts with `T`, 34 chars total)
-  [/\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu, '**'],
+  /\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu,
   // Stellar / XLM (starts with `G`, 56 chars total)
-  [/\bG[A-Z2-7]{55}\b/gu, '**'],
+  /\bG[A-Z2-7]{55}\b/gu,
   // Bitcoin bech32 / taproot (`bc1...`)
-  [/\bbc1[02-9ac-hj-np-z]{6,87}\b/gu, '**'],
+  /\bbc1[02-9ac-hj-np-z]{6,87}\b/gu,
   // Bitcoin legacy P2PKH / P2SH (base58, starts with `1` or `3`)
-  [/\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu, '**'],
-  // Solana (base58, 32-44 chars). Kept last among addresses as its range
-  // overlaps the others.
-  [/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu, '**'],
-  // Money account balance validation errors (from
-  // `@metamask/money-account-balance-service`) interpolate raw balance amounts,
-  // which can be used to identify an account. These match exact wording: the
-  // address patterns above exclude `0` and do not catch amounts.
-  // TODO: remove once @metamask/money-account-balance-service stops
-  // interpolating amounts.
-  [
-    /(Invalid balance invariant: totalBalance \()[^)\n]*(\) must equal musdBalance \()[^)\n]*(\) \+ vmusdValueInMusd \()[^)\n]*(\))/gu,
-    '$1**$2**$3**$4',
-  ],
-  [/(: expected a non-negative integer string, got ')[^\n]*(')/gu, '$1**$2'],
+  /\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu,
+  // Solana (base58, 32-44 chars). Kept last as its range overlaps the others.
+  /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu,
 ];
 
 /**
- * Sanitizes account addresses and Money balance amounts from a string.
+ * Sanitizes EVM and non-EVM account addresses from a string.
  *
- * @param text - The string to sanitize.
- * @returns The sanitized string.
+ * @param text - The string to sanitize addresses from.
+ * @returns The string with any addresses replaced by a mask.
  */
-function sanitizeSensitiveDataFromString(text: string): string {
+function sanitizeAddressesFromString(text: string): string {
   // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
   // the base58 patterns below.
   let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
-  for (const [regex, replacement] of SENSITIVE_DATA_REGEXES) {
-    sanitized = sanitized.replace(regex, replacement);
+  for (const regex of NON_EVM_ADDRESS_REGEXES) {
+    sanitized = sanitized.replace(regex, '**');
   }
   return sanitized;
 }
@@ -709,7 +697,7 @@ function sanitizeAddressesFromObject<Value>(
   seen: WeakMap<object, unknown> = new WeakMap(),
 ): Value {
   if (typeof value === 'string') {
-    return sanitizeSensitiveDataFromString(value) as Value;
+    return sanitizeAddressesFromString(value) as Value;
   }
   // Leave primitives (and null) untouched.
   if (value === null || typeof value !== 'object') {
@@ -741,10 +729,10 @@ function sanitizeAddressesFromObject<Value>(
   // error. Copy them across explicitly, sanitized.
   if (value instanceof Error) {
     if (typeof value.message === 'string') {
-      copy.message = sanitizeSensitiveDataFromString(value.message);
+      copy.message = sanitizeAddressesFromString(value.message);
     }
     if (typeof value.stack === 'string') {
-      copy.stack = sanitizeSensitiveDataFromString(value.stack);
+      copy.stack = sanitizeAddressesFromString(value.stack);
     }
     if (typeof value.name === 'string') {
       copy.name = value.name;

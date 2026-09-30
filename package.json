@@ -451,7 +451,7 @@
     "@metamask/mobile-wallet-protocol-core": "^0.4.0",
     "@metamask/mobile-wallet-protocol-dapp-client": "^0.3.0",
     "@metamask/money-account-api-data-service": "^2.1.0",
-    "@metamask/money-account-balance-service": "^3.1.1",
+    "@metamask/money-account-balance-service": "^3.1.2",
     "@metamask/money-account-controller": "^0.3.3",
     "@metamask/money-account-upgrade-controller": "^4.0.0",
     "@metamask/money-account-utils": "^1.2.0",
