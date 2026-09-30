@@ -18,9 +18,67 @@ describe('usePerpsTabExploreData', () => {
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      isLive: true,
+      areMarketsLive: jest.fn().mockReturnValue(true),
       error: null,
       refresh: jest.fn(),
     });
+  });
+
+  it('waits for live prices on the rendered preview instead of offscreen markets', () => {
+    const markets = [...mockCryptoMarkets, ...mockHip3Markets];
+    const liveSymbols = new Set(
+      markets
+        .slice(PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT)
+        .map((market) => market.symbol),
+    );
+    const areMarketsLive = jest.fn(
+      (rows: readonly PerpsMarketData[]) =>
+        rows.length > 0 && rows.every((row) => liveSymbols.has(row.symbol)),
+    );
+    const marketData = {
+      markets,
+      cryptoMarkets: mockCryptoMarkets,
+      hip3Markets: mockHip3Markets,
+      isInitialLoading: false,
+      isLive: true,
+      areMarketsLive,
+      error: null,
+      refresh: jest.fn(),
+    };
+    jest.mocked(usePerpsLiveMarketListData).mockReturnValue(marketData);
+    const { result, rerender } = renderHookWithProvider(
+      () => usePerpsTabExploreData(),
+      { metamask: { ...mockState.metamask } },
+    );
+
+    expect(result.current.isLive).toBe(false);
+    expect(areMarketsLive).toHaveBeenCalledWith(result.current.exploreMarkets);
+
+    result.current.exploreMarkets.forEach((market: PerpsMarketData) =>
+      liveSymbols.add(market.symbol),
+    );
+    jest.mocked(usePerpsLiveMarketListData).mockReturnValue({
+      ...marketData,
+      areMarketsLive: (rows) => areMarketsLive(rows),
+    });
+    rerender();
+
+    expect(result.current.isLive).toBe(true);
+  });
+
+  it('returns every live market unsliced so other sections can rank the same data', () => {
+    const { result } = renderHookWithProvider(() => usePerpsTabExploreData(), {
+      metamask: { ...mockState.metamask },
+    });
+
+    expect(result.current.allMarkets).toStrictEqual([
+      ...mockCryptoMarkets,
+      ...mockHip3Markets,
+    ]);
+    expect(result.current.allMarkets.length).toBeGreaterThan(
+      PERPS_CONSTANTS.EXPLORE_MARKETS_LIMIT,
+    );
   });
 
   it('returns explore preview markets and watchlist markets from the same live source', () => {
@@ -60,6 +118,8 @@ describe('usePerpsTabExploreData', () => {
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
       isInitialLoading: false,
+      isLive: true,
+      areMarketsLive: jest.fn().mockReturnValue(true),
       error: null,
       refresh: jest.fn(),
     });

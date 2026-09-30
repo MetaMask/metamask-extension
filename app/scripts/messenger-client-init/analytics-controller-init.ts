@@ -24,13 +24,14 @@ import { MessengerClientInitFunction } from './types';
  * @param request.persistedState - The persisted state to use for the
  * controller.
  * @param request.initMessenger
+ * @param request.extension - The webextension polyfill instance.
  * @returns The initialized controller.
  */
 export const AnalyticsControllerInit: MessengerClientInitFunction<
   AnalyticsController,
   AnalyticsControllerMessenger,
   AnalyticsControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
+> = ({ controllerMessenger, initMessenger, persistedState, extension }) => {
   const persisted = {
     ...persistedState.AnalyticsController,
   };
@@ -59,11 +60,13 @@ export const AnalyticsControllerInit: MessengerClientInitFunction<
     isEventQueuePersistenceEnabled: true,
     isPreConsentQueueEnabled: true,
     isGeolocationEnabled: true,
+    isEventFragmentsEnabled: true,
   });
   controller.init();
 
   configureAnalytics({
     messenger: initMessenger,
+    extension,
   });
 
   return { messengerClient: controller };

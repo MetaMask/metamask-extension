@@ -3,11 +3,13 @@ import {
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
   type InputPrimaryDenomination,
+  type MetaMetricsSwapsEventSource,
 } from '@metamask/bridge-controller';
+import type { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import type { ActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -47,18 +49,7 @@ export const submitBridgeTx = (
   inputPrimaryDenomination?: InputPrimaryDenomination,
 ) =>
   callBridgeStatusControllerMethod<
-    [
-      string,
-      QuoteResponse,
-      boolean,
-      RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
-      MetaMetricsSwapsEventSource,
-      undefined,
-      ActiveABTestAssignment[] | undefined,
-      string | null,
-      undefined,
-      InputPrimaryDenomination | undefined,
-    ]
+    Parameters<BridgeStatusController['submitTx']>
   >('submitTx', [
     accountAddress,
     quote,
@@ -70,6 +61,7 @@ export const submitBridgeTx = (
     tokenSecurityTypeDestination,
     undefined,
     inputPrimaryDenomination,
+    BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
   ]);
 
 /**
@@ -94,7 +86,14 @@ export const submitBridgeIntent = (params: {
   inputPrimaryDenomination?: InputPrimaryDenomination;
   quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
 }) =>
-  callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);
+  callBridgeStatusControllerMethod<
+    Parameters<BridgeStatusController['submitIntent']>
+  >('submitIntent', [
+    {
+      ...params,
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+    },
+  ]);
 
 /**
  * Submit a batch-sell trade through the bridge status controller. The
@@ -117,6 +116,11 @@ export const submitBatchSellTrade = (params: {
   quotesReceivedContext?: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived];
   tokenSecurityTypeDestination?: string | null;
 }) =>
-  callBridgeStatusControllerMethod<[typeof params]>('submitBatchSell', [
-    params,
+  callBridgeStatusControllerMethod<
+    Parameters<BridgeStatusController['submitBatchSell']>
+  >('submitBatchSell', [
+    {
+      ...params,
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
+    },
   ]);

@@ -11,3 +11,4 @@ export const IDENTITY_TEAM_SEED_PHRASE_2 =
   'accuse float glide matter spin column meadow drama scale program fish april';
 export const IDENTITY_TEAM_STORAGE_KEY_2 =
   '1df177749d2b6c8d734864edb5bc21b6d2a9ed935ac92314c9ea2ee3670edebe';
+export const USER_STORAGE_RAMPS_ORDERS_FEATURE = 'rampsOrders';

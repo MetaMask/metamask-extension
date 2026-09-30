@@ -228,7 +228,10 @@ const ConfirmAddSuggestedToken = () => {
                   </div>
                 </div>
                 <div className="confirm-add-suggested-token__balance">
-                  <TokenBalance token={asset} />
+                  <TokenBalance
+                    token={asset}
+                    data-testid="confirm-add-suggested-token-balance"
+                  />
                 </div>
               </div>
             );

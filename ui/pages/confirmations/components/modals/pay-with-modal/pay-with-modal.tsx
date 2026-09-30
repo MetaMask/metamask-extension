@@ -17,10 +17,8 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
-import {
-  clearPaymentOverride,
-  getAvailableTokens,
-} from '../../../utils/transaction-pay';
+import { getAvailableTokens } from '../../../utils/transaction-pay';
+import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
 import { Asset } from '../../send/asset';
 import { type Asset as AssetType } from '../../../types/send';
 import {
@@ -52,6 +50,7 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const blockedTokens = useTransactionPayBlockedTokens();
+  const clearOverride = useClearPaymentOverride();
   const [showOtherAssets, setShowOtherAssets] = useState(false);
 
   const confirmationType = getConfirmationTransactionType(currentConfirmation);
@@ -78,8 +77,11 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
     confirmationType === TransactionType.moneyAccountDeposit;
   const { renderNoFeeTag } = usePayWithNoFeeToken();
   const tagRenderers = useMemo(
-    () => (isMoneyAccountDeposit ? [renderNoFeeTag] : undefined),
-    [isMoneyAccountDeposit, renderNoFeeTag],
+    () =>
+      isMoneyAccountDeposit || isPostQuoteWithdraw
+        ? [renderNoFeeTag]
+        : undefined,
+    [isMoneyAccountDeposit, isPostQuoteWithdraw, renderNoFeeTag],
   );
 
   const handleClose = useCallback(() => {
@@ -161,13 +163,12 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         }
       }
 
-      if (currentConfirmation?.id) {
-        clearPaymentOverride(currentConfirmation.id);
-      }
+      clearOverride();
       setPayToken(tokenSelection);
       handleClose();
     },
     [
+      clearOverride,
       currentConfirmation,
       dispatch,
       handleClose,

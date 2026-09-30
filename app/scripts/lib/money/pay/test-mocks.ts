@@ -19,6 +19,20 @@ export const MONEY_ACCOUNT_ADDRESS_MOCK =
 
 export const NETWORK_CLIENT_ID_MOCK = 'monad-network-client';
 
+function createProviderMock(chainId: Hex = VAULT_CONFIG_MOCK.chainId) {
+  return {
+    request: jest.fn(async ({ method }: { method: string }) => {
+      if (method === 'eth_chainId') {
+        return chainId;
+      }
+      if (method === 'net_version') {
+        return String(parseInt(chainId, 16));
+      }
+      throw new Error(`Unexpected provider method: ${method}`);
+    }),
+  };
+}
+
 export type MessengerMockOptions = {
   /** Remote flags returned by `RemoteFeatureFlagController:getState`. */
   remoteFeatureFlags?: Record<string, unknown>;
@@ -39,6 +53,8 @@ export type MessengerMockOptions = {
 export function createMoneyPayMessengerMock(
   options: MessengerMockOptions = {},
 ) {
+  const provider = createProviderMock();
+
   const remoteFeatureFlags = options.remoteFeatureFlags ?? {
     moneyAccountVaultConfig: VAULT_CONFIG_MOCK,
   };
@@ -57,6 +73,7 @@ export function createMoneyPayMessengerMock(
       }
       return NETWORK_CLIENT_ID_MOCK;
     },
+    'NetworkController:getNetworkClientById': () => ({ provider }),
     ...options.handlers,
   };
 

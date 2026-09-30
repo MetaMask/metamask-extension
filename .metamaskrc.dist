@@ -25,6 +25,17 @@ PASSKEY_ENABLED='false'
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
 
+; Core backend REST API base URL overrides
+; Uses production API endpoints by default when unset
+;MM_BACKEND_ACCOUNTS_API_URL='https://accounts.api.cx.metamask.io'
+;MM_BACKEND_PRICES_API_URL='https://price.api.cx.metamask.io'
+;MM_BACKEND_TOKEN_API_URL='https://token.api.cx.metamask.io'
+;MM_BACKEND_TOKENS_API_URL='https://tokens.api.cx.metamask.io'
+; Set to `true` to stop sending the bearer token on core-backend REST requests.
+; Production auth tokens are rejected by non-production backends, so this is
+; usually needed alongside the URL overrides above.
+;MM_BACKEND_DISABLE_AUTH='true'
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
@@ -98,6 +109,15 @@ BLOCKAID_PUBLIC_KEY=
 ; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
 ; FORCE_AUTH_MATCH_BUILD='false'
 
+; Set to `dev` to point AuthenticationController and identity services
+; (User Storage, Profile Metrics, Config Registry, Authenticated User Storage)
+; at DEV backends. Defaults to prod, and is ignored outside local development
+; (`yarn start`) builds. Restart `yarn start` after changing.
+; Enabling DEV will break authenticated services that still talk to PRD
+; (notifications, shield, money-account, bridge, perps). After flipping,
+; clear the auth session from Settings → Debug → Backup and sync.
+; MM_DEV_API_ENV=dev
+
 ; This variable is required to run performance tests
 TEST_SRP_2=
 
@@ -121,3 +141,8 @@ NEW_HARDWARE_WALLET_ONBOARDING='false'
 ; `moneyActivityMockDataEnabled` takes precedence when it is a boolean.
 ; Rebuild after changing this value.
 ;MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED='true'
+
+; Set to `true` so Money activity rows navigate to the transaction details
+; page. Remote flag `moneyEnableActivityDetails` takes precedence when it
+; is a boolean. Rebuild after changing this value.
+;MM_MONEY_ENABLE_ACTIVITY_DETAILS='true'

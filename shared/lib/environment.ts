@@ -1,5 +1,15 @@
 import { ENVIRONMENT } from '../constants/build';
 
+/**
+ * Get a boolean value for a string or boolean value.
+ *
+ * @param value - The value to convert to a boolean.
+ * @returns `true` if the value is `'true'` or `true`, otherwise `false`.
+ */
+export function getBooleanFlag(value: string | boolean | undefined): boolean {
+  return value === true || value === 'true';
+}
+
 export const isProduction = (): boolean => {
   return (
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&
@@ -35,10 +45,12 @@ export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
 };
 
 /**
- * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`): controls whether onboarding
- * assigns new users to the consolidated Basic Functionality experience. This
- * is intentionally separate from the remote rollout flag because onboarding
- * completes before remote feature flags are reliably available.
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`):
+ * - Onboarding: assign new users to the consolidated experience (remote flags
+ * are not reliable during onboarding).
+ * - Existing BF-off wallets: hardcode consolidation + notice in this release,
+ * because Basic Functionality off disables remote feature flag fetching.
+ * BF-on existing users still use the remote flag as a kill switch.
  */
 export const getIsBasicFunctionalityConsolidationEnabledInBuild =
   (): boolean => {

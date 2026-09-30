@@ -8,7 +8,9 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { captureMessage } from '../../shared/lib/sentry';
+import type { TraceName } from '../../shared/lib/trace';
 import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
+import { submitRequestToBackground } from '../store/background-connection';
 import {
   MetaMetricsContext,
   MetaMetricsProvider,
@@ -18,6 +20,9 @@ import {
 jest.mock('../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
   captureMessage: jest.fn(),
+  sentryLogger: {
+    extend: jest.fn(() => jest.fn()),
+  },
 }));
 
 jest.mock('../hooks/useSegmentContext', () => ({
@@ -34,6 +39,7 @@ jest.mock('../store/background-connection', () => ({
 }));
 
 const mockStore = configureMockStore([]);
+const TRACE_NAME_MOCK = 'Transaction' as TraceName;
 
 const renderProviderAtPath = (pathname: string) => {
   const store = mockStore({
@@ -118,10 +124,127 @@ describe('MetaMetricsProvider', () => {
   const mockedTrackAnalyticsEvent = jest.mocked(trackAnalyticsEvent);
   const mockedTrackMetaMetricsPage = jest.mocked(trackMetaMetricsPage);
   const mockedCaptureMessage = jest.mocked(captureMessage);
+  const mockedSubmitRequestToBackground = jest.mocked(
+    submitRequestToBackground,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
     resetPreviousTrackedPagePathForTesting();
+  });
+
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([true, false])(
+    'forwards buffered traces to the background without a consent snapshot',
+    async (isOptedIn: boolean) => {
+      const store = mockStore({
+        metamask: {
+          analyticsId: '0x123',
+          consentDecisionMade: true,
+          optedIn: isOptedIn,
+        },
+      });
+
+      const TestComponent = () => {
+        const { bufferedTrace, bufferedEndTrace } =
+          useContext(MetaMetricsContext);
+
+        useEffect(() => {
+          bufferedTrace({ name: TRACE_NAME_MOCK });
+          bufferedEndTrace({ name: TRACE_NAME_MOCK });
+        }, [bufferedTrace, bufferedEndTrace]);
+
+        return null;
+      };
+
+      const router = createMemoryRouter(
+        [
+          {
+            path: '*',
+            element: (
+              <MetaMetricsProvider>
+                <TestComponent />
+              </MetaMetricsProvider>
+            ),
+          },
+        ],
+        { initialEntries: ['/'] },
+      );
+
+      render(
+        <Provider store={store}>
+          <RouterProvider router={router} />
+        </Provider>,
+      );
+
+      await waitFor(() => {
+        expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
+          1,
+          'bufferedTrace',
+          [{ name: TRACE_NAME_MOCK }],
+        );
+        expect(mockedSubmitRequestToBackground).toHaveBeenNthCalledWith(
+          2,
+          'bufferedEndTrace',
+          [{ name: TRACE_NAME_MOCK }],
+        );
+      });
+    },
+  );
+
+  it('keeps the buffered trace methods stable when the opt-in state changes', async () => {
+    let optedIn = false;
+    const store = mockStore(() => ({
+      metamask: {
+        analyticsId: '0x123',
+        consentDecisionMade: true,
+        optedIn,
+      },
+    }));
+
+    const runTraceEffect = jest.fn();
+
+    const TestComponent = () => {
+      const { bufferedTrace, bufferedEndTrace } =
+        useContext(MetaMetricsContext);
+
+      useEffect(() => {
+        runTraceEffect();
+      }, [bufferedTrace, bufferedEndTrace]);
+
+      return null;
+    };
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: (
+            <MetaMetricsProvider>
+              <TestComponent />
+            </MetaMetricsProvider>
+          ),
+        },
+      ],
+      { initialEntries: ['/'] },
+    );
+
+    render(
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(runTraceEffect).toHaveBeenCalledTimes(1);
+    });
+
+    optedIn = true;
+    act(() => {
+      store.dispatch({ type: 'OPT_IN' });
+    });
+
+    expect(runTraceEffect).toHaveBeenCalledTimes(1);
   });
 
   it('queues events when participation is enabled but analyticsId is missing', async () => {

@@ -1,5 +1,3 @@
-import assert from 'assert';
-import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { regularDelayMs } from '../../../helpers';
 
@@ -46,51 +44,79 @@ export default class DeepLink {
     });
   }
 
+  /**
+   * Asserts the description box does not display the given text.
+   *
+   * Uses the same `{ css, text }` locator shape as
+   * {@link checkDescriptionTextIsDisplayed} (XPath `contains()`). A
+   * `waitAtLeastGuard` is required because 404 extra CTA copy is filled
+   * asynchronously after `verify(url)` — absence must not pass before
+   * that work finishes.
+   *
+   * @param text - The (partial) text that must not appear.
+   */
+  async checkDescriptionTextIsNotDisplayed(text: string): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.descriptionBox,
+        text,
+      },
+      { waitAtLeastGuard: regularDelayMs },
+    );
+  }
+
   async checkPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.descriptionBox,
-        this.parentSelector,
-      ]);
-      // loading indicator should not be present when the page is loaded
-      await this.driver.assertElementNotPresent(this.loadingIndicator, {
-        waitAtLeastGuard: regularDelayMs,
-      });
-    } catch (e) {
-      console.log('Timeout while waiting for Deep Link page to be loaded', e);
-      throw e;
-    }
+    await this.driver.waitForMultipleSelectors([
+      this.descriptionBox,
+      this.parentSelector,
+    ]);
+    // loading indicator should not be present when the page is loaded
+    await this.driver.assertElementNotPresent(this.loadingIndicator, {
+      waitAtLeastGuard: regularDelayMs,
+    });
     console.log('Deep Link page is loaded');
   }
 
-  async clickContinueButton() {
-    try {
-      await this.driver.clickElementAndWaitToDisappear(this.continueButton);
-    } catch (e) {
-      console.log('Error clicking continue button on Deep Link page', e);
-      throw e;
+  /**
+   * Waits for the skip-interstitial checkbox to be present or absent.
+   *
+   * @param shouldBeDisplayed - Whether the checkbox should be shown.
+   */
+  async checkSkipDeepLinkInterstitialCheckBoxIsDisplayed(
+    shouldBeDisplayed: boolean,
+  ): Promise<void> {
+    if (shouldBeDisplayed) {
+      await this.driver.waitForSelector(this.checkbox);
+    } else {
+      await this.driver.assertElementNotPresent(this.checkbox);
     }
   }
 
-  async clickSkipDeepLinkInterstitialCheckBox() {
-    try {
-      await this.driver.clickElement(this.checkbox);
-    } catch (e) {
-      console.log(
-        'Error clicking skip deep link interstitial checkbox on Deep Link page',
-        e,
-      );
-      throw e;
-    }
+  async clickContinueButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
   }
 
-  async getDescriptionText(): Promise<string> {
-    const routeBox = await this.driver.driver.findElement(
-      By.css(this.descriptionBox),
+  async clickSkipDeepLinkInterstitialCheckBox(): Promise<void> {
+    await this.driver.clickElement(this.checkbox);
+  }
+
+  /**
+   * Loads the interstitial, asserts skip-checkbox presence, and continues.
+   *
+   * @param shouldShowCheckbox - Whether the skip checkbox should be rendered
+   * (signed links show it; unsigned/invalid links do not).
+   */
+  async continueFromInterstitial(shouldShowCheckbox: boolean): Promise<void> {
+    console.log('Checking if deep link page is loaded');
+    await this.checkPageIsLoaded();
+
+    console.log('Checking if deep link interstitial checkbox exists');
+    await this.checkSkipDeepLinkInterstitialCheckBoxIsDisplayed(
+      shouldShowCheckbox,
     );
-    assert.strictEqual(await routeBox.isDisplayed(), true);
-    const routeText = await routeBox.getText();
-    return routeText;
+
+    console.log('Clicking continue button');
+    await this.clickContinueButton();
   }
 
   async getSkipDeepLinkInterstitialCheckBoxState(): Promise<boolean> {
@@ -98,13 +124,6 @@ export default class DeepLink {
       '#dont-remind-me-checkbox',
     );
     return await skipCheckbox.isSelected();
-  }
-
-  async hasSkipDeepLinkInterstitialCheckBox(): Promise<boolean> {
-    const skipCheckbox = await this.driver.driver.findElements(
-      By.css(this.checkbox),
-    );
-    return skipCheckbox.length > 0;
   }
 
   async setSkipDeepLinkInterstitialCheckBox(skip: boolean): Promise<void> {

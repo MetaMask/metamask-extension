@@ -213,14 +213,15 @@ export const BridgeQuotesModal = ({
                     {/* TOTAL COST + TAG */}
                     <Row gap={1}>
                       <Text
+                        data-testid="bridge-quote-total-cost"
                         variant={TextVariant.bodySm}
                         color={TextColor.textAlternative}
                         style={{ whiteSpace: 'nowrap' }}
                       >
                         {t('quotedTotalCost', [
-                          (quote.cost?.valueInCurrency
+                          (quote.quote.priceData?.cost?.valueInCurrency
                             ? formatCurrencyAmount(
-                                quote.cost.valueInCurrency,
+                                quote.quote.priceData.cost.valueInCurrency,
                                 currency,
                                 2,
                               )

@@ -588,7 +588,9 @@ const config = {
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
-    ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
+    ...(args.minify
+      ? { minimize: true, minimizer: getMinimizers() }
+      : { minimize: false }),
     // Make most chunks share a single runtime file, which contains the
     // webpack "runtime". The exception is @lavamoat/snow and all scripts
     // found in the extension manifest; these scripts must be self-contained

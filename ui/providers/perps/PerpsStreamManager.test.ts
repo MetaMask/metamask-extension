@@ -1,5 +1,23 @@
-import type { Position } from '@metamask/perps-controller';
+import { it } from '@jest/globals';
+import type {
+  Position,
+  PerpsMarketData,
+  PriceUpdate,
+} from '@metamask/perps-controller';
+import { flushPromises } from '../../../test/lib/timer-helpers';
+import { trace, endTrace, TraceName } from '../../../shared/lib/trace';
 import { PerpsStreamManager } from './PerpsStreamManager';
+
+jest.mock('../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+  getPerformanceTimestamp: () => Date.now(),
+}));
+jest.mock('../../helpers/perps/entry-trace', () => ({
+  readPerpsLifecycleContext: () => 'cold_process',
+  PERPS_LIFECYCLE_TAG: 'lifecycle_context',
+}));
 
 // Polyfill crypto.randomUUID for jsdom
 let uuidCounter = 0;
@@ -20,6 +38,7 @@ jest.mock('../../store/background-connection', () => ({
 jest.mock('./CandleStreamChannel', () => ({
   CandleStreamChannel: jest.fn().mockImplementation(() => ({
     clearAll: jest.fn(),
+    clearCache: jest.fn(),
   })),
 }));
 
@@ -57,6 +76,381 @@ describe('PerpsStreamManager', () => {
   afterEach(() => {
     manager.reset();
     jest.useRealTimers();
+  });
+
+  describe('startPreload', () => {
+    function createPreloadManager() {
+      return Object.assign(manager, {
+        initForAddress: jest.fn().mockResolvedValue(undefined),
+        prewarm: jest.fn(),
+        cleanupPrewarm: jest.fn(),
+      });
+    }
+    let preloadManager: ReturnType<typeof createPreloadManager>;
+    beforeEach(() => {
+      mockSubmitRequestToBackground.mockReset().mockResolvedValue(undefined);
+      preloadManager = createPreloadManager();
+    });
+    function deferred() {
+      let resolve!: () => void;
+      const promise = new Promise<void>((done) => {
+        resolve = done;
+      });
+      return { promise, resolve };
+    }
+    async function settle(run: () => void | Promise<void>) {
+      await run();
+      await flushPromises();
+    }
+    it('registers ownership before initializing and cancels before delayed registration completes', async () => {
+      const registration = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsRegisterPreload'
+            ? registration.promise
+            : Promise.resolve(undefined),
+        );
+      const { stop: unmount } = preloadManager.startPreload({
+        address: '0xfirst',
+        useTerminalApi: false,
+        accountChanged: false,
+        provider: 'hyperliquid',
+        isTestnet: false,
+      });
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsRegisterPreload',
+        [expect.any(String)],
+      );
+      expect(preloadManager.initForAddress).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledTimes(1);
+      expect(jest.mocked(trace).mock.calls[0][0]).not.toHaveProperty(
+        'startTime',
+      );
+      unmount();
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'released' },
+        }),
+      );
+      await settle(async () => {
+        registration.resolve();
+      });
+      expect(preloadManager.initForAddress).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsStartPreload',
+        expect.anything(),
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+    });
+
+    it('ends the connection span only after the background subscriptions are ready', async () => {
+      const ready = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsStartPreload'
+            ? ready.promise
+            : Promise.resolve(undefined),
+        );
+      let unmount!: () => void;
+      await settle(async () => {
+        ({ stop: unmount } = preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        }));
+      });
+      expect(endTrace).not.toHaveBeenCalled();
+      expect(preloadManager.prewarm).toHaveBeenCalledTimes(1);
+
+      await settle(async () => {
+        ready.resolve();
+      });
+
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.PerpsConnectionEstablishment,
+          data: { success: true, reason: 'subscriptions_ready' },
+        }),
+      );
+      const { id } = jest.mocked(trace).mock.calls[0][0];
+      unmount();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [id, true],
+      );
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(jest.getTimerCount()).toBe(0);
+    });
+
+    it('does not start subscriptions after unmount during initialization', async () => {
+      const init = deferred();
+      preloadManager.initForAddress.mockReturnValue(init.promise);
+      let unmount!: () => void;
+      await settle(async () => {
+        ({ stop: unmount } = preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        }));
+      });
+      expect(preloadManager.initForAddress).toHaveBeenCalledTimes(1);
+
+      unmount();
+      await settle(async () => {
+        init.resolve();
+      });
+
+      expect(preloadManager.prewarm).not.toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsStartPreload',
+        expect.anything(),
+      );
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'released' },
+        }),
+      );
+    });
+
+    it('records a timeout once and ignores late connection completion', async () => {
+      const ready = deferred();
+      jest
+        .mocked(mockSubmitRequestToBackground)
+        .mockImplementation((method) =>
+          method === 'perpsStartPreload'
+            ? ready.promise
+            : Promise.resolve(undefined),
+        );
+      await settle(async () => {
+        preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+      });
+
+      await settle(async () => {
+        jest.advanceTimersByTime(30_000);
+        ready.resolve();
+      });
+
+      expect(endTrace).toHaveBeenCalledTimes(1);
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'timeout' },
+        }),
+      );
+      expect(preloadManager.cleanupPrewarm).toHaveBeenCalled();
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+    });
+
+    it.each(['failure', 'timeout', 'pending init'])(
+      'reinitializes on foreground entry after preload %s',
+      async (outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        const init = deferred();
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return ready;
+          }
+          if (method === 'perpsInitForAccount' && outcome === 'pending init') {
+            return init.promise;
+          }
+          return Promise.resolve();
+        });
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
+          });
+        });
+        expect(manager.isInitialized('0xfirst')).toBe(
+          outcome !== 'pending init',
+        );
+
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('market fetch failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+            init.resolve();
+          }
+        });
+
+        expect(manager.isInitialized('0xfirst')).toBe(false);
+        await manager.initForAddress('0xfirst');
+        expect(manager.isInitialized('0xfirst')).toBe(true);
+        expect(
+          mockSubmitRequestToBackground.mock.calls.filter(
+            ([method]) => method === 'perpsInitForAccount',
+          ),
+        ).toHaveLength(2);
+      },
+    );
+
+    it.each([
+      ['replacement preload', 'failure'],
+      ['replacement preload', 'timeout'],
+      ['new account', 'failure'],
+      ['new account', 'timeout'],
+    ])(
+      'preserves readiness for a %s after an older preload %s',
+      async (owner, outcome) => {
+        preloadManager.initForAddress.mockImplementation((address: string) =>
+          PerpsStreamManager.prototype.initForAddress.call(manager, address),
+        );
+        let rejectPreload!: (error: Error) => void;
+        const ready = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let starts = 0;
+        mockSubmitRequestToBackground.mockImplementation((method: string) =>
+          method === 'perpsStartPreload' && (starts += 1) === 1
+            ? ready
+            : Promise.resolve(),
+        );
+        await settle(() => {
+          manager.startPreload({
+            address: '0xfirst',
+            useTerminalApi: false,
+            accountChanged: false,
+            provider: 'hyperliquid',
+            isTestnet: false,
+          });
+        });
+        const address = owner === 'new account' ? '0xsecond' : '0xfirst';
+        await settle(async () => {
+          if (owner === 'new account') {
+            await manager.initForAddress(address);
+          } else {
+            manager.startPreload({
+              address,
+              useTerminalApi: false,
+              accountChanged: false,
+              provider: 'hyperliquid',
+              isTestnet: false,
+            });
+          }
+        });
+        preloadManager.cleanupPrewarm.mockClear();
+        await settle(() => {
+          if (outcome === 'failure') {
+            rejectPreload(new Error('old preload failed'));
+          } else {
+            jest.advanceTimersByTime(30_000);
+          }
+        });
+
+        expect(manager.isInitialized(address)).toBe(true);
+        expect(preloadManager.cleanupPrewarm).not.toHaveBeenCalled();
+      },
+    );
+
+    it('records initialization failure without claiming readiness', async () => {
+      preloadManager.initForAddress.mockRejectedValue(new Error('offline'));
+      const debug = jest
+        .spyOn(console, 'debug')
+        .mockImplementation(() => undefined);
+
+      await settle(async () => {
+        preloadManager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+      });
+
+      expect(endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { success: false, reason: 'connection_failed' },
+        }),
+      );
+      expect(preloadManager.prewarm).not.toHaveBeenCalled();
+      expect(jest.getTimerCount()).toBe(0);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsStopPreload',
+        [expect.any(String), false],
+      );
+      debug.mockRestore();
+    });
+  });
+
+  describe('preload failure with mounted streams', () => {
+    it.each(['failure', 'timeout'])(
+      'keeps the mounted market fallback connected after preload %s',
+      async (outcome) => {
+        let rejectPreload!: (error: Error) => void;
+        const preload = new Promise<void>((_resolve, reject) => {
+          rejectPreload = reject;
+        });
+        let finishMarkets!: (markets: PerpsMarketData[]) => void;
+        const fallback = new Promise<PerpsMarketData[]>((resolve) => {
+          finishMarkets = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((method: string) => {
+          if (method === 'perpsStartPreload') {
+            return preload;
+          }
+          if (method === 'perpsGetMarketDataWithPrices') {
+            return fallback;
+          }
+          return Promise.resolve();
+        });
+        manager.startPreload({
+          address: '0xfirst',
+          useTerminalApi: false,
+          accountChanged: false,
+          provider: 'hyperliquid',
+          isTestnet: false,
+        });
+        await flushPromises();
+        const onMarkets = jest.fn();
+        const unsubscribe = manager.markets.subscribe(onMarkets);
+        if (outcome === 'failure') {
+          rejectPreload(new Error('preload market fetch failed'));
+          await flushPromises();
+        }
+        jest.advanceTimersByTime(outcome === 'timeout' ? 30_000 : 3000);
+        await flushPromises();
+        expect(manager.isInitialized()).toBe(false);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetMarketDataWithPrices',
+          [{ useTerminalApi: false }],
+        );
+        const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+        finishMarkets(markets);
+        await flushPromises();
+        expect(onMarkets).toHaveBeenLastCalledWith(markets);
+        expect(manager.markets.getCachedData()).toEqual(markets);
+        unsubscribe();
+      },
+    );
   });
 
   describe('constructor', () => {
@@ -496,7 +890,10 @@ describe('PerpsStreamManager', () => {
     it('calls perpsInit on first init and sets address', async () => {
       await manager.initForAddress('0xfirst');
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith('perpsInit');
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsInitForAccount',
+        ['0xfirst'],
+      );
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsDisconnect',
       );
@@ -512,7 +909,7 @@ describe('PerpsStreamManager', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
-    it('calls disconnect then init on account switch', async () => {
+    it('delegates account teardown and initialization to the shared background coordinator', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
@@ -524,12 +921,93 @@ describe('PerpsStreamManager', () => {
 
       await manager.initForAddress('0xsecond');
 
-      expect(callOrder).toContain('perpsDisconnect');
-      expect(callOrder).toContain('perpsInit');
-      expect(callOrder.indexOf('perpsDisconnect')).toBeLessThan(
-        callOrder.indexOf('perpsInit'),
-      );
+      expect(callOrder).not.toContain('perpsDisconnect');
+      expect(callOrder).toContain('perpsInitForAccount');
+
       expect(manager.isInitialized('0xsecond')).toBe(true);
+    });
+
+    it.each<['positions' | 'orders' | 'account', string]>([
+      ['positions', 'perpsGetPositions'],
+      ['orders', 'perpsGetOpenOrders'],
+      ['account', 'perpsGetAccountState'],
+    ])(
+      'cancels the previous account %s fallback on switch',
+      async (channel, method) => {
+        jest.useFakeTimers();
+        await manager.initForAddress('0xfirst');
+        let resolveFallback!: (value: unknown) => void;
+        const fallback = new Promise((resolve) => {
+          resolveFallback = resolve;
+        });
+        mockSubmitRequestToBackground.mockImplementation((request: string) =>
+          request === method ? fallback : Promise.resolve(undefined),
+        );
+        const onData = jest.fn();
+        manager[channel].subscribe(onData);
+        await jest.advanceTimersByTimeAsync(3_000);
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(method, []);
+
+        await manager.initForAddress('0xsecond');
+        const stale =
+          channel === 'account' ? { totalBalance: '99' } : [{ symbol: 'OLD' }];
+        resolveFallback(stale);
+        await fallback;
+        await Promise.resolve();
+
+        expect(manager[channel].hasCachedData()).toBe(false);
+        expect(onData).not.toHaveBeenCalled();
+      },
+    );
+
+    it('retains new-session snapshots emitted before initialization returns', async () => {
+      await manager.initForAddress('0xfirst');
+      const positions = [makePosition('NEW')];
+      mockSubmitRequestToBackground.mockImplementation(
+        async (method: string) => {
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: [makePosition('OLD')],
+            });
+            expect(manager.positions.hasCachedData()).toBe(false);
+          }
+          if (method === 'perpsInitForAccount') {
+            manager.handleBackgroundUpdate({
+              channel: 'accountSession',
+              data: { address: '0xsecond' },
+            });
+            manager.handleBackgroundUpdate({
+              channel: 'positions',
+              data: positions,
+            });
+          }
+        },
+      );
+
+      await manager.initForAddress('0xsecond');
+
+      expect(manager.positions.getCachedData()).toEqual(positions);
+      const onData = jest.fn();
+      manager.positions.subscribe(onData);
+      expect(onData).toHaveBeenCalledWith(positions);
+    });
+
+    it('discards early snapshots when initialization fails', async () => {
+      mockSubmitRequestToBackground.mockImplementation(async () => {
+        manager.handleBackgroundUpdate({
+          channel: 'positions',
+          data: [makePosition('FAILED')],
+        });
+        throw new Error('init failed');
+      });
+
+      await expect(manager.initForAddress('0xfailed')).rejects.toThrow(
+        'init failed',
+      );
+
+      expect(manager.positions.hasCachedData()).toBe(false);
+      expect(manager.isInitialized()).toBe(false);
     });
 
     it('deduplicates concurrent calls for the same address', async () => {
@@ -541,9 +1019,65 @@ describe('PerpsStreamManager', () => {
       await Promise.all([p1, p2]);
 
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(1);
+    });
+
+    it('serializes A to B to A and drops stream updates during the transition', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const first = manager.initForAddress('0xaaa');
+      await started;
+      const middle = manager.initForAddress('0xbbb');
+      const latest = manager.initForAddress('0xaaa');
+
+      manager.handleBackgroundUpdate({
+        channel: 'positions',
+        data: [makePosition('STALE')],
+      });
+      expect(manager.positions.getCachedData()).toEqual([]);
+      release();
+      await Promise.all([first, middle, latest]);
+
+      expect(manager.getCurrentAddress()).toBe('0xaaa');
+      expect(
+        mockSubmitRequestToBackground.mock.calls.map(([method]) => method),
+      ).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
+    });
+
+    it('cannot restore initialization after reset while the RPC is pending', async () => {
+      let release!: () => void;
+      let entered!: () => void;
+      const started = new Promise<void>((resolve) => {
+        entered = resolve;
+      });
+      const barrier = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      mockSubmitRequestToBackground.mockImplementationOnce(() => {
+        entered();
+        return barrier;
+      });
+      const pending = manager.initForAddress('0xaaa');
+      await started;
+
+      manager.reset();
+      release();
+      await pending;
+
+      expect(manager.isInitialized()).toBe(false);
+      expect(manager.getCurrentAddress()).toBeNull();
     });
 
     it('throws when address is empty', async () => {
@@ -552,7 +1086,7 @@ describe('PerpsStreamManager', () => {
       );
     });
 
-    it('calls perpsDisconnect before second perpsInit when first init is still in flight', async () => {
+    it('queues the next shared account request until the previous request settles', async () => {
       let releaseFirstInit: (() => void) | undefined;
       const firstInitBarrier = new Promise<void>((resolve) => {
         releaseFirstInit = resolve;
@@ -564,7 +1098,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
@@ -580,17 +1114,14 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
 
       const pSecond = manager.initForAddress('0xsecond');
-      await pSecond;
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pFirst, pSecond]);
 
       const callOrder = mockSubmitRequestToBackground.mock.calls.map(
         ([m]: [string]) => m,
       );
-      const disconnectIdx = callOrder.indexOf('perpsDisconnect');
-      const secondInitIdx = callOrder.findIndex(
-        (m, i) => m === 'perpsInit' && i > disconnectIdx,
-      );
-      expect(disconnectIdx).toBeGreaterThanOrEqual(0);
-      expect(secondInitIdx).toBeGreaterThan(disconnectIdx);
+      expect(callOrder).toEqual(['perpsInitForAccount', 'perpsInitForAccount']);
       expect(manager.getCurrentAddress()).toBe('0xsecond');
 
       expect(releaseFirstInit).toBeDefined();
@@ -608,7 +1139,7 @@ describe('PerpsStreamManager', () => {
         if (method === 'perpsDisconnect') {
           return Promise.resolve(undefined);
         }
-        if (method === 'perpsInit') {
+        if (method === 'perpsInitForAccount') {
           initAttempts += 1;
           if (initAttempts === 1) {
             return Promise.reject(new Error('init failed'));
@@ -626,17 +1157,17 @@ describe('PerpsStreamManager', () => {
 
       expect(manager.isInitialized('0xretry')).toBe(true);
       const initCalls = mockSubmitRequestToBackground.mock.calls.filter(
-        ([m]: [string]) => m === 'perpsInit',
+        ([m]: [string]) => m === 'perpsInitForAccount',
       );
       expect(initCalls).toHaveLength(2);
     });
 
-    it('clears pending init on perpsDisconnect failure so switch can be retried', async () => {
+    it('clears pending init on shared account transition failure so switch can be retried', async () => {
       await manager.initForAddress('0xfirst');
       mockSubmitRequestToBackground.mockClear();
 
       mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsDisconnect') {
+        if (method === 'perpsInitForAccount') {
           return Promise.reject(new Error('disconnect failed'));
         }
         return Promise.resolve(undefined);
@@ -665,7 +1196,7 @@ describe('PerpsStreamManager', () => {
           if (method === 'perpsDisconnect') {
             return undefined;
           }
-          if (method === 'perpsInit') {
+          if (method === 'perpsInitForAccount') {
             perpsInitCount += 1;
             if (perpsInitCount === 1) {
               await firstInitBarrier;
@@ -680,7 +1211,10 @@ describe('PerpsStreamManager', () => {
       await Promise.resolve();
       await Promise.resolve();
 
-      await manager.initForAddress('0xwins');
+      const pWinner = manager.initForAddress('0xwins');
+      expect(manager.isInitialized()).toBe(false);
+      releaseFirstInit?.();
+      await Promise.all([pSlow, pWinner]);
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
 
@@ -692,6 +1226,82 @@ describe('PerpsStreamManager', () => {
       await pSlow;
 
       expect(manager.getCurrentAddress()).toBe('0xwins');
+    });
+  });
+
+  describe('live snapshot provenance', () => {
+    const markets = [{ symbol: 'BTC' }] as PerpsMarketData[];
+    const prices = [{ symbol: 'BTC', price: '50000' }] as PriceUpdate[];
+
+    it('distinguishes persisted market seeds from current-session responses', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: false,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
+
+      manager.handleBackgroundUpdate({
+        channel: 'markets',
+        data: markets,
+        live: true,
+      });
+      expect(manager.hasLiveMarketData(markets)).toBe(true);
+      expect(manager.hasLiveMarketData([{ ...markets[0] }])).toBe(false);
+    });
+
+    it('merges detail prices without discarding the other preloaded symbols', () => {
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [...prices, { symbol: 'ETH', price: '2000' }],
+      });
+      const previous = manager.prices.getCachedData();
+      manager.handleBackgroundUpdate({
+        channel: 'prices',
+        data: [{ symbol: 'BTC', price: '51000' }],
+      });
+      const current = manager.prices.getCachedData();
+
+      expect(current).toEqual([
+        { symbol: 'BTC', price: '51000' },
+        { symbol: 'ETH', price: '2000' },
+      ]);
+      expect(manager.hasLivePrices(current)).toBe(true);
+      expect(manager.hasLivePrices(previous)).toBe(false);
+      expect(manager.hasLivePrices(prices)).toBe(false);
+    });
+
+    it.each(['0', '-1', 'invalid'])(
+      'does not accept a %s price as live readiness',
+      (price) => {
+        manager.handleBackgroundUpdate({
+          channel: 'prices',
+          data: [{ symbol: 'BTC', price }],
+        });
+        expect(manager.hasLivePrices(manager.prices.getCachedData())).toBe(
+          false,
+        );
+      },
+    );
+
+    it.each(['reset', 'clearAllCaches'] as const)(
+      'invalidates consumed snapshots after %s',
+      (method) => {
+        manager.pushLiveMarkets(markets);
+        manager.handleBackgroundUpdate({ channel: 'prices', data: prices });
+        const snapshot = manager.prices.getCachedData();
+
+        manager[method]();
+
+        expect(manager.hasLiveMarketData(markets)).toBe(false);
+        expect(manager.hasLivePrices(snapshot)).toBe(false);
+      },
+    );
+
+    it('invalidates live market metadata after a backend change', () => {
+      manager.pushLiveMarkets(markets);
+      manager.setUseTerminalApi(true);
+      expect(manager.hasLiveMarketData(markets)).toBe(false);
     });
   });
 
@@ -734,6 +1344,22 @@ describe('PerpsStreamManager', () => {
       manager.handleBackgroundUpdate({ channel: 'fills', data: fills });
 
       expect(cb).toHaveBeenCalledWith(fills);
+    });
+
+    it('delivers wallet-warmed fills immediately after screen navigation', () => {
+      const initial = [{ orderId: '1', symbol: 'BTC' }];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: initial });
+      const firstScreen = jest.fn();
+      const leave = manager.fills.subscribe(firstScreen);
+      expect(firstScreen).toHaveBeenCalledWith(initial);
+      leave();
+      const updated = [{ orderId: '2', symbol: 'ETH' }, ...initial];
+      manager.handleBackgroundUpdate({ channel: 'fills', data: updated });
+      const nextScreen = jest.fn();
+      manager.fills.subscribe(nextScreen);
+      expect(nextScreen).toHaveBeenCalledWith(updated);
+      expect(firstScreen).toHaveBeenCalledTimes(1);
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
     it('routes prices channel to prices.pushData', () => {
@@ -1295,33 +1921,122 @@ describe('PerpsStreamManager', () => {
         expect.anything(),
       );
     });
+  });
 
-    it('notifies subscribers with null when REST fallback fails without cache', async () => {
-      const consoleErrorSpy = jest
+  describe('account fetch failure', () => {
+    /**
+     * Rejects `perpsGetAccountState` the way a total HyperLiquid outage does —
+     * the TAT-3832 report's `Failed to fetch account state
+     * (failedDexs=[main,xyz], spotError=WebSocket connection permanently
+     * terminated)`.
+     *
+     * @param error - The rejection surfaced to the account channel.
+     */
+    function rejectAccountStateWith(error: Error) {
+      mockSubmitRequestToBackground.mockImplementation((method: string) => {
+        if (method === 'perpsGetAccountState') {
+          return Promise.reject(error);
+        }
+        return Promise.resolve(undefined);
+      });
+    }
+
+    let consoleErrorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleErrorSpy = jest
         .spyOn(console, 'error')
         .mockImplementation(() => undefined);
+    });
 
-      try {
-        mockSubmitRequestToBackground.mockImplementation((method: string) => {
-          if (method === 'perpsGetAccountState') {
-            return Promise.reject(new Error('network'));
-          }
-          return Promise.resolve(undefined);
-        });
+    afterEach(() => {
+      consoleErrorSpy.mockRestore();
+    });
 
-        const onData = jest.fn();
-        manager.account.subscribe(onData);
+    it('does not notify subscribers when the REST fallback fails without cache', async () => {
+      rejectAccountStateWith(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main,xyz], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
 
-        await jest.advanceTimersByTimeAsync(3_000);
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
 
-        expect(onData).toHaveBeenCalledWith(null);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          '[PerpsStreamManager] Failed to fetch account',
-          expect.any(Error),
-        );
-      } finally {
-        consoleErrorSpy.mockRestore();
-      }
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      // A failed fetch is not data. Notifying here is what let the balance
+      // header leave its loading state and render a funded account as $0.00.
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.any(Error),
+      );
+    });
+
+    // Pre-existing-behaviour guard, not proof of this fix: the old code's
+    // `!hasCachedData()` check already suppressed the push once a cache
+    // existed, so this passes with or without the fix. Kept to pin the
+    // behaviour that a later failure must never clobber a good balance.
+    it('keeps previously cached account data when a later REST fallback fails', async () => {
+      const cachedAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: cachedAccount,
+      });
+
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(manager.account.getCachedData()).toBe(cachedAccount);
+      // Subscribing with a cache present already fires once with that cache.
+      // Pinning the exact call count and payload proves nothing *else*
+      // notified — a bare `not.toHaveBeenCalledWith(null)` would pass even if
+      // the failure path had pushed something.
+      expect(onData).toHaveBeenCalledTimes(1);
+      expect(onData).toHaveBeenCalledWith(cachedAccount);
+    });
+
+    it('does not notify subscribers when the REST fallback settles empty', async () => {
+      // The messenger can settle with no payload instead of rejecting. `null`
+      // is this channel's initialValue, so pushing it notifies without setting
+      // a cache — the same fabricated `$0.00` as an outright rejection.
+      mockSubmitRequestToBackground.mockImplementation(() =>
+        Promise.resolve(undefined),
+      );
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+      expect(manager.account.hasCachedData()).toBe(false);
+    });
+
+    it('still delivers account data pushed after an account fetch failure', async () => {
+      rejectAccountStateWith(new Error('network'));
+
+      const onData = jest.fn();
+      manager.account.subscribe(onData);
+
+      await jest.advanceTimersByTimeAsync(3_000);
+
+      expect(onData).not.toHaveBeenCalled();
+
+      const recoveredAccount = { totalBalance: '632.69' };
+      manager.handleBackgroundUpdate({
+        channel: 'account',
+        data: recoveredAccount,
+      });
+
+      expect(onData).toHaveBeenCalledWith(recoveredAccount);
+      expect(manager.account.hasCachedData()).toBe(true);
     });
   });
 
@@ -1367,7 +2082,7 @@ describe('PerpsStreamManager', () => {
       expect(() => manager.cleanupPrewarm()).not.toThrow();
     });
 
-    it('does not prewarm fills channel (fills are REST-only)', () => {
+    it('leaves fills prewarming to the background provider session', () => {
       manager.prewarm();
 
       expect(manager.fills.isPrewarming()).toBe(false);

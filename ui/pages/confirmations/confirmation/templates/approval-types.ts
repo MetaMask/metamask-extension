@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
+  HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
   VARIATIONAL_APPROVAL_TYPE,
@@ -31,6 +32,7 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES = [
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
   VARIATIONAL_APPROVAL_TYPE,
+  HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
 ] as const;
 
 // ──────────────────────────────────────────────────────────────────────────

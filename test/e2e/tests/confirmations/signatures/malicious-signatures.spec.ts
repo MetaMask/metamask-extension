@@ -61,7 +61,10 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           SignatureType.SIWE_BadDomain,
         );
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         await testDapp.assertUserRejectedRequest();

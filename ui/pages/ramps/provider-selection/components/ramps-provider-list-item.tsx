@@ -18,14 +18,17 @@ import {
 } from '@metamask/design-system-react';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getRampsListItemClassName } from '../../components/get-ramps-list-item-class-name';
-import RampsQuoteDisplay from '../../payment-method/components/ramps-quote-display';
+import RampsQuoteDisplay, {
+  getRampsQuoteAmounts,
+  shouldShowSelectedCheckIcon,
+} from '../../payment-method/components/ramps-quote-display';
 import type { ProviderTag } from '../utils/build-provider-list-items';
 
 export type RampsProviderListItemProps = {
   provider: Provider;
   isSelected?: boolean;
   isDisabled?: boolean;
-  tag?: ProviderTag | null;
+  tags?: ProviderTag[];
   subtitle?: string | null;
   showQuote?: boolean;
   quote?: Quote | null;
@@ -42,7 +45,7 @@ export type RampsProviderListItemProps = {
  * @param options0.provider
  * @param options0.isSelected
  * @param options0.isDisabled
- * @param options0.tag
+ * @param options0.tags
  * @param options0.subtitle
  * @param options0.showQuote
  * @param options0.quote
@@ -55,7 +58,7 @@ export default function RampsProviderListItem({
   provider,
   isSelected = false,
   isDisabled = false,
-  tag = null,
+  tags = [],
   subtitle = null,
   showQuote = false,
   quote = null,
@@ -66,20 +69,20 @@ export default function RampsProviderListItem({
 }: RampsProviderListItemProps) {
   const { formatToken, formatCurrency } = useFormatters();
 
-  const cryptoAmount =
-    quote?.quote?.amountOut !== undefined &&
-    quote.quote.amountOut !== null &&
-    tokenSymbol
-      ? formatToken(Number(quote.quote.amountOut), tokenSymbol, {
-          maximumFractionDigits: 6,
-          minimumFractionDigits: 0,
-        })
-      : '';
-  const fiatAmount =
-    quote?.quote?.amountOutInFiat !== undefined &&
-    quote.quote.amountOutInFiat !== null
-      ? formatCurrency(Number(quote.quote.amountOutInFiat), currency)
-      : null;
+  const { cryptoAmount, fiatAmount } = getRampsQuoteAmounts({
+    quote,
+    tokenSymbol,
+    currency,
+    formatToken,
+    formatCurrency,
+  });
+  const showSelectedCheckIcon = shouldShowSelectedCheckIcon({
+    isSelected,
+    showQuote,
+    cryptoAmount,
+    fiatAmount,
+    isLoading: quoteLoading,
+  });
 
   return (
     <ButtonBase
@@ -110,19 +113,21 @@ export default function RampsProviderListItem({
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              className="truncate text-left"
+              className="min-w-0 flex-1 truncate text-left"
+              data-testid={`ramps-provider-item-name-${provider.id}`}
             >
               {provider.name}
             </Text>
-            {tag ? (
+            {tags.map((tag, index) => (
               <Tag
+                key={tag.label}
                 severity={tag.severity}
-                className="shrink-0"
-                data-testid={`ramps-provider-item-tag-${provider.id}`}
+                className="shrink-0 self-center"
+                data-testid={`ramps-provider-item-tag-${provider.id}-${index}`}
               >
                 {tag.label}
               </Tag>
-            ) : null}
+            ))}
           </Box>
           {subtitle ? (
             <Text
@@ -149,7 +154,7 @@ export default function RampsProviderListItem({
                 isLoading={quoteLoading}
               />
             ) : null}
-            {isSelected ? (
+            {showSelectedCheckIcon ? (
               <Icon
                 name={IconName.Check}
                 size={IconSize.Md}

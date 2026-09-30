@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useSelector } from 'react-redux';
 import type { WalletComplianceStatus } from '@metamask/compliance-controller';
 import { submitRequestToBackground } from '../../../store/background-connection';
@@ -74,7 +80,6 @@ export function useComplianceGate(address?: AddressInput) {
   // effect runs. gate() reads these to detect a wallet switch that happens
   // while a compliance check is in flight.
   const currentAddressKeyRef = useRef(addressKey);
-  currentAddressKeyRef.current = addressKey;
 
   const checkCompliance = useCallback(async () => {
     if (addresses.length === 0) {
@@ -90,7 +95,14 @@ export function useComplianceGate(address?: AddressInput) {
   // gate() must call the current checkCompliance (bound to the current address
   // set), never a stale closure copy — its deps are intentionally minimal.
   const checkComplianceRef = useRef(checkCompliance);
-  checkComplianceRef.current = checkCompliance;
+
+  useLayoutEffect(() => {
+    currentAddressKeyRef.current = addressKey;
+  }, [addressKey]);
+
+  useLayoutEffect(() => {
+    checkComplianceRef.current = checkCompliance;
+  }, [checkCompliance]);
 
   // Prefetch compliance status on mount and whenever the address changes.
   // `checkCompliance` is memoized on `addresses`, so its identity changes

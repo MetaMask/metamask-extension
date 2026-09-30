@@ -23,7 +23,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
             class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--rounded-full"
+              class="mm-box mm-box--display-flex mm-box--rounded-full"
               style="margin-left: 0px;"
             >
               <div
@@ -38,7 +38,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="mm-box mm-box--display-flex mm-box--rounded-full"
               style="margin-left: -8px;"
             >
               <div
@@ -53,7 +53,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="mm-box mm-box--display-flex mm-box--rounded-full"
               style="margin-left: -8px;"
             >
               <div
@@ -67,7 +67,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="mm-box mm-box--display-flex mm-box--rounded-full"
               style="margin-left: -8px;"
             >
               <div

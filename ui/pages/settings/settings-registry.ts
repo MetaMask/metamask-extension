@@ -67,6 +67,8 @@ export type SettingsRouteMeta = {
   component?: ComponentType<React.PropsWithChildren<unknown>>;
   /** If true, this route appears as a tab in the TabBar */
   isTab?: boolean;
+  /** Index routes render into their parent's Outlet at their parent's URL (like a default child route). */
+  index?: boolean;
   /** Icon for TabBar (required if isTab is true) */
   iconName?: IconName;
   /** Background messenger capabilities delegated only while this route is mounted. */
@@ -139,6 +141,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
     isTab: true,
     iconName: IconName.Customize,
+    index: true,
   },
   [THEME_ROUTE]: {
     labelKey: 'theme',
@@ -472,6 +475,7 @@ export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
     labelKey: meta.labelKey,
     iconName: meta.iconName,
     component: meta.component,
+    index: meta.index,
   }));
 
 /**
@@ -488,4 +492,5 @@ export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
     path,
     component: meta.component,
     messengerCapabilities: meta.messengerCapabilities,
+    index: meta.index,
   }));
