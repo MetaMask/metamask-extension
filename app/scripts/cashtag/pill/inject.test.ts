@@ -8,11 +8,11 @@ describe('injectPills', () => {
   it('restores the original cashtag after the resolved ticker changes', async () => {
     const tweet = document.createElement('article');
     tweet.dataset.testid = 'tweet';
-    tweet.innerHTML = '<a href="/search?q=%24ABC&src=cashtag_click">$ABC</a>';
+    tweet.innerHTML = '<a href="/search?q=%24MSFT&src=cashtag_click">$MSFT</a>';
     document.body.append(tweet);
 
     const stop = await injectPills(async () => ({
-      ticker: 'XYZ',
+      ticker: 'MSFTON',
       name: 'Example Token',
       iconUrl: null,
       color: null,
@@ -30,10 +30,10 @@ describe('injectPills', () => {
     await Promise.resolve();
 
     const anchor = tweet.querySelector('a');
-    expect(anchor?.textContent).toContain('XYZ');
+    expect(anchor?.textContent).toContain('MSFT');
 
     stop.stop();
 
-    expect(anchor?.textContent).toBe('$ABC');
+    expect(anchor?.textContent).toBe('$MSFT');
   });
 });

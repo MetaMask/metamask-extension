@@ -3,7 +3,7 @@ import type { AssetData } from '../lib/types';
 import { injectPageStyles, removePageStyles } from '../lib/ui';
 import pillPageStyles from './page.css';
 
-function buildPillContents(data: AssetData) {
+function buildPillContents(data: AssetData, displayTicker: string) {
   const icon = document.createElement('img');
   icon.className = 'mm-cashtag-pill-icon';
   icon.alt = '';
@@ -26,7 +26,7 @@ function buildPillContents(data: AssetData) {
   }
 
   const ticker = document.createElement('span');
-  ticker.textContent = data.ticker;
+  ticker.textContent = displayTicker;
 
   const label = document.createElement('span');
   label.className = 'mm-cashtag-pill-label';
@@ -70,7 +70,7 @@ export async function injectPills(
     painted.add(element);
     element.dataset.mmCashtag = symbol;
     element.replaceChildren();
-    element.append(buildPillContents(data));
+    element.append(buildPillContents(data, symbol));
   };
 
   // Drop pill markup and reinstate the plain `$TICKER` cashtag text, then
