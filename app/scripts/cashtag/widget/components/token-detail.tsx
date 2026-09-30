@@ -67,7 +67,7 @@ export function TokenDetail({
 
   return (
     <div className="flex flex-col h-full p-6 gap-2">
-      <header className="mb-7 flex items-center justify-between gap-1">
+      <header className="mb-4 flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-4">
           <TokenAvatar asset={data} size="lg" />
           <div className="flex min-w-0 flex-col justify-center">
@@ -94,7 +94,7 @@ export function TokenDetail({
                 <>
                   <span>•</span>
                   <TextButton
-                    className="text-inherit truncate"
+                    className="text-inherit whitespace-nowrap shrink-0"
                     size={TextButtonSize.BodySm}
                     endIconName={IconName.ArrowRight}
                     endIconProps={{ size: IconSize.Xs }}

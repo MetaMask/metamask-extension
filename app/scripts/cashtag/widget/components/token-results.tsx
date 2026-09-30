@@ -26,7 +26,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
   const showLiquidity = results.some((asset) => asset.liquidity !== null);
 
   return (
-    <div className="flex h-full flex-col py-6">
+    <div className="flex h-full flex-col pt-6">
       <header className="mb-5 flex items-center gap-3 px-6">
         <ButtonIcon
           iconName={IconName.ArrowLeft}
