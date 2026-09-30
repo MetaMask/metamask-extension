@@ -30,7 +30,7 @@ function toInternalHref(path: string, query: URLSearchParams): string {
  */
 export async function resolveTrustedDeepLinkHref(
   href: string,
-  isUnifiedBuyEnabled = false,
+  isUnifiedBuyEnabled: boolean,
 ): Promise<string> {
   if (isInternalRouteHref(href)) {
     return href;
@@ -56,11 +56,10 @@ export async function resolveTrustedDeepLinkHref(
     // Route-specific destination resolution (e.g. `/buy` into the in-app
     // unified buy flow), so a trusted surface's `/buy` link behaves the same
     // no matter which surface it is clicked from.
-    const destination = resolveBuyDeepLinkDestination({
-      route: parsed.route,
-      destination: parsed.destination,
+    const destination = resolveBuyDeepLinkDestination(
+      parsed,
       isUnifiedBuyEnabled,
-    });
+    );
 
     if ('redirectTo' in destination) {
       return destination.redirectTo.toString();

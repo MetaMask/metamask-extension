@@ -9,11 +9,10 @@ describe('resolveBuyDeepLinkDestination', () => {
         'https://app.metamask.io/buy?address=0xabc&chainId=1&amount=100',
       ),
     };
-    const destination = resolveBuyDeepLinkDestination({
-      route: buy,
-      destination: buyDestination,
-      isUnifiedBuyEnabled: false,
-    });
+    const destination = resolveBuyDeepLinkDestination(
+      { route: buy, destination: buyDestination },
+      false,
+    );
 
     expect(destination).toStrictEqual(buyDestination);
   });
@@ -32,11 +31,10 @@ describe('resolveBuyDeepLinkDestination', () => {
   ];
   for (const [label, portfolioUrl] of internalCases) {
     it(`routes to the internal entry destination ${label}`, () => {
-      const destination = resolveBuyDeepLinkDestination({
-        route: buy,
-        destination: { redirectTo: portfolioUrl },
-        isUnifiedBuyEnabled: true,
-      });
+      const destination = resolveBuyDeepLinkDestination(
+        { route: buy, destination: { redirectTo: portfolioUrl } },
+        true,
+      );
 
       const internal = destination as {
         path: string;
@@ -67,11 +65,10 @@ describe('resolveBuyDeepLinkDestination', () => {
   ];
   for (const [label, route, internalDestination] of passthroughCases) {
     it(`${label} when the flag is on`, () => {
-      const destination = resolveBuyDeepLinkDestination({
-        route,
-        destination: internalDestination,
-        isUnifiedBuyEnabled: true,
-      });
+      const destination = resolveBuyDeepLinkDestination(
+        { route, destination: internalDestination },
+        true,
+      );
 
       expect(destination).toStrictEqual(internalDestination);
     });
