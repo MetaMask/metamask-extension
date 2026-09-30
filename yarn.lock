@@ -18330,12 +18330,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:24.10.13, @types/node@npm:>=13.7.0, @types/node@npm:>=18.0.0":
-  version: 24.10.13
-  resolution: "@types/node@npm:24.10.13"
+"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:>=18.0.0":
+  version: 26.6.3
+  resolution: "@types/node@npm:26.6.3"
   dependencies:
-    undici-types: "npm:~7.16.0"
-  checksum: 10/c779d14cf17758a9d603e0c0978c8045bd070e259617ec16f4ddac419ec11aac0e0cf2bb013dab008fdbd2f46c39f82397884662bbdfabeb19bef0079679ea48
+    undici-types: "npm:~8.9.0"
+  checksum: 10/278d5241522520fbadd46b41065d7587bbb214adb3c6f8a2a9a28754d374c578d090f7387866d09c79be1e9bbf5adc7eeea453032a52f77e70b06077f85c5c14
   languageName: node
   linkType: hard
 
@@ -18348,12 +18348,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:>=12.12.47":
-  version: 26.6.3
-  resolution: "@types/node@npm:26.6.3"
+"@types/node@npm:24.10.13":
+  version: 24.10.13
+  resolution: "@types/node@npm:24.10.13"
   dependencies:
-    undici-types: "npm:~8.9.0"
-  checksum: 10/278d5241522520fbadd46b41065d7587bbb214adb3c6f8a2a9a28754d374c578d090f7387866d09c79be1e9bbf5adc7eeea453032a52f77e70b06077f85c5c14
+    undici-types: "npm:~7.16.0"
+  checksum: 10/c779d14cf17758a9d603e0c0978c8045bd070e259617ec16f4ddac419ec11aac0e0cf2bb013dab008fdbd2f46c39f82397884662bbdfabeb19bef0079679ea48
   languageName: node
   linkType: hard
 
@@ -25961,27 +25961,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:3.4.13":
-  version: 3.4.13
-  resolution: "dompurify@npm:3.4.13"
+"dompurify@npm:3.4.16":
+  version: 3.4.16
+  resolution: "dompurify@npm:3.4.16"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/0db0a309a868a38aca042f606b37446977c35ee4501850a8c1bf2781337d79871daf1f4344bbf5b545f2a8c62e4d4e192c8fd6f1ff49ecec7c865c55a0aefee3
+  checksum: 10/a571d0e2bede4f739666afd640398a86854abd27c71ce0724910249e2fd2ca7ddb8098a9ab579d3a5b39058419af694421f8fe859a81fd6d8acda16019a8ab9d
   languageName: node
   linkType: hard
 
-"dompurify@patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch":
-  version: 3.4.13
-  resolution: "dompurify@patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch::version=3.4.13&hash=1f531d"
+"dompurify@patch:dompurify@npm%3A3.4.16#~/.yarn/patches/dompurify-npm-3.4.16-5722cc146c.patch":
+  version: 3.4.16
+  resolution: "dompurify@patch:dompurify@npm%3A3.4.16#~/.yarn/patches/dompurify-npm-3.4.16-5722cc146c.patch::version=3.4.16&hash=71fd3e"
   dependencies:
     "@types/trusted-types": "npm:^2.0.7"
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 10/ae33e4915d6462d9faf52ae0922b3922b8d0dd7c29c8373f3c55da3fb2568bf38b58c3bb9df06f99070fea3df860338539a71b1e6e26404c4e31761db319a67b
+  checksum: 10/f06c9d09ecd0ff8bd1794605d5cf92b1e6107c590a7ce1218ea020e8faf04f771a81b9c3a407e8f39139caa81111b602404661f0e03fa2fa5e15580ecf881f74
   languageName: node
   linkType: hard
 
@@ -35868,7 +35868,7 @@ __metadata:
     deep-freeze-strict: "npm:1.1.1"
     depcheck: "npm:^1.4.7"
     detect-port: "npm:^1.5.1"
-    dompurify: "patch:dompurify@npm%3A3.4.13#~/.yarn/patches/dompurify-npm-3.4.13-71386e31f7.patch"
+    dompurify: "patch:dompurify@npm%3A3.4.16#~/.yarn/patches/dompurify-npm-3.4.16-5722cc146c.patch"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
     eciesjs: "npm:^0.5.0"
