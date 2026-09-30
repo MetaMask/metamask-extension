@@ -893,50 +893,6 @@ describe('Onboarding Create Password', () => {
     });
   });
 
-  describe('Analytics IFrame', () => {
-    it('should inject iframe when participating in metametrics', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          consentDecisionMade: true,
-          optedIn: true,
-        },
-      };
-      const mockStore = configureMockStore([thunk])(state);
-      const { queryByTestId } = renderWithProvider(
-        <CreatePassword
-          createNewAccount={mockCreateNewAccount}
-          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
-          secretRecoveryPhrase="SRP"
-        />,
-        mockStore,
-      );
-      expect(queryByTestId('create-password-iframe')).toBeInTheDocument();
-    });
-
-    it('should not inject iframe when participating in metametrics', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          consentDecisionMade: true,
-          optedIn: false,
-        },
-      };
-      const mockStore = configureMockStore()(state);
-      const { queryByTestId } = renderWithProvider(
-        <CreatePassword
-          createNewAccount={mockCreateNewAccount}
-          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
-          secretRecoveryPhrase="SRP"
-        />,
-        mockStore,
-      );
-      expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
-    });
-  });
-
   describe('Uncovered routing branches', () => {
     it('routes to completion when keyring present and flow is socialImport (non-Firefox, no passkey)', () => {
       jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValue(false);

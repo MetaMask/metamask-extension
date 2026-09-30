@@ -16,12 +16,4 @@
   &__link-text {
     color: var(--color-primary-default);
   }
-
-  &__analytics-iframe {
-    width: 1px;
-    height: 1px;
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
 }
