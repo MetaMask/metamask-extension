@@ -1,3 +1,7 @@
+import type {
+  CanonicalMoneyAccountBalanceResponse,
+  FetchBalanceWithFallbackOptions,
+} from '@metamask/money-account-balance-service';
 import {
   MoneyAccountApiDataServiceQueryKeys,
   MoneyAccountBalanceServiceQueryKeys,
@@ -81,4 +85,38 @@ export async function invalidateMoneyAccountBalanceSourceCaches(
       ],
     ]),
   ]);
+}
+
+/**
+ * Read the Money Account balance with cache bypass and seed the UI facade cache.
+ *
+ * `useQuery` cannot pass `fresh` / `minBlock` without changing the cache key,
+ * and `fetchBalanceWithFallback` has no background cache entry of its own. A
+ * direct messenger call applies those options on the API source (the service
+ * ignores them for RPC), then `setQueryData` publishes the result to observers
+ * of the existing facade key.
+ *
+ * @param address - Money account address (same casing as used by the UI query).
+ * @param options - Freshness controls forwarded to `fetchBalanceWithFallback`.
+ * @returns The canonical balance, including source provenance.
+ */
+export async function fetchFreshMoneyAccountBalance(
+  address: string,
+  options: FetchBalanceWithFallbackOptions,
+): Promise<CanonicalMoneyAccountBalanceResponse> {
+  const result =
+    await submitRequestToBackground<CanonicalMoneyAccountBalanceResponse>(
+      'messengerCall',
+      [
+        'MoneyAccountBalanceService:fetchBalanceWithFallback',
+        [address, options],
+      ],
+    );
+
+  queryClient.setQueryData(
+    [MoneyAccountBalanceServiceQueryKeys.FETCH_BALANCE_WITH_FALLBACK, address],
+    result,
+  );
+
+  return result;
 }
