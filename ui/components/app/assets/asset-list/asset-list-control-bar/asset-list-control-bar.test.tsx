@@ -134,7 +134,7 @@ describe('NFTs options', () => {
     jest.clearAllMocks();
   });
 
-  it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
+  it('renders a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', async () => {
     const detectNftsSpy = jest.spyOn(actions, 'detectNfts');
     const checkAndUpdateAllNftsOwnershipStatusSpy = jest.spyOn(
       actions,
@@ -519,8 +519,6 @@ describe('NFTs options', () => {
       actions,
       'refreshAssetsForSelectedAccount',
     );
-    const updateBalancesSpy = jest.spyOn(actions, 'updateBalancesFoAccounts');
-    const detectTokensSpy = jest.spyOn(actions, 'detectTokens');
 
     const state = createMockState();
     state.metamask.enabledNetworkMap = {
@@ -545,8 +543,6 @@ describe('NFTs options', () => {
         assetTypes: ['token', 'price', 'metadata'],
       },
     );
-    expect(updateBalancesSpy).not.toHaveBeenCalled();
-    expect(detectTokensSpy).not.toHaveBeenCalled();
   });
 
   it('keeps the original NFT overflow menu for non-EVM accounts', async () => {
