@@ -26,13 +26,15 @@ const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
  * EVM-style `address` + `chainId` pair used by Portfolio links, converted to
  * a CAIP-19 asset id; the native token is the zero address or no address.
  *
- * @param pathParams - The deep link query params.
+ * @param params - The deep link query params.
  * @returns The intent, or undefined when no valid asset survives.
  */
 export function parseRampIntent(
-  pathParams: Record<string, string | undefined>,
+  params: URLSearchParams,
 ): RampDeepLinkIntent | undefined {
-  const { address, assetId: rawAssetId, chainId } = pathParams;
+  const address = params.get('address');
+  const rawAssetId = params.get('assetId');
+  const chainId = params.get('chainId');
 
   // Deep link params are untrusted input, and the buy flow's catalog lookup
   // fails open while the catalog is unsettled, so malformed asset ids must
@@ -58,7 +60,8 @@ export function parseRampIntent(
   }
 
   if (!address || address === NATIVE_ADDRESS) {
-    // The ramps controller currently represents native assets with slip44:.
+    // `slip44:.` is the native placeholder that `resolveRampControllerToken`
+    // matches against the catalog's `slip44:{coinType}` native ids.
     return { assetId: `${evmChainId}/slip44:.` as CaipAssetType };
   }
   if (isValidHexAddress(address)) {
