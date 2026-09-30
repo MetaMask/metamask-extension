@@ -16,6 +16,7 @@ import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags
 import { ARBITRUM_USDC } from '../../constants/perps';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -162,6 +163,7 @@ describe('useAutomaticTransactionPayToken', () => {
   const useIsMoneyAccountFlagDefaultMock = jest.mocked(
     useIsMoneyAccountFlagDefault,
   );
+  const getHardwareWalletTypeMock = jest.mocked(getHardwareWalletType);
 
   const setPayTokenMock = jest.fn(async () => undefined);
 
@@ -191,6 +193,7 @@ describe('useAutomaticTransactionPayToken', () => {
       isTokenAllowed: () => false,
     });
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
+    getHardwareWalletTypeMock.mockReturnValue(null);
   });
 
   afterEach(() => {
@@ -726,6 +729,31 @@ describe('useAutomaticTransactionPayToken', () => {
   });
 
   describe('money account deposit zero-balance tokens', () => {
+    it('selects a funded token for a hardware wallet deposit', () => {
+      getHardwareWalletTypeMock.mockReturnValue('ledger');
+      useTransactionPayAvailableTokensMock.mockReturnValue([
+        {
+          address: TOKEN_ADDRESS_1_MOCK,
+          chainId: CHAIN_ID_1_MOCK,
+          fiat: { balance: 0 },
+        },
+        {
+          address: TOKEN_ADDRESS_2_MOCK,
+          chainId: CHAIN_ID_2_MOCK,
+          fiat: { balance: 50 },
+        },
+      ] as Asset[]);
+
+      renderHookWithProvider({
+        transactionType: TransactionType.moneyAccountDeposit,
+      });
+
+      expect(setPayTokenMock).toHaveBeenCalledWith({
+        address: TOKEN_ADDRESS_2_MOCK,
+        chainId: CHAIN_ID_2_MOCK,
+      });
+    });
+
     it('skips a zero-balance preferred flag token and selects the highest funded token', () => {
       // `minimumRequiredTokenBalance` defaults to 0, so without the
       // deposit-specific filter a $0 preferred token would outrank a funded one.
