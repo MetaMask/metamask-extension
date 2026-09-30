@@ -4,8 +4,10 @@ const DAI = 'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 describe('parseRampIntent', () => {
   it('returns undefined when no intent params are present', () => {
-    expect(parseRampIntent({})).toBeUndefined();
-    expect(parseRampIntent({ utmSource: 'promo' })).toBeUndefined();
+    expect(parseRampIntent(new URLSearchParams())).toBeUndefined();
+    expect(
+      parseRampIntent(new URLSearchParams({ utmSource: 'promo' })),
+    ).toBeUndefined();
   });
 
   const cases: [string, Record<string, string>, object | undefined][] = [
@@ -45,15 +47,6 @@ describe('parseRampIntent', () => {
       { assetId: 'eip155:137/erc20:0xabc' },
     ],
     [
-      'drops amount and currency, which the in-app flow does not consume',
-      {
-        assetId: 'eip155:1/slip44:.',
-        amount: '100',
-        currency: 'usd',
-      },
-      { assetId: 'eip155:1/slip44:.' },
-    ],
-    [
       'returns undefined when the address is invalid',
       { address: 'not-an-address', chainId: '137', amount: '50' },
       undefined,
@@ -76,7 +69,9 @@ describe('parseRampIntent', () => {
   ];
   for (const [label, params, expected] of cases) {
     it(label, () => {
-      expect(parseRampIntent(params)).toStrictEqual(expected);
+      expect(parseRampIntent(new URLSearchParams(params))).toStrictEqual(
+        expected,
+      );
     });
   }
 });

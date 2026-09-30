@@ -10,10 +10,7 @@ import Spinner from '../../../components/ui/spinner';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-} from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
+import { getBuyPortfolioRedirectDestination } from '../../../../shared/lib/deep-links/buy-flow';
 import { parseRampIntent } from './parse-ramp-intent';
 
 /**
@@ -24,7 +21,7 @@ import { parseRampIntent } from './parse-ramp-intent';
  * handed to the shared `goToBuy` chain (same eligibility gating and token
  * preselection as the in-app Buy buttons). When Buy leaves the extension
  * instead (the Portfolio fallback), the legacy behavior is preserved: the
- * deep link params are forwarded verbatim to Portfolio in a new tab. If no
+ * deep link params are forwarded verbatim to Portfolio. If no
  * navigation is possible, the user is taken to the wallet home page; any
  * eligibility modal is still displayed by the global modal manager.
  *
@@ -37,14 +34,9 @@ export function BuyDeepLinkEntry() {
   const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
   const hasInitiatedRef = useRef(false);
 
-  // Drop navigations that land after unmount (React Router warns). This is
-  // unmount-only on purpose: the effect below must not cancel on dependency
-  // changes — `goToBuy`'s identity changes mid-flight when the user's
-  // region/catalog resolve, and a cancelled in-flight navigation would strand
-  // the user on this spinner (the effect re-runs into the `hasInitiatedRef`
-  // guard and never re-arms the flag). Resetting on setup keeps this correct
-  // under the dev-only StrictMode double-invoke, whose simulated remount runs
-  // the cleanup while the ref survives.
+  // Unmount-only on purpose: `goToBuy`'s identity changes mid-flight, and
+  // cancelling on dep changes would strand the user on the spinner. Guards
+  // against yanking a user who navigated away. Reset on setup for StrictMode.
   const isCancelledRef = useRef(false);
   useEffect(() => {
     isCancelledRef.current = false;
@@ -59,53 +51,50 @@ export function BuyDeepLinkEntry() {
     }
     hasInitiatedRef.current = true;
 
-    const searchParams = new URLSearchParams(location.search);
-    const params: Record<string, string | undefined> = {
-      address: searchParams.get('address') ?? undefined,
-      chainId: searchParams.get('chainId') ?? undefined,
-      assetId: searchParams.get('assetId') ?? undefined,
-      amount: searchParams.get('amount') ?? undefined,
-      currency: searchParams.get('currency') ?? undefined,
-    };
+    const params = new URLSearchParams(location.search);
 
     if (opensBuyInPortfolioTab) {
-      // Legacy redirect: forward the deep link params verbatim (the pre-UB2
-      // `/buy` behavior), preserving the link's token/amount. Intentionally
-      // NOT `openBuyCryptoInPdapp` (the `goToBuy` Portfolio path) — that
-      // builder drops the link's token/amount params and appends analytics
-      // params. In a fullscreen tab this navigates in place: the deep-link
-      // tab itself used to BE the external redirect, so no stray extension
-      // tab is left behind. Other surfaces (popup, side panel, notification
-      // windows) must not navigate themselves to a full website, so they open
-      // Portfolio in a new tab instead.
-      const { redirectTo } = getBuyPortfolioRedirectDestination(
-        new URLSearchParams(location.search),
-      );
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-        window.location.href = redirectTo.toString();
+      // Forward the deep link params verbatim (the pre-UB2 `/buy` behavior).
+      // Intentionally not `openBuyCryptoInPdapp`: it drops the link's params
+      // and appends analytics params.
+      const url =
+        getBuyPortfolioRedirectDestination(params).redirectTo.toString();
+      if (location.key === 'default') {
+        // The deep-link tab itself: redirect in place, as `/buy` used to.
+        window.location.href = url;
       } else {
-        global.platform.openTab({ url: redirectTo.toString() });
+        // Reached via an in-app link: keep the wallet open.
+        global.platform.openTab({ url });
+        navigate(DEFAULT_ROUTE, { replace: true });
       }
       return;
     }
 
     const intent = parseRampIntent(params);
 
+    const goHome = () => {
+      if (!isCancelledRef.current) {
+        navigate(DEFAULT_ROUTE, { replace: true });
+      }
+    };
+
     // Replace this page in history: it exists only to intercept the deep link,
     // and back-buttoning into it would re-run the interception forever.
     goToBuy(intent, { replace: true })
       .then((didNavigate) => {
         // No navigation was possible (an eligibility modal was shown instead).
-        if (!isCancelledRef.current && !didNavigate) {
-          navigate(DEFAULT_ROUTE, { replace: true });
+        if (!didNavigate) {
+          goHome();
         }
       })
-      .catch(() => {
-        if (!isCancelledRef.current) {
-          navigate(DEFAULT_ROUTE, { replace: true });
-        }
-      });
-  }, [goToBuy, navigate, opensBuyInPortfolioTab, location.search]);
+      .catch(goHome);
+  }, [
+    goToBuy,
+    navigate,
+    opensBuyInPortfolioTab,
+    location.search,
+    location.key,
+  ]);
 
   return (
     <Box
