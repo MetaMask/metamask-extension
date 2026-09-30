@@ -1196,9 +1196,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
     "TokenRatesController": {
       "marketData": {
         "0x539": {}
