@@ -221,6 +221,21 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           ),
         );
 
+        // V14 known-answer fixture for the count metrics. `showAccountListCount`
+        // reads 1 in every run of the A/A window, and a count that never varies
+        // is indistinguishable from an instrument that cannot see, because a
+        // constant has no variance for stage 3 to read. The check is whether a
+        // second occurrence moves it: opening the list again fires both traces
+        // once more, so both counts must read 2 and each duration must come
+        // from the second open. Off unless the fixture asks for it — a
+        // known-answer arm, not part of the measured flow.
+        if (process.env.BENCHMARK_V14_INJECT === 'account-list') {
+          const reopenAccountListPage = new AccountListPage(driver);
+          await reopenAccountListPage.closeMultichainAccountsPage();
+          await headerNavbar.openAccountMenu();
+          await reopenAccountListPage.checkPageIsLoaded(120000);
+        }
+
         // The app's own spans over opening the account list, as the Sentry SDK
         // sent them, timed on the browser's clock rather than on the harness's
         // (extension#46006 ([P0] Benchmark step timers measure the test
