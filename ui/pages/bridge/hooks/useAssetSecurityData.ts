@@ -85,7 +85,7 @@ export const useAssetSecurityData = (asset: BridgeToken) => {
   );
 
   const assetSecurityTrustBadgeResult = getAssetSecurityTrustBadgeResult(
-    assetIsVerified,
+    Boolean(assetIsVerified),
     assetIsSuspicious,
     assetIsMalicious,
     asset.securityData?.type,
