@@ -107,22 +107,18 @@ async function updateStateFromUrl(
       return;
     }
     if (parsed) {
-      const { destination } = parsed;
-
-      // Route-specific destination resolution (e.g. `/buy` into the in-app
-      // unified buy flow). The interstitial policy above is unaffected.
-      const resolvedDestination = resolveBuyDeepLinkDestination({
-        route: parsed.route,
-        destination,
+      // Resolve the final destination (e.g. `/buy` into the in-app buy flow).
+      const destination = resolveBuyDeepLinkDestination(
+        parsed,
         isUnifiedBuyEnabled,
-      });
+      );
 
       const href =
-        'redirectTo' in resolvedDestination
-          ? resolvedDestination.redirectTo.toString()
+        'redirectTo' in destination
+          ? destination.redirectTo.toString()
           : getExtensionURL(
-              resolvedDestination.path,
-              resolvedDestination.query.toString(),
+              destination.path,
+              destination.query.toString() ?? null,
             );
       const title = parsed.route.getTitle(url.searchParams);
 

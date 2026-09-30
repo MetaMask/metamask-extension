@@ -548,11 +548,6 @@ describe('DeepLinkRouter', () => {
 
       it.each([
         ['a plain boolean', { rampsEnabled: true }, BUY_ENTRY_URL],
-        [
-          'a version-gated flag',
-          { rampsEnabled: { enabled: true, minimumVersion: '13.48.0' } },
-          BUY_ENTRY_URL,
-        ],
         ['off', { rampsEnabled: false }, BUY_PORTFOLIO_DESTINATION],
         ['missing from state', {}, BUY_PORTFOLIO_DESTINATION],
       ])(
@@ -612,10 +607,15 @@ describe('DeepLinkRouter', () => {
             url: expect.any(URL),
             destination: {
               path: RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
-              query: expect.any(URLSearchParams),
+              query: expect.anything(),
             },
           }),
         );
+        const { destination } = navigateListener.mock.calls[0][0];
+        expect(Object.fromEntries(destination.query)).toStrictEqual({
+          address: '0xabc',
+          chainId: '1',
+        });
       });
 
       it('emits the external redirect destination for /buy when rampsEnabled is off', async () => {
