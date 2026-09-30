@@ -647,44 +647,27 @@ function sanitizeAddressesFromErrorMessages(report: SentryReport): void {
   );
 }
 
-// Patterns for sanitizing account addresses before sending events to Sentry.
+// Patterns for sanitizing sensitive data before sending events to Sentry.
 // EVM is handled separately so it can keep its `0x**` replacement form.
 const EVM_ADDRESS_REGEX = /0x[A-Fa-f0-9]{40}/gu;
-const NON_EVM_ADDRESS_REGEXES = [
+const SENSITIVE_DATA_REGEXES: [RegExp, string][] = [
   // Tron (base58, starts with `T`, 34 chars total)
-  /\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu,
+  [/\bT[1-9A-HJ-NP-Za-km-z]{33}\b/gu, '**'],
   // Stellar / XLM (starts with `G`, 56 chars total)
-  /\bG[A-Z2-7]{55}\b/gu,
+  [/\bG[A-Z2-7]{55}\b/gu, '**'],
   // Bitcoin bech32 / taproot (`bc1...`)
-  /\bbc1[02-9ac-hj-np-z]{6,87}\b/gu,
+  [/\bbc1[02-9ac-hj-np-z]{6,87}\b/gu, '**'],
   // Bitcoin legacy P2PKH / P2SH (base58, starts with `1` or `3`)
-  /\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu,
-  // Solana (base58, 32-44 chars). Kept last as its range overlaps the others.
-  /\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu,
-];
-
-/**
- * Sanitizes EVM and non-EVM account addresses from a string.
- *
- * @param text - The string to sanitize addresses from.
- * @returns The string with any addresses replaced by a mask.
- */
-function sanitizeAddressesFromString(text: string): string {
-  // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
-  // the base58 patterns below.
-  let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
-  for (const regex of NON_EVM_ADDRESS_REGEXES) {
-    sanitized = sanitized.replace(regex, '**');
-  }
-  return sanitized;
-}
-
-// Money account balance validation errors (from
-// `@metamask/money-account-balance-service`) interpolate raw balance amounts,
-// which can be used to identify an account.
-// TODO: once @metamask/money-account-balance-service is published with removal of amounts,
-// remove this local version and use the published version instead.
-const MONEY_BALANCE_AMOUNT_REGEXES: [RegExp, string][] = [
+  [/\b[13][1-9A-HJ-NP-Za-km-z]{25,34}\b/gu, '**'],
+  // Solana (base58, 32-44 chars). Kept last among addresses as its range
+  // overlaps the others.
+  [/\b[1-9A-HJ-NP-Za-km-z]{32,44}\b/gu, '**'],
+  // Money account balance validation errors (from
+  // `@metamask/money-account-balance-service`) interpolate raw balance amounts,
+  // which can be used to identify an account. These match exact wording: the
+  // address patterns above exclude `0` and do not catch amounts.
+  // TODO: remove once @metamask/money-account-balance-service stops
+  // interpolating amounts.
   [
     /(Invalid balance invariant: totalBalance \()[^)\n]*(\) must equal musdBalance \()[^)\n]*(\) \+ vmusdValueInMusd \()[^)\n]*(\))/gu,
     '$1**$2**$3**$4',
@@ -693,29 +676,19 @@ const MONEY_BALANCE_AMOUNT_REGEXES: [RegExp, string][] = [
 ];
 
 /**
- * Sanitizes Money account balance amounts from a string.
- *
- * @param text - The string to sanitize balance amounts from.
- * @returns The string with any balance amounts replaced by a mask.
- */
-function sanitizeMoneyBalanceAmountsFromString(text: string): string {
-  let sanitized = text;
-  for (const [regex, replacement] of MONEY_BALANCE_AMOUNT_REGEXES) {
-    sanitized = sanitized.replace(regex, replacement);
-  }
-  return sanitized;
-}
-
-/**
- * Sanitizes account addresses and Money account balance amounts from a string.
+ * Sanitizes account addresses and Money balance amounts from a string.
  *
  * @param text - The string to sanitize.
  * @returns The sanitized string.
  */
 function sanitizeSensitiveDataFromString(text: string): string {
-  return sanitizeMoneyBalanceAmountsFromString(
-    sanitizeAddressesFromString(text),
-  );
+  // Sanitize EVM addresses first so the resulting `0x**` cannot be re-matched by
+  // the base58 patterns below.
+  let sanitized = text.replace(EVM_ADDRESS_REGEX, '0x**');
+  for (const [regex, replacement] of SENSITIVE_DATA_REGEXES) {
+    sanitized = sanitized.replace(regex, replacement);
+  }
+  return sanitized;
 }
 
 /**

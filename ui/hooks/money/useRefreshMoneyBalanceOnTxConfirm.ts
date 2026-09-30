@@ -49,6 +49,14 @@ type RefreshMoneyBalanceMessenger = RouteMessengerFromCapabilities<
 
 type MoneyBalanceSnapshot = CanonicalMoneyAccountBalanceResponse | undefined;
 
+type RefreshOptions = { minBlock?: number };
+
+type InFlightRefresh = { pending?: RefreshOptions };
+
+// One refresh per address: concurrent loops bust each other's source caches and
+// compare against a baseline the other has moved.
+const inFlightRefreshByAddress = new Map<string, InFlightRefresh>();
+
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -136,7 +144,7 @@ const isAuthoritativeApiRead = (
  */
 const refreshMoneyBalanceQueries = async (
   address: string,
-  { minBlock }: { minBlock?: number },
+  { minBlock }: RefreshOptions,
 ) => {
   const baseline = readBalanceSnapshot(address);
   const requestOptions: FetchBalanceWithFallbackOptions = { fresh: true };
@@ -202,6 +210,49 @@ const refreshMoneyBalanceQueries = async (
   );
 };
 
+const mergeRefreshOptions = (
+  queued: RefreshOptions | undefined,
+  incoming: RefreshOptions,
+): RefreshOptions => {
+  const minBlocks = [queued?.minBlock, incoming.minBlock].filter(
+    (block): block is number => block !== undefined,
+  );
+  return minBlocks.length > 0 ? { minBlock: Math.max(...minBlocks) } : {};
+};
+
+/**
+ * Runs at most one refresh per address. A confirmation that lands while a
+ * refresh is running queues a single follow-up run (merged to the highest
+ * `minBlock`) instead of starting a competing loop, because the running loop
+ * may stop at the earlier block before the later transaction is reflected.
+ *
+ * @param address - Money account address.
+ * @param options - Freshness controls for this confirmation.
+ */
+const requestMoneyBalanceRefresh = async (
+  address: string,
+  options: RefreshOptions,
+): Promise<void> => {
+  const inFlight = inFlightRefreshByAddress.get(address);
+  if (inFlight) {
+    inFlight.pending = mergeRefreshOptions(inFlight.pending, options);
+    return;
+  }
+
+  const refresh: InFlightRefresh = {};
+  inFlightRefreshByAddress.set(address, refresh);
+  try {
+    let next: RefreshOptions | undefined = options;
+    while (next) {
+      refresh.pending = undefined;
+      await refreshMoneyBalanceQueries(address, next);
+      next = refresh.pending;
+    }
+  } finally {
+    inFlightRefreshByAddress.delete(address);
+  }
+};
+
 /**
  * Refreshes the Money Account balance when a transaction that moves money
  * balance confirms: direct Money txs (deposit/withdraw, including nested in a
@@ -253,7 +304,7 @@ export function useRefreshMoneyBalanceOnTxConfirm(): void {
       }
       refreshedIdsRef.current.add(transactionMeta.id);
 
-      refreshMoneyBalanceQueries(address, {
+      requestMoneyBalanceRefresh(address, {
         minBlock: resolveMinBlock(transactionMeta),
       }).catch((error) => {
         reportMoneyError(`${LOG_PREFIX} Balance refresh failed`, error, {

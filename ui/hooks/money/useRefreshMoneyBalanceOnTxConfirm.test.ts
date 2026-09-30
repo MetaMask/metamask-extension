@@ -355,6 +355,59 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
     expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(1);
   });
 
+  it('runs one refresh per address and queues a single follow-up at the highest minBlock', async () => {
+    let resolveFirstRead: (
+      value: CanonicalMoneyAccountBalanceResponse,
+    ) => void = () => undefined;
+    mockFetchFreshMoneyAccountBalance
+      .mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveFirstRead = resolve;
+        }),
+      )
+      .mockResolvedValueOnce(
+        balance(BASELINE_TOTAL, { source: 'api', asOfBlock: 32 }),
+      );
+
+    renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
+    const handler = getStatusUpdatedHandler();
+    const confirmOnMoneyChain = (id: string, blockNumber: string) =>
+      emit(handler, {
+        ...makeTx(TransactionType.moneyAccountDeposit),
+        id,
+        chainId: CHAIN_IDS.MONAD,
+        txReceipt: { blockNumber },
+      } as unknown as TransactionMeta);
+
+    confirmOnMoneyChain('tx-1', '0x10');
+    await waitFor(() => {
+      expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(1);
+    });
+    confirmOnMoneyChain('tx-2', '0x20');
+    confirmOnMoneyChain('tx-3', '0x14');
+    expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(1);
+
+    resolveFirstRead(balance(BASELINE_TOTAL, { source: 'api', asOfBlock: 16 }));
+    await waitFor(() => {
+      expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(2);
+    });
+
+    expect(mockFetchFreshMoneyAccountBalance).toHaveBeenNthCalledWith(
+      1,
+      MOCK_ADDRESS,
+      { fresh: true, minBlock: 16 },
+    );
+    expect(mockFetchFreshMoneyAccountBalance).toHaveBeenNthCalledWith(
+      2,
+      MOCK_ADDRESS,
+      { fresh: true, minBlock: 32 },
+    );
+    expect(mockInvalidateMoneyAccountBalanceSourceCaches).toHaveBeenCalledTimes(
+      2,
+    );
+    expect(mockReportMoneyError).not.toHaveBeenCalled();
+  });
+
   it('accepts the array-wrapped event payload', async () => {
     renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
     const handler = getStatusUpdatedHandler() as unknown as (
