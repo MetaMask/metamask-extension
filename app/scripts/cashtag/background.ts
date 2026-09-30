@@ -5,10 +5,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '#shared/constants/metametrics';
-import {
-  EXTENSION_MESSAGES,
-  WEB_WIDGET_CLICK_ENTRY_POINT,
-} from '#shared/constants/messages';
+import { EXTENSION_MESSAGES } from '#shared/constants/messages';
 import { buildAssetRoutePath } from '#shared/lib/asset-route';
 import type { ManifestFlags } from '#shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '#shared/lib/remote-feature-flag-utils';
@@ -418,7 +415,7 @@ function handleTrackEvent(message: CashtagMessage) {
     trackEvent(
       createEventBuilder('Unified SwapBridge Page Viewed')
         .addCategory(MetaMetricsEventCategory.CrossChainSwaps)
-        .addProperties({ entry_point: WEB_WIDGET_CLICK_ENTRY_POINT })
+        .addProperties({ source: 'x_widget' })
         .build(),
     );
     return Promise.resolve();
@@ -430,7 +427,7 @@ function handleTrackEvent(message: CashtagMessage) {
         .addCategory(MetaMetricsEventCategory.Tokens)
         .addProperties({
           location: 'Asset',
-          entry_point: WEB_WIDGET_CLICK_ENTRY_POINT,
+          source: 'x_widget',
           token_symbol: tokenSymbol,
           chain_id: chainId,
         })

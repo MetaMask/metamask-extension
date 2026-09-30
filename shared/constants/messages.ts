@@ -14,6 +14,4 @@ export const EXTENSION_MESSAGES = {
   X_WIDGET_ENABLED_CHANGED: 'METAMASK_X_WIDGET_ENABLED_CHANGED',
 } as const;
 
-export const WEB_WIDGET_CLICK_ENTRY_POINT = 'web_widget_click' as const;
-
 export const MESSENGER_SUBSCRIPTION_NOTIFICATION = 'messengerSubscription';
