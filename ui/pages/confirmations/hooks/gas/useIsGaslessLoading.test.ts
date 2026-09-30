@@ -1,4 +1,4 @@
-import { GasFeeToken } from '@metamask/transaction-controller';
+import { GasFeeToken, TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
@@ -22,6 +22,8 @@ async function runHook({
   gasFeeTokens,
   selectedGasFeeToken,
   excludeNativeTokenForFee,
+  isGasFeeSponsored,
+  type,
 }: {
   simulationEnabled: boolean;
   gaslessSupported: boolean;
@@ -30,6 +32,8 @@ async function runHook({
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   excludeNativeTokenForFee?: boolean;
+  isGasFeeSponsored?: boolean;
+  type?: TransactionType;
 }) {
   mockedUseIsGaslessSupported.mockReturnValue({
     isSupported: gaslessSupported,
@@ -42,16 +46,21 @@ async function runHook({
     nativeCurrency: 'USD',
   });
 
+  const confirmation = genUnapprovedContractInteractionConfirmation({
+    gasFeeTokens,
+    selectedGasFeeToken,
+    excludeNativeTokenForFee,
+    isGasFeeSponsored,
+  });
+  if (type) {
+    confirmation.type = type;
+  }
+
   const { result } = renderHookWithConfirmContextProvider(
     useIsGaslessLoading,
-    getMockConfirmStateForTransaction(
-      genUnapprovedContractInteractionConfirmation({
-        gasFeeTokens,
-        selectedGasFeeToken,
-        excludeNativeTokenForFee,
-      }),
-      { metamask: { useTransactionSimulations: simulationEnabled } },
-    ),
+    getMockConfirmStateForTransaction(confirmation, {
+      metamask: { useTransactionSimulations: simulationEnabled },
+    }),
   );
 
   return result.current;
@@ -103,6 +112,18 @@ describe('useIsGaslessLoading', () => {
     expect(result.isGaslessLoading).toBe(false);
   });
 
+  it('returns false for a money account withdraw even when gas fee tokens are still loading', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      type: TransactionType.moneyAccountWithdraw,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
   it('returns true if gas fee tokens are undefined (still loading)', async () => {
     const result = await runHook({
       simulationEnabled: true,
@@ -112,6 +133,30 @@ describe('useIsGaslessLoading', () => {
     });
 
     expect(result.isGaslessLoading).toBe(true);
+  });
+
+  it('returns false when gas is sponsored even if gas fee tokens are missing', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      isGasFeeSponsored: true,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
+  });
+
+  it('returns false for a money-account deposit even if gas fee tokens are missing', async () => {
+    const result = await runHook({
+      simulationEnabled: true,
+      gaslessSupported: true,
+      insufficientBalance: true,
+      gasFeeTokens: undefined,
+      type: TransactionType.moneyAccountDeposit,
+    });
+
+    expect(result.isGaslessLoading).toBe(false);
   });
 
   it('returns false if gas fee tokens are present', async () => {

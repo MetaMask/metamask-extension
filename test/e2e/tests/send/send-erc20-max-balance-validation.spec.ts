@@ -28,6 +28,7 @@ const CHAIN_ID_HEX = toHex(CHAIN_ID);
 const TOKEN_ADDRESS = '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947';
 const TOKEN_DECIMALS = 4;
 const SYMBOL = 'TST';
+const TOKEN_NAME = 'Test Standard Token';
 const INITIAL_RAW_BALANCE = '0x186a0';
 const POST_SEND_RAW_BALANCE = '0xc350';
 const RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
@@ -40,8 +41,17 @@ function mockCommonApis(mockServer: Mockttp) {
       )
       .always()
       .thenJson(200, {
-        fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 1337],
-        partialSupport: { balances: [] },
+        fullSupport: [
+          'eip155:1',
+          'eip155:137',
+          'eip155:56',
+          'eip155:59144',
+          'eip155:8453',
+          'eip155:10',
+          'eip155:42161',
+          'eip155:1337',
+        ],
+        partialSupport: [],
       }),
     mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
@@ -102,11 +112,7 @@ function mockV5Balances(mockServer: Mockttp, tstBalance: { value: string }) {
 }
 
 describe('Send ERC20 - Max Balance Validation', function () {
-  // ASSETS-3385: AssetsController discards a WebSocket balance update when a
-  // stale accounts-API snapshot commits after it, so the Tokens list / Send
-  // "Max" never reflect the WS post-balance. Skip until that race is fixed.
-  // eslint-disable-next-line mocha/no-skipped-tests -- ASSETS-3385: blocked on AssetsController WS vs accounts-API race
-  it.skip('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
+  it('reflects a WebSocket balance update in the Tokens list and Send "Max"', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
 
@@ -149,7 +155,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
             aggregators: [],
             decimals: TOKEN_DECIMALS,
             image: undefined,
-            name: 'Test Standard Token',
+            name: TOKEN_NAME,
             symbol: SYMBOL,
             type: 'erc20',
           },
@@ -235,7 +241,7 @@ describe('Send ERC20 - Max Balance Validation', function () {
         wsServer.sendMessage(JSON.stringify(notification));
 
         await tokensTab.checkTokenAmountIsDisplayed(`5 ${SYMBOL}`);
-        await tokensTab.openTokenDetails(SYMBOL);
+        await tokensTab.openTokenDetails(TOKEN_NAME);
         await tokensTab.startSendFlow();
         await sendPage.fillRecipient({ recipientAddress: RECIPIENT_ADDRESS });
 

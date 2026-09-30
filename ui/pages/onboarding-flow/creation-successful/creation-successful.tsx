@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   Button,
   ButtonSize,
@@ -13,23 +13,23 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   TextButton,
-} from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from "@metamask/design-system-react";
+import { useI18nContext } from "../../../hooks/useI18nContext";
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-} from '../../../helpers/constants/routes';
+} from "../../../helpers/constants/routes";
 import {
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
   getIsWalletResetInProgress,
-} from '../../../ducks/metamask/metamask';
-import { LottieAnimation } from '../../../components/component-library/lottie-animation';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { useOnboardingCompletion } from '../hooks/useOnboardingCompletion';
-import WalletReadyAnimation from './wallet-ready-animation';
+} from "../../../ducks/metamask/metamask";
+import { LottieAnimation } from "../../../components/component-library/lottie-animation";
+import { useSidePanelEnabled } from "../../../hooks/useSidePanelEnabled";
+import ZENDESK_URLS from "../../../helpers/constants/zendesk-url";
+import { useOnboardingSearchParams } from "../hooks/useOnboardingSearchParams";
+import { useOnboardingCompletion } from "../hooks/useOnboardingCompletion";
+import WalletReadyAnimation from "./wallet-ready-animation";
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
@@ -67,12 +67,7 @@ export default function CreationSuccessful() {
     }
 
     markCompletionPageSeen();
-  }, [
-    isFromReminder,
-    isInitialized,
-    isResetWalletInProgress,
-    markCompletionPageSeen,
-  ]);
+  }, [isFromReminder, isInitialized, isResetWalletInProgress, markCompletionPageSeen]);
 
   useEffect(() => {
     const browserWithSidePanel = chrome;
@@ -84,11 +79,9 @@ export default function CreationSuccessful() {
       // NOTE: `sidePanel.onClosed` event is only available on later versions of Chrome
       // REFERENCE: {@link https://developer.chrome.com/docs/extensions/reference/api/sidePanel#event-onClosed}
       if (browserWithSidePanel?.sidePanel?.onClosed?.addListener) {
-        browserWithSidePanel.sidePanel.onClosed.addListener(
-          handleSidePanelClosed,
-        );
+        browserWithSidePanel.sidePanel.onClosed.addListener(handleSidePanelClosed);
       } else {
-        console.warn('`sidePanel.onClosed` event is not available');
+        console.warn("`sidePanel.onClosed` event is not available");
         // If the event is not available, we set the state to false to prevent the button from being disabled
         setIsSidePanelOpen(false);
       }
@@ -96,29 +89,21 @@ export default function CreationSuccessful() {
 
     return () => {
       if (browserWithSidePanel?.sidePanel?.onClosed?.removeListener) {
-        browserWithSidePanel.sidePanel.onClosed.removeListener(
-          handleSidePanelClosed,
-        );
+        browserWithSidePanel.sidePanel.onClosed.removeListener(handleSidePanelClosed);
       }
     };
   }, [isSidePanelEnabled, setIsSidePanelOpen]);
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
-      return t('walletReadyLoseSrpFromReminder');
+      return t("walletReadyLoseSrpFromReminder");
     }
 
-    return t('walletReadyLoseSrp');
+    return t("walletReadyLoseSrp");
   }, [isFromReminder, t]);
 
   const renderFox = useMemo(() => {
-    return (
-      <LottieAnimation
-        path="images/animations/fox/celebrating.lottie.json"
-        loop
-        autoplay
-      />
-    );
+    return <LottieAnimation path="images/animations/fox/celebrating.lottie.json" loop autoplay />;
   }, []);
 
   const onDone = useCallback(async () => {
@@ -134,18 +119,13 @@ export default function CreationSuccessful() {
     }
 
     await completeOnboardingFromCompletionPage();
-  }, [
-    completeOnboardingFromCompletionPage,
-    isFromReminder,
-    isResetWalletInProgress,
-    navigate,
-  ]);
+  }, [completeOnboardingFromCompletionPage, isFromReminder, isResetWalletInProgress, navigate]);
 
-  let doneButtonLabel = t('done');
+  let doneButtonLabel = t("done");
   if (isFromSettingsSRPBackup) {
-    doneButtonLabel = t('backToWallet');
+    doneButtonLabel = t("backToWallet");
   } else if (isSidePanelEnabled) {
-    doneButtonLabel = t('openWallet');
+    doneButtonLabel = t("openWallet");
   }
 
   const renderDoneButton = () => {
@@ -161,9 +141,7 @@ export default function CreationSuccessful() {
           size={ButtonSize.Lg}
           className="w-full"
           onClick={onDone}
-          disabled={
-            !isFromSettingsSRPBackup && isSidePanelEnabled && isSidePanelOpen
-          }
+          disabled={!isFromSettingsSRPBackup && isSidePanelEnabled && isSidePanelOpen}
         >
           {doneButtonLabel}
         </Button>
@@ -192,34 +170,23 @@ export default function CreationSuccessful() {
             justifyContent={BoxJustifyContent.Center}
             alignItems={BoxAlignItems.Start}
           >
-            <Text
-              variant={TextVariant.HeadingLg}
-              className="self-start mb-4 flex justify-center"
-            >
-              {t('yourWalletIsReadyFromReminder')}
+            <Text variant={TextVariant.HeadingLg} className="self-start mb-4 flex justify-center">
+              {t("yourWalletIsReadyFromReminder")}
             </Text>
             <Box className="w-full mb-6">
               <Box className="w-36 h-36 mx-auto">{renderFox}</Box>
             </Box>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="mb-6"
-            >
+            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative} className="mb-6">
               {renderDetails1}
             </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              className="mb-6"
-            >
-              {t('walletReadyLearn', [
+            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative} className="mb-6">
+              {t("walletReadyLearn", [
                 <TextButton
                   key="walletReadyLearn"
                   className="hover:bg-transparent active:bg-transparent w-fit"
                   onClick={handleLearnMoreClick}
                 >
-                  {t('learnHow')}
+                  {t("learnHow")}
                 </TextButton>,
               ])}
             </Text>
@@ -227,20 +194,19 @@ export default function CreationSuccessful() {
         </Box>
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
-      {!isFromSettingsSRPBackup && (
-        <Text className="title">{t('yourWalletIsReady')}</Text>
-      )}
+      {!isFromSettingsSRPBackup && <Text className="title">{t("yourWalletIsReady")}</Text>}
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (
-        <Box>
-          <TextButton
-            onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-            className="hover:bg-transparent active:bg-transparent w-full text-center"
-            data-testid="manage-default-settings"
-          >
-            {t('manageDefaultSettings')}
-          </TextButton>
-        </Box>
+        <Button
+          variant={ButtonVariant.Tertiary}
+          size={ButtonSize.Lg}
+          className="w-full"
+          data-testid="manage-default-settings"
+          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          disabled={isSidePanelEnabled && isSidePanelOpen}
+        >
+          {t("manageDefaultSettings")}
+        </Button>
       )}
     </Box>
   );

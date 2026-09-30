@@ -20,7 +20,7 @@ type TransactionIdProps = {
 
 export function TransactionId({ value }: TransactionIdProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
 
   if (!value) {
     return null;

@@ -23,9 +23,6 @@ import {
   hasValidTransactionParams,
   hasValidSendCallsParams,
   isSecurityAlertsEnabledByUser,
-  isConnected,
-  connectScreenHasBeenPrompted,
-  isEip7715AdvancedPermissionsRequest,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
@@ -34,12 +31,21 @@ export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
   networkClientId: NetworkClientId;
 };
 
-export function createTrustSignalsMiddleware(
-  networkController: NetworkController,
-  appStateController: AppStateController,
+/**
+ * Scan the requesting origin. Kept separate from address scanning because the
+ * two need different positions in the Multichain API stack: the origin scan has
+ * to run above the session handlers, which answer `wallet_createSession` and
+ * `wallet_getSession` without passing them down.
+ *
+ * @param phishingController - Owns the URL scan and its cache
+ * @param preferencesController - Source of the user's security alerts setting
+ * @param shouldScanOrigin - Per-transport gate, since no method name is shared
+ * @param requestUrl - Full sender URL, preferred over the bare origin
+ */
+export function createOriginScanMiddleware(
   phishingController: PhishingController,
   preferencesController: PreferencesController,
-  getPermittedAccounts: (origin: string) => string[],
+  shouldScanOrigin: (req: TrustSignalsMiddlewareRequest) => boolean,
   requestUrl?: string,
 ) {
   return async (
@@ -57,6 +63,46 @@ export function createTrustSignalsMiddleware(
         return;
       }
 
+      if (shouldScanOrigin(req)) {
+        scanUrl(req, phishingController);
+      }
+    } catch (error) {
+      console.error('[createOriginScanMiddleware] error: ', error);
+    } finally {
+      next();
+    }
+  };
+}
+
+/**
+ * Scan the addresses a request touches. Gated on the EIP-1193 method name on
+ * both transports, since Multichain API requests reach this point already
+ * unwrapped.
+ *
+ * @param networkController - Resolves the request's chain
+ * @param appStateController - Holds the verdict cache the confirmation UI reads
+ * @param phishingController - Performs the address scan
+ * @param preferencesController - Source of the user's security alerts setting
+ */
+export function createAddressScanMiddleware(
+  networkController: NetworkController,
+  appStateController: AppStateController,
+  phishingController: PhishingController,
+  preferencesController: PreferencesController,
+) {
+  return async (
+    req: TrustSignalsMiddlewareRequest,
+    _res: JsonRpcResponse,
+    next: () => void,
+  ) => {
+    try {
+      if (
+        !isSecurityAlertsEnabledByUser(preferencesController) ||
+        !isSecurityAlertsAPIEnabled()
+      ) {
+        return;
+      }
+
       if (isEthSendTransaction(req)) {
         handleEthSendTransaction(
           req,
@@ -64,7 +110,6 @@ export function createTrustSignalsMiddleware(
           networkController,
           phishingController,
         );
-        scanUrl(req, phishingController);
       } else if (isWalletSendCalls(req)) {
         handleWalletSendCalls(
           req,
@@ -72,7 +117,6 @@ export function createTrustSignalsMiddleware(
           networkController,
           phishingController,
         );
-        scanUrl(req, phishingController);
       } else if (isEthSignTypedData(req)) {
         handleEthSignTypedData(
           req,
@@ -80,16 +124,9 @@ export function createTrustSignalsMiddleware(
           networkController,
           phishingController,
         );
-        scanUrl(req, phishingController);
-      } else if (isConnected(req, getPermittedAccounts)) {
-        scanUrl(req, phishingController);
-      } else if (connectScreenHasBeenPrompted(req)) {
-        scanUrl(req, phishingController);
-      } else if (isEip7715AdvancedPermissionsRequest(req)) {
-        scanUrl(req, phishingController);
       }
     } catch (error) {
-      console.error('[createTrustSignalsMiddleware] error: ', error);
+      console.error('[createAddressScanMiddleware] error: ', error);
     } finally {
       next();
     }
@@ -104,7 +141,7 @@ function scanUrl(
 
   if (urlToScan) {
     phishingController.scanUrl(urlToScan).catch((error) => {
-      console.error('[createTrustSignalsMiddleware] error:', error);
+      console.error('[createOriginScanMiddleware] error:', error);
     });
   }
 }
@@ -134,7 +171,7 @@ function scanAddressInBackground(
     phishingController,
   ).catch((error) => {
     console.error(
-      `[createTrustSignalsMiddleware] error scanning ${logLabel}:`,
+      `[createAddressScanMiddleware] error scanning ${logLabel}:`,
       error,
     );
   });

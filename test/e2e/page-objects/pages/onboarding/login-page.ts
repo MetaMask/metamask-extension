@@ -30,7 +30,7 @@ class LoginPage {
 
   private readonly incorrectPasswordMessage: object = {
     testId: 'unlock-page-help-text',
-    text: 'Password is incorrect. Please try again.',
+    text: 'Incorrect password. Try again.',
   };
 
   private readonly parentSelector: object = {
@@ -123,6 +123,13 @@ class LoginPage {
     await this.driver.clickElement(this.forgotPasswordButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.resetPasswordModalButton,
+    );
+  }
+
+  async isPageLoaded(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(
+      this.parentSelector,
+      200,
     );
   }
 

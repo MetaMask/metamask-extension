@@ -1,9 +1,31 @@
 import log from 'loglevel';
-import { PLATFORM_FIREFOX } from '../../shared/constants/app';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { PLATFORM_FIREFOX } from '#shared/constants/app';
+import { getRemoteFeatureFlags } from '#shared/lib/selectors/remote-feature-flags';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
-import { AppStateController } from './controllers/app-state-controller';
+import type { AppStateController } from './controllers/app-state-controller';
+
+type OnUpdateAppStateController = Pick<
+  AppStateController,
+  | 'setLastUpdatedAt'
+  | 'setLastUpdatedFromVersion'
+  | 'setPendingExtensionVersion'
+> & {
+  state: Pick<AppStateController['state'], 'lastUpdatedFromVersion'>;
+};
+
+type OnUpdateController = {
+  store: MetaMaskController['store'];
+  appStateController: OnUpdateAppStateController;
+  remoteFeatureFlagController: {
+    state: Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>;
+  };
+};
+
+type OnUpdatePlatform = Pick<ExtensionPlatform, 'getVersion'>;
+
 /**
  * Trigger actions that should happen only upon update installation. Calling
  * this might result in the extension restarting on Chromium-based browsers.
@@ -11,19 +33,15 @@ import { AppStateController } from './controllers/app-state-controller';
  * @param controller - The MetaMask controller instance.
  * @param controller.store - The MetaMask store.
  * @param controller.appStateController - The app state controller.
+ * @param controller.remoteFeatureFlagController - The cached remote feature flags.
  * @param platform - The ExtensionPlatform API.
  * @param previousVersion - The previous version string.
  * @param requestSafeReload - A function to request a safe reload of the
  * extension background process.
  */
 export function onUpdate(
-  // we use a custom type here because the `MetaMaskController` type doesn't
-  // include the actual controllers as properties.
-  controller: {
-    store: MetaMaskController['store'];
-    appStateController: AppStateController;
-  },
-  platform: ExtensionPlatform,
+  controller: OnUpdateController,
+  platform: OnUpdatePlatform,
   previousVersion: string,
   requestSafeReload: () => void,
 ): void {
@@ -51,7 +69,14 @@ export function onUpdate(
   appStateController.setLastUpdatedFromVersion(previousVersion);
   appStateController.setPendingExtensionVersion(null);
 
-  if (!isFirefox) {
+  // Use cached flags without waiting for a network refresh during startup.
+  // Only an explicit false disables the workaround; missing or malformed flags
+  // retain the existing behavior. Manifest overrides support local testing.
+  const { extensionPlatformAutoReloadAfterUpdate } = getRemoteFeatureFlags({
+    metamask: controller.remoteFeatureFlagController.state,
+  });
+
+  if (!isFirefox && extensionPlatformAutoReloadAfterUpdate !== false) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
     // by doing a safe reload after an update.
     //

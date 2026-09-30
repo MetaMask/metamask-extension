@@ -1,7 +1,9 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import { IconColor } from '@metamask/design-system-react';
 
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import { OrderEntryHeader } from './order-entry-header';
@@ -49,7 +51,17 @@ describe('OrderEntryHeader', () => {
       mockStore,
     );
 
-    fireEvent.click(screen.getByTestId('perps-order-entry-back-button'));
+    const backButton = screen.getByRole('button', {
+      name: messages.back.message,
+    });
+    expect(backButton).toHaveAttribute(
+      'data-testid',
+      'perps-order-entry-back-button',
+    );
+    expect(backButton.querySelector('svg')).toHaveClass(
+      IconColor.IconAlternative,
+    );
+    fireEvent.click(backButton);
 
     expect(onBack).toHaveBeenCalledTimes(1);
   });

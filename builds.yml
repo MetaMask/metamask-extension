@@ -29,7 +29,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
@@ -55,7 +55,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
@@ -80,7 +80,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
@@ -105,7 +105,7 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.2.0/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.3.1/index.html
       - SUPPORT_LINK: https://support.metamask.io/?utm_source=extension
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
@@ -227,6 +227,11 @@ env:
   # Core Backend Services
   ###
   - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
+  - MM_BACKEND_ACCOUNTS_API_URL
+  - MM_BACKEND_PRICES_API_URL
+  - MM_BACKEND_TOKEN_API_URL
+  - MM_BACKEND_TOKENS_API_URL
+  - MM_BACKEND_DISABLE_AUTH
 
   ###
   # Notifications Feature
@@ -371,9 +376,6 @@ env:
   - MM_PERPS_HL_BUILDER_ADDRESS_TESTNET: null
   # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
   - PERPS_ENABLED: false
-  # Build-time gate: when false AssetsController is instantiated but state remains empty.
-  # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
@@ -383,6 +385,10 @@ env:
   # can be reviewed without live deposits/withdraws. Remote flag
   # moneyActivityMockDataEnabled takes precedence when it is a boolean.
   - MM_MONEY_ACTIVITY_MOCK_DATA_ENABLED: false
+  # Local/QA only: make Money activity rows navigate to the transaction
+  # details page. Remote flag moneyEnableActivityDetails takes precedence
+  # when it is a boolean.
+  - MM_MONEY_ENABLE_ACTIVITY_DETAILS: false
 
   ###
   # Meta variables
@@ -416,9 +422,13 @@ env:
   - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
 
   ###
-  # Host to watch for deep links into MetaMask
+  # Canonical host used to construct signed deep links
   ###
-  - DEEP_LINK_HOST: 'link.metamask.io'
+  - CANONICAL_DEEP_LINK_HOST: 'link.metamask.io'
+  ###
+  # Comma-separated hosts to watch for incoming deep links
+  ###
+  - DEEP_LINK_HOSTS: 'link.metamask.io,link.metamask.com'
   ###
   # RAW base64 encoded public key used to verify deep link signatures
   ###
@@ -442,12 +452,14 @@ env:
 
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+  # Opt in to DEV identity backends (`dev` | `prod`). Default prod.
+  - MM_DEV_API_ENV: prod
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
 
   # Basic Functionality toggle (required for onboarding)
-  - BFT_CONSOLIDATION_ENABLED: false
+  - BFT_CONSOLIDATION_ENABLED: true
 
   # Sentry browser SDK serverless environment checks
   - FUNCTIONS_WORKER_RUNTIME: ''

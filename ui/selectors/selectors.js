@@ -1411,7 +1411,7 @@ export function getIsTestnet(state) {
   return TEST_CHAINS.includes(chainId);
 }
 
-export function getShowTestNetworks(state) {
+export function getShowTestNetworksPreference(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
 }
@@ -2750,7 +2750,7 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 // Deep-equal memo: reduce filters configs into a new enabled-networks map each evaluation.
 export const getAllEnabledNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
-  getShowTestNetworks,
+  getShowTestNetworksPreference,
   (networkConfigurationsByChainId, showTestNetworks) =>
     Object.entries(networkConfigurationsByChainId).reduce(
       (acc, [chainId, network]) => {
@@ -2992,6 +2992,27 @@ export function getIsPasskeyRegistered(state) {
  */
 export function getPasskeyDerivationMethod(state) {
   return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
+ * Checks if the enrolled passkey derives the vault wrapping key from its
+ * legacy user handle.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyUserHandleBased(state) {
+  return getPasskeyDerivationMethod(state) === 'userHandle';
+}
+
+/**
+ * Checks if the enrolled passkey derives the vault wrapping key using PRF.
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyPRFBased(state) {
+  return getPasskeyDerivationMethod(state) === 'prf';
 }
 
 /**

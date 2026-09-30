@@ -18,7 +18,7 @@ const inputLabelBase = {
   color: 'var(--color-text-default)',
 };
 
-const fontFamily = ['"Geist"', 'Helvetica', 'Arial', 'sans-serif'].join(', ');
+const fontFamily = ['"Inter"', 'Helvetica', 'Arial', 'sans-serif'].join(', ');
 
 const getMaterialThemeInputProps = ({
   dir,

@@ -1,13 +1,18 @@
 import log from 'loglevel';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FormTextField,
+  HelpText,
+  HelpTextSeverity,
   IconName,
   TextButton,
   TextButtonSize,
+  TextFieldSize,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -36,7 +41,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
@@ -49,19 +57,11 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import {
-  Box,
-  FormTextField,
-  FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-  Text,
-} from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -153,16 +153,9 @@ export const NetworksForm = ({
 
   const { safeChains } = useSafeChains();
 
-  const [errors, setErrors] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [warnings, setWarnings] = useState<
-    Record<string, { key: string; msg: string } | undefined>
-  >({});
-
-  const [suggestedName, setSuggestedName] = useState<string>();
-  const [suggestedTicker, setSuggestedTicker] = useState<string>();
+  const [rpcFetchError, setRpcFetchError] = useState<
+    { key: string; msg: string } | undefined
+  >();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
@@ -172,9 +165,9 @@ export const NetworksForm = ({
       ? endpoint.replace('{infuraProjectId}', infuraProjectId ?? '')
       : endpoint;
 
-  // Validate the network name when it changes
-  useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+  const chainIdHex = chainId ? toHex(chainId) : undefined;
+
+  const { suggestedName, nameWarning } = useMemo(() => {
     const expectedName = chainIdHex
       ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
         NETWORKS_BYPASSING_VALIDATION[
@@ -183,22 +176,19 @@ export const NetworksForm = ({
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
-    const mismatch = expectedName && expectedName !== name;
-    setSuggestedName(mismatch ? expectedName : undefined);
-    setWarnings((state) => ({
-      ...state,
-      name: mismatch
+    const mismatch = Boolean(expectedName && expectedName !== name);
+    return {
+      suggestedName: mismatch ? expectedName : undefined,
+      nameWarning: mismatch
         ? {
             key: 'wrongNetworkName',
             msg: t('wrongNetworkName'),
           }
         : undefined,
-    }));
-  }, [chainId, name, safeChains]);
+    };
+  }, [chainIdHex, name, safeChains, t]);
 
-  // Validate the ticker when it changes
-  useEffect(() => {
-    const chainIdHex = chainId ? toHex(chainId) : undefined;
+  const { suggestedTicker, tickerWarning } = useMemo(() => {
     const expectedSymbol = chainIdHex
       ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
@@ -213,23 +203,22 @@ export const NetworksForm = ({
         ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
       : false;
 
-    const mismatch =
-      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+    const mismatch = Boolean(
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol,
+    );
 
-    setSuggestedTicker(mismatch ? expectedSymbol : undefined);
-    setWarnings((state) => ({
-      ...state,
-      ticker: mismatch
+    return {
+      suggestedTicker: mismatch ? expectedSymbol : undefined,
+      tickerWarning: mismatch
         ? {
             key: 'chainListReturnedDifferentTickerSymbol',
             msg: t('chainListReturnedDifferentTickerSymbol'),
           }
         : undefined,
-    }));
-  }, [chainId, ticker, safeChains]);
+    };
+  }, [chainIdHex, ticker, safeChains, t]);
 
-  // Validate the chain ID when it changes
-  useEffect(() => {
+  const chainIdError = useMemo(() => {
     let error: [string, string] | undefined;
 
     if (chainId === undefined || chainId === '') {
@@ -254,8 +243,6 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
-    const chainIdHex = toHex(chainId);
-
     if (!error && !existingNetwork) {
       const matchingNetwork = chainIdHex
         ? networkConfigurations[chainIdHex]
@@ -268,48 +255,82 @@ export const NetworksForm = ({
       }
     }
 
-    let rpcError: [string, string] | undefined;
-    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
-      rpcError = [
-        'endpointReturnedDifferentChainId',
-        t('endpointReturnedDifferentChainId', [hexToDecimal(fetchedChainId)]),
-      ];
-    }
+    return error ? { key: error[0], msg: error[1] } : undefined;
+  }, [chainId, chainIdHex, existingNetwork, networkConfigurations, t]);
 
-    setErrors((state) => ({
-      ...state,
-      chainId: error ? { key: error[0], msg: error[1] } : undefined,
-      rpcUrl: rpcError ? { key: rpcError[0], msg: rpcError[1] } : undefined,
-    }));
-  }, [chainId, fetchedChainId, existingNetwork?.chainId]);
+  const rpcMismatchError = useMemo(() => {
+    if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
+      return {
+        key: 'endpointReturnedDifferentChainId',
+        msg: t('endpointReturnedDifferentChainId', [
+          hexToDecimal(fetchedChainId),
+        ]),
+      };
+    }
+    return undefined;
+  }, [fetchedChainId, chainIdHex, t]);
+
+  const warnings = useMemo(
+    () => ({
+      name: nameWarning,
+      ticker: tickerWarning,
+    }),
+    [nameWarning, tickerWarning],
+  );
+
+  const errors = useMemo(
+    () => ({
+      chainId: chainIdError,
+      rpcUrl: rpcFetchError ?? rpcMismatchError,
+    }),
+    [chainIdError, rpcFetchError, rpcMismatchError],
+  );
+
+  const selectedRpcUrl =
+    rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+  const [prevSelectedRpcUrl, setPrevSelectedRpcUrl] = useState(selectedRpcUrl);
+
+  if (selectedRpcUrl !== prevSelectedRpcUrl) {
+    setPrevSelectedRpcUrl(selectedRpcUrl);
+    setRpcFetchError(undefined);
+    setFetchedChainId(undefined);
+  }
 
   // Fetch the chain ID from the RPC endpoint when it changes
   useEffect(() => {
-    const rpcUrl =
-      rpcUrls?.rpcEndpoints?.[rpcUrls?.defaultRpcEndpointIndex ?? -1]?.url;
+    if (!selectedRpcUrl) {
+      return undefined;
+    }
 
-    if (rpcUrl) {
-      jsonRpcRequest(templateInfuraRpc(rpcUrl), 'eth_chainId')
-        .then((response) => {
+    let cancelled = false;
+
+    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
+      .then((response) => {
+        if (!cancelled) {
           setFetchedChainId(response as string);
-        })
-        .catch((err) => {
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
           setFetchedChainId(undefined);
           log.warn('Failed to fetch the chainId from the endpoint.', err);
-          setErrors((state) => ({
-            ...state,
-            rpcUrl: {
-              key: 'failedToFetchChainId',
-              msg: t('failedToFetchChainId'),
-            },
-          }));
-        });
-    }
-  }, [chainId, rpcUrls]);
+          const errorKey = isRpcRateLimitError(err)
+            ? 'rpcUrlRateLimited'
+            : 'failedToFetchChainId';
+          setRpcFetchError({
+            key: errorKey,
+            msg: t(errorKey),
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedRpcUrl, t]);
 
   const onSubmit = async () => {
     try {
-      const chainIdHex = chainId ? toHex(chainId) : undefined;
       if (chainIdHex === CHAIN_IDS.GOERLI) {
         dispatch(showDeprecatedNetworkModal());
       } else if (chainIdHex) {
@@ -492,7 +513,7 @@ export const NetworksForm = ({
             startIconName={IconName.FlashFilled}
             isFullWidth
             onClick={onAddFromChainlist}
-            className="mb-4 rounded-xl"
+            className="mb-4"
             data-testid="network-form-add-from-chainlist"
           >
             {t('addFromChainlist')}
@@ -501,44 +522,10 @@ export const NetworksForm = ({
 
         <FormTextField
           id="networkName"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           autoFocus
-          helpText={
-            ((name && warnings?.name?.msg) || suggestedName) && (
-              <>
-                {name && warnings?.name?.msg && (
-                  <HelpText
-                    variant={TextVariant.bodySm}
-                    severity={HelpTextSeverity.Warning}
-                  >
-                    {warnings.name.msg}
-                  </HelpText>
-                )}
-
-                {suggestedName && (
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textDefault}
-                    data-testid="network-form-name-suggestion"
-                  >
-                    {t('suggestedTokenName')}
-                    <TextButton
-                      size={TextButtonSize.BodySm}
-                      onClick={() => {
-                        setName(suggestedName);
-                      }}
-                      className="px-1 align-baseline"
-                    >
-                      {suggestedName}
-                    </TextButton>
-                  </Text>
-                )}
-              </>
-            )
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -546,23 +533,54 @@ export const NetworksForm = ({
           }}
           label={t('networkName')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-network-name',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-network-name',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={name}
         />
+        {(name && warnings?.name?.msg) || suggestedName ? (
+          <Box marginTop={1}>
+            {name && warnings?.name?.msg ? (
+              <HelpText severity={HelpTextSeverity.Warning}>
+                {warnings.name.msg}
+              </HelpText>
+            ) : null}
+
+            {suggestedName ? (
+              <Text
+                as="span"
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+                data-testid="network-form-name-suggestion"
+              >
+                {t('suggestedTokenName')}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    setName(suggestedName);
+                  }}
+                  className="px-1 align-baseline"
+                >
+                  {suggestedName}
+                </TextButton>
+              </Text>
+            ) : null}
+          </Box>
+        ) : null}
         <DropdownEditor
           title={t('defaultRpcUrl')}
           placeholder={t('addAUrl')}
           style={DropdownEditorStyle.PopoverStyle}
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
+          itemDataTestId={(endpoint, index) =>
+            `network-form-rpc-option-${endpoint.name ?? String(index)}`
+          }
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
@@ -623,7 +641,6 @@ export const NetworksForm = ({
         {errors.rpcUrl?.msg && (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
@@ -635,49 +652,44 @@ export const NetworksForm = ({
         {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
           <FormTextField
             id="failoverRpcUrl"
-            size={FormTextFieldSize.Lg}
-            paddingTop={4}
+            size={TextFieldSize.Lg}
+            className="pt-4"
             label={t('failoverRpcUrl')}
             labelProps={{
-              children: undefined,
-              variant: TextVariant.bodyMdMedium,
+              variant: DsTextVariant.BodyMd,
             }}
-            textFieldProps={{
-              borderRadius: BorderRadius.LG,
-            }}
+            textFieldProps={{ className: 'rounded-lg' }}
             value={onlyKeepHost(defaultFailoverUrls[0])}
-            disabled={true}
+            isDisabled
           />
         ) : null}
 
         <FormTextField
           id="chainId"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterChainId')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-chain-id-input"
           onChange={(e) => {
             setChainId(e.target?.value.trim());
           }}
-          error={Boolean(errors?.chainId)}
+          isError={Boolean(errors?.chainId)}
           label={t('chainId')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-chain-id',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-chain-id',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={chainId}
-          disabled={Boolean(existingNetwork)}
+          isDisabled={Boolean(existingNetwork)}
         />
 
         {errors.chainId?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Danger}
             data-testid="network-form-chain-id-error"
           >
@@ -687,57 +699,37 @@ export const NetworksForm = ({
         {errors.chainId?.key === 'existingChainId' ? (
           <Box>
             <HelpText
-              variant={TextVariant.bodySm}
+              asChild
               severity={HelpTextSeverity.Danger}
               data-testid="network-form-chain-id-error"
             >
-              {t('updateOrEditNetworkInformations')}{' '}
-              <TextButton
-                size={TextButtonSize.BodySm}
-                onClick={() => {
-                  const chainIdHex = toHex(chainId);
-                  if (chainIdHex) {
-                    dispatch(
-                      setEditedNetwork({
-                        chainId: chainIdHex,
-                      }),
-                    );
-                    onEdit?.();
-                  }
-                }}
-              >
-                {t('editNetworkLink')}
-              </TextButton>
+              <div>
+                {t('updateOrEditNetworkInformations')}{' '}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    if (chainIdHex) {
+                      dispatch(
+                        setEditedNetwork({
+                          chainId: chainIdHex,
+                        }),
+                      );
+                      onEdit?.();
+                    }
+                  }}
+                >
+                  {t('editNetworkLink')}
+                </TextButton>
+              </div>
             </HelpText>
           </Box>
         ) : null}
         <FormTextField
           id="nativeCurrency"
-          size={FormTextFieldSize.Lg}
+          size={TextFieldSize.Lg}
           placeholder={t('enterSymbol')}
-          paddingTop={4}
+          className="pt-4"
           data-testid="network-form-ticker"
-          helpText={
-            suggestedTicker ? (
-              <Text
-                as="span"
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
-                data-testid="network-form-ticker-suggestion"
-              >
-                {t('suggestedCurrencySymbol')}
-                <TextButton
-                  size={TextButtonSize.BodySm}
-                  onClick={() => {
-                    setTicker(suggestedTicker);
-                  }}
-                  className="px-1 align-baseline"
-                >
-                  {suggestedTicker}
-                </TextButton>
-              </Text>
-            ) : null
-          }
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onChange={(e: any) => {
@@ -745,20 +737,38 @@ export const NetworksForm = ({
           }}
           label={t('currencySymbol')}
           labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
+            variant: DsTextVariant.BodyMd,
           }}
-          textFieldProps={{
-            borderRadius: BorderRadius.LG,
-          }}
-          inputProps={{
-            'data-testid': 'network-form-ticker-input',
-          }}
+          textFieldProps={{ className: 'rounded-lg' }}
+          inputProps={
+            {
+              'data-testid': 'network-form-ticker-input',
+            } as React.InputHTMLAttributes<HTMLInputElement>
+          }
           value={ticker}
         />
+        {suggestedTicker ? (
+          <Text
+            as="span"
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+            marginTop={1}
+            data-testid="network-form-ticker-suggestion"
+          >
+            {t('suggestedCurrencySymbol')}
+            <TextButton
+              size={TextButtonSize.BodySm}
+              onClick={() => {
+                setTicker(suggestedTicker);
+              }}
+              className="px-1 align-baseline"
+            >
+              {suggestedTicker}
+            </TextButton>
+          </Text>
+        ) : null}
         {ticker && warnings.ticker?.msg ? (
           <HelpText
-            variant={TextVariant.bodySm}
             severity={HelpTextSeverity.Warning}
             data-testid="network-form-ticker-warning"
           >
@@ -801,7 +811,7 @@ export const NetworksForm = ({
           }}
           renderItem={(item) => (
             <Text
-              as="button"
+              as="span"
               paddingLeft={0}
               paddingRight={0}
               paddingTop={3}
@@ -831,7 +841,7 @@ export const NetworksForm = ({
             size={ButtonSize.Lg}
             isDisabled={isSaveDisabled}
             onClick={onSubmit}
-            className="w-full rounded-xl"
+            className="w-full"
             data-testid="page-container-footer-next"
           >
             {t('save')}

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import {
@@ -111,7 +111,7 @@ export const Needed: Story = {
 
 /** Primary button in a loading state. */
 export const NeededContinueLoading: Story = {
-  storyName: 'Needed (continue loading)',
+  name: 'Needed (continue loading)',
   args: {
     variant: CameraAccessErrorContentVariant.Needed,
     continueLoading: true,
@@ -120,7 +120,7 @@ export const NeededContinueLoading: Story = {
 };
 
 export const BlockedChromium: Story = {
-  storyName: 'Blocked (Chrome / Chromium)',
+  name: 'Blocked (Chrome / Chromium)',
   args: {
     variant: CameraAccessErrorContentVariant.Blocked,
     isFirefox: false,
@@ -131,7 +131,7 @@ export const BlockedChromium: Story = {
 };
 
 export const BlockedFirefox: Story = {
-  storyName: 'Blocked (Firefox)',
+  name: 'Blocked (Firefox)',
   args: {
     variant: CameraAccessErrorContentVariant.Blocked,
     isFirefox: true,

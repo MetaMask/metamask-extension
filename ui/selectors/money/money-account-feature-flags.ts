@@ -4,8 +4,10 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
   isMoneyAccountEnabled,
+  isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHomeScreenCardEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -57,6 +59,21 @@ const parseNonNegativeFinite = (raw: unknown): number | undefined => {
 export const selectMoneyAccountFeatureEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyAccountEnabled,
+);
+
+/**
+ * Selects whether the `moneyHomeScreenCardEnabled` flag is on.
+ *
+ * This flag controls whether the money balance is shown on the extension home.
+ * If the money account is disabled generally, having this flag turned on will
+ * still not show the balance
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the home screen Money card is enabled.
+ */
+export const selectMoneyHomeScreenCardEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyHomeScreenCardEnabled,
 );
 
 /**
@@ -140,4 +157,31 @@ export const selectMoneyAccountDepositQuotePipelineEnabled = createSelector(
 export const selectMoneyActivityMockDataEnabled = createSelector(
   getRemoteFeatureFlags,
   isMoneyActivityMockDataEnabled,
+);
+
+/**
+ * Selects whether tapping a Money activity row should open transaction
+ * details.
+ *
+ * Remote `moneyEnableActivityDetails` (plain boolean) wins; otherwise the
+ * `MM_MONEY_ENABLE_ACTIVITY_DETAILS` env var is used. Defaults off.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether activity details navigation is enabled.
+ */
+export const selectMoneyActivityDetailsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  isMoneyActivityDetailsEnabled,
+);
+
+/**
+ * Selects whether the Money balance card should show the "mUSD" text label
+ * next to the fiat balance.
+ *
+ * @param state - The MetaMask state object.
+ * @returns Whether the mUSD label is enabled.
+ */
+export const selectMoneyBalanceShowMusdLabelEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (flags) => getBooleanFeatureFlag(flags?.moneyBalanceShowMusdLabel, false),
 );

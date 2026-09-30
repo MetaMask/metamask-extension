@@ -18,4 +18,10 @@ describe('buildChromiumLaunchArgs', () => {
     expect(args).not.toContain('--allow-insecure-localhost');
     expect(args).toContain('--disable-features=TranslateUI');
   });
+
+  it('uses full Chromium headless mode when requested', () => {
+    const args = buildChromiumLaunchArgs('/tmp/dist/chrome', undefined, true);
+
+    expect(args).toContain('--headless=new');
+  });
 });

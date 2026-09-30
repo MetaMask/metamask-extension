@@ -1,7 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { MockttpServer } from 'mockttp';
-import { mockEthDaiTrade, mockEthUsdcGasIncludedTrade } from '../swaps/shared';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { SSE_RESPONSE_HEADER } from '../bridge/constants';
@@ -516,17 +516,37 @@ const GET_BLOCK_BY_HASH_RESPONSE = {
   },
 };
 
+async function mockEthDaiTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
+async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
+      .withQuery({ enableGasIncludedQuotes: 'true' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
 export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
   await mockSmartTransactionRequestsBase(mockServer);
 
   await mockEthDaiTrade(mockServer);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -566,13 +586,6 @@ export async function mockChooseGasFeeTokenRequests(mockServer: MockttpServer) {
   await mockServer
     .forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io')
     .thenJson(200, TRANSACTION_SIMULATION_RESPONSE);
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID });
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -716,13 +729,6 @@ export async function mockGasIncludedTransactionRequests(
     }));
 
   await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(200, { uuid: STX_UUID, txHashes: [TRANSACTION_HASH] });
-
-  await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
     .once()
     .thenCallback(() => {
@@ -750,13 +756,6 @@ export async function mockSmartTransactionBatchRequests(
   const submitResponse = error
     ? {}
     : { uuid: STX_UUID, txHashes: transactionHashes };
-
-  await mockServer
-    .forPost(
-      'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
-    )
-    .once()
-    .thenJson(submitStatusCode, submitResponse);
 
   await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/submitTransactions`)
@@ -794,20 +793,10 @@ export async function mockSmartTransactionRequestsBase(
   ]);
 
   await mockServer
-    .forPost('https://transaction.api.cx.metamask.io/networks/1/getFees')
-    .thenJson(200, GET_FEES_RESPONSE);
-
-  await mockServer
     .forPost(`${TX_SENTINEL_URL}/v1/networks/1/getFees`)
     .thenCallback(() => {
       return { statusCode: 200, json: GET_FEES_RESPONSE };
     });
-
-  await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, GET_BATCH_STATUS_RESPONSE_PENDING);
 
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
@@ -816,12 +805,6 @@ export async function mockSmartTransactionRequestsBase(
     .thenCallback(() => {
       return { statusCode: 200, json: GET_BATCH_STATUS_RESPONSE_PENDING };
     });
-
-  await mockServer
-    .forGet('https://transaction.api.cx.metamask.io/networks/1/batchStatus')
-    .withQuery({ uuids: STX_UUID })
-    .once()
-    .thenJson(200, GET_BATCH_STATUS_RESPONSE_SUCCESS);
 
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/v1/networks/1/batchStatus`)
