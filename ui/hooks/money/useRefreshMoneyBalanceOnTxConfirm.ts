@@ -61,9 +61,15 @@ const readBalanceSnapshot = (address: string) =>
 const didBalanceChange = (
   before: MoneyBalanceSnapshot,
   after: CanonicalMoneyAccountBalanceResponse,
-) =>
-  before?.totalBalance !== undefined &&
-  before.totalBalance !== after.totalBalance;
+) => {
+  // No cached total means this read is the first figure the UI has. Treat it
+  // as a change so the refresh stops instead of retrying against nothing.
+  if (before?.totalBalance === undefined) {
+    return true;
+  }
+
+  return before.totalBalance !== after.totalBalance;
+};
 
 /**
  * `as_of_block` is a Money Account chain block. Receipt block numbers on other
@@ -145,7 +151,6 @@ const refreshMoneyBalanceQueries = async (
 
   let sawResult = false;
   let lastError: unknown;
-  let lastResult: CanonicalMoneyAccountBalanceResponse | undefined;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     if (attempt > 0) {
@@ -156,25 +161,19 @@ const refreshMoneyBalanceQueries = async (
       await invalidateMoneyAccountBalanceSourceCaches(address);
       const next = await fetchFreshMoneyAccountBalance(address, requestOptions);
       sawResult = true;
-      lastResult = next;
       const authoritative = isAuthoritativeApiRead(next, minBlock);
       const changed = didBalanceChange(baseline, next);
-      // No cached total to compare, and no block to wait for: the fresh read
-      // is the best answer we can get.
-      const freshReadWithoutBaseline =
-        minBlock === undefined && baseline?.totalBalance === undefined;
 
       log.debug(`${LOG_PREFIX} attempt ${attempt} result`, {
         authoritative,
         changed,
-        freshReadWithoutBaseline,
         minBlock,
         source: next.source,
         asOfBlock: next.asOfBlock,
         next,
       });
 
-      if (authoritative || changed || freshReadWithoutBaseline) {
+      if (authoritative || changed) {
         return;
       }
     } catch (error) {
@@ -192,7 +191,6 @@ const refreshMoneyBalanceQueries = async (
   if (!sawResult && lastError !== undefined) {
     reportMoneyError(`${LOG_PREFIX} Balance refresh failed`, lastError, {
       attempts: MAX_RETRIES,
-      minBlock,
     });
     return;
   }
@@ -200,12 +198,7 @@ const refreshMoneyBalanceQueries = async (
   reportMoneyError(
     `${LOG_PREFIX} Balance unchanged after ${MAX_RETRIES} retries; awaiting 30s auto-poll`,
     new Error('Money Account balance unchanged after retries'),
-    {
-      attempts: MAX_RETRIES,
-      minBlock,
-      source: lastResult?.source,
-      asOfBlock: lastResult?.asOfBlock,
-    },
+    { attempts: MAX_RETRIES },
   );
 };
 

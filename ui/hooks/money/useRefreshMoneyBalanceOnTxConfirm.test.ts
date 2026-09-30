@@ -367,31 +367,25 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
     });
   });
 
-  it('keeps retrying a stale fallback when there is no cached baseline until the api read is authoritative', async () => {
-    jest.useFakeTimers();
-    try {
-      mockGetQueryData.mockReturnValue(undefined);
-      mockFetchFreshMoneyAccountBalance
-        .mockResolvedValueOnce(balance('3000000', { source: 'rpc' }))
-        .mockResolvedValueOnce(
-          balance('3000000', { source: 'api', asOfBlock: 16 }),
-        );
+  it('stops on the first read when there is no cached baseline', async () => {
+    mockGetQueryData.mockReturnValue(undefined);
+    mockFetchFreshMoneyAccountBalance.mockResolvedValue(
+      balance('3000000', { source: 'rpc' }),
+    );
 
-      renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
-      const handler = getStatusUpdatedHandler();
+    renderHook(() => useRefreshMoneyBalanceOnTxConfirm());
+    const handler = getStatusUpdatedHandler();
 
-      emit(handler, {
-        ...makeTx(TransactionType.moneyAccountDeposit),
-        chainId: CHAIN_IDS.MONAD,
-        txReceipt: { blockNumber: '0x10' },
-      } as unknown as TransactionMeta);
-      await jest.advanceTimersByTimeAsync(30_000);
+    emit(handler, {
+      ...makeTx(TransactionType.moneyAccountDeposit),
+      chainId: CHAIN_IDS.MONAD,
+      txReceipt: { blockNumber: '0x10' },
+    } as unknown as TransactionMeta);
+    await waitFor(() => {
+      expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(1);
+    });
 
-      expect(mockFetchFreshMoneyAccountBalance).toHaveBeenCalledTimes(2);
-      expect(mockReportMoneyError).not.toHaveBeenCalled();
-    } finally {
-      jest.useRealTimers();
-    }
+    expect(mockReportMoneyError).not.toHaveBeenCalled();
   });
 
   it('stops when an api read has reached minBlock even if the total is unchanged', async () => {
@@ -498,12 +492,7 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
         expect.objectContaining({
           message: 'Money Account balance unchanged after retries',
         }),
-        {
-          attempts: 8,
-          minBlock: undefined,
-          source: 'rpc',
-          asOfBlock: undefined,
-        },
+        { attempts: 8 },
       );
     } finally {
       jest.useRealTimers();
@@ -541,7 +530,7 @@ describe('useRefreshMoneyBalanceOnTxConfirm', () => {
       expect(mockReportMoneyError).toHaveBeenCalledWith(
         '[Money Balance Refresh] Balance refresh failed',
         error,
-        { attempts: 8, minBlock: undefined },
+        { attempts: 8 },
       );
     } finally {
       jest.useRealTimers();
