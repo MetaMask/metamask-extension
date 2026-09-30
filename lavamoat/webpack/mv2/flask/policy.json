@@ -634,7 +634,10 @@
         "HTMLElement": true,
         "Node": true,
         "ShadowRoot": true,
-        "document": true
+        "document": true,
+        "frameElement": true,
+        "parent": true,
+        "visualViewport": true
       }
     },
     "@hello-pangea/dnd": {
