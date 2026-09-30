@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkplatform_api_docs_site||=[]).push([[4921],{1597(s){s.exports=JSON.parse('{"name":"@easyops-cn/docusaurus-search-local","id":"default"}')}}]);
