@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { preventNewApiMembers } from '../common/prevent-new-api-members';
+import { checkApiMatchesSnapshot } from '../common/check-api-matches-snapshot';
 
 const TARGET_FILE_PATH =
   'app/scripts/services/legacy-background-api-service.ts';
@@ -7,20 +7,19 @@ const TARGET_FILE_PATH =
 /**
  * Prevents adding public methods to LegacyBackgroundApiService.
  *
- * @param diff - The diff from the current PR to inspect.
- * @param baseRef - The commit the PR is based on.
- * @returns True if the current PR does not add public methods to
- * LegacyBackgroundApiService, false otherwise.
+ * The public methods must match the `LegacyBackgroundApiService` entry in
+ * `legacy-background-api-snapshot.json`. This does not look at the diff: the
+ * service is read from the working tree (including unstaged changes), so that
+ * edits to the snapshot alone are checked as well.
+ *
+ * @returns True if the public methods of LegacyBackgroundApiService match the
+ * snapshot, false otherwise.
  */
-export function preventLegacyBackgroundApiServiceExpansion(
-  diff: string,
-  baseRef: string,
-): boolean {
-  return preventNewApiMembers({
-    diff,
+export function preventLegacyBackgroundApiServiceExpansion(): boolean {
+  return checkApiMatchesSnapshot({
     filePath: TARGET_FILE_PATH,
+    snapshotKey: 'LegacyBackgroundApiService',
     getMemberNames: getMethodNamesFromLegacyBackgroundApiService,
-    baseRef,
   });
 }
 

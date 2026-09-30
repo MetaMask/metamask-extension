@@ -206,11 +206,4 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
-        run: |
-          # The checkout is a shallow clone of the PR's merge commit. Some
-          # fitness functions compare files against the PR's base commit, so
-          # fetch it explicitly.
-          git fetch --quiet --depth=1 origin "$BASE_SHA"
-
-          yarn fitness-functions ci --labels "$LABELS"
+        run: yarn fitness-functions ci

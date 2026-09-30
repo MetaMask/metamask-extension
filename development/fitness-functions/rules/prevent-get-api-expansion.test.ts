@@ -1,41 +1,59 @@
 import fs from 'fs';
 import * as path from 'path';
-import { withinTemporaryGitRepository } from '../common/temporary-git-repository';
-import { generateModifyFilesDiff } from '../common/test-data';
+import { withinTemporaryDirectory } from '../common/temporary-directory';
 import { preventGetApiExpansion } from './prevent-get-api-expansion';
 
 const CONTROLLER_PATH = 'app/scripts/metamask-controller.js';
 
-const REAL_CONTROLLER_PATH = path.resolve(
-  __dirname,
-  '../../..',
-  CONTROLLER_PATH,
-);
+const SNAPSHOT_PATH = 'legacy-background-api-snapshot.json';
+
+const REPOSITORY_ROOT_PATH = path.resolve(__dirname, '../../..');
 
 describe('preventGetApiExpansion', () => {
-  it('passes without reading the base commit when the diff does not modify the controller', () => {
-    const result = preventGetApiExpansion(
-      generateModifyFilesDiff('ui/example.ts'),
-      'commit-which-does-not-exist',
-    );
-
-    expect(result).toBe(true);
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
-  it('rejects a new property even when another property is removed', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
+  it('passes when the properties of getApi match the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
-                oldMethod: this.oldMethod,
+                existingMethod: this.existingMethod,
+                existingShorthand,
+                existingMethodProperty() {
+                  return true;
+                },
               };
             }
           }
         `,
-        currentContents: `
+      );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({
+          'MetamaskController.getApi': [
+            'existingMethod',
+            'existingShorthand',
+            'existingMethodProperty',
+          ],
+        }),
+      );
+
+      const result = preventGetApiExpansion();
+
+      expect(result).toBe(true);
+    });
+  });
+
+  it('rejects a property that is not in the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
@@ -44,29 +62,23 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(false);
     });
   });
 
-  it('rejects a new shorthand property', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
-          class MetamaskController {
-            getApi() {
-              return {};
-            }
-          }
-        `,
-        currentContents: `
+  it('rejects a shorthand property that is not in the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
@@ -75,29 +87,23 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(false);
     });
   });
 
-  it('rejects a new method property', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
-          class MetamaskController {
-            getApi() {
-              return {};
-            }
-          }
-        `,
-        currentContents: `
+  it('rejects a method property that is not in the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
@@ -108,22 +114,23 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(false);
     });
   });
 
-  it('allows edits to an existing property', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
+  it('rejects a property that is in the snapshot but no longer in getApi', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
@@ -132,77 +139,50 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-        currentContents: `
+      );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({
+          'MetamaskController.getApi': ['existingMethod', 'obsoleteMethod'],
+        }),
+      );
+
+      const result = preventGetApiExpansion();
+
+      expect(result).toBe(false);
+    });
+  });
+
+  it('identifies a spread property by its source text', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
-                existingMethod: this.controllerMessenger.call.bind(
-                  this.controllerMessenger,
-                  'SomeController:existingMethod',
-                ),
+                ...this.otherApi,
               };
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': ['...this.otherApi'] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('allows removal of a property', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
-          class MetamaskController {
-            getApi() {
-              return {
-                existingMethod: this.existingMethod,
-                obsoleteMethod: this.obsoleteMethod,
-              };
-            }
-          }
-        `,
-        currentContents: `
-          class MetamaskController {
-            getApi() {
-              return {
-                existingMethod: this.existingMethod,
-              };
-            }
-          }
-        `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
-      );
-
-      expect(result).toBe(true);
-    });
-  });
-
-  it('ignores properties added inside a nested object', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
-          class MetamaskController {
-            getApi() {
-              return {
-                existingMethod: () => ({}),
-              };
-            }
-          }
-        `,
-        currentContents: `
+  it('ignores properties inside a nested object', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getApi() {
               return {
@@ -213,37 +193,27 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': ['existingMethod'] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('ignores properties added to objects outside of getApi', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: `
-          class MetamaskController {
-            getState() {
-              return {};
-            }
-
-            getApi() {
-              return {};
-            }
-          }
-        `,
-        currentContents: `
+  it('ignores properties of objects outside of getApi', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
           class MetamaskController {
             getState() {
               return {
-                newStateProperty: true,
+                stateProperty: true,
               };
             }
 
@@ -252,58 +222,110 @@ describe('preventGetApiExpansion', () => {
             }
           }
         `,
-      });
-
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('passes when the real controller is unchanged', async () => {
-    await withinTemporaryGitRepository(({ writeFile, commitAllFiles }) => {
-      const realControllerSource = fs.readFileSync(
-        REAL_CONTROLLER_PATH,
-        'utf8',
+  it('throws when MetamaskController does not exist', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(CONTROLLER_PATH, 'class OtherController {}');
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
       );
-      writeFile(CONTROLLER_PATH, realControllerSource);
-      const baseRef = commitAllFiles();
 
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
+      expect(() => preventGetApiExpansion()).toThrow(
+        'MetamaskController was not found',
       );
+    });
+  });
+
+  it('throws when MetamaskController.getApi does not exist', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(CONTROLLER_PATH, 'class MetamaskController {}');
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      expect(() => preventGetApiExpansion()).toThrow(
+        'MetamaskController.getApi was not found',
+      );
+    });
+  });
+
+  it('throws when MetamaskController.getApi does not return an object literal', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        CONTROLLER_PATH,
+        `
+          class MetamaskController {
+            getApi() {
+              return this.api;
+            }
+          }
+        `,
+      );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ 'MetamaskController.getApi': [] }),
+      );
+
+      expect(() => preventGetApiExpansion()).toThrow(
+        'MetamaskController.getApi does not return an object literal',
+      );
+    });
+  });
+
+  it('passes against the real controller and snapshot', async () => {
+    const realControllerSource = readRepositoryFile(CONTROLLER_PATH);
+    const realSnapshot = readRepositoryFile(SNAPSHOT_PATH);
+
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(CONTROLLER_PATH, realControllerSource);
+      writeFile(SNAPSHOT_PATH, realSnapshot);
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(true);
     });
   });
 
   it('rejects a property added to the real controller', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const realControllerSource = fs.readFileSync(
-        REAL_CONTROLLER_PATH,
-        'utf8',
-      );
-      const expandedControllerSource = realControllerSource.replace(
-        /(\n {2}getApi\(\) \{[\s\S]*?\n {4}return \{\n)/u,
-        '$1      newLegacyMethod: () => true,\n',
-      );
-      expect(expandedControllerSource).not.toBe(realControllerSource);
-      const baseRef = createFileWithChanges({
-        filePath: CONTROLLER_PATH,
-        baseContents: realControllerSource,
-        currentContents: expandedControllerSource,
-      });
+    const realControllerSource = readRepositoryFile(CONTROLLER_PATH);
+    const realSnapshot = readRepositoryFile(SNAPSHOT_PATH);
+    const expandedControllerSource = realControllerSource.replace(
+      /(\n {2}getApi\(\) \{[\s\S]*?\n {4}return \{\n)/u,
+      '$1      newLegacyMethod: () => true,\n',
+    );
+    expect(expandedControllerSource).not.toBe(realControllerSource);
 
-      const result = preventGetApiExpansion(
-        generateModifyFilesDiff(CONTROLLER_PATH),
-        baseRef,
-      );
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(CONTROLLER_PATH, expandedControllerSource);
+      writeFile(SNAPSHOT_PATH, realSnapshot);
+
+      const result = preventGetApiExpansion();
 
       expect(result).toBe(false);
     });
   });
 });
+
+/**
+ * Reads a file from the real repository, so that tests can check the committed
+ * API against the committed snapshot.
+ *
+ * @param filePath - The repository-relative path of the file.
+ * @returns The contents of the file.
+ */
+function readRepositoryFile(filePath: string): string {
+  return fs.readFileSync(path.join(REPOSITORY_ROOT_PATH, filePath), 'utf8');
+}

@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { preventNewApiMembers } from '../common/prevent-new-api-members';
+import { checkApiMatchesSnapshot } from '../common/check-api-matches-snapshot';
 
 const TARGET_FILE_PATH = 'app/scripts/metamask-controller.js';
 
@@ -7,17 +7,19 @@ const TARGET_FILE_PATH = 'app/scripts/metamask-controller.js';
  * Prevents adding properties to the object returned by
  * `MetamaskController.getApi`.
  *
- * @param diff - The diff from the current PR to inspect.
- * @param baseRef - The commit the PR is based on.
- * @returns True if the current PR does not add properties to
- * `MetamaskController.getApi`, false otherwise.
+ * The properties must match the `MetamaskController.getApi` entry in
+ * `legacy-background-api-snapshot.json`. This does not look at the diff: the
+ * controller is read from the working tree (including unstaged changes), so
+ * that edits to the snapshot alone are checked as well.
+ *
+ * @returns True if the properties of `MetamaskController.getApi` match the
+ * snapshot, false otherwise.
  */
-export function preventGetApiExpansion(diff: string, baseRef: string): boolean {
-  return preventNewApiMembers({
-    diff,
+export function preventGetApiExpansion(): boolean {
+  return checkApiMatchesSnapshot({
     filePath: TARGET_FILE_PATH,
+    snapshotKey: 'MetamaskController.getApi',
     getMemberNames: getMethodNamesFromGetApi,
-    baseRef,
   });
 }
 

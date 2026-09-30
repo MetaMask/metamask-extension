@@ -1,18 +1,8 @@
-import { AUTOMATION_TYPE } from '../common/constants';
 import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
 import { preventDeprecatedImports } from './prevent-deprecated-imports';
 import { preventGetApiExpansion } from './prevent-get-api-expansion';
 import { preventLegacyBackgroundApiServiceExpansion } from './prevent-legacy-background-api-service-expansion';
-
-/**
- * The PR label that allows changes to the legacy background API.
- *
- * Adding this label to a PR skips the fitness functions that prevent
- * `MetamaskController.getApi` and `LegacyBackgroundApiService` from being
- * expanded. It is intended for emergencies only.
- */
-const ALLOW_BACKGROUND_API_CHANGES_LABEL = 'allow-background-api-changes';
 
 const RULES: IRule[] = [
   {
@@ -37,53 +27,27 @@ const RULES: IRule[] = [
     name: "Don't expand MetamaskController.getApi",
     fn: preventGetApiExpansion,
     errorMessage:
-      'Do not add new properties to MetamaskController.getApi(). Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
-    automationType: AUTOMATION_TYPE.CI,
-    skip: ({ labels }) => labels.includes(ALLOW_BACKGROUND_API_CHANGES_LABEL),
+      'The properties of MetamaskController.getApi() must match legacy-background-api-snapshot.json.\n- If you removed a property, remove it from the snapshot as well.\n- If you added a property, please place the action in a controller or service instead, expose it through the messenger, and use useMessenger() in UI files to access it.\n  - You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n  - You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md\n- In an emergency, you may add the property to the snapshot, but this requires approval from @MetaMask/core-platform.',
   },
   {
     name: "Don't expand LegacyBackgroundApiService",
     fn: preventLegacyBackgroundApiServiceExpansion,
     errorMessage:
-      'Do not add new methods to LegacyBackgroundApiService. Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
-    automationType: AUTOMATION_TYPE.CI,
-    skip: ({ labels }) => labels.includes(ALLOW_BACKGROUND_API_CHANGES_LABEL),
+      'The public methods of LegacyBackgroundApiService must match legacy-background-api-snapshot.json.\n- If you removed a method, remove it from the snapshot as well.\n- If you added a method, please place the action in a controller or service instead, expose it through the messenger, and use useMessenger() in UI files to access it.\n  - You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n  - You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md\n- In an emergency, you may add the method to the snapshot, but this requires approval from @MetaMask/core-platform.',
   },
 ];
 
 type IRule = {
   name: string;
-  fn: (diff: string, baseRef: string) => boolean;
+  fn: (diff: string) => boolean;
   errorMessage: string;
-  automationType?: AUTOMATION_TYPE;
-  skip?: (options: { labels: string[] }) => boolean;
 };
 
-function runFitnessFunctionRule({
-  rule,
-  diff,
-  automationType,
-  ruleOptions,
-  baseRef,
-}: {
-  rule: IRule;
-  diff: string;
-  automationType: AUTOMATION_TYPE;
-  ruleOptions: {
-    labels: string[];
-  };
-  baseRef: string;
-}): void {
+function runFitnessFunctionRule(rule: IRule, diff: string): void {
   const { name, fn, errorMessage } = rule;
-  if (
-    (rule.automationType && rule.automationType !== automationType) ||
-    rule.skip?.(ruleOptions)
-  ) {
-    return;
-  }
   console.log(`Checking rule "${name}"...`);
 
-  const hasRulePassed: boolean = fn(diff, baseRef);
+  const hasRulePassed: boolean = fn(diff) as boolean;
   if (hasRulePassed === true) {
     console.log(`...OK`);
   } else {

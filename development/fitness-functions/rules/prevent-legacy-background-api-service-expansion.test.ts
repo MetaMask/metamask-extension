@@ -1,241 +1,235 @@
 import fs from 'fs';
 import * as path from 'path';
-import { withinTemporaryGitRepository } from '../common/temporary-git-repository';
-import { generateModifyFilesDiff } from '../common/test-data';
+import { withinTemporaryDirectory } from '../common/temporary-directory';
 import { preventLegacyBackgroundApiServiceExpansion } from './prevent-legacy-background-api-service-expansion';
 
 const SERVICE_PATH = 'app/scripts/services/legacy-background-api-service.ts';
 
-const REAL_SERVICE_PATH = path.resolve(__dirname, '../../..', SERVICE_PATH);
+const SNAPSHOT_PATH = 'legacy-background-api-snapshot.json';
+
+const REPOSITORY_ROOT_PATH = path.resolve(__dirname, '../../..');
 
 describe('preventLegacyBackgroundApiServiceExpansion', () => {
-  it('passes without reading the base commit when the diff does not modify the service', () => {
-    const result = preventLegacyBackgroundApiServiceExpansion(
-      generateModifyFilesDiff('ui/example.ts'),
-      'commit-which-does-not-exist',
-    );
-
-    expect(result).toBe(true);
+  beforeEach(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => undefined);
   });
 
-  it('rejects a new public method', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {}
+  it('passes when the public methods of the service match the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
+          export class LegacyBackgroundApiService {
+            existingMethod(): void {}
+
+            async existingAsyncMethod(): Promise<void> {}
+          }
         `,
-        currentContents: `
+      );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({
+          LegacyBackgroundApiService: ['existingMethod', 'existingAsyncMethod'],
+        }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
+
+      expect(result).toBe(true);
+    });
+  });
+
+  it('rejects a public method that is not in the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
             newMethod(): void {}
           }
         `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: [] }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(false);
     });
   });
 
-  it('rejects a new async public method', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {}
-        `,
-        currentContents: `
+  it('rejects an async public method that is not in the snapshot', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
             async newMethod(): Promise<void> {}
           }
         `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: [] }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(false);
     });
   });
 
-  it('rejects a new public method even when another method is removed', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {
-            oldMethod(): void {}
-          }
-        `,
-        currentContents: `
-          export class LegacyBackgroundApiService {
-            newMethod(): void {}
-          }
-        `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
-      );
-
-      expect(result).toBe(false);
-    });
-  });
-
-  it('allows changes to an existing public method', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
+  it('rejects a public method that is in the snapshot but no longer in the service', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
             existingMethod(): void {}
           }
         `,
-        currentContents: `
+      );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({
+          LegacyBackgroundApiService: ['existingMethod', 'obsoleteMethod'],
+        }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
+
+      expect(result).toBe(false);
+    });
+  });
+
+  it('ignores private and protected methods', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
-            existingMethod(): void {
-              this.#helper();
-            }
+            #helper(): void {}
+
+            private privateHelper(): void {}
+
+            protected protectedHelper(): void {}
           }
         `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: [] }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('allows private helper methods to be added', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {}
-        `,
-        currentContents: `
+  it('ignores properties', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
-            #newHelper(): void {}
-
-            private newPrivateHelper(): void {}
-
-            protected newProtectedHelper(): void {}
+            readonly messenger: unknown;
           }
         `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: [] }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('ignores a method added to a nested class', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {
-            existingMethod(): void {
-              class OtherService {}
-            }
-          }
-        `,
-        currentContents: `
+  it('ignores methods of a nested class', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(
+        SERVICE_PATH,
+        `
           export class LegacyBackgroundApiService {
             existingMethod(): void {
               class OtherService {
-                newMethod(): void {}
+                otherMethod(): void {}
               }
             }
           }
         `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
       );
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: ['existingMethod'] }),
+      );
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(true);
     });
   });
 
-  it('allows removal of a public method', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: `
-          export class LegacyBackgroundApiService {
-            existingMethod(): void {}
-
-            obsoleteMethod(): void {}
-          }
-        `,
-        currentContents: `
-          export class LegacyBackgroundApiService {
-            existingMethod(): void {}
-          }
-        `,
-      });
-
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
+  it('throws when LegacyBackgroundApiService does not exist', async () => {
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(SERVICE_PATH, 'export class OtherService {}');
+      writeFile(
+        SNAPSHOT_PATH,
+        JSON.stringify({ LegacyBackgroundApiService: [] }),
       );
 
-      expect(result).toBe(true);
+      expect(() => preventLegacyBackgroundApiServiceExpansion()).toThrow(
+        'LegacyBackgroundApiService was not found',
+      );
     });
   });
 
-  it('passes when the real service is unchanged', async () => {
-    await withinTemporaryGitRepository(({ writeFile, commitAllFiles }) => {
-      const realServiceSource = fs.readFileSync(REAL_SERVICE_PATH, 'utf8');
+  it('passes against the real service and snapshot', async () => {
+    const realServiceSource = readRepositoryFile(SERVICE_PATH);
+    const realSnapshot = readRepositoryFile(SNAPSHOT_PATH);
+
+    await withinTemporaryDirectory(({ writeFile }) => {
       writeFile(SERVICE_PATH, realServiceSource);
-      const baseRef = commitAllFiles();
+      writeFile(SNAPSHOT_PATH, realSnapshot);
 
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
-      );
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(true);
     });
   });
 
   it('rejects a public method added to the real service', async () => {
-    await withinTemporaryGitRepository(({ createFileWithChanges }) => {
-      const realServiceSource = fs.readFileSync(REAL_SERVICE_PATH, 'utf8');
-      const expandedServiceSource = realServiceSource.replace(
-        'export class LegacyBackgroundApiService {\n',
-        'export class LegacyBackgroundApiService {\n  newLegacyMethod(): void {}\n',
-      );
-      expect(expandedServiceSource).not.toBe(realServiceSource);
-      const baseRef = createFileWithChanges({
-        filePath: SERVICE_PATH,
-        baseContents: realServiceSource,
-        currentContents: expandedServiceSource,
-      });
+    const realServiceSource = readRepositoryFile(SERVICE_PATH);
+    const realSnapshot = readRepositoryFile(SNAPSHOT_PATH);
+    const expandedServiceSource = realServiceSource.replace(
+      'export class LegacyBackgroundApiService {\n',
+      'export class LegacyBackgroundApiService {\n  newLegacyMethod(): void {}\n',
+    );
+    expect(expandedServiceSource).not.toBe(realServiceSource);
 
-      const result = preventLegacyBackgroundApiServiceExpansion(
-        generateModifyFilesDiff(SERVICE_PATH),
-        baseRef,
-      );
+    await withinTemporaryDirectory(({ writeFile }) => {
+      writeFile(SERVICE_PATH, expandedServiceSource);
+      writeFile(SNAPSHOT_PATH, realSnapshot);
+
+      const result = preventLegacyBackgroundApiServiceExpansion();
 
       expect(result).toBe(false);
     });
   });
 });
+
+/**
+ * Reads a file from the real repository, so that tests can check the committed
+ * API against the committed snapshot.
+ *
+ * @param filePath - The repository-relative path of the file.
+ * @returns The contents of the file.
+ */
+function readRepositoryFile(filePath: string): string {
+  return fs.readFileSync(path.join(REPOSITORY_ROOT_PATH, filePath), 'utf8');
+}
