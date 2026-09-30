@@ -40,6 +40,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      # Recorded into the artifact by `captureHostProvenance`. No GitHub context
+      # exposes the label a job requested, so it is passed explicitly; keep it in
+      # sync with this job's `runs-on`. `BENCHMARK_RUNNER_REGION` is deliberately
+      # unset: GitHub-hosted runners do not expose the Azure region in the
+      # environment, and guessing it is worse than leaving the field undefined.
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
       SELENIUM_BROWSER: ${{ matrix.browser }}
       SELENIUM_HEADLESS: true
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
@@ -139,6 +145,12 @@ jobs:
     timeout-minutes: 30
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
+      # Recorded into the artifact by `captureHostProvenance`. No GitHub context
+      # exposes the label a job requested, so it is passed explicitly; keep it in
+      # sync with this job's `runs-on`. `BENCHMARK_RUNNER_REGION` is deliberately
+      # unset: GitHub-hosted runners do not expose the Azure region in the
+      # environment, and guessing it is worse than leaving the field undefined.
+      BENCHMARK_RUNNER_LABEL: ubuntu-latest
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
