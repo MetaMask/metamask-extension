@@ -15,7 +15,6 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
-  AccountTrackerController,
   AssetsContractController,
   DeFiPositionsController,
   DeFiPositionsControllerV2,
@@ -138,7 +137,6 @@ import { SentryTracingService } from '../services/sentry/sentry-tracing-service'
  */
 export type MessengerClient =
   | AccountOrderController
-  | AccountTrackerController
   | AccountsController
   | AddressBookController
   | AlertController
@@ -325,5 +323,4 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
-  AccountTrackerController['state'] &
   ProfileMetricsController['state'];
