@@ -425,9 +425,13 @@ env:
   - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
 
   ###
-  # Host to watch for deep links into MetaMask
+  # Canonical host used to construct signed deep links
   ###
-  - DEEP_LINK_HOST: 'link.metamask.io'
+  - CANONICAL_DEEP_LINK_HOST: 'link.metamask.io'
+  ###
+  # Comma-separated hosts to watch for incoming deep links
+  ###
+  - DEEP_LINK_HOSTS: 'link.metamask.io,link.metamask.com'
   ###
   # RAW base64 encoded public key used to verify deep link signatures
   ###

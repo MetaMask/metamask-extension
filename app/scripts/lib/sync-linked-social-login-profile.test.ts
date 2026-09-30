@@ -104,7 +104,7 @@ describe('registerLinkedSocialLoginProfileSync', () => {
     );
   });
 
-  it('reacts to auth state changes with paired identifiers on srp session profile', () => {
+  it('reacts to auth state changes with paired identifiers on the srp session profile', () => {
     const preferencesController = {
       getPreferences: jest.fn(() => ({
         hasLinkedSocialLoginProfile: false,

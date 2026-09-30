@@ -178,7 +178,7 @@ export const lavamoatPlugin = (args: Args) =>
 // Matches the app's `background` root module, which the service worker imports.
 // This is the boundary at which the 'unsafe' layer must stop, so that `background`
 // and its entire dependency graph run inside LavaMoat.
-const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.(?:js|ts)$/u;
 
 // Unsafe layer that runs code without LavaMoat. `background` is excluded here
 // because, although it is imported from the unsafe service worker, it must
