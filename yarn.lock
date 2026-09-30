@@ -5837,14 +5837,14 @@ __metadata:
   linkType: hard
 
 "@metamask/bridge-controller@npm:^81.3.3":
-  version: 81.3.3
-  resolution: "@metamask/bridge-controller@npm:81.3.3"
+  version: 81.4.0
+  resolution: "@metamask/bridge-controller@npm:81.4.0"
   dependencies:
-    "@ethersproject/address": "npm:^5.7.0"
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/address": "npm:^5.8.0"
+    "@ethersproject/bignumber": "npm:^5.8.0"
+    "@ethersproject/constants": "npm:^5.8.0"
     "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/accounts-controller": "npm:^40.0.0"
     "@metamask/assets-controller": "npm:^17.0.0"
     "@metamask/assets-controllers": "npm:^112.0.4"
@@ -5865,7 +5865,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^11.1.1"
-  checksum: 10/67644673f76d8f4d1d51d5718a5d75b462c7e3f4a477c36a185526c32707d4b9bdf37bfb75b0ddc5466168ae263aa31b35d2ef4d9c4e3669703d9a3bc31e03ae
+  checksum: 10/c122bdd7c331801a65ab030ec0d7d0d0758fa026d1bc0ad78f4d978d15df6c9be44887c1ef6561166cdbfa64bf768c4a799f60a6d3ceeb9480e77afecc7bbb18
   languageName: node
   linkType: hard
 
