@@ -63,7 +63,7 @@ describe('RampsPaymentMethodListItem', () => {
       <RampsPaymentMethodListItem
         paymentMethod={debitCard}
         isSelected
-        limitText="Up to $2,000"
+        limitText="$2,000 limit"
         onClick={jest.fn()}
       />,
       createStore(),
@@ -99,6 +99,59 @@ describe('RampsPaymentMethodListItem', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('hides the check icon when quote info is displayed', () => {
+    const { queryByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(queryByTestId('ramps-payment-method-item-selected')).toBeNull();
+  });
+
+  it('shows the check icon when selected without quote info', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(
+      getByTestId('ramps-payment-method-item-selected'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows the check icon when selected and no quote info is displayed', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsPaymentMethodListItem
+        paymentMethod={debitCard}
+        isSelected
+        showQuote
+        quote={null}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(
+      getByTestId('ramps-payment-method-item-selected'),
+    ).toBeInTheDocument();
   });
 
   it('matches snapshot while quote is loading', () => {
