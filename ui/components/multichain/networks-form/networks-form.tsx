@@ -562,6 +562,9 @@ export const NetworksForm = ({
           style={DropdownEditorStyle.PopoverStyle}
           items={rpcUrls.rpcEndpoints}
           itemKey={(endpoint) => endpoint.url}
+          itemDataTestId={(endpoint, index) =>
+            `network-form-rpc-option-${endpoint.name ?? String(index)}`
+          }
           selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
           error={Boolean(errors.rpcUrl)}
           buttonDataTestId="test-add-rpc-drop-down"
@@ -789,7 +792,7 @@ export const NetworksForm = ({
               variant={TextVariant.BodyMd}
               className="bg-transparent px-0 py-3"
             >
-              <button type="button">{stripProtocol(item)}</button>
+              <span>{stripProtocol(item)}</span>
             </Text>
           )}
           renderTooltip={(item) => (item.length > 36 ? item : undefined)}

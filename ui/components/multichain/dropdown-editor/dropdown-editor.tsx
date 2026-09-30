@@ -2,18 +2,16 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react';
+import classnames from 'clsx';
 import {
   Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxBorderColor,
-  BoxJustifyContent,
+  ButtonBase,
   ButtonIcon,
   ButtonIconSize,
-  FontWeight,
   Icon,
   IconColor,
   IconName,
@@ -50,6 +48,7 @@ export const DropdownEditor = <Item,>({
   onItemAdd,
   onDropdownOpened,
   itemKey,
+  itemDataTestId,
   itemIsDeletable = () => true,
   renderItem,
   renderTooltip,
@@ -67,49 +66,63 @@ export const DropdownEditor = <Item,>({
   onItemAdd: () => void;
   onDropdownOpened?: () => void;
   itemKey: (item: Item) => string;
+  itemDataTestId?: (item: Item, index: number) => string | undefined;
   itemIsDeletable?: (item: Item, items: Item[]) => boolean;
   renderItem: (item: Item, isList: boolean) => string | ReactNode;
   renderTooltip: (item: Item, isList: boolean) => string | undefined;
   buttonDataTestId: string;
 }) => {
   const t = useI18nContext();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLButtonElement>(null);
   // Captured on open (rather than via a callback ref on mount) so the popover
   // has a positioned reference without triggering a state update on mount.
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
   );
+  const labelId = useId();
+  const listboxId = useId();
+  const selectedValueId = useId();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const closeDropdown = useCallback(() => setIsDropdownOpen(false), []);
 
   const renderDropdownList = () => (
-    <Box>
+    <Box
+      id={listboxId}
+      role="listbox"
+      className="max-h-40 overflow-y-auto py-2"
+    >
       {items?.map((item, index) => {
-        const isSelected = index === selectedItemIndex;
+        const selectItem = () => {
+          onItemSelected(index);
+          setIsDropdownOpen(false);
+        };
         const row = (
           <Box
             key={itemKey(item)}
-            alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.Between}
-            paddingHorizontal={4}
-            backgroundColor={
-              isSelected ? BoxBackgroundColor.PrimaryMuted : undefined
-            }
-            className={`relative flex cursor-pointer ${
-              isSelected ? '' : 'hover:bg-hover'
-            }`}
-            onClick={() => {
-              onItemSelected(index);
-              closeDropdown();
-            }}
-          >
-            {isSelected && (
-              <Box
-                backgroundColor={BoxBackgroundColor.PrimaryDefault}
-                className="absolute inset-y-1 left-1 w-1 rounded-full"
-              />
+            className={classnames(
+              'relative flex items-center justify-between px-4 hover:bg-hover',
+              {
+                'bg-primary-muted hover:bg-primary-muted':
+                  index === selectedItemIndex,
+              },
             )}
-            {renderItem(item, true)}
+          >
+            {index === selectedItemIndex && (
+              <Box className="absolute inset-y-1 left-1 w-1 rounded-full bg-primary-default" />
+            )}
+            <button
+              type="button"
+              role="option"
+              aria-selected={index === selectedItemIndex}
+              className="min-w-0 flex-1 text-left"
+              data-testid={
+                itemDataTestId?.(item, index) ??
+                `dropdown-editor-option-${index}`
+              }
+              onClick={selectItem}
+            >
+              {renderItem(item, true)}
+            </button>
             {itemIsDeletable(item, items) && (
               <ButtonIcon
                 className="ml-1"
@@ -118,8 +131,8 @@ export const DropdownEditor = <Item,>({
                 iconName={IconName.Trash}
                 iconProps={{ color: IconColor.ErrorDefault }}
                 data-testid={`delete-item-${index}`}
-                onClick={(event: React.MouseEvent) => {
-                  event.stopPropagation();
+                onClick={(e: React.MouseEvent) => {
+                  e.stopPropagation();
 
                   // Determine which item should be selected after deletion
                   let newSelectedIndex;
@@ -142,7 +155,7 @@ export const DropdownEditor = <Item,>({
 
         const tooltip = renderTooltip(item, true);
         return tooltip ? (
-          <Tooltip key={itemKey(item)} title={tooltip} position="bottom">
+          <Tooltip title={tooltip} position="bottom">
             {row}
           </Tooltip>
         ) : (
@@ -150,38 +163,21 @@ export const DropdownEditor = <Item,>({
         );
       })}
 
-      <Box
-        alignItems={BoxAlignItems.Center}
-        padding={4}
-        className="flex cursor-pointer hover:bg-hover"
+      <button
+        type="button"
         onClick={onItemAdd}
+        className="flex h-auto w-full items-center justify-start gap-2 rounded-none bg-transparent px-4 py-4 text-primary-default hover:bg-hover active:bg-pressed"
       >
         <Icon
-          color={IconColor.PrimaryDefault}
           name={IconName.Add}
           size={IconSize.Sm}
-          className="mr-2"
+          color={IconColor.PrimaryDefault}
+          aria-hidden
         />
-        <Text
-          asChild
-          color={TextColor.PrimaryDefault}
-          variant={TextVariant.BodySm}
-          fontWeight={FontWeight.Medium}
-        >
-          <button type="button" className="bg-transparent">
-            {addButtonText}
-          </button>
-        </Text>
-      </Box>
+        {addButtonText}
+      </button>
     </Box>
   );
-
-  let borderColor: BoxBorderColor = BoxBorderColor.BorderMuted;
-  if (error) {
-    borderColor = BoxBorderColor.ErrorDefault;
-  } else if (isDropdownOpen) {
-    borderColor = BoxBorderColor.BorderDefault;
-  }
 
   // Call back in a useEffect so it triggers after the opening has rendered
   useEffect(() => {
@@ -194,44 +190,52 @@ export const DropdownEditor = <Item,>({
   const tooltip = selectedItem ? renderTooltip(selectedItem, false) : undefined;
 
   const trigger = (
-    <Box
-      ref={dropdownRef}
-      alignItems={BoxAlignItems.Center}
-      justifyContent={BoxJustifyContent.Between}
-      backgroundColor={BoxBackgroundColor.BackgroundMuted}
-      borderColor={borderColor}
-      borderWidth={1}
-      paddingHorizontal={4}
-      className="flex min-h-12 cursor-pointer break-all rounded-xl transition-colors"
+    <ButtonBase
+      type="button"
       onClick={() => {
         setReferenceElement(dropdownRef.current);
         setIsDropdownOpen((isOpen) => !isOpen);
       }}
-    >
-      {selectedItem ? (
-        renderItem(selectedItem, false)
-      ) : (
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          className="select-none"
-        >
-          {placeholder}
-        </Text>
+      aria-labelledby={`${labelId} ${selectedValueId}`}
+      aria-controls={listboxId}
+      aria-expanded={isDropdownOpen}
+      aria-haspopup="listbox"
+      className={classnames(
+        'min-h-12 h-auto w-full justify-between rounded-xl border bg-muted px-4 text-left hover:bg-muted-hover active:scale-100 active:bg-muted-pressed',
+        {
+          'border-error-default': error,
+          'border-default': !error && isDropdownOpen,
+          'border-muted': !error && !isDropdownOpen,
+        },
       )}
-      <ButtonIcon
-        className="ml-auto"
-        iconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
-        ariaLabel={title}
-        size={ButtonIconSize.Md}
-        data-testid={buttonDataTestId}
-      />
-    </Box>
+      ref={dropdownRef}
+      data-testid={buttonDataTestId}
+      endIconName={isDropdownOpen ? IconName.ArrowUp : IconName.ArrowDown}
+      endIconProps={{
+        color: IconColor.IconDefault,
+      }}
+    >
+      <Box id={selectedValueId} className="min-w-0 flex-1">
+        {selectedItem ? (
+          renderItem(selectedItem, false)
+        ) : (
+          <Text
+            asChild
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+          >
+            <span>{placeholder}</span>
+          </Text>
+        )}
+      </Box>
+    </ButtonBase>
   );
 
   return (
-    <Box paddingTop={4}>
-      <Label className="mb-1">{title}</Label>
+    <Box className="pt-4">
+      <Label id={labelId} className="mb-1">
+        {title}
+      </Label>
       {tooltip ? (
         <Tooltip title={tooltip} position="bottom">
           {trigger}
@@ -248,23 +252,21 @@ export const DropdownEditor = <Item,>({
           isOpen={isDropdownOpen}
           onClickOutside={closeDropdown}
           onPressEscKey={closeDropdown}
-          className={`z-10 rounded-xl px-0 ${
-            items && items.length > 0 ? 'py-2' : 'py-0'
-          }`}
+          className="z-10 rounded-xl p-0"
         >
           {renderDropdownList()}
         </Popover>
       ) : (
-        isDropdownOpen && (
-          <Box
-            marginTop={2}
-            borderColor={BoxBorderColor.BorderMuted}
-            borderWidth={1}
-            className="overflow-hidden rounded-xl"
-          >
-            {renderDropdownList()}
-          </Box>
-        )
+        <Box
+          className={classnames(
+            'mt-2 overflow-hidden rounded-xl border border-muted',
+            {
+              hidden: !isDropdownOpen,
+            },
+          )}
+        >
+          {renderDropdownList()}
+        </Box>
       )}
     </Box>
   );
