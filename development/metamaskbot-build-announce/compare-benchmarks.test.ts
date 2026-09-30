@@ -85,7 +85,7 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
 
       expect(result.anyFailed).toBe(true);
-      expect(result.absent).toStrictEqual([
+      expect(result.unmeasured).toStrictEqual([
         {
           entryName: 'assetDetails',
           file: 'benchmark-chrome-webpack-userJourneyAssets',
@@ -111,11 +111,11 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
 
       expect(result.anyFailed).toBe(true);
-      expect(result.absent).toHaveLength(1);
-      expect(result.absent[0].reason).toBe('no p75/p95 in the artifact');
+      expect(result.unmeasured).toHaveLength(1);
+      expect(result.unmeasured[0].reason).toBe('no p75/p95 in the artifact');
     });
 
-    it('an absent entry stays in the reported total', () => {
+    it('an unmeasured entry stays in the reported total', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-userJourneyAssets',
@@ -132,7 +132,7 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
 
-      expect(result.comparisons.length + result.absent.length).toBe(2);
+      expect(result.comparisons.length + result.unmeasured.length).toBe(2);
       expect(result.anyFailed).toBe(true);
     });
 
@@ -491,7 +491,7 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
       expect(result.anyFailed).toBe(true);
-      expect(result.absent).toStrictEqual([
+      expect(result.unmeasured).toStrictEqual([
         {
           entryName: 'startupStandardHome',
           file: 'benchmark-chrome-webpack-startupStandardHome',
@@ -567,7 +567,7 @@ describe('printReport', () => {
   });
 
   it('prints PASS result when no comparison failed', () => {
-    printReport({ comparisons: [], absent: [], anyFailed: false });
+    printReport({ comparisons: [], unmeasured: [], anyFailed: false });
 
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('PASS — all benchmarks within constant limits'),
@@ -576,7 +576,7 @@ describe('printReport', () => {
 
   it('prints FAIL result when anyFailed is true', () => {
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -593,7 +593,7 @@ describe('printReport', () => {
 
   it('shows passing comparison in grouped PASS section', () => {
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -612,7 +612,7 @@ describe('printReport', () => {
 
   it('shows failing comparison with source label and FAIL prefix', () => {
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'loadNewAccount',
@@ -629,7 +629,7 @@ describe('printReport', () => {
 
   it('groups passing entries without baseline into PASS section', () => {
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({ relativeMetrics: [], absoluteViolations: [] }),
       ],
@@ -645,7 +645,7 @@ describe('printReport', () => {
       './comparison-utils',
     ) as typeof import('./comparison-utils');
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -681,7 +681,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'standardHome',
@@ -712,7 +712,7 @@ describe('printReport', () => {
       '../../shared/constants/benchmarks',
     ) as typeof import('../../shared/constants/benchmarks');
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
         makeComparison({
@@ -741,7 +741,7 @@ describe('printReport', () => {
 
   it('groups multiple sources for the same benchmark name in PASS section', () => {
     printReport({
-      absent: [],
+      unmeasured: [],
       comparisons: [
         makeComparison({
           benchmarkName: 'startupStandardHome',

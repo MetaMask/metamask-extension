@@ -77,9 +77,14 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 }
 
 /**
- * An entry that produced no statistics, and why.
+ * An entry that is present in an artifact but produced no statistics, and why.
+ *
+ * Deliberately not called `missing`: `extension#45670` uses that name on this
+ * same function for an artifact the run never produced at all. These are
+ * different absences -- a file that is not there, against an entry inside a
+ * file that is -- and two synonyms on one signature would hide that.
  */
-export type AbsentMeasurement = {
+export type UnmeasuredEntry = {
   entryName: string;
   file: string;
   reason: string;
@@ -97,11 +102,11 @@ export type AbsentMeasurement = {
  * @param results - the entry as parsed from the artifact.
  * @returns the absence, or `undefined` when the entry carries statistics.
  */
-function absentMeasurement(
+function unmeasuredEntry(
   entryName: string,
   file: string,
   results: BenchmarkResults,
-): AbsentMeasurement | undefined {
+): UnmeasuredEntry | undefined {
   const errored = results as unknown as { error?: unknown };
   if (errored.error !== undefined) {
     return { entryName, file, reason: String(errored.error) };
@@ -123,11 +128,11 @@ export function runComparison(
   baseline: HistoricalBaselineReference,
 ): {
   comparisons: BenchmarkEntryComparison[];
-  absent: AbsentMeasurement[];
+  unmeasured: UnmeasuredEntry[];
   anyFailed: boolean;
 } {
   const comparisons: BenchmarkEntryComparison[] = [];
-  const absent: AbsentMeasurement[] = [];
+  const unmeasured: UnmeasuredEntry[] = [];
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
@@ -139,10 +144,10 @@ export function runComparison(
       // printed PASS beside them (extension#46664): once an entry leaves the loop it
       // is absent from `comparisons`, so it cannot fail, and it also leaves the
       // `Total: N benchmarks` denominator, so the count shrinks without a reader
-      // seeing it. An absent measurement is not a passing one.
-      const failure = absentMeasurement(entryName, name, results);
+      // seeing it. An entry that produced nothing is not a passing one.
+      const failure = unmeasuredEntry(entryName, name, results);
       if (failure) {
-        absent.push(failure);
+        unmeasured.push(failure);
         anyFailed = true;
         continue;
       }
@@ -190,7 +195,7 @@ export function runComparison(
     }
   }
 
-  return { comparisons, absent, anyFailed };
+  return { comparisons, unmeasured, anyFailed };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -360,7 +365,7 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
-  absent: AbsentMeasurement[];
+  unmeasured: UnmeasuredEntry[];
   anyFailed: boolean;
 }): void {
   console.log('\n═══════════════════════════════════════');
@@ -428,24 +433,24 @@ export function printReport(result: {
 
   // Absences are printed before the counts, because a reader who sees the totals
   // first reads a shrunken denominator as a smaller suite rather than as a gap.
-  for (const { entryName, file, reason } of result.absent) {
+  for (const { entryName, file, reason } of result.unmeasured) {
     console.log(`\nNO MEASUREMENT  ${entryName}  (${file})`);
     console.log(`      ${reason}`);
   }
 
   const failCount = failed.length;
   const warnCount = warned.length;
-  const absentCount = result.absent.length;
+  const unmeasuredCount = result.unmeasured.length;
 
   console.log('\n───────────────────────────────────────');
   console.log(
-    `Total: ${result.comparisons.length + absentCount} benchmarks | ` +
-      `${failCount} failed | ${warnCount} warnings | ${absentCount} produced no measurement`,
+    `Total: ${result.comparisons.length + unmeasuredCount} benchmarks | ` +
+      `${failCount} failed | ${warnCount} warnings | ${unmeasuredCount} produced no measurement`,
   );
 
-  if (absentCount > 0) {
+  if (unmeasuredCount > 0) {
     console.log(
-      `\nRESULT: FAIL — ${absentCount} benchmark(s) produced no measurement`,
+      `\nRESULT: FAIL — ${unmeasuredCount} benchmark(s) produced no measurement`,
     );
   } else if (result.anyFailed) {
     console.log(
