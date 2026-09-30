@@ -8,6 +8,7 @@ type WidgetView = 'detail' | 'results';
 export function Widget({
   data,
   similar,
+  displayTicker,
   onSwap,
   onViewDetails,
   onViewSimilar,
@@ -47,7 +48,7 @@ export function Widget({
           />
         ) : (
           <TokenResults
-            ticker={active.ticker}
+            ticker={displayTicker}
             results={results}
             onBack={() => setView('detail')}
             onSelect={(asset) => {

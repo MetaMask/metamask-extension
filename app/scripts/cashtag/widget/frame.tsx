@@ -116,6 +116,7 @@ async function main() {
     <Widget
       data={resolved.primary}
       similar={resolved.similar}
+      displayTicker={symbol}
       onSwap={(asset) => {
         trackWidgetEvent({
           event: 'swap_clicked',

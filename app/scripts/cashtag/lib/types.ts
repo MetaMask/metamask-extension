@@ -29,6 +29,7 @@ export type ResolvedTicker = {
 export type WidgetModel = {
   data: AssetData;
   similar: AssetData[];
+  displayTicker: string;
   onSwap: (asset: AssetData) => void;
   onViewDetails: (asset: AssetData) => void;
   onViewSimilar: () => void;
