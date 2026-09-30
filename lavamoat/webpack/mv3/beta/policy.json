@@ -1168,11 +1168,12 @@
     "@metamask/base-data-service": {
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/base-data-service>@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true,
-        "@metamask/assets-controller>lodash-es": true
+        "@metamask/assets-controller>lodash-es": true,
+        "@metamask/base-data-service>uuid": true
       }
     },
     "@metamask/bridge-controller": {
@@ -1459,6 +1460,40 @@
         "@metamask/assets-controller>lodash-es": true
       }
     },
+    "@metamask/money-account-api-data-service>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/money-account-api-data-service>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/money-account-balance-service>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/money-account-balance-service>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
     "@metamask/name-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -1582,6 +1617,23 @@
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/transaction-pay-controller>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -2274,23 +2326,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2432,14 +2467,14 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/money-account-api-data-service>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@metamask/base-data-service": true,
-        "@metamask/controller-utils": true,
+        "@metamask/money-account-api-data-service>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/money-account-api-data-service>@metamask/utils": true,
         "cockatiel": true
       }
     },
@@ -2450,17 +2485,17 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/money-account-balance-service>@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/base-data-service": true,
-        "@metamask/controller-utils": true,
+        "@metamask/money-account-balance-service>@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/money-account-balance-service>@metamask/utils": true,
         "cockatiel": true
       }
     },
@@ -2985,6 +3020,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/ramps-controller>@metamask/controller-utils": true,
+        "@metamask/ramps-controller>bignumber.js": true,
         "cockatiel": true,
         "eslint>fast-deep-equal": true
       }
@@ -3407,16 +3443,16 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/transaction-pay-controller>@metamask/keyring-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/controller-utils": true,
+        "@metamask/keyring-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
         "@metamask/ramps-controller": true,
-        "@metamask/sentinel-api-service": true,
+        "@metamask/transaction-pay-controller>@metamask/sentinel-api-service": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true,
+        "@metamask/transaction-pay-controller>@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
-        "lodash": true
+        "@metamask/assets-controller>lodash-es": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -3540,6 +3576,11 @@
         "lodash": true
       }
     },
+    "@metamask/base-data-service>@metamask/utils": {
+      "packages": {
+        "nock>debug": true
+      }
+    },
     "@metamask/bridge-controller>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3619,6 +3660,20 @@
         "lodash": true
       }
     },
+    "@metamask/money-account-api-data-service>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/money-account-balance-service>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/notification-services-controller>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3627,6 +3682,13 @@
       }
     },
     "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
@@ -3671,6 +3733,19 @@
         "@metamask/superstruct": true,
         "@scure/base": true,
         "buffer": true
+      }
+    },
+    "@metamask/money-account-api-data-service>@metamask/utils": {
+      "packages": {
+        "nock>debug": true
+      }
+    },
+    "@metamask/money-account-balance-service>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "nock>debug": true,
+        "lodash": true
       }
     },
     "@metamask/multichain-account-service>@metamask/utils": {
@@ -3763,6 +3838,14 @@
         "@noble/hashes": true,
         "@scure/base": true,
         "buffer": true,
+        "nock>debug": true,
+        "lodash": true
+      }
+    },
+    "@metamask/transaction-pay-controller>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
         "nock>debug": true,
         "lodash": true
       }
@@ -5146,6 +5229,11 @@
       }
     },
     "@metamask/perps-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/ramps-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
@@ -6650,14 +6738,14 @@
     },
     "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
       "packages": {
-        "react-markdown>unist-util-visit": true
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit": true
       }
     },
     "react-markdown>remark-parse>mdast-util-from-markdown": {
       "packages": {
         "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
         "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
-        "react-syntax-highlighter>refractor>parse-entities": true,
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true,
         "react-markdown>vfile>unist-util-stringify-position": true
       }
     },
@@ -6695,7 +6783,7 @@
     },
     "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
       "packages": {
-        "react-syntax-highlighter>refractor>parse-entities": true
+        "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": true
       }
     },
     "crypto-browserify>diffie-hellman>miller-rabin": {
@@ -6828,7 +6916,7 @@
         "mockttp>express>safe-buffer": true
       }
     },
-    "react-syntax-highlighter>refractor>parse-entities": {
+    "react-markdown>remark-parse>mdast-util-from-markdown>parse-entities": {
       "globals": {
         "document.createElement": true
       }
@@ -7980,15 +8068,25 @@
       "packages": {
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
-        "react-markdown>unified>is-buffer": true,
+        "react-markdown>vfile>is-buffer": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
     },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-visit-parents": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-is": true
+      }
+    },
     "react-markdown>unist-util-visit>unist-util-visit-parents": {
       "packages": {
         "react-markdown>unist-util-visit>unist-util-is": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit": {
+      "packages": {
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions>unist-util-visit>unist-util-visit-parents": true
       }
     },
     "react-markdown>unist-util-visit": {
@@ -8081,6 +8179,11 @@
       }
     },
     "@metamask/assets-controllers>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/base-data-service>uuid": {
       "globals": {
         "crypto": true
       }

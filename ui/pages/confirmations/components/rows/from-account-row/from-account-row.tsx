@@ -31,6 +31,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../context/confirm';
+import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
 import { AccountSelectModal } from '../../account-select-modal';
@@ -58,11 +59,6 @@ type FromAccountRowProps = {
  * otherwise falls back to the "To" default.
  */
 const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
-  TransactionType.moneyAccountWithdraw,
-];
-
-const MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES = [
-  TransactionType.moneyAccountDeposit,
   TransactionType.moneyAccountWithdraw,
 ];
 
@@ -96,12 +92,10 @@ export function FromAccountRow({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const isHardwareBlocked = useIsPayHardwareBlocked();
-  const excludeHardwareAccounts =
-    isHardwareBlocked ||
-    hasTransactionType(
-      currentConfirmation,
-      MONEY_ACCOUNT_HARDWARE_SELECTOR_BLOCKED_TRANSACTION_TYPES,
-    );
+  const excludeQrAccounts = hasTransactionType(
+    currentConfirmation,
+    PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
+  );
   const transactionId = currentConfirmation?.id ?? '';
   const txFrom = currentConfirmation?.txParams?.from ?? '';
   const { chainId, id: ownerId } = currentConfirmation ?? {};
@@ -213,7 +207,9 @@ export function FromAccountRow({
           onSelect={handleSelect}
           onClose={closeModal}
           title={isRecipientRow ? t('selectRecipient') : undefined}
-          excludeHardwareAccounts={excludeHardwareAccounts}
+          excludeHardwareAccounts={isHardwareBlocked}
+          excludeQrAccounts={excludeQrAccounts}
+          restrictHardwareAccountsToSelected={excludeQrAccounts}
         />
       )}
     </>
