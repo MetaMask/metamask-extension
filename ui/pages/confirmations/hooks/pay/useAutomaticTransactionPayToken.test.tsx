@@ -193,7 +193,7 @@ describe('useAutomaticTransactionPayToken', () => {
       isTokenAllowed: () => false,
     });
     useIsMoneyAccountFlagDefaultMock.mockReturnValue(false);
-    getHardwareWalletTypeMock.mockReturnValue(null);
+    getHardwareWalletTypeMock.mockReturnValue(undefined);
   });
 
   afterEach(() => {
