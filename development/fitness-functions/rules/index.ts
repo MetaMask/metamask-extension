@@ -5,6 +5,15 @@ import { preventDeprecatedImports } from './prevent-deprecated-imports';
 import { preventGetApiExpansion } from './prevent-get-api-expansion';
 import { preventLegacyBackgroundApiServiceExpansion } from './prevent-legacy-background-api-service-expansion';
 
+/**
+ * The PR label that allows changes to the legacy background API.
+ *
+ * Adding this label to a PR skips the fitness functions that prevent
+ * `MetamaskController.getApi` and `LegacyBackgroundApiService` from being
+ * expanded. It is intended for emergencies only.
+ */
+const ALLOW_BACKGROUND_API_CHANGES_LABEL = 'allow-background-api-changes';
+
 const RULES: IRule[] = [
   {
     name: "Don't use `sinon` or `assert` in unit tests",
@@ -30,7 +39,7 @@ const RULES: IRule[] = [
     errorMessage:
       'Do not add new properties to MetamaskController.getApi(). Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
     automationType: AUTOMATION_TYPE.CI,
-    skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
+    skip: ({ labels }) => labels.includes(ALLOW_BACKGROUND_API_CHANGES_LABEL),
   },
   {
     name: "Don't expand LegacyBackgroundApiService",
@@ -38,7 +47,7 @@ const RULES: IRule[] = [
     errorMessage:
       'Do not add new methods to LegacyBackgroundApiService. Please place actions in a controller or service, expose them through the messenger, and use useMessenger() in UI files to access them.\n- You can read more about UI messengers here: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md\n- You can read about data services here: https://github.com/MetaMask/core/tree/main/docs/legacy/data-services-announcement.md',
     automationType: AUTOMATION_TYPE.CI,
-    skip: ({ allowBackgroundApiChanges }) => allowBackgroundApiChanges,
+    skip: ({ labels }) => labels.includes(ALLOW_BACKGROUND_API_CHANGES_LABEL),
   },
 ];
 
@@ -47,7 +56,7 @@ type IRule = {
   fn: (diff: string, baseRef: string) => boolean;
   errorMessage: string;
   automationType?: AUTOMATION_TYPE;
-  skip?: (options: { allowBackgroundApiChanges: boolean }) => boolean;
+  skip?: (options: { labels: string[] }) => boolean;
 };
 
 function runFitnessFunctionRule({
@@ -61,7 +70,7 @@ function runFitnessFunctionRule({
   diff: string;
   automationType: AUTOMATION_TYPE;
   ruleOptions: {
-    allowBackgroundApiChanges: boolean;
+    labels: string[];
   };
   baseRef: string;
 }): void {

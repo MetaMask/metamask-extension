@@ -2,41 +2,51 @@ import { AUTOMATION_TYPE } from './constants';
 import { parseFitnessFunctionArguments } from './parse-arguments';
 
 describe('parseFitnessFunctionArguments', () => {
-  it('accepts the CI bypass flag', () => {
-    const argumentsForFitnessFunctions = [
+  it('parses a JSON-encoded array of labels', () => {
+    const options = parseFitnessFunctionArguments([
       'ci',
-      '--allow-background-api-changes',
-    ];
-
-    const options = parseFitnessFunctionArguments(argumentsForFitnessFunctions);
+      '--labels',
+      '["team-core-platform", "allow-background-api-changes"]',
+    ]);
 
     expect(options).toStrictEqual({
       automationType: AUTOMATION_TYPE.CI,
-      allowBackgroundApiChanges: true,
       diffPath: undefined,
+      labels: ['team-core-platform', 'allow-background-api-changes'],
     });
   });
 
-  it('preserves the optional CI diff path alongside the bypass flag', () => {
-    const argumentsForFitnessFunctions = [
+  it('preserves the optional CI diff path alongside labels', () => {
+    const options = parseFitnessFunctionArguments([
       'ci',
       '/tmp/fitness.diff',
-      '--allow-background-api-changes',
-    ];
-
-    const options = parseFitnessFunctionArguments(argumentsForFitnessFunctions);
+      '--labels',
+      '["allow-background-api-changes"]',
+    ]);
 
     expect(options).toStrictEqual({
       automationType: AUTOMATION_TYPE.CI,
-      allowBackgroundApiChanges: true,
       diffPath: '/tmp/fitness.diff',
+      labels: ['allow-background-api-changes'],
     });
   });
 
-  it('keeps the legacy API guards enabled by default', () => {
+  it('defaults to no labels', () => {
     const options = parseFitnessFunctionArguments(['ci']);
 
-    expect(options.allowBackgroundApiChanges).toBe(false);
+    expect(options.labels).toStrictEqual([]);
+  });
+
+  it('throws when labels are not valid JSON', () => {
+    expect(() =>
+      parseFitnessFunctionArguments(['ci', '--labels', 'not-json']),
+    ).toThrow('--labels must be a JSON-encoded array of strings');
+  });
+
+  it('throws when labels are not an array of strings', () => {
+    expect(() =>
+      parseFitnessFunctionArguments(['ci', '--labels', '["valid", 1]']),
+    ).toThrow('--labels must be a JSON-encoded array of strings');
   });
 
   it('rejects unknown flags', () => {

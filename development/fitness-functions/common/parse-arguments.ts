@@ -6,16 +6,17 @@ import { AUTOMATION_TYPE } from './constants';
  *
  * The optional diff path remains available for running CI rules against a local fixture.
  * @param argumentsForFitnessFunctions - CLI arguments after the script name.
- * @returns The selected automation and optional CI overrides.
+ * @returns The selected automation type, optional diff path, and the labels
+ * on the PR being checked.
  */
 export function parseFitnessFunctionArguments(
   argumentsForFitnessFunctions: string[],
 ): {
   automationType: AUTOMATION_TYPE;
   diffPath?: string;
-  allowBackgroundApiChanges: boolean;
+  labels: string[];
 } {
-  const { automationType, diffPath, allowBackgroundApiChanges } = yargs(
+  const { automationType, diffPath, labels } = yargs(
     argumentsForFitnessFunctions,
   )
     .command(
@@ -33,12 +34,16 @@ export function parseFitnessFunctionArguments(
             type: 'string',
           }),
     )
-    .option('allowBackgroundApiChanges', {
+    .option('labels', {
       describe:
-        'Skip fitness functions which guard against expanding the legacy background API',
-      type: 'boolean',
-      default: false,
+        'JSON-encoded array of the labels on the PR being checked. Some fitness functions can be skipped by adding a label to the PR.',
+      type: 'string',
+      default: '[]',
     })
+    .example(
+      '$0 ci --labels \'["allow-background-api-changes"]\'',
+      'Run fitness functions for a PR which has the allow-background-api-changes label',
+    )
     .strict()
     .help()
     .fail((message) => {
@@ -51,8 +56,38 @@ export function parseFitnessFunctionArguments(
   return {
     automationType,
     diffPath: typeof diffPath === 'string' ? diffPath : undefined,
-    allowBackgroundApiChanges,
+    labels: parseLabels(labels),
   };
+}
+
+/**
+ * Parses the `--labels` argument.
+ *
+ * Labels are passed as JSON (rather than, say, a comma-separated list)
+ * because GitHub Actions can produce JSON from the PR payload directly, and
+ * label names may contain commas.
+ *
+ * @param value - The JSON-encoded array of labels.
+ * @returns The labels.
+ */
+function parseLabels(value: string): string[] {
+  const errorMessage = `--labels must be a JSON-encoded array of strings, but got: ${value}`;
+
+  let labels: unknown;
+  try {
+    labels = JSON.parse(value);
+  } catch {
+    throw new Error(errorMessage);
+  }
+
+  if (
+    !Array.isArray(labels) ||
+    !labels.every((label) => typeof label === 'string')
+  ) {
+    throw new Error(errorMessage);
+  }
+
+  return labels;
 }
 
 /**

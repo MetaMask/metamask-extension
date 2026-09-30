@@ -3,8 +3,9 @@ import { getDiffByAutomationType } from './common/get-diff';
 import { parseFitnessFunctionArguments } from './common/parse-arguments';
 import { RULES, runFitnessFunctionRule } from './rules';
 
-const { automationType, diffPath, allowBackgroundApiChanges } =
-  parseFitnessFunctionArguments(process.argv.slice(2));
+const { automationType, diffPath, labels } = parseFitnessFunctionArguments(
+  process.argv.slice(2),
+);
 
 getDiffByAutomationType(automationType, diffPath)
   .then(({ baseRef, diff }) => {
@@ -13,7 +14,7 @@ getDiffByAutomationType(automationType, diffPath)
         rule,
         diff,
         automationType,
-        ruleOptions: { allowBackgroundApiChanges },
+        ruleOptions: { labels },
         baseRef,
       });
     }
