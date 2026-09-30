@@ -5,6 +5,7 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../store/store';
+import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { SelectedAssetButton } from './selected-asset-button';
 
@@ -74,6 +75,15 @@ describe('SelectedAssetButton', () => {
     const { queryByTestId } = renderButton(
       toBridgeToken(getNativeAssetForChainId('0x1')),
     );
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('does not render a badge for a malicious asset unless it is verified', () => {
+    const { queryByTestId } = renderButton({
+      ...toBridgeToken(getNativeAssetForChainId('0x1')),
+      securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
+    });
 
     expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });

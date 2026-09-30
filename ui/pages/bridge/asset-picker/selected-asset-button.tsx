@@ -27,6 +27,7 @@ import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../../shared/constants/bridge';
+import { useAssetSecurityData } from '../hooks/useAssetSecurityData';
 import { AssetSecurityBadge } from './asset-security-badge';
 
 export const SelectedAssetButton = ({
@@ -36,6 +37,7 @@ export const SelectedAssetButton = ({
   asset: BridgeToken;
 } & SelectButtonProps<'div'>) => {
   const caipChainId = formatChainIdToCaip(asset.chainId);
+  const { assetIsVerified } = useAssetSecurityData(asset);
 
   return (
     <SelectButton
@@ -71,7 +73,7 @@ export const SelectedAssetButton = ({
             <AvatarToken src={asset.iconUrl ?? undefined} name={asset.symbol} />
           </BadgeWrapper>
           <Label className="cursor-pointer ml-1">{asset.symbol}</Label>
-          <AssetSecurityBadge asset={asset} />
+          {assetIsVerified ? <AssetSecurityBadge asset={asset} /> : null}
         </div>
       }
       {...props}
