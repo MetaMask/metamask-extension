@@ -236,7 +236,9 @@ function publishHook({
             e,
           );
         }
-        return result;
+        if (result?.transactionHash) {
+          return result;
+        }
       }
     }
 
