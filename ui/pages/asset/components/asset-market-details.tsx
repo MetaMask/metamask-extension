@@ -29,13 +29,21 @@ import { Asset } from '../types/asset';
 import { getConversionRatesForNativeAsset } from '../../../../shared/lib/asset-conversion-rates';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { AssetMarketData } from '../hooks/useCurrentPrice';
 
 export const AssetMarketDetails = ({
   asset,
   address,
+  fallbackMarketData,
 }: {
   asset: Asset;
   address: string;
+  /**
+   * Market data fetched from the Price API, already in the selected fiat
+   * currency. Used for assets the wallet does not track, which have no cached
+   * market data in redux.
+   */
+  fallbackMarketData?: AssetMarketData;
 }) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
@@ -76,9 +84,14 @@ export const AssetMarketDetails = ({
       ? conversionRateForNativeToken?.marketData
       : nonEvmConversionRates?.[address as CaipAssetType]?.marketData;
 
-  const tokenMarketDetails = isEvm
+  const cachedMarketDetails = isEvm
     ? evmMarketData[chainId]?.[address as Hex]
     : nonEvmMarketData;
+
+  // Cached EVM values are stored in native units and are converted below, while
+  // the fallback arrives from the Price API already in the selected currency.
+  const isCachedMarketData = Boolean(cachedMarketDetails);
+  const tokenMarketDetails = cachedMarketDetails ?? fallbackMarketData;
 
   const rawDilutedMarketCap = (
     tokenMarketDetails as { dilutedMarketCap?: string | number } | undefined
@@ -112,7 +125,7 @@ export const AssetMarketDetails = ({
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
   let fullyDiluted = toNumber(rawDilutedMarketCap);
 
-  if (isEvm) {
+  if (isEvm && isCachedMarketData) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
