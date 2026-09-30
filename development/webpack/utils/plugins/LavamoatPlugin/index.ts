@@ -91,7 +91,28 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // under scuttling the detection itself throws unless excepted.
   'requestIdleCallback',
   // globals used by e2e
-  ...(args.test ? ['ret_nodes', 'browser', 'chrome', 'indexedDB'] : []),
+  ...(args.test
+    ? [
+        'ret_nodes',
+        'browser',
+        'chrome',
+        'indexedDB',
+        'eval',
+        'setInterval',
+        'clearInterval',
+        'requestAnimationFrame',
+        'cancelAnimationFrame',
+        'cancelIdleCallback',
+        'Intl',
+        'AbortSignal',
+        'Window',
+        'Document',
+        'Node',
+        'URL',
+        'btoa',
+        'atob',
+      ]
+    : []),
 ];
 
 export const lavamoatPlugin = (args: Args) =>
