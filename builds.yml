@@ -376,9 +376,6 @@ env:
   - MM_PERPS_HL_BUILDER_ADDRESS_TESTNET: null
   # Build-time gate: omit PerpsController and perps RPC when false (mitigation for critical failures)
   - PERPS_ENABLED: false
-  # Build-time gate: when false AssetsController is instantiated but state remains empty.
-  # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
   # Build-time gate: when true, the Add Device Sync tab is shown in Settings
@@ -425,9 +422,13 @@ env:
   - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
 
   ###
-  # Host to watch for deep links into MetaMask
+  # Canonical host used to construct signed deep links
   ###
-  - DEEP_LINK_HOST: 'link.metamask.io'
+  - CANONICAL_DEEP_LINK_HOST: 'link.metamask.io'
+  ###
+  # Comma-separated hosts to watch for incoming deep links
+  ###
+  - DEEP_LINK_HOSTS: 'link.metamask.io,link.metamask.com'
   ###
   # RAW base64 encoded public key used to verify deep link signatures
   ###
