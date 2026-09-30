@@ -18,20 +18,25 @@ a[interestfor='mm-cashtag-popover'] {
   transition-behavior: allow-discrete;
   position-anchor: --cashtag-invoker;
   top: anchor(bottom);
-  left: anchor(left);
+  justify-self: anchor-center;
   margin-block: 8px;
-  position-try: flip-block, --below-left, --above-left;
+  position-try: flip-block, --bottom, --top, --top-left;
   position-try-order: most-height;
 }
 
-@position-try --below-left {
+@position-try --bottom {
   top: anchor(bottom);
-  left: anchor(left);
+  justify-self: anchor-center;
 }
 
-@position-try --above-left {
+@position-try --top {
   bottom: anchor(top);
-  left: anchor(left);
+  justify-self: anchor-center;
+}
+
+@position-try --top-left {
+  bottom: anchor(top);
+  right: anchor(right);
 }
 
 @starting-style {
