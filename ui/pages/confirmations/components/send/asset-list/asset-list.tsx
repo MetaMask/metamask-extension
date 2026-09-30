@@ -5,11 +5,6 @@ import React, {
   useMemo,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import {
-  type CaipAssetType,
-  isCaipChainId,
-  isStrictHexString,
-} from '@metamask/utils';
 
 import {
   Text,
@@ -33,10 +28,7 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { SendContext } from '../../../context/send';
 import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
-import {
-  normalizeTokenAssetId,
-  toAssetId,
-} from '../../../../../../shared/lib/asset-utils';
+import { toNormalizedCaipAssetId } from '../../../../../../shared/lib/asset-utils';
 import { useTokenAssetSecurityResults } from '../../../../../hooks/token-asset/useTokenAssetSecurityResults';
 
 type AssetListProps = {
@@ -62,18 +54,6 @@ type ListItem =
 const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 40;
 const noop = () => undefined;
-
-const toSecurityAssetId = (asset: Asset): CaipAssetType | undefined => {
-  const { address, assetId, chainId } = asset;
-  const identifier = assetId ?? address;
-
-  if (!identifier || (!isStrictHexString(chainId) && !isCaipChainId(chainId))) {
-    return undefined;
-  }
-
-  const caipAssetId = toAssetId(identifier, chainId);
-  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
-};
 
 export const AssetList = ({
   tokens,
@@ -106,7 +86,13 @@ export const AssetList = ({
 
   const tokenRows = useMemo(
     () =>
-      tokens.map((asset) => ({ asset, caipAssetId: toSecurityAssetId(asset) })),
+      tokens.map((asset) => ({
+        asset,
+        caipAssetId: toNormalizedCaipAssetId(
+          asset.assetId ?? asset.address,
+          asset.chainId,
+        ),
+      })),
     [tokens],
   );
 
