@@ -396,7 +396,7 @@ function getBestToken({
       }
     : undefined;
 
-  if (isHardwareWallet) {
+  if (isHardwareWallet && !isMoneyAccountDeposit) {
     return targetTokenFallback;
   }
 

@@ -1890,12 +1890,14 @@ export async function addTransaction(
  * @param txMeta - The transaction metadata
  * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
  * @param loadingIndicatorMessage - Message to show during loading
+ * @param signingAccountAddress - Account that signs funding transactions
  * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
  */
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  signingAccountAddress?: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1905,7 +1907,7 @@ export function updateAndApproveTx(
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
-      txMeta.txParams.from,
+      signingAccountAddress ?? txMeta.txParams.from,
     );
 
     if (isHardwareAccount(fromAccount)) {
