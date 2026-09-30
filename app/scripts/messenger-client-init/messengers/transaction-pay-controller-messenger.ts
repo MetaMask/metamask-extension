@@ -22,8 +22,6 @@ import type {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
-import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
 
 export function getTransactionPayControllerMessenger(
   messenger: RootMessenger<
@@ -35,12 +33,6 @@ export function getTransactionPayControllerMessenger(
     namespace: 'TransactionPayController',
     parent: messenger,
   });
-
-  // TODO: Remove this once the assets unified state is fully rolled out
-  registerAssetsControllerGetStateForTransactionPayAction(
-    messenger,
-    controllerMessenger,
-  );
 
   messenger.delegate({
     messenger: controllerMessenger,
@@ -133,43 +125,4 @@ export function getTransactionPayControllerInitMessenger(
   });
 
   return controllerInitMessenger;
-}
-
-function registerAssetsControllerGetStateForTransactionPayAction(
-  messenger: RootMessenger,
-  controllerMessenger: TransactionPayControllerMessenger,
-) {
-  if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-    const assetsControllerMessenger = getAssetsControllerMessenger(messenger);
-    assetsControllerMessenger.registerActionHandler(
-      'AssetsController:getStateForTransactionPay' as const,
-      () => {
-        const tokenBalancesControllerState = controllerMessenger.call(
-          'TokenBalancesController:getState',
-        );
-        const accountsByChainIdControllerState = controllerMessenger.call(
-          'AccountTrackerController:getState',
-        );
-        const tokensControllerState = controllerMessenger.call(
-          'TokensController:getState',
-        );
-        const marketDataControllerState = controllerMessenger.call(
-          'TokenRatesController:getState',
-        );
-        const currencyRatesControllerState = controllerMessenger.call(
-          'CurrencyRateController:getState',
-        );
-
-        return {
-          tokenBalances: tokenBalancesControllerState?.tokenBalances ?? {},
-          accountsByChainId:
-            accountsByChainIdControllerState?.accountsByChainId ?? {},
-          allTokens: tokensControllerState?.allTokens ?? {},
-          marketData: marketDataControllerState?.marketData ?? {},
-          currencyRates: currencyRatesControllerState?.currencyRates ?? {},
-          currentCurrency: currencyRatesControllerState?.currentCurrency ?? '',
-        };
-      },
-    );
-  }
 }

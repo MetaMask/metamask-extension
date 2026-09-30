@@ -4301,6 +4301,9 @@
   "gasLimitBelowMinimum": {
     "message": "Gas limit must be at least 12000"
   },
+  "gasLimitEditingUnavailable": {
+    "message": "Editing the gas limit is unavailable until MetaMask provides an estimate."
+  },
   "gasPrice": {
     "message": "Gas price"
   },
@@ -5879,6 +5882,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Fund your Money account",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "Send"
@@ -9045,7 +9052,7 @@
     "message": "Instant"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Less than"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "min"
@@ -9058,7 +9065,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Up to $1",
+    "message": "$1 limit",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -9083,9 +9090,6 @@
   "rampsServiceDisruptionTitle": {
     "message": "Buying is temporarily unavailable"
   },
-  "rampsShowAllTokens": {
-    "message": "Show all tokens"
-  },
   "rampsTokenUnavailableDescription": {
     "message": "This token isn't available in your region.",
     "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
@@ -9107,7 +9111,7 @@
     "message": "Includes $1% MM fee."
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
+    "message": "You can add this token back in the future by going to \"Manage tokens\" in the tokens menu"
   },
   "receive": {
     "message": "Receive"

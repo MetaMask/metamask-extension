@@ -56,7 +56,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import { enablePatches, Immer, Patch } from 'immer';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -4004,7 +4004,7 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
 }
 
-export function setShowTestNetworks(value: boolean) {
+export function setShowTestNetworksPreference(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
@@ -7593,6 +7593,8 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
+enablePatches();
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],

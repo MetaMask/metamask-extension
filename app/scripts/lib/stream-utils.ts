@@ -1,6 +1,6 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-// @ts-expect-error @types/readable-stream does not export pipeline or Duplex
-import { pipeline, Duplex } from 'readable-stream';
+// @ts-expect-error @types/readable-stream does not export pipeline, Duplex, or finished
+import { finished, pipeline, Duplex } from 'readable-stream';
 
 /**
  * A stream-like object that exposes the internal properties accessed by
@@ -28,6 +28,16 @@ export function setupMultiplex(connectionStream: Duplex): ObjectMultiplex {
     }
   });
   return mux;
+}
+
+/**
+ * Invokes `callback` when `stream` has finished (readable-stream / Node `finished` semantics).
+ *
+ * @param stream - Stream to watch (e.g. an `ExtensionPortStream`).
+ * @param callback - Called once the stream is fully closed.
+ */
+export function onStreamFinished(stream: Duplex, callback: () => void): void {
+  finished(stream, callback);
 }
 
 /**

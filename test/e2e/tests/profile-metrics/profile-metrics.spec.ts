@@ -238,62 +238,45 @@ describe('Profile Metrics', function () {
     });
   });
 
-  [
-    {
-      title:
-        'when MetaMetrics is disabled and basic functionality is not consolidated',
-      consentDecisionMade: true,
-      optedIn: false,
-      pna25Acknowledged: true,
-    },
-    {
-      title: 'when the user has not acknowledged the privacy change',
-      consentDecisionMade: true,
-      optedIn: true,
-      pna25Acknowledged: false,
-    },
-  ].forEach(({ title, optedIn, consentDecisionMade, pna25Acknowledged }) => {
-    describe(title, function () {
-      it('does not send existing accounts to the API on wallet unlock', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilderV2()
-              .withAnalyticsController({
-                optedIn,
-                consentDecisionMade,
-              })
-              .withAppStateController({
-                pna25Acknowledged,
-              })
-              .withBasicFunctionalityConsolidationDisabled()
-              .build(),
-            testSpecificMock: async (server: Mockttp) => [
-              await mockAuthService(server),
-              await mockRemoteFeatureFlags()(server),
-            ],
-            title: this.test?.fullTitle(),
-          },
-          async ({
-            driver,
-            mockedEndpoint,
-          }: {
-            driver: Driver;
-            mockedEndpoint: MockedEndpoint[];
-          }) => {
-            await login(driver);
+  describe('when the user has not acknowledged the privacy change', function () {
+    it('does not send existing accounts to the API on wallet unlock', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilderV2()
+            .withAnalyticsController({
+              optedIn: true,
+              consentDecisionMade: true,
+            })
+            .withAppStateController({
+              pna25Acknowledged: false,
+            })
+            .build(),
+          testSpecificMock: async (server: Mockttp) => [
+            await mockAuthService(server),
+            await mockRemoteFeatureFlags()(server),
+          ],
+          title: this.test?.fullTitle(),
+        },
+        async ({
+          driver,
+          mockedEndpoint,
+        }: {
+          driver: Driver;
+          mockedEndpoint: MockedEndpoint[];
+        }) => {
+          await login(driver);
 
-            await driver.delay(5000);
+          await driver.delay(5000);
 
-            const [authCall] = mockedEndpoint;
-            const requests = await authCall.getSeenRequests();
-            assert.equal(
-              requests.length,
-              0,
-              'Expected no requests to the auth API.',
-            );
-          },
-        );
-      });
+          const [authCall] = mockedEndpoint;
+          const requests = await authCall.getSeenRequests();
+          assert.equal(
+            requests.length,
+            0,
+            'Expected no requests to the auth API.',
+          );
+        },
+      );
     });
   });
 });
