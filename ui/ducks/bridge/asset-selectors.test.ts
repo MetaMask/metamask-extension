@@ -2,6 +2,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -408,7 +409,7 @@ describe('Bridge asset selectors', () => {
         rpcEndpoints: [
           {
             networkClientId: 'arc',
-            type: 'custom',
+            type: RpcEndpointType.Custom,
             url: 'https://rpc.arc.example',
           },
         ],
