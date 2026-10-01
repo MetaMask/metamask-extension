@@ -1,0 +1,80 @@
+diff --git a/development/webpack/utils/helpers.ts b/development/webpack/utils/helpers.ts
+index 1e002af..3aa123e 100644
+--- a/development/webpack/utils/helpers.ts
++++ b/development/webpack/utils/helpers.ts
+@@ -1,6 +1,7 @@
+ import { join, sep } from 'node:path';
+ import type { EntryObject, Stats } from 'webpack';
+ import type TerserPluginType from 'terser-webpack-plugin';
++import type { JsMinifyOptions, TerserMangleOptions } from '@swc/types';
+ 
+ export type Manifest = chrome.runtime.Manifest;
+ export type ManifestV2 = chrome.runtime.ManifestV2;
+@@ -101,26 +102,37 @@ export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
+ export const extensionToJs = (filename: string) =>
+   filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
+ 
++/**
++ * `mangle.disableCharFreq` is not declared in `@swc/types`' mangle options, but
++ * SWC reads it as `MangleOptions.disable_char_freq`. See `getMinimizers`.
++ */
++type SwcMangleOptions = TerserMangleOptions & { disableCharFreq?: boolean };
++type SwcMinifyOptions = Omit<JsMinifyOptions, 'mangle'> & {
++  mangle?: boolean | SwcMangleOptions;
++};
++
+ /**
+  * It gets minimizers for the webpack build.
+  *
+- * TerserPlugin's default `parallel` mode uses jest-worker to spawn a minifier
+- * process per CPU core. Worker assignment is not guaranteed to be stable across
+- * runs, which can change SWC mangling frequency analysis and produce different
+- * `runtime.[contenthash].js` filenames. That breaks Firefox AMO reviewer
+- * rebuild comparisons (mtree) even when the bundles are otherwise equivalent.
+- * Disabling parallel minify keeps that step deterministic and has also been a
+- * small wall-clock win in local `yarn dist:mv2` timings.
++ * Experiment patch (see PR #46829): mangle the runtime chunk with SWC's fixed
++ * identifier alphabet instead of one derived from the chunk's character
++ * frequencies, so rebuilds stay content-stable.
+  */
+ export function getMinimizers() {
+   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
++  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
+   return [
+-    new TerserPlugin({
+-      // use SWC to minify (about 7x faster than Terser)
++    new TerserPlugin<SwcMinifyOptions>({
++      minify: TerserPlugin.swcMinify,
++      parallel: false,
++      terserOptions: { mangle: true },
++      exclude: [/snow\.prod/u, runtimeChunkRe],
++    }),
++    new TerserPlugin<SwcMinifyOptions>({
+       minify: TerserPlugin.swcMinify,
+-      // Determinism (and a small local build-time win): one minifier process.
+       parallel: false,
+-      // do not minify snow.
++      terserOptions: { mangle: { disableCharFreq: true } },
++      include: runtimeChunkRe,
+       exclude: /snow\.prod/u,
+     }),
+   ];
+diff --git a/development/webpack/utils/loaders/swcLoader.ts b/development/webpack/utils/loaders/swcLoader.ts
+index 4b4facd..4d8d76f 100644
+--- a/development/webpack/utils/loaders/swcLoader.ts
++++ b/development/webpack/utils/loaders/swcLoader.ts
+@@ -198,7 +198,13 @@ const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
+     };
+ 
+     const cb = this.async();
+-    transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
++    transform(src, options).then(
++      // Experiment patch (see PR #46829): hand webpack a parsed source map so
++      // `contextifySourceMap` relativizes `sources`; string maps are hashed
++      // verbatim, leaking the absolute build path into every module hash.
++      ({ code, map }) => cb(null, code, map === undefined ? map : JSON.parse(map)),
++      cb,
++    );
+   };
+ 
+ export default swcLoader;

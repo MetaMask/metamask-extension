@@ -1,0 +1,214 @@
+name: AMO determinism experiment
+
+# Reviewable evidence for https://github.com/MetaMask/metamask-extension/pull/46829.
+#
+# Builds the Firefox MV2 production bundle of v13.47.1 (the release whose
+# `runtime.[contenthash].js` flaked for AMO reviewers) in N different absolute
+# paths, twice: once untouched ("control") and once with the two fixes from
+# #46829 applied as a patch ("fixed"). A final job tabulates the runtime chunk
+# name and a digest of the whole dist directory for every build.
+#
+# Expected outcome: the control runs split between `runtime.b574af00….js` and
+# `runtime.1fcc8942….js` depending on the path; the fixed runs all agree.
+#
+# This workflow only runs on the experiment branch; it is not part of CI.
+
+on:
+  push:
+    branches:
+      - test/amo-determinism-proof
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  TAG: v13.47.1
+  # Any fixed value works: both variants share it, so it cannot explain a diff.
+  SOURCE_DATE_EPOCH: '1757400000'
+  TZ: UTC
+  ENABLE_MV3: 'false'
+  # The production build only requires these to be *defined*. Values are
+  # placeholders of the right shape; they are baked into chunk contents, so
+  # the resulting hashes will not equal the published release, but every
+  # iteration of a variant gets identical values and must agree with itself.
+  INFURA_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_PROD_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_BETA_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_FLASK_PROJECT_ID: '00000000000000000000000000000000'
+  INFURA_EXPERIMENTAL_PROJECT_ID: ''
+  SEGMENT_WRITE_KEY: 'placeholder'
+  SEGMENT_PROD_WRITE_KEY: 'placeholder'
+  SEGMENT_BETA_WRITE_KEY: 'placeholder'
+  SEGMENT_FLASK_WRITE_KEY: 'placeholder'
+  SEGMENT_EXPERIMENTAL_WRITE_KEY: ''
+  CONTENTFUL_ACCESS_SPACE_ID: 'placeholder'
+  CONTENTFUL_ACCESS_TOKEN: 'placeholder'
+  ETHERSCAN_API_KEY: 'placeholder'
+  FIREBASE_API_KEY: 'placeholder'
+  FIREBASE_APP_ID: '1:0:web:0'
+  FIREBASE_AUTH_DOMAIN: 'placeholder.firebaseapp.com'
+  FIREBASE_MEASUREMENT_ID: 'G-PLACEHOLDER'
+  FIREBASE_MESSAGING_SENDER_ID: '0'
+  FIREBASE_PROJECT_ID: 'placeholder'
+  FIREBASE_STORAGE_BUCKET: 'placeholder.appspot.com'
+  QUICKNODE_ARBITRUM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_AVALANCHE_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_BASE_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_LINEA_MAINNET_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MAINNET_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_OPTIMISM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_POLYGON_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_SEI_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MONAD_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_HYPEREVM_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ARC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ROBINHOOD_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_BSC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_ZKSYNC_URL: 'https://placeholder.quiknode.pro/0/'
+  QUICKNODE_MEGAETH_URL: 'https://placeholder.quiknode.pro/0/'
+  ANALYTICS_DATA_DELETION_SOURCE_ID: 'placeholder'
+  ANALYTICS_DATA_DELETION_ENDPOINT: 'https://placeholder.example/segment/v1'
+  SENTRY_DSN: 'https://00000000000000000000000000000000@sentry.io/0'
+  SENTRY_DSN_DEV: 'https://00000000000000000000000000000000@sentry.io/0'
+  SENTRY_DSN_PERFORMANCE: 'https://00000000000000000000000000000000@sentry.io/0'
+  VAPID_KEY: 'placeholder'
+
+jobs:
+  build:
+    name: ${{ matrix.variant }} #${{ matrix.iteration }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [control, fixed]
+        iteration:
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    steps:
+      - name: Checkout experiment branch (for the patch)
+        uses: actions/checkout@v6
+
+      - name: Choose a build directory whose absolute path differs per iteration
+        id: dir
+        shell: bash
+        run: |
+          # Iteration n gets a directory name of n*6 extra characters, so the
+          # 20 iterations span absolute path lengths of roughly 80 to 200.
+          pad="$(printf '%*s' "$(( ${{ matrix.iteration }} * 6 ))" '' | tr ' ' 'x')"
+          dir="work/i${{ matrix.iteration }}-${pad}/metamask-extension"
+          mkdir -p "${dir}"
+          abs="$(cd "${dir}" && pwd)"
+          echo "dir=${dir}" >> "${GITHUB_OUTPUT}"
+          echo "abs=${abs}" >> "${GITHUB_OUTPUT}"
+          echo "len=${#abs}" >> "${GITHUB_OUTPUT}"
+          echo "Building in ${abs} (length ${#abs})"
+
+      - name: Clone ${{ env.TAG }} into that directory
+        shell: bash
+        run: |
+          git clone --quiet --depth 1 --branch "${TAG}" \
+            https://github.com/MetaMask/metamask-extension.git \
+            "${{ steps.dir.outputs.dir }}"
+
+      - name: Apply the #46829 fixes (fixed variant only)
+        if: ${{ matrix.variant == 'fixed' }}
+        shell: bash
+        run: |
+          git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-46829-on-v13.47.1.patch"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ${{ steps.dir.outputs.dir }}/.nvmrc
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Build Firefox MV2 production bundle
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        run: |
+          yarn webpack:tsc
+          yarn webpack:lavamoat:build:mv2
+
+      - name: Record result
+        id: result
+        shell: bash
+        working-directory: ${{ steps.dir.outputs.dir }}
+        run: |
+          runtime="$(find dist/firefox -maxdepth 1 -name 'runtime.*.js' -exec basename {} \;)"
+          # Digest of every file in dist/firefox (names + contents), so any
+          # difference anywhere in the bundle is caught, not just the runtime.
+          dist_digest="$(cd dist/firefox && find . -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | cut -d' ' -f1)"
+          mkdir -p "${RUNNER_TEMP}/result"
+          printf '{"variant":"%s","iteration":%s,"path":"%s","path_length":%s,"runtime":"%s","dist_digest":"%s"}\n' \
+            "${{ matrix.variant }}" "${{ matrix.iteration }}" "${{ steps.dir.outputs.abs }}" \
+            "${{ steps.dir.outputs.len }}" "${runtime}" "${dist_digest}" \
+            | tee "${RUNNER_TEMP}/result/${{ matrix.variant }}-${{ matrix.iteration }}.json"
+
+      - name: Upload result
+        uses: actions/upload-artifact@v6
+        with:
+          name: result-${{ matrix.variant }}-${{ matrix.iteration }}
+          path: ${{ runner.temp }}/result/*.json
+          retention-days: 30
+
+  report:
+    name: Report
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v7
+        with:
+          pattern: result-*
+          path: results
+          merge-multiple: true
+
+      - name: Tabulate
+        shell: bash
+        run: |
+          python3 - <<'PY' | tee -a "${GITHUB_STEP_SUMMARY}"
+          import glob, json, collections
+
+          rows = [json.load(open(f)) for f in sorted(glob.glob('results/*.json'))]
+          by_variant = collections.defaultdict(list)
+          for r in rows:
+              by_variant[r['variant']].append(r)
+
+          print('# AMO determinism experiment — v13.47.1 built at 20 different paths\n')
+          verdict_ok = True
+          for variant in ('control', 'fixed'):
+              rs = sorted(by_variant.get(variant, []), key=lambda r: r['iteration'])
+              runtimes = collections.Counter(r['runtime'] for r in rs)
+              digests = collections.Counter(r['dist_digest'] for r in rs)
+              print(f'## {variant} — {len(rs)} builds, '
+                    f'{len(runtimes)} distinct runtime chunk name(s), '
+                    f'{len(digests)} distinct dist digest(s)\n')
+              for name, n in runtimes.most_common():
+                  print(f'- `{name}` × {n}')
+              print()
+              print('| # | path length | runtime chunk | dist digest (first 12) |')
+              print('|---|---|---|---|')
+              for r in rs:
+                  print(f"| {r['iteration']} | {r['path_length']} | `{r['runtime']}` | `{r['dist_digest'][:12]}` |")
+              print()
+              if variant == 'fixed' and (len(digests) != 1 or len(rs) == 0):
+                  verdict_ok = False
+
+          print('## Verdict\n')
+          if verdict_ok:
+              print('✅ Every **fixed** build produced a byte-identical `dist/firefox` '
+                    'regardless of the absolute build path.')
+          else:
+              print('❌ The **fixed** builds did not all agree (or some are missing). '
+                    'See the table above.')
+          raise SystemExit(0 if verdict_ok else 1)
+          PY
