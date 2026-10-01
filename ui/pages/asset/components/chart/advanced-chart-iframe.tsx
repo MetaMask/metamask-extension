@@ -49,6 +49,11 @@ type AdvancedChartIframeProps = {
   ohlcvData: OHLCVBar[];
   onError?: (error: string) => void;
   onReady?: () => void;
+  /**
+   * Fired for gesture interactions the chart engine reports: zoom, pan, and
+   * tooltip. Already debounced by the engine.
+   */
+  onChartInteracted?: (interactionType: 'zoom' | 'pan' | 'tooltip') => void;
   /** Real-time candle update from useOHLCVRealtime hook */
   realtimeBar?: OHLCVRealtimeBar;
   /** Ambient color overrides — mirrors mobile's AdvancedChart props */
@@ -72,6 +77,7 @@ const AdvancedChartIframe = forwardRef<
       ohlcvData,
       onError,
       onReady,
+      onChartInteracted,
       realtimeBar,
       lineColorOverride,
       successColorOverride,
@@ -120,13 +126,21 @@ const AdvancedChartIframe = forwardRef<
           if (msg?.type === 'ERROR' && msg?.payload?.message) {
             onError?.(msg.payload.message);
           }
+          // The chart bundle debounces zoom and pan and sends tooltip once per
+          // crosshair session, so these arrive pre-throttled.
+          if (
+            msg?.type === 'CHART_INTERACTED' &&
+            msg?.payload?.interaction_type
+          ) {
+            onChartInteracted?.(msg.payload.interaction_type);
+          }
         } catch {
           // ignore non-JSON
         }
       };
       window.addEventListener('message', handleMessage);
       return () => window.removeEventListener('message', handleMessage);
-    }, [onError, onReady]);
+    }, [onChartInteracted, onError, onReady]);
 
     // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
     useEffect(() => {

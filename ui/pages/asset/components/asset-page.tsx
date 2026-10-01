@@ -37,6 +37,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -118,6 +119,7 @@ import IntervalBar, {
   LINE_TIME_RANGE_TO_ISO8601,
 } from './chart/advanced-chart-interval-bar';
 import IndicatorBar from './chart/advanced-chart-indicator-bar';
+import { useChartAnalytics } from './chart/useChartAnalytics';
 import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
 import { useOHLCVRealtime } from './chart/useOHLCVRealtime';
 import { useOHLCVChart } from './chart/useOHLCVChart';
@@ -233,9 +235,83 @@ const AssetPage = ({
     isLineChart: acIsLineChart,
   } = useAdvancedChartPreferences();
 
+  const { trackChartInteraction, trackChartEmptyDisplayed } = useChartAnalytics(
+    { chartType: acChartType, indicators: acIndicators },
+  );
+
   const handleAdvancedChartReady = useCallback(() => {
     setAcChartReady(true);
   }, []);
+
+  const handleChartTypeSelect = useCallback(
+    (next: number) => {
+      if (next === acChartType) {
+        return;
+      }
+      trackChartInteraction({
+        interactionType: 'chart_type_changed',
+        chartType: next,
+      });
+      setAcChartType(next);
+    },
+    [acChartType, setAcChartType, trackChartInteraction],
+  );
+
+  const handleIntervalSelect = useCallback(
+    (next: string) => {
+      trackChartInteraction({
+        interactionType: 'granularity_changed',
+        chartGranularity: next.toLowerCase(),
+      });
+      setAcInterval(next);
+    },
+    [setAcInterval, trackChartInteraction],
+  );
+
+  const handleLineTimeRangeSelect = useCallback(
+    (next: string) => {
+      trackChartInteraction({
+        interactionType: 'timeframe_changed',
+        chartTimeframe: next,
+      });
+      setAcLineTimeRange(next);
+    },
+    [setAcLineTimeRange, trackChartInteraction],
+  );
+
+  const handleIndicatorToggle = useCallback(
+    (name: string) => {
+      const wasActive = acIndicators.has(name);
+      const nextIndicators = new Set(acIndicators);
+      if (wasActive) {
+        nextIndicators.delete(name);
+      } else {
+        nextIndicators.add(name);
+      }
+      trackChartInteraction({
+        interactionType: 'indicator_toggled',
+        indicatorType: name,
+        indicatorAction: wasActive ? 'off' : 'on',
+        indicatorsActive: [...nextIndicators],
+      });
+      toggleAcIndicator(name);
+    },
+    [acIndicators, toggleAcIndicator, trackChartInteraction],
+  );
+
+  const handleMASelectorOpen = useCallback(() => {
+    trackChartInteraction({
+      interactionType: 'indicator_selector_opened',
+      selectorType: 'moving_averages',
+    });
+  }, [trackChartInteraction]);
+
+  const handleChartInteracted = useCallback(
+    (interactionType: 'zoom' | 'pan' | 'tooltip') => {
+      trackChartInteraction({ interactionType });
+    },
+    [trackChartInteraction],
+  );
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -429,6 +505,30 @@ const AssetPage = ({
 
   // Combine iframe and OHLCV errors for error state in candle mode
   const combinedChartError = advancedChartError || ohlcvError;
+
+  // A completed fetch that returned no candles, for a chart that is actually on
+  // screen. Load failures are deliberately excluded: the event describes a chart
+  // that loaded without enough data, not one that errored. The OHLCV fetch runs
+  // even when advanced charts are off, hence the flag check.
+  const isChartEmpty =
+    isAdvancedChartsEnabled &&
+    Boolean(caipAssetId) &&
+    !isOhlcvLoading &&
+    !combinedChartError &&
+    ohlcvData.length === 0;
+
+  const chartEmptyTrackedRef = useRef(false);
+  useEffect(() => {
+    if (!isChartEmpty) {
+      chartEmptyTrackedRef.current = false;
+      return;
+    }
+    if (chartEmptyTrackedRef.current) {
+      return;
+    }
+    chartEmptyTrackedRef.current = true;
+    trackChartEmptyDisplayed();
+  }, [isChartEmpty, trackChartEmptyDisplayed]);
 
   const securityTrustToken = useMemo(
     () => ({
@@ -658,10 +758,12 @@ const AssetPage = ({
                 intervals={acIsLineChart ? LINE_CHART_TIME_RANGES : undefined}
                 selectedInterval={acIsLineChart ? acLineTimeRange : acInterval}
                 onIntervalSelect={
-                  acIsLineChart ? setAcLineTimeRange : setAcInterval
+                  acIsLineChart
+                    ? handleLineTimeRangeSelect
+                    : handleIntervalSelect
                 }
                 chartType={acChartType}
-                onChartTypeSelect={setAcChartType}
+                onChartTypeSelect={handleChartTypeSelect}
               />
             ) : (
               <Box
@@ -738,6 +840,7 @@ const AssetPage = ({
                     ohlcvData={ohlcvData}
                     onError={setAdvancedChartError}
                     onReady={handleAdvancedChartReady}
+                    onChartInteracted={handleChartInteracted}
                     realtimeBar={realtimeLatestBar ?? undefined}
                     lineColorOverride={initialAmbientColor}
                     successColorOverride={ambientSuccessColor}
@@ -748,8 +851,9 @@ const AssetPage = ({
                 {acChartReady && !combinedChartError && (
                   <IndicatorBar
                     activeIndicators={acIndicators}
-                    onIndicatorToggle={toggleAcIndicator}
-                    onMAToggle={toggleAcIndicator}
+                    onIndicatorToggle={handleIndicatorToggle}
+                    onMAToggle={handleIndicatorToggle}
+                    onMASelectorOpen={handleMASelectorOpen}
                   />
                 )}
               </Box>
