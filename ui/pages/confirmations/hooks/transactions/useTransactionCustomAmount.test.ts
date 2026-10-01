@@ -1166,16 +1166,28 @@ describe('useTransactionCustomAmount', () => {
     const PAY_TOKEN_ADDRESS = '0x1234567890123456789012345678901234567890';
     const TARGET_TOKEN_ADDRESS = '0x8888888888888888888888888888888888888888';
 
+    const VAULT_ADDRESS = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const TELLER_ADDRESS = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+
+    // Real deposit batches target the vault in the parent `to` and keep the
+    // approve (to mUSD) + deposit (to the teller) calls nested, with mUSD in
+    // `requiredAssets`. The destination token must resolve via the required
+    // asset, not the parent `to`.
     const depositMeta = {
       ...MOCK_TRANSACTION_META,
       type: TransactionType.moneyAccountDeposit,
       chainId: '0x1',
       txParams: {
         ...MOCK_TRANSACTION_META.txParams,
-        to: TARGET_TOKEN_ADDRESS,
+        to: VAULT_ADDRESS,
         data: undefined,
       },
-    } as TransactionMeta;
+      nestedTransactions: [
+        { to: TARGET_TOKEN_ADDRESS },
+        { to: TELLER_ADDRESS },
+      ],
+      requiredAssets: [{ address: TARGET_TOKEN_ADDRESS }],
+    } as unknown as TransactionMeta;
 
     const fixedSpreadFlag = {
       confirmations_relay_fixed_spread: {
@@ -1261,11 +1273,10 @@ describe('useTransactionCustomAmount', () => {
       const { result } = runHook({
         transactionMeta: {
           ...depositMeta,
-          txParams: {
-            ...depositMeta.txParams,
-            to: '0x9999999999999999999999999999999999999999',
-          },
-        } as TransactionMeta,
+          requiredAssets: [
+            { address: '0x9999999999999999999999999999999999999999' },
+          ],
+        } as unknown as TransactionMeta,
         payTokenAddress: PAY_TOKEN_ADDRESS,
         payTokenChainId: '0x1',
         payTokenBalanceUsd: 100,
