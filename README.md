@@ -72,7 +72,7 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
-  - See the [build system readme](./development/build/README.md) for build system usage information.
+  - See the [build system readme](./development/webpack/README.md) for build system usage information.
 
 - Follow these instructions to verify that your local build runs correctly:
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
@@ -258,7 +258,7 @@ Build-time flags are set before running tests and require creating a test build 
 
 #### Feature Flag Registry
 
-The [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts) is the central source of truth for all remote feature flags used in MetaMask Extension E2E tests. A [CI check](./.github/workflows/check-feature-flag-registry.yml) runs on every PR to verify that every remote flag reference in changed files exists in the registry. For background on how remote feature flags work in MetaMask, see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc.
+The [Feature Flag Registry](./test/e2e/feature-flags/feature-flag-registry.ts) is the central source of truth for all remote feature flags used in MetaMask Extension E2E tests. A [CI check](./.github/workflows/check-feature-flag-registry-drift.yml) runs on every PR to verify that every remote flag reference in changed files exists in the registry. For background on how remote feature flags work in MetaMask, see the [Remote Feature Flags](https://github.com/MetaMask/contributor-docs/blob/main/docs/remote-feature-flags.md) contributor doc.
 
 ##### Registry entry format
 
@@ -370,7 +370,6 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to use the TREZOR emulator](./docs/trezor-emulator.md)
 - [Developing on MetaMask](./development/README.md)
 - [How to generate a visualization of this repository's development](./development/gource-viz.sh)
-- [How to add new confirmations](./docs/confirmations.md)
 - [Browser support guidelines](./docs/browser-support.md)
 
 ## Dapp Developer Resources
