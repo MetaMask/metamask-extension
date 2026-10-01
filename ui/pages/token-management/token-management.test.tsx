@@ -21,6 +21,18 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
 import { TokenManagementPage } from './token-management';
 
+/**
+ * This suite seeds AssetsController fields (`customAssets`, `assetsInfo`,
+ * `assetPreferences`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy TokensController slices.
+ */
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 jest.mock('../../hooks/token-asset/useTokenAssetSecurityResults', () => ({
   useTokenAssetSecurityResults: jest.fn(() => ({})),
 }));
@@ -1052,15 +1064,6 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const selectedAddress =
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts
-          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
-      ]?.address;
-    if (!selectedAddress) {
-      throw new Error('Expected selected account address');
-    }
-
     const baseState = createState({
       accountGroupAssets: {
         '0x1': [nativeToken],
@@ -1070,9 +1073,21 @@ describe('TokenManagementPage', () => {
       ...baseState,
       metamask: {
         ...baseState.metamask,
-        allIgnoredTokens: {
-          '0x1': {
-            [selectedAddress]: [mainnetToken.address],
+        customAssets: {
+          [mainnetToken.accountId]: [mainnetTokenAssetId],
+        },
+        assetsInfo: {
+          ...(baseState.metamask.assetsInfo ?? {}),
+          [mainnetTokenAssetId]: {
+            type: 'erc20',
+            symbol: mainnetToken.symbol,
+            decimals: mainnetToken.decimals,
+            name: mainnetToken.name,
+          },
+        },
+        assetPreferences: {
+          [mainnetTokenAssetId]: {
+            hidden: true,
           },
         },
       },
