@@ -373,7 +373,7 @@ export class PlaywrightDriver {
       if (tag) {
         return root.locator(tag, { hasText: text });
       }
-      return root.locator(`*:has-text("${text}")`);
+      return root.getByText(text, { exact: false });
     }
     if (rawLocator.testId) {
       return root.getByTestId(rawLocator.testId);
@@ -425,6 +425,7 @@ export class PlaywrightDriver {
     if (typeof script === 'function' && source.includes('__name')) {
       source = `function() { var __name = (fn) => fn; return (${source}).apply(null, arguments); }`;
     }
+
     return (await this.page.evaluate<
       TResult,
       { source: string; passedArgs: unknown[] }
@@ -561,19 +562,21 @@ export class PlaywrightDriver {
     }
 
     const locator = this.buildLocator(rawLocator).first();
-    if (state === 'visible' || state === 'hidden') {
-      await locator.waitFor({ state, timeout });
+    if (state === 'visible') {
+      await locator.waitFor({ state: 'attached', timeout });
+    } else if (state === 'hidden') {
+      await locator.waitFor({ state: 'hidden', timeout });
     } else if (state === 'detached') {
       await locator.waitFor({ state: 'detached', timeout });
     } else if (state === 'enabled') {
       // Playwright's `toBeEnabled` matcher polls in-page at a faster
       // cadence than our 100ms JS-loop and avoids a protocol round trip
-      // per check. We still pre-wait for `visible` to preserve the
-      // Selenium contract of "the element is on screen AND interactive".
-      await locator.waitFor({ state: 'visible', timeout });
+      // per check. We still pre-wait for DOM presence to preserve the
+      // Selenium contract of "the element exists AND is interactive".
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeEnabled({ timeout });
     } else if (state === 'disabled') {
-      await locator.waitFor({ state: 'visible', timeout });
+      await locator.waitFor({ state: 'attached', timeout });
       await expect(locator).toBeDisabled({ timeout });
     } else {
       throw new Error(
@@ -798,6 +801,25 @@ export class PlaywrightDriver {
     }
   }
 
+  /**
+   * Clicks a nested button element by its text content. First attempts to click
+   * a button with the exact text, then falls back to finding an element
+   * containing the text and clicking its parent button.
+   *
+   * @param buttonText - The text content of the button to click.
+   */
+  async clickNestedButton(buttonText: string): Promise<void> {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch {
+      // Fallback: find element containing text and click its parent button
+      const locator = this.page
+        .locator(`//*[contains(text(),"${buttonText}")]/parent::button`)
+        .first();
+      await locator.click({ timeout: this.timeout });
+    }
+  }
+
   async clickElementAndWaitToDisappear(
     rawLocator: RawLocator,
     timeout = 3000,
@@ -913,8 +935,9 @@ export class PlaywrightDriver {
 
   /**
    * Waits until the current page's URL equals the given URL. Mirrors the
-   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
-   * plain string (no glob characters) as an exact-match pattern.
+   * Selenium driver's `waitForUrl` (`until.urlIs`) by polling `page.url()`
+   * instead of using Playwright's navigation-aware `waitForURL`, which can
+   * fail with `net::ERR_ABORTED` during redirects or frame detachment.
    *
    * @param options - Parameters for the function.
    * @param options.url - The URL to wait for.
@@ -927,10 +950,7 @@ export class PlaywrightDriver {
     url: string;
     timeout?: number;
   }): Promise<void> {
-    await this.page.waitForURL((current) => current.href === url, {
-      timeout,
-      waitUntil: 'commit',
-    });
+    await this.waitUntil(async () => this.page.url() === url, { timeout });
   }
 
   async refresh(): Promise<void> {
