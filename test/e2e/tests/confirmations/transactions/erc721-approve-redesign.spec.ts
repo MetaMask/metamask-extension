@@ -36,7 +36,10 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await login(driver, { localNode: localNodes?.[0], waitForNonEvmAccounts: false });
+          await login(driver, {
+            localNode: localNodes?.[0],
+            waitForNonEvmAccounts: false,
+          });
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
