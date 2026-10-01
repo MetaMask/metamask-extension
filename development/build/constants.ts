@@ -1,20 +1,22 @@
-const ENVIRONMENT = require('../../shared/constants/build-environment.json');
+import ENVIRONMENT from '../../shared/constants/build-environment.json';
 
 /**
- * The build target. This descrbes the overall purpose of the build.
+ * The build target. This describes the overall purpose of the build.
  *
  * These constants also act as the high-level tasks for the build system (i.e.
  * the usual tasks invoked directly via the CLI rather than internally).
  */
-const BUILD_TARGETS = {
+export const BUILD_TARGETS = {
   DEV: 'dev',
   DIST: 'dist',
   PROD: 'prod',
   TEST: 'test',
   TEST_DEV: 'testDev',
-};
+} as const;
 
-const TASKS = {
+export type BuildTarget = (typeof BUILD_TARGETS)[keyof typeof BUILD_TARGETS];
+
+export const TASKS = {
   ...BUILD_TARGETS,
   CLEAN: 'clean',
   MANIFEST_DEV: 'manifest:dev',
@@ -62,20 +64,18 @@ const TASKS = {
   STYLES_DEV: 'styles:dev',
   STYLES_PROD: 'styles:prod',
   ZIP: 'zip',
-};
+} as const;
+
+export type Task = (typeof TASKS)[keyof typeof TASKS];
 
 // manifest key use for development, to get the consistent extension id (required for OAuth)
-const MANIFEST_DEV_KEY =
+export const MANIFEST_DEV_KEY =
   'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqZDxqBR1jHc1TygPHRO+GEyjMENrt3GLn2zXZg0VJ+S8EDuPSQR3sh14qDGWqbqpVk6+6ZF5QI5Ofx9lqAbNV7KjZT4W4RcXJ0VnTqPKUvhWm5+PfUbWMmnuQPebLjuVAkjiZUtY6OfVDowJdYmz4OLp6s64g+lH/Skz3lPKgVQKkWqrDDOy+wPsMBhiYWVGJvRkWA1f73mzhu6yTex/VivXg5PCck/xFN2/UiWTOYK4a/f8/XdVvN6yJd6XHH2lC7BJ+e8Trx0YeIC+3GNgv85rnlb4h31TzF4tmGV2cXB6d1Xw2KT0K+eS4KbTct5tCHOnnDZXvGhJDBrCH786jQIDAQAB';
 
 // only for builds from the release candidate branch
-const MANIFEST_RELEASE_CANDIDATE_KEY =
+export const MANIFEST_RELEASE_CANDIDATE_KEY =
   'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlcgI4VVL4JUvo6hlSgeCZp9mGltZrzFvc2Asqzb1dDGO9baoYOe+QRoh27/YyVXugxni480Q/R147INhBOyQZVMhZOD5pFMVutia9MHMaZhgRXzrK3BHtNSkKLL1c5mhutQNwiLqLtFkMSGvka91LoMEC8WTI0wi4tACnJ5FyFZQYzvtqy5sXo3VS3gzfOBluLKi7BxYcaUJjNrhOIxl1xL2qgK5lDrDOLKcbaurDiwqofVtAFOL5sM3uJ6D8nOO9tG+T7hoobRFN+nxk43PHgCv4poicOv+NMZQEk3da1m/xfuzXV88NcE/YRbRLwAS82m3gsJZKc6mLqm4wZHzBwIDAQAB';
 
-module.exports = {
-  BUILD_TARGETS,
-  ENVIRONMENT,
-  TASKS,
-  MANIFEST_DEV_KEY,
-  MANIFEST_RELEASE_CANDIDATE_KEY,
-};
+export { ENVIRONMENT };
+
+export type BuildEnvironment = typeof ENVIRONMENT;

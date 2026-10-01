@@ -1,29 +1,26 @@
-const assert = require('assert');
+import assert from 'node:assert';
 
 const DeclaredOnly = Symbol(
   'This variable was declared only without being defined',
 );
 
-class Variables {
-  /**
-   * @type {Map<string, unknown | typeof DeclaredOnly>}
-   */
-  #definitions = new Map();
+type StoredValue = unknown | typeof DeclaredOnly;
 
-  /**
-   * @param {Iterable<string>} declarations
-   */
-  constructor(declarations) {
+export class Variables {
+  #definitions = new Map<string, StoredValue>();
+
+  /** @param declarations - Env variable names declared in builds.yml. */
+  constructor(declarations: Iterable<string>) {
     for (const declaration of declarations) {
       this.#definitions.set(declaration, DeclaredOnly);
     }
   }
 
   /**
-   * @param {string} key - The name of the variable
+   * @param key - The name of the variable
    * @throws {TypeError} If there is no definition of a variable.
    */
-  get(key) {
+  get(key: string): unknown {
     const value = this.getMaybe(key);
     assert(
       value !== DeclaredOnly,
@@ -41,11 +38,11 @@ class Variables {
   /**
    * Returns a declared, but maybe not defined variable.
    *
-   * @param {string} key - The name of the variable
+   * @param key - The name of the variable
    * @throws {TypeError} If there was no declaration of the variable.
    * @returns The value, or undefined if the variables wasn't defined.
    */
-  getMaybe(key) {
+  getMaybe(key: string): unknown {
     assert(
       this.isDeclared(key),
       new TypeError(
@@ -57,25 +54,13 @@ class Variables {
     return this.#definitions.get(key);
   }
 
-  /**
-   * Sets one key
-   *
-   * @overload
-   * @param {string} key
-   * @param {unknown} value
-   * @returns {void}
-   */
-  /**
-   * @overload
-   * @param {Record<string, unknown>} records - Key-Value object
-   * @returns {void}
-   */
-  /**
-   * @param {string | Record<string, unknown>} keyOrRecord
-   * @param {unknown} value
-   * @returns {void}
-   */
-  set(keyOrRecord, value) {
+  /** Sets one declared variable. */
+  set(key: string, value: unknown): void;
+
+  /** Sets many declared variables from a key-value object. */
+  set(records: Record<string, unknown>): void;
+
+  set(keyOrRecord: string | Record<string, unknown>, value?: unknown): void {
     if (typeof keyOrRecord === 'object') {
       for (const [key, recordValue] of Object.entries(keyOrRecord)) {
         this.set(key, recordValue);
@@ -91,11 +76,11 @@ class Variables {
     this.#definitions.set(key, value);
   }
 
-  isDeclared(key) {
+  isDeclared(key: string): boolean {
     return this.#definitions.has(key);
   }
 
-  isDefined(key) {
+  isDefined(key: string): boolean {
     return (
       this.#definitions.has(key) && this.#definitions.get(key) !== DeclaredOnly
     );
@@ -103,11 +88,11 @@ class Variables {
 
   [Symbol.iterator] = this.declarations;
 
-  *declarations() {
+  *declarations(): Generator<string> {
     yield* this.#definitions.keys();
   }
 
-  *definitions() {
+  *definitions(): Generator<[string, unknown]> {
     for (const [key, value] of this.#definitions.entries()) {
       if (value !== DeclaredOnly) {
         yield [key, value];
@@ -115,5 +100,3 @@ class Variables {
     }
   }
 }
-
-module.exports = { Variables };
