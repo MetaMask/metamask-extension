@@ -410,6 +410,43 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns alert on Monad for an undelegated account when only the proactive reserve check would fail', () => {
+    // Undelegated accounts have no `delegationAddress` and may dip below the
+    // 10 MON reserve, so the generic fee alert must still be shown.
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      delegationAddress: undefined,
+      isGasFeeSponsored: false,
+    } as TransactionMeta;
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toStrictEqual(
+      expect.objectContaining({ key: 'insufficientBalance', isBlocking: true }),
+    );
+  });
+
+  it('returns no alerts on Monad for a delegated account when the proactive reserve check fails', () => {
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      delegationAddress: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+      isGasFeeSponsored: false,
+    } as TransactionMeta;
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+    expect(alerts).toEqual([]);
+  });
+
   it('returns no alerts for money account deposits even when native balance is insufficient', () => {
     const moneyAccountDeposit = {
       ...TRANSACTION_MOCK,

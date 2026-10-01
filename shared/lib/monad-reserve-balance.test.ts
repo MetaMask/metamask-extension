@@ -74,6 +74,8 @@ describe('monad-reserve-balance', () => {
   describe('wouldViolateMonadReserveBalance', () => {
     // 15 MON
     const balance15Mon = `0x${(15n * 10n ** 18n).toString(16)}`;
+    // 7 MON
+    const balance7Mon = `0x${(7n * 10n ** 18n).toString(16)}`;
     // 6 MON
     const value6Mon = `0x${(6n * 10n ** 18n).toString(16)}`;
     // 4 MON
@@ -101,12 +103,36 @@ describe('monad-reserve-balance', () => {
       ).toBe(false);
     });
 
-    it('returns true when delegation status is unknown and remaining balance would be below 10 MON', () => {
+    it('returns false when delegation is not confirmed, even if remaining balance would be below 10 MON', () => {
+      // `TransactionMeta.delegationAddress` is undefined for ordinary EOAs, so
+      // the proactive check must not fail closed when it is omitted.
       expect(
         wouldViolateMonadReserveBalance({
           chainId: CHAIN_IDS.MONAD,
           balance: balance15Mon,
           value: value6Mon,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns false for a gas-only call from an undelegated account already under 10 MON', () => {
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: balance7Mon,
+          value: '0x0',
+          isDelegatedAccount: false,
+        }),
+      ).toBe(false);
+    });
+
+    it('returns true for a delegated account already under 10 MON', () => {
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: balance7Mon,
+          value: '0x1',
+          isDelegatedAccount: true,
         }),
       ).toBe(true);
     });
@@ -151,6 +177,31 @@ describe('monad-reserve-balance', () => {
           balance: MONAD_RESERVE_BALANCE_WEI_HEX,
           value: '0x1',
           isDelegatedAccount: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('does not flag the proactive check for undelegated accounts', () => {
+      expect(
+        hasMonadReserveBalanceViolation({
+          chainId: CHAIN_IDS.MONAD,
+          balance: MONAD_RESERVE_BALANCE_WEI_HEX,
+          value: '0x1',
+          isDelegatedAccount: false,
+        }),
+      ).toBe(false);
+    });
+
+    it('still reports simulation violations for undelegated accounts', () => {
+      expect(
+        hasMonadReserveBalanceViolation({
+          chainId: CHAIN_IDS.MONAD,
+          balance: MONAD_RESERVE_BALANCE_WEI_HEX,
+          value: '0x0',
+          isDelegatedAccount: false,
+          simulationFails: {
+            reason: 'execution reverted: reserve balance violation',
+          },
         }),
       ).toBe(true);
     });

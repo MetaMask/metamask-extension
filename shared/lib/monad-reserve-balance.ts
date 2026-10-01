@@ -132,12 +132,23 @@ export function simulationIndicatesMonadReserveBalanceViolation({
  * below the Monad reserve? Gas is excluded because protocol allows gas to come
  * from the reserve for the sender.
  *
+ * Only applies to EIP-7702 delegated (smart) accounts. Undelegated EOAs are
+ * allowed to dip below the reserve through the protocol's "emptying
+ * transaction" exception, so the network accepts e.g. a 15 MON account sending
+ * 6 MON or a gas-only call from an account already under 10 MON.
+ *
+ * `TransactionMeta.delegationAddress` is `undefined` both for undelegated
+ * accounts and while the lookup is still pending, so callers cannot express an
+ * "unknown" state. Anything other than a confirmed delegation therefore skips
+ * the proactive check and relies on the simulation-based detection in
+ * `simulationIndicatesMonadReserveBalanceViolation`.
+ *
  * @param options - Chain, balance, and tx value (hex wei).
  * @param options.chainId
  * @param options.balance
  * @param options.value
- * @param options.isDelegatedAccount - False only when known to be undelegated.
- * @returns True when the value spend would leave less than 10 MON.
+ * @param options.isDelegatedAccount - True when the sender is EIP-7702 delegated.
+ * @returns True when a delegated sender's value spend would leave less than 10 MON.
  */
 export function wouldViolateMonadReserveBalance({
   chainId,
@@ -160,7 +171,7 @@ export function wouldViolateMonadReserveBalance({
 
   // Undelegated accounts can empty below 10 MON. When the delegation status is
   // unknown, keep the proactive warning active so the UI does not fail open.
-  if (isDelegatedAccount === false) {
+  if (!isDelegatedAccount) {
     return false;
   }
 
@@ -176,7 +187,7 @@ export function wouldViolateMonadReserveBalance({
  * @param options.chainId
  * @param options.balance
  * @param options.value
- * @param options.isDelegatedAccount - False only when known to be undelegated.
+ * @param options.isDelegatedAccount - True when the sender is EIP-7702 delegated.
  * @param options.simulationData
  * @param options.simulationFails
  * @returns True when the reserve alert should take precedence over generic fee alerts.

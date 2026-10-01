@@ -94,11 +94,13 @@ export function useInsufficientBalanceAlerts({
 
   // Prefer the Monad reserve-balance alert over the generic "pay for network
   // fees" message when the protocol reserve (not max-fee solvency) is the cause.
+  // Undelegated accounts (no `delegationAddress`) may dip below the reserve, so
+  // the proactive value check must not hide the generic alert for them.
   const hasMonadReserveViolation = hasMonadReserveBalanceViolation({
     chainId,
     balance,
     value: sumHexes(value, ...batchTransactionValues),
-    isDelegatedAccount: delegationAddress ? true : undefined,
+    isDelegatedAccount: Boolean(delegationAddress),
     simulationData,
     simulationFails,
   });

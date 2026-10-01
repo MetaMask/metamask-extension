@@ -100,11 +100,14 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
       return false;
     }
 
+    // `delegationAddress` is unset for undelegated accounts, which the protocol
+    // lets dip below the reserve, so only a resolved delegation enables the
+    // proactive value check. Simulation errors still catch real violations.
     return hasMonadReserveBalanceViolation({
       chainId,
       balance,
       value: totalValue,
-      isDelegatedAccount: delegationAddress ? true : undefined,
+      isDelegatedAccount: Boolean(delegationAddress),
       simulationData: simulationData as
         | SimulationDataWithCallTraceErrors
         | undefined,

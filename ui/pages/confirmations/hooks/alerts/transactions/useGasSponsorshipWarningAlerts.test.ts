@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -16,6 +17,10 @@ import {
 import { useGasSponsorshipWarningAlerts } from './useGasSponsorshipWarningAlerts';
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const DELEGATION_ADDRESS: Hex = '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b';
+const BALANCE_15_MON = toHex(15n * 10n ** 18n);
+const BALANCE_7_MON = toHex(7n * 10n ** 18n);
+const VALUE_6_MON = toHex(6n * 10n ** 18n);
 
 const BASE_CONFIRMATION = genUnapprovedContractInteractionConfirmation({
   chainId: CHAIN_IDS.MONAD,
@@ -166,33 +171,140 @@ describe('useGasSponsorshipWarningAlerts', () => {
     expect(alerts).toEqual([RESERVE_ALERT]);
   });
 
-  it('returns warning alert when value spend would leave less than 10 MON', () => {
-    // 15 MON balance, sending 6 MON value → 9 MON remaining
-    const balance15 = toHex(15n * 10n ** 18n);
-    const value6 = toHex(6n * 10n ** 18n);
+  // it('returns warning alert when value spend would leave less than 10 MON', () => {
+  //   // 15 MON balance, sending 6 MON value → 9 MON remaining
+  //   const balance15 = toHex(15n * 10n ** 18n);
+  //   const value6 = toHex(6n * 10n ** 18n);
+  //
+  //   const alerts = runHook(
+  //     getMockConfirmStateForTransaction(
+  //       {
+  //         ...CONFIRMATION_MOCK,
+  //         isGasFeeSponsored: false,
+  //         txParams: {
+  //           ...CONFIRMATION_MOCK.txParams,
+  //           value: value6,
+  //         },
+  //       },
+  //       buildMonadNetworkState({
+  //         accountsByChainId: {
+  //           [CHAIN_IDS.MONAD]: {
+  //             [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+  //               balance: balance15,
+  //             },
+  //           },
+  //         },
+  //       }),
+  //     ),
+  //   );
+  //
+  //   expect(alerts).toEqual([RESERVE_ALERT]);
+  // });
 
+  it('returns warning alert when a delegated account value spend would leave less than 10 MON', () => {
+    // 15 MON balance, sending 6 MON value → 9 MON remaining
     const alerts = runHook(
       getMockConfirmStateForTransaction(
         {
           ...CONFIRMATION_MOCK,
+          delegationAddress: DELEGATION_ADDRESS,
           isGasFeeSponsored: false,
           txParams: {
             ...CONFIRMATION_MOCK.txParams,
-            value: value6,
+            value: VALUE_6_MON,
           },
         },
         buildMonadNetworkState({
           accountsByChainId: {
             [CHAIN_IDS.MONAD]: {
               [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-                balance: balance15,
+                balance: BALANCE_15_MON,
               },
             },
           },
         }),
       ),
     );
+    expect(alerts).toEqual([RESERVE_ALERT]);
+  });
 
+  it('returns no alerts when an undelegated account value spend would leave less than 10 MON', () => {
+    // Undelegated EOAs can dip below the reserve (emptying transaction), and
+    // `delegationAddress` is undefined for them.
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          delegationAddress: undefined,
+          isGasFeeSponsored: false,
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            value: VALUE_6_MON,
+          },
+        },
+        buildMonadNetworkState({
+          accountsByChainId: {
+            [CHAIN_IDS.MONAD]: {
+              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                balance: BALANCE_15_MON,
+              },
+            },
+          },
+        }),
+      ),
+    );
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns no alerts for a gas-only call from an undelegated account already under 10 MON', () => {
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          delegationAddress: undefined,
+          isGasFeeSponsored: false,
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            value: '0x0',
+          },
+        },
+        buildMonadNetworkState({
+          accountsByChainId: {
+            [CHAIN_IDS.MONAD]: {
+              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                balance: BALANCE_7_MON,
+              },
+            },
+          },
+        }),
+      ),
+    );
+    expect(alerts).toEqual([]);
+  });
+
+  it('returns warning alert for an undelegated account when simulation reports a reserve violation', () => {
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          delegationAddress: undefined,
+          isGasFeeSponsored: false,
+          simulationData: {
+            callTraceErrors: ['reserve balance violation'],
+            tokenBalanceChanges: [],
+          },
+        },
+        buildMonadNetworkState({
+          accountsByChainId: {
+            [CHAIN_IDS.MONAD]: {
+              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                balance: BALANCE_15_MON,
+              },
+            },
+          },
+        }),
+      ),
+    );
     expect(alerts).toEqual([RESERVE_ALERT]);
   });
 
