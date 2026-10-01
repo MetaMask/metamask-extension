@@ -18,12 +18,15 @@ import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import {
+  getBackendApiUrlsOption,
+  isBackendAuthDisabled,
+} from '../../../../shared/lib/core-backend-api-urls';
+import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
@@ -42,6 +45,9 @@ let apiClient: AssetsControllerOptions['queryApiClient'] | null = null;
 async function safeGetBearerToken(
   initMessenger: AssetsControllerInitMessenger,
 ): Promise<string | undefined> {
+  if (isBackendAuthDisabled()) {
+    return undefined;
+  }
   try {
     return await initMessenger.call('AuthenticationController:getBearerToken');
   } catch {
@@ -100,7 +106,7 @@ function getIsBasicFunctionality(
 
 /**
  * Whether AssetsController Sentry tracing is enabled via
- * `assetsUnifyState.tracesEnabled` (requires unify itself to be enabled).
+ * `assetsUnifyState.tracesEnabled`.
  *
  * @param initMessenger - The initialization messenger.
  * @returns True when tracing should run, false otherwise.
@@ -109,9 +115,6 @@ function isAssetsControllerTracesEnabled(
   initMessenger: AssetsControllerInitMessenger,
 ): boolean {
   try {
-    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-      return false;
-    }
     const { remoteFeatureFlags } = initMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
@@ -161,6 +164,7 @@ function getApiClient(
       clientProduct: 'metamask-extension',
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
+      ...getBackendApiUrlsOption(),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }
   return apiClient;

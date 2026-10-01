@@ -24,9 +24,7 @@ async function mockAccountsApiWithoutLocalNode(server: Mockttp) {
       statusCode: 200,
       json: {
         fullSupport: [],
-        partialSupport: {
-          balances: [],
-        },
+        partialSupport: [],
       },
     }));
   return [];

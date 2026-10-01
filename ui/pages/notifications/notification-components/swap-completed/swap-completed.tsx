@@ -14,7 +14,6 @@ import {
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
   NotificationDetailBlockExplorerButton,
-  NotificationDetailTitle,
   NotificationDetailCopyButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
@@ -24,12 +23,12 @@ import { BadgeWrapperPosition } from '../../../../components/component-library';
 import {
   createTextItems,
   getAmount,
-  formatIsoDateString,
   getNativeCurrencyLogoByChainId,
   getNetworkDetailsFromNotifPayload,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
+import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -40,22 +39,12 @@ const isSwapCompletedNotification = isOfTypeNodeGuard([
 ]);
 
 const getTitle = (n: SwapCompletedNotification) => {
-  const items = createTextItems(
-    [
-      t('notificationItemSwapped') ?? '',
-      n.payload.data.token_in.symbol,
-      t('notificationItemSwappedFor') ?? '',
-    ],
-    TextVariant.bodySm,
-  );
+  const items = createTextItems([n.template?.title ?? ''], TextVariant.bodySm);
   return items;
 };
 
 const getDescription = (n: SwapCompletedNotification) => {
-  const items = createTextItems(
-    [n.payload.data.token_out.symbol],
-    TextVariant.bodyMd,
-  );
+  const items = createTextItems([n.template?.body ?? ''], TextVariant.bodyMd);
   return items;
 };
 
@@ -89,14 +78,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     );
   },
   details: {
-    title: ({ notification }) => (
-      <NotificationDetailTitle
-        title={`${t('notificationItemSwapped') ?? ''} ${
-          notification.payload.data.token_out.symbol
-        }`}
-        date={formatIsoDateString(notification.createdAt)}
-      />
-    ),
+    title: OnChainNotificationDetailsTitle,
     body: {
       type: NotificationComponentType.OnChainBody,
       Account: ({ notification }) => {

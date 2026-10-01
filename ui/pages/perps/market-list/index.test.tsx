@@ -15,6 +15,16 @@ import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { MarketListView } from '.';
 
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest
+    .fn()
+    .mockImplementation((method: string) =>
+      Promise.resolve(
+        method === 'perpsGetLifecycleContext' ? 'cold_process' : undefined,
+      ),
+    ),
+}));
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
@@ -64,6 +74,7 @@ describe('MarketListView', () => {
     jest.clearAllMocks();
     // Default mock returns loaded state with markets
     mockUsePerpsLiveMarketListData.mockReturnValue({
+      areMarketsLive: jest.fn().mockReturnValue(false),
       markets: [...mockCryptoMarkets, ...mockHip3Markets],
       cryptoMarkets: mockCryptoMarkets,
       hip3Markets: mockHip3Markets,
@@ -116,6 +127,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(<MarketListView />, mockStore);
@@ -161,6 +173,7 @@ describe('MarketListView', () => {
     it('renders live price and change values from the list hook', async () => {
       const [firstMarket] = mockCryptoMarkets;
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [
           {
             ...firstMarket,
@@ -190,6 +203,7 @@ describe('MarketListView', () => {
     it('shows loading skeletons initially', () => {
       // Override mock to return loading state
       mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
         markets: [],
         cryptoMarkets: [],
         hip3Markets: [],
@@ -317,6 +331,9 @@ describe('MarketListView', () => {
         ).toBeInTheDocument();
       });
       expect(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      ).toBeInTheDocument();
+      expect(
         screen.getByTestId('market-list-categories-pill-stock'),
       ).toBeInTheDocument();
       // `all` is expressed as no selection, never as its own pill.
@@ -326,6 +343,7 @@ describe('MarketListView', () => {
     });
 
     const filterLabelCases: [filter: string, expectedLabel: string][] = [
+      ['memecoin', messages.perpsFilterMemecoins.message],
       ['pre-ipo', messages.perpsFilterPreIpo.message],
       ['index', messages.perpsFilterIndex.message],
       ['etf', messages.perpsFilterEtf.message],
@@ -362,6 +380,7 @@ describe('MarketListView', () => {
         isInitialLoading: false,
         error: null,
         refresh: jest.fn(),
+        areMarketsLive: jest.fn().mockReturnValue(false),
       });
 
       renderWithProvider(
@@ -534,6 +553,7 @@ describe('MarketListView', () => {
     priceChangeSortCases.forEach(([queryDirection, expectedOrder]) => {
       it(`ranks the list by ${queryDirection} price change from the query params`, async () => {
         mockUsePerpsLiveMarketListData.mockReturnValue({
+          areMarketsLive: jest.fn().mockReturnValue(false),
           markets: [
             {
               ...mockCryptoMarkets[0],
@@ -635,6 +655,73 @@ describe('MarketListView', () => {
         ).not.toBeInTheDocument();
       });
     });
+
+    it('shows only tagged main-DEX markets on Memecoins and still lists them under Crypto', async () => {
+      const dogeMarket = {
+        ...mockCryptoMarkets[0],
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        tags: ['memecoin'],
+      };
+      const taggedHip3StockMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:FAKE',
+        name: 'Fake',
+        tags: ['memecoin'],
+      };
+      const taggedHip3CryptoMarket = {
+        ...mockHip3Markets[0],
+        symbol: 'xyz:PEPE',
+        name: 'PEPE',
+        marketType: 'crypto' as const,
+        tags: ['memecoin'],
+      };
+
+      mockUsePerpsLiveMarketListData.mockReturnValue({
+        areMarketsLive: jest.fn().mockReturnValue(false),
+        markets: [
+          mockCryptoMarkets[0],
+          dogeMarket,
+          taggedHip3StockMarket,
+          taggedHip3CryptoMarket,
+        ],
+        cryptoMarkets: [mockCryptoMarkets[0], dogeMarket],
+        hip3Markets: [taggedHip3StockMarket, taggedHip3CryptoMarket],
+        isInitialLoading: false,
+        error: null,
+        refresh: jest.fn(),
+      });
+
+      renderWithProvider(<MarketListView />, mockStore);
+
+      fireEvent.click(
+        screen.getByTestId('market-list-categories-pill-memecoin'),
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.queryByTestId('market-row-BTC')).not.toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('market-list-categories-pill-crypto'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('market-row-DOGE')).toBeInTheDocument();
+        expect(screen.getByTestId('market-row-BTC')).toBeInTheDocument();
+      });
+      expect(
+        screen.queryByTestId('market-row-xyz-FAKE'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('market-row-xyz-PEPE'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('sort functionality', () => {
@@ -684,6 +771,13 @@ describe('MarketListView', () => {
         expect.objectContaining({
           interaction_type: 'filter_applied',
           filter_category: 'crypto',
+        }),
+      );
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'crypto',
         }),
       );
     });

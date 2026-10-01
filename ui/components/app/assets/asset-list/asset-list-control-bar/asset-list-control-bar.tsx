@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -66,12 +60,10 @@ import {
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
-  detectTokens,
   refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
-  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -84,7 +76,6 @@ import {
   ASSETS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { getIsAssetsUnifyStateEnabled } from '../../../../../selectors/assets-unify-state/feature-flags';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
 import {
   getInternalAccountsFromGroupById,
@@ -119,8 +110,16 @@ const AssetListControlBar = ({
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const navigate = useNavigate();
-  const sortButtonRef = useRef<HTMLButtonElement>(null);
-  const importButtonRef = useRef<HTMLButtonElement>(null);
+  const [sortReferenceElement, setSortReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [importReferenceElement, setImportReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const setSortButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setSortReferenceElement(node);
+  }, []);
+  const setImportButtonRef = useCallback((node: HTMLButtonElement | null) => {
+    setImportReferenceElement(node);
+  }, []);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -131,7 +130,6 @@ const AssetListControlBar = ({
   const accountSupportsEnabledNetworks = useSelector(
     selectAccountSupportsEnabledNetworks,
   );
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const isEvmOnlySelectedAccountGroup = useSelector(
     (state: MetaMaskReduxState) => {
@@ -346,23 +344,13 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    if (isAssetsUnifyStateEnabled) {
-      if (selectedInternalAccount) {
-        dispatch(
-          refreshAssetsForSelectedAccount([selectedInternalAccount], {
-            chainIds: selectedCaipChainIds,
-            assetTypes: ['token', 'price', 'metadata'],
-          }),
-        );
-      }
-    } else {
+    if (selectedInternalAccount) {
       dispatch(
-        updateBalancesFoAccounts(
-          Object.keys(enabledNetworksByNamespace),
-          false,
-        ),
+        refreshAssetsForSelectedAccount([selectedInternalAccount], {
+          chainIds: selectedCaipChainIds,
+          assetTypes: ['token', 'price', 'metadata'],
+        }),
       );
-      dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     }
     closePopover();
   };
@@ -460,7 +448,7 @@ const AssetListControlBar = ({
               disabled={isTokenSortPopoverOpen}
             >
               <ButtonIcon
-                ref={sortButtonRef}
+                ref={setSortButtonRef}
                 data-testid="sort-by-popover-toggle"
                 className={`asset-list-control-bar__button flex items-center justify-center border-0 ${
                   isTokenSortPopoverOpen ? 'bg-pressed' : 'bg-transparent'
@@ -477,7 +465,7 @@ const AssetListControlBar = ({
             (isEvm || showTokensLinks ? (
               // Tokens (EVM and non-EVM) and EVM NFT: overflow menu with Refresh list
               <ImportControl
-                ref={importButtonRef}
+                ref={setImportButtonRef}
                 showTokensLinks={showTokensLinks}
                 onClick={
                   showTokensLinks
@@ -493,7 +481,7 @@ const AssetListControlBar = ({
                 distance={20}
               >
                 <ButtonIcon
-                  ref={importButtonRef}
+                  ref={setImportButtonRef}
                   data-testid="importTokens-button"
                   className="asset-list-control-bar__button flex items-center justify-center border-0 bg-transparent hover:bg-hover active:bg-pressed"
                   onClick={handleOpenTokenManagement}
@@ -506,7 +494,7 @@ const AssetListControlBar = ({
 
           {!showImportTokenButton && onRefresh ? (
             <ImportControl
-              ref={importButtonRef}
+              ref={setImportButtonRef}
               showTokensLinks
               onClick={toggleRefreshListPopover}
             />
@@ -524,7 +512,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isTokenSortPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={sortButtonRef.current}
+        referenceElement={sortReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -542,7 +530,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportTokensPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -571,7 +559,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isImportNftPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,
@@ -624,7 +612,7 @@ const AssetListControlBar = ({
         onClickOutside={closePopover}
         isOpen={isRefreshListPopoverOpen}
         position={PopoverPosition.BottomEnd}
-        referenceElement={importButtonRef.current}
+        referenceElement={importReferenceElement}
         matchWidth={false}
         style={{
           zIndex: 10,

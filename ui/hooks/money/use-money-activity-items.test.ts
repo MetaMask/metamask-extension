@@ -94,7 +94,7 @@ describe('buildMergedMoneyActivityBuckets', () => {
     receivedFrom: '0xrewarder',
   };
 
-  it('keeps API rows in All only', () => {
+  it('keeps API rows in All and Card, not Deposits or Sends', () => {
     const buckets = buildMergedMoneyActivityBuckets(onchain, [card, cashback]);
     const ids = (filter: MoneyActivityFilter) =>
       buckets[filter].map((item) => item.id);
@@ -107,6 +107,10 @@ describe('buildMergedMoneyActivityBuckets', () => {
     ]);
     expect(ids(MoneyActivityFilter.Deposits)).toStrictEqual(['dep']);
     expect(ids(MoneyActivityFilter.Transfers)).toStrictEqual(['xfer']);
+    expect(ids(MoneyActivityFilter.Card)).toStrictEqual([
+      'cashback:0xback',
+      'card:0xcard',
+    ]);
   });
 
   it('withholds rows at or below the watermark', () => {
@@ -121,6 +125,9 @@ describe('buildMergedMoneyActivityBuckets', () => {
     ).toStrictEqual(['cashback:0xback']);
     expect(buckets[MoneyActivityFilter.Deposits]).toStrictEqual([]);
     expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
+    expect(
+      buckets[MoneyActivityFilter.Card].map((item) => item.id),
+    ).toStrictEqual(['cashback:0xback']);
   });
 });
 
@@ -176,6 +183,25 @@ describe('useMoneyActivityItems', () => {
     const { result } = renderHook(() => useMoneyActivityItems());
 
     expect(result.current.items[0].id).toBe('money-tx-deposited');
+    expect(
+      result.current.items.some((item) => item.kind === 'accountsApi'),
+    ).toBe(true);
+    expect(
+      result.current.buckets[MoneyActivityFilter.All].filter(
+        (item) => item.kind === 'accountsApi',
+      ),
+    ).toHaveLength(3);
+    expect(result.current.buckets[MoneyActivityFilter.Card]).toHaveLength(3);
+    expect(
+      result.current.buckets[MoneyActivityFilter.Deposits].every(
+        (item) => item.kind === 'onchain',
+      ),
+    ).toBe(true);
+    expect(
+      result.current.buckets[MoneyActivityFilter.Transfers].every(
+        (item) => item.kind === 'onchain',
+      ),
+    ).toBe(true);
     expect(result.current.hasMore).toBe(false);
     expect(result.current.error).toBe(false);
     expect(result.current.isSettling).toBe(false);

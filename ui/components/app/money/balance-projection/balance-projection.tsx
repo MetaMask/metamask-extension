@@ -5,7 +5,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  IconColor,
   Skeleton,
   Text,
   TextColor,
@@ -22,8 +21,8 @@ import {
 } from '../../../../pages/money/constants/money-events';
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
-import { InfoPopover } from '../../musd/info-popover';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
+import { TooltipText } from '../tooltip-text';
 
 const PROJECTED_YEARS = 1;
 
@@ -111,12 +110,10 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('moneyAccountProjectedBalance')}
         </Text>
-        <Text variant={TextVariant.BodyMd} color={TextColor.SuccessDefault}>
-          {moneyFormatUsd(projected)}
-        </Text>
-        <InfoPopover
-          iconColor={IconColor.IconAlternative}
-          ariaLabel={t('moneyAccountProjectedBalanceInfo')}
+        <TooltipText
+          text={moneyFormatUsd(projected)}
+          variant={TextVariant.BodyMd}
+          color={TextColor.SuccessDefault}
           data-testid="balance-projection-info"
           onOpen={() =>
             trackTooltipClicked({
@@ -127,7 +124,7 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
           }
         >
           {t('moneyAccountProjectedBalanceTooltip', [String(apyPercent)])}
-        </InfoPopover>
+        </TooltipText>
       </Box>
     );
   }
@@ -140,21 +137,24 @@ const BalanceProjectionContent = ({ amountFiat }: BalanceProjectionProps) => {
       data-testid="balance-projection-apy-pitch"
     >
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-        {t('moneyAccountApyPitch', [String(apyPercent)])}
+        {t('moneyAccountApyPitchEarn', [
+          <TooltipText
+            key="apy"
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            data-testid="balance-projection-apy-pitch-info"
+            text={t('moneyAccountApyPitchApy', [String(apyPercent)])}
+            onOpen={() =>
+              trackTooltipClicked({
+                tooltipName: MoneyTooltipName.Apy,
+                tooltipType: MoneyTooltipType.Info,
+              })
+            }
+          >
+            {t('moneyAccountApyTooltip')}
+          </TooltipText>,
+        ])}
       </Text>
-      <InfoPopover
-        iconColor={IconColor.IconAlternative}
-        ariaLabel={t('moneyAccountApyPitchInfo')}
-        data-testid="balance-projection-apy-pitch-info"
-        onOpen={() =>
-          trackTooltipClicked({
-            tooltipName: MoneyTooltipName.Apy,
-            tooltipType: MoneyTooltipType.Info,
-          })
-        }
-      >
-        {t('moneyAccountApyTooltip')}
-      </InfoPopover>
     </Box>
   );
 };

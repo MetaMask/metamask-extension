@@ -1,63 +1,52 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { TransactionMeta } from '@metamask/transaction-controller';
-import { TransactionType } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AlertsName } from '../constants';
-import { useConfirmContext } from '../../../context/confirm';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
-import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
-import { selectIsPayHardwareEnabled } from '../../../selectors/feature-flags';
+import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
+import { useIsPayHardwareBlocked } from '../../pay/useIsPayHardwareBlocked';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
+import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 
-const PAY_HARDWARE_ALERT_TRANSACTION_TYPES: TransactionType[] = [
-  TransactionType.moneyAccountDeposit,
-  TransactionType.moneyAccountWithdraw,
-  TransactionType.perpsDeposit,
-  TransactionType.perpsWithdraw,
-  TransactionType.predictDeposit,
-  TransactionType.predictWithdraw,
-];
-
-const PAY_HARDWARE_FLAG_GATED_TYPES: TransactionType[] = [
-  TransactionType.musdConversion,
-];
-
+/**
+ * Blocking alert for a hardware account already funding a Pay flow
+ * that forbids hardware wallets.
+ *
+ * Account-picker filtering and this backstop share
+ * `useIsPayHardwareBlocked`, while the account lookup follows the effective
+ * payer (`accountOverride ?? txParams.from`).
+ *
+ * @returns The blocking alert, or an empty array.
+ */
 export function usePayHardwareAccountAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-
-  const isPayHardwareEnabled = useSelector(selectIsPayHardwareEnabled);
-  const fromAddress = currentConfirmation?.txParams?.from as Hex | undefined;
+  const transactionMeta = useTransactionMetadataRequestOptional();
+  const isHardwareBlocked = useIsPayHardwareBlocked();
+  const payingAccount = useTransactionPayingAccount();
 
   const account = useSelector((state) =>
-    fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
+    payingAccount
+      ? getInternalAccountByAddress(state, payingAccount)
+      : undefined,
   );
 
   const isHardwareWallet = account ? isHardwareAccount(account) : false;
-
-  const isAlwaysBlockedType = hasTransactionType(
-    currentConfirmation,
-    PAY_HARDWARE_ALERT_TRANSACTION_TYPES,
+  const isQrWallet = account?.metadata?.keyring?.type === KeyringTypes.qr;
+  const isQrHardwareBlocked = hasTransactionType(
+    transactionMeta,
+    PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
   );
-
-  const isFlagGatedType = hasTransactionType(
-    currentConfirmation,
-    PAY_HARDWARE_FLAG_GATED_TYPES,
-  );
+  const shouldAlert =
+    isHardwareWallet &&
+    (isHardwareBlocked || (isQrWallet && isQrHardwareBlocked));
 
   return useMemo(() => {
-    if (!isHardwareWallet) {
-      return [];
-    }
-
-    const shouldAlert =
-      isAlwaysBlockedType || (isFlagGatedType && !isPayHardwareEnabled);
-
     if (!shouldAlert) {
       return [];
     }
@@ -72,11 +61,5 @@ export function usePayHardwareAccountAlert(): Alert[] {
         isBlocking: true,
       },
     ];
-  }, [
-    isHardwareWallet,
-    isAlwaysBlockedType,
-    isFlagGatedType,
-    isPayHardwareEnabled,
-    t,
-  ]);
+  }, [shouldAlert, t]);
 }

@@ -18,7 +18,7 @@ export const DECODING_E2E_API_URL =
 export async function scrollAndConfirmAndAssertConfirm(driver: Driver) {
   const confirmation = new Confirmation(driver);
   await confirmation.clickScrollToBottomButton();
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 }
 
 export function withTransactionEnvelopeTypeFixtures(
@@ -45,7 +45,7 @@ export function withTransactionEnvelopeTypeFixtures(
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
-        .withMetaMetricsController({
+        .withAnalyticsController({
           analyticsId: MOCK_ANALYTICS_ID,
           consentDecisionMade: true,
           optedIn: true,
@@ -83,7 +83,7 @@ export function withSignatureFixtures(
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilderV2()
         .withPermissionControllerConnectedToTestDapp()
-        .withMetaMetricsController({
+        .withAnalyticsController({
           analyticsId: MOCK_ANALYTICS_ID,
           consentDecisionMade: true,
           optedIn: true,

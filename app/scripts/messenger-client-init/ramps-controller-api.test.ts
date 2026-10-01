@@ -31,6 +31,7 @@ describe('getRampsControllerApi', () => {
     expect(typeof api.getRampsQuotes).toBe('function');
     expect(typeof api.syncRampsOrdersWithUserStorage).toBe('function');
     expect(typeof api.watchRampsCheckoutTab).toBe('function');
+    expect(typeof api.watchRampsProviderOrderTab).toBe('function');
   });
 
   it('delegates syncRampsOrdersWithUserStorage to the controller', async () => {

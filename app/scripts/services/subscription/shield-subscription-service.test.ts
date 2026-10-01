@@ -19,6 +19,10 @@ import browser from 'webextension-polyfill';
 import { TransactionType } from '@metamask/transaction-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
@@ -109,6 +113,7 @@ const mockGetSubscriptionControllerState = jest.fn();
 const mockGetKeyringControllerState = jest.fn();
 const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetHasAccountOptedIn = jest.fn();
+const mockGetActualSubscriptionId = jest.fn();
 const mockLinkRewards = jest.fn();
 const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 const mockClearLastSelectedPaymentMethod = jest.fn();
@@ -177,6 +182,10 @@ rootMessenger.registerActionHandler(
   mockGetHasAccountOptedIn,
 );
 rootMessenger.registerActionHandler(
+  'RewardsController:getActualSubscriptionId',
+  mockGetActualSubscriptionId,
+);
+rootMessenger.registerActionHandler(
   'SubscriptionController:linkRewards',
   mockLinkRewards,
 );
@@ -234,6 +243,7 @@ rootMessenger.delegate({
     'RewardsController:getHasAccountOptedIn',
     'RewardsController:getSeasonMetadata',
     'RewardsController:getSeasonStatus',
+    'RewardsController:getActualSubscriptionId',
   ],
 });
 
@@ -299,6 +309,7 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
       endDate: Date.now() + 1000,
     });
     mockGetHasAccountOptedIn.mockResolvedValueOnce(false);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
       id: 1,
@@ -307,15 +318,19 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
       .spyOn(mockPlatform, 'addTabUpdatedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 200));
-        await fn(1, {
-          url: MOCK_REDIRECT_URI,
-        });
+        await fn(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
       });
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
         await new Promise((r) => setTimeout(r, 500));
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
   });
 
@@ -356,6 +371,7 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
     mockGetAccountsState.mockRestore();
     mockGetHasAccountOptedIn.mockRestore();
     mockGetHasAccountOptedIn.mockResolvedValueOnce(true);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
 
     mockGetAccountsState.mockReturnValue({
       internalAccounts: {
@@ -393,6 +409,22 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
     expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
 
     expect(mockGetHasAccountOptedIn).toHaveBeenCalled();
+    expect(mockGetActualSubscriptionId).toHaveBeenCalledWith(
+      'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    );
+    expect(mockTrackEvent.mock.calls).toEqual(
+      expect.arrayContaining([
+        [
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              rewards_subscription_id: 'rewards_subscription_id',
+            }),
+          }),
+        ],
+      ]),
+    );
   });
 
   it('should not include the reward account id if the season is not active', async () => {
@@ -671,6 +703,105 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
       PRODUCT_TYPES.SHIELD,
     );
   });
+
+  it('tracks a succeeded payment method change when the shield subscription is already active', async () => {
+    const previousShieldEnabled = process.env.METAMASK_SHIELD_ENABLED;
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
+    mockGetSubscriptions.mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: true,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    try {
+      // @ts-expect-error mock tx meta
+      await subscriptionService.handlePostTransaction(txMeta);
+    } finally {
+      process.env.METAMASK_SHIELD_ENABLED = previousShieldEnabled;
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldPaymentMethodChange,
+        properties: expect.objectContaining({
+          category: MetaMetricsEventCategory.Shield,
+          status: 'succeeded',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          subscription_status: SUBSCRIPTION_STATUSES.active,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          payment_type: PAYMENT_TYPES.byCard,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          billing_interval: 'monthly',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_payment_type: PAYMENT_TYPES.byCrypto,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_billing_interval: 'yearly',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_crypto_payment_chain: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_payment_currency: 'USD',
+        }),
+      }),
+    );
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldSubscriptionRequest,
+      }),
+    );
+  });
+
+  it('tracks a failed payment method change with sponsorship status', async () => {
+    const previousShieldEnabled = process.env.METAMASK_SHIELD_ENABLED;
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
+    mockGetSubscriptions.mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+    mockSubmitShieldSubscriptionCryptoApproval.mockRejectedValueOnce(
+      new Error('payment failed'),
+    );
+
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: true,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+
+    try {
+      await expect(
+        // @ts-expect-error mock tx meta
+        subscriptionService.handlePostTransaction(txMeta),
+      ).rejects.toThrow('payment failed');
+    } finally {
+      process.env.METAMASK_SHIELD_ENABLED = previousShieldEnabled;
+    }
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.ShieldPaymentMethodChange,
+        properties: expect.objectContaining({
+          status: 'failed',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          gas_sponsored: true,
+          error: 'payment failed',
+        }),
+      }),
+    );
+    expect(mockClearLastSelectedPaymentMethod).toHaveBeenCalledWith(
+      PRODUCT_TYPES.SHIELD,
+    );
+  });
 });
 
 describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
@@ -708,6 +839,12 @@ describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
       endDate: Date.now() + 1000,
     });
     mockGetHasAccountOptedIn.mockResolvedValueOnce(true);
+    mockGetActualSubscriptionId.mockReturnValue('rewards_subscription_id');
+    mockGetAppStateControllerState.mockReturnValue({
+      shieldSubscriptionMetricsProps: {
+        userBalanceInUSD: 1000,
+      },
+    });
   });
 
   it('should link the reward to the existing subscription', async () => {
@@ -720,6 +857,22 @@ describe('ShieldSubscriptionService - linkRewardToExistingSubscription', () => {
       subscriptionId: MOCK_SHIELD_SUBSCRIPTION_ID,
       rewardAccountId: MOCK_REWARD_ACCOUNT_ID,
     });
+    expect(mockGetActualSubscriptionId).toHaveBeenCalledWith(
+      MOCK_REWARD_ACCOUNT_ID,
+    );
+    expect(mockTrackEvent.mock.calls).toEqual(
+      expect.arrayContaining([
+        [
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              rewards_subscription_id: 'rewards_subscription_id',
+            }),
+          }),
+        ],
+      ]),
+    );
   });
 
   it('should not link the reward to the existing subscription if the season is not active', async () => {
@@ -955,7 +1108,7 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        await fn(1);
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     const result =
@@ -970,7 +1123,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -984,10 +1138,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: `${MOCK_REDIRECT_URI}?cancel=true`,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: `${MOCK_REDIRECT_URI}?cancel=true`,
+          },
+          { url: `${MOCK_REDIRECT_URI}?cancel=true` } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
 
     await expect(
@@ -1002,7 +1160,8 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
 
     let tabUpdatedListener: (
       tabId: number,
-      changeInfo: { url: string },
+      changeInfo: browser.Tabs.OnUpdatedChangeInfoType,
+      tab: browser.Tabs.Tab,
     ) => void = () => undefined;
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
@@ -1016,10 +1175,14 @@ describe('ShieldSubscriptionService - updateSubscriptionCardPaymentMethod', () =
     jest
       .spyOn(mockPlatform, 'addTabRemovedListener')
       .mockImplementation(async (fn) => {
-        tabUpdatedListener(1, {
-          url: MOCK_REDIRECT_URI,
-        });
-        await fn(1);
+        tabUpdatedListener(
+          1,
+          {
+            url: MOCK_REDIRECT_URI,
+          },
+          { url: MOCK_REDIRECT_URI } as browser.Tabs.Tab,
+        );
+        await fn(1, { windowId: 0, isWindowClosing: false });
       });
     const openExtensionSpy = jest
       .spyOn(mockPlatform, 'openExtensionInBrowser')

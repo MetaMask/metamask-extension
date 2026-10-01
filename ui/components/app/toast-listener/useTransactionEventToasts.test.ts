@@ -5,12 +5,19 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
+  registerMoneyBatchTransaction,
+  resetMoneyBatchRegistry,
+} from '../../../helpers/money/money-batch-registry';
+import {
   dismissToast,
   showFailedToast,
   showPendingToast,
   showSuccessToast,
 } from './shared';
-import { useTransactionEventToasts } from './useTransactionEventToasts';
+import {
+  batchHelperTransactionTypes,
+  useTransactionEventToasts,
+} from './useTransactionEventToasts';
 
 const transactionControllerEvent =
   'TransactionController:transactionStatusUpdated';
@@ -77,6 +84,7 @@ function mountHook() {
 describe('useTransactionEventToasts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetMoneyBatchRegistry();
     mockGetState.mockReturnValue({
       metamask: { transactions: [] },
     });
@@ -283,18 +291,21 @@ describe('useTransactionEventToasts', () => {
       expect(mockDismissToast).not.toHaveBeenCalled();
     });
 
-    it('does not toast excluded approval transactions', () => {
-      const { handlers } = mountHook();
+    it('does not toast batch helper transaction types', () => {
+      for (const type of batchHelperTransactionTypes) {
+        mockShowPendingToast.mockClear();
+        const { handlers } = mountHook();
 
-      handlers[transactionControllerEvent]({
-        transactionMeta: createTransactionMeta({
-          id: 'excluded-approval',
-          status: TransactionStatus.submitted,
-          type: TransactionType.bridgeApproval,
-        }),
-      });
+        handlers[transactionControllerEvent]({
+          transactionMeta: createTransactionMeta({
+            id: `batch-helper-${type}`,
+            status: TransactionStatus.submitted,
+            type,
+          }),
+        });
 
-      expect(mockShowPendingToast).not.toHaveBeenCalled();
+        expect(mockShowPendingToast).not.toHaveBeenCalled();
+      }
     });
 
     it('shows a pending toast for musdClaim transactions on approved', () => {
@@ -381,6 +392,24 @@ describe('useTransactionEventToasts', () => {
             }),
           ],
         },
+      });
+      const { handlers } = mountHook();
+
+      handlers[transactionControllerEvent]({
+        transactionMeta: createTransactionMeta({
+          id: 'relay-submitted',
+          status: TransactionStatus.submitted,
+          type: TransactionType.relayDeposit,
+        }),
+      });
+
+      expect(mockShowPendingToast).not.toHaveBeenCalled();
+    });
+
+    it('does not toast pay funding txs registered as money-batch children', () => {
+      registerMoneyBatchTransaction({
+        id: 'money-deposit',
+        requiredTransactionIds: ['relay-submitted'],
       });
       const { handlers } = mountHook();
 

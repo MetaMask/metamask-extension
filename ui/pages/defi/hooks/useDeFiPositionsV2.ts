@@ -65,13 +65,17 @@ export function useDeFiPositionsV2(): UseDeFiPositionsV2Result {
   const [failedAccountGroup, setFailedAccountGroup] = useState<
     typeof selectedAccountGroup | null
   >(null);
+  const [prevSelectedAccountGroup, setPrevSelectedAccountGroup] =
+    useState(selectedAccountGroup);
+  if (selectedAccountGroup !== prevSelectedAccountGroup) {
+    setPrevSelectedAccountGroup(selectedAccountGroup);
+    setFailedAccountGroup(null);
+  }
   const isError =
     failedAccountGroup !== null && failedAccountGroup === selectedAccountGroup;
 
   useEffect(() => {
     let cancelled = false;
-
-    setFailedAccountGroup(null);
 
     fetchDeFiPositions().catch(() => {
       if (!cancelled) {

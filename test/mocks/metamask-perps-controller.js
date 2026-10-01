@@ -43,7 +43,6 @@ const mockPerpsEventPropertyKeys = {
   SOURCE: 'source',
   HAS_PERP_BALANCE: 'has_perp_balance',
   BUTTON_LOCATION: 'button_location',
-  BUTTON_TYPE: 'button_type',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',
@@ -154,6 +153,9 @@ const mockPerpsEventValueLiterals = {
     CLOSE_ALL_CANCELLED: 'close_all_cancelled',
     ORDER_BOOK_OPENED: 'order_book_opened',
     ORDER_BOOK_CLOSED: 'order_book_closed',
+    DEPOSIT_FLOW_OPENED: 'deposit_flow_opened',
+    DEPOSIT_CONFIRMED: 'deposit_confirmed',
+    TRADE_SUBMITTED_AFTER_DEPOSIT: 'trade_submitted_after_deposit',
     SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
     SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
     SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
@@ -244,6 +246,7 @@ const mockPerpsEventValueLiterals = {
     PERPS_TAB: 'perps_tab',
     PERPS_HOME: 'perps_home',
     PERPS_HOME_EMPTY_STATE: 'perps_home_empty_state',
+    AMOUNT_INPUT: 'amount_input',
   },
 };
 
@@ -261,6 +264,7 @@ const mockPerpsAnalyticsEventNames = {
 
 const mockMarketCategories = [
   'crypto',
+  'memecoin',
   'stock',
   'pre-ipo',
   'index',
@@ -279,6 +283,25 @@ function mockGetMarketTypeFilter(market) {
   }
 
   return mockIsHip3Market(market) ? 'new' : 'crypto';
+}
+
+function mockMatchesCategory(market, category) {
+  if (category === 'all') {
+    return true;
+  }
+  if (category === 'crypto') {
+    return !mockIsHip3Market(market) || market?.marketType === 'crypto';
+  }
+  if (category === 'memecoin') {
+    return (
+      (!mockIsHip3Market(market) || market?.marketType === 'crypto') &&
+      Boolean(market?.tags?.includes('memecoin'))
+    );
+  }
+  if (category === 'new') {
+    return mockIsHip3Market(market) && market?.marketType === undefined;
+  }
+  return market?.marketType !== undefined && market.marketType === category;
 }
 
 function mockGetPerpsDisplaySymbol(symbol) {
@@ -472,6 +495,7 @@ module.exports = {
   MARKET_CATEGORIES: mockMarketCategories,
   isHip3Market: mockIsHip3Market,
   getMarketTypeFilter: mockGetMarketTypeFilter,
+  matchesCategory: mockMatchesCategory,
   getPerpsDisplaySymbol: mockGetPerpsDisplaySymbol,
   AggregatedOrderBookConnection: MockAggregatedOrderBookConnection,
 };

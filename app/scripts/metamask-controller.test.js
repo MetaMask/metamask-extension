@@ -14,9 +14,6 @@ import {
   RequestSourceFlow,
 } from '@metamask/phishing-controller';
 import {
-  BtcAccountType,
-  BtcMethod,
-  BtcScope,
   EthAccountType,
   SolAccountType,
   TrxAccountType,
@@ -26,10 +23,7 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import {
-  RatesController,
-  TokenListController,
-} from '@metamask/assets-controllers';
+import { TokenListController } from '@metamask/assets-controllers';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import {
   Caip25CaveatType,
@@ -80,22 +74,6 @@ import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { trackEvent } from './controllers/analytics';
 import MetaMaskController from './metamask-controller';
 
-// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// and provide the pure flag-evaluation logic without the IN_TEST bypass
-// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
-// so using jest.requireActual here would make the function always return true,
-// breaking tests that depend on the disabled-flag path).
-jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual(
-    '../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(
-    (featureFlag, featureVersion) =>
-      Boolean(featureFlag?.enabled) &&
-      featureFlag?.featureVersion === featureVersion,
-  ),
-}));
-
 jest.mock('./controllers/analytics', () => ({
   ...jest.requireActual('./controllers/analytics'),
   trackEvent: jest.fn(),
@@ -106,6 +84,7 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
     messengerClient: {
       state: {},
       name: 'PerpsController',
+      stopMarketDataPreload: jest.fn(),
     },
     api: {
       perpsDisconnect: jest.fn().mockResolvedValue(undefined),
@@ -115,6 +94,7 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
 }));
 
 jest.mock('./messenger-client-init/ramps-controller-init', () => ({
+  ...jest.requireActual('./messenger-client-init/ramps-controller-init'),
   RampsControllerInit: jest.fn().mockImplementation(() => ({
     messengerClient: {
       state: {},
@@ -300,8 +280,29 @@ jest.mock('./lib/rpc-method-middleware', () => ({
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
+  getPerformanceTimestamp: jest.fn(() => 1_000),
   trace: jest.fn(),
   endTrace: jest.fn(),
+}));
+
+// Records the options the controller wires the bridge with, so the callbacks it
+// passes can be exercised without standing up the Hyperliquid SDK.
+const perpsStreamBridgeOptions = [];
+const mockPerpsStreamCanEmit = jest.fn().mockReturnValue(true);
+jest.mock('./controllers/perps/perps-stream-bridge', () => ({
+  PerpsStreamBridge: class {
+    static invalidateController = jest.fn();
+
+    constructor(options) {
+      perpsStreamBridgeOptions.push(options);
+    }
+
+    bridgeApi = () => ({});
+
+    canEmit = (...args) => mockPerpsStreamCanEmit(...args);
+
+    dispose = jest.fn();
+  },
 }));
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
@@ -336,18 +337,6 @@ jest.mock('@metamask/core-backend', () => ({
     getCachedData: jest.fn().mockReturnValue({}),
   }),
 }));
-
-jest.mock('../../shared/lib/environment', () => {
-  const actualEnvironment = jest.requireActual('../../shared/lib/environment');
-  return {
-    ...actualEnvironment,
-    // Wrap in a jest.fn (defaulting to the real behavior) so individual tests
-    // can toggle the unified-assets build gate on/off.
-    getIsAssetsUnifiedStateIncludedInBuild: jest.fn(
-      actualEnvironment.getIsAssetsUnifiedStateIncludedInBuild,
-    ),
-  };
-});
 
 jest.mock('../../shared/lib/manifestFlags', () => ({
   getManifestFlags: jest.fn(() => ({})),
@@ -594,6 +583,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -618,7 +608,7 @@ describe('MetaMaskController', () => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
       jest
         .spyOn(environment, 'getIsPerpsIncludedInBuild')
-        .mockReturnValue(false);
+        .mockReturnValue(true);
 
       jest.spyOn(Messenger.prototype, 'subscribe');
       jest.spyOn(TokenListController.prototype, 'start');
@@ -642,6 +632,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         browser: browserPolyfillMock,
@@ -687,53 +678,10 @@ describe('MetaMaskController', () => {
       const watchAssetTokenAddress =
         '0x073Ec1fAd5cC742951e44Ae96680A7Ba13b8C668';
 
-      afterEach(() => {
-        // The file-level beforeEach rebuilds the controller (reading this build
-        // gate) before any describe-level beforeEach runs, so restore the
-        // default (enabled in tests) to avoid leaking an "off" value into the
-        // next test's controller construction.
-        jest
-          .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-          .mockReturnValue(true);
-      });
-
-      it('delegates ERC-20 to TokensController.watchAsset when the unified assets build flag is off', async () => {
-        jest
-          .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-          .mockReturnValue(false);
-
-        const watchAssetSpy = jest
-          .spyOn(metamaskController.tokensController, 'watchAsset')
-          .mockResolvedValue(undefined);
-
-        const asset = {
-          address: watchAssetTokenAddress,
-          symbol: 'TST',
-          decimals: 4,
-        };
-
-        await metamaskController.handleWatchAssetRequest({
-          asset,
-          type: ERC20,
-          origin: 'https://example.com',
-          networkClientId: watchAssetNetworkClientId,
-        });
-
-        expect(watchAssetSpy).toHaveBeenCalledWith({
-          asset,
-          type: ERC20,
-          networkClientId: watchAssetNetworkClientId,
-        });
-      });
-
-      describe('with the unified assets build flag on', () => {
+      describe('ERC-20 via AssetsController', () => {
         let addRequestSpy;
 
         beforeEach(() => {
-          jest
-            .mocked(environment.getIsAssetsUnifiedStateIncludedInBuild)
-            .mockReturnValue(true);
-
           jest
             .spyOn(metamaskController.accountsController, 'getSelectedAccount')
             .mockReturnValue({
@@ -971,6 +919,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -1011,6 +960,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -1042,6 +992,35 @@ describe('MetaMaskController', () => {
       });
     });
 
+    it('disconnects active Perps when Basic Functionality is disabled', async () => {
+      jest
+        .spyOn(environment, 'getIsPerpsIncludedInBuild')
+        .mockReturnValue(true);
+      jest
+        .spyOn(metamaskController.messengerClientApi, 'perpsGetConnectionState')
+        .mockReturnValue('connected');
+      const disconnect = jest.spyOn(
+        metamaskController.messengerClientApi,
+        'perpsDisconnect',
+      );
+      const publishPreferences = (useExternalServices) =>
+        metamaskController.controllerMessenger.publish(
+          'PreferencesController:stateChange',
+          {
+            ...metamaskController.preferencesController.state,
+            useExternalServices,
+          },
+          getMockPatches(),
+        );
+      publishPreferences(true);
+      expect(disconnect).not.toHaveBeenCalled();
+
+      publishPreferences(false);
+      await waitForAllPromises();
+
+      expect(disconnect).toHaveBeenCalledTimes(1);
+    });
+
     describe('_onLock', () => {
       it('disconnects an active perps websocket', async () => {
         jest
@@ -1049,7 +1028,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -1095,7 +1076,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -1327,24 +1310,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('#getBalance', () => {
-      it('should return the balance known by accountTrackerController', async () => {
-        const balance = '0x14ced5122ce0a000';
-
-        jest
-          .spyOn(metamaskController.accountTrackerController, 'state', 'get')
-          .mockReturnValue({
-            accountsByChainId: {
-              '0x1': {
-                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
-              },
-            },
-          });
-
-        const gotten = await metamaskController.getBalance(TEST_ADDRESS);
-
-        expect(balance).toStrictEqual(gotten);
-      });
-
       it('should ask the network for a balance when not known by accountTrackerController', async () => {
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
@@ -2405,11 +2370,10 @@ describe('MetaMaskController', () => {
             ...cloneDeep(firstTimeState),
             AnalyticsController: {
               analyticsId: 'MOCK_METRICS_ID',
-              optedIn: true,
               consentDecisionMade: true,
-            },
-            MetaMetricsController: {
-              dataCollectionForMarketing: true,
+              marketingConsentDecisionMade: true,
+              optedIn: true,
+              optedInToMarketing: true,
             },
           },
           initLangCode: 'en_US',
@@ -2421,6 +2385,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -2765,6 +2730,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -2997,6 +2963,67 @@ describe('MetaMaskController', () => {
         );
       });
 
+      describe('perps stream bridge wiring', () => {
+        const connectPerpsBridge = () => {
+          perpsStreamBridgeOptions.length = 0;
+          mockPerpsStreamCanEmit.mockReturnValue(true);
+          metamaskController.messengerClientsByName.PerpsController = {
+            state: {},
+            stopMarketDataPreload: jest.fn(),
+          };
+
+          const streamTest = createThroughStream((chunk, _, cb) => {
+            cb(chunk);
+          });
+          metamaskController.setupTrustedCommunication(streamTest, {});
+
+          return {
+            bridgeOptions: perpsStreamBridgeOptions[0],
+            streamTest,
+          };
+        };
+
+        it('resolves the selected address from the accounts controller', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+          jest
+            .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+            .mockReturnValue({ address: '0xabc' });
+
+          expect(bridgeOptions.getSelectedAddress()).toBe('0xabc');
+          streamTest.end();
+        });
+
+        it('withholds preload permission when Perps is not in the build', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+          jest
+            .spyOn(environment, 'getIsPerpsIncludedInBuild')
+            .mockReturnValue(false);
+
+          expect(bridgeOptions.isPreloadAllowed()).toBe(false);
+          streamTest.end();
+        });
+
+        it('asks the bridge whether it owns each stream channel', () => {
+          const { bridgeOptions, streamTest } = connectPerpsBridge();
+
+          // A channel the bridge disowns must be dropped before the write, so
+          // the guard has to run for every channel rather than once per stream.
+          mockPerpsStreamCanEmit.mockReturnValue(false);
+          expect(() =>
+            bridgeOptions.emit('prices', { coin: 'BTC' }, {}),
+          ).not.toThrow();
+
+          mockPerpsStreamCanEmit.mockReturnValue(true);
+          bridgeOptions.emit('markets', { coin: 'ETH' }, {});
+
+          expect(mockPerpsStreamCanEmit.mock.calls).toStrictEqual([
+            ['prices'],
+            ['markets'],
+          ]);
+          streamTest.end();
+        });
+      });
+
       const createTestStream = () => {
         const {
           promise: onFinishedCallbackPromise,
@@ -3165,7 +3192,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3222,7 +3251,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3279,7 +3310,9 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
         const perpsDisconnect = jest.fn().mockResolvedValue(undefined);
 
-        metamaskController.messengerClientsByName.PerpsController = {};
+        metamaskController.messengerClientsByName.PerpsController = {
+          stopMarketDataPreload: jest.fn(),
+        };
         jest
           .spyOn(metamaskController.messengerClientApi, 'perpsDisconnect')
           .mockImplementation(perpsDisconnect);
@@ -3412,193 +3445,6 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('MultichainRatesController start/stop', () => {
-      const mockEvmAccount = createMockInternalAccount();
-      const mockNonEvmAccount = {
-        ...mockEvmAccount,
-        scopes: [BtcScope.Mainnet],
-        id: '21690786-6abd-45d8-a9f0-9ff1d8ca76a1',
-        type: BtcAccountType.P2wpkh,
-        methods: [BtcMethod.SendBitcoin],
-        address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
-      };
-      const mockCurrency = 'CAD';
-
-      beforeEach(() => {
-        jest.spyOn(metamaskController.multichainRatesController, 'start');
-        jest.spyOn(metamaskController.multichainRatesController, 'stop');
-      });
-
-      afterEach(() => {
-        jest.clearAllMocks();
-      });
-
-      describe('client is open', () => {
-        beforeEach(() => {
-          jest.replaceProperty(
-            metamaskController,
-            'activeControllerConnections',
-            1,
-          );
-        });
-
-        it('starts MultichainRatesController if selected account is changed to non-EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).toHaveBeenCalledTimes(1);
-          expect(
-            metamaskController.multichainRatesController.stop,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('client is closed', () => {
-        beforeEach(() => {
-          jest.replaceProperty(
-            metamaskController,
-            'activeControllerConnections',
-            0,
-          );
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to non-EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockNonEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-
-        it('stops MultichainRatesController if selected account is changed to EVM', async () => {
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.stop,
-          ).toHaveBeenCalledTimes(1);
-        });
-
-        it('does not start MultichainRatesController if selected account is changed to EVM', async () => {
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-
-          metamaskController.controllerMessenger.publish(
-            'AccountsController:selectedAccountChange',
-            mockEvmAccount,
-          );
-
-          expect(
-            metamaskController.multichainRatesController.start,
-          ).not.toHaveBeenCalled();
-        });
-      });
-
-      it('calls setFiatCurrency when the `currentCurrency` has changed', async () => {
-        jest.spyOn(RatesController.prototype, 'setFiatCurrency');
-        const localMetamaskController = new MetaMaskController({
-          showUserConfirmation: noop,
-          encryptor: mockEncryptor,
-          initState: {
-            ...cloneDeep(firstTimeState),
-            AccountsController: {
-              internalAccounts: {
-                accounts: {
-                  [mockNonEvmAccount.id]: mockNonEvmAccount,
-                  [mockEvmAccount.id]: mockEvmAccount,
-                },
-                selectedAccount: mockNonEvmAccount.id,
-              },
-            },
-          },
-          initLangCode: 'en_US',
-          platform: {
-            showTransactionNotification: () => undefined,
-            getVersion: () => 'foo',
-          },
-          browser: browserPolyfillMock,
-          getRequestAccountTabIds: () => ({}),
-          getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: {
-            markAsAutomaticallyClosed: jest.fn(),
-          },
-          infuraProjectId: 'foo',
-          isFirstMetaMaskControllerSetup: true,
-          cronjobControllerStorageManager:
-            createMockCronjobControllerStorageManager(),
-          controllerMessenger: new Messenger({
-            namespace: MOCK_ANY_NAMESPACE,
-          }),
-        });
-
-        metamaskController.controllerMessenger.publish(
-          'CurrencyRateController:stateChange',
-          { currentCurrency: mockCurrency },
-          getMockPatches(),
-        );
-
-        expect(
-          localMetamaskController.multichainRatesController.setFiatCurrency,
-        ).toHaveBeenCalledWith(mockCurrency);
-      });
-    });
-
     describe('RemoteFeatureFlagController', () => {
       let localMetamaskController;
 
@@ -3621,6 +3467,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3759,7 +3606,10 @@ describe('MetaMaskController', () => {
           browser: browserPolyfillMock,
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
-          notificationManager: { markAsAutomaticallyClosed: jest.fn() },
+          notificationManager: {
+            closePopup: jest.fn(),
+            markAsAutomaticallyClosed: jest.fn(),
+          },
           infuraProjectId: 'foo',
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
@@ -3806,6 +3656,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3873,6 +3724,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3942,6 +3794,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -3995,6 +3848,7 @@ describe('MetaMaskController', () => {
           getRequestAccountTabIds: () => ({}),
           getOpenMetamaskTabsIds: () => ({}),
           notificationManager: {
+            closePopup: jest.fn(),
             markAsAutomaticallyClosed: jest.fn(),
           },
           infuraProjectId: 'foo',
@@ -4520,6 +4374,7 @@ describe('MetaMaskController', () => {
       getRequestAccountTabIds: () => ({}),
       getOpenMetamaskTabsIds: () => ({}),
       notificationManager: {
+        closePopup: jest.fn(),
         markAsAutomaticallyClosed: jest.fn(),
       },
       infuraProjectId: 'foo',
@@ -4593,6 +4448,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4628,6 +4484,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4670,6 +4527,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4858,6 +4716,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -4989,6 +4848,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -5126,6 +4986,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
@@ -5286,6 +5147,7 @@ describe('MetaMaskController', () => {
         getRequestAccountTabIds: () => ({}),
         getOpenMetamaskTabsIds: () => ({}),
         notificationManager: {
+          closePopup: jest.fn(),
           markAsAutomaticallyClosed: jest.fn(),
         },
         infuraProjectId: 'foo',
