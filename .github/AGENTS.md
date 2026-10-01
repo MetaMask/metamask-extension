@@ -197,8 +197,8 @@ actual work starts. A check that takes 2 seconds to run ends up taking 3.5
 minutes as a standalone workflow.
 
 **When reviewing a PR** that adds a new workflow file, check whether it's
-just a single short check. If so, suggest folding it into
-[`repository-health-checks.yml`](.github/workflows/repository-health-checks.yml) instead.
+just a single short check. If so, suggest folding it into the
+`repository-health-checks` job in [`main.yml`](.github/workflows/main.yml) instead.
 
 **When authoring CI changes**, prefer adding steps to existing jobs over
 creating new workflow files.
@@ -206,11 +206,11 @@ creating new workflow files.
 **How to consolidate:**
 
 1. Identify the script or command the standalone workflow runs
-2. Add it as a new step in [`repository-health-checks.yml`](.github/workflows/repository-health-checks.yml) (with
-   `if: ${{ !cancelled() }}` so it runs even if earlier steps fail)
+2. Add it as a new step in the `repository-health-checks` job in
+   [`main.yml`](.github/workflows/main.yml) (with `if: ${{ !cancelled() }}` so it
+   runs even if earlier steps fail)
 3. If the script needs extra permissions (e.g., `issues: write`), add
-   them to the `permissions` block where `main.yml` calls the reusable
-   workflow
+   them to that job's `permissions` block
 4. Delete the standalone workflow file
 5. Update CODEOWNERS if needed
 
