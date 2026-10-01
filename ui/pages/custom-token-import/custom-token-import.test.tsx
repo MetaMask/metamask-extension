@@ -21,6 +21,18 @@ import {
   mergeCustomTokenMetadataForImport,
 } from './custom-token-import';
 
+/**
+ * This suite seeds AssetsController fields (`customAssets`, `assetsInfo`,
+ * `assetPreferences`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy TokensController slices.
+ */
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 const METRICS_PROPERTIES = {
   addedToken: 'added_token',
   assetType: 'asset_type',

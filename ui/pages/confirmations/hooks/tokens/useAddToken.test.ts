@@ -6,6 +6,21 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import * as actions from '../../../../store/actions';
 import { useAddToken } from './useAddToken';
 
+/**
+ * This suite seeds AssetsController fields (`customAssets`, `assetsInfo`,
+ * `assetsPrice`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy TokensController slices.
+ */
+jest.mock(
+  '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 jest.mock('../../../../store/actions', () => ({
   addToken: jest.fn(),
   findNetworkClientIdByChainId: jest.fn(),
