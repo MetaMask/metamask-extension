@@ -125,7 +125,7 @@ jobs:
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v2-on-v13.47.1.patch"
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v3-on-v13.47.1.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
@@ -167,7 +167,14 @@ jobs:
         working-directory: ${{ steps.dir.outputs.dir }}
         run: |
           yarn webpack:tsc
-          yarn webpack:lavamoat:build:mv2
+          # The build script exits 0 even when webpack reports errors, so
+          # capture the output and fail explicitly on any compilation error.
+          yarn webpack:lavamoat:build:mv2 2>&1 | tee build.log
+          if grep -qE "compiled with [0-9]+ errors?|ERROR in" build.log; then
+            echo "::error::webpack reported compilation errors"
+            grep -E "ERROR in|Can't resolve|compiled with" build.log | head -20
+            exit 1
+          fi
 
       - name: Record result
         id: result
