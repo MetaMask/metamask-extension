@@ -328,7 +328,7 @@ describe('Transaction Controller Hooks', () => {
       });
     });
 
-    it('records get_fees_error submission via metrics fragment on STX hook failure', async () => {
+    it('records stx_get_fees_error submission via metrics fragment on STX hook failure', async () => {
       jest
         .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
         .mockReturnValue({
@@ -363,7 +363,7 @@ describe('Transaction Controller Hooks', () => {
 
       expect(upsertFragmentMock).toHaveBeenCalledWith(mockTransactionMeta.id, {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        properties: { get_fees_error: 'BACKEND_CALL_FAILED' },
+        properties: { stx_get_fees_error: 'BACKEND_CALL_FAILED' },
       });
     });
 
@@ -443,7 +443,7 @@ describe('Transaction Controller Hooks', () => {
       expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
     });
 
-    it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on get_fees_error path', async () => {
+    it('returns transaction hash even if upsertTransactionUIMetricsFragment throws on stx_get_fees_error path', async () => {
       jest
         .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
         .mockReturnValue({
