@@ -7,6 +7,10 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   ModalContent,
   Modal,
   ModalOverlay,
@@ -27,7 +31,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
@@ -52,7 +55,7 @@ import {
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
-import { Box, Icon, IconName, IconSize, Label } from '../../component-library';
+import { Box, Label } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
@@ -313,8 +316,8 @@ export const ImportNftsModal = ({ onClose }) => {
                     <Icon
                       name={IconName.Info}
                       size={IconSize.Sm}
-                      marginLeft={1}
-                      color={IconColor.iconAlternative}
+                      className="ml-1"
+                      color={IconColor.IconAlternative}
                     />
                   </Tooltip>
                 </Box>
@@ -354,8 +357,8 @@ export const ImportNftsModal = ({ onClose }) => {
                     <Icon
                       name={IconName.Info}
                       size={IconSize.Sm}
-                      marginLeft={1}
-                      color={IconColor.iconAlternative}
+                      className="ml-1"
+                      color={IconColor.IconAlternative}
                     />
                   </Tooltip>
                 </Box>
