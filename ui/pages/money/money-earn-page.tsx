@@ -19,10 +19,10 @@ import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
 import {
-  MoneyButtonIntent,
-  MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyPotentialEarningsSummary } from './components/money-potential-earnings-summary';
 import { MoneyPotentialEarningsTokenRow } from './components/money-potential-earnings-token-row';
@@ -42,12 +42,12 @@ export function MoneyEarnPage() {
     () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
-  const { handleAddToken, initiateDeposit, isDepositLoading } =
-    useMoneyAddDepositToken({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
-    });
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
-    screenName: MoneyScreenName.MoneyEarnOnCrypto,
+  const { handleAddToken, isDepositLoading } = useMoneyAddDepositToken({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
+    tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+  });
+  const { trackScreenViewed, trackTooltipClicked } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
   });
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -65,15 +65,23 @@ export function MoneyEarnPage() {
   }, [navigate]);
 
   const handleConvert = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.PotentialEarningsSectionFooter,
+    const [defaultToken] = eligibleTokens;
+    if (!defaultToken) {
+      return;
+    }
+    handleAddToken(defaultToken, 0, eligibleTokens.length, {
+      componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
-      redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [eligibleTokens, handleAddToken]);
+
+  const handleProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsViewHeader,
+    });
+  }, [trackTooltipClicked]);
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -110,6 +118,7 @@ export function MoneyEarnPage() {
             apyPercent={apyPercent}
             privacyMode={privacyMode}
             headingVariant={TextVariant.HeadingLg}
+            onProjectionTooltipOpen={handleProjectionTooltipOpen}
           />
 
           {eligibleTokens.map((token, index) => (
@@ -131,8 +140,9 @@ export function MoneyEarnPage() {
           <Button
             size={ButtonSize.Lg}
             isLoading={isDepositLoading}
+            isDisabled={eligibleTokens.length === 0}
             onClick={handleConvert}
-            className="w-full rounded-lg"
+            className="w-full"
             data-testid="money-earn-convert-cta"
           >
             {t('moneyConvertYourCrypto')}

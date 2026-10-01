@@ -8,9 +8,11 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useDisplayName } from '../../../../../hooks/useDisplayName';
 import { setAccountOverride } from '../../../../../store/controller-actions/transaction-pay-controller';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
+import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { FromAccountRow } from './from-account-row';
 
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/pay/useIsPayHardwareBlocked');
 jest.mock('../../../../../hooks/useDisplayName');
 jest.mock(
   '../../../../../store/controller-actions/transaction-pay-controller',
@@ -28,15 +30,20 @@ jest.mock('../../account-select-modal', () => ({
     onSelect,
     onClose,
     title,
+    excludeHardwareAccounts,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
     onClose: () => void;
     title?: string;
+    excludeHardwareAccounts?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
       <span data-testid="modal-title">{title}</span>
+      <span data-testid="exclude-hardware-accounts">
+        {String(excludeHardwareAccounts)}
+      </span>
       <button
         data-testid="select-other"
         onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
@@ -116,9 +123,12 @@ describe('FromAccountRow', () => {
   const replaceAccountInNestedTransactionsMock = jest.mocked(
     replaceAccountInNestedTransactions,
   );
+  const useIsPayHardwareBlockedMock = jest.mocked(useIsPayHardwareBlocked);
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useIsPayHardwareBlockedMock.mockReturnValue(false);
 
     useConfirmContextMock.mockReturnValue({
       currentConfirmation: {
@@ -375,6 +385,30 @@ describe('FromAccountRow', () => {
 
     expect(replaceAccountInNestedTransactionsMock).not.toHaveBeenCalled();
     expect(setAccountOverrideMock).not.toHaveBeenCalled();
+  });
+
+  it('excludes hardware accounts from the modal when the flow blocks them', () => {
+    useIsPayHardwareBlockedMock.mockReturnValue(true);
+
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'true',
+    );
+  });
+
+  it('allows hardware accounts in the modal when the flow permits them', () => {
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    fireEvent.click(screen.getByTestId('from-account-pill'));
+
+    expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
+      'false',
+    );
   });
 
   it('renders nothing when there is no from address', () => {

@@ -25,9 +25,7 @@ export function trackSplitStateWrite(event: SplitStateWriteEvent): void {
     'state.write.write_duration_ms': event.writeDurationMs,
   };
 
-  for (const [controllerKey, bytes] of Object.entries(
-    event.bytesByController,
-  )) {
+  for (const [controllerKey, bytes] of event.bytesByController) {
     data[`state.write.bytes.${controllerKey}`] = bytes;
   }
 

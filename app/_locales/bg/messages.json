@@ -412,9 +412,6 @@
     "message": "Частен ключ",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Предупреждение: Никога не разкривайте този ключ. Всеки с достъп до вашите лични ключове може да открадне всички активи, съхранявани във вашия акаунт."
-  },
   "privateNetwork": {
     "message": "Частна мрежа"
   },

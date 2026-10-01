@@ -261,9 +261,6 @@
     "message": "தனிப்பட்ட விசை",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "எச்சரிக்கை: இந்த விசையை எப்போதும் வெளியிட வேண்டாம். உங்கள் தனிப்பட்ட விசைகளைக் கொண்ட எவரும் உங்கள் கணக்கில் உள்ள எந்த சொத்துக்களையும் திருடலாம்."
-  },
   "privateNetwork": {
     "message": "தனியார் நெட்வொர்க்"
   },

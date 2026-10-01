@@ -1,9 +1,5 @@
 import { getErrorMessage } from '@metamask/utils';
 import type {
-  AnalyticsControllerGetStateAction,
-  AnalyticsControllerState,
-} from '@metamask/analytics-controller';
-import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -27,7 +23,7 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-import { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
+import type { MetaMetricsControllerMethodActions } from './metametrics-controller-method-action-types';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsController';
@@ -52,12 +48,6 @@ const exceptionsToFilter: Record<string, boolean> = {
  * the `anonymous` flag.
  */
 const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
-  dataCollectionForMarketing: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: false,
-    usedInUi: true,
-  },
   marketingCampaignCookieId: {
     includeInStateLogs: true,
     persist: true,
@@ -69,11 +59,9 @@ const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
 /**
  * The state that MetaMetricsController stores.
  *
- * @property dataCollectionForMarketing - Flag to determine if data collection for marketing is enabled.
  * @property marketingCampaignCookieId - The marketing campaign cookie id.
  */
 export type MetaMetricsControllerState = {
-  dataCollectionForMarketing: boolean | null;
   marketingCampaignCookieId: string | null;
 };
 
@@ -110,8 +98,7 @@ export type AllowedActions =
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
-  | MultichainNetworkControllerGetStateAction
-  | AnalyticsControllerGetStateAction;
+  | MultichainNetworkControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -142,14 +129,10 @@ export type MetaMetricsControllerOptions = {
  */
 export const getDefaultMetaMetricsControllerState =
   (): MetaMetricsControllerState => ({
-    dataCollectionForMarketing: null,
     marketingCampaignCookieId: null,
   });
 
-const MESSENGER_EXPOSED_METHODS = [
-  'setDataCollectionForMarketing',
-  'setMarketingCampaignCookieId',
-] as const;
+const MESSENGER_EXPOSED_METHODS = ['setMarketingCampaignCookieId'] as const;
 
 export class MetaMetricsController extends BaseController<
   typeof controllerName,
@@ -161,10 +144,6 @@ export class MetaMetricsController extends BaseController<
   chainId: Hex;
 
   locale: string;
-
-  #analyticsGetState(): AnalyticsControllerState {
-    return this.messenger.call('AnalyticsController:getState');
-  }
 
   /**
    * @param options
@@ -242,20 +221,6 @@ export class MetaMetricsController extends BaseController<
       selectedNetworkClientId,
     );
     return chainId;
-  }
-
-  setDataCollectionForMarketing(dataCollectionForMarketing: boolean): string {
-    const { analyticsId } = this.#analyticsGetState();
-
-    this.update((state) => {
-      state.dataCollectionForMarketing = dataCollectionForMarketing;
-    });
-
-    if (!dataCollectionForMarketing && this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
-    }
-
-    return analyticsId;
   }
 
   setMarketingCampaignCookieId(marketingCampaignCookieId: string | null): void {

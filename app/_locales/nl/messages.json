@@ -176,9 +176,6 @@
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
-  },
   "privateNetwork": {
     "message": "Prive netwerk"
   },

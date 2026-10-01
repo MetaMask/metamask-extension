@@ -8,8 +8,10 @@ import { getManifestFlags } from '../manifestFlags';
 import {
   BROWSER_SHUTTING_DOWN_ERROR,
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
+  INACCESSIBLE_DATABASE_ERROR,
   MISSING_VAULT_ERROR,
 } from '../../constants/errors';
+import { StateCorruptionErrorType } from '../../constants/critical-error';
 import {
   PersistenceManager,
   PERSISTENCE_MANAGER_OPERATION_SAFENER_DEBOUNCE_MS,
@@ -616,9 +618,24 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get({ validateVault: true })).rejects.toThrow(
-        MISSING_VAULT_ERROR,
-      );
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: MISSING_VAULT_ERROR,
+        corruptionType: StateCorruptionErrorType.MissingVaultInDatabase,
+      });
+    });
+
+    it('does throw when validating state fails but has a backup', async () => {
+      mockStoreGet.mockRejectedValueOnce(new Error('storage failed'));
+      jest.spyOn(manager, 'getBackup').mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toMatchObject({
+        message: INACCESSIBLE_DATABASE_ERROR,
+        corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+      });
     });
 
     describe('when the browser is shutting down', () => {
@@ -686,9 +703,12 @@ describe('PersistenceManager', () => {
           KeyringController: { vault: 'vault' },
         });
 
-        await expect(manager.get({ validateVault: true })).rejects.toThrow(
-          MISSING_VAULT_ERROR,
-        );
+        await expect(
+          manager.get({ validateVault: true }),
+        ).rejects.toMatchObject({
+          message: INACCESSIBLE_DATABASE_ERROR,
+          corruptionType: StateCorruptionErrorType.InaccessibleDatabase,
+        });
       });
     });
   });
@@ -828,33 +848,24 @@ describe('PersistenceManager', () => {
 
       expect(listener).toHaveBeenCalledTimes(1);
       const [event] = listener.mock.calls[0];
+      const fooControllerLength = JSON.stringify({
+        privateValue: 'latest controller state value',
+      }).length;
+      const barControllerLength = JSON.stringify({ enabled: true }).length;
       expect(event).toStrictEqual({
-        bytesByController: {
-          BarController: new TextEncoder().encode(
-            JSON.stringify({ enabled: true }),
-          ).byteLength,
-          FooController: new TextEncoder().encode(
-            JSON.stringify({
-              privateValue: 'latest controller state value',
-            }),
-          ).byteLength,
-        },
+        bytesByController: new Map([
+          ['FooController', fooControllerLength],
+          ['BarController', barControllerLength],
+        ]),
         coalescedUpdates: 3,
-        controllerKeys: ['BarController', 'FooController'],
+        controllerKeys: ['FooController', 'BarController'],
         idleStatus: 'idle',
         measurementDurationMs: expect.any(Number),
         sampleRate: 1,
-        totalBytes: new TextEncoder().encode(
-          JSON.stringify({
-            BarController: { enabled: true },
-            FooController: {
-              privateValue: 'latest controller state value',
-            },
-          }),
-        ).byteLength,
+        totalBytes: barControllerLength + fooControllerLength,
         writeDurationMs: expect.any(Number),
       });
-      expect(Object.keys(event.bytesByController)).toStrictEqual(
+      expect([...event.bytesByController.keys()]).toStrictEqual(
         event.controllerKeys,
       );
       expect(JSON.stringify(event)).not.toContain(

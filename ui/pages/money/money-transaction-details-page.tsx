@@ -100,7 +100,7 @@ export function MoneyTransactionDetailsPage() {
   );
   const pageRef = useRef<HTMLDivElement>(null);
   // useCopyToClipboard analysis: Copies a public transaction hash
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
@@ -390,7 +390,10 @@ export function MoneyTransactionDetailsPage() {
                   {showSponsoredNetworkFeeInTooltip ? (
                     <>
                       <br />
-                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                      {`${t('networkFee')}: ${formatCurrencyWithMinThreshold(
+                        0,
+                        MONEY_ACCOUNT_FIAT_CURRENCY,
+                      )}`}
                     </>
                   ) : null}
                 </Text>

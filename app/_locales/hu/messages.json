@@ -409,9 +409,6 @@
     "message": "Privát kulcs",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Figyelem! Soha ne adja át másnak ezt a kulcsot. A privát kulcs birtokában ellophatják a számláján lévő pénzeszközöket."
-  },
   "privateNetwork": {
     "message": "Magánhálózat"
   },

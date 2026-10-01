@@ -35,7 +35,7 @@ import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
   findProviderQuote,
-  getProviderTag,
+  getProviderTags,
   type ProviderListItem,
   type ProviderTag,
 } from './utils/build-provider-list-items';
@@ -51,7 +51,7 @@ type ProviderListRow = {
   provider: Provider;
   isSelected: boolean;
   isDisabled: boolean;
-  tag: ProviderTag | null;
+  tags: ProviderTag[];
   showQuote: boolean;
   quote: ReturnType<typeof findProviderQuote>;
   quoteLoading: boolean;
@@ -106,17 +106,17 @@ function buildProviderListRows({
       provider.id,
       selectedPaymentMethodId,
     );
-    const tag =
+    const tags =
       showQuotes && !quotesLoading
-        ? getProviderTag(provider.id, quotes, ordersProviders, t)
-        : null;
+        ? getProviderTags(provider.id, matchedQuote, ordersProviders, t)
+        : [];
 
     return {
       key: provider.id,
       provider,
       isSelected: selectedProviderId === provider.id,
       isDisabled: isSelecting,
-      tag,
+      tags,
       showQuote: showQuotes,
       quote: matchedQuote,
       quoteLoading: quotesLoading,
@@ -349,7 +349,7 @@ export function RampsProviderSelectionModal({
                 provider={row.provider}
                 isSelected={row.isSelected}
                 isDisabled={row.isDisabled}
-                tag={row.tag}
+                tags={row.tags}
                 showQuote={row.showQuote}
                 quote={row.quote}
                 quoteLoading={row.quoteLoading}
@@ -381,6 +381,7 @@ export function RampsProviderSelectionModal({
           'data-testid': testId,
           paddingLeft: 0,
           paddingRight: 0,
+          className: 'rounded-[32px]',
         }}
       >
         <ModalHeader
