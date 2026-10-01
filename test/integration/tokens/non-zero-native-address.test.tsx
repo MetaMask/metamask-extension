@@ -78,6 +78,9 @@ function buildState(network: NonZeroNativeNetwork) {
   return {
     ...mockMetaMaskState,
     consentDecisionMade: true,
+    // Prevent the BIP-44 intro modal from mounting; its Lottie XHR to a
+    // localhost asset is what logged AggregateError in jsdom.
+    hasShownMultichainAccountsIntroModal: true,
     selectedNetworkClientId: network.clientId,
     enabledNetworkMap: {
       eip155: {
