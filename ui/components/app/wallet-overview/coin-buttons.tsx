@@ -369,7 +369,7 @@ const CoinButtons = ({
     return {};
   };
 
-  const { goToBuy, opensBuyInPortfolioTab } = useRampsNavigation();
+  const { goToBuy } = useRampsNavigation();
 
   const { openBridgeExperience } = useBridging();
 
@@ -447,16 +447,14 @@ const CoinButtons = ({
   }, [chainId, account, setCorrectChain, trackingLocation]);
 
   const handleBuyAndSellOnClick = useCallback(async () => {
-    const opened = await goToBuy({
+    const destination = await goToBuy({
       assetId: buyAssetId,
       chainId: getChainId(),
     });
-    if (!opened) {
+    if (!destination) {
       return;
     }
-    // Only the Portfolio paths open a browser tab; when goToBuy navigates
-    // in-app the "tab opened" toast would be misleading.
-    if (opensBuyInPortfolioTab) {
+    if (destination === 'portfolio') {
       showBuyTabOpenedToast(
         t('buyTabOpenedToastText'),
         t('buyTabOpenedToastDescription'),
@@ -481,7 +479,7 @@ const CoinButtons = ({
         })
         .build(),
     );
-  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy, opensBuyInPortfolioTab]);
+  }, [chainId, defaultSwapsToken, buyAssetId, goToBuy]);
 
   const handleSwapOnClick = useCallback(async () => {
     // Determine the chainId to use in the Swap experience using the url

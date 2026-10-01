@@ -106,7 +106,11 @@ async function runHook(state: Record<string, unknown> = {}) {
 
 async function runLegacyHook({
   existingTokens,
-}: { existingTokens?: { address: string }[] } = {}) {
+  assetsPrice,
+}: {
+  existingTokens?: { address: string }[];
+  assetsPrice?: Record<string, unknown>;
+} = {}) {
   return runHook({
     metamask: {
       allTokens: {
@@ -114,6 +118,7 @@ async function runLegacyHook({
           [ACCOUNT_ADDRESS_MOCK]: existingTokens || [],
         },
       },
+      assetsPrice: assetsPrice ?? {},
     },
   });
 }
@@ -158,13 +163,17 @@ describe('useAddToken', () => {
     );
   });
 
-  it('does not add token if already present', async () => {
+  it('does not add token if already present with prices', async () => {
     await runLegacyHook({
       existingTokens: [
         {
           address: TOKEN_ADDRESS_MOCK,
         },
       ],
+      assetsPrice: {
+        [ASSET_ID_MOCK]: FUNGIBLE_PRICE_MOCK,
+        [NATIVE_ASSET_ID_MOCK]: NATIVE_FUNGIBLE_PRICE_MOCK,
+      },
     });
 
     expect(mockAddToken).not.toHaveBeenCalled();

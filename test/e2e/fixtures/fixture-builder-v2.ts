@@ -5,6 +5,7 @@ import type { AccountsControllerState } from '@metamask/accounts-controller';
 import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
+import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -129,14 +130,10 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = {
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+type AnalyticsControllerFixturePatch = {
   analyticsId?: string | null;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   dataCollectionForMarketing?: boolean;
 };
 
@@ -298,6 +295,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
+    merge(this.fixture.data.BridgeStatusController, data);
+    return this;
+  }
+
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -308,7 +310,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+  withAnalyticsController(data: AnalyticsControllerFixturePatch): this {
     const {
       analyticsId,
       optedIn,
@@ -1631,19 +1633,6 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
-    });
-  }
-
-  /**
-   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
-   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
-   * those surfaces when `default-fixture.json` marks the wallet consolidated.
-   */
-  withBasicFunctionalityConsolidationDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        isBasicFunctionalityConsolidatedEnabled: false,
-      },
     });
   }
 

@@ -7,7 +7,6 @@ import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import TransactionsSettingsPage from '../../page-objects/pages/settings/transactions-settings';
 
 async function mockServerCalls(mockServer: Mockttp) {
   return [
@@ -20,27 +19,11 @@ async function mockServerCalls(mockServer: Mockttp) {
             event: 'Settings Updated',
             properties: {
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              blockaid_alerts_enabled: true,
-              category: 'Settings',
-            },
-          },
-        ],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [
-          {
-            type: 'track',
-            event: 'Settings Updated',
-            properties: {
+              settings_type: 'basic_functionality',
               // eslint-disable-next-line @typescript-eslint/naming-convention
-              blockaid_alerts_enabled: false,
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
               category: 'Settings',
             },
           },
@@ -55,7 +38,7 @@ async function mockServerCalls(mockServer: Mockttp) {
 }
 
 describe('PPOM Blockaid Alert - Metrics', function () {
-  it('Successfully track button toggle on/off', async function () {
+  it('tracks Settings Updated when basic functionality is turned off', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -70,12 +53,11 @@ describe('PPOM Blockaid Alert - Metrics', function () {
             useLocalhostHostname: true,
             chainIds: [1],
           })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
             consentDecisionMade: true,
             optedIn: true,
           })
-          .withBasicFunctionalityConsolidationDisabled()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockServerCalls,
@@ -88,71 +70,45 @@ describe('PPOM Blockaid Alert - Metrics', function () {
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToTransactionsSettings();
-
-        const transactionsSettingsPage = new TransactionsSettingsPage(driver);
-        await transactionsSettingsPage.waitForSecurityAlertsSection();
+        await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        // Default fixture has security alerts enabled; first click turns them off.
-        await privacySettings.toggleBlockaidAlerts();
+        await privacySettings.checkPageIsLoaded();
 
-        // wait for state to update
-        await driver.delay(1000);
-
-        // Second click turns security alerts back on.
-        await privacySettings.toggleBlockaidAlerts();
-
-        await driver.delay(1000);
+        await privacySettings.toggleBasicFunctionalityOff();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-
-        const toggleOnEvent = {
-          event: 'Settings Updated',
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled: true,
-            category: 'Settings',
-          },
-          userId: MOCK_ANALYTICS_ID,
-          type: 'track',
-        };
-        const matchToggleOnEvent = {
-          event: events[0].event,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled:
-              events[0].properties.blockaid_alerts_enabled,
-            category: events[0].properties.category,
-          },
-          userId: events[0].userId,
-          type: events[0].type,
-        };
 
         const toggleOffEvent = {
           event: 'Settings Updated',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled: false,
+            settings_type: 'basic_functionality',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: false,
             category: 'Settings',
           },
           userId: MOCK_ANALYTICS_ID,
           type: 'track',
         };
         const matchToggleOffEvent = {
-          event: events[1].event,
+          event: events[0].event,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled:
-              events[1].properties.blockaid_alerts_enabled,
-            category: events[1].properties.category,
+            settings_type: events[0].properties.settings_type,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_value: events[0].properties.old_value,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_value: events[0].properties.new_value,
+            category: events[0].properties.category,
           },
-          userId: events[1].userId,
-          type: events[1].type,
+          userId: events[0].userId,
+          type: events[0].type,
         };
 
-        assert.equal(events.length, 2);
-        assert.deepEqual(toggleOnEvent, matchToggleOnEvent);
+        assert.equal(events.length, 1);
         assert.deepEqual(toggleOffEvent, matchToggleOffEvent);
       },
     );
