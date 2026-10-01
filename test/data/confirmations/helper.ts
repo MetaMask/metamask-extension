@@ -23,6 +23,35 @@ type RootState = { metamask: Record<string, unknown> } & Record<
   unknown
 >;
 
+/** Selected EVM account UUID from `test/data/mock-state.json`. */
+export const MOCK_CONFIRMATIONS_ACCOUNT_ID =
+  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
+/**
+ * Convert a wei hex string or integer into the human-readable decimal amount
+ * string stored in unified `assetsBalance`.
+ * @param wei
+ * @param decimals
+ */
+export function weiToAssetAmount(wei: string | number, decimals = 18): string {
+  const value = typeof wei === 'string' ? BigInt(wei) : BigInt(wei);
+  if (value === 0n) {
+    return '0';
+  }
+  const padded = value.toString().padStart(decimals + 1, '0');
+  const whole = padded.slice(0, -decimals).replace(/^0+/u, '') || '0';
+  const frac = padded.slice(-decimals).replace(/0+$/u, '');
+  return frac ? `${whole}.${frac}` : whole;
+}
+
+/**
+ * CAIP-19 asset id for the native ETH-like asset on an EVM chain.
+ * @param hexChainId
+ */
+export function nativeEvmAssetId(hexChainId: string): string {
+  return `eip155:${Number.parseInt(hexChainId, 16)}/slip44:60`;
+}
+
 export const getMockTypedSignConfirmState = (
   args: RootState = { metamask: {} },
 ) => ({
