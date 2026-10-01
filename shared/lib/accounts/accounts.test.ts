@@ -22,12 +22,11 @@ function createAccount(keyringType: string): InternalAccount {
 }
 
 describe('isHardwareAccount', () => {
-  it.each(Object.values(HardwareKeyringType))(
-    'returns true for hardware keyring type %s',
-    (keyringType) => {
+  Object.values(HardwareKeyringType).forEach((keyringType) => {
+    it(`returns true for hardware keyring type ${keyringType}`, () => {
       expect(isHardwareAccount(createAccount(keyringType))).toBe(true);
-    },
-  );
+    });
+  });
 
   it('returns false for a software keyring type', () => {
     expect(isHardwareAccount(createAccount('HD Key Tree'))).toBe(false);
