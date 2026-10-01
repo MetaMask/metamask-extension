@@ -493,7 +493,6 @@
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
   "hasAccountTreeSyncingSyncedAtLeastOnce": true,
   "hasDismissedOpenSeaToBlockaidBanner": false,
-  "hiddenAccountList": [],
   "ignoredNfts": [],
   "ignoredTokens": [],
   "internalAccounts": {

@@ -131,7 +131,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
       'AccountsController:clearState',
-      'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
       'AccountTreeController:reinit',
