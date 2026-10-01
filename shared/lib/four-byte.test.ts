@@ -17,6 +17,23 @@ describe('Four Byte', () => {
       jest.spyOn(global, 'fetch').mockImplementation(fetchMock);
     });
 
+    function mockSourcify(
+      prefix: string,
+      signatures: {
+        name: string;
+        filtered: boolean;
+        hasVerifiedContract: boolean;
+      }[],
+    ) {
+      fetchMock.mockImplementation(async (url: string) => ({
+        ok: true,
+        json: async () =>
+          url.includes('sourcify')
+            ? { ok: true, result: { function: { [prefix]: signatures } } }
+            : FOUR_BYTE_RESPONSE,
+      }));
+    }
+
     it('returns signature with earliest creation date', async () => {
       fetchMock.mockResolvedValue({
         ok: true,
@@ -26,6 +43,68 @@ describe('Four Byte', () => {
       const result = await getMethodFrom4Byte(FOUR_BYTE_MOCK);
 
       expect(result).toStrictEqual('someOtherFunction(address,uint256)');
+    });
+
+    it('prefers the Sourcify signature database over 4byte.directory', async () => {
+      mockSourcify('0x11111111', [
+        { name: 'junk(uint256)', filtered: true, hasVerifiedContract: true },
+        {
+          name: 'unverified(address)',
+          filtered: false,
+          hasVerifiedContract: false,
+        },
+        {
+          name: 'verified(address,uint256)',
+          filtered: false,
+          hasVerifiedContract: true,
+        },
+      ]);
+
+      expect(await getMethodFrom4Byte('0x11111111')).toStrictEqual(
+        'verified(address,uint256)',
+      );
+    });
+
+    it('takes the first unfiltered signature when none has a verified contract', async () => {
+      mockSourcify('0x22222222', [
+        { name: 'junk(uint256)', filtered: true, hasVerifiedContract: true },
+        {
+          name: 'unverified(address)',
+          filtered: false,
+          hasVerifiedContract: false,
+        },
+      ]);
+
+      expect(await getMethodFrom4Byte('0x22222222')).toStrictEqual(
+        'unverified(address)',
+      );
+    });
+
+    it('queries both sources rather than waiting on Sourcify first', async () => {
+      mockSourcify('0x44444444', [
+        {
+          name: 'verified(address)',
+          filtered: false,
+          hasVerifiedContract: true,
+        },
+      ]);
+      fetchMock.mockClear();
+
+      await getMethodFrom4Byte('0x44444444');
+
+      const requested = fetchMock.mock.calls.map(([url]) => url as string);
+      expect(requested.some((url) => url.includes('sourcify'))).toBe(true);
+      expect(requested.some((url) => url.includes('4byte.directory'))).toBe(
+        true,
+      );
+    });
+
+    it('falls back to 4byte.directory when Sourcify has no match', async () => {
+      mockSourcify('0x33333333', []);
+
+      expect(await getMethodFrom4Byte('0x33333333')).toStrictEqual(
+        'someOtherFunction(address,uint256)',
+      );
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
