@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { Transaction } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import log from 'loglevel';
 import {
   KnownCaipNamespace,
   isCaipChainId,
@@ -109,9 +108,10 @@ export const useFreshTronAssets = (
       unsubscribe = off;
     };
 
-    subscribe().catch((error: unknown) => {
-      log.error('[useFreshTronAssets] subscription error', error);
-    });
+    // `subscribe` never rejects: the inner `.catch(() => undefined)` on
+    // `subscribeToMessengerEvent` swallows subscription failures, so like
+    // `fetchFreshAssets` this failure mode is silent.
+    subscribe().catch(() => undefined);
 
     return () => {
       hasUnsubscribed = true;
