@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { Skeleton } from '@metamask/design-system-react';
 import { useTheme } from '../../../../hooks/useTheme';
 import { isMovingAverage } from './advanced-chart-indicator-bar';
 import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
@@ -27,7 +28,7 @@ import type { OHLCVRealtimeBar } from './useOHLCVRealtime';
 const CHART_ORIGIN = 'http://localhost:8001';
 
 // If the chart hasn't emitted CHART_READY within this window, fall back to legacy.
-const LOAD_TIMEOUT_MS = 10_000;
+const LOAD_TIMEOUT_MS = 5_000;
 
 /** Imperative handle so the parent can send messages to the chart engine. */
 export type AdvancedChartIframeRef = {
@@ -313,8 +314,30 @@ const AdvancedChartIframe = forwardRef<
           height: `${height}px`,
           overflow: 'hidden',
           background: 'var(--color-background-default)',
+          position: 'relative',
         }}
       >
+        {/* Loading skeleton shown until chart is ready. Hides broken iframe state
+            (e.g., "localhost refused to connect") while waiting for CHART_READY
+            or timeout. */}
+        {!chartReady && (
+          <div
+            data-testid="advanced-chart-loading"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1,
+              background: 'var(--color-background-default)',
+            }}
+          >
+            <Skeleton
+              style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
+            />
+          </div>
+        )}
         <iframe
           ref={iframeRef}
           src={chartUrl}
