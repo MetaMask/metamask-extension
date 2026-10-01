@@ -2,17 +2,25 @@ import log from 'loglevel';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
-  FormTextField,
   HelpText,
   HelpTextSeverity,
   IconName,
+  Label,
+  Text,
   TextButton,
   TextButtonSize,
+  TextColor,
+  TextField,
   TextFieldSize,
-  TextVariant as DsTextVariant,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   type UpdateNetworkFields,
@@ -57,17 +65,6 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import { Box, Text } from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
@@ -492,20 +489,13 @@ export const NetworksForm = ({
 
   return (
     <Box
-      height={BlockSize.Full}
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       ref={scrollableRef}
-      className="networks-form__scrollable"
+      className="networks-form__scrollable h-full"
     >
-      <Box
-        width={BlockSize.Full}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={2}
-      >
+      <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
         {onAddFromChainlist && !existingNetwork ? (
           <Button
             variant={ButtonVariant.Secondary}
@@ -520,57 +510,51 @@ export const NetworksForm = ({
           </Button>
         ) : null}
 
-        <FormTextField
+        <Label htmlFor="networkName" className="mb-1">
+          {t('networkName')}
+        </Label>
+        <TextField
           id="networkName"
           size={TextFieldSize.Lg}
           placeholder={t('enterNetworkName')}
           data-testid="network-form-name-input"
           autoFocus
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            setName(e.target?.value);
+          className="w-full"
+          onChange={(event) => {
+            setName(event.target.value);
           }}
-          label={t('networkName')}
-          labelProps={{
-            variant: DsTextVariant.BodyMd,
-          }}
-          textFieldProps={{ className: 'rounded-lg' }}
           inputProps={
             {
               'data-testid': 'network-form-network-name',
-            } as React.InputHTMLAttributes<HTMLInputElement>
+            } as React.ComponentPropsWithoutRef<'input'>
           }
           value={name}
         />
-        {(name && warnings?.name?.msg) || suggestedName ? (
-          <Box marginTop={1}>
-            {name && warnings?.name?.msg ? (
-              <HelpText severity={HelpTextSeverity.Warning}>
-                {warnings.name.msg}
-              </HelpText>
-            ) : null}
-
-            {suggestedName ? (
-              <Text
-                as="span"
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
-                data-testid="network-form-name-suggestion"
+        {name && warnings?.name?.msg ? (
+          <HelpText severity={HelpTextSeverity.Warning}>
+            {warnings.name.msg}
+          </HelpText>
+        ) : null}
+        {suggestedName ? (
+          <Text
+            asChild
+            variant={TextVariant.BodySm}
+            color={TextColor.TextDefault}
+            data-testid="network-form-name-suggestion"
+          >
+            <span>
+              {t('suggestedTokenName')}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                onClick={() => {
+                  setName(suggestedName);
+                }}
+                className="px-1 align-baseline"
               >
-                {t('suggestedTokenName')}
-                <TextButton
-                  size={TextButtonSize.BodySm}
-                  onClick={() => {
-                    setName(suggestedName);
-                  }}
-                  className="px-1 align-baseline"
-                >
-                  {suggestedName}
-                </TextButton>
-              </Text>
-            ) : null}
-          </Box>
+                {suggestedName}
+              </TextButton>
+            </span>
+          </Text>
         ) : null}
         <DropdownEditor
           title={t('defaultRpcUrl')}
@@ -600,16 +584,12 @@ export const NetworksForm = ({
               // A custom (non Infura) endpoint never has a failover, so it just
               // renders the URL with no failover tag.
               <Text
-                as="span"
+                asChild
                 ellipsis
-                variant={TextVariant.bodyMd}
-                paddingTop={3}
-                paddingBottom={3}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
+                variant={TextVariant.BodyMd}
+                className="flex items-center gap-1 py-3"
               >
-                {stripProtocol(stripKeyFromInfuraUrl(item.url))}
+                <span>{stripProtocol(stripKeyFromInfuraUrl(item.url))}</span>
               </Text>
             );
           }}
@@ -639,54 +619,52 @@ export const NetworksForm = ({
         />
 
         {errors.rpcUrl?.msg && (
-          <Box>
-            <HelpText
-              severity={HelpTextSeverity.Danger}
-              data-testid="network-form-chain-id-error"
-            >
-              {errors.rpcUrl?.msg}
-            </HelpText>
-          </Box>
+          <HelpText
+            severity={HelpTextSeverity.Danger}
+            data-testid="network-form-chain-id-error"
+          >
+            {errors.rpcUrl?.msg}
+          </HelpText>
         )}
 
         {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
-          <FormTextField
-            id="failoverRpcUrl"
-            size={TextFieldSize.Lg}
-            className="pt-4"
-            label={t('failoverRpcUrl')}
-            labelProps={{
-              variant: DsTextVariant.BodyMd,
-            }}
-            textFieldProps={{ className: 'rounded-lg' }}
-            value={onlyKeepHost(defaultFailoverUrls[0])}
-            isDisabled
-          />
+          <div className="mt-4">
+            <Label htmlFor="failoverRpcUrl" className="mb-1">
+              {t('failoverRpcUrl')}
+            </Label>
+            <TextField
+              id="failoverRpcUrl"
+              size={TextFieldSize.Lg}
+              className="w-full"
+              value={onlyKeepHost(defaultFailoverUrls[0])}
+              isDisabled
+            />
+          </div>
         ) : null}
 
-        <FormTextField
-          id="chainId"
-          size={TextFieldSize.Lg}
-          placeholder={t('enterChainId')}
-          className="pt-4"
-          data-testid="network-form-chain-id-input"
-          onChange={(e) => {
-            setChainId(e.target?.value.trim());
-          }}
-          isError={Boolean(errors?.chainId)}
-          label={t('chainId')}
-          labelProps={{
-            variant: DsTextVariant.BodyMd,
-          }}
-          textFieldProps={{ className: 'rounded-lg' }}
-          inputProps={
-            {
-              'data-testid': 'network-form-chain-id',
-            } as React.InputHTMLAttributes<HTMLInputElement>
-          }
-          value={chainId}
-          isDisabled={Boolean(existingNetwork)}
-        />
+        <div className="mt-4">
+          <Label htmlFor="chainId" className="mb-1">
+            {t('chainId')}
+          </Label>
+          <TextField
+            id="chainId"
+            size={TextFieldSize.Lg}
+            placeholder={t('enterChainId')}
+            data-testid="network-form-chain-id-input"
+            className="w-full"
+            onChange={(event) => {
+              setChainId(event.target.value.trim());
+            }}
+            isError={Boolean(errors?.chainId)}
+            inputProps={
+              {
+                'data-testid': 'network-form-chain-id',
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            value={chainId}
+            isDisabled={Boolean(existingNetwork)}
+          />
+        </div>
 
         {errors.chainId?.msg ? (
           <HelpText
@@ -697,76 +675,73 @@ export const NetworksForm = ({
           </HelpText>
         ) : null}
         {errors.chainId?.key === 'existingChainId' ? (
-          <Box>
-            <HelpText
+          <HelpText
+            asChild
+            severity={HelpTextSeverity.Danger}
+            data-testid="network-form-chain-id-error"
+          >
+            <div>
+              {t('updateOrEditNetworkInformations')}{' '}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                onClick={() => {
+                  if (chainIdHex) {
+                    dispatch(
+                      setEditedNetwork({
+                        chainId: chainIdHex,
+                      }),
+                    );
+                    onEdit?.();
+                  }
+                }}
+              >
+                {t('editNetworkLink')}
+              </TextButton>
+            </div>
+          </HelpText>
+        ) : null}
+        <div className="mt-4">
+          <Label htmlFor="nativeCurrency" className="mb-1">
+            {t('currencySymbol')}
+          </Label>
+          <TextField
+            id="nativeCurrency"
+            size={TextFieldSize.Lg}
+            placeholder={t('enterSymbol')}
+            data-testid="network-form-ticker"
+            className="w-full"
+            onChange={(event) => {
+              setTicker(event.target.value);
+            }}
+            inputProps={
+              {
+                'data-testid': 'network-form-ticker-input',
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            value={ticker}
+          />
+          {suggestedTicker ? (
+            <Text
               asChild
-              severity={HelpTextSeverity.Danger}
-              data-testid="network-form-chain-id-error"
+              variant={TextVariant.BodySm}
+              color={TextColor.TextDefault}
+              data-testid="network-form-ticker-suggestion"
             >
-              <div>
-                {t('updateOrEditNetworkInformations')}{' '}
+              <span>
+                {t('suggestedCurrencySymbol')}
                 <TextButton
                   size={TextButtonSize.BodySm}
                   onClick={() => {
-                    if (chainIdHex) {
-                      dispatch(
-                        setEditedNetwork({
-                          chainId: chainIdHex,
-                        }),
-                      );
-                      onEdit?.();
-                    }
+                    setTicker(suggestedTicker);
                   }}
+                  className="px-1 align-baseline"
                 >
-                  {t('editNetworkLink')}
+                  {suggestedTicker}
                 </TextButton>
-              </div>
-            </HelpText>
-          </Box>
-        ) : null}
-        <FormTextField
-          id="nativeCurrency"
-          size={TextFieldSize.Lg}
-          placeholder={t('enterSymbol')}
-          className="pt-4"
-          data-testid="network-form-ticker"
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => {
-            setTicker(e.target?.value);
-          }}
-          label={t('currencySymbol')}
-          labelProps={{
-            variant: DsTextVariant.BodyMd,
-          }}
-          textFieldProps={{ className: 'rounded-lg' }}
-          inputProps={
-            {
-              'data-testid': 'network-form-ticker-input',
-            } as React.InputHTMLAttributes<HTMLInputElement>
-          }
-          value={ticker}
-        />
-        {suggestedTicker ? (
-          <Text
-            as="span"
-            variant={TextVariant.bodySm}
-            color={TextColor.textDefault}
-            marginTop={1}
-            data-testid="network-form-ticker-suggestion"
-          >
-            {t('suggestedCurrencySymbol')}
-            <TextButton
-              size={TextButtonSize.BodySm}
-              onClick={() => {
-                setTicker(suggestedTicker);
-              }}
-              className="px-1 align-baseline"
-            >
-              {suggestedTicker}
-            </TextButton>
-          </Text>
-        ) : null}
+              </span>
+            </Text>
+          ) : null}
+        </div>
         {ticker && warnings.ticker?.msg ? (
           <HelpText
             severity={HelpTextSeverity.Warning}
@@ -811,29 +786,24 @@ export const NetworksForm = ({
           }}
           renderItem={(item) => (
             <Text
-              as="span"
-              paddingLeft={0}
-              paddingRight={0}
-              paddingTop={3}
-              paddingBottom={3}
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              backgroundColor={BackgroundColor.transparent}
+              asChild
               ellipsis
+              color={TextColor.TextDefault}
+              variant={TextVariant.BodyMd}
+              className="bg-transparent px-0 py-3"
             >
-              {stripProtocol(item)}
+              <span>{stripProtocol(item)}</span>
             </Text>
           )}
           renderTooltip={(item) => (item.length > 36 ? item : undefined)}
         />
       </Box>
       <Box
-        className={`networks-form__footer${
+        className={`networks-form__footer w-full${
           usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         padding={4}
-        width={BlockSize.Full}
       >
         {usePageFooterStyle ? (
           <Button

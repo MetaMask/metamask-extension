@@ -13,21 +13,23 @@ import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTota
 const mockTokenBalances = [
   {
     address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    balance: '48573',
+    aggregators: [],
+    balance: '0',
     balanceError: null,
     decimals: 6,
-    string: 0.04857,
+    string: 0,
     symbol: 'USDC',
-    tokenFiatAmount: '0.05',
+    tokenFiatAmount: '0',
   },
   {
     address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+    aggregators: [],
     symbol: 'YFI',
-    balance: '1409247882142934',
+    balance: '0',
     balanceError: null,
     decimals: 18,
-    string: 0.00141,
-    tokenFiatAmount: '7.52',
+    string: 0,
+    tokenFiatAmount: '0',
   },
 ];
 
@@ -172,15 +174,15 @@ describe('useMultichainAccountTotalFiatBalance', () => {
     const { result } = renderUseMultichainAccountTotalFiatBalance(mockAccount);
 
     expect(result.current).toStrictEqual({
-      formattedFiat: '$9.41',
+      formattedFiat: '$1.85',
       loading: false,
       mergedRates: {
         '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
       },
-      totalWeiBalance: '14ba1e6a08a9ed',
+      totalWeiBalance: '4132df88d899a',
       tokensWithBalances: mockTokenBalances,
-      totalFiatBalance: '9.41',
+      totalFiatBalance: '1.85',
       orderedTokenList: [
         {
           fiatBalance: '1.85',
@@ -203,15 +205,15 @@ describe('useMultichainAccountTotalFiatBalance', () => {
             'zerion',
             'zeroEx',
           ],
-          balance: '1409247882142934',
+          balance: '0',
           balanceError: null,
           decimals: 18,
-          fiatBalance: '0.05',
+          fiatBalance: '0',
           iconUrl:
             'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png',
           name: 'yearn.finance',
           occurrences: 12,
-          string: '0.001409247882142934',
+          string: '0',
           symbol: 'YFI',
         },
       ],
