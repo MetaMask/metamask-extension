@@ -144,8 +144,14 @@ jobs:
           corepack enable
           if [ "${{ matrix.variant }}" = "fixed" ]; then
             # Root cause 2 is fixed in @swc/core 1.16.2; the lockfile changes, so
-            # this variant cannot install immutably.
-            yarn up '@swc/core@1.16.2'
+            # this variant cannot install immutably. The first `yarn up` updates
+            # the lockfile and links node_modules but then fails in the
+            # @lavamoat/allow-scripts post-install check because the allowlist
+            # still names @swc/core#1.13.3; `allow-scripts auto` fixes the
+            # allowlist and the second install passes (same steps as the PR).
+            yarn up '@swc/core@1.16.2' || true
+            yarn allow-scripts auto
+            yarn install
             git diff --stat -- package.json yarn.lock
           else
             yarn install --immutable
