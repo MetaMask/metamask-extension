@@ -9,6 +9,7 @@
  * Environment variables (all optional, enables graceful degradation):
  *   GITHUB_REPOSITORY  — owner/repo (set automatically by GitHub Actions)
  *   BASE_SHA           — pull_request.base.sha from the event payload
+ *                        (used unless `baseSha` is passed explicitly)
  *   GH_TOKEN           — GitHub token for API access
  *
  * Requires `gh` CLI (pre-installed on GitHub Actions runners) for tier 1.
@@ -18,6 +19,12 @@ import { execFileSync } from 'child_process';
 import { context } from '@actions/github';
 
 export interface GetPrDiffOptions {
+  /**
+   * The PR's base commit (default: `BASE_SHA`). Used for the SHA-based git
+   * diff; callers that also read files at the base commit should pass the
+   * same value here so that both refer to the same commit.
+   */
+  baseSha?: string;
   /** Base branch name (default: 'main'). Used only in the branch-based fallback. */
   baseBranch?: string;
   /** Directories to scope the git diff to (e.g. ['app/', 'ui/']). Omit for full diff. */
@@ -69,6 +76,7 @@ function filterDiffByDirectories(diff: string, dirs: string[]): string {
  */
 export function getPrDiff(options: GetPrDiffOptions = {}): string {
   const {
+    baseSha = process.env.BASE_SHA,
     baseBranch = 'main',
     directories = [],
     maxBuffer = 50 * 1024 * 1024,
@@ -100,7 +108,6 @@ export function getPrDiff(options: GetPrDiffOptions = {}): string {
 
   // 2. Try git diff using the base SHA from the event payload (immutable,
   //    works even when the base branch has advanced since the event fired).
-  const baseSha = process.env.BASE_SHA;
   if (baseSha) {
     try {
       execFileSync('git', ['fetch', 'origin', baseSha, '--depth=1'], {

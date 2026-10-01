@@ -118,6 +118,27 @@ function filterDiffFileCreations(diff: string): string {
   return filteredDiff;
 }
 
+/**
+ * Determines whether a diff contains changes to the given file.
+ *
+ * Rules that inspect a specific file use this to avoid reading source files
+ * (and potentially fetching Git history) when the file was not touched.
+ *
+ * @param diff - The diff to inspect.
+ * @param filePath - The repository-relative path of the file.
+ * @returns True if either side of any diff header refers to the file.
+ */
+function doesDiffModifyFile(diff: string, filePath: string): boolean {
+  return splitDiffIntoBlocks(diff).some((block) =>
+    block
+      .split('\n')[0]
+      .trim()
+      .split(' ')
+      .map((headerPath) => headerPath.substring(2))
+      .includes(filePath),
+  );
+}
+
 function hasNumberOfCodeBlocksIncreased(
   diffFragment: string,
   codeBlocks: string[],
@@ -141,6 +162,7 @@ function hasNumberOfCodeBlocksIncreased(
 }
 
 export {
+  doesDiffModifyFile,
   filterDiffByFilePath,
   restrictedFilePresent,
   filterDiffFileCreations,

@@ -1,10 +1,51 @@
 import {
+  doesDiffModifyFile,
   filterDiffLineAdditions,
   hasNumberOfCodeBlocksIncreased,
   filterDiffByFilePath,
   filterDiffFileCreations,
 } from './shared';
 import { generateCreateFileDiff, generateModifyFilesDiff } from './test-data';
+
+describe('doesDiffModifyFile()', (): void => {
+  it('returns true when the diff modifies the file', (): void => {
+    const diff = [
+      generateModifyFilesDiff('app/other.ts', 'foo', 'bar'),
+      generateModifyFilesDiff('app/target.ts', 'foo', 'bar'),
+    ].join('');
+
+    const result = doesDiffModifyFile(diff, 'app/target.ts');
+
+    expect(result).toBe(true);
+  });
+
+  it('returns true when the diff renames the file away', (): void => {
+    const diff = [
+      'diff --git a/app/target.ts b/app/renamed.ts',
+      'similarity index 100%',
+      'rename from app/target.ts',
+      'rename to app/renamed.ts',
+    ].join('\n');
+
+    const result = doesDiffModifyFile(diff, 'app/target.ts');
+
+    expect(result).toBe(true);
+  });
+
+  it('returns false when only a file with a similar path is modified', (): void => {
+    const diff = generateModifyFilesDiff('app/target.ts.snap', 'foo', 'bar');
+
+    const result = doesDiffModifyFile(diff, 'app/target.ts');
+
+    expect(result).toBe(false);
+  });
+
+  it('returns false for an empty diff', (): void => {
+    const result = doesDiffModifyFile('', 'app/target.ts');
+
+    expect(result).toBe(false);
+  });
+});
 
 describe('filterDiffLineAdditions()', (): void => {
   it('should return code additions in the diff', (): void => {

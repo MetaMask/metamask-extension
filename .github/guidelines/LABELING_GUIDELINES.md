@@ -28,6 +28,7 @@ Using any of these labels should be exceptional in case of CI friction and urgen
 - **force-e2e**: Force E2E tests to run, overriding all automatic skip conditions.
 - **skip-builds**: Force build reuse regardless of hash match (skip the build step).
 - **force-builds**: Force fresh builds, disabling build reuse.
+- **allow-background-api-changes**: Suppress the quality gates that would normally prevent changes to `MetamaskController.getApi` and `LegacyBackgroundApiService`, which are legacy APIs.
 
 For the full CI flow that these labels control, see [E2E_DECISION_TREE.md](E2E_DECISION_TREE.md).
 

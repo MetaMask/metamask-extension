@@ -1,14 +1,21 @@
 import { exitWithError } from '../lib/exit-with-error';
-import { AUTOMATION_TYPE } from './common/constants';
 import { getDiffByAutomationType } from './common/get-diff';
-import { IRule, RULES, runFitnessFunctionRule } from './rules';
+import { parseFitnessFunctionArguments } from './common/parse-arguments';
+import { RULES, runFitnessFunctionRule } from './rules';
 
-const automationType: AUTOMATION_TYPE = process.argv[2] as AUTOMATION_TYPE;
+const { automationType, diffPath, allowBackgroundApiChanges } =
+  parseFitnessFunctionArguments(process.argv.slice(2));
 
-getDiffByAutomationType(automationType)
-  .then((diff) => {
-    if (typeof diff === 'string') {
-      RULES.forEach((rule: IRule): void => runFitnessFunctionRule(rule, diff));
+getDiffByAutomationType(automationType, diffPath)
+  .then(({ baseRef, diff }) => {
+    for (const rule of RULES) {
+      runFitnessFunctionRule({
+        rule,
+        diff,
+        automationType,
+        ruleOptions: { allowBackgroundApiChanges },
+        baseRef,
+      });
     }
   })
   .catch((error) => {

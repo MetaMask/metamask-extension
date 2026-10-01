@@ -206,4 +206,15 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn fitness-functions ci
+          ALLOW_BACKGROUND_API_CHANGES: ${{ contains(github.event.pull_request.labels.*.name, 'allow-background-api-changes') }}
+        run: |
+          # The checkout is a shallow clone of the PR's merge commit. Some
+          # fitness functions compare files against the PR's base commit, so
+          # fetch it explicitly.
+          git fetch --quiet --depth=1 origin "$BASE_SHA"
+
+          if [[ "$ALLOW_BACKGROUND_API_CHANGES" == 'true' ]]; then
+            yarn fitness-functions ci --allow-background-api-changes
+          else
+            yarn fitness-functions ci
+          fi
