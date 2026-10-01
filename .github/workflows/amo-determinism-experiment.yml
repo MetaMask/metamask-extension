@@ -91,7 +91,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [control, fixed, charfreq]
+        variant: [fixed] # DEBUG RUN: fixed only, with per-module hash dumps
         iteration:
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
@@ -125,7 +125,7 @@ jobs:
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v5-on-v13.47.1.patch"
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v5-debug-on-v13.47.1.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
@@ -167,6 +167,7 @@ jobs:
         working-directory: ${{ steps.dir.outputs.dir }}
         run: |
           yarn webpack:tsc
+          export MM_DEBUG_HASH_DUMP="${RUNNER_TEMP}/hashdump-${{ matrix.variant }}-${{ matrix.iteration }}.json"
           # The build script exits 0 even when webpack reports errors, so
           # capture the output and fail explicitly on any compilation error.
           yarn webpack:lavamoat:build:mv2 2>&1 | tee build.log
@@ -197,6 +198,13 @@ jobs:
           name: result-${{ matrix.variant }}-${{ matrix.iteration }}
           path: ${{ runner.temp }}/result/*.json
           retention-days: 30
+
+      - name: Upload per-module hash dump
+        uses: actions/upload-artifact@v6
+        with:
+          name: hashdump-${{ matrix.variant }}-${{ matrix.iteration }}
+          path: ${{ runner.temp }}/hashdump-*.json
+          retention-days: 7
 
       - name: Upload runtime chunk (for byte-level inspection of any mismatch)
         uses: actions/upload-artifact@v6
