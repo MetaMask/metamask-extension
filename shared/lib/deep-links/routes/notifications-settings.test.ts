@@ -12,7 +12,7 @@ describe('notificationsSettings', () => {
   });
 
   it('opens notification settings without a section', () => {
-    expect(notificationsSettings.pathname).toBe(NOTIFICATIONS_SETTINGS_ROUTE);
+    expect(notificationsSettings.pathname).toBe('/notifications-settings');
     expect(notificationsSettings.getTitle(new URLSearchParams())).toBe(
       'deepLink_theNotificationsSettingsPage',
     );

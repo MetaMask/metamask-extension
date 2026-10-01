@@ -10,7 +10,7 @@ import {
  * Unknown sections and sections unavailable in this build open the main page.
  */
 export const notificationsSettings = new Route({
-  pathname: NOTIFICATIONS_SETTINGS_ROUTE,
+  pathname: '/notifications-settings',
   getTitle: (_: URLSearchParams) => 'deepLink_theNotificationsSettingsPage',
   handler: function handler(params: URLSearchParams) {
     const section = params.get('section')?.trim().toLowerCase();
