@@ -186,6 +186,13 @@ jobs:
           path: ${{ runner.temp }}/result/*.json
           retention-days: 30
 
+      - name: Upload runtime chunk (for byte-level inspection of any mismatch)
+        uses: actions/upload-artifact@v6
+        with:
+          name: runtime-${{ matrix.variant }}-${{ matrix.iteration }}
+          path: ${{ steps.dir.outputs.dir }}/dist/firefox/runtime.*.js
+          retention-days: 30
+
   report:
     name: Report
     needs: build
