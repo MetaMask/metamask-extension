@@ -14,8 +14,10 @@ import type {
   Backup,
   StorageKind,
 } from '../shared/lib/stores/persistence-manager';
+import type { SentryRemoteRates } from '../shared/lib/sentry-remote-rates';
 
 type StateHooks = {
+  getSentryRemoteRates?: () => SentryRemoteRates;
   getCustomTraces?: () => { [name: string]: number };
   getIsIdle?: () => boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
