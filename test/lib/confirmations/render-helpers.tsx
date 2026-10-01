@@ -104,6 +104,7 @@ export function renderWithConfirmContext(
     setIsScrollToBottomCompleted: () => undefined,
     goBackTo: undefined,
     suppressAutoExit: () => undefined,
+    exitConfirmation: () => undefined,
   });
 }
 

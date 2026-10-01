@@ -9,14 +9,20 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNavigation';
+import {
+  useConfirmationNavigationOptions,
+  type ConfirmationLocationState,
+} from '../../hooks/useConfirmationNavigation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
@@ -33,6 +39,11 @@ export type ConfirmContextType = {
    * rejected/removed. See CONF-1865.
    */
   suppressAutoExit: () => void;
+  /**
+   * Leaves the confirmation for `goBackTo` (or home). Pops history when the
+   * confirmation was pushed from `goBackTo`, otherwise replaces the entry.
+   */
+  exitConfirmation: () => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -51,6 +62,13 @@ export const ConfirmContextProvider = ({
 }>) => {
   const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
+  const { state: locationState } = useLocation();
+  const [goBackToIsPreviousEntry] = useState(
+    Boolean(
+      (locationState as ConfirmationLocationState | null)
+        ?.goBackToIsPreviousEntry,
+    ),
+  );
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
@@ -65,6 +83,7 @@ export const ConfirmContextProvider = ({
   const previousConfirmation = usePrevious(currentConfirmation);
   const shouldNavigateHomeRef = useRef(false);
   const autoExitSuppressedRef = useRef(false);
+  const hasPoppedHistoryRef = useRef(false);
   const isHardwareWalletErrorModalVisible = useSelector(
     getIsHardwareWalletErrorModalVisible,
   );
@@ -72,6 +91,21 @@ export const ConfirmContextProvider = ({
   const suppressAutoExit = useCallback(() => {
     autoExitSuppressedRef.current = true;
   }, []);
+
+  const exitConfirmation = useCallback(() => {
+    if (!goBackToIsPreviousEntry) {
+      navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+      return;
+    }
+
+    // Cancel and the auto-exit effect can both fire for the same reject;
+    // popping twice would skip past the origin.
+    if (hasPoppedHistoryRef.current) {
+      return;
+    }
+    hasPoppedHistoryRef.current = true;
+    navigate(PREVIOUS_ROUTE);
+  }, [goBackTo, goBackToIsPreviousEntry, navigate]);
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
@@ -93,14 +127,13 @@ export const ConfirmContextProvider = ({
         autoExitSuppressedRef.current = false;
         return;
       }
-      navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+      exitConfirmation();
     }
   }, [
     currentConfirmationOverride,
     previousConfirmation,
     currentConfirmation,
-    navigate,
-    goBackTo,
+    exitConfirmation,
     isHardwareWalletErrorModalVisible,
   ]);
 
@@ -111,6 +144,7 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       suppressAutoExit,
+      exitConfirmation,
     }),
     [
       currentConfirmation,
@@ -118,6 +152,7 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       suppressAutoExit,
+      exitConfirmation,
     ],
   );
 
@@ -142,5 +177,6 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
     suppressAutoExit: () => void;
+    exitConfirmation: () => void;
   };
 };

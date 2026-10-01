@@ -49,6 +49,7 @@ describe('BridgeTimeRow', () => {
       setIsScrollToBottomCompleted: jest.fn(),
       goBackTo: undefined,
       suppressAutoExit: jest.fn(),
+      exitConfirmation: jest.fn(),
     } as ReturnType<typeof useConfirmContext>);
 
     useIsTransactionPayQuotePendingMock.mockReturnValue(false);
