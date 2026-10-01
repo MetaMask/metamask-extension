@@ -65,11 +65,10 @@ const browsersListPath = join(root, '.browserslistrc');
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
 const { variables, safeVariables, version, buildEnvVarDeclarations } =
   getVariables(args, buildTypes);
-const webAccessibleResources = [
-  ...(args.devtool === 'source-map'
+const webAccessibleResources =
+  args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
-    : []),
-];
+    : [];
 // Styles for the outer X document. They cannot be bundled into the widget
 // frame HTML because that HTML is the iframe, so they are imported as strings
 // and injected by the content script instead.
