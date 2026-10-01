@@ -2196,9 +2196,6 @@
   "bridgeLowestCost": {
     "message": "最低コスト"
   },
-  "bridgeMalicious": {
-    "message": "悪意のある"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "悪質なトークン"
   },
@@ -2478,9 +2475,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "まずStellarで$1を有効化",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "不審"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "不審なトークン"
