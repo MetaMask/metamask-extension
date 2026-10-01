@@ -6,13 +6,13 @@ import Box from '../../../../../components/ui/box';
 import Tooltip from '../../../../../components/ui/tooltip';
 
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../../../helpers/constants/design-system';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
   <Tooltip position="top" html={html} title={title}>
-    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       {children}
     </Box>
   </Tooltip>
