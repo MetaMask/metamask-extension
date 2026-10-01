@@ -636,7 +636,7 @@ jobs:
   deploy-platform-api-docs:
     name: Deploy Platform API Docs
     needs: lint-workflows
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     permissions:
       contents: read
       id-token: write

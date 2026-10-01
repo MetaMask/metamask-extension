@@ -3,10 +3,15 @@ name: Deploy Platform API Docs
 on:
   workflow_call:
 
+concurrency:
+  group: deploy-platform-api-docs
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: Build and deploy to GitHub Pages
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment: default-branch
     permissions:
       id-token: write
@@ -41,4 +46,3 @@ jobs:
           personal_token: ${{ steps.get-token.outputs.token }}
           publish_dir: ./.platform-api-docs/build
           destination_dir: platform-api-docs
-          keep_files: true
