@@ -11,7 +11,7 @@ for Mozilla reviewers — 60 times on CI:
 
 - **control** ×20: the tag untouched, each build in a directory whose absolute path has a
   different length (≈80 to ≈200 characters).
-- **fixed** ×20: the end state — [`fix-endstate-v4-on-v13.47.1.patch`](./fix-endstate-v4-on-v13.47.1.patch)
+- **fixed** ×20: the end state — [`fix-endstate-v5-on-v13.47.1.patch`](./fix-endstate-v5-on-v13.47.1.patch)
   (the swc loader returning an object source map; `html-bundler-webpack-plugin` emitting
   issuer-relative `require()` requests instead of absolute paths; plus the `.ts`/`.tsx` loader split
   and `IN_TEST` inlining that `@swc/core` 1.16 needs) and `yarn up @swc/core@1.16.2`.
