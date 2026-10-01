@@ -5,8 +5,9 @@ import { Driver } from '../../../webdriver/driver';
  *
  * Screen: snap confirmation dialog with "Sign transaction" header (not
  * redesigned MetaMask `#/confirmation`).
- * Owns: header/footer loaded checks, confirm disabled state, fee asset and
- * insufficient-funds banner, and confirm footer action.
+ * Owns: header/footer loaded checks, confirm enabled/disabled state, fee
+ * asset, insufficient-funds banner, skipped-estimate copy, and confirm footer
+ * action.
  * Boundaries: snap sign-and-send ("Transaction request") is
  * `SnapTransactionConfirmation`. MetaMask transaction confirms are
  * `TransactionConfirmation` and subclasses.
@@ -43,6 +44,12 @@ class SnapSignTransactionConfirmation {
     testId: 'parent-selector-snap-confirmation-page',
   };
 
+  // Rendered by tron-wallet-snap from its bundled locale when simulation is
+  // skipped for unsupported contract types (not extension messages.json).
+  private unsupportedContractSimulationMessage = {
+    text: 'Unsupported contract for simulation',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -50,6 +57,12 @@ class SnapSignTransactionConfirmation {
   async checkConfirmButtonIsDisabled(): Promise<void> {
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'disabled',
+    });
+  }
+
+  async checkConfirmButtonIsEnabled(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton, {
+      state: 'enabled',
     });
   }
 
@@ -77,6 +90,10 @@ class SnapSignTransactionConfirmation {
       throw e;
     }
     console.log('Snap transaction confirmation page is loaded');
+  }
+
+  async checkUnsupportedContractSimulationMessageIsDisplayed(): Promise<void> {
+    await this.driver.findElement(this.unsupportedContractSimulationMessage);
   }
 
   async clickFooterConfirmButton() {

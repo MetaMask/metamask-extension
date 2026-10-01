@@ -30,6 +30,7 @@ import {
   mockGetNextMaintenanceTime,
   mockGetContract,
   mockGetNowBlockInfura,
+  type TronScanTransactionResponse,
 } from './mocks';
 
 export const TRANSACTION_HASH_MOCK =
@@ -47,6 +48,7 @@ export const withTronAccountSnap = async (
     tronAccountResources,
     additionalMocks,
     fixtureCustomizer,
+    scanTransactionResponse,
   }: {
     title?: string;
     numberOfAccounts?: number;
@@ -58,6 +60,7 @@ export const withTronAccountSnap = async (
     tronAccountResources?: AccountResourcesRequestOptions;
     additionalMocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>;
     fixtureCustomizer?: (builder: FixtureBuilderV2) => FixtureBuilderV2;
+    scanTransactionResponse?: TronScanTransactionResponse;
   },
   test: (driver: Driver) => Promise<void>,
 ) => {
@@ -101,7 +104,7 @@ export const withTronAccountSnap = async (
         await mockGetNowBlock(mockServer),
         await mockGetNowBlockInfura(mockServer),
         await mockGetBlockByNum(mockServer),
-        await mockScanTransaction(mockServer),
+        await mockScanTransaction(mockServer, scanTransactionResponse),
         await mockBroadcastTransaction(mockServer),
         await mockTriggerSmartContract(mockServer),
         await mockTriggerConstantContract(mockServer),
