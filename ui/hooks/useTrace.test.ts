@@ -72,6 +72,23 @@ describe('useTrace', () => {
     );
   });
 
+  it('calls onEnd after ending a ready trace', () => {
+    const onEnd = jest.fn();
+    const { rerender } = renderHook(
+      ({ ready }) =>
+        useTrace({
+          name: TraceName.HomepageSectionTimeToContent,
+          ready,
+          onEnd,
+        }),
+      { initialProps: { ready: false } },
+    );
+
+    rerender({ ready: true });
+
+    expect(onEnd).toHaveBeenCalledTimes(1);
+  });
+
   it('constructs the parent context for the wrapper', () => {
     const parentNameKey = '_name';
     const parentIdKey = '_id';

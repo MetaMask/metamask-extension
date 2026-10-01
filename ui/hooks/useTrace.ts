@@ -1,8 +1,6 @@
 import { useEffect, useId, useRef } from 'react';
 import { endTrace, trace, TraceName } from '#shared/lib/trace';
-
-const toSnakeCase = (value: string) =>
-  value.replace(/[A-Z]/gu, (letter) => `_${letter.toLowerCase()}`);
+import { toSnakeCase } from '#shared/lib/string-utils';
 
 const normalizeTraceData = (data?: Record<string, number | string | boolean>) =>
   data &&
@@ -18,8 +16,9 @@ export function useTrace({
   id,
   parentName,
   parentId,
-  ready = false,
-  deferEnd = false,
+  ready,
+  deferEnd,
+  onEnd,
   data,
 }: {
   name: TraceName;
@@ -31,6 +30,7 @@ export function useTrace({
   parentId?: string;
   ready?: boolean;
   deferEnd?: boolean;
+  onEnd?: () => void;
   data?: Record<string, number | string | boolean>;
 }) {
   const hookId = useId();
@@ -106,6 +106,7 @@ export function useTrace({
         data: normalizeTraceData(data),
       });
       activeTrace.current.ended = true;
+      onEnd?.();
     };
 
     if (deferEnd) {
@@ -123,6 +124,7 @@ export function useTrace({
     id,
     name,
     op,
+    onEnd,
     parentId,
     parentName,
     ready,
