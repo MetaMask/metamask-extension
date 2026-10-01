@@ -202,6 +202,7 @@ import {
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
+import { isOpaqueWebsiteSender } from './lib/opaque-origin';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
@@ -4548,6 +4549,10 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Website;
     }
 
+    if (isOpaqueWebsiteSender(inputSubjectType, sender)) {
+      return;
+    }
+
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
     mux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
@@ -4582,6 +4587,10 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType = SubjectType.Extension;
     } else {
       inputSubjectType = SubjectType.Website;
+    }
+
+    if (isOpaqueWebsiteSender(inputSubjectType, sender)) {
+      return;
     }
 
     // messages between subject and background
