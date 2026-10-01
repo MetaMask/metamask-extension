@@ -546,6 +546,7 @@ const config = {
           },
         ],
       },
+      // TODO: remove feature-specific hack from config.
       // Cashtag widget host-page styles, imported as text so the content script can inject
       // and remove them without exposing a web-accessible stylesheet.
       {
