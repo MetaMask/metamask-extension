@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { endTrace, trace, TraceName } from '#shared/lib/trace';
 import { useTrace } from './useTrace';
 
@@ -129,38 +129,6 @@ describe('useTrace', () => {
 
     expect(trace).toHaveBeenCalledTimes(2);
     expect(endTrace).toHaveBeenCalledTimes(2);
-  });
-
-  it('defers an end until child traces start', async () => {
-    const parentId = 'homepage-id';
-    const mockedTrace = jest.mocked(trace);
-    const mockedEndTrace = jest.mocked(endTrace);
-
-    renderHook(() => {
-      useTrace({
-        name: TraceName.HomepageReady,
-        id: parentId,
-        ready: true,
-        deferEnd: true,
-      });
-      useTrace({
-        name: TraceName.HomepageSectionTimeToContent,
-        parentName: TraceName.HomepageReady,
-        parentId,
-      });
-    });
-
-    const childStartOrder = mockedTrace.mock.invocationCallOrder[1];
-
-    await act(async () => {
-      await new Promise<void>((resolve) => queueMicrotask(resolve));
-    });
-
-    const parentEndOrder = mockedEndTrace.mock.invocationCallOrder.find(
-      (_, index) => mockedEndTrace.mock.calls[index][0].id === parentId,
-    );
-
-    expect(childStartOrder).toBeLessThan(parentEndOrder ?? Infinity);
   });
 
   it('ends an unfinished trace on unmount', () => {

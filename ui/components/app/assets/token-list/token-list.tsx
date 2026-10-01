@@ -36,8 +36,7 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
-import { useTrace } from '#ui/hooks/useTrace';
-import { getSelectedAccountGroup } from '#ui/selectors/multichain-accounts/account-tree';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -172,7 +171,6 @@ const LowValueAssetsToggle = ({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -258,27 +256,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     useExternalServices,
   ]);
 
-  const tokenListReady =
-    sortedFilteredTokens.length > 0 ||
-    Object.keys(accountGroupIdAssets).some((chainId) =>
-      allEnabledNetworksForAllNamespaces.includes(chainId),
-    );
-  const homepageGenerationKey = `${selectedAccountGroup ?? 'none'}:${[
-    ...allEnabledNetworksForAllNamespaces,
-  ]
-    .sort()
-    .join(',')}`;
-  useTrace({
+  useCoordinatedTrace({
     name: TraceName.HomepageSectionTimeToContent,
     op: TraceOperation.HomepageSectionPerformance,
-    enabled: Boolean(selectedAccountGroup),
-    generationKey: homepageGenerationKey,
-    parentName: TraceName.HomepageReady,
-    parentId: homepageGenerationKey,
-    ready: tokenListReady,
+    ready: true,
+    sectionId: 'tokens',
     data: {
       success: true,
-      sectionId: 'tokens',
       contentState: sortedFilteredTokens.length ? 'filled' : 'empty',
     },
   });

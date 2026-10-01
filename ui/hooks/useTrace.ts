@@ -1,26 +1,15 @@
-import { useEffect, useId, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { endTrace, trace, TraceName } from '#shared/lib/trace';
 import { toSnakeCase } from '#shared/lib/string-utils';
 
-const normalizeTraceData = (data?: Record<string, number | string | boolean>) =>
-  data &&
-  Object.fromEntries(
-    Object.entries(data).map(([key, value]) => [toSnakeCase(key), value]),
-  );
-
-export function useTrace({
-  name,
-  op,
-  enabled = true,
-  generationKey = 'default',
-  id,
-  parentName,
-  parentId,
-  ready,
-  deferEnd,
-  onEnd,
-  data,
-}: {
+type Options = {
   name: TraceName;
   op?: string;
   enabled?: boolean;
@@ -29,15 +18,32 @@ export function useTrace({
   parentName?: TraceName;
   parentId?: string;
   ready?: boolean;
-  deferEnd?: boolean;
   onEnd?: () => void;
   data?: Record<string, number | string | boolean>;
-}) {
+};
+
+const normalizeTraceData = (data?: Record<string, number | string | boolean>) =>
+  data &&
+  Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [toSnakeCase(key), value]),
+  );
+
+const useTraceLifecycle = ({
+  name,
+  op,
+  enabled = true,
+  generationKey = 'default',
+  id,
+  parentName,
+  parentId,
+  ready,
+  onEnd,
+  data,
+}: Options) => {
   const hookId = useId();
-  const activeTrace = useRef({ id: '', ended: true });
   const isUnmounted = useRef(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     isUnmounted.current = false;
 
     return () => {
@@ -45,15 +51,9 @@ export function useTrace({
     };
   }, []);
 
-  useEffect(() => {
-    if (!enabled) {
-      return undefined;
-    }
-
-    const traceId = id ?? `${hookId}:${generationKey}`;
-    const traceState = { id: traceId, ended: false };
-    activeTrace.current = traceState;
-    const parentContext =
+  const traceId = id ?? `${hookId}:${generationKey}`;
+  const parentContext = useMemo(
+    () =>
       parentName && parentId
         ? {
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,7 +61,30 @@ export function useTrace({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             _id: parentId,
           }
-        : undefined;
+        : undefined,
+    [parentId, parentName],
+  );
+  const traceGeneration = useMemo(
+    () => ({ name, op, parentContext, traceId }),
+    [name, op, parentContext, traceId],
+  );
+  const activeTrace = useRef({
+    id: '',
+    generation: traceGeneration,
+    ended: true,
+  });
+
+  const startTrace = useCallback(() => {
+    if (!enabled) {
+      return undefined;
+    }
+
+    const traceState = {
+      id: traceId,
+      generation: traceGeneration,
+      ended: false,
+    };
+    activeTrace.current = traceState;
 
     trace({ name, id: traceId, op, parentContext });
 
@@ -78,55 +101,42 @@ export function useTrace({
         traceState.ended = true;
       }
     };
-  }, [enabled, generationKey, hookId, id, name, op, parentName, parentId]);
+  }, [enabled, name, op, parentContext, traceGeneration, traceId]);
 
-  useEffect(() => {
+  const endWhenReady = useCallback(() => {
     if (!enabled || !ready) {
       return;
     }
 
     if (
       activeTrace.current.ended ||
-      activeTrace.current.id !== (id ?? `${hookId}:${generationKey}`)
+      activeTrace.current.generation !== traceGeneration
     ) {
       return;
     }
 
-    const endCurrentTrace = () => {
-      if (
-        activeTrace.current.ended ||
-        activeTrace.current.id !== (id ?? `${hookId}:${generationKey}`)
-      ) {
-        return;
-      }
+    endTrace({
+      name,
+      id: activeTrace.current.id,
+      data: normalizeTraceData(data),
+    });
+    activeTrace.current.ended = true;
+    onEnd?.();
+  }, [data, enabled, name, onEnd, ready, traceGeneration]);
 
-      endTrace({
-        name,
-        id: activeTrace.current.id,
-        data: normalizeTraceData(data),
-      });
-      activeTrace.current.ended = true;
-      onEnd?.();
-    };
+  return { endWhenReady, startTrace };
+};
 
-    if (deferEnd) {
-      queueMicrotask(endCurrentTrace);
-      return;
-    }
+export function useTrace(options: Options) {
+  const { endWhenReady, startTrace } = useTraceLifecycle(options);
 
-    endCurrentTrace();
-  }, [
-    data,
-    deferEnd,
-    enabled,
-    generationKey,
-    hookId,
-    id,
-    name,
-    op,
-    onEnd,
-    parentId,
-    parentName,
-    ready,
-  ]);
+  useEffect(() => startTrace(), [startTrace]);
+  useEffect(() => endWhenReady(), [endWhenReady]);
+}
+
+export function useLayoutTrace(options: Options) {
+  const { endWhenReady, startTrace } = useTraceLifecycle(options);
+
+  useLayoutEffect(() => startTrace(), [startTrace]);
+  useEffect(() => endWhenReady(), [endWhenReady]);
 }
