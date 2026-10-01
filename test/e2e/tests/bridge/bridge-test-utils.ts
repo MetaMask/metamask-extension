@@ -1928,38 +1928,6 @@ export const getMonadBaseBridgeFixtures = (
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x8f')
     .withCurrencyController(BRIDGE_MONAD_MOCK_CURRENCY_RATES)
-    .withTokenListController({
-      tokensChainsCache: {
-        '0x2105': {
-          timestamp: Date.now(),
-          data: {
-            '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-        '0x8f': {
-          timestamp: Date.now(),
-          data: {
-            '0x754704bc059f8c67012fed69bc8a327a5aafb603': {
-              name: 'USD Coin',
-              symbol: 'USDC',
-              address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
-              decimals: 6,
-              occurrences: 1,
-              aggregators: [],
-              iconUrl: '',
-            },
-          },
-        },
-      },
-    })
     .withEnabledNetworks({
       eip155: {
         '0x8f': true,
