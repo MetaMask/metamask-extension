@@ -81,8 +81,12 @@ describe('useFreshTronAssets', () => {
     cleanup();
   });
 
-  it('fetches uncached assets when the hook mounts', () => {
+  it('fetches uncached assets when the hook mounts', async () => {
     renderFreshTronAssetsHook(mockAccount, chainId);
+
+    await waitFor(() => {
+      expect(getMessengerCall()).toBeDefined();
+    });
 
     const messengerCall = getMessengerCall();
     expect(messengerCall).toStrictEqual({
@@ -91,6 +95,24 @@ describe('useFreshTronAssets', () => {
         [mockAccount],
         { chainIds: [chainId], forceUpdate: true, bypassServerCache: true },
       ],
+    });
+  });
+
+  it('subscribes before the initial fetch so no confirmation is missed', async () => {
+    let resolveSubscribe!: (off: () => Promise<void>) => void;
+    mockSubscribeToMessengerEvent.mockReturnValue(
+      new Promise((resolve) => {
+        resolveSubscribe = resolve;
+      }),
+    );
+
+    renderFreshTronAssetsHook(mockAccount, chainId);
+
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+    resolveSubscribe(jest.fn().mockResolvedValue(undefined));
+    await waitFor(() => {
+      expect(getMessengerCall()).toBeDefined();
     });
   });
 

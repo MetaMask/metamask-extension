@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import type { Transaction } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import log from 'loglevel';
 import {
   KnownCaipNamespace,
   isCaipChainId,
@@ -67,9 +66,6 @@ export const useFreshTronAssets = (
       ]).catch(() => undefined);
     };
 
-    // Fresh data when the page is opened.
-    fetchFreshAssets();
-
     // Fresh data when a Tron transaction confirms while the page is open.
     let hasUnsubscribed = false;
     let unsubscribe: (() => Promise<void>) | undefined;
@@ -109,9 +105,17 @@ export const useFreshTronAssets = (
       unsubscribe = off;
     };
 
-    subscribe().catch((error: unknown) => {
-      log.error('[useFreshTronAssets] subscription error', error);
-    });
+    // Subscribe first so a transaction that confirms while the page is
+    // opening is not missed, then refresh for the initial render. `subscribe`
+    // never rejects: the inner `.catch(() => undefined)` on
+    // `subscribeToMessengerEvent` swallows subscription failures, so like
+    // `fetchFreshAssets` this failure mode is silent.
+    const setup = async () => {
+      await subscribe();
+      fetchFreshAssets();
+    };
+
+    setup().catch(() => undefined);
 
     return () => {
       hasUnsubscribed = true;
