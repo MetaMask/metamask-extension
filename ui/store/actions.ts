@@ -218,6 +218,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
@@ -1910,7 +1911,7 @@ export function updateAndApproveTx(
       signingAccountAddress ?? txMeta.txParams.from,
     );
 
-    if (isHardwareAccount(fromAccount)) {
+    if (isUiHardwareAccount(fromAccount)) {
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareWalletTransaction(
         dispatch,
