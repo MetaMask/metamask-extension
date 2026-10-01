@@ -25,11 +25,6 @@ const QUOTE_READY_TIMEOUT = 60_000;
  * @see ui/pages/confirmations/components/info/money-account-deposit-info/money-account-deposit-info.tsx
  */
 export class MoneyAccountDepositConfirmation {
-  private readonly addFundsButton = {
-    testId: 'confirm-footer-button',
-    text: tEn('addFunds'),
-  };
-
   private readonly amountInput = { testId: 'custom-amount-input' };
 
   private readonly bridgeFeeRow = { testId: 'bridge-fee-row' };
@@ -37,6 +32,8 @@ export class MoneyAccountDepositConfirmation {
   private readonly bridgeTimeRow = { testId: 'bridge-time-row' };
 
   private readonly confirmButton = { testId: 'confirm-footer-button' };
+
+  private readonly confirmText: string;
 
   private readonly customAmountInfo = { testId: 'custom-amount-info' };
 
@@ -53,10 +50,7 @@ export class MoneyAccountDepositConfirmation {
     testId: 'wallet-initiated-header-back-button',
   };
 
-  private readonly headerTitle = {
-    testId: 'wallet-initiated-header-title',
-    text: tEn('addFunds'),
-  };
+  private readonly headerTitle: { testId: string; text: string };
 
   private readonly parentSelector = {
     testId: 'parent-selector-confirmation-page',
@@ -84,8 +78,18 @@ export class MoneyAccountDepositConfirmation {
 
   private readonly transactionFeeValue = { testId: 'transaction-fee-value' };
 
-  constructor(driver: Driver) {
+  /**
+   * @param driver - The WebDriver instance.
+   * @param confirmText - Header title and confirm-button label. Deposit uses
+   * "Add funds"; withdraw uses "Send".
+   */
+  constructor(driver: Driver, confirmText: string = tEn('addFunds')) {
     this.driver = driver;
+    this.confirmText = confirmText;
+    this.headerTitle = {
+      testId: 'wallet-initiated-header-title',
+      text: confirmText,
+    };
   }
 
   async checkAmount(expectedAmount: string): Promise<void> {
@@ -147,9 +151,10 @@ export class MoneyAccountDepositConfirmation {
       [this.bridgeFeeRow, this.transactionFeeValue, this.bridgeTimeRow],
       { timeout: QUOTE_READY_TIMEOUT },
     );
-    await this.driver.waitForSelector(this.addFundsButton, {
-      timeout: QUOTE_READY_TIMEOUT,
-    });
+    await this.driver.waitForSelector(
+      { ...this.confirmButton, text: this.confirmText },
+      { timeout: QUOTE_READY_TIMEOUT },
+    );
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'enabled',
       timeout: QUOTE_READY_TIMEOUT,
