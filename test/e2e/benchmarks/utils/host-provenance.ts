@@ -6,11 +6,27 @@ import type { HostProvenance } from '../../../../shared/constants/benchmarks';
 /**
  * Fixed work for the CPU probe: hash the same buffer this many times.
  *
- * Chosen so the probe costs a few milliseconds on a current CI box — small
- * enough to run once per benchmark without moving the numbers it annotates,
- * large enough that timer granularity is not the dominant term.
+ * Set from the probe's own repeatability rather than from a cost target.
+ * Measured on a Linux VM, 30 calls per setting:
+ *
+ *     rounds    mean      CV
+ *      2,000     4.1 ms   61.6%
+ *     10,000    17.2 ms   16.4%
+ *     50,000    84.9 ms    4.2%
+ *    200,000   342.7 ms    5.3%
+ *
+ * The probe exists to tell a slow box from a fast one, and the between-run
+ * modes it has to separate sit about 26% apart. At 2,000 rounds the probe's
+ * own noise is 61.6% — more than twice the signal — so a single reading
+ * could not rank two machines, and the column would have looked like data.
+ * The dominant term there is scheduling noise rather than timer granularity.
+ *
+ * 50,000 is the first setting whose CV is well inside the separation, and
+ * 200,000 is worse for four times the cost. Both call sites run during result
+ * assembly, after every measurement has completed, so 85 ms is outside
+ * anything the benchmark reports.
  */
-const CPU_PROBE_ROUNDS = 2000;
+const CPU_PROBE_ROUNDS = 50000;
 
 /** The buffer the probe hashes. Fixed, so the work is identical everywhere. */
 const CPU_PROBE_INPUT = Buffer.alloc(4096, 0x5a);
@@ -100,7 +116,10 @@ export function captureHostProvenance(): HostProvenance {
     arch: process.env.RUNNER_ARCH ?? os.arch(),
     cpuModel: first?.model,
     cpuCount: cpus.length,
-    cpuSpeedMhz: first?.speed,
+    // `os.cpus()[0].speed` reports 0 on Linux VMs rather than being absent,
+    // and a 0 MHz CPU is not a reading. Normalised so a consumer does not have
+    // to know that one field encodes "unknown" as a number.
+    cpuSpeedMhz: first?.speed ? first.speed : undefined,
     totalMemMb: Math.round(os.totalmem() / 1024 / 1024),
     stealPercent: readStealPercent(),
     cpuProbeMs: timeCpuProbe(),

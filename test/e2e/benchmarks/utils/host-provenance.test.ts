@@ -46,6 +46,26 @@ describe('captureHostProvenance', () => {
     expect(host.cpuProbeMs).toBeGreaterThan(0);
   });
 
+  it('reports a CPU speed or nothing, never a zero', () => {
+    // `os.cpus()[0].speed` is 0 on Linux VMs rather than absent, and a 0 MHz
+    // CPU is not a reading. A consumer should not have to know that one field
+    // encodes "unknown" as a number.
+    const { cpuSpeedMhz } = captureHostProvenance();
+    if (cpuSpeedMhz !== undefined) {
+      expect(cpuSpeedMhz).toBeGreaterThan(0);
+    }
+  });
+
+  it('runs the probe long enough to rank two machines', () => {
+    // The probe exists to separate a slow box from a fast one, and the modes
+    // it has to tell apart sit about 26% apart. At the original 2,000 rounds
+    // its own CV was 61.6%, so one reading could not rank anything. This
+    // asserts the cost that buys the repeatability rather than the CV itself,
+    // which would need 30 calls and make the suite slow.
+    const { cpuProbeMs } = captureHostProvenance();
+    expect(cpuProbeMs).toBeGreaterThan(10);
+  });
+
   it('reports steal as a percentage or not at all', () => {
     const { stealPercent } = captureHostProvenance();
     if (stealPercent !== undefined) {
