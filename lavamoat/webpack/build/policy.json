@@ -811,7 +811,7 @@
     },
     "koa>accepts": {
       "packages": {
-        "webpack>mime-types": true,
+        "koa>accepts>mime-types": true,
         "koa>accepts>negotiator": true
       }
     },
@@ -2270,12 +2270,12 @@
         "micromatch>picomatch": true
       }
     },
-    "webpack>mime-types": {
+    "koa>accepts>mime-types": {
       "builtin": {
         "path.extname": true
       },
       "packages": {
-        "webpack>mime-types>mime-db": true
+        "koa>accepts>mime-types>mime-db": true
       }
     },
     "koa>mime-types": {
@@ -2283,7 +2283,7 @@
         "path.extname": true
       },
       "packages": {
-        "webpack>mime-db": true
+        "koa>mime-types>mime-db": true
       }
     },
     "webpack-dev-server>serve-index>mime-types": {
@@ -2308,6 +2308,14 @@
       },
       "packages": {
         "webpack-dev-server>express>type-is>mime-types>mime-db": true
+      }
+    },
+    "webpack>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "webpack>mime-types>mime-db": true
       }
     },
     "http-server>mime": {
@@ -2974,7 +2982,6 @@
         "koa>escape-html": true,
         "webpack-dev-server>serve-index>http-errors": true,
         "webpack-dev-server>serve-index>mime-types": true,
-        "webpack>mime-types": true,
         "koa>parseurl": true
       }
     },
@@ -3327,15 +3334,13 @@
     "mockttp>body-parser>type-is": {
       "packages": {
         "mockttp>body-parser>type-is>media-typer": true,
-        "mockttp>body-parser>type-is>mime-types": true,
-        "webpack>mime-types": true
+        "mockttp>body-parser>type-is>mime-types": true
       }
     },
     "webpack-dev-server>express>type-is": {
       "packages": {
         "webpack-dev-server>express>type-is>media-typer": true,
-        "mockttp>body-parser>type-is>mime-types": true,
-        "webpack>mime-types": true
+        "webpack-dev-server>express>type-is>mime-types": true
       }
     },
     "typescript": {
@@ -3628,8 +3633,7 @@
       "packages": {
         "webpack-cli>colorette": true,
         "webpack-dev-server>webpack-dev-middleware>memfs": true,
-        "mockttp>body-parser>type-is>mime-types": true,
-        "webpack>mime-types": true,
+        "koa>mime-types": true,
         "koa>on-finished": true,
         "mockttp>express>range-parser": true,
         "schema-utils": true
