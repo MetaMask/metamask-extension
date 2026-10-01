@@ -6,12 +6,13 @@ name: AMO determinism experiment
 # `runtime.[contenthash].js` flaked for AMO reviewers) in N different absolute
 # paths, in three variants:
 #   control  — the tag untouched;
-#   fixed    — the end-state fix: swcLoader returns an object source map
-#              (root cause 1), @swc/core is bumped to 1.16.2 (root cause 2),
-#              and html-bundler-webpack-plugin emits issuer-relative require()
-#              requests instead of absolute paths (root cause 3), with
-#              frequency-ordered mangling left ON and no runtime-chunk special
-#              case;
+#   fixed    — the tag plus the end-state fixes: swcLoader returns an object
+#              source map (cause 1), @swc/core 1.16.2 (cause 2),
+#              html-bundler-webpack-plugin emits issuer-relative require()
+#              requests (cause 3), and React Compiler stats are kept out of the
+#              hashed buildMeta (cause 4); frequency-ordered mangling ON, no
+#              runtime-chunk special case;
+#   branch   — the PR branch fix/amo-build-determinism itself, unmodified;
 #   charfreq — the earlier #46829 approach (mangle.disableCharFreq on the
 #              runtime chunk + the loader fix), kept for comparison.
 # A final job tabulates the runtime chunk name and a digest of the whole dist
@@ -91,9 +92,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [fixed, branch] # DEBUG RUN 2: tag+fixes vs the PR branch itself, with per-module hash dumps
+        variant: [control, fixed, branch, charfreq]
         iteration:
-          [1, 2, 3, 4, 5, 6] # DEBUG RUN 2: six jobs are enough to compare
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
       - name: Checkout experiment branch (for the patch)
         uses: actions/checkout@v6
@@ -127,14 +128,7 @@ jobs:
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v5-debug2-on-v13.47.1.patch"
-
-      - name: Add the hash-dump plugin (branch variant)
-        if: ${{ matrix.variant == 'branch' }}
-        shell: bash
-        run: |
-          git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/debug-dump-on-branch.patch"
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v6-on-v13.47.1.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
@@ -176,7 +170,6 @@ jobs:
         working-directory: ${{ steps.dir.outputs.dir }}
         run: |
           yarn webpack:tsc
-          export MM_DEBUG_HASH_DUMP="${RUNNER_TEMP}/hashdump-${{ matrix.variant }}-${{ matrix.iteration }}.json"
           # The build script exits 0 even when webpack reports errors, so
           # capture the output and fail explicitly on any compilation error.
           yarn webpack:lavamoat:build:mv2 2>&1 | tee build.log
@@ -207,13 +200,6 @@ jobs:
           name: result-${{ matrix.variant }}-${{ matrix.iteration }}
           path: ${{ runner.temp }}/result/*.json
           retention-days: 30
-
-      - name: Upload per-module hash dump
-        uses: actions/upload-artifact@v6
-        with:
-          name: hashdump-${{ matrix.variant }}-${{ matrix.iteration }}
-          path: ${{ runner.temp }}/hashdump-*.json
-          retention-days: 7
 
       - name: Upload runtime chunk (for byte-level inspection of any mismatch)
         uses: actions/upload-artifact@v6

@@ -11,11 +11,14 @@ for Mozilla reviewers — 60 times on CI:
 
 - **control** ×20: the tag untouched, each build in a directory whose absolute path has a
   different length (≈80 to ≈200 characters).
-- **fixed** ×20: the end state — [`fix-endstate-v5-on-v13.47.1.patch`](./fix-endstate-v5-on-v13.47.1.patch)
+- **fixed** ×20: the end state — [`fix-endstate-v6-on-v13.47.1.patch`](./fix-endstate-v6-on-v13.47.1.patch)
   (the swc loader returning an object source map; `html-bundler-webpack-plugin` emitting
   issuer-relative `require()` requests instead of absolute paths; plus the `.ts`/`.tsx` loader split
   and `IN_TEST` inlining that `@swc/core` 1.16 needs) and `yarn up @swc/core@1.16.2`.
-  Frequency-ordered mangling stays on; no runtime-chunk special case.
+  Also: `reactCompilerLoaderWrapper` no longer stores compiler events (with absolute filenames) in
+  the hashed `buildMeta`. Frequency-ordered mangling stays on; no runtime-chunk special case.
+- **branch** ×20: the PR branch `fix/amo-build-determinism` itself, unmodified — the end state as it
+  will merge.
   (The earlier `fix-endstate-on-v13.47.1.patch`, without the html-bundler change, still flipped
   17/3 — run 36864195140 — which is how the third path leak was found. `…-v2…` made the
   loader emit relative requests but broke the plugin's render step, which the build script

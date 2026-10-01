@@ -1,0 +1,542 @@
+diff --git a/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch b/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch
+index 991db44..4024d6a 100644
+--- a/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch
++++ b/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch
+@@ -1,3 +1,46 @@
++diff --git a/src/Common/Helpers.js b/src/Common/Helpers.js
++index 81484701efadd9790d7a74ac385dff3b9980baad..71aee24ca9c8049cf5ba8b7a173f31f030616c2a 100644
++--- a/src/Common/Helpers.js
+++++ b/src/Common/Helpers.js
++@@ -1,6 +1,30 @@
++ const path = require('path');
++ const { parseRequest } = require('./RequestParser');
++ 
+++/**
+++ * Make an absolute file path a request relative to the issuer's directory, e.g.
+++ * `/abs/app/scripts/x.ts` required from `/abs/app/html/ui/home.html` becomes
+++ * `../../scripts/x.ts`. webpack resolves module requests relative to the
+++ * requiring module, so this is equivalent, but it keeps the absolute path of
+++ * the project out of the generated module source — which webpack hashes into
+++ * `buildInfo.hash`, so otherwise every chunk's provisional `[contenthash]`
+++ * depends on where the project lives on disk. Non-absolute requests (URLs,
+++ * aliases, `require()` expressions) are returned unchanged.
+++ *
+++ * @param {string} file
+++ * @param {string} [issuer]
+++ * @return {string}
+++ */
+++const toRelativeRequest = (file, issuer) => {
+++  if (!issuer || !path.isAbsolute(file)) return file;
+++  const [issuerFile] = issuer.split('?', 1);
+++  const [filePath, ...query] = file.split('?');
+++  let request = path.relative(path.dirname(issuerFile), filePath);
+++  if (isWin) request = pathToPosix(request);
+++  if (!request.startsWith('.')) request = './' + request;
+++  return query.length ? `${request}?${query.join('?')}` : request;
+++};
+++
++ const isWin = path.sep === '\\';
++ 
++ /**
++@@ -334,6 +358,7 @@ const compareVersions = (version1, compare, version2) => {
++ };
++ 
++ module.exports = {
+++  toRelativeRequest,
++   isWin,
++   isFunction,
++   isUrl,
+ diff --git a/src/Common/Utils.js b/src/Common/Utils.js
+ index e923daa8a95ab70ae5f1dbc883f5e90420b14b1a..ca21e8ac6c566820236aa682becd03b6c05e592a 100644
+ --- a/src/Common/Utils.js
+@@ -13,3 +56,140 @@ index e923daa8a95ab70ae5f1dbc883f5e90420b14b1a..ca21e8ac6c566820236aa682becd03b6
+    for (const [match, variable, file] of importMatches) {
+      code = code.replace(match, `var ${variable} = require('${file}');`);
+    }
++diff --git a/src/Loader/Modes/Compile.js b/src/Loader/Modes/Compile.js
++index 4b810d82dab33495b6dd69695f2e0f42ccb04449..5c07c1a6f0adf69acc3b916240400f6706174d4b 100644
++--- a/src/Loader/Modes/Compile.js
+++++ b/src/Loader/Modes/Compile.js
++@@ -1,6 +1,6 @@
++ const PreprocessorModeAbstract = require('./PreprocessorModeAbstract');
++ const { decodeReservedChars, escapeSequences } = require('../Utils');
++-const { isWin, pathToPosix } = require('../../Common/Helpers');
+++const { isWin, pathToPosix, toRelativeRequest } = require('../../Common/Helpers');
++ const { errorToHtml } = require('../Messages/Exeptions');
++ 
++ /**
++@@ -28,11 +28,13 @@ class Compile extends PreprocessorModeAbstract {
++ 
++   /**
++    * @param {string} file
+++   * @param {string} [issuer]
++    * @return {string}
++    */
++-  requireExpression(file) {
+++  requireExpression(file, issuer) {
++     const quote = this.enclosingQuotes;
++ 
+++    file = toRelativeRequest(file, issuer);
++     if (isWin) file = pathToPosix(file);
++ 
++     return `${quote} + require('${file}') + ${quote}`;
++diff --git a/src/Loader/Modes/PreprocessorModeAbstract.js b/src/Loader/Modes/PreprocessorModeAbstract.js
++index 5c1266d7d69b9509ec733e4536d56c5aea0918a0..ba431c0cda3922eb952e83089f32318540d67f9d 100644
++--- a/src/Loader/Modes/PreprocessorModeAbstract.js
+++++ b/src/Loader/Modes/PreprocessorModeAbstract.js
++@@ -49,11 +49,26 @@ class PreprocessorModeAbstract {
++   setEnclosingQuotes(enclosingQuotes) {}
++ 
++   /**
++-   * @param {string} file
+++   * @param {string} file The resolved absolute path of the required file.
+++   * @param {string} [issuer] The template file that requires it.
++    * @return {string}
++    * @abstract This method must be defined in the child class.
++    */
++-  requireExpression(file) {}
+++  requireExpression(file, issuer) {}
+++
+++  /**
+++   * Requests are emitted relative to the issuer only when the issuer is an
+++   * entry template: the plugin renders that same file later, so the request
+++   * can be resolved back against the same directory (Plugin/Resolver.require).
+++   * Partials, styles and other non-entry issuers are compiled under one file
+++   * but rendered under another, so for those the request stays absolute.
+++   *
+++   * @param {string} issuer
+++   * @return {string|undefined}
+++   */
+++  relativeRequestBase(issuer) {
+++    return this.loaderOption.isEntry(issuer) ? issuer : undefined;
+++  }
++ 
++   /**
++    * Export template code with rendered HTML.
++@@ -118,7 +133,7 @@ class PreprocessorModeAbstract {
++ 
++     return {
++       resolvedFile,
++-      requireExpression: this.requireExpression(resolvedFile),
+++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
++     };
++   }
++ 
++@@ -151,7 +166,7 @@ class PreprocessorModeAbstract {
++ 
++     return {
++       resolvedFile,
++-      requireExpression: this.requireExpression(resolvedFile),
+++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
++     };
++   }
++ 
++@@ -184,7 +199,7 @@ class PreprocessorModeAbstract {
++ 
++     return {
++       resolvedFile,
++-      requireExpression: this.requireExpression(resolvedFile),
+++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
++     };
++   }
++ }
++diff --git a/src/Loader/Modes/Render.js b/src/Loader/Modes/Render.js
++index c272d80008cc14f8af7926603c09309ce3884c46..d45238b0dc161ee19bb30e767ee3709d79c12cdc 100644
++--- a/src/Loader/Modes/Render.js
+++++ b/src/Loader/Modes/Render.js
++@@ -1,4 +1,5 @@
++ const PreprocessorModeAbstract = require('./PreprocessorModeAbstract');
+++const { toRelativeRequest } = require('../../Common/Helpers');
++ const PluginService = require('../../Plugin/PluginService');
++ const { hotUpdateFile, injectBeforeEndHead, decodeReservedChars } = require('../Utils');
++ const { errorToHtml } = require('../Messages/Exeptions');
++@@ -23,9 +24,11 @@ class Render extends PreprocessorModeAbstract {
++ 
++   /**
++    * @param {string} file
+++   * @param {string} [issuer]
++    * @return {string}
++    */
++-  requireExpression(file) {
+++  requireExpression(file, issuer) {
+++    file = toRelativeRequest(file, issuer);
++     return `\\u0027 + require(\\u0027${file}\\u0027) + \\u0027`;
++   }
++ 
++diff --git a/src/Plugin/Resolver.js b/src/Plugin/Resolver.js
++index 7ef14e658c0b1efeb388e0a7275414e45dc08f13..959ae9f102c5188dbc47c3b170d3a6fd66cc87ec 100644
++--- a/src/Plugin/Resolver.js
+++++ b/src/Plugin/Resolver.js
++@@ -222,6 +222,22 @@ class Resolver {
++   require(rawRequest) {
++     const { issuer, issuerFile } = this;
++ 
+++    // The loader emits script/style requests of entry templates relative to
+++    // the template's directory (see `toRelativeRequest` in Common/Helpers.js)
+++    // so that the generated module source — which webpack hashes — contains no
+++    // absolute path. Scripts and inline styles are looked up below by their
+++    // absolute resource, so map such a request back to it. Other relative
+++    // requests (e.g. `url()` in CSS) were always relative and are resolved via
+++    // `resolveResource()`'s (issuer, rawRequest) table, so leave them as is.
+++    if (rawRequest.startsWith('./') || rawRequest.startsWith('../')) {
+++      const [requestFile, ...query] = rawRequest.split('?');
+++      const absoluteFile = path.resolve(path.dirname(issuerFile), requestFile);
+++      const absolute = query.length ? `${absoluteFile}?${query.join('?')}` : absoluteFile;
+++      if (this.collection.hasScript(absolute) || this.collection.isInlineStyle(absolute)) {
+++        rawRequest = absolute;
+++      }
+++    }
+++
++     // @import CSS rule is not supported
++     if (rawRequest.includes('??ruleSet')) {
++       resolveException(rawRequest, issuer.resource, this.rootContext, this.pluginOption);
+diff --git a/development/webpack/utils/helpers.ts b/development/webpack/utils/helpers.ts
+index 1e002af..6ab1554 100644
+--- a/development/webpack/utils/helpers.ts
++++ b/development/webpack/utils/helpers.ts
+@@ -65,6 +65,12 @@ export const UI_COMPONENT_RE = new RegExp(
+ 
+ export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+ 
++/** TypeScript without JSX (`.ts` / `.mts`). */
++export const TYPESCRIPT_NON_TSX_FILE_RE = /\.(?:ts|mts)$/u;
++
++/** TypeScript with JSX (`.tsx` only). */
++export const TYPESCRIPT_TSX_FILE_RE = /\.tsx$/u;
++
+ export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+ 
+ /**
+diff --git a/development/webpack/utils/loaders/envValidationLoader.ts b/development/webpack/utils/loaders/envValidationLoader.ts
+index be8b1b7..5661ddd 100644
+--- a/development/webpack/utils/loaders/envValidationLoader.ts
++++ b/development/webpack/utils/loaders/envValidationLoader.ts
+@@ -9,7 +9,7 @@ import type {
+   AssignmentPatternProperty,
+   KeyValuePatternProperty,
+ } from '@swc/types';
+-import { TYPESCRIPT_FILE_RE } from '../helpers';
++import { TYPESCRIPT_FILE_RE, TYPESCRIPT_TSX_FILE_RE } from '../helpers';
+ 
+ // Options are serialized to a JSON array for thread-loader compatibility
+ export type EnvValidationLoaderOptions = {
+@@ -19,9 +19,9 @@ export type EnvValidationLoaderOptions = {
+ /**
+  * Determines the parser syntax based on the file extension.
+  *
+- * Always enables JSX parsing since this loader only runs on the project's own
+- * source files (not node_modules), and .js files in this codebase commonly
+- * contain JSX. SWC can parse non-JSX code with JSX enabled, but not the reverse.
++ * Enables JSX/TSX parsing for files that may contain JSX. `.js`/`.jsx` and
++ * `.tsx` use JSX mode. Plain `.ts`/`.mts` keep `tsx: false` because
++ * `@swc/core` >= 1.16 treats TypeScript generics as JSX when `tsx` is true.
+  *
+  * @param resourcePath - The file path to determine syntax for.
+  * @returns The parse options with appropriate syntax configuration.
+@@ -30,7 +30,8 @@ function getParseOptions(resourcePath: string): ParseOptions {
+   const isTypeScript = TYPESCRIPT_FILE_RE.test(resourcePath);
+ 
+   if (isTypeScript) {
+-    return { syntax: 'typescript', tsx: true };
++    const tsx = TYPESCRIPT_TSX_FILE_RE.test(resourcePath);
++    return { syntax: 'typescript', tsx };
+   }
+   return { syntax: 'ecmascript', jsx: true };
+ }
+diff --git a/development/webpack/utils/loaders/reactCompilerLoader.ts b/development/webpack/utils/loaders/reactCompilerLoader.ts
+index 604a487..ef655cb 100644
+--- a/development/webpack/utils/loaders/reactCompilerLoader.ts
++++ b/development/webpack/utils/loaders/reactCompilerLoader.ts
+@@ -8,9 +8,10 @@ import {
+ const getWrapperPath = () => require.resolve('./reactCompilerLoaderWrapper');
+ 
+ /**
+- * React Compiler result status stored in module.buildMeta.
++ * React Compiler result status stored in module.buildInfo (not buildMeta,
++ * which webpack hashes into the module hash).
+  * This allows statistics to be collected from all modules after compilation.
+- * NOTE: buildMeta tracking only works without thread-loader (this._module is
++ * NOTE: buildInfo tracking only works without thread-loader (this._module is
+  * null in worker contexts), so it is only active in verbose mode.
+  */
+ export type ReactCompilerStatus =
+@@ -22,7 +23,7 @@ export type ReactCompilerStatus =
+ export const REACT_COMPILER_STATUS_KEY = '__reactCompilerStatus__';
+ 
+ /**
+- * Per-file or per-compilation component counts. Stored in buildMeta when
++ * Per-file or per-compilation component counts. Stored in buildInfo when
+  * using the wrapper loader; aggregated by ReactCompilerPlugin.
+  */
+ export type ReactCompilerStatusCounts = Record<ReactCompilerStatus, number>;
+@@ -47,7 +48,7 @@ export type ReactCompilerFileDetail = {
+ };
+ 
+ /**
+- * Statistics collected from module buildMeta after compilation.
++ * Statistics collected from module buildInfo after compilation.
+  * File-level counts use worst-status-wins; component-level counts are raw.
+  */
+ export type ReactCompilerStats = {
+@@ -75,7 +76,7 @@ export type ReactCompilerLoaderConfig = {
+   /**
+    * When true, uses the wrapper loader so the same source works in
+    * thread-loader workers and the emitted CJS build. Verbose mode also uses
+-   * the wrapper for logging and buildMeta tracking.
++   * the wrapper for logging and buildInfo tracking.
+    */
+   threadLoaderEnabled: boolean;
+ };
+@@ -86,7 +87,7 @@ export type ReactCompilerLoaderConfig = {
+  * Uses the wrapper loader when thread-loader is active or when verbose logging
+  * is requested. Falls back to the direct `react-compiler-webpack` loader
+  * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
+- * resolvable). While worker builds still cannot record buildMeta stats, using
++ * resolvable). While worker builds still cannot record buildInfo stats, using
+  * the wrapper there keeps the loader path consistent across the direct `tsx`
+  * and emitted `.webpack` CJS execution paths.
+  *
+diff --git a/development/webpack/utils/loaders/reactCompilerLoaderWrapper.ts b/development/webpack/utils/loaders/reactCompilerLoaderWrapper.ts
+index eb40f50..77d04b7 100644
+--- a/development/webpack/utils/loaders/reactCompilerLoaderWrapper.ts
++++ b/development/webpack/utils/loaders/reactCompilerLoaderWrapper.ts
+@@ -1,8 +1,8 @@
+ /**
+  * Wrapper loader for react-compiler-webpack that stores compilation status
+- * in module.buildMeta for collection by ReactCompilerPlugin.
++ * in module.buildInfo for collection by ReactCompilerPlugin.
+  *
+- * LIMITATION: Stats collection via buildMeta does NOT work with thread-loader
++ * LIMITATION: Stats collection via buildInfo does NOT work with thread-loader
+  * because `this._module` is null in worker contexts. The webpack config
+  * automatically disables thread-loader when --reactCompilerVerbose is used.
+  *
+@@ -15,7 +15,7 @@
+  * resolution issues. Both values MUST stay in sync.
+  */
+ import { createRequire } from 'node:module';
+-import { join } from 'node:path';
++import { join, relative } from 'node:path';
+ import type { Schema } from 'schema-utils';
+ import type { LoaderDefinitionFunction } from 'webpack';
+ 
+@@ -68,9 +68,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
+ ) {
+   const options = this.getOptions();
+   const verbose = options.__verbose ?? false;
+-  const buildMeta = this._module?.buildMeta as
++  // Stats go on `buildInfo`, never `buildMeta`: webpack hashes
++  // `JSON.stringify(buildMeta)` into every module's `buildInfo.hash`, so the
++  // compiler events (which name the file) would make module hashes depend on
++  // the absolute build path and on whether this loader happened to run
++  // in-process or in a thread-loader worker. `buildInfo` is not hashed.
++  const buildInfo = this._module?.buildInfo as
+     | Record<string, unknown>
+     | undefined;
++  const {rootContext} = this;
+ 
+   function extractMessage(detail: CompilerEvent['detail']): string | undefined {
+     if (!detail) {
+@@ -90,7 +96,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
+     }
+   }
+ 
+-  const logger = buildMeta && {
++  const logger = buildInfo && {
+     logEvent: (filename: string | null, event: CompilerEvent) => {
+       if (!filename) return;
+ 
+@@ -129,14 +135,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
+       }
+ 
+       if (status) {
+-        const stored = buildMeta[REACT_COMPILER_STATUS_KEY] as
++        const stored = buildInfo[REACT_COMPILER_STATUS_KEY] as
+           | { events: Record<string, unknown>[] }
+           | undefined;
+         const events = stored?.events ?? [];
+         const loc = event.fnLoc?.start;
+         const message = extractMessage(event.detail);
+         const entry: Record<string, unknown> = {
+-          filename,
++          // relative so the recorded stats are the same from any checkout
++          filename: rootContext ? relative(rootContext, filename) : filename,
+           status,
+           kind: event.kind,
+           ...(message && { message }),
+@@ -147,7 +154,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
+             }),
+         };
+         events.push(entry);
+-        buildMeta[REACT_COMPILER_STATUS_KEY] = { events };
++        buildInfo[REACT_COMPILER_STATUS_KEY] = { events };
+       }
+     },
+   };
+diff --git a/development/webpack/utils/loaders/swcLoader.ts b/development/webpack/utils/loaders/swcLoader.ts
+index 4b4facd..4d8d76f 100644
+--- a/development/webpack/utils/loaders/swcLoader.ts
++++ b/development/webpack/utils/loaders/swcLoader.ts
+@@ -198,7 +198,13 @@ const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
+     };
+ 
+     const cb = this.async();
+-    transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
++    transform(src, options).then(
++      // Experiment patch (see PR #46829): hand webpack a parsed source map so
++      // `contextifySourceMap` relativizes `sources`; string maps are hashed
++      // verbatim, leaking the absolute build path into every module hash.
++      ({ code, map }) => cb(null, code, map === undefined ? map : JSON.parse(map)),
++      cb,
++    );
+   };
+ 
+ export default swcLoader;
+diff --git a/development/webpack/utils/plugins/ReactCompilerPlugin/index.ts b/development/webpack/utils/plugins/ReactCompilerPlugin/index.ts
+index 87fbc18..512edd9 100644
+--- a/development/webpack/utils/plugins/ReactCompilerPlugin/index.ts
++++ b/development/webpack/utils/plugins/ReactCompilerPlugin/index.ts
+@@ -53,10 +53,10 @@ function toLogEntry(
+ }
+ 
+ /**
+- * Collect React Compiler statistics from all modules' buildMeta.
++ * Collect React Compiler statistics from all modules' buildInfo.
+  *
+  * NOTE: This does NOT work with thread-loader because workers cannot access
+- * `_module.buildMeta` (it's null in worker contexts). The webpack config
++ * `_module.buildInfo` (it's null in worker contexts). The webpack config
+  * automatically disables thread-loader when --reactCompilerVerbose is used.
+  *
+  * @param compilation - The webpack compilation object.
+@@ -86,8 +86,8 @@ function collectStats(compilation: Compilation): ReactCompilerStats {
+   };
+ 
+   const processModule = (module: Module) => {
+-    const buildMeta = module.buildMeta as Record<string, unknown> | undefined;
+-    const stored = buildMeta?.[REACT_COMPILER_STATUS_KEY];
++    const buildInfo = module.buildInfo as Record<string, unknown> | undefined;
++    const stored = buildInfo?.[REACT_COMPILER_STATUS_KEY];
+ 
+     if (stored === null || stored === undefined) {
+       return;
+@@ -245,13 +245,13 @@ export class ReactCompilerPlugin {
+         logSummary(stats);
+       }
+ 
+-      // Clear buildMeta from all modules to prevent accumulation in watch mode
++      // Clear buildInfo from all modules to prevent accumulation in watch mode
+       for (const module of compilation.modules) {
+-        const buildMeta = module.buildMeta as
++        const buildInfo = module.buildInfo as
+           | Record<string, unknown>
+           | undefined;
+-        if (buildMeta && REACT_COMPILER_STATUS_KEY in buildMeta) {
+-          delete buildMeta[REACT_COMPILER_STATUS_KEY];
++        if (buildInfo && REACT_COMPILER_STATUS_KEY in buildInfo) {
++          delete buildInfo[REACT_COMPILER_STATUS_KEY];
+         }
+       }
+     });
+diff --git a/development/webpack/webpack.config.ts b/development/webpack/webpack.config.ts
+index 5c40d49..b74fcfe 100644
+--- a/development/webpack/webpack.config.ts
++++ b/development/webpack/webpack.config.ts
+@@ -26,7 +26,8 @@ import {
+   getMinimizers,
+   JAVASCRIPT_FILE_RE,
+   NODE_MODULES_RE,
+-  TYPESCRIPT_FILE_RE,
++  TYPESCRIPT_NON_TSX_FILE_RE,
++  TYPESCRIPT_TSX_FILE_RE,
+   UI_COMPONENT_RE,
+   SNOW_MODULE_RE,
+   TREZOR_MODULE_RE,
+@@ -291,10 +292,19 @@ if (args.bundleAnalyzer) {
+ // #endregion plugins
+ 
+ const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
++// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
++// and .tsx must use separate loaders.
++const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
+ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+ const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+ 
+ const swcReactRefreshConfig = { ...swcConfig, refresh: true };
++const reactRefreshTsLoader = getSwcLoader(
++  'typescript',
++  false,
++  safeVariables,
++  swcReactRefreshConfig,
++);
+ const reactRefreshTsxLoader = getSwcLoader(
+   'typescript',
+   true,
+@@ -308,8 +318,21 @@ const reactRefreshJsxLoader = getSwcLoader(
+   swcReactRefreshConfig,
+ );
+ 
+-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+-const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
++// npm packages keep runtime `process.env.*` unless SWC inlines them. First-party
++// code gets the full `safeVariables` map, but `@metamask/network-controller`
++// (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
++// always falsy there and custom networks kept the 20s block-tracker interval
++// instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
++const npmEnvs: Record<string, string> =
++  safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
++const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
++const cjsLoader = getSwcLoader(
++  'ecmascript',
++  false,
++  npmEnvs,
++  swcConfig,
++  'commonjs',
++);
+ 
+ const isChunkableInitial = (chunk: Chunk) =>
+   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+@@ -436,19 +459,40 @@ const config = {
+       ...(isDevelopmentWatchMode
+         ? [
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX (UI, react-refresh)
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              include: UI_DIR_RE,
++              use: reactRefreshTsLoader,
++            },
++            {
++              // typescript JSX (UI, react-refresh)
++              test: TYPESCRIPT_TSX_FILE_RE,
+               include: UI_DIR_RE,
+               use: reactRefreshTsxLoader,
+             },
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              exclude: [NODE_MODULES_RE, UI_DIR_RE],
++              use: tsLoader,
++            },
++            {
++              // typescript JSX
++              test: TYPESCRIPT_TSX_FILE_RE,
+               exclude: [NODE_MODULES_RE, UI_DIR_RE],
+               use: tsxLoader,
+             },
+           ]
+         : [
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              exclude: NODE_MODULES_RE,
++              use: tsLoader,
++            },
++            {
++              // typescript JSX
++              test: TYPESCRIPT_TSX_FILE_RE,
+               exclude: NODE_MODULES_RE,
+               use: tsxLoader,
+             },
