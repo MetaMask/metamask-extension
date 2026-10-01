@@ -1,0 +1,112 @@
+diff --git a/dist/ses.cjs b/dist/ses.cjs
+index c10f41b6a6a1bfb63032ebe523063dade9048409..ce52b5cc05217b5fa0229554c91617ce57382f8a 100644
+--- a/dist/ses.cjs
++++ b/dist/ses.cjs
+@@ -4514,7 +4514,28 @@ const freezeTypedArray = array => {
+           return;
+         }
+       }
+-      error(`failed to delete ${subPath}`, reason);
++      if (
++      typeof obj === 'function' &&
++      (prop === 'caller' || prop === 'arguments') &&
++      hasOwn(obj, prop)
++    ) {
++      const desc = Object.getOwnPropertyDescriptor(obj, prop);
++      if (
++        desc &&
++        !desc.configurable &&
++        !desc.writable &&
++        !desc.get &&
++        !desc.set &&
++        desc.value === null
++      ) {
++        // Legacy "restricted properties" on older V8 (e.g. Chrome < 127) are
++        // undeletable own data properties whose value is null. They expose
++        // nothing, so tolerate them rather than failing lockdown outright.
++        warn(`Tolerating undeletable ${subPath} === null`);
++        return;
++      }
++    }
++    error(`failed to delete ${subPath}`, reason);
+     } else {
+       error(`deleting ${subPath} threw`, reason);
+     }
+@@ -4587,6 +4608,9 @@ const freezeTypedArray = array => {
+   EvalError: 'EvalError',
+ 
+   Int8Array: 'Int8Array',
++  Float16Array: 'Float16Array',
++  Float32Array: 'Float32Array',
++  Float64Array: 'Float64Array',
+   Int16Array: 'Int16Array',
+   Int32Array: 'Int32Array',
+   Map: 'Map',
+@@ -4685,9 +4709,6 @@ const freezeTypedArray = array => {
+   // NaN side channel.
+   //
+   // // https://github.com/tc39/proposal-float16array
+-  Float16Array: 'Float16Array',
+-  Float32Array: 'Float32Array',
+-  Float64Array: 'Float64Array',
+ 
+   // ESNext
+ 
+diff --git a/src/cauterize-property.js b/src/cauterize-property.js
+index 0c54ac367ae0b2e63f2a3aaf1fde02b94557cd84..24a83a3a950111e751c6790771480ab532fdfa20 100644
+--- a/src/cauterize-property.js
++++ b/src/cauterize-property.js
+@@ -61,7 +61,28 @@ export const cauterizeProperty = (
+           return;
+         }
+       }
+-      error(`failed to delete ${subPath}`, reason);
++      if (
++      typeof obj === 'function' &&
++      (prop === 'caller' || prop === 'arguments') &&
++      hasOwn(obj, prop)
++    ) {
++      const desc = Object.getOwnPropertyDescriptor(obj, prop);
++      if (
++        desc &&
++        !desc.configurable &&
++        !desc.writable &&
++        !desc.get &&
++        !desc.set &&
++        desc.value === null
++      ) {
++        // Legacy "restricted properties" on older V8 (e.g. Chrome < 127) are
++        // undeletable own data properties whose value is null. They expose
++        // nothing, so tolerate them rather than failing lockdown outright.
++        warn(`Tolerating undeletable ${subPath} === null`);
++        return;
++      }
++    }
++    error(`failed to delete ${subPath}`, reason);
+     } else {
+       error(`deleting ${subPath} threw`, reason);
+     }
+diff --git a/src/permits.js b/src/permits.js
+index f01e556507e37766be728143b7782559564ff6b5..8013a00f9c2ccc7f38f9e9f7163cdae7ccdd0880 100644
+--- a/src/permits.js
++++ b/src/permits.js
+@@ -61,6 +61,9 @@ export const universalPropertyNames = {
+   EvalError: 'EvalError',
+ 
+   Int8Array: 'Int8Array',
++  Float16Array: 'Float16Array',
++  Float32Array: 'Float32Array',
++  Float64Array: 'Float64Array',
+   Int16Array: 'Int16Array',
+   Int32Array: 'Int32Array',
+   Map: 'Map',
+@@ -159,9 +162,6 @@ export const initialGlobalPropertyNames = {
+   // NaN side channel.
+   //
+   // // https://github.com/tc39/proposal-float16array
+-  Float16Array: 'Float16Array',
+-  Float32Array: 'Float32Array',
+-  Float64Array: 'Float64Array',
+ 
+   // ESNext
+ 

@@ -42,9 +42,9 @@ export function convertUrlSafeBase64StringToBase64String(base64String: string) {
  * @param buffer - The buffer to encode
  * @returns The base64url encoded string
  */
-export function base64urlencode(buffer: ArrayBuffer) {
+export function base64urlencode(buffer: ArrayBuffer | Uint8Array) {
   let str = '';
-  const bytes = new Uint8Array(buffer);
+  const bytes = new Uint8Array(buffer as ArrayBuffer);
   for (let i = 0; i < bytes.byteLength; i++) {
     str += String.fromCharCode(bytes[i]);
   }
