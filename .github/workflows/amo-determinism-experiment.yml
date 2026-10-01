@@ -125,7 +125,7 @@ jobs:
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v3-on-v13.47.1.patch"
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v4-on-v13.47.1.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
