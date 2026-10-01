@@ -175,19 +175,6 @@ export function getWrappedRequestMethod(
 }
 
 /**
- * Build the EIP-1193 gate for origin scanning.
- *
- * @param getPermittedAccounts - Returns the accounts an origin may use
- */
-export function createEip1193OriginScanGate(
-  getPermittedAccounts: (origin: string) => string[],
-) {
-  const getFlow = getEip1193OriginScanFlow(getPermittedAccounts);
-  return (req: JsonRpcRequest & { origin?: string }): boolean =>
-    getFlow(req) !== undefined;
-}
-
-/**
  * Build the EIP-1193 request-source classifier for origin scans.
  *
  * @param getPermittedAccounts - Returns the accounts an origin may use
@@ -228,26 +215,6 @@ export function getEip1193OriginScanFlow(
 
     return undefined;
   };
-}
-
-/**
- * Build the Multichain API gate for origin scanning. Authored independently of
- * the EIP-1193 gate rather than derived from it, since none of those method
- * names exist on this transport.
- *
- * Action requests are matched on the method wrapped inside `wallet_invokeMethod`
- * rather than on `wallet_invokeMethod` itself. A granted `eip155` scope permits
- * nearly the entire RPC surface, so gating on the outer method alone would scan
- * the origin on routine polling reads.
- *
- * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
- */
-export function createCaipOriginScanGate(
-  hasCaip25Permission: (origin: string) => boolean,
-) {
-  const getFlow = getCaipOriginScanFlow(hasCaip25Permission);
-  return (req: JsonRpcRequest & { origin?: string }): boolean =>
-    getFlow(req) !== undefined;
 }
 
 /**
