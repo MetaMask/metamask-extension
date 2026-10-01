@@ -1,3 +1,46 @@
+diff --git a/src/Common/Helpers.js b/src/Common/Helpers.js
+index 81484701efadd9790d7a74ac385dff3b9980baad..71aee24ca9c8049cf5ba8b7a173f31f030616c2a 100644
+--- a/src/Common/Helpers.js
++++ b/src/Common/Helpers.js
+@@ -1,6 +1,30 @@
+ const path = require('path');
+ const { parseRequest } = require('./RequestParser');
+ 
++/**
++ * Make an absolute file path a request relative to the issuer's directory, e.g.
++ * `/abs/app/scripts/x.ts` required from `/abs/app/html/ui/home.html` becomes
++ * `../../scripts/x.ts`. webpack resolves module requests relative to the
++ * requiring module, so this is equivalent, but it keeps the absolute path of
++ * the project out of the generated module source — which webpack hashes into
++ * `buildInfo.hash`, so otherwise every chunk's provisional `[contenthash]`
++ * depends on where the project lives on disk. Non-absolute requests (URLs,
++ * aliases, `require()` expressions) are returned unchanged.
++ *
++ * @param {string} file
++ * @param {string} [issuer]
++ * @return {string}
++ */
++const toRelativeRequest = (file, issuer) => {
++  if (!issuer || !path.isAbsolute(file)) return file;
++  const [issuerFile] = issuer.split('?', 1);
++  const [filePath, ...query] = file.split('?');
++  let request = path.relative(path.dirname(issuerFile), filePath);
++  if (isWin) request = pathToPosix(request);
++  if (!request.startsWith('.')) request = './' + request;
++  return query.length ? `${request}?${query.join('?')}` : request;
++};
++
+ const isWin = path.sep === '\\';
+ 
+ /**
+@@ -334,6 +358,7 @@ const compareVersions = (version1, compare, version2) => {
+ };
+ 
+ module.exports = {
++  toRelativeRequest,
+   isWin,
+   isFunction,
+   isUrl,
 diff --git a/src/Common/Utils.js b/src/Common/Utils.js
 index e923daa8a95ab70ae5f1dbc883f5e90420b14b1a..ca21e8ac6c566820236aa682becd03b6c05e592a 100644
 --- a/src/Common/Utils.js
@@ -13,3 +56,140 @@ index e923daa8a95ab70ae5f1dbc883f5e90420b14b1a..ca21e8ac6c566820236aa682becd03b6
    for (const [match, variable, file] of importMatches) {
      code = code.replace(match, `var ${variable} = require('${file}');`);
    }
+diff --git a/src/Loader/Modes/Compile.js b/src/Loader/Modes/Compile.js
+index 4b810d82dab33495b6dd69695f2e0f42ccb04449..5c07c1a6f0adf69acc3b916240400f6706174d4b 100644
+--- a/src/Loader/Modes/Compile.js
++++ b/src/Loader/Modes/Compile.js
+@@ -1,6 +1,6 @@
+ const PreprocessorModeAbstract = require('./PreprocessorModeAbstract');
+ const { decodeReservedChars, escapeSequences } = require('../Utils');
+-const { isWin, pathToPosix } = require('../../Common/Helpers');
++const { isWin, pathToPosix, toRelativeRequest } = require('../../Common/Helpers');
+ const { errorToHtml } = require('../Messages/Exeptions');
+ 
+ /**
+@@ -28,11 +28,13 @@ class Compile extends PreprocessorModeAbstract {
+ 
+   /**
+    * @param {string} file
++   * @param {string} [issuer]
+    * @return {string}
+    */
+-  requireExpression(file) {
++  requireExpression(file, issuer) {
+     const quote = this.enclosingQuotes;
+ 
++    file = toRelativeRequest(file, issuer);
+     if (isWin) file = pathToPosix(file);
+ 
+     return `${quote} + require('${file}') + ${quote}`;
+diff --git a/src/Loader/Modes/PreprocessorModeAbstract.js b/src/Loader/Modes/PreprocessorModeAbstract.js
+index 5c1266d7d69b9509ec733e4536d56c5aea0918a0..ba431c0cda3922eb952e83089f32318540d67f9d 100644
+--- a/src/Loader/Modes/PreprocessorModeAbstract.js
++++ b/src/Loader/Modes/PreprocessorModeAbstract.js
+@@ -49,11 +49,26 @@ class PreprocessorModeAbstract {
+   setEnclosingQuotes(enclosingQuotes) {}
+ 
+   /**
+-   * @param {string} file
++   * @param {string} file The resolved absolute path of the required file.
++   * @param {string} [issuer] The template file that requires it.
+    * @return {string}
+    * @abstract This method must be defined in the child class.
+    */
+-  requireExpression(file) {}
++  requireExpression(file, issuer) {}
++
++  /**
++   * Requests are emitted relative to the issuer only when the issuer is an
++   * entry template: the plugin renders that same file later, so the request
++   * can be resolved back against the same directory (Plugin/Resolver.require).
++   * Partials, styles and other non-entry issuers are compiled under one file
++   * but rendered under another, so for those the request stays absolute.
++   *
++   * @param {string} issuer
++   * @return {string|undefined}
++   */
++  relativeRequestBase(issuer) {
++    return this.loaderOption.isEntry(issuer) ? issuer : undefined;
++  }
+ 
+   /**
+    * Export template code with rendered HTML.
+@@ -118,7 +133,7 @@ class PreprocessorModeAbstract {
+ 
+     return {
+       resolvedFile,
+-      requireExpression: this.requireExpression(resolvedFile),
++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
+     };
+   }
+ 
+@@ -151,7 +166,7 @@ class PreprocessorModeAbstract {
+ 
+     return {
+       resolvedFile,
+-      requireExpression: this.requireExpression(resolvedFile),
++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
+     };
+   }
+ 
+@@ -184,7 +199,7 @@ class PreprocessorModeAbstract {
+ 
+     return {
+       resolvedFile,
+-      requireExpression: this.requireExpression(resolvedFile),
++      requireExpression: this.requireExpression(resolvedFile, this.relativeRequestBase(issuer)),
+     };
+   }
+ }
+diff --git a/src/Loader/Modes/Render.js b/src/Loader/Modes/Render.js
+index c272d80008cc14f8af7926603c09309ce3884c46..d45238b0dc161ee19bb30e767ee3709d79c12cdc 100644
+--- a/src/Loader/Modes/Render.js
++++ b/src/Loader/Modes/Render.js
+@@ -1,4 +1,5 @@
+ const PreprocessorModeAbstract = require('./PreprocessorModeAbstract');
++const { toRelativeRequest } = require('../../Common/Helpers');
+ const PluginService = require('../../Plugin/PluginService');
+ const { hotUpdateFile, injectBeforeEndHead, decodeReservedChars } = require('../Utils');
+ const { errorToHtml } = require('../Messages/Exeptions');
+@@ -23,9 +24,11 @@ class Render extends PreprocessorModeAbstract {
+ 
+   /**
+    * @param {string} file
++   * @param {string} [issuer]
+    * @return {string}
+    */
+-  requireExpression(file) {
++  requireExpression(file, issuer) {
++    file = toRelativeRequest(file, issuer);
+     return `\\u0027 + require(\\u0027${file}\\u0027) + \\u0027`;
+   }
+ 
+diff --git a/src/Plugin/Resolver.js b/src/Plugin/Resolver.js
+index 7ef14e658c0b1efeb388e0a7275414e45dc08f13..959ae9f102c5188dbc47c3b170d3a6fd66cc87ec 100644
+--- a/src/Plugin/Resolver.js
++++ b/src/Plugin/Resolver.js
+@@ -222,6 +222,22 @@ class Resolver {
+   require(rawRequest) {
+     const { issuer, issuerFile } = this;
+ 
++    // The loader emits script/style requests of entry templates relative to
++    // the template's directory (see `toRelativeRequest` in Common/Helpers.js)
++    // so that the generated module source — which webpack hashes — contains no
++    // absolute path. Scripts and inline styles are looked up below by their
++    // absolute resource, so map such a request back to it. Other relative
++    // requests (e.g. `url()` in CSS) were always relative and are resolved via
++    // `resolveResource()`'s (issuer, rawRequest) table, so leave them as is.
++    if (rawRequest.startsWith('./') || rawRequest.startsWith('../')) {
++      const [requestFile, ...query] = rawRequest.split('?');
++      const absoluteFile = path.resolve(path.dirname(issuerFile), requestFile);
++      const absolute = query.length ? `${absoluteFile}?${query.join('?')}` : absoluteFile;
++      if (this.collection.hasScript(absolute) || this.collection.isInlineStyle(absolute)) {
++        rawRequest = absolute;
++      }
++    }
++
+     // @import CSS rule is not supported
+     if (rawRequest.includes('??ruleSet')) {
+       resolveException(rawRequest, issuer.resource, this.rootContext, this.pluginOption);
