@@ -49,8 +49,14 @@ describe('swcLoader', () => {
     const [err, content, map] = await deferredPromise;
     assert.strictEqual(err, null);
     assert.strictEqual(content, expected);
-    const mapObj = JSON.parse(map as string);
-    assert.deepStrictEqual(mapObj.sources, [context.resourcePath]);
+    // The map must be handed to webpack as an object, not a JSON string: only
+    // object maps get their absolute `sources` rewritten relative to the build
+    // context (`NormalModule.contextifySourceMap`). A string map is hashed
+    // verbatim, which leaks the absolute build path into every module hash.
+    assert.strictEqual(typeof map, 'object');
+    assert.deepStrictEqual((map as unknown as { sources: string[] }).sources, [
+      context.resourcePath,
+    ]);
   });
 
   it('should throw an error when options are invalid', () => {
