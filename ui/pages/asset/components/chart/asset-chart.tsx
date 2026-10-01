@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -40,7 +40,6 @@ import { finiteFallback, loadingOpacity } from '../../util';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
 import { AssetChartEmptyState } from './asset-chart-empty-state';
-import AssetChartPrice from './asset-chart-price';
 import { getAmbientColor } from './chart-theme-config';
 
 Chart.register(
@@ -155,25 +154,60 @@ const getTranslatedTimeRangeLabel = (
 
 const TIME_RANGES = ['P1D', 'P1W', 'P1M', 'P3M', 'P1Y', 'P10Y'];
 
+type AssetChartProps = {
+  chainId: Hex;
+  address: string;
+  currentPrice?: number;
+  currency: string;
+  /**
+   * When provided, overrides internal time range state.
+   * Used when the chart is controlled externally (e.g., line mode in advanced charts).
+   */
+  controlledTimeRange?: string;
+  /**
+   * When true, hides the built-in time range selector buttons.
+   * Used when the chart is controlled externally.
+   */
+  hideTimeRangeSelector?: boolean;
+  /**
+   * Real-time price from OHLCV WebSocket to update the last data point.
+   * When provided, the chart's end-dot will reflect real-time price movement.
+   */
+  realtimePrice?: number;
+  /**
+   * Timestamp for the real-time price (milliseconds since epoch).
+   */
+  realtimeTimestamp?: number;
+  /**
+   * When provided, overrides the internally-computed ambient chart color.
+   * Used when the parent has a more authoritative color source (e.g., OHLCV data).
+   */
+  chartColor?: string;
+};
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
   address,
   currentPrice,
   currency,
-}: {
-  chainId: Hex;
-  address: string;
-  currentPrice?: number;
-  currency: string;
-}) => {
+  controlledTimeRange,
+  hideTimeRangeSelector = false,
+  realtimePrice,
+  realtimeTimestamp,
+  chartColor: chartColorOverride,
+}: AssetChartProps) => {
   const t = useI18nContext();
   const theme = useTheme();
   const isThemingEnabled = useSelector(getIsAdvancedChartsThemingEnabled);
 
-  const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
+  const [internalTimeRange, setInternalTimeRange] = useState<string>(
     TIME_RANGES[0],
   );
+
+  // Use controlled time range if provided, otherwise use internal state
+  const selectedTimeRange = controlledTimeRange ?? internalTimeRange;
+  const setSelectedTimeRange = setInternalTimeRange;
 
   const {
     loading,
@@ -198,20 +232,63 @@ const AssetChart = ({
   const shouldShowChartMuted =
     isFetching && prices.length > 0 && !isPlaceholderData;
 
-  // Determine price direction for ambient chart theming (when feature flag enabled)
-  const isDark = theme === 'dark';
-  const chartColor = useMemo(() => {
-    if (!isThemingEnabled) {
-      return undefined; // Feature flag disabled, use default blue
+  /**
+   * Historical prices with the last data point updated to the real-time OHLCV price/timestamp
+   * so the line chart end-dot reflects real-time price movement.
+   */
+  const realtimePrices = useMemo(() => {
+    if (!realtimePrice || !realtimeTimestamp || prices.length === 0) {
+      return prices;
     }
-    // Compare current price with the first price in the range to determine direction
+    const updated = [...prices];
+    updated[updated.length - 1] = {
+      x: realtimeTimestamp,
+      y: realtimePrice,
+    };
+    return updated;
+  }, [prices, realtimePrice, realtimeTimestamp]);
+
+  /**
+   * Adjusted scale bounds to include the real-time point.
+   * This ensures the end-dot stays visible even when the real-time timestamp
+   * is newer than the historical data's xMax.
+   */
+  const adjustedXMax = useMemo(() => {
+    if (!realtimeTimestamp || !Number.isFinite(xMax)) {
+      return xMax;
+    }
+    return Math.max(xMax, realtimeTimestamp);
+  }, [xMax, realtimeTimestamp]);
+
+  const adjustedYMin = useMemo(() => {
+    if (!realtimePrice || !Number.isFinite(yMin)) {
+      return yMin;
+    }
+    return Math.min(yMin, realtimePrice);
+  }, [yMin, realtimePrice]);
+
+  const adjustedYMax = useMemo(() => {
+    if (!realtimePrice || !Number.isFinite(yMax)) {
+      return yMax;
+    }
+    return Math.max(yMax, realtimePrice);
+  }, [yMax, realtimePrice]);
+
+  // Determine price direction for ambient chart theming.
+  // Parent-supplied chartColor takes priority (e.g., OHLCV-based color).
+  const isDark = theme === 'dark';
+  const internalChartColor = useMemo(() => {
+    if (!isThemingEnabled) {
+      return undefined;
+    }
     const comparePrice = prices?.[0]?.y;
     if (comparePrice === undefined || currentPrice === undefined) {
-      return undefined; // No data yet, will use fallback
+      return undefined;
     }
     const isPositive = currentPrice >= comparePrice;
     return getAmbientColor(isPositive, isDark);
   }, [isThemingEnabled, currentPrice, prices, isDark]);
+  const chartColor = chartColorOverride ?? internalChartColor;
 
   const animation =
     isPlaceholderData || wasPlaceholderData
@@ -241,47 +318,22 @@ const AssetChart = ({
     scales: {
       x: {
         min: finiteFallback(xMin, undefined),
-        max: finiteFallback(xMax, undefined),
+        max: finiteFallback(adjustedXMax, undefined),
         display: false,
         type: 'linear',
       },
       y: {
-        min: isPlaceholderData ? 0 : finiteFallback(yMin, 0),
-        max: isPlaceholderData ? 1 : finiteFallback(yMax, 1),
+        min: isPlaceholderData ? 0 : finiteFallback(adjustedYMin, 0),
+        max: isPlaceholderData ? 1 : finiteFallback(adjustedYMax, 1),
         display: false,
       },
     },
   } as ChartOptions<'line'>;
 
   const chartRef = useRef<Chart<'line', Point[]>>();
-  const priceRef = useRef<{
-    setPrice: (_: { price?: number; date?: number }) => void;
-  }>();
-
-  // Init the price ref with the current price
-  useEffect(() => {
-    priceRef?.current?.setPrice({
-      price: currentPrice,
-      date: Date.now(),
-    });
-  }, [currentPrice]);
 
   return (
     <Box className="flex rounded-lg" flexDirection={BoxFlexDirection.Column}>
-      <AssetChartPrice
-        ref={priceRef}
-        loading={loading || isPlaceholderData}
-        currency={currency}
-        price={currentPrice}
-        date={prices?.[prices.length - 1]?.x ?? 0}
-        comparePrice={
-          isPlaceholderData || shouldShowChartEmptyState
-            ? undefined
-            : prices?.[0]?.y
-        }
-        ambientColor={chartColor}
-      />
-
       <Box
         data-testid="asset-price-chart"
         className="flex rounded-lg"
@@ -316,42 +368,8 @@ const AssetChart = ({
             >
               <Line
                 ref={chartRef}
-                data={{ datasets: [{ data: prices, clip: false }] }}
+                data={{ datasets: [{ data: realtimePrices, clip: false }] }}
                 options={options}
-                // Update the price display on chart hover
-                onMouseMove={(event) => {
-                  if (isPlaceholderData) {
-                    return;
-                  }
-                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                  if (data) {
-                    const target = event.target as HTMLElement;
-                    const index = Math.max(
-                      0,
-                      Math.min(
-                        data.length - 1,
-                        Math.round(
-                          (event.nativeEvent.offsetX / target.clientWidth) *
-                            data.length,
-                        ),
-                      ),
-                    );
-                    const point = data[index];
-                    if (point) {
-                      priceRef?.current?.setPrice({
-                        price: point.y,
-                        date: point.x,
-                      });
-                    }
-                  }
-                }}
-                // Revert to current price when not hovering
-                onMouseOut={() => {
-                  priceRef?.current?.setPrice({
-                    price: currentPrice,
-                    date: Date.now(),
-                  });
-                }}
               />
             </Box>
 
@@ -364,35 +382,39 @@ const AssetChart = ({
           </Box>
         )}
 
-        <Box
-          style={prices ? undefined : { visibility: `hidden` }}
-          className="flex"
-          justifyContent={BoxJustifyContent.Between}
-          marginTop={2}
-          marginLeft={3}
-          marginRight={3}
-        >
-          {TIME_RANGES.map((timeRange) => (
-            <ButtonBase
-              key={timeRange}
-              className={classnames('time-range-button', {
-                'time-range-button__selected': timeRange === selectedTimeRange,
-              })}
-              onClick={() => setSelectedTimeRange(timeRange)}
-              variant={TextVariant.bodyXsMedium}
-              size={ButtonBaseSize.Sm}
-              paddingLeft={2}
-              paddingRight={2}
-              backgroundColor={BackgroundColor.transparent}
-              color={TextColor.textAlternative}
-            >
-              {getTranslatedTimeRangeLabel(
-                t as (key: string) => string,
-                timeRange,
-              )}
-            </ButtonBase>
-          ))}
-        </Box>
+        {/* Time range selector - hidden when controlled externally */}
+        {!hideTimeRangeSelector && (
+          <Box
+            style={prices ? undefined : { visibility: `hidden` }}
+            className="flex"
+            justifyContent={BoxJustifyContent.Between}
+            marginTop={2}
+            marginLeft={3}
+            marginRight={3}
+          >
+            {TIME_RANGES.map((timeRange) => (
+              <ButtonBase
+                key={timeRange}
+                className={classnames('time-range-button', {
+                  'time-range-button__selected':
+                    timeRange === selectedTimeRange,
+                })}
+                onClick={() => setSelectedTimeRange(timeRange)}
+                variant={TextVariant.bodyXsMedium}
+                size={ButtonBaseSize.Sm}
+                paddingLeft={2}
+                paddingRight={2}
+                backgroundColor={BackgroundColor.transparent}
+                color={TextColor.textAlternative}
+              >
+                {getTranslatedTimeRangeLabel(
+                  t as (key: string) => string,
+                  timeRange,
+                )}
+              </ButtonBase>
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );

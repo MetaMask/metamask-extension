@@ -18,9 +18,29 @@ import {
 export const CHART_TYPE_CANDLE = 1;
 export const CHART_TYPE_LINE = 2;
 
-const INTERVAL_KEYS = ['1m', '5m', '15m', '1h', '4h', '1d', '1w'];
+/** Candle-granularity intervals for candlestick chart mode. */
+const CANDLE_INTERVAL_KEYS = ['1m', '5m', '15m', '1h', '4h', '1d', '1w'];
+
+/**
+ * Time-range options shown in the IntervalBar when chart type is Line.
+ * Matches the TimeRangeSelector options so the UX is consistent.
+ */
+export const LINE_CHART_TIME_RANGES = ['1H', '1D', '1W', '1M', '1Y'] as const;
+
+/**
+ * Maps line chart time ranges to ISO 8601 duration strings for the Historical Prices API.
+ */
+export const LINE_TIME_RANGE_TO_ISO8601: Record<string, string> = {
+  '1H': 'PT1H',
+  '1D': 'P1D',
+  '1W': 'P1W',
+  '1M': 'P1M',
+  '1Y': 'P1Y',
+};
 
 type IntervalBarProps = {
+  /** Override the default candle intervals (e.g. time-range labels for line mode). */
+  intervals?: readonly string[];
   selectedInterval: string;
   onIntervalSelect: (interval: string) => void;
   chartType: number;
@@ -28,6 +48,7 @@ type IntervalBarProps = {
 };
 
 const IntervalBar = ({
+  intervals = CANDLE_INTERVAL_KEYS,
   selectedInterval,
   onIntervalSelect,
   chartType,
@@ -57,11 +78,13 @@ const IntervalBar = ({
         padding: '6px 16px',
       }}
     >
-      {INTERVAL_KEYS.map((interval) => (
+      {intervals.map((interval) => (
         <button
           key={interval}
           onClick={() => onIntervalSelect(interval)}
-          style={pillStyle(selectedInterval === interval)}
+          style={pillStyle(
+            selectedInterval.toLowerCase() === interval.toLowerCase(),
+          )}
         >
           {interval}
         </button>

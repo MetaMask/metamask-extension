@@ -37,7 +37,10 @@ export type AdvancedChartIframeRef = {
 
 type AdvancedChartIframeProps = {
   assetId: string;
+  /** Fixed pixel height. Ignored when `aspectRatio` is set. */
   height?: number;
+  /** CSS aspect-ratio (e.g. 2.6). When set, the chart sizes itself responsively. */
+  aspectRatio?: number;
   chartType: number;
   selectedInterval: string;
   /** Persisted indicator selection, re-applied to each freshly loaded chart. */
@@ -61,7 +64,8 @@ const AdvancedChartIframe = forwardRef<
   (
     {
       assetId,
-      height = 300,
+      height,
+      aspectRatio,
       chartType,
       selectedInterval,
       activeIndicators,
@@ -311,8 +315,11 @@ const AdvancedChartIframe = forwardRef<
         data-testid="advanced-chart-iframe"
         style={{
           width: '100%',
-          height: `${height}px`,
+          ...(aspectRatio
+            ? { aspectRatio: `${aspectRatio}` }
+            : { height: height ? `${height}px` : '100%' }),
           overflow: 'hidden',
+          flex: height || aspectRatio ? undefined : 1,
           background: 'var(--color-background-default)',
           position: 'relative',
         }}

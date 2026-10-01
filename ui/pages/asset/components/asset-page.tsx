@@ -109,7 +109,8 @@ import AssetChart from './chart/asset-chart';
 // [POC — THROWAWAY] Advanced Chart via cross-origin iframe from localhost:8001
 import AdvancedChartIframe from './chart/advanced-chart-iframe';
 import IntervalBar, {
-  CHART_TYPE_CANDLE,
+  LINE_CHART_TIME_RANGES,
+  LINE_TIME_RANGE_TO_ISO8601,
 } from './chart/advanced-chart-interval-bar';
 import IndicatorBar from './chart/advanced-chart-indicator-bar';
 import { useAdvancedChartPreferences } from './chart/useAdvancedChartPreferences';
@@ -122,6 +123,7 @@ import {
   getAmbientSuccessColor,
 } from './chart/chart-theme-config';
 import TokenPriceHeader from './chart/token-price-header';
+import { ChartErrorState } from './chart/chart-error-state';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
 import { AssetActivateCard } from './asset-activation-card';
@@ -215,10 +217,13 @@ const AssetPage = ({
   const {
     chartType: acChartType,
     interval: acInterval,
+    lineTimeRange: acLineTimeRange,
     indicators: acIndicators,
     setChartType: setAcChartType,
     setInterval: setAcInterval,
+    setLineTimeRange: setAcLineTimeRange,
     toggleIndicator: toggleAcIndicator,
+    isLineChart: acIsLineChart,
   } = useAdvancedChartPreferences();
 
   const handleAdvancedChartReady = useCallback(() => {
@@ -415,10 +420,8 @@ const AssetPage = ({
     ? AMBIENT_NEGATIVE_COLOR
     : undefined;
 
-  // Combine iframe and OHLCV errors for fallback decision
+  // Combine iframe and OHLCV errors for error state in candle mode
   const combinedChartError = advancedChartError || ohlcvError;
-  const shouldShowAdvancedChart =
-    isAdvancedChartsEnabled && !combinedChartError;
 
   const securityTrustToken = useMemo(
     () => ({
@@ -583,11 +586,13 @@ const AssetPage = ({
           />
         )}
         <AssetPageSecurityTrustBanner />
-        {/* [POC — THROWAWAY] Advanced Chart replaces legacy chart; falls back on error.
-            Layout mirrors mobile: IntervalBar → AdvancedChart → IndicatorBar */}
-        {shouldShowAdvancedChart ? (
+        {/* Advanced Charts section: when FF is ON, show IntervalBar (toggle always visible)
+            so users can switch between Line (legacy chart) and Candle (advanced chart).
+            On error in candle mode, show error state instead of falling back to legacy. */}
+        {isAdvancedChartsEnabled ? (
           <>
-            {/* Price header using OHLCV data */}
+            {/* Price header using OHLCV data - shown in both line and candle modes
+                for consistent real-time price display */}
             <TokenPriceHeader
               price={ohlcvPrice}
               percentChange={ohlcvPercentChange}
@@ -597,11 +602,15 @@ const AssetPage = ({
               ambientColor={initialAmbientColor}
             />
 
-            {/* Show skeleton for IntervalBar while chart is loading */}
-            {acChartReady ? (
+            {/* IntervalBar with chart type toggle - always visible when FF is ON.
+                Show skeleton only in candle mode while chart is loading (no error). */}
+            {acIsLineChart || acChartReady || combinedChartError ? (
               <IntervalBar
-                selectedInterval={acInterval}
-                onIntervalSelect={setAcInterval}
+                intervals={acIsLineChart ? LINE_CHART_TIME_RANGES : undefined}
+                selectedInterval={acIsLineChart ? acLineTimeRange : acInterval}
+                onIntervalSelect={
+                  acIsLineChart ? setAcLineTimeRange : setAcInterval
+                }
                 chartType={acChartType}
                 onChartTypeSelect={setAcChartType}
               />
@@ -620,37 +629,94 @@ const AssetPage = ({
                 <Skeleton className="h-[28px] w-[72px] rounded-lg" />
               </Box>
             )}
-            <AdvancedChartIframe
-              assetId={caipAssetId as string}
-              height={300}
-              chartType={acChartType}
-              selectedInterval={acInterval}
-              activeIndicators={acIndicators}
-              ohlcvData={ohlcvData}
-              onError={setAdvancedChartError}
-              onReady={handleAdvancedChartReady}
-              realtimeBar={realtimeLatestBar ?? undefined}
-              lineColorOverride={initialAmbientColor}
-              successColorOverride={ambientSuccessColor}
-              errorColorOverride={ambientErrorColor}
-            />
-            {/* Candlestick-only: the selection is kept in preferences, but the
-                bar and the studies themselves are hidden on a line chart. */}
-            {acChartReady && acChartType === CHART_TYPE_CANDLE && (
-              <IndicatorBar
-                activeIndicators={acIndicators}
-                onIndicatorToggle={toggleAcIndicator}
-                onMAToggle={toggleAcIndicator}
-              />
-            )}
+
+            {/* Chart area container: the legacy chart is always rendered to drive
+                the container's natural height. In candle mode it becomes invisible
+                (but still occupies space) while the advanced chart is overlaid
+                via absolute positioning, guaranteeing zero layout shift. */}
+            <Box style={{ position: 'relative' }}>
+              {/* Legacy chart — always mounted to define container height */}
+              <Box
+                style={{
+                  visibility: acIsLineChart ? 'visible' : 'hidden',
+                }}
+              >
+                <AssetChart
+                  chainId={chainId}
+                  address={address}
+                  currentPrice={currentPrice}
+                  currency={currency}
+                  controlledTimeRange={
+                    LINE_TIME_RANGE_TO_ISO8601[acLineTimeRange] ?? 'P1D'
+                  }
+                  hideTimeRangeSelector
+                  realtimePrice={ohlcvPrice}
+                  realtimeTimestamp={ohlcvTimestamp}
+                  chartColor={initialAmbientColor}
+                />
+              </Box>
+
+              {/* Candle mode overlay: absolutely positioned to fill legacy chart's space.
+                  The iframe is ALWAYS mounted to avoid re-init; hidden via display:none
+                  when in line mode or error state. Error state and IndicatorBar are
+                  conditionally rendered since they don't need to persist. */}
+              <Box
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  ...(acIsLineChart ? { display: 'none' } : {}),
+                }}
+                flexDirection={BoxFlexDirection.Column}
+              >
+                {/* Error state overlay */}
+                {combinedChartError && <ChartErrorState />}
+
+                {/* TradingView iframe — always mounted, hidden on error */}
+                <Box
+                  style={{
+                    flex: 1,
+                    ...(combinedChartError ? { display: 'none' } : {}),
+                  }}
+                >
+                  <AdvancedChartIframe
+                    assetId={caipAssetId as string}
+                    chartType={acChartType}
+                    selectedInterval={acInterval}
+                    activeIndicators={acIndicators}
+                    ohlcvData={ohlcvData}
+                    onError={setAdvancedChartError}
+                    onReady={handleAdvancedChartReady}
+                    realtimeBar={realtimeLatestBar ?? undefined}
+                    lineColorOverride={initialAmbientColor}
+                    successColorOverride={ambientSuccessColor}
+                    errorColorOverride={ambientErrorColor}
+                  />
+                </Box>
+
+                {acChartReady && !combinedChartError && (
+                  <IndicatorBar
+                    activeIndicators={acIndicators}
+                    onIndicatorToggle={toggleAcIndicator}
+                    onMAToggle={toggleAcIndicator}
+                  />
+                )}
+              </Box>
+            </Box>
           </>
         ) : (
-          <AssetChart
-            chainId={chainId}
-            address={address}
-            currentPrice={currentPrice}
-            currency={currency}
-          />
+          /* FF OFF: parent owns header, legacy chart handles the rest */
+          <>
+            <TokenPriceHeader price={currentPrice} currency={currency} />
+            <AssetChart
+              chainId={chainId}
+              address={address}
+              currentPrice={currentPrice}
+              currency={currency}
+            />
+          </>
         )}
         <MaybePerpsViewStreamBoundary
           enabled={Boolean(isPerpsMarketLoading || perpsMarket)}
