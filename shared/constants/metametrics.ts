@@ -1059,6 +1059,8 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
+  ChartInteracted = 'Chart Interacted',
+  ChartEmptyDisplayed = 'Chart Empty Displayed',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
   TokenDetailsSecuritySectionViewed = 'token_details_security_section_viewed',
   NftScreenViewed = 'NFT Screen Viewed',

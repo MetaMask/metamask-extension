@@ -30,6 +30,28 @@ const CHART_ORIGIN = 'http://localhost:8001';
 // If the chart hasn't emitted CHART_READY within this window, fall back to legacy.
 const LOAD_TIMEOUT_MS = 5_000;
 
+/**
+ * Whether a URL handed over by the chart bundle points at TradingView.
+ *
+ * The bundle filters these links itself, but the origin check on an incoming
+ * message only proves who sent it, not where the URL points, so the host checks
+ * again before handing anything to a tab-open.
+ *
+ * @param url - Candidate URL from a `CHART_TRADINGVIEW_CLICKED` message.
+ * @returns True when the URL is an https TradingView URL.
+ */
+const isTradingViewUrl = (url: string) => {
+  try {
+    const { protocol, hostname } = new URL(url);
+    return (
+      protocol === 'https:' &&
+      (hostname === 'tradingview.com' || hostname.endsWith('.tradingview.com'))
+    );
+  } catch {
+    return false;
+  }
+};
+
 /** Imperative handle so the parent can send messages to the chart engine. */
 export type AdvancedChartIframeRef = {
   postMessage: (message: Record<string, unknown>) => void;
@@ -49,6 +71,17 @@ type AdvancedChartIframeProps = {
   ohlcvData: OHLCVBar[];
   onError?: (error: string) => void;
   onReady?: () => void;
+  /**
+   * Fired for gesture interactions the chart engine reports: zoom, pan, and
+   * tooltip. Already debounced by the engine.
+   */
+  onChartInteracted?: (interactionType: 'zoom' | 'pan' | 'tooltip') => void;
+  /**
+   * Fired when a TradingView attribution link inside the chart is clicked. The
+   * chart bundle cancels the navigation and hands the URL to its host, so the
+   * host is responsible for opening it.
+   */
+  onTradingViewClicked?: (url: string) => void;
   /** Real-time candle update from useOHLCVRealtime hook */
   realtimeBar?: OHLCVRealtimeBar;
   /** Ambient color overrides — mirrors mobile's AdvancedChart props */
@@ -72,6 +105,8 @@ const AdvancedChartIframe = forwardRef<
       ohlcvData,
       onError,
       onReady,
+      onChartInteracted,
+      onTradingViewClicked,
       realtimeBar,
       lineColorOverride,
       successColorOverride,
@@ -120,13 +155,31 @@ const AdvancedChartIframe = forwardRef<
           if (msg?.type === 'ERROR' && msg?.payload?.message) {
             onError?.(msg.payload.message);
           }
+          // The chart bundle debounces zoom and pan and sends tooltip once per
+          // crosshair session, so these arrive pre-throttled.
+          if (
+            msg?.type === 'CHART_INTERACTED' &&
+            msg?.payload?.interaction_type
+          ) {
+            onChartInteracted?.(msg.payload.interaction_type);
+          }
+          // Debounced by the bundle, which also suppresses the navigation. As on
+          // mobile, a message without a usable URL is ignored rather than
+          // reported.
+          if (
+            msg?.type === 'CHART_TRADINGVIEW_CLICKED' &&
+            typeof msg?.payload?.url === 'string' &&
+            isTradingViewUrl(msg.payload.url)
+          ) {
+            onTradingViewClicked?.(msg.payload.url);
+          }
         } catch {
           // ignore non-JSON
         }
       };
       window.addEventListener('message', handleMessage);
       return () => window.removeEventListener('message', handleMessage);
-    }, [onError, onReady]);
+    }, [onChartInteracted, onError, onReady, onTradingViewClicked]);
 
     // Fall back to legacy chart if chartReady isn't set within LOAD_TIMEOUT_MS.
     useEffect(() => {

@@ -243,6 +243,92 @@ describe('AdvancedChartIframe', () => {
       );
     });
 
+    it('forwards gesture interactions reported by the chart engine', () => {
+      const onChartInteracted = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onChartInteracted={onChartInteracted}
+        />,
+      );
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({
+              type: 'CHART_INTERACTED',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              payload: { interaction_type: 'zoom' },
+            }),
+          }),
+        );
+      });
+
+      expect(onChartInteracted).toHaveBeenCalledWith('zoom');
+    });
+
+    it('forwards a TradingView attribution click with its url', () => {
+      const onTradingViewClicked = jest.fn();
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          onTradingViewClicked={onTradingViewClicked}
+        />,
+      );
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({
+              type: 'CHART_TRADINGVIEW_CLICKED',
+              payload: { url: 'https://www.tradingview.com/symbols/ETHUSD/' },
+            }),
+          }),
+        );
+      });
+
+      expect(onTradingViewClicked).toHaveBeenCalledWith(
+        'https://www.tradingview.com/symbols/ETHUSD/',
+      );
+    });
+
+    const rejectedUrls: [string, string][] = [
+      ['a non-TradingView host', 'https://evil.example.com/phish'],
+      ['a lookalike host', 'https://tradingview.com.evil.example.com/'],
+      // eslint-disable-next-line no-script-url -- asserting this scheme is rejected
+      ['a non-https scheme', 'javascript:alert(1)'],
+      ['an unparseable url', 'not-a-url'],
+      ['an empty url', ''],
+    ];
+
+    for (const [description, url] of rejectedUrls) {
+      it(`ignores a TradingView click carrying ${description}`, () => {
+        const onTradingViewClicked = jest.fn();
+        render(
+          <AdvancedChartIframe
+            {...defaultProps}
+            onTradingViewClicked={onTradingViewClicked}
+          />,
+        );
+
+        act(() => {
+          window.dispatchEvent(
+            new MessageEvent('message', {
+              origin: CHART_ORIGIN,
+              data: JSON.stringify({
+                type: 'CHART_TRADINGVIEW_CLICKED',
+                payload: { url },
+              }),
+            }),
+          );
+        });
+
+        expect(onTradingViewClicked).not.toHaveBeenCalled();
+      });
+    }
+
     it('exposes postMessage via ref', () => {
       const ref = React.createRef<{
         postMessage: (msg: Record<string, unknown>) => void;
