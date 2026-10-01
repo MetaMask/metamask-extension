@@ -91,7 +91,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [fixed] # DEBUG RUN: fixed only, with per-module hash dumps
+        variant: [fixed, branch] # DEBUG RUN 2: tag+fixes vs the PR branch itself, with per-module hash dumps
         iteration:
           [1, 2, 3, 4, 5, 6] # DEBUG RUN 2: six jobs are enough to compare
     steps:
@@ -113,10 +113,12 @@ jobs:
           echo "len=${#abs}" >> "${GITHUB_OUTPUT}"
           echo "Building in ${abs} (length ${#abs})"
 
-      - name: Clone ${{ env.TAG }} into that directory
+      - name: Clone ${{ env.TAG }} (or the PR branch) into that directory
         shell: bash
         run: |
-          git clone --quiet --depth 1 --branch "${TAG}" \
+          ref="${TAG}"
+          if [ "${{ matrix.variant }}" = "branch" ]; then ref="fix/amo-build-determinism"; fi
+          git clone --quiet --depth 1 --branch "${ref}" \
             https://github.com/MetaMask/metamask-extension.git \
             "${{ steps.dir.outputs.dir }}"
 
@@ -126,6 +128,13 @@ jobs:
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
             "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v5-debug2-on-v13.47.1.patch"
+
+      - name: Add the hash-dump plugin (branch variant)
+        if: ${{ matrix.variant == 'branch' }}
+        shell: bash
+        run: |
+          git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/debug-dump-on-branch.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
