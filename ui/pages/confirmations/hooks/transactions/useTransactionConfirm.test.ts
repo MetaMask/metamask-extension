@@ -35,6 +35,7 @@ import { useTransactionConfirm } from './useTransactionConfirm';
 
 const mockGetEnvironmentType = jest.fn();
 const mockUseIsHardwareWalletAccount = jest.fn();
+const mockUseTransactionPayingAccount = jest.fn();
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment-type'),
@@ -76,6 +77,9 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 jest.mock('./useMoneyAccountWithdrawConfirm');
+jest.mock('./useTransactionPayingAccount', () => ({
+  useTransactionPayingAccount: () => mockUseTransactionPayingAccount(),
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -225,6 +229,9 @@ describe('useTransactionConfirm', () => {
       sendAmount: '1.5',
       sendSymbol: 'ETH',
     });
+    mockUseTransactionPayingAccount.mockReturnValue(
+      TRANSACTION_META_MOCK.txParams.from,
+    );
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
     mockPrepareWithdrawTransaction.mockResolvedValue(null);
@@ -249,6 +256,23 @@ describe('useTransactionConfirm', () => {
     await onTransactionConfirm();
 
     expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses the paying account to detect hardware wallet signing', async () => {
+    const payingAccount = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+    mockUseTransactionPayingAccount.mockReturnValue(payingAccount);
+    mockUseIsHardwareWalletAccount.mockReturnValue(true);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      'Confirm with your hardware wallet',
+      payingAccount,
+    );
   });
 
   it('updates custom nonce', async () => {
@@ -526,6 +550,7 @@ describe('useTransactionConfirm', () => {
       }),
       true,
       '',
+      TRANSACTION_META_MOCK.txParams.from,
     );
   });
 

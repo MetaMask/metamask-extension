@@ -11,7 +11,7 @@
         "process": true
       },
       "packages": {
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "@babel/types>@babel/helper-validator-identifier": true,
         "@babel/code-frame>js-tokens": true,
         "postcss>picocolors": true
       }
@@ -47,6 +47,7 @@
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
+        "@babel/types": true,
         "@babel/core>@babel/types": true,
         "@babel/core>@jridgewell/remapping": true,
         "@babel/core>convert-source-map": true,
@@ -62,7 +63,7 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/core>@babel/types": true,
+        "@babel/types": true,
         "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
@@ -70,7 +71,7 @@
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets": {
@@ -105,7 +106,7 @@
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -113,7 +114,7 @@
         "assert": true
       },
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms": {
@@ -125,13 +126,13 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "@babel/types>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
@@ -144,13 +145,13 @@
     },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helpers": {
       "packages": {
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "react-compiler-webpack>@babel/plugin-syntax-jsx": {
@@ -199,7 +200,7 @@
       "packages": {
         "@babel/code-frame": true,
         "depcheck>@babel/parser": true,
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -213,6 +214,7 @@
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
+        "@babel/types": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
@@ -228,18 +230,18 @@
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
+        "@babel/types": true,
         "nock>debug": true
       }
     },
-    "@babel/core>@babel/types": {
+    "@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
+        "@babel/types>@babel/helper-string-parser": true,
+        "@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
@@ -302,6 +304,102 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/json-pack>@jsonjoy.com/base64": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/buffers": {
+      "globals": {
+        "Buffer": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "tslib": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-core": {
+      "builtin": {
+        "process": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process": true
+      },
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-builtins": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-utils": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>thingies": true,
+        "tslib": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-builtins": {
+      "builtin": {
+        "node:buffer.Buffer": true,
+        "node:events.EventEmitter": true,
+        "node:path.basename": true,
+        "node:path.dirname": true,
+        "node:path.isAbsolute": true,
+        "node:path.join": true,
+        "node:path.normalize": true,
+        "node:path.posix": true,
+        "node:path.relative": true,
+        "node:path.resolve": true,
+        "node:path.sep": true,
+        "node:stream.Readable": true,
+        "node:stream.Writable": true,
+        "node:url.URL": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-utils": {
+      "globals": {
+        "setTimeout.apply": true
+      },
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-builtins": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>glob-to-regex.js": true,
+        "tslib": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node": {
+      "globals": {
+        "Blob": true,
+        "ReadableStream": true,
+        "clearTimeout": true,
+        "process": true,
+        "queueMicrotask": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-core": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-builtins": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-utils": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-print": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>glob-to-regex.js": true,
+        "tslib": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-print": {
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-utils": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>tree-dump": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot": {
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/buffers": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/json-pack": true,
+        "tslib": true
+      }
+    },
+    "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/json-pack": {
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/json-pack>@jsonjoy.com/base64": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-snapshot>@jsonjoy.com/buffers": true,
+        "tslib": true
       }
     },
     "@lavamoat/webpack>@lavamoat/aa": {
@@ -829,6 +927,7 @@
         "process": true
       },
       "packages": {
+        "@babel/types": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -2282,27 +2381,12 @@
       }
     },
     "webpack-dev-server>webpack-dev-middleware>memfs": {
-      "builtin": {
-        "assert": true,
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "path": true,
-        "process": true,
-        "stream.Readable": true,
-        "stream.Writable": true,
-        "url.URL": true,
-        "util.format": true,
-        "util.inherits": true,
-        "util.inspect": true
-      },
       "globals": {
-        "DOMException": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "process": true,
-        "queueMicrotask": true,
-        "setImmediate": true,
-        "setTimeout": true
+        "process": true
+      },
+      "packages": {
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node-utils": true,
+        "webpack-dev-server>webpack-dev-middleware>memfs>@jsonjoy.com/fs-node": true
       }
     },
     "@viem/anvil>execa>merge-stream": {
@@ -2338,6 +2422,38 @@
       },
       "packages": {
         "koa>accepts>mime-types>mime-db": true
+      }
+    },
+    "koa>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "webpack>mime-db": true
+      }
+    },
+    "webpack-dev-server>serve-index>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "webpack-dev-server>serve-index>mime-types>mime-db": true
+      }
+    },
+    "mockttp>body-parser>type-is>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "mockttp>body-parser>type-is>mime-types>mime-db": true
+      }
+    },
+    "webpack-dev-server>express>type-is>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "webpack-dev-server>express>type-is>mime-types>mime-db": true
       }
     },
     "http-server>mime": {
@@ -3263,7 +3379,7 @@
         "webpack-dev-server>serve-index>debug": true,
         "koa>escape-html": true,
         "webpack-dev-server>serve-index>http-errors": true,
-        "koa>accepts>mime-types": true,
+        "webpack-dev-server>serve-index>mime-types": true,
         "koa>parseurl": true
       }
     },
@@ -3662,6 +3778,11 @@
         "path.resolve": true
       }
     },
+    "webpack-dev-server>webpack-dev-middleware>memfs>tree-dump": {
+      "packages": {
+        "tslib": true
+      }
+    },
     "tailwindcss>sucrase>ts-interface-checker": {
       "globals": {
         "Buffer": true
@@ -3691,13 +3812,13 @@
     "mockttp>body-parser>type-is": {
       "packages": {
         "mockttp>body-parser>type-is>media-typer": true,
-        "koa>accepts>mime-types": true
+        "mockttp>body-parser>type-is>mime-types": true
       }
     },
     "webpack-dev-server>express>type-is": {
       "packages": {
         "webpack-dev-server>express>type-is>media-typer": true,
-        "koa>accepts>mime-types": true
+        "webpack-dev-server>express>type-is>mime-types": true
       }
     },
     "typescript": {
@@ -3972,15 +4093,18 @@
     },
     "webpack-dev-server>webpack-dev-middleware": {
       "builtin": {
-        "crypto.createHash": true,
-        "fs.mkdir": true,
-        "fs.writeFile": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.normalize": true,
-        "querystring.unescape": true,
-        "url.parse": true
+        "node:crypto.createHash": true,
+        "node:fs.mkdir": true,
+        "node:fs.writeFile": true,
+        "node:path.dirname": true,
+        "node:path.extname": true,
+        "node:path.isAbsolute": true,
+        "node:path.join": true,
+        "node:path.normalize": true,
+        "node:path.relative": true,
+        "node:path.sep": true,
+        "node:querystring.unescape": true,
+        "node:url.parse": true
       },
       "globals": {
         "Buffer.byteLength": true,
@@ -3993,7 +4117,7 @@
       "packages": {
         "webpack-cli>colorette": true,
         "webpack-dev-server>webpack-dev-middleware>memfs": true,
-        "koa>accepts>mime-types": true,
+        "koa>mime-types": true,
         "koa>on-finished": true,
         "mockttp>express>range-parser": true,
         "schema-utils": true

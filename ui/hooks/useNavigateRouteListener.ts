@@ -1,10 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, type Path } from 'react-router-dom';
 import browser from 'webextension-polyfill';
 import { isObject } from '@metamask/utils';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { getIsUnlocked } from '../ducks/metamask/base-selectors';
-import { useAppSelector } from '../store/hooks';
 
 function routeFromMessage(
   message: unknown,
@@ -33,25 +31,11 @@ function routeFromMessage(
  */
 export function useNavigateRouteListener(): void {
   const navigate = useNavigate();
-  const isUnlocked = useAppSelector(getIsUnlocked);
-  const isUnlockedRef = useRef(isUnlocked);
-  const pendingRouteRef = useRef<Pick<Path, 'pathname' | 'search'> | null>(
-    null,
-  );
-
-  useEffect(() => {
-    isUnlockedRef.current = isUnlocked;
-  }, [isUnlocked]);
 
   useEffect(() => {
     const onMessage = (message: unknown) => {
       const route = routeFromMessage(message);
       if (!route) {
-        return undefined;
-      }
-
-      if (!isUnlockedRef.current) {
-        pendingRouteRef.current = route;
         return undefined;
       }
 
@@ -64,13 +48,4 @@ export function useNavigateRouteListener(): void {
       browser.runtime.onMessage.removeListener(onMessage);
     };
   }, [navigate]);
-
-  useEffect(() => {
-    if (!isUnlocked || !pendingRouteRef.current) {
-      return;
-    }
-    const route = pendingRouteRef.current;
-    pendingRouteRef.current = null;
-    navigate(route);
-  }, [isUnlocked, navigate]);
 }

@@ -13,6 +13,10 @@ import { getManifestFlags } from '../manifestFlags';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import { IndexedDBStore } from './indexeddb-store';
+import {
+  BACKUP_INDEXED_DB_NAME,
+  BACKUP_INDEXED_DB_VERSION,
+} from './indexeddb-storage-constants';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -26,7 +30,6 @@ export type StorageKind = 'data' | 'split';
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
-  'MetaMetricsController',
   'AnalyticsController',
 ] as const;
 
@@ -491,7 +494,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // cost is negligible here because the write is skipped unless the
       // serialized backup actually changed.
       const db = new IndexedDBStore({ strictDurability: true });
-      await db.open('metamask-backup', 1);
+      await db.open(BACKUP_INDEXED_DB_NAME, BACKUP_INDEXED_DB_VERSION);
       this.#backupDb = db;
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
@@ -1105,7 +1108,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               log.info('Backup vault found in IndexedDB, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
-              // We do this here (before throwing) because MetaMetricsController
+              // We do this here (before throwing) because AnalyticsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
                 ? StateCorruptionErrorType.InaccessibleDatabase
