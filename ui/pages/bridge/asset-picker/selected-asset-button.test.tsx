@@ -5,6 +5,7 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../store/store';
+import { BridgeAssetSecurityDataType } from '../utils/tokens';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { SelectedAssetButton } from './selected-asset-button';
 
@@ -58,9 +59,7 @@ describe('SelectedAssetButton', () => {
       isVerified: true,
     });
 
-    expect(
-      getByTestId('bridge-selected-asset-verified-badge'),
-    ).toBeInTheDocument();
+    expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
   it('does not render the verified badge for an unverified asset', () => {
@@ -69,9 +68,7 @@ describe('SelectedAssetButton', () => {
       isVerified: false,
     });
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('does not render the verified badge when verification is absent', () => {
@@ -79,9 +76,16 @@ describe('SelectedAssetButton', () => {
       toBridgeToken(getNativeAssetForChainId('0x1')),
     );
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('does not render a badge for a malicious asset unless it is verified', () => {
+    const { queryByTestId } = renderButton({
+      ...toBridgeToken(getNativeAssetForChainId('0x1')),
+      securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
+    });
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('applies the bridge-selected-asset-button class', () => {
