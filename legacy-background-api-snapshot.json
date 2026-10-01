@@ -95,7 +95,8 @@
     "unlockAndGetSeedPhrase",
     "unlockHardwareWalletAccount",
     "unlockWithPasskey",
-    "upsertTransactionUIMetricsFragment"
+    "upsertTransactionUIMetricsFragment",
+    "dsjalkjdf"
   ],
   "MetamaskController.getApi": [
     "addCustomAsset",
@@ -461,6 +462,7 @@
     "updateViewedNotifications",
     "upsertTransactionUIMetricsFragment",
     "validateRewardsReferralCode",
-    "verifyPassword"
+    "verifyPassword",
+    "zzzz"
   ]
 }

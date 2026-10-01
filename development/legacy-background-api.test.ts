@@ -3,34 +3,14 @@ import fs from 'fs';
 import * as path from 'path';
 import { createSandbox } from '@metamask/utils/node';
 
-/**
- * The result of running the script.
- */
-type ScriptResult = {
-  /**
-   * The exit code of the process.
-   */
-  exitCode: number | null;
-  /**
-   * Everything the process wrote to standard output.
-   */
-  stdout: string;
-  /**
-   * Everything the process wrote to standard error.
-   */
-  stderr: string;
-};
-
 const REPOSITORY_ROOT_PATH = path.resolve(__dirname, '..');
 
 const SCRIPT_PATH = path.join(__dirname, 'legacy-background-api.ts');
-
 const TSX_PATH = path.join(REPOSITORY_ROOT_PATH, 'node_modules/.bin/tsx');
 
-const CONTROLLER_PATH = 'app/scripts/metamask-controller.js';
-
-const SERVICE_PATH = 'app/scripts/services/legacy-background-api-service.ts';
-
+const METAMASK_CONTROLLER_PATH = 'app/scripts/metamask-controller.js';
+const LEGACY_BACKGROUND_API_SERVICE_PATH =
+  'app/scripts/services/legacy-background-api-service.ts';
 const SNAPSHOT_PATH = 'legacy-background-api-snapshot.json';
 
 const EMPTY_CONTROLLER_SOURCE = `
@@ -49,9 +29,9 @@ describe('legacy-background-api.ts', () => {
   describe('check', () => {
     it('succeeds when the legacy background APIs match the snapshot', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -60,7 +40,7 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               existingMethod(): void {}
             }
@@ -79,9 +59,9 @@ describe('legacy-background-api.ts', () => {
 
     it('succeeds when the snapshot lists names in a different order', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -105,9 +85,9 @@ describe('legacy-background-api.ts', () => {
 
     it('rejects properties added to MetamaskController.getApi, advising that they be removed', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -131,16 +111,16 @@ describe('legacy-background-api.ts', () => {
           'MetamaskController.getApi has properties which are not listed in legacy-background-api-snapshot.json:\n- newPropertyA\n- newPropertyB',
         );
         expect(result.stderr).toContain(
-          'MetamaskController.getApi is frozen, so please remove these properties.',
+          'MetamaskController.getApi is a deprecated legacy API,\nand we do not support extending it further.',
         );
       });
     });
 
     it('rejects methods added to LegacyBackgroundApiService, advising that they be removed', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               newMethod(): void {}
             }
@@ -158,14 +138,14 @@ describe('legacy-background-api.ts', () => {
           'LegacyBackgroundApiService has methods which are not listed in legacy-background-api-snapshot.json:\n- newMethod',
         );
         expect(result.stderr).toContain(
-          'LegacyBackgroundApiService is frozen, so please remove these methods.',
+          'LegacyBackgroundApiService is a deprecated legacy API,\nand we do not support extending it further.',
         );
       });
     });
 
     it('rejects properties removed from MetamaskController.getApi, advising that the snapshot be updated', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
           snapshot: JSON.stringify({
             LegacyBackgroundApiService: [],
@@ -190,7 +170,7 @@ describe('legacy-background-api.ts', () => {
 
     it('rejects methods removed from LegacyBackgroundApiService, advising that the snapshot be updated', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
           snapshot: JSON.stringify({
             LegacyBackgroundApiService: ['obsoleteMethod'],
@@ -212,9 +192,9 @@ describe('legacy-background-api.ts', () => {
 
     it('reports discrepancies in both APIs at once', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -223,7 +203,7 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               newMethod(): void {}
             }
@@ -243,7 +223,7 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when the snapshot does not exist', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({ directoryPath });
+        setupSandbox({ directoryPath });
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -256,7 +236,7 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when the snapshot is not valid JSON', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({ directoryPath, snapshot: '{' });
+        setupSandbox({ directoryPath, snapshot: '{' });
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -269,7 +249,7 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when the snapshot does not have an entry for an API', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
           snapshot: JSON.stringify({ 'MetamaskController.getApi': [] }),
         });
@@ -285,7 +265,7 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when an entry in the snapshot is not an array of strings', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
           snapshot: JSON.stringify({
             LegacyBackgroundApiService: [],
@@ -306,9 +286,9 @@ describe('legacy-background-api.ts', () => {
   describe('update', () => {
     it('replaces the snapshot with the sorted names of both APIs', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -318,7 +298,7 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               methodB(): void {}
 
@@ -343,9 +323,9 @@ describe('legacy-background-api.ts', () => {
 
     it('records shorthand, method, and spread properties of MetamaskController.getApi', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return {
@@ -375,9 +355,9 @@ describe('legacy-background-api.ts', () => {
 
     it('ignores properties of nested objects and of objects outside of MetamaskController.getApi', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getState() {
                 return {
@@ -407,9 +387,9 @@ describe('legacy-background-api.ts', () => {
 
     it('records async public methods of LegacyBackgroundApiService', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               async asyncMethod(): Promise<void> {}
             }
@@ -427,9 +407,9 @@ describe('legacy-background-api.ts', () => {
 
     it('ignores private and protected methods of LegacyBackgroundApiService', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               #helper(): void {}
 
@@ -451,9 +431,9 @@ describe('legacy-background-api.ts', () => {
 
     it('ignores properties and nested classes of LegacyBackgroundApiService', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          serviceSource: `
+          legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
               readonly messenger: unknown;
 
@@ -477,9 +457,9 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when MetamaskController does not exist', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: 'class OtherController {}',
+          metamaskControllerContent: 'class OtherController {}',
         });
 
         const result = await runScript({ directoryPath, args: ['update'] });
@@ -491,9 +471,9 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when MetamaskController.getApi does not exist', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: 'class MetamaskController {}',
+          metamaskControllerContent: 'class MetamaskController {}',
         });
 
         const result = await runScript({ directoryPath, args: ['update'] });
@@ -507,9 +487,9 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when MetamaskController.getApi does not return an object literal', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          controllerSource: `
+          metamaskControllerContent: `
             class MetamaskController {
               getApi() {
                 return this.api;
@@ -529,9 +509,9 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when LegacyBackgroundApiService does not exist', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setUpRepository({
+        setupSandbox({
           directoryPath,
-          serviceSource: 'export class OtherService {}',
+          legacyBackgroundApiServiceContent: 'export class OtherService {}',
         });
 
         const result = await runScript({ directoryPath, args: ['update'] });
@@ -546,7 +526,7 @@ describe('legacy-background-api.ts', () => {
 
   it('fails when no command is given', async () => {
     await withinSandbox(async ({ directoryPath }) => {
-      setUpRepository({ directoryPath });
+      setupSandbox({ directoryPath });
 
       const result = await runScript({ directoryPath, args: [] });
 
@@ -575,26 +555,32 @@ async function withinSandbox(
  * @param options - The options.
  * @param options.directoryPath - The directory standing in for the root of the
  * repository.
- * @param options.controllerSource - The contents of the file that defines
- * `MetamaskController`.
- * @param options.serviceSource - The contents of the file that defines
- * `LegacyBackgroundApiService`.
+ * @param options.metamaskControllerContent - The contents of the file that
+ * defines `MetamaskController`.
+ * @param options.legacyBackgroundApiServiceContent - The contents of the file
+ * that defines `LegacyBackgroundApiService`.
  * @param options.snapshot - The contents of the snapshot. If omitted, the
  * snapshot is not created.
  */
-function setUpRepository({
+function setupSandbox({
   directoryPath,
-  controllerSource = EMPTY_CONTROLLER_SOURCE,
-  serviceSource = EMPTY_SERVICE_SOURCE,
+  metamaskControllerContent = EMPTY_CONTROLLER_SOURCE,
+  legacyBackgroundApiServiceContent = EMPTY_SERVICE_SOURCE,
   snapshot,
 }: {
   directoryPath: string;
-  controllerSource?: string;
-  serviceSource?: string;
+  metamaskControllerContent?: string;
+  legacyBackgroundApiServiceContent?: string;
   snapshot?: string;
 }): void {
-  writeFile(path.join(directoryPath, CONTROLLER_PATH), controllerSource);
-  writeFile(path.join(directoryPath, SERVICE_PATH), serviceSource);
+  writeFile(
+    path.join(directoryPath, METAMASK_CONTROLLER_PATH),
+    metamaskControllerContent,
+  );
+  writeFile(
+    path.join(directoryPath, LEGACY_BACKGROUND_API_SERVICE_PATH),
+    legacyBackgroundApiServiceContent,
+  );
   if (snapshot !== undefined) {
     writeFile(path.join(directoryPath, SNAPSHOT_PATH), snapshot);
   }
@@ -639,7 +625,11 @@ async function runScript({
 }: {
   directoryPath: string;
   args: string[];
-}): Promise<ScriptResult> {
+}): Promise<{
+  exitCode: number | null;
+  stdout: string;
+  stderr: string;
+}> {
   return new Promise((resolve, reject) => {
     const child = spawn(TSX_PATH, [SCRIPT_PATH, ...args], {
       cwd: directoryPath,
