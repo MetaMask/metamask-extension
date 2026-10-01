@@ -412,9 +412,6 @@
     "message": "کلید شخصی",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "هشدار: هرگز این کلید را فاش نسازید. هر کسیکه کلید های شخصی تان را داشته باشد میتواند هرگونه سرمایه موجود در حساب تان را سرقت نماید."
-  },
   "privateNetwork": {
     "message": "شبکه شخصی"
   },

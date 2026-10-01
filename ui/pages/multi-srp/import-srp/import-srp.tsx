@@ -41,6 +41,7 @@ export const ImportSrp = () => {
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
@@ -50,6 +51,12 @@ export const ImportSrp = () => {
     try {
       if (!secretRecoveryPhrase) {
         return;
+      }
+
+      if (shouldClearClipboard) {
+        navigator.clipboard.writeText('').catch(() => {
+          // Do not block SRP import if clipboard access remains unavailable.
+        });
       }
 
       if (isSocialLoginEnabled) {
@@ -129,6 +136,8 @@ export const ImportSrp = () => {
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
+        onClearClipboardRetry={() => setShouldClearClipboard(false)}
+        onClipboardClearFailed={() => setShouldClearClipboard(true)}
       />
       <Box className="w-full cta-footer">
         <Button

@@ -86,8 +86,8 @@ import {
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
-import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
 import {
   CandlePeriod,
   TimeDuration,
@@ -685,8 +685,16 @@ const PerpsMarketDetailPage = () => {
   const [cancelOrderTarget, setCancelOrderTarget] = useState<Order | null>(
     null,
   );
-  const modifyMenuRef = useRef<HTMLDivElement>(null);
-  const marginMenuRef = useRef<HTMLDivElement>(null);
+  const [marginMenuElement, setMarginMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const [modifyMenuElement, setModifyMenuElement] =
+    useState<HTMLDivElement | null>(null);
+  const setMarginMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setMarginMenuElement(node);
+  }, []);
+  const setModifyMenuRef = useCallback((node: HTMLDivElement | null) => {
+    setModifyMenuElement(node);
+  }, []);
 
   // Parse fallback price from market data (used before candle stream is ready)
   const marketPrice = useMemo(() => {
@@ -725,7 +733,7 @@ const PerpsMarketDetailPage = () => {
       return formatPerpsFiatUniversal(market.price);
     }
     return '$0.00';
-  }, [market?.price, livePrice?.price, chartCurrentPrice]);
+  }, [market, livePrice?.price, chartCurrentPrice]);
 
   // 24h change prefers live stream updates when available, with market-data fallback.
   const displayChange = formatSignedChangePercent(
@@ -855,7 +863,7 @@ const PerpsMarketDetailPage = () => {
         track(MetaMetricsEventName.PerpsUiInteraction, {
           [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
             PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-          [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+          [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
             PERPS_EVENT_VALUE.BUTTON_CLICKED.TRADE,
           [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
             PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -899,7 +907,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.ADD_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -917,7 +925,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REMOVE_MARGIN,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -943,7 +951,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.INCREASE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -984,7 +992,7 @@ const PerpsMarketDetailPage = () => {
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
           PERPS_EVENT_VALUE.BUTTON_CLICKED.REDUCE_EXPOSURE,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1001,7 +1009,7 @@ const PerpsMarketDetailPage = () => {
     track(MetaMetricsEventName.PerpsUiInteraction, {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+      [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
         PERPS_EVENT_VALUE.BUTTON_CLICKED.MARGIN,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
         PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -1509,7 +1517,7 @@ const PerpsMarketDetailPage = () => {
 
                 {/* Margin Card - click to open Add/Remove margin popover */}
                 <Box
-                  ref={marginMenuRef}
+                  ref={setMarginMenuRef}
                   className="relative flex-1 rounded-xl bg-muted px-4 py-3 cursor-pointer hover:bg-muted-hover active:bg-muted-pressed transition-colors"
                   flexDirection={BoxFlexDirection.Column}
                   onClick={handleOpenMarginMenu}
@@ -1532,7 +1540,7 @@ const PerpsMarketDetailPage = () => {
                     {formatPerpsFiatMinimal(position.marginUsed)}
                   </SensitiveText>
                   <Popover
-                    referenceElement={marginMenuRef.current}
+                    referenceElement={marginMenuElement}
                     isOpen={isMarginMenuOpen}
                     isPortal
                     onClickOutside={() => setIsMarginMenuOpen(false)}
@@ -1982,7 +1990,7 @@ const PerpsMarketDetailPage = () => {
                 track(MetaMetricsEventName.PerpsUiInteraction, {
                   [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
                     PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-                  [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+                  [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
                     PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
                   [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
                     PERPS_EVENT_VALUE.BUTTON_LOCATION.ASSET_DETAILS,
@@ -2029,7 +2037,7 @@ const PerpsMarketDetailPage = () => {
             data-testid="perps-position-cta-buttons"
           >
             {/* Modify dropdown */}
-            <Box ref={modifyMenuRef} className="flex-1 min-w-0">
+            <Box ref={setModifyMenuRef} className="flex-1 min-w-0">
               <Button
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
@@ -2057,7 +2065,7 @@ const PerpsMarketDetailPage = () => {
                 />
               </Button>
               <Popover
-                referenceElement={modifyMenuRef.current}
+                referenceElement={modifyMenuElement}
                 isOpen={isModifyMenuOpen}
                 isPortal
                 onClickOutside={() => setIsModifyMenuOpen(false)}

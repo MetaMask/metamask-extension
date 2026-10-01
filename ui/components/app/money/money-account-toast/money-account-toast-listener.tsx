@@ -19,6 +19,10 @@ import {
   getMoneyAccountDepositIntent,
   type MoneyAccountDepositIntent,
 } from '../../../../helpers/money/deposit-intent';
+import {
+  clearMoneyBatchTransaction,
+  registerMoneyBatchTransaction,
+} from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { selectTransactions } from '../../../../selectors/transactionController';
@@ -180,15 +184,17 @@ export function useMoneyAccountToasts(): void {
       const { id, status, replacedById } = transactionMeta;
 
       if (pendingStatuses.has(status)) {
+        registerMoneyBatchTransaction(transactionMeta);
         if (shouldShowPendingToast(id)) {
           showMoneyAccountToast('pending', transactionMeta);
         }
-      } else if (
-        status === TransactionStatus.confirmed &&
-        shouldShowTerminalToast(id)
-      ) {
-        showMoneyAccountToast('success', transactionMeta);
+      } else if (status === TransactionStatus.confirmed) {
+        clearMoneyBatchTransaction(transactionMeta);
+        if (shouldShowTerminalToast(id)) {
+          showMoneyAccountToast('success', transactionMeta);
+        }
       } else if (failedStatuses.has(status)) {
+        clearMoneyBatchTransaction(transactionMeta);
         if (
           replacedById &&
           isSpeedUpReplacement(
