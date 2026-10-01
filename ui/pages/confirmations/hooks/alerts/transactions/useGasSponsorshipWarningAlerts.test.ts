@@ -66,7 +66,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
         getMockConfirmStateForTransaction(
           {
             ...CONFIRMATION_MOCK,
-            isGasFeeSponsored: true,
+            isGasFeeSponsoredAvailable: true,
             simulationData: {
               callTraceErrors: ['reserve balance violation'],
               tokenBalanceChanges: [],
@@ -110,7 +110,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
         getMockConfirmStateForTransaction(
           {
             ...CONFIRMATION_MOCK,
-            isGasFeeSponsored: false,
+            isGasFeeSponsoredAvailable: false,
             simulationData: {
               callTraceErrors: ['reserve balance violation'],
               tokenBalanceChanges: [],
@@ -147,7 +147,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
       getMockConfirmStateForTransaction(
         {
           ...CONFIRMATION_MOCK,
-          isGasFeeSponsored: false,
+          isGasFeeSponsoredAvailable: false,
           simulationData: {
             callTraceErrors: ['reserve balance violation'],
             tokenBalanceChanges: [],

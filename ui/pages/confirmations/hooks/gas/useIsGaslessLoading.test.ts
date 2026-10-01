@@ -22,7 +22,7 @@ async function runHook({
   gasFeeTokens,
   selectedGasFeeToken,
   excludeNativeTokenForFee,
-  isGasFeeSponsored,
+  isGasFeeSponsoredAvailable,
   type,
 }: {
   simulationEnabled: boolean;
@@ -32,7 +32,7 @@ async function runHook({
   gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
   excludeNativeTokenForFee?: boolean;
-  isGasFeeSponsored?: boolean;
+  isGasFeeSponsoredAvailable?: boolean;
   type?: TransactionType;
 }) {
   mockedUseIsGaslessSupported.mockReturnValue({
@@ -50,7 +50,7 @@ async function runHook({
     gasFeeTokens,
     selectedGasFeeToken,
     excludeNativeTokenForFee,
-    isGasFeeSponsored,
+    isGasFeeSponsoredAvailable,
   });
   if (type) {
     confirmation.type = type;
@@ -141,7 +141,7 @@ describe('useIsGaslessLoading', () => {
       gaslessSupported: true,
       insufficientBalance: true,
       gasFeeTokens: undefined,
-      isGasFeeSponsored: true,
+      isGasFeeSponsoredAvailable: true,
     });
 
     expect(result.isGaslessLoading).toBe(false);

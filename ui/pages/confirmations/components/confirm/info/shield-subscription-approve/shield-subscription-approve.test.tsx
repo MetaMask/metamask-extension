@@ -79,6 +79,14 @@ jest.mock('../../../../hooks/gas/useIsGaslessSupported', () => ({
   })),
 }));
 
+jest.mock('../../../../hooks/gas/useIsGasFeeSponsored', () => ({
+  useIsGasFeeSponsored: jest.fn(() => ({
+    isGasFeeSponsored: false,
+    isGasFeeSponsorshipEligible: false,
+    pending: false,
+  })),
+}));
+
 jest.mock('../../../../hooks/gas/useGasSponsorshipPreference', () => ({
   useGasSponsorshipPreference: jest.fn(() => ({
     isSponsorshipOptedOut: false,
@@ -196,6 +204,7 @@ describe('ShieldSubscriptionApproveInfo', () => {
       expect.objectContaining({
         type: TransactionType.shieldSubscriptionApprove,
       }),
+      false,
       false,
     );
   });

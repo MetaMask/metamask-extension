@@ -294,7 +294,15 @@ async function isEIP7702GasFeeTokensEnabled(
     return false;
   }
 
-  const { chainId, isExternalSign } = transactionMeta;
+  const { chainId, excludeNativeTokenForFee, isGasFeeTokenIgnoredIfBalance } =
+    transactionMeta;
+
+  // A gas fee token requested when creating the transaction is always paid
+  // through EIP-7702.
+  if (isGasFeeTokenIgnoredIfBalance || excludeNativeTokenForFee) {
+    return true;
+  }
+
   const uiState = getUIState(getFlatState());
 
   const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
@@ -303,13 +311,8 @@ async function isEIP7702GasFeeTokensEnabled(
 
   // EIP7702 gas fee tokens are enabled when:
   // - Smart transactions are NOT enabled, OR
-  // - Send bundle is NOT supported, OR
-  // - Gas fee token was provided when creating transaction
-  return (
-    !isSmartTransactionEnabled ||
-    !isSendBundleSupportedChain ||
-    Boolean(isExternalSign)
-  );
+  // - Send bundle is NOT supported
+  return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
 }
 
 function getKeyringController(messenger: TransactionControllerInitMessenger) {

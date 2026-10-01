@@ -15,6 +15,7 @@ import { getUseTransactionSimulations } from '../../../../../selectors';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useIsGasFeeSponsored } from '../../gas/useIsGasFeeSponsored';
 import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHasSourceAmount';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
@@ -40,7 +41,7 @@ export function useInsufficientBalanceAlerts({
   const { hasInsufficientBalance, isNativeBalanceKnown, nativeCurrency } =
     useHasInsufficientBalance();
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
-  const isSponsored = currentConfirmation?.isGasFeeSponsored;
+  const { isGasFeeSponsored: isSponsoredTransaction } = useIsGasFeeSponsored();
   const {
     isSupported: isGaslessSupported,
     pending: isGaslessSupportedPending,
@@ -66,9 +67,6 @@ export function useInsufficientBalanceAlerts({
 
   // Check if gasless check has completed (regardless of result)
   const isGaslessCheckComplete = !isGaslessSupportedPending;
-
-  // Transaction is sponsored only if it's marked as sponsored AND gasless is supported
-  const isSponsoredTransaction = isSponsored && isGaslessSupported;
 
   // Simulation is complete if it's disabled, or if enabled and gasFeeTokens is loaded
   const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);

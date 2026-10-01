@@ -3,6 +3,7 @@ import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   PublishHook,
+  type ShouldSignHook,
   TransactionController,
   TransactionControllerOptions,
   TransactionMeta,
@@ -11,11 +12,13 @@ import {
 import {
   TransactionPayControllerMessenger,
   TransactionPayPublishHook,
+  TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import {
   getInternalEvmAddresses,
   isEnforcedSimulationsEligible,
@@ -31,6 +34,7 @@ import {
 import { MessengerClientFlatState } from '../../../messenger-client-init/controller-list';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getTransactionById } from '../util';
+import { isGasFeeSponsored } from '../gas-sponsorship';
 import { isSendBundleSupported } from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 import { EnforceSimulationHook } from './enforce-simulation-hook';
@@ -40,6 +44,10 @@ export type TransactionControllerHookRequest = {
   getTransactionMetricsRequest: () => TransactionMetricsRequest;
   messenger: TransactionControllerInitMessenger;
 };
+
+type TransactionControllerHooks = NonNullable<
+  TransactionControllerOptions['hooks']
+>;
 
 const TRANSACTION_SUBMISSION_METHOD_METRIC_NAME =
   'transaction_submission_method';
@@ -58,14 +66,14 @@ const TRANSACTION_SUBMISSION_METHOD = {
  */
 export function getTransactionControllerHooks(
   request: TransactionControllerHookRequest,
-): TransactionControllerOptions['hooks'] {
+): TransactionControllerHooks {
   return {
     afterAdd: afterAddHook(request),
     beforePublish: beforePublishHook(request),
     beforeSign: beforeSignHook(request),
-    // @ts-expect-error - Controller type is missing signedTx parameter
     publish: publishHook(request),
     publishBatch: publishBatchHook(request),
+    shouldSign: shouldSignHook(request),
   };
 }
 
@@ -77,6 +85,131 @@ function afterAddHook({ messenger }: TransactionControllerHookRequest) {
     );
     return {};
   };
+}
+
+type SponsorshipRoute = {
+  isGasFeeSponsored: boolean;
+  isSponsoredVia7702: boolean;
+};
+
+async function getSponsorshipRoute(
+  { getFlatState, messenger }: TransactionControllerHookRequest,
+  transactionMeta: TransactionMeta,
+): Promise<SponsorshipRoute> {
+  const sponsored = await isGasFeeSponsored(
+    { getFlatState, keyringController: getKeyringController(messenger) },
+    transactionMeta,
+  );
+
+  if (!sponsored) {
+    return { isGasFeeSponsored: false, isSponsoredVia7702: false };
+  }
+
+  if (
+    hasTransactionType(transactionMeta, [TransactionType.moneyAccountWithdraw])
+  ) {
+    return { isGasFeeSponsored: true, isSponsoredVia7702: true };
+  }
+
+  if (
+    hasTransactionType(transactionMeta, [TransactionType.moneyAccountDeposit])
+  ) {
+    return { isGasFeeSponsored: true, isSponsoredVia7702: false };
+  }
+
+  const { isSmartTransaction } = getSmartTransactionCommonParams(
+    getFlatState(),
+    transactionMeta.chainId,
+  );
+
+  const isSmartTransactionBundle =
+    isSmartTransaction &&
+    (await isSendBundleSupported(transactionMeta.chainId));
+
+  return {
+    isGasFeeSponsored: true,
+    isSponsoredVia7702: !isSmartTransactionBundle,
+  };
+}
+
+function shouldSignHook(
+  request: TransactionControllerHookRequest,
+): ShouldSignHook {
+  const { getFlatState, messenger } = request;
+
+  return async ({ transactionMeta }) => {
+    const flatState = getFlatState();
+
+    const hasTransactionPayQuotes = flatState.transactionData?.[
+      transactionMeta.id
+    ]?.quotes?.some((quote) => quote.strategy !== TransactionPayStrategy.None);
+
+    if (hasTransactionPayQuotes) {
+      return { shouldSign: false };
+    }
+
+    if (
+      hasTransactionType(transactionMeta, [
+        TransactionType.moneyAccountWithdraw,
+      ])
+    ) {
+      return { shouldSign: false };
+    }
+
+    const { isSponsoredVia7702 } = await getSponsorshipRoute(
+      request,
+      transactionMeta,
+    );
+
+    if (isSponsoredVia7702) {
+      return { shouldSign: false };
+    }
+
+    return {
+      shouldSign: !(await isGasFeeToken7702({
+        flatState,
+        messenger,
+        transactionMeta,
+      })),
+    };
+  };
+}
+
+async function isGasFeeToken7702({
+  flatState,
+  messenger,
+  transactionMeta,
+}: {
+  flatState: MessengerClientFlatState;
+  messenger: TransactionControllerInitMessenger;
+  transactionMeta: TransactionMeta;
+}): Promise<boolean> {
+  if (
+    !transactionMeta.selectedGasFeeToken ||
+    transactionMeta.isGasFeeTokenIgnoredIfBalance ||
+    hasTransactionType(transactionMeta, [TransactionType.moneyAccountDeposit])
+  ) {
+    return false;
+  }
+
+  const { isHardwareWalletAccount, isSmartTransaction } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (isHardwareWalletAccount) {
+    return false;
+  }
+
+  if (
+    isSmartTransaction &&
+    (await isSendBundleSupported(transactionMeta.chainId))
+  ) {
+    return false;
+  }
+
+  return await accountSupports7702ForRelay(
+    transactionMeta.txParams?.from,
+    getKeyringController(messenger),
+  );
 }
 
 function beforePublishHook({ messenger }: TransactionControllerHookRequest) {
@@ -130,6 +263,12 @@ function publishHook({
 }: TransactionControllerHookRequest): PublishHook {
   return async (transactionMeta: TransactionMeta, signedTx: string) => {
     const flatState = getFlatState();
+    const { isGasFeeSponsored: sponsored, isSponsoredVia7702 } =
+      await getSponsorshipRoute(
+        { getFlatState, getTransactionMetricsRequest, messenger },
+        transactionMeta,
+      );
+
     const transactionController = {
       state: messenger.call('TransactionController:getState'),
     } as unknown as TransactionController;
@@ -147,15 +286,16 @@ function publishHook({
     }).getHook()(transactionMeta, signedTx as Hex);
 
     if (payResult?.transactionHash) {
-      return payResult;
+      return { ...payResult, isGasFeeSponsored: sponsored };
     }
-
-    const { isExternalSign } = transactionMeta;
 
     const keyringSupports7702 = await accountSupports7702ForRelay(
       transactionMeta.txParams?.from,
       getKeyringController(messenger),
     );
+    const publishVia7702 =
+      isSponsoredVia7702 ||
+      (await isGasFeeToken7702({ flatState, messenger, transactionMeta }));
 
     const isRevokeDelegation =
       transactionMeta.type === TransactionType.revokeDelegation;
@@ -170,10 +310,11 @@ function publishHook({
       (isSwapGasIncluded7702 ||
         !isSmartTransaction ||
         !sendBundleSupport ||
-        isExternalSign)
+        publishVia7702)
     ) {
       attemptedHook = true;
       const hook = new Delegation7702PublishHook({
+        isGasFeeSponsored: isSponsoredVia7702,
         messenger,
       }).getHook();
 
@@ -192,7 +333,7 @@ function publishHook({
         } catch (e) {
           console.error('Failed to record sentinel_relay metrics fragment', e);
         }
-        return result;
+        return { ...result, isGasFeeSponsored: isSponsoredVia7702 };
       }
     }
 
@@ -203,8 +344,10 @@ function publishHook({
       attemptedHook = true;
 
       const result = await submitSmartTransactionHook({
+        isGasFeeSponsored: sponsored,
         transactionMeta,
-        signedTransactionInHex: signedTx as Hex,
+        signedTransactionInHex:
+          signedTx === '0x' ? undefined : (signedTx as Hex),
         transactionController,
         smartTransactionsController: getSmartTransactionsController(messenger),
         controllerMessenger: messenger,
@@ -226,7 +369,7 @@ function publishHook({
         } catch (e) {
           console.error('Failed to record sentinel_stx metrics fragment', e);
         }
-        return result;
+        return { ...result, isGasFeeSponsored: sponsored };
       }
     }
 

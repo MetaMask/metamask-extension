@@ -14,6 +14,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useIsGasFeeSponsored } from '../../gas/useIsGasFeeSponsored';
 
 type SponsorshipWarningRule = {
   messageKey: string;
@@ -79,8 +80,11 @@ function hasGasSponsorshipWarning(
 export function useGasSponsorshipWarningAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId, isGasFeeSponsored, simulationData } =
-    currentConfirmation ?? {};
+  const { chainId, simulationData } = currentConfirmation ?? {};
+  // Eligibility ignores the user opt-out, as the warning explains why
+  // sponsorship is unavailable rather than disabled.
+  const { isGasFeeSponsorshipEligible: isGasFeeSponsored } =
+    useIsGasFeeSponsored();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
 
   const callTraceErrors = (

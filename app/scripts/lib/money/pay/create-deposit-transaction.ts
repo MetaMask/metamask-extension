@@ -54,7 +54,7 @@ export async function createMoneyAccountDepositTransaction(
     disableUpgrade: true,
     from: moneyAccountAddress,
     // The gas-station sponsorship exists on Monad mainnet only.
-    isGasFeeSponsored: chainId === CHAIN_IDS.MONAD,
+    forceIsGasFeeSponsored: chainId === CHAIN_IDS.MONAD,
     isInternal: true,
     networkClientId,
     origin: ORIGIN_METAMASK,

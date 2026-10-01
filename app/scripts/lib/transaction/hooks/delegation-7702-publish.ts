@@ -43,13 +43,19 @@ type RelayTransactionTxType = NonNullable<
 const log = createProjectLogger('delegation-7702-publish-hook');
 
 export class Delegation7702PublishHook {
+  #isGasFeeSponsored: boolean;
+
   #messenger: TransactionControllerInitMessenger;
 
   constructor({
+    isGasFeeSponsored,
     messenger,
   }: {
+    /** Whether the gas fee is sponsored, as decided by the publish hook. */
+    isGasFeeSponsored: boolean;
     messenger: TransactionControllerInitMessenger;
   }) {
+    this.#isGasFeeSponsored = isGasFeeSponsored;
     this.#messenger = messenger;
   }
 
@@ -101,7 +107,7 @@ export class Delegation7702PublishHook {
 
     const { isGasFeeIncluded } = transactionMeta;
 
-    const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
+    const isSponsored = this.#isGasFeeSponsored;
 
     if (!isSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
@@ -144,8 +150,7 @@ export class Delegation7702PublishHook {
       throw new Error('Selected gas fee token not found');
     }
 
-    const includeTransfer =
-      !isGasFeeIncluded && !transactionMeta.isGasFeeSponsored;
+    const includeTransfer = !isGasFeeIncluded && !isSponsored;
 
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {

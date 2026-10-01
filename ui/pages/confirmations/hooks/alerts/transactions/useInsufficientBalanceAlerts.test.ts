@@ -165,11 +165,11 @@ describe('useInsufficientBalanceAlerts', () => {
       balance: 7,
       currentConfirmation: {
         ...TRANSACTION_MOCK,
-        isGasFeeSponsored: true,
+        isGasFeeSponsoredAvailable: true,
       },
       transaction: {
         ...TRANSACTION_MOCK,
-        isGasFeeSponsored: true,
+        isGasFeeSponsoredAvailable: true,
       },
     });
 

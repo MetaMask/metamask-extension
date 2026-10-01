@@ -7,7 +7,7 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
 import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
-import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
+import { useIsGasFeeSponsored } from '../../../../hooks/gas/useIsGasFeeSponsored';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
@@ -41,7 +41,7 @@ jest.mock('../../../../context/confirm', () => ({
 }));
 
 jest.mock('../../../../hooks/useTransactionEventFragment');
-jest.mock('../../../../hooks/gas/useIsGaslessSupported');
+jest.mock('../../../../hooks/gas/useIsGasFeeSponsored');
 
 jest.mock('./useSupportsEIP1559', () => ({
   useSupportsEIP1559: jest.fn(),
@@ -61,7 +61,7 @@ describe('useMaxValueRefresher', () => {
     selectMaxValueModeForTransaction,
   );
   const updateEditableParamsMock = jest.mocked(updateEditableParams);
-  const mockUseIsGaslessSupported = jest.mocked(useIsGaslessSupported);
+  const mockUseIsGasFeeSponsored = jest.mocked(useIsGasFeeSponsored);
 
   const baseTransactionMeta = {
     id: 'test-transaction-id',
@@ -99,9 +99,9 @@ describe('useMaxValueRefresher', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    mockUseIsGaslessSupported.mockReturnValue({
-      isSupported: false,
-      isSmartTransaction: false,
+    mockUseIsGasFeeSponsored.mockReturnValue({
+      isGasFeeSponsored: false,
+      isGasFeeSponsorshipEligible: false,
       pending: false,
     });
   });
@@ -331,9 +331,9 @@ describe('useMaxValueRefresher', () => {
       });
 
       it('calculates value as full balance if gas is sponsored', () => {
-        mockUseIsGaslessSupported.mockReturnValue({
-          isSmartTransaction: false,
-          isSupported: true,
+        mockUseIsGasFeeSponsored.mockReturnValue({
+          isGasFeeSponsored: true,
+          isGasFeeSponsorshipEligible: true,
           pending: false,
         });
         const transactionMeta = merge({}, baseTransactionMeta, {
@@ -341,7 +341,6 @@ describe('useMaxValueRefresher', () => {
             gas: '0x5208', // 21000
             maxFeePerGas: '0x77359400', // 2 gwei
           },
-          isGasFeeSponsored: true,
         });
 
         useConfirmContextMock.mockReturnValue({
@@ -358,19 +357,13 @@ describe('useMaxValueRefresher', () => {
         );
       });
 
-      it('calculates value using maxFeePerGas if gas is sponsored on network but gasless not supported (ex: Hardware Wallet)', () => {
-        mockUseIsGaslessSupported.mockReturnValue({
-          isSmartTransaction: false,
-          // Unsupported, often because account is Hardware Wallet
-          isSupported: false,
-          pending: false,
-        });
+      it('calculates value using maxFeePerGas if sponsorship is available but the gas fee is not sponsored (ex: Hardware Wallet)', () => {
         const transactionMeta = merge({}, baseTransactionMeta, {
           txParams: {
             gas: '0x5208', // 21000
             maxFeePerGas: '0x77359400', // 2 gwei
           },
-          isGasFeeSponsored: true,
+          isGasFeeSponsoredAvailable: true,
         });
 
         useConfirmContextMock.mockReturnValue({

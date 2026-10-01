@@ -26,6 +26,14 @@ jest.mock('../../../../../hooks/useTransactionEventFragment', () => ({
   }),
 }));
 
+jest.mock('../../../../../hooks/gas/useIsGasFeeSponsored', () => ({
+  useIsGasFeeSponsored: jest.fn(() => ({
+    isGasFeeSponsored: false,
+    isGasFeeSponsorshipEligible: false,
+    pending: false,
+  })),
+}));
+
 jest.mock('../../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../../store/actions'),
   getGasFeeTimeEstimate: jest.fn(),

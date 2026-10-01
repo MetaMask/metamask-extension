@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -29,8 +26,7 @@ import { getPreferences } from '../../../../../../../../shared/lib/selectors/pre
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
-import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { useGasSponsorshipPreference } from '../../../../../hooks/gas/useGasSponsorshipPreference';
+import { useIsGasFeeSponsored } from '../../../../../hooks/gas/useIsGasFeeSponsored';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useTransactionNativeTicker } from '../../../../../hooks/transactions/useTransactionNativeTicker';
@@ -64,12 +60,7 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const {
-    chainId,
-    isGasFeeSponsored: doesSentinelAllowSponsorship,
-    simulationData,
-    type: transactionType,
-  } = transactionMeta;
+  const { chainId, simulationData } = transactionMeta;
 
   const estimationFailed = useEstimationFailed();
   const gasFeeToken = useSelectedGasFeeToken();
@@ -83,17 +74,10 @@ export const EditGasFeesRow = ({
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
 
-  // This prevents the gas fee row from showing as sponsored if stx is disabled
-  // by the user and 7702 is not supported in the chain.
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { isSponsorshipOptedOut } = useGasSponsorshipPreference(chainId);
-
-  const isSponsorshipEligible =
-    isGaslessSupported &&
-    doesSentinelAllowSponsorship &&
-    transactionType !== TransactionType.revokeDelegation;
-
-  const isGasFeeSponsored = isSponsorshipEligible && !isSponsorshipOptedOut;
+  const {
+    isGasFeeSponsored,
+    isGasFeeSponsorshipEligible: isSponsorshipEligible,
+  } = useIsGasFeeSponsored();
 
   const [isSponsorshipModalOpen, setIsSponsorshipModalOpen] = useState(false);
   const handleOpenSponsorshipModal = useCallback(() => {

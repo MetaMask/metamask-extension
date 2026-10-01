@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useUserSubscriptions } from '../../../../../../hooks/subscription/useSubscription';
 import { useConfirmContext } from '../../../../context/confirm';
+import { useIsGasFeeSponsored } from '../../../../hooks/gas/useIsGasFeeSponsored';
 import { useHasInsufficientBalance } from '../../../../hooks/useHasInsufficientBalance';
 import { useShieldConfirm } from '../../../../hooks/transactions/useShieldConfirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
@@ -63,10 +64,9 @@ const ShieldSubscriptionApproveInfo = () => {
     useConfirmContext<TransactionMeta>();
   const { hasInsufficientBalance, isNativeBalanceKnown } =
     useHasInsufficientBalance();
+  const { isGasFeeSponsored } = useIsGasFeeSponsored();
   const hasInsufficientGas =
-    isNativeBalanceKnown &&
-    !transactionMeta?.isGasFeeSponsored &&
-    hasInsufficientBalance;
+    isNativeBalanceKnown && !isGasFeeSponsored && hasInsufficientBalance;
   const trackedConfirmationId = useRef<string>();
 
   useEffect(() => {
@@ -90,10 +90,12 @@ const ShieldSubscriptionApproveInfo = () => {
     handleShieldSubscriptionApprovalTransactionOpened(
       transactionMeta,
       hasInsufficientGas,
+      isGasFeeSponsored,
     );
   }, [
     handleShieldSubscriptionApprovalTransactionOpened,
     hasInsufficientGas,
+    isGasFeeSponsored,
     isNativeBalanceKnown,
     transactionMeta,
   ]);

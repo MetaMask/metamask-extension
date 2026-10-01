@@ -175,7 +175,7 @@
   "resolutions": {
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "36.0.0",
-    "@metamask/transaction-controller": "72.0.1",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@72.0.1-preview-e45297452",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.7.2",
@@ -337,7 +337,7 @@
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
     "@metamask/keyring-internal-api": "^12.1.0",
     "@metamask/keyring-api": "^24.1.0",
-    "@metamask/accounts-controller": "^39.1.0",
+    "@metamask/accounts-controller": "^40.0.0",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.1.0",
@@ -378,7 +378,7 @@
     "@metamask/account-api": "^2.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
     "@metamask/account-watcher": "^4.1.3",
-    "@metamask/accounts-controller": "^39.1.0",
+    "@metamask/accounts-controller": "^40.0.0",
     "@metamask/address-book-controller": "^7.1.2",
     "@metamask/analytics-controller": "^3.2.0",
     "@metamask/announcement-controller": "^8.0.0",
@@ -855,6 +855,20 @@
     "yargs": "^17.7.2",
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
+  },
+  "previewBuilds": {
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "76.3.3-preview-e45297452"
+    },
+    "@metamask/transaction-controller": {
+      "type": "breaking",
+      "previewVersion": "72.0.1-preview-e45297452"
+    },
+    "@metamask/transaction-pay-controller": {
+      "type": "breaking",
+      "previewVersion": "29.2.3-preview-e45297452"
+    }
   },
   "engines": {
     "node": ">=24.13.0",

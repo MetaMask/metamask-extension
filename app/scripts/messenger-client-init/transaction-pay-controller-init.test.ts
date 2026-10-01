@@ -20,6 +20,7 @@ import {
 import { getPaymentOverrideData } from '../lib/money/pay/payment-override-callback';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { getDelegationTransaction } from '../lib/transaction/delegation';
+import { isGasFeeSponsored } from '../lib/transaction/gas-sponsorship';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -32,6 +33,9 @@ import { TransactionPayControllerInit } from './transaction-pay-controller-init'
 jest.mock('@metamask/transaction-pay-controller');
 jest.mock('../lib/transaction/delegation', () => ({
   getDelegationTransaction: jest.fn(),
+}));
+jest.mock('../lib/transaction/gas-sponsorship', () => ({
+  isGasFeeSponsored: jest.fn(),
 }));
 jest.mock('../lib/money/pay/create-deposit-transaction', () => ({
   createMoneyAccountDepositTransaction: jest.fn(),
@@ -98,9 +102,32 @@ describe('TransactionPayControllerInit', () => {
       getDelegationTransaction: expect.any(Function),
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
+      isGasFeeSponsored: expect.any(Function),
       messenger: expect.any(Object),
       state: undefined,
     });
+  });
+
+  it('delegates isGasFeeSponsored to the shared sponsorship definition', async () => {
+    jest.mocked(isGasFeeSponsored).mockResolvedValue(true);
+    const requestMock = getInitRequestMock();
+    TransactionPayControllerInit(requestMock);
+
+    const controllerMock = jest.mocked(TransactionPayController);
+    const { isGasFeeSponsored: isGasFeeSponsoredCallback } =
+      controllerMock.mock.calls[controllerMock.mock.calls.length - 1][0];
+    const transaction = { id: 'tx-1' } as TransactionMeta;
+
+    const result = await isGasFeeSponsoredCallback?.({ transaction });
+
+    expect(result).toStrictEqual({ isGasFeeSponsored: true });
+    expect(jest.mocked(isGasFeeSponsored)).toHaveBeenCalledWith(
+      {
+        getFlatState: requestMock.getFlatState,
+        keyringController: { getKeyringForAccount: expect.any(Function) },
+      },
+      transaction,
+    );
   });
 
   it('forwards isSubsidized to getDelegationTransaction', async () => {

@@ -287,7 +287,7 @@ describe('TransactionController wallet instance options', () => {
       expect(await optionFn?.(mockTransactionMeta)).toBe(true);
     });
 
-    it('returns true when isExternalSign is true', async () => {
+    it('returns true when isGasFeeTokenIgnoredIfBalance is set even if send bundle is supported', async () => {
       getIsSmartTransactionMock.mockReturnValue(true);
       isSendBundleSupportedMock.mockResolvedValue(true);
 
@@ -295,7 +295,20 @@ describe('TransactionController wallet instance options', () => {
       expect(
         await optionFn?.({
           ...mockTransactionMeta,
-          isExternalSign: true,
+          isGasFeeTokenIgnoredIfBalance: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('returns true when excludeNativeTokenForFee is set even if send bundle is supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(true);
+      isSendBundleSupportedMock.mockResolvedValue(true);
+
+      const optionFn = testConstructorOption('isEIP7702GasFeeTokensEnabled');
+      expect(
+        await optionFn?.({
+          ...mockTransactionMeta,
+          excludeNativeTokenForFee: true,
         }),
       ).toBe(true);
     });
