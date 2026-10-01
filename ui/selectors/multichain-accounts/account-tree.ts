@@ -28,7 +28,6 @@ import { EMPTY_ARRAY } from '../shared';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
-  getPinnedAccountsList,
 } from '../selectors';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../selectors.types';
@@ -84,17 +83,12 @@ export const getWalletsWithAccounts = createSelector(
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
-  getPinnedAccountsList,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
     connectedAccounts: InternalAccount[],
     selectedAccount: InternalAccount,
-    pinnedAccounts: string[],
   ): ConsolidatedWallets => {
-    // Precompute lookups for pinned accounts
-    const pinnedAccountsSet = new Set(pinnedAccounts);
-
     // Precompute connected account IDs for faster lookup
     const connectedAccountIdsSet = new Set(
       connectedAccounts.map((account) => account.id),
@@ -132,9 +126,7 @@ export const getWalletsWithAccounts = createSelector(
               const accountWithMetadata = { ...accountsById[accountId] };
 
               // Set flags for pinned, hidden, and active accounts
-              accountWithMetadata.pinned = pinnedAccountsSet.has(
-                accountWithMetadata.address,
-              );
+              accountWithMetadata.pinned = Boolean(group.metadata?.pinned);
               accountWithMetadata.hidden = Boolean(group.metadata?.hidden);
               accountWithMetadata.active =
                 selectedAccount.id === accountWithMetadata.id &&

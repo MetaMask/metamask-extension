@@ -3356,10 +3356,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'NetworkOrderController:updateNetworksList',
       ),
-      updateAccountsList: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'AccountOrderController:updateAccountsList',
-      ),
       setEnabledNetworks: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:setEnabledNetworks',
