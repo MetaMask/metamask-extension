@@ -5,6 +5,7 @@ import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import type {
   Provider,
+  RampsOrder,
   RampsToken,
   ResourceState,
   TokensResponse,
@@ -16,6 +17,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { showModal } from '../../../store/actions';
 import { submitRequestToBackground } from '../../../store/background-connection';
+import { getRampsTokens } from '../../../store/controller-actions/ramps-controller';
 import {
   getIsRampsEnabled,
   getIsRampsServiceDisruptionActive,
@@ -25,6 +27,7 @@ import {
   selectRampsOrders,
   selectProviders,
   selectTokens,
+  selectUserRegion,
 } from '../../../selectors/rampsController';
 import {
   selectIsBackupAndSyncEnabled,
@@ -36,7 +39,7 @@ import {
   hasEverConnectedToPortfolio,
   markPortfolioBuyMigrationAttempted,
 } from '../utils/portfolioConnection';
-import { normalizeAssetIdForApi } from '../utils/normalizeAssetIdForApi';
+import { resolveRampControllerToken } from '../utils/resolveRampControllerToken';
 
 /**
  * A buy intent, mirroring mobile's `RampIntent` (buy-only subset).
@@ -90,9 +93,9 @@ function isCatalogEmpty(
   return providersEmpty || tokensEmpty;
 }
 
-// Finds `assetId` in the catalog, ignoring EVM address casing: callers build
-// asset ids from a checksummed address while the API returns a mix of
-// checksummed (USDC, USDT) and lowercase (mUSD) ids.
+// Finds `assetId` in the catalog, returning the catalog's own token: caller
+// ids may differ in address casing, and deep link intents use the
+// `slip44:.` native placeholder vs the catalog's `slip44:{coinType}`.
 function findCatalogToken(
   tokensData: TokensResponse | null,
   assetId: CaipAssetType,
@@ -101,10 +104,7 @@ function findCatalogToken(
     ...(tokensData?.topTokens ?? []),
     ...(tokensData?.allTokens ?? []),
   ];
-  return catalog.find(
-    (token) =>
-      normalizeAssetIdForApi(token.assetId) === normalizeAssetIdForApi(assetId),
-  );
+  return resolveRampControllerToken(assetId, catalog);
 }
 
 // Pre-select the token before navigating to build-quote. Fail closed so a
@@ -118,15 +118,69 @@ async function preselectToken(assetId: CaipAssetType): Promise<boolean> {
   }
 }
 
+async function attemptPortfolioOrderMigration({
+  everConnectedToPortfolio,
+  isBackupAndSyncEnabled,
+  isRampsSyncingEnabled,
+  rampsOrders,
+  migrationRef,
+  intent,
+  portfolioRedirectUrl,
+  openBuyCryptoInPdapp,
+}: {
+  everConnectedToPortfolio: boolean;
+  isBackupAndSyncEnabled: boolean;
+  isRampsSyncingEnabled: boolean;
+  rampsOrders: RampsOrder[];
+  migrationRef: { current: Promise<boolean> | null };
+  intent?: RampIntent;
+  portfolioRedirectUrl?: string;
+  openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => Promise<void>;
+}): Promise<boolean> {
+  const shouldAttemptMigration =
+    everConnectedToPortfolio &&
+    isBackupAndSyncEnabled &&
+    isRampsSyncingEnabled &&
+    rampsOrders.length === 0;
+  if (!shouldAttemptMigration) {
+    return false;
+  }
+
+  const migration =
+    migrationRef.current ??
+    (migrationRef.current = (async () => {
+      if (await hasAttemptedPortfolioBuyMigration()) {
+        return false;
+      }
+      if (portfolioRedirectUrl) {
+        await global.platform.openTab({ url: portfolioRedirectUrl });
+      } else {
+        await openBuyCryptoInPdapp(intent?.chainId as ChainId | CaipChainId);
+      }
+      // Record the attempt only after Portfolio was opened so a failed open
+      // does not permanently consume the one-time migration.
+      await markPortfolioBuyMigrationAttempted();
+      return true;
+    })());
+
+  try {
+    return await migration;
+  } finally {
+    if (migrationRef.current === migration) {
+      migrationRef.current = null;
+    }
+  }
+}
+
 /**
  * Provides the `goToBuy` navigation gate for the Ramps buy entry point.
  *
  * When the flag is off, everyone is redirected to Portfolio.
  *
  * @returns An object with `goToBuy`, an async callback taking an optional
- * {@link RampIntent}. It runs the gate and either shows a blocking modal or
- * opens the buy destination. Resolves to the destination when it proceeded and
- * `false` when a blocking modal was shown.
+ * {@link RampIntent} and optional navigation options. It runs the gate and
+ * either shows a blocking modal or opens the buy destination. Resolves to the
+ * destination when it proceeded and `false` when a blocking modal was shown.
  */
 export default function useRampsNavigation() {
   const dispatch = useDispatch();
@@ -138,6 +192,7 @@ export default function useRampsNavigation() {
   const isRegionUnsupported = useSelector(getIsRampRegionUnsupported);
   const providers = useSelector(selectProviders);
   const tokens = useSelector(selectTokens);
+  const userRegion = useSelector(selectUserRegion);
   const rampsOrders = useSelector(selectRampsOrders);
   const everConnectedToPortfolio = useSelector(hasEverConnectedToPortfolio);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
@@ -145,7 +200,13 @@ export default function useRampsNavigation() {
   const portfolioMigrationRef = useRef<Promise<boolean> | null>(null);
 
   const goToBuy = useCallback(
-    async (intent?: RampIntent): Promise<RampsNavigationResult> => {
+    async (
+      intent?: RampIntent,
+      {
+        replace = false,
+        portfolioRedirectUrl,
+      }: { replace?: boolean; portfolioRedirectUrl?: string } = {},
+    ): Promise<RampsNavigationResult> => {
       // Rollout gate off → unchanged Portfolio behavior.
       if (!isEnabled) {
         // `getBuyURI` accepts any hex chain id; the narrower `ChainId` param is
@@ -157,35 +218,18 @@ export default function useRampsNavigation() {
       // Returning Portfolio users get one migration visit before native Buy.
       // This precedes native eligibility gates because Portfolio performs the
       // migration from its app shell, independently of native Buy support.
-      if (
-        everConnectedToPortfolio &&
-        isBackupAndSyncEnabled &&
-        isRampsSyncingEnabled &&
-        rampsOrders.length === 0
-      ) {
-        const migration =
-          portfolioMigrationRef.current ??
-          (portfolioMigrationRef.current = (async () => {
-            if (await hasAttemptedPortfolioBuyMigration()) {
-              return false;
-            }
-            await openBuyCryptoInPdapp(
-              intent?.chainId as ChainId | CaipChainId,
-            );
-            // Record the attempt only after Portfolio was opened so a failed
-            // open does not permanently consume the one-time migration.
-            await markPortfolioBuyMigrationAttempted();
-            return true;
-          })());
-        try {
-          if (await migration) {
-            return 'portfolio';
-          }
-        } finally {
-          if (portfolioMigrationRef.current === migration) {
-            portfolioMigrationRef.current = null;
-          }
-        }
+      const didAttemptMigration = await attemptPortfolioOrderMigration({
+        everConnectedToPortfolio,
+        isBackupAndSyncEnabled,
+        isRampsSyncingEnabled,
+        rampsOrders,
+        migrationRef: portfolioMigrationRef,
+        intent,
+        portfolioRedirectUrl,
+        openBuyCryptoInPdapp,
+      });
+      if (didAttemptMigration) {
+        return 'portfolio';
       }
 
       // 1. Service-disruption kill-switch for native Buy.
@@ -210,7 +254,7 @@ export default function useRampsNavigation() {
         return false;
       }
 
-      // 4. Providers/tokens fetched but empty. `tokens.data === null` means
+      // 4. Providers/tokens fetched but empty. A null `tokens.data` means
       // providers/tokens haven't been fetched yet (fetched together by the
       // native flow), so fail open and skip this check entirely until then.
       // A fetch error also fails open (mobile parity) — an empty result only
@@ -226,16 +270,30 @@ export default function useRampsNavigation() {
       const assetId = intent?.assetId;
       if (!assetId) {
         // No specific asset → token selection page.
-        navigate(RAMPS_TOKEN_SELECTION_ROUTE);
+        navigate(RAMPS_TOKEN_SELECTION_ROUTE, { replace });
         return 'native';
       }
 
-      // Resolve against the catalog. Only block on a settled catalog that
-      // definitively lacks/unsupports the token — an unsettled catalog fails
-      // open (proceed with it selected, page re-resolves).
-      const catalogToken = findCatalogToken(tokens.data, assetId);
+      // `tokens` isn't persisted, and setSelectedToken throws until it's fetched
+      // (e.g. after an MV3 service-worker restart). The controller dedupes this
+      // with RampsBootstrap's in-flight fetch.
+      const fetchedTokens = tokens.data
+        ? null
+        : await getRampsTokens(
+            userRegion?.regionCode ?? location.toLowerCase(),
+            'buy',
+          ).catch(() => null);
+
+      // Resolve against the catalog. Block on one that definitively lacks or
+      // does not support the token — either the rendered catalog settled
+      // (checked above), or the catalog we just fetched. Otherwise fail open
+      // (proceed with it selected, page re-resolves).
+      const catalogToken = findCatalogToken(
+        fetchedTokens ?? tokens.data,
+        assetId,
+      );
       if (
-        catalogData &&
+        (catalogData || fetchedTokens) &&
         (!catalogToken || catalogToken.tokenSupported === false)
       ) {
         dispatch(showModal({ name: 'RAMPS_UNSUPPORTED' }));
@@ -254,6 +312,7 @@ export default function useRampsNavigation() {
       }
       navigate(RAMPS_BUILD_QUOTE_ROUTE, {
         state: { assetId: selectedAssetId },
+        replace,
       });
       return 'native';
     },
@@ -263,6 +322,7 @@ export default function useRampsNavigation() {
       isRegionUnsupported,
       providers,
       tokens,
+      userRegion,
       rampsOrders,
       everConnectedToPortfolio,
       isBackupAndSyncEnabled,
@@ -273,5 +333,5 @@ export default function useRampsNavigation() {
     ],
   );
 
-  return { goToBuy };
+  return { goToBuy, isUnifiedBuyEnabled: isEnabled };
 }
