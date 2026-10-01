@@ -2038,6 +2038,45 @@ describe('PerpsStreamManager', () => {
       expect(onData).toHaveBeenCalledWith(recoveredAccount);
       expect(manager.account.hasCachedData()).toBe(true);
     });
+
+    // #46623: an in-flight fetch can reject *after* the last subscriber has
+    // unsubscribed. The E2E harness turns any unignored console error into a
+    // failure, so a post-teardown rejection fails whichever test happens to be
+    // running — which is why this surfaced as unrelated "flaky" specs.
+    it('does not log when an in-flight fetch rejects after teardown', async () => {
+      let rejectInFlight: (reason: Error) => void = () => undefined;
+      mockSubmitRequestToBackground.mockImplementation(
+        (method: string) =>
+          new Promise((_resolve, reject) => {
+            if (method === 'perpsGetAccountState') {
+              rejectInFlight = reject;
+            }
+          }),
+      );
+
+      const unsubscribe = manager.account.subscribe(jest.fn());
+
+      // Let the grace-period timer fire so the fetch is genuinely in flight,
+      // then tear the channel down before it settles.
+      await jest.advanceTimersByTimeAsync(3_000);
+      unsubscribe();
+
+      rejectInFlight(
+        new Error(
+          'Failed to fetch account state (failedDexs=[main], spotError=WebSocket connection permanently terminated)',
+        ),
+      );
+      await jest.advanceTimersByTimeAsync(0);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsGetAccountState',
+        [],
+      );
+      expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+        '[PerpsStreamManager] Failed to fetch account',
+        expect.anything(),
+      );
+    });
   });
 
   describe('getCurrentAddress', () => {
