@@ -6,7 +6,6 @@ import {
 } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionType,
   hasTransactionType,
@@ -31,6 +30,7 @@ import {
   getMoneyAccountPayToken,
   type MoneyAccountPayToken,
 } from '../../utils/money-account-pay-token';
+import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useImportPayToken } from './useImportPayToken';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
@@ -117,11 +117,7 @@ export function useAutomaticTransactionPayToken({
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
 
-  const hardwareWalletType = useSelector(getHardwareWalletType);
-  const isHardwareWallet = useMemo(
-    () => Boolean(hardwareWalletType),
-    [hardwareWalletType],
-  );
+  const isHardwareWallet = useIsHardwareWalletAccount(accountOverride ?? from);
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
@@ -396,7 +392,7 @@ function getBestToken({
       }
     : undefined;
 
-  if (isHardwareWallet) {
+  if (isHardwareWallet && !isMoneyAccountDeposit) {
     return targetTokenFallback;
   }
 
@@ -410,9 +406,30 @@ function getBestToken({
   // and the deposit would open on a token that can never fund it. If none are
   // funded, leave the pay token unresolved so the deposit prefill lifecycle can
   // settle as skipped instead of holding the amount skeleton up forever.
-  const selectableTokens = isMoneyAccountDeposit
+  const fundedTokens = isMoneyAccountDeposit
     ? tokens.filter((token) => (token.fiat?.balance ?? 0) > 0)
     : tokens;
+  const gasFundedChainIds = new Set(
+    tokens
+      .filter(
+        (token) =>
+          token.isNative &&
+          token.chainId &&
+          hasPositiveRawBalance(token.rawBalance),
+      )
+      .map((token) => String(token.chainId).toLowerCase()),
+  );
+  const hardwareGasEligibleTokens =
+    isHardwareWallet && isMoneyAccountDeposit
+      ? fundedTokens.filter(
+          (token) =>
+            token.isNative ||
+            gasFundedChainIds.has(String(token.chainId).toLowerCase()),
+        )
+      : fundedTokens;
+  const selectableTokens = hardwareGasEligibleTokens.length
+    ? hardwareGasEligibleTokens
+    : fundedTokens;
 
   // Without a post-quote withdraw allowlist, `preferredToken` is the
   // destination: honor it even if the user has no wallet balance of it.
@@ -503,6 +520,10 @@ function getBestToken({
   }
 
   return undefined;
+}
+
+function hasPositiveRawBalance(rawBalance: Hex | undefined): boolean {
+  return Boolean(rawBalance && BigInt(rawBalance) > 0n);
 }
 
 function getPreferredToken({
