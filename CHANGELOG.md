@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Refreshed Tron energy, bandwidth and staking information on the TRX token details page so it shows up-to-date values when the page is opened and after Tron transactions confirm (#46795)
+
 ## [13.50.0]
 
 ### Added
