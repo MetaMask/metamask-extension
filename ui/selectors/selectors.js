@@ -2067,8 +2067,8 @@ export const getIsBridgeChain = createParameterizedSelector(20)(
   },
 );
 
-// Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
-// only bridgeConfig should invalidate consumers of bridge feature flags.
+// Deep-equal memo: only bridgeConfig should invalidate consumers of bridge
+// feature flags.
 const getBridgeFeatureFlags = createDeepEqualSelector(
   [(state) => getRemoteFeatureFlags(state).bridgeConfig],
   (bridgeConfig) => {

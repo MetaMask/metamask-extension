@@ -2,8 +2,8 @@
  * Hardware Wallet Feature Flag Selectors.
  *
  * Memoized selectors for hardware-wallet-related remote feature flags.
- * Uses the shared `getRemoteFeatureFlags` selector which merges manifest
- * overrides with state flags (manifest wins on conflict).
+ * Uses the shared `getRemoteFeatureFlags` selector, which reads the effective
+ * flags published by the RemoteFeatureFlagController.
  *
  * Supports version-gated flags in both direct and progressive-rollout shapes:
  * Direct: `{ enabled: true, minimumVersion: '12.0.0' }`
