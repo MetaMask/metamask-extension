@@ -18,15 +18,9 @@ import {
   MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  MetaMetricsSwapsEventSource,
-  ScreenViewedEntryPoint,
-} from '../../../../shared/constants/metametrics';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
-import useBridging from '../../../hooks/bridge/useBridging';
-import { resetBridgeController } from '../../../ducks/bridge/actions';
-import { useDispatch } from '../../../store/hooks';
 import { transitionForward } from '../../ui/transition';
 import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
 import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
@@ -81,32 +75,20 @@ const NavTab = ({
 
 export function BottomNavBar() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
   const { availability: moneyAccountAvailability } =
     useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
-  const { openBridgeExperience } = useBridging();
   const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
     componentName: MoneyComponentName.HomeTab,
   });
 
-  const { isHome, isPerps, isMoney, isSwaps, isActivity } =
+  const { isHome, isPerps, isMoney, isActivity } =
     getActiveBottomNavTabs(pathname);
 
-  // Mirrors the back-button behaviour in bridge/index.tsx: reset the bridge
-  // controller (clears quotes + cache) and pass stayOnHomePage:true so that
-  // ConfirmationRouter doesn't redirect back during the async reset window.
-  const resetBridgeIfNeeded = useCallback(() => {
-    if (isSwaps) {
-      dispatch(resetBridgeController());
-    }
-  }, [dispatch, isSwaps]);
-
   const handleHomeClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
@@ -118,14 +100,13 @@ export function BottomNavBar() {
         },
       ),
     );
-  }, [navigate, lastActiveTab, resetBridgeIfNeeded]);
+  }, [navigate, lastActiveTab]);
 
   const handlePerpsClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate]);
 
   const handleMoneyClick = useCallback(() => {
     trackMoneyButtonClicked({
@@ -134,23 +115,12 @@ export function BottomNavBar() {
       labelKey: 'money',
       redirectTarget: MoneyScreenName.MoneyHome,
     });
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
     );
-  }, [navigate, resetBridgeIfNeeded, trackMoneyButtonClicked]);
-
-  const handleSwapsClick = useCallback(() => {
-    if (isSwaps) {
-      return;
-    }
-    transitionForward(() =>
-      openBridgeExperience(MetaMetricsSwapsEventSource.BottomNavBar),
-    );
-  }, [openBridgeExperience, isSwaps]);
+  }, [navigate, trackMoneyButtonClicked]);
 
   const handleActivityClick = useCallback(() => {
-    resetBridgeIfNeeded();
     transitionForward(() =>
       navigate(ACTIVITY_ROUTE, {
         state: {
@@ -159,7 +129,7 @@ export function BottomNavBar() {
         },
       }),
     );
-  }, [navigate, resetBridgeIfNeeded]);
+  }, [navigate]);
 
   return (
     <nav
@@ -192,13 +162,6 @@ export function BottomNavBar() {
           data-testid="bottom-nav-money"
         />
       )}
-      <NavTab
-        isActive={isSwaps}
-        icon={IconName.SwapVertical}
-        label={t('swap')}
-        onClick={handleSwapsClick}
-        data-testid="bottom-nav-swaps"
-      />
       <NavTab
         isActive={isActivity}
         icon={isActivity ? IconName.ClockFilled : IconName.Clock}

@@ -57,7 +57,7 @@ import {
 } from '../../../../../selectors/multichain/networks';
 import {
   getOrderedNetworksList,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
   getUseExternalServices,
 } from '../../../../../selectors';
 import {
@@ -316,7 +316,7 @@ export const NetworkSelectionModal = ({
             <Box className="px-4 pt-4">
               <Button
                 data-testid={footerButton.testId}
-                className="h-12 w-full rounded-xl border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+                className="h-12 w-full border-0 bg-muted hover:bg-muted-hover active:bg-muted-pressed"
                 size={ButtonSize.Md}
                 variant={ButtonVariant.Secondary}
                 onClick={footerButton.onClick}
@@ -356,7 +356,7 @@ const HomeNetworkFilterModalContent = ({
   );
   const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const useExternalServices = useSelector(getUseExternalServices);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const blacklistedChainIds = useSelector(
     selectAdditionalNetworksBlacklistFeatureFlag,
   );

@@ -21,6 +21,7 @@ import {
   isMoneyAccountChildTx,
   isMoneyAccountTx,
 } from '../../../helpers/money/money-transaction-guards';
+import { isKnownMoneyBatchChild } from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
 import type { MetaMaskReduxState } from '../../../store/store';
@@ -184,7 +185,10 @@ export function useTransactionEventToasts(): void {
       }
 
       const transactions = selectTransactions(store.getState());
-      if (isExcludedTransactionType(transactionMeta, transactions)) {
+      if (
+        isKnownMoneyBatchChild(id) ||
+        isExcludedTransactionType(transactionMeta, transactions)
+      ) {
         return;
       }
 

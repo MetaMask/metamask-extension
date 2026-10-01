@@ -2,7 +2,6 @@ import { formatChainIdToHex } from '@metamask/bridge-controller';
 import type { Hex } from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
-import { StablecoinsByChainId } from '../../../shared/constants/swaps';
 import { MUSD_TOKEN_ADDRESS } from '../../components/app/musd/constants';
 import type { BlockedPayTokensListConfig } from '../../pages/confirmations/selectors/feature-flags';
 import type { Asset } from '../../pages/confirmations/types/send';
@@ -55,28 +54,6 @@ const addressesEqual = (
   second: string | undefined,
 ): boolean =>
   Boolean(first && second && first.toLowerCase() === second.toLowerCase());
-
-const OPTIMISTIC_STABLECOIN_SYMBOLS = new Set([
-  'DAI',
-  'MUSD',
-  'USDC',
-  'USDS',
-  'USDT',
-]);
-
-function isOptimisticStablecoin(
-  token: Pick<MoneyDepositToken, 'address' | 'chainId' | 'symbol'>,
-): boolean {
-  const knownAddresses = StablecoinsByChainId[token.chainId];
-  const hasKnownAddress = [...(knownAddresses ?? [])].some((address) =>
-    addressesEqual(address, token.address),
-  );
-
-  return (
-    hasKnownAddress ||
-    OPTIMISTIC_STABLECOIN_SYMBOLS.has(token.symbol.toUpperCase())
-  );
-}
 
 /**
  * Calculates projected earnings for a fiat principal and APY.
@@ -302,7 +279,7 @@ export function parseMoneySubsidizedRoutes(
  * @returns Whether the token is Monad mUSD or has a subsidized route to it.
  */
 export function isNoFeeMoneyDepositToken(
-  token: Pick<MoneyDepositToken, 'address' | 'chainId' | 'symbol'>,
+  token: Pick<MoneyDepositToken, 'address' | 'chainId'>,
   routes: MoneySubsidizedRoute[],
 ): boolean {
   const target = {
@@ -316,17 +293,11 @@ export function isNoFeeMoneyDepositToken(
     return true;
   }
 
-  const hasSubsidizedRoute = routes.some(
+  return routes.some(
     (route) =>
       addressesEqual(route.sourceChain, token.chainId) &&
       addressesEqual(route.sourceToken, token.address) &&
       addressesEqual(route.targetChain, target.chainId) &&
       addressesEqual(route.targetToken, target.address),
   );
-
-  if (hasSubsidizedRoute) {
-    return true;
-  }
-
-  return isOptimisticStablecoin(token);
 }

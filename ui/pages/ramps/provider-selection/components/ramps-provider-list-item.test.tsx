@@ -62,6 +62,50 @@ describe('RampsProviderListItem', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('hides the check icon when quote info is displayed', () => {
+    const { queryByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(queryByTestId('ramps-provider-item-selected')).toBeNull();
+  });
+
+  it('shows the check icon when selected without quote info', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(getByTestId('ramps-provider-item-selected')).toBeInTheDocument();
+  });
+
+  it('shows the check icon when selected and no quote info is displayed', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        showQuote
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(getByTestId('ramps-provider-item-selected')).toBeInTheDocument();
+  });
+
   it('matches snapshot when unavailable', () => {
     const { container } = renderWithProvider(
       <RampsProviderListItem
@@ -96,7 +140,7 @@ describe('RampsProviderListItem', () => {
       <RampsProviderListItem
         provider={provider}
         tags={[
-          { label: 'Most reliable', severity: 'neutral' },
+          { label: 'Most reliable', severity: 'info' },
           { label: 'Best rate', severity: 'success' },
         ]}
         onClick={jest.fn()}
