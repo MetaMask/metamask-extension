@@ -490,7 +490,7 @@
     "@metamask/sentinel-api-service": "^1.0.1",
     "@metamask/shield-controller": "^6.0.1",
     "@metamask/signature-controller": "^39.2.6",
-    "@metamask/smart-transactions-controller": "^26.0.0",
+    "@metamask/smart-transactions-controller": "^27.1.0",
     "@metamask/snap-account-service": "^4.0.0",
     "@metamask/snaps-controllers": "^21.1.0",
     "@metamask/snaps-execution-environments": "^11.3.1",
@@ -887,7 +887,8 @@
       "sass-loader>sass>@parcel/watcher#2.5.6": false,
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
       "@storybook/test-runner>@swc/core#1.16.1": true,
-      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false
+      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false,
+      "html-bundler-webpack-plugin>ejs#2.7.4": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",
