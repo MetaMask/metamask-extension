@@ -24,7 +24,6 @@ import { isTronSpecialAsset, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getCurrencyRateControllerCurrencyRates,
-  getIsAssetsUnifyStateEnabled,
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
   getTokensControllerAllTokens,
@@ -32,7 +31,6 @@ import {
 import { getMultichainBalances } from '../../selectors/multichain';
 import {
   getAccountAssets,
-  getAssetsInfo,
   getAssetsMetadata,
   getAssetsRates,
 } from '../../selectors/assets';
@@ -419,100 +417,25 @@ const getBridgeAssetsForAccountGroupId = createSelector(
 );
 
 /**
- * Decimals unified state used to encode the Arc native balance.
- *
- * Account-tracker balances are already raw 18-decimal native units, so
- * `getNativeAssetForChainId` decodes them correctly. Unified balances are
- * human amounts encoded with `assetsInfo` decimals (6 for Arc USDC) and then
- * decoded with that same 18-decimal native asset.
- *
- * @param state - The state of the bridge app.
- * @returns Unified encoding decimals for native Arc USDC, when that path is active.
- */
-const getArcNativeUnifiedEncodingDecimals = (
-  state: BridgeAppState,
-): number | undefined => {
-  if (!getIsAssetsUnifyStateEnabled(state)) {
-    return undefined;
-  }
-
-  const decimals = getAssetsInfo(state)[ARC_NATIVE_ASSET_ID]?.decimals;
-  return typeof decimals === 'number' ? decimals : undefined;
-};
-
-/**
- * Restores a human-readable amount that was decoded with a different decimal
- * scale than the one used to encode the raw value.
- *
- * @param amount - Amount already divided by `decodedDecimals`.
- * @param decodedDecimals - Decimals used to decode the raw value.
- * @param encodedDecimals - Decimals used to encode the raw value.
- * @returns The amount as encoded, or the original amount when the scales match.
- */
-const restoreDecodedAmount = (
-  amount: string,
-  decodedDecimals: number,
-  encodedDecimals: number,
-): string => {
-  const decimalShift = decodedDecimals - encodedDecimals;
-  if (decimalShift === 0) {
-    return amount;
-  }
-
-  return new BigNumber(amount || '0')
-    .times(new BigNumber(10).pow(decimalShift))
-    .toString(10);
-};
-
-/**
  * Creates a bridge-token alias for assets whose wallet balance representation
  * differs from the token representation required by Bridge/Swaps.
  *
  * @param asset - The owned wallet asset carrying the balance.
  * @param assetId - The bridge asset ID that should resolve to the same balance.
- * @param unifiedEncodingDecimals - Decimals unified state used to encode the
- * native balance. Absent when the account-tracker balance was decoded with
- * the native asset's own decimals.
  * @returns The aliased bridge token.
  */
 const getBridgeAssetAlias = (
   asset: BridgeToken,
   assetId: CaipAssetType,
-  unifiedEncodingDecimals?: number,
 ): BridgeToken => {
   if (
     asset.assetId === ARC_NATIVE_ASSET_ID &&
     assetId === ARC_ERC20_USDC_ASSET_ID
   ) {
-    const decodedDecimals = asset.decimals;
-    const shouldRestoreBalance =
-      unifiedEncodingDecimals !== undefined &&
-      decodedDecimals !== undefined &&
-      unifiedEncodingDecimals !== decodedDecimals;
-    const decimalShift = shouldRestoreBalance
-      ? decodedDecimals - unifiedEncodingDecimals
-      : 0;
-    const balance = shouldRestoreBalance
-      ? restoreDecodedAmount(
-          asset.balance ?? '0',
-          decodedDecimals,
-          unifiedEncodingDecimals,
-        )
-      : asset.balance;
-
     return {
       ...asset,
       assetId,
-      balance,
       decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
-      // Fiat was computed from the mis-decoded balance. Shift the shortest
-      // decimal form so a 6-vs-18 mismatch does not leave the alias near zero.
-      tokenFiatAmount:
-        shouldRestoreBalance && typeof asset.tokenFiatAmount === 'number'
-          ? new BigNumber(String(asset.tokenFiatAmount))
-              .times(new BigNumber(10).pow(decimalShift))
-              .toNumber()
-          : asset.tokenFiatAmount,
     };
   }
 
@@ -542,11 +465,8 @@ export const getBridgeSortedAssets = createSelector(
  * @returns The assets owned by the wallet's accounts by asset ID.
  */
 export const getBridgeAssetsByAssetId = createSelector(
-  [
-    getBridgeAssetsForAccountGroupIdIncludingHidden,
-    getArcNativeUnifiedEncodingDecimals,
-  ],
-  (assetsWithBalance, arcNativeUnifiedEncodingDecimals) =>
+  [getBridgeAssetsForAccountGroupIdIncludingHidden],
+  (assetsWithBalance) =>
     assetsWithBalance.reduce<Record<CaipAssetType, BridgeToken>>(
       (acc, asset) => {
         acc[asset.assetId.toLowerCase() as keyof typeof acc] = asset;
@@ -554,7 +474,6 @@ export const getBridgeAssetsByAssetId = createSelector(
           acc[assetId.toLowerCase() as keyof typeof acc] = getBridgeAssetAlias(
             asset,
             assetId,
-            arcNativeUnifiedEncodingDecimals,
           );
         });
         return acc;
