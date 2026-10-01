@@ -1,9 +1,8 @@
 import type {
-  MultichainAssetsControllerState,
-  MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
@@ -78,15 +77,14 @@ export { getMultichainNetwork, getMultichainIsEvm };
 
 export type AssetsState = {
   metamask: Pick<
-    MultichainAssetsControllerState,
-    'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
+    AssetsControllerState,
+    'assetsInfo' | 'assetsBalance' | 'customAssets' | 'assetPreferences'
   >;
 };
 
 export type AssetsRatesState = {
-  metamask: MultichainAssetsRatesControllerState;
+  metamask: Pick<AssetsControllerState, 'assetsPrice'>;
 };
-
 export type RatesState = {
   metamask: RatesControllerState;
 };
@@ -419,7 +417,9 @@ export function getMultichainConversionRate(
   const { chainId } = getMultichainNetwork(state, account);
 
   const conversionRate = getMultichainIsEvm(state, account)
-    ? getConversionRate(state as Parameters<typeof getConversionRate>[0])
+    ? getConversionRate(
+        state as unknown as Parameters<typeof getConversionRate>[0],
+      )
     : getConversionRatesForNativeAsset({
         conversionRates:
           getMultichainAssetsRatesControllerConversionRates(state),

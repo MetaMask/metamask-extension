@@ -158,7 +158,6 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
-    AssetsControllerState &
     AccountTreeControllerState &
     AccountTrackerControllerState &
     Pick<TokenBalancesControllerState, 'tokenBalances'> &

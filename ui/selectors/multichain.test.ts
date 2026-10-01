@@ -230,9 +230,8 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       balances: {},
       // Unified AssetsController price map; conversion rates are derived from this.
       assetsPrice: {},
-      assetsMetadata: {},
-      accountsAssets: {},
-      allIgnoredAssets: {},
+      customAssets: {},
+      assetPreferences: {},
       isEvmSelected: false,
       multichainNetworkConfigurationsByChainId: {
         ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
