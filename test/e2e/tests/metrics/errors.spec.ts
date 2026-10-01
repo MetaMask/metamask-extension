@@ -297,7 +297,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: null,
                 consentDecisionMade: true,
                 optedIn: false,
@@ -370,7 +370,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -447,7 +447,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -532,7 +532,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -634,7 +634,7 @@ describe('Sentry errors', function () {
         {
           fixtures: {
             ...new FixtureBuilderV2()
-              .withMetaMetricsController({
+              .withAnalyticsController({
                 analyticsId: MOCK_ANALYTICS_ID,
                 consentDecisionMade: true,
                 optedIn: true,
@@ -724,7 +724,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -808,7 +808,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -915,7 +915,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -989,7 +989,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: null,
               consentDecisionMade: true,
               optedIn: false,
@@ -1063,7 +1063,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1152,7 +1152,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1254,7 +1254,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
@@ -1338,7 +1338,7 @@ describe('Sentry errors', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
+            .withAnalyticsController({
               analyticsId: MOCK_ANALYTICS_ID,
               consentDecisionMade: true,
               optedIn: true,
