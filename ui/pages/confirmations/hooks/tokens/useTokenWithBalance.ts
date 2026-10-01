@@ -26,13 +26,24 @@ export type TokenWithBalance = {
   tokenFiatAmount: number;
 };
 
+/**
+ * Token metadata and balance for an account.
+ *
+ * @param tokenAddress - Token contract address, or the native token address.
+ * @param chainId - Chain of the token.
+ * @param accountAddress - Account whose balance to read; defaults to the
+ * selected account. MM Pay callers pass the paying account, which differs
+ * from the selected account when the funding account was changed.
+ */
 export function useTokenWithBalance(
   tokenAddress: Hex,
   chainId: Hex,
+  accountAddress?: Hex,
 ): TokenWithBalance | undefined {
   const fiatFormatter = useFiatFormatter();
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const selectedAddress = selectedAccount?.address as Hex | undefined;
+  const selectedAddress =
+    accountAddress ?? (selectedAccount?.address as Hex | undefined);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
