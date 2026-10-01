@@ -1909,6 +1909,36 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('estimates the gas for a transaction using the requested network client', async () => {
+      await withService(async ({ rootMessenger }) => {
+        const request = jest.fn().mockResolvedValue(21000);
+        const getNetworkClientById = jest.fn().mockReturnValue({
+          provider: {
+            request,
+          },
+        });
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          getNetworkClientById,
+        );
+
+        const estimateGasParams = { to: '0x123', value: '0x0' };
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:estimateGas',
+          estimateGasParams,
+          'networkClientId',
+        );
+
+        expect(getNetworkClientById).toHaveBeenCalledWith('networkClientId');
+        expect(request).toHaveBeenCalledWith({
+          method: 'eth_estimateGas',
+          params: [estimateGasParams],
+        });
+        expect(result).toStrictEqual((21000).toString(16));
+      });
+    });
+
     it('throws if there is no selected network client', async () => {
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(

@@ -180,11 +180,13 @@ export type LegacyBackgroundApiServiceCheckDelegationDisabledAction = {
 };
 
 /**
- * Estimates the gas for a given transaction using the currently selected
- * network client.
+ * Estimates the gas for a given transaction using the requested network
+ * client, or the currently selected network client if none is provided.
  *
  * @param estimateGasParams - The parameters of the transaction to estimate
  * the gas for.
+ * @param networkClientId - The ID of the network client to use for the
+ * request. Defaults to the currently selected network client.
  * @returns The estimated gas as a hexadecimal string.
  */
 export type LegacyBackgroundApiServiceEstimateGasAction = {
