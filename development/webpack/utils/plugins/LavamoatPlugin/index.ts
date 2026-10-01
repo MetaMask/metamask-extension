@@ -83,6 +83,13 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'opr',
   // for @popperjs/core and snap simple keyring site
   'devicePixelRatio',
+  // for @floating-ui/dom (via @metamask/design-system-react Popover), which
+  // reads these off the real window returned by `ownerDocument.defaultView`
+  'parent',
+  'frameElement',
+  'scrollX',
+  'scrollY',
+  'Node',
   // for @tanstack/react-virtual
   'ResizeObserver',
   'setTimeout',
