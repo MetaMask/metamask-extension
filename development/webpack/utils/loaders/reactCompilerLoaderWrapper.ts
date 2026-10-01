@@ -1,8 +1,8 @@
 /**
  * Wrapper loader for react-compiler-webpack that stores compilation status
- * in module.buildMeta for collection by ReactCompilerPlugin.
+ * in module.buildInfo for collection by ReactCompilerPlugin.
  *
- * LIMITATION: Stats collection via buildMeta does NOT work with thread-loader
+ * LIMITATION: Stats collection via buildInfo does NOT work with thread-loader
  * because `this._module` is null in worker contexts. The webpack config
  * automatically disables thread-loader when --reactCompilerVerbose is used.
  *
@@ -15,7 +15,7 @@
  * resolution issues. Both values MUST stay in sync.
  */
 import { createRequire } from 'node:module';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import type { Schema } from 'schema-utils';
 import type { LoaderDefinitionFunction } from 'webpack';
 
@@ -68,9 +68,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
 ) {
   const options = this.getOptions();
   const verbose = options.__verbose ?? false;
-  const buildMeta = this._module?.buildMeta as
+  // Stats go on `buildInfo`, never `buildMeta`: webpack hashes
+  // `JSON.stringify(buildMeta)` into every module's `buildInfo.hash`, so the
+  // compiler events (which name the file) would make module hashes depend on
+  // the absolute build path and on whether this loader happened to run
+  // in-process or in a thread-loader worker. `buildInfo` is not hashed.
+  const buildInfo = this._module?.buildInfo as
     | Record<string, unknown>
     | undefined;
+  const {rootContext} = this;
 
   function extractMessage(detail: CompilerEvent['detail']): string | undefined {
     if (!detail) {
@@ -90,7 +96,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
     }
   }
 
-  const logger = buildMeta && {
+  const logger = buildInfo && {
     logEvent: (filename: string | null, event: CompilerEvent) => {
       if (!filename) return;
 
@@ -129,14 +135,15 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
       }
 
       if (status) {
-        const stored = buildMeta[REACT_COMPILER_STATUS_KEY] as
+        const stored = buildInfo[REACT_COMPILER_STATUS_KEY] as
           | { events: Record<string, unknown>[] }
           | undefined;
         const events = stored?.events ?? [];
         const loc = event.fnLoc?.start;
         const message = extractMessage(event.detail);
         const entry: Record<string, unknown> = {
-          filename,
+          // relative so the recorded stats are the same from any checkout
+          filename: rootContext ? relative(rootContext, filename) : filename,
           status,
           kind: event.kind,
           ...(message && { message }),
@@ -147,7 +154,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
             }),
         };
         events.push(entry);
-        buildMeta[REACT_COMPILER_STATUS_KEY] = { events };
+        buildInfo[REACT_COMPILER_STATUS_KEY] = { events };
       }
     },
   };
