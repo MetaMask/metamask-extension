@@ -294,36 +294,40 @@ describe('AdvancedChartIframe', () => {
       );
     });
 
-    it.each([
+    const rejectedUrls: [string, string][] = [
       ['a non-TradingView host', 'https://evil.example.com/phish'],
       ['a lookalike host', 'https://tradingview.com.evil.example.com/'],
       // eslint-disable-next-line no-script-url -- asserting this scheme is rejected
       ['a non-https scheme', 'javascript:alert(1)'],
       ['an unparseable url', 'not-a-url'],
       ['an empty url', ''],
-    ])('ignores a TradingView click carrying %s', (_label, url) => {
-      const onTradingViewClicked = jest.fn();
-      render(
-        <AdvancedChartIframe
-          {...defaultProps}
-          onTradingViewClicked={onTradingViewClicked}
-        />,
-      );
+    ];
 
-      act(() => {
-        window.dispatchEvent(
-          new MessageEvent('message', {
-            origin: CHART_ORIGIN,
-            data: JSON.stringify({
-              type: 'CHART_TRADINGVIEW_CLICKED',
-              payload: { url },
-            }),
-          }),
+    for (const [description, url] of rejectedUrls) {
+      it(`ignores a TradingView click carrying ${description}`, () => {
+        const onTradingViewClicked = jest.fn();
+        render(
+          <AdvancedChartIframe
+            {...defaultProps}
+            onTradingViewClicked={onTradingViewClicked}
+          />,
         );
-      });
 
-      expect(onTradingViewClicked).not.toHaveBeenCalled();
-    });
+        act(() => {
+          window.dispatchEvent(
+            new MessageEvent('message', {
+              origin: CHART_ORIGIN,
+              data: JSON.stringify({
+                type: 'CHART_TRADINGVIEW_CLICKED',
+                payload: { url },
+              }),
+            }),
+          );
+        });
+
+        expect(onTradingViewClicked).not.toHaveBeenCalled();
+      });
+    }
 
     it('exposes postMessage via ref', () => {
       const ref = React.createRef<{
