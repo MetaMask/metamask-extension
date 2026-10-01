@@ -455,8 +455,7 @@ class SwapPage {
 
   async submitSwap(): Promise<void> {
     console.log('Submit Swap');
-    await this.driver.clickElement(this.swapButton);
-    await this.driver.delay(1500);
+    await this.driver.clickElementAndWaitToDisappear(this.swapButton);
   }
 
   async swapProcessingMessageCheck(message: string): Promise<void> {

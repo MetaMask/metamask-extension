@@ -35,6 +35,15 @@ jest.mock('#ui/helpers/utils/window', () => ({
   openWindow: jest.fn(),
 }));
 
+const mockUnreadNotificationsCount = jest.fn().mockReturnValue(0);
+
+jest.mock('../../../hooks/metamask-notifications/useCounter', () => ({
+  ...jest.requireActual('../../../hooks/metamask-notifications/useCounter'),
+  useUnreadNotificationsCounter: () => ({
+    notificationsUnreadCount: mockUnreadNotificationsCount(),
+  }),
+}));
+
 describe('AppHeaderUnlockedContent trace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -132,6 +141,39 @@ describe('Default address section', () => {
         screen.queryByTestId('default-address-container'),
       ).not.toBeInTheDocument();
     });
+  });
+});
+
+describe('Unread notifications badge', () => {
+  const stateWithSearchEnabled = {
+    ...mockDefaultState,
+    metamask: {
+      ...mockDefaultState.metamask,
+      remoteFeatureFlags: { extensionUXSearch: true },
+    },
+  };
+
+  afterEach(() => {
+    mockUnreadNotificationsCount.mockReturnValue(0);
+  });
+
+  it('anchors the badge to the menu button rather than the header icon row', async () => {
+    mockUnreadNotificationsCount.mockReturnValue(2);
+    const store = configureStore(stateWithSearchEnabled);
+    const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
+    renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
+
+    const badge = await screen.findByTestId(
+      'notifications-tag-counter__unread-dot',
+    );
+    const menuButton = screen.getByTestId('account-options-menu-button');
+    const searchButton = screen.getByTestId('discover-search-button');
+
+    // The badge is positioned against the menu button alone, so adding icons to
+    // the header cannot move it onto a neighbouring icon.
+    const badgeWrapper = menuButton.parentElement?.parentElement;
+    expect(badgeWrapper).toContainElement(badge);
+    expect(badgeWrapper).not.toContainElement(searchButton);
   });
 });
 

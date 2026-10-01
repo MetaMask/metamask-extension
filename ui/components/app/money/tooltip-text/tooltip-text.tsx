@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useId,
+  useRef,
   useState,
   type CSSProperties,
   type ReactNode,
@@ -32,7 +33,7 @@ export type TooltipTextProps = Omit<TextProps, 'children' | 'asChild'> & {
   /** Number of bullet characters shown while hidden. */
   length?: SensitiveTextLength | string;
   position?: PopoverPosition;
-  /** Called each time the tooltip opens. */
+  /** Called the first time the tooltip opens after mounting. */
   onOpen?: () => void;
   /** Merged over the default popover panel styles (e.g. maxWidth, padding). */
   popoverStyle?: CSSProperties;
@@ -56,9 +57,14 @@ export function TooltipText({
     null,
   );
   const popoverId = useId();
+  const hasOpenedRef = useRef(false);
 
   const handleOpen = useCallback(() => {
     setIsOpen(true);
+    if (hasOpenedRef.current) {
+      return;
+    }
+    hasOpenedRef.current = true;
     onOpen?.();
   }, [onOpen]);
 
@@ -72,7 +78,7 @@ export function TooltipText({
         {...textProps}
         asChild
         className={classnames(
-          'underline decoration-dotted underline-offset-4',
+          'underline decoration-dotted underline-offset-[32%] decoration-[8%]',
           className,
         )}
       >

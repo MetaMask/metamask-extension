@@ -186,9 +186,6 @@
     "message": "निजी कुंजी",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "चेतावनी: कभी भी इस कुंजी का खुलासा न करें। आपकी निजी कुंजी वाले कोई भी आपके खाते में रखी किसी भी संपत्ति को चुरा सकता है।"
-  },
   "privateNetwork": {
     "message": "निजी नेटवर्क"
   },

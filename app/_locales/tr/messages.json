@@ -484,41 +484,27 @@
   "activity_marketShort_success_title": {
     "message": "Short kapatıldı - piyasa"
   },
-  "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money account"
-  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Para yatırma işlemi başarısız oldu"
   },
-  "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money account"
-  },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "Yatırılıyor"
-  },
-  "activity_moneyAccountDeposit_success_description": {
-    "message": "Money account"
+    "message": "$1 yatırılıyor",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "Yatırıldı"
-  },
-  "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money account"
+    "message": "$1 yatırıldı",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "Gönderilemedi"
-  },
-  "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money account"
+    "message": "Alınamadı"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "Gönderiliyor"
-  },
-  "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money account"
+    "message": "$1 alınıyor",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "Gönderildi"
+    "message": "$1 alındı",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "Alış işlemi başarısız oldu"
@@ -1942,34 +1928,11 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Temel işlevselliği aç"
   },
-  "basicFunctionalityMigrationModalTitle": {
-    "message": "Ayarlarınız değiştirildi"
-  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz"
   },
-  "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "MetaMask'in sosyal medya hesabı ile giriş işlemlerinde çalışma şeklini güncelliyoruz. MetaMask genelinde kesintisiz bir deneyim sunabilmek amacıyla; sosyal medya hesabı kimliğiniz (e-posta veya kullanıcı adı) artık kullanıcı profilinize ve ilişkili hesap adreslerinize güvenli bir şekilde bağlanacaktır. Bu güncellemenin bir parçası olarak, Temel İşlevsellik ve diğer varsayılan ayarlar her zaman etkin olacaktır."
-  },
-  "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Verilerinizi asla üçüncü taraflara satmayız. Hangi verileri neden topladığımız hakkında daha fazla bilgiyi şurada okuyabilirsiniz: $1 ve güncellenmiş $2.",
-    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
-  },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Gizlilik Bildirisi"
-  },
-  "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Gizlilik ve ürün güncellemeleri"
-  },
-  "basicFunctionalityMigrationToastDescription": {
-    "message": "Üçüncü taraf API'ler artık Temel İşlevselliğin bir parçasıdır. Önceki tercihlerinize göre bu ayar $1. Dilediğiniz zaman şurada değiştirebilirsiniz:$2",
-    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link"
-  },
-  "basicFunctionalityMigrationToastDisabled": {
-    "message": "devre dışı"
-  },
-  "basicFunctionalityMigrationToastEnabled": {
-    "message": "etkinleştirildi"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Ayarlar > Gizlilik"
@@ -2232,9 +2195,6 @@
   },
   "bridgeLowestCost": {
     "message": "En düşük maliyet"
-  },
-  "bridgeMalicious": {
-    "message": "Kötü amaçlı"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Kötü amaçlı tokenlar"
@@ -2515,9 +2475,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Önce Stellar ağında $1 varlığını etkinleştirin",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Şüpheli"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Şüpheli tokenlar"
@@ -3102,14 +3059,14 @@
   "copiedToClipboard": {
     "message": "Panoya kopyalandı"
   },
+  "copy": {
+    "message": "Kopyala"
+  },
   "copyAddress": {
     "message": "Adresi panoya kopyala"
   },
   "copyAddressShort": {
     "message": "Adresi kopyala"
-  },
-  "copyPrivateKey": {
-    "message": "Özel anahtarı kopyala"
   },
   "copyToClipboard": {
     "message": "Panoya kopyala"
@@ -3169,6 +3126,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask'i geri yükleyin"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask Durumunu Sıfırla"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "Hala sorun mu yaşıyorsunuz?"
   },
@@ -3190,9 +3150,6 @@
   },
   "current": {
     "message": "Mevcut"
-  },
-  "currentAccountNotConnected": {
-    "message": "Mevcut hesabınız bağlı değil"
   },
   "currentEstimatedBaseFee": {
     "message": "Geçerli: $1 GWEI"
@@ -3611,9 +3568,6 @@
   "disconnectAllSitesQuestion": {
     "message": "Tümünün bağlantısını kes?"
   },
-  "disconnectAllSitesSuccess": {
-    "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
-  },
   "disconnectPrompt": {
     "message": "$1 bağlantısını kes"
   },
@@ -3622,10 +3576,6 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "Bu işlem tüm hesaplarınızın $1 ile bağlantısını keser. Bu dapp'i tekrar kullanmak için yeniden bağlamanız gerekir.",
-    "description": "$1 is the site hostname"
-  },
-  "disconnectSiteSuccess": {
-    "message": "$1 ile bağlantısı başarıyla kesildi.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4587,9 +4537,6 @@
   "hardwareWalletRepairStepTwoTitle": {
     "message": "Cihazınızın Kilidini Açın"
   },
-  "hardwareWalletRepairSuccessDescription": {
-    "message": "Cihazınız başarıyla yeniden bağlandı. Bu sekmeyi kapatabilirsiniz."
-  },
   "hardwareWalletRepairSuccessTitle": {
     "message": "Cihaz Bağlandı"
   },
@@ -5033,9 +4980,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "Güvenliğiniz için bu metin şu anda seçilemez."
-  },
   "learnHow": {
     "message": "Nasıl olduğunu öğrenin"
   },
@@ -5460,6 +5404,14 @@
   "money": {
     "message": "Bakiye"
   },
+  "moneyAccountApyPitchApy": {
+    "message": "%$1 APY",
+    "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
+  },
+  "moneyAccountApyPitchEarn": {
+    "message": "$1 kazanın",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
+  },
   "moneyAccountApyTooltip": {
     "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiridir (APY). APY değişken olup garanti edilmemektedir."
   },
@@ -5580,9 +5532,6 @@
   "moneyApy": {
     "message": "$1 APY"
   },
-  "moneyBalanceInfoBody": {
-    "message": "Her zaman harcamaya, gönderime veya işlem yapmaya hazır olan dolara endeksli bakiyeniz. Bunu toplam hesap bakiyenize yansıtmayız."
-  },
   "moneyBalanceInfoWithdrawals": {
     "message": "Para çekme işlemleri, ilgili blokzinciri üzerindeki standart ağ onay sürelerine tabi olmak kaydıyla anında gerçekleşir. Likiditenin sıkışık olduğu durumlarda geçici gecikmeler yaşanabilir."
   },
@@ -5600,6 +5549,10 @@
   },
   "moneyBenefitAutoEarn": {
     "message": "Para bakiyeniz üzerinden otomatik getiri elde edin"
+  },
+  "moneyBenefitAutoEarnWithApy": {
+    "message": "Otomatik olarak $1 orana kadar kazanın",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "Kilitleme olmadan tam likidite alarak dilediğiniz zaman işlem yapabilir veya para çekebilirsiniz"
@@ -5640,6 +5593,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "Ücret yok"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "Tahmin, %$1 Yıllık Yüzde Getirinin (APY) bir yıl boyunca değişmeden kalacağı varsayımına dayanır. APY değişkendir ve garanti edilmez. Getiri garantisi yoktur.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "Bakiyeniz üzerinden kazanın"
   },
@@ -5655,9 +5612,6 @@
   "moneyFundDescriptionWithApy": {
     "message": "Money account hesabınıza fon ekleyin ve $1 APY ile bakiyenizin yükselişini izleyin."
   },
-  "moneyHomeApyTooltip": {
-    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
-  },
   "moneyHomeApyTooltipPoweredBy": {
     "message": "Money account, Monad tarafından desteklenmektedir."
   },
@@ -5667,16 +5621,6 @@
   "moneyHowItWorksDescription": {
     "message": "mUSD ekleyin; dolara endeksli bakiyeniz her zaman harcamaya, işlem yapmaya veya gönderime hazırdır."
   },
-  "moneyHowItWorksDescription1": {
-    "message": "Money account hesabınıza mUSD ekleyin ve otomatik olarak $1 APY (değişkendir) kazanın. Fonlar, Steakhouse Financial risk izlemesi ile Veda tarafından yönetilen bir DeFi kasasına gider. Oran, blokzinciri protokollerinde fon dağıtan üçüncü taraf DeFi platformları tarafından oluşturulur. Stake yok, hak talebinde bulunma yok, kilitleme yok.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksDescription2": {
-    "message": "Para bakiyeniz, bakiyenizi harcıyor. MetaMask Card'ınızı bağlayarak dünya çapında 150 milyondan fazla satıcıda harcama yapabilirsiniz. Kullandığınız ana kadar para kazanmaya devam eder."
-  },
-  "moneyHowItWorksDescription3": {
-    "message": "Money account, Monad tarafından desteklenmektedir."
-  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSD ekleyin ve en fazla $1 kazanın. Bakiyeniz dolara endekslidir ve her zaman harcamaya, işlem yapmaya veya gönderime hazırdır.",
     "description": "$1 is the current mUSD APY."
@@ -5684,57 +5628,9 @@
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money account bir banka hesabı, tasarruf hesabı ya da sigortalı bir vadeli mevduat hesabı değildir. APY değişkendir ve garantili değildir. Money account; akıllı sözleşme, protokol, likidite ve diğer riskleri taşır ve fonlarınızın bir kısmını veya tamamını kaybedebilirsiniz. Bölgesel kısıtlamalara tabidir. Şartlar uygulanır."
   },
-  "moneyHowItWorksDisclosuresTitle": {
-    "message": "Riskler ve Açıklamalar"
-  },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "$1 APY'ye varan kazanç sağlar. Oran değişkendir ve piyasa koşulları ile dalgalanır. Geçerli oran her zaman Money account hesabının içinde görülebilir.",
     "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqApyQuestion": {
-    "message": "APY oranı değişir mi?"
-  },
-  "moneyHowItWorksFaqControlAnswer": {
-    "message": "Sizin! MetaMask, self-custodial bir cüzdandır, yani yalnızca hesap sahibinin Özel Anahtarları ile kontrol edilir. MetaMask fonlarınıza erişemez, donduramaz veya taşıyamaz. Bu, bizi geleneksel banka hesaplarından ve custodial kripto platformlarından ayıran özelliktir. Fonlarınızı tutan üçüncü taraf yoktur."
-  },
-  "moneyHowItWorksFaqControlQuestion": {
-    "message": "Paramın kontrolü kimde?"
-  },
-  "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
-  },
-  "moneyHowItWorksFaqFeesLink": {
-    "message": "Kart ücretlerinin tam dökümünü burada görebilirsiniz."
-  },
-  "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Ücretler var mı?"
-  },
-  "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Evet. Uyarı süresi, para cezası ve MetaMask'ten para çekme ücretleri olmadan tüm bakiyenizle dilediğiniz zaman işlem yapabilir, tüm bakiyenizi gönderebilir, harcayabilir veya çekebilirsiniz. Likidite sıkışık olduğunda geçici gecikmeler yaşanabilir."
-  },
-  "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Param kilitli mi? Dilediğim zaman çekebilir miyim?"
-  },
-  "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "$1 değişken APY'ye varan kazanç sağlayan bir hesap. Yatırdığınız fonlar mUSD olarak hesapta tutulur ve $1 APY'ye varan kazanç sağlarsınız. mUSD, MetaMask'in dolara endeksli stabil kripto parasıdır. Fonlarınızı dilediğiniz zaman para cezası ödemeden kullanabilir veya çekebilirsiniz. MetaMask Card ile fonlarınızı dünya çapında +150 milyon Mastercard satıcısında harcayabilirsiniz.",
-    "description": "$1 is the current mUSD APY, including the percent sign."
-  },
-  "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Para hesabı nedir?"
-  },
-  "moneyHowItWorksFaqMusdAnswer": {
-    "message": "mUSD, MetaMask'in 1:1 dolara endeksli stabil kripto parasıdır. Para bakiyeniz mUSD olarak tutulur ve dilediğiniz zaman harcamaya, gönderilmeye veya işleme hazırdır.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqMusdQuestion": {
-    "message": "mUSD nedir?"
-  },
-  "moneyHowItWorksFaqSpendingAnswer": {
-    "message": "Para bakiyeniz harcama bakiyenizdir; siz kullanana kadar kazanmaya devam eder. Money account hesabı bir banka hesabı, birikim hesabı veya sigortalı mevduat ürünü değildir.",
-    "description": "Drafted from existing Money copy for content review."
-  },
-  "moneyHowItWorksFaqSpendingQuestion": {
-    "message": "Bu bir tasarruf hesabı mı yoksa harcama hesabı mı?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "SSS"
@@ -6289,9 +6185,6 @@
   "newContract": {
     "message": "Yeni sözleşme"
   },
-  "newCustomTokenAdded": {
-    "message": "\"$1\" başarılı bir şekilde eklendi!"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Ayarlar > Varlıklar"
   },
@@ -6305,15 +6198,6 @@
   "newNFTsAutodetected": {
     "message": "NFT otomatik algılama"
   },
-  "newNetworkAdded": {
-    "message": "\"$1\" başarılı bir şekilde eklendi!"
-  },
-  "newNetworkEdited": {
-    "message": "“$1” başarılı bir şekilde düzenlendi!"
-  },
-  "newNftAddedMessage": {
-    "message": "NFT başarılı bir şekilde eklendi!"
-  },
   "newPassword": {
     "message": "Yeni şifre"
   },
@@ -6325,10 +6209,6 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "Gizlilik politikamızı güncelledik"
-  },
-  "newTokensImportedMessage": {
-    "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
-    "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
     "message": "Token içe aktarıldı"
@@ -6433,9 +6313,6 @@
   },
   "noTokensToManage": {
     "message": "Henüz tokenınız yok. Popüler tokenları keşfetmek için ada veya adrese göre arama yapın."
-  },
-  "noWebcamFound": {
-    "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
   },
   "noWebcamFoundTitle": {
     "message": "Web kamerası bulunamadı"
@@ -6584,9 +6461,6 @@
   "notificationsPageEmptyTitle": {
     "message": "Burada gösterilecek bir şey yok"
   },
-  "notificationsPageErrorContent": {
-    "message": "Lütfen bu sayfayı tekrar ziyaret etmeyi deneyin."
-  },
   "notificationsPageErrorTitle": {
     "message": "Bir hata oluştu"
   },
@@ -6601,9 +6475,6 @@
   },
   "notificationsSettingsAgenticCliTitle": {
     "message": "Ajan cüzdanı"
-  },
-  "notificationsSettingsBoxError": {
-    "message": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
   },
   "notificationsSettingsDeselectAll": {
     "message": "Tümünün seçimini kaldır"
@@ -6707,9 +6578,6 @@
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "Lütfen geçerli bir URL adresi girin"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "Özel IPFS Ağ Geçidi Ekle"
@@ -6950,6 +6818,10 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "Tekrar deneyin",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -7561,9 +7433,6 @@
   "perpsConfirmCloseShort": {
     "message": "Short pozisyonu kapat"
   },
-  "perpsConnectionTimeout": {
-    "message": "Bağlantı zaman aşımına uğradı. Lütfen tekrar deneyin."
-  },
   "perpsContactSupport": {
     "message": "Destek ile iletişime geç"
   },
@@ -7841,9 +7710,6 @@
   "perpsMore": {
     "message": "Daha fazla"
   },
-  "perpsNetworkError": {
-    "message": "Bir ağ hatası oluştu. Lütfen tekrar deneyin."
-  },
   "perpsNoMarketsFound": {
     "message": "Hiçbir piyasa bulunamadı"
   },
@@ -8005,9 +7871,6 @@
     "message": "Ürünler",
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
-  "perpsRateLimitExceeded": {
-    "message": "Çok sayıda talepte bulunuldu. Lütfen bekleyip tekrar deneyin."
-  },
   "perpsRecentActivity": {
     "message": "Son etkinlik"
   },
@@ -8054,9 +7917,6 @@
   "perpsSeeAll": {
     "message": "Tümünü gör",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
-  },
-  "perpsServiceUnavailable": {
-    "message": "Hizmet geçici olarak kullanılamıyor. Lütfen daha sonra tekrar deneyin."
   },
   "perpsShort": {
     "message": "Kısa"
@@ -8237,10 +8097,6 @@
     "message": "Marj ayarlaması başarısız oldu",
     "description": "Error toast text shown when adding or removing margin fails"
   },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "Marj ayarlanamıyor. Lütfen tekrar deneyin.",
-    "description": "Fallback description shown when margin adjustment fails without a usable error message."
-  },
   "perpsToastMarginRemoveSuccess": {
     "message": "$2 pozisyonunuzdan $1 marj kaldırıldı",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
@@ -8320,10 +8176,6 @@
   "perpsToastUpdateInProgress": {
     "message": "KA/ZD güncelleniyor...",
     "description": "In-progress toast text shown while updating TP/SL settings"
-  },
-  "perpsToastUpdateSuccess": {
-    "message": "KA/ZD başarılı bir şekilde güncellendi",
-    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTopMovers": {
     "message": "En çok hareketlenenler",
@@ -8516,9 +8368,6 @@
   "pinned": {
     "message": "Sabitlendi"
   },
-  "pleaseConfirm": {
-    "message": "Lütfen onayla"
-  },
   "pna25ModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz."
   },
@@ -8578,10 +8427,6 @@
     "message": "Özel anahtar",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 için özel anahtar",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "Özel anahtar gizli",
     "description": "Explains that the private key input is hidden"
@@ -8593,9 +8438,6 @@
   "privateKeyShown": {
     "message": "Özel anahtar gösteriliyor",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "Uyarı: Bu anahtarı kimse ile paylaşmayın. Özel anahtarlarınıza sahip herkes hesaplarınızıdaki tüm varlığınızı çalabilir."
   },
   "privateKeys": {
     "message": "Özel anahtarlar",
@@ -8739,9 +8581,6 @@
     "message": "$1 Al",
     "description": "$1 is the token symbol being purchased"
   },
-  "rampsBuyWidgetError": {
-    "message": "Satın alma işleminiz başlatılamıyor. Lütfen tekrar deneyin."
-  },
   "rampsBuyingViaProvider": {
     "message": "$1 üzerinden satın alınıyor.",
     "description": "$1 is the ramp provider name"
@@ -8754,7 +8593,7 @@
     "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
-    "message": "Sağlayıcı seç"
+    "message": "Sağlayıcıları seçin"
   },
   "rampsCompleteBuyTitle": {
     "message": "Satın alma işlemini tamamla",
@@ -8767,9 +8606,6 @@
   "rampsContinueInBrowser": {
     "message": "Tarayıcıda devam et",
     "description": "Banner title on the ramps complete-buy interstitial"
-  },
-  "rampsEligibilityFailedDescription": {
-    "message": "Lütfen tekrar deneyin, bu durum devam ederse destek bölümüyle iletişime geçin."
   },
   "rampsEligibilityFailedTitle": {
     "message": "Bölgenizi doğrulayamadık"
@@ -8900,9 +8736,6 @@
   "rampsPaymentDelayInstant": {
     "message": "Anında"
   },
-  "rampsPaymentDelayLessThan": {
-    "message": "En fazla"
-  },
   "rampsPaymentDelayMinute": {
     "message": "dk."
   },
@@ -8912,10 +8745,6 @@
   "rampsPaymentMethod": {
     "message": "Ödeme yöntemi",
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
-  },
-  "rampsPaymentMethodLimits": {
-    "message": "En fazla $1",
-    "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
     "message": "Min $1",
@@ -8933,14 +8762,8 @@
   "rampsSelectPaymentMethod": {
     "message": "Ödeme yöntemi seç"
   },
-  "rampsServiceDisruptionDescription": {
-    "message": "Hizmet kesintisi yaşıyoruz. Lütfen daha sonra tekrar deneyin."
-  },
   "rampsServiceDisruptionTitle": {
     "message": "Alış işlemi geçici olarak kullanılamıyor"
-  },
-  "rampsShowAllTokens": {
-    "message": "Tüm tokenları göster"
   },
   "rampsTokenUnavailableDescription": {
     "message": "Bu token bölgenizde kullanılamıyor.",
@@ -8961,9 +8784,6 @@
   },
   "rateIncludesMMFee": {
     "message": "%$1 MM ücreti dahildir."
-  },
-  "readdToken": {
-    "message": "Gelecekte bu tokeni hesap seçenekleri menüsünde “Tokeni İçe Aktar”' kısmına giderek tekrar ekleyebilirsiniz."
   },
   "receive": {
     "message": "Al"
@@ -9034,6 +8854,10 @@
   "relayerFee": {
     "message": "Relayer ücreti"
   },
+  "remindMeLater": {
+    "message": "Daha sonra hatırlat",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "Kaldır"
   },
@@ -9070,9 +8894,6 @@
   },
   "removeNftErrorMessage": {
     "message": "Bu NFT'yi kaldıramıyoruz."
-  },
-  "removeNftMessage": {
-    "message": "NFT başarılı bir şekilde kaldırıldı!"
   },
   "removeSnap": {
     "message": "Snap'i Kaldır"
@@ -9173,9 +8994,6 @@
   "resultPageSuccess": {
     "message": "Başarılı"
   },
-  "resultPageSuccessDefaultMessage": {
-    "message": "İşlem başarılı bir şekilde tamamlandı."
-  },
   "reusedTokenNameWarning": {
     "message": "Buradaki bir token izlediğiniz başka bir tokenden sembol kullanıyor, bu kafa karıştırıcı veya aldatıcı olabilir."
   },
@@ -9239,26 +9057,11 @@
   "reward": {
     "message": "Ödül"
   },
-  "rewardsAuthFailDescription": {
-    "message": "Bu hesabın ödüller programıyla doğrulanması sırasında bilinmeyen bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-  },
   "rewardsAuthFailTitle": {
     "message": "Bilinmeyen hata."
   },
-  "rewardsErrorMessagesAccountAlreadyRegistered": {
-    "message": "Bu hesap zaten başka bir Ödüller profili ile kayıtlı. Devam etmek için lütfen hesap değiştirin."
-  },
-  "rewardsErrorMessagesFailedToClaimReward": {
-    "message": "Ödül alınamadı. Lütfen kısa süre sonra tekrar deneyin."
-  },
   "rewardsErrorMessagesRequestRejected": {
     "message": "Talebi reddettiniz."
-  },
-  "rewardsErrorMessagesServiceNotAvailable": {
-    "message": "Hizmet şu anda kullanılamıyor. Lütfen kısa süre sonra tekrar deneyin."
-  },
-  "rewardsErrorMessagesSomethingWentWrong": {
-    "message": "Bir hata oluştu. Lütfen kısa süre sonra tekrar deneyin."
   },
   "rewardsLinkAccount": {
     "message": "Hesap ekle"
@@ -9271,9 +9074,6 @@
   },
   "rewardsOnboardingDescription": {
     "message": "Sadece MetaMask kullanarak ödül kazanın, avantajlardan yararlanın ve daha fazla kazanç yolu keşfedin."
-  },
-  "rewardsOnboardingIntroGeoCheckFailedDescription": {
-    "message": "Ülkenizin ödüller programına katılıma izin verip vermediğini belirleyemiyoruz. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "Katılım uygunluğu belirlenemiyor"
@@ -9376,6 +9176,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL adresi"
+  },
+  "rpcUrlRateLimited": {
+    "message": "Bu RPC sağlayıcısı talepleri sınırlandırıyor. Daha sonra tekrar deneyin veya farklı bir RPC URL kullanın."
   },
   "safeTransferFrom": {
     "message": "Güvenli transfer kaynağı"
@@ -9559,9 +9362,6 @@
   },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
-  },
-  "securityChangePasswordToastError": {
-    "message": "Şifre değiştirilemedi. Lütfen tekrar deneyin."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "Yeni şifre kaydedildi ancak $1 ile kilit açma özelliği açılamadı.",
@@ -9975,9 +9775,6 @@
   "sendAlertNewAddressTitle": {
     "message": "Yeni adres"
   },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönderin."
-  },
   "sendBundleHwGasPayment": {
     "message": "Ağ ücreti $1 ile ödeniyor",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -10073,14 +9870,8 @@
   "shieldClaimDraftDeleteFailed": {
     "message": "Taslak silinemedi"
   },
-  "shieldClaimDraftDeleteFailedDescription": {
-    "message": "Talep taslağınız silinemiyor. Lütfen tekrar deneyin."
-  },
   "shieldClaimDraftSaveFailed": {
     "message": "Taslak kaydedilemedi"
-  },
-  "shieldClaimDraftSaveFailedDescription": {
-    "message": "Talep taslağınız kaydedilemiyor. Lütfen tekrar deneyin."
   },
   "shieldClaimDraftSaved": {
     "message": "Taslak kaydedildi"
@@ -10112,9 +9903,6 @@
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG (Maksimum $1MB)",
     "description": "The $1 is the maximum file size in MB"
-  },
-  "shieldClaimFileUploaderHelpText": {
-    "message": "Başka kanıtlarınız varsa lütfen buraya yükleyin."
   },
   "shieldClaimGroupActive": {
     "message": "Aktif talepler"
@@ -10162,26 +9950,11 @@
   "shieldClaimIncidentDetails": {
     "message": "Olay bilgileri"
   },
-  "shieldClaimInvalidChainId": {
-    "message": "Lütfen geçerli bir zincir kimliği girin"
-  },
-  "shieldClaimInvalidEmail": {
-    "message": "Lütfen geçerli bir e-posta adresi girin"
-  },
   "shieldClaimInvalidRequired": {
     "message": "Bu alan gereklidir"
   },
   "shieldClaimInvalidTxHash": {
     "message": "Lütfen geçerli bir işlem hash'i girin"
-  },
-  "shieldClaimInvalidWalletAddress": {
-    "message": "Lütfen geçerli bir cüzdan adresi girin"
-  },
-  "shieldClaimMaxClaimsLimitExceeded": {
-    "message": "Maksimum açık talep sayısına ulaştınız. Daha fazla talep göndermeniz gerekiyorsa lütfen destek bölümüyle iletişime geçin."
-  },
-  "shieldClaimMaxDraftsReached": {
-    "message": "Maksimum taslak sayısına ulaştınız. Yeni bir taslağı kaydetmek için lütfen bir taslağı silin."
   },
   "shieldClaimNetwork": {
     "message": "Ağ seç"
@@ -10191,9 +9964,6 @@
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Geri ödeme için cüzdan adresi"
-  },
-  "shieldClaimReimbursementWalletAddressHelpText": {
-    "message": "Lütfen bunun gizliliği ihlal edilmiş bir cüzdan olmadığından emin olun."
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Etkilenen cüzdan adresi ve geri ödeme yapılacak cüzdan adresi farklı olmalıdır."
@@ -10587,9 +10357,6 @@
   "shieldTxMembershipErrorPausedCardAction": {
     "message": "Kart bilgilerini güncelle"
   },
-  "shieldTxMembershipErrorPausedCardTooltip": {
-    "message": "Ödemeniz reddedildi. Koruma kapsamınızı sürdürmek için lütfen ödeme yönteminizi güncelleyin."
-  },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "Plan yetersiz fondan dolayı duraklatıldı. Ödeme güncellemeleri $1 saate kadar sürebilir.",
     "description": "The $1 is the number of hours"
@@ -10698,12 +10465,6 @@
   },
   "showPermissions": {
     "message": "İzinleri göster"
-  },
-  "showPrivateKey": {
-    "message": "Özel anahtarı göster"
-  },
-  "showSRP": {
-    "message": "Gizli Kurtarma İfadesini Göster"
   },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"
@@ -11041,10 +10802,6 @@
     "message": "Yüklediğiniz her Snap'in Consensys $1 içinde tanımlanan şekilde, aksi belirtilmedikçe bir üçüncü taraf hizmeti olduğunu kabul edersiniz. Üçüncü taraf hizmetlerini kullanımınız üçüncü taraf hizmet sağlayıcısı tarafından belirtilen ayrı şart ve koşullar tarafından yönetilir. Consensys herhangi bir Snap'in herhangi belirli bir sebeple herhangi belirli bir şahıs tarafından kullanımını önermez. Üçüncü taraf hizmetine erişiminizin, güvenmenizin veya kullanımınızın riski size aittir. Consensys, üçüncü taraf hizmetlerini kullanımınızdan kaynaklanan zararlar için her türlü sorumluluğu ve yükümlülüğü reddeder.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Üçüncü taraf hizmetleri ile paylaştığınız tüm bilgiler söz konusu üçüncü taraf hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys'un bu üçüncü taraf hizmetleri ile paylaştığınız bilgilere erişimi bulunmamaktadır.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
@@ -11311,44 +11068,22 @@
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1 izleyerek kasanızı geri yüklemeye karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1 izleyerek MetaMask'i sıfırlamaya karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Kasanız otomatik olarak kurtarılamaz."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Kasanız otomatik bir yedeklemeden kurtarılabilir. Otomatik kurtarma, mevcut ayar ve tercihlerinizi silerek yalnızca kasanızı geri yükleyecektir."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Dahili hata: Veri tabanına erişim sağlanamıyor"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask Durumunu Sıfırla"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "Veri tabanı sıfırlanıyor…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Hesapları geri yükle"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Veri tabanı geri yükleniyor…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "bu talimatları",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "Gizli Kurtarma İfadeniz nasıl kurtarılır"
-  },
-  "stateLogError": {
-    "message": "Durum günlükleri alınırken hata oluştu, lütfen daha sonra tekrar deneyin."
   },
   "stateLogFileName": {
     "message": "MetaMask durum günlükleri"
@@ -11395,10 +11130,6 @@
   },
   "stxFailure": {
     "message": "Takas başarısız oldu"
-  },
-  "stxFailureDescription": {
-    "message": "Ani piyasa değişiklikleri başarısızlıklara neden olabilir. Sorun devam ederse lütfen $1 ile iletişime geç.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
     "message": "Daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
@@ -11621,9 +11352,6 @@
   "swapQuoteSource": {
     "message": "Teklif kaynağı"
   },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "En son oranları almak için lütfen yeni teklifler isteyin."
-  },
   "swapQuotesExpiredErrorTitle": {
     "message": "Teklifler için zaman aşımı"
   },
@@ -11668,6 +11396,9 @@
   },
   "swapSlippageAutoDescription": {
     "message": "Otomatik"
+  },
+  "swapSlippageCappedDescription": {
+    "message": "Kayma toleransı %100 olarak sınırlandırıldı."
   },
   "swapSlippageHighDescription": {
     "message": "Girilen kayma ($1%) çok yüksek kabul edilir ve kötü bir oranla sonuçlanabilir",
@@ -11815,9 +11546,6 @@
   "termsOfUseAgreeText": {
     "message": "MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum."
   },
-  "termsOfUseFooterText": {
-    "message": "Tüm bölümleri okumak için lütfen kaydırın"
-  },
   "termsOfUseTitle": {
     "message": "Kullanım Şartları bölümümüzü inceleyin"
   },
@@ -11897,9 +11625,6 @@
     "message": "$1 token izni",
     "description": "$1 is the count of token permissions (plural form)"
   },
-  "tokenSearchError": {
-    "message": "Arama sonuçları yüklenemedi. Lütfen tekrar deneyin."
-  },
   "tokenStandard": {
     "message": "Token standardı"
   },
@@ -11939,9 +11664,6 @@
   },
   "totalReceived": {
     "message": "Toplam alınan"
-  },
-  "totalVolume": {
-    "message": "Toplam hacim"
   },
   "transaction": {
     "message": "İşlem"
@@ -12032,10 +11754,6 @@
     "message": "Trezor",
     "description": "Hardware device name"
   },
-  "trezorDesktopAppRequiredError": {
-    "message": "Trezor kullanmak için Trezor Suite Masaüstü gereklidir. Lütfen Trezor Suite'i (suite.trezor.io) yükleyip açın ve tekrar deneyin.",
-    "description": "An error message shown to the user during the hardware connect flow."
-  },
   "tronBandwidth": {
     "message": "Bant genişliği"
   },
@@ -12098,9 +11816,6 @@
   "turnOff": {
     "message": "Kapat"
   },
-  "turnOffMetamaskNotificationsError": {
-    "message": "Bildirimler devre dışı bırakılırken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
-  },
   "turnOffPasskey": {
     "message": "$1 özelliğini kapat",
     "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -12111,9 +11826,6 @@
   },
   "turnOn": {
     "message": "Aç"
-  },
-  "turnOnMetamaskNotificationsError": {
-    "message": "Bildirimler oluşturulurken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
   },
   "turnOnTokenDetection": {
     "message": "Gelişmiş token algılamayı açın"
@@ -12147,9 +11859,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1 ile bağlantı güvenilir değil. Devam etmeden önce ağ bağlantı bilgilerini güncelleyin veya daha sonra tekrar deneyin.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
   "unexpectedError": {
     "message": "Beklenmedik bir hata oluştu.",
@@ -12190,9 +11899,6 @@
   },
   "unlock": {
     "message": "Kilidi Aç"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Şifre yanlış. Tekrar deneyin."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "Çok sayıda deneme. Şu kadar süre sonra tekrar deneyin: "
@@ -12419,10 +12125,6 @@
     "message": "$1 uyarısı",
     "description": "$1 represents the name of the snap"
   },
-  "watchEthereumAccountsDescription": {
-    "message": "Bu seçeneği açtığınızda size genel adres veya ENS adı ile Ethereum hesaplarını izleme yeteneği verilir. Bu Beta özellik hakkında geri bildirim için lütfen bu $1 formunu doldurun.",
-    "description": "$1 is the link to a product feedback form"
-  },
   "watchEthereumAccountsToggle": {
     "message": "Ethereum Hesaplarını İzle (Beta)"
   },
@@ -12432,10 +12134,6 @@
   },
   "web3": {
     "message": "Web3"
-  },
-  "web3ShimUsageNotification": {
-    "message": "Mevcut web sitesinin kaldırılmış olan window.web3 API'sini kullanmaya çalıştığını fark ettik. Site bozuk görünüyorsa daha fazla bilgi için lütfen $1 bağlantısına tıklayın.",
-    "description": "$1 is a clickable link."
   },
   "webhid": {
     "message": "WebHID",

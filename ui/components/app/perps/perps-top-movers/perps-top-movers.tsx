@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -28,7 +28,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import type { SortDirection } from '../../../../pages/perps/utils/sortMarkets';
-import { MARKET_SORTING_CONFIG } from '../constants';
+import { MARKET_SORTING_CONFIG, PERPS_CONSTANTS } from '../constants';
 import { usePerpsTopMovers } from '../hooks/usePerpsTopMovers';
 import type { PerpsMarketData } from '../types';
 import { PerpsTopMoverPill } from './perps-top-mover-pill';
@@ -42,40 +42,28 @@ const GAINERS_DIRECTION: SortDirection =
   MARKET_SORTING_CONFIG.DEFAULT_DIRECTION;
 const LOSERS_DIRECTION: SortDirection = 'asc';
 
-/** Pills are split evenly across this many rows, as mobile's PillScrollList does. */
-const PILL_ROW_COUNT = 2;
+/**
+ * Pills keep the content width they have on mobile and wrap onto as many lines
+ * as the current width needs. Wrapping rather than scrolling is the point: a
+ * desktop user without a trackpad has no gesture to slide a row sideways, so
+ * every ranked market has to be reachable on screen.
+ */
+const PILL_LIST_STYLES = 'flex flex-wrap gap-2 px-4';
 
-/** Skeleton pill footprint, matching mobile's SectionPillsSkeleton (104x32). */
-const SKELETON_PILL_STYLES = 'h-8 w-[104px] shrink-0 rounded-full';
-const SKELETON_PILL_KEYS = ['a', 'b', 'c', 'd', 'e', 'f'];
+/** One skeleton placeholder per ranked slot, so the section reserves its space while loading. */
+const SKELETON_PILL_KEYS = Array.from(
+  { length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT },
+  (_, index) => `slot-${index}`,
+);
 
 /**
- * Splits the ranked markets evenly across rows, filling each row in turn —
- * the same distribution mobile's `PillScrollList` uses, so the two clients
- * order their pills identically.
- *
- * @param markets - Ranked markets to lay out.
- * @param rowCount - How many rows to split across.
- * @returns One array of markets per row.
+ * Skeleton pill footprint, matching mobile's SectionPillsSkeleton width. `h-9`
+ * (36px) is the height a real pill measures: it is content-height (`h-auto` +
+ * `py-1.5` in `PILL_STYLES`) over a 24px `AvatarTokenSize.Sm` logo, confirmed
+ * against the live section. A shorter placeholder makes the section jump when
+ * the ranking lands.
  */
-const splitIntoRows = (
-  markets: PerpsMarketData[],
-  rowCount: number,
-): PerpsMarketData[][] => {
-  const rows: PerpsMarketData[][] = [];
-  let start = 0;
-
-  for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-    const rowSize = Math.ceil((markets.length - start) / (rowCount - rowIndex));
-    const row = markets.slice(start, start + rowSize);
-    if (row.length > 0) {
-      rows.push(row);
-    }
-    start += rowSize;
-  }
-
-  return rows;
-};
+const SKELETON_PILL_STYLES = 'h-9 w-[104px] rounded-full';
 
 export type PerpsTopMoversProps = {
   /** Live markets to rank, owned by the Perps tab's market-list stream. */
@@ -85,8 +73,9 @@ export type PerpsTopMoversProps = {
 };
 
 /**
- * PerpsTopMovers ranks the live perps markets by 24h price change and shows
- * the strongest movers as two horizontally scrolling rows of pills. The
+ * PerpsTopMovers ranks the live perps markets by 24h price change and lays the
+ * strongest movers out as wrapping pills, so every ranked market is reachable
+ * without a sideways scroll the desktop has no gesture for. The
  * Gainers/Losers toggle flips the ranking direction in place, and the header
  * opens the full market list already sorted by price change in that direction.
  *
@@ -146,11 +135,6 @@ export const PerpsTopMovers = ({
       );
     },
     [isGainers, navigate, track],
-  );
-
-  const pillRows = useMemo(
-    () => splitIntoRows(markets, PILL_ROW_COUNT),
-    [markets],
   );
 
   // Once the markets have loaded, an empty ranking means there is nothing to
@@ -217,57 +201,25 @@ export const PerpsTopMovers = ({
 
       {isLoading ? (
         <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={3}
-          className="overflow-hidden px-4"
+          className={PILL_LIST_STYLES}
           data-testid="perps-top-movers-skeleton"
         >
-          {Array.from({ length: PILL_ROW_COUNT }).map((_, rowIndex) => (
-            <Box
-              key={`perps-top-movers-skeleton-row-${rowIndex}`}
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={2}
-              className="flex-nowrap"
-            >
-              {SKELETON_PILL_KEYS.map((pillKey) => (
-                <Skeleton
-                  key={`perps-top-movers-skeleton-pill-${rowIndex}-${pillKey}`}
-                  className={SKELETON_PILL_STYLES}
-                />
-              ))}
-            </Box>
+          {SKELETON_PILL_KEYS.map((pillKey) => (
+            <Skeleton
+              key={`perps-top-movers-skeleton-pill-${pillKey}`}
+              className={SKELETON_PILL_STYLES}
+            />
           ))}
         </Box>
       ) : (
-        <Box className="overflow-x-auto" data-testid="perps-top-movers-list">
-          {/* Padding lives on the scroll content, matching mobile's
-              PillScrollList. On a flex overflow container, px-4 on the
-              scroller itself is dropped at the inline end. */}
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={3}
-            className="w-max px-4"
-          >
-            {pillRows.map((row, rowIndex) => (
-              <Box
-                key={`perps-top-movers-row-${rowIndex}`}
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                gap={2}
-                className="w-max flex-nowrap"
-                data-testid={`perps-top-movers-list-row-${rowIndex}`}
-              >
-                {row.map((market) => (
-                  <PerpsTopMoverPill
-                    key={market.symbol}
-                    market={market}
-                    onPress={handleMarketClick}
-                  />
-                ))}
-              </Box>
-            ))}
-          </Box>
+        <Box className={PILL_LIST_STYLES} data-testid="perps-top-movers-list">
+          {markets.map((market) => (
+            <PerpsTopMoverPill
+              key={market.symbol}
+              market={market}
+              onPress={handleMarketClick}
+            />
+          ))}
         </Box>
       )}
     </Box>

@@ -1,5 +1,12 @@
 import { useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -230,7 +237,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
     useSubscriptionMetrics();
 
   const trackSubscriptionUncancelRequestEvent = useCallback(
-    (status: 'completed' | 'failed', errorMessage?: string) => {
+    (status: 'succeeded' | 'failed', error?: string) => {
       if (!subscription) {
         return;
       }
@@ -244,8 +251,8 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         billingInterval: subscription.interval,
         cryptoPaymentChain,
         cryptoPaymentCurrency,
-        requestStatus: status,
-        errorMessage,
+        status,
+        error,
       });
     },
     [captureShieldSubscriptionRestartRequestEvent, subscription],
@@ -258,7 +265,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         return;
       }
       await dispatch(unCancelSubscription({ subscriptionId }));
-      trackSubscriptionUncancelRequestEvent('completed');
+      trackSubscriptionUncancelRequestEvent('succeeded');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -949,7 +956,10 @@ export const useSubscriptionError = (): {
 
   // Keep a ref so the unmount-only cleanup can read the latest value
   const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
-  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  useLayoutEffect(() => {
+    shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+  }, [shieldSubscriptionError]);
 
   // Clear shield subscription error when unmounting
   useEffect(() => {

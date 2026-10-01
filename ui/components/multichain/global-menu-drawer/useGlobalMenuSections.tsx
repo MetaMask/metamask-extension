@@ -167,15 +167,7 @@ export function useGlobalMenuSections(
 
   const handleSupportMenuClick = useCallback(() => {
     dispatch(setShowSupportDataConsentModal(true));
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Home)
-        .addProperties({
-          url: supportLink,
-          location: segmentContext.page?.title,
-        })
-        .build(),
-    );
+
     if (showPriorityTag) {
       const shieldSubscription = getShieldSubscription(subscriptions);
       const { cryptoPaymentChain, cryptoPaymentCurrency } =
@@ -192,6 +184,17 @@ export function useGlobalMenuSections(
           MetaMetricsEventName.ShieldPrioritySupportClicked,
         );
       }
+    } else {
+      // if shield subscription is not active, track the support link clicked event for non-priority support
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
+          .addCategory(MetaMetricsEventCategory.Home)
+          .addProperties({
+            url: supportLink,
+            location: segmentContext.page?.title,
+          })
+          .build(),
+      );
     }
     onClose();
   }, [

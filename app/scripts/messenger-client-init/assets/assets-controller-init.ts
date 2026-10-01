@@ -27,7 +27,6 @@ import {
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
@@ -107,7 +106,7 @@ function getIsBasicFunctionality(
 
 /**
  * Whether AssetsController Sentry tracing is enabled via
- * `assetsUnifyState.tracesEnabled` (requires unify itself to be enabled).
+ * `assetsUnifyState.tracesEnabled`.
  *
  * @param initMessenger - The initialization messenger.
  * @returns True when tracing should run, false otherwise.
@@ -116,9 +115,6 @@ function isAssetsControllerTracesEnabled(
   initMessenger: AssetsControllerInitMessenger,
 ): boolean {
   try {
-    if (!getIsAssetsUnifiedStateIncludedInBuild()) {
-      return false;
-    }
     const { remoteFeatureFlags } = initMessenger.call(
       'RemoteFeatureFlagController:getState',
     );
