@@ -334,10 +334,19 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
+// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
+// and .tsx must use separate loaders.
+const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
+const reactRefreshTsLoader = getSwcLoader(
+  'typescript',
+  false,
+  safeVariables,
+  swcReactRefreshConfig,
+);
 const reactRefreshTsxLoader = getSwcLoader(
   'typescript',
   true,
