@@ -2196,9 +2196,6 @@
   "bridgeLowestCost": {
     "message": "Pinakamababang halaga"
   },
-  "bridgeMalicious": {
-    "message": "Mapaminsala"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Mapanganib na token"
   },
@@ -2478,9 +2475,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "I-activate muna ang $1 sa Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Kahina-hinala"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Kahina-hinalang token"
