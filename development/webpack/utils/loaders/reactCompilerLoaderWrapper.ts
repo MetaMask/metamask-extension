@@ -76,7 +76,7 @@ const loader: LoaderDefinitionFunction<LoaderOptions> = function loader(
   const buildInfo = this._module?.buildInfo as
     | Record<string, unknown>
     | undefined;
-  const {rootContext} = this;
+  const { rootContext } = this;
 
   function extractMessage(detail: CompilerEvent['detail']): string | undefined {
     if (!detail) {
