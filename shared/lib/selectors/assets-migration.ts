@@ -89,6 +89,12 @@ type ControllerStateSelector<
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
 
+// Dual-path selectors that also read AssetsController fields. Input is intentionally
+// loose so migrated fixtures (which omit legacy controller slices) type-check.
+type MigratingControllerStateSelector<Result> = (state: {
+  metamask: Record<string, unknown>;
+}) => Result;
+
 export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
     (state: { metamask: RemoteFeatureFlagControllerState }) =>
@@ -553,9 +559,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsControllerState['assetsMetadata']
   >;
 
 // AccountId -> Array of AssetIds
@@ -690,12 +695,9 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-  // Dual-path during migration: legacy `currentCurrency` or unified `selectedCurrency`.
-) as unknown as (state: {
-  metamask: Partial<Pick<CurrencyRateState, 'currentCurrency'>> &
-    Partial<Pick<AssetsControllerState, 'selectedCurrency'>> &
-    Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
-}) => CurrencyRateState['currentCurrency'];
+) as unknown as MigratingControllerStateSelector<
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -912,14 +914,9 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-    // Dual-path during migration: legacy `conversionRates` or unified `assetsPrice`.
-  ) as unknown as (state: {
-    metamask: Partial<
-      Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
-    > &
-      Partial<Pick<AssetsControllerState, 'assetsPrice'>> &
-      Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
-  }) => MultichainAssetsRatesControllerState['conversionRates'];
+) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsRatesControllerState['conversionRates']
+  >;
 
 export const getRatesControllerRates = createDeepEqualSelector(
   [
