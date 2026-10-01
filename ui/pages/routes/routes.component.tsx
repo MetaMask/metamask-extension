@@ -13,7 +13,6 @@ import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -114,7 +113,7 @@ import { pageChanged } from '../../ducks/history/history';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import RewardsPage from '../rewards';
+import Home from '../home/home.tsx';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -132,19 +131,12 @@ import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
-import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
 import { useSpinDelay } from '../../hooks/useSpinDelay';
 import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunctionalityConsolidation';
-import { AccountList } from '../multichain-accounts/account-list';
-import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
-import { ChooseNewWalletTypePage } from '../multichain-accounts/choose-new-wallet-type';
-import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
-import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import { RequireOnboarded } from '../../layouts/require-onboarded';
@@ -161,19 +153,16 @@ import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
-import BatchSell from '../batch-sell/batch-sell-page';
-import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
-import { lazyRouteLoaders } from './lazy-route-loaders';
 import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
-const UnlockPage = mmLazy(lazyRouteLoaders.unlock);
+const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
@@ -201,7 +190,7 @@ const ConfirmEncryptionPublicKey = mmLazy(
 const ConfirmDecryptMessage = mmLazy(
   () => import('../confirm-decrypt-message/index.js'),
 );
-const Confirm = mmLazy(lazyRouteLoaders.confirmTransaction);
+const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
 const HardwareWalletSignaturesPage = mmLazy(
@@ -216,7 +205,9 @@ const ConfirmAddSuggestedTokenPage = mmLazy(
 const ConfirmAddSuggestedNftPage = mmLazy(
   () => import('../confirm-add-suggested-nft/index.js'),
 );
-const ConfirmationPage = mmLazy(lazyRouteLoaders.confirmation);
+const ConfirmationPage = mmLazy(
+  () => import('../confirmations/confirmation/index.js'),
+);
 const CreateAccountPage = mmLazy(
   () => import('../create-account/create-account.component.js'),
 );
@@ -255,7 +246,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(lazyRouteLoaders.home);
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
@@ -305,6 +295,42 @@ const HardwareWalletRepair = mmLazy(
 );
 const TransactionDetailsRoute = mmLazy(
   () => import('../details/transaction-details-route.tsx'),
+);
+const RewardsPage = mmLazy(() => import('../rewards/index.tsx'));
+const BatchSell = mmLazy(() => import('../batch-sell/batch-sell-page.tsx'));
+const AccountList = mmLazy(
+  () => import('../multichain-accounts/account-list/account-list.tsx'),
+);
+const AddWalletPage = mmLazy(
+  () => import('../multichain-accounts/add-wallet-page/add-wallet-page.tsx'),
+);
+const ChooseNewWalletTypePage = mmLazy(
+  () =>
+    import('../multichain-accounts/choose-new-wallet-type/choose-new-wallet-type-page.tsx'),
+);
+const WalletDetailsPage = mmLazy(
+  () =>
+    import('../multichain-accounts/wallet-details-page/wallet-details-page.tsx'),
+);
+const MultichainAccountAddressListPage = mmLazy(
+  () =>
+    import('../multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.tsx'),
+);
+const MultichainAccountPrivateKeyListPage = mmLazy(
+  () =>
+    import('../multichain-accounts/multichain-account-private-key-list-page/multichain-account-private-key-list-page.tsx'),
+);
+const MultichainReviewPermissions = mmLazy(
+  () =>
+    import('../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page.tsx'),
+);
+const RampsFlowLayout = mmLazy(() =>
+  import('../ramps/context/ramps-flow-context.tsx').then((module) => ({
+    default: module.RampsFlowLayout,
+  })),
+);
+const ImportNftsModal = mmLazy(
+  () => import('../../components/multichain/import-nfts-modal/index.js'),
 );
 // End Lazy Routes
 
@@ -912,7 +938,9 @@ export default function Routes() {
 
       <NetworkConfirmationPopover />
       {isImportNftsModalOpen ? (
-        <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
+        <Suspense fallback={null}>
+          <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
+        </Suspense>
       ) : null}
 
       {isIpfsModalOpen ? (

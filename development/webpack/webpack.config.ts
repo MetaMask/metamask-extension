@@ -310,12 +310,9 @@ const reactRefreshJsxLoader = getSwcLoader(
 
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const PRELOAD_ROUTES_ENTRY_NAME = 'preload-routes';
+
 const isChunkableInitial = (chunk: Chunk) =>
-  manifestPlugin.canBeChunked(chunk) &&
-  chunk.canBeInitial() &&
-  // Keep the route preloader standalone so it can run before the UI split chunks.
-  chunk.name !== PRELOAD_ROUTES_ENTRY_NAME;
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
