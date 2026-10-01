@@ -7,9 +7,11 @@ name: AMO determinism experiment
 # paths, in three variants:
 #   control  — the tag untouched;
 #   fixed    — the end-state fix: swcLoader returns an object source map
-#              (root cause 1) and @swc/core is bumped to 1.16.2 (root cause 2),
-#              with frequency-ordered mangling left ON and no runtime-chunk
-#              special case;
+#              (root cause 1), @swc/core is bumped to 1.16.2 (root cause 2),
+#              and html-bundler-webpack-plugin emits issuer-relative require()
+#              requests instead of absolute paths (root cause 3), with
+#              frequency-ordered mangling left ON and no runtime-chunk special
+#              case;
 #   charfreq — the earlier #46829 approach (mangle.disableCharFreq on the
 #              runtime chunk + the loader fix), kept for comparison.
 # A final job tabulates the runtime chunk name and a digest of the whole dist
@@ -123,7 +125,7 @@ jobs:
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
-            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-on-v13.47.1.patch"
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-v2-on-v13.47.1.patch"
 
       - name: Apply the #46829 fix (charfreq variant)
         if: ${{ matrix.variant == 'charfreq' }}
@@ -149,6 +151,9 @@ jobs:
             # @lavamoat/allow-scripts post-install check because the allowlist
             # still names @swc/core#1.13.3; `allow-scripts auto` fixes the
             # allowlist and the second install passes (same steps as the PR).
+            # The html-bundler-webpack-plugin yarn patch changed, so its lockfile
+            # checksum must be recomputed rather than enforced.
+            export YARN_CHECKSUM_BEHAVIOR=update
             yarn up '@swc/core@1.16.2' || true
             yarn allow-scripts auto
             yarn install

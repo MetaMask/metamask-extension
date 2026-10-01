@@ -11,10 +11,13 @@ for Mozilla reviewers — 60 times on CI:
 
 - **control** ×20: the tag untouched, each build in a directory whose absolute path has a
   different length (≈80 to ≈200 characters).
-- **fixed** ×20: the end state — [`fix-endstate-on-v13.47.1.patch`](./fix-endstate-on-v13.47.1.patch)
-  (the swc loader returning an object source map, plus the `.ts`/`.tsx` loader split and
-  `IN_TEST` inlining that `@swc/core` 1.16 needs) and `yarn up @swc/core@1.16.2`. Frequency-ordered
-  mangling stays on; no runtime-chunk special case.
+- **fixed** ×20: the end state — [`fix-endstate-v2-on-v13.47.1.patch`](./fix-endstate-v2-on-v13.47.1.patch)
+  (the swc loader returning an object source map; `html-bundler-webpack-plugin` emitting
+  issuer-relative `require()` requests instead of absolute paths; plus the `.ts`/`.tsx` loader split
+  and `IN_TEST` inlining that `@swc/core` 1.16 needs) and `yarn up @swc/core@1.16.2`.
+  Frequency-ordered mangling stays on; no runtime-chunk special case.
+  (The earlier `fix-endstate-on-v13.47.1.patch`, without the html-bundler change, still flipped
+  17/3 — run 36864195140 — which is how the third path leak was found.)
 - **charfreq** ×20: the earlier #46829 approach for comparison —
   [`fix-46829-on-v13.47.1.patch`](./fix-46829-on-v13.47.1.patch) (`mangle.disableCharFreq` on the
   runtime chunk + the loader fix), still on `@swc/core` 1.13.3.
