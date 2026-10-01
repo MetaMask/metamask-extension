@@ -71,7 +71,7 @@ describe('useTronResources', () => {
     assetsControllerBalances: Record<
       string,
       Record<string, { amount: string }>
-    > = {},
+    > = balances,
     isAssetsUnifyStateEnabled = false,
   ) => {
     (
