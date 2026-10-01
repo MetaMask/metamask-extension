@@ -8,6 +8,7 @@ import {
   MOCK_EVM_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { decimalToPrefixedHex } from '../../../shared/lib/conversion.utils';
 import { isAssetsUnifyStateFeatureEnabled } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
@@ -395,8 +396,13 @@ describe('Bridge asset selectors', () => {
               decimals: 6,
             },
           },
-          currencyRates: {
-            USDC: { conversionRate: 1 },
+          assetsPrice: {
+            [ARC_NATIVE_ASSET_ID]: {
+              assetPriceType: 'fungible',
+              price: 1,
+              usdPrice: 1,
+              lastUpdated: 1,
+            },
           },
         },
       });
@@ -432,7 +438,77 @@ describe('Bridge asset selectors', () => {
       );
       expect(balanceByAssetId[ARC_ERC20_USDC_ASSET_ID]).toMatchObject({
         assetId: ARC_ERC20_USDC_ASSET_ID,
+        balance: arcBalance,
+        decimals: 6,
+        symbol: 'USDC',
+        tokenFiatAmount: 123,
+      });
+      expect(balanceByAssetId[ARC_NATIVE_ASSET_ID]).toMatchObject({
+        assetId: ARC_NATIVE_ASSET_ID,
         balance: '0.000000000123',
+        decimals: 18,
+      });
+    });
+
+    it('keeps account-tracker Arc balances when assets-unify-state is off', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
+
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            // Distinct from the unify-state test so the memoized flag selector
+            // recomputes instead of reusing that test's enabled result.
+            maxRefreshCount: 4,
+            support: true,
+            chains: {
+              [CHAIN_IDS.ARC]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+        metamaskStateOverrides: {
+          accountsByChainId: {
+            [CHAIN_IDS.ARC]: {
+              '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': {
+                // 123 USDC in native 18-decimal units
+                balance: decimalToPrefixedHex('123000000000000000000'),
+              },
+            },
+          },
+          currencyRates: {
+            USDC: { conversionRate: 1 },
+          },
+        },
+      });
+      state.metamask.networkConfigurationsByChainId[CHAIN_IDS.ARC] = {
+        blockExplorerUrls: [],
+        chainId: CHAIN_IDS.ARC,
+        defaultRpcEndpointIndex: 0,
+        name: 'Arc',
+        nativeCurrency: 'USDC',
+        rpcEndpoints: [
+          {
+            networkClientId: 'arc',
+            type: RpcEndpointType.Custom,
+            url: 'https://rpc.arc.example',
+          },
+        ],
+      };
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+      const balanceByAssetId = getBridgeAssetsByAssetId(state, accountGroup.id);
+
+      expect(balanceByAssetId[ARC_ERC20_USDC_ASSET_ID]).toMatchObject({
+        assetId: ARC_ERC20_USDC_ASSET_ID,
+        balance: '123',
+        decimals: 6,
         symbol: 'USDC',
       });
     });
