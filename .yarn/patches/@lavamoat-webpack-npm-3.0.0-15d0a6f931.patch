@@ -1,0 +1,33 @@
+diff --git a/src/runtime/runtime.js b/src/runtime/runtime.js
+index 3c69d2bf2304b1455f250f151d7fdc169da49f65..f436e828ad91cbb10ea30169f93ea71e79d15397 100644
+--- a/src/runtime/runtime.js
++++ b/src/runtime/runtime.js
+@@ -41,6 +41,19 @@ const {
+ 
+ const { Proxy, Math, Date } = globalThis
+ 
++// ses 2.x moved the float typed arrays out of universalPropertyNames because of
++// the NaN side channel, so compartments no longer receive them automatically.
++// Bundled packages use them, so endow them deliberately, accepting that channel.
++// Read before scuttling, and skip any the engine lacks (Float16Array is absent
++// on older browsers).
++const floatTypedArrays = {}
++for (const name of ['Float16Array', 'Float32Array', 'Float64Array']) {
++  const ctor = globalThis[name]
++  if (typeof ctor === 'function') {
++    floatTypedArrays[name] = ctor
++  }
++}
++
+ // harden appears on globalThis only after lockdown is called
+ const { harden } = globalThis
+ 
+@@ -309,7 +322,7 @@ const lavamoatRuntimeWrapper = (resourceId, runtimeKit) => {
+ 
+   if (!compartmentMap.has(resourceId)) {
+     // Endow original Math and Date, because SES tames them and we don't need that
+-    const c = new Compartment({ Math, Date })
++    const c = new Compartment({ Math, Date, ...floatTypedArrays })
+     installGlobalsForPolicy(resourceId, c.globalThis)
+     compartmentMap.set(resourceId, c)
+   }
