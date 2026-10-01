@@ -313,6 +313,17 @@ const AssetPage = ({
     [trackChartInteraction],
   );
 
+  // The chart bundle cancels the in-iframe navigation and delegates the open to
+  // its host, so without this the attribution link does nothing. Mobile does the
+  // same in one step, opening the URL and reporting the click together.
+  const handleTradingViewClicked = useCallback(
+    (url: string) => {
+      global.platform.openTab({ url });
+      trackChartInteraction({ interactionType: 'tradingview_clicked' });
+    },
+    [trackChartInteraction],
+  );
+
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
   }, []);
@@ -841,6 +852,7 @@ const AssetPage = ({
                     onError={setAdvancedChartError}
                     onReady={handleAdvancedChartReady}
                     onChartInteracted={handleChartInteracted}
+                    onTradingViewClicked={handleTradingViewClicked}
                     realtimeBar={realtimeLatestBar ?? undefined}
                     lineColorOverride={initialAmbientColor}
                     successColorOverride={ambientSuccessColor}

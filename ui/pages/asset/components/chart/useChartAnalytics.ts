@@ -7,9 +7,7 @@ import { CHART_TYPE_CANDLE } from './advanced-chart-interval-bar';
  * Interaction types carried by the `Chart Interacted` event.
  *
  * Mirrors the `interaction_type` enum in the segment-schema definition at
- * `libraries/events/metamask-assets/chart-interacted.yaml`. `tradingview_clicked`
- * is intentionally absent: the extension embeds the chart directly and has no
- * TradingView attribution link to instrument.
+ * `libraries/events/metamask-assets/chart-interacted.yaml`.
  */
 export type ChartInteractionType =
   | 'zoom'
@@ -19,7 +17,8 @@ export type ChartInteractionType =
   | 'timeframe_changed'
   | 'granularity_changed'
   | 'indicator_toggled'
-  | 'indicator_selector_opened';
+  | 'indicator_selector_opened'
+  | 'tradingview_clicked';
 
 type TrackChartInteractionArgs = {
   interactionType: ChartInteractionType;

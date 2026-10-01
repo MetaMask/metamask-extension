@@ -119,6 +119,16 @@ describe('useChartAnalytics', () => {
       expect(trackedEvent().properties).not.toHaveProperty('indicators_active');
     });
 
+    it('sends a TradingView attribution click', () => {
+      const { current } = renderChartAnalytics();
+
+      current.trackChartInteraction({ interactionType: 'tradingview_clicked' });
+
+      expect(trackedEvent().properties.interaction_type).toBe(
+        'tradingview_clicked',
+      );
+    });
+
     it('omits properties that do not apply to the interaction', () => {
       const { current } = renderChartAnalytics();
 
