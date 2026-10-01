@@ -81,6 +81,11 @@ const FILE_SOURCES: Array<{
     exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_FLAG',
   },
   {
+    key: 'TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG',
+    file: 'shared/lib/assets/advanced-charts-feature-flags.ts',
+    exportName: 'TOKEN_DETAILS_ADVANCED_CHARTS_THEMING_FLAG',
+  },
+  {
     key: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
     file: 'shared/lib/money/feature-flags.ts',
     exportName: 'MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME',
