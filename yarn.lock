@@ -7397,52 +7397,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:^16.1.0":
-  version: 16.1.0
-  resolution: "@metamask/assets-controller@npm:16.1.0"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@17.0.0-preview-772d48ed6":
+  version: 17.0.0-preview-772d48ed6
+  resolution: "@metamask-previews/assets-controller@npm:17.0.0-preview-772d48ed6"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/account-tree-controller": "npm:^10.0.1"
-    "@metamask/accounts-controller": "npm:^40.0.0"
-    "@metamask/assets-controllers": "npm:^112.0.2"
-    "@metamask/base-controller": "npm:^10.0.0"
-    "@metamask/client-controller": "npm:^2.0.0"
-    "@metamask/config-registry-controller": "npm:^4.0.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/core-backend": "npm:^11.0.0"
-    "@metamask/keyring-api": "npm:^24.0.0"
-    "@metamask/keyring-controller": "npm:^28.0.0"
-    "@metamask/keyring-internal-api": "npm:^12.0.0"
-    "@metamask/keyring-snap-client": "npm:^10.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^37.0.0"
-    "@metamask/network-enablement-controller": "npm:^7.0.0"
-    "@metamask/permission-controller": "npm:^14.0.0"
-    "@metamask/phishing-controller": "npm:^18.1.0"
-    "@metamask/polling-controller": "npm:^17.0.0"
-    "@metamask/preferences-controller": "npm:^24.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/transaction-controller": "npm:^70.0.1"
-    "@metamask/utils": "npm:^12.0.0"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    lodash-es: "npm:^4.17.21"
-    p-limit: "npm:^3.1.0"
-  checksum: 10/a3eef2c5238333f2cd45b45624b3fa7c3474a852b6ac931361571dc91049c13938b71e220b0313629734de637d77bf7194a21382ae71a1296823a9f74cae513e
-  languageName: node
-  linkType: hard
-
-"@metamask/assets-controller@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "@metamask/assets-controller@npm:17.0.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.8.0"
     "@metamask/account-tree-controller": "npm:^11.0.0"
     "@metamask/accounts-controller": "npm:^40.0.0"
     "@metamask/assets-controllers": "npm:^112.0.4"
@@ -7469,8 +7430,8 @@ __metadata:
     "@metamask/utils": "npm:^12.0.0"
     async-mutex: "npm:^0.5.0"
     bignumber.js: "npm:^9.1.2"
-    lodash-es: "npm:^4.17.21"
-  checksum: 10/ac421edc1b788dfec6c25aae3cf53153da25bfb1a98d526c5cf65deb5e7275b7c6d7849e52b7afa9a88552c8ee4ef0c895a55dfc631834fff6348c4de322fa45
+    lodash-es: "npm:^4.18.1"
+  checksum: 10/963acfad08119cbd009fdb6b5c6427f99cd9d92ca17cec9ef8131a2e324665b2fa1d6e0d6f2d29831b81d2b2ebe07e879133848f86cd3355ba3cd9fd89670d08
   languageName: node
   linkType: hard
 
@@ -9640,7 +9601,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^7.0.0, @metamask/network-enablement-controller@npm:^7.0.1":
+"@metamask/network-enablement-controller@npm:^7.0.1":
   version: 7.0.1
   resolution: "@metamask/network-enablement-controller@npm:7.0.1"
   dependencies:
@@ -9836,7 +9797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^18.1.0, @metamask/phishing-controller@npm:^18.1.1":
+"@metamask/phishing-controller@npm:^18.1.1":
   version: 18.1.1
   resolution: "@metamask/phishing-controller@npm:18.1.1"
   dependencies:
@@ -35586,7 +35547,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:^17.0.0"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@17.0.0-preview-772d48ed6"
     "@metamask/assets-controllers": "npm:^112.0.2"
     "@metamask/authenticated-user-storage": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"

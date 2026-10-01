@@ -102,6 +102,8 @@
     "assetPreferences": "object",
     "assetsBalance": "object",
     "assetsInfo": "object",
+    "assetsLoadingStatus": "object",
+    "assetsLoadingTokens": "object",
     "assetsMetadata": "object",
     "assetsPrice": "object",
     "autoramps": "object",

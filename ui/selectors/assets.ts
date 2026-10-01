@@ -944,6 +944,11 @@ const selectAssetsControllerStateForBalances = createSelector(
     assetPreferences,
     customAssets,
     selectedCurrency,
+    // The transient loading fields are not persisted and are not needed for
+    // balance aggregation; they are re-declared here only to satisfy the
+    // full AssetsControllerState shape.
+    assetsLoadingStatus: {},
+    assetsLoadingTokens: {},
   }),
 );
 
