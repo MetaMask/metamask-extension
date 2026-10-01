@@ -7,6 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.52.0]
+
+### Uncategorized
+
+- Hid no-fee labels for hardware wallet payment tokens (#46366)
+- Null (CI only) (#46811)
+- Null (dev tooling only) (#40352)
+- Temporarily hid hardware wallet accounts from Money Account selectors (#46778)
+- Replaced the "Show all tokens" button on the Buy token selection page with scroll-to-bottom pagination (#46685)
+- Increase spacing between money balance and earning section (#46619)
+- Allowed deeplinking to money home (#46589)
+- Implemented now money balance widget design (#46598)
+- Enabled Add funds to trade on the Perps order screen when the account has no balance, so unfunded users can start a deposit from the primary button (#45986)
+- Preloaded Perps market data when the wallet unlocks (#46123)
+- Support switching from notification window to popup for Hyperliquid deposit prompt popup users (#46222)
+- Don’t show no fee label next to tokens without a no-fee route (#46552)
+- MUSD-1415 MUSD-1417 (#46514)
+- Redesign vault recovery screen (#42740)
+- @metamask/delegation-deployments from ^1.3.0 to ^2.0.0 (#46194)
+- Moved token name, avatar, and contract address into the Token Details page header (#46433)
+- Revert forced fetch for Arc assets (#46416)
+
+### Added
+
+- Added trust signals to send asset picker (#46806)
+- Added accurate native gas balance checks for hardware-funded Money Account deposits (#46365)
+- Added Volume / Market cap and Fully diluted rows to the asset page Market details section, and renamed Total volume to Total volume (24h) (#46788)
+- Added support for funding Money Account deposits with a Ledger hardware wallet, behind a feature flag (#46364)
+- Added trust signal badges to tokens on the Manage tokens screen (#46789)
+- Added support for opening MetaMask deep links from link.metamask.com (#46530)
+- Added trust signal badges to RWAs (#46772)
+- Added a warning in Swap and Bridge when a Stellar quote requires keeping a minimum XLM balance that the account cannot cover (#46554)
+- Validate swap quotes with multi-asset fees (#46406)
+- Added an unlock prompt that asks users with an older passkey to replace it with a supported provider (#46560)
+- Added XDC Network to the additional networks list (#46543)
+
+### Changed
+
+- Updated look and text of trust signal badges on Swap assets (#46813)
+- Updated the add and edit network form to use the new design system (#46792)
+- Updated Perps loading skeletons so action buttons are pill-shaped (#46826)
+- Changed bump `@metamask/stellar-wallet-snap` to `^1.1.0` (#46681)
+- Updated Buy to use synced order history, prefer the latest completed order provider, and avoid notifications for historical orders (#46046)
+- Updated the network editor controls to use the latest design-system styling (#46591)
+- Updated Robinhood Chain explorer URL (#46742)
+- Updated the hide-token confirmation to use the standard modal design (#46797)
+- Updated the payment method limit text to read as a limit (for example, "$5,000 limit") and shortened less-than wait times to a "<15 mins" style (#46718)
+- Updated money account tracking (#46724)
+- Improved Ledger connection feedback by failing fast with a clear error when no permitted Ledger device is found, instead of waiting for the discovery timeout (#46340)
+- Updated the OP Mainnet network icon to the current Optimism brand asset (#46520)
+- Improved the reliability of the buy flow when a provider checkout URL is malformed (#46504)
+- Updated money account copy (#46617)
+- Improved the private key screen by grouping EVM networks and masking the key until tapped (#46331)
+- Updated the buy flow's provider selection screen to read "Choose providers" and to show the "Most reliable" tag in blue (#46507)
+
+### Removed
+
+- Removed the redundant back button from the account rename dialog (#46820)
+- Removed the clipboardWrite permission from the manifest file (#46603)
+- Removed the "Sort by" button from the NFTs tab and DeFi tab when there is nothing to show (#46559)
+
+### Fixed
+
+- Fixed install attribution for users arriving from metamask.com (#46801)
+- Fixed the vertical alignment of the arrow icons on the account details page (#46822)
+- Fixed Money Account balance staying stale after a confirmed transaction when the balance is read from the Money API (#46785)
+- Fixed perps close and TP/SL updates failing with "position not found" when the trade screen was opened with a differently cased market symbol (#46606)
+- Fixed the button styling in the marketing data consent modal (#46758)
+- Fixed a bug that was causing the check icon to appear alongside quote information on Buy payment method and provider rows (#46717)
+- Fixed test network visibility and the “Show test networks” toggle when a connected dapp uses a testnet (#46716)
+- Fixed Caip19 asset id not resolve correctly in asset detail for Stellar component (#46700)
+- Fixed advanced gas dialogs showing an incorrect default gas limit when estimation was unavailable (#46464)
+- Fixed an issue that could prevent social-login users from restoring their wallet on a new device (#46630)
+- Fixed a bug that was causing mUSD to appear as "MUSD" in the Buy flow headers and labels (#46657)
+- Fixed the back arrow navigating outside of MetaMask when pages are opened directly from a URL (#46547)
+- Fixed a crash that occurred when unified asset state included a non-EVM asset on an EVM account (#46632)
+- Fixed a bug where the Buy flow pay-with page did not explain why a quote was unavailable when hovering the warning icon (#46505)
+- Fixed a bug that prevented the scam questionnaire from appearing for configured malicious websites (#46568)
+- Fixed the Money account activity list showing the swap icon on Sent rows instead of the up-right arrow (#46457)
+- Fixed push notifications stopping for every source when wallet activity was turned off, and not being registered again when notifications were re-enabled with every account's wallet activity disabled (#46616)
+- Fixed ledger account box alignment (#46588)
+- Fixed misaligned icons on the Backup & Sync settings page (#46599)
+- Fixed the Activity tab empty-state Swap button not enabling on supported unified swaps/bridge networks (#46587)
+- Fixed the Perps tab's Top movers section so all eight markets wrap onto multiple rows instead of running off the right edge behind a horizontal scroll (#46555)
+- Fixed missing fiat prices for Tempo tokens (#46129)
+- Fixed a bug that hid the failed-transaction toast when a transaction failed before it was submitted (#46556)
+- Fixed a layout issue in a Snap confirmation popup (#46533)
+- Fixed the unread notifications count so it appears on the menu icon in the wallet header instead of beside it (#46442)
+- Fixed carousel overlapping dapp control bar network menu (#46551)
+- Fixed bug where selecting a non-evm network made it impossible to deposit or withdraw from money account (#46553)
+- Fixed duplicated toast shown upon custom token import (#46516)
+- Fixed duplicate notifications shown during Money Account deposits (#46486)
+- Fixed a bug where clicking "View on explorer" for a token would open the wrong network's block explorer (#46508)
+- Fixed misleading errors when adding a custom network whose RPC provider is rate limiting requests or uses RouteMesh (`lb.routeme.sh`) (#46095)
+- Fixed a bug that could show the `Best rate` label on a provider whose displayed quote was not the best rate (#46414)
+- Fixed Activity showing hugely inflated token and fiat amounts when transfer decimals were missing (#46420)
+
 ## [13.50.0]
 
 ### Added
@@ -3330,7 +3427,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...HEAD
+[13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.52.0
 [13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0
 [13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0
