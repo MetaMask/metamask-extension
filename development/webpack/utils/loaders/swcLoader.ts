@@ -198,7 +198,18 @@ const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
     };
 
     const cb = this.async();
-    transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
+    transform(src, options).then(
+      ({ code, map }) =>
+        // Hand webpack a *parsed* source map. webpack rewrites `sources` to be
+        // relative to the build context, but only for object maps:
+        // `NormalModule.contextifySourceMap` returns string maps unchanged, and
+        // the map is then hashed into `buildInfo.hash` verbatim. Since
+        // `sourceFileName` above is an absolute path, passing the string form
+        // made every module's hash — and therefore every chunk's provisional
+        // `[contenthash]` — depend on where the project happens to live.
+        cb(null, code, map === undefined ? map : JSON.parse(map)),
+      cb,
+    );
   };
 
 export default swcLoader;
