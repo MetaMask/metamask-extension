@@ -27,9 +27,9 @@ let mockImg: { onload?: () => void; onerror?: () => void; src: string } = {
 beforeEach(() => {
   mockImg = { src: '' };
   mockUseTheme.mockReturnValue('light');
-  jest
-    .spyOn(window, 'Image')
-    .mockImplementation(() => mockImg as unknown as HTMLImageElement);
+  jest.spyOn(window, 'Image').mockImplementation(function imageMock() {
+    return mockImg as unknown as HTMLImageElement;
+  } as unknown as typeof Image);
 });
 
 afterEach(() => jest.restoreAllMocks());
