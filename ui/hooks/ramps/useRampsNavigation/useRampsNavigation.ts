@@ -279,9 +279,10 @@ export default function useRampsNavigation() {
       // with RampsBootstrap's in-flight fetch.
       const fetchedTokens = tokens.data
         ? null
-        : await getRampsTokens(userRegion?.regionCode ?? location, 'buy').catch(
-            () => null,
-          );
+        : await getRampsTokens(
+            userRegion?.regionCode ?? location.toLowerCase(),
+            'buy',
+          ).catch(() => null);
 
       // Resolve against the catalog. Block on one that definitively lacks or
       // does not support the token — either the rendered catalog settled

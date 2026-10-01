@@ -846,6 +846,27 @@ describe('useRampsNavigation goToBuy', () => {
     expect(getModalName()).toBeNull();
   });
 
+  it('normalizes the geolocation region when the persisted region is unavailable', async () => {
+    const assetId = 'eip155:1/erc20:0xabc';
+    backgroundHandlers.getRampsTokens = () => ({
+      topTokens: [],
+      allTokens: [{ assetId, tokenSupported: true } as RampsToken],
+    });
+    const { result } = run(
+      buildState({
+        userRegion: null,
+        tokens: { data: null, selected: null, isLoading: false, error: null },
+      }),
+    );
+
+    await goToBuy(result, { assetId });
+
+    expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
+      'us-ca',
+      'buy',
+    ]);
+  });
+
   it('cold catalog fetch that fails and a controller that cannot pre-select → shows RAMPS_UNSUPPORTED', async () => {
     // Real-controller parity for the deep-link cold start: without a fetched
     // catalog, setSelectedToken throws "Tokens not loaded" — the entry page
