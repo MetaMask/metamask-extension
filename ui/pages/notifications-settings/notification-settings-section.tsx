@@ -467,6 +467,9 @@ export function NotificationSettingsSection({
           alignItems={BoxAlignItems.Stretch}
           gap={4}
         >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            {section.description}
+          </Text>
           <NotificationsSettingsBox
             value={sectionPreferences.pushNotificationsEnabled}
             onToggle={() => handleTogglePreference('pushNotificationsEnabled')}

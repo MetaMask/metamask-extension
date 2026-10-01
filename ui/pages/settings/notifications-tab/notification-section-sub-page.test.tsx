@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import { NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
@@ -944,10 +945,12 @@ describe('NotificationSectionSubPage', () => {
     const cases: {
       section: NotificationsSettingsSectionType;
       preferences: NotificationPreferences;
+      description: string;
     }[] = [
       {
         section: 'marketing',
         preferences: createMockNotificationPreferences(),
+        description: messages.notificationsSettingsMarketingDescription.message,
       },
       {
         section: 'agenticCli',
@@ -958,12 +961,16 @@ describe('NotificationSectionSubPage', () => {
             pushNotificationsEnabled: true,
           },
         },
+        description:
+          messages.notificationsSettingsAgenticCliDescription.message,
       },
       ...(getIsPerpsIncludedInBuild()
         ? [
             {
               section: 'perps' as const,
               preferences: createMockNotificationPreferences(),
+              description:
+                messages.notificationsSettingsPerpsDescription.message,
             },
           ]
         : []),
@@ -980,7 +987,35 @@ describe('NotificationSectionSubPage', () => {
       expect(
         screen.queryByTestId('walletActivity-push-notifications-toggle-input'),
       ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(
+          messages.notificationsSettingsWalletActivityDescription.message,
+        ),
+      ).not.toBeInTheDocument();
     });
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each(cases)(
+      'displays the $section description above the channel toggles',
+      ({ section, preferences, description }: (typeof cases)[number]) => {
+        renderSection(section, preferences);
+
+        const descriptionElement = screen.getByText(description);
+        const pushToggle = screen.getByTestId(
+          `${section}-push-notifications-toggle-input`,
+        );
+        const inAppToggle = screen.getByTestId(
+          `${section}-in-app-notifications-toggle-input`,
+        );
+
+        expect(descriptionElement.compareDocumentPosition(pushToggle)).toBe(
+          Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+        expect(descriptionElement.compareDocumentPosition(inAppToggle)).toBe(
+          Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+      },
+    );
 
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each(cases)(
