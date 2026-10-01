@@ -7,6 +7,16 @@ import configureStore from '../store/store';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
+const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
+const POL_NATIVE_ASSET_ID = 'eip155:137/slip44:966';
+
+const fungiblePrice = (price, lastUpdated = 1) => ({
+  assetPriceType: 'fungible',
+  price,
+  usdPrice: price,
+  lastUpdated,
+});
+
 const tests = [
   {
     input: {
@@ -122,15 +132,38 @@ const tests = [
   },
 ];
 
+const buildMetamaskState = ({ ethRate, polRate } = { ethRate: 280.45 }) => ({
+  ...mockState.metamask,
+  completedOnboarding: true,
+  selectedCurrency: 'usd',
+  assetsInfo: {
+    [ETH_NATIVE_ASSET_ID]: {
+      type: 'native',
+      decimals: 18,
+      symbol: 'ETH',
+    },
+    ...(polRate === undefined
+      ? {}
+      : {
+          [POL_NATIVE_ASSET_ID]: {
+            type: 'native',
+            decimals: 18,
+            symbol: 'POL',
+          },
+        }),
+  },
+  assetsPrice: {
+    [ETH_NATIVE_ASSET_ID]: fungiblePrice(ethRate),
+    ...(polRate === undefined
+      ? {}
+      : { [POL_NATIVE_ASSET_ID]: fungiblePrice(polRate) }),
+  },
+});
+
 const renderUseCurrencyDisplay = (value, restProps) => {
   const state = {
     ...mockState,
-    metamask: {
-      ...mockState.metamask,
-      completedOnboarding: true,
-      currentCurrency: 'usd',
-      currencyRates: { ETH: { conversionRate: 280.45 } },
-    },
+    metamask: buildMetamaskState({ ethRate: 280.45 }),
   };
 
   const wrapper = ({ children }) => (
@@ -161,12 +194,7 @@ describe('useCurrencyDisplay', () => {
     it('should format native currency correctly for EVM chains', () => {
       const state = {
         ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          currentCurrency: 'usd',
-          currencyRates: { ETH: { conversionRate: 280.45 } },
-        },
+        metamask: buildMetamaskState({ ethRate: 280.45 }),
       };
 
       const wrapper = ({ children }) => (
@@ -192,12 +220,7 @@ describe('useCurrencyDisplay', () => {
     it('should use EVM formatting for transactions on EVM chains even with non-EVM accounts', () => {
       const state = {
         ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          currentCurrency: 'usd',
-          currencyRates: { ETH: { conversionRate: 280.45 } },
-        },
+        metamask: buildMetamaskState({ ethRate: 280.45 }),
       };
 
       const wrapper = ({ children }) => (
@@ -224,15 +247,7 @@ describe('useCurrencyDisplay', () => {
     it('should use chain-specific conversion rate for fiat display when chainId is provided', () => {
       const state = {
         ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: { conversionRate: 3000 },
-            POL: { conversionRate: 0.15 },
-          },
-        },
+        metamask: buildMetamaskState({ ethRate: 3000, polRate: 0.15 }),
       };
 
       const wrapper = ({ children }) => (
@@ -257,15 +272,7 @@ describe('useCurrencyDisplay', () => {
     it('should fall back to account conversion rate for fiat display when chainId is not provided', () => {
       const state = {
         ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: { conversionRate: 3000 },
-            POL: { conversionRate: 0.15 },
-          },
-        },
+        metamask: buildMetamaskState({ ethRate: 3000, polRate: 0.15 }),
       };
 
       const wrapper = ({ children }) => (
@@ -291,15 +298,7 @@ describe('useCurrencyDisplay', () => {
     it('should fall back to account conversion rate when chain is not in predefined map (custom networks)', () => {
       const state = {
         ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          currentCurrency: 'usd',
-          // Only ETH rate available, custom network not in map
-          currencyRates: {
-            ETH: { conversionRate: 3000 },
-          },
-        },
+        metamask: buildMetamaskState({ ethRate: 3000 }),
       };
 
       const wrapper = ({ children }) => (
