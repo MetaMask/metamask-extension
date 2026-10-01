@@ -1,8 +1,6 @@
 import { Key } from 'selenium-webdriver';
 import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
-import { AccountSelectModal } from './account-select-modal';
-import { PayWithModal } from './pay-with-modal';
 
 // Fetching the Relay quote, rendering the fee / time rows and enabling the
 // "Add funds" button can take longer than the default 10s wait on slower CI
@@ -19,13 +17,19 @@ const QUOTE_READY_TIMEOUT = 60_000;
  * pills, the quote rows (fee / time / total), the header back button and the
  * "Add funds" confirm button.
  * Boundaries: the Money home page that opens this belongs to
- * `MoneyHomePage`; the pay-with and account pickers are `PayWithModal` and
- * `AccountSelectModal`, exposed here as helpers.
+ * `MoneyHomePage`; the pay-with and account pickers opened by the pills are
+ * `PayWithModal` and `AccountSelectModal`, driven from
+ * `money-account-deposit.flow.ts`.
  * Related: `MoneyHomePage`, `PayWithModal`, `AccountSelectModal`.
  *
  * @see ui/pages/confirmations/components/info/money-account-deposit-info/money-account-deposit-info.tsx
  */
 export class MoneyAccountDepositConfirmation {
+  private readonly addFundsButton = {
+    testId: 'confirm-footer-button',
+    text: tEn('addFunds'),
+  };
+
   private readonly amountInput = { testId: 'custom-amount-input' };
 
   private readonly bridgeFeeRow = { testId: 'bridge-fee-row' };
@@ -38,7 +42,10 @@ export class MoneyAccountDepositConfirmation {
 
   private readonly driver: Driver;
 
-  private readonly fromAccountName = { testId: 'from-account-name' };
+  private readonly fromAccountName = (accountName: string) => ({
+    testId: 'from-account-name',
+    text: accountName,
+  });
 
   private readonly fromAccountPill = { testId: 'from-account-pill' };
 
@@ -47,9 +54,8 @@ export class MoneyAccountDepositConfirmation {
   };
 
   private readonly headerTitle = {
-    xpath: `//*[@data-testid='wallet-initiated-header-back-button']/following-sibling::*[normalize-space(.)='${tEn(
-      'addFunds',
-    )}']`,
+    testId: 'wallet-initiated-header-title',
+    text: tEn('addFunds'),
   };
 
   private readonly parentSelector = {
@@ -60,7 +66,10 @@ export class MoneyAccountDepositConfirmation {
 
   private readonly payWithRow = { testId: 'pay-with-row' };
 
-  private readonly payWithSymbol = { testId: 'pay-with-symbol' };
+  private readonly payWithSymbol = (symbol: string) => ({
+    testId: 'pay-with-symbol',
+    text: symbol,
+  });
 
   private readonly percentageButton = (percentage: number) => ({
     testId: `percentage-button-${percentage}`,
@@ -68,7 +77,10 @@ export class MoneyAccountDepositConfirmation {
 
   private readonly percentageButtons = { testId: 'percentage-buttons' };
 
-  private readonly totalRow = { testId: 'total-row' };
+  private readonly totalRow = (total: string) => ({
+    testId: 'total-row',
+    text: total,
+  });
 
   private readonly transactionFeeValue = { testId: 'transaction-fee-value' };
 
@@ -78,18 +90,18 @@ export class MoneyAccountDepositConfirmation {
 
   async checkAmount(expectedAmount: string): Promise<void> {
     console.log(`Wait for deposit amount to be "${expectedAmount}"`);
-    const input = await this.driver.findElement(this.amountInput);
-    await this.driver.wait(
-      async () => (await input.getAttribute('value')) === expectedAmount,
-      QUOTE_READY_TIMEOUT,
+    await this.driver.waitUntil(
+      async () => {
+        const input = await this.driver.findElement(this.amountInput);
+        return (await input.getAttribute('value')) === expectedAmount;
+      },
+      { interval: 100, timeout: QUOTE_READY_TIMEOUT },
     );
   }
 
   async checkFromAccount(accountName: string): Promise<void> {
-    await this.driver.waitForSelector({
-      ...this.fromAccountName,
-      text: accountName,
-    });
+    console.log(`Wait for from-account pill to show "${accountName}"`);
+    await this.driver.waitForSelector(this.fromAccountName(accountName));
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -114,13 +126,14 @@ export class MoneyAccountDepositConfirmation {
    * @param symbol - Token symbol, e.g. `USDC`.
    */
   async checkPayWithToken(symbol: string): Promise<void> {
-    await this.driver.waitForSelector(
-      { ...this.payWithSymbol, text: symbol },
-      { timeout: QUOTE_READY_TIMEOUT },
-    );
+    console.log(`Wait for pay-with pill to show "${symbol}"`);
+    await this.driver.waitForSelector(this.payWithSymbol(symbol), {
+      timeout: QUOTE_READY_TIMEOUT,
+    });
   }
 
   async checkPercentageButtonsDisplayed(): Promise<void> {
+    console.log('Check percentage buttons are displayed');
     await this.driver.waitForSelector(this.percentageButtons);
   }
 
@@ -134,10 +147,9 @@ export class MoneyAccountDepositConfirmation {
       [this.bridgeFeeRow, this.transactionFeeValue, this.bridgeTimeRow],
       { timeout: QUOTE_READY_TIMEOUT },
     );
-    await this.driver.waitForSelector(
-      { ...this.confirmButton, text: tEn('addFunds') },
-      { timeout: QUOTE_READY_TIMEOUT },
-    );
+    await this.driver.waitForSelector(this.addFundsButton, {
+      timeout: QUOTE_READY_TIMEOUT,
+    });
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'enabled',
       timeout: QUOTE_READY_TIMEOUT,
@@ -145,25 +157,26 @@ export class MoneyAccountDepositConfirmation {
   }
 
   async checkTotal(expectedTotal: string): Promise<void> {
-    await this.driver.waitForSelector(
-      { ...this.totalRow, text: expectedTotal },
-      { timeout: QUOTE_READY_TIMEOUT },
-    );
+    console.log(`Wait for deposit total to be "${expectedTotal}"`);
+    await this.driver.waitForSelector(this.totalRow(expectedTotal), {
+      timeout: QUOTE_READY_TIMEOUT,
+    });
   }
 
   /**
    * Delete the current amount character by character. The amount field is a
-   * controlled input that normalises an empty value to `0`, and select-all
-   * shortcuts are not reliable against it across platforms, so backspacing is
-   * the dependable way to reset it.
+   * controlled input that normalises an empty value to `0`, and the
+   * select-all shortcut `driver.fill` relies on does not clear it reliably
+   * across platforms (it is a no-op on macOS Chrome), so backspacing is the
+   * dependable way to reset it.
    */
   async clearAmount(): Promise<void> {
     console.log('Clear deposit amount');
     const input = await this.driver.findElement(this.amountInput);
     const currentValue = (await input.getAttribute('value')) ?? '';
-    await input.sendKeys(
-      Key.END,
-      ...Array<string>(currentValue.length).fill(Key.BACK_SPACE),
+    await this.driver.press(
+      this.amountInput,
+      Key.END + Key.BACK_SPACE.repeat(currentValue.length),
     );
     await this.checkAmount('0');
   }
@@ -175,9 +188,22 @@ export class MoneyAccountDepositConfirmation {
     await this.driver.clickElementUsingMouseMove(this.confirmButton);
   }
 
+  async clickFromAccountPill(): Promise<void> {
+    console.log('Click from-account pill');
+    await this.driver.clickElement(this.fromAccountPill);
+  }
+
   async clickMax(): Promise<void> {
     console.log('Click Max percentage button');
     await this.driver.clickElement(this.percentageButton(100));
+  }
+
+  async clickPayWithPill(): Promise<void> {
+    console.log('Click Pay with pill');
+    await this.driver.waitForSelector(this.payWithPill, {
+      timeout: QUOTE_READY_TIMEOUT,
+    });
+    await this.driver.clickElement(this.payWithPill);
   }
 
   async clickPercentage(percentage: number): Promise<void> {
@@ -186,7 +212,8 @@ export class MoneyAccountDepositConfirmation {
   }
 
   /**
-   * Replace the current amount with `amount`.
+   * Replace the current amount with `amount`. See {@link clearAmount} for why
+   * this does not use `driver.fill`.
    *
    * @param amount - Fiat amount to type, e.g. `50`.
    */
@@ -194,72 +221,15 @@ export class MoneyAccountDepositConfirmation {
     console.log(`Fill deposit amount ${amount}`);
     await this.driver.waitForSelector(this.amountInput, { state: 'enabled' });
     await this.clearAmount();
-    const input = await this.driver.findElement(this.amountInput);
     // Typing onto the normalised `0` yields `0<amount>`, which the field
     // strips back to `<amount>`.
-    await input.sendKeys(amount);
+    await this.driver.press(this.amountInput, amount);
     await this.checkAmount(amount);
   }
 
   async goBack(): Promise<void> {
+    console.log('Click deposit confirmation back button');
     await this.driver.clickElement(this.headerBackButton);
-  }
-
-  /**
-   * Open the account picker from the from-account pill.
-   *
-   * @returns The opened `AccountSelectModal`.
-   */
-  async openAccountSelector(): Promise<AccountSelectModal> {
-    console.log('Open funding account selector');
-    await this.driver.clickElement(this.fromAccountPill);
-    const modal = new AccountSelectModal(this.driver);
-    await modal.checkPageIsLoaded();
-    return modal;
-  }
-
-  /**
-   * Open the "Pay with" token picker from the pay-with pill.
-   *
-   * @returns The opened `PayWithModal`.
-   */
-  async openPayWith(): Promise<PayWithModal> {
-    console.log('Open Pay with token selector');
-    await this.driver.waitForSelector(this.payWithPill, {
-      timeout: QUOTE_READY_TIMEOUT,
-    });
-    await this.driver.clickElement(this.payWithPill);
-    const modal = new PayWithModal(this.driver);
-    await modal.checkPageIsLoaded();
-    return modal;
-  }
-
-  /**
-   * Fund the deposit from a different wallet account.
-   *
-   * @param address - Address of the account to fund from.
-   * @param accountName - Display name expected on the pill afterwards.
-   */
-  async selectFundingAccount(
-    address: string,
-    accountName: string,
-  ): Promise<void> {
-    const modal = await this.openAccountSelector();
-    await modal.selectAccount(address);
-    await this.checkFromAccount(accountName);
-  }
-
-  /**
-   * Pick the pay token from the wallet asset list.
-   *
-   * @param chainId - Hex chain id of the token, e.g. `0x1`.
-   * @param symbol - Token symbol, e.g. `USDC`.
-   */
-  async selectPayToken(chainId: string, symbol: string): Promise<void> {
-    const modal = await this.openPayWith();
-    await modal.openOtherAssets();
-    await modal.selectToken(chainId, symbol);
-    await this.checkPayWithToken(symbol);
   }
 }
 

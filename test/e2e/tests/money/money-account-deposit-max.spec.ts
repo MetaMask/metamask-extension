@@ -5,13 +5,12 @@ import { Driver } from '../../webdriver/driver';
 import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
+  selectDepositPayToken,
   verifyMoneyDepositConverted,
 } from '../../page-objects/flows/money-account-deposit.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  getMoneyAccountDepositConfig,
-  USDC_BALANCE_HUMAN,
-} from './money-account-deposit-fixture-config';
+import { USDC_BALANCE_HUMAN } from './constants';
+import { getMoneyAccountDepositConfig } from './helpers';
 
 /**
  * Port of mobile `tests/smoke-appium/confirmations/pay/money-account-deposit-max.spec.ts`.
@@ -42,7 +41,12 @@ describe('Money Account Deposit - Max', function (this: Suite) {
           moneyHomePage,
         );
 
-        await confirmation.selectPayToken(CHAIN_IDS.MAINNET, 'USDC');
+        await selectDepositPayToken(
+          driver,
+          confirmation,
+          CHAIN_IDS.MAINNET,
+          'USDC',
+        );
 
         await confirmation.clickMax();
         await confirmation.checkAmount(String(USDC_BALANCE_HUMAN));

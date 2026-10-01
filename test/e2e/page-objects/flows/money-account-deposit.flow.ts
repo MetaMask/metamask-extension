@@ -1,7 +1,9 @@
 import { tEn } from '../../../lib/i18n-helpers';
 import type { Anvil } from '../../seeder/anvil';
 import { Driver } from '../../webdriver/driver';
+import { AccountSelectModal } from '../pages/confirmations/account-select-modal';
 import { MoneyAccountDepositConfirmation } from '../pages/confirmations/money-account-deposit-confirmation';
+import { PayWithModal } from '../pages/confirmations/pay-with-modal';
 import BottomNavBar from '../pages/home/bottom-nav-bar-page';
 import MoneyHomePage from '../pages/money/money-home-page';
 import MoneyTransactionDetailsPage from '../pages/money/money-transaction-details-page';
@@ -46,6 +48,57 @@ export async function openMoneyAccountDeposit(
   const confirmation = new MoneyAccountDepositConfirmation(driver);
   await confirmation.checkPageIsLoaded();
   return confirmation;
+}
+
+/**
+ * Fund the deposit from a different wallet account via the from-account pill
+ * and the "Select an account" modal.
+ *
+ * @param driver - The WebDriver instance.
+ * @param confirmation - The loaded deposit confirmation.
+ * @param address - Address of the account to fund from.
+ * @param accountName - Display name expected on the pill afterwards.
+ */
+export async function selectDepositFundingAccount(
+  driver: Driver,
+  confirmation: MoneyAccountDepositConfirmation,
+  address: string,
+  accountName: string,
+): Promise<void> {
+  console.log(`Select deposit funding account ${accountName}`);
+  await confirmation.clickFromAccountPill();
+
+  const accountSelectModal = new AccountSelectModal(driver);
+  await accountSelectModal.checkPageIsLoaded();
+  await accountSelectModal.selectAccount(address);
+
+  await confirmation.checkFromAccount(accountName);
+}
+
+/**
+ * Pick the pay token from the wallet asset list via the pay-with pill and the
+ * "Pay with" modal.
+ *
+ * @param driver - The WebDriver instance.
+ * @param confirmation - The loaded deposit confirmation.
+ * @param chainId - Hex chain id of the token, e.g. `0x1`.
+ * @param symbol - Token symbol, e.g. `USDC`.
+ */
+export async function selectDepositPayToken(
+  driver: Driver,
+  confirmation: MoneyAccountDepositConfirmation,
+  chainId: string,
+  symbol: string,
+): Promise<void> {
+  console.log(`Select deposit pay token ${symbol} on ${chainId}`);
+  await confirmation.clickPayWithPill();
+
+  const payWithModal = new PayWithModal(driver);
+  await payWithModal.checkPageIsLoaded();
+  await payWithModal.openOtherAssets();
+  await payWithModal.selectToken(chainId, symbol);
+
+  await confirmation.checkPayWithToken(symbol);
 }
 
 /**

@@ -148,7 +148,11 @@ export const WalletInitiatedHeader = () => {
         color={IconColor.iconDefault}
       />
       {headerTitle && (
-        <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.inherit}
+          data-testid="wallet-initiated-header-title"
+        >
           {headerTitle}
         </Text>
       )}

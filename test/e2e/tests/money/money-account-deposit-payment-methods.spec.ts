@@ -6,10 +6,8 @@ import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
 } from '../../page-objects/flows/money-account-deposit.flow';
-import {
-  getMoneyAccountDepositConfig,
-  PREFILL_ETH_PAY_TOKENS_FLAG,
-} from './money-account-deposit-fixture-config';
+import { PREFILL_ETH_PAY_TOKENS_FLAG } from './constants';
+import { getMoneyAccountDepositConfig } from './helpers';
 
 /**
  * Port of mobile

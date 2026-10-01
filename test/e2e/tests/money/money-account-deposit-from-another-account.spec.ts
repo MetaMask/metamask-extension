@@ -6,10 +6,12 @@ import { ACCOUNT_2 } from '../../constants';
 import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
+  selectDepositFundingAccount,
+  selectDepositPayToken,
   verifyMoneyDepositConverted,
 } from '../../page-objects/flows/money-account-deposit.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getMoneyAccountDepositConfig } from './money-account-deposit-fixture-config';
+import { getMoneyAccountDepositConfig } from './helpers';
 
 /**
  * Port of mobile
@@ -44,9 +46,19 @@ describe('Money Account Deposit - From Another Account', function (this: Suite) 
         );
 
         await confirmation.checkFromAccount('Account 1');
-        await confirmation.selectFundingAccount(ACCOUNT_2, 'Account 2');
+        await selectDepositFundingAccount(
+          driver,
+          confirmation,
+          ACCOUNT_2,
+          'Account 2',
+        );
 
-        await confirmation.selectPayToken(CHAIN_IDS.MAINNET, 'USDC');
+        await selectDepositPayToken(
+          driver,
+          confirmation,
+          CHAIN_IDS.MAINNET,
+          'USDC',
+        );
 
         await confirmation.fillAmount('50');
         await confirmation.checkQuoteIsReady();

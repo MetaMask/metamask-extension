@@ -24,6 +24,11 @@ class MoneyTransactionDetailsPage {
     testId: 'money-transaction-details-hero-amount',
   };
 
+  private readonly heroAmountText = (amount: string) => ({
+    testId: 'money-transaction-details-hero-amount',
+    text: amount,
+  });
+
   private readonly loadingSkeleton = {
     testId: 'money-transaction-details-loading',
   };
@@ -34,12 +39,18 @@ class MoneyTransactionDetailsPage {
     testId: 'money-transaction-details-status-value',
   };
 
+  private readonly statusValueText = (status: string) => ({
+    testId: 'money-transaction-details-status-value',
+    text: status,
+  });
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkHeroAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector({ ...this.heroAmount, text: amount });
+    console.log(`Wait for Money transaction hero amount "${amount}"`);
+    await this.driver.waitForSelector(this.heroAmountText(amount));
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -54,7 +65,8 @@ class MoneyTransactionDetailsPage {
   }
 
   async checkStatus(status: string): Promise<void> {
-    await this.driver.waitForSelector({ ...this.statusValue, text: status });
+    console.log(`Wait for Money transaction status "${status}"`);
+    await this.driver.waitForSelector(this.statusValueText(status));
   }
 
   async checkStatusIsConfirmed(): Promise<void> {

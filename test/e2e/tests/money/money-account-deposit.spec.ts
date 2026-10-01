@@ -5,10 +5,11 @@ import { Driver } from '../../webdriver/driver';
 import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
+  selectDepositPayToken,
   verifyMoneyDepositConverted,
 } from '../../page-objects/flows/money-account-deposit.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getMoneyAccountDepositConfig } from './money-account-deposit-fixture-config';
+import { getMoneyAccountDepositConfig } from './helpers';
 
 /**
  * Port of mobile `tests/smoke-appium/confirmations/pay/money-account-deposit.spec.ts`.
@@ -41,7 +42,12 @@ describe('Money Account Deposit', function (this: Suite) {
         await confirmation.checkPercentageButtonsDisplayed();
 
         // Pay with USDC on Mainnet, picked explicitly from the asset list.
-        await confirmation.selectPayToken(CHAIN_IDS.MAINNET, 'USDC');
+        await selectDepositPayToken(
+          driver,
+          confirmation,
+          CHAIN_IDS.MAINNET,
+          'USDC',
+        );
 
         await confirmation.clickPercentage(25);
         await confirmation.checkAmount('25');

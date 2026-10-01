@@ -69,9 +69,7 @@ class MoneyHomePage {
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for Money home page to load');
     await this.driver.waitForSelector(this.page);
-    await this.driver.assertElementNotPresent(this.loadingSkeleton, {
-      waitAtLeastGuard: 0,
-    });
+    await this.driver.assertElementNotPresent(this.loadingSkeleton);
     await this.driver.waitForSelector(this.balance);
   }
 
