@@ -1,11 +1,11 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import { priceApiBaseUrl } from '#shared/constants/price-api';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '#shared/constants/tokens';
 import { getCaipAssetImageUrl } from '#shared/lib/asset-utils';
 import type { AssetData, PricePoint, ResolvedTicker } from './types';
 
 const tokenSearchUrl = `${TOKEN_API_METASWAP_CODEFI_URL}search`;
-const historicalPricesUrl =
-  'https://price.api.cx.metamask.io/v3/historical-prices';
+const historicalPricesUrl = `${priceApiBaseUrl}/v3/historical-prices`;
 const clientIdHeader = { 'X-Client-Id': 'extension' };
 
 type SearchHit = {
