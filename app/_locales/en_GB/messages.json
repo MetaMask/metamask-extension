@@ -4285,6 +4285,9 @@
   "from": {
     "message": "From"
   },
+  "fullyDiluted": {
+    "message": "Fully diluted"
+  },
   "function": {
     "message": "Function: $1"
   },
@@ -9111,7 +9114,7 @@
     "message": "Includes $1% MM fee."
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
+    "message": "You can add this token back in the future by going to \"Manage tokens\" in the tokens menu"
   },
   "receive": {
     "message": "Receive"
@@ -12078,7 +12081,7 @@
     "message": "Total received"
   },
   "totalVolume": {
-    "message": "Total volume"
+    "message": "Total volume (24h)"
   },
   "transaction": {
     "message": "Transaction"
@@ -12520,6 +12523,9 @@
   },
   "volume": {
     "message": "Volume"
+  },
+  "volumeToMarketCap": {
+    "message": "Volume / Market cap"
   },
   "wallet": {
     "message": "Wallet"

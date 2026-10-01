@@ -7,7 +7,7 @@ import {
   parse,
 } from '../../../../shared/lib/deep-links/parse';
 import {
-  DEEP_LINK_HOST,
+  DEEP_LINK_HOSTS,
   DEEP_LINK_MAX_LENGTH,
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
@@ -123,13 +123,13 @@ export class DeepLinkRouter extends EventEmitter<{
 
   /**
    * Installs the deep link router by adding a listener for
-   * `onBeforeRequest` events for the deep link host.
+   * `onBeforeRequest` events for the configured deep-link hosts.
    */
   public install() {
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
-        urls: [`*://*.${DEEP_LINK_HOST}/*`],
+        urls: DEEP_LINK_HOSTS.map((host) => `*://*.${host}/*`),
         // redirect only top level frames, ignore all others.
         types: ['main_frame'],
       },
@@ -155,7 +155,7 @@ export class DeepLinkRouter extends EventEmitter<{
    * In Manifest V3 this listener is non-blocking, so Chrome continues the
    * original request without waiting for this method's Promise. Keep all work
    * before `redirectTab` minimal and never perform external network or API
-   * lookups here. Otherwise `link.metamask.io` can load its fallback page and
+   * lookups here. Otherwise the deep-link host can load its fallback page and
    * incorrectly tell the user to install MetaMask even though it is installed.
    *
    * @param tabId - The ID of the tab to redirect.
