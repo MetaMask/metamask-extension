@@ -1,19 +1,23 @@
 # AMO determinism experiment
 
-Evidence for [#46829](https://github.com/MetaMask/metamask-extension/pull/46829): the two fixes
+Evidence for the AMO build-determinism fix (see #46829 and its successor PR): the fixes
 make `runtime.[contenthash].js` independent of the directory the build runs in.
 
 ## What it does
 
 [`.github/workflows/amo-determinism-experiment.yml`](../../workflows/amo-determinism-experiment.yml)
 builds the Firefox MV2 production bundle of **v13.47.1** — the release whose runtime chunk flaked
-for Mozilla reviewers — 40 times on CI:
+for Mozilla reviewers — 60 times on CI:
 
 - **control** ×20: the tag untouched, each build in a directory whose absolute path has a
   different length (≈80 to ≈200 characters).
-- **fixed** ×20: the same, after applying [`fix-46829-on-v13.47.1.patch`](./fix-46829-on-v13.47.1.patch),
-  which is the #46829 change rebased onto that tag (`disableCharFreq` on the runtime chunk +
-  the swc loader returning an object source map).
+- **fixed** ×20: the end state — [`fix-endstate-on-v13.47.1.patch`](./fix-endstate-on-v13.47.1.patch)
+  (the swc loader returning an object source map, plus the `.ts`/`.tsx` loader split and
+  `IN_TEST` inlining that `@swc/core` 1.16 needs) and `yarn up @swc/core@1.16.2`. Frequency-ordered
+  mangling stays on; no runtime-chunk special case.
+- **charfreq** ×20: the earlier #46829 approach for comparison —
+  [`fix-46829-on-v13.47.1.patch`](./fix-46829-on-v13.47.1.patch) (`mangle.disableCharFreq` on the
+  runtime chunk + the loader fix), still on `@swc/core` 1.13.3.
 
 Each build records its runtime chunk filename and a digest of every file in `dist/firefox`.
 A final **Report** job tabulates them in the run summary and fails if the fixed builds disagree.
@@ -24,9 +28,11 @@ A final **Report** job tabulates them in the run summary and fails if the fixed 
 | --- | --- |
 | control | a mix of two names (the `c`/`l` alphabet flip described in the PR) |
 | fixed | a single name across all 20 paths |
+| charfreq | a single name across all 20 paths |
 
-The fixed name is **not** the published `b574af00…` hash: `disableCharFreq` changes the mangled
-identifiers, so the chunk content changes once. The point is that it then never changes again.
+Neither fixed name equals the published `b574af00…` hash: the experiment uses placeholder API
+keys (and `disableCharFreq` changes identifiers), so chunk contents differ from the release once.
+The point is that they then never change again.
 
 ## Why v13.47.1 and not the PR branch
 

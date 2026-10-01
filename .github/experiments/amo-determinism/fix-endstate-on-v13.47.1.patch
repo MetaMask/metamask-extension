@@ -1,0 +1,174 @@
+diff --git a/development/webpack/utils/helpers.ts b/development/webpack/utils/helpers.ts
+index 1e002af..6ab1554 100644
+--- a/development/webpack/utils/helpers.ts
++++ b/development/webpack/utils/helpers.ts
+@@ -65,6 +65,12 @@ export const UI_COMPONENT_RE = new RegExp(
+ 
+ export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
+ 
++/** TypeScript without JSX (`.ts` / `.mts`). */
++export const TYPESCRIPT_NON_TSX_FILE_RE = /\.(?:ts|mts)$/u;
++
++/** TypeScript with JSX (`.tsx` only). */
++export const TYPESCRIPT_TSX_FILE_RE = /\.tsx$/u;
++
+ export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
+ 
+ /**
+diff --git a/development/webpack/utils/loaders/envValidationLoader.ts b/development/webpack/utils/loaders/envValidationLoader.ts
+index be8b1b7..5661ddd 100644
+--- a/development/webpack/utils/loaders/envValidationLoader.ts
++++ b/development/webpack/utils/loaders/envValidationLoader.ts
+@@ -9,7 +9,7 @@ import type {
+   AssignmentPatternProperty,
+   KeyValuePatternProperty,
+ } from '@swc/types';
+-import { TYPESCRIPT_FILE_RE } from '../helpers';
++import { TYPESCRIPT_FILE_RE, TYPESCRIPT_TSX_FILE_RE } from '../helpers';
+ 
+ // Options are serialized to a JSON array for thread-loader compatibility
+ export type EnvValidationLoaderOptions = {
+@@ -19,9 +19,9 @@ export type EnvValidationLoaderOptions = {
+ /**
+  * Determines the parser syntax based on the file extension.
+  *
+- * Always enables JSX parsing since this loader only runs on the project's own
+- * source files (not node_modules), and .js files in this codebase commonly
+- * contain JSX. SWC can parse non-JSX code with JSX enabled, but not the reverse.
++ * Enables JSX/TSX parsing for files that may contain JSX. `.js`/`.jsx` and
++ * `.tsx` use JSX mode. Plain `.ts`/`.mts` keep `tsx: false` because
++ * `@swc/core` >= 1.16 treats TypeScript generics as JSX when `tsx` is true.
+  *
+  * @param resourcePath - The file path to determine syntax for.
+  * @returns The parse options with appropriate syntax configuration.
+@@ -30,7 +30,8 @@ function getParseOptions(resourcePath: string): ParseOptions {
+   const isTypeScript = TYPESCRIPT_FILE_RE.test(resourcePath);
+ 
+   if (isTypeScript) {
+-    return { syntax: 'typescript', tsx: true };
++    const tsx = TYPESCRIPT_TSX_FILE_RE.test(resourcePath);
++    return { syntax: 'typescript', tsx };
+   }
+   return { syntax: 'ecmascript', jsx: true };
+ }
+diff --git a/development/webpack/utils/loaders/swcLoader.ts b/development/webpack/utils/loaders/swcLoader.ts
+index 4b4facd..4d8d76f 100644
+--- a/development/webpack/utils/loaders/swcLoader.ts
++++ b/development/webpack/utils/loaders/swcLoader.ts
+@@ -198,7 +198,13 @@ const swcLoader: LoaderDefinitionFunction<SwcLoaderOptions> =
+     };
+ 
+     const cb = this.async();
+-    transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
++    transform(src, options).then(
++      // Experiment patch (see PR #46829): hand webpack a parsed source map so
++      // `contextifySourceMap` relativizes `sources`; string maps are hashed
++      // verbatim, leaking the absolute build path into every module hash.
++      ({ code, map }) => cb(null, code, map === undefined ? map : JSON.parse(map)),
++      cb,
++    );
+   };
+ 
+ export default swcLoader;
+diff --git a/development/webpack/webpack.config.ts b/development/webpack/webpack.config.ts
+index 5c40d49..b74fcfe 100644
+--- a/development/webpack/webpack.config.ts
++++ b/development/webpack/webpack.config.ts
+@@ -26,7 +26,8 @@ import {
+   getMinimizers,
+   JAVASCRIPT_FILE_RE,
+   NODE_MODULES_RE,
+-  TYPESCRIPT_FILE_RE,
++  TYPESCRIPT_NON_TSX_FILE_RE,
++  TYPESCRIPT_TSX_FILE_RE,
+   UI_COMPONENT_RE,
+   SNOW_MODULE_RE,
+   TREZOR_MODULE_RE,
+@@ -291,10 +292,19 @@ if (args.bundleAnalyzer) {
+ // #endregion plugins
+ 
+ const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
++// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
++// and .tsx must use separate loaders.
++const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
+ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
+ const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
+ 
+ const swcReactRefreshConfig = { ...swcConfig, refresh: true };
++const reactRefreshTsLoader = getSwcLoader(
++  'typescript',
++  false,
++  safeVariables,
++  swcReactRefreshConfig,
++);
+ const reactRefreshTsxLoader = getSwcLoader(
+   'typescript',
+   true,
+@@ -308,8 +318,21 @@ const reactRefreshJsxLoader = getSwcLoader(
+   swcReactRefreshConfig,
+ );
+ 
+-const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
+-const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
++// npm packages keep runtime `process.env.*` unless SWC inlines them. First-party
++// code gets the full `safeVariables` map, but `@metamask/network-controller`
++// (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
++// always falsy there and custom networks kept the 20s block-tracker interval
++// instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
++const npmEnvs: Record<string, string> =
++  safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
++const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
++const cjsLoader = getSwcLoader(
++  'ecmascript',
++  false,
++  npmEnvs,
++  swcConfig,
++  'commonjs',
++);
+ 
+ const isChunkableInitial = (chunk: Chunk) =>
+   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+@@ -436,19 +459,40 @@ const config = {
+       ...(isDevelopmentWatchMode
+         ? [
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX (UI, react-refresh)
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              include: UI_DIR_RE,
++              use: reactRefreshTsLoader,
++            },
++            {
++              // typescript JSX (UI, react-refresh)
++              test: TYPESCRIPT_TSX_FILE_RE,
+               include: UI_DIR_RE,
+               use: reactRefreshTsxLoader,
+             },
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              exclude: [NODE_MODULES_RE, UI_DIR_RE],
++              use: tsLoader,
++            },
++            {
++              // typescript JSX
++              test: TYPESCRIPT_TSX_FILE_RE,
+               exclude: [NODE_MODULES_RE, UI_DIR_RE],
+               use: tsxLoader,
+             },
+           ]
+         : [
+             {
+-              test: TYPESCRIPT_FILE_RE,
++              // typescript without JSX
++              test: TYPESCRIPT_NON_TSX_FILE_RE,
++              exclude: NODE_MODULES_RE,
++              use: tsLoader,
++            },
++            {
++              // typescript JSX
++              test: TYPESCRIPT_TSX_FILE_RE,
+               exclude: NODE_MODULES_RE,
+               use: tsxLoader,
+             },

@@ -4,12 +4,19 @@ name: AMO determinism experiment
 #
 # Builds the Firefox MV2 production bundle of v13.47.1 (the release whose
 # `runtime.[contenthash].js` flaked for AMO reviewers) in N different absolute
-# paths, twice: once untouched ("control") and once with the two fixes from
-# #46829 applied as a patch ("fixed"). A final job tabulates the runtime chunk
-# name and a digest of the whole dist directory for every build.
+# paths, in three variants:
+#   control  — the tag untouched;
+#   fixed    — the end-state fix: swcLoader returns an object source map
+#              (root cause 1) and @swc/core is bumped to 1.16.2 (root cause 2),
+#              with frequency-ordered mangling left ON and no runtime-chunk
+#              special case;
+#   charfreq — the earlier #46829 approach (mangle.disableCharFreq on the
+#              runtime chunk + the loader fix), kept for comparison.
+# A final job tabulates the runtime chunk name and a digest of the whole dist
+# directory for every build.
 #
-# Expected outcome: the control runs split between `runtime.b574af00….js` and
-# `runtime.1fcc8942….js` depending on the path; the fixed runs all agree.
+# Expected outcome: the control runs split between two runtime chunk names
+# depending on the path; every fixed (and charfreq) run agrees with itself.
 #
 # This workflow only runs on the experiment branch; it is not part of CI.
 
@@ -82,7 +89,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [control, fixed]
+        variant: [control, fixed, charfreq]
         iteration:
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
@@ -111,8 +118,15 @@ jobs:
             https://github.com/MetaMask/metamask-extension.git \
             "${{ steps.dir.outputs.dir }}"
 
-      - name: Apply the #46829 fixes (fixed variant only)
+      - name: Apply the end-state fix (fixed variant)
         if: ${{ matrix.variant == 'fixed' }}
+        shell: bash
+        run: |
+          git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
+            "${GITHUB_WORKSPACE}/.github/experiments/amo-determinism/fix-endstate-on-v13.47.1.patch"
+
+      - name: Apply the #46829 fix (charfreq variant)
+        if: ${{ matrix.variant == 'charfreq' }}
         shell: bash
         run: |
           git -C "${{ steps.dir.outputs.dir }}" apply --verbose \
@@ -128,7 +142,14 @@ jobs:
         working-directory: ${{ steps.dir.outputs.dir }}
         run: |
           corepack enable
-          yarn install --immutable
+          if [ "${{ matrix.variant }}" = "fixed" ]; then
+            # Root cause 2 is fixed in @swc/core 1.16.2; the lockfile changes, so
+            # this variant cannot install immutably.
+            yarn up '@swc/core@1.16.2'
+            git diff --stat -- package.json yarn.lock
+          else
+            yarn install --immutable
+          fi
 
       - name: Build Firefox MV2 production bundle
         shell: bash
@@ -185,7 +206,7 @@ jobs:
 
           print('# AMO determinism experiment — v13.47.1 built at 20 different paths\n')
           verdict_ok = True
-          for variant in ('control', 'fixed'):
+          for variant in ('control', 'fixed', 'charfreq'):
               rs = sorted(by_variant.get(variant, []), key=lambda r: r['iteration'])
               runtimes = collections.Counter(r['runtime'] for r in rs)
               digests = collections.Counter(r['dist_digest'] for r in rs)
@@ -200,15 +221,15 @@ jobs:
               for r in rs:
                   print(f"| {r['iteration']} | {r['path_length']} | `{r['runtime']}` | `{r['dist_digest'][:12]}` |")
               print()
-              if variant == 'fixed' and (len(digests) != 1 or len(rs) == 0):
+              if variant in ('fixed', 'charfreq') and (len(digests) != 1 or len(rs) == 0):
                   verdict_ok = False
 
           print('## Verdict\n')
           if verdict_ok:
-              print('✅ Every **fixed** build produced a byte-identical `dist/firefox` '
-                    'regardless of the absolute build path.')
+              print('✅ Every **fixed** and **charfreq** build produced a byte-identical '
+                    '`dist/firefox` regardless of the absolute build path.')
           else:
-              print('❌ The **fixed** builds did not all agree (or some are missing). '
+              print('❌ The **fixed**/**charfreq** builds did not all agree (or some are missing). '
                     'See the table above.')
           raise SystemExit(0 if verdict_ok else 1)
           PY
