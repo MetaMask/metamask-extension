@@ -102,7 +102,7 @@ test/integration/config/assets
 
 # webpack
 development/.webpack
-# Emitted by `tsc -p development/lib/tsconfig.json` (see webpack:tsc)
+# Emitted by `tsc -p development/lib/tsconfig.lib.json` (see webpack:tsc)
 development/lib/build-type.js
 development/lib/build-type.d.ts
 development/lib/get-manifest-flag.js
@@ -151,3 +151,6 @@ temp-llm-workflow-*
 .cursor/commands/
 # Carve-outs: IDE/bugbot config that must stay tracked
 !.cursor/BUGBOT.md
+
+# Platform API docs
+.platform-api-docs/

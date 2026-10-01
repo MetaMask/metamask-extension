@@ -1705,7 +1705,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://robinhoodchain.blockscout.com'],
+    blockExplorerUrls: ['https://robin.etherscan.io/'],
     defaultBlockExplorerUrlIndex: 0,
   },
   {
