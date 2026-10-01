@@ -196,6 +196,7 @@ describe('useMoneyAccountWithdrawal', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
+      replace: true,
     });
   });
 
@@ -213,6 +214,7 @@ describe('useMoneyAccountWithdrawal', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: MONEY_HOME_ROUTE,
+      replace: true,
     });
   });
 
@@ -320,6 +322,7 @@ describe('useMoneyAccountWithdrawal', () => {
       expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
         loader: ConfirmationLoader.CustomAmount,
         goBackTo: '/',
+        replace: true,
       });
       expect(reportErrorMock).not.toHaveBeenCalled();
     });

@@ -89,7 +89,10 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
  *
  * The current location is passed as `goBackTo` so closing the confirmation
  * returns the user to the surface they started from (e.g. the Money home)
- * rather than the global wallet home.
+ * rather than the global wallet home. The confirmation replaces the current
+ * history entry, because it exits by replacing itself with `goBackTo`; a push
+ * would leave the origin in history twice and the in-app Back would need two
+ * clicks.
  *
  * Setup failures are reported to Sentry and shown as a toast inside this
  * hook, matching mobile. The promise resolves after that so callers do not
@@ -135,6 +138,7 @@ export function useMoneyAccountDeposit() {
         navigateToTransaction(transactionId, {
           loader: ConfirmationLoader.CustomAmount,
           goBackTo: location.pathname + location.search,
+          replace: true,
           preferredPaymentToken: options?.preferredPaymentToken,
         });
       } catch (error) {

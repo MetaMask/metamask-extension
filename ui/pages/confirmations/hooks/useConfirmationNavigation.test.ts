@@ -465,6 +465,24 @@ describe('useConfirmationNavigation', () => {
           'loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1',
       });
     });
+
+    it('replaces the current history entry when replace is set', () => {
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-500', {
+        goBackTo: '/money-home/earn',
+        replace: true,
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        {
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-500`,
+          search: 'goBackTo=%2Fmoney-home%2Fearn',
+        },
+        { replace: true },
+      );
+    });
   });
 });
 

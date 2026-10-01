@@ -197,6 +197,7 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
+      replace: true,
     });
   });
 
@@ -214,6 +215,7 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: MONEY_HOME_ROUTE,
+      replace: true,
     });
   });
 
@@ -232,6 +234,7 @@ describe('useMoneyAccountDeposit', () => {
     expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
+      replace: true,
       preferredPaymentToken: { address: '0xabc', chainId: '0x1' },
     });
   });
@@ -477,6 +480,7 @@ describe('useMoneyAccountDeposit', () => {
       expect(navigateToTransactionMock).toHaveBeenCalledWith(TRANSACTION_ID, {
         loader: ConfirmationLoader.CustomAmount,
         goBackTo: '/',
+        replace: true,
       });
       expect(reportErrorMock).not.toHaveBeenCalled();
     });
