@@ -3,8 +3,7 @@ export const CANONICAL_DEEP_LINK_HOST =
   process.env.CANONICAL_DEEP_LINK_HOST ?? 'link.metamask.io';
 
 // `DEEP_LINK_HOSTS` configures every host accepted for incoming deep links.
-// `CANONICAL_DEEP_LINK_HOST` remains separate because signed URLs always use
-// that host.
+// `CANONICAL_DEEP_LINK_HOST` remains separate for legacy .io signatures.
 const configuredDeepLinkHosts = (
   process.env.DEEP_LINK_HOSTS ?? 'link.metamask.io,link.metamask.com'
 )
