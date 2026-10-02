@@ -86,6 +86,12 @@ export type ConfirmationNavigationOptions = {
    * Token the confirmation should select as the source of funds.
    */
   preferredPaymentToken?: SetPayTokenRequest;
+  /**
+   * Replace the current history entry instead of pushing. Use with `goBackTo`
+   * set to the current route: the confirmation exits by replacing itself with
+   * `goBackTo`, so a push would leave the origin in history twice.
+   */
+  replace?: boolean;
 };
 
 export function useConfirmationNavigation() {
@@ -170,10 +176,17 @@ export function useConfirmationNavigation() {
         );
       }
 
-      navigate({
+      const to = {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: params.toString(),
-      });
+      };
+
+      if (options.replace) {
+        navigate(to, { replace: true });
+        return;
+      }
+
+      navigate(to);
     },
     [navigate],
   );

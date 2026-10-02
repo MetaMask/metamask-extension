@@ -60,6 +60,7 @@ export function useMoneyAccountWithdrawal() {
       navigateToTransaction(transactionId, {
         loader: ConfirmationLoader.CustomAmount,
         goBackTo: location.pathname + location.search,
+        replace: true,
       });
     } catch (error) {
       reportError({
