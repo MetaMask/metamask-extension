@@ -238,6 +238,7 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: find alternative way to handle cashtag widget styles
       {
         from: join(context, 'scripts/cashtag/widget/widget.css'),
         to: 'scripts/cashtag/widget/widget.css',
