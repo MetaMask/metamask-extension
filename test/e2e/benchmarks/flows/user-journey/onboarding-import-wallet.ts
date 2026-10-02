@@ -43,6 +43,11 @@ import {
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { collectWebVitals } from '../../utils';
+import {
+  BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+  BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
+  WITH_STATE_POWER_USER,
+} from '../../utils/constants';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-onboarding-import-wallet';
@@ -79,6 +84,9 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
       },
       async ({ driver }: { driver: Driver }) => {
         const srp = process.env.E2E_POWER_USER_SRP || E2E_SRP;
+        const expectedAccountCount = process.env.E2E_POWER_USER_SRP
+          ? WITH_STATE_POWER_USER.withAccounts
+          : 1;
 
         await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -189,13 +197,17 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
         // Measure: Account list load
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
         steps.push(
           await measureStepWithLongTasks(
             driver,
             'openAccountMenuToAccountListLoaded',
             async () => {
-              const accountListPage = new AccountListPage(driver);
-              await accountListPage.checkPageIsLoaded(120000);
+              await accountListPage.checkAccountListRenderComplete({
+                expectedCount: expectedAccountCount,
+                timeout: BENCHMARK_ACCOUNT_LIST_RENDER_TIMEOUT,
+                stableFor: BENCHMARK_ACCOUNT_LIST_STABLE_FOR,
+              });
             },
           ),
         );
