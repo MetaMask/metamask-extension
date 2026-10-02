@@ -12,6 +12,7 @@ import type {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
+import { ENVIRONMENT } from '../../../shared/constants/build';
 import { MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME } from '../../../shared/lib/money/chomp-config';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -22,6 +23,7 @@ import {
 import {
   ChompApiServiceInit,
   DEFAULT_CHOMP_API_URL,
+  DEV_CHOMP_API_URL,
 } from './chomp-api-service-init';
 import type { MessengerClientInitRequest } from './types';
 
@@ -80,8 +82,25 @@ function getInitRequestMock(
 }
 
 describe('ChompApiServiceInit', () => {
+  const environmentKeys = ['METAMASK_ENVIRONMENT', 'MM_DEV_API_ENV'] as const;
+  const originalEnvironment = Object.fromEntries(
+    environmentKeys.map((key) => [key, process.env[key]]),
+  );
+
   beforeEach(() => {
     jest.clearAllMocks();
+    environmentKeys.forEach((key) => delete process.env[key]);
+  });
+
+  afterAll(() => {
+    environmentKeys.forEach((key) => {
+      const value = originalEnvironment[key];
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    });
   });
 
   it('initializes the service', () => {
@@ -90,6 +109,26 @@ describe('ChompApiServiceInit', () => {
     );
 
     expect(messengerClient).toBeInstanceOf(ChompApiService);
+  });
+
+  it('uses the dev CHOMP host when the dev identity env is selected', () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
+    process.env.MM_DEV_API_ENV = 'dev';
+
+    ChompApiServiceInit(
+      getInitRequestMock(
+        buildBaseMessenger({
+          [MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME]: {
+            baseUrl: DEFAULT_CHOMP_API_URL,
+          },
+        }),
+      ),
+    );
+
+    expect(jest.mocked(ChompApiService)).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      baseUrl: DEV_CHOMP_API_URL,
+    });
   });
 
   it('uses the base URL from the remote feature flag', () => {

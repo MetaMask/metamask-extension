@@ -11,8 +11,9 @@ export type { MpcKeyringBuilderMessenger };
 /**
  * Messenger for the MPC keyring builder.
  *
- * The builder reads the primary mnemonic (to encrypt the key-share backup)
- * and the MetaMask bearer token (presented to the MPC cloud).
+ * The builder reads the primary mnemonic (to encrypt the key-share backup),
+ * the MetaMask bearer token (presented to the MPC cloud), and asks for the
+ * signing MFA confirmation.
  *
  * @param messenger - The root messenger.
  * @returns The MPC keyring builder messenger.
@@ -30,6 +31,7 @@ export function getMpcKeyringBuilderMessenger(
     actions: [
       'KeyringController:withKeyringUnsafe',
       'AuthenticationController:getBearerToken',
+      'MpcSigningMfaController:requestSigningConfirmation',
     ],
   });
 

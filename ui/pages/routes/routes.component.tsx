@@ -124,6 +124,7 @@ import {
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import { MpcSigningMfaConfirmation } from '../../components/app/mpc-signing-mfa-confirmation/mpc-signing-mfa-confirmation';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
 import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal';
@@ -908,6 +909,7 @@ export default function Routes() {
       <ToastListener />
 
       <QRHardwarePopover />
+      <MpcSigningMfaConfirmation />
       {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 

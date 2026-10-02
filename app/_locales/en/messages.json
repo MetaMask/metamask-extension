@@ -5995,6 +5995,18 @@
   "moreQuotes": {
     "message": "More quotes"
   },
+  "mpcSigningMfaCancel": {
+    "message": "Cancel"
+  },
+  "mpcSigningMfaConfirm": {
+    "message": "Confirm"
+  },
+  "mpcSigningMfaDescription": {
+    "message": "Confirm this signature with MFA before the MPC keyring can sign."
+  },
+  "mpcSigningMfaTitle": {
+    "message": "Confirm signature"
+  },
   "multichainAccountAddressCopied": {
     "message": "Address copied",
     "description": "Message displayed when the multichain account address is copied to clipboard"

@@ -1,10 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { BalanceProjection } from '../../../../../components/app/money/balance-projection';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
+import { selectMoneyAccountVaultConfig } from '../../../../../selectors/money/money-account-feature-flags';
 import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
   MUSD_TOKEN,
   MUSD_TOKEN_ADDRESS,
+  MUSD_TOKEN_ADDRESS_BY_CHAIN,
 } from '../../../constants/musd';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
@@ -29,12 +32,19 @@ const renderAmountDetails = (amountFiat: string) => (
 
 export const MoneyAccountDepositInfo = () => {
   const { preferredPaymentToken } = useConfirmationNavigationOptions();
+  const vaultConfig = useSelector(selectMoneyAccountVaultConfig);
+  // Pay parses the required mUSD token on the vault chain. Registering it on
+  // mainnet leaves that lookup empty, so the amount screen stays on its
+  // skeleton.
+  const depositChainId = vaultConfig?.chainId ?? CHAIN_IDS.MONAD;
+  const depositAssetAddress =
+    MUSD_TOKEN_ADDRESS_BY_CHAIN[depositChainId] ?? MUSD_TOKEN_ADDRESS;
 
   useAddToken({
-    chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+    chainId: depositChainId,
     decimals: MUSD_TOKEN.decimals,
     symbol: MUSD_TOKEN.symbol,
-    tokenAddress: MUSD_TOKEN_ADDRESS,
+    tokenAddress: depositAssetAddress,
   });
 
   // A deposit reached without visiting the Money home page must still ensure

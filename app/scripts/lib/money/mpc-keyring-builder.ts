@@ -6,6 +6,7 @@ import {
 import type { Keyring } from '@metamask/keyring-utils';
 import { encodeMnemonic } from '@metamask/keyring-sdk';
 import type { Messenger } from '@metamask/messenger';
+import type { MpcSigningMfaControllerRequestSigningConfirmationAction } from '../../controllers/mpc-signing-mfa/mpc-signing-mfa-controller';
 import { MPC_KEYRING_TYPE } from '../../../../shared/constants/mpc-keyring';
 
 /**
@@ -31,6 +32,7 @@ export type MpcKeyringBuilderMessenger = Messenger<
   'MpcKeyringBuilder',
   | KeyringControllerWithKeyringUnsafeAction
   | AuthenticationControllerGetBearerTokenAction
+  | MpcSigningMfaControllerRequestSigningConfirmationAction
 >;
 
 type MpcKeyringConstructor = new (opts: {
@@ -43,6 +45,7 @@ type MpcKeyringConstructor = new (opts: {
     challenge?: Uint8Array;
   }) => Promise<string>;
   getBackupEncryptionKey: () => Promise<Uint8Array>;
+  webSocket?: unknown;
 }) => Keyring;
 
 /**
@@ -89,20 +92,30 @@ async function getBackupEncryptionKey(
   return new Uint8Array(digest);
 }
 
+type ProfileTokenOpts = {
+  twoFactor?: boolean;
+  challenge?: Uint8Array;
+};
+
 /**
  * Profile token presented to the MPC cloud.
  *
- * The keyring asks for this on every cloud call, including a 2FA flag and an
- * optional signing challenge. This POC sends the MetaMask bearer token. A
- * released integration would exchange that token for an MFA profile token
- * bound to `opts.challenge`.
+ * A signing request is the call that includes both `twoFactor` and a
+ * `challenge`. That call waits for the MFA confirmation screen before the
+ * bearer token is returned. Other cloud calls do not.
  *
  * @param messenger - The messenger used to read the bearer token.
+ * @param opts - The token options from the keyring.
  * @returns The bearer token.
  */
 async function getProfileToken(
   messenger: MpcKeyringBuilderMessenger,
+  opts?: ProfileTokenOpts,
 ): Promise<string> {
+  if (opts?.twoFactor && opts.challenge) {
+    await messenger.call('MpcSigningMfaController:requestSigningConfirmation');
+  }
+
   const token = await messenger.call('AuthenticationController:getBearerToken');
   if (!token) {
     throw new Error('Sign in to MetaMask before enabling MFA');
@@ -150,8 +163,11 @@ export function buildMpcKeyringBuilder(messenger: MpcKeyringBuilderMessenger) {
       dkls23Lib: loadSync(),
       cloudURL: readEnv('MFA_CLOUD_SIGNER_URL', DEFAULT_MFA_CLOUD_SIGNER_URL),
       relayerURL: readEnv('MFA_RELAYER_URL', DEFAULT_MFA_RELAYER_URL),
-      getProfileToken: () => getProfileToken(messenger),
+      getProfileToken: (opts) => getProfileToken(messenger, opts),
       getBackupEncryptionKey: () => getBackupEncryptionKey(messenger),
+      // Centrifuge rejects the connection unless this constructor is passed
+      // in. It does not fall back to the global, which the service worker has.
+      webSocket: globalThis.WebSocket,
     });
   };
 

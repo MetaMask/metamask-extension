@@ -1,14 +1,17 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { render, screen } from '@testing-library/react';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
 import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
 import { CustomAmountInfo } from '../custom-amount-info';
-import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../constants/musd';
+import { MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
 import { MoneyAccountDepositInfo } from './money-account-deposit-info';
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
@@ -26,6 +29,7 @@ jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigationOptions: jest.fn(),
 }));
 
+const useSelectorMock = jest.mocked(useSelector);
 const useAddTokenMock = jest.mocked(useAddToken);
 const useConfirmationNavigationOptionsMock = jest.mocked(
   useConfirmationNavigationOptions,
@@ -37,6 +41,7 @@ describe('MoneyAccountDepositInfo', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useConfirmationNavigationOptionsMock.mockReturnValue({});
+    useSelectorMock.mockReturnValue(undefined);
   });
 
   it('upgrades the Money account while mounted', () => {
@@ -45,15 +50,25 @@ describe('MoneyAccountDepositInfo', () => {
     expect(useUpgradeMoneyAccountMock).toHaveBeenCalled();
   });
 
-  it('registers the mUSD token via useAddToken with the branded symbol', () => {
+  it('registers mUSD on the vault chain so Pay can resolve the required token', () => {
+    useSelectorMock.mockReturnValue({ chainId: CHAIN_IDS.MONAD });
+
     render(<MoneyAccountDepositInfo />);
 
     expect(useAddTokenMock).toHaveBeenCalledWith({
-      chainId: MUSD_CONVERSION_DEFAULT_CHAIN_ID,
+      chainId: CHAIN_IDS.MONAD,
       decimals: 6,
       symbol: 'mUSD',
       tokenAddress: MUSD_TOKEN_ADDRESS,
     });
+  });
+
+  it('falls back to Monad when the vault config is not served', () => {
+    render(<MoneyAccountDepositInfo />);
+
+    expect(useAddTokenMock).toHaveBeenCalledWith(
+      expect.objectContaining({ chainId: CHAIN_IDS.MONAD }),
+    );
   });
 
   it('renders CustomAmountInfo with the account row for a USD fiat deposit', () => {

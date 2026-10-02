@@ -200,6 +200,7 @@ import { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data
 import { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 import { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 import { getMoneyAccountMpcServiceMessenger } from './money-account-mpc-service-messenger';
+import { getMpcSigningMfaControllerMessenger } from './mpc-signing-mfa-controller-messenger';
 import {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
@@ -282,6 +283,7 @@ export { getMoneyAccountApiDataServiceMessenger } from './money-account-api-data
 export { getMoneyAccountBalanceServiceMessenger } from './money-account-balance-service-messenger';
 export { getMoneyAccountAvailabilityServiceMessenger } from './money-account-availability-service-messenger';
 export { getMoneyAccountMpcServiceMessenger } from './money-account-mpc-service-messenger';
+export { getMpcSigningMfaControllerMessenger } from './mpc-signing-mfa-controller-messenger';
 export {
   getMoneyAccountControllerInitMessenger,
   getMoneyAccountControllerMessenger,
@@ -511,6 +513,10 @@ export const MESSENGER_FACTORIES = {
   },
   MoneyAccountMpcService: {
     getMessenger: getMoneyAccountMpcServiceMessenger,
+    getInitMessenger: noop,
+  },
+  MpcSigningMfaController: {
+    getMessenger: getMpcSigningMfaControllerMessenger,
     getInitMessenger: noop,
   },
   MoneyAccountUpgradeController: {
