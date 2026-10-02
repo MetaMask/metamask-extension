@@ -141,6 +141,24 @@ export function setupLongTaskObserver(sampleRate: number = 0.1): () => void {
       }
     });
 
+    // `observe({ type })` for a type the browser does not implement is a silent
+    // no-op, not a throw, so reaching the next line proves nothing about whether
+    // an entry can ever arrive. Without this check `observerAttached` reads true
+    // on Firefox -- which implements no Long Tasks API -- and every consumer that
+    // trusts `observed` then treats four zeroed counters as a measurement of a
+    // quiet main thread.
+    //
+    // Measured on the 15-run window at `3747670c650`: all 48 Firefox long-task and
+    // TBT series are constant at exactly 0 across 15 runs and 12 benchmarks, while
+    // Chrome varies on 21 of its 29. The 2026-09-11 window showed the same 48.
+    if (!PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+      observer = null;
+      observerAttached = false;
+      return () => {
+        // Nothing attached, so nothing to disconnect
+      };
+    }
+
     observer.observe({ type: 'longtask', buffered: true });
     observerAttached = true;
   } catch (error) {

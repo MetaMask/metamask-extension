@@ -45,6 +45,9 @@ describe('performance-observers', () => {
         maxDuration: 0,
         tbt: 0,
         tasks: [],
+        // Added with the field itself and omitted here, so these two shape
+        // assertions have been failing on this branch since `0902a9805c9`.
+        observed: false,
       });
     });
 
@@ -65,6 +68,9 @@ describe('performance-observers', () => {
         maxDuration: 0,
         tbt: 0,
         tasks: [],
+        // Added with the field itself and omitted here, so these two shape
+        // assertions have been failing on this branch since `0902a9805c9`.
+        observed: false,
       });
 
       const afterReset = getLongTaskMetrics();
@@ -121,6 +127,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         observe = mockObserve;
 
         disconnect = jest.fn();
@@ -134,12 +145,60 @@ describe('performance-observers', () => {
       });
     });
 
+    it('reports `observed: false` where the browser does not implement longtask', () => {
+      // Firefox. `observe({ type })` for an unsupported type is a silent no-op
+      // rather than a throw, so without the `supportedEntryTypes` check the
+      // attach path falls through and `observed` reads true while every counter
+      // stays at zero -- which consumers then treat as a quiet main thread.
+      Math.random = () => 0;
+      const mockObserve = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        static supportedEntryTypes = ['paint', 'navigation'];
+
+        observe = mockObserve;
+
+        disconnect = jest.fn();
+      };
+
+      setupLongTaskObserver(1);
+      expect(mockObserve).not.toHaveBeenCalled();
+      expect(getLongTaskMetrics().observed).toBe(false);
+    });
+
+    it('reports `observed: true` where the browser does implement longtask', () => {
+      Math.random = () => 0;
+      const mockObserve = jest.fn();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (globalThis as any).PerformanceObserver = class {
+        static supportedEntryTypes = ['longtask', 'paint'];
+
+        observe = mockObserve;
+
+        disconnect = jest.fn();
+      };
+
+      setupLongTaskObserver(1);
+      expect(mockObserve).toHaveBeenCalledWith({
+        type: 'longtask',
+        buffered: true,
+      });
+      expect(getLongTaskMetrics().observed).toBe(true);
+    });
+
     it('does not create observer when not sampled', () => {
       Math.random = () => 0.5; // 50% > 10% sample rate
       const mockConstructor = jest.fn();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         constructor() {
           mockConstructor();
         }
@@ -172,6 +231,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         constructor(cb: (list: { getEntries: () => object[] }) => void) {
           capturedCallback = cb;
         }
@@ -207,6 +271,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         observe = mockObserve;
 
         disconnect = mockDisconnect;
@@ -229,6 +298,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         observe() {
           throw new Error('longtask not supported');
         }
@@ -252,6 +326,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         constructor(cb: (list: { getEntries: () => object[] }) => void) {
           capturedCallback = cb;
         }
@@ -288,6 +367,11 @@ describe('performance-observers', () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (globalThis as any).PerformanceObserver = class {
+        // A browser that implements Long Tasks advertises it here. `observe()` is
+        // a silent no-op for an unsupported type, so this is the only signal the
+        // attach path can read.
+        static supportedEntryTypes = ['longtask'];
+
         observe = jest.fn();
 
         disconnect = mockDisconnect;
