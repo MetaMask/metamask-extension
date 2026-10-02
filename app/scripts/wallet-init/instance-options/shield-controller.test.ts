@@ -1,4 +1,5 @@
-import { Env, parseSignatureRequestMethod } from '@metamask/shield-controller';
+import { Env } from '@metamask/subscription-controller';
+import { parseSignatureRequestMethod } from '@metamask/shield-controller';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { SignatureRequest } from '@metamask/signature-controller';
 import { loadShieldConfig } from '../../../../shared/lib/shield';
