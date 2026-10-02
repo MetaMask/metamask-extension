@@ -27,7 +27,7 @@ function frameUrl(symbol: string, theme: 'light' | 'dark') {
   return url.href;
 }
 
-export async function injectWidget(): Promise<WidgetHandle> {
+export function injectWidget(): WidgetHandle {
   injectPageStyles(widgetPageStyles, widgetPageStyleAttr);
 
   const host = document.createElement('div');
@@ -139,7 +139,8 @@ export function bindWidgetTriggers(
         })
         .finally(() => {
           resolving.delete(element);
-        });
+        })
+        .catch(() => undefined);
     }
   };
 

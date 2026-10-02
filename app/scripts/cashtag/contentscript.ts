@@ -24,15 +24,15 @@ export function createWidgetLifecycle(deps: WidgetDeps) {
   // never dropped while a mount is still injecting.
   let queue = Promise.resolve();
 
-  async function mount() {
+  function mount() {
     const resolveTicker = deps.createTickerResolver(deps.sendRuntimeMessage);
-    const widget = await deps.injectWidget();
+    const widget = deps.injectWidget();
     if (!enabled) {
       widget.stop();
       return;
     }
 
-    const pills = await deps.injectPills(async (symbol) => {
+    const pills = deps.injectPills(async (symbol) => {
       const resolved = await resolveTicker(symbol);
       return resolved?.primary ?? null;
     });
@@ -55,9 +55,9 @@ export function createWidgetLifecycle(deps: WidgetDeps) {
     cleanup = null;
   }
 
-  async function sync() {
+  function sync() {
     if (enabled && !cleanup) {
-      await mount();
+      mount();
       return;
     }
     if (!enabled && cleanup) {

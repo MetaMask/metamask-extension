@@ -11,7 +11,7 @@ describe('injectPills', () => {
     tweet.innerHTML = '<a href="/search?q=%24MSFT&src=cashtag_click">$MSFT</a>';
     document.body.append(tweet);
 
-    const stop = await injectPills(async () => ({
+    const stop = injectPills(async () => ({
       ticker: 'MSFTON',
       name: 'Example Token',
       iconUrl: null,

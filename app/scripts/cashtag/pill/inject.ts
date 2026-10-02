@@ -51,7 +51,7 @@ function buildPillContents(data: AssetData, displayTicker: string) {
   return fragment;
 }
 
-export async function injectPills(
+export function injectPills(
   resolvePrimary: (symbol: string) => Promise<AssetData | null>,
 ) {
   injectPageStyles(pillPageStyles, 'data-mm-cashtag-pill-css');
@@ -100,7 +100,8 @@ export async function injectPills(
         })
         .finally(() => {
           resolving.delete(element);
-        });
+        })
+        .catch(() => undefined);
     }
   };
 
