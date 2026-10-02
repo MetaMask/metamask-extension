@@ -398,6 +398,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
+import { setupMarketingConsentSync } from './wallet-init/marketing-consent-sync';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -783,6 +784,9 @@ export default class MetamaskController extends EventEmitter {
     this.userStorageController = messengerClientsByName.UserStorageController;
     this.authenticatedUserStorageService =
       messengerClientsByName.AuthenticatedUserStorageService;
+    this.marketingConsentSync = setupMarketingConsentSync({
+      messenger: this.controllerMessenger,
+    });
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -2515,6 +2519,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
+      waitForMarketingConsentSync:
+        this.marketingConsentSync.waitForMarketingConsentSync,
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -3102,12 +3108,6 @@ export default class MetamaskController extends EventEmitter {
 
       // OAuthService
       startOAuthLogin: this.oauthService.startOAuthLogin.bind(
-        this.oauthService,
-      ),
-      setMarketingConsent: this.oauthService.setMarketingConsent.bind(
-        this.oauthService,
-      ),
-      getMarketingConsent: this.oauthService.getMarketingConsent.bind(
         this.oauthService,
       ),
       getGeolocation: this.geolocationController.getGeolocation.bind(
@@ -6443,6 +6443,8 @@ export default class MetamaskController extends EventEmitter {
 
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
+      // Consent may have changed on another device since the last read.
+      this.marketingConsentSync.refreshMarketingConsent();
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
     }

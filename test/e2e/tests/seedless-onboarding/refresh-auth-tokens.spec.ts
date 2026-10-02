@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { decode, JwtPayload } from 'jsonwebtoken';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -9,11 +8,11 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { lockAndWaitForLoginPage } from '../../page-objects/flows/login.flow';
-import { closeSettings } from '../../page-objects/flows/settings.flow';
-import { AuthServer } from '../../helpers/seedless-onboarding/constants';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import {
+  AuthServer,
+  ProfileSyncServer,
+} from '../../helpers/seedless-onboarding/constants';
 import { MOCK_GOOGLE_ACCOUNT } from '../../constants';
 
 async function getMockedRequests(
@@ -25,11 +24,7 @@ async function getMockedRequests(
       const pendingStatuses = await Promise.all(
         mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
       );
-      const isSomethingPending = pendingStatuses.some(
-        (pendingStatus) => pendingStatus,
-      );
-
-      return !isSomethingPending;
+      return !pendingStatuses.some((pendingStatus) => pendingStatus);
     },
     driver.timeout,
     true,
@@ -44,7 +39,7 @@ async function getMockedRequests(
 }
 
 describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
-  it('should refresh Auth Token when tokens are expired', async function () {
+  it('renews an expired social-login auth token during onboarding', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -54,7 +49,6 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         ],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
-          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
           return oAuthMockttpService.setup(server, {
             forceTokenExpiration: true,
@@ -69,76 +63,32 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await importWalletWithSocialLoginOnboardingFlow({
-          driver,
-        });
+        await importWalletWithSocialLoginOnboardingFlow({ driver });
+        await new HomePage(driver).checkPageIsLoaded();
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const headerNavbar = new HeaderNavbar(driver);
-
-        // Go to the Privacy & Security Settings
-        // Trigger the token refresh before locking the wallet
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        let mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-
-        const authServiceTokenRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.RequestToken),
+        const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
+        const tokenRequests = mockedRequests.filter((request) =>
+          request.url.includes(AuthServer.RequestToken),
+        );
+        const grants = await Promise.all(
+          tokenRequests.map(async (request) => {
+            const body = (await request.body.getJson()) as {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              grant_type?: string;
+            };
+            return body.grant_type;
+          }),
         );
 
-        // Assert that the token request API is called twice, first for social authentication and second for refresh token
-        assert.strictEqual(authServiceTokenRequests.length, 2);
-
-        // close the settings page
-        await closeSettings(driver);
-
-        // Lock the wallet and wait for login page
-        await lockAndWaitForLoginPage(driver);
-
-        // Unlock the wallet
-        const loginPage = new LoginPage(driver);
-        await loginPage.loginToHomepage();
-
-        // Go to the Privacy & Security Settings
-        await headerNavbar.openSettingsPage();
-        // const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // Inspect the marketing_opt_in API call
-        mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-        const marketingOptInRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.GetMarketingOptInStatus),
-        );
-        assert.strictEqual(marketingOptInRequests.length, 3);
-
-        // Extract the access token from the authorization header
-        const marketingOptInRequestAfterTokenRefresh =
-          marketingOptInRequests[1];
-        const authorizationHeaders = marketingOptInRequestAfterTokenRefresh
-          .headers.authorization as string;
-        const accessToken = authorizationHeaders.split(' ')[1];
-
-        // assert that the API call is using the latest refresh token by
-        // decoding the access token and assert that the mode is 'refreshed'
-        const decodedAccessToken = decode(accessToken);
-        assert.strictEqual(
-          (decodedAccessToken as JwtPayload).mode,
-          'refreshed',
+        assert.ok(
+          grants.includes('refresh_token'),
+          'Expected wallet initialization to refresh the expired auth token',
         );
       },
     );
   });
 
-  it('should use valid Access Token after lock/unlock cycle', async function () {
+  it('uses a refreshed token after locking and unlocking the wallet', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
@@ -147,13 +97,11 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
           'Unable to enable notifications',
         ],
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server, {
+        testSpecificMock: (server: Mockttp) =>
+          new OAuthMockttpService().setup(server, {
             forceTokenExpiration: true,
             userEmail: MOCK_GOOGLE_ACCOUNT,
-          });
-        },
+          }),
       },
       async ({
         driver,
@@ -162,59 +110,29 @@ describe('Refresh Auth Tokens (Seedless Onboarding)', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await importWalletWithSocialLoginOnboardingFlow({
+        await importWalletWithSocialLoginOnboardingFlow({ driver });
+        await new HomePage(driver).checkPageIsLoaded();
+        const requestsBeforeLock = await getMockedRequests(
           driver,
-        });
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        // Lock the wallet after onboarding is finished and wait for login page
+          mockedEndpoints,
+        );
+        // The wallet re-establishes its auth session after unlock, minting a
+        // fresh OIDC token (the OAuth marketing-consent consumer that used to
+        // exercise the auth-service token endpoint was removed in this PR).
+        const tokenRequestsBeforeLock = requestsBeforeLock.filter((request) =>
+          ProfileSyncServer.OIDCToken.test(request.url),
+        ).length;
         await lockAndWaitForLoginPage(driver);
-        const headerNavbar = new HeaderNavbar(driver);
+        await new LoginPage(driver).loginToHomepage();
+        await new HeaderNavbar(driver).openSettingsPage();
 
-        // Unlock the wallet again
-        const loginPage = new LoginPage(driver);
-        await loginPage.loginToHomepage();
-
-        // Go to the Privacy & Security Settings
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // Inspect the marketing_opt_in network call
-        const mockedRequests = await getMockedRequests(driver, mockedEndpoints);
-        const marketingOptInRequests = mockedRequests.filter((req) =>
-          req.url.includes(AuthServer.GetMarketingOptInStatus),
+        const requests = await getMockedRequests(driver, mockedEndpoints);
+        const tokenRequests = requests.filter((request) =>
+          ProfileSyncServer.OIDCToken.test(request.url),
         );
-
-        // Assert that marketing_opt_in API was called
         assert.ok(
-          marketingOptInRequests.length >= 1,
-          'Expected at least one marketing_opt_in request',
-        );
-
-        // Extract and verify the access token from the authorization header
-        const latestMarketingOptInRequest =
-          marketingOptInRequests[marketingOptInRequests.length - 1];
-        const authorizationHeader = latestMarketingOptInRequest.headers
-          .authorization as string;
-
-        assert.ok(
-          authorizationHeader,
-          'Expected authorization header to be present',
-        );
-
-        const accessToken = authorizationHeader.split(' ')[1];
-        const decodedAccessToken = decode(accessToken);
-
-        assert.strictEqual(
-          (decodedAccessToken as JwtPayload).mode,
-          'refreshed',
+          tokenRequests.length > tokenRequestsBeforeLock,
+          'Expected a new auth token request after wallet unlock',
         );
       },
     );

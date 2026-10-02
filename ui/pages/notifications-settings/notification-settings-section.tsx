@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -27,6 +28,10 @@ import type {
 } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { useDispatch } from '../../store/hooks';
+import { setDataCollectionForMarketing } from '../../store/actions';
+import { getDataCollectionForMarketing } from '../../selectors/metametrics';
+import { MarketingConsentSheet } from '../../components/app/marketing-consent-sheet/marketing-consent-sheet';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
@@ -397,7 +402,16 @@ export function NotificationSettingsSection({
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const dispatch = useDispatch();
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const [preferenceError, setPreferenceError] = useSafeState<string | null>(
+    null,
+  );
+  const [pendingMarketingChannel, setPendingMarketingChannel] =
+    useState<NotificationPreferenceChannelKey | null>(null);
+  const [isMarketingConsentSubmitting, setIsMarketingConsentSubmitting] =
+    useState(false);
+  const [marketingSheetError, setMarketingSheetError] = useState<string | null>(
     null,
   );
 
@@ -410,29 +424,53 @@ export function NotificationSettingsSection({
       : preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
   const showChannelToggles = section.type !== 'walletActivity';
+  const isMarketingConsentRequired =
+    section.type === 'marketing' &&
+    dataCollectionForMarketing === false &&
+    !sectionPreferences.pushNotificationsEnabled &&
+    !sectionPreferences.inAppNotificationsEnabled;
+
+  const savePreference = useCallback(
+    async (key: NotificationPreferenceChannelKey, value: boolean) => {
+      await updatePreference(section.type, key, value);
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+            notification_channel:
+              key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+            enabled: value,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+      listNotifications();
+    },
+    [
+      createEventBuilder,
+      listNotifications,
+      section.type,
+      trackEvent,
+      updatePreference,
+    ],
+  );
 
   const handleTogglePreference = useCallback(
     async (key: NotificationPreferenceChannelKey) => {
       setPreferenceError(null);
       const oldValue = Boolean(sectionPreferences[key]);
       const newValue = !oldValue;
+
+      if (isMarketingConsentRequired && newValue) {
+        setMarketingSheetError(null);
+        setPendingMarketingChannel(key);
+        return;
+      }
+
       try {
-        await updatePreference(section.type, key, newValue);
-        trackEvent(
-          createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
-            .addCategory(MetaMetricsEventCategory.NotificationSettings)
-            .addProperties({
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              /* eslint-disable @typescript-eslint/naming-convention */
-              settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
-              notification_channel:
-                key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
-              enabled: newValue,
-              /* eslint-enable @typescript-eslint/naming-convention */
-            })
-            .build(),
-        );
-        listNotifications();
+        await savePreference(key, newValue);
       } catch (error) {
         setPreferenceError(
           error instanceof Error
@@ -442,16 +480,35 @@ export function NotificationSettingsSection({
       }
     },
     [
-      createEventBuilder,
-      listNotifications,
-      section.type,
+      isMarketingConsentRequired,
       sectionPreferences,
+      savePreference,
       setPreferenceError,
       t,
-      trackEvent,
-      updatePreference,
     ],
   );
+
+  const handleMarketingConsentOptIn = useCallback(async () => {
+    if (!pendingMarketingChannel) {
+      return;
+    }
+
+    setIsMarketingConsentSubmitting(true);
+    setMarketingSheetError(null);
+    try {
+      await dispatch(setDataCollectionForMarketing(true, { waitForAus: true }));
+      await savePreference(pendingMarketingChannel, true);
+      setPendingMarketingChannel(null);
+    } catch (error) {
+      setMarketingSheetError(
+        error instanceof Error
+          ? error.message
+          : t('notificationsSettingsBoxError'),
+      );
+    } finally {
+      setIsMarketingConsentSubmitting(false);
+    }
+  }, [dispatch, pendingMarketingChannel, savePreference, t]);
 
   return (
     <Box
@@ -496,6 +553,17 @@ export function NotificationSettingsSection({
           accountSettingsProps={accountSettingsProps}
         />
       )}
+      <MarketingConsentSheet
+        isOpen={pendingMarketingChannel !== null}
+        isSubmitting={isMarketingConsentSubmitting}
+        title={t('notificationsSettingsMarketingConsentSheetTitle')}
+        description={t('notificationsSettingsMarketingConsentSheetDescription')}
+        confirmLabel={t('notificationsSettingsMarketingConsentSheetOptIn')}
+        testId="marketing-consent-sheet"
+        error={marketingSheetError}
+        onClose={() => setPendingMarketingChannel(null)}
+        onConfirm={handleMarketingConsentOptIn}
+      />
     </Box>
   );
 }
