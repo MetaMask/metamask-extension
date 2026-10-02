@@ -3,7 +3,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { CaipAssetType } from '@metamask/utils';
+import {
+  isCaipAssetType,
+  KnownCaipNamespace,
+  parseCaipAssetType,
+  type CaipAssetType,
+} from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -20,11 +25,42 @@ export type ActivityListFilter =
   | { assetId: CaipAssetType }
   | { networks: string[] };
 
+/**
+ * Normalizes legacy EVM `token` asset namespaces to `erc20` while preserving
+ * CAIP format.
+ *
+ * @param assetId - The CAIP asset ID to normalize.
+ * @returns The normalized CAIP asset ID.
+ */
+function normalizeActivityAssetId(assetId: CaipAssetType): CaipAssetType {
+  const { assetNamespace, assetReference, chain, chainId } =
+    parseCaipAssetType(assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Eip155) {
+    return assetId;
+  }
+
+  return assetNamespace === 'token'
+    ? (`${chainId}/erc20:${assetReference}` as CaipAssetType)
+    : assetId;
+}
+
+/**
+ * Checks whether an activity item belongs on a token details page for the
+ * given asset ID.
+ *
+ * The check compares the activity token, source token, and destination token.
+ *
+ * @param item - The activity item to check.
+ * @param assetId - The token details page asset ID.
+ * @returns Whether the activity item references the given asset.
+ */
 export function activityMatchesAssetId(
   item: ActivityListItem,
   assetId: CaipAssetType,
 ) {
   const { data } = item;
+  const normalizedAssetId = normalizeActivityAssetId(assetId);
   const tokenAssetIds = [
     'token' in data ? data.token?.assetId : undefined,
     'sourceToken' in data ? data.sourceToken?.assetId : undefined,
@@ -33,8 +69,45 @@ export function activityMatchesAssetId(
 
   return tokenAssetIds.some(
     (tokenAssetId) =>
-      tokenAssetId && isEqualCaseInsensitive(tokenAssetId, assetId),
+      tokenAssetId &&
+      isCaipAssetType(tokenAssetId) &&
+      isEqualCaseInsensitive(
+        normalizeActivityAssetId(tokenAssetId),
+        normalizedAssetId,
+      ),
   );
+}
+
+/**
+ * Checks whether an activity item belongs in the Activity list for the
+ * selected networks.
+ *
+ * Cross-chain bridge rows are anchored to the source transaction chain, but
+ * users expect them to appear when filtering by the destination chain too.
+ *
+ * @param item - The activity item to check.
+ * @param networks - The selected CAIP chain IDs.
+ * @returns Whether the activity item references one of the selected networks.
+ */
+export function activityMatchesNetworks(
+  item: ActivityListItem,
+  networks: string[],
+) {
+  const selectedNetworks = new Set(networks);
+
+  if (selectedNetworks.has(item.chainId)) {
+    return true;
+  }
+
+  const { data } = item;
+  const destinationAssetId =
+    'destinationToken' in data ? data.destinationToken?.assetId : undefined;
+
+  if (!destinationAssetId || !isCaipAssetType(destinationAssetId)) {
+    return false;
+  }
+
+  return selectedNetworks.has(parseCaipAssetType(destinationAssetId).chainId);
 }
 
 function getActivityCellStatus(
