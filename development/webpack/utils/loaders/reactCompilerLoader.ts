@@ -87,8 +87,8 @@ export type ReactCompilerLoaderConfig = {
  * is requested. Falls back to the direct `react-compiler-webpack` loader
  * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
  * resolvable). While worker builds still cannot record buildMeta stats, using
- * the wrapper there keeps the loader path consistent across the direct `tsx`
- * and emitted `.webpack` CJS execution paths.
+ * the wrapper there keeps the loader path consistent across the direct Node
+ * TypeScript and emitted `.webpack` CommonJS execution paths.
  *
  * @param config - Configuration options for the React Compiler loader.
  * @param config.target - The target version of the React Compiler.
