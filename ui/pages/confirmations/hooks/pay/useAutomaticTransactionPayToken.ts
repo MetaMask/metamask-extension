@@ -32,7 +32,9 @@ import {
 } from '../../utils/money-account-pay-token';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
+import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { useImportPayToken } from './useImportPayToken';
+import { useIsPayHardwareBlocked } from './useIsPayHardwareBlocked';
 import { useIsMoneyAccountFlagDefault } from './useIsMoneyAccountFlagDefault';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
@@ -117,7 +119,9 @@ export function useAutomaticTransactionPayToken({
   const [emptyAccountReselectTimedOut, setEmptyAccountReselectTimedOut] =
     useState(false);
 
-  const isHardwareWallet = useIsHardwareWalletAccount(accountOverride ?? from);
+  const payingAccount = useTransactionPayingAccount();
+  const isHardwareWallet = useIsHardwareWalletAccount(payingAccount);
+  const isPayHardwareBlocked = useIsPayHardwareBlocked();
 
   const targetToken = useMemo(
     () => requiredTokens.find((token) => !token.allowUnderMinimum),
@@ -152,6 +156,7 @@ export function useAutomaticTransactionPayToken({
         isHardwareWallet,
         isMoneyAccountDeposit,
         isMoneyPaymentOverride,
+        isPayHardwareBlocked,
         isPostQuoteWithdraw,
         isPostQuoteWithdrawTokenFilterApplied,
         isPostQuoteWithdrawTokenAllowed,
@@ -167,6 +172,7 @@ export function useAutomaticTransactionPayToken({
       isHardwareWallet,
       isMoneyAccountDeposit,
       isMoneyPaymentOverride,
+      isPayHardwareBlocked,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
       isPostQuoteWithdrawTokenAllowed,
@@ -357,6 +363,7 @@ function getBestToken({
   isHardwareWallet,
   isMoneyAccountDeposit,
   isMoneyPaymentOverride,
+  isPayHardwareBlocked,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
   isPostQuoteWithdrawTokenAllowed,
@@ -371,6 +378,7 @@ function getBestToken({
   isHardwareWallet: boolean;
   isMoneyAccountDeposit: boolean;
   isMoneyPaymentOverride: boolean;
+  isPayHardwareBlocked: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
   isPostQuoteWithdrawTokenAllowed: (
@@ -392,7 +400,7 @@ function getBestToken({
       }
     : undefined;
 
-  if (isHardwareWallet && !isMoneyAccountDeposit) {
+  if (isHardwareWallet && isPayHardwareBlocked) {
     return targetTokenFallback;
   }
 
