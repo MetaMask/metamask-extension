@@ -7,6 +7,39 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      measured-ref:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          The ref actually under measurement, when it is not the workflow's own.
+          A scheduled run measures a release tag while `github.ref_name` is the
+          default branch, so without this the results are filed against `main`.
+      measured-sha:
+        required: false
+        type: string
+        default: ''
+        description: Commit SHA of `measured-ref`. Required alongside it.
+      series-name:
+        required: false
+        type: string
+        default: ''
+        description: >-
+          Series to file results under, when it is not the branch. A scheduled
+          run measures a different release each time; filing under the tag would
+          produce one file per release holding a single datapoint, which is not
+          a series and which no retention cap can trim. The tag is recorded per
+          entry instead.
+      benchmark-mock-mode:
+        required: false
+        type: string
+        default: mocked
+        description: >-
+          Network population to measure: `mocked` or `live`. Overrides the branch
+          heuristic in resolveBenchmarkMockMode(). The per-commit path takes the
+          default so every commit is measured against one population; the
+          scheduled drift job passes `live`. Leave empty to fall back to the
+          branch heuristic.
 
 permissions:
   contents: read
@@ -46,10 +79,17 @@ jobs:
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
-      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-      GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
-      # main or release/* only — for S3 / AWS CLI (same ref semantics as Sentry).
-      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      HEAD_COMMIT_HASH: ${{ inputs.measured-sha || github.event.pull_request.head.sha || github.sha }}
+      # `measured-ref` first: on a `schedule` event `github.ref` is the default
+      # branch, so without it a run measuring a release tag stamps its Sentry
+      # events `ci.branch:main` and contaminates the mocked-main population that
+      # the threshold recalibration query reads back.
+      GITHUB_REF_NAME: ${{ inputs.measured-ref || github.head_ref || github.ref_name }}
+      # Gates the Sentry send: only populations with a stable identity are worth
+      # a series. A named `measured-ref` is a release tag, which is neither
+      # `main` nor `release/*`, so it has to be named explicitly.
+      MAIN_OR_RELEASE: ${{ inputs.measured-ref != '' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -99,7 +139,9 @@ jobs:
             --buildType "${{ matrix.buildType }}"
         shell: bash
         env:
-          GH_HEAD_REF: ${{ github.head_ref }}
+          # `measured-ref` leads: the step re-exports GITHUB_REF_NAME from these,
+          # so the job-level value is shadowed and this pair is what Sentry sees.
+          GH_HEAD_REF: ${{ inputs.measured-ref || github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
 
       - name: Upload benchmark to S3
@@ -148,7 +190,10 @@ jobs:
       BENCHMARK_BROWSER_LOADS: '10'
       BENCHMARK_PAGE_LOADS: '10'
       DAPP_BENCHMARK_JSON: benchmark-chrome-webpack-pageLoadBenchmark.json
-      MAIN_OR_RELEASE: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      # See the `benchmarks` job for why `measured-ref` leads here.
+      GITHUB_REF_NAME: ${{ inputs.measured-ref || github.head_ref || github.ref_name }}
+      MAIN_OR_RELEASE: ${{ inputs.measured-ref != '' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') }}
+      BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
@@ -189,7 +234,9 @@ jobs:
             --buildType "webpack"
         shell: bash
         env:
-          GH_HEAD_REF: ${{ github.head_ref }}
+          # `measured-ref` leads: the step re-exports GITHUB_REF_NAME from these,
+          # so the job-level value is shadowed and this pair is what Sentry sees.
+          GH_HEAD_REF: ${{ inputs.measured-ref || github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
 
       - name: Upload benchmark to S3
@@ -238,6 +285,10 @@ jobs:
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      # The gate must resolve the same population the harness measured under,
+      # or it selects a baseline from the other series.
+      BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout quality-gate sources
         uses: actions/checkout@v6
@@ -323,20 +374,32 @@ jobs:
     needs:
       - benchmarks
       - benchmarks-page-load
+    # Two ways to be a publishable measurement: a push to main/release, or an
+    # explicitly-named ref that the caller measured on purpose. A scheduled run
+    # is the second — without that branch the job is skipped and the series it
+    # exists to build is never written.
     if: >-
       ${{
         !cancelled() &&
-        github.event_name == 'push' &&
-        (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')) &&
-        !github.event.repository.fork
+        !github.event.repository.fork &&
+        (
+          (github.event_name == 'push' &&
+           (github.ref_name == 'main' || startsWith(github.ref, 'refs/heads/release/')))
+          || inputs.measured-ref != ''
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: ${{ github.ref_name == github.event.repository.default_branch && 'default-branch' || 'release-ci' }}
     env:
-      HEAD_COMMIT_HASH: ${{ github.sha }}
+      HEAD_COMMIT_HASH: ${{ inputs.measured-sha || github.sha }}
+      # A named measured-ref means the caller re-measured on purpose, so the
+      # same SHA may legitimately produce more than one point.
+      ALLOW_REMEASURE: ${{ inputs.measured-ref != '' && 'true' || 'false' }}
       OWNER: ${{ github.repository_owner }}
-      BRANCH_NAME: ${{ github.ref_name }}
+      BRANCH_NAME: ${{ inputs.series-name || inputs.measured-ref || github.ref_name }}
+      RELEASE_TAG: ${{ inputs.measured-ref }}
+      BENCHMARK_MOCK_MODE: ${{ inputs.benchmark-mock-mode }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

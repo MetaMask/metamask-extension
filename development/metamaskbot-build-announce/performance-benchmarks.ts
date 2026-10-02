@@ -7,6 +7,7 @@ import {
   BENCHMARK_PLATFORMS,
   BENCHMARK_TYPE,
   DEFAULT_RELATIVE_THRESHOLDS,
+  resolveBenchmarkMockMode,
   STAT_KEY,
   THRESHOLD_SEVERITY,
 } from '../../shared/constants/benchmarks';
@@ -39,7 +40,7 @@ import type {
 } from './historical-comparison';
 import { fetchHistoricalPerformanceDataFromMain } from './historical-comparison';
 import {
-  EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL,
+  getBenchmarkStatsUrl,
   resolveBaseline,
   buildEntryKey,
   buildCombo,
@@ -671,6 +672,18 @@ export { BENCHMARK_ANNOUNCE_SECTIONS };
 /**
  * User journey benchmarks use the real API on `main` and `release/*` branches; other
  * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.
+ *
+ * This resolves the branch differently from `shouldUseMockedRequests()`, which reads
+ * `GITHUB_REF_NAME` while this prefers `BRANCH`/`GITHUB_HEAD_REF`. The two cannot
+ * currently disagree: main.yml's `pull_request` trigger carries
+ * `branches-ignore: [stable]`, which filters on the base branch, so release PRs
+ * (base `stable`) never reach it and release branches are exercised through `push`,
+ * where both sources return `release/…`. Feature PRs return `mock` from either.
+ *
+ * The equivalence is a property of the trigger config rather than of these functions,
+ * so anything that must describe the population actually *measured* — baseline
+ * selection, gating — still reads `GITHUB_REF_NAME` via `resolveBenchmarkMockMode`,
+ * which is the source the harness itself uses.
  */
 export function getUserJourneyBenchmarkApiModeFromBranch(): 'mock' | 'real' {
   const branch = getCiBranchName();
@@ -1218,7 +1231,23 @@ export async function buildPerformanceBenchmarksSection(
       [BENCHMARK_PLATFORMS.CHROME],
       benchmarkBuildTypes,
     ),
-    fetchHistoricalPerformanceDataFromMain(),
+    // Population-matched: a mocked PR run is only ever compared against a
+    // mocked baseline, so the deltas reflect the commit rather than upstream
+    // latency. Yields no baseline until a matching series exists.
+    //
+    // Reads `GITHUB_REF_NAME` bare, NOT `getCiBranchName()`, because this must
+    // report the population the benchmark harness actually measured, and
+    // `shouldUseMockedRequests()` in mock-config.ts reads `GITHUB_REF_NAME`.
+    // The two agree today, but only because main.yml's `pull_request` trigger
+    // excludes base `stable`, so release branches arrive via `push`. Reading the
+    // same source the harness reads keeps that agreement a property of this call
+    // rather than of the trigger config.
+    fetchHistoricalPerformanceDataFromMain(
+      resolveBenchmarkMockMode(
+        process.env.GITHUB_REF_NAME,
+        process.env.BENCHMARK_MOCK_MODE,
+      ),
+    ),
   ]);
 
   const resolvedBaseline = baselineResult?.baseline ?? undefined;
@@ -1297,7 +1326,14 @@ export async function buildPerformanceBenchmarksSection(
   const pipelineLink = runUrl
     ? `<a href="${runUrl}">${benchmarkRunId}</a>`
     : (benchmarkRunId ?? '');
-  const baselineLogsLink = `<a href="${EXTENSION_BENCHMARK_STATS_MAIN_PERFORMANCE_DATA_URL}">Baseline logs</a>`;
+  // Point at the series this run actually compared against, not always the
+  // live one — otherwise the link contradicts the numbers beside it.
+  const baselineLogsLink = `<a href="${getBenchmarkStatsUrl(
+    resolveBenchmarkMockMode(
+      process.env.GITHUB_REF_NAME,
+      process.env.BENCHMARK_MOCK_MODE,
+    ),
+  )}">Baseline logs</a>`;
   const commitInfo = `\n\n<p><strong>Baseline (latest main)</strong>: ${commitLink} | <strong>Date</strong>: ${commitDate} | <strong>Pipeline</strong>: ${pipelineLink} | ${baselineLogsLink}</p>\n\n`;
 
   // Plain text only inside <summary> (no block elements like <p>).
