@@ -2135,7 +2135,13 @@ function collectMetrics() {
     });
 
   const longTaskData = window.stateHooks?.getLongTaskMetricsWithTBT?.();
-  if (longTaskData) {
+  // Gate on `observed`, not on the object. `PerformanceObserver` rejects the
+  // `longtask` type outside Chromium, so on Firefox the hook returns a populated
+  // object whose counters are all zero and whose `observed` is false. A truthy
+  // check on the object therefore writes four zeros that read as a quiet main
+  // thread, and the gate types them constant and routes them to a known-answer
+  // check that cannot pass. Absent is the honest value.
+  if (longTaskData?.observed) {
     results.longTaskCount = longTaskData.count;
     results.longTaskTotalDuration = longTaskData.totalDuration;
     results.longTaskMaxDuration = longTaskData.maxDuration;
