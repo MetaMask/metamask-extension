@@ -88,11 +88,19 @@ export type ConfirmationNavigationOptions = {
   preferredPaymentToken?: SetPayTokenRequest;
 };
 
+export type ConfirmationLocationState = {
+  /**
+   * Set when the confirmation was pushed from the `goBackTo` route, so exiting
+   * can pop back to that entry instead of replacing itself with a duplicate.
+   */
+  goBackToIsPreviousEntry?: boolean;
+};
+
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
   const approvalFlows = useSelector(getApprovalFlows);
   const navigate = useNavigate();
-  const { search: queryString } = useLocation();
+  const { pathname, search: queryString } = useLocation();
   const count = confirmations.length;
 
   const getIndex = useCallback(
@@ -170,12 +178,22 @@ export function useConfirmationNavigation() {
         );
       }
 
-      navigate({
+      const to = {
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
         search: params.toString(),
-      });
+      };
+
+      if (options.goBackTo && options.goBackTo === pathname + queryString) {
+        const state: ConfirmationLocationState = {
+          goBackToIsPreviousEntry: true,
+        };
+        navigate(to, { state });
+        return;
+      }
+
+      navigate(to);
     },
-    [navigate],
+    [navigate, pathname, queryString],
   );
 
   return {

@@ -465,6 +465,43 @@ describe('useConfirmationNavigation', () => {
           'loader=customAmount&preferredPaymentTokenAddress=0xabc&preferredPaymentTokenChainId=0x1',
       });
     });
+
+    it('marks goBackTo as the previous entry when navigating from the goBackTo route', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/money-home/earn',
+        search: '',
+      } as unknown as ReturnType<typeof mockUseLocation>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-500', {
+        goBackTo: '/money-home/earn',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        {
+          pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-500`,
+          search: 'goBackTo=%2Fmoney-home%2Fearn',
+        },
+        { state: { goBackToIsPreviousEntry: true } },
+      );
+    });
+
+    it('does not mark goBackTo as the previous entry when it differs from the current route', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/money-home/earn',
+        search: '',
+      } as unknown as ReturnType<typeof mockUseLocation>);
+      const result = renderHook(ApprovalType.Transaction);
+
+      result.navigateToTransaction('tx-600', {
+        goBackTo: '/perps',
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: `${CONFIRM_TRANSACTION_ROUTE}/tx-600`,
+        search: 'goBackTo=%2Fperps',
+      });
+    });
   });
 });
 

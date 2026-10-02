@@ -1513,6 +1513,7 @@ describe('ConfirmFooter', () => {
   describe('goBackTo navigation', () => {
     it('does not call navigateNext when cancel is clicked and goBackTo is defined', async () => {
       const navigateNextMock = jest.fn();
+      const exitConfirmationMock = jest.fn();
       useConfirmationNavigationMock.mockReturnValue({
         navigateNext: navigateNextMock,
         navigateToId: jest.fn(),
@@ -1523,6 +1524,7 @@ describe('ConfirmFooter', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
         goBackTo: '/asset/0x123',
+        exitConfirmation: exitConfirmationMock,
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();
@@ -1540,6 +1542,9 @@ describe('ConfirmFooter', () => {
         expect(rejectSpy).toHaveBeenCalled();
       });
 
+      await waitFor(() => {
+        expect(exitConfirmationMock).toHaveBeenCalled();
+      });
       // Should NOT call navigateNext when goBackTo is defined (early return)
       expect(navigateNextMock).not.toHaveBeenCalled();
     });

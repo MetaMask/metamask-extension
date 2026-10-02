@@ -3,13 +3,17 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ConfirmContextProvider, useConfirmContext } from '.';
 
 const mockNavigate = jest.fn();
 
 let mockWindowSearch = '';
+let mockLocationState: unknown = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -20,7 +24,7 @@ jest.mock('react-router-dom', () => ({
     pathname: '/confirm-transaction',
     search: mockWindowSearch,
     hash: '',
-    state: null,
+    state: mockLocationState,
     key: 'test',
   }),
 }));
@@ -73,6 +77,7 @@ describe('ConfirmContextProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockWindowSearch = '';
+    mockLocationState = null;
     window.history.replaceState({}, '', '/');
     mockCurrentConfirmation = { id: 'test-id', type: 'transaction' };
   });
@@ -110,6 +115,47 @@ describe('ConfirmContextProvider', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/perps/trade/BTC', {
       replace: true,
     });
+  });
+
+  it('pops history when confirmation disappears and goBackTo is the previous entry', () => {
+    mockWindowSearch = '?goBackTo=/money-home/earn';
+    mockLocationState = { goBackToIsPreviousEntry: true };
+    const store = createStore();
+    const { rerender } = renderContextProvider(store);
+
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('pops history only once when cancel and auto-exit both exit', () => {
+    mockWindowSearch = '?goBackTo=/money-home/earn';
+    mockLocationState = { goBackToIsPreviousEntry: true };
+    const store = createStore();
+    const { result, rerender } = renderContextProvider(store);
+
+    result.current.exitConfirmation();
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('keeps the previous-entry flag from mount when location state is cleared', () => {
+    mockWindowSearch = '?goBackTo=/money-home/earn';
+    mockLocationState = { goBackToIsPreviousEntry: true };
+    const store = createStore();
+    const { rerender } = renderContextProvider(store);
+
+    mockLocationState = null;
+    rerender();
+    mockCurrentConfirmation = undefined;
+    rerender();
+
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('does not navigate when confirmation is still present', () => {

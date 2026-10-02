@@ -51,6 +51,7 @@ function confirmContextWithId(id: string): ConfirmContextType {
     setIsScrollToBottomCompleted: jest.fn(),
     goBackTo: undefined,
     suppressAutoExit: () => undefined,
+    exitConfirmation: () => undefined,
   };
 }
 
