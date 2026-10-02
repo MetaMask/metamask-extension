@@ -1,0 +1,28 @@
+diff --git a/dist/utils.cjs b/dist/utils.cjs
+index 136b70a14e384b5a518967e1680d8e2497c130a3..78630c05da6084313f033b7e0dc390268b53796a 100644
+--- a/dist/utils.cjs
++++ b/dist/utils.cjs
+@@ -47,6 +47,9 @@ function keyringTypeToName(keyringType) {
+             // FIXME: This should probably live in the `KeyringController` package instead.
+             return 'Money';
+         }
++        case 'MPC Keyring': {
++            return 'MPC';
++        }
+         default: {
+             throw new Error(`Unknown keyring ${keyringType}`);
+         }
+diff --git a/dist/utils.mjs b/dist/utils.mjs
+index f8c5e622c3d7f055f01f5df5f233bbe91500745a..5bf2f7bffcc4a0274487cdc058baed76dd304b23 100644
+--- a/dist/utils.mjs
++++ b/dist/utils.mjs
+@@ -44,6 +44,9 @@ export function keyringTypeToName(keyringType) {
+             // FIXME: This should probably live in the `KeyringController` package instead.
+             return 'Money';
+         }
++        case 'MPC Keyring': {
++            return 'MPC';
++        }
+         default: {
+             throw new Error(`Unknown keyring ${keyringType}`);
+         }

@@ -340,7 +340,7 @@
     "@ecies/ciphers@npm:^0.2.6": "patch:@ecies/ciphers@npm%3A0.2.6#~/.yarn/patches/@ecies-ciphers-npm-0.2.6-9a4b96d70b.patch",
     "@metamask/keyring-internal-api": "^12.1.0",
     "@metamask/keyring-api": "^24.1.0",
-    "@metamask/accounts-controller": "^39.1.0",
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A39.1.0#~/.yarn/patches/@metamask-accounts-controller-npm-39.1.0-53a510819b.patch",
     "@pmmmwh/react-refresh-webpack-plugin@npm:^0.5.11": "patch:@pmmmwh/react-refresh-webpack-plugin@npm%3A0.5.13#~/.yarn/patches/@pmmmwh-react-refresh-webpack-plugin-npm-0.5.13-25d13d4186.patch",
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.0.0",
@@ -349,7 +349,10 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^33.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
-    "@metamask/ramps-controller": "^22.0.0"
+    "@metamask/ramps-controller": "^22.0.0",
+    "@metamask/transaction-controller@npm:^70.0.0": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
+    "@metamask/transaction-controller@npm:^70.0.1": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
+    "@metamask/transaction-controller@npm:^70.1.0": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -382,7 +385,7 @@
     "@metamask/account-api": "^2.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
     "@metamask/account-watcher": "^4.1.3",
-    "@metamask/accounts-controller": "^39.1.0",
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A39.1.0#~/.yarn/patches/@metamask-accounts-controller-npm-39.1.0-53a510819b.patch",
     "@metamask/address-book-controller": "^7.1.2",
     "@metamask/analytics-controller": "^3.2.0",
     "@metamask/announcement-controller": "^8.0.0",
@@ -512,7 +515,7 @@
     "@metamask/stellar-wallet-snap": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
-    "@metamask/transaction-controller": "^70.1.0",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
     "@metamask/transaction-pay-controller": "^27.1.1",
     "@metamask/tron-wallet-snap": "^3.2.0",
     "@metamask/tss-dkls23-lib": "file:./vendor/mpc/metamask-tss-dkls23-lib-0.0.0.tgz",
