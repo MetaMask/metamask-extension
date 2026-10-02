@@ -74,6 +74,62 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.contractMethodName).toBeUndefined();
   });
 
+  it.each([
+    [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+    [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+  ] as const)(
+    'returns %s for direct Money Account transactions',
+    async (type, expectedType) => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type,
+          txParams: {},
+        }),
+        transactionMetricsRequest: createRequest({
+          getMethodData: jest.fn(),
+        }),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe(expectedType);
+    },
+  );
+
+  it.each([
+    [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+    [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+  ] as const)(
+    'returns %s for nested Money Account transactions',
+    async (type, expectedType) => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type: TransactionType.batch,
+          nestedTransactions: [{ type }],
+          txParams: {},
+        }),
+        transactionMetricsRequest: createRequest({
+          getMethodData: jest.fn(),
+        }),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe(expectedType);
+    },
+  );
+
+  it('preserves batch for a batch without a semantic transaction type', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.tokenMethodApprove }],
+        txParams: {},
+      }),
+      transactionMetricsRequest: createRequest({
+        getMethodData: jest.fn(),
+      }),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('batch');
+  });
+
   it('returns musd_conversion as transaction type for mUSD conversion transactions', async () => {
     const context = await buildTransactionMetricsContext({
       transactionMeta: createTransactionMeta({

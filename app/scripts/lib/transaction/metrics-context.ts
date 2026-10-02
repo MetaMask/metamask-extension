@@ -7,8 +7,15 @@ import {
   TransactionApprovalAmountType,
 } from '../../../../shared/constants/transaction';
 import { determineTransactionAssetType } from '../../../../shared/lib/transaction.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import type { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import type { TransactionMetricsBuilderRequest } from './metrics-builders/types';
+
+const SEMANTIC_TRANSACTION_TYPE_MAPPINGS: readonly [TransactionType, string][] =
+  [
+    [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+    [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+  ];
 
 export const CONTRACT_INTERACTION_TYPES = [
   TransactionType.bridge,
@@ -45,10 +52,12 @@ export async function buildTransactionMetricsContext({
   transactionMeta: TransactionMeta;
   transactionMetricsRequest: TransactionMetricsRequest;
 }): Promise<TransactionMetricsBuilderRequest['context']> {
+  const semanticTransactionType = getSemanticTransactionType(transactionMeta);
   const { transactionType, isContractInteraction } =
     determineTransactionTypeAndContractInteraction(
       transactionMeta.type ?? '',
       transactionMeta.originalType,
+      semanticTransactionType,
     );
 
   let contractMethodName;
@@ -89,6 +98,7 @@ export async function buildTransactionMetricsContext({
 function determineTransactionTypeAndContractInteraction(
   type: string,
   originalType?: string,
+  semanticTransactionType?: string,
 ): {
   transactionType: string;
   isContractInteraction: boolean;
@@ -96,6 +106,13 @@ function determineTransactionTypeAndContractInteraction(
   const isContractInteraction = CONTRACT_INTERACTION_TYPES.includes(
     type as TransactionType,
   );
+
+  if (semanticTransactionType) {
+    return {
+      transactionType: semanticTransactionType,
+      isContractInteraction,
+    };
+  }
 
   const directTypeMappings: Record<string, string> = {
     swapAndSend: 'swap_and_send',
@@ -144,6 +161,14 @@ function determineTransactionTypeAndContractInteraction(
     transactionType: 'simpleSend',
     isContractInteraction: false,
   };
+}
+
+function getSemanticTransactionType(
+  transactionMeta: TransactionMeta,
+): string | undefined {
+  return SEMANTIC_TRANSACTION_TYPE_MAPPINGS.find(([transactionType]) =>
+    hasTransactionType(transactionMeta, [transactionType]),
+  )?.[1];
 }
 
 function getTransactionApprovalAmountType({
