@@ -37,6 +37,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { useHardwareWalletError } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../store/store';
@@ -87,6 +88,7 @@ export default function useSubmitBridgeTransaction(
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
+  const { showErrorModal } = useHardwareWalletError();
   const inE2e = isInE2eTest();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -223,9 +225,24 @@ export default function useSubmitBridgeTransaction(
         isHardwareWalletAccount &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
-        const isDeviceReady = await ensureDeviceReady();
+        // Device preflight: a failure here must surface the error modal even
+        // on bridge/quote pages, where auto-shown modals are route-gated off.
+        // Manual showErrorModal calls bypass that gate; the provider still
+        // filters user rejections itself.
+        let isDeviceReady = false;
+        let deviceError: unknown;
+        try {
+          isDeviceReady = await ensureDeviceReady();
+        } catch (error) {
+          deviceError = error;
+        }
+
         if (!isDeviceReady) {
-          throw new Error('Hardware wallet device is not ready');
+          showErrorModal(
+            deviceError ?? new Error('Hardware wallet device is not ready'),
+          );
+          setIsSubmitting(false);
+          return;
         }
       }
 

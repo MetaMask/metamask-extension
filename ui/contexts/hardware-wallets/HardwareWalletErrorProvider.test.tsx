@@ -11,7 +11,9 @@ import {
 } from '../../store/actions';
 import {
   CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  AWAITING_SIGNATURES_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
 import { createHardwareWalletError } from './errors';
@@ -491,7 +493,10 @@ describe('HardwareWalletErrorProvider', () => {
       expect(mockShowModal).not.toHaveBeenCalled();
     });
 
-    it('auto-shows errors on the bridge page', () => {
+    it('does not auto-show errors on the bridge page', () => {
+      // Bridge/quote pages are no longer auto-show routes: a locked Ledger
+      // during quote browsing must not pop the modal. Lock validation happens
+      // at submit time (ensureDeviceReady), and signing has its own route.
       const error = createHardwareWalletError(
         ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
@@ -505,6 +510,68 @@ describe('HardwareWalletErrorProvider', () => {
 
       const store = mockStore(createMockState());
       renderHardwareWalletErrorHook(store, CROSS_CHAIN_SWAP_ROUTE);
+
+      expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    it('does not auto-show errors on cross-chain sub-routes', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(
+        store,
+        `${CROSS_CHAIN_SWAP_ROUTE}/swaps/prepare-bridge-page`,
+      );
+
+      expect(mockShowModal).not.toHaveBeenCalled();
+    });
+
+    it('auto-shows errors on the confirmation vNext page', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(store, CONFIRMATION_V_NEXT_ROUTE);
+
+      expect(mockShowModal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: HARDWARE_WALLET_ERROR_MODAL_NAME,
+          error,
+        }),
+      );
+    });
+
+    it('auto-shows errors on the awaiting signatures page', () => {
+      const error = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+
+      mockConnectionState.current = {
+        status: ConnectionStatus.ErrorState,
+        error,
+      };
+
+      const store = mockStore(createMockState());
+      renderHardwareWalletErrorHook(store, AWAITING_SIGNATURES_ROUTE);
 
       expect(mockShowModal).toHaveBeenCalledWith(
         expect.objectContaining({
