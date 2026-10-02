@@ -44,6 +44,8 @@ import type {
   UserActionMeasurement,
 } from './types';
 import { performanceTracker } from './performance-tracker';
+import Timers from './timers';
+import type { TimerWithId } from './timers';
 
 /**
  * Promote web vitals aggregated stats into a TimerStatistics array.
@@ -88,16 +90,86 @@ async function runWithRetries(
       performanceTracker.reset();
 
       const result = await benchmarkFn();
+      // Read the step timers before the next iteration's reset clears them.
+      const spanMetrics = computeStepSpanMetrics(Timers.getAllTimers());
       lastResult = result;
 
       if (!result.success) {
         throw new Error(result.error ?? 'Benchmark failed');
       }
-      return result;
+      return withStepSpanTimers(result, spanMetrics);
     });
   } catch {
     return lastResult;
   }
+}
+
+/**
+ * Gap and overlap between the step timers, derived from the steps themselves.
+ *
+ * `span` is first-start to last-end across the completed step timers, so it
+ * covers the measured region of the journey and nothing else. Bracketing the
+ * whole benchmark function instead would fold in `withFixtures` — browser
+ * launch, mock servers, teardown — which is seconds of setup and would dwarf
+ * the inter-step gaps this exists to expose.
+ *
+ * Returns `null` below two completed steps, where there is no inter-step
+ * region for either quantity to describe.
+ *
+ * @param timers - Raw timers from the `Timers` singleton for this run.
+ * @returns Non-negative `gap` and `overlap` in ms, or null.
+ */
+export function computeStepSpanMetrics(
+  timers: TimerWithId[],
+): { gap: number; overlap: number } | null {
+  const completed = timers.filter(
+    (t): t is TimerWithId & { start: number; end: number; duration: number } =>
+      t.start !== null && t.end !== null && t.duration !== null,
+  );
+  if (completed.length < 2) {
+    return null;
+  }
+
+  const span =
+    Math.max(...completed.map((t) => t.end)) -
+    Math.min(...completed.map((t) => t.start));
+  const measured = completed.reduce((acc, t) => acc + t.duration, 0);
+  const difference = span - measured;
+
+  // Emitted as two non-negative metrics rather than one signed one:
+  // `validateMetricValue` rejects negatives outright, so a signed value would
+  // have its overlap samples dropped before aggregation and overlap would read
+  // as absent in the published mean and percentiles.
+  return { gap: Math.max(0, difference), overlap: Math.max(0, -difference) };
+}
+
+/**
+ * Appends the step-span diagnostics to a completed run.
+ *
+ * Both carry a unit, which is the marker the per-run total already filters on
+ * (`timers.filter((t) => !t.unit)`) and which the long task diagnostics use, so
+ * `total` stays the sum of the steps and no threshold moves.
+ *
+ * @param result - The completed run.
+ * @param spanMetrics - Output of {@link computeStepSpanMetrics}, or null.
+ * @returns The run, with the diagnostics appended when available.
+ */
+export function withStepSpanTimers(
+  result: BenchmarkRunResult,
+  spanMetrics: { gap: number; overlap: number } | null,
+): BenchmarkRunResult {
+  if (!spanMetrics) {
+    return result;
+  }
+
+  return {
+    ...result,
+    timers: [
+      ...result.timers,
+      { id: 'unattributedGap', value: spanMetrics.gap, unit: 'ms' },
+      { id: 'stepOverlap', value: spanMetrics.overlap, unit: 'ms' },
+    ],
+  };
 }
 
 type CdpInnerDriver = {
