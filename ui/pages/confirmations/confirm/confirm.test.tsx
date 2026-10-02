@@ -1,9 +1,10 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   getMockPersonalSignConfirmState,
+  getMockPersonalSignConfirmStateForRequest,
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../test/data/confirmations/helper';
@@ -14,12 +15,21 @@ import {
   permitSingleSignatureMsg,
 } from '../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../test/data/mock-state.json';
+import { signatureRequestSIWE } from '../../../../test/data/confirmations/personal_sign';
+import configureStore from '../../../store/store';
+import { Severity } from '../../../helpers/constants/design-system';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
 import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
+
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+  callBackgroundMethod: jest.fn(),
+}));
 
 jest.mock('../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../hooks/useAssetDetails'),
@@ -68,7 +78,9 @@ const mockedAssetDetails = jest.mocked(useAssetDetails);
 async function renderConfirmAndWait(store: unknown) {
   const result = renderWithConfirmContextProvider(<Confirm />, store);
   await waitFor(() => {
-    expect(result.container.firstChild).not.toBeNull();
+    expect(
+      within(result.container).getByTestId('parent-selector-confirmation-page'),
+    ).toBeInTheDocument();
   });
   return result;
 }
@@ -124,9 +136,17 @@ describe('Confirm', () => {
     const mockStatePersonalSign = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
 
-    const { container } = await renderConfirmAndWait(mockStore);
+    const { container } = renderWithConfirmContextProvider(
+      <Confirm />,
+      mockStore,
+    );
+
+    expect(
+      screen.queryByTestId('confirm-footer-button'),
+    ).not.toBeInTheDocument();
 
     await screen.findByTestId('confirm-title-text');
+    expect(screen.getByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -248,5 +268,51 @@ describe('Confirm', () => {
       await renderConfirmAndWait(mockStoreSign);
     await screen.findByTestId('confirm-title-text');
     expect(signatureContainer).toMatchSnapshot();
+  });
+
+  it('loads SIWE validation before displaying approval controls', async () => {
+    const { msgParams } = signatureRequestSIWE;
+    if (!msgParams) {
+      throw new Error('SIWE fixture is missing message parameters');
+    }
+    const request = {
+      ...signatureRequestSIWE,
+      msgParams: {
+        ...msgParams,
+        origin: 'https://different-domain.example',
+      },
+    };
+    const store = configureStore(
+      getMockPersonalSignConfirmStateForRequest(request),
+    );
+
+    renderWithConfirmContextProvider(<Confirm />, store);
+
+    expect(
+      screen.queryByTestId('confirm-footer-button'),
+    ).not.toBeInTheDocument();
+    await screen.findByTestId('parent-selector-confirmation-page');
+    expect(store.getState().confirmAlerts.alerts[request.id]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          key: 'requestFrom',
+          severity: Severity.Danger,
+        }),
+      ]),
+    );
+  });
+
+  it('accepts a SIWE domain matching the request origin', async () => {
+    const store = configureStore(
+      getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE),
+    );
+
+    await renderConfirmAndWait(store);
+
+    expect(
+      store.getState().confirmAlerts.alerts[signatureRequestSIWE.id],
+    ).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ key: 'requestFrom' })]),
+    );
   });
 });

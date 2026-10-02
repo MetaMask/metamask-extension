@@ -4,12 +4,17 @@ import React, {
   useContext,
   useMemo,
   useState,
+  Suspense,
 } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasModalType } from '../../constants/gas';
-import { GasFeeModal } from '../../components/modals/gas-fee-modal/gas-fee-modal';
+import { mmLazy } from '../../../../helpers/utils/mm-lazy';
 import { ConfirmContextProvider } from '../confirm';
 import { EditGasModes } from '../../../../../shared/constants/gas';
+
+const GasFeeModal = mmLazy(
+  () => import('../../components/modals/gas-fee-modal/gas-fee-modal'),
+);
 
 export type GasFeeModalContextType = {
   isGasFeeModalVisible: boolean;
@@ -98,10 +103,12 @@ export const GasFeeModalWrapper = () => {
   }
 
   const gasFeeModal = (
-    <GasFeeModal
-      setGasModalVisible={() => closeGasFeeModal()}
-      initialModalType={initialModalType}
-    />
+    <Suspense fallback={null}>
+      <GasFeeModal
+        setGasModalVisible={() => closeGasFeeModal()}
+        initialModalType={initialModalType}
+      />
+    </Suspense>
   );
 
   // When opened from cancel-speedup, inject transactionMeta into ConfirmContext

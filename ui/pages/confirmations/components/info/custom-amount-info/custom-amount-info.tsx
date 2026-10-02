@@ -10,14 +10,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  CustomAmount,
-  CustomAmountSkeleton,
-} from '../../transactions/custom-amount/custom-amount';
-import {
-  PayTokenAmount,
-  PayTokenAmountSkeleton,
-} from '../../pay-token-amount/pay-token-amount';
+import { CustomAmount } from '../../transactions/custom-amount/custom-amount';
+import { PayTokenAmount } from '../../pay-token-amount/pay-token-amount';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
 import { FromAccountRow } from '../../rows/from-account-row';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
@@ -26,10 +20,7 @@ import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
 import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
-import {
-  PercentageButtons,
-  PercentageButtonsSkeleton,
-} from '../../percentage-buttons';
+import { PercentageButtons } from '../../percentage-buttons';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -54,6 +45,10 @@ import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+
+import { CustomAmountInfoSkeleton } from './custom-amount-info-skeleton';
+
+export { CustomAmountInfoSkeleton } from './custom-amount-info-skeleton';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -273,25 +268,6 @@ export const CustomAmountInfo = React.memo(
   },
 );
 
-export function CustomAmountInfoSkeleton({
-  displayPercentageButtons,
-}: {
-  displayPercentageButtons?: boolean;
-} = {}) {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      style={{ flex: 1 }}
-      data-testid="custom-amount-info-skeleton"
-    >
-      <CenterContainerSkeleton
-        displayPercentageButtons={displayPercentageButtons}
-      />
-    </Box>
-  );
-}
-
 type CenterContainerProps = {
   amountDetails?: (amountFiat: string) => ReactNode;
   autoFocusAmount: boolean;
@@ -361,27 +337,6 @@ function CenterContainer({
           {children}
         </Box>
       )}
-    </Box>
-  );
-}
-
-function CenterContainerSkeleton({
-  displayPercentageButtons,
-}: {
-  displayPercentageButtons?: boolean;
-}) {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      gap={4}
-      style={{ flex: 1 }}
-    >
-      <CustomAmountSkeleton />
-      <PayTokenAmountSkeleton />
-      {displayPercentageButtons && <PercentageButtonsSkeleton />}
     </Box>
   );
 }

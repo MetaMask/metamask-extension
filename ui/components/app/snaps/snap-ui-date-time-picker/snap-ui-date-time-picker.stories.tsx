@@ -1,40 +1,23 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { ThemeProvider } from '@mui/material/styles';
 import configureStore from '../../../../store/store';
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import testData from '../../../../../.storybook/test-data';
-import { muiPickerTheme } from '../snap-ui-renderer/utils';
 import { SnapUIDateTimePicker } from './snap-ui-date-time-picker';
 
 const store = configureStore(testData);
 
-const pickerLocaleText = {
-  clearButtonLabel: 'Clear',
-  cancelButtonLabel: 'Cancel',
-  okButtonLabel: 'OK',
-};
-
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <Provider store={store}>
-    <ThemeProvider theme={muiPickerTheme}>
-      <LocalizationProvider
-        dateAdapter={AdapterLuxon}
-        localeText={pickerLocaleText}
-      >
-        <SnapInterfaceContextProvider
-          snapId="npm:@metamask/test-snap-bip44"
-          interfaceId="test-interface"
-          initialState={{}}
-          context={{}}
-        >
-          <div style={{ maxWidth: 360, padding: 16 }}>{children}</div>
-        </SnapInterfaceContextProvider>
-      </LocalizationProvider>
-    </ThemeProvider>
+    <SnapInterfaceContextProvider
+      snapId="npm:@metamask/test-snap-bip44"
+      interfaceId="test-interface"
+      initialState={{}}
+      context={{}}
+    >
+      <div style={{ maxWidth: 360, padding: 16 }}>{children}</div>
+    </SnapInterfaceContextProvider>
   </Provider>
 );
 

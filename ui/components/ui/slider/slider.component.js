@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Slider as MaterialSlider } from '@mui/material';
+import MaterialSlider from '@mui/material/Slider';
 
 import {
   TextColor,

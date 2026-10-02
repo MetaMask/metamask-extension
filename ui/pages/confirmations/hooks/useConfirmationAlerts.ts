@@ -5,7 +5,6 @@ import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { PAY_TRANSACTION_TYPES } from '../constants/pay';
 import { useConfirmContext } from '../context/confirm';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
-import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
 import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
 import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
@@ -40,9 +39,10 @@ import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
 import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
 import { useTokenContractAlert } from './alerts/transactions/useTokenContractAlert';
 
-function useSignatureAlerts(): Alert[] {
+const EMPTY_ALERTS: Alert[] = [];
+
+function useSignatureAlerts(domainMismatchAlerts: Alert[]): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
-  const domainMismatchAlerts = useDomainMismatchAlerts();
 
   return useMemo(
     () => [...accountMismatchAlerts, ...domainMismatchAlerts],
@@ -147,11 +147,13 @@ function withoutRowFields(alerts: Alert[]): Alert[] {
   return alerts.map(({ field: _field, ...alert }) => alert);
 }
 
-export default function useConfirmationAlerts(): Alert[] {
+export default function useConfirmationAlerts(
+  domainMismatchAlerts: Alert[] = EMPTY_ALERTS,
+): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const blockaidAlerts = useBlockaidAlerts();
   const confirmationOriginAlerts = useConfirmationOriginAlerts();
-  const signatureAlerts = useSignatureAlerts();
+  const signatureAlerts = useSignatureAlerts(domainMismatchAlerts);
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();

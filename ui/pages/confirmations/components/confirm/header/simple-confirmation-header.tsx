@@ -23,7 +23,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
-import { useMusdConversionHeaderContent } from '../../info/musd-conversion-info';
+import { useMusdConversionHeaderContent } from '../../info/musd-conversion-info/musd-conversion-header-content';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const SimpleHeaderLayout = ({

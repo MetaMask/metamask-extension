@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
@@ -30,7 +31,8 @@ const Confirm = ({ confirmationId }: { confirmationId?: string }) => {
         <GasFeeModalContextProvider>
           <TransactionModalContextProvider>
             <ConfirmAlerts>
-              <>
+              {/* Keep the approval controls hidden until the details load. */}
+              <Suspense fallback={<LoadingScreen />}>
                 <Page
                   className="confirm_wrapper"
                   data-testid="parent-selector-confirmation-page"
@@ -48,7 +50,7 @@ const Confirm = ({ confirmationId }: { confirmationId?: string }) => {
                   <Footer />
                 </Page>
                 <GasFeeModalWrapper />
-              </>
+              </Suspense>
             </ConfirmAlerts>
           </TransactionModalContextProvider>
         </GasFeeModalContextProvider>

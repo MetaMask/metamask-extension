@@ -5,6 +5,8 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { mmLazy } from '../../../../../helpers/utils/mm-lazy';
+import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info/custom-amount-info-skeleton';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -13,28 +15,42 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
-import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import {
   ConfirmationLoader,
   useConfirmationNavigationOptions,
 } from '../../../hooks/useConfirmationNavigation';
-import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
-import { MoneyAccountDepositInfo } from '../../info/money-account-deposit-info';
-import { MoneyAccountWithdrawInfo } from '../../info/money-account-withdraw-info';
-import { MusdConversionInfo } from '../../info/musd-conversion-info';
-import { PerpsDepositInfo } from './perps-deposit-info';
-import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
 import NFTTokenTransferInfo from './nft-token-transfer/nft-token-transfer';
-import PersonalSignInfo from './personal-sign/personal-sign';
 import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-all-info';
-import ShieldSubscriptionApproveInfo from './shield-subscription-approve/shield-subscription-approve';
 import TokenTransferInfo from './token-transfer/token-transfer';
-import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
-import TypedSignInfo from './typed-sign/typed-sign';
-import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
+
+// Keep common transaction details in the confirmation chunk. Specialized
+// confirmations load their details only when that request type is displayed.
+const AddEthereumChain = mmLazy(
+  () => import('../../../external/add-ethereum-chain/add-ethereum-chain'),
+);
+const MoneyAccountDepositInfo = mmLazy(
+  () => import('../../info/money-account-deposit-info'),
+);
+const MoneyAccountWithdrawInfo = mmLazy(
+  () => import('../../info/money-account-withdraw-info'),
+);
+const MusdConversionInfo = mmLazy(
+  () => import('../../info/musd-conversion-info/musd-conversion-info'),
+);
+const PerpsDepositInfo = mmLazy(() => import('./perps-deposit-info'));
+const PerpsWithdrawInfo = mmLazy(() => import('./perps-withdraw-info'));
+const PersonalSignInfo = mmLazy(() => import('./personal-sign/personal-sign'));
+const ShieldSubscriptionApproveInfo = mmLazy(
+  () => import('./shield-subscription-approve/shield-subscription-approve'),
+);
+const TypedSignV1Info = mmLazy(() => import('./typed-sign-v1/typed-sign-v1'));
+const TypedSignInfo = mmLazy(() => import('./typed-sign/typed-sign'));
+const TypedSignPermissionInfo = mmLazy(
+  () => import('./typed-sign/typed-sign-permission'),
+);
 
 const DefaultHeadingSkeleton = () => (
   <>

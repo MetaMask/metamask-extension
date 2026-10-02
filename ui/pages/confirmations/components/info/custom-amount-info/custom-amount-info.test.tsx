@@ -23,10 +23,7 @@ import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransaction
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
-import {
-  CustomAmountInfo,
-  CustomAmountInfoSkeleton,
-} from './custom-amount-info';
+import { CustomAmountInfo } from './custom-amount-info';
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
@@ -1134,32 +1131,5 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('override-content').textContent).toBe('50');
       expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
     });
-  });
-});
-
-describe('CustomAmountInfoSkeleton', () => {
-  it('renders skeleton components', () => {
-    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
-      <CustomAmountInfoSkeleton />,
-      mockStore(state),
-    );
-
-    expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
-    expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-    expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
-    expect(
-      queryByTestId('percentage-buttons-skeleton'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders the percentage buttons skeleton when the flow displays them', () => {
-    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId } = renderWithConfirmContextProvider(
-      <CustomAmountInfoSkeleton displayPercentageButtons />,
-      mockStore(state),
-    );
-
-    expect(getByTestId('percentage-buttons-skeleton')).toBeInTheDocument();
   });
 });

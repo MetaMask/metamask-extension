@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider as MaterialSlider } from '@mui/material';
+import MaterialSlider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 import {
   Box,
