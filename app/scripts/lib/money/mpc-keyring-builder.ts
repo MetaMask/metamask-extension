@@ -124,7 +124,7 @@ async function getProfileToken(
  */
 export function buildMpcKeyringBuilder(messenger: MpcKeyringBuilderMessenger) {
   const builder = () => {
-    // Loaded lazily. Both packages are unpublished local tarballs.
+    // Loaded lazily. These tarballs are the builds the MPC service runs.
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const mpcKeyringModule = require('@metamask/eth-mpc-keyring') as Record<
       string,
@@ -132,16 +132,16 @@ export function buildMpcKeyringBuilder(messenger: MpcKeyringBuilderMessenger) {
     >;
     // The package export is the class name. `new-cap` requires that name.
 
-    const { MpcKeyring } = mpcKeyringModule;
-    if (!MpcKeyring) {
+    const { MPCKeyring } = mpcKeyringModule;
+    if (!MPCKeyring) {
       throw new Error('MPC keyring package did not export a constructor');
     }
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { loadSync } = require('@metamask/mpc-dkls23') as {
+    const { loadSync } = require('@metamask/tss-dkls23-lib') as {
       loadSync: () => unknown;
     };
 
-    return new MpcKeyring({
+    return new MPCKeyring({
       getRandomBytes: (size) => {
         const bytes = new Uint8Array(size);
         crypto.getRandomValues(bytes);

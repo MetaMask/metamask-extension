@@ -6698,17 +6698,16 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz#./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::hash=44ce1b&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz#./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::hash=28dbae&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^9.0.0"
-    "@metamask/mfa-wallet-cl24": "npm:^0.0.0"
-    "@metamask/mfa-wallet-dkls23": "npm:^0.0.0"
+    "@metamask/mfa-wallet-cl24-lib": "npm:^0.0.0"
+    "@metamask/mfa-wallet-dkls23-lib": "npm:^0.0.0"
+    "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
-    "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/1619ba92edf950572dee56ed63840de16fdc8af285db0a7ef224471ff471ebd9eb5d947367fcd6283f0d949e470703a06505d2d1c215dc1f6e2b0e47dd5a313b
+    "@metamask/mfa-wallet-util": "npm:^0.0.0"
+  checksum: 10/2a7c1c697be66cd51ccdb64b5513928a0285c7a4b4560ba8a92f3c7cb4e8c2ce2a477a641c6d8503651fe8cb250b7b611ba2ca9668c182ca050502555b3a1295
   languageName: node
   linkType: hard
 
@@ -7543,56 +7542,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/mfa-wallet-cl24@file:./vendor/mpc/metamask-mfa-wallet-cl24-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+"@metamask/mfa-wallet-cl24-lib@file:./vendor/mpc/metamask-mfa-wallet-cl24-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-cl24@file:./vendor/mpc/metamask-mfa-wallet-cl24-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-cl24-0.0.0.tgz::hash=c5c65e&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-cl24-lib@file:./vendor/mpc/metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=4e48d0&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/fa8f8f149546fcd3372eda3fa691698fe372d0208e3b64c3518a863054deb078d0b865516db807daecd310e177067777474953e9a2a8370255668e261b61c085
+  checksum: 10/8d1c5e32823fa97b656ab4287e4f17ed0a7fc3a00ab3d2d9ea0ff161a701176355f03d4317132edc7c9736e95459e745ceaf33d89953140297148264fef839de
   languageName: node
   linkType: hard
 
-"@metamask/mfa-wallet-dkls23@file:./vendor/mpc/metamask-mfa-wallet-dkls23-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+"@metamask/mfa-wallet-dkls23-lib@file:./vendor/mpc/metamask-mfa-wallet-dkls23-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-dkls23@file:./vendor/mpc/metamask-mfa-wallet-dkls23-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-dkls23-0.0.0.tgz::hash=d7e4c4&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-dkls23-lib@file:./vendor/mpc/metamask-mfa-wallet-dkls23-lib-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-dkls23-lib-0.0.0.tgz::hash=5a83f7&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/mpc-interface": "npm:^0.1.0"
+    "@metamask/mfa-wallet-util": "npm:^0.0.0"
     "@noble/curves": "npm:^1.9.2"
-  checksum: 10/903676420e9564880108723970cf738a940b8dea5cd40ac9481c39b75148121069fb33d44349843f1b604e7ac3baecdaaf1103f38b5cb6f368331981ac058173
+  checksum: 10/cab98dc3f6de7b065d5854aa8e23cd928dc628f4d40c78417e511c50b4b08aeb80e1a5a1a5a5cdce8d2f9271bd2928c23b79ee6614221784b24c032ef77a2b0f
   languageName: node
   linkType: hard
 
 "@metamask/mfa-wallet-e2ee@file:./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-e2ee@file:./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz::hash=74f676&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-e2ee@file:./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz::hash=b1f8ae&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/mfa-wallet-interface": "npm:^0.0.0"
     "@msgpack/msgpack": "npm:^3.1.2"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
-  checksum: 10/5caaad16babe2d7e0e092b7c6631178283734f94cbd2976acdaec08e23b1184daf091dbf927a7baf4a1c49d14ea97d3d50843146de6d332e300328ad2426b5f9
-  languageName: node
-  linkType: hard
-
-"@metamask/mfa-wallet-interface@file:./vendor/mpc/metamask-mfa-wallet-interface-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/mfa-wallet-interface@file:./vendor/mpc/metamask-mfa-wallet-interface-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-interface-0.0.0.tgz::hash=3a12d6&locator=metamask-crx%40workspace%3A."
-  checksum: 10/99bee43e3c3cde5f9e53986c6dc9fe96414459abf5728f9171da5f5294fb94bd96832b05b0550e14eaa0008c6eb110829554646788e13e00bacc57cb27ca56b5
+  checksum: 10/33df44ec33e032f457978685b05b91cedb87f9da2453d336d4090cc82ad70a882b61d177b970ac03a70c7d7ec439146afdb5a5d2860789905132bbcaee568f70
   languageName: node
   linkType: hard
 
 "@metamask/mfa-wallet-network@file:./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/mfa-wallet-network@file:./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz::hash=689539&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/mfa-wallet-network@file:./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz::hash=5e5b38&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
-    "@metamask/mfa-wallet-interface": "npm:^0.0.0"
     "@noble/hashes": "npm:^1.8.0"
-    centrifuge: "npm:^5.7.2"
-  checksum: 10/f234b2b2ccda8fd12a4542a6e08bb5d2a5ab4c1b1ae94d5ea77883230569488e7ae13d99a5844a6a1fb3bf70efe3f6be67efdeebe798f51978a5ad0f933f7bdd
+    centrifuge: "npm:^5.5.2"
+  checksum: 10/98cb8c5cad46af2d1aa87a8885ace59e0e75cec5609d2f2152417927262f72cdfe0586b32af8a255bb3217f1ffdfee07bc81cf1b2940f530f61c451eefb4a286
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-util@file:./vendor/mpc/metamask-mfa-wallet-util-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-util@file:./vendor/mpc/metamask-mfa-wallet-util-0.0.0.tgz#./vendor/mpc/metamask-mfa-wallet-util-0.0.0.tgz::hash=3f0779&locator=metamask-crx%40workspace%3A."
+  checksum: 10/a1c4ab9188b7df9ecc77b9fe37b1f16b0897fc0334f917b8ade80d1d09dcf03cf9cdbf0cd160f0dcea8be0394c45c186a2e8429452c572cc3370257f35f2c1f6
   languageName: node
   linkType: hard
 
@@ -7743,20 +7740,6 @@ __metadata:
     "@metamask/transaction-controller": "npm:^70.0.0"
     "@metamask/utils": "npm:^11.12.0"
   checksum: 10/6a7b7f8f8c11a590b1a21d654c355476236c3529a6fa12e9e40504cf86b2f001cf44b7473cde2eee670b5b66f92285faa3c9c684e7afcd591d8c52753e248dde
-  languageName: node
-  linkType: hard
-
-"@metamask/mpc-dkls23@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/mpc-dkls23@npm:0.1.0"
-  checksum: 10/e113eeef5123e7aa7134483827963970e8e7846fb8f36a398f4a1229571a486d8179c10e6676b4a33007f61589242df78126499a27d603e9a7935341674472a5
-  languageName: node
-  linkType: hard
-
-"@metamask/mpc-interface@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/mpc-interface@npm:0.1.0"
-  checksum: 10/a08be84ecc0216de39f89e4a7a21195891e904071f42a66a8d7382980e58754a242b1df32bbce827ecc292e5eedbf614f5fd52b4c8ba2c02b5e1e537e976608b
   languageName: node
   linkType: hard
 
@@ -9396,6 +9379,13 @@ __metadata:
   version: 3.2.0
   resolution: "@metamask/tron-wallet-snap@npm:3.2.0"
   checksum: 10/8d65d9d037269b4a9f507bf80080bfe7817e6d58396f6b87400f73295e060237792a3b3ecfb719daa658a08bcb7d5825598cb69abb2c1ec724ccb096273ec6eb
+  languageName: node
+  linkType: hard
+
+"@metamask/tss-dkls23-lib@file:./vendor/mpc/metamask-tss-dkls23-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/tss-dkls23-lib@file:./vendor/mpc/metamask-tss-dkls23-lib-0.0.0.tgz#./vendor/mpc/metamask-tss-dkls23-lib-0.0.0.tgz::hash=5cd23e&locator=metamask-crx%40workspace%3A."
+  checksum: 10/e7da78b454f6cb9da5b09adbec326190932e9f230fb8ed49bce816b4fb5379a06825786ae616213ba87c81fc0f971f0232ad077863a990c7fb593aad154a12f0
   languageName: node
   linkType: hard
 
@@ -20868,7 +20858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"centrifuge@npm:^5.3.5, centrifuge@npm:^5.7.2":
+"centrifuge@npm:^5.3.5, centrifuge@npm:^5.5.2":
   version: 5.7.4
   resolution: "centrifuge@npm:5.7.4"
   dependencies:
@@ -32204,11 +32194,11 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/messenger-cli": "npm:^0.2.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/mfa-wallet-cl24": "file:./vendor/mpc/metamask-mfa-wallet-cl24-0.0.0.tgz"
-    "@metamask/mfa-wallet-dkls23": "file:./vendor/mpc/metamask-mfa-wallet-dkls23-0.0.0.tgz"
+    "@metamask/mfa-wallet-cl24-lib": "file:./vendor/mpc/metamask-mfa-wallet-cl24-lib-0.0.0.tgz"
+    "@metamask/mfa-wallet-dkls23-lib": "file:./vendor/mpc/metamask-mfa-wallet-dkls23-lib-0.0.0.tgz"
     "@metamask/mfa-wallet-e2ee": "file:./vendor/mpc/metamask-mfa-wallet-e2ee-0.0.0.tgz"
-    "@metamask/mfa-wallet-interface": "file:./vendor/mpc/metamask-mfa-wallet-interface-0.0.0.tgz"
     "@metamask/mfa-wallet-network": "file:./vendor/mpc/metamask-mfa-wallet-network-0.0.0.tgz"
+    "@metamask/mfa-wallet-util": "file:./vendor/mpc/metamask-mfa-wallet-util-0.0.0.tgz"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
     "@metamask/money-account-api-data-service": "npm:^0.4.1"
@@ -32216,7 +32206,6 @@ __metadata:
     "@metamask/money-account-controller": "npm:^0.3.3"
     "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
     "@metamask/money-account-utils": "npm:^1.2.0"
-    "@metamask/mpc-dkls23": "npm:0.1.0"
     "@metamask/multichain-account-service": "npm:^14.1.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.1.4"
@@ -32284,6 +32273,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^70.1.0"
     "@metamask/transaction-pay-controller": "npm:^27.1.1"
     "@metamask/tron-wallet-snap": "npm:^3.2.0"
+    "@metamask/tss-dkls23-lib": "file:./vendor/mpc/metamask-tss-dkls23-lib-0.0.0.tgz"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.12.1"
     "@metamask/wallet": "npm:^14.0.1"
