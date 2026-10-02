@@ -735,7 +735,6 @@ export class ManifestPlugin<Z extends boolean> {
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
     if (this.isWebAccessibleHtml(filename)) {
-      this.selfContainedScripts.add(parsedFileName);
       this.isolatedHtmlEntries.add(parsedFileName);
 
       // `cashtag-widget.html` is the web-accessible HTML entry, but HtmlBundler
