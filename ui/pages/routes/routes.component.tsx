@@ -2,7 +2,12 @@
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
 import React, { Suspense, useCallback, useEffect } from 'react';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import {
+  useLocation,
+  Navigate,
+  Outlet,
+  type RouteObject,
+} from 'react-router-dom';
 import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
@@ -169,6 +174,7 @@ import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
 import { GlobalMenuRouteTransition } from './global-menu-route-transition';
+import { getNearestMatchedRoute } from './nearest-route';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -335,6 +341,28 @@ export const DiscoverSearchFeatureRoute = () => {
 
 export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
+};
+
+/**
+ * Assigned after `routeConfig` so the fallback can read the table without
+ * referring to that binding before it is initialized.
+ */
+let registeredRoutes: RouteObject[] = [];
+
+/**
+ * Unmatched hashes must not render the fatal error page. Settings already
+ * falls back to the settings root; this does the same for the rest of the
+ * app by replacing the URL with the closest route that exists.
+ */
+export const UnknownRouteFallback = () => {
+  const { pathname } = useLocation();
+  const destination = getNearestMatchedRoute(pathname, registeredRoutes);
+
+  if (destination === pathname) {
+    return null;
+  }
+
+  return <Navigate to={destination} replace />;
 };
 
 export const routeConfig = [
@@ -722,7 +750,13 @@ export const routeConfig = [
       },
     ],
   },
+  {
+    path: '*',
+    element: <UnknownRouteFallback />,
+  },
 ];
+
+registeredRoutes = routeConfig;
 
 export default function Routes() {
   const dispatch = useDispatch();

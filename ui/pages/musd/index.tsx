@@ -64,6 +64,12 @@ const MusdConversionPage = () => {
             <Navigate to={MUSD_CONVERSION_ROUTES.EDUCATION.RELATIVE} replace />
           }
         />
+        <Route
+          path="*"
+          element={
+            <Navigate to={MUSD_CONVERSION_ROUTES.EDUCATION.FULL} replace />
+          }
+        />
       </Routes>
     </div>
   );

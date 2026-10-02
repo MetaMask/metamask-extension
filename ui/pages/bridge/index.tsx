@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -12,6 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
   PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  SWAP_PATH,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -220,6 +221,7 @@ const CrossChainSwap = () => {
           </Page>
         }
       />
+      <Route path="*" element={<Navigate to={SWAP_PATH} replace />} />
     </Routes>
   );
 };
