@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { type CaipAssetType } from '@metamask/utils';
 import { FontWeight, Text, TextColor } from '@metamask/design-system-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -10,7 +10,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Column } from '../layout';
 import { useInitialBridgeTokens } from '../../../hooks/bridge/useInitialBridgeTokens';
 import { usePopularTokens } from '../../../hooks/bridge/usePopularTokens';
-import { filterOutArcNativeAsset } from '../../../components/app/assets/enablement/arc';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -56,20 +55,14 @@ export const BridgeAssetList = ({
   /**
    * If there is a search query, use the search results, otherwise use the popular token list
    */
-  const filteredTokenList = useMemo(
-    () =>
-      filterOutArcNativeAsset(
-        searchQuery.length > 0 ? searchResults : popularTokensList,
-      ),
-    [searchQuery.length, searchResults, popularTokensList],
-  );
+  const tokenList = searchQuery.length > 0 ? searchResults : popularTokensList;
 
   const shouldFetchMoreResults =
     searchQuery.length > 0 && hasMoreResults && !isSearchResultsLoading;
   const shouldShowLoadingIndicator =
     shouldFetchMoreResults || isSearchResultsLoading || isPopularTokensLoading;
   const shouldShowNoResultsMessage =
-    filteredTokenList.length === 0 && !shouldShowLoadingIndicator;
+    tokenList.length === 0 && !shouldShowLoadingIndicator;
 
   /**
    * The number of all items to virtualize. When there are more results to fetch or
@@ -78,8 +71,8 @@ export const BridgeAssetList = ({
    */
   const count =
     shouldShowLoadingIndicator || shouldShowNoResultsMessage
-      ? filteredTokenList.length + 1
-      : filteredTokenList.length;
+      ? tokenList.length + 1
+      : tokenList.length;
 
   /**
    * The number of items to virtualize before and after the visible items
@@ -109,7 +102,7 @@ export const BridgeAssetList = ({
       if (
         shouldFetchMoreResults &&
         // If the index of the last visible item is greater than the number of tokens in the list
-        lastVirtualItem.index + OVERSCAN_COUNT >= filteredTokenList.length
+        lastVirtualItem.index + OVERSCAN_COUNT >= tokenList.length
       ) {
         onFetchMoreResults(searchQuery);
       }
@@ -139,7 +132,7 @@ export const BridgeAssetList = ({
           left: 0,
           transform: `translateY(${start}px)`,
         } as const;
-        const token = filteredTokenList[index];
+        const token = tokenList[index];
         if (token) {
           return (
             <BridgeAsset

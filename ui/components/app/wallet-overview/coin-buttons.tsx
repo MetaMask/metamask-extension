@@ -16,9 +16,9 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
-  BridgeAsset,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  type BridgeAsset,
 } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -89,25 +89,11 @@ import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import { PerpsTradeButtons } from '../perps/perps-trade-buttons';
 import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
-import {
-  ARC_ERC20_USDC_BRIDGE_ASSET,
-  ARC_HEX_CHAIN_ID,
-} from '../assets/enablement/arc';
-
-/**
- * Allows to manually set the default Swap token when clicking on the Swap CTA from
- * native token page. If unset, `getNativeAssetForChainId` of bridge-controller is used.
- */
-const NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN: { [key: string]: BridgeAsset } = {
-  // On Arc, we want to Bridge/Swap the ERC20 flavor of USDC, not the native one.
-  [ARC_HEX_CHAIN_ID]: ARC_ERC20_USDC_BRIDGE_ASSET,
-};
 
 export function getSwapNativeTokenWithOverridesForChain(
   chainId: string | number,
 ): BridgeAsset {
-  const override = NATIVE_SWAP_TOKEN_OVERRIDE_PER_CHAIN[String(chainId)];
-  return override ?? getNativeAssetForChainId(chainId);
+  return getNativeAssetForChainId(chainId);
 }
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
