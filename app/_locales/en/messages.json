@@ -9179,6 +9179,18 @@
   "relayerFee": {
     "message": "Relayer fee"
   },
+  "rememberSupportPreference": {
+    "message": "Remember my support preference"
+  },
+  "rememberSupportPreferenceCurrentlyNotSharing": {
+    "message": "your current decision is to not share your User ID."
+  },
+  "rememberSupportPreferenceCurrentlySharing": {
+    "message": "your current decision is to share your User ID."
+  },
+  "rememberSupportPreferenceDescription": {
+    "message": "When enabled, you won't be asked for consent each time you contact support. Your saved preference will be used automatically:"
+  },
   "remindMeLater": {
     "message": "Remind me later",
     "description": "Secondary action to postpone replacing a legacy passkey."
@@ -12501,16 +12513,19 @@
     "message": "Visit site"
   },
   "visitSupportDataConsentModalAccept": {
-    "message": "Confirm"
+    "message": "Continue"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+    "message": "By continuing, you agree to share your User ID and app version with our Support Center. This will help us better solve your problem."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Don’t share"
   },
+  "visitSupportDataConsentModalSavePreference": {
+    "message": "Save my preference"
+  },
   "visitSupportDataConsentModalTitle": {
-    "message": "Share device details with support"
+    "message": "Share your User ID with Support"
   },
   "visitWebSite": {
     "message": "Visit our website"
