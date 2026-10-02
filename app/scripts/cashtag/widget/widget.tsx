@@ -29,38 +29,36 @@ export function Widget({
   ];
 
   return (
-    <>
-      <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-default text-default">
-        {view === 'detail' ? (
-          <TokenDetail
-            data={active}
-            onSwap={() => onSwap(active)}
-            onDisable={onDisable}
-            onViewDetails={() => onViewDetails(active)}
-            onViewSimilar={
-              results.length > 1
-                ? () => {
-                    onViewSimilar();
-                    setView('results');
-                  }
-                : null
+    <div className="mm-cashtag-card w-full h-full overflow-y-auto rounded-xl border border-muted bg-default text-default">
+      {view === 'detail' ? (
+        <TokenDetail
+          data={active}
+          onSwap={() => onSwap(active)}
+          onDisable={onDisable}
+          onViewDetails={() => onViewDetails(active)}
+          onViewSimilar={
+            results.length > 1
+              ? () => {
+                  onViewSimilar();
+                  setView('results');
+                }
+              : null
+          }
+        />
+      ) : (
+        <TokenResults
+          ticker={displayTicker}
+          results={results}
+          onBack={() => setView('detail')}
+          onSelect={(asset) => {
+            if (asset.caipAssetId !== data.caipAssetId) {
+              onSelectSimilar(asset);
             }
-          />
-        ) : (
-          <TokenResults
-            ticker={displayTicker}
-            results={results}
-            onBack={() => setView('detail')}
-            onSelect={(asset) => {
-              if (asset.caipAssetId !== data.caipAssetId) {
-                onSelectSimilar(asset);
-              }
-              setActive(asset);
-              setView('detail');
-            }}
-          />
-        )}
-      </div>
-    </>
+            setActive(asset);
+            setView('detail');
+          }}
+        />
+      )}
+    </div>
   );
 }
