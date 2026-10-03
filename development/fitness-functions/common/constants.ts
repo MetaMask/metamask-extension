@@ -12,6 +12,7 @@ const JS_REGEX = /^(app|shared|ui)\/.*\.(js|jsx)$/u;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 enum AUTOMATION_TYPE {
   CI = 'ci',
+  PR = 'pr',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   PRE_COMMIT_HOOK = 'pre-commit-hook',
