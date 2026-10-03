@@ -1934,6 +1934,15 @@
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "गोपनीयता नोटिस"
   },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "बंद"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "को"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "ज्यादा जानें"
+  },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "सेटिंग्स > गोपनीयता"
   },
@@ -3568,6 +3577,9 @@
   "disconnectAllSitesQuestion": {
     "message": "सभी को डिस्कनेक्ट करें?"
   },
+  "disconnectAllSitesSuccess": {
+    "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
+  },
   "disconnectPrompt": {
     "message": "$1 डिस्कनेक्ट करें"
   },
@@ -3576,6 +3588,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "इससे आपके सभी अकाउंट्स $1 से डिस्कनेक्ट हो जाएंगे। इस dapp को दोबारा उपयोग करने के लिए आपको फिर से कनेक्ट करना होगा।",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "$1 से सफलतापूर्वक डिस्कनेक्ट हो गया।",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4153,6 +4169,9 @@
   "from": {
     "message": "भेजने वाले"
   },
+  "fullyDiluted": {
+    "message": "पूरी तरह से डाइल्यूट किया हुआ"
+  },
   "function": {
     "message": "फंक्शन: $1"
   },
@@ -4532,6 +4551,9 @@
   },
   "hardwareWalletRepairStepTwoTitle": {
     "message": "अपना डिवाइस अनलॉक करें"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "आपका डिवाइस सही से फिर से कनेक्ट हो गया है। आप यह टैब बंद कर सकते हैं।"
   },
   "hardwareWalletRepairSuccessTitle": {
     "message": "डिवाइस कनेक्ट किया गया"
@@ -5534,6 +5556,9 @@
   "moneyBalanceLastKnown": {
     "message": "आखिरी ज्ञात बैलेंस"
   },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
+  },
   "moneyBalanceRetry": {
     "message": "फिर से प्रयास करें"
   },
@@ -5624,12 +5649,42 @@
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money Account कोई बैंक अकाउंट, सेविंग्स अकाउंट या इंश्योर्ड डिपॉज़िट प्रोडक्ट नहीं है। APY वेरिएबल है और इसकी गारंटी नहीं है। Money Account में स्मार्ट कॉन्ट्रैक्ट, प्रोटोकॉल, लिक्विडिटी और दूसरे रिस्क शामिल हैं, और आप अपने कुछ या सभी फंड खो सकते हैं। स्थानीय पाबंदियों के अधीन। शर्तें लागू।"
   },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "जोखिम और प्रकटीकरण"
+  },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "$1 APY तक। रेट बदलता रहता है और मार्केट के हालात के साथ बदलता रहता है। अभी का रेट हमेशा Money Account के अंदर दिखता है।",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "मैं MetaMask Money Account से कितना कमा सकता हूँ?"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "ज़्यादातर जगहों पर! हम अभी यूके और यूएसए की सैंक्शन लिस्ट वाले देशों में उपलब्ध नहीं हैं।"
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "MetaMask Money Account किन देशों में उपलब्ध है?"
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "MetaMask Money Account की फीस क्या है?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "नहीं, Money Account खोलने के लिए आइडेंटिटी वेरिफिकेशन की ज़रूरत नहीं है। हालाँकि, Card और Ramps जैसे कुछ फीचर्स के लिए वेरिफिकेशन की ज़रूरत होती है। चेकिंग थर्ड-पार्टी प्रोवाइडर्स करते हैं जो रेगुलेटेड सर्विसेज़ चलाते हैं, MetaMask नहीं। अगर ज़रूरत हो, तो साइन-अप के दौरान ऐप के अंदर आपको प्रोसेस के बारे में गाइड किया जाएगा।"
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "क्या मुझे MetaMask Money Account इस्तेमाल करने के लिए आइडेंटिटी वेरिफिकेशन पूरा करना होगा?"
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "क्या मैं MetaMask Money Account से कभी भी पैसे निकाल सकता हूँ?"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "MetaMask Money Account क्या है?"
+  },
   "moneyHowItWorksFaqTitle": {
     "message": "सामान्य प्रश्न"
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "मैं Money Account में कौन से टोकन जमा कर सकता हूँ?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "जब आप फंड जमा करते हैं, तो उन्हें Aave और Morpho जैसे जाने-माने DeFi प्रोटोकॉल में डाल दिया जाता है, जहाँ वे असली आर्थिक गतिविधि से रिटर्न कमाते हैं। ये रिटर्न फिर आपको APY के रूप में दिए जाते हैं।\n\nSteakhouse Financial नाम का एक थर्ड-पार्टी सर्विस प्रोवाइडर मॉनिटर करता है कि प्रोटोकॉल में फंड कैसे बांटे जाते हैं। Veda, एक थर्ड-पार्टी इंफ्रास्ट्रक्चर प्रोवाइडर, आपके फंड रखने वाले वॉल्ट स्मार्ट कॉन्ट्रैक्ट को डिप्लॉय और मेंटेन करता है।\n\nकमाई MetaMask या mUSD जारी करने वाले द्वारा दिया गया ब्याज नहीं है। वे थर्ड-पार्टी DeFi प्रोटोकॉल में पोज़िशन से मिलने वाले ऑनचेन रिटर्न हैं।"
@@ -5663,6 +5718,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "अपना Money Account फंड करें",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "भेजें"
@@ -6181,6 +6240,9 @@
   "newContract": {
     "message": "नया कॉन्ट्रैक्ट"
   },
+  "newCustomTokenAdded": {
+    "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "सेटिंग्स > एसेट्स"
   },
@@ -6194,6 +6256,15 @@
   "newNFTsAutodetected": {
     "message": "NFT ऑटोडिटेक्शन"
   },
+  "newNetworkAdded": {
+    "message": "\"$1\" सफलतापूर्वक जोड़ा गया था!"
+  },
+  "newNetworkEdited": {
+    "message": "\"$1\" सफलतापूर्वक बदला गया!"
+  },
+  "newNftAddedMessage": {
+    "message": "NFT सफलतापूर्वक जोड़ा गया!"
+  },
   "newPassword": {
     "message": "नया पासवर्ड"
   },
@@ -6205,6 +6276,10 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "हमने अपनी गोपनीयता नीति अपडेट कर दी है"
+  },
+  "newTokensImportedMessage": {
+    "message": "आपने सफलतापूर्वक $1 इम्पोर्ट कर लिया है।",
+    "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
     "message": "टोकन इम्पोर्ट हो गया"
@@ -6309,6 +6384,9 @@
   },
   "noTokensToManage": {
     "message": "आपके पास अभी तक कोई टोकन नहीं है। पॉपुलर टोकन खोजने के लिए नाम या पते से खोजें।"
+  },
+  "noWebcamFound": {
+    "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
   },
   "noWebcamFoundTitle": {
     "message": "वेबकैम नहीं मिला"
@@ -6457,6 +6535,9 @@
   "notificationsPageEmptyTitle": {
     "message": "यहाँ देखने के लिए कुछ नहीं है।"
   },
+  "notificationsPageErrorContent": {
+    "message": "कृपया, इस पेज पर दोबारा आने का प्रयास करें।"
+  },
   "notificationsPageErrorTitle": {
     "message": "एक गड़बड़ी हुई है"
   },
@@ -6471,6 +6552,9 @@
   },
   "notificationsSettingsAgenticCliTitle": {
     "message": "एजेंट वॉलेट"
+  },
+  "notificationsSettingsBoxError": {
+    "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें"
   },
   "notificationsSettingsDeselectAll": {
     "message": "सभी को अचयनित करें"
@@ -6574,6 +6658,9 @@
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS (आईपीएफएस) गेटवे थर्ड पार्टियों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का इस्तेमाल जारी रख सकते हैं।"
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "कृपया एक मान्य URL (यूआरएल) को डालें"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "कस्टम IPFS गेटवे जोड़ें"
@@ -7423,6 +7510,9 @@
   "perpsConfirmCloseShort": {
     "message": "शॉर्ट को क्लोज़ करें"
   },
+  "perpsConnectionTimeout": {
+    "message": "कनेक्शन टाइम आउट हो गया। कृपया फिर से कोशिश करें।"
+  },
   "perpsContactSupport": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
   },
@@ -7700,6 +7790,9 @@
   "perpsMore": {
     "message": "अधिक"
   },
+  "perpsNetworkError": {
+    "message": "नेटवर्क में गड़बड़ी हुई। कृपया फिर से कोशिश करें।"
+  },
   "perpsNoMarketsFound": {
     "message": "कोई मार्केट नहीं मिला"
   },
@@ -7861,6 +7954,9 @@
     "message": "प्रोडक्ट्स",
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
+  "perpsRateLimitExceeded": {
+    "message": "बहुत ज़्यादा रिक्वेस्ट हैं। कृपया इंतज़ार करें और फिर से कोशिश करें।"
+  },
   "perpsRecentActivity": {
     "message": "हालिया गतिविधि"
   },
@@ -7907,6 +8003,9 @@
   "perpsSeeAll": {
     "message": "सभी को देखें",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceUnavailable": {
+    "message": "सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से कोशिश करें।"
   },
   "perpsShort": {
     "message": "शॉर्ट"
@@ -8087,6 +8186,10 @@
     "message": "मार्जिन एडजस्टमेंट नहीं हो पाया",
     "description": "Error toast text shown when adding or removing margin fails"
   },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "मार्जिन एडजस्ट नहीं हो पाया। कृपया फिर से प्रयास करें।",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
   "perpsToastMarginRemoveSuccess": {
     "message": "$2 पोज़िशन में से $1 मार्जिन हटाया गया",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
@@ -8162,6 +8265,10 @@
   "perpsToastUpdateInProgress": {
     "message": "TP/SL अपडेट किया जा रहा है...",
     "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "TP/SL सफलतापूर्वक अपडेट किया गया",
+    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTopMovers": {
     "message": "टॉप मूवर्स",
@@ -8353,6 +8460,9 @@
   },
   "pinned": {
     "message": "पिन किया गया"
+  },
+  "pleaseConfirm": {
+    "message": "कृपया कन्फर्म करें"
   },
   "pna25ModalBlogPostLink": {
     "message": "ब्लॉग पोस्ट।"
@@ -8567,6 +8677,9 @@
     "message": "$1 खरीदें",
     "description": "$1 is the token symbol being purchased"
   },
+  "rampsBuyWidgetError": {
+    "message": "आपकी खरीदारी शुरू नहीं हो पा रही है। कृपया दोबारा कोशिश करें।"
+  },
   "rampsBuyingViaProvider": {
     "message": "$1 के माध्यम से खरीदना।",
     "description": "$1 is the ramp provider name"
@@ -8592,6 +8705,9 @@
   "rampsContinueInBrowser": {
     "message": "ब्राउज़र में जारी रखें",
     "description": "Banner title on the ramps complete-buy interstitial"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "कृपया फिर से प्रयास करें, या यदि ऐसा बार-बार हो रहा है तो सपोर्ट से संपर्क करें।"
   },
   "rampsEligibilityFailedTitle": {
     "message": "हम आपके क्षेत्र की पुष्टि नहीं कर सके"
@@ -8748,6 +8864,9 @@
   "rampsSelectPaymentMethod": {
     "message": "भुगतान विधि चुनें"
   },
+  "rampsServiceDisruptionDescription": {
+    "message": "हमारी सेवा में रुकावट आ रही है। कृपया बाद में फिर से कोशिश करें।"
+  },
   "rampsServiceDisruptionTitle": {
     "message": "खरीदारी अस्थायी रूप से उपलब्ध नहीं है"
   },
@@ -8881,6 +9000,9 @@
   "removeNftErrorMessage": {
     "message": "हम इस NFT को नहीं हटा पाए।"
   },
+  "removeNftMessage": {
+    "message": "NET सफलतापूर्वक हटा दिया गया!"
+  },
   "removeSnap": {
     "message": "स्नैप हटाएं"
   },
@@ -8980,6 +9102,9 @@
   "resultPageSuccess": {
     "message": "सफल"
   },
+  "resultPageSuccessDefaultMessage": {
+    "message": "परिचालन सफलतापूर्वक पूरा हुआ।"
+  },
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
   },
@@ -9043,11 +9168,26 @@
   "reward": {
     "message": "रिवॉर्ड"
   },
+  "rewardsAuthFailDescription": {
+    "message": "इस अकाउंट को रिवॉर्ड्स प्रोग्राम के साथ प्रमाणित करते समय एक अज्ञात गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
+  },
   "rewardsAuthFailTitle": {
     "message": "अज्ञात गड़बड़ी।"
   },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "यह अकाउंट पहले ही किसी अन्य रिवॉर्ड्स प्रोफ़ाइल के साथ पंजीकृत है। जारी रखने के लिए कृपया अकाउंट बदलें।"
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "रिवॉर्ड क्लेम नहीं हो पाया। कृपया थोड़ी देर में फिर से प्रयास करें।"
+  },
   "rewardsErrorMessagesRequestRejected": {
     "message": "आपने अनुरोध रिजेक्ट कर दिया।"
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "सेवा इस समय उपलब्ध नहीं है। कृपया थोड़ी देर में फिर से प्रयास करें।"
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "कुछ गलत हो गया। कृपया थोड़ी देर में फिर से कोशिश करें।"
   },
   "rewardsLinkAccount": {
     "message": "अकाउंट जोड़ें"
@@ -9060,6 +9200,9 @@
   },
   "rewardsOnboardingDescription": {
     "message": "इनाम जीतें, फ़ायदे पाएँ, और कमाने के और भी तरीके जानें—सिर्फ़ MetaMask का इस्तेमाल करके।"
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "हम यह निर्धारित नहीं कर सकते कि आपका देश रिवॉर्ड्स प्रोग्राम में ऑप्ट-इन की अनुमति देता है या नहीं। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "ऑप्ट-इन पात्रता निर्धारित नहीं की जा सकती"
@@ -9348,6 +9491,9 @@
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
+  },
+  "securityChangePasswordToastError": {
+    "message": "पासवर्ड बदला नहीं जा सका। कृपया फिर से प्रयास करें।"
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "नया पासवर्ड सेव हो गया है, लेकिन $1 अनलॉक को चालू नहीं किया जा सका।",
@@ -9856,8 +10002,14 @@
   "shieldClaimDraftDeleteFailed": {
     "message": "ड्राफ़्ट मिटाना नहीं हो पाया"
   },
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "आपका क्लेम ड्राफ़्ट मिटाया नहीं जा सका। कृपया फिर से कोशिश करें।"
+  },
   "shieldClaimDraftSaveFailed": {
     "message": "ड्राफ़्ट सेव नहीं हो पाया"
+  },
+  "shieldClaimDraftSaveFailedDescription": {
+    "message": "आपका क्लेम ड्राफ़्ट सेव नहीं किया जा सका। कृपया फिर से कोशिश करें।"
   },
   "shieldClaimDraftSaved": {
     "message": "ड्राफ़्ट सेव किया गया"
@@ -9889,6 +10041,9 @@
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG (अधिकतम $1MB)",
     "description": "The $1 is the maximum file size in MB"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "यदि आपके पास कोई अतिरिक्त प्रमाण है, तो कृपया इसे यहाँ अपलोड करें।"
   },
   "shieldClaimGroupActive": {
     "message": "एक्टिव क्लेम"
@@ -9936,11 +10091,26 @@
   "shieldClaimIncidentDetails": {
     "message": "घटना का विवरण"
   },
+  "shieldClaimInvalidChainId": {
+    "message": "कृपया एक मान्य चेन ID दर्ज करें"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "कृपया एक मान्य ईमेल एड्रेस दर्ज करें"
+  },
   "shieldClaimInvalidRequired": {
     "message": "यह फ़ील्ड आवश्यक है"
   },
   "shieldClaimInvalidTxHash": {
     "message": "कृपया एक मान्य ट्रांसेक्शन हैश डालें"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "कृपया एक मान्य वॉलेट एड्रेस डालें"
+  },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "आप ओपन क्लेम की अधिकतम सीमा तक पहुँच गए हैं। अगर आपको और क्लेम सबमिट करने हैं, तो कृपया सपोर्ट से संपर्क करें।"
+  },
+  "shieldClaimMaxDraftsReached": {
+    "message": "आप ड्राफ़्ट की अधिकतम संख्या तक पहुँच गए हैं। नया ड्राफ़्ट सेव करने के लिए कृपया एक ड्राफ़्ट मिटाएं।"
   },
   "shieldClaimNetwork": {
     "message": "नेटवर्क चुनें"
@@ -9950,6 +10120,9 @@
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "भुगतान के लिए वॉलेट एड्रेस"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "कृपया सुनिश्चित करें कि यह कोई समझौता किया गया वॉलेट नहीं है।"
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "इम्पैक्टेड वॉलेट एड्रेस और रीइंबर्समेंट वॉलेट एड्रेस अलग-अलग होने चाहिए।"
@@ -10342,6 +10515,9 @@
   },
   "shieldTxMembershipErrorPausedCardAction": {
     "message": "कार्ड विवरण अपडेट करें"
+  },
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "आपका भुगतान अस्वीकार कर दिया गया। कृपया अपनी भुगतान विधि अपडेट करें ताकि आपका कवरेज जारी रह सके।"
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "फ़ंड्स कम होने की वजह से प्लान रोक दिया गया है। पेमेंट अपडेट होने में $1 घंटे तक का समय लग सकता है।",
@@ -10788,6 +10964,10 @@
     "message": "आप इस बात को स्वीकार करते हैं कि आपके द्वारा इंस्टॉल किया गया कोई भी Snap एक थर्ड-पार्टी सर्विस है, जब तक कि इसे अलग से न बताया गया हो, जैसा कि Consensys $1 में बताया गया है। थर्ड-पार्टी सर्विस का आपका इस्तेमाल थर्ड-पार्टी सर्विस प्रोवाइडर द्वारा तय किए गए अलग-अलग नियमों और शर्तों के तहत होता है। Consensys किसी खास व्यक्ति को किसी खास वजह से किसी भी Snap के इस्तेमाल की सलाह नहीं देता है। आप अपने जोखिम पर थर्ड-पार्टी सर्विस को एक्सेस करते हैं, उस पर भरोसा करते हैं या उसका इस्तेमाल करते हैं। थर्ड-पार्टी सर्विस के इस्तेमाल की वजह से आपको होने वाले किसी भी नुकसान के लिए Consensys की कोई भी ज़िम्मेदारी और देनदारी नहीं होगी।",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "थर्ड पार्टी सेवाओं के साथ आप जो भी सूचना शेयर करते हैं, उसे उन थर्ड पार्टी सेवाओं द्वारा उनकी अपनी गोपनीयता नीतियों के अनुसार सीधे एकत्र की जाएगी। अधिक जानकारी के लिए कृपया उनकी गोपनीयता नीतियां देखें।",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys के पास थर्ड पार्टी सेवाओं के साथ आपके द्वारा शेयर की गई जानकारी का कोई एक्सेस नहीं है।",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
@@ -11071,6 +11251,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
   },
+  "stateLogError": {
+    "message": "स्टेट लॉग्स पाने में गड़बड़ी हुई, कृपया बाद में फिर से कोशिश करें।"
+  },
   "stateLogFileName": {
     "message": "MetaMask स्टेट लॉग"
   },
@@ -11116,6 +11299,10 @@
   },
   "stxFailure": {
     "message": "स्वैप नहीं हो पाया"
+  },
+  "stxFailureDescription": {
+    "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
     "message": "अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
@@ -11338,6 +11525,9 @@
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
   },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "कृपया लेटेस्ट दरों को प्राप्त करने के लिए नए उद्धरणों का रिक्वेस्ट करें।"
+  },
   "swapQuotesExpiredErrorTitle": {
     "message": "उद्धरण समयबाह्य"
   },
@@ -11532,6 +11722,9 @@
   "termsOfUseAgreeText": {
     "message": "मैं उपयोग की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे उपयोग पर लागू होती हैं।"
   },
+  "termsOfUseFooterText": {
+    "message": "सभी वर्गों को पढ़ने के लिए कृपया स्क्रॉल करें"
+  },
   "termsOfUseTitle": {
     "message": "हमारी उपयोग की शर्तों की समीक्षा करें"
   },
@@ -11611,6 +11804,9 @@
     "message": "$1 टोकन अनुमतियां",
     "description": "$1 is the count of token permissions (plural form)"
   },
+  "tokenSearchError": {
+    "message": "सर्च रिज़ल्ट लोड नहीं हो सके। कृपया फिर से कोशिश करें।"
+  },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"
   },
@@ -11650,6 +11846,9 @@
   },
   "totalReceived": {
     "message": "टोटल प्राप्त हुआ"
+  },
+  "totalVolume": {
+    "message": "कुल वॉल्यूम (24h)"
   },
   "transaction": {
     "message": "ट्रांसेक्शन"
@@ -11740,6 +11939,10 @@
     "message": "ट्रेज़र",
     "description": "Hardware device name"
   },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor इस्तेमाल करने के लिए Trezor Suite Desktop ज़रूरी है। कृपया Trezor Suite (suite.trezor.io) इंस्टॉल करें और खोलें और फिर से कोशिश करें।",
+    "description": "An error message shown to the user during the hardware connect flow."
+  },
   "tronBandwidth": {
     "message": "बैंडविड्थ"
   },
@@ -11802,6 +12005,9 @@
   "turnOff": {
     "message": "बंद करें"
   },
+  "turnOffMetamaskNotificationsError": {
+    "message": "नोटिफिकेशंस अक्षम करने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
+  },
   "turnOffPasskey": {
     "message": "$1 बंद करें",
     "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -11812,6 +12018,9 @@
   },
   "turnOn": {
     "message": "चालू करें"
+  },
+  "turnOnMetamaskNotificationsError": {
+    "message": "नोटिफिकेशंस बनाने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
   },
   "turnOnTokenDetection": {
     "message": "एन्हांस्ड टोकन डिटेक्शन चालू करें"
@@ -11885,6 +12094,9 @@
   },
   "unlock": {
     "message": "अनलॉक करें"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "गलत पासवर्ड। कृपया फिर से प्रयास करें।"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "बहुत अधिक प्रयास हो गए हैं। इतने समय में फिर से कोशिश करें "
@@ -12079,6 +12291,9 @@
   "volume": {
     "message": "वॉल्यूम"
   },
+  "volumeToMarketCap": {
+    "message": "वॉल्यूम / मार्केट कैप"
+  },
   "wallet": {
     "message": "वॉलेट"
   },
@@ -12111,6 +12326,10 @@
     "message": "$1 से चेतावनी",
     "description": "$1 represents the name of the snap"
   },
+  "watchEthereumAccountsDescription": {
+    "message": "इस विकल्प को चालू करने से आपको पब्लिक एड्रेस या ENS नाम के माध्यम से Ethereum एकाउंट्स को देखने की सुविधा मिलेगी। इस Beta फीचर पर प्रतिक्रिया के लिए कृपया इस $1 को पूरा करें।",
+    "description": "$1 is the link to a product feedback form"
+  },
   "watchEthereumAccountsToggle": {
     "message": "Ethereum एकाउंट्स देखें (Beta)"
   },
@@ -12120,6 +12339,10 @@
   },
   "web3": {
     "message": "Web3"
+  },
+  "web3ShimUsageNotification": {
+    "message": "हमने देखा है कि वर्तमान वेबसाइट ने हटाए गए window.web3 API का इस्तेमाल करने की कोशिश की। यदि साइट में गड़बड़ी लगती है, तो कृपया अधिक जानकारी के लिए $1 पर क्लिक करें।",
+    "description": "$1 is a clickable link."
   },
   "webhid": {
     "message": "WebHID",
