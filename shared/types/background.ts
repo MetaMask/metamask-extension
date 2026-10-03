@@ -15,6 +15,7 @@ import type {
   DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -72,11 +73,16 @@ import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers
 import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
-import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
 export type ControllerStatePropertiesEnumerated = {
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -132,6 +138,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
+  lastPerpsDepositEntryPoint: AppStateControllerState['lastPerpsDepositEntryPoint'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -151,6 +158,7 @@ export type ControllerStatePropertiesEnumerated = {
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
+  lastShownPrfMigrationReminderAt: AppStateControllerState['lastShownPrfMigrationReminderAt'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -189,14 +197,14 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
   consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  marketingConsentDecisionMade?: AnalyticsControllerState['marketingConsentDecisionMade'];
   preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
+  optedInToMarketing?: AnalyticsControllerState['optedInToMarketing'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
-  marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
+  marketingCampaignCookieId?: AnalyticsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
@@ -320,6 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  isRampsSyncingEnabled: UserStorageController.UserStorageControllerState['isRampsSyncingEnabled'];
   rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
   rewardsAccounts: RewardsControllerState['rewardsAccounts'];
   rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
@@ -339,6 +348,7 @@ export type ControllerStatePropertiesEnumerated = {
 export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
+  AssetsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
@@ -359,7 +369,6 @@ export type ControllerStateTypesMerged = AccountsControllerState &
     [P in keyof GasFeeState]: GasFeeState[P];
   } & KeyringControllerState &
   LoggingControllerState &
-  MetaMetricsControllerState &
   AnalyticsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &

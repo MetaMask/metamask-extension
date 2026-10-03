@@ -6,12 +6,14 @@ import {
   MONEY_EARNING_SECTION_ENABLED_FLAG_NAME,
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
+  MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME,
   getMoneyAccountGeoBlockedCountries,
   isMoneyAccountEnabled,
   isMoneyAccountGeoEligible,
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
+  isMoneyHomeScreenCardEnabled,
 } from './feature-flags';
 
 const CURRENT_VERSION = packageJson.version;
@@ -242,6 +244,71 @@ describe('isMoneyEarningSectionEnabled', () => {
         [MONEY_EARNING_SECTION_ENABLED_FLAG_NAME]: true,
       }),
     ).toBe(false);
+  });
+});
+
+describe('isMoneyHomeScreenCardEnabled', () => {
+  it('returns true for an enabled flag the current version satisfies', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: CURRENT_VERSION,
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true for an enabled flag inside a progressive rollout wrapper', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          name: 'home-card-rollout',
+          value: { enabled: true, minimumVersion: '0.0.0' },
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for a disabled flag', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: false,
+          minimumVersion: '0.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the current version is below the minimum', () => {
+    expect(
+      isMoneyHomeScreenCardEnabled({
+        [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: {
+          enabled: true,
+          minimumVersion: '9999.0.0',
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is absent, malformed, or unserved', () => {
+    const cases: [string, Record<string, unknown> | undefined][] = [
+      ['unserved flags', undefined],
+      ['no card flag', { someOtherFlag: true }],
+      ['plain boolean', { [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: true }],
+      [
+        'missing minimumVersion',
+        { [MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME]: { enabled: true } },
+      ],
+    ];
+
+    for (const [name, flags] of cases) {
+      expect({
+        name,
+        enabled: isMoneyHomeScreenCardEnabled(flags),
+      }).toStrictEqual({ name, enabled: false });
+    }
   });
 });
 

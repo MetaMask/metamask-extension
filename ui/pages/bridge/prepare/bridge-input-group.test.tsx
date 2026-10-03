@@ -283,17 +283,13 @@ describe('BridgeInputGroup', () => {
       { tokenSecurityData: { isVerified: true } },
     );
 
-    expect(
-      getByTestId('bridge-selected-asset-verified-badge'),
-    ).toBeInTheDocument();
+    expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
   it('leaves the selected asset button unchanged without fetched metadata', () => {
     const { queryByTestId } = renderBridgeInputGroup();
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('moves the caret only when the input denomination changes', () => {

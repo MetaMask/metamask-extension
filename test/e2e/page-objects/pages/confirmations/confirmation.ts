@@ -1,6 +1,6 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { RawLocator } from '../../common';
+import { ClickWaitUntil, FooterButton, RawLocator } from '../../common';
 
 /**
  * Shared base for redesigned confirmation screens: footer actions, multi-page
@@ -178,32 +178,39 @@ class Confirmation {
     await this.driver.clickElement(this.sectionCollapseButton);
   }
 
-  async clickFooterCancelButton() {
-    await this.driver.clickElement(this.footerCancelButton);
+  /**
+   * Click the confirmation footer confirm or cancel button.
+   *
+   * @param options - Footer click options
+   * @param options.button - Which footer button to click
+   * @param options.waitUntil - Optional wait after click. Omitted uses a plain click.
+   */
+  async clickFooterButton({
+    button,
+    waitUntil,
+  }: {
+    button: FooterButton;
+    waitUntil?: ClickWaitUntil;
+  }): Promise<void> {
+    const locator =
+      button === 'confirm' ? this.footerConfirmButton : this.footerCancelButton;
+    await this.clickFooterButtonAndWait(locator, waitUntil);
   }
 
-  async clickFooterCancelButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerCancelButton,
-    );
-  }
-
-  async clickFooterCancelButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
-  }
-
-  async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.footerConfirmButton);
-  }
-
-  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerConfirmButton,
-    );
-  }
-
-  async clickFooterConfirmButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
+  private async clickFooterButtonAndWait(
+    locator: RawLocator,
+    waitUntil?: ClickWaitUntil,
+  ): Promise<void> {
+    switch (waitUntil) {
+      case 'windowClose':
+        await this.driver.clickElementAndWaitForWindowToClose(locator);
+        return;
+      case 'disappear':
+        await this.driver.clickElementAndWaitToDisappear(locator);
+        return;
+      default:
+        await this.driver.clickElement(locator);
+    }
   }
 
   async clickHeaderAccountDetailsButton() {

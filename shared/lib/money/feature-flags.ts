@@ -28,6 +28,13 @@ export const DEFAULT_MONEY_ACCOUNT_BLOCKED_COUNTRIES = ['GB'];
 const UNKNOWN_LOCATION = 'UNKNOWN';
 
 /**
+ * The LaunchDarkly flag that gates the Money balance card on the wallet home
+ * screen, independently of {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME}.
+ */
+export const MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME =
+  'moneyHomeScreenCardEnabled';
+
+/**
  * The LaunchDarkly flag that gates the realized Earnings section on Money
  * Home.
  */
@@ -129,6 +136,28 @@ export function isMoneyAccountGeoEligible(
 
   return blockedCountries.every(
     (blocked) => !userCountry.startsWith(blocked.toUpperCase()),
+  );
+}
+
+/**
+ * Whether the Money balance card on the wallet home screen is enabled.
+ *
+ * The flag is version-gated and fails closed when absent, malformed, or below
+ * the current extension version.
+ *
+ * This says nothing about whether Money Account itself is enabled; callers
+ * must also gate on {@link isMoneyAccountEnabled}.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the home screen card is enabled.
+ */
+export function isMoneyHomeScreenCardEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return (
+    validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags?.[MONEY_HOME_SCREEN_CARD_ENABLED_FLAG_NAME],
+    ) ?? false
   );
 }
 

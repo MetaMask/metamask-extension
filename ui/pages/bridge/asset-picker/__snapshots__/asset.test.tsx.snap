@@ -47,7 +47,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
@@ -78,7 +78,7 @@ exports[`BridgeAsset should render ERC20 asset 1`] = `
   </div>
   <button
     aria-label="View token details"
-    class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
     data-testid="bridge-asset-info-icon-eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
   >
     <svg
@@ -142,7 +142,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
@@ -182,7 +182,7 @@ exports[`BridgeAsset should render asset with accountType 1`] = `
   </div>
   <button
     aria-label="View token details"
-    class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
     data-testid="bridge-asset-info-icon-bip122:000000000019d6689c085ae165831e93/slip44:0"
   >
     <svg
@@ -246,7 +246,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
@@ -281,7 +281,7 @@ exports[`BridgeAsset should render asset with balance 1`] = `
   </div>
   <button
     aria-label="View token details"
-    class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
     data-testid="bridge-asset-info-icon-eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA"
   >
     <svg
@@ -349,7 +349,7 @@ exports[`BridgeAsset should render native asset 1`] = `
       class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
     >
       <div
-        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+        class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
@@ -380,7 +380,7 @@ exports[`BridgeAsset should render native asset 1`] = `
   </div>
   <button
     aria-label="View token details"
-    class="inline-flex items-center justify-center p-0 h-8 w-8 rounded-lg bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
+    class="inline-flex shrink-0 items-center justify-center rounded-full p-0 h-8 w-8 bg-transparent hover:bg-hover active:bg-pressed text-icon-default bridge-asset-info-icon"
     data-testid="bridge-asset-info-icon-eip155:1/slip44:60"
   >
     <svg

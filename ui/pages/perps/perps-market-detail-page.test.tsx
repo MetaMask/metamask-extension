@@ -15,6 +15,7 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
@@ -103,6 +104,7 @@ jest.mock('@metamask/perps-controller', () => ({
   },
   MARKET_CATEGORIES: [
     'crypto',
+    'memecoin',
     'stock',
     'pre-ipo',
     'index',
@@ -258,6 +260,7 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockPerpsTrack = jest.fn();
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
 // properties the page constructs.
 const mockPerpsScreenViewedOptions: {
@@ -274,7 +277,7 @@ jest.mock('../../hooks/perps', () => ({
       mockPerpsScreenViewedOptions.push(options);
       return undefined;
     }
-    return { track: jest.fn() };
+    return { track: mockPerpsTrack };
   },
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
@@ -384,6 +387,8 @@ jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
         mockReact.createElement('div', {
           'data-testid': 'perps-candlestick-chart',
           'data-price-lines': JSON.stringify(props.priceLines ?? []),
+          'data-visible-candle-count': props.initialVisibleCandleCount,
+          onClick: () => props.onVisibleCandleCountChange?.(75),
         }),
     ),
   };
@@ -1307,6 +1312,21 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByTestId('perps-candlestick-chart')).toBeInTheDocument();
     });
 
+    it('restores and updates the visible candle count', async () => {
+      const state = createMockState(true);
+      (state.metamask as Record<string, unknown>).visibleCandleCount = 60;
+      const { getByTestId } = await renderPage(mockStore(state));
+
+      const chart = getByTestId('perps-candlestick-chart');
+      expect(chart).toHaveAttribute('data-visible-candle-count', '60');
+      fireEvent.click(chart);
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsSetVisibleCandleCount',
+        [75],
+      );
+    });
+
     it('passes a Liq price line to the chart when position has a liquidationPrice', async () => {
       // ETH mock position has liquidationPrice: '2400.00'
       mockLivePositions.mockReturnValue({
@@ -1537,6 +1557,17 @@ describe('PerpsMarketDetailPage', () => {
       const marginMenu = screen.getByTestId('perps-margin-menu');
       expect(marginMenu).toBeInTheDocument();
       expect(marginMenu.parentElement).toBe(document.body);
+      expect(mockPerpsTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'margin',
+          button_location: 'asset_details',
+        }),
+      );
+      mockPerpsTrack.mock.calls.forEach(([, properties]) => {
+        expect(properties).not.toHaveProperty('button_type');
+      });
       expect(
         screen.getByText(messages.perpsAddMargin.message),
       ).toBeInTheDocument();

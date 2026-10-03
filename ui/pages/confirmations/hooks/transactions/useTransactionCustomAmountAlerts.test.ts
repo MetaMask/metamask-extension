@@ -279,6 +279,38 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
+  it('returns alertContent when alert has content', () => {
+    const content = 'alert content';
+
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.NoPayTokenQuotes,
+            reason: 'No quotes',
+            message: 'Quote simulation failed',
+            content,
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertContent: content,
+      alertMessage: 'Quote simulation failed',
+      disableUpdate: false,
+      hasAlert: true,
+      hideResults: false,
+    });
+  });
+
   it('does not return alertMessage when reason and message are the same for other alerts', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({

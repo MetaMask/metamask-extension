@@ -10,10 +10,16 @@ import type {
   LongTaskMetrics,
   LongTaskMetricsWithTBT,
 } from '../ui/helpers/utils/performance-observers';
-import type { Backup } from '../shared/lib/stores/persistence-manager';
+import type {
+  Backup,
+  StorageKind,
+} from '../shared/lib/stores/persistence-manager';
+import type { SentryRemoteRates } from '../shared/lib/sentry-remote-rates';
 
 type StateHooks = {
+  getSentryRemoteRates?: () => SentryRemoteRates;
   getCustomTraces?: () => { [name: string]: number };
+  getIsIdle?: () => boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getCleanAppState?: () => Promise<any>;
@@ -62,7 +68,7 @@ type StateHooks = {
   hasConsoleAccess?: () => boolean;
 
   /**
-   * This is initialized by the service worker in MV3. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.ts`.
    */
   lazyListener?: ExtensionLazyListener<typeof chrome>;
   /**
@@ -105,7 +111,7 @@ type StateHooks = {
   /**
    * Returns the persistence storage kind currently in use (`data` or `split`).
    */
-  getStorageKind?: () => import('../shared/lib/stores/persistence-manager').StorageKind;
+  getStorageKind?: () => StorageKind;
 
   // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
   // Typed as `unknown` because these are untyped debug-only entry points consumed
@@ -119,6 +125,11 @@ type StateHooks = {
 };
 
 declare global {
+  /**
+   * Debug helper to log encrypted vault state
+   */
+  var logEncryptedVault: () => void;
+
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;

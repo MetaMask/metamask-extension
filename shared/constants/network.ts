@@ -1705,7 +1705,22 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://robinhoodchain.blockscout.com'],
+    blockExplorerUrls: ['https://robin.etherscan.io/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.XDC,
+    name: XDC_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.XDC,
+    rpcEndpoints: [
+      {
+        url: `https://xdc-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForChainId(CHAIN_IDS.XDC),
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://xdcscan.com'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

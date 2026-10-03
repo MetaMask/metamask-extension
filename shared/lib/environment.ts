@@ -35,20 +35,20 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
 };
 
 /**
- * Compile-time gate (`ASSETS_UNIFIED_STATE_ENABLED`): controls whether
- * AssetsController populates state. The controller is always instantiated,
- * but when this is false the state remains empty. Distinct from the remote
- * `assetsUnifyState` rollout flag which provides an additional runtime gate.
+ * The assets unified state is included in every build. This compatibility
+ * helper remains while its callers are removed in the subsequent stack PR.
  */
 export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
-  return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
+  return true;
 };
 
 /**
- * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`): controls whether onboarding
- * assigns new users to the consolidated Basic Functionality experience. This
- * is intentionally separate from the remote rollout flag because onboarding
- * completes before remote feature flags are reliably available.
+ * Compile-time gate (`BFT_CONSOLIDATION_ENABLED`):
+ * - Onboarding: assign new users to the consolidated experience (remote flags
+ * are not reliable during onboarding).
+ * - Existing BF-off wallets: hardcode consolidation + notice in this release,
+ * because Basic Functionality off disables remote feature flag fetching.
+ * BF-on existing users still use the remote flag as a kill switch.
  */
 export const getIsBasicFunctionalityConsolidationEnabledInBuild =
   (): boolean => {

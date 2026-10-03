@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Gaasi ülemmäär"
   },
-  "gasLimitTooLow": {
-    "message": "Gaasi ülemmäär peab olema vähemalt 21 000"
-  },
   "gasUsed": {
     "message": "Kasutatud gaasihulk"
   },
@@ -408,9 +405,6 @@
   "privateKey": {
     "message": "Privaatvõti",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Hoiatus: ärge seda võtit kellelegi avaldage. Suvaline isik, kes teab teie privaatvõtmeid, võib teie kontolt varasid varastada."
   },
   "privateNetwork": {
     "message": "Privaatvõrk"

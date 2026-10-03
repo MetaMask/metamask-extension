@@ -7,7 +7,8 @@ import { useIdleTimer } from 'react-idle-timer';
 
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import type { Json } from '@metamask/utils';
-
+import { MainLayout } from '#ui/layouts/main-layout';
+import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -80,7 +81,9 @@ import {
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOW_IT_WORKS_ROUTE,
   MONEY_TRANSACTION_DETAILS_ROUTE,
+  MONEY_EARN_ROUTE,
   CONTACTS_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
@@ -160,6 +163,7 @@ import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-mes
 import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messenger';
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
+import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -282,9 +286,13 @@ const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
 const MoneyActivityPage = mmLazy(
   () => import('../money/money-activity-page.tsx'),
 );
+const MoneyHowItWorksPage = mmLazy(
+  () => import('../money/money-how-it-works-page.tsx'),
+);
 const MoneyTransactionDetailsPage = mmLazy(
   () => import('../money/money-transaction-details-page.tsx'),
 );
+const MoneyEarnPage = mmLazy(() => import('../money/money-earn-page.tsx'));
 const PerpsWithdrawPage = mmLazy(
   () => import('../perps/perps-withdraw-page.tsx'),
 );
@@ -552,11 +560,6 @@ export const routeConfig = [
         ),
         children: contactsRoutes,
       },
-      createRouteWithMessenger({
-        path: DEFAULT_ROUTE,
-        capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
-        element: <Home />,
-      }),
       {
         path: `${TX_DETAILS_ROUTE}/:caipChainId/:txIdentifier`,
         element: <TransactionDetailsRoute />,
@@ -606,16 +609,21 @@ export const routeConfig = [
             element: <DeFiPage />,
           },
           {
-            path: RAMPS_BUILD_QUOTE_ROUTE,
-            element: <RampsBuildQuote />,
-          },
-          {
-            path: RAMPS_TOKEN_SELECTION_ROUTE,
-            element: <RampsTokenSelection />,
-          },
-          {
-            path: RAMPS_PAYMENT_METHOD_ROUTE,
-            element: <RampsPaymentMethod />,
+            element: <RampsFlowLayout />,
+            children: [
+              {
+                path: RAMPS_BUILD_QUOTE_ROUTE,
+                element: <RampsBuildQuote />,
+              },
+              {
+                path: RAMPS_TOKEN_SELECTION_ROUTE,
+                element: <RampsTokenSelection />,
+              },
+              {
+                path: RAMPS_PAYMENT_METHOD_ROUTE,
+                element: <RampsPaymentMethod />,
+              },
+            ],
           },
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,
@@ -662,29 +670,54 @@ export const routeConfig = [
               },
             ],
           },
+        ],
+      },
+      {
+        element: <MainLayout />,
+        children: [
+          createRouteWithMessenger({
+            path: DEFAULT_ROUTE,
+            capabilities: HOME_ROUTE_ALLOWED_CAPABILITIES,
+            element: <Home />,
+          }),
           {
-            path: ACTIVITY_ROUTE,
-            element: <ActivityPage />,
+            element: <RequireBasicFunctionality />,
+            children: [
+              {
+                path: ACTIVITY_ROUTE,
+                element: <ActivityPage />,
+              },
+              {
+                path: PERPS_HOME_PAGE_ROUTE,
+                element: <PerpsPage />,
+              },
+              createRouteWithMessenger({
+                path: MONEY_HOME_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHomePage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_ACTIVITY_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyActivityPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_HOW_IT_WORKS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyHowItWorksPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_TRANSACTION_DETAILS_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyTransactionDetailsPage />,
+              }),
+              createRouteWithMessenger({
+                path: MONEY_EARN_ROUTE,
+                capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
+                element: <MoneyEarnPage />,
+              }),
+            ],
           },
-          {
-            path: PERPS_HOME_PAGE_ROUTE,
-            element: <PerpsPage />,
-          },
-          createRouteWithMessenger({
-            path: MONEY_HOME_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyHomePage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_ACTIVITY_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyActivityPage />,
-          }),
-          createRouteWithMessenger({
-            path: MONEY_TRANSACTION_DETAILS_ROUTE,
-            capabilities: MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES,
-            element: <MoneyTransactionDetailsPage />,
-          }),
         ],
       },
     ],
@@ -708,6 +741,7 @@ export default function Routes() {
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
+  usePerpsPreload(isUnlocked && completedOnboarding);
   const currentCurrency = useAppSelector(
     getCurrencyRateControllerCurrentCurrency,
   );

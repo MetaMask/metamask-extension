@@ -36,7 +36,7 @@ describe('MoneyActivityRow', () => {
     expect(onItemClick).toHaveBeenCalledWith(deposited);
   });
 
-  it('keeps Accounts API rows non-interactive even when onItemClick is set', () => {
+  it('renders a button that invokes onItemClick for Accounts API rows', () => {
     const onItemClick = jest.fn();
     const apiItem = accountsApiItem({
       kind: 'card',
@@ -57,8 +57,8 @@ describe('MoneyActivityRow', () => {
     );
 
     const row = screen.getByTestId(`money-activity-row-${apiItem.id}`);
-    expect(row.tagName).toBe('DIV');
+    expect(row.tagName).toBe('BUTTON');
     fireEvent.click(row);
-    expect(onItemClick).not.toHaveBeenCalled();
+    expect(onItemClick).toHaveBeenCalledWith(apiItem);
   });
 });
