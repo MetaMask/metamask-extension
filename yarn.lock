@@ -43694,12 +43694,12 @@ __metadata:
 
 "ses@patch:ses@npm%3A2.3.0#~/.yarn/patches/ses-npm-2.3.0-dc6afde707.patch":
   version: 2.3.0
-  resolution: "ses@patch:ses@npm%3A2.3.0#~/.yarn/patches/ses-npm-2.3.0-dc6afde707.patch::version=2.3.0&hash=d002a1"
+  resolution: "ses@patch:ses@npm%3A2.3.0#~/.yarn/patches/ses-npm-2.3.0-dc6afde707.patch::version=2.3.0&hash=4d62b5"
   dependencies:
     "@endo/cache-map": "npm:^1.1.0"
     "@endo/env-options": "npm:^1.1.11"
     "@endo/immutable-arraybuffer": "npm:^2.0.0"
-  checksum: 10/6f9f88a5ff9d27e6f0fae522a9baedbcde32bad989a380ad90657fc476cbb4c6db7ad38300a28fcdb6f20392dc936346b7b1644c15b5b601a35d5a1dabe44684
+  checksum: 10/ff8bf2446ee77e22889cebab45e7a4404618fe7837ca270f5d4e094452aacfe3cf27276b82a5981c4f1868e07ecd2ec511efca8a5ea39918d2bd16d3dd93de05
   languageName: node
   linkType: hard
 

@@ -1,68 +1,58 @@
 diff --git a/dist/ses.cjs b/dist/ses.cjs
-index c10f41b6a6a1bfb63032ebe523063dade9048409..4712c75772a8e0fee8cfa167f044a9d6ff887eea 100644
+index c10f41b6a6a1bfb63032ebe523063dade9048409..f5eb74a41d2496c1062121637f4cbd89e727cc9a 100644
 --- a/dist/ses.cjs
 +++ b/dist/ses.cjs
-@@ -4514,7 +4514,28 @@ const freezeTypedArray = array => {
-           return;
-         }
-       }
--      error(`failed to delete ${subPath}`, reason);
-+      if (
-+      typeof obj === 'function' &&
-+      (prop === 'caller' || prop === 'arguments') &&
-+      hasOwn(obj, prop)
-+    ) {
-+      const desc = Object.getOwnPropertyDescriptor(obj, prop);
-+      if (
-+        desc &&
-+        !desc.configurable &&
-+        !desc.writable &&
-+        !desc.get &&
-+        !desc.set &&
-+        desc.value === null
-+      ) {
-+        // Legacy "restricted properties" on older V8 (e.g. Chrome < 127) are
-+        // undeletable own data properties whose value is null. They expose
-+        // nothing, so tolerate them rather than failing lockdown outright.
-+        warn(`Tolerating undeletable ${subPath} === null`);
-+        return;
-+      }
-+    }
-+    error(`failed to delete ${subPath}`, reason);
-     } else {
-       error(`deleting ${subPath} threw`, reason);
-     }
-diff --git a/src/cauterize-property.js b/src/cauterize-property.js
-index 0c54ac367ae0b2e63f2a3aaf1fde02b94557cd84..24a83a3a950111e751c6790771480ab532fdfa20 100644
---- a/src/cauterize-property.js
-+++ b/src/cauterize-property.js
-@@ -61,7 +61,28 @@ export const cauterizeProperty = (
-           return;
-         }
-       }
--      error(`failed to delete ${subPath}`, reason);
-+      if (
-+      typeof obj === 'function' &&
-+      (prop === 'caller' || prop === 'arguments') &&
-+      hasOwn(obj, prop)
-+    ) {
-+      const desc = Object.getOwnPropertyDescriptor(obj, prop);
-+      if (
-+        desc &&
-+        !desc.configurable &&
-+        !desc.writable &&
-+        !desc.get &&
-+        !desc.set &&
-+        desc.value === null
-+      ) {
-+        // Legacy "restricted properties" on older V8 (e.g. Chrome < 127) are
-+        // undeletable own data properties whose value is null. They expose
-+        // nothing, so tolerate them rather than failing lockdown outright.
-+        warn(`Tolerating undeletable ${subPath} === null`);
-+        return;
-+      }
-+    }
-+    error(`failed to delete ${subPath}`, reason);
-     } else {
-       error(`deleting ${subPath} threw`, reason);
-     }
+@@ -4630,12 +4630,18 @@ const freezeTypedArray = array => {
+ 
+   // WHATWG Encoding Standard
+   // https://encoding.spec.whatwg.org/
+-  // TextEncoder and TextDecoder are pure transformations between string and
+-  // Uint8Array with no static side channels and no exposed iterator
+-  // prototype. They are permitted universally; on hosts that do not provide
+-  // them (XS), the sampling pass tolerates the absence.
+-  TextEncoder: 'TextEncoder',
+-  TextDecoder: 'TextDecoder',
++  // Upstream permits these universally on the grounds that they are pure
++  // transformations between string and Uint8Array with no static side
++  // channels. That does not hold on every engine we support: on V8 before
++  // Chrome 127 these constructors are sloppy-mode functions, so they carry
++  // own `caller` and `arguments`, which is a live stack-walking channel and
++  // an undeletable one, so `lockdown()` throws while cauterizing them.
++  // Until ses repairs those properties, we keep TextEncoder/TextDecoder out
++  // of the intrinsics, as in ses 2.2.x. They stay ordinary host globals that
++  // LavaMoat grants through policy, which is what we already rely on.
++  // See https://github.com/endojs/endo/issues/3369
++  // TextEncoder: 'TextEncoder',
++  // TextDecoder: 'TextDecoder',
+ 
+   // *** Annex B
+ 
+diff --git a/src/permits.js b/src/permits.js
+index f01e556507e37766be728143b7782559564ff6b5..73e03589e7ad52c0ddfd114618fe91f8f70544cf 100644
+--- a/src/permits.js
++++ b/src/permits.js
+@@ -104,12 +104,18 @@ export const universalPropertyNames = {
+ 
+   // WHATWG Encoding Standard
+   // https://encoding.spec.whatwg.org/
+-  // TextEncoder and TextDecoder are pure transformations between string and
+-  // Uint8Array with no static side channels and no exposed iterator
+-  // prototype. They are permitted universally; on hosts that do not provide
+-  // them (XS), the sampling pass tolerates the absence.
+-  TextEncoder: 'TextEncoder',
+-  TextDecoder: 'TextDecoder',
++  // Upstream permits these universally on the grounds that they are pure
++  // transformations between string and Uint8Array with no static side
++  // channels. That does not hold on every engine we support: on V8 before
++  // Chrome 127 these constructors are sloppy-mode functions, so they carry
++  // own `caller` and `arguments`, which is a live stack-walking channel and
++  // an undeletable one, so `lockdown()` throws while cauterizing them.
++  // Until ses repairs those properties, we keep TextEncoder/TextDecoder out
++  // of the intrinsics, as in ses 2.2.x. They stay ordinary host globals that
++  // LavaMoat grants through policy, which is what we already rely on.
++  // See https://github.com/endojs/endo/issues/3369
++  // TextEncoder: 'TextEncoder',
++  // TextDecoder: 'TextDecoder',
+ 
+   // *** Annex B
+ 
