@@ -142,7 +142,7 @@ describe('passkey ceremony helpers', () => {
     });
 
     it('decodes PRF eval.first and encodes non-empty PRF result', async () => {
-      const firstBuffer = new Uint8Array([1, 2, 3]).buffer;
+      const firstBuffer = new Uint8Array([1, 2, 3]).buffer as ArrayBuffer;
       mockBase64UrlToBuffer.mockReturnValue(firstBuffer);
       mockBufferToBase64Url.mockReturnValue('encoded-first');
       mockStartRegistration.mockResolvedValue({
@@ -276,7 +276,7 @@ describe('passkey ceremony helpers', () => {
     });
 
     it('decodes PRF eval.first string to buffer for authentication options', async () => {
-      const firstBuffer = new Uint8Array([9, 9]).buffer;
+      const firstBuffer = new Uint8Array([9, 9]).buffer as ArrayBuffer;
       mockBase64UrlToBuffer.mockReturnValue(firstBuffer);
       mockStartAuthentication.mockResolvedValue({
         id: 'credential-id',
