@@ -1934,6 +1934,15 @@
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "プライバシー通知"
   },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "オフ"
+  },
+  "basicFunctionalityMigrationToastEnabled": {
+    "message": "に"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "詳細。"
+  },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "設定 > プライバシー"
   },
@@ -3568,6 +3577,9 @@
   "disconnectAllSitesQuestion": {
     "message": "すべて接続解除?"
   },
+  "disconnectAllSitesSuccess": {
+    "message": "すべてのDAppの接続が解除されました。"
+  },
   "disconnectPrompt": {
     "message": "$1を接続解除"
   },
@@ -3576,6 +3588,10 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "これにより、すべてのアカウントの$1への接続が解除されます。このDAppを再び使用するには、再度接続する必要があります。",
+    "description": "$1 is the site hostname"
+  },
+  "disconnectSiteSuccess": {
+    "message": "$1からの接続切断が完了しました。",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -4153,6 +4169,9 @@
   "from": {
     "message": "送り元"
   },
+  "fullyDiluted": {
+    "message": "完全希釈化後"
+  },
   "function": {
     "message": "機能: $1"
   },
@@ -4536,6 +4555,9 @@
   },
   "hardwareWalletRepairStepTwoTitle": {
     "message": "デバイスのロックを解除する"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "デバイスが再接続されました。このタブは閉じていただいて結構です。"
   },
   "hardwareWalletRepairSuccessTitle": {
     "message": "デバイスが接続されました"
@@ -5538,6 +5560,9 @@
   "moneyBalanceLastKnown": {
     "message": "直近の残高"
   },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
+  },
   "moneyBalanceRetry": {
     "message": "再試行"
   },
@@ -5628,12 +5653,42 @@
   "moneyHowItWorksDisclosuresBody": {
     "message": "Money Accountは、銀行口座、普通預金口座、または保険対象の預金商品ではありません。APYは変動制であり、保証されるものではありません。Money Accountには、スマートコントラクト、プロトコル、流動性その他に関するリスクが伴い、資金の一部または全部が失われる可能性があります。地域ごとの制限の対象となります。規約が適用されます。"
   },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "リスクおよび開示事項"
+  },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "最大$1のAPYが得られます。この利率は変動制であり、市場の状況に応じて変動します。現在のレートはMoney Account内に常に表示されます。",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "MetaMask Money Accountでどの程度の収益を得られますか？"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "ほとんどの国でご利用いただけます。英国内、および米国の制裁対象国内では現在ご利用いただけません。"
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "MetaMask Money Accountはどの国で利用できますか？"
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "MetaMask Money Accountの手数料について教えてください"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "いいえ、Money Accountでは本人確認は不要です。ただし、CardやRampsなど、一部の機能については本人確認が必要となります。確認は、MetaMaskではなく、これらの規制対象サービスを運営するサードパーティプロバイダーによって行われます。必要に応じて、サインアップ時にアプリ内で手続きの手順が表示されます。"
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "MetaMask Money Accountを使用するには本人確認が必要ですか？"
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "MetaMask Money Accountからいつでも引き出すことができますか？"
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "MetaMask Money Accountとは何ですか？"
+  },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "どのトークンをMoney Accountに入金できますか？"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "ユーザーが入金すると、その資金はAaveやMorphoなどの確立されたDeFiプロトコルに預け入れられます。これらのプロトコルは実際の経済活動から収益を上げ、これらの収益がAPY（年換算利回り）の形でユーザーに届けられます。\n\nプロトコル内での資金の配分状況は、Steakhouse Financialという第三者サービスプロバイダーによって監視されます。ユーザーの資金を保管するボールトスマートコントラクトのデプロイと維持・管理は、第三者インフラプロバイダーのVedaが担当します。\n\nここで得られる収益は、MetaMaskまたはmUSDの発行者が利息として支払うものではありません。第三者であるDeFiプロトコル内のポジションから生まれるオンチェーン上の収益が配分される仕組みとなっています。"
@@ -5667,6 +5722,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Money Accountへの入金",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "送金"
@@ -6185,6 +6244,9 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
+  "newCustomTokenAdded": {
+    "message": "「$1」が追加されました！"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "設定 > 資産"
   },
@@ -6198,6 +6260,15 @@
   "newNFTsAutodetected": {
     "message": "NFTの自動検出"
   },
+  "newNetworkAdded": {
+    "message": "「$1」が追加されました！"
+  },
+  "newNetworkEdited": {
+    "message": "“$1”が編集されました！"
+  },
+  "newNftAddedMessage": {
+    "message": "NFTが追加されました！"
+  },
   "newPassword": {
     "message": "新しいパスワード (最低8文字)"
   },
@@ -6209,6 +6280,10 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "プライバシーポリシーが更新されました"
+  },
+  "newTokensImportedMessage": {
+    "message": "$1をインポートしました。",
+    "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
     "message": "トークンがインポートされました"
@@ -6313,6 +6388,9 @@
   },
   "noTokensToManage": {
     "message": "まだトークンがありません。名前またはアドレスで検索して、人気のトークンを見つけましょう。"
+  },
+  "noWebcamFound": {
+    "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
   },
   "noWebcamFoundTitle": {
     "message": "Webカメラが見つかりません"
@@ -6461,6 +6539,9 @@
   "notificationsPageEmptyTitle": {
     "message": "ここに表示する内容はありません"
   },
+  "notificationsPageErrorContent": {
+    "message": "このページにもう一度アクセスしてみてください"
+  },
   "notificationsPageErrorTitle": {
     "message": "エラーが発生しました"
   },
@@ -6475,6 +6556,9 @@
   },
   "notificationsSettingsAgenticCliTitle": {
     "message": "Agent Wallet"
+  },
+  "notificationsSettingsBoxError": {
+    "message": "問題が発生しました。もう一度お試しください。"
   },
   "notificationsSettingsDeselectAll": {
     "message": "すべての選択を解除"
@@ -6578,6 +6662,9 @@
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイの追加、または継続的なデフォルト使用が可能です。"
+  },
+  "onboardingAdvancedPrivacyIPFSInvalid": {
+    "message": "有効なURLを入力してください"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "カスタムIPFSゲートウェイを追加"
@@ -7427,6 +7514,9 @@
   "perpsConfirmCloseShort": {
     "message": "ショートをクローズ"
   },
+  "perpsConnectionTimeout": {
+    "message": "接続がタイムアウトしました。もう一度お試しください。"
+  },
   "perpsContactSupport": {
     "message": "サポートへのお問い合わせ"
   },
@@ -7704,6 +7794,9 @@
   "perpsMore": {
     "message": "さらに表示"
   },
+  "perpsNetworkError": {
+    "message": "ネットワークエラーが発生しました。もう一度お試しください。"
+  },
   "perpsNoMarketsFound": {
     "message": "市場が見つかりませんでした"
   },
@@ -7865,6 +7958,9 @@
     "message": "商品",
     "description": "Heading of the Perps tab section listing market categories as chips"
   },
+  "perpsRateLimitExceeded": {
+    "message": "リクエストが多すぎます。時間をおいて、もう一度お試しください。"
+  },
   "perpsRecentActivity": {
     "message": "最近のアクティビティ"
   },
@@ -7911,6 +8007,9 @@
   "perpsSeeAll": {
     "message": "すべて表示",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceUnavailable": {
+    "message": "現在サービスが一時的にご利用いただけません。後ほどもう一度お試しください。"
   },
   "perpsShort": {
     "message": "ショート"
@@ -8091,6 +8190,10 @@
     "message": "証拠金の調整に失敗しました",
     "description": "Error toast text shown when adding or removing margin fails"
   },
+  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
+    "message": "証拠金を調整できませんでした。もう一度お試しください。",
+    "description": "Fallback description shown when margin adjustment fails without a usable error message."
+  },
   "perpsToastMarginRemoveSuccess": {
     "message": "$1の証拠金を$2のポジションから引き出しました",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
@@ -8166,6 +8269,10 @@
   "perpsToastUpdateInProgress": {
     "message": "TP/SLを更新中...",
     "description": "In-progress toast text shown while updating TP/SL settings"
+  },
+  "perpsToastUpdateSuccess": {
+    "message": "TP/SLが更新されました",
+    "description": "Success toast text shown when TP/SL settings are updated"
   },
   "perpsTopMovers": {
     "message": "注目銘柄",
@@ -8357,6 +8464,9 @@
   },
   "pinned": {
     "message": "ピン留め"
+  },
+  "pleaseConfirm": {
+    "message": "ご確認ください"
   },
   "pna25ModalBlogPostLink": {
     "message": "ブログ記事をお読みください。"
@@ -8571,6 +8681,9 @@
     "message": "$1を購入",
     "description": "$1 is the token symbol being purchased"
   },
+  "rampsBuyWidgetError": {
+    "message": "購入を開始できませんでした。もう一度お試しください。"
+  },
   "rampsBuyingViaProvider": {
     "message": "$1経由で購入中。",
     "description": "$1 is the ramp provider name"
@@ -8596,6 +8709,9 @@
   "rampsContinueInBrowser": {
     "message": "ブラウザで続ける",
     "description": "Banner title on the ramps complete-buy interstitial"
+  },
+  "rampsEligibilityFailedDescription": {
+    "message": "もう一度お試しください。引き続き問題が発生する場合はサポートにお問い合わせください。"
   },
   "rampsEligibilityFailedTitle": {
     "message": "お住まいの地域を確認できませんでした"
@@ -8752,6 +8868,9 @@
   "rampsSelectPaymentMethod": {
     "message": "支払方法を選択"
   },
+  "rampsServiceDisruptionDescription": {
+    "message": "現在、サービスに障害が発生しています。後でもう一度お試しください。"
+  },
   "rampsServiceDisruptionTitle": {
     "message": "購入は一時的にご利用いただけません"
   },
@@ -8885,6 +9004,9 @@
   "removeNftErrorMessage": {
     "message": "このNFTを削除できませんでした。"
   },
+  "removeNftMessage": {
+    "message": "NFTが削除されました！"
+  },
   "removeSnap": {
     "message": "Snapを削除"
   },
@@ -8984,6 +9106,9 @@
   "resultPageSuccess": {
     "message": "成功"
   },
+  "resultPageSuccessDefaultMessage": {
+    "message": "操作が正常に完了しました。"
+  },
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },
@@ -9047,11 +9172,26 @@
   "reward": {
     "message": "報酬"
   },
+  "rewardsAuthFailDescription": {
+    "message": "このアカウントをリワードプログラムで認証中に不明なエラーが発生しました。後でもう一度お試しください。"
+  },
   "rewardsAuthFailTitle": {
     "message": "不明なエラーです。"
   },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "このアカウントは別のリワードプロファイルにすでに登録されています。続行するにはアカウントを切り替えてください。"
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "リワードの請求に失敗しました。しばらくしてからもう一度お試しください。"
+  },
   "rewardsErrorMessagesRequestRejected": {
     "message": "リクエストを拒否しました。"
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "現在サービスをご利用いただけません。しばらくしてからもう一度お試しください。"
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "問題が発生しました。しばらくしてからもう一度お試しください。"
   },
   "rewardsLinkAccount": {
     "message": "アカウントを追加"
@@ -9064,6 +9204,9 @@
   },
   "rewardsOnboardingDescription": {
     "message": "MetaMaskを使うだけで、賞品を獲得し、特典を請求し、他にも収益を得る方法を発見できます。"
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "お住いの国でリワードプログラムへのオプトインが許可されているかを確認できません。接続を確認して、もう一度お試しください。"
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "オプトインの資格を確認できません"
@@ -9352,6 +9495,9 @@
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
+  },
+  "securityChangePasswordToastError": {
+    "message": "パスワードを変更できませんでした。もう一度お試しください。"
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "新しいパスワードは保存されましたが、$1によるロック解除はオンにできませんでした。",
@@ -9860,8 +10006,14 @@
   "shieldClaimDraftDeleteFailed": {
     "message": "下書きを削除できませんでした"
   },
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "請求の下書きを削除できませんでした。もう一度お試しください。"
+  },
   "shieldClaimDraftSaveFailed": {
     "message": "下書きを保存できませんでした"
+  },
+  "shieldClaimDraftSaveFailedDescription": {
+    "message": "請求の下書きを保存できませんでした。もう一度お試しください。"
   },
   "shieldClaimDraftSaved": {
     "message": "下書きが保存されました"
@@ -9893,6 +10045,9 @@
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF、PNG、JPG（最大$1MB）",
     "description": "The $1 is the maximum file size in MB"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "追加の証拠がある場合は、こちらにアップロードしてください。"
   },
   "shieldClaimGroupActive": {
     "message": "審査中の請求"
@@ -9940,11 +10095,26 @@
   "shieldClaimIncidentDetails": {
     "message": "インシデントの詳細"
   },
+  "shieldClaimInvalidChainId": {
+    "message": "有効なチェーンIDを入力してください"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "有効なメールアドレスを入力してください"
+  },
   "shieldClaimInvalidRequired": {
     "message": "この項目は必須です"
   },
   "shieldClaimInvalidTxHash": {
     "message": "有効なトランザクションハッシュを入力してください"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "有効なウォレットアドレスを入力してください"
+  },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "未解決の請求件数が上限に達しました。追加の請求を提出する必要がある場合は、サポートにお問い合わせください。"
+  },
+  "shieldClaimMaxDraftsReached": {
+    "message": "下書きの上限数に達しました。新しい下書きを保存するには、既存の下書きを1件削除してください。"
   },
   "shieldClaimNetwork": {
     "message": "ネットワークを選択"
@@ -9954,6 +10124,9 @@
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "返金用ウォレットアドレス"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "このウォレットが侵害されていないことをご確認ください。"
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "影響を受けたウォレットアドレスと払い戻し用ウォレットアドレスは異なるものでなければなりません。"
@@ -10346,6 +10519,9 @@
   },
   "shieldTxMembershipErrorPausedCardAction": {
     "message": "カード情報を更新"
+  },
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "支払いが拒否されました。補償を継続するには、支払方法を更新してください。"
   },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "残高不足のため、プランが一時停止されています。支払いの更新には最大$1時間かかる場合があります。",
@@ -10792,6 +10968,10 @@
     "message": "ユーザーは、別途特定されていない限り、インストールするSnapがConsensys$1で定義されているサードパーティサービスであることを認めたものとみなされます。サードパーティサービスの使用には、当該サードパーティサービスプロバイダーにより定められた、別の諸条件が適用されます。Consensysは、いかなる理由であっても、特定の人物によるSnapの使用を一切推奨しません。サードパーティサービスへのアクセス、依存、使用は、ユーザーの自己責任で行うものとします。Consensysは、サードパーティサービスの使用によりアカウントで発生する損失について、一切責任および賠償責任を負いません。",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensysは、ユーザーがサードパーティと共有した情報に一切アクセスできません。",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
@@ -11075,6 +11255,9 @@
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "シークレットリカバリーフレーズの復元方法"
   },
+  "stateLogError": {
+    "message": "ステートログの取得中にエラーが発生しました。後程もう一度お試しください。"
+  },
   "stateLogFileName": {
     "message": "MetaMaskステートログ"
   },
@@ -11120,6 +11303,10 @@
   },
   "stxFailure": {
     "message": "スワップに失敗しました"
+  },
+  "stxFailureDescription": {
+    "message": "突然の市場変動が失敗の原因になります。問題が解決されないようでしたら、$1にお問い合わせください。",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
     "message": "スマートトランザクションをオンにして、トランザクションの信頼性と安全性を高めましょう。$1"
@@ -11342,6 +11529,9 @@
   "swapQuoteSource": {
     "message": "見積もり提供元"
   },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "最新のレートを取得するには、新しい見積もりをリクエストしてください。"
+  },
   "swapQuotesExpiredErrorTitle": {
     "message": "クォートのタイムアウト"
   },
@@ -11536,6 +11726,9 @@
   "termsOfUseAgreeText": {
     "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
+  "termsOfUseFooterText": {
+    "message": "スクロールしてすべてのセクションをお読みください"
+  },
   "termsOfUseTitle": {
     "message": "利用規約が更新されました"
   },
@@ -11615,6 +11808,9 @@
     "message": "$1トークンのアクセス許可",
     "description": "$1 is the count of token permissions (plural form)"
   },
+  "tokenSearchError": {
+    "message": "検索結果を読み込めませんでした。もう一度お試しください。"
+  },
   "tokenStandard": {
     "message": "トークン規格"
   },
@@ -11654,6 +11850,9 @@
   },
   "totalReceived": {
     "message": "受取額合計"
+  },
+  "totalVolume": {
+    "message": "出来高 (24時間)"
   },
   "transaction": {
     "message": "トランザクション"
@@ -11744,6 +11943,10 @@
     "message": "Trezor",
     "description": "Hardware device name"
   },
+  "trezorDesktopAppRequiredError": {
+    "message": "Trezor Suiteデスクトップ版は、Trezorを使用する必要があります。Trezor Suite (suite.trezor.io) をインストールして開き、もう一度お試しください。",
+    "description": "An error message shown to the user during the hardware connect flow."
+  },
   "tronBandwidth": {
     "message": "帯域幅"
   },
@@ -11806,6 +12009,9 @@
   "turnOff": {
     "message": "オフにする"
   },
+  "turnOffMetamaskNotificationsError": {
+    "message": "通知を無効化する際にエラーが発生しました。後でもう一度お試しください。"
+  },
   "turnOffPasskey": {
     "message": "$1をオフにする",
     "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -11816,6 +12022,9 @@
   },
   "turnOn": {
     "message": "オンにする"
+  },
+  "turnOnMetamaskNotificationsError": {
+    "message": "通知の作成中にエラーが発生しました。後でもう一度お試しください。"
   },
   "turnOnTokenDetection": {
     "message": "強化されたトークン検出をオンにする"
@@ -11889,6 +12098,9 @@
   },
   "unlock": {
     "message": "ロックを解除"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "パスワードが正しくありません。もう一度お試しください。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "試行回数の上限に達しました。再試行できるまであと"
@@ -12083,6 +12295,9 @@
   "volume": {
     "message": "取引量"
   },
+  "volumeToMarketCap": {
+    "message": "出来高 / 時価総額"
+  },
   "wallet": {
     "message": "ウォレット"
   },
@@ -12115,6 +12330,10 @@
     "message": "$1からの警告",
     "description": "$1 represents the name of the snap"
   },
+  "watchEthereumAccountsDescription": {
+    "message": "このオプションをオンにすると、パブリックアドレスまたはENS名でイーサリアムアカウントを監視できるようになります。ベータ機能に関するフィードバックは、こちらの$1に入力してください。",
+    "description": "$1 is the link to a product feedback form"
+  },
   "watchEthereumAccountsToggle": {
     "message": "イーサリアムアカウントの監視 (ベータ)"
   },
@@ -12124,6 +12343,10 @@
   },
   "web3": {
     "message": "Web3"
+  },
+  "web3ShimUsageNotification": {
+    "message": "現在のWebサイトが、削除済みのwindow.web3 APIの使用を検知しました。サイトが破損しているようであれば、$1をクリックして詳細を確認してください。",
+    "description": "$1 is a clickable link."
   },
   "webhid": {
     "message": "WebHID",
