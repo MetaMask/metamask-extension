@@ -403,9 +403,6 @@
     "message": "Privat nøkkel",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Advarsel: aldri gjør kjent denne nøkkelen. Alle som har tilgang til dine private nøkler kan stjele midlene dine som er på konto."
-  },
   "privateNetwork": {
     "message": "Privat nettverk "
   },

@@ -384,9 +384,6 @@
     "message": "Privátní klíč",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyWarning": {
-    "message": "Upozornění: Nikdy nezveřejněte tento klíč. Kdokoli může s vaším privátním klíčem odcizit vaše aktiva z účtu."
-  },
   "privateNetwork": {
     "message": "Soukromá síť"
   },
