@@ -172,6 +172,39 @@ describe('TokenAsset', () => {
     expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
     expect(getByTestId('custom-token-tag')).toBeInTheDocument();
   });
+
+  it('renders a security badge for a flagged token', () => {
+    const { getByTestId, getByText } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Malicious" />,
+    );
+
+    expect(getByTestId('security-badge')).toBeInTheDocument();
+    expect(
+      getByText(messages.securityTrustMalicious.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a security badge for a verified token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Verified" />,
+    );
+
+    expect(queryByTestId('security-badge')).toBeInTheDocument();
+  });
+
+  it('does not render a security badge when there is no safety result', () => {
+    const { queryByTestId } = render(<Asset asset={mockTokenAsset} />);
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('does not render a security badge for a benign token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Benign" />,
+    );
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
 });
 
 describe('NFTAsset', () => {

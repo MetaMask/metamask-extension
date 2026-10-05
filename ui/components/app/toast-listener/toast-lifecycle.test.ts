@@ -1,6 +1,5 @@
 import {
   clearToastPhase,
-  shouldShowFailedToast,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -40,24 +39,6 @@ describe('toast-lifecycle', () => {
       shouldShowTerminalToast(txId);
 
       expect(shouldShowTerminalToast(txId)).toBe(false);
-    });
-  });
-
-  describe('shouldShowFailedToast', () => {
-    it('returns true when no pending toast was shown for that id', () => {
-      expect(shouldShowFailedToast(txId)).toBe(true);
-    });
-
-    it('returns true after a pending toast was shown for that id', () => {
-      shouldShowPendingToast(txId);
-
-      expect(shouldShowFailedToast(txId)).toBe(true);
-    });
-
-    it('returns false when a failed toast was already shown for that id', () => {
-      shouldShowFailedToast(txId);
-
-      expect(shouldShowFailedToast(txId)).toBe(false);
     });
   });
 

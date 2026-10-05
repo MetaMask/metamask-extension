@@ -11,6 +11,7 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
 } from './onboarding.flow';
+import { waitUntilAccountTreeSyncIdle } from './tron-account-derivation.flow';
 
 export const completeOnboardFlowIdentity = async (
   driver: Driver,
@@ -29,6 +30,7 @@ export const completeOnboardFlowIdentity = async (
   const header = new HeaderNavbar(driver);
   await header.checkPageIsLoaded();
   await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+  await waitUntilAccountTreeSyncIdle(driver);
   return { homePage, header };
 };
 

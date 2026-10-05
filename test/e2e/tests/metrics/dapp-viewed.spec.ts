@@ -89,7 +89,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             // Non-null invalid ID: null is replaced with a generated ID at
             // AnalyticsController init, which can still sample into the 1%.
             analyticsId: 'fake-metrics-id-invalid',
@@ -123,7 +123,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
             consentDecisionMade: true,
             optedIn: true,
@@ -166,7 +166,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
             consentDecisionMade: true,
             optedIn: true,
@@ -212,7 +212,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
             consentDecisionMade: true,
             optedIn: true,
@@ -261,7 +261,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
             consentDecisionMade: true,
             optedIn: true,
@@ -307,7 +307,7 @@ describe('Dapp viewed Event', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: validFakeMetricsId,
             consentDecisionMade: true,
             optedIn: true,
