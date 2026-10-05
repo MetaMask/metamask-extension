@@ -52,6 +52,7 @@ import {
 import {
   getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
+  getIsPerpsServiceInterruptionBannerEnabled,
 } from '../../../selectors/perps/feature-flags';
 import {
   selectPerpsIsTestnet,
@@ -72,6 +73,7 @@ import { usePerpsEventTracking } from '../../../hooks/perps';
 import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from '../../../components/app/perps/market-row';
+import { PerpsServiceInterruptionBanner } from '../../../components/app/perps/perps-service-interruption-banner';
 import { PerpsCategoryRail } from '../../../components/app/perps/perps-market-categories';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
@@ -222,6 +224,9 @@ export const MarketListView = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
   const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
   const isTestnet = useSelector(selectPerpsIsTestnet);
@@ -317,6 +322,8 @@ export const MarketListView = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]:
         PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });
@@ -768,6 +775,7 @@ export const MarketListView = () => {
       flexDirection={BoxFlexDirection.Column}
       data-testid="parent-selector-perps-market-list"
     >
+      <PerpsServiceInterruptionBanner />
       {/* Header: back, title, and the search / watchlist accessories */}
       <Box
         className="border-b border-border-muted px-4 py-3"

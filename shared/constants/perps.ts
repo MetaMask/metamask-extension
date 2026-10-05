@@ -74,6 +74,15 @@ export const SUPPORT_CONFIG = {
 } as const;
 
 /**
+ * Outage banner FAQ. Points at the Perps help-center hub so users can see
+ * their options while trading is degraded, matching mobile.
+ */
+export const SERVICE_INTERRUPTION_CONFIG = {
+  FaqUrl:
+    'https://support.metamask.io/manage-crypto/trade/perps/?utm_source=extension',
+} as const;
+
+/**
  * Perps feedback survey (third-party). Single source of truth aligned with mobile perpsConfig.
  */
 export const FEEDBACK_CONFIG = {

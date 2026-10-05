@@ -77,10 +77,14 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
+import {
+  getIsPerpsCloseLimitOrderEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
+} from '../../../../selectors/perps/feature-flags';
 import {
   getCloseLimitReferencePrice,
   isCloseLimitPriceOutsideDeviation,
@@ -345,6 +349,9 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -356,6 +363,8 @@ export const ClosePositionModal = ({
       // Which CTA opened this modal — close vs reduce_exposure.
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -853,6 +862,7 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
+          <PerpsServiceInterruptionBanner />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}

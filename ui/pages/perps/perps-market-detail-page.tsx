@@ -49,6 +49,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import {
   getIsPerpsExperienceAvailable,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -119,6 +120,7 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../../components/app/perps/perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import type { Order } from '../../components/app/perps/types';
 import {
@@ -288,6 +290,9 @@ const PerpsMarketDetailPage = () => {
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const showFullAssetNames = useSelector(getIsPerpsShowFullAssetNamesEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
@@ -438,6 +443,8 @@ const PerpsMarketDetailPage = () => {
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
       // watchlisted only surfaces on the asset_detail screen.
       [PERPS_EVENT_PROPERTY.WATCHLISTED]: isInWatchlist,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
     resetKey: decodedSymbol,
   });
@@ -1078,13 +1085,19 @@ const PerpsMarketDetailPage = () => {
 
   // Show loading state while market data is being fetched
   if (!marketCatalogReady) {
-    return <PerpsDetailPageSkeleton />;
+    return (
+      <>
+        <PerpsServiceInterruptionBanner />
+        <PerpsDetailPageSkeleton />
+      </>
+    );
   }
 
   // If market not found after loading, show error state
   if (!market) {
     return (
       <Box className="main-container asset__container">
+        <PerpsServiceInterruptionBanner />
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-market-detail-back-button"
@@ -1180,6 +1193,7 @@ const PerpsMarketDetailPage = () => {
       className="main-container asset__container"
       data-testid="parent-selector-perps-market-detail"
     >
+      <PerpsServiceInterruptionBanner />
       {/* Sticky identity header — large price lives in the scroll flow below. */}
       <Box
         ref={setStickyHeaderEl}

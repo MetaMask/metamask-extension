@@ -57,6 +57,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsOrderBookEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsSlippageConfigEnabled,
 } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
@@ -118,6 +119,7 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../../components/app/perps/perps-service-interruption-banner';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
@@ -326,6 +328,9 @@ const PerpsOrderEntryPage = () => {
   const { symbol } = useParams<{ symbol: string }>();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const isSlippageConfigEnabled = useSelector(getIsPerpsSlippageConfigEnabled);
   const isOrderBookEnabled = useSelector(getIsPerpsOrderBookEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
@@ -488,6 +493,8 @@ const PerpsOrderEntryPage = () => {
       ...(decodedSymbol && { [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
       ...tradingScreenDefaults,
     },
     resetKey: decodedSymbol,
@@ -2479,11 +2486,17 @@ const PerpsOrderEntryPage = () => {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
   if (!marketCatalogReady) {
-    return <PerpsDetailPageSkeleton />;
+    return (
+      <>
+        <PerpsServiceInterruptionBanner />
+        <PerpsDetailPageSkeleton />
+      </>
+    );
   }
   if (!market) {
     return (
       <Box className="main-container asset__container">
+        <PerpsServiceInterruptionBanner />
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
@@ -2825,6 +2838,7 @@ const PerpsOrderEntryPage = () => {
       )}
       data-testid="parent-selector-perps-order-entry"
     >
+      <PerpsServiceInterruptionBanner />
       <OrderEntryHeader
         displayName={displayName}
         displayPrice={displayPrice}
