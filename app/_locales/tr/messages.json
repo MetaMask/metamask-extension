@@ -2196,9 +2196,6 @@
   "bridgeLowestCost": {
     "message": "En düşük maliyet"
   },
-  "bridgeMalicious": {
-    "message": "Kötü amaçlı"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Kötü amaçlı tokenlar"
   },
@@ -2478,9 +2475,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Önce Stellar ağında $1 varlığını etkinleştirin",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Şüpheli"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Şüpheli tokenlar"

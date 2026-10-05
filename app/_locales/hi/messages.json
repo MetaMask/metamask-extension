@@ -2196,9 +2196,6 @@
   "bridgeLowestCost": {
     "message": "सबसे कम लागत"
   },
-  "bridgeMalicious": {
-    "message": "बुरी नीयत वाला"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "बुरी नीयत वाला टोकन"
   },
@@ -2478,9 +2475,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "पहले स्टेलर पर $1 एक्टिवेट करें",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "संदिग्ध"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "संदिग्ध टोकन"
