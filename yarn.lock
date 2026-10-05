@@ -10881,6 +10881,45 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A72.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-72.0.1-c51d54c5f4.patch":
+  version: 72.0.1
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A72.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-72.0.1-c51d54c5f4.patch::version=72.0.1&hash=8d58f4"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/accounts-controller": "npm:^40.0.0"
+    "@metamask/approval-controller": "npm:^10.0.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/core-backend": "npm:^11.0.0"
+    "@metamask/gas-fee-controller": "npm:^27.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^37.0.0"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^12.0.0"
+    async-mutex: "npm:^0.5.0"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.5"
+    eth-method-registry: "npm:^4.0.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fast-json-patch: "npm:^3.1.1"
+    lodash-es: "npm:^4.17.21"
+    uuid: "npm:^11.1.1"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+  checksum: 10/91d3e04ef98eeb81f8e819441d75567bb9a4d6ea3f2025aa613599cde0349610f479ce83933323ac408854d44bdd32aa2388cf62d3f807d04fb93912df623437
+  languageName: node
+  linkType: hard
+
 "@metamask/transaction-pay-controller@npm:^30.0.0":
   version: 30.0.0
   resolution: "@metamask/transaction-pay-controller@npm:30.0.0"

@@ -175,7 +175,7 @@
   "resolutions": {
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "36.0.0",
-    "@metamask/transaction-controller": "72.0.1",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A72.0.1#~/.yarn/patches/@metamask-transaction-controller-npm-72.0.1-c51d54c5f4.patch",
     "@humanfs/node@npm:^0.16.6": "^0.16.8",
     "follow-redirects": "^1.16.0",
     "ip-address": "^10.7.2",

@@ -1,0 +1,13 @@
+diff --git a/dist/gas-flows/OptimismLayer1GasFeeFlow.js b/dist/gas-flows/OptimismLayer1GasFeeFlow.js
+index 8f1abfa0dc0047337c67ddd479be644b1fa54b26..19c21bd7ad275e23c5dd6322f2d5a9707ad643b5 100644
+--- a/dist/gas-flows/OptimismLayer1GasFeeFlow.js
++++ b/dist/gas-flows/OptimismLayer1GasFeeFlow.js
+@@ -10,6 +10,8 @@ const FALLBACK_OPTIMISM_STACK_CHAIN_IDS = [
+     CHAIN_IDS.OPBNB,
+     CHAIN_IDS.OPBNB_TESTNET,
+     CHAIN_IDS.ZORA,
++    '0xdef1', // Ink Mainnet
++    '0xba5eD', // Ink Sepolia
+ ];
+ const GAS_SUPPORTED_NETWORKS_ENDPOINT = 'https://gas.api.cx.metamask.io/v1/supportedNetworks';
+ /**

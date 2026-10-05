@@ -76,10 +76,20 @@ export const useMaxValueRefresher = () => {
   }, [isMaxValueMode, transactionId]);
 
   useEffect(() => {
+    // When the simulation reverts on-chain the returned gas limit is an
+    // unreliable fallback, so skip the correction. Other failures (e.g.
+    // "insufficient funds" on OP-stack L2s where the L1 fee isn't yet
+    // reflected in the value) still need the correction to run.
+    const isExecutionRevert = Boolean(
+      transactionMeta.simulationFails?.reason
+        ?.toLowerCase()
+        .includes('execution reverted'),
+    );
+
     if (
       !isMaxValueMode ||
       transactionMeta.type !== TransactionType.simpleSend ||
-      transactionMeta.simulationFails
+      isExecutionRevert
     ) {
       return;
     }
