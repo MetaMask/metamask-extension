@@ -200,7 +200,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           return [];
         }
 
-        // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
+        // Mapping necessary to comply with the type. Fields will be overridden with useTokenDisplayInfo
         return assets.filter((asset) => {
           if (isTronSpecialAsset(asset.assetId)) {
             return false;
