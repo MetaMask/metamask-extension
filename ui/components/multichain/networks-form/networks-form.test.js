@@ -206,21 +206,14 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('starts the Chainlist flow from the add network form', () => {
-    const onAddFromChainlist = jest.fn();
+  it('does not render a separate Chainlist button on the add network form', () => {
+    renderComponent(propNetworkDisplay);
 
-    renderComponent({
-      ...propNetworkDisplay,
-      onAddFromChainlist,
-    });
-
-    fireEvent.click(
-      screen.getByRole('button', {
+    expect(
+      screen.queryByRole('button', {
         name: messages.addFromChainlist.message,
       }),
-    );
-
-    expect(onAddFromChainlist).toHaveBeenCalledTimes(1);
+    ).not.toBeInTheDocument();
   });
 
   it('should render network form correctly', () => {

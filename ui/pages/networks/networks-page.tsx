@@ -228,15 +228,6 @@ export const NetworksPage = () => {
     handleNewNetwork();
   }, [createEventBuilder, handleNewNetwork, trackEvent]);
 
-  const handleAddFromChainlist = useCallback(() => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
-        .addCategory(MetaMetricsEventCategory.Network)
-        .build(),
-    );
-    setView('add-from-chainlist');
-  }, [createEventBuilder, setView, trackEvent]);
-
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork, searchQuery?: string) => {
       const chainIdHex = getHexChainId(network.chainId);
@@ -293,7 +284,9 @@ export const NetworksPage = () => {
         blockExplorerUrls,
         defaultBlockExplorerUrlIndex: blockExplorerUrls.length ? 0 : undefined,
       });
-      setView('add');
+      if (view !== 'add') {
+        setView('add');
+      }
     },
     [
       createEventBuilder,
@@ -302,6 +295,7 @@ export const NetworksPage = () => {
       networkFormState,
       setView,
       trackEvent,
+      view,
     ],
   );
 
@@ -509,8 +503,14 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
-            onAddFromChainlist={
-              isChainlistEnabled ? handleAddFromChainlist : undefined
+            chainlist={
+              isChainlistEnabled
+                ? {
+                    existingNetworkChainIds,
+                    existingNetworkNamesByChainId,
+                    onSelect: handleChainlistNetworkSelect,
+                  }
+                : undefined
             }
           />
         </>

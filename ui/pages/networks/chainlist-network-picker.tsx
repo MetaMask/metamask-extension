@@ -57,15 +57,27 @@ type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
   onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
+  /**
+   * When false, the picker filters on `searchValue` from the parent field
+   * instead of rendering its own search input.
+   */
+  showSearchField?: boolean;
+  searchValue?: string;
+  /** `dropdown` caps the list so it can sit under the network name field. */
+  layout?: 'page' | 'dropdown';
 };
 
 export const ChainlistNetworkPicker = ({
   existingNetworkChainIds,
   existingNetworkNamesByChainId,
   onSelect,
+  showSearchField = true,
+  searchValue: searchValueProp = '',
+  layout = 'page',
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
-  const [searchValue, setSearchValue] = useState('');
+  const [internalSearchValue, setInternalSearchValue] = useState('');
+  const searchValue = showSearchField ? internalSearchValue : searchValueProp;
   const [visibleNetworkCount, setVisibleNetworkCount] =
     useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
@@ -135,24 +147,34 @@ export const ChainlistNetworkPicker = ({
     [chainlistNetworks.length],
   );
 
+  const isDropdown = layout === 'dropdown';
+
   return (
-    <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
-      <Box className="px-4 pb-4">
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={() => setSearchValue('')}
-          data-testid="networks-page-chainlist-search"
-          onChange={(event) => setSearchValue(event.target.value)}
-          placeholder={t('searchNetworkNameOrChainId')}
-          value={searchValue}
-        />
-      </Box>
+    <Box
+      className={
+        isDropdown
+          ? 'flex max-h-96 flex-col overflow-hidden bg-background-default'
+          : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
+      }
+    >
+      {showSearchField ? (
+        <Box className="px-4 pb-4">
+          <TextFieldSearch
+            className="w-full"
+            clearButtonOnClick={() => setInternalSearchValue('')}
+            data-testid="networks-page-chainlist-search"
+            onChange={(event) => setInternalSearchValue(event.target.value)}
+            placeholder={t('searchNetworkNameOrChainId')}
+            value={searchValue}
+          />
+        </Box>
+      ) : null}
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
-        <Box className="px-4 pb-4">
+        <Box className={showSearchField ? 'px-4 pb-4' : 'px-4 py-4'}>
           <BannerAlert
             severity={BannerAlertSeverity.Info}
             data-testid="networks-page-chainlist-source-banner"

@@ -12,8 +12,9 @@ import {
   ButtonVariant,
   HelpText,
   HelpTextSeverity,
-  IconName,
   Label,
+  Popover,
+  PopoverPosition,
   Text,
   TextButton,
   TextButtonSize,
@@ -79,8 +80,18 @@ import {
 } from '../../../selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { useDispatch } from '../../../store/hooks';
+import {
+  ChainlistNetworkPicker,
+  type ChainlistNetwork,
+} from '../../../pages/networks/chainlist-network-picker';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
+
+export type NetworksFormChainlist = {
+  existingNetworkChainIds: Set<string>;
+  existingNetworkNamesByChainId: Record<string, string>;
+  onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
+};
 
 export const NetworksForm = ({
   networkFormState,
@@ -92,7 +103,7 @@ export const NetworksForm = ({
   usePageFooterStyle = false,
   onComplete,
   onEdit,
-  onAddFromChainlist,
+  chainlist,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -103,12 +114,32 @@ export const NetworksForm = ({
   usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
-  onAddFromChainlist?: () => void;
+  chainlist?: NetworksFormChainlist;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
+  const nameFieldRef = useRef<HTMLDivElement>(null);
+  const [isChainlistOpen, setIsChainlistOpen] = useState(false);
+  const [chainlistReference, setChainlistReference] =
+    useState<HTMLElement | null>(null);
+  const showChainlist = Boolean(chainlist) && !existingNetwork;
+
+  const openChainlist = () => {
+    if (!showChainlist) {
+      return;
+    }
+    setChainlistReference(nameFieldRef.current);
+    if (!isChainlistOpen) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+          .addCategory(MetaMetricsEventCategory.Network)
+          .build(),
+      );
+    }
+    setIsChainlistOpen(true);
+  };
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
@@ -496,40 +527,62 @@ export const NetworksForm = ({
       className="networks-form__scrollable h-full"
     >
       <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
-        {onAddFromChainlist && !existingNetwork ? (
-          <Button
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            startIconName={IconName.FlashFilled}
-            isFullWidth
-            onClick={onAddFromChainlist}
-            className="mb-4"
-            data-testid="network-form-add-from-chainlist"
-          >
-            {t('addFromChainlist')}
-          </Button>
-        ) : null}
-
         <Label htmlFor="networkName" className="mb-1">
           {t('networkName')}
         </Label>
-        <TextField
-          id="networkName"
-          size={TextFieldSize.Lg}
-          placeholder={t('enterNetworkName')}
-          data-testid="network-form-name-input"
-          autoFocus
-          className="w-full"
-          onChange={(event) => {
-            setName(event.target.value);
-          }}
-          inputProps={
-            {
-              'data-testid': 'network-form-network-name',
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          value={name}
-        />
+        <Box ref={nameFieldRef}>
+          <TextField
+            id="networkName"
+            size={TextFieldSize.Lg}
+            placeholder={t('enterNetworkName')}
+            data-testid="network-form-name-input"
+            autoFocus
+            className="w-full"
+            onClick={openChainlist}
+            onFocus={(event) => {
+              // Skip the mount auto-focus so the list opens on a click or a later focus.
+              if (event.relatedTarget) {
+                openChainlist();
+              }
+            }}
+            onChange={(event) => {
+              setName(event.target.value);
+              openChainlist();
+            }}
+            inputProps={
+              {
+                'data-testid': 'network-form-network-name',
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            value={name}
+          />
+        </Box>
+        {showChainlist && chainlist ? (
+          <Popover
+            referenceElement={chainlistReference}
+            position={PopoverPosition.Bottom}
+            matchWidth
+            isOpen={isChainlistOpen}
+            isPortal
+            onClickOutside={() => setIsChainlistOpen(false)}
+            onPressEscKey={() => setIsChainlistOpen(false)}
+            className="z-10 overflow-hidden rounded-xl p-0"
+          >
+            <ChainlistNetworkPicker
+              existingNetworkChainIds={chainlist.existingNetworkChainIds}
+              existingNetworkNamesByChainId={
+                chainlist.existingNetworkNamesByChainId
+              }
+              layout="dropdown"
+              searchValue={name}
+              showSearchField={false}
+              onSelect={(network, searchQuery) => {
+                setIsChainlistOpen(false);
+                chainlist.onSelect(network, searchQuery);
+              }}
+            />
+          </Popover>
+        ) : null}
         {name && warnings?.name?.msg ? (
           <HelpText severity={HelpTextSeverity.Warning}>
             {warnings.name.msg}

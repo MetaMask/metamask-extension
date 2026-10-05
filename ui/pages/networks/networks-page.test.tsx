@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -315,15 +315,51 @@ describe('NetworksPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
+  it('opens the Chainlist dropdown from the network name field', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
     expect(
-      screen.getByTestId('network-form-add-from-chainlist'),
+      screen.queryByRole('button', {
+        name: messages.addFromChainlist.message,
+      }),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+
+    expect(
+      screen.getByTestId('networks-page-chainlist-source-banner'),
     ).toBeInTheDocument();
+    expect(screen.getByText('Gnosis')).toBeInTheDocument();
+  });
+
+  it('fills the add network form when a Chainlist network is chosen', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+    await act(async () => {
+      fireEvent.click(
+        screen.getByText('Gnosis').closest('button') as HTMLButtonElement,
+      );
+    });
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Gnosis',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
+    expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects away from the Chainlist picker when the remote feature flag is disabled', async () => {

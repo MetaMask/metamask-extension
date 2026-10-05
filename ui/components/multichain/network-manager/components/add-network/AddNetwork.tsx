@@ -1,21 +1,24 @@
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { NetworksForm } from '../../../networks-form/networks-form';
+import {
+  NetworksForm,
+  type NetworksFormChainlist,
+} from '../../../networks-form/networks-form';
 import { useNetworkFormState } from '../../../networks-form/networks-form-state';
 
 type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   network: UpdateNetworkFields;
   isEdit?: boolean;
-  onAddFromChainlist?: () => void;
+  chainlist?: NetworksFormChainlist;
 };
 
 export const AddNetwork = ({
   networkFormState,
   network,
   isEdit = false,
-  onAddFromChainlist,
+  chainlist,
 }: AddNetworkProps) => {
   const [, setSearchParams] = useSearchParams();
   return (
@@ -33,7 +36,7 @@ export const AddNetwork = ({
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
-      onAddFromChainlist={onAddFromChainlist}
+      chainlist={chainlist}
       onRpcAdd={() => {
         setSearchParams({ view: isEdit ? 'edit-rpc' : 'add-rpc' });
       }}
