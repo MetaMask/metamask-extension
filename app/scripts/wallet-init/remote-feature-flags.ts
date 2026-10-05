@@ -8,6 +8,11 @@ import {
   type RemoteFeatureFlagControllerDisableAction,
   type RemoteFeatureFlagControllerUpdateRemoteFeatureFlagsAction,
 } from '@metamask/remote-feature-flag-controller';
+import {
+  MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME,
+  parseMoneyAccountVaultConfig,
+} from '../../../shared/lib/money/vault-config';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { previousValueComparator } from '../lib/util';
 import { RootMessenger } from '../lib/messenger';
 import type {
@@ -18,6 +23,7 @@ import type {
   OnboardingControllerState,
   OnboardingControllerStateChangeEvent,
 } from '../controllers/onboarding';
+import type { WalletInitMessenger } from './types';
 
 type RemoteFeatureFlagToggleActions =
   | RemoteFeatureFlagControllerEnableAction
@@ -46,6 +52,40 @@ function getCanonicalProfileId(
   return (
     Object.entries(srpSessionData ?? {})?.[0]?.[1]?.profile
       ?.canonicalProfileId ?? ''
+  );
+}
+
+/**
+ * Apply `moneyAccountVaultConfig` from the extension manifest as a local
+ * feature-flag override.
+ *
+ * The upgrade controller reads `RemoteFeatureFlagController` state, which is
+ * the fetched client-config value. Manifest `_flags` are merged only in the
+ * UI. `setFlagOverride` stores the manifest vault config in `localOverrides`,
+ * and that layer wins over the fetched flag, so a local `.manifest-overrides.json`
+ * can retarget `boringVault` without access to client config.
+ *
+ * Call after the controller is constructed and before `wallet.init()`, so
+ * `init()` republishes effective flags with the override included.
+ *
+ * @param messenger - Root messenger. The controller is already registered.
+ */
+export function applyManifestMoneyAccountVaultConfigOverride(
+  messenger: WalletInitMessenger,
+): void {
+  const vaultConfig = parseMoneyAccountVaultConfig(
+    getManifestFlags().remoteFeatureFlags?.[
+      MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME
+    ],
+  );
+  if (!vaultConfig) {
+    return;
+  }
+
+  messenger.call(
+    'RemoteFeatureFlagController:setFlagOverride',
+    MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME,
+    vaultConfig,
   );
 }
 

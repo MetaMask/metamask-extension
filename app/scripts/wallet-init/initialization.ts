@@ -1,6 +1,9 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
-import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import {
+  applyManifestMoneyAccountVaultConfigOverride,
+  setupRemoteFeatureFlagToggle,
+} from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -102,6 +105,10 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+
+  // The controller exists once `Wallet` has constructed it. Apply the manifest
+  // vault config before `init()` republishes effective flags.
+  applyManifestMoneyAccountVaultConfigOverride(messenger);
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state

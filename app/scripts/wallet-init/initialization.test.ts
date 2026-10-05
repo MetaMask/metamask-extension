@@ -2,7 +2,10 @@ import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
 import { initializeWallet } from './initialization';
-import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import {
+  applyManifestMoneyAccountVaultConfigOverride,
+  setupRemoteFeatureFlagToggle,
+} from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
 import { getGasFeeControllerInstanceOptions } from './instance-options/gas-fee-controller';
@@ -33,6 +36,7 @@ jest.mock('@metamask/wallet', () => ({
   Wallet: jest.fn(() => ({ init: mockWalletInit })),
 }));
 jest.mock('./remote-feature-flags', () => ({
+  applyManifestMoneyAccountVaultConfigOverride: jest.fn(),
   setupRemoteFeatureFlagToggle: jest.fn(),
 }));
 jest.mock('./instance-options/approval-controller', () => ({
@@ -282,6 +286,9 @@ describe('initializeWallet', () => {
 
 describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
   const mockSetupToggle = jest.mocked(setupRemoteFeatureFlagToggle);
+  const mockApplyVaultOverride = jest.mocked(
+    applyManifestMoneyAccountVaultConfigOverride,
+  );
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -302,6 +309,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       state: { OnboardingController: { completedOnboarding: true } },
     });
 
+    expect(mockApplyVaultOverride).toHaveBeenCalledWith(messenger);
     expect(mockSetupToggle).toHaveBeenCalledWith({
       messenger,
       onboardingState: { completedOnboarding: true },

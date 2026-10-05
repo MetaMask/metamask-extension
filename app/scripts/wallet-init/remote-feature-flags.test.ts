@@ -1,5 +1,13 @@
 import { Messenger } from '@metamask/messenger';
-import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import {
+  applyManifestMoneyAccountVaultConfigOverride,
+  setupRemoteFeatureFlagToggle,
+} from './remote-feature-flags';
+
+jest.mock('../../../shared/lib/manifestFlags', () => ({
+  getManifestFlags: jest.fn(() => ({})),
+}));
 
 jest.mock('@metamask/messenger', () => ({
   Messenger: jest.fn(),
@@ -293,5 +301,68 @@ describe('setupRemoteFeatureFlagToggle', () => {
       );
       consoleErrorSpy.mockRestore();
     });
+  });
+});
+
+const MANIFEST_VAULT_CONFIG = {
+  accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  boringVault: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
+  chainId: '0x8f',
+  lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+  tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+};
+
+describe('applyManifestMoneyAccountVaultConfigOverride', () => {
+  const getManifestFlagsMock = jest.mocked(getManifestFlags);
+
+  beforeEach(() => {
+    getManifestFlagsMock.mockReturnValue({});
+  });
+
+  it('does nothing when the manifest has no vault config', () => {
+    const call = jest.fn();
+
+    applyManifestMoneyAccountVaultConfigOverride({
+      call,
+    } as unknown as Parameters<
+      typeof applyManifestMoneyAccountVaultConfigOverride
+    >[0]);
+
+    expect(call).not.toHaveBeenCalled();
+  });
+
+  it('overrides moneyAccountVaultConfig from the manifest', () => {
+    getManifestFlagsMock.mockReturnValue({
+      remoteFeatureFlags: { moneyAccountVaultConfig: MANIFEST_VAULT_CONFIG },
+    });
+    const call = jest.fn();
+
+    applyManifestMoneyAccountVaultConfigOverride({
+      call,
+    } as unknown as Parameters<
+      typeof applyManifestMoneyAccountVaultConfigOverride
+    >[0]);
+
+    expect(call).toHaveBeenCalledWith(
+      'RemoteFeatureFlagController:setFlagOverride',
+      'moneyAccountVaultConfig',
+      MANIFEST_VAULT_CONFIG,
+    );
+  });
+
+  it('does nothing when the manifest vault config is malformed', () => {
+    getManifestFlagsMock.mockReturnValue({
+      remoteFeatureFlags: { moneyAccountVaultConfig: { chainId: '0x8f' } },
+    });
+    const call = jest.fn();
+
+    applyManifestMoneyAccountVaultConfigOverride({
+      call,
+    } as unknown as Parameters<
+      typeof applyManifestMoneyAccountVaultConfigOverride
+    >[0]);
+
+    expect(call).not.toHaveBeenCalled();
   });
 });
