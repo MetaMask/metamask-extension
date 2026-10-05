@@ -2,6 +2,7 @@ import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
 import { Env as ClaimsEnv } from '@metamask/claims-controller';
 import { Env as ShieldEnv } from '@metamask/shield-controller';
 import { ENVIRONMENT } from '../../constants/build';
+import { devApiEnv } from '../authentication/dev-api-env';
 import { ShieldEnvConfig } from './type';
 
 const SHIELD_GATEWAY_URL = {
@@ -102,5 +103,13 @@ export function loadShieldConfig(): ShieldEnvConfig {
     buildTypeEnv = BUILD_TYPE.beta;
   }
 
-  return ShieldConfigMap[buildTypeEnv];
+  const config = ShieldConfigMap[buildTypeEnv];
+  // A dev login token is rejected by the production subscription host.
+  if (devApiEnv() === 'dev') {
+    return {
+      ...config,
+      subscriptionEnv: SubscriptionEnv.DEV,
+    };
+  }
+  return config;
 }
