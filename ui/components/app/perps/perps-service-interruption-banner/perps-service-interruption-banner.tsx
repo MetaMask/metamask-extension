@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -38,14 +38,6 @@ export const PerpsServiceInterruptionBanner = ({
   const isEnabled = useSelector(getIsPerpsServiceInterruptionBannerEnabled);
   const t = useI18nContext();
 
-  const handleFaqPress = useCallback(() => {
-    globalThis.platform.openTab({ url: SERVICE_INTERRUPTION_CONFIG.FaqUrl });
-  }, []);
-
-  const handleSupportPress = useCallback(() => {
-    globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
-  }, []);
-
   if (!isEnabled) {
     return null;
   }
@@ -53,23 +45,35 @@ export const PerpsServiceInterruptionBanner = ({
   const faqLink = (
     <TextButton
       key="faq"
+      asChild
       size={TextButtonSize.BodySm}
       className="inline underline"
-      onClick={handleFaqPress}
-      data-testid={`${testId}-faq-link`}
     >
-      {t('perpsServiceInterruptionFaqLink')}
+      <a
+        href={SERVICE_INTERRUPTION_CONFIG.FaqUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid={`${testId}-faq-link`}
+      >
+        {t('perpsServiceInterruptionFaqLink')}
+      </a>
     </TextButton>
   );
   const supportLink = (
     <TextButton
       key="support"
+      asChild
       size={TextButtonSize.BodySm}
       className="inline underline"
-      onClick={handleSupportPress}
-      data-testid={`${testId}-support-link`}
     >
-      {t('perpsServiceInterruptionContactSupport')}
+      <a
+        href={SUPPORT_CONFIG.Url}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid={`${testId}-support-link`}
+      >
+        {t('perpsServiceInterruptionContactSupport')}
+      </a>
     </TextButton>
   );
 

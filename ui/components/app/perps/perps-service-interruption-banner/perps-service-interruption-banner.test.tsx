@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -25,14 +25,6 @@ const renderBanner = (enabled: boolean) => {
 };
 
 describe('PerpsServiceInterruptionBanner', () => {
-  beforeEach(() => {
-    // @ts-expect-error test platform
-    globalThis.platform = {
-      openTab: jest.fn(),
-      closeCurrentWindow: jest.fn(),
-    };
-  });
-
   it('renders nothing when the outage flag is off', () => {
     renderBanner(false);
 
@@ -57,27 +49,27 @@ describe('PerpsServiceInterruptionBanner', () => {
     );
   });
 
-  it('opens the Perps FAQ when the FAQ link is clicked', () => {
+  it('points the FAQ link at the Perps help center', () => {
     renderBanner(true);
 
-    fireEvent.click(
-      screen.getByTestId('perps-service-interruption-banner-faq-link'),
+    const faqLink = screen.getByTestId(
+      'perps-service-interruption-banner-faq-link',
     );
 
-    expect(globalThis.platform.openTab).toHaveBeenCalledWith({
-      url: SERVICE_INTERRUPTION_CONFIG.FaqUrl,
-    });
+    expect(faqLink).toHaveAttribute('href', SERVICE_INTERRUPTION_CONFIG.FaqUrl);
+    expect(faqLink).toHaveAttribute('target', '_blank');
+    expect(faqLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('opens support when the support link is clicked', () => {
+  it('points the support link at MetaMask support', () => {
     renderBanner(true);
 
-    fireEvent.click(
-      screen.getByTestId('perps-service-interruption-banner-support-link'),
+    const supportLink = screen.getByTestId(
+      'perps-service-interruption-banner-support-link',
     );
 
-    expect(globalThis.platform.openTab).toHaveBeenCalledWith({
-      url: SUPPORT_CONFIG.Url,
-    });
+    expect(supportLink).toHaveAttribute('href', SUPPORT_CONFIG.Url);
+    expect(supportLink).toHaveAttribute('target', '_blank');
+    expect(supportLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });
