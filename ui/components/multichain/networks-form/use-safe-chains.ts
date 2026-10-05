@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 
-import { getUseSafeChainsListValidation } from '../../../selectors';
+import {
+  getUseExternalServices,
+  getUseSafeChainsListValidation,
+} from '../../../selectors';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import { DAY } from '../../../../shared/constants/time';
@@ -74,7 +77,7 @@ const loadSafeChains = () => {
 type UseSafeChainsOptions = {
   /**
    * Load Chainlist even when network-details validation is off.
-   * Add RPC suggestions need the list independently of that preference.
+   * Basic functionality still has to be on. Chainlist is a third-party API.
    */
   enabled?: boolean;
 };
@@ -83,7 +86,10 @@ export const useSafeChains = ({ enabled }: UseSafeChainsOptions = {}) => {
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
-  const shouldLoad = enabled || useSafeChainsListValidation;
+  const useExternalServices = useSelector(getUseExternalServices);
+  const shouldLoad =
+    Boolean(useExternalServices) &&
+    (Boolean(enabled) || useSafeChainsListValidation);
 
   const [safeChains, setSafeChains] = useState<SafeChainsState>(() =>
     shouldLoad ? safeChainsState : { safeChains: [] },

@@ -115,6 +115,7 @@ describe('useSafeChains', () => {
     const mockState = {
       metamask: {
         useSafeChainsListValidation: true,
+        useExternalServices: true,
       },
     };
 
@@ -169,6 +170,7 @@ describe('useSafeChains', () => {
       {
         metamask: {
           useSafeChainsListValidation: false,
+          useExternalServices: true,
         },
       },
     );
@@ -178,6 +180,25 @@ describe('useSafeChains', () => {
     );
     expect(mockFetchWithCache).toHaveBeenCalledTimes(1);
     expect(result.current.safeChains).toHaveLength(0);
+  });
+
+  it('does not fetch safe chains when basic functionality is off', async () => {
+    const { mockFetchWithCache } = arrangeAct((mocks) => {
+      mocks.mockState.metamask.useExternalServices = false;
+    });
+
+    const enabledHook = renderHookWithProviderTyped(
+      () => useSafeChains({ enabled: true }),
+      {
+        metamask: {
+          useSafeChainsListValidation: true,
+          useExternalServices: false,
+        },
+      },
+    );
+
+    expect(enabledHook.result.current.safeChains).toHaveLength(0);
+    expect(mockFetchWithCache).not.toHaveBeenCalled();
   });
 
   it('does not fetch safe chains when useSafeChainsListValidation is disabled', async () => {
