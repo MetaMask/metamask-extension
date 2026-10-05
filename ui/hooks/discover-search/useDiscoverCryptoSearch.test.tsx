@@ -373,7 +373,6 @@ describe('useDiscoverCryptoSearch', () => {
         price: '2500',
         marketCap: 1,
         aggregatedUsdVolume: 1,
-        securityData: { resultType: 'Verified' },
       },
     ] as never);
 
@@ -386,9 +385,7 @@ describe('useDiscoverCryptoSearch', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    expect(mockSearchTokens.mock.calls[0][2]).not.toHaveProperty(
-      'includeTokenSecurityData',
-    );
+    expect(mockSearchTokens).not.toHaveBeenCalled();
     expect(mockGetTrendingTokens.mock.calls[0][0]).not.toHaveProperty(
       'includeTokenSecurityData',
     );
