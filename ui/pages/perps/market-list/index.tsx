@@ -770,7 +770,7 @@ export const MarketListView = () => {
 
   return (
     <Box
-      className="flex h-full flex-col bg-background-default"
+      className="flex min-h-0 flex-1 flex-col bg-background-default"
       flexDirection={BoxFlexDirection.Column}
       data-testid="parent-selector-perps-market-list"
     >
