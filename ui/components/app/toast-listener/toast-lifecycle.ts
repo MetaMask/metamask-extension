@@ -1,7 +1,4 @@
-type ToastPhase =
-  | 'approvedOrSigned'
-  | 'pending'
-  | 'terminal';
+type ToastPhase = 'approvedOrSigned' | 'pending' | 'terminal';
 
 const toastPhaseById = new Map<string, ToastPhase>();
 
