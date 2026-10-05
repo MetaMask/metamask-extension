@@ -592,10 +592,46 @@ describe('NetworksPage', () => {
     await waitFor(() =>
       expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
-    await userEvent.click(screen.getByTestId('page-container-footer-next'));
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
 
     expect(
       await screen.findByText(messages.editNetwork.message),
     ).toBeInTheDocument();
+  });
+
+  it('suggests Chainlist RPCs for the network being edited', () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=edit-rpc`,
+      editedNetwork: { chainId: '0x12c', nickname: 'Multi RPC Network' },
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        '0x12c': {
+          chainId: '0x12c',
+          name: 'Multi RPC Network',
+          rpcEndpoints: [
+            {
+              url: 'https://rpc-primary.example.com',
+              type: RpcEndpointType.Custom,
+              networkClientId: 'multi-rpc',
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: [],
+          defaultBlockExplorerUrlIndex: 0,
+          nativeCurrency: 'MULTI',
+        },
+      },
+    });
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+
+    expect(screen.getByText('rpc-secondary.example.com')).toBeInTheDocument();
+    expect(screen.getByText('rpc-tertiary.example.com')).toBeInTheDocument();
+    expect(
+      screen.queryByText('https://rpc-primary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('https://rpc.gnosischain.com'),
+    ).not.toBeInTheDocument();
   });
 });

@@ -71,26 +71,32 @@ const loadSafeChains = () => {
   return safeChainsRequest;
 };
 
-export const useSafeChains = () => {
+type UseSafeChainsOptions = {
+  /**
+   * Load Chainlist even when network-details validation is off.
+   * Add RPC suggestions need the list independently of that preference.
+   */
+  enabled?: boolean;
+};
+
+export const useSafeChains = ({ enabled }: UseSafeChainsOptions = {}) => {
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
+  const shouldLoad = enabled || useSafeChainsListValidation;
 
   const [safeChains, setSafeChains] = useState<SafeChainsState>(() =>
-    useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
+    shouldLoad ? safeChainsState : { safeChains: [] },
   );
-  const [prevUseSafeChainsListValidation, setPrevUseSafeChainsListValidation] =
-    useState(useSafeChainsListValidation);
+  const [prevShouldLoad, setPrevShouldLoad] = useState(shouldLoad);
 
-  if (useSafeChainsListValidation !== prevUseSafeChainsListValidation) {
-    setPrevUseSafeChainsListValidation(useSafeChainsListValidation);
-    setSafeChains(
-      useSafeChainsListValidation ? safeChainsState : { safeChains: [] },
-    );
+  if (shouldLoad !== prevShouldLoad) {
+    setPrevShouldLoad(shouldLoad);
+    setSafeChains(shouldLoad ? safeChainsState : { safeChains: [] });
   }
 
   useEffect(() => {
-    if (!useSafeChainsListValidation) {
+    if (!shouldLoad) {
       return undefined;
     }
 
@@ -100,7 +106,7 @@ export const useSafeChains = () => {
     return () => {
       safeChainsSubscribers.delete(setSafeChains);
     };
-  }, [useSafeChainsListValidation]);
+  }, [shouldLoad]);
 
   return safeChains;
 };

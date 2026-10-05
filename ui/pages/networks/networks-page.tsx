@@ -167,6 +167,10 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const existingRpcUrls = useMemo(
+    () => networkFormState.rpcUrls.rpcEndpoints.map((endpoint) => endpoint.url),
+    [networkFormState.rpcUrls.rpcEndpoints],
+  );
   const existingNetworkChainIds = useMemo(
     () =>
       new Set(
@@ -540,6 +544,9 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
+              chainId={networkFormState.chainId}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onCancel={handleNewNetwork}
               onAdded={handleAddRPC}
             />
@@ -555,6 +562,9 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
+              chainId={networkFormState.chainId}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onCancel={handleEditOnComplete}
               onAdded={handleAddRPC}
             />
