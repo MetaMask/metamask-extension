@@ -69,8 +69,6 @@ export const MultichainAccountEditModal = ({
           data-testid="account-edit-modal-header"
           onClose={onClose}
           closeButtonProps={{ ariaLabel: t('close') }}
-          onBack={onClose}
-          backButtonProps={{ ariaLabel: t('back') }}
         >
           {t('rename')}
         </ModalHeader>

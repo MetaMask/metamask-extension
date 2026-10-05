@@ -80,8 +80,8 @@ import {
   getAssetImageUrl,
   isEvmChainId,
   isTronSpecialAsset,
-  normalizeTokenAssetId,
   toAssetId,
+  toNormalizedCaipAssetId,
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
@@ -96,7 +96,6 @@ import {
   convertSearchResultToImportPayload,
   type SearchResultImportPayload,
 } from '../../../shared/lib/token-search/convert-search-result';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
 
@@ -164,15 +163,6 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   const assetType = assetId.split('/').pop();
   const assetReference = assetType?.split(':').pop();
   return assetReference || assetId;
-};
-
-// Normalized CAIP-19 ids needed for security lookups
-const toNormalizedCaipAssetId = (
-  assetId: string,
-  chainId?: Hex | CaipChainId,
-): CaipAssetType | undefined => {
-  const caipAssetId = toAssetId(assetId, chainId);
-  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
 };
 
 const hasValidAssetId = (
@@ -527,11 +517,6 @@ export const TokenManagementPage = () => {
     }
     await commitStagedHidesRef.current();
   }, []);
-
-  const isAssetsUnifiedStateInBuild = useMemo(
-    () => getIsAssetsUnifiedStateIncludedInBuild(),
-    [],
-  );
 
   const accountGroupIdAssets = useSelector(
     getAssetsBySelectedAccountGroup,
@@ -1025,7 +1010,7 @@ export const TokenManagementPage = () => {
                 networkClientId,
               }),
             );
-            if (isAssetsUnifiedStateInBuild && entry.caipAssetId) {
+            if (entry.caipAssetId) {
               await dispatch(hideAsset(entry.caipAssetId));
             }
             return;
@@ -1033,18 +1018,11 @@ export const TokenManagementPage = () => {
           await dispatch(
             multichainIgnoreAssets([entry.assetId], entry.accountId),
           );
-          if (isAssetsUnifiedStateInBuild) {
-            await dispatch(hideAsset(entry.assetId));
-          }
+          await dispatch(hideAsset(entry.assetId));
         }),
       );
     };
-  }, [
-    addCommittedHideKeys,
-    dispatch,
-    getNetworkMeta,
-    isAssetsUnifiedStateInBuild,
-  ]);
+  }, [addCommittedHideKeys, dispatch, getNetworkMeta]);
 
   useEffect(() => {
     return () => {
@@ -1268,16 +1246,9 @@ export const TokenManagementPage = () => {
                 networkClientIdForImport,
               ),
             ),
-            ...(isAssetsUnifiedStateInBuild
-              ? [
-                  dispatch(
-                    importEvmSearchResultToUnifiedAssets(
-                      evmAccount.id,
-                      payload,
-                    ),
-                  ),
-                ]
-              : []),
+            dispatch(
+              importEvmSearchResultToUnifiedAssets(evmAccount.id, payload),
+            ),
           ]);
 
           trackEvent(tokenAddedEvent);
@@ -1294,13 +1265,7 @@ export const TokenManagementPage = () => {
 
         await Promise.all([
           dispatch(multichainAddAssets([payload.assetId], account.id)),
-          ...(isAssetsUnifiedStateInBuild
-            ? [
-                dispatch(
-                  importEvmSearchResultToUnifiedAssets(account.id, payload),
-                ),
-              ]
-            : []),
+          dispatch(importEvmSearchResultToUnifiedAssets(account.id, payload)),
         ]);
         trackEvent(tokenAddedEvent);
       } finally {
@@ -1318,7 +1283,6 @@ export const TokenManagementPage = () => {
       getNetworkMeta,
       ignoredEvmAssetIds,
       importedAssetIds,
-      isAssetsUnifiedStateInBuild,
       createEventBuilder,
       removePendingKey,
       removeCommittedHideKey,
