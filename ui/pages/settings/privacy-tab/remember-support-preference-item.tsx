@@ -10,8 +10,7 @@ import { PRIVACY_ITEMS } from '../search-config';
 export const RememberSupportPreferenceToggleItem = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { shouldShowSupportConsent, supportDataSharingPreference } =
-    useSelector(getPreferences);
+  const { shouldShowSupportConsent } = useSelector(getPreferences);
 
   // The toggle is "remember my preference", i.e. the inverse of shouldShowSupportConsent.
   const rememberPreference = shouldShowSupportConsent === false;
@@ -21,21 +20,10 @@ export const RememberSupportPreferenceToggleItem = () => {
     dispatch(setShouldShowSupportConsent(!newRememberPreference));
   };
 
-  let description = t('rememberSupportPreferenceDescription');
-  if (
-    supportDataSharingPreference !== null &&
-    supportDataSharingPreference !== undefined
-  ) {
-    const currentDecision = supportDataSharingPreference
-      ? t('rememberSupportPreferenceCurrentlySharing')
-      : t('rememberSupportPreferenceCurrentlyNotSharing');
-    description = `${description} ${currentDecision}`;
-  }
-
   return (
     <SettingsToggleItem
       title={t(PRIVACY_ITEMS['remember-support-preference'])}
-      description={description}
+      description={t('rememberSupportPreferenceDescription')}
       value={rememberPreference}
       onToggle={handleToggle}
       dataTestId="remember-support-preference-toggle"

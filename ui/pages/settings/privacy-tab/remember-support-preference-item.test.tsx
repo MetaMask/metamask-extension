@@ -15,10 +15,7 @@ jest.mock('../../../store/actions', () => ({
   })),
 }));
 
-const renderItem = (
-  shouldShowSupportConsent: boolean,
-  supportDataSharingPreference: boolean | null,
-) =>
+const renderItem = (shouldShowSupportConsent: boolean) =>
   renderWithProvider(
     <RememberSupportPreferenceToggleItem />,
     configureMockStore([thunk])({
@@ -28,7 +25,6 @@ const renderItem = (
         preferences: {
           ...mockState.metamask.preferences,
           shouldShowSupportConsent,
-          supportDataSharingPreference,
         },
       },
     }),
@@ -40,7 +36,7 @@ describe('RememberSupportPreferenceToggleItem', () => {
   });
 
   it('renders off with the base description when no choice is saved', () => {
-    const { getByText, getByTestId } = renderItem(true, null);
+    const { getByText, getByTestId } = renderItem(true);
 
     expect(
       getByText(messages.rememberSupportPreference.message),
@@ -54,13 +50,11 @@ describe('RememberSupportPreferenceToggleItem', () => {
     );
   });
 
-  it('renders on and describes the saved share decision', () => {
-    const { getByText, getByTestId } = renderItem(false, true);
+  it('renders on with the base description', () => {
+    const { getByText, getByTestId } = renderItem(false);
 
     expect(
-      getByText(
-        `${messages.rememberSupportPreferenceDescription.message} ${messages.rememberSupportPreferenceCurrentlySharing.message}`,
-      ),
+      getByText(messages.rememberSupportPreferenceDescription.message),
     ).toBeInTheDocument();
     expect(getByTestId('remember-support-preference-toggle')).toHaveAttribute(
       'value',
@@ -68,18 +62,8 @@ describe('RememberSupportPreferenceToggleItem', () => {
     );
   });
 
-  it('describes the saved do-not-share decision', () => {
-    const { getByText } = renderItem(false, false);
-
-    expect(
-      getByText(
-        `${messages.rememberSupportPreferenceDescription.message} ${messages.rememberSupportPreferenceCurrentlyNotSharing.message}`,
-      ),
-    ).toBeInTheDocument();
-  });
-
   it('asks for consent again when turned off', () => {
-    const { getByTestId } = renderItem(false, true);
+    const { getByTestId } = renderItem(false);
 
     fireEvent.click(getByTestId('remember-support-preference-toggle'));
 
@@ -87,7 +71,7 @@ describe('RememberSupportPreferenceToggleItem', () => {
   });
 
   it('stops asking for consent when turned on', () => {
-    const { getByTestId } = renderItem(true, false);
+    const { getByTestId } = renderItem(true);
 
     fireEvent.click(getByTestId('remember-support-preference-toggle'));
 
