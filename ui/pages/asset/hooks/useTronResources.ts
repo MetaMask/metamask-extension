@@ -2,14 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Balance, CaipAssetId } from '@metamask/keyring-api';
-import type { Asset } from '@metamask/assets-controllers';
-import { isTronSpecialAsset } from '../../../../shared/lib/asset-utils';
-import {
-  getAssetsBalance,
-  getAssetsBySelectedAccountGroupWithTronSpecialAssets,
-} from '../../../selectors/assets';
-import { getMultichainBalances } from '../../../selectors/multichain';
-import { getIsAssetsUnifyStateEnabled } from '../../../selectors/assets-unify-state';
+import { getAssetsBalance } from '../../../selectors/assets';
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 
 const TronResourceType = {
@@ -28,47 +21,9 @@ export type TronResource = {
 };
 
 /**
- * Internal hook that reads Tron resource balances from state.
- * This is the legacy data path, used when the unified AssetsController
- * feature flag is disabled.
- * @param account
- * @param chainId
- */
-const useMultichainStateTronBalances = (
-  account: InternalAccount | undefined,
-  chainId: string,
-): Record<CaipAssetId, Balance> => {
-  const accountGroupAssets = useSelector(
-    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
-  );
-  const multichainBalances = useSelector(getMultichainBalances);
-
-  return useMemo(() => {
-    if (!account || !chainId) {
-      return {} as Record<CaipAssetId, Balance>;
-    }
-
-    const assets = accountGroupAssets[chainId] || [];
-    const accountBalances = multichainBalances?.[account.id];
-    const tronSpecialAssets = assets.filter((asset: Asset) =>
-      isTronSpecialAsset(asset.assetId),
-    );
-
-    return Object.fromEntries(
-      tronSpecialAssets.map((asset: Asset) => [
-        asset.assetId,
-        accountBalances?.[asset.assetId as CaipAssetId] ?? {
-          amount: '0',
-          unit: '',
-        },
-      ]),
-    ) as Record<CaipAssetId, Balance>;
-  }, [account, chainId, accountGroupAssets, multichainBalances]);
-};
-
-/**
  * Internal hook that reads Tron resource balances from the unified
  * AssetsController state.
+ *
  * @param account
  */
 const useAssetsControllerTronBalances = (
@@ -99,12 +54,6 @@ export const useTronResources = (
   energy: TronResource;
   bandwidth: TronResource;
 } => {
-  const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-
-  const multichainStateBalances = useMultichainStateTronBalances(
-    account,
-    chainId,
-  );
   const assetsControllerBalances = useAssetsControllerTronBalances(account);
 
   return useMemo(() => {
@@ -127,13 +76,11 @@ export const useTronResources = (
       return defaultResources;
     }
 
-    const balances = isAssetsUnifyStateEnabled
-      ? assetsControllerBalances
-      : multichainStateBalances;
-
     const getBalanceForCaipType = (caipType: string): number => {
       const assetId = `${chainId}/${caipType}` as CaipAssetId;
-      return Number.parseFloat(balances?.[assetId]?.amount || '0');
+      return Number.parseFloat(
+        assetsControllerBalances?.[assetId]?.amount || '0',
+      );
     };
 
     const energyData = {
@@ -165,11 +112,5 @@ export const useTronResources = (
       energy: createResource(TronResourceType.ENERGY, energyData),
       bandwidth: createResource(TronResourceType.BANDWIDTH, bandwidthData),
     };
-  }, [
-    account,
-    chainId,
-    isAssetsUnifyStateEnabled,
-    multichainStateBalances,
-    assetsControllerBalances,
-  ]);
+  }, [account, chainId, assetsControllerBalances]);
 };

@@ -2297,9 +2297,6 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
-  "bridgeMalicious": {
-    "message": "Malicious"
-  },
   "bridgeMaliciousTokenTitle": {
     "message": "Malicious token"
   },
@@ -2579,9 +2576,6 @@
   "bridgeStellarTrustlineWarningTitle": {
     "message": "Activate $1 on Stellar first",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
-  },
-  "bridgeSuspicious": {
-    "message": "Suspicious"
   },
   "bridgeSuspiciousTokenTitle": {
     "message": "Suspicious token"
@@ -4284,6 +4278,9 @@
   },
   "from": {
     "message": "From"
+  },
+  "fullyDiluted": {
+    "message": "Fully diluted"
   },
   "function": {
     "message": "Function: $1"
@@ -9052,7 +9049,7 @@
     "message": "Instant"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Less than"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "min"
@@ -9065,7 +9062,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Up to $1",
+    "message": "$1 limit",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -9111,7 +9108,7 @@
     "message": "Includes $1% MM fee."
   },
   "readdToken": {
-    "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
+    "message": "You can add this token back in the future by going to \"Manage tokens\" in the tokens menu"
   },
   "receive": {
     "message": "Receive"
@@ -12078,7 +12075,7 @@
     "message": "Total received"
   },
   "totalVolume": {
-    "message": "Total volume"
+    "message": "Total volume (24h)"
   },
   "transaction": {
     "message": "Transaction"
@@ -12520,6 +12517,9 @@
   },
   "volume": {
     "message": "Volume"
+  },
+  "volumeToMarketCap": {
+    "message": "Volume / Market cap"
   },
   "wallet": {
     "message": "Wallet"
