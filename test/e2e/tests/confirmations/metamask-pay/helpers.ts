@@ -28,6 +28,7 @@ import {
   MUSD_USD_PRICE,
   USDC_BALANCE_HUMAN,
   USDC_BALANCE_RAW,
+  USDC_USD_PRICE,
 } from './constants';
 
 /**
