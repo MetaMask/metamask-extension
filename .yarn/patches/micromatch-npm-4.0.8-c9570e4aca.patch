@@ -207,7 +207,7 @@ new file mode 100644
 index 0000000000000000000000000000000000000000..945a78b584b778ef1871261609b540bc4005b5c2
 --- /dev/null
 +++ b/vendor/braces/lib/compile.js
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,65 @@
 +'use strict';
 +
 +const fill = require('fill-range');
@@ -232,7 +232,6 @@ index 0000000000000000000000000000000000000000..945a78b584b778ef1871261609b540bc
 +    }
 +
 +    if (node.isClose === true) {
-+      console.log('node.isClose', prefix, node.value);
 +      return prefix + node.value;
 +    }
 +
@@ -858,7 +857,7 @@ index 0000000000000000000000000000000000000000..651849c23c7f318fb311c107c90c469c
 +
 +    if (node.nodes) {
 +      for (const child of node.nodes) {
-+        output += stringify(child, undefined, child.nodes ? depth + 1 : depth);
++        output += stringify(child, node, child.nodes ? depth + 1 : depth);
 +      }
 +    }
 +    return output;

@@ -867,12 +867,6 @@
         "chalk>ansi-styles>color-convert": true
       }
     },
-    "chokidar>anymatch": {
-      "packages": {
-        "chokidar>normalize-path": true,
-        "micromatch>picomatch": true
-      }
-    },
     "mockttp>@peculiar/asn1-x509>asn1js": {
       "packages": {
         "mockttp>@peculiar/x509>pvtsutils": true,
@@ -982,14 +976,6 @@
         "webpack-dev-server>bonjour-service>multicast-dns": true
       }
     },
-    "chokidar>braces": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "chokidar>braces>fill-range": true
-      }
-    },
     "browserify>browser-resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -1086,15 +1072,15 @@
     "chokidar": {
       "builtin": {
         "events.EventEmitter": true,
-        "fs.close": true,
-        "fs.lstat": true,
-        "fs.open": true,
-        "fs.readdir": true,
-        "fs.realpath": true,
         "fs.stat": true,
         "fs.unwatchFile": true,
         "fs.watch": true,
         "fs.watchFile": true,
+        "fs/promises.lstat": true,
+        "fs/promises.open": true,
+        "fs/promises.readdir": true,
+        "fs/promises.realpath": true,
+        "fs/promises.stat": true,
         "os.type": true,
         "path.basename": true,
         "path.dirname": true,
@@ -1103,29 +1089,18 @@
         "path.join": true,
         "path.normalize": true,
         "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true,
-        "util.promisify": true
+        "path.resolve": true
       },
       "globals": {
         "clearTimeout": true,
-        "console.error": true,
         "process.env.CHOKIDAR_INTERVAL": true,
-        "process.env.CHOKIDAR_PRINT_FSEVENTS_REQUIRE_ERROR": true,
         "process.env.CHOKIDAR_USEPOLLING": true,
         "process.nextTick": true,
         "process.platform": true,
-        "process.version.match": true,
         "setTimeout": true
       },
       "packages": {
-        "chokidar>anymatch": true,
-        "chokidar>braces": true,
         "tsx>fsevents": true,
-        "eslint>glob-parent": true,
-        "chokidar>is-binary-path": true,
-        "eslint>is-glob": true,
-        "chokidar>normalize-path": true,
         "chokidar>readdirp": true
       }
     },
@@ -1213,6 +1188,7 @@
         "mockttp>body-parser>bytes": true,
         "webpack-dev-server>compression>compressible": true,
         "webpack-dev-server>compression>debug": true,
+        "koa>destroy": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
         "mockttp>express>safe-buffer": true,
@@ -1264,7 +1240,7 @@
       },
       "packages": {
         "eslint>glob-parent": true,
-        "chokidar>normalize-path": true,
+        "stylelint>normalize-path": true,
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
@@ -1867,12 +1843,12 @@
         "copy-webpack-plugin>tinyglobby>picomatch": true
       }
     },
-    "chokidar>braces>fill-range": {
+    "fill-range": {
       "builtin": {
         "util.inspect": true
       },
       "packages": {
-        "chokidar>braces>fill-range>to-regex-range": true
+        "fill-range>to-regex-range": true
       }
     },
     "webpack-dev-server>express>finalhandler": {
@@ -2156,14 +2132,6 @@
         "util.inherits": true
       }
     },
-    "chokidar>is-binary-path": {
-      "builtin": {
-        "path.extname": true
-      },
-      "packages": {
-        "chokidar>is-binary-path>binary-extensions": true
-      }
-    },
     "depcheck>is-core-module": {
       "globals": {
         "process.versions": true
@@ -2409,7 +2377,7 @@
         "util.inspect": true
       },
       "packages": {
-        "chokidar>braces": true,
+        "fill-range": true,
         "micromatch>picomatch": true
       }
     },
@@ -2679,7 +2647,7 @@
         "assert": true
       },
       "packages": {
-        "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-calc>postcss-selector-parser": true,
+        "stylelint>postcss-selector-parser": true,
         "stylelint>postcss-value-parser": true
       }
     },
@@ -2757,7 +2725,7 @@
         "browserslist": true,
         "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-colormin>caniuse-api": true,
         "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>cssnano-utils": true,
-        "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-merge-rules>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true
       }
     },
     "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-minify-font-values": {
@@ -2787,7 +2755,7 @@
     },
     "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-minify-selectors": {
       "packages": {
-        "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-minify-selectors>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -2809,7 +2777,7 @@
     },
     "tailwindcss>postcss-nested": {
       "packages": {
-        "tailwindcss>postcss-selector-parser": true,
+        "stylelint>postcss-selector-parser": true,
         "tailwindcss>postcss": true
       }
     },
@@ -2896,43 +2864,7 @@
         "postcss-rtlcss>rtlcss": true
       }
     },
-    "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-calc>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
-    "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-merge-rules>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
-    "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-minify-selectors>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
-    "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-unique-selectors>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
-    "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-merge-longhand>stylehacks>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
     "stylelint>postcss-selector-parser": {
-      "packages": {
-        "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream-2>util-deprecate": true
-      }
-    },
-    "tailwindcss>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
         "readable-stream-2>util-deprecate": true
@@ -2950,7 +2882,7 @@
     },
     "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-unique-selectors": {
       "packages": {
-        "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-unique-selectors>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true
       }
     },
     "css-loader>postcss": {
@@ -3079,20 +3011,18 @@
     },
     "chokidar>readdirp": {
       "builtin": {
-        "fs": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true,
-        "stream.Readable": true,
-        "util.promisify": true
+        "node:fs/promises.lstat": true,
+        "node:fs/promises.readdir": true,
+        "node:fs/promises.realpath": true,
+        "node:fs/promises.stat": true,
+        "node:path.join": true,
+        "node:path.relative": true,
+        "node:path.resolve": true,
+        "node:path.sep": true,
+        "node:stream.Readable": true
       },
       "globals": {
-        "process.platform": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "micromatch>picomatch": true
+        "process.platform": true
       }
     },
     "@ledgerhq/device-management-kit>reflect-metadata": {
@@ -3546,7 +3476,7 @@
       },
       "packages": {
         "browserslist": true,
-        "@metamask/platform-api-docs>@docusaurus/core>@docusaurus/bundler>cssnano>cssnano-preset-default>postcss-merge-longhand>stylehacks>postcss-selector-parser": true
+        "stylelint>postcss-selector-parser": true
       }
     },
     "tailwindcss>sucrase": {
@@ -3642,12 +3572,12 @@
         "eslint>is-glob": true,
         "eslint>jiti": true,
         "micromatch": true,
-        "chokidar>normalize-path": true,
+        "stylelint>normalize-path": true,
         "tailwindcss>object-hash": true,
         "postcss>picocolors": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
-        "tailwindcss>postcss-selector-parser": true,
+        "stylelint>postcss-selector-parser": true,
         "tailwindcss>postcss": true,
         "tailwindcss>sucrase": true
       }
@@ -3762,9 +3692,9 @@
         "copy-webpack-plugin>tinyglobby>picomatch": true
       }
     },
-    "chokidar>braces>fill-range>to-regex-range": {
+    "fill-range>to-regex-range": {
       "packages": {
-        "chokidar>braces>fill-range>to-regex-range>is-number": true
+        "fill-range>to-regex-range>is-number": true
       }
     },
     "jest-preview>sirv>totalist": {

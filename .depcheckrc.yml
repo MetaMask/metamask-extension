@@ -94,6 +94,8 @@ ignores:
   - 'process' # polyfill
   - 'stream-http' # polyfill
   - 'json-schema-to-ts' # misc: typescript helper
+  # hoisted for patched micromatch (vendored braces); Yarn hardened mode keeps braces in lockfile
+  - 'fill-range'
   - 'https-browserify' # polyfill
   - 'path-browserify' # polyfill
   - 'nyc' # coverage
