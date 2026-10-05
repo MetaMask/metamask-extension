@@ -1,11 +1,11 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
-import type { Anvil } from '../../seeder/anvil';
-import { Driver } from '../../webdriver/driver';
+import { withFixtures } from '../../../helpers';
+import type { Anvil } from '../../../seeder/anvil';
+import { Driver } from '../../../webdriver/driver';
 import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
-} from '../../page-objects/flows/money-account-deposit.flow';
+} from '../../../page-objects/flows/money-account-deposit.flow';
 import { PREFILL_ETH_PAY_TOKENS_FLAG } from './constants';
 import { getMoneyAccountDepositConfig } from './helpers';
 

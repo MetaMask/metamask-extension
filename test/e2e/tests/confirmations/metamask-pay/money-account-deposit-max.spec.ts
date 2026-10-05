@@ -1,14 +1,14 @@
 import { Suite } from 'mocha';
-import { withFixtures } from '../../helpers';
-import type { Anvil } from '../../seeder/anvil';
-import { Driver } from '../../webdriver/driver';
+import { withFixtures } from '../../../helpers';
+import type { Anvil } from '../../../seeder/anvil';
+import { Driver } from '../../../webdriver/driver';
 import {
   loginAndOpenMoneyHome,
   openMoneyAccountDeposit,
-  selectDepositPayToken,
   verifyMoneyDepositConverted,
-} from '../../page-objects/flows/money-account-deposit.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+} from '../../../page-objects/flows/money-account-deposit.flow';
+import { selectPayToken } from '../../../page-objects/flows/metamask-pay.flow';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { USDC_BALANCE_HUMAN } from './constants';
 import { getMoneyAccountDepositConfig } from './helpers';
 
@@ -41,12 +41,7 @@ describe('Money Account Deposit - Max', function (this: Suite) {
           moneyHomePage,
         );
 
-        await selectDepositPayToken(
-          driver,
-          confirmation,
-          CHAIN_IDS.MAINNET,
-          'USDC',
-        );
+        await selectPayToken(driver, confirmation, CHAIN_IDS.MAINNET, 'USDC');
 
         await confirmation.clickMax();
         await confirmation.checkAmount(String(USDC_BALANCE_HUMAN));

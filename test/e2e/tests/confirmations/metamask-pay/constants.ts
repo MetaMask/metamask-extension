@@ -1,12 +1,12 @@
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import { parseAbi } from 'viem';
-import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import {
   MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME,
   MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME,
   MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME,
-} from '../../../../shared/lib/money/feature-flags';
+} from '../../../../../shared/lib/money/feature-flags';
 
 /**
  * Money Account address derived from `E2E_SRP` at the fixed money derivation

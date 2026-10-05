@@ -10,11 +10,12 @@ import { Driver } from '../../../webdriver/driver';
  * (rendered when Money Account pay is enabled for the transaction type) and
  * picking a wallet token from the asset list.
  * Boundaries: the pill that opens the modal belongs to the confirmation page
- * object (e.g. `MoneyAccountDepositConfirmation`).
+ * object (e.g. `MoneyAccountDepositConfirmation`). Picking a token is driven
+ * from `metamask-pay.flow.ts`.
  *
  * @see ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.tsx
  */
-export class PayWithModal {
+export class MetaMaskPaySourceModal {
   private readonly driver: Driver;
 
   private readonly otherAssetsRow = {
@@ -64,4 +65,4 @@ export class PayWithModal {
   }
 }
 
-export default PayWithModal;
+export default MetaMaskPaySourceModal;

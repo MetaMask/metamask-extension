@@ -9,11 +9,12 @@ import { Driver } from '../../../webdriver/driver';
  * Screen: modal over the confirmation.
  * Owns: the modal-loaded check and selecting an account by address.
  * Boundaries: the pill that opens the modal belongs to the confirmation page
- * object (e.g. `MoneyAccountDepositConfirmation`).
+ * object (e.g. `MoneyAccountDepositConfirmation`). Selecting an account is
+ * driven from `metamask-pay.flow.ts`.
  *
  * @see ui/pages/confirmations/components/account-select-modal/account-select-modal.tsx
  */
-export class AccountSelectModal {
+export class MetaMaskPayAccountSelectModal {
   private readonly accountItem = (address: string) => ({
     testId: `account-select-item-${address.toLowerCase()}`,
   });
@@ -41,4 +42,4 @@ export class AccountSelectModal {
   }
 }
 
-export default AccountSelectModal;
+export default MetaMaskPayAccountSelectModal;

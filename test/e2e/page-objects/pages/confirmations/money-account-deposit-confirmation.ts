@@ -1,30 +1,28 @@
 import { Key } from 'selenium-webdriver';
 import { tEn } from '../../../../lib/i18n-helpers';
-import { Driver } from '../../../webdriver/driver';
-
-// Fetching the Relay quote, rendering the fee / time rows and enabling the
-// "Add funds" button can take longer than the default 10s wait on slower CI
-// browsers, so quote-dependent waits get more room.
-const QUOTE_READY_TIMEOUT = 60_000;
+import {
+  MetaMaskPayConfirmation,
+  PAY_QUOTE_READY_TIMEOUT,
+} from './metamask-pay-confirmation';
 
 /**
  * The Money Account deposit confirmation ("Add funds"): a fiat amount input
- * backed by MetaMask Pay quotes from a wallet token into Monad mUSD.
+ * on top of the shared MetaMask Pay confirmation.
  *
  * Screen: wallet-initiated confirmation opened by the Money home "Add"
  * action (not a route of its own).
- * Owns: amount input and percentage buttons, the from-account and pay-with
- * pills, the quote rows (fee / time / total), the header back button and the
- * "Add funds" confirm button.
- * Boundaries: the Money home page that opens this belongs to
- * `MoneyHomePage`; the pay-with and account pickers opened by the pills are
- * `PayWithModal` and `AccountSelectModal`, driven from
- * `money-account-deposit.flow.ts`.
- * Related: `MoneyHomePage`, `PayWithModal`, `AccountSelectModal`.
+ * Owns: amount input and percentage buttons, the "Add funds" header and
+ * confirm label, and the loaded check for this flow.
+ * Boundaries: shared Pay pills, quote rows, and the confirm click belong to
+ * `MetaMaskPayConfirmation`. The Money home page that opens this belongs to
+ * `MoneyHomePage`. The pay-with and account pickers are
+ * `MetaMaskPaySourceModal` and `MetaMaskPayAccountSelectModal`, driven from
+ * `metamask-pay.flow.ts`.
+ * Related: `MetaMaskPayConfirmation`, `MoneyHomePage`.
  *
  * @see ui/pages/confirmations/components/info/money-account-deposit-info/money-account-deposit-info.tsx
  */
-export class MoneyAccountDepositConfirmation {
+export class MoneyAccountDepositConfirmation extends MetaMaskPayConfirmation {
   private readonly addFundsButton = {
     testId: 'confirm-footer-button',
     text: tEn('addFunds'),
@@ -32,61 +30,18 @@ export class MoneyAccountDepositConfirmation {
 
   private readonly amountInput = { testId: 'custom-amount-input' };
 
-  private readonly bridgeFeeRow = { testId: 'bridge-fee-row' };
-
-  private readonly bridgeTimeRow = { testId: 'bridge-time-row' };
-
-  private readonly confirmButton = { testId: 'confirm-footer-button' };
-
   private readonly customAmountInfo = { testId: 'custom-amount-info' };
-
-  private readonly driver: Driver;
-
-  private readonly fromAccountName = (accountName: string) => ({
-    testId: 'from-account-name',
-    text: accountName,
-  });
-
-  private readonly fromAccountPill = { testId: 'from-account-pill' };
-
-  private readonly headerBackButton = {
-    testId: 'wallet-initiated-header-back-button',
-  };
 
   private readonly headerTitle = {
     testId: 'wallet-initiated-header-title',
     text: tEn('addFunds'),
   };
 
-  private readonly parentSelector = {
-    testId: 'parent-selector-confirmation-page',
-  };
-
-  private readonly payWithPill = { testId: 'pay-with-pill' };
-
-  private readonly payWithRow = { testId: 'pay-with-row' };
-
-  private readonly payWithSymbol = (symbol: string) => ({
-    testId: 'pay-with-symbol',
-    text: symbol,
-  });
-
   private readonly percentageButton = (percentage: number) => ({
     testId: `percentage-button-${percentage}`,
   });
 
   private readonly percentageButtons = { testId: 'percentage-buttons' };
-
-  private readonly totalRow = (total: string) => ({
-    testId: 'total-row',
-    text: total,
-  });
-
-  private readonly transactionFeeValue = { testId: 'transaction-fee-value' };
-
-  constructor(driver: Driver) {
-    this.driver = driver;
-  }
 
   async checkAmount(expectedAmount: string): Promise<void> {
     console.log(`Wait for deposit amount to be "${expectedAmount}"`);
@@ -95,19 +50,14 @@ export class MoneyAccountDepositConfirmation {
         const input = await this.driver.findElement(this.amountInput);
         return (await input.getAttribute('value')) === expectedAmount;
       },
-      { interval: 100, timeout: QUOTE_READY_TIMEOUT },
+      { interval: 100, timeout: PAY_QUOTE_READY_TIMEOUT },
     );
-  }
-
-  async checkFromAccount(accountName: string): Promise<void> {
-    console.log(`Wait for from-account pill to show "${accountName}"`);
-    await this.driver.waitForSelector(this.fromAccountName(accountName));
   }
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for Money Account deposit confirmation to load');
     await this.driver.waitForMultipleSelectors([
-      this.parentSelector,
+      this.confirmationPage,
       this.headerBackButton,
       this.headerTitle,
       this.confirmButton,
@@ -116,20 +66,8 @@ export class MoneyAccountDepositConfirmation {
     // token and the pay-with row settles on a funded token.
     await this.driver.waitForMultipleSelectors(
       [this.customAmountInfo, this.amountInput, this.payWithRow],
-      { timeout: QUOTE_READY_TIMEOUT },
+      { timeout: PAY_QUOTE_READY_TIMEOUT },
     );
-  }
-
-  /**
-   * Assert the pay-with pill shows the given token symbol.
-   *
-   * @param symbol - Token symbol, e.g. `USDC`.
-   */
-  async checkPayWithToken(symbol: string): Promise<void> {
-    console.log(`Wait for pay-with pill to show "${symbol}"`);
-    await this.driver.waitForSelector(this.payWithSymbol(symbol), {
-      timeout: QUOTE_READY_TIMEOUT,
-    });
   }
 
   async checkPercentageButtonsDisplayed(): Promise<void> {
@@ -138,28 +76,17 @@ export class MoneyAccountDepositConfirmation {
   }
 
   /**
-   * Wait for the quote-derived rows (transaction fee, estimated time, total)
-   * to render for the entered amount and the "Add funds" button to enable.
+   * Wait for the quote-derived rows and the "Add funds" button to enable.
    */
   async checkQuoteIsReady(): Promise<void> {
     console.log('Wait for deposit quote rows and enabled Add funds button');
-    await this.driver.waitForMultipleSelectors(
-      [this.bridgeFeeRow, this.transactionFeeValue, this.bridgeTimeRow],
-      { timeout: QUOTE_READY_TIMEOUT },
-    );
+    await this.checkQuoteRows();
     await this.driver.waitForSelector(this.addFundsButton, {
-      timeout: QUOTE_READY_TIMEOUT,
+      timeout: PAY_QUOTE_READY_TIMEOUT,
     });
     await this.driver.waitForSelector(this.confirmButton, {
       state: 'enabled',
-      timeout: QUOTE_READY_TIMEOUT,
-    });
-  }
-
-  async checkTotal(expectedTotal: string): Promise<void> {
-    console.log(`Wait for deposit total to be "${expectedTotal}"`);
-    await this.driver.waitForSelector(this.totalRow(expectedTotal), {
-      timeout: QUOTE_READY_TIMEOUT,
+      timeout: PAY_QUOTE_READY_TIMEOUT,
     });
   }
 
@@ -181,29 +108,9 @@ export class MoneyAccountDepositConfirmation {
     await this.checkAmount('0');
   }
 
-  async clickConfirm(): Promise<void> {
-    console.log('Click Add funds');
-    // Firefox WebDriver often reports a successful element.click() without
-    // firing the React handler, leaving the confirmation unapproved.
-    await this.driver.clickElementUsingMouseMove(this.confirmButton);
-  }
-
-  async clickFromAccountPill(): Promise<void> {
-    console.log('Click from-account pill');
-    await this.driver.clickElement(this.fromAccountPill);
-  }
-
   async clickMax(): Promise<void> {
     console.log('Click Max percentage button');
     await this.driver.clickElement(this.percentageButton(100));
-  }
-
-  async clickPayWithPill(): Promise<void> {
-    console.log('Click Pay with pill');
-    await this.driver.waitForSelector(this.payWithPill, {
-      timeout: QUOTE_READY_TIMEOUT,
-    });
-    await this.driver.clickElement(this.payWithPill);
   }
 
   async clickPercentage(percentage: number): Promise<void> {
@@ -225,11 +132,6 @@ export class MoneyAccountDepositConfirmation {
     // strips back to `<amount>`.
     await this.driver.press(this.amountInput, amount);
     await this.checkAmount(amount);
-  }
-
-  async goBack(): Promise<void> {
-    console.log('Click deposit confirmation back button');
-    await this.driver.clickElement(this.headerBackButton);
   }
 }
 
