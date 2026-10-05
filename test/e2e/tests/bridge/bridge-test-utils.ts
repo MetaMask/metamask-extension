@@ -2143,23 +2143,31 @@ async function mockSentinelNetworks(
   mockServer: Mockttp,
   sendBundle: boolean = true,
 ) {
+  const network = {
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    hidden: false,
+    sendBundle,
+  };
+
+  await mockServer
+    .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/network')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: network,
+    }));
+
   return await mockServer
     .forGet('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/networks')
     .always()
     .thenCallback(() => ({
       statusCode: 200,
-      json: {
-        '1': {
-          network: 'ethereum-mainnet',
-          explorer: 'https://etherscan.io',
-          confirmations: true,
-          smartTransactions: true,
-          relayTransactions: true,
-          cubistSigners: ['0x1111111111111111111111111111111111111111'],
-          hidden: false,
-          sendBundle,
-        },
-      },
+      json: { '1': network },
     }));
 }
 
