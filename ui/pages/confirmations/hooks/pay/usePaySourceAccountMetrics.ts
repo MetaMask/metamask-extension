@@ -6,6 +6,10 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsHardwareWalletDeviceType,
+} from '../../../../../shared/constants/metametrics';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
   selectPaymentOverrideByTransactionId,
@@ -18,37 +22,36 @@ import { useTransactionPayingAccount } from '../transactions/useTransactionPayin
 /** Fallback when the paying account type cannot be resolved. */
 export const CRYPTO_PAY_SOURCE = 'crypto';
 
+const MONEY_ACCOUNT_PAY_SOURCE = 'money-account';
+
+const PAYMENT_OVERRIDE_SOURCES = {
+  [PaymentOverride.MoneyAccount]: MONEY_ACCOUNT_PAY_SOURCE,
+  [PaymentOverride.Perps]: 'perps',
+  [PaymentOverride.Predict]: 'predict',
+} as const satisfies Record<PaymentOverride, string>;
+
+type CryptoAccountType = Exclude<
+  MetaMetricsEventAccountType,
+  MetaMetricsEventAccountType.Hardware
+>;
+
 export type PaySourceAccountType =
-  | 'money-account'
-  | 'perps'
-  | 'predict'
-  | 'metamask'
-  | 'imported'
-  | 'snap'
-  | 'Ledger'
-  | 'Trezor'
-  | 'Lattice'
-  | 'QR Hardware'
+  | CryptoAccountType
+  | MetaMetricsHardwareWalletDeviceType
+  | (typeof PAYMENT_OVERRIDE_SOURCES)[PaymentOverride]
   | typeof CRYPTO_PAY_SOURCE;
 
 const KEYRING_SOURCE_TYPES: Record<string, PaySourceAccountType> = {
-  [KeyringTypes.money]: 'money-account',
-  [KeyringTypes.hd]: 'metamask',
-  [KeyringTypes.simple]: 'imported',
-  [KeyringTypes.snap]: 'snap',
-  [KeyringTypes.ledger]: 'Ledger',
-  [KeyringTypes.trezor]: 'Trezor',
-  [KeyringTypes.lattice]: 'Lattice',
-  [KeyringTypes.qr]: 'QR Hardware',
-  [KeyringTypes.oneKey]: 'QR Hardware',
+  [KeyringTypes.money]: MONEY_ACCOUNT_PAY_SOURCE,
+  [KeyringTypes.hd]: MetaMetricsEventAccountType.Default,
+  [KeyringTypes.simple]: MetaMetricsEventAccountType.Imported,
+  [KeyringTypes.snap]: MetaMetricsEventAccountType.Snap,
+  [KeyringTypes.ledger]: MetaMetricsHardwareWalletDeviceType.Ledger,
+  [KeyringTypes.trezor]: MetaMetricsHardwareWalletDeviceType.Trezor,
+  [KeyringTypes.lattice]: MetaMetricsHardwareWalletDeviceType.Lattice,
+  [KeyringTypes.qr]: MetaMetricsHardwareWalletDeviceType.QrHardware,
+  [KeyringTypes.oneKey]: MetaMetricsHardwareWalletDeviceType.QrHardware,
 };
-
-const PAYMENT_OVERRIDE_SOURCES: Record<PaymentOverride, PaySourceAccountType> =
-  {
-    [PaymentOverride.MoneyAccount]: 'money-account',
-    [PaymentOverride.Perps]: 'perps',
-    [PaymentOverride.Predict]: 'predict',
-  };
 
 /**
  * Maps a keyring type to the analytics account category. Never returns an
