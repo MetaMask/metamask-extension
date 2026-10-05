@@ -299,12 +299,7 @@ class HeaderNavbar {
     } catch {
       await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     }
-    try {
-      await this.driver.findVisibleElement(this.drawerBackButton);
-    } catch {
-      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
-      await this.driver.findVisibleElement(this.drawerBackButton);
-    }
+    await this.driver.findVisibleElement(this.drawerBackButton);
   }
 
   async openGlobalNetworksMenu({
