@@ -30,6 +30,7 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
   'QR_SYNC_ENABLED',
+  'MPC_KEYRING_ENABLED',
   'COMPLIANCE_API_URL',
 ];
 
@@ -56,6 +57,7 @@ function getVariablesForSetEnvironmentVariables() {
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
     QR_SYNC_ENABLED: 'false',
+    MPC_KEYRING_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
 

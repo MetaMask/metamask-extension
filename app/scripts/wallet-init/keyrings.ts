@@ -17,10 +17,15 @@ import {
 } from '@metamask/eth-ledger-bridge-keyring';
 import { LedgerKeyring as LedgerKeyringV2 } from '@metamask/eth-ledger-bridge-keyring/v2';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
+import { getIsMpcKeyringIncludedInBuild } from '../../../shared/lib/environment';
 import {
   buildMoneyKeyringBuilder,
   buildMoneyKeyringV2Builder,
 } from '../lib/money/money-keyring-builder';
+import {
+  buildMpcKeyringBuilder,
+  buildMpcKeyringV2Builder,
+} from '../lib/mpc-keyring/mpc-keyring-builder';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { TrezorMv2Bridge } from '../lib/offscreen-bridge/trezor-mv2-bridge';
@@ -100,7 +105,7 @@ function buildHardwareV2Builder<Wrapper, Legacy>(
  * @returns The V2 keyring builders to register with the `KeyringController`.
  */
 export function getKeyringV2Builders(): KeyringV2Builder[] {
-  return [
+  const builders = [
     buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
     buildHardwareV2Builder(LedgerKeyringV2, LedgerKeyring.type),
     buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
@@ -114,6 +119,15 @@ export function getKeyringV2Builders(): KeyringV2Builder[] {
     // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
     snapKeyringV2Builder(),
   ];
+
+  // The MPC keyring is fenced behind the `MPC_KEYRING_ENABLED` compile-time
+  // gate while the feature is unreleased, for the same reason as in
+  // `getKeyringBuilders` above. See `buildMpcKeyringBuilder`.
+  if (getIsMpcKeyringIncludedInBuild()) {
+    builders.push(buildMpcKeyringV2Builder());
+  }
+
+  return builders;
 }
 
 /**
@@ -206,6 +220,14 @@ export function getKeyringBuilders(
       getSnapKeyringV2BuilderMessenger(messenger),
     ),
   );
+
+  // The MPC keyring is fenced behind the `MPC_KEYRING_ENABLED` compile-time
+  // gate while the feature is unreleased: no released build can yet hold an
+  // MPC keyring in its vault, so a build without the flag never needs to
+  // recognize the type. See `buildMpcKeyringBuilder`.
+  if (getIsMpcKeyringIncludedInBuild()) {
+    keyrings.push(buildMpcKeyringBuilder());
+  }
 
   return keyrings;
 }

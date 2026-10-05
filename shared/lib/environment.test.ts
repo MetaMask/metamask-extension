@@ -5,6 +5,7 @@ import {
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   getIsBasicFunctionalityConsolidationEnabledInBuild,
+  getIsMpcKeyringIncludedInBuild,
   isInE2eTest,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
@@ -209,6 +210,33 @@ describe('getIsNewHardwareWalletOnboardingEnabled', () => {
   it('returns false when NEW_HARDWARE_WALLET_ONBOARDING is undefined', () => {
     delete process.env.NEW_HARDWARE_WALLET_ONBOARDING;
     expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(false);
+  });
+});
+
+describe('getIsMpcKeyringIncludedInBuild', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.MPC_KEYRING_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.MPC_KEYRING_ENABLED = originalValue;
+  });
+
+  it('returns true when MPC_KEYRING_ENABLED is "true"', () => {
+    process.env.MPC_KEYRING_ENABLED = 'true';
+    expect(getIsMpcKeyringIncludedInBuild()).toBe(true);
+  });
+
+  it('returns false when MPC_KEYRING_ENABLED is "false"', () => {
+    process.env.MPC_KEYRING_ENABLED = 'false';
+    expect(getIsMpcKeyringIncludedInBuild()).toBe(false);
+  });
+
+  it('returns false when MPC_KEYRING_ENABLED is undefined', () => {
+    delete process.env.MPC_KEYRING_ENABLED;
+    expect(getIsMpcKeyringIncludedInBuild()).toBe(false);
   });
 });
 

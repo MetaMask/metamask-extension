@@ -126,6 +126,11 @@ TEST_SRP_2=
 ; Entry points to connecting remain unchanged regardless of this flag.
 NEW_HARDWARE_WALLET_ONBOARDING='false'
 
+; Set this to `true` to register the MPC keyring builder with the
+; KeyringController (compile-time gate, see builds.yml). Fenced while the
+; feature is unreleased.
+MPC_KEYRING_ENABLED='false'
+
 ; Set this to `true` to force enforced simulations to apply whenever a
 ; transaction has balance changes, bypassing the trust signal check.
 ; Intended for local development and QA only.
