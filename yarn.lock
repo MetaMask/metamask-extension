@@ -5961,7 +5961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chomp-api-service@npm:^4.0.2":
+"@metamask/chomp-api-service@npm:4.0.2":
   version: 4.0.2
   resolution: "@metamask/chomp-api-service@npm:4.0.2"
   dependencies:
@@ -5986,6 +5986,20 @@ __metadata:
     "@metamask/utils": "npm:^11.12.0"
     "@tanstack/query-core": "npm:^5.62.16"
   checksum: 10/8fbd5c985d130110f4ee4e1cb08e2c33f7598736f5ba53039671c1ebda0b2c9670fac7b9ad97b9da57e2f02ad3b2fb7e9c69575f769a8bb3d7bc29a5a8aa9e55
+  languageName: node
+  linkType: hard
+
+"@metamask/chomp-api-service@patch:@metamask/chomp-api-service@npm%3A4.0.2#~/.yarn/patches/@metamask-chomp-api-service-npm-4.0.2-c078e85d09.patch":
+  version: 4.0.2
+  resolution: "@metamask/chomp-api-service@patch:@metamask/chomp-api-service@npm%3A4.0.2#~/.yarn/patches/@metamask-chomp-api-service-npm-4.0.2-c078e85d09.patch::version=4.0.2&hash=b7db1f"
+  dependencies:
+    "@metamask/base-data-service": "npm:^1.0.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
+    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^11.12.0"
+    "@tanstack/query-core": "npm:^5.62.16"
+  checksum: 10/cd48e9897fba3dc6e5fdcf66e30bfb425aa9a48612d001f6a7481f706c700aa458235446992ca34e636641d610c7497826abbce57afb2f3cbb8dfdbb03b5a49e
   languageName: node
   linkType: hard
 
@@ -6726,7 +6740,7 @@ __metadata:
 
 "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz#./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::hash=28dbae&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-mpc-keyring@file:./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz#./vendor/mpc/metamask-eth-mpc-keyring-0.0.0.tgz::hash=4b3eac&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^9.0.0"
@@ -6735,7 +6749,7 @@ __metadata:
     "@metamask/mfa-wallet-e2ee": "npm:^0.0.0"
     "@metamask/mfa-wallet-network": "npm:^0.0.0"
     "@metamask/mfa-wallet-util": "npm:^0.0.0"
-  checksum: 10/2a7c1c697be66cd51ccdb64b5513928a0285c7a4b4560ba8a92f3c7cb4e8c2ce2a477a641c6d8503651fe8cb250b7b611ba2ca9668c182ca050502555b3a1295
+  checksum: 10/a23de7d39b0b6701dd559647239cb50a0d92309d925c627fa924227d5e3764a6cb24999336723e5a7f617a2d2b357ffad6b642306e9b5c260051669d4819ef2e
   languageName: node
   linkType: hard
 
@@ -32195,7 +32209,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/browser-playground": "npm:0.8.1"
     "@metamask/chain-agnostic-permission": "npm:^1.6.2"
-    "@metamask/chomp-api-service": "npm:^4.0.2"
+    "@metamask/chomp-api-service": "patch:@metamask/chomp-api-service@npm%3A4.0.2#~/.yarn/patches/@metamask-chomp-api-service-npm-4.0.2-c078e85d09.patch"
     "@metamask/claims-controller": "npm:^0.6.1"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.10.0"

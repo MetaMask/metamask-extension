@@ -1,0 +1,57 @@
+diff --git a/dist/chomp-api-service.cjs b/dist/chomp-api-service.cjs
+index b97fa1827f1ae1f45377eab8e4406ac30c34f2d8..243a3767895de4b9a6c99be983f5aa0442d67f10 100644
+--- a/dist/chomp-api-service.cjs
++++ b/dist/chomp-api-service.cjs
+@@ -119,7 +119,7 @@ const ServiceDetailsProtocolStruct = (0, superstruct_1.type)({
+         tokenDecimals: (0, superstruct_1.number)(),
+     })),
+     adapterAddress: utils_1.StrictHexStruct,
+-    intentTypes: (0, superstruct_1.array)((0, superstruct_1.enums)(['cash-deposit', 'cash-withdrawal'])),
++    intentTypes: (0, superstruct_1.array)((0, superstruct_1.enums)(['cash-deposit', 'cash-withdrawal', 'cash-deposit-premium', 'cash-withdrawal-premium'])),
+ });
+ const ServiceDetailsResponseStruct = (0, superstruct_1.type)({
+     auth: (0, superstruct_1.type)({
+diff --git a/dist/chomp-api-service.mjs b/dist/chomp-api-service.mjs
+index 3347b56f2ea3a269e6ac707277e5a4ec9f91cae8..44abb10918b1133c423a5058e8b673b5adf942e8 100644
+--- a/dist/chomp-api-service.mjs
++++ b/dist/chomp-api-service.mjs
+@@ -116,7 +116,12 @@ const ServiceDetailsProtocolStruct = type({
+         tokenDecimals: number(),
+     })),
+     adapterAddress: StrictHexStruct,
+-    intentTypes: array(enums(['cash-deposit', 'cash-withdrawal'])),
++    intentTypes: array(enums([
++        'cash-deposit',
++        'cash-withdrawal',
++        'cash-deposit-premium',
++        'cash-withdrawal-premium',
++    ])),
+ });
+ const ServiceDetailsResponseStruct = type({
+     auth: type({
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index d82bcbfd4d62d19c13c84a3a4c1d8253b9339339..b2130e4c831852c0db5f28b443143ea5bb13ff72 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -147,7 +147,7 @@ export type ServiceDetailsSupportedToken = {
+ export type ServiceDetailsProtocol = {
+     supportedTokens: ServiceDetailsSupportedToken[];
+     adapterAddress: Hex;
+-    intentTypes: ('cash-deposit' | 'cash-withdrawal')[];
++    intentTypes: ('cash-deposit' | 'cash-withdrawal' | 'cash-deposit-premium' | 'cash-withdrawal-premium')[];
+ };
+ export type ServiceDetailsChain = {
+     autoDepositDelegate: Hex;
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+index 7dc3ace8530d0e9c1aff8827ff958268efd38b69..4013f53c7b13e09cbbf65c7508955c326a85e21b 100644
+--- a/dist/types.d.mts
++++ b/dist/types.d.mts
+@@ -147,7 +147,7 @@ export type ServiceDetailsSupportedToken = {
+ export type ServiceDetailsProtocol = {
+     supportedTokens: ServiceDetailsSupportedToken[];
+     adapterAddress: Hex;
+-    intentTypes: ('cash-deposit' | 'cash-withdrawal')[];
++    intentTypes: ('cash-deposit' | 'cash-withdrawal' | 'cash-deposit-premium' | 'cash-withdrawal-premium')[];
+ };
+ export type ServiceDetailsChain = {
+     autoDepositDelegate: Hex;

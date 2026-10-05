@@ -352,7 +352,8 @@
     "@metamask/ramps-controller": "^22.0.0",
     "@metamask/transaction-controller@npm:^70.0.0": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
     "@metamask/transaction-controller@npm:^70.0.1": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
-    "@metamask/transaction-controller@npm:^70.1.0": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch"
+    "@metamask/transaction-controller@npm:^70.1.0": "patch:@metamask/transaction-controller@npm%3A70.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-70.1.0-22462e4aa3.patch",
+    "@metamask/chomp-api-service@npm:^4.0.2": "patch:@metamask/chomp-api-service@npm%3A4.0.2#~/.yarn/patches/@metamask-chomp-api-service-npm-4.0.2-c078e85d09.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -401,7 +402,7 @@
     "@metamask/bridge-status-controller": "^76.3.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.6.2",
-    "@metamask/chomp-api-service": "^4.0.2",
+    "@metamask/chomp-api-service": "patch:@metamask/chomp-api-service@npm%3A4.0.2#~/.yarn/patches/@metamask-chomp-api-service-npm-4.0.2-c078e85d09.patch",
     "@metamask/claims-controller": "^0.6.1",
     "@metamask/client-controller": "^1.0.0",
     "@metamask/client-utils": "^2.0.2",
