@@ -18,6 +18,7 @@ import {
   DISCOVER_SEARCH_STALE_TIME_MS,
 } from './constants';
 import type { TokenSearchMarketResult } from './types';
+import { useDiscoverTokenSecurityDataEnabled } from './useDiscoverTokenSecurityDataEnabled';
 
 export type UseDiscoverCryptoSearchOptions = {
   query: string;
@@ -116,6 +117,7 @@ export const useDiscoverCryptoSearch = ({
   const trimmedQuery = query.trim();
   const isSearch = trimmedQuery.length > 0;
   const chainIds = useDiscoverSearchChainIds();
+  const includeTokenSecurityData = useDiscoverTokenSecurityDataEnabled();
 
   const trendingQuery = useQuery<TrendingAsset[], Error>({
     queryKey: [
@@ -123,6 +125,7 @@ export const useDiscoverCryptoSearch = ({
       'crypto',
       'trending',
       chainIds,
+      includeTokenSecurityData,
     ] as const,
     queryFn: async (): Promise<TrendingAsset[]> =>
       getTrendingTokens({
@@ -130,7 +133,7 @@ export const useDiscoverCryptoSearch = ({
         sort: 'h24_trending',
         minLiquidity: 200_000,
         minVolume24hUsd: 1_000_000,
-        includeTokenSecurityData: true,
+        ...(includeTokenSecurityData ? { includeTokenSecurityData: true } : {}),
       }),
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
@@ -144,13 +147,14 @@ export const useDiscoverCryptoSearch = ({
       'search',
       trimmedQuery,
       chainIds,
+      includeTokenSecurityData,
     ] as const,
     queryFn: async ({ pageParam }): Promise<CryptoSearchPage> => {
       const response = await searchTokens(chainIds, trimmedQuery, {
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
         includeMarketData: true,
-        includeTokenSecurityData: true,
+        ...(includeTokenSecurityData ? { includeTokenSecurityData: true } : {}),
       });
 
       if (response.error) {

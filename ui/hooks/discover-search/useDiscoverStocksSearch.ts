@@ -14,6 +14,7 @@ import {
   DISCOVER_SEARCH_STALE_TIME_MS,
   DISCOVER_STOCKS_CHAIN_IDS,
 } from './constants';
+import { useDiscoverTokenSecurityDataEnabled } from './useDiscoverTokenSecurityDataEnabled';
 
 export type UseDiscoverStocksSearchOptions = {
   query: string;
@@ -68,6 +69,7 @@ export const useDiscoverStocksSearch = ({
 }: UseDiscoverStocksSearchOptions): UseDiscoverStocksSearchResult => {
   const trimmedQuery = query.trim();
   const hasQuery = trimmedQuery.length > 0;
+  const includeTokenSecurityData = useDiscoverTokenSecurityDataEnabled();
 
   // Empty query: Ethereum-only preview (matches mobile stocks feed).
   // Search: Ethereum + BNB so users can find stocks across supported RWA chains.
@@ -83,6 +85,7 @@ export const useDiscoverStocksSearch = ({
       'stocks',
       trimmedQuery,
       chainIds,
+      includeTokenSecurityData,
     ] as const,
     queryFn: async ({ pageParam }): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
@@ -91,7 +94,7 @@ export const useDiscoverStocksSearch = ({
         sortBy: 'price_change_desc',
         limit: DISCOVER_SEARCH_PAGE_SIZE,
         after: pageParam,
-        includeTokenSecurityData: true,
+        ...(includeTokenSecurityData ? { includeTokenSecurityData: true } : {}),
       });
 
       const data = response.data.map(normalizeRwaToken);

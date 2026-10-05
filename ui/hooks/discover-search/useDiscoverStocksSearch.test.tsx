@@ -1,15 +1,28 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchRwas } from '@metamask/assets-controllers';
 
+import { getUseExternalServices } from '../../selectors';
+import { getIsSecurityTrustTdpEnabled } from '../../selectors/multichain/feature-flags';
 import { useDiscoverStocksSearch } from './useDiscoverStocksSearch';
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
 
 jest.mock('@metamask/assets-controllers', () => ({
   fetchRwas: jest.fn(),
 }));
 
 const mockFetchRwas = jest.mocked(fetchRwas);
+const mockUseSelector = jest.mocked(useSelector);
+
+const selectorState = {
+  allowExternalServices: true,
+  isSecurityTrustEnabled: true,
+};
 
 describe('useDiscoverStocksSearch', () => {
   const createWrapper = () => {
@@ -31,6 +44,17 @@ describe('useDiscoverStocksSearch', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    selectorState.allowExternalServices = true;
+    selectorState.isSecurityTrustEnabled = true;
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getUseExternalServices) {
+        return selectorState.allowExternalServices;
+      }
+      if (selector === getIsSecurityTrustTdpEnabled) {
+        return selectorState.isSecurityTrustEnabled;
+      }
+      return undefined;
+    });
   });
 
   it('loads and merges the next RWA page using the returned cursor', async () => {
@@ -130,5 +154,40 @@ describe('useDiscoverStocksSearch', () => {
     expect(result.current.data[0].securityData).toStrictEqual({
       resultType: 'Verified',
     });
+  });
+
+  it('omits token security data when basic functionality is off', async () => {
+    selectorState.allowExternalServices = false;
+    mockFetchRwas.mockResolvedValue({
+      count: 1,
+      totalCount: 1,
+      data: [
+        {
+          assetId: 'eip155:1/erc20:0xstock',
+          name: 'Stock one',
+          symbol: 'STK1',
+          decimals: 18,
+          rwaData: {
+            price: '1',
+            priceChange: '1',
+            marketCap: 1,
+            aggregatedUsdVolume: 1,
+          },
+        },
+      ],
+      pageInfo: { hasNextPage: false, nextCursor: null },
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverStocksSearch({ query: '' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(mockFetchRwas.mock.calls[0][0]).not.toHaveProperty(
+      'includeTokenSecurityData',
+    );
+    expect(result.current.data[0].securityData).toBeUndefined();
   });
 });

@@ -5,7 +5,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getTrendingTokens, searchTokens } from '@metamask/assets-controllers';
 
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { DISCOVER_SEARCH_CHAIN_IDS } from './constants';
+import { getUseExternalServices } from '../../selectors';
+import {
+  getIsSecurityTrustTdpEnabled,
+  getIsStellarSupportEnabled,
+} from '../../selectors/multichain/feature-flags';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
 
 jest.mock('react-redux', () => ({
@@ -20,6 +24,12 @@ jest.mock('@metamask/assets-controllers', () => ({
 const mockUseSelector = jest.mocked(useSelector);
 const mockGetTrendingTokens = jest.mocked(getTrendingTokens);
 const mockSearchTokens = jest.mocked(searchTokens);
+
+const selectorState = {
+  isStellarSupportEnabled: false,
+  allowExternalServices: true,
+  isSecurityTrustEnabled: true,
+};
 
 describe('useDiscoverCryptoSearch', () => {
   const createWrapper = () => {
@@ -41,7 +51,21 @@ describe('useDiscoverCryptoSearch', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSelector.mockReturnValue(false);
+    selectorState.isStellarSupportEnabled = false;
+    selectorState.allowExternalServices = true;
+    selectorState.isSecurityTrustEnabled = true;
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getIsStellarSupportEnabled) {
+        return selectorState.isStellarSupportEnabled;
+      }
+      if (selector === getUseExternalServices) {
+        return selectorState.allowExternalServices;
+      }
+      if (selector === getIsSecurityTrustTdpEnabled) {
+        return selectorState.isSecurityTrustEnabled;
+      }
+      return undefined;
+    });
     mockGetTrendingTokens.mockResolvedValue([]);
   });
 
@@ -79,7 +103,7 @@ describe('useDiscoverCryptoSearch', () => {
   });
 
   it('includes Stellar in trending chain IDs when Stellar support is enabled', async () => {
-    mockUseSelector.mockReturnValue(true);
+    selectorState.isStellarSupportEnabled = true;
     mockGetTrendingTokens.mockResolvedValue([]);
 
     const { result } = renderHook(
@@ -97,7 +121,7 @@ describe('useDiscoverCryptoSearch', () => {
   });
 
   it('excludes Stellar in trending chain IDs when Stellar support is off', async () => {
-    mockUseSelector.mockReturnValue(false);
+    selectorState.isStellarSupportEnabled = false;
     mockGetTrendingTokens.mockResolvedValue([]);
 
     const { result } = renderHook(
@@ -336,5 +360,116 @@ describe('useDiscoverCryptoSearch', () => {
     expect(result.current.data.map(({ symbol }) => symbol)).toStrictEqual([
       'ETH',
     ]);
+  });
+
+  it('omits token security data when basic functionality is off', async () => {
+    selectorState.allowExternalServices = false;
+    mockGetTrendingTokens.mockResolvedValue([
+      {
+        assetId: 'eip155:1/slip44:60',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        decimals: 18,
+        price: '2500',
+        marketCap: 1,
+        aggregatedUsdVolume: 1,
+        securityData: { resultType: 'Verified' },
+      },
+    ] as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: '' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockSearchTokens.mock.calls[0][2]).not.toHaveProperty(
+      'includeTokenSecurityData',
+    );
+    expect(mockGetTrendingTokens.mock.calls[0][0]).not.toHaveProperty(
+      'includeTokenSecurityData',
+    );
+    expect(result.current.data[0].securityData).toBeUndefined();
+  });
+
+  it('omits token security data from search when Security and Trust is off', async () => {
+    selectorState.isSecurityTrustEnabled = false;
+    mockSearchTokens.mockResolvedValue({
+      count: 1,
+      totalCount: 1,
+      data: [
+        {
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          price: '2500',
+          marketCap: 1,
+          aggregatedUsdVolume: 1,
+        },
+      ],
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: 'eth' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockSearchTokens.mock.calls[0][2]).not.toHaveProperty(
+      'includeTokenSecurityData',
+    );
+    expect(mockGetTrendingTokens.mock.calls[0][0]).not.toHaveProperty(
+      'includeTokenSecurityData',
+    );
+    expect(result.current.data[0].securityData).toBeUndefined();
+  });
+
+  it('includes token security data when basic functionality and Security and Trust are on', async () => {
+    selectorState.allowExternalServices = true;
+    selectorState.isSecurityTrustEnabled = true;
+    mockSearchTokens.mockResolvedValue({
+      count: 1,
+      totalCount: 1,
+      data: [
+        {
+          assetId: 'eip155:1/slip44:60',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          decimals: 18,
+          price: '2500',
+          marketCap: 1,
+          aggregatedUsdVolume: 1,
+          securityData: { resultType: 'Verified' },
+        },
+      ],
+    } as never);
+
+    const { result } = renderHook(
+      () => useDiscoverCryptoSearch({ query: 'eth' }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(mockGetTrendingTokens).toHaveBeenCalledWith(
+      expect.objectContaining({ includeTokenSecurityData: true }),
+    );
+    expect(mockSearchTokens).toHaveBeenCalledWith(
+      expect.any(Array),
+      'eth',
+      expect.objectContaining({ includeTokenSecurityData: true }),
+    );
+    expect(result.current.data[0].securityData).toStrictEqual({
+      resultType: 'Verified',
+    });
   });
 });
