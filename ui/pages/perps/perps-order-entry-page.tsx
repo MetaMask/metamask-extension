@@ -119,7 +119,6 @@ import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { PerpsServiceInterruptionBanner } from '../../components/app/perps/perps-service-interruption-banner';
 import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
@@ -2486,17 +2485,11 @@ const PerpsOrderEntryPage = () => {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
   if (!marketCatalogReady) {
-    return (
-      <>
-        <PerpsServiceInterruptionBanner />
-        <PerpsDetailPageSkeleton />
-      </>
-    );
+    return <PerpsDetailPageSkeleton />;
   }
   if (!market) {
     return (
       <Box className="main-container asset__container">
-        <PerpsServiceInterruptionBanner />
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
@@ -2838,7 +2831,6 @@ const PerpsOrderEntryPage = () => {
       )}
       data-testid="parent-selector-perps-order-entry"
     >
-      <PerpsServiceInterruptionBanner />
       <OrderEntryHeader
         displayName={displayName}
         displayPrice={displayPrice}

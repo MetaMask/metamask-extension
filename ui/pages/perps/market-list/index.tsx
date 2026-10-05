@@ -73,7 +73,6 @@ import { usePerpsEventTracking } from '../../../hooks/perps';
 import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { MarketRow } from '../../../components/app/perps/market-row';
-import { PerpsServiceInterruptionBanner } from '../../../components/app/perps/perps-service-interruption-banner';
 import { PerpsCategoryRail } from '../../../components/app/perps/perps-market-categories';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
@@ -775,7 +774,6 @@ export const MarketListView = () => {
       flexDirection={BoxFlexDirection.Column}
       data-testid="parent-selector-perps-market-list"
     >
-      <PerpsServiceInterruptionBanner />
       {/* Header: back, title, and the search / watchlist accessories */}
       <Box
         className="border-b border-border-muted px-4 py-3"

@@ -120,7 +120,6 @@ import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
 import { ClosePositionModal } from '../../components/app/perps/close-position';
 import { CancelOrderModal } from '../../components/app/perps/cancel-order';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { PerpsServiceInterruptionBanner } from '../../components/app/perps/perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import type { Order } from '../../components/app/perps/types';
 import {
@@ -1085,19 +1084,13 @@ const PerpsMarketDetailPage = () => {
 
   // Show loading state while market data is being fetched
   if (!marketCatalogReady) {
-    return (
-      <>
-        <PerpsServiceInterruptionBanner />
-        <PerpsDetailPageSkeleton />
-      </>
-    );
+    return <PerpsDetailPageSkeleton />;
   }
 
   // If market not found after loading, show error state
   if (!market) {
     return (
       <Box className="main-container asset__container">
-        <PerpsServiceInterruptionBanner />
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-market-detail-back-button"
@@ -1193,7 +1186,6 @@ const PerpsMarketDetailPage = () => {
       className="main-container asset__container"
       data-testid="parent-selector-perps-market-detail"
     >
-      <PerpsServiceInterruptionBanner />
       {/* Sticky identity header — large price lives in the scroll flow below. */}
       <Box
         ref={setStickyHeaderEl}
