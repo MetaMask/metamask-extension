@@ -105,7 +105,7 @@ export const SecurityTrustInlineBadge = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      className={`inline-flex shrink-0 self-start items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
+      className={`inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
       data-testid={onClick ? undefined : testId}
     >
       <Icon name={badge.icon} size={IconSize.Sm} color={badge.iconColor} />

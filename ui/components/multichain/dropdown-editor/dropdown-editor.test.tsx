@@ -1,47 +1,22 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DropdownEditor, DropdownEditorStyle } from './dropdown-editor';
-
-jest.mock('../../component-library', () => {
-  const actual = jest.requireActual('../../component-library');
-  const react = jest.requireActual('react');
-  return {
-    ...actual,
-    Popover: ({
-      children,
-      isOpen,
-      role,
-      onPressEscKey,
-    }: {
-      children: React.ReactNode;
-      isOpen: boolean;
-      role?: React.AriaRole;
-      onPressEscKey?: () => void;
-    }) =>
-      isOpen
-        ? react.createElement(
-            'div',
-            {
-              role,
-              onKeyDown: (event: React.KeyboardEvent) => {
-                if (event.key === 'Escape') {
-                  onPressEscKey?.();
-                }
-              },
-            },
-            children,
-          )
-        : null,
-  };
-});
 
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
 const ITEMS = ['First endpoint', 'Second endpoint'];
+
+// Floating UI positions the popover asynchronously, so flush that update
+// inside act to keep the render tree settled before asserting.
+const openDropdown = async (trigger: HTMLElement) => {
+  await act(async () => {
+    fireEvent.click(trigger);
+  });
+};
 
 describe('DropdownEditor', () => {
   const onItemSelected = jest.fn();
@@ -90,11 +65,11 @@ describe('DropdownEditor', () => {
     expect(screen.getByText('First endpoint')).toBeInTheDocument();
   });
 
-  it('selects an item and closes the popover', () => {
+  it('selects an item and closes the popover', async () => {
     renderEditor();
 
     const trigger = screen.getByTestId('rpc-dropdown');
-    fireEvent.click(trigger);
+    await openDropdown(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
     expect(screen.getByRole('listbox')).toHaveClass(
@@ -109,30 +84,30 @@ describe('DropdownEditor', () => {
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('closes the popover when Escape is pressed', () => {
+  it('closes the popover when Escape is pressed', async () => {
     renderEditor();
 
     const trigger = screen.getByTestId('rpc-dropdown');
-    fireEvent.click(trigger);
+    await openDropdown(trigger);
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
 
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('deletes an item without selecting it', () => {
+  it('deletes an item without selecting it', async () => {
     renderEditor();
 
-    fireEvent.click(screen.getByTestId('rpc-dropdown'));
+    await openDropdown(screen.getByTestId('rpc-dropdown'));
     fireEvent.click(screen.getByTestId('delete-item-1'));
 
     expect(onItemDeleted).toHaveBeenCalledWith(1, 0);
     expect(onItemSelected).not.toHaveBeenCalled();
   });
 
-  it('opens the add-item flow', () => {
+  it('opens the add-item flow', async () => {
     renderEditor();
 
-    fireEvent.click(screen.getByTestId('rpc-dropdown'));
+    await openDropdown(screen.getByTestId('rpc-dropdown'));
     const addButton = screen.getByRole('button', {
       name: messages.addRpcUrl.message,
     });
