@@ -6,10 +6,13 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { getAccountTypeForKeyring } from '../../../../../shared/lib/selectors/keyring';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsHardwareWalletDeviceType,
 } from '../../../../../shared/constants/metametrics';
+import { keyringTypeToHardwareWalletType } from '../../../../contexts/hardware-wallets/utils';
+import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
   selectPaymentOverrideByTransactionId,
@@ -41,18 +44,6 @@ export type PaySourceAccountType =
   | (typeof PAYMENT_OVERRIDE_SOURCES)[PaymentOverride]
   | typeof CRYPTO_PAY_SOURCE;
 
-const KEYRING_SOURCE_TYPES: Record<string, PaySourceAccountType> = {
-  [KeyringTypes.money]: MONEY_ACCOUNT_PAY_SOURCE,
-  [KeyringTypes.hd]: MetaMetricsEventAccountType.Default,
-  [KeyringTypes.simple]: MetaMetricsEventAccountType.Imported,
-  [KeyringTypes.snap]: MetaMetricsEventAccountType.Snap,
-  [KeyringTypes.ledger]: MetaMetricsHardwareWalletDeviceType.Ledger,
-  [KeyringTypes.trezor]: MetaMetricsHardwareWalletDeviceType.Trezor,
-  [KeyringTypes.lattice]: MetaMetricsHardwareWalletDeviceType.Lattice,
-  [KeyringTypes.qr]: MetaMetricsHardwareWalletDeviceType.QrHardware,
-  [KeyringTypes.oneKey]: MetaMetricsHardwareWalletDeviceType.QrHardware,
-};
-
 /**
  * Maps a keyring type to the analytics account category. Never returns an
  * address or other identifying data.
@@ -62,10 +53,54 @@ const KEYRING_SOURCE_TYPES: Record<string, PaySourceAccountType> = {
 export function getPaySourceAccountType(
   keyringType?: string,
 ): PaySourceAccountType {
-  return (
-    (keyringType ? KEYRING_SOURCE_TYPES[keyringType] : undefined) ??
-    CRYPTO_PAY_SOURCE
+  if (
+    !keyringType ||
+    !Object.values<string>(KeyringTypes).includes(keyringType)
+  ) {
+    return CRYPTO_PAY_SOURCE;
+  }
+
+  if (keyringType === KeyringTypes.money) {
+    return MONEY_ACCOUNT_PAY_SOURCE;
+  }
+
+  const hardwareWalletType = keyringTypeToHardwareWalletType(keyringType);
+  if (hardwareWalletType) {
+    return getHardwarePaySourceAccountType(hardwareWalletType);
+  }
+
+  const accountType = getAccountTypeForKeyring(
+    keyringType ? { type: keyringType } : undefined,
   );
+  switch (accountType) {
+    case 'default':
+      return MetaMetricsEventAccountType.Default;
+    case 'imported':
+      return MetaMetricsEventAccountType.Imported;
+    case 'snap':
+      return MetaMetricsEventAccountType.Snap;
+    default:
+      return CRYPTO_PAY_SOURCE;
+  }
+}
+
+function getHardwarePaySourceAccountType(
+  hardwareWalletType: HardwareWalletType,
+): MetaMetricsHardwareWalletDeviceType {
+  switch (hardwareWalletType) {
+    case HardwareWalletType.Ledger:
+      return MetaMetricsHardwareWalletDeviceType.Ledger;
+    case HardwareWalletType.Trezor:
+      return MetaMetricsHardwareWalletDeviceType.Trezor;
+    case HardwareWalletType.Lattice:
+      return MetaMetricsHardwareWalletDeviceType.Lattice;
+    case HardwareWalletType.OneKey:
+    case HardwareWalletType.Qr:
+    case HardwareWalletType.Unknown:
+      return MetaMetricsHardwareWalletDeviceType.QrHardware;
+    default:
+      return MetaMetricsHardwareWalletDeviceType.QrHardware;
+  }
 }
 
 /**
