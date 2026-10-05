@@ -1,6 +1,7 @@
 import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
+import type { JsMinifyOptions, TerserMangleOptions } from '@swc/types';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -102,20 +103,33 @@ export const extensionToJs = (filename: string) =>
   filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
 
 /**
+ * `mangle.disableCharFreq` is not declared in `@swc/types`' mangle options, but
+ * SWC reads it as `MangleOptions.disable_char_freq`. See `getMinimizers`.
+ */
+type SwcMangleOptions = TerserMangleOptions & { disableCharFreq?: boolean };
+type SwcMinifyOptions = Omit<JsMinifyOptions, 'mangle'> & {
+  mangle?: boolean | SwcMangleOptions;
+};
+
+/**
  * It gets minimizers for the webpack build.
  *
- * SWC mangling can still produce different `runtime.[contenthash].js` output
- * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
- * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
- * comparisons. Disabling mangling for the runtime chunk keeps it
- * content-stable while leaving mangling ON for all other chunks.
+ * By default SWC orders the one-letter names it assigns to variables by how
+ * often each letter already appears in the chunk, string literals included.
+ * The runtime chunk embeds the provisional content hashes of every other chunk
+ * (hex, so they contain `c` but never `l`) before webpack replaces them with
+ * the final ones, and anything that changes a provisional hash can therefore
+ * change which letter every variable gets. `runtime.[contenthash].js` came out
+ * differently for identical sources (short-name swaps such as `c`/`l`), which
+ * breaks the byte-for-byte rebuild check Firefox AMO reviewers run.
+ *
+ * `disableCharFreq` makes SWC use its fixed alphabet instead, so the names no
+ * longer depend on the chunk's contents. Mangling stays enabled everywhere.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
-  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
-  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
-    new TerserPlugin({
+    new TerserPlugin<SwcMinifyOptions>({
       // use SWC to minify (about 7x faster than Terser)
       minify: TerserPlugin.swcMinify,
       // terser-webpack-plugin defaults this to `true`, and since 5.6 it
@@ -125,23 +139,9 @@ export function getMinimizers() {
       extractComments: false,
       parallel: false,
       terserOptions: {
-        mangle: true,
+        mangle: { disableCharFreq: true },
       },
-      // do not minify snow or the runtime chunk (handled below).
-      exclude: [/snow\.prod/u, runtimeChunkRe],
-    }),
-    new TerserPlugin({
-      // use SWC to minify (about 7x faster than Terser)
-      minify: TerserPlugin.swcMinify,
-      // see the note on the minimizer above
-      extractComments: false,
-      parallel: false,
-      terserOptions: {
-        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
-        // content-stable.
-        mangle: false,
-      },
-      include: runtimeChunkRe,
+      // do not minify snow.
       exclude: /snow\.prod/u,
     }),
   ];
