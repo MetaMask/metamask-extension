@@ -862,6 +862,14 @@ export async function mockSmartTransactionRequestsBase(
 }
 
 export async function mockSentinelNetworks(mockServer: MockttpServer) {
+  const network = {
+    network: 'ethereum-mainnet',
+    confirmations: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    sendBundle: true,
+  };
+
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
@@ -869,15 +877,18 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
       return {
         ok: true,
         statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            cubistSigners: ['0x1111111111111111111111111111111111111111'],
-            sendBundle: true,
-          },
-        },
+        json: { '1': network },
+      };
+    });
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/network`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
       };
     });
 }
