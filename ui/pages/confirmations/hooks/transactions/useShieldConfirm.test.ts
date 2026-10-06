@@ -12,6 +12,14 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockNavigate = jest.fn();
+const mockCaptureShieldCryptoConfirmationEvent = jest.fn();
+
+jest.mock('../../../../hooks/shield/metrics/useSubscriptionMetrics', () => ({
+  useSubscriptionMetrics: () => ({
+    captureShieldCryptoConfirmationEvent:
+      mockCaptureShieldCryptoConfirmationEvent,
+  }),
+}));
 
 describe('useShieldConfirm', () => {
   beforeEach(() => {
@@ -26,7 +34,7 @@ describe('useShieldConfirm', () => {
 
       const txMeta = {
         type: TransactionType.shieldSubscriptionApprove,
-      } as TransactionMeta;
+      } as unknown as TransactionMeta;
 
       result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(
         txMeta,
@@ -42,7 +50,7 @@ describe('useShieldConfirm', () => {
 
       const txMeta = {
         type: TransactionType.contractInteraction,
-      } as TransactionMeta;
+      } as unknown as TransactionMeta;
 
       result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(
         txMeta,
@@ -65,6 +73,7 @@ describe('useShieldConfirm', () => {
       );
 
       expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+      expect(mockCaptureShieldCryptoConfirmationEvent).not.toHaveBeenCalled();
     });
 
     it('does not navigate when transaction type is not shieldSubscriptionApprove', () => {
@@ -79,6 +88,53 @@ describe('useShieldConfirm', () => {
       );
 
       expect(mockNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('crypto confirmation metrics', () => {
+    it('tracks when the user rejects the Shield crypto confirmation', () => {
+      const txMeta = {
+        id: 'shield-approval-transaction',
+        type: TransactionType.shieldSubscriptionApprove,
+        chainId: '0x1',
+        isGasFeeSponsored: false,
+      } as unknown as TransactionMeta;
+      const { result } = renderHookWithProvider(() => useShieldConfirm());
+      mockCaptureShieldCryptoConfirmationEvent.mockClear();
+
+      result.current.handleShieldSubscriptionApprovalTransactionRejected(
+        txMeta,
+      );
+
+      expect(mockCaptureShieldCryptoConfirmationEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confirmationScreenStatus: 'rejected',
+          hasInsufficientGas: false,
+        }),
+      );
+    });
+
+    it('tracks the insufficient gas state passed by the confirmation screen', () => {
+      const txMeta = {
+        id: 'shield-approval-transaction',
+        type: TransactionType.shieldSubscriptionApprove,
+        chainId: '0x1',
+        isGasFeeSponsored: false,
+      } as unknown as TransactionMeta;
+      const { result } = renderHookWithProvider(() => useShieldConfirm());
+      mockCaptureShieldCryptoConfirmationEvent.mockClear();
+
+      result.current.handleShieldSubscriptionApprovalTransactionRejected(
+        txMeta,
+        true,
+      );
+
+      expect(mockCaptureShieldCryptoConfirmationEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confirmationScreenStatus: 'rejected',
+          hasInsufficientGas: true,
+        }),
+      );
     });
   });
 });
