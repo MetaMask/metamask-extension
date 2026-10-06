@@ -10,6 +10,10 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsHardwareWalletDeviceType,
+} from '../../../../../shared/constants/metametrics';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
@@ -137,8 +141,8 @@ describe('useTransactionPayMetrics', () => {
     jest.resetAllMocks();
 
     usePaySourceAccountMetricsMock.mockReturnValue({
-      presented: 'metamask',
-      selected: 'metamask',
+      presented: MetaMetricsEventAccountType.Default,
+      selected: MetaMetricsEventAccountType.Default,
     });
 
     useTransactionPayPrimaryRequiredTokenMock.mockReturnValue(undefined);
@@ -196,8 +200,8 @@ describe('useTransactionPayMetrics', () => {
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
     usePaySourceAccountMetricsMock.mockReturnValue({
-      presented: 'Ledger',
-      selected: 'Ledger',
+      presented: MetaMetricsHardwareWalletDeviceType.Ledger,
+      selected: MetaMetricsHardwareWalletDeviceType.Ledger,
     });
 
     renderHook(() => useTransactionPayMetrics(), {
