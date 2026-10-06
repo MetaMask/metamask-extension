@@ -1136,7 +1136,7 @@ describe('Onboarding Create Password', () => {
 
     const renderWithMetricsContext = (
       component: React.ReactElement,
-      store: ReturnType<typeof configureMockStore>,
+      store: ReturnType<ReturnType<typeof configureMockStore>>,
       metricsContext: ReturnType<typeof createMetricsContext>,
     ) =>
       renderWithProvider(
@@ -1269,7 +1269,7 @@ describe('Onboarding Create Password', () => {
 
     const renderWithMetricsContext = (
       component: React.ReactElement,
-      store: ReturnType<typeof configureMockStore>,
+      store: ReturnType<ReturnType<typeof configureMockStore>>,
       metricsContext: ReturnType<typeof createMetricsContext>,
     ) =>
       renderWithProvider(
@@ -1297,6 +1297,7 @@ describe('Onboarding Create Password', () => {
       fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
     };
 
+    // @ts-expect-error - it.each is a function
     it.each([
       [
         'SRP creation',
@@ -1325,7 +1326,11 @@ describe('Onboarding Create Password', () => {
       ],
     ])(
       'records a successful %s machine-time span',
-      async (_label, state, termsRequired) => {
+      async (
+        _label: string,
+        state: typeof mockState,
+        termsRequired: boolean,
+      ) => {
         const store = configureMockStore([thunk])(state);
         const metricsContext = createMetricsContext();
 

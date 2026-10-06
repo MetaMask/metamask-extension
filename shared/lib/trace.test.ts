@@ -561,13 +561,14 @@ describe('Trace', () => {
   describe('onboarding machine time', () => {
     const createSpanMock = () => {
       const setAttributeMock = jest.fn();
+      const endMock = jest.fn();
       const spanMock = {
-        end: jest.fn(),
+        end: endMock,
         setAttribute: setAttributeMock,
         spanContext: jest.fn(),
       } as unknown as Sentry.Span;
 
-      return { setAttributeMock, spanMock };
+      return { endMock, setAttributeMock, spanMock };
     };
 
     const queueSpans = (spans: ReturnType<typeof createSpanMock>[]) => {
@@ -591,7 +592,7 @@ describe('Trace', () => {
     };
 
     it('sums successful machine spans before ending the journey', () => {
-      expect.assertions(1);
+      expect.assertions(2);
       const journey = createSpanMock();
       queueSpans([
         journey,
@@ -623,6 +624,9 @@ describe('Trace', () => {
       endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 4_000 });
 
       expectMachineTime(journey, 1_700);
+      expect(journey.setAttributeMock.mock.invocationCallOrder[0]).toBeLessThan(
+        journey.endMock.mock.invocationCallOrder[0],
+      );
     });
 
     it('excludes failed and human-interaction spans', () => {
