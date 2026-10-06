@@ -33,7 +33,7 @@ const mockUseVirtualizer = jest.fn();
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
-const mockTrackUnifiedSwapBridgeEvent = jest.fn();
+const mockMessengerCall = jest.fn();
 
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
@@ -227,9 +227,9 @@ describe('BridgeInputGroup', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    mockTrackUnifiedSwapBridgeEvent.mockResolvedValue(undefined);
+    mockMessengerCall.mockResolvedValue(undefined);
     setBackgroundConnection({
-      trackUnifiedSwapBridgeEvent: mockTrackUnifiedSwapBridgeEvent,
+      messengerCall: mockMessengerCall,
       getStatePatches: jest.fn(),
     } as never);
     mockUseVirtualizer.mockReturnValue({
@@ -265,14 +265,17 @@ describe('BridgeInputGroup', () => {
       });
       await flushPromises();
 
-      expect(mockTrackUnifiedSwapBridgeEvent).toHaveBeenCalledWith(
-        UnifiedSwapBridgeEventName.AssetPickerOpened,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          asset_location: assetLocation,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
-        },
+      expect(mockMessengerCall).toHaveBeenCalledWith(
+        'BridgeController:trackUnifiedSwapBridgeEvent',
+        [
+          UnifiedSwapBridgeEventName.AssetPickerOpened,
+          {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            asset_location: assetLocation,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_id: FeatureId.UNIFIED_SWAP_BRIDGE,
+          },
+        ],
       );
     },
   );

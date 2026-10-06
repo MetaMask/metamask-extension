@@ -36,12 +36,10 @@ setBackgroundConnection({
   getStatePatches: jest.fn(),
   isSendBundleSupported: jest.fn(),
   isRelaySupported: jest.fn(),
-  resetState: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn(),
   gasFeeStartPolling: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
-  updateBridgeQuoteRequestParams: jest.fn(),
+  messengerCall: jest.fn(),
   getBearerToken: jest.fn(),
 });
 

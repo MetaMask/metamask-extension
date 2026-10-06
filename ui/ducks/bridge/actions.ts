@@ -89,7 +89,10 @@ const callBridgeControllerMethod = (
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, args);
+    await submitRequestToBackground('messengerCall', [
+      `BridgeController:${bridgeAction}`,
+      args,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 };

@@ -16,7 +16,7 @@ import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
 const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
-const mockResetBridgeState = jest.fn();
+const mockMessengerCall = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
@@ -57,9 +57,8 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
-  resetState: () => mockResetBridgeState(),
+  messengerCall: mockMessengerCall,
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   isRelaySupported: jest.fn().mockResolvedValue(true),
   isSendBundleSupported: jest.fn().mockResolvedValue(true),
@@ -130,7 +129,7 @@ describe('Bridge', () => {
     expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
+    expect(mockMessengerCall).toHaveBeenCalledTimes(0);
   });
 
   it('resets the bridge store and state when the Back button is clicked', async () => {
@@ -167,6 +166,10 @@ describe('Bridge', () => {
       fireEvent.click(backButton);
     });
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockMessengerCall).toHaveBeenCalledTimes(1);
+    expect(mockMessengerCall).toHaveBeenCalledWith(
+      'BridgeController:resetState',
+      [],
+    );
   });
 });
