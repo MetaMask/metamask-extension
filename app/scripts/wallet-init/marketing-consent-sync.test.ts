@@ -72,6 +72,7 @@ function setupSync({
   });
   const syncMessenger = {
     call,
+    registerActionHandler: jest.fn(),
     subscribe: jest.fn((event: string, handler: (state?: unknown) => void) => {
       handlers[event] = handler;
     }),
@@ -83,7 +84,14 @@ function setupSync({
   const { waitForMarketingConsentSync: waitForSync, refreshMarketingConsent } =
     setupMarketingConsentSync({ messenger });
 
-  return { handlers, call, delegate, waitForSync, refreshMarketingConsent };
+  return {
+    handlers,
+    call,
+    delegate,
+    registerActionHandler: syncMessenger.registerActionHandler,
+    waitForSync,
+    refreshMarketingConsent,
+  };
 }
 
 describe('setupMarketingConsentSync', () => {
@@ -113,6 +121,21 @@ describe('setupMarketingConsentSync', () => {
         marketingConsentEnabled: false,
       },
       'extension',
+    );
+  });
+
+  it('registers the consent wait action on the messenger', async () => {
+    const { registerActionHandler } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+    });
+    expect(registerActionHandler).toHaveBeenCalledWith(
+      'MarketingConsentSync:waitForMarketingConsentSync',
+      expect.any(Function),
     );
   });
 

@@ -2519,8 +2519,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
-      waitForMarketingConsentSync:
-        this.marketingConsentSync.waitForMarketingConsentSync,
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),

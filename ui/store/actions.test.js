@@ -3867,11 +3867,11 @@ describe('Actions', () => {
     it('waits for AUS and refreshes local state after reconciliation', async () => {
       const store = mockStore();
       const setConsent = sinon.stub().resolves('analytics-id');
-      const waitForMarketingConsentSync = sinon.stub().resolves();
+      const messengerCall = sinon.stub().resolves();
       const getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection({
         setDataCollectionForMarketing: setConsent,
-        waitForMarketingConsentSync,
+        messengerCall,
         getStatePatches,
       });
 
@@ -3880,7 +3880,12 @@ describe('Actions', () => {
       );
 
       expect(setConsent.calledOnceWith(true)).toBe(true);
-      expect(waitForMarketingConsentSync.calledOnceWith(true)).toBe(true);
+      expect(
+        messengerCall.calledOnceWith(
+          'MarketingConsentSync:waitForMarketingConsentSync',
+          [true],
+        ),
+      ).toBe(true);
       expect(getStatePatches.calledOnce).toBe(true);
     });
   });

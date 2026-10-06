@@ -32,7 +32,11 @@ type SyncActions =
   | AnalyticsControllerOptInToMarketingAction
   | AnalyticsControllerOptOutOfMarketingAction
   | AuthenticationControllerGetStateAction
-  | KeyringControllerGetStateAction;
+  | KeyringControllerGetStateAction
+  | {
+      type: 'MarketingConsentSync:waitForMarketingConsentSync';
+      handler: (expectedConsent: boolean) => Promise<void>;
+    };
 
 type SyncEvents =
   | AnalyticsControllerStateChangeEvent
@@ -365,6 +369,11 @@ export function setupMarketingConsentSync({
       analyticsState,
     );
   };
+
+  syncMessenger.registerActionHandler(
+    'MarketingConsentSync:waitForMarketingConsentSync',
+    waitForMarketingConsentSync,
+  );
 
   return { waitForMarketingConsentSync, refreshMarketingConsent };
 }

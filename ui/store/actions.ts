@@ -4361,8 +4361,9 @@ export function setDataCollectionForMarketing(
     });
     if (waitForAus) {
       try {
-        await submitRequestToBackground('waitForMarketingConsentSync', [
-          dataCollectionPreference,
+        await submitRequestToBackground('messengerCall', [
+          'MarketingConsentSync:waitForMarketingConsentSync',
+          [dataCollectionPreference],
         ]);
       } finally {
         await forceUpdateMetamaskState(dispatch);
