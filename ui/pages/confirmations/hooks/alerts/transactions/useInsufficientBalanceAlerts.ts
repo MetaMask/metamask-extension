@@ -2,6 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,10 +13,8 @@ import {
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getNativeTokenCachedBalanceByChainIdSelector,
-  getUseTransactionSimulations,
-} from '../../../../../selectors';
+import { getUseTransactionSimulations } from '../../../../../selectors';
+import { getAccountTrackerControllerAccountsByChainId } from '../../../../../../shared/lib/selectors/assets-migration';
 import { hasMonadReserveBalanceViolation } from '../../../../../../shared/lib/monad-reserve-balance';
 import { sumHexes } from '../../../../../../shared/lib/conversion.utils';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
@@ -83,13 +82,13 @@ export function useInsufficientBalanceAlerts({
       (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
     ) ?? [];
 
-  const chainBalances = useSelector((state) =>
-    getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
-  ) as Record<Hex, Hex>;
-
+  const accountsByChainId = useSelector(
+    getAccountTrackerControllerAccountsByChainId,
+  );
   const balance =
-    chainId && Object.hasOwn(chainBalances ?? {}, chainId)
-      ? (chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK)
+    chainId && fromAddress
+      ? accountsByChainId?.[chainId]?.[toChecksumHexAddress(fromAddress)]
+          ?.balance
       : undefined;
 
   // Prefer the Monad reserve-balance alert over the generic "pay for network

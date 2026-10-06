@@ -1,14 +1,13 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
 import {
   hasMonadReserveBalanceRule,
   simulationIndicatesMonadReserveBalanceViolation,
 } from '../../../../../../shared/lib/monad-reserve-balance';
-import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 
 export function useIsMonadReserveViolation(): boolean {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useTransactionMetadataRequestOptional();
   const { chainId, simulationData, simulationFails } =
     currentConfirmation ?? {};
 

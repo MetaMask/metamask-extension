@@ -29,6 +29,10 @@ export const MONAD_RESERVE_BALANCE_WEI_HEX =
 
 const MONAD_RESERVE_BALANCE_WEI = 10n * 10n ** 18n;
 
+type HexString = Hex | string;
+type OptionalHexString = HexString | undefined;
+type OptionalNullableString = string | undefined | null;
+
 const MONAD_RESERVE_CHAIN_IDS = new Set(
   [CHAIN_IDS.MONAD, CHAIN_IDS.MONAD_TESTNET].map((id) => id.toLowerCase()),
 );
@@ -39,7 +43,7 @@ const MONAD_RESERVE_CHAIN_IDS = new Set(
  * @param value - Hex wei string.
  * @returns Parsed bigint amount.
  */
-function hexToBigInt(value: string | undefined): bigint {
+function hexToBigInt(value: OptionalHexString): bigint {
   if (!value) {
     return 0n;
   }
@@ -57,7 +61,7 @@ function hexToBigInt(value: string | undefined): bigint {
  * @returns True for Monad mainnet and testnet.
  */
 export function hasMonadReserveBalanceRule(
-  chainId: Hex | string | undefined,
+  chainId: OptionalHexString,
 ): boolean {
   if (!chainId) {
     return false;
@@ -72,7 +76,7 @@ export function hasMonadReserveBalanceRule(
  * @returns True when a known matcher is present.
  */
 export function isMonadReserveBalanceError(
-  error: string | undefined | null,
+  error: OptionalNullableString,
 ): boolean {
   if (!error) {
     return false;
@@ -156,9 +160,9 @@ export function wouldViolateMonadReserveBalance({
   value,
   isDelegatedAccount,
 }: {
-  chainId: Hex | string | undefined;
-  balance: Hex | string | undefined;
-  value: Hex | string | undefined;
+  chainId: OptionalHexString;
+  balance: OptionalHexString;
+  value: OptionalHexString;
   isDelegatedAccount?: boolean;
 }): boolean {
   if (
@@ -200,9 +204,9 @@ export function hasMonadReserveBalanceViolation({
   simulationData,
   simulationFails,
 }: {
-  chainId: Hex | string | undefined;
-  balance?: Hex | string;
-  value?: Hex | string;
+  chainId: OptionalHexString;
+  balance?: HexString;
+  value?: HexString;
   isDelegatedAccount?: boolean;
   simulationData?: SimulationLike | null;
   simulationFails?: SimulationFailsLike | null;
