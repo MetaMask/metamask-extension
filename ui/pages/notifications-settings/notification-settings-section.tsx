@@ -426,7 +426,7 @@ export function NotificationSettingsSection({
   const showChannelToggles = section.type !== 'walletActivity';
   const isMarketingConsentRequired =
     section.type === 'marketing' &&
-    dataCollectionForMarketing === false &&
+    dataCollectionForMarketing !== true &&
     !sectionPreferences.pushNotificationsEnabled &&
     !sectionPreferences.inAppNotificationsEnabled;
 

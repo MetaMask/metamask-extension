@@ -917,7 +917,7 @@ describe('NotificationSectionSubPage', () => {
   /* eslint-enable @typescript-eslint/naming-convention */
 
   describe('section notification toggle wiring', () => {
-    const buildStore = () =>
+    const buildStore = (metamaskOverrides = {}) =>
       mockStore({
         metamask: {
           isNotificationServicesEnabled: true,
@@ -928,6 +928,7 @@ describe('NotificationSectionSubPage', () => {
           subscriptionAccountsSeen: [],
           accountTree: { selectedAccountGroup: '', wallets: {} },
           internalAccounts: { selectedAccount: '', accounts: {} },
+          ...metamaskOverrides,
         },
       });
 
@@ -1005,6 +1006,40 @@ describe('NotificationSectionSubPage', () => {
             inAppNotificationsEnabled: false,
           },
         }),
+      );
+
+      fireEvent.click(
+        screen.getByTestId('marketing-push-notifications-toggle-input'),
+      );
+
+      expect(screen.getByTestId('marketing-consent-sheet')).toBeInTheDocument();
+      expect(updatePreference).not.toHaveBeenCalled();
+    });
+
+    it('shows marketing consent before enabling a channel when consent is unset', () => {
+      const updatePreference = jest.fn();
+      const preferences = createMockNotificationPreferences({
+        marketing: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: false,
+        },
+      });
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        preferences,
+        hasNotificationPreferences: true,
+        isLoading: false,
+        isUpdatingPreferences: false,
+        error: null,
+        refetchPreferences: jest.fn(),
+        ensurePreferences: jest.fn(),
+        updatePreference,
+        updatePreferencesSection: jest.fn(),
+      });
+
+      renderWithProvider(
+        <NotificationSectionSubPage sectionType="marketing" />,
+        buildStore({ marketingConsentDecisionMade: false }),
+        getNotificationsSettingsSectionRoute('marketing'),
       );
 
       fireEvent.click(
