@@ -27,7 +27,7 @@ const EMPTY_SERVICE_SOURCE = `
 
 describe('legacy-background-api.ts', () => {
   describe('check', () => {
-    it('succeeds when the legacy background APIs match the snapshot', async () => {
+    it('succeeds when all legacy background APIs match the snapshot', async () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
@@ -45,7 +45,7 @@ describe('legacy-background-api.ts', () => {
               existingMethod(): void {}
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: ['existingMethod'],
             'MetamaskController.getApi': ['existingProperty'],
           }),
@@ -57,7 +57,7 @@ describe('legacy-background-api.ts', () => {
       });
     });
 
-    it('succeeds when the snapshot lists names in a different order', async () => {
+    it('succeeds even when the snapshot lists names in a different order', async () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
@@ -71,7 +71,7 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['b', 'a'],
           }),
@@ -98,7 +98,7 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['existingProperty'],
           }),
@@ -108,7 +108,10 @@ describe('legacy-background-api.ts', () => {
 
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          'MetamaskController.getApi has properties which are not listed in legacy-background-api-snapshot.json:\n- newPropertyA\n- newPropertyB',
+          'ERROR: New methods have been added to some legacy background APIs',
+        );
+        expect(result.stderr).toContain(
+          '- MetamaskController.getApi\n  - newPropertyA\n  - newPropertyB',
         );
         expect(result.stderr).toContain(
           'MetamaskController.getApi is a deprecated legacy API,\nand we do not support extending it further.',
@@ -122,10 +125,11 @@ describe('legacy-background-api.ts', () => {
           directoryPath,
           legacyBackgroundApiServiceContent: `
             export class LegacyBackgroundApiService {
-              newMethod(): void {}
+              newMethodA(): void {}
+              newMethodB(): void {}
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [],
           }),
@@ -135,7 +139,10 @@ describe('legacy-background-api.ts', () => {
 
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          'LegacyBackgroundApiService has methods which are not listed in legacy-background-api-snapshot.json:\n- newMethod',
+          'ERROR: New methods have been added to some legacy background APIs',
+        );
+        expect(result.stderr).toContain(
+          '- LegacyBackgroundApiService\n  - newMethodA\n  - newMethodB',
         );
         expect(result.stderr).toContain(
           'LegacyBackgroundApiService is a deprecated legacy API,\nand we do not support extending it further.',
@@ -147,7 +154,7 @@ describe('legacy-background-api.ts', () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [
               'obsoletePropertyB',
@@ -160,7 +167,10 @@ describe('legacy-background-api.ts', () => {
 
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          'legacy-background-api-snapshot.json lists properties which no longer exist in MetamaskController.getApi:\n- obsoletePropertyA\n- obsoletePropertyB',
+          'ERROR: Methods have been removed from some legacy background APIs which are not reflected in the snapshot',
+        );
+        expect(result.stderr).toContain(
+          '- MetamaskController.getApi\n  - obsoletePropertyA\n  - obsoletePropertyB',
         );
         expect(result.stderr).toContain(
           'Please run `yarn legacy-background-api:update` to remove them from the snapshot.',
@@ -172,8 +182,8 @@ describe('legacy-background-api.ts', () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
-          snapshot: JSON.stringify({
-            LegacyBackgroundApiService: ['obsoleteMethod'],
+          snapshotContent: JSON.stringify({
+            LegacyBackgroundApiService: ['obsoleteMethodA', 'obsoleteMethodB'],
             'MetamaskController.getApi': [],
           }),
         });
@@ -182,7 +192,10 @@ describe('legacy-background-api.ts', () => {
 
         expect(result.exitCode).toBe(1);
         expect(result.stderr).toContain(
-          'legacy-background-api-snapshot.json lists methods which no longer exist in LegacyBackgroundApiService:\n- obsoleteMethod',
+          'ERROR: Methods have been removed from some legacy background APIs which are not reflected in the snapshot',
+        );
+        expect(result.stderr).toContain(
+          '- LegacyBackgroundApiService\n  - obsoleteMethodA\n  - obsoleteMethodB',
         );
         expect(result.stderr).toContain(
           'Please run `yarn legacy-background-api:update` to remove them from the snapshot.',
@@ -190,7 +203,7 @@ describe('legacy-background-api.ts', () => {
       });
     });
 
-    it('reports discrepancies in both APIs at once', async () => {
+    it('reports extra members in both APIs', async () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
@@ -208,7 +221,7 @@ describe('legacy-background-api.ts', () => {
               newMethod(): void {}
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [],
           }),
@@ -216,8 +229,53 @@ describe('legacy-background-api.ts', () => {
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
-        expect(result.stderr).toContain('- newProperty');
-        expect(result.stderr).toContain('- newMethod');
+        expect(result.exitCode).toBe(1);
+        expect(result.stderr).toContain(
+          'ERROR: New methods have been added to some legacy background APIs',
+        );
+        expect(result.stderr).toContain(
+          '- MetamaskController.getApi\n  - newProperty',
+        );
+        expect(result.stderr).toContain(
+          '- LegacyBackgroundApiService\n  - newMethod',
+        );
+        expect(result.stderr).toContain(
+          'MetamaskController.getApi and LegacyBackgroundApiService are deprecated legacy APIs,\nand we do not support extending them further.',
+        );
+      });
+    });
+
+    it('only reports extra members in both APIs even if there are also removed members', async () => {
+      await withinSandbox(async ({ directoryPath }) => {
+        setupSandbox({
+          directoryPath,
+          metamaskControllerContent: `
+            class MetamaskController {
+              getApi() {
+                return {
+                  newProperty: this.newProperty,
+                };
+              }
+            }
+          `,
+          snapshotContent: JSON.stringify({
+            LegacyBackgroundApiService: [],
+            'MetamaskController.getApi': ['obsoleteProperty'],
+          }),
+        });
+
+        const result = await runScript({ directoryPath, args: ['check'] });
+
+        expect(result.exitCode).toBe(1);
+        expect(result.stderr).toContain(
+          'ERROR: New methods have been added to some legacy background APIs',
+        );
+        expect(result.stderr).toContain(
+          '- MetamaskController.getApi\n  - newProperty',
+        );
+        expect(result.stderr).toContain(
+          'MetamaskController.getApi is a deprecated legacy API,\nand we do not support extending it further.',
+        );
       });
     });
 
@@ -236,7 +294,7 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when the snapshot is not valid JSON', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({ directoryPath, snapshot: '{' });
+        setupSandbox({ directoryPath, snapshotContent: '{' });
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -251,7 +309,7 @@ describe('legacy-background-api.ts', () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
-          snapshot: JSON.stringify({ 'MetamaskController.getApi': [] }),
+          snapshotContent: JSON.stringify({ 'MetamaskController.getApi': [] }),
         });
 
         const result = await runScript({ directoryPath, args: ['check'] });
@@ -267,7 +325,7 @@ describe('legacy-background-api.ts', () => {
       await withinSandbox(async ({ directoryPath }) => {
         setupSandbox({
           directoryPath,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['a', 1],
           }),
@@ -305,7 +363,7 @@ describe('legacy-background-api.ts', () => {
               methodA(): void {}
             }
           `,
-          snapshot: JSON.stringify({
+          snapshotContent: JSON.stringify({
             LegacyBackgroundApiService: ['obsoleteMethod'],
             'MetamaskController.getApi': ['obsoleteProperty'],
           }),
@@ -559,19 +617,19 @@ async function withinSandbox(
  * defines `MetamaskController`.
  * @param options.legacyBackgroundApiServiceContent - The contents of the file
  * that defines `LegacyBackgroundApiService`.
- * @param options.snapshot - The contents of the snapshot. If omitted, the
+ * @param options.snapshotContent - The contents of the snapshot. If omitted, the
  * snapshot is not created.
  */
 function setupSandbox({
   directoryPath,
   metamaskControllerContent = EMPTY_CONTROLLER_SOURCE,
   legacyBackgroundApiServiceContent = EMPTY_SERVICE_SOURCE,
-  snapshot,
+  snapshotContent,
 }: {
   directoryPath: string;
   metamaskControllerContent?: string;
   legacyBackgroundApiServiceContent?: string;
-  snapshot?: string;
+  snapshotContent?: string;
 }): void {
   writeFile(
     path.join(directoryPath, METAMASK_CONTROLLER_PATH),
@@ -581,8 +639,8 @@ function setupSandbox({
     path.join(directoryPath, LEGACY_BACKGROUND_API_SERVICE_PATH),
     legacyBackgroundApiServiceContent,
   );
-  if (snapshot !== undefined) {
-    writeFile(path.join(directoryPath, SNAPSHOT_PATH), snapshot);
+  if (snapshotContent !== undefined) {
+    writeFile(path.join(directoryPath, SNAPSHOT_PATH), snapshotContent);
   }
 }
 

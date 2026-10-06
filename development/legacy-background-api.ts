@@ -45,10 +45,6 @@ type Result = {
    */
   legacyApi: LegacyApi;
   /**
-   * Whether the check passed.
-   */
-  isPass: boolean;
-  /**
    * Names of members in the current state of the legacy API which are not
    * present in the snapshot.
    */
@@ -141,19 +137,20 @@ function check(): void {
   const results = LEGACY_APIS.map((legacyApi) =>
     checkApiMemberNamesMatchSnapshot(legacyApi, snapshot),
   );
-  const allChecksPassed = results.every((result) => result.isPass);
-
-  if (allChecksPassed) {
-    console.log(chalk.green('All legacy background API match snapshot.'));
-    return;
-  }
-
   const newApiMemberResults = results.filter(
     (result) => result.namesToRemoveFromLegacyApi.length > 0,
   );
   const outdatedSnapshotResults = results.filter(
     (result) => result.namesToRemoveFromSnapshot.length > 0,
   );
+
+  const allChecksPassed =
+    newApiMemberResults.length === 0 && outdatedSnapshotResults.length === 0;
+
+  if (allChecksPassed) {
+    console.log(chalk.green('All legacy background API match snapshot.'));
+    return;
+  }
 
   if (newApiMemberResults.length > 0) {
     reportNewApiMembersError(newApiMemberResults);
@@ -162,6 +159,8 @@ function check(): void {
     // people to update the snapshot prematurely
     reportOutdatedSnapshotError(outdatedSnapshotResults);
   }
+
+  process.exitCode = 1;
 }
 
 /**
@@ -188,13 +187,9 @@ function checkApiMemberNamesMatchSnapshot(
     snapshottedNames,
     currentNames,
   ).sort();
-  const isPass =
-    namesToRemoveFromLegacyApi.length === 0 &&
-    namesToRemoveFromSnapshot.length === 0;
 
   return {
     legacyApi,
-    isPass,
     namesToRemoveFromLegacyApi,
     namesToRemoveFromSnapshot,
   };
@@ -266,7 +261,7 @@ function reportOutdatedSnapshotError(results: Result[]): void {
   }
   console.error('');
 
-  console.log(
+  console.error(
     'Please run `yarn legacy-background-api:update` to remove them from the snapshot.',
   );
 }
