@@ -20,6 +20,7 @@ import {
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 
+import { assetIdAliases } from '../constants/asset-aliases';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
@@ -137,6 +138,9 @@ export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
     ? (assetId.toLowerCase() as CaipAssetType)
     : assetId;
 };
+
+export const toCanonicalAssetId = (assetId: CaipAssetType | string) =>
+  assetIdAliases.get(assetId.toLowerCase()) ?? assetId;
 
 /**
  * Builds a normalized CAIP-19 token id from a contract address and chain, or
