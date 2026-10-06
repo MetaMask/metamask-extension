@@ -31,33 +31,6 @@ import {
   isValidPositiveNumericString,
 } from '../../../utils/send';
 
-const MaxButton = ({
-  isAvailable,
-  isError,
-  isPending,
-  onClick,
-}: {
-  isAvailable: boolean;
-  isError: boolean;
-  isPending: boolean;
-  onClick: () => void;
-}) => {
-  const t = useI18nContext();
-
-  return (
-    <ButtonLink
-      disabled={!isAvailable}
-      loading={isPending}
-      marginLeft={2}
-      onClick={onClick}
-      title={isError ? t('maxAmountUnavailable') : undefined}
-      variant={TextVariant.bodySm}
-    >
-      {t('max')}
-    </ButtonLink>
-  );
-};
-
 export const Amount = ({
   amountError,
 }: {
@@ -254,3 +227,31 @@ export const Amount = ({
     </Box>
   );
 };
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function MaxButton({
+  isAvailable,
+  isError,
+  isPending,
+  onClick,
+}: {
+  isAvailable: boolean;
+  isError: boolean;
+  isPending: boolean;
+  onClick: () => void;
+}) {
+  const t = useI18nContext();
+
+  return (
+    <ButtonLink
+      disabled={!isAvailable}
+      loading={isPending}
+      marginLeft={2}
+      onClick={onClick}
+      title={isError ? t('maxAmountUnavailable') : undefined}
+      variant={TextVariant.bodySm}
+    >
+      {t('max')}
+    </ButtonLink>
+  );
+}
