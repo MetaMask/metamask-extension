@@ -140,7 +140,7 @@ export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
 };
 
 export const toCanonicalAssetId = (assetId: CaipAssetType | string) =>
-  assetIdAliases.get(assetId.toLowerCase()) ?? assetId;
+  assetIdAliases.get(assetId.toLowerCase() as CaipAssetType) ?? assetId;
 
 /**
  * Builds a normalized CAIP-19 token id from a contract address and chain, or
