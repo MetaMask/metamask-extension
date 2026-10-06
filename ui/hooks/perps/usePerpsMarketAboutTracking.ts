@@ -46,8 +46,8 @@ export function usePerpsMarketAboutTracking({
   const hasViewedRef = useRef(false);
   const previousSymbolRef = useRef(symbol);
 
-  // The section is remounted for a new market by the page, but reset the
-  // tracking guard here as well so this hook remains correct when reused.
+  // The observed wrapper is remounted per market by the page. Reset the guard
+  // here too so the fresh intersection callback can emit the next viewed event.
   useEffect(() => {
     if (previousSymbolRef.current !== symbol) {
       previousSymbolRef.current = symbol;

@@ -261,10 +261,11 @@ const mockLiveAccount = jest.fn(() => ({
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockPerpsTrack = jest.fn();
+const mockAboutRef = jest.fn();
 const mockUsePerpsMarketAboutTracking = jest.fn(
   ({ description }: { description?: string }) => ({
     hasDescription: Boolean(description?.trim()),
-    aboutRef: jest.fn(),
+    aboutRef: mockAboutRef,
   }),
 );
 // Captures the declarative PERPS_SCREEN_VIEWED options so tests can assert the
@@ -1495,6 +1496,36 @@ describe('PerpsMarketDetailPage', () => {
       expect(aboutSection.compareDocumentPosition(recentActivityHeader)).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
+    });
+
+    it('reattaches the about view observer when navigating between markets with descriptions', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH' || market.symbol === 'BTC'
+            ? { ...market, description: `${market.symbol} market description.` }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+      const { rerender } = await renderPage(mockStore(createMockState(true)));
+      const initialNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+
+      expect(initialNode).toBeInstanceOf(HTMLElement);
+
+      mockAboutRef.mockClear();
+      mockUseParams.mockReturnValue({ symbol: 'BTC' });
+      await act(async () => {
+        rerender(<PerpsMarketDetailPage />);
+      });
+
+      expect(mockAboutRef).toHaveBeenCalledWith(null);
+      const nextNode = mockAboutRef.mock.calls.findLast(
+        ([node]) => node instanceof HTMLElement,
+      )?.[0];
+      expect(nextNode).toBeInstanceOf(HTMLElement);
+      expect(nextNode).not.toBe(initialNode);
     });
 
     it('does not render the About section without a description', async () => {

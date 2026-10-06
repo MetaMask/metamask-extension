@@ -1983,10 +1983,11 @@ const PerpsMarketDetailPage = () => {
         </Box>
 
         {hasAboutDescription && (
-          <div ref={aboutRef}>
-            {/* Keying the section remounts its mount-only overflow measurement per market. */}
+          // Key the observed wrapper, not only the section. A market change
+          // must detach the intersection observer so `viewed` fires again
+          // when this section stays on screen.
+          <div key={market.symbol} ref={aboutRef}>
             <PerpsMarketAbout
-              key={market.symbol}
               description={market.description}
               assetName={market.name}
             />
