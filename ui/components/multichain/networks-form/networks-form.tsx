@@ -580,6 +580,10 @@ export const NetworksForm = ({
                 setIsChainlistOpen(false);
                 chainlist.onSelect(network, searchQuery);
               }}
+              onUseTypedName={(typedName) => {
+                setName(typedName);
+                setIsChainlistOpen(false);
+              }}
             />
           </Popover>
         ) : null}

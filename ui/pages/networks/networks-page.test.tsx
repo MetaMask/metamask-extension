@@ -362,6 +362,45 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('keeps a typed network name when Chainlist has no match', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('network-form-network-name'), {
+        target: { value: 'sasdf' },
+      });
+    });
+
+    expect(
+      screen.getByText(messages.chainlistNoMatches.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Use "sasdf" as network name')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chainlistEnterNetworkDetailsManually.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('networks-page-chainlist-use-typed-name'),
+      );
+    });
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'sasdf',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-use-typed-name'),
+    ).not.toBeInTheDocument();
+  });
+
   it('redirects away from the Chainlist picker when the remote feature flag is disabled', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
