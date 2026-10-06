@@ -5517,6 +5517,157 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Continue"
+  },
+  "mfaEmailEntryDescription": {
+    "message": "We'll send a verification code to this address."
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Enter a valid email address."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Email address"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "Enter your email"
+  },
+  "mfaErrorCooldown": {
+    "message": "Too many requests. Wait a moment and try again."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "This email is already in use. Try a different one."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Another verification is already in progress."
+  },
+  "mfaErrorGeneric": {
+    "message": "Something went wrong. Try again."
+  },
+  "mfaErrorInvalidCode": {
+    "message": "That code is incorrect. Try again."
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Your passkey couldn't be verified. Try again."
+  },
+  "mfaErrorLimitReached": {
+    "message": "You've reached the limit for this method."
+  },
+  "mfaErrorMultiPrimarySrp": {
+    "message": "Verification isn't available yet for wallets with more than one Secret Recovery Phrase."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Passkey request was cancelled."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Sign in to continue."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Too many attempts. Request a new code."
+  },
+  "mfaErrorUnsupported": {
+    "message": "This method isn't supported on this device."
+  },
+  "mfaFailureClose": {
+    "message": "Close"
+  },
+  "mfaFailureRetry": {
+    "message": "Try again"
+  },
+  "mfaFailureTitle": {
+    "message": "Something went wrong"
+  },
+  "mfaIntroContinue": {
+    "message": "Get started"
+  },
+  "mfaIntroDescription": {
+    "message": "Set up the following to continue."
+  },
+  "mfaIntroTitle": {
+    "message": "Secure your account"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaMethodPasskey": {
+    "message": "Passkey"
+  },
+  "mfaOtpDescription": {
+    "message": "We sent a 6-digit code to your email."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "We sent a 6-digit code to $1.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpResend": {
+    "message": "Resend code"
+  },
+  "mfaOtpResendIn": {
+    "message": "Resend code in $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "We sent you a new code."
+  },
+  "mfaOtpSendIn": {
+    "message": "Sending a new code in $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Sending code..."
+  },
+  "mfaOtpSubmit": {
+    "message": "Verify"
+  },
+  "mfaOtpTitle": {
+    "message": "Enter the code"
+  },
+  "mfaPasskeyContinue": {
+    "message": "Continue"
+  },
+  "mfaPasskeyDescription": {
+    "message": "Your device will ask you to confirm."
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Create a passkey"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Use your passkey"
+  },
+  "mfaPickerDescription": {
+    "message": "Choose how you want to verify."
+  },
+  "mfaPickerTitle": {
+    "message": "Confirm it's you"
+  },
+  "mfaProgress": {
+    "message": "Step $1 of $2",
+    "description": "$1 is the current step, $2 the number of steps"
+  },
+  "mfaSettingsDescription": {
+    "message": "Used to confirm it's you before sensitive actions."
+  },
+  "mfaSettingsEmailLinked": {
+    "message": "Linked to your sign-in"
+  },
+  "mfaSettingsEmailPending": {
+    "message": "Setup not finished"
+  },
+  "mfaSettingsFinishSetup": {
+    "message": "Finish setup"
+  },
+  "mfaSettingsSetUp": {
+    "message": "Set up"
+  },
+  "mfaSettingsTitle": {
+    "message": "Verification methods"
+  },
+  "mfaSuccessDone": {
+    "message": "Done"
+  },
+  "mfaSuccessTitle": {
+    "message": "You're all set"
+  },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
   },

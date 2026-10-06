@@ -922,4 +922,60 @@ module.exports = defineConfig([
       '@typescript-eslint/naming-convention': 'off',
     },
   },
+  /**
+   * MFA engine
+   */
+  {
+    files: ['ui/hooks/identity/mfa/engine/**/*.ts'],
+    rules: {
+      // A copy of metamask-mobile's engine, kept identical until it moves to
+      // @metamask/profile-sync-controller. Error codes are the server's.
+      '@typescript-eslint/consistent-type-definitions': 'off',
+      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-shadow': 'off',
+      'default-case': 'off',
+      'jsdoc/require-param': 'off',
+    },
+  },
+  {
+    files: ['ui/hooks/identity/mfa/engine/**/*.ts'],
+    ignores: ['ui/hooks/identity/mfa/engine/**/*.test.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                'react-redux',
+                'react-router-dom',
+                'webextension-polyfill',
+                '**/store/**',
+                '**/selectors/**',
+                '**/components/**',
+                '**/pages/**',
+                '**/shared/**',
+              ],
+              message:
+                'The MFA engine must stay platform-agnostic: take clients through ports in engine/types.ts.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['ui/**/*.{js,ts,tsx}'],
+    ignores: ['ui/hooks/identity/mfa/**'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        {
+          property: 'getVerificationToken',
+          message:
+            'Get verification tokens from useMfa().verifyOrEnroll: it reuses a live session and shows the MFA screens when there is none.',
+        },
+      ],
+    },
+  },
 ]);

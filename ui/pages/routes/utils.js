@@ -28,6 +28,7 @@ import {
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -377,6 +378,10 @@ export function hideAppHeader(props) {
   );
 
   if (isSyncAccountsPage) {
+    return true;
+  }
+
+  if (matchPath({ path: MFA_FLOW_ROUTE, end: false }, location.pathname)) {
     return true;
   }
 
