@@ -58,8 +58,7 @@ export default function CreatePassword({
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
 }: CreatePasswordProps) {
-  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
-    useState(false);
+  const [walletSetupInProgress, setWalletSetupInProgress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasCreationError, setHasCreationError] = useState(false);
   const navigate = useNavigate();
@@ -101,11 +100,7 @@ export default function CreatePassword({
   }, [dispatch, navigate]);
 
   useEffect(() => {
-    if (
-      currentKeyring &&
-      !newAccountCreationInProgress &&
-      !isWalletResetInProgress
-    ) {
+    if (currentKeyring && !walletSetupInProgress && !isWalletResetInProgress) {
       // route to passkey setup
       if (
         isPasskeyFeatureAvailable &&
@@ -150,7 +145,7 @@ export default function CreatePassword({
     isFirefox,
     navigate,
     firstTimeFlowType,
-    newAccountCreationInProgress,
+    walletSetupInProgress,
     secretRecoveryPhrase,
     consentDecisionMade,
     isWalletResetInProgress,
@@ -174,7 +169,30 @@ export default function CreatePassword({
         .build(),
     );
 
-    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+    setWalletSetupInProgress(true);
+    bufferedTrace?.({
+      name: TraceName.OnboardingSRPAccountImportTime,
+      op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
+      parentContext: onboardingParentContext?.current,
+    });
+
+    try {
+      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+      bufferedEndTrace?.({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        data: { success: true },
+      });
+    } catch (error) {
+      bufferedEndTrace?.({
+        name: TraceName.OnboardingSRPAccountImportTime,
+        data: { success: false },
+      });
+      throw error;
+    }
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
@@ -227,7 +245,7 @@ export default function CreatePassword({
         .build(),
     );
 
-    setNewAccountCreationInProgress(true);
+    setWalletSetupInProgress(true);
     await createNewAccount(password);
 
     if (isSocialLoginFlow) {

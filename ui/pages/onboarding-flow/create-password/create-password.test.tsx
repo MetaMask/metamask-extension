@@ -20,8 +20,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import * as Actions from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
@@ -1107,6 +1109,147 @@ describe('Onboarding Create Password', () => {
           ONBOARDING_COMPLETION_ROUTE,
           { replace: true },
         );
+      });
+    });
+  });
+
+  describe('SRP import machine-time trace', () => {
+    const importState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.import,
+      },
+    };
+
+    const createMetricsContext = () => ({
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn().mockResolvedValue(undefined),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: {
+        current: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          _name: TraceName.OnboardingJourneyOverall,
+        },
+      },
+    });
+
+    const renderWithMetricsContext = (
+      component: React.ReactElement,
+      store: ReturnType<typeof configureMockStore>,
+      metricsContext: ReturnType<typeof createMetricsContext>,
+    ) =>
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={metricsContext}>
+          {component}
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+
+    it('records a successful machine-time import span', async () => {
+      const store = configureMockStore([thunk])(importState);
+      const metricsContext = createMetricsContext();
+      const props = {
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue(undefined),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithMetricsContext(
+        <CreatePassword {...props} />,
+        store,
+        metricsContext,
+      );
+
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: '12345678' },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: '12345678' } },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          metricsContext.bufferedTrace.mock.calls.find(
+            ([request]) =>
+              request.name === TraceName.OnboardingSRPAccountImportTime,
+          ),
+        ).toEqual([
+          expect.objectContaining({
+            name: TraceName.OnboardingSRPAccountImportTime,
+            op: TraceOperation.OnboardingUserJourney,
+            parentContext: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              _name: TraceName.OnboardingJourneyOverall,
+            },
+            data: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: expect.any(String),
+            },
+          }),
+        ]);
+        expect(
+          metricsContext.bufferedEndTrace.mock.calls.find(
+            ([request]) =>
+              request.name === TraceName.OnboardingSRPAccountImportTime,
+          ),
+        ).toEqual([
+          {
+            name: TraceName.OnboardingSRPAccountImportTime,
+            data: { success: true },
+          },
+        ]);
+      });
+    });
+
+    it('ends the machine-time import span as failed when import throws', async () => {
+      const store = configureMockStore([thunk])(importState);
+      const metricsContext = createMetricsContext();
+      const props = {
+        importWithRecoveryPhrase: jest
+          .fn()
+          .mockRejectedValue(new Error('import failed')),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithMetricsContext(
+        <CreatePassword {...props} />,
+        store,
+        metricsContext,
+      );
+
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: '12345678' },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        { target: { value: '12345678' } },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(
+          metricsContext.bufferedEndTrace.mock.calls.find(
+            ([request]) =>
+              request.name === TraceName.OnboardingSRPAccountImportTime,
+          ),
+        ).toEqual([
+          {
+            name: TraceName.OnboardingSRPAccountImportTime,
+            data: { success: false },
+          },
+        ]);
       });
     });
   });
