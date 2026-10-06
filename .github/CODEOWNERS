@@ -40,7 +40,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # step requires approval from the Core Platform team.
 development/legacy-background-api.ts      @MetaMask/core-platform
 development/legacy-background-api.test.ts @MetaMask/core-platform
-legacy-background-api-snapshot.json      @MetaMask/core-platform
+legacy-background-api-snapshot.json       @MetaMask/core-platform
 
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
