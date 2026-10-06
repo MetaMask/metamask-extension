@@ -2428,9 +2428,13 @@ export class LegacyBackgroundApiService {
           });
 
         // Asynchronously track incomplete metadata backup events
-        this.#messenger.call('SeedlessOnboardingController:identifyIncompleteMetadataBackup', password)
+        this.#messenger
+          .call(
+            'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+            password,
+          )
           .catch((err) => {
-          log.error('error while tracking incomplete metadata backup', err);
+            log.error('error while tracking incomplete metadata backup', err);
           });
       } catch (err) {
         this.#messenger?.captureException?.(

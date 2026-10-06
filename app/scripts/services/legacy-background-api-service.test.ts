@@ -4844,6 +4844,10 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:revokePendingRefreshTokens',
           jest.fn().mockResolvedValue(undefined),
         );
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          jest.fn().mockResolvedValue(undefined),
+        );
         registerUnlockSideEffectHandlers(rootMessenger);
 
         const callSpy = jest.spyOn(serviceMessenger, 'call');
@@ -4897,6 +4901,10 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+          'global-password',
         );
         expect(callSpy).toHaveBeenCalledWith(
           'SentryTracingService:bufferedEndTrace',
@@ -8441,6 +8449,7 @@ function getMessenger(
       'SeedlessOnboardingController:changePassword',
       'SeedlessOnboardingController:loadKeyringEncryptionKey',
       'SeedlessOnboardingController:revokePendingRefreshTokens',
+      'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
       'SeedlessOnboardingController:setLocked',
       'SeedlessOnboardingController:storeKeyringEncryptionKey',
       'SeedlessOnboardingController:submitGlobalPassword',
