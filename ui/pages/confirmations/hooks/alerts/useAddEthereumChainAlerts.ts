@@ -53,7 +53,12 @@ export function useAddEthereumChainAlerts() {
       const nextAlerts: Alert[] = [];
       const { requestData } = pendingApproval;
 
-      if (!isValidASCIIURL(requestData.rpcUrl)) {
+      if (!requestData) {
+        setAlerts(nextAlerts);
+        return;
+      }
+
+      if (requestData.rpcUrl && !isValidASCIIURL(requestData.rpcUrl)) {
         nextAlerts.push({
           key: 'rpcUrlIdnHomograph',
           message: t('networkUrlErrorWarning', [
