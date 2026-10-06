@@ -2,6 +2,8 @@ import {
   TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
+import { toChecksumHexAddress, toHex } from '@metamask/controller-utils';
+import type { Hex } from '@metamask/utils';
 import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 
@@ -18,6 +20,7 @@ import {
 } from '../../../../../components/app/confirm/info/row/constants';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useIsGasSponsored } from '../../gas/useIsGasSponsored';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
 
 jest.mock('../../gas/useIsGasSponsored');
@@ -25,6 +28,10 @@ jest.mock('../../gas/useIsGasSponsored');
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 }) as TransactionMeta;
+
+const DELEGATION_ADDRESS: Hex = '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b';
+const BALANCE_15_MON = toHex(15n * 10n ** 18n);
+const VALUE_6_MON = toHex(6n * 10n ** 18n);
 
 const GAS_ALERT = {
   actions: [
@@ -141,6 +148,35 @@ describe('useGasEstimateFailedAlerts', () => {
           simulationFails: {
             reason: 'execution reverted: reserve balance violation',
             debug: {},
+          },
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('returns no alerts for a proactive delegated Monad reserve violation', () => {
+    const transaction = {
+      ...CONFIRMATION_MOCK,
+      chainId: CHAIN_IDS.MONAD,
+      delegationAddress: DELEGATION_ADDRESS,
+      simulationFails: { debug: {} },
+      txParams: {
+        ...CONFIRMATION_MOCK.txParams,
+        value: VALUE_6_MON,
+      },
+    };
+
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction(transaction, {
+          metamask: {
+            accountsByChainId: {
+              [CHAIN_IDS.MONAD]: {
+                [toChecksumHexAddress(transaction.txParams.from)]: {
+                  balance: BALANCE_15_MON,
+                },
+              },
+            },
           },
         }),
       ),

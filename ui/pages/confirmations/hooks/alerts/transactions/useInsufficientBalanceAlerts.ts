@@ -2,8 +2,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
-import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -14,9 +12,6 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getUseTransactionSimulations } from '../../../../../selectors';
-import { getAccountTrackerControllerAccountsByChainId } from '../../../../../../shared/lib/selectors/assets-migration';
-import { hasMonadReserveBalanceViolation } from '../../../../../../shared/lib/monad-reserve-balance';
-import { sumHexes } from '../../../../../../shared/lib/conversion.utils';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
@@ -25,8 +20,7 @@ import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHas
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
-
-const ZERO_HEX_FALLBACK = '0x0';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -35,16 +29,8 @@ export function useInsufficientBalanceAlerts({
 } = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    selectedGasFeeToken,
-    gasFeeTokens,
-    excludeNativeTokenForFee,
-    chainId,
-    simulationData,
-    simulationFails,
-    delegationAddress,
-    txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
-  } = currentConfirmation ?? {};
+  const { selectedGasFeeToken, gasFeeTokens, excludeNativeTokenForFee } =
+    currentConfirmation ?? {};
   // Post-quote withdraw flows don't use the user's native balance for gas the
   // same way as standard txs, so suppress the "insufficient balance" alert
   // even when native balance is low. Gate on the post-quote flag rather than
@@ -77,32 +63,9 @@ export function useInsufficientBalanceAlerts({
     TransactionType.moneyAccountWithdraw,
   ]);
 
-  const batchTransactionValues =
-    currentConfirmation?.nestedTransactions?.map(
-      (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
-    ) ?? [];
-
-  const accountsByChainId = useSelector(
-    getAccountTrackerControllerAccountsByChainId,
-  );
-  const balance =
-    chainId && fromAddress
-      ? accountsByChainId?.[chainId]?.[toChecksumHexAddress(fromAddress)]
-          ?.balance
-      : undefined;
-
   // Prefer the Monad reserve-balance alert over the generic "pay for network
   // fees" message when the protocol reserve (not max-fee solvency) is the cause.
-  // Undelegated accounts (no `delegationAddress`) may dip below the reserve, so
-  // the proactive value check must not hide the generic alert for them.
-  const hasMonadReserveViolation = hasMonadReserveBalanceViolation({
-    chainId,
-    balance,
-    value: sumHexes(value, ...batchTransactionValues),
-    isDelegatedAccount: Boolean(delegationAddress),
-    simulationData,
-    simulationFails,
-  });
+  const hasMonadReserveViolation = useIsMonadReserveViolation();
 
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 

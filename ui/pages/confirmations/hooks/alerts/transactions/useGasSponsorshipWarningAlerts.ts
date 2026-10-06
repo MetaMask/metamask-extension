@@ -1,19 +1,8 @@
-import {
-  SimulationData,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { getAccountTrackerControllerAccountsByChainId } from '../../../../../../shared/lib/selectors/assets-migration';
-import {
-  hasMonadReserveBalanceRule,
-  hasMonadReserveBalanceViolation,
-  MONAD_RESERVE_BALANCE_MON,
-} from '../../../../../../shared/lib/monad-reserve-balance';
-import { sumHexes } from '../../../../../../shared/lib/conversion.utils';
+import { MONAD_RESERVE_BALANCE_MON } from '../../../../../../shared/lib/monad-reserve-balance';
 import {
   AlertActionKey,
   RowAlertKey,
@@ -22,16 +11,13 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 type SponsorshipWarningRule = {
   messageKey: string;
   titleKey: string;
   minBalance: string;
   nativeCurrency: string;
-};
-
-type SimulationDataWithCallTraceErrors = SimulationData & {
-  callTraceErrors?: string[];
 };
 
 const GAS_SPONSORSHIP_WARNING_RULES: Partial<
@@ -51,8 +37,6 @@ const GAS_SPONSORSHIP_WARNING_RULES: Partial<
   },
 };
 
-const ZERO_HEX_FALLBACK = '0x0';
-
 /**
  * Hook that returns an alert when a Monad reserve-balance requirement would be
  * violated (protocol rule, not only gas-sponsorship UX).
@@ -62,73 +46,18 @@ const ZERO_HEX_FALLBACK = '0x0';
  * `"reserve balance violation"`
  * - Proactive check: `balance - value < 10 MON` (gas may come from the reserve)
  *
- * Shown whenever the tx is not gas-sponsored. Previously gated on gasless
- * support, which hid the correct alert for hardware wallets and other
- * non-relay paths and let the generic "insufficient network fees" message win.
+ * Shown whenever the reserve would fail, including when gas is sponsored.
  *
  * @returns An array containing a blocking danger alert if reserve would fail
  */
 export function useGasSponsorshipWarningAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    chainId,
-    isGasFeeSponsored,
-    simulationData,
-    simulationFails,
-    delegationAddress,
-    txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
-  } = currentConfirmation ?? {};
-
-  const batchTransactionValues =
-    currentConfirmation?.nestedTransactions?.map(
-      (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
-    ) ?? [];
-
-  const accountsByChainId = useSelector(
-    getAccountTrackerControllerAccountsByChainId,
-  );
-  const balance =
-    chainId && fromAddress
-      ? accountsByChainId?.[chainId]?.[toChecksumHexAddress(fromAddress)]
-          ?.balance
-      : undefined;
-
-  const totalValue = sumHexes(value, ...batchTransactionValues);
-
-  const hasWarning = useMemo(() => {
-    if (!chainId || !hasMonadReserveBalanceRule(chainId)) {
-      return false;
-    }
-
-    // `delegationAddress` is unset for undelegated accounts, which the protocol
-    // lets dip below the reserve, so only a resolved delegation enables the
-    // proactive value check. Simulation errors still catch real violations.
-    return hasMonadReserveBalanceViolation({
-      chainId,
-      balance,
-      value: totalValue,
-      isDelegatedAccount: Boolean(delegationAddress),
-      simulationData: simulationData as
-        | SimulationDataWithCallTraceErrors
-        | undefined,
-      simulationFails,
-    });
-  }, [
-    balance,
-    chainId,
-    delegationAddress,
-    simulationData,
-    simulationFails,
-    totalValue,
-  ]);
-
-  // Show when reserve would fail and sponsorship is not covering gas. Do not
-  // require gasless support — the reserve is a protocol rule for all account types.
-  const shouldShow = hasWarning && !isGasFeeSponsored;
+  const chainId = currentConfirmation?.chainId;
+  const hasWarning = useIsMonadReserveViolation();
 
   return useMemo(() => {
-    if (!shouldShow || !chainId) {
+    if (!hasWarning || !chainId) {
       return [];
     }
 
@@ -158,5 +87,5 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
         showArrow: false,
       },
     ];
-  }, [shouldShow, chainId, t]);
+  }, [hasWarning, chainId, t]);
 }

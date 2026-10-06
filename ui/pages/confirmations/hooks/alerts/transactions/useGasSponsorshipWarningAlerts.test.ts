@@ -116,7 +116,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
     ).toEqual([]);
   });
 
-  it('returns no alerts if the transaction is sponsored', () => {
+  it('returns warning alert for a sponsored transaction with a reserve violation', () => {
     expect(
       runHook(
         getMockConfirmStateForTransaction(
@@ -131,11 +131,10 @@ describe('useGasSponsorshipWarningAlerts', () => {
           buildMonadNetworkState(),
         ),
       ),
-    ).toEqual([]);
+    ).toEqual([RESERVE_ALERT]);
   });
 
-  it('returns warning alert for reserve balance violations even when gasless is unsupported', () => {
-    // Gasless support is no longer required — the reserve is a protocol rule.
+  it('returns warning alert for reserve balance violations', () => {
     const alerts = runHook(
       getMockConfirmStateForTransaction(
         {
@@ -170,36 +169,6 @@ describe('useGasSponsorshipWarningAlerts', () => {
 
     expect(alerts).toEqual([RESERVE_ALERT]);
   });
-
-  // it('returns warning alert when value spend would leave less than 10 MON', () => {
-  //   // 15 MON balance, sending 6 MON value → 9 MON remaining
-  //   const balance15 = toHex(15n * 10n ** 18n);
-  //   const value6 = toHex(6n * 10n ** 18n);
-  //
-  //   const alerts = runHook(
-  //     getMockConfirmStateForTransaction(
-  //       {
-  //         ...CONFIRMATION_MOCK,
-  //         isGasFeeSponsored: false,
-  //         txParams: {
-  //           ...CONFIRMATION_MOCK.txParams,
-  //           value: value6,
-  //         },
-  //       },
-  //       buildMonadNetworkState({
-  //         accountsByChainId: {
-  //           [CHAIN_IDS.MONAD]: {
-  //             [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
-  //               balance: balance15,
-  //             },
-  //           },
-  //         },
-  //       }),
-  //     ),
-  //   );
-  //
-  //   expect(alerts).toEqual([RESERVE_ALERT]);
-  // });
 
   it('returns warning alert when a delegated account value spend would leave less than 10 MON', () => {
     // 15 MON balance, sending 6 MON value → 9 MON remaining
@@ -305,24 +274,6 @@ describe('useGasSponsorshipWarningAlerts', () => {
         }),
       ),
     );
-    expect(alerts).toEqual([RESERVE_ALERT]);
-  });
-
-  it('returns warning alert for reserve balance violations', () => {
-    const alerts = runHook(
-      getMockConfirmStateForTransaction(
-        {
-          ...CONFIRMATION_MOCK,
-          isGasFeeSponsored: false,
-          simulationData: {
-            callTraceErrors: ['reserve balance violation'],
-            tokenBalanceChanges: [],
-          },
-        },
-        buildMonadNetworkState(),
-      ),
-    );
-
     expect(alerts).toEqual([RESERVE_ALERT]);
   });
 });
