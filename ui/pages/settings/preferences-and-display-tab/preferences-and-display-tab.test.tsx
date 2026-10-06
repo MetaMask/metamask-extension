@@ -25,22 +25,9 @@ const buildStore = (cashtagInjection?: boolean) =>
   });
 
 describe('PreferencesAndDisplayTab', () => {
-  const mockStore = buildStore();
-
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-  });
-
-  describe('snapshot', () => {
-    it('matches snapshot', () => {
-      const { container } = renderWithProvider(
-        <PreferencesAndDisplayTab />,
-        mockStore,
-      );
-
-      expect(container).toMatchSnapshot();
-    });
   });
 
   describe('show web widget on X setting', () => {

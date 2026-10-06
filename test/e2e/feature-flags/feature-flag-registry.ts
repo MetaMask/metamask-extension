@@ -3127,8 +3127,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  // Default address is always on. The client no longer reads this flag.
-  // Kept here until it is retired server-side.
   extensionUxDefaultAddressVersioned: {
     inProd: true,
     name: 'extensionUxDefaultAddressVersioned',
