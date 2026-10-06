@@ -29,6 +29,23 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
+
 setBackgroundConnection({
   // @ts-expect-error - setSlippage is valid
   setSlippage,
