@@ -10,10 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  SERVICE_INTERRUPTION_CONFIG,
-  SUPPORT_CONFIG,
-} from '../../../../../shared/constants/perps';
+import { SERVICE_INTERRUPTION_CONFIG } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsServiceInterruptionBannerEnabled } from '../../../../selectors/perps/feature-flags';
 
@@ -67,7 +64,7 @@ export const PerpsServiceInterruptionBanner = ({
       className="inline underline"
     >
       <a
-        href={SUPPORT_CONFIG.Url}
+        href={SERVICE_INTERRUPTION_CONFIG.SupportUrl}
         target="_blank"
         rel="noopener noreferrer"
         data-testid={`${testId}-support-link`}

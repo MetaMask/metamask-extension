@@ -4,10 +4,7 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import {
-  SERVICE_INTERRUPTION_CONFIG,
-  SUPPORT_CONFIG,
-} from '../../../../../shared/constants/perps';
+import { SERVICE_INTERRUPTION_CONFIG } from '../../../../../shared/constants/perps';
 import { PerpsServiceInterruptionBanner } from './perps-service-interruption-banner';
 
 const renderBanner = (enabled: boolean) => {
@@ -61,14 +58,17 @@ describe('PerpsServiceInterruptionBanner', () => {
     expect(faqLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('points the support link at MetaMask support', () => {
+  it('points the support link at the Perps troubleshoot article', () => {
     renderBanner(true);
 
     const supportLink = screen.getByTestId(
       'perps-service-interruption-banner-support-link',
     );
 
-    expect(supportLink).toHaveAttribute('href', SUPPORT_CONFIG.Url);
+    expect(supportLink).toHaveAttribute(
+      'href',
+      SERVICE_INTERRUPTION_CONFIG.SupportUrl,
+    );
     expect(supportLink).toHaveAttribute('target', '_blank');
     expect(supportLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
