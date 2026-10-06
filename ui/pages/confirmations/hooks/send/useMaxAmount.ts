@@ -24,24 +24,6 @@ const GWEI_TO_WEI_CONVERSION_RATE = 1e9;
 
 type GasFeeEstimates = SingleChainGasFeeState['gasFeeEstimates'];
 
-const gweiToWei = (gwei: string) =>
-  new Numeric(gwei, 10).times(new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10));
-
-const getMaxFeePerGasInWei = (gasFeeEstimates: GasFeeEstimates) => {
-  if ('gasPrice' in gasFeeEstimates) {
-    return gweiToWei(gasFeeEstimates.gasPrice);
-  }
-
-  if (!('medium' in gasFeeEstimates)) {
-    return undefined;
-  }
-
-  const { medium } = gasFeeEstimates;
-  return gweiToWei(
-    typeof medium === 'string' ? medium : medium.suggestedMaxFeePerGas,
-  );
-};
-
 export const getEstimatedTotalGas = (
   gasLimit: Hex,
   layer1GasFees: Hex,
@@ -53,86 +35,6 @@ export const getEstimatedTotalGas = (
     : new Numeric('0', 10);
 
   return gasFee.add(new Numeric(layer1GasFees, 16));
-};
-
-/**
- * Estimates the gas limit and layer 1 fee for sending the full native balance.
- *
- * `eth_estimateGas` without fee fields only requires the value to be covered
- * by the balance, so the transaction is estimated using the full balance and
- * the resulting gas cost is subtracted from it.
- *
- * @param args - The estimate arguments.
- * @param args.asset - The native asset being sent.
- * @param args.chainId - The chain ID of the send.
- * @param args.from - The sender address.
- * @param args.hexData - The optional transaction data.
- * @param args.networkClientId - The network client to estimate with.
- * @param args.rawBalanceNumeric - The raw native balance of the sender.
- * @param args.to - The recipient address.
- * @returns The estimated gas limit and layer 1 gas fees.
- */
-const estimateMaxTransactionGas = async ({
-  asset,
-  chainId,
-  from,
-  hexData,
-  networkClientId,
-  rawBalanceNumeric,
-  to,
-}: {
-  asset: Asset;
-  chainId: Hex;
-  from: Hex;
-  hexData?: Hex;
-  networkClientId: string;
-  rawBalanceNumeric: Numeric;
-  to: string;
-}) => {
-  const value = toTokenMinimalUnit(
-    rawBalanceNumeric.toString(),
-    asset.decimals,
-    10,
-  ) as string;
-  const transactionParams = prepareEVMTransaction(
-    asset,
-    { from, to, value },
-    hexData,
-  );
-
-  const [gasLimit, layer1GasFees] = await Promise.all([
-    estimateGas(transactionParams, networkClientId),
-    chainId === CHAIN_IDS.MAINNET
-      ? Promise.resolve('0x0' as Hex)
-      : getLayer1GasFees({ asset, chainId, from, value }),
-  ]);
-
-  return {
-    gasLimit,
-    layer1GasFees: layer1GasFees ?? ('0x0' as Hex),
-  };
-};
-
-type GetMaxAmountArgs = {
-  asset?: Asset;
-  estimatedTotalGas?: Numeric;
-  rawBalanceNumeric: Numeric;
-};
-
-const getMaxAmountFn = ({
-  asset,
-  estimatedTotalGas = new Numeric('0', 10),
-  rawBalanceNumeric,
-}: GetMaxAmountArgs) => {
-  if (!asset) {
-    return '0';
-  }
-
-  const balance = rawBalanceNumeric.minus(estimatedTotalGas);
-
-  return balance.isZero() || balance.isNegative()
-    ? '0'
-    : toTokenMinimalUnit(balance.toString(), asset.decimals, 10);
 };
 
 export const useMaxAmount = () => {
@@ -255,3 +157,104 @@ export const useMaxAmount = () => {
     isMaxAmountPending,
   };
 };
+
+function gweiToWei(gwei: string) {
+  return new Numeric(gwei, 10).times(
+    new Numeric(GWEI_TO_WEI_CONVERSION_RATE, 10),
+  );
+}
+
+function getMaxFeePerGasInWei(gasFeeEstimates: GasFeeEstimates) {
+  if ('gasPrice' in gasFeeEstimates) {
+    return gweiToWei(gasFeeEstimates.gasPrice);
+  }
+
+  if (!('medium' in gasFeeEstimates)) {
+    return undefined;
+  }
+
+  const { medium } = gasFeeEstimates;
+  return gweiToWei(
+    typeof medium === 'string' ? medium : medium.suggestedMaxFeePerGas,
+  );
+}
+
+/**
+ * Estimates the gas limit and layer 1 fee for sending the full native balance.
+ *
+ * `eth_estimateGas` without fee fields only requires the value to be covered
+ * by the balance, so the transaction is estimated using the full balance and
+ * the resulting gas cost is subtracted from it.
+ *
+ * @param args - The estimate arguments.
+ * @param args.asset - The native asset being sent.
+ * @param args.chainId - The chain ID of the send.
+ * @param args.from - The sender address.
+ * @param args.hexData - The optional transaction data.
+ * @param args.networkClientId - The network client to estimate with.
+ * @param args.rawBalanceNumeric - The raw native balance of the sender.
+ * @param args.to - The recipient address.
+ * @returns The estimated gas limit and layer 1 gas fees.
+ */
+async function estimateMaxTransactionGas({
+  asset,
+  chainId,
+  from,
+  hexData,
+  networkClientId,
+  rawBalanceNumeric,
+  to,
+}: {
+  asset: Asset;
+  chainId: Hex;
+  from: Hex;
+  hexData?: Hex;
+  networkClientId: string;
+  rawBalanceNumeric: Numeric;
+  to: string;
+}) {
+  const value = toTokenMinimalUnit(
+    rawBalanceNumeric.toString(),
+    asset.decimals,
+    10,
+  ) as string;
+  const transactionParams = prepareEVMTransaction(
+    asset,
+    { from, to, value },
+    hexData,
+  );
+
+  const [gasLimit, layer1GasFees] = await Promise.all([
+    estimateGas(transactionParams, networkClientId),
+    chainId === CHAIN_IDS.MAINNET
+      ? Promise.resolve('0x0' as Hex)
+      : getLayer1GasFees({ asset, chainId, from, value }),
+  ]);
+
+  return {
+    gasLimit,
+    layer1GasFees: layer1GasFees ?? ('0x0' as Hex),
+  };
+}
+
+type GetMaxAmountArgs = {
+  asset?: Asset;
+  estimatedTotalGas?: Numeric;
+  rawBalanceNumeric: Numeric;
+};
+
+function getMaxAmountFn({
+  asset,
+  estimatedTotalGas = new Numeric('0', 10),
+  rawBalanceNumeric,
+}: GetMaxAmountArgs) {
+  if (!asset) {
+    return '0';
+  }
+
+  const balance = rawBalanceNumeric.minus(estimatedTotalGas);
+
+  return balance.isZero() || balance.isNegative()
+    ? '0'
+    : toTokenMinimalUnit(balance.toString(), asset.decimals, 10);
+}
