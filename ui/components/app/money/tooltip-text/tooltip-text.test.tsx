@@ -52,6 +52,23 @@ describe('TooltipText', () => {
     expect(queryByTestId('test-tooltip')).not.toBeInTheDocument();
   });
 
+  it('calls onOpen only on the first open', async () => {
+    const onOpen = jest.fn();
+    const { getByTestId } = renderTooltipText({ onOpen });
+    const trigger = getByTestId('test-tooltip-trigger');
+
+    for (let i = 0; i < 3; i++) {
+      await act(async () => {
+        fireEvent.mouseEnter(trigger);
+      });
+      await act(async () => {
+        fireEvent.mouseLeave(trigger);
+      });
+    }
+
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
   it('does not open the tooltip on keyboard focus', async () => {
     const { getByTestId, queryByTestId } = renderTooltipText();
     const trigger = getByTestId('test-tooltip-trigger');
