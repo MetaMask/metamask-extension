@@ -28,10 +28,10 @@ const EMPTY_SERVICE_SOURCE = `
 describe('legacy-background-api.ts', () => {
   describe('check', () => {
     it('succeeds when all legacy background APIs match the snapshot', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return {
@@ -40,16 +40,22 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          legacyBackgroundApiServiceContent: `
+        );
+        writeFile(
+          LEGACY_BACKGROUND_API_SERVICE_PATH,
+          `
             export class LegacyBackgroundApiService {
               existingMethod(): void {}
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: ['existingMethod'],
             'MetamaskController.getApi': ['existingProperty'],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -58,10 +64,10 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('succeeds even when the snapshot lists names in a different order', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return {
@@ -71,11 +77,14 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['b', 'a'],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -84,10 +93,10 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('rejects properties added to MetamaskController.getApi, advising that they be removed', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return {
@@ -98,11 +107,14 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['existingProperty'],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -120,20 +132,23 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('rejects methods added to LegacyBackgroundApiService, advising that they be removed', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          legacyBackgroundApiServiceContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          LEGACY_BACKGROUND_API_SERVICE_PATH,
+          `
             export class LegacyBackgroundApiService {
               newMethodA(): void {}
               newMethodB(): void {}
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -151,17 +166,17 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('rejects properties removed from MetamaskController.getApi, advising that the snapshot be updated', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          snapshotContent: JSON.stringify({
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [
               'obsoletePropertyB',
               'obsoletePropertyA',
             ],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -179,14 +194,14 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('rejects methods removed from LegacyBackgroundApiService, advising that the snapshot be updated', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          snapshotContent: JSON.stringify({
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: ['obsoleteMethodA', 'obsoleteMethodB'],
             'MetamaskController.getApi': [],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -204,10 +219,10 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('reports extra members in both APIs', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return {
@@ -216,16 +231,22 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          legacyBackgroundApiServiceContent: `
+        );
+        writeFile(
+          LEGACY_BACKGROUND_API_SERVICE_PATH,
+          `
             export class LegacyBackgroundApiService {
               newMethod(): void {}
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': [],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -246,10 +267,10 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('only reports extra members in both APIs even if there are also removed members', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return {
@@ -258,11 +279,14 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          snapshotContent: JSON.stringify({
+        );
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['obsoleteProperty'],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -281,8 +305,6 @@ describe('legacy-background-api.ts', () => {
 
     it('fails when the snapshot does not exist', async () => {
       await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({ directoryPath });
-
         const result = await runScript({ directoryPath, args: ['check'] });
 
         expect(result.exitCode).toBe(1);
@@ -293,8 +315,8 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when the snapshot is not valid JSON', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({ directoryPath, snapshotContent: '{' });
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(SNAPSHOT_PATH, '{');
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -306,11 +328,11 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when the snapshot does not have an entry for an API', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          snapshotContent: JSON.stringify({ 'MetamaskController.getApi': [] }),
-        });
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({ 'MetamaskController.getApi': [] }),
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -322,14 +344,14 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when an entry in the snapshot is not an array of strings', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          snapshotContent: JSON.stringify({
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          SNAPSHOT_PATH,
+          JSON.stringify({
             LegacyBackgroundApiService: [],
             'MetamaskController.getApi': ['a', 1],
           }),
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['check'] });
 
@@ -343,10 +365,11 @@ describe('legacy-background-api.ts', () => {
 
   describe('update', () => {
     it('replaces the snapshot with the sorted names of both APIs', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            METAMASK_CONTROLLER_PATH,
+            `
             class MetamaskController {
               getApi() {
                 return {
@@ -356,34 +379,42 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-          legacyBackgroundApiServiceContent: `
+          );
+          writeFile(
+            LEGACY_BACKGROUND_API_SERVICE_PATH,
+            `
             export class LegacyBackgroundApiService {
               methodB(): void {}
 
               methodA(): void {}
             }
           `,
-          snapshotContent: JSON.stringify({
-            LegacyBackgroundApiService: ['obsoleteMethod'],
-            'MetamaskController.getApi': ['obsoleteProperty'],
-          }),
-        });
+          );
+          writeFile(
+            SNAPSHOT_PATH,
+            JSON.stringify({
+              LegacyBackgroundApiService: ['obsoleteMethod'],
+              'MetamaskController.getApi': ['obsoleteProperty'],
+            }),
+          );
 
-        const result = await runScript({ directoryPath, args: ['update'] });
+          const result = await runScript({ directoryPath, args: ['update'] });
 
-        expect(result.exitCode).toBe(0);
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: ['methodA', 'methodB'],
-          'MetamaskController.getApi': ['propertyA', 'propertyB'],
-        });
-      });
+          expect(result.exitCode).toBe(0);
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: ['methodA', 'methodB'],
+            'MetamaskController.getApi': ['propertyA', 'propertyB'],
+          });
+        },
+      );
     });
 
     it('records shorthand, method, and spread properties of MetamaskController.getApi', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            METAMASK_CONTROLLER_PATH,
+            `
             class MetamaskController {
               getApi() {
                 return {
@@ -396,26 +427,28 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-        });
+          );
 
-        await runScript({ directoryPath, args: ['update'] });
+          await runScript({ directoryPath, args: ['update'] });
 
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: [],
-          'MetamaskController.getApi': [
-            '...this.otherApi',
-            'methodProperty',
-            'shorthandProperty',
-          ],
-        });
-      });
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: [],
+            'MetamaskController.getApi': [
+              '...this.otherApi',
+              'methodProperty',
+              'shorthandProperty',
+            ],
+          });
+        },
+      );
     });
 
     it('ignores properties of nested objects and of objects outside of MetamaskController.getApi', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            METAMASK_CONTROLLER_PATH,
+            `
             class MetamaskController {
               getState() {
                 return {
@@ -432,42 +465,46 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-        });
+          );
 
-        await runScript({ directoryPath, args: ['update'] });
+          await runScript({ directoryPath, args: ['update'] });
 
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: [],
-          'MetamaskController.getApi': ['existingProperty'],
-        });
-      });
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: [],
+            'MetamaskController.getApi': ['existingProperty'],
+          });
+        },
+      );
     });
 
     it('records async public methods of LegacyBackgroundApiService', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          legacyBackgroundApiServiceContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            LEGACY_BACKGROUND_API_SERVICE_PATH,
+            `
             export class LegacyBackgroundApiService {
               async asyncMethod(): Promise<void> {}
             }
           `,
-        });
+          );
 
-        await runScript({ directoryPath, args: ['update'] });
+          await runScript({ directoryPath, args: ['update'] });
 
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: ['asyncMethod'],
-          'MetamaskController.getApi': [],
-        });
-      });
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: ['asyncMethod'],
+            'MetamaskController.getApi': [],
+          });
+        },
+      );
     });
 
     it('ignores private and protected methods of LegacyBackgroundApiService', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          legacyBackgroundApiServiceContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            LEGACY_BACKGROUND_API_SERVICE_PATH,
+            `
             export class LegacyBackgroundApiService {
               #helper(): void {}
 
@@ -476,22 +513,24 @@ describe('legacy-background-api.ts', () => {
               protected protectedHelper(): void {}
             }
           `,
-        });
+          );
 
-        await runScript({ directoryPath, args: ['update'] });
+          await runScript({ directoryPath, args: ['update'] });
 
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: [],
-          'MetamaskController.getApi': [],
-        });
-      });
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: [],
+            'MetamaskController.getApi': [],
+          });
+        },
+      );
     });
 
     it('ignores properties and nested classes of LegacyBackgroundApiService', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          legacyBackgroundApiServiceContent: `
+      await withinSandbox(
+        async ({ directoryPath, writeFile, readSnapshot }) => {
+          writeFile(
+            LEGACY_BACKGROUND_API_SERVICE_PATH,
+            `
             export class LegacyBackgroundApiService {
               readonly messenger: unknown;
 
@@ -502,23 +541,21 @@ describe('legacy-background-api.ts', () => {
               }
             }
           `,
-        });
+          );
 
-        await runScript({ directoryPath, args: ['update'] });
+          await runScript({ directoryPath, args: ['update'] });
 
-        expect(readSnapshot(directoryPath)).toStrictEqual({
-          LegacyBackgroundApiService: ['existingMethod'],
-          'MetamaskController.getApi': [],
-        });
-      });
+          expect(readSnapshot()).toStrictEqual({
+            LegacyBackgroundApiService: ['existingMethod'],
+            'MetamaskController.getApi': [],
+          });
+        },
+      );
     });
 
     it('fails when MetamaskController does not exist', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: 'class OtherController {}',
-        });
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(METAMASK_CONTROLLER_PATH, 'class OtherController {}');
 
         const result = await runScript({ directoryPath, args: ['update'] });
 
@@ -528,11 +565,8 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when MetamaskController.getApi does not exist', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: 'class MetamaskController {}',
-        });
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(METAMASK_CONTROLLER_PATH, 'class MetamaskController {}');
 
         const result = await runScript({ directoryPath, args: ['update'] });
 
@@ -544,17 +578,17 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when MetamaskController.getApi does not return an object literal', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          metamaskControllerContent: `
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          METAMASK_CONTROLLER_PATH,
+          `
             class MetamaskController {
               getApi() {
                 return this.api;
               }
             }
           `,
-        });
+        );
 
         const result = await runScript({ directoryPath, args: ['update'] });
 
@@ -566,11 +600,11 @@ describe('legacy-background-api.ts', () => {
     });
 
     it('fails when LegacyBackgroundApiService does not exist', async () => {
-      await withinSandbox(async ({ directoryPath }) => {
-        setupSandbox({
-          directoryPath,
-          legacyBackgroundApiServiceContent: 'export class OtherService {}',
-        });
+      await withinSandbox(async ({ directoryPath, writeFile }) => {
+        writeFile(
+          LEGACY_BACKGROUND_API_SERVICE_PATH,
+          'export class OtherService {}',
+        );
 
         const result = await runScript({ directoryPath, args: ['update'] });
 
@@ -584,8 +618,6 @@ describe('legacy-background-api.ts', () => {
 
   it('fails when no command is given', async () => {
     await withinSandbox(async ({ directoryPath }) => {
-      setupSandbox({ directoryPath });
-
       const result = await runScript({ directoryPath, args: [] });
 
       expect(result.exitCode).toBe(1);
@@ -597,75 +629,36 @@ describe('legacy-background-api.ts', () => {
  * Runs a function inside a new temporary directory, which stands in for the
  * root of the repository.
  *
- * @param callback - The function to run. It receives the path of the
- * directory.
+ * @param callback - The function to run. It receives the sandbox path and
+ * helpers for writing files and reading the snapshot within that sandbox.
  */
 async function withinSandbox(
-  callback: (options: { directoryPath: string }) => Promise<void>,
+  callback: (options: {
+    directoryPath: string;
+    writeFile: (filePath: string, contents: string) => void;
+    readSnapshot: () => unknown;
+  }) => Promise<void>,
 ): Promise<void> {
   const sandbox = createSandbox('legacy-background-api');
-  await sandbox.withinSandbox(callback);
-}
+  await sandbox.withinSandbox(async ({ directoryPath }) => {
+    const writeFile = (filePath: string, contents: string): void => {
+      const absoluteFilePath = path.join(directoryPath, filePath);
+      fs.mkdirSync(path.dirname(absoluteFilePath), { recursive: true });
+      fs.writeFileSync(absoluteFilePath, contents);
+    };
 
-/**
- * Writes the files that the script reads into the given directory.
- *
- * @param options - The options.
- * @param options.directoryPath - The directory standing in for the root of the
- * repository.
- * @param options.metamaskControllerContent - The contents of the file that
- * defines `MetamaskController`.
- * @param options.legacyBackgroundApiServiceContent - The contents of the file
- * that defines `LegacyBackgroundApiService`.
- * @param options.snapshotContent - The contents of the snapshot. If omitted, the
- * snapshot is not created.
- */
-function setupSandbox({
-  directoryPath,
-  metamaskControllerContent = EMPTY_CONTROLLER_SOURCE,
-  legacyBackgroundApiServiceContent = EMPTY_SERVICE_SOURCE,
-  snapshotContent,
-}: {
-  directoryPath: string;
-  metamaskControllerContent?: string;
-  legacyBackgroundApiServiceContent?: string;
-  snapshotContent?: string;
-}): void {
-  writeFile(
-    path.join(directoryPath, METAMASK_CONTROLLER_PATH),
-    metamaskControllerContent,
-  );
-  writeFile(
-    path.join(directoryPath, LEGACY_BACKGROUND_API_SERVICE_PATH),
-    legacyBackgroundApiServiceContent,
-  );
-  if (snapshotContent !== undefined) {
-    writeFile(path.join(directoryPath, SNAPSHOT_PATH), snapshotContent);
-  }
-}
+    writeFile(METAMASK_CONTROLLER_PATH, EMPTY_CONTROLLER_SOURCE);
+    writeFile(LEGACY_BACKGROUND_API_SERVICE_PATH, EMPTY_SERVICE_SOURCE);
 
-/**
- * Writes a file, creating any directories leading up to it.
- *
- * @param filePath - The absolute path of the file.
- * @param contents - The contents of the file.
- */
-function writeFile(filePath: string, contents: string): void {
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.writeFileSync(filePath, contents);
-}
-
-/**
- * Reads and parses the snapshot in the given directory.
- *
- * @param directoryPath - The directory standing in for the root of the
- * repository.
- * @returns The parsed snapshot.
- */
-function readSnapshot(directoryPath: string): unknown {
-  return JSON.parse(
-    fs.readFileSync(path.join(directoryPath, SNAPSHOT_PATH), 'utf8'),
-  );
+    await callback({
+      directoryPath,
+      writeFile,
+      readSnapshot: () =>
+        JSON.parse(
+          fs.readFileSync(path.join(directoryPath, SNAPSHOT_PATH), 'utf8'),
+        ),
+    });
+  });
 }
 
 /**
