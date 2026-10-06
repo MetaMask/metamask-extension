@@ -154,8 +154,14 @@ export function useTransactionCustomAmount({
     depositPrefill.status === DepositPrefillStatus.Prefilled;
   const isDepositPrefillSkipped =
     depositPrefill.status === DepositPrefillStatus.Skipped;
+  const supportsDepositPrefill = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountDeposit,
+    TransactionType.perpsDeposit,
+    TransactionType.predictDeposit,
+    TransactionType.predictDepositAndOrder,
+  ]);
   const shouldUseDepositPrefill =
-    isMoneyAccountDeposit && isDepositPrefillEnabled;
+    supportsDepositPrefill && isDepositPrefillEnabled;
   const prevDepositHasPrefilledRef = useRef(isDepositPrefilled);
   // The prefill amount is written by an effect, one commit after prefill
   // reports `hasPrefilled`. Without tracking that gap the field paints "$0"
@@ -496,12 +502,15 @@ export function useTransactionCustomAmount({
       }
 
       if (transactionId) {
+        let amountInputType = `${percentage}%`;
+        if (isPrefill) {
+          amountInputType =
+            percentage === 100 ? 'prefilled_max' : 'prefilled_50';
+        }
         upsertTransactionUIMetricsFragment(transactionId, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: isPrefill
-              ? 'prefilled_max'
-              : `${percentage}%`,
+            mm_pay_amount_input_type: amountInputType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
             // Record the USD amount prefilled at load so the controller metrics
@@ -673,11 +682,13 @@ export function useTransactionCustomAmount({
       // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
       // and arms isMaxAmount like pressing Max. The fiat literal path can
       // ROUND_UP past available balance and yield "No quotes".
-      if (depositPrefill.isUncappedMaxPrefill) {
+      if (depositPrefill.percentage === undefined) {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- apply deposit prefill when hasPrefilled commits
-        updatePendingAmountPercentage(100, { isPrefill: true });
-      } else {
         applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
+      } else {
+        updatePendingAmountPercentage(depositPrefill.percentage, {
+          isPrefill: true,
+        });
       }
 
       // A Max held for the funding-account fetch has not written the amount

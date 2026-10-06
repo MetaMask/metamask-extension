@@ -193,6 +193,7 @@ describe('useDepositPrefillAmount', () => {
 
       expect(result.current).toEqual({
         prefillAmount: undefined,
+        percentage: undefined,
         isUncappedMaxPrefill: false,
         status: DepositPrefillStatus.Disabled,
       });
@@ -210,6 +211,28 @@ describe('useDepositPrefillAmount', () => {
   });
 
   describe('prefillAmount computation', () => {
+    [
+      TransactionType.perpsDeposit,
+      TransactionType.predictDeposit,
+      TransactionType.predictDepositAndOrder,
+    ].forEach((transactionType) => {
+      it(`computes 50% for stablecoin ${transactionType} transactions`, () => {
+        setupMocks({
+          transactionMeta: makeTransactionMeta({ type: transactionType }),
+          stablecoin: true,
+          payToken: makePayToken({ balanceUsd: '1000' }),
+          prefilledAmountDefault: { enabled: true },
+          prefilledAmountOverrides: {},
+        });
+
+        const { result } = runHook();
+
+        expect(result.current.prefillAmount).toBe('500');
+        expect(result.current.percentage).toBe(50);
+        expect(result.current.isUncappedMaxPrefill).toBe(false);
+      });
+    });
+
     it('computes 100% for stablecoin route tokens', () => {
       setupMocks({
         stablecoin: true,

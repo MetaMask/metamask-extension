@@ -63,6 +63,7 @@ function createDepositPrefillMock(
 ): ReturnType<typeof useDepositPrefillAmount> {
   return {
     prefillAmount: undefined,
+    percentage: undefined,
     isUncappedMaxPrefill: false,
     status: DepositPrefillStatus.Prefilled,
     ...overrides,
@@ -1189,6 +1190,7 @@ describe('useTransactionCustomAmount', () => {
         updateTokenAmountMock,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1219,6 +1221,7 @@ describe('useTransactionCustomAmount', () => {
         isAccountTokensLoading: true,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1269,6 +1272,7 @@ describe('useTransactionCustomAmount', () => {
         isMaxAmount: false,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),

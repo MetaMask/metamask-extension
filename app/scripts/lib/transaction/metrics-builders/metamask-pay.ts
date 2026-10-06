@@ -47,6 +47,12 @@ const USE_CASE_MAP: [TransactionType[], string][] = [
 
 // Pay types whose confirmations support pre-filling the amount field.
 const PREFILL_TYPES = [TransactionType.musdConversion];
+const DEPOSIT_PREFILL_TYPES = [
+  TransactionType.moneyAccountDeposit,
+  TransactionType.perpsDeposit,
+  TransactionType.predictDeposit,
+  TransactionType.predictDepositAndOrder,
+];
 
 export const getMetaMaskPayProperties: TransactionMetricsBuilder = ({
   eventName,
@@ -192,7 +198,12 @@ function addPayTypeProperties(
 
   const prefilledAmount = fragmentProperties?.mm_pay_prefilled_amount;
 
-  if (prefilledAmount !== undefined) {
+  const supportsDepositPrefillMetrics = [
+    ...PREFILL_TYPES,
+    ...DEPOSIT_PREFILL_TYPES,
+  ].some((type) => hasTransactionType(transaction, [type]));
+
+  if (prefilledAmount !== undefined && supportsDepositPrefillMetrics) {
     properties.mm_pay_prefilled_amount = prefilledAmount;
   }
 
@@ -202,7 +213,7 @@ function addPayTypeProperties(
     hasTransactionType(transaction, [type]),
   );
 
-  if (amountInputType !== undefined) {
+  if (amountInputType !== undefined && supportsDepositPrefillMetrics) {
     properties.mm_pay_amount_input_type = amountInputType;
   } else if (
     prefillType &&
