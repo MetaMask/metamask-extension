@@ -117,6 +117,7 @@ describe('MetametricsToggleItem', () => {
     );
     mockUpdatePreferencesSection.mockResolvedValue(undefined);
     mockListNotifications.mockResolvedValue(undefined);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   it('renders title', () => {
@@ -260,6 +261,38 @@ describe('MetametricsToggleItem', () => {
       previousMarketing,
     );
     expect(mockDisableMetametrics).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith(
+      'Failed to turn off marketing consent:',
+      expect.any(Error),
+    );
+  });
+
+  it('does not opt in to marketing when rolling back with consent already off', async () => {
+    mockMarketingPreferences = {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: false,
+    };
+    mockConsentWrite = jest.fn().mockRejectedValueOnce(new Error('not saved'));
+    const mockStore = createMockStore({
+      optedIn: true,
+      optedInToMarketing: false,
+      isSignedIn: true,
+    });
+    renderWithProvider(<MetametricsToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+    fireEvent.click(
+      await screen.findByTestId('metametrics-marketing-consent-sheet-confirm'),
+    );
+
+    await waitFor(() =>
+      expect(mockUpdatePreferencesSection).toHaveBeenCalledTimes(2),
+    );
+    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalledWith(true);
+    expect(console.error).toHaveBeenCalledWith(
+      'Failed to turn off marketing consent:',
+      expect.any(Error),
+    );
   });
 
   it('is disabled when useExternalServices is false', () => {

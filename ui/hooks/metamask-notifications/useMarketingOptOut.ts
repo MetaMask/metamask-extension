@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { MarketingPreference } from '@metamask/authenticated-user-storage';
+import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { setDataCollectionForMarketing } from '../../store/actions';
 import { useDispatch } from '../../store/hooks';
@@ -31,6 +32,7 @@ export function useMarketingOptOut({
   const { ensurePreferences, refetchPreferences, updatePreferencesSection } =
     useNotificationPreferences();
   const isSignedIn = useSelector(selectIsSignedIn);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,8 +64,12 @@ export function useMarketingOptOut({
   const rollBack = useCallback(
     async (previousMarketing?: MarketingPreference) => {
       try {
-        // Restore consent before channels so channels are never on without it.
-        await dispatch(setDataCollectionForMarketing(true));
+        // Only restore consent the user actually had, so a rollback never
+        // opts them in. Restore it before channels so channels are never on
+        // without it.
+        if (dataCollectionForMarketing === true) {
+          await dispatch(setDataCollectionForMarketing(true));
+        }
         if (previousMarketing) {
           await updatePreferencesSection('marketing', previousMarketing);
           listNotifications();
@@ -72,7 +78,12 @@ export function useMarketingOptOut({
         console.error('Failed to roll back marketing opt-out:', rollbackError);
       }
     },
-    [dispatch, listNotifications, updatePreferencesSection],
+    [
+      dataCollectionForMarketing,
+      dispatch,
+      listNotifications,
+      updatePreferencesSection,
+    ],
   );
 
   const onConfirm = useCallback(async () => {
