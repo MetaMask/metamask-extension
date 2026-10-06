@@ -134,7 +134,7 @@ describe('LavamoatPlugin', () => {
       );
     });
 
-    it('includes importScripts in service-worker.ts scuttleGlobalThis exceptions', () => {
+    it('includes importScripts and chrome in service-worker.ts scuttleGlobalThis exceptions', () => {
       const result = runtimeConfig(mockChunk('service-worker.ts')) as {
         embeddedOptions?: {
           scuttleGlobalThis?: {
@@ -153,6 +153,10 @@ describe('LavamoatPlugin', () => {
       assert.ok(
         exceptions.includes('importScripts'),
         'importScripts must be in the SW exceptions list so the SW can load background.js',
+      );
+      assert.ok(
+        exceptions.includes('chrome'),
+        'chrome must be in the SW exceptions list so LavaMoat does not scuttle the host chrome API',
       );
     });
 

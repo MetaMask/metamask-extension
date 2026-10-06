@@ -145,6 +145,10 @@ export const lavamoatPlugin = (args: Args) =>
               exceptions: [
                 ...getScuttleGlobalThisExceptions(args),
                 'importScripts',
+                // Host `chrome` is often configurable on MV3 workers. Without
+                // this exception LavaMoat replaces it with a throwing getter
+                // after the background compartment loads.
+                'chrome',
               ],
             },
           },
