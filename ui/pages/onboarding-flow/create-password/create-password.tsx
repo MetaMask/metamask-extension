@@ -206,6 +206,10 @@ export default function CreatePassword({
         TraceName.OnboardingSRPAccountImportTime,
         false,
       );
+      // reset wallet setup in progress state
+      // so that if the keyring creation succeeds,
+      // user can move on to the next step
+      setWalletSetupInProgress(false);
       throw error;
     }
 
