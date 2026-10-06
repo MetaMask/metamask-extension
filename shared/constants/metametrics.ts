@@ -796,6 +796,9 @@ export const REJECT_NOTIFICATION_CLOSE_SIG =
  * @see {@link https://www.notion.so/f2997ab32326441793ff790ba5c60a6a?v=267d984721cd4a26be610b5caa3e25b7&pvs=4}
  */
 export enum MetaMetricsEventName {
+  // TODO: test event to trigger the draft-segment-schema-pr workflow. Remove this before merging the PR.
+  DraftSchemaPrWorkflowTest = 'Draft Schema PR Workflow Test',
+
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
