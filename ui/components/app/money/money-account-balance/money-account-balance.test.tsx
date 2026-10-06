@@ -5,6 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -54,6 +55,12 @@ const mockUseMoneyAccountBalance = jest.mocked(useMoneyAccountBalance);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockUseMoneyAccountDeposit = jest.mocked(useMoneyAccountDeposit);
 const mockInitiateDeposit = jest.fn();
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const PRIMARY_BUTTON_CLASS = 'bg-icon-default';
 const SECONDARY_BUTTON_CLASS = 'bg-muted';
@@ -361,6 +368,40 @@ describe('MoneyAccountBalance', () => {
       buttonIntent: MoneyButtonIntent.AddMoney,
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('opens Money Home when the card is clicked', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      state: { stayOnHomePage: true },
+    });
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
+  });
+
+  it('opens Money Home when the card is activated from the keyboard', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.keyDown(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID), {
+      key: 'Enter',
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      state: { stayOnHomePage: true },
     });
   });
 

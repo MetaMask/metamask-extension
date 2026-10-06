@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -22,7 +23,9 @@ import {
   selectMoneyBalanceShowMusdLabelEnabled,
   selectMoneyHomeScreenCardEnabled,
 } from '../../../../selectors/money/money-account-feature-flags';
+import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
+import { transitionForward } from '../../../ui/transition';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAccountDeposit } from '../../../../hooks/money/useMoneyAccountDeposit';
@@ -134,7 +137,7 @@ const Add = ({
   isDepositLoading,
   moneyAccountEmpty,
 }: {
-  onAddClick: () => void;
+  onAddClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isDepositLoading: boolean;
   moneyAccountEmpty: boolean;
 }) => {
@@ -206,10 +209,16 @@ const Add = ({
  * APY slot. If the query fails with nothing to show, the slot is omitted
  * rather than inventing a rate.
  *
+ * ## The card opens Money Home
+ *
+ * Clicking the card, or activating it from the keyboard, opens Money Home.
+ * Add stays a deposit action: its click does not follow the card.
+ *
  * @returns The balance row, or `null`.
  */
 export const MoneyAccountBalance = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const { privacyMode } = useSelector(getPreferences);
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
   const showMusdLabel = useSelector(selectMoneyBalanceShowMusdLabelEnabled);
@@ -247,7 +256,30 @@ export const MoneyAccountBalance = () => {
     return null;
   }
 
-  const handleAddClick = () => {
+  const handleCardClick = () => {
+    trackButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
+    transitionForward(() =>
+      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  };
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleCardClick();
+    }
+  };
+
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -274,7 +306,11 @@ export const MoneyAccountBalance = () => {
       gap={4}
       // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
       // so this row lines up with the action buttons above it.
-      className="w-full max-w-[458px] self-center rounded-2xl"
+      className="w-full max-w-[458px] self-center cursor-pointer rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+      role="link"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
       <Box flexDirection={BoxFlexDirection.Column} gap={1} className="min-w-0">
