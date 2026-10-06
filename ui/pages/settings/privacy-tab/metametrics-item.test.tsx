@@ -27,6 +27,14 @@ jest.mock('../../../hooks/useAnalytics', () => {
 const mockEnableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockDisableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockSetDataCollectionForMarketing = jest.fn();
+const mockUpdatePreferencesSection = jest.fn();
+const mockRefetchPreferences = jest.fn();
+const mockEnsurePreferences = jest.fn();
+const mockListNotifications = jest.fn();
+let mockMarketingPreferences = {
+  pushNotificationsEnabled: false,
+  inAppNotificationsEnabled: false,
+};
 
 jest.mock('../../../hooks/useMetametrics', () => ({
   useEnableMetametrics: () => ({
@@ -41,11 +49,35 @@ jest.mock('../../../hooks/useMetametrics', () => ({
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
-  setDataCollectionForMarketing: (val: boolean) => {
-    mockSetDataCollectionForMarketing(val);
-    return { type: 'MOCK_ACTION' };
+  setDataCollectionForMarketing: (val: boolean, options?: unknown) => {
+    if (options === undefined) {
+      mockSetDataCollectionForMarketing(val);
+    } else {
+      mockSetDataCollectionForMarketing(val, options);
+    }
+    return () => Promise.resolve();
   },
 }));
+
+jest.mock(
+  '../../../hooks/metamask-notifications/useNotificationPreferences',
+  () => ({
+    useNotificationPreferences: () => ({
+      ensurePreferences: mockEnsurePreferences,
+      refetchPreferences: mockRefetchPreferences,
+      updatePreferencesSection: mockUpdatePreferencesSection,
+    }),
+  }),
+);
+
+jest.mock(
+  '../../../contexts/metamask-notifications/metamask-notifications',
+  () => ({
+    useMetamaskNotificationsContext: () => ({
+      listNotifications: mockListNotifications,
+    }),
+  }),
+);
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -62,6 +94,7 @@ const createMockStore = (overrides = {}) =>
       optedIn: false,
       marketingConsentDecisionMade: true,
       optedInToMarketing: false,
+      isSignedIn: false,
       ...overrides,
     },
   });
@@ -70,6 +103,18 @@ describe('MetametricsToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
+    mockMarketingPreferences = {
+      pushNotificationsEnabled: false,
+      inAppNotificationsEnabled: false,
+    };
+    mockEnsurePreferences.mockImplementation(() =>
+      Promise.resolve({ marketing: mockMarketingPreferences }),
+    );
+    mockRefetchPreferences.mockImplementation(() =>
+      Promise.resolve({ data: { marketing: mockMarketingPreferences } }),
+    );
+    mockUpdatePreferencesSection.mockResolvedValue(undefined);
+    mockListNotifications.mockResolvedValue(undefined);
   });
 
   it('renders title', () => {
@@ -142,6 +187,45 @@ describe('MetametricsToggleItem', () => {
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
     });
+  });
+
+  it('warns and disables marketing channels before turning off metrics', async () => {
+    mockMarketingPreferences = {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    };
+    const mockStore = createMockStore({
+      optedIn: true,
+      optedInToMarketing: true,
+      isSignedIn: true,
+    });
+    renderWithProvider(<MetametricsToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+
+    expect(
+      await screen.findByTestId('metametrics-marketing-consent-sheet'),
+    ).toBeInTheDocument();
+    expect(mockDisableMetametrics).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      screen.getByTestId('metametrics-marketing-consent-sheet-confirm'),
+    );
+
+    await waitFor(() => {
+      expect(mockUpdatePreferencesSection).toHaveBeenCalledWith('marketing', {
+        pushNotificationsEnabled: false,
+        inAppNotificationsEnabled: false,
+      });
+      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false, {
+        waitForAus: true,
+      });
+      expect(mockDisableMetametrics).toHaveBeenCalled();
+    });
+    expect(mockListNotifications).toHaveBeenCalled();
+    expect(
+      screen.queryByTestId('metametrics-marketing-consent-sheet'),
+    ).not.toBeInTheDocument();
   });
 
   it('is disabled when useExternalServices is false', () => {
