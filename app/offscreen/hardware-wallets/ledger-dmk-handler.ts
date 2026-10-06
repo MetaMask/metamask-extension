@@ -318,8 +318,8 @@ export class LedgerDmkBridgeHandler {
       // `#bridge` may be re-assigned while awaiting (teardown or a concurrent
       // rebuild), so only tear down if it is still the bridge we checked.
       const checkedBridge = this.#bridge;
-      const hasPermittedDevice = await this.#hasPermittedLedgerDevice();
-      if (!hasPermittedDevice && this.#bridge === checkedBridge) {
+      const cachedBridge = await this.#checkBridgeCacheStatus();
+      if (!cachedBridge && this.#bridge === checkedBridge) {
         skipPermittedDeviceProbe = true;
         // Do not wait for cleanup of an unresponsive device.
         const bridgeToDestroy = this.#clearBridgeState();
@@ -391,7 +391,7 @@ export class LedgerDmkBridgeHandler {
    *
    * @returns Whether the bridge may still be valid.
    */
-  async #hasPermittedLedgerDevice(): Promise<boolean> {
+  async #checkBridgeCacheStatus(): Promise<boolean> {
     if (!isWebHIDSupported()) {
       return true;
     }
