@@ -2,16 +2,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, closed]
     # UI, background, and the event catalog. New paths outside these trees do not start this workflow.
+    # Negated globs replace paths-ignore: GitHub rejects both filters on one event.
     # Test globs stay because tests live inside ui/ and app/scripts/.
     paths:
       - 'app/scripts/**/*.ts'
       - 'ui/**/*.ts'
       - 'ui/**/*.tsx'
       - 'shared/constants/metametrics.ts'
-    paths-ignore:
-      - '**/*.test.*'
-      - '**/*.spec.*'
-      - '**/__snapshots__/**'
+      - '!**/*.test.*'
+      - '!**/*.spec.*'
+      - '!**/__snapshots__/**'
   issue_comment:
     types: [created]
 jobs:
