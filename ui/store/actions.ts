@@ -7612,7 +7612,7 @@ function applyPatches(
 }
 
 export async function getCode(address: Hex, networkClientId: string) {
-  return await submitRequestToBackground<string>('getCode', [
+  return await submitRequestToBackground('LegacyBackgroundApiService:getCode', [
     address,
     networkClientId,
   ]);

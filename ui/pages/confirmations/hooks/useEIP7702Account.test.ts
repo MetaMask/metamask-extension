@@ -12,6 +12,7 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import { useDispatch } from '../../../store/hooks';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { useEIP7702Account } from './useEIP7702Account';
+import { Hex } from '@metamask/utils';
 
 jest.mock('../../../store/hooks', () => ({
   useDispatch: jest.fn(),
@@ -93,7 +94,8 @@ describe('useEIP7702Account', () => {
     // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code: string) => {
+      async (code: Hex | undefined) => {
+        // @ts-expect-error Intentionally forcing `getCode` to return nothing.
         getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);
