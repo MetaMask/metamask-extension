@@ -69,7 +69,7 @@ export {
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 const reactRoots = new WeakMap();
 
