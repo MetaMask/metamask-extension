@@ -24,6 +24,11 @@ import type {
 } from '@metamask/profile-sync-controller/auth';
 import type { RootMessenger } from '../lib/messenger';
 
+export type MarketingConsentSyncWaitForMarketingConsentSyncAction = {
+  type: 'MarketingConsentSync:waitForMarketingConsentSync';
+  handler: (expectedConsent: boolean) => Promise<void>;
+};
+
 type SyncActions =
   | AuthenticatedUserStorageInvalidateQueriesAction
   | AuthenticatedUserStorageServiceGetMarketingConsentAction
@@ -33,10 +38,7 @@ type SyncActions =
   | AnalyticsControllerOptOutOfMarketingAction
   | AuthenticationControllerGetStateAction
   | KeyringControllerGetStateAction
-  | {
-      type: 'MarketingConsentSync:waitForMarketingConsentSync';
-      handler: (expectedConsent: boolean) => Promise<void>;
-    };
+  | MarketingConsentSyncWaitForMarketingConsentSyncAction;
 
 type SyncEvents =
   | AnalyticsControllerStateChangeEvent

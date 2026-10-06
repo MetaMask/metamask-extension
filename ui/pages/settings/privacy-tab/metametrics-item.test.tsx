@@ -27,6 +27,7 @@ jest.mock('../../../hooks/useAnalytics', () => {
 const mockEnableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockDisableMetametrics = jest.fn().mockResolvedValue(undefined);
 const mockSetDataCollectionForMarketing = jest.fn();
+let mockConsentWrite = jest.fn().mockResolvedValue(undefined);
 const mockUpdatePreferencesSection = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockEnsurePreferences = jest.fn();
@@ -55,7 +56,7 @@ jest.mock('../../../store/actions', () => ({
     } else {
       mockSetDataCollectionForMarketing(val, options);
     }
-    return () => Promise.resolve();
+    return () => mockConsentWrite();
   },
 }));
 
@@ -102,6 +103,7 @@ const createMockStore = (overrides = {}) =>
 describe('MetametricsToggleItem', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockConsentWrite = jest.fn().mockResolvedValue(undefined);
     setBackgroundConnection(backgroundConnectionMock as never);
     mockMarketingPreferences = {
       pushNotificationsEnabled: false,
@@ -226,6 +228,38 @@ describe('MetametricsToggleItem', () => {
     expect(
       screen.queryByTestId('metametrics-marketing-consent-sheet'),
     ).not.toBeInTheDocument();
+  });
+
+  it('rolls channels back and keeps metrics on if the consent update fails', async () => {
+    const previousMarketing = {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: false,
+    };
+    mockMarketingPreferences = previousMarketing;
+    mockConsentWrite = jest
+      .fn()
+      .mockRejectedValueOnce(new Error('not saved'))
+      .mockResolvedValue(undefined);
+    const mockStore = createMockStore({
+      optedIn: true,
+      optedInToMarketing: true,
+      isSignedIn: true,
+    });
+    renderWithProvider(<MetametricsToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('participate-in-meta-metrics-input'));
+    fireEvent.click(
+      await screen.findByTestId('metametrics-marketing-consent-sheet-confirm'),
+    );
+
+    expect(
+      await screen.findByText(messages.notificationsSettingsBoxError.message),
+    ).toBeInTheDocument();
+    expect(mockUpdatePreferencesSection).toHaveBeenLastCalledWith(
+      'marketing',
+      previousMarketing,
+    );
+    expect(mockDisableMetametrics).not.toHaveBeenCalled();
   });
 
   it('is disabled when useExternalServices is false', () => {
