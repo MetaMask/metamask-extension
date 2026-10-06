@@ -112,16 +112,6 @@ async function main(): Promise<void> {
     .version(false)
     .help()
     .alias('help', 'h')
-    /*
-    .fail((message, error, instance) => {
-      if (error) {
-        throw error;
-      }
-      instance.showHelp();
-      console.error(`\n${message}`);
-      process.exit(1);
-    })
-    */
     .parseAsync();
 }
 
@@ -350,7 +340,9 @@ async function update(): Promise<void> {
     },
   );
   writeFileSync(SNAPSHOT_PATH, contents);
-  console.log(`Wrote legacy background API names to ${SNAPSHOT_PATH}.`);
+  console.log(
+    `Updated legacy background API snapshot with current members: ${SNAPSHOT_PATH}.`,
+  );
 }
 
 /**

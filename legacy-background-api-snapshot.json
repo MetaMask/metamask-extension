@@ -54,7 +54,6 @@
     "handleDefiReferralOnPermittedAccountsAdded",
     "importAccountWithStrategy",
     "importMnemonicToVault",
-    "isAssetsUnifyStateEnabled",
     "isPublicEndpointUrl",
     "isRelaySupported",
     "isSendBundleSupported",
