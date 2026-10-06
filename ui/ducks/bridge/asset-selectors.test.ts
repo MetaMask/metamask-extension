@@ -1,4 +1,7 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -6,6 +9,7 @@ import {
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getBridgeBalancesByChainId,
   getBridgeAssetsByAssetId,
@@ -344,6 +348,55 @@ describe('Bridge asset selectors', () => {
         balance: '1',
         chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
       });
+    });
+
+    it('includes a native asset with its balance in the picker', () => {
+      const nativeAsset = getNativeAssetForChainId(CHAIN_IDS.ARC);
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.ARC]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
+          accountsByChainId: {
+            [CHAIN_IDS.ARC]: {
+              [MOCK_EVM_ACCOUNT.address]: {
+                balance: '0x6aaf7c8516d0c0000',
+              },
+            },
+          },
+          currencyRates: {
+            USDC: { conversionRate: 1 },
+          },
+        },
+      });
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+
+      expect(getBridgeSortedAssets(state, accountGroup.id)).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            assetId: nativeAsset.assetId,
+            balance: '123',
+            decimals: nativeAsset.decimals,
+            symbol: nativeAsset.symbol,
+          }),
+        ]),
+      );
     });
 
     it('returns empty results when accountGroupId is undefined', () => {

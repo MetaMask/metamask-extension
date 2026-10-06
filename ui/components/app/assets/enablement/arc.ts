@@ -16,8 +16,6 @@ import {
 export const ARC_HEX_CHAIN_ID = '0x13b2';
 export const ARC_NATIVE_CAIP_CHAIN_ID = 'eip155:5042';
 export const ARC_NATIVE_ASSET_ID = 'eip155:5042/slip44:5042';
-export const ARC_USDC_ERC20_ASSET_ID =
-  `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`.toLowerCase();
 
 /**
  * Checks whether an asset is the native Arc USDC token supported by the bridge.
@@ -39,21 +37,5 @@ export function isArcUsdcForBridge(
     chainId === CHAIN_IDS.ARC &&
     address.toLowerCase() === ARC_USDC_TOKEN_ADDRESS.toLowerCase() &&
     item.isNative
-  );
-}
-
-/**
- * Checks whether an asset id is one of the Arc USDC representations that spend
- * from the native Arc USDC balance.
- *
- * @param assetId - CAIP-19 asset id.
- * @returns Whether the asset is Arc USDC.
- */
-export function isArcUsdcAssetIdForBridge(assetId?: string) {
-  const normalizedAssetId = assetId?.toLowerCase();
-
-  return (
-    normalizedAssetId === ARC_NATIVE_ASSET_ID ||
-    normalizedAssetId === ARC_USDC_ERC20_ASSET_ID
   );
 }

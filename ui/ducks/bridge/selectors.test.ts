@@ -14,7 +14,6 @@ import {
   toQuoteResponseV2,
   type QuoteMetadata,
 } from '@metamask/bridge-controller';
-import type { CaipAssetType } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { setGlobalDevModeChecks } from 'reselect';
@@ -31,11 +30,7 @@ import {
   MOCK_ACCOUNT_TRON_MAINNET,
   MOCK_ACCOUNT_STELLAR_PUBNET,
 } from '../../../test/data/mock-accounts';
-import {
-  ARC_USDC_TOKEN_ADDRESS,
-  CHAIN_IDS,
-  FEATURED_RPCS,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
@@ -3156,120 +3151,6 @@ describe('Bridge selectors', () => {
       const result = getValidationErrors(state);
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
-      expect(result.isInsufficientNativeReserve).toBe(false);
-    });
-
-    it('should return isInsufficientNativeReserve=true on Arc USDC when source amount leaves less than the reserve', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-          fromTokenInputValue: '10',
-          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.ARC)),
-          // 10 native Arc USDC in atomic units.
-          fromNativeBalance: '10000000000000000000',
-          fromTokenBalance: '10000000000000000000',
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '10000000000000000000',
-          },
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
-          },
-        },
-      });
-      const result = getValidationErrors(state);
-      const nativeReserveError = getInsufficientNativeReserveError(state);
-
-      expect(nativeReserveError).toStrictEqual({
-        minimumNativeBalanceToBeKeptInAccount: '0.05',
-        maxSwappableNativeBalance: '9.95',
-      });
-      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
-      expect(result.isInsufficientNativeReserve).toBe(true);
-    });
-
-    it('should return isInsufficientNativeReserve=true on Arc ERC20 USDC when source amount leaves less than the reserve', () => {
-      const arcErc20Usdc = {
-        assetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}` as CaipAssetType,
-        address: ARC_USDC_TOKEN_ADDRESS,
-        chainId: formatChainIdToCaip(CHAIN_IDS.ARC),
-        decimals: 6,
-        symbol: 'USDC',
-        name: 'USDC',
-      };
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-          fromTokenInputValue: '10',
-          fromToken: toBridgeToken(arcErc20Usdc),
-          fromNativeBalance: '10000000000000000000',
-          fromTokenBalance: '10000000000000000000',
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '10000000000000000000',
-          },
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
-          },
-        },
-      });
-      const result = getValidationErrors(state);
-      const nativeReserveError = getInsufficientNativeReserveError(state);
-
-      expect(nativeReserveError).toStrictEqual({
-        minimumNativeBalanceToBeKeptInAccount: '0.05',
-        maxSwappableNativeBalance: '9.95',
-      });
-      expect(getQuoteRequestInsufficientBal(state)).toBe(true);
-      expect(result.isInsufficientNativeReserve).toBe(true);
-    });
-
-    it('should return isInsufficientNativeReserve=false on Arc USDC when source amount keeps the reserve', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-          fromTokenInputValue: '9.95000',
-          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.ARC)),
-          // 10 native Arc USDC in atomic units.
-          fromNativeBalance: '10000000000000000000',
-          fromTokenBalance: '10000000000000000000',
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: CHAIN_IDS.ARC,
-            srcTokenAmount: '9950000000000000000',
-          },
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.ARC }),
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
-          },
-        },
-      });
-      const result = getValidationErrors(state);
-
-      expect(getInsufficientNativeReserveError(state)).toBeUndefined();
-      expect(getQuoteRequestInsufficientBal(state)).toBe(false);
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 

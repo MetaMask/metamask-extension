@@ -15,12 +15,10 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { isArcUsdcAssetIdForBridge } from '../../../components/app/assets/enablement/arc';
 
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
-    'eip155:5042': '0.05',
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
@@ -30,10 +28,7 @@ const trimTrailingDecimalZeros = (value: string) =>
 export const resolveMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (
-    !caipAssetId ||
-    (!isNativeAddress(caipAssetId) && !isArcUsdcAssetIdForBridge(caipAssetId))
-  ) {
+  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
@@ -143,8 +138,7 @@ export const buildInsufficientNativeReserveError = ({
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    (isNativeAddress(fromToken.assetId) ||
-      isArcUsdcAssetIdForBridge(fromToken.assetId)) &&
+    isNativeAddress(fromToken.assetId) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,

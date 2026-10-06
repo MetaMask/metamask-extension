@@ -1,31 +1,30 @@
-import { ARC_USDC_TOKEN_ADDRESS } from '../../../../shared/constants/network';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   calculateMaxAmountWithReserve,
   resolveMinimumReserveBalanceForCaipAssetId,
 } from './minimum-reserve';
 
 describe('minimum reserve utils', () => {
-  it('subtracts the Arc native reserve from Arc ERC20 USDC Max amount', () => {
-    expect(
-      resolveMinimumReserveBalanceForCaipAssetId(
-        `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`,
-      ),
-    ).toBe('0.05');
+  it('subtracts the Monad native reserve from the Max amount', () => {
+    const monadAssetId = getNativeAssetForChainId(CHAIN_IDS.MONAD).assetId;
+
+    expect(resolveMinimumReserveBalanceForCaipAssetId(monadAssetId)).toBe('10');
     expect(
       calculateMaxAmountWithReserve({
-        balanceAmount: '10',
-        caipAssetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`,
-        decimals: 6,
+        balanceAmount: '100',
+        caipAssetId: monadAssetId,
+        decimals: 18,
       }),
-    ).toBe('9.95');
+    ).toBe('90');
   });
 
-  it('does not return a negative Max amount when Arc USDC balance is below the reserve', () => {
+  it('does not return a negative Max amount when the balance is below the reserve', () => {
     expect(
       calculateMaxAmountWithReserve({
-        balanceAmount: '0.01',
-        caipAssetId: `eip155:5042/erc20:${ARC_USDC_TOKEN_ADDRESS}`,
-        decimals: 6,
+        balanceAmount: '5',
+        caipAssetId: getNativeAssetForChainId(CHAIN_IDS.MONAD).assetId,
+        decimals: 18,
       }),
     ).toBe('0');
   });
