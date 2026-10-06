@@ -5,6 +5,8 @@ import thunk from 'redux-thunk';
 import type { EnrolledCredential } from '@metamask/profile-sync-controller/sdk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+// eslint-disable-next-line import-x/no-restricted-paths
+import messages from '../../../../app/_locales/en/messages.json';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
@@ -73,8 +75,12 @@ describe('MfaSettings', () => {
       },
     ]);
 
-    expect(screen.getByText('Setup not finished')).toBeInTheDocument();
-    expect(screen.getByText('Finish setup')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaSettingsEmailPending.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.mfaSettingsFinishSetup.message),
+    ).toBeInTheDocument();
   });
 
   it('shows an active email without a setup button', () => {

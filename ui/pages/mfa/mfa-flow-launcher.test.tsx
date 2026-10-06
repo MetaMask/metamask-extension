@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { MFA_FLOW_ROUTE } from '../../helpers/constants/routes';
@@ -96,6 +97,18 @@ describe('MfaFlowLauncher', () => {
     });
 
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('runs the flow in place in the side panel', async () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+    renderLauncher();
+
+    await act(async () => {
+      start(createController());
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_FLOW_ROUTE);
+    expect(mockOpenExtensionInBrowser).not.toHaveBeenCalled();
   });
 
   it('cancels and reopens the current page in the expanded view from the popup', async () => {
