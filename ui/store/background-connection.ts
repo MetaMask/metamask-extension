@@ -1,14 +1,23 @@
-import { NamespacedName } from '@metamask/messenger';
+import log from 'loglevel';
+import {
+  type ExtractActionParameters,
+  type ExtractActionResponse,
+  NamespacedName,
+} from '@metamask/messenger';
 import { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
 import { getSerializedTraceContext } from '../../shared/lib/trace';
+import type { UIMessengerActions } from '../messengers/ui-messenger';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Api = Record<string, (...params: any[]) => any>;
 type BackgroundRpcClient = MetaRpcClientFactory<Api>;
+
+type LegacyBackgroundMethod<Method extends string> =
+  Method extends NamespacedName ? never : Method;
 
 const NO_BACKGROUND_CONNECTION_MESSAGE =
   'Background connection is not set. Please initialize the background connection before making requests.';
@@ -18,37 +27,73 @@ let background: BackgroundRpcClient;
 export const generateActionId = () => Date.now() + Math.random();
 
 /**
- * Promise-style call to background method invokes promisifiedBackground method directly.
- * Automatically propagates the active Sentry trace context to the background
- * for distributed tracing across the UI/background boundary.
+ * Calls an action on the root messenger (the messenger defined in
+ * MetamaskController) by sending a message through the background<->UI
+ * connection.
  *
- * @param method - name of the background method
- * @param [args] - arguments to that method, if any
- * @returns
+ * @param action - Name of the root messenger action, e.g.
+ * `NetworkController:addNetwork`.
+ * @param args - Arguments to that action, if any.
+ * @returns The return value of the action.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function submitRequestToBackground<R>(
-  method: keyof Api,
-  args?: Parameters<Api[typeof method]>,
-): Promise<R> {
+export function submitRequestToBackground<
+  ActionType extends UIMessengerActions['type'],
+>(
+  action: ActionType,
+  ...args: [] extends ExtractActionParameters<UIMessengerActions, ActionType>
+    ? []
+    : [args: ExtractActionParameters<UIMessengerActions, ActionType>]
+): ExtractActionResponse<UIMessengerActions, ActionType>;
+
+/**
+ * Calls a method on the background API by sending a message through the
+ * background<->UI connection.
+ *
+ * @param method - Name of the legacy background API method, e.g. `addNetwork`.
+ * @param args - Arguments to that method, if any.
+ * @returns The return value of the method.
+ */
+export function submitRequestToBackground<
+  ReturnValue = unknown,
+  Method extends string = string,
+>(
+  method: LegacyBackgroundMethod<Method>,
+  args?: Parameters<Api[string]>,
+): Promise<ReturnValue>;
+
+export function submitRequestToBackground(
+  actionOrMethod: string,
+  args: unknown[] = [],
+): Promise<unknown> {
+  if (actionOrMethod.includes(':')) {
+    log.debug('Submitting request to root messenger:', actionOrMethod, args);
+    // Assume that `actionOrMethod` is an action on the root messenger.
+    return submitRequestToBackground('messengerCall', [actionOrMethod, args]);
+  }
+
+  log.debug(
+    'Submitting request to legacy background API:',
+    actionOrMethod,
+    args,
+  );
+
   if (process.env.IN_TEST) {
     // tests don't always set the `background` property for convenience, as
     // the return values for various RPC calls aren't always used. In production
     // builds, this will not happen, and even if it did MM wouldn't work.
     if (!background) {
       console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
-      return Promise.resolve() as Promise<R>;
+      return Promise.resolve();
     }
   }
 
   const traceContext = getSerializedTraceContext();
-  const rpcArgs = traceContext
+  const argsWithTraceContext = traceContext
     ? // eslint-disable-next-line @typescript-eslint/naming-convention
-      [...(args ?? []), { _traceContext: traceContext }]
-    : (args ?? []);
+      [...args, { _traceContext: traceContext }]
+    : args;
 
-  return background[method](...rpcArgs) as unknown as Promise<R>;
+  return background[actionOrMethod](...argsWithTraceContext);
 }
 
 type MessengerEventSubscription = {
