@@ -1,6 +1,5 @@
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -19,6 +18,7 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => ({ pathname: '/settings/security', search: '?tab=mfa' }),
 }));
 
 jest.mock('../../../shared/lib/environment-type', () => ({
@@ -52,12 +52,7 @@ const start = (controller: MfaControllerAdapter) =>
     (error) => error.mfaCode,
   );
 
-const renderLauncher = () =>
-  render(
-    <MemoryRouter initialEntries={['/settings/security?tab=mfa']}>
-      <MfaFlowLauncher />
-    </MemoryRouter>,
-  );
+const renderLauncher = () => render(<MfaFlowLauncher />);
 
 describe('MfaFlowLauncher', () => {
   beforeEach(() => {
