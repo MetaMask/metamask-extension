@@ -315,7 +315,8 @@ export class LedgerDmkBridgeHandler {
     // no device is actually available, instead of duplicating that error
     // construction here).
     if (this.#bridge) {
-      // Apply the result only to the bridge being checked.
+      // `#bridge` may be re-assigned while awaiting (teardown or a concurrent
+      // rebuild), so only tear down if it is still the bridge we checked.
       const checkedBridge = this.#bridge;
       const hasPermittedDevice = await this.#hasPermittedLedgerDevice();
       if (!hasPermittedDevice && this.#bridge === checkedBridge) {
