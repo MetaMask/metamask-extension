@@ -9,10 +9,7 @@ import {
   CONTRACT_INTERACTION_SENDER_ADDRESS,
 } from '../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import {
-  getPaySourceAccountType,
-  usePaySourceAccountMetrics,
-} from './usePaySourceAccountMetrics';
+import { usePaySourceAccountMetrics } from './usePaySourceAccountMetrics';
 
 const SENDER_ACCOUNT_ID = 'sender-account-id';
 const PAYER_ACCOUNT_ID = 'payer-account-id';
@@ -97,7 +94,7 @@ function runHook({
   );
 }
 
-describe('getPaySourceAccountType', () => {
+describe('usePaySourceAccountMetrics', () => {
   // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [KeyringTypes.hd, 'metamask'],
@@ -109,17 +106,15 @@ describe('getPaySourceAccountType', () => {
     [KeyringTypes.qr, 'QR Hardware'],
     [KeyringTypes.oneKey, 'QR Hardware'],
     [KeyringTypes.money, 'money-account'],
-  ])('maps %s to %s', (keyringType: string, expected: string) => {
-    expect(getPaySourceAccountType(keyringType)).toBe(expected);
+    ['Unknown Keyring', 'crypto'],
+  ])('maps %s to %s', async (senderKeyringType: string, expected: string) => {
+    const { result } = runHook({ senderKeyringType });
+
+    await waitFor(() => {
+      expect(result.current.selected).toBe(expected);
+    });
   });
 
-  it('falls back to crypto for unknown or missing keyring types', () => {
-    expect(getPaySourceAccountType('Unknown Keyring')).toBe('crypto');
-    expect(getPaySourceAccountType(undefined)).toBe('crypto');
-  });
-});
-
-describe('usePaySourceAccountMetrics', () => {
   it('reports the sender keyring category when there is no payer override', async () => {
     const { result } = runHook({ senderKeyringType: KeyringTypes.ledger });
 

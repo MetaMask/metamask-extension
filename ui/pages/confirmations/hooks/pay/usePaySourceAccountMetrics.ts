@@ -33,6 +33,10 @@ const PAYMENT_OVERRIDE_SOURCES = {
   [PaymentOverride.Predict]: 'predict',
 } as const satisfies Record<PaymentOverride, string>;
 
+const TRANSACTION_TYPES_REQUIRE_ACCOUNT_OVERRIDE = [
+  TransactionType.moneyAccountDeposit,
+];
+
 type CryptoAccountType = Exclude<
   MetaMetricsEventAccountType,
   MetaMetricsEventAccountType.Hardware
@@ -43,65 +47,6 @@ export type PaySourceAccountType =
   | MetaMetricsHardwareWalletDeviceType
   | (typeof PAYMENT_OVERRIDE_SOURCES)[PaymentOverride]
   | typeof CRYPTO_PAY_SOURCE;
-
-/**
- * Maps a keyring type to the analytics account category. Never returns an
- * address or other identifying data.
- *
- * @param keyringType - Keyring type of the paying account.
- */
-export function getPaySourceAccountType(
-  keyringType?: string,
-): PaySourceAccountType {
-  if (
-    !keyringType ||
-    !Object.values<string>(KeyringTypes).includes(keyringType)
-  ) {
-    return CRYPTO_PAY_SOURCE;
-  }
-
-  if (keyringType === KeyringTypes.money) {
-    return MONEY_ACCOUNT_PAY_SOURCE;
-  }
-
-  const hardwareWalletType = keyringTypeToHardwareWalletType(keyringType);
-  if (hardwareWalletType) {
-    return getHardwarePaySourceAccountType(hardwareWalletType);
-  }
-
-  const accountType = getAccountTypeForKeyring(
-    keyringType ? { type: keyringType } : undefined,
-  );
-  switch (accountType) {
-    case 'default':
-      return MetaMetricsEventAccountType.Default;
-    case 'imported':
-      return MetaMetricsEventAccountType.Imported;
-    case 'snap':
-      return MetaMetricsEventAccountType.Snap;
-    default:
-      return CRYPTO_PAY_SOURCE;
-  }
-}
-
-function getHardwarePaySourceAccountType(
-  hardwareWalletType: HardwareWalletType,
-): MetaMetricsHardwareWalletDeviceType {
-  switch (hardwareWalletType) {
-    case HardwareWalletType.Ledger:
-      return MetaMetricsHardwareWalletDeviceType.Ledger;
-    case HardwareWalletType.Trezor:
-      return MetaMetricsHardwareWalletDeviceType.Trezor;
-    case HardwareWalletType.Lattice:
-      return MetaMetricsHardwareWalletDeviceType.Lattice;
-    case HardwareWalletType.OneKey:
-    case HardwareWalletType.Qr:
-    case HardwareWalletType.Unknown:
-      return MetaMetricsHardwareWalletDeviceType.QrHardware;
-    default:
-      return MetaMetricsHardwareWalletDeviceType.QrHardware;
-  }
-}
 
 /**
  * Source account category for MM Pay analytics.
@@ -133,9 +78,10 @@ export function usePaySourceAccountMetrics(hasPayToken: boolean): {
       : undefined,
   );
 
-  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
-    TransactionType.moneyAccountDeposit,
-  ]);
+  const isMoneyAccountDeposit = hasTransactionType(
+    currentConfirmation,
+    TRANSACTION_TYPES_REQUIRE_ACCOUNT_OVERRIDE,
+  );
   const isPayingAccountReady =
     !isMoneyAccountDeposit || Boolean(accountOverride);
 
@@ -151,4 +97,49 @@ export function usePaySourceAccountMetrics(hasPayToken: boolean): {
   }
 
   return { presented, selected };
+}
+
+function getPaySourceAccountType(keyringType?: string): PaySourceAccountType {
+  if (
+    !keyringType ||
+    !Object.values<string>(KeyringTypes).includes(keyringType)
+  ) {
+    return CRYPTO_PAY_SOURCE;
+  }
+
+  if (keyringType === KeyringTypes.money) {
+    return MONEY_ACCOUNT_PAY_SOURCE;
+  }
+
+  const hardwareWalletType = keyringTypeToHardwareWalletType(keyringType);
+  if (hardwareWalletType) {
+    return getHardwarePaySourceAccountType(hardwareWalletType);
+  }
+
+  const accountType = getAccountTypeForKeyring({ type: keyringType });
+  switch (accountType) {
+    case 'default':
+      return MetaMetricsEventAccountType.Default;
+    case 'imported':
+      return MetaMetricsEventAccountType.Imported;
+    case 'snap':
+      return MetaMetricsEventAccountType.Snap;
+    default:
+      return CRYPTO_PAY_SOURCE;
+  }
+}
+
+function getHardwarePaySourceAccountType(
+  hardwareWalletType: HardwareWalletType,
+): MetaMetricsHardwareWalletDeviceType {
+  switch (hardwareWalletType) {
+    case HardwareWalletType.Ledger:
+      return MetaMetricsHardwareWalletDeviceType.Ledger;
+    case HardwareWalletType.Trezor:
+      return MetaMetricsHardwareWalletDeviceType.Trezor;
+    case HardwareWalletType.Lattice:
+      return MetaMetricsHardwareWalletDeviceType.Lattice;
+    default:
+      return MetaMetricsHardwareWalletDeviceType.QrHardware;
+  }
 }
