@@ -2,10 +2,12 @@ import {
   SimulationData,
   TransactionMeta,
 } from '@metamask/transaction-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { getAccountTrackerControllerAccountsByChainId } from '../../../../../../shared/lib/selectors/assets-migration';
 import {
   hasMonadReserveBalanceRule,
   hasMonadReserveBalanceViolation,
@@ -19,7 +21,6 @@ import {
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
 
 type SponsorshipWarningRule = {
@@ -84,13 +85,13 @@ export function useGasSponsorshipWarningAlerts(): Alert[] {
       (trxn) => (trxn.value as Hex) ?? ZERO_HEX_FALLBACK,
     ) ?? [];
 
-  const chainBalances = useSelector((state) =>
-    getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
-  ) as Record<Hex, Hex>;
-
+  const accountsByChainId = useSelector(
+    getAccountTrackerControllerAccountsByChainId,
+  );
   const balance =
-    chainId && Object.hasOwn(chainBalances ?? {}, chainId)
-      ? (chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK)
+    chainId && fromAddress
+      ? accountsByChainId?.[chainId]?.[toChecksumHexAddress(fromAddress)]
+          ?.balance
       : undefined;
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
