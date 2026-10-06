@@ -185,6 +185,10 @@ export const NetworksForm = ({
     { key: string; msg: string } | undefined
   >();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
+  // Save writes this chain into network configurations before the form closes.
+  // Skip the duplicate warning for that chain so the network just added is not
+  // reported as already saved.
+  const submittedChainIdRef = useRef<string | undefined>(undefined);
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
@@ -271,7 +275,11 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
-    if (!error && !existingNetwork) {
+    if (
+      !error &&
+      !existingNetwork &&
+      chainIdHex !== submittedChainIdRef.current
+    ) {
       const matchingNetwork = chainIdHex
         ? networkConfigurations[chainIdHex]
         : undefined;
@@ -450,6 +458,7 @@ export const NetworksForm = ({
           // network from the Networks page should only persist the
           // configuration; switching is reserved for the homepage network
           // modal (`toggleNetworkMenuAfterSubmit=true`).
+          submittedChainIdRef.current = chainIdHex;
           await dispatch(
             addNetwork(networkPayload, {
               setActive: toggleNetworkMenuAfterSubmit,
