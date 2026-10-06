@@ -172,9 +172,29 @@ const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
+export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
+
+/**
+ * Machine-time spans summed into the overall onboarding journey. These spans
+ * represent application work and deliberately exclude user interaction such
+ * as password/SRP entry and external OAuth provider login.
+ *
+ * OnboardingCreateKeyAndBackupSrp is excluded because it is nested inside
+ * OnboardingSRPAccountCreationTime and summing both would double-count it.
+ */
+const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
+  TraceName.OnboardingSRPAccountCreationTime,
+  TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+  TraceName.OnboardingOAuthSeedlessAuthenticate,
+  TraceName.OnboardingFetchSrps,
+  TraceName.OnboardingAddSrp,
+  TraceName.OnboardingResetPassword,
+]);
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
+let onboardingMachineTimeByKey = new Map<string, number>();
 
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
@@ -349,6 +369,69 @@ export function trace<T>(
   return traceCallback(request, fn);
 }
 
+function sumOnboardingMachineTime(): number {
+  let total = 0;
+
+  for (const duration of onboardingMachineTimeByKey.values()) {
+    total += duration;
+  }
+
+  return total;
+}
+
+function recordOnboardingMachineTime(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+  duration: number,
+): void {
+  onboardingMachineTimeByKey.set(getTraceKey(request), Math.max(duration, 0));
+}
+
+function addOnboardingMachineTime(
+  request: EndTraceRequest,
+  duration: number,
+): void {
+  if (
+    !MACHINE_TIME_TRACE_NAMES.has(request.name) ||
+    request.data?.success === false ||
+    !Number.isFinite(duration)
+  ) {
+    return;
+  }
+
+  recordOnboardingMachineTime(request, duration);
+}
+
+function addOpenOnboardingMachineTime(
+  request: EndTraceRequest,
+  journeyEndTime: number,
+): void {
+  if (request.data?.success === false) {
+    return;
+  }
+
+  for (const pendingTrace of tracesByKey.values()) {
+    if (!MACHINE_TIME_TRACE_NAMES.has(pendingTrace.request.name as TraceName)) {
+      continue;
+    }
+
+    const duration = journeyEndTime - pendingTrace.startTime;
+    if (Number.isFinite(duration)) {
+      recordOnboardingMachineTime(pendingTrace.request, duration);
+    }
+  }
+}
+
+function finalizeOnboardingMachineTime(span?: Span | null): void {
+  if (span && typeof span.setAttribute === 'function') {
+    span.setAttribute(
+      ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+      Math.round(sumOnboardingMachineTime()),
+    );
+  }
+
+  onboardingMachineTimeByKey = new Map();
+}
+
 /**
  * Adapter that wraps the extension's synchronous {@link trace} function into the
  * async {@link ControllerTraceCallback} signature expected by `@metamask/assets-controller`.
@@ -390,14 +473,21 @@ export function endTrace(request: EndTraceRequest): void {
     }
   }
 
-  pendingTrace.end(timestamp);
+  const endTime = timestamp ?? getPerformanceTimestamp();
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    addOpenOnboardingMachineTime(request, endTime);
+    finalizeOnboardingMachineTime(pendingTrace.span);
+  }
+
+  pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+  addOnboardingMachineTime(request, endTime - startTime);
 }
 
 /**
@@ -526,6 +616,10 @@ function startTrace(request: TraceRequest): TraceContext {
   const { name, startTime: requestStartTime } = request;
   const startTime = requestStartTime ?? getPerformanceTimestamp();
   const id = getTraceId(request);
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    onboardingMachineTimeByKey = new Map();
+  }
 
   const callback = (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
