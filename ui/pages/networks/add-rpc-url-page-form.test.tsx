@@ -284,4 +284,49 @@ describe('AddRpcUrlPageForm', () => {
     );
     expect(screen.getByTestId('rpc-name-input-test')).toHaveValue('My RPC');
   });
+
+  it('offers the typed URL when Chainlist has no RPC match', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://custom.example.com' },
+    });
+
+    expect(screen.getByText('chainlistNoMatches')).toBeInTheDocument();
+    expect(screen.getByText('chainlistUseTypedRpcUrl')).toBeInTheDocument();
+    expect(
+      screen.getByText('chainlistEnterRpcUrlManually'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-rpc-chainlist-use-typed-url'));
+
+    expect(screen.getByTestId('rpc-url-input-test')).toHaveValue(
+      'https://custom.example.com',
+    );
+    expect(screen.getByTestId('rpc-name-input-test')).toHaveValue('');
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-no-matches'),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -13,7 +13,9 @@ import {
   HelpTextSeverity,
   Label,
   Text,
+  TextAlign,
   TextButton,
+  TextColor,
   TextField,
   TextFieldSize,
   TextVariant,
@@ -106,8 +108,14 @@ export const AddRpcUrlPageForm = ({
       }),
     [chainId, existingRpcUrls, safeChains, url],
   );
+  const trimmedQuery = url.trim();
   const showSuggestions =
     isUrlFocused && !suggestionsDismissed && suggestions.length > 0;
+  const showNoMatches =
+    isUrlFocused &&
+    !suggestionsDismissed &&
+    trimmedQuery.length > 0 &&
+    suggestions.length === 0;
   const networkImageUrl =
     hasChainId(chainId) && chainId
       ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
@@ -138,6 +146,13 @@ export const AddRpcUrlPageForm = ({
 
   const handleLearnHowToStaySafe = () => {
     global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
+  };
+
+  const handleUseTypedUrl = () => {
+    setSuggestionsDismissed(true);
+    if (trimmedQuery) {
+      setUrlFeedback(true);
+    }
   };
 
   useEffect(() => {
@@ -260,6 +275,41 @@ export const AddRpcUrlPageForm = ({
                 } as React.ComponentPropsWithoutRef<'input'>
               }
             />
+            {showNoMatches ? (
+              <Box
+                className="mt-2 overflow-hidden rounded-xl border border-border-muted bg-background-default"
+                data-testid="add-rpc-chainlist-no-matches"
+              >
+                <Text
+                  variant={TextVariant.BodyMd}
+                  textAlign={TextAlign.Left}
+                  className="block w-full px-4 py-4 text-text-alternative"
+                >
+                  {t('chainlistNoMatches')}
+                </Text>
+                <button
+                  className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
+                  data-testid="add-rpc-chainlist-use-typed-url"
+                  type="button"
+                  onMouseDown={(event) => event.preventDefault()}
+                  onClick={handleUseTypedUrl}
+                >
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.InfoDefault}
+                  >
+                    {t('chainlistUseTypedRpcUrl', [trimmedQuery])}
+                  </Text>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    className="text-text-alternative"
+                  >
+                    {t('chainlistEnterRpcUrlManually')}
+                  </Text>
+                </button>
+              </Box>
+            ) : null}
             {showSuggestions ? (
               <Box
                 className="mt-2 max-h-80 overflow-y-auto rounded-xl border border-border-muted bg-background-default p-3"
