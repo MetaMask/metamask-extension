@@ -71,6 +71,8 @@ export enum TraceName {
   OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
   OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
   OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingSRPAccountCreationTime = 'Onboarding SRP Account Creation Time',
+  OnboardingSRPAccountImportTime = 'Onboarding SRP Account Import Time',
   OnboardingResetPassword = 'Onboarding - Reset Password',
   OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
   OnboardingAddSrp = 'Onboarding - Add SRP',
@@ -190,6 +192,8 @@ type PendingTrace = {
  */
 export type TraceContext = unknown;
 
+export type TraceValue = string | number | boolean;
+
 /**
  * Serialized trace context for cross-boundary propagation.
  * Contains trace/span IDs for distributed tracing and optional name/id for
@@ -281,6 +285,39 @@ export type EndTraceRequest = {
    */
   data?: Record<string, number | string | boolean>;
 };
+
+/**
+ * Return the active span for a pending manual trace.
+ *
+ * This is useful when a child trace is started after navigation or another
+ * async boundary and the parent must be resolved from the local trace registry
+ * instead of being threaded through route parameters.
+ * @param request
+ */
+export function getTraceContext(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+): TraceContext {
+  return tracesByKey.get(getTraceKey(request))?.span;
+}
+
+/**
+ * Attach attributes to an active trace without requiring callers to retain the
+ * raw Sentry span. Missing or non-Sentry contexts are intentionally ignored.
+ * @param context
+ * @param attributes
+ */
+export function annotateTrace(
+  context: TraceContext,
+  attributes: Record<string, TraceValue>,
+): void {
+  if (!isValidSentrySpan(context)) {
+    return;
+  }
+
+  for (const [key, value] of Object.entries(attributes)) {
+    context.setAttribute(key, value);
+  }
+}
 
 export function trace<ResultType>(
   request: TraceRequest,

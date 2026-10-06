@@ -1,5 +1,12 @@
 import type * as Sentry from '@sentry/browser';
-import { endTrace, getSerializedTraceContext, trace, TraceName } from './trace';
+import {
+  annotateTrace,
+  endTrace,
+  getSerializedTraceContext,
+  getTraceContext,
+  trace,
+  TraceName,
+} from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -74,6 +81,15 @@ describe('Trace', () => {
   });
 
   describe('trace', () => {
+    it('defines the mobile-compatible onboarding machine-time trace names', () => {
+      expect(TraceName.OnboardingSRPAccountCreationTime).toBe(
+        'Onboarding SRP Account Creation Time',
+      );
+      expect(TraceName.OnboardingSRPAccountImportTime).toBe(
+        'Onboarding SRP Account Import Time',
+      );
+    });
+
     it('executes callback', () => {
       let callbackExecuted = false;
 
@@ -82,6 +98,33 @@ describe('Trace', () => {
       });
 
       expect(callbackExecuted).toBe(true);
+    });
+
+    it('retrieves and annotates a pending trace context', () => {
+      const setAttributeMock = jest.fn();
+      const spanMock = {
+        end: jest.fn(),
+        setAttribute: setAttributeMock,
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id: ID_MOCK });
+
+      const context = getTraceContext({ name: NAME_MOCK, id: ID_MOCK });
+      annotateTrace(context, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'metamask',
+      });
+
+      expect(setAttributeMock).toHaveBeenCalledWith('account_type', 'metamask');
+
+      endTrace({ name: NAME_MOCK, id: ID_MOCK });
     });
 
     it('returns value from callback', () => {
