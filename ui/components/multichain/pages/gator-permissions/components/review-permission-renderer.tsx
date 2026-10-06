@@ -33,19 +33,19 @@ import { translateI18nValue } from '../../../../../../shared/lib/gator-permissio
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAdvancedPermissionTranslationsMap } from '../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
-import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
+import type { GatorTokenInfo } from '../../../../../../shared/lib/gator-permissions/gator-permissions-utils';
 import {
   convertTimestampToReadableDate,
-  extractAddressesFromRuleByType,
   extractExpiryTimestampFromRules,
-  formatDecimalShiftedValue,
-} from '../../../../../../shared/lib/gator-permissions';
+} from '../../../../../../shared/lib/gator-permissions/time-utils';
+import { extractAddressesFromRuleByType } from '../../../../../../shared/lib/gator-permissions/address-rule-utils';
+import { formatDecimalShiftedValue } from '../../../../../../shared/lib/gator-permissions/numbers-utils';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { PreferredAvatar } from '../../../../app/preferred-avatar';
+import { PreferredAvatar } from '../../../../app/preferred-avatar/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import { useGetDisplayName } from '../../../../../hooks/useGetDisplayName';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
-import NicknamePopovers from '../../../../app/modals/nickname-popovers';
+import NicknamePopovers from '../../../../app/modals/nickname-popovers/nickname-popovers.component';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,

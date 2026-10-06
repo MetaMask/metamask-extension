@@ -6,13 +6,13 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledNetworks,
-} from '../selectors';
+} from '../selectors/selectors';
+import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import {
-  getCurrentCurrency,
-  getCurrencyRates,
-  getTokenBalances,
-} from '../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getTokenBalancesControllerTokenBalances as getTokenBalances,
+} from '../../shared/lib/selectors/assets-migration';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
@@ -26,15 +26,19 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/selectors', () => ({
   getCrossChainTokenExchangeRates: jest.fn(),
   getCrossChainMetaMaskCachedBalances: jest.fn(),
+}));
+
+jest.mock('../../shared/lib/selectors/multichain', () => ({
   getEnabledNetworks: jest.fn(),
 }));
-jest.mock('../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
-  getCurrencyRates: jest.fn(),
-  getTokenBalances: jest.fn(),
+
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
+  getCurrencyRateControllerCurrencyRates: jest.fn(),
+  getTokenBalancesControllerTokenBalances: jest.fn(),
 }));
 jest.mock('../../shared/lib/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),

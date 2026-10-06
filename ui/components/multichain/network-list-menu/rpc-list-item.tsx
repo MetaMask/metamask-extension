@@ -3,7 +3,8 @@ import { Tag } from '@metamask/design-system-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { infuraProjectId } from '../../../../shared/constants/network';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import {
   Display,
   FlexDirection,
@@ -16,7 +17,7 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsRpcFailoverEnabled } from '../../../selectors';
+import { getIsRpcFailoverEnabled } from '../../../selectors/selectors';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;

@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
-import { getInternalAccountByAddress } from '../../selectors';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
   addTransaction,
   findNetworkClientIdByChainId,

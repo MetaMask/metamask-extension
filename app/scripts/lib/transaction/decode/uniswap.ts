@@ -2,7 +2,7 @@ import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { Hex } from '@metamask/utils';
 
 import { decodeCommandV3Path } from '../../../../../shared/lib/decoding';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { UNISWAP_ROUTER_COMMANDS } from './uniswap-commands';
 
 export type UniswapRouterCommand = {

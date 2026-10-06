@@ -1,6 +1,6 @@
 import React from 'react';
 import { Checkbox } from '@metamask/design-system-react';
-import { NetworkListItem } from '.';
+import { NetworkListItem } from './network-list-item';
 
 export default {
   title: 'Components/Multichain/NetworkListItem',

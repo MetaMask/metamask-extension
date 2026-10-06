@@ -3,23 +3,23 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import {
-  getAllTokens,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../shared/lib/selectors/assets-migration';
+import {
   getMetaMaskCachedBalances,
   getTokenExchangeRates,
   getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
   getUSDConversionRate,
-} from '../selectors';
+} from '../selectors/selectors';
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
 } from '../../shared/lib/conversion.utils';
-import {
-  getNativeCurrency,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';

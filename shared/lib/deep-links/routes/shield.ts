@@ -1,4 +1,9 @@
-import { Route, SETTINGS_ROUTE, SHIELD_PLAN_ROUTE } from './route';
+import {
+  SETTINGS_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+} from '../../../../ui/helpers/constants/routes';
+import { Route } from './route';
 
 export const SHIELD_QUERY_PARAMS = {
   showShieldEntryModal: 'showShieldEntryModal',

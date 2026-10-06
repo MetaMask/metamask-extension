@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getSelectedEvmInternalAccount,
-  selectEvmAddress,
   getUseExternalServices,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { selectEvmAddress } from '../../selectors/accounts';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,

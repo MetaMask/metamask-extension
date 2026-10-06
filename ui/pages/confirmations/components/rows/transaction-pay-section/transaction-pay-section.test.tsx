@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -14,9 +14,11 @@ jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../selectors/feature-flags');
 
+jest.mock('../../../../../components/app/confirm/info/row/row', () => ({
+  ConfirmInfoRowSize: { Default: 'default', Small: 'small' },
+}));
 jest.mock('../pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row">PayWithRow</div>,
-  ConfirmInfoRowSize: { Default: 'default', Small: 'small' },
 }));
 
 jest.mock('../bridge-fee-row/bridge-fee-row', () => ({
@@ -27,7 +29,7 @@ jest.mock('../total-row/total-row', () => ({
   TotalRow: () => <div data-testid="total-row">TotalRow</div>,
 }));
 
-jest.mock('../required-tokens-row', () => ({
+jest.mock('../required-tokens-row/required-tokens-row', () => ({
   RequiredTokensRow: () => (
     <div data-testid="required-tokens-row">RequiredTokensRow</div>
   ),
@@ -38,7 +40,9 @@ const mockStore = configureMockStore([]);
 function render() {
   const state = getMockPersonalSignConfirmState();
   return renderWithConfirmContextProvider(
-    <TransactionPaySection />,
+    <Suspense fallback={null}>
+      <TransactionPaySection />
+    </Suspense>,
     mockStore(state),
   );
 }
@@ -85,29 +89,29 @@ describe('TransactionPaySection', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders section when loading', () => {
+  it('renders section when loading', async () => {
     useIsTransactionPayLoadingMock.mockReturnValue(true);
 
-    const { getByTestId } = render();
+    const { getByTestId, findByTestId } = render();
 
-    expect(getByTestId('transaction-pay-section')).toBeInTheDocument();
+    expect(await findByTestId('transaction-pay-section')).toBeInTheDocument();
     expect(getByTestId('required-tokens-row')).toBeInTheDocument();
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('renders section when has required tokens', () => {
+  it('renders section when has required tokens', async () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([
       { chainId: '0x1', address: '0x123' },
     ] as never);
 
-    const { getByTestId } = render();
+    const { getByTestId, findByTestId } = render();
 
-    expect(getByTestId('transaction-pay-section')).toBeInTheDocument();
+    expect(await findByTestId('transaction-pay-section')).toBeInTheDocument();
     expect(getByTestId('required-tokens-row')).toBeInTheDocument();
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
   });
 
-  it('does not render BridgeFeeRow and TotalRow when no payToken', () => {
+  it('does not render BridgeFeeRow and TotalRow when no payToken', async () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([
       { chainId: '0x1', address: '0x123' },
     ] as never);
@@ -117,14 +121,14 @@ describe('TransactionPaySection', () => {
       isNative: false,
     });
 
-    const { getByTestId, queryByTestId } = render();
+    const { findByTestId, queryByTestId } = render();
 
-    expect(getByTestId('transaction-pay-section')).toBeInTheDocument();
+    expect(await findByTestId('transaction-pay-section')).toBeInTheDocument();
     expect(queryByTestId('bridge-fee-row')).not.toBeInTheDocument();
     expect(queryByTestId('total-row')).not.toBeInTheDocument();
   });
 
-  it('renders BridgeFeeRow and TotalRow when payToken exists', () => {
+  it('renders BridgeFeeRow and TotalRow when payToken exists', async () => {
     useTransactionPayRequiredTokensMock.mockReturnValue([
       { chainId: '0x1', address: '0x123' },
     ] as never);
@@ -139,9 +143,9 @@ describe('TransactionPaySection', () => {
       isNative: true,
     } as never);
 
-    const { getByTestId } = render();
+    const { getByTestId, findByTestId } = render();
 
-    expect(getByTestId('transaction-pay-section')).toBeInTheDocument();
+    expect(await findByTestId('transaction-pay-section')).toBeInTheDocument();
     expect(getByTestId('bridge-fee-row')).toBeInTheDocument();
     expect(getByTestId('total-row')).toBeInTheDocument();
   });

@@ -13,12 +13,10 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
 import { AlignItems } from '../../../helpers/constants/design-system';
 
 type ConfirmSrpModalProps = {

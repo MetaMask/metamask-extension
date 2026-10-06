@@ -7,25 +7,31 @@ import {
   isCaipAssetType,
   parseCaipAssetType,
 } from '@metamask/utils';
+import type { TokenAmount } from '@metamask/client-utils';
 import { isNativeCaipAssetId } from '#shared/lib/asset-utils';
 import {
   calculateFiatFromMarketRates,
   getHumanReadableTokenAmount,
   toMarketRateLookupToken,
 } from '../../shared/lib/activity/fiat';
-import type { TokenAmount } from '../../shared/lib/activity/types';
 import {
   MULTICHAIN_TESTNET_NETWORKS,
   type MultichainNetworks,
 } from '../../shared/constants/multichain/networks';
 import { decimalToPrefixedHex } from '../../shared/lib/conversion.utils';
-import { getCurrencyRates } from '../ducks/metamask/metamask';
+import {
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+} from '../../shared/lib/selectors/assets-migration';
 import { selectMarketRates } from '../selectors/activity';
-import { getAssetsPrice, getAssetsRates } from '../selectors/assets';
-import { getShowFiatInTestnets, getUseCurrencyRateCheck } from '../selectors';
+import { getAssetsPrice } from '../selectors/assets';
+import {
+  getShowFiatInTestnets,
+  getUseCurrencyRateCheck,
+} from '../selectors/selectors';
 import { getMultichainShouldShowFiat } from '../selectors/multichain';
 import { useAppSelector } from '../store/hooks';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 
 type AssetsPriceMap = Record<
   string,

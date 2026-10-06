@@ -23,7 +23,7 @@ import {
   updateAndApproveTx,
 } from '../../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
+import { useHardwareWalletError } from '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import * as DappSwapContext from '../../context/dapp-swap';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
@@ -43,14 +43,24 @@ jest.mock('../../../../../shared/lib/environment-type', () => ({
 }));
 const mockIsHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn();
-jest.mock('../../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../../contexts/hardware-wallets'),
-  useHardwareWalletError: jest.fn(() => ({
-    showErrorModal: jest.fn(),
-    dismissErrorModal: jest.fn(),
-    isErrorModalVisible: false,
-    setErrorModalSuppressed: jest.fn(),
-  })),
+jest.mock(
+  '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: jest.fn(() => ({
+      showErrorModal: jest.fn(),
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    })),
+  }),
+);
+jest.mock('../../../../../shared/lib/hardware-wallets/rpc-error-utils', () => ({
+  ...jest.requireActual(
+    '../../../../../shared/lib/hardware-wallets/rpc-error-utils',
+  ),
   isHardwareWalletError: (...args: unknown[]) =>
     mockIsHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args: unknown[]) =>
@@ -60,7 +70,7 @@ jest.mock('../../../../store/background-connection', () => ({
   ...jest.requireActual('../../../../store/background-connection'),
   submitRequestToBackground: jest.fn(() => Promise.resolve()),
 }));
-jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors/smart-transactions');
 jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
   ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
   isHardwareWallet: jest.fn(),

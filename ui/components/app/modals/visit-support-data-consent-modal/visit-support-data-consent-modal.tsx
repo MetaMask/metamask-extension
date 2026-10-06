@@ -2,19 +2,17 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { openWindow } from '../../../../helpers/utils/window';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ModalBody,
-  Text,
-  ButtonSecondary,
-  ButtonSecondarySize,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ButtonPrimary } from '../../../component-library/button-primary/button-primary';
+import { ButtonPrimarySize } from '../../../component-library/button-primary/button-primary.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { Text } from '../../../component-library/text/text';
+import { ButtonSecondary } from '../../../component-library/button-secondary/button-secondary';
+import { ButtonSecondarySize } from '../../../component-library/button-secondary/button-secondary.types';
 import {
   TextVariant,
   BlockSize,

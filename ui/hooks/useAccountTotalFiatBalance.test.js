@@ -5,7 +5,7 @@ import { renderHook } from '@testing-library/react';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { useAccountTotalFiatBalance } from './useAccountTotalFiatBalance';

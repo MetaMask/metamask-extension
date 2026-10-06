@@ -4,7 +4,7 @@ import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
 import { getInternalAccounts } from '../../selectors/accounts';
-import { getMetaMaskHdKeyrings } from '../../selectors';
+import { getMetaMaskHdKeyrings } from '../../selectors/selectors';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 // TODO: Move this data type to the @metamask/keyring-controller module

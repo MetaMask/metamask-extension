@@ -4,35 +4,31 @@ import { useNavigate } from 'react-router-dom';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
-import { useMusdCtaVisibility } from '../../../../hooks/musd';
+import { useMusdCtaVisibility } from '../../../../hooks/musd/useMusdCtaVisibility';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
   type SafeChain,
 } from '../../../multichain/networks-form/use-safe-chains';
 import { setEditedNetwork } from '../../../../store/actions';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
-import { MusdConvertLink } from '../../musd';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { MusdConvertLink } from '../../musd/musd-convert-link';
 import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
-import { useTokenDisplayInfo } from '../hooks';
+import useTokenDisplayInfo from '../hooks/useTokenDisplayInfo';
 import { type TokenWithFiatAmount } from '../types';
 import { useDispatch } from '../../../../store/hooks';
 
-import {
-  TokenCellPercentChange,
-  TokenCellPrimaryDisplay,
-  TokenCellSecondaryDisplay,
-  TokenCellTitle,
-} from './cells';
+import { TokenCellPercentChange } from './cells/token-cell-percent-change';
+import { TokenCellPrimaryDisplay } from './cells/token-cell-primary-display';
+import { TokenCellSecondaryDisplay } from './cells/token-cell-secondary-display';
+import { TokenCellTitle } from './cells/token-cell-title';
 
 export type TokenCellMusdOptions = {
   /** When set, enables footer convert link (subject to `useMusdCtaVisibility` / balance rules). */

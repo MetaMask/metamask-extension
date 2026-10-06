@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import InvalidCustomNetworkAlert from './invalid-custom-network-alert';
-import { ALERT_STATE } from '../../../../ducks/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 
 const mockStore = configureStore([]);
 const store = mockStore({

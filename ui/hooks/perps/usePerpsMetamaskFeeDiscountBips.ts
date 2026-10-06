@@ -7,7 +7,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
-import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
+import { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';
 
 /**
  * Cache TTL for the per-address fee discount lookup. Mirrors mobile's

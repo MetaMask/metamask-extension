@@ -6,10 +6,11 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import configureStore from '../../../store/store';
-import * as bridgeActions from '../../../ducks/bridge/actions';
+import * as bridgeActionsModule1 from '../../../ducks/bridge/actions';
+
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -85,7 +86,7 @@ describe('BridgeQuotesModal', () => {
     });
 
     const mockTrackMetaMetricsEvent = jest.spyOn(
-      bridgeActions,
+      bridgeActionsModule1,
       'trackUnifiedSwapBridgeEvent',
     );
 

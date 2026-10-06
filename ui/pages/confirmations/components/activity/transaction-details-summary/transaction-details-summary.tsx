@@ -7,7 +7,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -18,8 +19,8 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useTransactionDetails } from '../transaction-details-context';
-import { formatTransactionDateTime } from '../utils';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
+import { formatTransactionDateTime } from '../utils/utils';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
 import {
@@ -27,8 +28,8 @@ import {
   type NetworkConfigurationsByChainIdState,
 } from '../../../../../../shared/lib/selectors/networks';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
-import { BlockExplorerLink } from '../block-explorer-link';
-import { TransactionStatusIcon } from '../transaction-status-icon';
+import { BlockExplorerLink } from '../block-explorer-link/block-explorer-link';
+import { TransactionStatusIcon } from '../transaction-status-icon/transaction-status-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 const RELAY_DEPOSIT_TYPES = [

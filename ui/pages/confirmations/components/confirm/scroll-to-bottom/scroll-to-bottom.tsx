@@ -1,11 +1,9 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
 import { I18nContext } from '../../../../../contexts/i18n';
 
 import {

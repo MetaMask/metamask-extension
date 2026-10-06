@@ -24,14 +24,14 @@ import {
   FlexDirection,
 } from '../../helpers/constants/design-system';
 import { Container } from '../../components/component-library/container/container';
-import ToggleButton from '../../components/ui/toggle-button';
+import ToggleButton from '../../components/ui/toggle-button/toggle-button.component';
 import { DEFAULT_ROUTE, PRIVACY_ROUTE } from '../../helpers/constants/routes';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import {
   toggleBasicFunctionality,
   toggleExternalServices,
 } from '../../store/actions';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/basic-functionality';
 import type { BasicFunctionalityOffState } from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { useDispatch } from '../../store/hooks';
 

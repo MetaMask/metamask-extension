@@ -1,5 +1,5 @@
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
-import type { PolymorphicComponentPropWithRef } from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

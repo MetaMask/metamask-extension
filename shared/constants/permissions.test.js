@@ -5,8 +5,8 @@ import {
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
-  RestrictedMethods,
-} from './permissions';
+} from './snaps/permissions';
+import { RestrictedMethods } from './permissions';
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {

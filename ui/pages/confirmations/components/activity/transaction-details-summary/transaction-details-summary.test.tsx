@@ -12,7 +12,7 @@ import {
   tEn,
 } from '../../../../../../test/lib/i18n-helpers';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsSummary } from './transaction-details-summary';
 
 jest.mock('../../../hooks/tokens/useTokenWithBalance');

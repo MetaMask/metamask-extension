@@ -1,6 +1,6 @@
 import React from 'react';
 import { useArgs } from 'storybook/preview-api';
-import ShowHideToggle from '.';
+import ShowHideToggle from './show-hide-toggle';
 
 export default {
   title: 'Components/UI/ShowHideToggle', // title should follow the folder structure location of the component. Don't use spaces.

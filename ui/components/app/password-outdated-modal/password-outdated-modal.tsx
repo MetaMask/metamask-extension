@@ -18,12 +18,10 @@ import {
 } from '@metamask/design-system-react';
 import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';

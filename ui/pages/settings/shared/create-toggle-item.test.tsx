@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

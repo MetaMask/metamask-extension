@@ -1,4 +1,4 @@
-import type { PerpsMarketData } from '../../../components/app/perps/types';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { sortMarkets } from './sortMarkets';
 
 const createMockMarket = (

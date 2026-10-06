@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 
 // State interface
 type SmartAccountsState = {

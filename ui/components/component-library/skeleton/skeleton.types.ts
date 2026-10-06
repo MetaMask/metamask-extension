@@ -3,7 +3,7 @@ import React from 'react';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+} from '../box/box.types';
 
 export type SkeletonStyleUtilityProps = Omit<
   StyleUtilityProps,

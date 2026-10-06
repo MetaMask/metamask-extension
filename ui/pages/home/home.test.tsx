@@ -13,28 +13,40 @@ const backgroundConnectionMock = new Proxy(
   },
 );
 
-jest.mock('../../components/multichain/app-header', () => ({
+jest.mock('../../components/multichain/app-header/app-header', () => ({
   AppHeader: () => <div data-testid="mock-app-header" />,
 }));
 
-jest.mock('../../components/multichain/dapp-connection-control-bar', () => ({
-  DappConnectionControlBar: () => <div data-testid="dapp-control-bar-bottom" />,
-}));
+jest.mock(
+  '../../components/multichain/dapp-connection-control-bar/dapp-connection-control-bar',
+  () => ({
+    DappConnectionControlBar: () => (
+      <div data-testid="dapp-control-bar-bottom" />
+    ),
+  }),
+);
 
-jest.mock('../../components/multichain', () => ({
-  AccountOverview: () => <div data-testid="mock-account-overview" />,
-}));
+jest.mock(
+  '../../components/multichain/account-overview/account-overview',
+  () => ({
+    AccountOverview: () => <div data-testid="mock-account-overview" />,
+  }),
+);
 
-jest.mock('../../components/app/terms-of-use-popup', () => ({
-  TermsOfUsePopupContainer: () => null,
-}));
+jest.mock(
+  '../../components/app/terms-of-use-popup/terms-of-use-popup-container',
+  () => ({ TermsOfUsePopupContainer: () => null }),
+);
+
 jest.mock(
   '../../components/app/metametrics-consent/metametrics-consent-container',
   () => ({ MetaMetricsConsentContainer: () => null }),
 );
-jest.mock('../../components/app/recovery-phrase-reminder', () => ({
-  RecoveryPhraseReminderContainer: () => null,
-}));
+jest.mock(
+  '../../components/app/recovery-phrase-reminder/recovery-phrase-reminder-container',
+  () => ({ RecoveryPhraseReminderContainer: () => null }),
+);
+
 jest.mock(
   '../../components/app/imported-tokens-notification/imported-tokens-notification-container',
   () => ({ ImportedTokensNotificationContainer: () => null }),
@@ -49,12 +61,16 @@ jest.mock('../../components/app/update-modal/update-modal-container', () => ({
 jest.mock('./connected-status-popover-container', () => ({
   ConnectedStatusPopoverContainer: () => null,
 }));
-jest.mock('../../components/app/password-outdated-modal', () => ({
-  PasswordOutdatedModalContainer: () => null,
-}));
-jest.mock('../../components/app/shield-entry-modal', () => ({
-  ShieldEntryModalContainer: () => null,
-}));
+jest.mock(
+  '../../components/app/password-outdated-modal/password-outdated-modal-container',
+  () => ({ PasswordOutdatedModalContainer: () => null }),
+);
+
+jest.mock(
+  '../../components/app/shield-entry-modal/shield-entry-modal-container',
+  () => ({ ShieldEntryModalContainer: () => null }),
+);
+
 jest.mock(
   '../../components/app/rewards/onboarding/rewards-modal-container',
   () => ({ RewardsModalContainer: () => null }),
@@ -72,8 +88,11 @@ jest.mock('./shield-cohort-container', () => ({
 jest.mock('./home-notifications-container', () => ({
   HomeNotificationsContainer: () => null,
 }));
-jest.mock('../connected-sites', () => () => null);
-jest.mock('../connected-accounts', () => () => null);
+jest.mock('../connected-sites/connected-sites.container', () => () => null);
+jest.mock(
+  '../connected-accounts/connected-accounts.container',
+  () => () => null,
+);
 jest.mock('./beta-and-flask-home-footer.component', () => () => null);
 jest.mock('./HomeDeepLinkActions', () => ({ HomeDeepLinkActions: () => null }));
 jest.mock('../../contexts/shield/shield-subscription', () => ({

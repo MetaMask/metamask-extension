@@ -48,5 +48,3 @@ export type MetaMaskControllerStore = Pick<
   MetaMaskControllerInstance,
   'memStore'
 >;
-
-export type { Backup } from '../../shared/lib/stores/persistence-manager';

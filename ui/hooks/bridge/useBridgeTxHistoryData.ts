@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { type MetaMaskReduxState } from '../../selectors';
+import type { MetaMaskReduxState } from '../../store/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,

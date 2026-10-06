@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../store/store';
-import { HardwareWalletErrorProvider } from '../../../../../contexts/hardware-wallets';
+import { HardwareWalletErrorProvider } from '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { ConfirmContextProvider } from '../../../context/confirm';
 import { DappSwapContextProvider } from '../../../context/dapp-swap';
 

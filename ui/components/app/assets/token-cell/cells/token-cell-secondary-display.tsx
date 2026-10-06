@@ -8,17 +8,13 @@ import {
   IconColor,
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  SensitiveText,
-  SensitiveTextLength,
-} from '../../../../component-library';
-import {
-  getUseCurrencyRateCheck,
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../../../selectors';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../component-library/icon/icon.types';
+import { SensitiveText } from '../../../../component-library/sensitive-text/sensitive-text';
+import { SensitiveTextLength } from '../../../../component-library/sensitive-text/sensitive-text.types';
+import { getUseCurrencyRateCheck } from '../../../../../selectors/selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors/multichain/networks';
 import { TokenFiatDisplayInfo } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/lib/selectors/networks';

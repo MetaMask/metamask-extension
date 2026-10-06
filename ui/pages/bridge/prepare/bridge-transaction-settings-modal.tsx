@@ -5,21 +5,23 @@ import {
   BannerAlertSeverity,
   Box,
 } from '@metamask/design-system-react';
+import { Button } from '../../../components/component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  Modal,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  PopoverPosition,
-  Text,
-  TextField,
+} from '../../../components/component-library/button/button.types';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { PopoverPosition } from '../../../components/component-library/popover/popover.types';
+import { Text } from '../../../components/component-library/text/text';
+import { TextField } from '../../../components/component-library/text-field/text-field';
+import {
   TextFieldType,
   TextFieldSize,
-} from '../../../components/component-library';
+} from '../../../components/component-library/text-field/text-field.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BlockSize,
@@ -35,7 +37,9 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { setSlippageUserOverride } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
-import { Column, Row, Tooltip } from '../layout';
+import Column from '../layout/column';
+import Row from '../layout/row';
+import Tooltip from '../layout/tooltip';
 import { sanitizeAmountInput } from '../utils/quote';
 import { useDispatch } from '../../../store/hooks';
 

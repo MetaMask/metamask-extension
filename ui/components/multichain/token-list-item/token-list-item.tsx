@@ -36,21 +36,22 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
+import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal/token-insights-modal';
 import { useRWAToken } from '../../../pages/bridge/hooks/useRWAToken';
-import {
-  BadgeWrapper,
-  Box,
-  SensitiveText,
-  SensitiveTextLength,
-  Text,
-} from '../../component-library';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { Box } from '../../component-library/box/box';
+import { SensitiveText } from '../../component-library/sensitive-text/sensitive-text';
+import { SensitiveTextLength } from '../../component-library/sensitive-text/sensitive-text.types';
+import { Text } from '../../component-library/text/text';
 import { MarketClosedModal } from '../../app/assets/market-closed-modal';
 import { StockBadge } from '../../app/assets/stock-badge/stock-badge';
-import { getMarketData, getCurrencyRates } from '../../../selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../../../shared/lib/selectors/assets-migration';
 
-import { getMultichainIsEvm } from '../../../selectors/multichain';
-import Tooltip from '../../ui/tooltip';
+import { getMultichainIsEvm } from '../../../selectors/multichain/networks';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,

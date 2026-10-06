@@ -33,7 +33,7 @@ import {
   createMetaMaskE2EContext,
   createMetaMaskProdContext,
 } from './capabilities/factory';
-import { MetaMaskExtensionLauncher } from '.';
+import { MetaMaskExtensionLauncher } from './extension-launcher';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;

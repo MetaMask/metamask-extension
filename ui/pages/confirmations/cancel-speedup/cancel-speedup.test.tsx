@@ -17,7 +17,7 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
 } from '../../../store/actions';
-import { MetaMaskReduxState } from '../../../selectors';
+import { MetaMaskReduxState } from '../../../store/types';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { CancelSpeedup } from './cancel-speedup';
 

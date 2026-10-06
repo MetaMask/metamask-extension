@@ -1,11 +1,11 @@
 import React from 'react';
-import type { ContainerProps } from '../container';
+import type { ContainerProps } from '../container/container.types';
 
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
-import type { ButtonProps } from '../button';
+} from '../box/box.types';
+import type { ButtonProps } from '../button/button.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

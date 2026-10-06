@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type AssetFilterInputProps = {

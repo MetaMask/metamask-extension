@@ -10,7 +10,7 @@ import {
   BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
+import Box from '../box/box';
 import { RESIZE } from './textarea.constants';
 
 /**

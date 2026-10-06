@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { getUseSafeChainsListValidation } from '../selectors';
+import { getUseSafeChainsListValidation } from '../selectors/selectors';
 import { getMultichainCurrentNetwork } from '../selectors/multichain';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 

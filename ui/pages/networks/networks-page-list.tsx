@@ -27,19 +27,19 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info';
+import { AdditionalNetworksInfo } from '../../components/multichain/network-manager/components/additional-networks-info/additional-networks-info';
 import { useNetworkItemCallbacks } from '../../components/multichain/network-manager/hooks/useNetworkItemCallbacks';
-import { NetworkListItem } from '../../components/multichain/network-list-item';
-import ToggleButton from '../../components/ui/toggle-button';
+import { NetworkListItem } from '../../components/multichain/network-list-item/network-list-item';
+import ToggleButton from '../../components/ui/toggle-button/toggle-button.component';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useIsNetworkGasSponsored } from '../../hooks/useIsNetworkGasSponsored';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import {
   getIsTestnetInUse,
-  getOrderedNetworksList,
   getShouldShowTestNetworks,
-} from '../../selectors';
+} from '../../selectors/test-networks';
+import { getOrderedNetworksList } from '../../selectors/selectors';
 import {
   addNetwork,
   setEditedNetwork,

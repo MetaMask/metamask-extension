@@ -21,8 +21,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
-import { Divider } from '../shared';
+import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal/visit-support-data-consent-modal';
+import { Divider } from '../shared/divider';
 import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function AboutInfo(): React.ReactElement {

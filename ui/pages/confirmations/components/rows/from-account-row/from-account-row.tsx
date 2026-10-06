@@ -16,7 +16,7 @@ import {
   Text,
 } from '@metamask/design-system-react';
 import type { Hex } from '@metamask/utils';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -34,9 +34,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../../hooks/pay/useIsPayHardwareBlocked';
 import { replaceAccountInNestedTransactions } from '../../../utils/transaction-pay';
-import { AccountSelectModal } from '../../account-select-modal';
-
-export { ConfirmInfoRowSize };
+import { AccountSelectModal } from '../../account-select-modal/account-select-modal';
 
 type FromAccountRowProps = {
   /**

@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 
-import {
-  ConnectionStatus,
-  getHardwareWalletErrorCode,
-  isInE2eTest,
-  useHardwareWalletState,
-} from '../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { getHardwareWalletErrorCode } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
+import { useHardwareWalletState } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { getHardwareWalletSignatureErrorEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletConnectionMonitoringOptions = {

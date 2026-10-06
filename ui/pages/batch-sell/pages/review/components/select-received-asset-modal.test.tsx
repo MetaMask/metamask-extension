@@ -9,8 +9,12 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: (state: { currency?: string }) => state?.currency,
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/selectors/assets-migration',
+  ),
+  getCurrencyRateControllerCurrentCurrency: (state: { currency?: string }) =>
+    state?.currency,
 }));
 
 jest.mock('react-redux', () => ({

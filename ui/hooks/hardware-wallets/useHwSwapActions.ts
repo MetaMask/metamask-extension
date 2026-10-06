@@ -2,17 +2,15 @@ import { useCallback, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  ConnectionStatus,
-  useHardwareWalletState,
-} from '../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { useHardwareWalletState } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { cleanupPendingApproval } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import type { UseHwSwapActionsOptions } from './useHwSwapActions.types';
 
 /**

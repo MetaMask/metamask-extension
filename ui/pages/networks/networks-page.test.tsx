@@ -71,7 +71,7 @@ jest.mock('../../../shared/lib/rpc.utils', () => ({
   jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 
-jest.mock('../../components/ui/toggle-button', () => {
+jest.mock('../../components/ui/toggle-button/toggle-button.component', () => {
   const ReactActual = jest.requireActual('react');
 
   return {

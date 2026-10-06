@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { IndividualFiatDisplay, TotalFiatDisplay } from './fiat-display';
 import { FIAT_UNAVAILABLE } from './types';
 

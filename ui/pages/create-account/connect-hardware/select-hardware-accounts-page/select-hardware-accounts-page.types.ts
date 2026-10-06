@@ -1,4 +1,4 @@
-import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card';
+import type { HardwareWalletAccount } from '../../../../components/multichain-accounts/hardware-account-card/hardware-account-card.types';
 
 /** Props for SelectHardwareAccountsPage. */
 export type SelectHardwareAccountsPageProps = {

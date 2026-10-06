@@ -18,12 +18,12 @@ import {
 import {
   getIsPerpsTerminalBackendEnabled,
   getIsPerpsExperienceAvailable,
-} from '../../../selectors/perps';
+} from '../../../selectors/perps/feature-flags';
 import {
   getSelectedEvmInternalAccount,
-  selectEvmAddress,
   getUseExternalServices,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { selectEvmAddress } from '../../../selectors/accounts';
 import {
   selectPerpsActiveProvider,
   selectPerpsIsTestnet,

@@ -1,6 +1,6 @@
 import { AccountGroupAssets } from '@metamask/assets-controllers';
 import { AssetsControllerState } from '@metamask/assets-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   ARC_USDC_ERC20_TOKEN_ADDRESS,
   STABLE_USDT0_ERC20_ADDRESS,

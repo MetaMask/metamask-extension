@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import SnapsConnect from '.';
+import SnapsConnect from './snaps-connect';
 
 const store = configureStore(mockState);
 

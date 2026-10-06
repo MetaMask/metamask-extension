@@ -11,7 +11,7 @@ import {
 import {
   getCrossChainTokenExchangeRates,
   selectConversionRateByChainId,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 

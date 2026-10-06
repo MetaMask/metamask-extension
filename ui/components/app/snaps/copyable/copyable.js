@@ -13,10 +13,13 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { SensitiveClipboardCleanup } from '../../../ui/sensitive-clipboard-cleanup/sensitive-clipboard-cleanup';
-import { Icon, IconName, Box, Text } from '../../../component-library';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Tooltip from '../../../ui/tooltip';
-import { ShowMore } from '../show-more';
+import Tooltip from '../../../ui/tooltip/tooltip';
+import { ShowMore } from '../show-more/show-more';
 import { SECOND } from '../../../../../shared/constants/time';
 import { useTimeout } from '../../../../hooks/useTimeout';
 

@@ -1,16 +1,14 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
-import Name from '../../../../../../../components/app/name';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import Name from '../../../../../../../components/app/name/name';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../../../components/component-library/text/text';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
   BackgroundColor,

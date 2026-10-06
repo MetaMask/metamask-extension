@@ -16,6 +16,7 @@ import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import {
   mapKeyringTransaction,
   mapLocalTransaction,
+  Status,
 } from '@metamask/client-utils';
 import { ResultType } from '../../shared/lib/trust-signals';
 import { EXCLUDED_TRANSACTION_TYPES } from '../helpers/constants/transactions';
@@ -27,16 +28,21 @@ import {
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../shared/constants/transaction';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
-import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
+import {
+  getTokensControllerAllTokens,
+  getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata,
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../shared/lib/selectors/assets-migration';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getLocalTransactionFees } from '../../shared/lib/activity/adapters/helpers';
 import {
   getMoneyAccountTransactionType,
   isProtectedByEnforcedSimulations,
 } from '../pages/confirmations/utils/confirm';
-import { ActivityListItem, Status } from '../../shared/lib/activity/types';
+import { ActivityListItem } from '../../shared/lib/activity/types';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
@@ -53,7 +59,6 @@ import {
   selectPrimaryMoneyAccount,
   type PrimaryMoneyAccount,
 } from './money-account';
-import { getAssetsMetadata } from './assets';
 import {
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
@@ -65,11 +70,7 @@ import {
   selectRequiredTransactionIds,
 } from './transactionController';
 import type { TokenScanCacheResults } from './token-scan';
-import {
-  getMarketData,
-  getCurrencyRates,
-  getTokenScanCache,
-} from './selectors';
+import { getTokenScanCache } from './selectors';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 const selectTransactionPayData = (state: MetaMaskReduxState) =>

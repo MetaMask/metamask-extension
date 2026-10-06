@@ -2,8 +2,6 @@ import { type DebounceSettings, type DebouncedFunc, debounce } from 'lodash';
 import log from 'loglevel';
 import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 
-export type { DebounceSettings } from 'lodash';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyParams = any[];
 

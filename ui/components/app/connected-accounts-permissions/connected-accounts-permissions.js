@@ -10,12 +10,10 @@ import {
   BoxJustifyContent,
   Checkbox,
 } from '@metamask/design-system-react';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 import {
@@ -23,7 +21,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSnapName } from '../../../helpers/utils/util';
-import { getSnapsMetadata } from '../../../selectors';
+import { getSnapsMetadata } from '../../../selectors/selectors';
 
 const ConnectedAccountsPermissions = ({ permissions }) => {
   const t = useI18nContext();

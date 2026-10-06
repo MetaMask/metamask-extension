@@ -8,23 +8,29 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { getConsentDecisionMade, getOptedIn } from '../../selectors';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  BannerAlert,
-  Icon,
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../../selectors/metametrics';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { BannerAlert } from '../../components/component-library/banner-alert/banner-alert';
+import { Icon } from '../../components/component-library/icon/icon';
+import {
   IconName,
   IconSize,
-  Text,
-  Button,
+} from '../../components/component-library/icon/icon.types';
+import { Text } from '../../components/component-library/text/text';
+import { Button } from '../../components/component-library/button/button';
+import {
   ButtonVariant,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '../../components/component-library';
+  ButtonSize,
+} from '../../components/component-library/button/button.types';
+import { Modal } from '../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../components/component-library/modal-body/modal-body';
+import { ModalFooter } from '../../components/component-library/modal-footer/modal-footer';
 import {
   AlignItems,
   BlockSize,
@@ -38,8 +44,7 @@ import {
 
 import { Textarea } from '../../components/component-library/textarea/textarea';
 import { TextareaResize } from '../../components/component-library/textarea/textarea.types';
-import { ButtonSize } from '../../components/component-library/button/button.types';
-import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal from '../../components/app/modals/visit-support-data-consent-modal/visit-support-data-consent-modal';
 import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 
 type ErrorPageProps = {

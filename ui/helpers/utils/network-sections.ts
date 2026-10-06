@@ -1,7 +1,7 @@
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN,
   TEST_CHAINS,

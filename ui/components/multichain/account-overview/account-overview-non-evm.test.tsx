@@ -4,7 +4,7 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   AccountOverviewNonEvm,
   AccountOverviewNonEvmProps,

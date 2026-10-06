@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { shortenString } from '../../../../helpers/utils/util';
 

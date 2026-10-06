@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { RAMPS_TOKEN_SELECTION_ROUTE } from '../../../helpers/constants/routes';
-import LoadingScreen from '../../../components/ui/loading-screen';
+import LoadingScreen from '../../../components/ui/loading-screen/loading-screen.component';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import RampsBuildQuoteView from './components/ramps-build-quote-view';
 import {

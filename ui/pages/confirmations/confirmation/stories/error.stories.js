@@ -5,7 +5,7 @@ import {
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import { IconName } from '../../../../components/component-library';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 

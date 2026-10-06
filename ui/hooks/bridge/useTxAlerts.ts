@@ -7,7 +7,7 @@ import {
   getBridgeQuotes,
   getFromAccount,
 } from '../../ducks/bridge/selectors';
-import { setTxAlerts } from '../../ducks/bridge/actions';
+import { setTxAlerts } from '../../ducks/bridge/bridge';
 import { useDispatch } from '../../store/hooks';
 
 /**

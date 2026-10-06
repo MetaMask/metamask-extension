@@ -8,13 +8,13 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../component-library/box/box';
+import { Icon } from '../../../../component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../component-library';
+} from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
 
 export function DeFiErrorMessage({
   title,

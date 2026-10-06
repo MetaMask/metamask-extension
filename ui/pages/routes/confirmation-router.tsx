@@ -25,15 +25,17 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
+import { getTransactions } from '../../selectors/transactions';
 import {
-  getTransactions,
   selectHasApprovalFlows,
+  selectPendingApprovalsForNavigation,
+} from '../../selectors/approvals';
+import {
   selectHasBatchSellQuotes,
   selectHasBridgeQuotes,
-  selectPendingApprovalsForNavigation,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { useModalState } from '../../hooks/useModalState';
-import { isMusdConversionTransaction } from '../../components/app/musd/utils';
+import { isMusdConversionTransaction } from '../../components/app/musd/utils/transaction-utils';
 import { resetBridgeController } from '../../ducks/bridge/actions';
 import { useDispatch } from '../../store/hooks';
 

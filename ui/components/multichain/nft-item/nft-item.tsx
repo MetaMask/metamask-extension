@@ -6,14 +6,12 @@ import {
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
-import {
-  BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
-  Box,
-  Icon,
-  IconName,
-  Text,
-} from '../../component-library';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { BadgeWrapperAnchorElementShape } from '../../component-library/badge-wrapper/badge-wrapper.types';
+import { Box } from '../../component-library/box/box';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -26,7 +24,7 @@ import {
   getIpfsGateway,
   getOpenSeaEnabled,
   getTestNetworkBackgroundColor,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getAvatarNetworkStyleFromBackgroundColor } from '../../../helpers/utils/accounts';
 import { NFT } from '../asset-picker-amount/asset-picker-modal/types';
 import Tooltip from '../../ui/tooltip/tooltip';

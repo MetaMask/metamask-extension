@@ -11,7 +11,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../controllers/permissions/specifications';
 import { requestPermissionsHandler } from './wallet-requestPermissions';
 
 const getBaseRequest = (overrides = {}) => ({

@@ -2,16 +2,16 @@ import React, { Component, useContext } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import AccountListItem from '../../components/app/account-list-item';
-import { PreferredAvatar } from '../../components/app/preferred-avatar';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import AccountListItem from '../../components/app/account-list-item/account-list-item';
+import { PreferredAvatar } from '../../components/app/preferred-avatar/preferred-avatar';
+import PageContainerFooter from '../../components/ui/page-container/page-container-footer/page-container-footer.component';
 
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import SiteOrigin from '../../components/ui/site-origin';
+import SiteOrigin from '../../components/ui/site-origin/site-origin';
 import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { Nav } from '../confirmations/components/confirm/nav';
+import { Nav } from '../confirmations/components/confirm/nav/nav';
 import { I18nContext } from '../../contexts/i18n';
 import { useAnalytics } from '../../hooks/useAnalytics';
 

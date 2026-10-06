@@ -7,7 +7,7 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { ButtonVariant } from '../../../../component-library';
+import { ButtonVariant } from '../../../../component-library/button/button.types';
 import { UIComponent, UIComponentFactory, UIComponentParams } from './types';
 import { button as buttonFn } from './button';
 

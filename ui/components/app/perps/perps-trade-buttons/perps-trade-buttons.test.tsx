@@ -42,12 +42,14 @@ const mockPosition = (size: string, leverageType = 'isolated') =>
 // runs the wrapped action. Individual tests can override it to simulate a
 // block.
 const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
-jest.mock('../../compliance', () => ({
-  // Passthrough so the real AccessRestrictedProvider wrap in PerpsTradeButtons
-  // still mounts children under the mocked compliance gate.
+
+jest.mock('../../compliance/access-restricted-context', () => ({
   AccessRestrictedProvider: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
   ),
+}));
+
+jest.mock('../../compliance/useSelectedAccountComplianceGate', () => ({
   useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
 }));
 
@@ -60,7 +62,7 @@ const mockGeoBlockModal = jest.fn(
   ({ isOpen }: { isOpen: boolean; source?: string }) =>
     isOpen ? <div data-testid="perps-geo-block-modal" /> : null,
 );
-jest.mock('../perps-geo-block-modal', () => ({
+jest.mock('../perps-geo-block-modal/perps-geo-block-modal', () => ({
   PerpsGeoBlockModal: (props: { isOpen: boolean; source?: string }) =>
     mockGeoBlockModal(props),
 }));

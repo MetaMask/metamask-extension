@@ -13,7 +13,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../../../shared/constants/app';
 import * as actionConstants from '../../../../../store/actionConstants';
-import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../../../../shared/lib/hardware-wallets/types';
 import * as environmentType from '../../../../../../shared/lib/environment-type';
 import { isInE2eTest } from '../../../../../contexts/hardware-wallets/is-in-e2e-test';
 import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';

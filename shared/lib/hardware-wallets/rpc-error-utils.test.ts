@@ -6,6 +6,7 @@ import {
   Category,
 } from '@metamask/hw-wallet-sdk';
 import { KeyringControllerError } from '@metamask/keyring-controller';
+import { extractMessageFromUnknownError } from '../error';
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
@@ -14,7 +15,6 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
   extractTrezorCodeFromMessage,
-  extractMessageFromUnknownError,
   hasUserRejectedMessage,
   isTrezorDesktopConnectionMissingError,
 } from './rpc-error-utils';

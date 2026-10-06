@@ -25,7 +25,7 @@ import {
   selectMusdConvertibleTokensAllowlist,
   selectMusdConvertibleTokensBlocklist,
   selectMusdMinAssetBalanceRequired,
-} from '../../selectors/musd';
+} from '../../selectors/musd/feature-flags';
 import { checkTokenAllowed } from '../../components/app/musd/utils/token-allowlist';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
 

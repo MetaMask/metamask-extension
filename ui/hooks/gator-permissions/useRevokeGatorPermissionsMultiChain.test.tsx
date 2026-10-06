@@ -20,7 +20,7 @@ import {
   encodeDisableDelegation,
   getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
-import { getInternalAccountByAddress } from '../../selectors';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
   checkDelegationDisabled,
   submitDirectRevocation,
@@ -46,7 +46,7 @@ jest.mock('../../../shared/lib/delegation/delegation', () => ({
   getDelegationHashOffchain: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/delegation', () => ({
+jest.mock('../../../shared/lib/delegation/environment', () => ({
   getDeleGatorEnvironment: jest.fn(() => ({
     EIP7702StatelessDeleGatorImpl: '0x1234567890123456789012345678901234567890',
   })),

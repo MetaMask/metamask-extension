@@ -3,7 +3,7 @@ import {
   DeFiPositionsControllerMessenger,
 } from '@metamask/assets-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { DeFiPositionsControllerInitMessenger } from '../messengers/defi-positions';
+import { DeFiPositionsControllerInitMessenger } from '../messengers/defi-positions/defi-positions-controller-messenger';
 import {
   DEFAULT_FEATURE_FLAG_VALUES,
   FeatureFlagNames,
@@ -17,7 +17,8 @@ import {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 export const DeFiPositionsControllerInit: MessengerClientInitFunction<
   DeFiPositionsController,

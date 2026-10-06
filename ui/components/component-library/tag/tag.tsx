@@ -1,9 +1,11 @@
 import React from 'react';
 import classnames from 'clsx';
 import { Text, Icon, IconSize, TextColor } from '@metamask/design-system-react';
-import { Icon as IconLegacy, IconSize as IconSizeLegacy } from '../icon';
-import { Text as TextLegacy } from '../text';
-import { Box, type BoxProps, type PolymorphicRef } from '../box';
+import { Icon as IconLegacy } from '../icon/icon';
+import { IconSize as IconSizeLegacy } from '../icon/icon.types';
+import { Text as TextLegacy } from '../text/text';
+import { Box } from '../box/box';
+import type { BoxProps, PolymorphicRef } from '../box/box.types';
 
 import {
   AlignItems,

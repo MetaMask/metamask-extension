@@ -20,7 +20,7 @@ jest.mock('../../../../../store/actions', () => ({
 }));
 jest.mock('../../../hooks/useEnforcedSimulationsEligibility');
 jest.mock('../../../hooks/useTransactionEventFragment');
-jest.mock('../../../../../components/ui/tooltip', () => {
+jest.mock('../../../../../components/ui/tooltip/tooltip', () => {
   const react = jest.requireActual('react');
 
   return {

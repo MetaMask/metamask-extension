@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import {
   createTxMeta,
   TARGET_FROM,

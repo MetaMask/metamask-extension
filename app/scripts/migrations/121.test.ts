@@ -1,6 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_RPC_URL_MAP,
   LINEA_SEPOLIA_DISPLAY_NAME,
   NETWORK_TYPES,

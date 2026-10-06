@@ -2,14 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Hex } from '@metamask/utils';
 
 import { getNetworkIcon } from '../../../../../../../shared/lib/network.utils';
-import Preloader from '../../../../../../components/ui/icon/preloader';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  ButtonLink,
-  Text,
-} from '../../../../../../components/component-library';
+import Preloader from '../../../../../../components/ui/icon/preloader/preloader-icon.component';
+import { AvatarNetwork } from '../../../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../../../components/component-library/avatar-network/avatar-network.types';
+import { Box } from '../../../../../../components/component-library/box/box';
+import { ButtonLink } from '../../../../../../components/component-library/button-link/button-link';
+import { Text } from '../../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BorderColor,

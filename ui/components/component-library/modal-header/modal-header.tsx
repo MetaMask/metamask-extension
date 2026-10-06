@@ -1,15 +1,16 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Text } from '../text';
+import { Text } from '../text/text';
 import {
   TextVariant,
   TextAlign,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonIcon, ButtonIconSize } from '../button-icon';
-import { IconName } from '../icon';
-import { HeaderBase } from '../header-base';
+import { ButtonIcon } from '../button-icon/button-icon';
+import { ButtonIconSize } from '../button-icon/button-icon.types';
+import { IconName } from '../icon/icon.types';
+import { HeaderBase } from '../header-base/header-base';
 import { ModalHeaderProps } from './modal-header.types';
 
 /**

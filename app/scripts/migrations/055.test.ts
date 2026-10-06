@@ -1,4 +1,5 @@
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import migration55 from './055';
 
 type MigrationInput = Parameters<typeof migration55.migrate>[0];

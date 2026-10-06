@@ -5,7 +5,7 @@ import {
   AvatarAccountProps,
   AvatarAccountVariant,
 } from '@metamask/design-system-react';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 
 /**
  * Renders an avatar for an address based on the user's settings. This wraps AvatarAccount.

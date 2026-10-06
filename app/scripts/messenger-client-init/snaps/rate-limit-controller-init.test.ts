@@ -6,7 +6,7 @@ import {
   getRateLimitControllerMessenger,
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
-} from '../messengers/snaps';
+} from '../messengers/snaps/rate-limit-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { RateLimitControllerInit } from './rate-limit-controller-init';
 

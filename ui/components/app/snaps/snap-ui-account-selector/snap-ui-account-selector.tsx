@@ -4,14 +4,12 @@ import { CaipChainId } from '@metamask/utils';
 
 import { AccountSelectorState, State } from '@metamask/snaps-sdk';
 import { createAccountList, createChainIdList } from '@metamask/snaps-utils';
-import { SnapUISelector } from '../snap-ui-selector';
-import {
-  getMetaMaskAccountsOrdered,
-  InternalAccountWithBalance,
-} from '../../../../selectors';
+import { SnapUISelector } from '../snap-ui-selector/snap-ui-selector';
+import { getMetaMaskAccountsOrdered } from '../../../../selectors/selectors';
+import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 
 import { setSelectedInternalAccountWithoutLoading } from '../../../../store/actions';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';

@@ -9,8 +9,6 @@ import {
 import {
   getTokensControllerAllTokens,
   getCurrencyRateControllerCurrencyRates,
-  getCurrencyRateControllerCurrentCurrency,
-  getTokenBalancesControllerTokenBalances,
 } from '../../../shared/lib/selectors/assets-migration';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
@@ -334,8 +332,6 @@ export function getConversionRateByTicker(state, ticker) {
   return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
 
-export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
-
 export function getSendHexDataFeatureFlagState(state) {
   return state.metamask.featureFlags.sendHexData;
 }
@@ -410,7 +406,6 @@ export const getGasEstimateTypeByChainId = createSelector(
  * @param {*} state
  * @returns { import('@metamask/assets-controllers').TokenBalancesControllerState['tokenBalances']}
  */
-export { getTokenBalancesControllerTokenBalances as getTokenBalances };
 
 export const getGasFeeEstimatesByChainId = createSelector(
   getGasFeeControllerEstimatesByChainId,
@@ -566,8 +561,6 @@ export function doesUserHaveALedgerAccount(state) {
     return kr.type === KeyringType.ledger;
   });
 }
-
-export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 
 /**
  * Returns a boolean indicating whether the user opened the extension with the sidepanel.

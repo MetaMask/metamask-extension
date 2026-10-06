@@ -1,5 +1,5 @@
 import type { WalletOptions } from '@metamask/wallet';
-import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield/config';
 import { captureException } from '../../../../shared/lib/sentry';
 
 type SubscriptionServiceInstanceOptions = NonNullable<

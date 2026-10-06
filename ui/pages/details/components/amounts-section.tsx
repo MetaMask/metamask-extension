@@ -1,15 +1,15 @@
 import React from 'react';
 import { CaipAssetType } from '@metamask/utils';
 import type {
-  ActivityFee,
-  ActivityListItem,
+  Fee as ActivityFee,
   FiatAmount,
   TokenAmount,
-} from '../../../../shared/lib/activity/types';
+} from '@metamask/client-utils';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
-import { SuccessPill } from '../../../components/component-library';
+import { SuccessPill } from '../../../components/component-library/success-pill/success-pill';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
 import { TokenLabel } from '../../../components/app/transaction/token-label';
 // eslint-disable-next-line import-x/no-restricted-paths

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Delineator } from '.';
+import { Delineator } from './delineator';
 import { DelineatorType } from './delineator.types';
-import { Text, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/text';
+import { IconName } from '../../component-library/icon/icon.types';
 import {
   TextVariant,
   TextColor,

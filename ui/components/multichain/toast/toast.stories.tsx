@@ -4,7 +4,7 @@ import {
   AvatarAccount,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
-import { Toast } from '.';
+import { Toast } from './toast';
 
 const [chaosAccount] = Object.values(
   testData.metamask.internalAccounts.accounts,

@@ -11,10 +11,8 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
-import {
-  useMusdConversionTokens,
-  useMusdPaymentToken,
-} from '../../../../../hooks/musd';
+import { useMusdConversionTokens } from '../../../../../hooks/musd/useMusdConversionTokens';
+import { useMusdPaymentToken } from '../../../../../hooks/musd/useMusdPaymentToken';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   addToken,
@@ -30,7 +28,18 @@ jest.mock('../../../hooks/pay/useTransactionPayBlockedTokens');
 jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../hooks/pay/usePayWithSections');
 jest.mock('../../../utils/transaction-pay');
-jest.mock('../../../../../hooks/musd');
+jest.mock('../../../../../components/app/musd/utils/token-allowlist');
+jest.mock('../../../../../hooks/musd/useCanBuyMusd');
+jest.mock('../../../../../hooks/musd/useCustomAmount');
+jest.mock('../../../../../hooks/musd/useMusdBalance');
+jest.mock('../../../../../hooks/musd/useMusdConversion');
+jest.mock('../../../../../hooks/musd/useMusdConversionConfirmTrace');
+jest.mock('../../../../../hooks/musd/useMusdConversionToastStatus');
+jest.mock('../../../../../hooks/musd/useMusdConversionTokens');
+jest.mock('../../../../../hooks/musd/useMusdCtaVisibility');
+jest.mock('../../../../../hooks/musd/useMusdGeoBlocking');
+jest.mock('../../../../../hooks/musd/useMusdNetworkFilter');
+jest.mock('../../../../../hooks/musd/useMusdPaymentToken');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(),
@@ -55,7 +64,7 @@ const PERPS_WITHDRAW_TOKEN = {
   image: './bnb.png',
 };
 
-jest.mock('../../send/asset', () => ({
+jest.mock('../../send/asset/asset', () => ({
   Asset: ({
     onAssetSelect,
     tokenFilter,

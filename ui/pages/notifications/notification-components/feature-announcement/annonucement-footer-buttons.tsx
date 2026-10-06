@@ -5,8 +5,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { NotificationDetailButton } from '../../../../components/multichain';
-import { ButtonVariant } from '../../../../components/component-library';
+import { NotificationDetailButton } from '../../../../components/multichain/notification-detail-button/notification-detail-button';
+import { ButtonVariant } from '../../../../components/component-library/button/button.types';
 import {
   isInternalRouteHref,
   resolveTrustedDeepLinkHref,

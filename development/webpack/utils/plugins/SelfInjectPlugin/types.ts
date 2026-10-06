@@ -1,6 +1,5 @@
 import type { Asset } from 'webpack';
 
-export type { Compiler } from 'webpack';
 export type Source = Asset['source'];
 
 /**

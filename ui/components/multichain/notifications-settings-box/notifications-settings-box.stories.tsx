@@ -6,8 +6,8 @@ import {
   NotificationsSettingsBox,
   NotificationsSettingsBoxProps,
 } from './notifications-settings-box';
-import { NotificationsSettingsType } from '../notifications-settings-type';
-import { NotificationsSettingsAccount } from '../notifications-settings-account';
+import { NotificationsSettingsType } from '../notifications-settings-type/notifications-settings-type';
+import { NotificationsSettingsAccount } from '../notifications-settings-account/notifications-settings-account';
 
 export default {
   title: 'Components/Multichain/Notification/NotificationsSettingsBox',

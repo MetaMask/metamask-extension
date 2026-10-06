@@ -8,10 +8,11 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
   SignatureControllerInitMessenger,
-} from '../messengers';
+} from '../messengers/signature-controller-messenger';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getRootMessenger } from '../../lib/messenger';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { SignatureControllerInit } from './signature-controller-init';
 
 jest.mock('@metamask/signature-controller', () => ({
@@ -22,10 +23,13 @@ jest.mock('@metamask/signature-controller', () => ({
   })),
 }));
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
 }));
 
 function getInitRequestMock(): jest.Mocked<

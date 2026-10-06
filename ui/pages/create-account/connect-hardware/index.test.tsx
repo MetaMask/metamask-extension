@@ -25,9 +25,9 @@ import {
   TREZOR_TESTNET_PATH,
 } from '../../../../shared/constants/hardware-wallets';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { createHardwareWalletError } from '../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
 import { UPDATE_METAMASK_STATE } from '../../../store/actionConstants';
 import configureStore from '../../../store/store';
 import ConnectHardwareForm, {
@@ -76,8 +76,8 @@ jest.mock('../../../store/actions', () => ({
   }),
 }));
 
-jest.mock('../../../selectors', () => ({
-  getCurrentChainId: () => '0x1',
+jest.mock('../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../selectors/selectors'),
   getSelectedAddress: () => '0xselectedAddress',
   getRpcPrefsForCurrentProvider: () => ({}),
   getMetaMaskAccountsConnected: () => [],
@@ -90,10 +90,12 @@ jest.mock('../../../selectors', () => ({
 }));
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  ...jest.requireActual('../../../selectors/multi-srp/multi-srp'),
   getShouldShowSeedPhraseReminder: () => false,
 }));
 
 jest.mock('../../../ducks/bridge/selectors', () => ({
+  ...jest.requireActual('../../../ducks/bridge/selectors'),
   getAllBridgeableNetworks: () => [],
 }));
 

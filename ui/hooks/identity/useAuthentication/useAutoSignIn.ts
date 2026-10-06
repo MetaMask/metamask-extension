@@ -5,7 +5,7 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   getMetaMaskKeyrings,
   getUseExternalServices,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   selectIsSignedIn,
   selectNeedsProfilePairing,

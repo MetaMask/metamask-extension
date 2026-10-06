@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  IconName,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalFooter,
-  ModalBody,
-  ModalContent,
-} from '../../../component-library';
+import { AvatarIcon } from '../../../component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../../component-library/avatar-icon/avatar-icon.types';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
 import {
   AlignItems,
   BackgroundColor,

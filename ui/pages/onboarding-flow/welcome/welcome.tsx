@@ -27,13 +27,13 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
+import { getAccountTypeForOnboardingMetrics } from '../../../selectors/onboarding/onboarding';
 import {
-  getAccountTypeForOnboardingMetrics,
   getFirstTimeFlowType,
-  getConsentDecisionMade,
-  getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
-} from '../../../selectors';
+} from '../../../selectors/first-time-flow';
+import { getConsentDecisionMade } from '../../../selectors/metametrics';
+import { getIsPasskeyFeatureAvailable } from '../../../selectors/selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

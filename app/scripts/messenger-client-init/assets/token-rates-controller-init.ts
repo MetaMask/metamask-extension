@@ -5,7 +5,7 @@ import {
 } from '@metamask/assets-controllers';
 import { getIsDeprecatedController } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from '../types';
-import { TokenRatesControllerInitMessenger } from '../messengers/assets';
+import { TokenRatesControllerInitMessenger } from '../messengers/assets/token-rates-controller-messenger';
 import { previousValueComparator } from '../../lib/util';
 
 /**

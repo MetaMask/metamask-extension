@@ -1,5 +1,9 @@
+import {
+  DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+  // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+} from '../../../../ui/helpers/constants/routes';
 import { HomeQueryParams } from './home';
-import { DEFAULT_ROUTE, DISCOVER_SEARCH_ROUTE } from './route';
 import { trending } from './trending';
 
 describe('trending deep link route', () => {

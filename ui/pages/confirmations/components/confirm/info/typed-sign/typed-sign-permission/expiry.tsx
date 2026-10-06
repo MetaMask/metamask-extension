@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Text, TextVariant } from '@metamask/design-system-react';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { DateAndTimeRow } from './date-and-time-row';
 

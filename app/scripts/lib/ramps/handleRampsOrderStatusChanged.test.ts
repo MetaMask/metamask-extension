@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { RampsOrder } from '@metamask/ramps-controller';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { trackEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import {
   handleRampsOrderStatusChanged,
   trackRampsTerminalOrder,
   trackRampsTransactionConfirmed,
 } from './handleRampsOrderStatusChanged';
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
 }));
 
 function makeEvent(status: string) {

@@ -4,8 +4,8 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
-} from '../../store/store';
-import { getIsSmartTransaction } from '../../../shared/lib/selectors';
+} from '../../store/types';
+import { getIsSmartTransaction } from '../../../shared/lib/selectors/smart-transactions';
 import type { SmartTransactionsState } from '../../../shared/lib/selectors/smart-transactions';
 import { getMaybeHexChainId } from '../bridge/utils';
 

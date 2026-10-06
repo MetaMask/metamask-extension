@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ActionableMessage from '../../../../components/ui/actionable-message';
-import { Text } from '../../../../components/component-library';
+import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
+import { Text } from '../../../../components/component-library/text/text';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SnapAccountErrorMessage = ({

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   Display,
   FlexDirection,
@@ -7,9 +8,9 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { TransactionDetailsRow } from '../transaction-details-row';
-import { useTransactionDetails } from '../transaction-details-context';
-import { formatTransactionDateTime } from '../utils';
+import { TransactionDetailsRow } from '../transaction-details-row/transaction-details-row';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
+import { formatTransactionDateTime } from '../utils/utils';
 
 export function TransactionDetailsDateRow() {
   const t = useI18nContext();

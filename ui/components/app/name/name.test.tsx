@@ -9,9 +9,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
-import { IconName } from '../../component-library';
+import { IconName } from '../../component-library/icon/icon.types';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Name from './name';
 

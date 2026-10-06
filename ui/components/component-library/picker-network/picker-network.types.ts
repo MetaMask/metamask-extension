@@ -1,10 +1,10 @@
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
+} from '../box/box.types';
 import { IconProps } from '../icon/icon.types';
 import { AvatarNetworkProps } from '../avatar-network/avatar-network.types';
-import { TextProps } from '../text';
+import { TextProps } from '../text/text.types';
 import { AvatarGroupProps } from '../../multichain/avatar-group/avatar-group.types';
 
 // TODO: Convert to a `type` in a future major version.

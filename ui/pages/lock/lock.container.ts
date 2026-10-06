@@ -4,7 +4,7 @@ import { lockMetamask } from '../../store/actions';
 import withRouterHooks, {
   RouterHooksProps,
 } from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/types';
 import Lock from './lock.component';
 
 const mapStateToProps = (state: MetaMaskReduxState) => {

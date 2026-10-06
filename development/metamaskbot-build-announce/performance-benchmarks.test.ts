@@ -1,9 +1,9 @@
 import { readFile } from 'fs/promises';
 import type { BenchmarkResults } from '../../shared/constants/benchmarks';
+import { BENCHMARK_ANNOUNCE_SECTIONS } from '../../shared/constants/benchmarks';
 import * as historicalComparison from './historical-comparison';
 import { COMPARISON_SEVERITY } from './comparison-utils';
 import {
-  BENCHMARK_ANNOUNCE_SECTIONS,
   buildBenchmarkSection,
   extractEntries,
   fetchBenchmarkJson,
@@ -12,8 +12,10 @@ import {
   computeEntryHealth,
   EntryHealth,
   getUserJourneyBenchmarkApiModeFromBranch,
-  type FetchBenchmarkResult,
-  type BenchmarkEntry,
+} from './performance-benchmarks';
+import type {
+  FetchBenchmarkResult,
+  BenchmarkEntry,
 } from './performance-benchmarks';
 
 jest.mock('fs/promises');

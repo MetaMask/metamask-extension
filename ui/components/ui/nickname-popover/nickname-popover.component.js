@@ -8,15 +8,19 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import Tooltip from '../tooltip';
-import Popover from '../popover';
-import Button from '../button';
+import Tooltip from '../tooltip/tooltip';
+import Popover from '../popover/popover.component';
+import Button from '../button/button.component';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { getTokenList, getBlockExplorerLinkText } from '../../../selectors';
+import {
+  getTokenList,
+  getBlockExplorerLinkText,
+} from '../../../selectors/selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { ButtonIcon, IconName, IconSize } from '../../component-library';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 
 const NicknamePopover = ({
   address,

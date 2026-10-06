@@ -7,13 +7,11 @@ import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Button,
-  ButtonVariant,
-  Text,
-} from '../../../../../components/component-library';
+import { BannerAlert } from '../../../../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../../../components/component-library/banner-alert/banner-alert.types';
+import { Button } from '../../../../../components/component-library/button/button';
+import { ButtonVariant } from '../../../../../components/component-library/button/button.types';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   getLedgerTransportStatus,
   getLedgerWebHidConnectedStatus,
@@ -30,7 +28,7 @@ import useLedgerConnection from '../../../hooks/useLedgerConnection';
 import { useDispatch } from '../../../../../store/hooks';
 import { isInE2eTest } from '../../../../../contexts/hardware-wallets/is-in-e2e-test';
 import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';
-import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../../../../shared/lib/hardware-wallets/types';
 
 const LedgerInfo = () => {
   const { isLedgerWallet } = useLedgerConnection();

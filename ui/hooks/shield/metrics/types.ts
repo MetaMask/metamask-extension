@@ -19,7 +19,7 @@ import {
 import {
   DefaultSubscriptionPaymentOptions,
   ExistingSubscriptionEventParams,
-} from '../../../../shared/types';
+} from '../../../../shared/types/metametrics';
 
 export type CaptureShieldEntryModalEventParams = {
   source: ShieldMetricsSourceEnum;

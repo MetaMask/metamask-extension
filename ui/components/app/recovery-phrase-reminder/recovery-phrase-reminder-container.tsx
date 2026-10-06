@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { getShowRecoveryPhraseReminder } from '../../../selectors';
+import { getShowRecoveryPhraseReminder } from '../../../selectors/selectors';
 import {
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,

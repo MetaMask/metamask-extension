@@ -1,4 +1,4 @@
-import { IconName } from '../../components/component-library';
+import { IconName } from '../../components/component-library/icon/icon.types';
 import { IconColor } from '../constants/design-system';
 import { TrustSignalDisplayState } from '../../hooks/useTrustSignals';
 import { getTrustSignalIcon, IconProps } from './trust-signals';

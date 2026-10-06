@@ -8,7 +8,7 @@ jest.mock('../../app/name/name', () => () => (
   <div data-testid="recipient-name" />
 ));
 
-jest.mock('../../app/preferred-avatar', () => ({
+jest.mock('../../app/preferred-avatar/preferred-avatar', () => ({
   PreferredAvatar: () => <div data-testid="preferred-avatar" />,
 }));
 

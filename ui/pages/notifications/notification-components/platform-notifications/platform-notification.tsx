@@ -2,7 +2,7 @@ import React from 'react';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import { type NotificationComponent } from '../types/notifications/notifications';
-import { NotificationListItem } from '../../../../components/multichain';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import { createTextItems } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';

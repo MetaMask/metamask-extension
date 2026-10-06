@@ -24,7 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
-import { PrivacyPolicyLink } from '../shared';
+import { PrivacyPolicyLink } from '../shared/privacy-policy-link';
 
 type DeleteMetametricsModalProps = {
   onClose: () => void;

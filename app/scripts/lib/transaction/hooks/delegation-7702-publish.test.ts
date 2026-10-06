@@ -15,7 +15,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
+import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation/environment';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import {

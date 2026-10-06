@@ -2,11 +2,9 @@ import React from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';

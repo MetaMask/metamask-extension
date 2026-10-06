@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, IconName, ModalOverlay } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalContentSize,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Answers,

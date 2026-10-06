@@ -21,9 +21,8 @@ import {
   isIncomingMoneyActivityKind,
   moneyActivityKindToIcon,
   moneyActivityLabelKey,
-  type MoneyActivityKind,
-  type MoneyActivityStatus,
 } from './classify-money-activity';
+import type { MoneyActivityStatus } from './classify-money-activity';
 
 export const MUSD_DISPLAY_SYMBOL = 'mUSD';
 
@@ -327,5 +326,3 @@ export function getAccountsApiActivityDisplayInfo(
     status: 'confirmed',
   };
 }
-
-export type { MoneyActivityKind };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import InfoTooltip from '../info-tooltip';
+import InfoTooltip from '../info-tooltip/info-tooltip';
 import InfoTooltipIcon from '../info-tooltip/info-tooltip-icon';
 
 const CLASSNAME_WARNING = 'actionable-message--warning';

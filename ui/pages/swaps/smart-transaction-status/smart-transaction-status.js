@@ -14,7 +14,10 @@ import {
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
-import { getRpcPrefsForCurrentProvider } from '../../../selectors';
+import {
+  getRpcPrefsForCurrentProvider,
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
 import {
   isHardwareWallet,
   getHardwareWalletType,
@@ -22,15 +25,15 @@ import {
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/lib/selectors';
+} from '../../../../shared/lib/selectors/smart-transactions';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { Text } from '../../../components/component-library';
-import Box from '../../../components/ui/box';
-import UrlIcon from '../../../components/ui/url-icon';
+import { Text } from '../../../components/component-library/text/text';
+import Box from '../../../components/ui/box/box';
+import UrlIcon from '../../../components/ui/url-icon/url-icon';
 import {
   BLOCK_SIZES,
   TextVariant,
@@ -47,13 +50,12 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
-import SwapsFooter from '../swaps-footer';
+import SwapsFooter from '../swaps-footer/swaps-footer';
 import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import CreateNewSwap from '../create-new-swap';
-import ViewOnBlockExplorer from '../view-on-block-explorer';
+import CreateNewSwap from '../create-new-swap/create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer/view-on-block-explorer';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useDispatch } from '../../../store/hooks';
 import SuccessIcon from './success-icon';

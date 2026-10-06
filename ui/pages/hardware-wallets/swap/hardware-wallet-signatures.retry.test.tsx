@@ -12,15 +12,13 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
-import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
+import { ConnectionStatus } from '../../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../../shared/lib/hardware-wallets/errors';
 import * as backgroundConnection from '../../../store/background-connection';
 import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import HardwareWalletSignatures from '.';
+import HardwareWalletSignatures from './hardware-wallet-signatures';
 
 jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
 jest.mock('./generic-hardware-wallet-animation', () => ({
@@ -32,8 +30,10 @@ jest.mock('./generic-hardware-wallet-animation', () => ({
 const mockUseHardwareWalletState = jest.fn();
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 
-jest.mock('../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../contexts/hardware-wallets'),
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,

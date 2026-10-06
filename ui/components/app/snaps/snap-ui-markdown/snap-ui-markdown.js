@@ -7,15 +7,12 @@ import {
   TextColor,
   Display,
 } from '../../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
-import SnapLinkWarning from '../snap-link-warning';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import SnapLinkWarning from '../snap-link-warning/snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
 
 const Paragraph = (props) => (

@@ -27,7 +27,7 @@ import {
   getAssetsBySelectedAccountGroupIncludingHidden,
 } from '../../../../selectors/assets';
 import { getIsTokenManagementFilterEnabled } from '../../../../selectors/multichain/feature-flags';
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';

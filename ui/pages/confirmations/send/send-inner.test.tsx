@@ -19,11 +19,11 @@ jest.mock('../hooks/send/useSendAssets', () => {
   };
 });
 
-jest.mock('../components/send/asset', () => ({
+jest.mock('../components/send/asset/asset', () => ({
   Asset: () => <div data-testid="asset-page">Asset page</div>,
 }));
 
-jest.mock('../components/send/amount-recipient', () => ({
+jest.mock('../components/send/amount-recipient/amount-recipient', () => ({
   AmountRecipient: () => (
     <div data-testid="amount-recipient-page">Amount recipient page</div>
   ),

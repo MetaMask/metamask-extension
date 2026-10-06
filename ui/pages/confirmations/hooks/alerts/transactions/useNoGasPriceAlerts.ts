@@ -12,7 +12,7 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { getNoGasPriceFetched } from '../../../../../selectors';
+import { getNoGasPriceFetched } from '../../../../../selectors/custom-gas';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 

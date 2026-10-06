@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

@@ -33,7 +33,7 @@ import {
   MetaMetricsUserTrait,
   type MetaMetricsUserTraits,
 } from '../../../shared/constants/metametrics';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import type { Preferences } from '../../../shared/types/preferences';
@@ -42,7 +42,9 @@ import {
   createMockInternalAccount,
   createMockInternalAccounts,
 } from '../../../test/data/mock-accounts';
-import * as Utils from '../lib/util';
+
+import * as UtilsModule3 from '../lib/util';
+
 import * as analyticsHelpers from '../controllers/analytics/analytics';
 import { getUserTraitsServiceMessenger } from '../messenger-client-init/messengers/user-traits-service-messenger';
 import type {
@@ -215,9 +217,11 @@ describe('UserTraitsService', function () {
 
   describe('_buildUserTraitsObject', function () {
     beforeEach(() => {
-      jest.spyOn(Utils, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
-      jest.spyOn(Utils, 'getDeviceType').mockReturnValue(DEVICE_TYPE.DESKTOP);
-      jest.spyOn(Utils, 'getOs').mockReturnValue(OS.MACOS);
+      jest.spyOn(UtilsModule3, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+      jest
+        .spyOn(UtilsModule3, 'getDeviceType')
+        .mockReturnValue(DEVICE_TYPE.DESKTOP);
+      jest.spyOn(UtilsModule3, 'getOs').mockReturnValue(OS.MACOS);
     });
 
     it('should return full user traits object on first call', async function () {

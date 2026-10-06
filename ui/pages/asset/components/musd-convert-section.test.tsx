@@ -19,21 +19,21 @@ jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   }),
 }));
 
-jest.mock('../../../hooks/musd', () => ({
+jest.mock('../../../hooks/musd/useMusdConversion', () => ({
   useMusdConversion: () => ({
     startConversionFlow: jest.fn().mockResolvedValue(undefined),
   }),
+}));
+
+jest.mock('../../../hooks/musd/useMusdConversionTokens', () => ({
   useMusdConversionTokens: () => ({
     tokens: mockConversionTokens.current,
   }),
 }));
 
-jest.mock('../../../selectors/musd', () => {
-  const actual = jest.requireActual('../../../selectors/musd');
-  return {
-    ...actual,
-    selectIsMusdConversionFlowEnabled: () => true,
-  };
+jest.mock('../../../selectors/musd/feature-flags', () => {
+  const actual = jest.requireActual('../../../selectors/musd/feature-flags');
+  return { ...actual, selectIsMusdConversionFlowEnabled: () => true };
 });
 
 const MOCK_NETWORK_CONFIGS = {};

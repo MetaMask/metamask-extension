@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { I18nContext } from '../../../contexts/i18n';
 
-import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
+import PageContainerFooter from '../../../components/ui/page-container/page-container-footer/page-container-footer.component';
 
 export default function SwapsFooter({
   onCancel,

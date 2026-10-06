@@ -18,7 +18,7 @@ import {
   BackgroundColor,
   TextVariant as LegacyTextVariant,
 } from '../../../helpers/constants/design-system';
-import { Header } from '../pages/page';
+import { Header } from '../pages/page/components/header/header';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';

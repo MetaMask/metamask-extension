@@ -5,8 +5,8 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 
-import { NotificationDetail } from '../notification-detail';
-import { Text } from '../../component-library';
+import { NotificationDetail } from '../notification-detail/notification-detail';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextVariant,

@@ -5,7 +5,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 // eslint-disable-next-line import-x/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

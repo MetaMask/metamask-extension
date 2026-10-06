@@ -4,22 +4,19 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from './HardwareWalletContext';
 import { useHardwareWalletError } from './HardwareWalletErrorProvider';
-import {
-  isHardwareWalletError,
-  isUserRejectedHardwareWalletError,
-} from './rpcErrorUtils';
 import { useHardwareFooter } from './useHardwareFooter';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
-import {
-  ConnectionStatus,
-  HardwareConnectionPermissionState,
-  HardwareWalletType,
-} from './types';
+import { ConnectionStatus, HardwareConnectionPermissionState } from './types';
 
 jest.mock('./useHardwareWalletMetrics', () => ({
   useHardwareWalletMetrics: jest.fn(),
@@ -35,7 +32,7 @@ jest.mock('./HardwareWalletErrorProvider', () => ({
   useHardwareWalletError: jest.fn(),
 }));
 
-jest.mock('./rpcErrorUtils', () => ({
+jest.mock('../../../shared/lib/hardware-wallets/rpc-error-utils', () => ({
   isHardwareWalletError: jest.fn(),
   isUserRejectedHardwareWalletError: jest.fn(),
 }));

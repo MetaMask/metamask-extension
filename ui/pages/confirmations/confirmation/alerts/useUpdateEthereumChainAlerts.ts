@@ -10,7 +10,7 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import {
   ApprovalsMetaMaskState,
   getApprovalsByOrigin,
-} from '../../../../selectors';
+} from '../../../../selectors/approvals';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const VALIDATED_APPROVAL_TYPES = [

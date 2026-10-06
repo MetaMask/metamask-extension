@@ -11,16 +11,16 @@ import { isNonEmptyArray } from '@metamask/controller-utils';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   RestrictedMethods,
-  EndowmentPermissions,
   ConnectionPermission,
   PermissionWeight,
 } from '../../../shared/constants/permissions';
+import { EndowmentPermissions } from '../../../shared/constants/snaps/permissions';
+import { Icon } from '../../components/component-library/icon/icon';
+import { Text } from '../../components/component-library/text/text';
 import {
-  Icon,
-  Text,
   IconName,
   IconSize,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/icon.types';
 import {
   FontWeight,
   IconColor,
@@ -29,7 +29,7 @@ import {
 } from '../constants/design-system';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { PermissionNames } from '../../../app/scripts/controllers/permissions';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions/specifications';
 import { getURLHost } from './util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');

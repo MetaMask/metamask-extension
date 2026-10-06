@@ -1,6 +1,6 @@
 import { SnapAccountService } from '@metamask/snap-account-service';
 import { MessengerClientInitFunction } from '../types';
-import { SnapAccountServiceMessenger } from '../messengers/accounts';
+import { SnapAccountServiceMessenger } from '../messengers/accounts/snap-account-service-messenger';
 
 /**
  * Initialize the Snap account service.

@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import type { PersistedMoneyBalance } from '.';
 

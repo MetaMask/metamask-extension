@@ -18,7 +18,7 @@ import {
   AssetsContractControllerInitMessenger,
   getAssetsContractControllerInitMessenger,
   getAssetsContractControllerMessenger,
-} from '../messengers/assets';
+} from '../messengers/assets/assets-contract-controller-messenger';
 import { AssetsContractControllerInit } from './assets-contract-controller-init';
 
 jest.mock('@metamask/assets-controllers');

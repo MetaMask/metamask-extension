@@ -7,7 +7,7 @@ import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
-import { getUse4ByteResolution } from '../../../../../../selectors';
+import { getUse4ByteResolution } from '../../../../../../selectors/confirm-transaction';
 
 export function useDecodedTransactionData({
   data,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
 import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
-import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
+import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';

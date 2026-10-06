@@ -2,11 +2,6 @@ import type BigNumber from 'bignumber.js';
 import { projectVmusdValueInMusdToHuman } from '../../../shared/lib/money/withdrawable-balance';
 import { moneyFormatUsd } from './format';
 
-export {
-  MUSD_UNIT,
-  projectVmusdValueInMusdToHuman,
-} from '../../../shared/lib/money/withdrawable-balance';
-
 export type WithdrawableFiatProjection = {
   withdrawableFiatFormatted: string | undefined;
   withdrawableFiatRaw: string | undefined;

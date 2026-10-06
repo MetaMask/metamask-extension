@@ -10,7 +10,7 @@ import {
 } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
-import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../../../shared/lib/gator-permissions';
+import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../../../shared/lib/gator-permissions/facilitator-addresses';
 import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 jest.mock(

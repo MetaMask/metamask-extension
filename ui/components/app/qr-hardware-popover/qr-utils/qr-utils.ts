@@ -1,5 +1,5 @@
-import { QrErrorType } from '../qr-error-content';
-import { extractMessageFromUnknownError } from '../../../../contexts/hardware-wallets';
+import { QrErrorType } from '../qr-error-content/qr-error-content.types';
+import { extractMessageFromUnknownError } from '../../../../../shared/lib/error';
 
 /**
  * Error categories for QR scan results.

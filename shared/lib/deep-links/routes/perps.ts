@@ -3,8 +3,9 @@ import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
-  Route,
-} from './route';
+  // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+} from '../../../../ui/helpers/constants/routes';
+import { Route } from './route';
 
 /**
  * Deeplink for the Perps experience.

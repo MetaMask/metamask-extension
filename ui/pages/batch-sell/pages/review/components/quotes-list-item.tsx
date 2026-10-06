@@ -18,8 +18,8 @@ import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { PerpsSlider } from '../../../../../components/app/perps/perps-slider';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { PerpsSlider } from '../../../../../components/app/perps/perps-slider/perps-slider';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
@@ -27,9 +27,9 @@ import {
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { BatchSellQuotesResults } from '../types';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Skeleton } from '../../../../../components/component-library/skeleton/skeleton';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Tag } from '../../../../../components/component-library';
+import { Tag } from '../../../../../components/component-library/tag/tag';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   MAX_SEND_PERCENT,

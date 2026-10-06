@@ -3,10 +3,10 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   allowedInfuraHosts,
-  CHAIN_IDS,
   infuraChainIdsTestNets,
   infuraProjectId,
 } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import type { Migrate } from './types';
 
 export const version = 213;

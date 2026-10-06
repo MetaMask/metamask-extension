@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
 import { TotalReceivedModal } from './total-received-modal';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({

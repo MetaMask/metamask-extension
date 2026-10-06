@@ -2,8 +2,9 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getSelectedNetworkClientId } from '../../shared/lib/selectors/networks';
-import { MultichainState, getMultichainIsEvm } from '../selectors/multichain';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { MultichainState } from '../selectors/multichain';
+import { getMultichainIsEvm } from '../selectors/multichain/networks';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainSelector } from './useMultichainSelector';
 

@@ -1,7 +1,7 @@
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapConfirmationMonitoring } from './useHwSwapConfirmationMonitoring';

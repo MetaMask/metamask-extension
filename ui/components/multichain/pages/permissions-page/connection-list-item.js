@@ -16,16 +16,13 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import { getURLHost } from '../../../../helpers/utils/util';
-import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
+import { SnapIcon } from '../../../app/snaps/snap-icon/snap-icon';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors/selectors';
 import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {

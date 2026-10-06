@@ -9,18 +9,20 @@ import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import HomePage from '../../page-objects/pages/home/homepage';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { mockAllBridgeEndpoints } from './mocks/bridge';
 import {
-  mockAllBridgeEndpoints,
   mockBtcSpotPrices,
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
-  mockInitialFullScan,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+} from './mocks/price-api';
+import { mockInitialFullScan } from './mocks/esplora';
+import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
-} from './mocks';
+} from './mocks/tokens-api';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 async function buildBtcSwapBaseMocks(mockServer: Mockttp) {

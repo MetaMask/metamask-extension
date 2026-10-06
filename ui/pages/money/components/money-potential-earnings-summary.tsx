@@ -15,8 +15,8 @@ import {
   calculateMoneyProjectedEarnings,
   type MoneyDepositToken,
 } from '../../../hooks/money/money-deposit-token-utils';
-import { PopoverPosition } from '../../../components/component-library';
-import { TooltipText } from '../../../components/app/money/tooltip-text';
+import { PopoverPosition } from '../../../components/component-library/popover/popover.types';
+import { TooltipText } from '../../../components/app/money/tooltip-text/tooltip-text';
 
 type MoneyPotentialEarningsSummaryProps = {
   tokens: MoneyDepositToken[];

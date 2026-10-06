@@ -1,10 +1,10 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   PERPS_TRANSACTION_DETAILS_ROUTE,
   TX_DETAILS_ROUTE,
 } from '../../../../helpers/constants/routes';
-import type { PerpsTransaction } from '../types';
+import type { PerpsTransaction } from '../types/transactionHistory';
 
 export type PerpsTransactionDestination = {
   pathname: string;

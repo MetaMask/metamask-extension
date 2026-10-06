@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

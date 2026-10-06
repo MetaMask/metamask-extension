@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { ModalHeader } from './modal-header';
 
 describe('ModalHeader', () => {

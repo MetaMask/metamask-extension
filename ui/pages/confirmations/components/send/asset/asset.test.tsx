@@ -13,10 +13,10 @@ const mockMessages = messages;
 
 jest.mock('../../../hooks/send/useSendAssets');
 jest.mock('../../../hooks/send/useSendAssetFilter');
-jest.mock('../header', () => ({
+jest.mock('../header/header', () => ({
   Header: () => <div data-testid="header">Header</div>,
 }));
-jest.mock('../asset-filter-input', () => ({
+jest.mock('../asset-filter-input/asset-filter-input', () => ({
   AssetFilterInput: ({
     searchQuery,
     onChange,
@@ -31,7 +31,7 @@ jest.mock('../asset-filter-input', () => ({
     />
   ),
 }));
-jest.mock('../network-filter', () => ({
+jest.mock('../network-filter/network-filter', () => ({
   NetworkFilter: ({
     selectedChainId,
     onChainIdChange,
@@ -49,7 +49,7 @@ jest.mock('../network-filter', () => ({
     </select>
   ),
 }));
-jest.mock('../asset-list', () => ({
+jest.mock('../asset-list/asset-list', () => ({
   AssetList: ({ onClearFilters }: { onClearFilters: () => void }) => (
     <div data-testid="asset-list">
       <button onClick={onClearFilters}>Clear Filters</button>

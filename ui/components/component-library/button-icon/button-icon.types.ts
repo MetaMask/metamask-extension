@@ -1,6 +1,9 @@
-import { IconName, IconProps } from '../icon';
+import { IconName, IconProps } from '../icon/icon.types';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
+import {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box/box.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

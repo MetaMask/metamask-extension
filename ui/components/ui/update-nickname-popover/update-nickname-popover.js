@@ -7,14 +7,14 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 
-import Popover from '../popover';
-import Button from '../button';
-import TextField from '../text-field';
+import Popover from '../popover/popover.component';
+import Button from '../button/button.component';
+import TextField from '../text-field/text-field.component';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { getTokenList } from '../../../selectors';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { getTokenList } from '../../../selectors/selectors';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 
 export default function UpdateNicknamePopover({
   address,

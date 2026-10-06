@@ -6,8 +6,8 @@ import {
   getPermissionsForActiveTab,
   getPermissionSubjects,
   getSubjectMetadata,
-  getInternalAccounts,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {

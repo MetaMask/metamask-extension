@@ -1,8 +1,8 @@
 import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
+import type { MoneyAccountVaultConfig } from '@metamask/money-account-utils';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 
 export type MoneyChainConfigMessenger = Messenger<

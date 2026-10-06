@@ -4,7 +4,7 @@ import {
   BorderRadius,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { AccountPicker } from '.';
+import { AccountPicker } from './account-picker';
 
 const CHAOS_ACCOUNT = {
   address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',

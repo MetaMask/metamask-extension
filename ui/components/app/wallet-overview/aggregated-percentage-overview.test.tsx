@@ -2,12 +2,12 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
@@ -26,14 +26,17 @@ jest.mock('../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock('../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
+jest.mock('../../../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../selectors/selectors', () => ({
   getSelectedAccount: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokensMarketData: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/networks', () => ({
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
 }));
 

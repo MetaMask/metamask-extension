@@ -16,7 +16,8 @@ const store = configureStore({
 });
 
 const mockSignOut = jest.fn();
-jest.mock('../../../hooks/identity/useAuthentication', () => ({
+
+jest.mock('../../../hooks/identity/useAuthentication/useSignOut', () => ({
   useSignOut: () => ({
     signOut: mockSignOut,
   }),

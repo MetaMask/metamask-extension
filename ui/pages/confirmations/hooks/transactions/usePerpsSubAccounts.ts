@@ -11,7 +11,7 @@ import {
   isFinitePerpsTotal,
   UNKNOWN_BALANCE,
 } from '../../../../hooks/perps/perpsBalance';
-import { getSelectedEvmInternalAccount } from '../../../../selectors';
+import { getSelectedEvmInternalAccount } from '../../../../selectors/selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
 import { selectPerpsCachedUserData } from '../../../../selectors/perps-controller';

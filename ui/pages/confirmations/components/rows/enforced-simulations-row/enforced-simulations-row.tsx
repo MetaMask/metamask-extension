@@ -26,7 +26,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import Tooltip from '../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { applyTransactionContainersExisting } from '../../../../../store/actions';

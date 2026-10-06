@@ -8,12 +8,9 @@ import {
   handlers as localHandlers,
   eip1193OnlyHandlers,
   ethAccountsHandler,
-  type HandlerHooks,
-  type Eip1193OnlyHooks,
-  type EthAccountsHooks,
 } from './handlers';
-
-export * from './createUnsupportedMethodMiddleware';
+import type { HandlerHooks, Eip1193OnlyHooks } from './handlers';
+import type { EthAccountsHooks } from './handlers/eth-accounts';
 
 const onError = (error: unknown) => {
   if (process.env.METAMASK_DEBUG) {

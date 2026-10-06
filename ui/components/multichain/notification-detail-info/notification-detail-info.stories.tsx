@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta } from '@storybook/react-webpack5';
 import { AvatarIconSeverity, IconName } from '@metamask/design-system-react';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
+import { NotificationDetailCopyButton } from '../notification-detail-copy-button/notification-detail-copy-button';
 import {
   NotificationDetailInfo,
   NotificationDetailInfoProps,

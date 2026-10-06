@@ -1,8 +1,9 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { Icon, IconName } from '../icon';
-import { TextField } from '../text-field';
+import { Icon } from '../icon/icon';
+import { IconName } from '../icon/icon.types';
+import { TextField } from '../text-field/text-field';
 import { Label } from './label';
 
 describe('label', () => {

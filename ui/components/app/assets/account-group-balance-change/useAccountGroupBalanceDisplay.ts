@@ -1,10 +1,8 @@
 import { type BalanceChangePeriod } from '@metamask/assets-controllers';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getPrivacyMode,
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../../selectors';
+import { getPrivacyMode } from '../../../../selectors/selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors/multichain/networks';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { determineBalanceColor, isValidAmount } from './get-display-balance';

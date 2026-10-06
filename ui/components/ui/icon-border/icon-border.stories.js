@@ -1,6 +1,6 @@
 import React from 'react';
 import { Severity } from '../../../helpers/constants/design-system';
-import { BannerAlert } from '../../component-library';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
 
 import IconBorder from './icon-border';
 

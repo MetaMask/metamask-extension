@@ -1,12 +1,12 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Box } from '../../../../../component-library';
+import { Box } from '../../../../../component-library/box/box';
 import {
   BlockSize,
   Display,
 } from '../../../../../../helpers/constants/design-system';
 
-import type { StyleUtilityProps } from '../../../../../component-library/box';
+import type { StyleUtilityProps } from '../../../../../component-library/box/box.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

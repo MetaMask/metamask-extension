@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getCompleteAddressBook } from '../../../../selectors';
+import { getCompleteAddressBook } from '../../../../selectors/selectors';
 import { useSendContext } from '../../context/send';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';

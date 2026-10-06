@@ -302,7 +302,7 @@ import {
   fetchERC1155Balance,
 } from '../../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   getNetworkConfigurationsByCaipChainId,
   getProviderConfig,
@@ -324,7 +324,7 @@ import {
   OnboardingControllerGetIsSocialLoginFlowAction,
   OnboardingControllerResetOnboardingAction,
 } from '../controllers/onboarding-method-action-types';
-import { getAccountsBySnapId } from '../lib/snap-keyring';
+import { getAccountsBySnapId } from '../lib/snap-keyring/utils';
 import {
   getSentinelNetworkFlags,
   isSendBundleSupported,
@@ -357,7 +357,8 @@ import {
   ReferralStatus,
 } from '../controllers/preferences-controller';
 import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
-import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../controllers/analytics/analytics';
 import {
   DefiReferralPartner,
   DefiReferralPartnerConfig,
@@ -396,11 +397,11 @@ import {
   LedgerTransportTypes,
   LEDGER_LIVE_PATH,
 } from '../../../shared/constants/hardware-wallets';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
-  HardwareWalletType,
   isUserRejectedHardwareWalletError,
   toHardwareWalletError,
-} from '../../../shared/lib/hardware-wallets';
+} from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import { isDmkFeatureEnabled } from '../../../shared/lib/hardware-wallets/feature-flags';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';

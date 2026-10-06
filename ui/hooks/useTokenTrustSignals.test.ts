@@ -21,7 +21,6 @@ jest.mock('./useTrustSignals', () => ({
 
 jest.mock('../store/actions', () => ({}));
 jest.mock('../ducks/metamask/metamask', () => ({}));
-jest.mock('../selectors', () => ({}));
 
 const CHAIN_ID_MOCK = '0x1';
 const TOKEN_ADDRESS_1 = '0x1234567890123456789012345678901234567890';

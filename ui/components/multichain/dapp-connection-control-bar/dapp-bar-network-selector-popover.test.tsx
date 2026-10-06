@@ -66,19 +66,25 @@ const mockGetShouldShowTestNetworks = jest.fn();
 const mockGetIsTestnetInUse = jest.fn();
 const mockGetAllChainsToPoll = jest.fn();
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
+jest.mock('../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../selectors/selectors'),
   getAllDomains: (state: unknown) => mockGetAllDomains(state),
-  getMultichainNetworkConfigurationsByChainId: (state: unknown) =>
-    mockGetMultichainNetworkConfigurationsByChainId(state),
   getOrderedNetworksList: (state: unknown) => mockGetOrderedNetworksList(state),
   getOriginOfCurrentTab: (state: unknown) => mockGetOriginOfCurrentTab(state),
   getPermittedEVMChainsForSelectedTab: (state: unknown, activeTab: unknown) =>
     mockGetPermittedEVMChainsForSelectedTab(state, activeTab),
+  getAllChainsToPoll: (state: unknown) => mockGetAllChainsToPoll(state),
+}));
+jest.mock('../../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../../selectors/multichain/networks'),
+  getMultichainNetworkConfigurationsByChainId: (state: unknown) =>
+    mockGetMultichainNetworkConfigurationsByChainId(state),
+}));
+jest.mock('../../../selectors/test-networks', () => ({
+  ...jest.requireActual('../../../selectors/test-networks'),
   getShouldShowTestNetworks: (state: unknown) =>
     mockGetShouldShowTestNetworks(state),
   getIsTestnetInUse: (state: unknown) => mockGetIsTestnetInUse(state),
-  getAllChainsToPoll: (state: unknown) => mockGetAllChainsToPoll(state),
 }));
 
 jest.mock('../../../../shared/lib/selectors/preferences', () => ({

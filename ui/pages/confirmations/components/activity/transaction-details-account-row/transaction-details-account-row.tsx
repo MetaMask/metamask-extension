@@ -1,7 +1,7 @@
 import type { AccountGroupId } from '@metamask/account-api';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,
@@ -14,8 +14,8 @@ import {
   selectAccountGroupNameByAddress,
 } from '../../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
-import { TransactionDetailsRow } from '../transaction-details-row';
-import { useTransactionDetails } from '../transaction-details-context';
+import { TransactionDetailsRow } from '../transaction-details-row/transaction-details-row';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
 
 function getMultichainAccountsState(
   state: unknown,

@@ -9,7 +9,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { unapprovedPersonalSignMsg } from '../../../../../test/data/confirmations/personal_sign';
 import { SignatureRequestType } from '../../types/confirm';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';

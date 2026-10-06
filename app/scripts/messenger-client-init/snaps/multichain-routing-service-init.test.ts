@@ -10,7 +10,7 @@ import {
   getMultichainRoutingServiceInitMessenger,
   getMultichainRoutingServiceMessenger,
   MultichainRoutingServiceInitMessenger,
-} from '../messengers/snaps';
+} from '../messengers/snaps/multichain-routing-service-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   MultichainRoutingServiceInit,

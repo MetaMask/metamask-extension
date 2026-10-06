@@ -23,12 +23,12 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   REVEAL_SEED_ROUTE,
 } from '../../../helpers/constants/routes';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import {
-  getIsSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
-} from '../../../selectors';
-import Card from '../../ui/card';
+} from '../../../selectors/onboarding/onboarding';
+import Card from '../../ui/card/card';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 
 const SOCIAL_LOGIN_ICON_CLASS = 'srp-reveal-list__social-icon';

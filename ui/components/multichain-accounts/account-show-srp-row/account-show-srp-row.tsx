@@ -18,9 +18,9 @@ import {
 import { AccountDetailsRow } from '../account-details-row/account-details-row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { getMetaMaskHdKeyrings } from '../../../selectors/selectors';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import SRPQuiz from '../../app/srp-quiz-modal';
+import SRPQuiz from '../../app/srp-quiz-modal/SRPQuiz/SRPQuiz';
 
 type AccountShowSrpRowProps = {
   account: InternalAccount;

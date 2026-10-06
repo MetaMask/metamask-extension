@@ -6,11 +6,9 @@ import { MetaMetricsEventLocation } from '../../../../../../../../../shared/cons
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import Name from '../../../../../../../../components/app/name/name';
-import {
-  Box,
-  Text,
-} from '../../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../../components/ui/tooltip';
+import { Box } from '../../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../../components/component-library/text/text';
+import Tooltip from '../../../../../../../../components/ui/tooltip/tooltip';
 import {
   BlockSize,
   BorderRadius,
@@ -31,7 +29,7 @@ import {
 import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
 import { isSpendingCapUnlimited } from '../../../approve/hooks/use-approve-token-simulation';
-import { normalizeUint256 } from '../../../../../../utils';
+import { normalizeUint256 } from '../../../../../../utils/confirm';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */

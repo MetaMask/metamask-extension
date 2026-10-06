@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   checkHardwareWalletPermission,
   requestHardwareWalletPermission,
 } from './webConnectionUtils';
-import { HardwareConnectionPermissionState, HardwareWalletType } from './types';
+import { HardwareConnectionPermissionState } from './types';
 import { type HardwareWalletState } from './HardwareWalletStateManager';
 
 type UseHardwareWalletPermissionsParams = {

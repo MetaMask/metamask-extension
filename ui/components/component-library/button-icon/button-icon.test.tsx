@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { ButtonIconSize } from './button-icon.types';
 import { ButtonIcon } from './button-icon';
 

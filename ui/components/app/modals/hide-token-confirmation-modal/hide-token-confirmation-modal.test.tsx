@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import HideTokenConfirmationModal from '.';
+import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 
 type MockToken = {
   assetId?: string;

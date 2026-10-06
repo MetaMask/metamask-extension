@@ -18,7 +18,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/lib/network.utils';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { getValidUrl } from '../../util';
+import { getValidUrl } from '../../../../../shared/lib/url-utils';
 
 type SwitchEthereumChainParams = {
   chainId: string;

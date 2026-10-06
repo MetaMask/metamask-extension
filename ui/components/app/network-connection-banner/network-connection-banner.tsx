@@ -2,21 +2,18 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { FailedNetwork } from '@metamask/network-connection-banner-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BannerBase,
-  ButtonLink,
-  ButtonLinkSize,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../component-library';
+import { BannerBase } from '../../component-library/banner-base/banner-base';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../component-library/button-link/button-link.types';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 import {
   BackgroundColor,
   BorderRadius,
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library/text';
+import { Text } from '../../component-library/text/text';
 import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionBanner';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';

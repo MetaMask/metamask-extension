@@ -34,14 +34,16 @@ import {
 } from './helpers/utils/performance-observers';
 import * as actions from './store/actions';
 import configureStore from './store/store';
+import { getUnapprovedTransactions } from './selectors/transactions';
 import {
-  getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
+} from './selectors/selectors';
+import {
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
-} from './selectors';
-import { ALERT_STATE } from './ducks/alerts';
+} from './selectors/first-time-flow';
+import { ALERT_STATE } from './ducks/alerts/enums';
 import {
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
@@ -56,18 +58,12 @@ import {
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
-import { getPerpsStreamManager } from './providers/perps';
+import { getPerpsStreamManager } from './providers/perps/PerpsStreamManager';
 import {
   primePerpsLifecycleContext,
   markPerpsLifecycleWarm,
 } from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
-
-export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
-export {
-  displayCriticalErrorMessage,
-  CriticalErrorTranslationKey,
-} from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 

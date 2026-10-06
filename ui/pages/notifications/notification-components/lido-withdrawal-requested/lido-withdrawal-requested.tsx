@@ -8,14 +8,12 @@ import {
 } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 
-import {
-  NotificationDetailAsset,
-  NotificationListItem,
-  NotificationDetailInfo,
-  NotificationDetailBlockExplorerButton,
-  NotificationDetailCopyButton,
-  NotificationDetailAddress,
-} from '../../../../components/multichain';
+import { NotificationDetailAsset } from '../../../../components/multichain/notification-detail-asset/notification-detail-asset';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
+import { NotificationDetailInfo } from '../../../../components/multichain/notification-detail-info/notification-detail-info';
+import { NotificationDetailBlockExplorerButton } from '../../../../components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button';
+import { NotificationDetailCopyButton } from '../../../../components/multichain/notification-detail-copy-button/notification-detail-copy-button';
+import { NotificationDetailAddress } from '../../../../components/multichain/notification-detail-address/notification-detail-address';
 import {
   createTextItems,
   getAmount,
@@ -26,7 +24,7 @@ import { t } from '../../../../../shared/lib/translate';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
-import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library/badge-wrapper/badge-wrapper.types';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 

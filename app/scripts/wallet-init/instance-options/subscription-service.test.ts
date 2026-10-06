@@ -1,9 +1,13 @@
 import { Env } from '@metamask/subscription-controller';
-import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield/config';
 import { captureException } from '../../../../shared/lib/sentry';
 import { getSubscriptionServiceInstanceOptions } from './subscription-service';
 
-jest.mock('../../../../shared/lib/shield');
+jest.mock('../../../../shared/lib/shield/constants');
+jest.mock('../../../../shared/lib/shield/config');
+jest.mock('../../../../shared/lib/shield/metrics');
+jest.mock('../../../../shared/lib/shield/shield');
+jest.mock('../../../../shared/lib/shield/subscription-utils');
 
 describe('getSubscriptionServiceInstanceOptions', () => {
   it('returns the configured environment and service dependencies', () => {

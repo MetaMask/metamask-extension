@@ -1,4 +1,5 @@
-import { CHAIN_IDS, infuraProjectId } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { infuraProjectId } from '../../../shared/constants/network';
 import migrate, { version } from './213';
 
 const ZKSYNC_CHAIN_ID = CHAIN_IDS.ZKSYNC_ERA;

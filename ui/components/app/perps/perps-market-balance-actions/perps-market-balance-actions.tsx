@@ -19,16 +19,14 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsLiveAccount } from '../../../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../../../hooks/perps/stream/usePerpsLiveAccount';
 import { getTradeableBalance } from '../../../../hooks/perps/getTradeableBalance';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { PerpsBalanceActionsSkeleton } from '../perps-skeletons';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
+import { PerpsBalanceActionsSkeleton } from '../perps-skeletons/perps-balance-actions-skeleton';
 
 /** Handler from perps triggers (e.g. deposit / withdraw); may return a Promise. */
 export type PerpsBalanceActionHandler = () => void | Promise<unknown>;

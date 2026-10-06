@@ -1,6 +1,9 @@
 import React from 'react';
 import type { BannerBaseStyleUtilityProps } from '../banner-base/banner-base.types';
-import type { PolymorphicComponentPropWithRef, BoxProps } from '../box';
+import type {
+  PolymorphicComponentPropWithRef,
+  BoxProps,
+} from '../box/box.types';
 
 export enum BannerTipLogoType {
   Greeting = 'greeting',

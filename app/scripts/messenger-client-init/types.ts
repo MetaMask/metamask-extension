@@ -7,12 +7,12 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import type { TransactionMetricsRequest } from '../../../shared/types';
+import type { TransactionMetricsRequest } from '../../../shared/types/metametrics';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
-import type { MetaMaskReduxState } from '../../../ui/store/store';
+import type { MetaMaskReduxState } from '../../../ui/store/types';
 import { MessengerClient, MessengerClientFlatState } from './controller-list';
 
 type MessageSender = chrome.runtime.MessageSender;

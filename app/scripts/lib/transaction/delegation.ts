@@ -22,15 +22,17 @@ import {
 } from '@metamask/delegation-core';
 import {
   ExecutionMode,
-  getDeleGatorEnvironment,
-  encodeRedeemDelegations,
   BATCH_DEFAULT_MODE,
   SINGLE_DEFAULT_MODE,
-  type ExecutionStruct,
-  type Caveat,
-  type Delegation,
-  type UnsignedDelegation,
-} from '../../../../shared/lib/delegation';
+} from '../../../../shared/lib/delegation/execution';
+import { getDeleGatorEnvironment } from '../../../../shared/lib/delegation/environment';
+import { encodeRedeemDelegations } from '../../../../shared/lib/delegation/delegation';
+import type { ExecutionStruct } from '../../../../shared/lib/delegation/execution';
+import type { Caveat } from '../../../../shared/lib/delegation';
+import type {
+  Delegation,
+  UnsignedDelegation,
+} from '../../../../shared/lib/delegation/delegation';
 
 const log = createProjectLogger('transaction-delegation');
 

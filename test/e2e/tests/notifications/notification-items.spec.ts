@@ -3,7 +3,7 @@ import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notifi
 import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   goToNotificationsList,

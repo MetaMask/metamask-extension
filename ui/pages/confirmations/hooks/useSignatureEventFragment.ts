@@ -3,7 +3,7 @@ import { generateSignatureUniqueId } from '../../../helpers/utils/metrics';
 import { updateEventFragment } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { SignatureRequestType } from '../types/confirm';
-import { isSignatureTransactionType } from '../utils';
+import { isSignatureTransactionType } from '../utils/confirm';
 
 import type { MetaMetricsEventFragmentPayload } from '../../../../shared/constants/metametrics';
 

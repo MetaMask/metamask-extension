@@ -1,4 +1,4 @@
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 
 export const selectTutorialModalOpen = (state: MetaMaskReduxState) =>
   state.perpsTutorial.tutorialModalOpen;

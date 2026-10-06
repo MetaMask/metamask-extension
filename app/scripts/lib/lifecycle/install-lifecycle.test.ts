@@ -5,7 +5,8 @@ import {
   MetaMetricsUserTrait,
 } from '#shared/constants/metametrics';
 import { getInstallAttribution } from '#shared/lib/install-attribution';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import type MetaMaskController from '../../metamask-controller';
 import { onUpdate } from '../../on-update';
 import {
@@ -26,8 +27,8 @@ jest.mock('#shared/lib/install-attribution', () => ({
   getInstallAttribution: jest.fn(),
 }));
 
-jest.mock('../../controllers/analytics', () => ({
-  ...jest.requireActual('../../controllers/analytics'),
+jest.mock('../../controllers/analytics/analytics', () => ({
+  ...jest.requireActual('../../controllers/analytics/analytics'),
   trackEvent: jest.fn(),
 }));
 

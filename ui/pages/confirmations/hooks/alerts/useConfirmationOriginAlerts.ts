@@ -6,8 +6,11 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../types/confirm';
-import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
-import { isSignatureTransactionType } from '../../utils';
+import {
+  isValidASCIIURL,
+  toPunycodeURL,
+  isSignatureTransactionType,
+} from '../../utils/confirm';
 import { useConfirmContext } from '../../context/confirm';
 
 const useConfirmationOriginAlerts = (): Alert[] => {

@@ -7,10 +7,8 @@ import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/
 import { AssetCellTitle } from '../../../components/app/assets/asset-list/cells/asset-title';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { useTokenDisplayInfo } from '../../../components/app/assets/hooks/useTokenDisplayInfo';
-import {
-  TokenCellPrimaryDisplay,
-  TokenCellSecondaryDisplay,
-} from '../../../components/app/assets/token-cell/cells';
+import { TokenCellPrimaryDisplay } from '../../../components/app/assets/token-cell/cells/token-cell-primary-display';
+import { TokenCellSecondaryDisplay } from '../../../components/app/assets/token-cell/cells/token-cell-secondary-display';
 import { mapDefiProtocolDetailsPositionV2ToToken } from './utils/map-defi-protocol-details-position-v2';
 
 type DefiDetailsPositionCellV2Props = {

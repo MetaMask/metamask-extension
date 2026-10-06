@@ -12,10 +12,8 @@ import {
   MetaMetricsHardwareWalletRecoveryErrorType,
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../shared/constants/metametrics';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-} from '../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from './track-hardware-wallet-recovery-connect-cta-clicked';
 

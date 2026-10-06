@@ -9,7 +9,7 @@ import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../../../store/actions';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
 type TestConfirmContextValue = {

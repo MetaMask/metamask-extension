@@ -6,7 +6,9 @@ import {
 } from '@metamask/design-system-react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { transitionBack } from '../../components/ui/transition';
 import { useBatchSellNavigation } from '../../hooks/batch-sell/useBatchSellNavigation';

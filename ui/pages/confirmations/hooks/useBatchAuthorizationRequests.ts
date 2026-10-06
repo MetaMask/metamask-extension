@@ -3,7 +3,7 @@ import { MultichainNetworkConfiguration } from '@metamask/multichain-network-con
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
-import { getTransactions } from '../../../selectors';
+import { getTransactions } from '../../../selectors/transactions';
 import { IN_PROGRESS_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 export type EIP7702NetworkConfiguration = MultichainNetworkConfiguration & {

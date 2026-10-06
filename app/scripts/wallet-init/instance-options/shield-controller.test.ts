@@ -1,7 +1,7 @@
 import { Env, parseSignatureRequestMethod } from '@metamask/shield-controller';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { SignatureRequest } from '@metamask/signature-controller';
-import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield/config';
 import { captureException } from '../../../../shared/lib/sentry';
 import { normalizeSignatureRequest as normalizePpomSignatureRequest } from '../../lib/ppom/ppom-util';
 import {
@@ -9,7 +9,11 @@ import {
   getShieldControllerInstanceOptions,
 } from './shield-controller';
 
-jest.mock('../../../../shared/lib/shield');
+jest.mock('../../../../shared/lib/shield/constants');
+jest.mock('../../../../shared/lib/shield/config');
+jest.mock('../../../../shared/lib/shield/metrics');
+jest.mock('../../../../shared/lib/shield/shield');
+jest.mock('../../../../shared/lib/shield/subscription-utils');
 jest.mock('../../lib/ppom/ppom-util');
 jest.mock('@metamask/shield-controller', () => ({
   ...jest.requireActual('@metamask/shield-controller'),

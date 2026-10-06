@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { NetworkConnectionBanner } from '../../app/network-connection-banner';
-import { MoneyAccountBalance } from '../../app/money/money-account-balance';
+import { NetworkConnectionBanner } from '../../app/network-connection-banner/network-connection-banner';
+import { MoneyAccountBalance } from '../../app/money/money-account-balance/money-account-balance';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,

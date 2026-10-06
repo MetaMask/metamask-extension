@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
+import { toast } from 'react-hot-toast';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
@@ -9,16 +10,17 @@ import {
   SECURITY_REGISTER_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
-import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey';
-import { toast } from '../../../components/ui/toast/toast';
+import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey/passkey-capabilities';
 import PasskeyRegisterSubPage from './passkey-register-sub-page';
 import { PASSKEY_REGISTRATION_ROUTE_CAPABILITIES } from './messenger';
 
 jest.mock('../../../components/ui/toast/toast', () => ({
+  ToastContent: ({ title }: { title: string }) => title,
+}));
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
   },
-  ToastContent: ({ title }: { title: string }) => title,
 }));
 
 const mockUseNavigate = jest.fn();
@@ -45,10 +47,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
-    '../../../../shared/lib/passkey',
-  ),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AQ',
     rawId: 'AQ',
@@ -70,13 +70,80 @@ jest.mock('../../../../shared/lib/passkey', () => ({
     },
     clientExtensionResults: { prf: { results: { first: 'AQ' } } },
   }),
+}));
+jest.mock('../../../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-capabilities'),
   isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
 
 const mockIsPasskeyPRFSupported = jest.mocked(
-  jest.requireMock<typeof import('../../../../shared/lib/passkey')>(
-    '../../../../shared/lib/passkey',
-  ).isPasskeyPRFSupported,
+  {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+    get PasskeyCeremonyTimeoutError() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-ceremony')
+        .PasskeyCeremonyTimeoutError;
+    },
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+    get PasskeyPRFRequiredError() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-capabilities',
+      ).PasskeyPRFRequiredError;
+    },
+    get cancelPasskeyCeremony() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-ceremony')
+        .cancelPasskeyCeremony;
+    },
+    get getPasskeyAuthMethodKey() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-auth-method',
+      ).getPasskeyAuthMethodKey;
+    },
+    get getPasskeyErrorCode() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-error')
+        .getPasskeyErrorCode;
+    },
+    get hasPasskeyPRFEnabled() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-capabilities',
+      ).hasPasskeyPRFEnabled;
+    },
+    get hasPasskeyPRFResult() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-capabilities',
+      ).hasPasskeyPRFResult;
+    },
+    get isPasskeyAaguidIncompatibleWithSidepanel() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-sidepanel-aaguid',
+      ).isPasskeyAaguidIncompatibleWithSidepanel;
+    },
+    get isPasskeyCeremonySilentError() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-ceremony')
+        .isPasskeyCeremonySilentError;
+    },
+    get isPasskeyPRFSupported() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-capabilities',
+      ).isPasskeyPRFSupported;
+    },
+    get isWebAuthnSupported() {
+      return jest.requireMock(
+        '../../../../shared/lib/passkey/passkey-capabilities',
+      ).isWebAuthnSupported;
+    },
+    get startPasskeyAuthentication() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-ceremony')
+        .startPasskeyAuthentication;
+    },
+    get startPasskeyRegistration() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-ceremony')
+        .startPasskeyRegistration;
+    },
+    get translatePasskeyError() {
+      return jest.requireMock('../../../../shared/lib/passkey/passkey-error')
+        .translatePasskeyError;
+    },
+  }.isPasskeyPRFSupported,
 );
 
 jest.mock('../../../../shared/lib/sentry', () => ({

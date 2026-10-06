@@ -16,11 +16,13 @@ import {
 import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
+import { toast } from 'react-hot-toast';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { Header, Page } from '../../components/multichain/pages/page';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import {
   addImportedTokens,
   getTokenStandardAndDetailsByChain,
@@ -35,19 +37,19 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../shared/lib/selectors/networks';
+import { getInternalAccounts } from '../../selectors/accounts';
 import {
-  getInternalAccounts,
   getSelectedEvmInternalAccount,
-  getAllTokens,
   selectERC20TokensByChain,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetsControllerAssetPreferences,
   isAssetIdHiddenInPreferencesMap,
 } from '../../selectors/assets-unify-state/asset-preferences';
 import { checkExistingAddresses } from '../../helpers/utils/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
@@ -55,7 +57,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { ToastContent } from '../../components/ui/toast/toast';
 import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';

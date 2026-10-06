@@ -6,7 +6,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { Text } from '../../../../component-library';
+import { Text } from '../../../../component-library/text/text';
 
 type NftDetailInformationFrameProps = {
   title?: string;

@@ -6,29 +6,30 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getTokensControllerAllTokens as getAllTokens,
+} from '../../../../../shared/lib/selectors/assets-migration';
 import {
   getTokenList,
-  getCurrencyRates,
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
-  getEnabledNetworksByNamespace,
-  getAllTokens,
-  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
-} from '../../../../selectors';
-import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+} from '../../../../selectors/selectors';
 import {
-  getMultichainCurrentChainId,
+  getEnabledNetworksByNamespace,
+  selectAnyEnabledNetworksAreAvailable,
   getMultichainIsEvm,
-} from '../../../../selectors/multichain';
+} from '../../../../selectors/multichain/networks';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { getMultichainCurrentChainId } from '../../../../selectors/multichain';
 import { getProviderConfig } from '../../../../../shared/lib/selectors/networks';
 
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenWithFiatAmount } from '../types';
 import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
-import { TokenCellProps } from './token-cell';
-import TokenCell from '.';
+import TokenCell, { TokenCellProps } from './token-cell';
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
@@ -46,12 +47,16 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => {
 });
 
 const mockShouldShowTokenListItemCta = jest.fn().mockReturnValue(false);
-jest.mock('../../../../hooks/musd', () => ({
-  useMusdCtaVisibility: () => ({
-    shouldShowTokenListItemCta: mockShouldShowTokenListItemCta,
-  }),
+
+jest.mock('../../../../hooks/musd/useMusdBalance', () => ({
   useMusdBalance: () => ({
     hasMusdBalance: true,
+  }),
+}));
+
+jest.mock('../../../../hooks/musd/useMusdCtaVisibility', () => ({
+  useMusdCtaVisibility: () => ({
+    shouldShowTokenListItemCta: mockShouldShowTokenListItemCta,
   }),
 }));
 
@@ -63,7 +68,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../../musd', () => ({
+jest.mock('../../musd/musd-convert-link', () => ({
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
 }));
 

@@ -2,8 +2,8 @@ import React, { useEffect, useLayoutEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
-import { PerpsToastProvider } from '../../components/app/perps';
-import { AccessRestrictedProvider } from '../../components/app/compliance';
+import { PerpsToastProvider } from '../../components/app/perps/perps-toast/perps-toast-provider';
+import { AccessRestrictedProvider } from '../../components/app/compliance/access-restricted-context';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -13,7 +13,7 @@ import {
   getSelectedInternalAccount,
   type AccountsState,
 } from '../../../shared/lib/selectors/accounts';
-import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
+import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps/feature-flags';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { useDispatch } from '../../store/hooks';

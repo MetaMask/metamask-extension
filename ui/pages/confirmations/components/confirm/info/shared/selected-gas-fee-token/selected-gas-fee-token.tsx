@@ -11,9 +11,12 @@ import {
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
-import { GasFeeTokenModal } from '../gas-fee-token-modal';
+import { GasFeeTokenModal } from '../gas-fee-token-modal/gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
-import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
+import {
+  GasFeeTokenIcon,
+  GasFeeTokenIconSize,
+} from '../gas-fee-token-icon/gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 import { useNativeCurrencySymbol } from '../../hooks/useNativeCurrencySymbol';

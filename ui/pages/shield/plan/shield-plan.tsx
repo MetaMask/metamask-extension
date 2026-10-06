@@ -33,18 +33,14 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-} from '../../../components/component-library';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
-import LoadingScreen from '../../../components/ui/loading-screen';
+import { AvatarNetwork } from '../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../components/component-library/avatar-network/avatar-network.types';
+import { AvatarToken } from '../../../components/component-library/avatar-token/avatar-token';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../../components/multichain/pages/page/components/footer/footer';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
+import LoadingScreen from '../../../components/ui/loading-screen/loading-screen.component';
 import {
   AlignItems,
   BackgroundColor,
@@ -74,7 +70,7 @@ import {
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../selectors/subscription';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../selectors/subscription/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -83,9 +79,9 @@ import {
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
-  getIsTrialedSubscription,
-} from '../../../../shared/lib/shield';
-import ApiErrorHandler from '../../../components/app/api-error-handler';
+} from '../../../../shared/lib/shield/config';
+import { getIsTrialedSubscription } from '../../../../shared/lib/shield/shield';
+import ApiErrorHandler from '../../../components/app/api-error-handler/api-error-handler';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 import {
@@ -94,7 +90,7 @@ import {
 } from '../../../store/actions';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getPendingRedirectRoute } from '../../../selectors';
+import { getPendingRedirectRoute } from '../../../selectors/selectors';
 import { PendingRedirectRoute } from '../../../../shared/lib/pending-redirect-state';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';

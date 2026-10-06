@@ -1,8 +1,8 @@
+import { BATCH_SELL_ASSET_IDS } from '../../../../../test/data/batch-sell/constants';
 import {
-  BATCH_SELL_ASSET_IDS,
   buildReceivedAsset,
   buildSendAssetConfigEntry,
-} from '../../../../../test/data/batch-sell';
+} from '../../../../../test/data/batch-sell/factories';
 import { batchSellReviewStateReducer } from './reducers';
 import { BatchSellReviewState, BatchSellReviewStateActionType } from './types';
 

@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import IconButton from './icon-button';
 import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
-import { Icon, IconName } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
 
 const meta: Meta<typeof IconButton> = {
   title: 'Components/UI/IconButton',
@@ -26,8 +27,6 @@ const meta: Meta<typeof IconButton> = {
 
 export default meta;
 type Story = StoryObj<typeof IconButton>;
-
-export const Default: Story = {};
 
 export const WithLongLabel: Story = {
   args: {
@@ -53,3 +52,5 @@ export const UnsupportedNetwork: Story = {
     },
   },
 };
+
+export const Default: Story = {};

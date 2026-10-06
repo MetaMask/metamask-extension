@@ -5,8 +5,8 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import nock from 'nock';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,

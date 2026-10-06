@@ -3,8 +3,11 @@ import BigNumber from 'bignumber.js';
 import { MULTICHAIN_NETWORK_TICKER } from '@metamask/multichain-network-controller';
 import { formatCurrency as deprecatedFormatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../shared/lib/selectors/assets-migration';
+import { getMultichainIsEvm } from '../selectors/multichain/networks';
+import {
   getMultichainNativeCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
@@ -18,7 +21,6 @@ import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { useFormatters } from './useFormatters';
 import { useMultichainSelector } from './useMultichainSelector';
 

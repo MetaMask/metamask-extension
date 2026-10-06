@@ -23,24 +23,23 @@ import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
-  getEnabledChainIds,
   getIsDefiPositionsEnabled,
-} from '../../../selectors';
-import {
-  getIsPerpsExperienceAvailable,
-  getPerpsTabBadgeSeen,
-} from '../../../selectors/perps';
+} from '../../../selectors/selectors';
+import { getEnabledChainIds } from '../../../selectors/multichain/networks';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
+import { getPerpsTabBadgeSeen } from '../../../selectors/perps/persisted-state';
 import {
   detectNfts,
   setDefaultHomeActiveTabName,
   setPerpsTabBadgeSeen,
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
-import AssetList from '../../app/assets/asset-list';
-import DeFiTab from '../../app/assets/defi-list/defi-tab';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
+import AssetList from '../../app/assets/asset-list/asset-list';
+import DeFiTab from '../../../pages/defi/pages/defi-tab';
+import NftsTab from '../../app/assets/nfts/nfts-tab/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
-import { Tab, Tabs } from '../../ui/tabs';
+import { Tab } from '../../ui/tabs/tab/tab';
+import { Tabs } from '../../ui/tabs/tabs';
 import { useABTest } from '../../../hooks/useABTest';
 import { useBottomNavBar } from '../../../hooks/useBottomNavBar';
 import {

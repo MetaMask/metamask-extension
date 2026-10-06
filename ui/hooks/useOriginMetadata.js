@@ -1,6 +1,6 @@
 import { SubjectType } from '@metamask/permission-controller';
 import { useSelector } from 'react-redux';
-import { getTargetSubjectMetadata } from '../selectors';
+import { getTargetSubjectMetadata } from '../selectors/selectors';
 
 /**
  * @typedef {object} OriginMetadata

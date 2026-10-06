@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { setSwapsErrorKey } from '../../../store/actions';
-import Box from '../../../components/ui/box';
+import Box from '../../../components/ui/box/box';
 import {
   DISPLAY,
   AlignItems,
@@ -12,9 +12,11 @@ import {
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, Text } from '../../../components/component-library';
+import { Icon } from '../../../components/component-library/icon/icon';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { Text } from '../../../components/component-library/text/text';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
-import SwapsFooter from '../swaps-footer';
+import SwapsFooter from '../swaps-footer/swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { useDispatch } from '../../../store/hooks';
 

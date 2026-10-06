@@ -7,7 +7,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { AccountStatusLayout } from '../account-status-layout';
+import { AccountStatusLayout } from '../account-status-layout/account-status-layout';
 import { useAccountStatusContext } from '../hooks/useAccountStatusContext';
 
 export default function AccountNotFound() {

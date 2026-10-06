@@ -34,7 +34,7 @@ import {
   Skeleton,
   twMerge,
 } from '@metamask/design-system-react';
-import type { PriceUpdate } from '@metamask/perps-controller';
+import type { PriceUpdate, Order } from '@metamask/perps-controller';
 import {
   formatFundingRate,
   formatPerpsFiat,
@@ -62,32 +62,27 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveOrders,
-  usePerpsLiveAccount,
-  usePerpsLiveMarketData,
-  usePerpsLiveCandles,
-} from '../../hooks/perps/stream';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-  usePerpsMarketInfo,
-} from '../../hooks/perps';
+import { usePerpsLivePositions } from '../../hooks/perps/stream/usePerpsLivePositions';
+import { usePerpsLiveOrders } from '../../hooks/perps/stream/usePerpsLiveOrders';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream/usePerpsLiveAccount';
+import { usePerpsLiveMarketData } from '../../hooks/perps/stream/usePerpsLiveMarketData';
+import { usePerpsLiveCandles } from '../../hooks/perps/stream/usePerpsLiveCandles';
+import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../hooks/perps/usePerpsEventTracking';
+import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
-import { getPerpsStreamManager } from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
-import { OrderCard } from '../../components/app/perps/order-card';
-import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
-import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
-import {
-  PerpsCandlestickChart,
+import { OrderCard } from '../../components/app/perps/order-card/order-card';
+import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity/perps-market-recent-activity';
+import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo/perps-token-logo';
+import PerpsCandlestickChart, {
   PerpsCandlestickChartRef,
-} from '../../components/app/perps/perps-candlestick-chart';
+} from '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart';
 import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
-import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import PerpsCandlePeriodSelector from '../../components/app/perps/perps-candle-period-selector/perps-candle-period-selector';
 import {
   CandlePeriod,
   TimeDuration,
@@ -110,24 +105,22 @@ import {
   derivePositionTpslPricesFromOrders,
   normalizeMarketDetailsOrders,
 } from '../../components/app/perps/utils/orderUtils';
-import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { Popover, PopoverPosition } from '../../components/component-library';
+import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons/perps-detail-page-skeleton';
+import { Popover } from '../../components/component-library/popover/popover';
+import { PopoverPosition } from '../../components/component-library/popover/popover.types';
 import { useFormatters } from '../../hooks/useFormatters';
-import { EditMarginModal } from '../../components/app/perps/edit-margin';
-import { ReversePositionModal } from '../../components/app/perps/reverse-position';
-import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl';
-import { ClosePositionModal } from '../../components/app/perps/close-position';
-import { CancelOrderModal } from '../../components/app/perps/cancel-order';
-import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
-import type { Order } from '../../components/app/perps/types';
-import {
-  PERPS_TOAST_KEYS,
-  type PerpsToastKey,
-  usePerpsToast,
-} from '../../components/app/perps/perps-toast';
-import Tooltip from '../../components/ui/tooltip';
-import type { MetaMaskReduxState } from '../../store/store';
+import { EditMarginModal } from '../../components/app/perps/edit-margin/edit-margin-modal';
+import { ReversePositionModal } from '../../components/app/perps/reverse-position/reverse-position-modal';
+import { UpdateTPSLModal } from '../../components/app/perps/update-tpsl/update-tpsl-modal';
+import { ClosePositionModal } from '../../components/app/perps/close-position/close-position-modal';
+import { CancelOrderModal } from '../../components/app/perps/cancel-order/cancel-order-modal';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../components/app/compliance/useSelectedAccountComplianceGate';
+import { PERPS_TOAST_KEYS } from '../../components/app/perps/perps-toast/perps-toast.constants';
+import type { PerpsToastKey } from '../../components/app/perps/perps-toast/perps-toast.constants';
+import { usePerpsToast } from '../../components/app/perps/perps-toast/perps-toast-provider';
+import Tooltip from '../../components/ui/tooltip/tooltip';
+import type { MetaMaskReduxState } from '../../store/types';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';
 import {
@@ -135,8 +128,8 @@ import {
   selectPerpsIsWatchlistMarket,
   selectPerpsVisibleCandleCount,
 } from '../../selectors/perps-controller';
-import { setTutorialModalOpen } from '../../ducks/perps';
-import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
+import { setTutorialModalOpen } from '../../ducks/perps/tutorial';
+import PerpsTutorialModal from '../../components/app/perps/perps-tutorial-modal/PerpsTutorialModal';
 import { useDispatch } from '../../store/hooks';
 
 const HEADER_SUBTITLE_CROSSFADE_LAYER =

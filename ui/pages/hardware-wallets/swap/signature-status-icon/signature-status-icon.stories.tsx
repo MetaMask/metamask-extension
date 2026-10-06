@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import SignatureStatusIcon from '.';
+import SignatureStatusIcon from './signature-status-icon';
 import { SignatureStepStatus } from '../types';
 
 const meta: Meta<typeof SignatureStatusIcon> = {

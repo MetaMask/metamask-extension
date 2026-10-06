@@ -6,7 +6,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { AvatarIcon } from './avatar-icon';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { AvatarIconSize } from './avatar-icon.types';
 
 export default {

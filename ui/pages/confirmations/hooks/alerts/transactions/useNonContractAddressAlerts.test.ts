@@ -12,10 +12,8 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import {
-  getUnapprovedTransaction,
-  selectPendingApprovalsForNavigation,
-} from '../../../../../selectors';
+import { getUnapprovedTransaction } from '../../../../../selectors/selectors';
+import { selectPendingApprovalsForNavigation } from '../../../../../selectors/approvals';
 import { useDispatch } from '../../../../../store/hooks';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
@@ -31,8 +29,8 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockGetUnapprovedTransaction = jest.fn();
-jest.mock('../../../../../selectors', () => ({
-  ...jest.requireActual('../../../../../selectors'),
+jest.mock('../../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../../selectors/selectors'),
   getUnapprovedTransaction: (...args: unknown[]) =>
     mockGetUnapprovedTransaction(...args),
 }));

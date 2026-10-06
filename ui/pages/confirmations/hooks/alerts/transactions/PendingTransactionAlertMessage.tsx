@@ -1,5 +1,6 @@
 import React from 'react';
-import { ButtonLink, Text } from '../../../../../components/component-library';
+import { ButtonLink } from '../../../../../components/component-library/button-link/button-link';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

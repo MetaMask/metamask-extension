@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { parseCaipAssetType, type Hex } from '@metamask/utils';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
 import { decimalToPrefixedHex } from '../../../../shared/lib/conversion.utils';
 import { formatUnits } from '../../../../shared/lib/unit';
 import { useConvertToFiat } from '../../../hooks/useConvertToFiat';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useGetTokenStandardAndDetails } from '../../../pages/confirmations/hooks/useGetTokenStandardAndDetails';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 
 const maximumFractionDigits = 8;
 

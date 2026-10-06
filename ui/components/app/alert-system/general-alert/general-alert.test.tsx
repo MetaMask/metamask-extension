@@ -1,7 +1,7 @@
 import React from 'react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import GeneralAlert, { GeneralAlertProps } from './general-alert';

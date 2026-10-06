@@ -9,6 +9,7 @@ import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/
 import { setToggleState } from '../../../ducks/smart-accounts/smart-accounts';
 import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 
+jest.mock('../../../../shared/lib/eip7702-utils');
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 

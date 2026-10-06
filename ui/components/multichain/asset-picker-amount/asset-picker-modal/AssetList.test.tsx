@@ -4,12 +4,10 @@ import { useSelector } from 'react-redux';
 import {
   getCurrentNetwork,
   getSelectedAccountCachedBalance,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import {
-  getNativeCurrency,
-  getTokenBalances,
-} from '../../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../../../../shared/lib/selectors/assets-migration';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -31,13 +29,15 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../selectors/selectors', () => ({
   getSelectedAccountCachedBalance: jest.fn(),
 }));
 
 jest.mock('../../../../ducks/metamask/metamask', () => ({
   getNativeCurrency: jest.fn(),
-  getTokenBalances: jest.fn(),
+}));
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => ({
+  getTokenBalancesControllerTokenBalances: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/useUserPreferencedCurrency', () => ({
@@ -48,7 +48,7 @@ jest.mock('../../../../hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: jest.fn(),
 }));
 
-jest.mock('../../token-list-item', () => ({
+jest.mock('../../token-list-item/token-list-item', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
 

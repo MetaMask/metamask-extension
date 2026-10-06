@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '../../components/component-library';
+import { Box } from '../../components/component-library/box/box';
 import {
   AlignItems,
   BlockSize,
@@ -7,7 +7,7 @@ import {
   Display,
   FlexDirection,
 } from '../../helpers/constants/design-system';
-import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 import SnapAccountRedirectContent from './components/snap-account-redirect-context';
 
 export type SnapAccountRedirectProps = {

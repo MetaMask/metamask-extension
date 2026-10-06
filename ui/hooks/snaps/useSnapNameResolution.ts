@@ -5,7 +5,7 @@ import {
   getLookupMatchersCaveat,
 } from '@metamask/snaps-rpc-methods';
 import { DomainLookupResult } from '@metamask/snaps-sdk';
-import { getNameLookupSnaps } from '../../selectors';
+import { getNameLookupSnaps } from '../../selectors/selectors';
 import { handleSnapRequest } from '../../store/actions';
 
 /**

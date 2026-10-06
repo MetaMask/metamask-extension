@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { selectMoneyAccountFeatureEnabled } from '../../selectors/money/money-account-feature-flags';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import type { RouteMessengerInstance } from '../../pages/money/messenger';
 import {
   selectPrimaryMoneyAccount,

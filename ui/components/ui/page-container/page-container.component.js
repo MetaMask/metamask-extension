@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
-import PageContainerHeader from './page-container-header';
-import PageContainerFooter from './page-container-footer';
+import PageContainerHeader from './page-container-header/page-container-header.component';
+import PageContainerFooter from './page-container-footer/page-container-footer.component';
 
 export default class PageContainer extends PureComponent {
   static propTypes = {

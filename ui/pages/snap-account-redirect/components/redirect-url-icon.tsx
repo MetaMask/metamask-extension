@@ -1,9 +1,7 @@
 import React from 'react';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 type RedirectUrlIconProps = {

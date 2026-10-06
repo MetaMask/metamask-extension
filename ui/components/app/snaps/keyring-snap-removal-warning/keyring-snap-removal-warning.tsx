@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  ButtonVariant,
-  Modal,
-  ModalOverlay,
-  Text,
-  TextField,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import { BannerAlert } from '../../../component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../component-library/banner-alert/banner-alert.types';
+import { Box } from '../../../component-library/box/box';
+import { ButtonVariant } from '../../../component-library/button/button.types';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
+import { TextField } from '../../../component-library/text-field/text-field';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 
 import {
   Display,
@@ -24,7 +22,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import InfoTooltip from '../../../ui/info-tooltip';
+import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 import { getCurrentChainId } from '../../../../../shared/lib/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 

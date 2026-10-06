@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { getTheme } from '../selectors';
+import { getTheme } from '../selectors/selectors';
 import { ThemeType } from '../../shared/constants/preferences';
 import { useEventListener } from './useEventListener';
 

@@ -4,7 +4,7 @@ import { Meta, StoryFn } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { Provider } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
-import { Button } from '../../../component-library';
+import { Button } from '../../../component-library/button/button';
 import { useArgs } from 'storybook/preview-api';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 

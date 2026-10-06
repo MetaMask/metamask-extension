@@ -23,16 +23,13 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
-import {
-  Textarea,
-  TextareaResize,
-} from '../../../../components/component-library/textarea';
-import {
-  FormTextField,
-  FormTextFieldSize,
-} from '../../../../components/component-library';
+import { Textarea } from '../../../../components/component-library/textarea/textarea';
+import { TextareaResize } from '../../../../components/component-library/textarea/textarea.types';
+import { FormTextField } from '../../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../../components/component-library/form-text-field/form-text-field.types';
 import {
   BlockSize,
   BorderRadius,
@@ -43,15 +40,15 @@ import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 import { isValidEmail } from '../../../../../shared/lib/url-utils';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { submitShieldClaim } from '../../../../store/actions';
-import LoadingScreen from '../../../../components/ui/loading-screen';
+import LoadingScreen from '../../../../components/ui/loading-screen/loading-screen.component';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { toast, ToastContent } from '../../../../components/ui/toast/toast';
+import { ToastContent } from '../../../../components/ui/toast/toast';
 import { SECOND } from '../../../../../shared/constants/time';
 import {
   TRANSACTION_SHIELD_SUPPORT_LINK,
   FIND_TRANSACTION_HASH_LINK,
 } from '../../../../helpers/constants/common';
-import { FileUploader } from '../../../../components/component-library/file-uploader';
+import { FileUploader } from '../../../../components/component-library/file-uploader/file-uploader';
 import {
   CLAIMS_FORM_MODES,
   ClaimsFormMode,
@@ -60,16 +57,16 @@ import {
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
-import AccountSelector from '../account-selector';
-import NetworkSelector from '../network-selector';
+import AccountSelector from '../account-selector/account-selector';
+import NetworkSelector from '../network-selector/network-selector';
 import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claims';
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
   ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
-import { getLatestShieldSubscription } from '../../../../selectors/subscription';
-import Tooltip from '../../../../components/ui/tooltip';
+import { getLatestShieldSubscription } from '../../../../selectors/subscription/subscription';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,

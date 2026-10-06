@@ -13,9 +13,9 @@ import {
 } from '@metamask/design-system-react';
 import type { ButtonProps } from '@metamask/design-system-react';
 import { TextVariant } from '../../../../helpers/constants/design-system';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { SnapIcon } from '../snap-icon';
-import { getHideSnapBranding } from '../../../../selectors';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+import { SnapIcon } from '../snap-icon/snap-icon';
+import { getHideSnapBranding } from '../../../../selectors/selectors';
 
 type SnapUIFooterButtonProps = {
   name?: string;

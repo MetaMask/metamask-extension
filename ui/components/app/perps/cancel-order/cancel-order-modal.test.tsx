@@ -1,13 +1,13 @@
 import React from 'react';
 import { act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { Order } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { PERPS_EVENT_PROPERTY } from '../../../../../shared/constants/perps-events';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockOrders } from '../mocks';
-import type { Order } from '../types';
 import { CancelOrderModal } from './cancel-order-modal';
 
 const mockSubmitRequestToBackground = jest.fn();
@@ -20,9 +20,12 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../hooks/perps', () => ({
-  usePerpsEventTracking: () => ({ track: mockTrack }),
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
@@ -35,11 +38,11 @@ jest.mock('../../../../hooks/perps/usePerpsAttribution', () => ({
   }),
 }));
 
-jest.mock('../perps-toast', () => ({
-  // Real keys: a hand-maintained subset silently emits `key: undefined` for any
-  // toast the mock has not been updated for.
+jest.mock('../perps-toast/perps-toast.constants', () => ({
   PERPS_TOAST_KEYS: jest.requireActual('../perps-toast/perps-toast.constants')
     .PERPS_TOAST_KEYS,
+}));
+jest.mock('../perps-toast/perps-toast-provider', () => ({
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),

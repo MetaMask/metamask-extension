@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {

@@ -4,16 +4,14 @@ import {
   BackgroundColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  IconName,
-  Text,
-} from '../../component-library';
-import { MenuItem } from '../../ui/menu';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../component-library/button-link/button-link.types';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
+import MenuItem from '../../ui/menu/menu-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ConnectedAccountsListItem from './connected-accounts-list-item';
-import ConnectedAccountsListOptions from './connected-accounts-list-options';
+import ConnectedAccountsListItem from './connected-accounts-list-item/connected-accounts-list-item.component';
+import ConnectedAccountsListOptions from './connected-accounts-list-options/connected-accounts-list-options.component';
 
 function ConnectedAccountsList({
   accountToConnect = null,

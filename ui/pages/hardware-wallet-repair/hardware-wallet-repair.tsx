@@ -25,16 +25,14 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
-} from '../../contexts/hardware-wallets';
-import { getHardwareWalletErrorCode } from '../../contexts/hardware-wallets/rpcErrorUtils';
+} from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { getHardwareWalletErrorCode } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import { HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM } from '../../contexts/hardware-wallets/constants';
-import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
-import {
-  Header,
-  Page,
-  Content,
-  Footer,
-} from '../../components/multichain/pages/page';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../components/multichain/pages/page/components/footer/footer';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import {
   ensureRepairDeviceReady,

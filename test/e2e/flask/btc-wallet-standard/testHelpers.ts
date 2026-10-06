@@ -1,14 +1,15 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
+import { WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import { regularDelayMs, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { addMultipleAccounts } from '../../page-objects/flows/add-account.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder-v2';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { mockExchangeRates } from '../../tests/btc/mocks/price-api';
+import { mockInitialFullScan } from '../../tests/btc/mocks/esplora';
+import { mockRampsDynamicFeatureFlag } from '../../tests/btc/mocks/ramps';
 import {
-  mockExchangeRates,
-  mockInitialFullScan,
-  mockRampsDynamicFeatureFlag,
   mockGetUtxos,
   mockGetBlocks,
   mockFeeEstimates,
@@ -21,8 +22,7 @@ import {
   mockScripthashTxs2,
   mockBlockHeight0,
   mockBlockHeight931551,
-} from '../../tests/btc/mocks';
-import { WalletConnectionType } from '../../page-objects/pages/test-dapp-bitcoin';
+} from '../../tests/btc/mocks/blockstream';
 import {
   DAPP_PATH,
   DEFAULT_BTC_ADDRESS,

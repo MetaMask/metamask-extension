@@ -10,14 +10,12 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // Imported from the module, not the `hooks/perps` barrel: hosts that render
 // this modal partially mock that barrel, which would leave the hook undefined.

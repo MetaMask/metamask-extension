@@ -1,22 +1,18 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import {
   BlockSize,
   Display,
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {

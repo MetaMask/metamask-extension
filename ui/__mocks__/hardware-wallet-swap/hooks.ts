@@ -3,11 +3,11 @@ import type {
   HardwareWalletSignatureEventWithoutPayload,
   HardwareWalletSignaturesAction,
   HardwareWalletSignaturesState,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { hwSwapStoryState } from './story-state';
 
 const FROM_ADDRESS = '0x1234567890123456789012345678901234567890';

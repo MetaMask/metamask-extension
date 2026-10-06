@@ -1,5 +1,5 @@
 import { MessengerClientInitRequest } from '../types';
-import { getShieldSubscriptionServiceMessenger } from '../messengers/subscription';
+import { getShieldSubscriptionServiceMessenger } from '../messengers/subscription/shield-subscription-service-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ShieldSubscriptionServiceMessenger } from '../../services/subscription/types';

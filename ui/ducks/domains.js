@@ -11,7 +11,7 @@ import {
   getNameLookupSnapsIds,
   getPermissionSubjects,
   getSnapMetadata,
-} from '../selectors';
+} from '../selectors/selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { handleSnapRequest } from '../store/actions';
 import { NO_RESOLUTION_FOR_DOMAIN } from '../pages/confirmations/send-utils/send.constants';

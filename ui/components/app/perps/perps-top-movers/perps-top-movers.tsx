@@ -16,8 +16,9 @@ import {
   Skeleton,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
@@ -30,7 +31,6 @@ import {
 import type { SortDirection } from '../../../../pages/perps/utils/sortMarkets';
 import { MARKET_SORTING_CONFIG, PERPS_CONSTANTS } from '../constants';
 import { usePerpsTopMovers } from '../hooks/usePerpsTopMovers';
-import type { PerpsMarketData } from '../types';
 import { PerpsTopMoverPill } from './perps-top-mover-pill';
 
 /**

@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Display } from '../../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Icon,
-  IconName,
-  IconSize,
-} from '../../../component-library';
-import SnapLinkWarning from '../snap-link-warning';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import SnapLinkWarning from '../snap-link-warning/snap-link-warning';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { getHideSnapBranding } from '../../../../selectors';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+import { getHideSnapBranding } from '../../../../selectors/selectors';
 
 export const SnapUILink = ({ href, children }) => {
   const [isOpen, setIsOpen] = useState(false);

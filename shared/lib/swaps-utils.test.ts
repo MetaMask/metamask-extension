@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   WETH_CONTRACT_ADDRESS,

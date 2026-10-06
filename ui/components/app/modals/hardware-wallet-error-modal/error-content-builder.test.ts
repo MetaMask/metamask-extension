@@ -1,6 +1,6 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
 import { buildErrorContent } from './error-content-builder';
 
 describe('buildErrorContent', () => {

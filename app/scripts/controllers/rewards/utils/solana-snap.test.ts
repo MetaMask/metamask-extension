@@ -1,6 +1,6 @@
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 import {
   signSolanaRewardsMessage,
   SignRewardsMessageResult,

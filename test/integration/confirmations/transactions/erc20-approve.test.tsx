@@ -7,7 +7,7 @@ import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
-import { ENVIRONMENT } from '../../../../development/build/constants';
+import ENVIRONMENT from '../../../../shared/constants/build-environment.json';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({

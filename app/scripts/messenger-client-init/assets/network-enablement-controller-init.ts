@@ -19,12 +19,10 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
-import { NetworkEnablementControllerInitMessenger } from '../messengers/assets';
+import { NetworkEnablementControllerInitMessenger } from '../messengers/assets/network-enablement-controller-messenger';
 import { MessengerClientInitFunction } from '../types';
-import {
-  CHAIN_IDS,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.

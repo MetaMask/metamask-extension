@@ -9,21 +9,24 @@ import type { UIMessenger } from '../../messengers/ui-messenger';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import {
   cancelPasskeyCeremony,
-  isPasskeyPRFSupported,
   startPasskeyAuthentication,
   startPasskeyRegistration,
-} from '../../../shared/lib/passkey';
-import { PasskeyPRFRequiredError } from '../../../shared/lib/passkey/passkey-capabilities';
+} from '../../../shared/lib/passkey/passkey-ceremony';
+import {
+  isPasskeyPRFSupported,
+  PasskeyPRFRequiredError,
+} from '../../../shared/lib/passkey/passkey-capabilities';
 import { usePasskeyEnrollment } from './usePasskeyEnrollment';
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
-  isPasskeyPRFSupported: jest.fn(),
   startPasskeyAuthentication: jest.fn(),
   startPasskeyRegistration: jest.fn(),
+}));
+jest.mock('../../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-capabilities'),
+  isPasskeyPRFSupported: jest.fn(),
 }));
 
 const registrationResponse: PasskeyRegistrationResponse = {

@@ -6,13 +6,13 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Icon } from '../../../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../../../../components/component-library';
+} from '../../../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,8 +28,11 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useGasFeeToken } from '../../hooks/useGasFeeToken';
-import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
-import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../../../shared/lib/selectors/assets-migration';
+import {
+  GasFeeTokenIcon,
+  GasFeeTokenIconSize,
+} from '../gas-fee-token-icon/gas-fee-token-icon';
 import { formatAmount } from '../../../../../../../../shared/lib/format-amount';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 

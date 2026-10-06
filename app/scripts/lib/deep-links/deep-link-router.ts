@@ -11,7 +11,8 @@ import {
   DEEP_LINK_MAX_LENGTH,
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
-import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
 

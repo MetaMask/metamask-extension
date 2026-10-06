@@ -6,15 +6,13 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  ButtonVariant,
-  Button,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { ButtonVariant } from '../../component-library/button/button.types';
+import { Button } from '../../component-library/button/button';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
+import { ModalContent } from '../../component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/deprecated/modal-header';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextAlign,

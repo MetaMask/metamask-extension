@@ -35,7 +35,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountNetworkAvailability } from '../../../hooks/accounts/useAccountNetworkAvailability';
-import { NetworkListItem } from '../network-list-item';
+import { NetworkListItem } from '../network-list-item/network-list-item';
 import {
   removeNetwork,
   setActiveNetwork,
@@ -53,8 +53,8 @@ import {
 } from '../../../store/actions';
 import { isDisableableDefaultNetwork } from '../../../helpers/utils/network-sections';
 import type { NetworkItemCallbacks } from '../network-manager/hooks/useNetworkItemCallbacks';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
@@ -63,6 +63,9 @@ import {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   getShouldShowTestNetworks,
+  getIsTestnetInUse,
+} from '../../../selectors/test-networks';
+import {
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -71,16 +74,17 @@ import {
   getIsAccessedFromDappConnectedSitePopover,
   getAllDomains,
   getPermittedEVMChainsForSelectedTab,
-  getMultichainNetworkConfigurationsByChainId,
-  getSelectedMultichainNetworkChainId,
-  getIsTestnetInUse,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import {
+  getMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkChainId,
+} from '../../../selectors/multichain/networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../selectors/network-blacklist/network-blacklist';
 import { getFeaturedEvmNetworks } from '../../../selectors/config-registry/config-registry';
-import ToggleButton from '../../ui/toggle-button';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import {
   Display,
   FlexDirection,
@@ -89,7 +93,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -104,7 +109,7 @@ import {
 } from '../../../../shared/lib/network.utils';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
-import NetworksForm from '../networks-form';
+import NetworksForm from '../networks-form/networks-form';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
 import { openWindow } from '../../../helpers/utils/window';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';

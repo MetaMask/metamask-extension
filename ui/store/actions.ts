@@ -93,11 +93,12 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { isErrorWithMessage } from '@metamask/utils';
 import {
   toHardwareWalletError,
   isTrezorDesktopConnectionMissingError,
-} from '../contexts/hardware-wallets/rpcErrorUtils';
-import { HardwareWalletType } from '../contexts/hardware-wallets/types';
+} from '../../shared/lib/hardware-wallets/rpc-error-utils';
+import { HardwareWalletType } from '../../shared/lib/hardware-wallets/types';
 import { isInE2eTest } from '../contexts/hardware-wallets/is-in-e2e-test';
 import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
@@ -113,23 +114,27 @@ import {
 } from '../../shared/constants/app';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { addHexPrefix } from '../../app/scripts/lib/util';
+
+import { addHexPrefix } from '../../shared/lib/add-hex-prefix';
 import {
   getMetaMaskAccounts,
-  hasTransactionPendingApprovals,
-  getApprovalFlows,
-  getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
-  getInternalAccountByAddress,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
+} from '../selectors/selectors';
+import {
+  hasTransactionPendingApprovals,
+  getCurrentNetworkTransactions,
+} from '../selectors/transactions';
+import { getApprovalFlows } from '../selectors/approvals';
+import { getInternalAccountByAddress } from '../selectors/accounts';
+import {
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
-} from '../selectors';
+} from '../selectors/first-time-flow';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   getSelectedNetworkClientId,
@@ -164,7 +169,7 @@ import {
 } from '../../shared/lib/analytics/create-event-builder';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
-import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors';
+import { getSmartTransactionsOptInStatusInternal } from '../../shared/lib/selectors/smart-transactions';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -176,7 +181,6 @@ import {
 } from '../../shared/constants/gas';
 import {
   getErrorMessage,
-  isErrorWithMessage,
   logErrorWithMessage,
   createSentryError,
 } from '../../shared/lib/error';
@@ -215,11 +219,11 @@ import { SubmitClaimError } from '../pages/shield/transaction-shield/claim-error
 import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
-} from '../../shared/types';
+} from '../../shared/types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
-import { isHardwareAccount } from '../../shared/lib/accounts';
+import { isHardwareAccount } from '../../shared/lib/accounts/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
@@ -231,11 +235,8 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
-import type {
-  MetaMaskReduxDispatch,
-  MetaMaskReduxState,
-  TemporaryMessageDataType,
-} from './store';
+import type { MetaMaskReduxDispatch, MetaMaskReduxState } from './types';
+import type { TemporaryMessageDataType } from './store';
 
 type CustomGasSettings = {
   gas?: string;

@@ -13,9 +13,9 @@ import {
 } from '../../../../../shared/constants/benchmarks';
 import {
   runPageLoadBenchmark,
-  collectWebVitals,
   collectGarbageBetweenIterations,
-} from '../../utils';
+} from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 import type {
   Metrics,
   PageLoadBenchmarkOptions,

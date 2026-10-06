@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { CanonicalMoneyAccountBalanceResponse } from '@metamask/money-account-balance-service';
 import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   fetchFreshMoneyAccountBalance,
   invalidateMoneyAccountBalanceSourceCaches,

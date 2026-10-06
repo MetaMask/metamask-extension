@@ -1,13 +1,13 @@
 import React from 'react';
+import { BannerAlert } from '../../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../components/component-library/banner-alert/banner-alert.types';
+import { Box } from '../../../components/component-library/box/box';
+import { Button } from '../../../components/component-library/button/button';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/button/button.types';
+import { Text } from '../../../components/component-library/text/text';
 import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,

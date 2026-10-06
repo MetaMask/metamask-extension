@@ -22,7 +22,7 @@ jest.mock('react-redux', () => ({
   ),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/selectors', () => ({
   getCompleteAddressBook: jest.fn(
     (state: { addressBook: unknown }) => state.addressBook,
   ),

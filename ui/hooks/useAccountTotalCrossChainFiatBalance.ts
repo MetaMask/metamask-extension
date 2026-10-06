@@ -2,14 +2,14 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { useMemo } from 'react';
 import {
-  getCurrentCurrency,
-  getCurrencyRates,
-} from '../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../shared/lib/selectors/assets-migration';
 import {
   getCrossChainTokenExchangeRates,
   getCrossChainMetaMaskCachedBalances,
-  getEnabledNetworks,
-} from '../selectors';
+} from '../selectors/selectors';
+import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { TokenWithBalance } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import {
   getValueFromWeiHex,

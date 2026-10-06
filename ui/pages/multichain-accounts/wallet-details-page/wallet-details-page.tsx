@@ -21,26 +21,24 @@ import {
   TextColor,
   TextVariant as DsrTextVariant,
 } from '@metamask/design-system-react';
-import { SensitiveText } from '../../../components/component-library';
+import { SensitiveText } from '../../../components/component-library/sensitive-text/sensitive-text';
 import {
   TextColor as LegacyTextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
-import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
+import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell/multichain-account-cell';
+import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
-import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup/multichain-srp-backup';
 import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,

@@ -9,6 +9,7 @@ import {
   type TransactionPayRequiredToken,
 } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
@@ -16,8 +17,7 @@ import { useTransactionAccountOverride } from '../transactions/useTransactionAcc
 import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { selectMinimumRequiredTokenBalance } from '../../selectors/feature-flags';
 import { ARBITRUM_USDC } from '../../constants/perps';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
   useAutomaticTransactionPayToken,
@@ -41,7 +41,7 @@ jest.mock('./useIsPayHardwareBlocked');
 jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../transactions/useTransactionPayingAccount');
 jest.mock('../../../../hooks/useIsHardwareWalletAccount');
-jest.mock('../../../../selectors', () => ({}));
+
 jest.mock('../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../selectors/feature-flags'),
   selectMinimumRequiredTokenBalance: jest.fn(),

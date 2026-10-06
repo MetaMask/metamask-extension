@@ -20,9 +20,9 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
-import { IconName } from '../../../../components/component-library';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
-import { isSignatureTransactionType } from '../../utils';
+import { isSignatureTransactionType } from '../../utils/confirm';
 import { useSignatureEventFragment } from '../useSignatureEventFragment';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';

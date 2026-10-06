@@ -3,7 +3,7 @@ import { SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockDefaultState from '../../../test/data/mock-state.json';
-import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
   getSnapAccountsByKeyringId,
   getShouldShowSeedPhraseReminder,
@@ -18,8 +18,8 @@ jest.mock('../assets', () => ({
   getMultichainAggregatedBalance: () => mockGetMultichainAggregatedBalance(),
 }));
 
-jest.mock('../selectors.js', () => ({
-  ...jest.requireActual('../selectors.js'),
+jest.mock('../selectors', () => ({
+  ...jest.requireActual('../selectors'),
   getCrossChainMetaMaskCachedBalances: () =>
     mockGetCrossChainMetaMaskCachedBalances(),
   getSelectedAccountTokensAcrossChains: () =>

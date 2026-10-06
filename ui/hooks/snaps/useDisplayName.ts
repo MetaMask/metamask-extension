@@ -8,9 +8,11 @@ import { useSelector } from 'react-redux';
 import {
   getAddressBookEntryByNetwork,
   AddressBookMetaMaskState,
+} from '../../selectors/snaps/address-book';
+import {
   AccountsMetaMaskState,
   getAccountNameFromState,
-} from '../../selectors/snaps';
+} from '../../selectors/snaps/accounts';
 import { toChecksumHexAddress } from '../../../shared/lib/hexstring-utils';
 import { decimalToHex } from '../../../shared/lib/conversion.utils';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';

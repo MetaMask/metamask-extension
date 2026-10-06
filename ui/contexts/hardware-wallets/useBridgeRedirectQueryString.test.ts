@@ -1,6 +1,6 @@
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CROSS_CHAIN_SWAP_ROUTE } from '../../helpers/constants/routes';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';

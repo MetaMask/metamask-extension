@@ -4,10 +4,8 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
+import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
   getRpcDataByChainId,
@@ -21,9 +19,9 @@ import {
 } from '../../../../store/actions';
 import {
   getMultichainNetworkConfigurationsByChainId,
-  getNetworkDiscoverButtonEnabled,
   getSelectedMultichainNetworkChainId,
-} from '../../../../selectors';
+} from '../../../../selectors/multichain/networks';
+import { getNetworkDiscoverButtonEnabled } from '../../../../selectors/selectors';
 import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountNetworkAvailability } from '../../../../hooks/accounts/useAccountNetworkAvailability';

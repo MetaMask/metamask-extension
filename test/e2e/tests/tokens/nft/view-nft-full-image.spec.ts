@@ -5,7 +5,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NftsTab from '../../../page-objects/pages/home/nfts-tab';
 import { login } from '../../../page-objects/flows/login.flow';
 import NFTDetailsPage from '../../../page-objects/pages/asset/nft-details-page';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { setupAutoDetectMocking } from './mocks';
 
 describe('NFT full', function () {

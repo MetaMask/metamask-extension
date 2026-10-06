@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { IconName } from '../../../component-library';
-import PageFooter from '.';
+import { IconName } from '../../../component-library/icon/icon.types';
+import PageFooter from './page-container-footer.component';
 
 describe('Page Footer', () => {
   const props = {

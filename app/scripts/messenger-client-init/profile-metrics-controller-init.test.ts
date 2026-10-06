@@ -8,10 +8,8 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import {
-  getProfileMetricsControllerMessenger,
-  type ProfileMetricsControllerInitMessenger,
-} from './messengers';
+import { getProfileMetricsControllerMessenger } from './messengers/profile-metrics-controller-messenger';
+import type { ProfileMetricsControllerInitMessenger } from './messengers/profile-metrics-controller-messenger';
 import { ProfileMetricsControllerInit } from './profile-metrics-controller-init';
 
 jest.mock('@metamask/profile-metrics-controller');

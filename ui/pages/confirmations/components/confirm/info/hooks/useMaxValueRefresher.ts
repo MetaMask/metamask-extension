@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 
-import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
+import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors/selectors';
 import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
 import {
   addHexes,
@@ -14,7 +14,7 @@ import {
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
-import type { MetaMaskReduxState } from '../../../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../../../store/types';
 import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';

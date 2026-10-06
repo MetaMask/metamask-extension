@@ -15,9 +15,9 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
   CAIP_FORMATTED_TEST_CHAINS,
-  CHAIN_IDS,
   NetworkStatus,
 } from '../../constants/network';
+import { CHAIN_IDS } from '../../constants/chain-ids';
 import { hexToDecimal } from '../conversion.utils';
 import {
   createParameterizedSelector,

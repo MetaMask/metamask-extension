@@ -10,7 +10,7 @@ import {
   ModalContent,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import {
   TextVariant,
   TextAlign,
@@ -24,11 +24,13 @@ import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRamps
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getAnalyticsId,
+  getSelectedAccount,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
   getDataCollectionForMarketing,
-  getSelectedAccount,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,

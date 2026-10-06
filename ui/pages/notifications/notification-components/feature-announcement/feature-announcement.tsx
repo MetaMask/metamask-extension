@@ -11,11 +11,10 @@ import {
   createTextItems,
   formatIsoDateString,
 } from '../../../../helpers/utils/notification.util';
-import { Box, Text } from '../../../../components/component-library';
-import {
-  NotificationListItem,
-  NotificationDetailTitle,
-} from '../../../../components/multichain';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
+import { NotificationDetailTitle } from '../../../../components/multichain/notification-detail-title/notification-detail-title';
 import {
   TextVariant,
   Display,

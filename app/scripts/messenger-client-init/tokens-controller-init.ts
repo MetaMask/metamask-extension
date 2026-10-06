@@ -5,7 +5,7 @@ import {
 import { assert } from '@metamask/utils';
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from './types';
-import { TokensControllerInitMessenger } from './messengers';
+import { TokensControllerInitMessenger } from './messengers/tokens-controller-messenger';
 import { getGlobalChainId } from './init-utils';
 import { tokenListService } from './token-list-service';
 

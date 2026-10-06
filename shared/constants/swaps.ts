@@ -13,8 +13,8 @@ import {
   MONAD_IMAGE_URL,
   HYPEREVM_IMAGE_URL,
   CURRENCY_SYMBOLS,
-  CHAIN_IDS,
 } from './network';
+import { CHAIN_IDS } from './chain-ids';
 
 export const QUOTES_EXPIRED_ERROR = 'quotes-expired';
 export const SWAP_FAILED_ERROR = 'swap-failed-error';

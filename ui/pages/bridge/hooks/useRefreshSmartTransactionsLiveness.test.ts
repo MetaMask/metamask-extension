@@ -14,8 +14,8 @@ jest.mock('../../../store/actions', () => ({
   fetchSmartTransactionsLiveness: jest.fn(() => mockInnerFn),
 }));
 
-jest.mock('../../../ducks/bridge/utils', () => ({
-  isNonEvmChain: (chainId: string) => chainId.startsWith('solana:'),
+jest.mock('@metamask/bridge-controller', () => ({
+  isNonEvmChainId: (chainId: string) => chainId.startsWith('solana:'),
 }));
 
 const mockFetchSmartTransactionsLiveness = jest.requireMock(

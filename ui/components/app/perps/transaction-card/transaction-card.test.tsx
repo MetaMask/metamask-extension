@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import type { PerpsTransaction } from '../types';
+import type { PerpsTransaction } from '../types/transactionHistory';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   FillType,

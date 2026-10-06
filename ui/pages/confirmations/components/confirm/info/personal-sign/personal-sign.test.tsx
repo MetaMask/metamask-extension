@@ -18,7 +18,7 @@ import {
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
-import * as utils from '../../../../utils';
+import * as utilsModule1 from '../../../../utils/confirm';
 import PersonalSignInfo from './personal-sign';
 
 jest.mock(
@@ -30,8 +30,8 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../utils', () => {
-  const originalUtils = jest.requireActual('../../../../utils');
+jest.mock('../../../../utils/confirm', () => {
+  const originalUtils = jest.requireActual('../../../../utils/confirm');
   return {
     ...originalUtils,
     isSIWESignatureRequest: jest.fn().mockReturnValue(false),
@@ -91,7 +91,7 @@ describe('PersonalSignInfo', () => {
   });
 
   it('display signing in from for SIWE request', () => {
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
     const mockStore = configureMockStore([])(state);
@@ -103,7 +103,7 @@ describe('PersonalSignInfo', () => {
   });
 
   it('display simulation for SIWE request if preference useTransactionSimulations is enabled', () => {
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const state = getMockPersonalSignConfirmStateForRequest(
       signatureRequestSIWE,
       {
@@ -124,7 +124,7 @@ describe('PersonalSignInfo', () => {
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE); // isSIWE is true
 
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
     const mockStore = configureMockStore([])(state);
     const { queryByText, getByText } = renderWithConfirmContextProvider(
       <PersonalSignInfo />,
@@ -144,7 +144,7 @@ describe('PersonalSignInfo', () => {
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
 
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
     (isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);
@@ -164,7 +164,7 @@ describe('PersonalSignInfo', () => {
   it('displays "requestFromInfo" tooltip when isSIWE is false and origin is not a snap', async () => {
     const state =
       getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(false);
     (isSnapId as unknown as jest.Mock).mockReturnValue(true);
 
     const mockStore = configureMockStore([])(state);

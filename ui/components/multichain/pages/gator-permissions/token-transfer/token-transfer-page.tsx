@@ -11,7 +11,9 @@ import {
   BoxJustifyContent,
   IconColor,
 } from '@metamask/design-system-react';
-import { Content, Header, Page } from '../../page';
+import { Content } from '../../page/components/content/content';
+import { Header } from '../../page/components/header/header';
+import { Page } from '../../page/page';
 import {
   BackgroundColor,
   TextVariant as TextVariantLocal,
@@ -21,7 +23,8 @@ import {
   PREVIOUS_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../../../../helpers/constants/routes';
-import { PermissionGroupListItem, PermissionsEmptyState } from '../components';
+import { PermissionGroupListItem } from '../components/permission-group-list-item';
+import { PermissionsEmptyState } from '../components/permissions-empty-state';
 import {
   AppState,
   getPermissionGroupMetaData,

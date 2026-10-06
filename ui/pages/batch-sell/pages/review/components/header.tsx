@@ -18,11 +18,11 @@ import {
 } from '@metamask/design-system-react';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Skeleton } from '../../../../../components/component-library/skeleton/skeleton';
 
 type HeaderProps = {
   quotesAreFetching: boolean;

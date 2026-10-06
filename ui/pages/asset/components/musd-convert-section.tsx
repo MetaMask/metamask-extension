@@ -24,7 +24,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Tag } from '../../../components/component-library';
+import { Tag } from '../../../components/component-library/tag/tag';
 import {
   BackgroundColor,
   FontWeight as LegacyFontWeight,
@@ -39,13 +39,11 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getImageForChainId,
 } from '../../../selectors/multichain';
-import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd/feature-flags';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../hooks/useFiatFormatter';
-import {
-  useMusdConversion,
-  useMusdConversionTokens,
-} from '../../../hooks/musd';
+import { useMusdConversion } from '../../../hooks/musd/useMusdConversion';
+import { useMusdConversionTokens } from '../../../hooks/musd/useMusdConversionTokens';
 import type { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
 

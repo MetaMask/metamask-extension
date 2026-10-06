@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
+import { isPasskeyPRFSupported } from '../../shared/lib/passkey/passkey-capabilities';
 
 /**
  * Checks whether the browser supports PRF-backed passkeys and invokes the

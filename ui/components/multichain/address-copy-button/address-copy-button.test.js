@@ -6,7 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { AddressCopyButton } from '.';
+import AddressCopyButton from './address-copy-button';
 
 const SAMPLE_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const mockHandleCopy = jest.fn();

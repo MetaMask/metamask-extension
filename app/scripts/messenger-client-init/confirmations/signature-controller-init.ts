@@ -3,10 +3,11 @@ import {
   SignatureControllerMessenger,
 } from '@metamask/signature-controller';
 import { MessengerClientInitFunction } from '../types';
-import { SignatureControllerInitMessenger } from '../messengers';
+import { SignatureControllerInitMessenger } from '../messengers/signature-controller-messenger';
 import { trace } from '../../../../shared/lib/trace';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 /**
  * Initialize the signature controller.

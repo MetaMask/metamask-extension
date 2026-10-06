@@ -12,8 +12,8 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import SrpInputImport from '../../components/app/srp-input-import';
-import SRPDetailsModal from '../../components/app/srp-details-modal';
+import SrpInputImport from '../../components/app/srp-input-import/srp-input-import';
+import SRPDetailsModal from '../../components/app/srp-details-modal/srp-details-modal';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

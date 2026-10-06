@@ -1,18 +1,19 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getAllChainsToPoll,
   getOpenSeaEnabled,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import {
   detectNfts,
   setOpenSeaEnabled,
   setUseNftDetection,
 } from '../../../../../store/actions';
 import { SECOND } from '../../../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
-import { BannerAlert } from '../../../../component-library';
+import { ToastContent } from '../../../../ui/toast/toast';
+import { BannerAlert } from '../../../../component-library/banner-alert/banner-alert';
 import { useDispatch } from '../../../../../store/hooks';
 
 const nftDetectionEnabledToastId = 'enabled-nft-auto-detection';

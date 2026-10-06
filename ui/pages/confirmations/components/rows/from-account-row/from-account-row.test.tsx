@@ -24,7 +24,7 @@ jest.mock('../../../utils/transaction-pay', () => ({
   replaceAccountInNestedTransactions: jest.fn(),
 }));
 
-jest.mock('../../account-select-modal', () => ({
+jest.mock('../../account-select-modal/account-select-modal', () => ({
   AccountSelectModal: ({
     selectedAddress,
     onSelect,
@@ -90,9 +90,12 @@ jest.mock('../../../../../hooks/useAlerts', () => ({
   }),
 }));
 
-jest.mock('../../../../../components/app/preferred-avatar', () => ({
-  PreferredAvatar: () => <div data-testid="preferred-avatar" />,
-}));
+jest.mock(
+  '../../../../../components/app/preferred-avatar/preferred-avatar',
+  () => ({
+    PreferredAvatar: () => <div data-testid="preferred-avatar" />,
+  }),
+);
 
 const FROM_ADDRESS_MOCK = '0xabcdef1234567890abcdef1234567890abcdef12';
 const OTHER_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';

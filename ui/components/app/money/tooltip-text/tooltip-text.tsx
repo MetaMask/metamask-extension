@@ -12,7 +12,8 @@ import {
   Text,
   type TextProps,
 } from '@metamask/design-system-react';
-import { Popover, PopoverPosition } from '../../../component-library';
+import { Popover } from '../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../component-library/popover/popover.types';
 
 const TOOLTIP_POPOVER_STYLE = {
   zIndex: 1050,

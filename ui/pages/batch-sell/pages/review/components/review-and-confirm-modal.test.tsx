@@ -6,7 +6,7 @@ import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import {
   buildBatchSellAsset,
   buildReceivedAsset,
-} from '../../../../../../test/data/batch-sell';
+} from '../../../../../../test/data/batch-sell/factories';
 import useBatchSellSubmitQuotes from '../hooks/useBatchSellSubmitQuotes';
 import { ReviewAndConfirmModal } from './review-and-confirm-modal';
 
@@ -19,11 +19,16 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
     args ? `${key}:${args.join(',')}` : key,
 }));
 
-jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: (state: { currency?: string }) => state?.currency,
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/selectors/assets-migration',
+  ),
+  getCurrencyRateControllerCurrentCurrency: (state: { currency?: string }) =>
+    state?.currency,
 }));
 
 jest.mock('../../../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../../../ducks/locale/locale'),
   getIntlLocale: (state: { locale?: string }) => state?.locale,
 }));
 
@@ -45,15 +50,19 @@ jest.mock('./assets-received-total-amounts-summary', () => ({
   ),
 }));
 
-jest.mock('../../../../../components/component-library/skeleton', () => ({
-  Skeleton: ({
-    isLoading,
-    children,
-  }: {
-    isLoading?: boolean;
-    children: React.ReactNode;
-  }) => (isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>),
-}));
+jest.mock(
+  '../../../../../components/component-library/skeleton/skeleton',
+  () => ({
+    Skeleton: ({
+      isLoading,
+      children,
+    }: {
+      isLoading?: boolean;
+      children: React.ReactNode;
+    }) =>
+      isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>,
+  }),
+);
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

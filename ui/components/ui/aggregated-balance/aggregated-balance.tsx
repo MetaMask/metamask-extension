@@ -4,31 +4,29 @@ import classnames from 'clsx';
 import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library/sensitive-text/sensitive-text';
 import {
-  getCurrentCurrency,
-  getTokenBalances,
-} from '../../../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getTokenBalancesControllerTokenBalances as getTokenBalances,
+  getMultiChainAssetsControllerAccountsAssets as getAccountAssets,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+} from '../../../../shared/lib/selectors/assets-migration';
 import {
-  getAccountAssets,
-  getAssetsRates,
   getMultichainAggregatedBalance,
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
 import {
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
-} from '../../../selectors';
+  getMultichainNetwork,
+} from '../../../selectors/multichain/networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import {
-  getMultichainNetwork,
-  getMultichainShouldShowFiat,
-} from '../../../selectors/multichain';
+import { getMultichainShouldShowFiat } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { Skeleton } from '../../component-library/skeleton';
+import { Skeleton } from '../../component-library/skeleton/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
 export const AggregatedBalance = ({

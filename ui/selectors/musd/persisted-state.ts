@@ -5,7 +5,7 @@
  * and merged into state.metamask. They persist until extension uninstall.
  */
 
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { EMPTY_ARRAY } from '../shared';
 
 /**

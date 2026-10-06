@@ -16,7 +16,7 @@ jest.mock('../../../../selectors/assets', () => ({
   selectBalanceForAllWallets: () => mockStableWalletBalances,
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../selectors/selectors', () => ({
   getIsDefaultAddressEnabled: () => false,
   getShowDefaultAddressPreference: () => false,
 }));
@@ -50,7 +50,7 @@ jest.mock(
 );
 
 jest.mock(
-  '../../../../components/multichain-accounts/multichain-account-cell',
+  '../../../../components/multichain-accounts/multichain-account-cell/multichain-account-cell',
   () => ({
     MultichainAccountCell: ({
       accountName,

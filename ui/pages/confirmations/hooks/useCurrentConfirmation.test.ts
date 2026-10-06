@@ -9,7 +9,7 @@ import { Json } from '@metamask/utils';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 const ID_MOCK = '123-456';

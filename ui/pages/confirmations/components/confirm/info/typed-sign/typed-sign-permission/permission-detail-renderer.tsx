@@ -20,19 +20,15 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowDivider,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row/divider';
 import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowUrl } from '../../../../../../../components/app/confirm/info/row/url';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import {
-  getNativeTokenInfo,
-  MetaMaskReduxState,
-} from '../../../../../../../selectors';
+import { getNativeTokenInfo } from '../../../../../../../selectors/selectors';
+import { MetaMaskReduxState } from '../../../../../../../store/types';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useAdvancedPermissionTranslationsMap } from '../../../../../../../hooks/gator-permissions/useAdvancedPermissionTranslationsMap';
@@ -47,7 +43,7 @@ import {
 } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
 import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
-import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
+import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions/address-rule-utils';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';

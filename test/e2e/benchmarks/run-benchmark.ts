@@ -24,7 +24,10 @@ import {
   DEFAULT_BENCHMARK_PAGE_LOADS,
 } from '../../../shared/constants/benchmarks';
 import { toCamelCase } from '../../../shared/lib/string-utils';
-import { runBenchmarkWithIterations, convertSummaryToResults } from './utils';
+import {
+  runBenchmarkWithIterations,
+  convertSummaryToResults,
+} from './utils/runner';
 import {
   STARTUP_PRESETS,
   INTERACTION_PRESETS,

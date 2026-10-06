@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 
 enum NetworkName {
   Ethereum = 'ethereum',

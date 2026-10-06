@@ -8,10 +8,10 @@ import { DappSwapComparisonBanner } from '../../dapp-swap-comparison-banner/dapp
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
-import { TransactionAccountDetails } from '../batch/transaction-account-details';
+import { TransactionAccountDetails } from '../batch/transaction-account-details/transaction-account-details';
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
-import { EstimatedPointsSection } from '../../../estimated-points';
-import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row';
+import { EstimatedPointsSection } from '../../../estimated-points/estimated-points';
+import { EnforcedSimulationsRow } from '../../../rows/enforced-simulations-row/enforced-simulations-row';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =

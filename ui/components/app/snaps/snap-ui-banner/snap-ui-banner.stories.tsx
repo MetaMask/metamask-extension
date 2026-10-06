@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { SnapUIBanner } from './snap-ui-banner';
-import { BannerAlertSeverity } from '../../../component-library';
+import { BannerAlertSeverity } from '../../../component-library/banner-alert/banner-alert.types';
 
 export default {
   title: 'Components/App/Snaps/SnapUIBanner',

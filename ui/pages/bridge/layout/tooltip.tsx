@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Box } from '@metamask/design-system-react';
+import { Icon } from '../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-  PolymorphicRef,
-  Popover,
-  PopoverHeader,
+} from '../../../components/component-library/icon/icon.types';
+import { PolymorphicRef } from '../../../components/component-library/box/box.types';
+import { Popover } from '../../../components/component-library/popover/popover';
+import { PopoverHeader } from '../../../components/component-library/popover-header/popover-header';
+import {
   PopoverPosition,
   PopoverProps,
-  Text,
-} from '../../../components/component-library';
+} from '../../../components/component-library/popover/popover.types';
+import { Text } from '../../../components/component-library/text/text';
 import {
   IconColor,
   JustifyContent,

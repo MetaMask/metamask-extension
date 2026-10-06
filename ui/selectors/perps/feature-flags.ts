@@ -170,4 +170,3 @@ export const getIsPerpsTerminalBackendEnabled = createSelector(
 
 // Re-export the VIP program flag so perps consumers can import from this
 // domain module without reaching into the rewards duck directly.
-export { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';

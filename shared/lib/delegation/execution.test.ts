@@ -1,3 +1,4 @@
+import type { Hex } from '@metamask/utils';
 import {
   createExecution,
   encodeSingleExecution,
@@ -10,7 +11,7 @@ import {
   BATCH_DEFAULT_MODE,
   BATCH_TRY_MODE,
 } from './execution';
-import { isHex, type Hex } from './utils';
+import { isHex } from './utils';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000' as Hex;
 

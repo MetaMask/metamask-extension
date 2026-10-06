@@ -15,8 +15,8 @@ import {
   BoxFlexDirection,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import Spinner from '../../../../components/ui/spinner';
-import PulseLoader from '../../../../components/ui/pulse-loader';
+import Spinner from '../../../../components/ui/spinner/spinner.component';
+import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import { subscribeToMessengerEvent } from '../../../../store/background-connection';
 
 const DEFAULT_DELAY_MS = 2000;

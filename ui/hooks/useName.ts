@@ -4,7 +4,7 @@ import {
   NameType,
 } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
-import { getNames } from '../selectors';
+import { getNames } from '../selectors/selectors';
 
 export type UseNameRequest = {
   value: string;

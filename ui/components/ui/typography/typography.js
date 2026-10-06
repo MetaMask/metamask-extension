@@ -9,7 +9,7 @@ import {
   TypographyVariant,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
-import Box, { MultipleSizesAndAuto } from '../box';
+import Box, { MultipleSizesAndAuto } from '../box/box';
 
 const { H6, H7, H8, H9 } = TypographyVariant;
 

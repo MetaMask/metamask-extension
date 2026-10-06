@@ -13,7 +13,7 @@ jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/selectors', () => ({
   activeTabHasPermissions: () => false,
   getOriginOfCurrentTab: () => null,
   getNewNetworkAdded: () => '',
@@ -23,6 +23,7 @@ jest.mock('../../selectors', () => ({
 }));
 
 jest.mock('../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/networks'),
   getInfuraBlocked: () => false,
 }));
 
@@ -30,9 +31,10 @@ jest.mock('../../ducks/metamask/metamask', () => ({
   getWeb3ShimUsageAlertEnabledness: () => false,
 }));
 
-jest.mock('../../components/app/recovery-phrase-reminder', () => ({
-  SeedPhraseBackupNotificationContainer: () => null,
-}));
+jest.mock(
+  '../../components/app/recovery-phrase-reminder/seed-phrase-backup-notification-container',
+  () => ({ SeedPhraseBackupNotificationContainer: () => null }),
+);
 
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),

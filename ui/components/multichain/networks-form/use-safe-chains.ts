@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 
-import { getUseSafeChainsListValidation } from '../../../selectors';
+import { getUseSafeChainsListValidation } from '../../../selectors/selectors';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
 import { DAY } from '../../../../shared/constants/time';

@@ -5,10 +5,8 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import nock from 'nock';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import {
-  CHAIN_IDS,
-  MAINNET_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { MAINNET_DISPLAY_NAME } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -86,11 +84,14 @@ jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
 
 // The Perps row and position card have their own suites; here we only assert
 // that the asset page mounts them for the native path with the matched market.
-jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
-  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
-    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
-  ),
-}));
+jest.mock(
+  '../../../components/app/perps/perps-trade-buttons/perps-trade-buttons',
+  () => ({
+    PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+      <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+    ),
+  }),
+);
 
 jest.mock('./asset-perps-position-section', () => ({
   AssetPerpsPositionSection: ({ marketSymbol }: { marketSymbol: string }) => (
@@ -108,40 +109,43 @@ jest.mock('react-chartjs-2', () => ({
 }));
 
 // Mock BUYABLE_CHAINS_MAP
-jest.mock('../../../../shared/constants/network', () => ({
-  ...jest.requireActual('../../../../shared/constants/network'),
-  BUYABLE_CHAINS_MAP: {
-    // MAINNET
-    '0x1': {
-      nativeCurrency: 'ETH',
-      network: 'ethereum',
-    },
-    // POLYGON
-    '0x89': {
-      nativeCurrency: 'MATIC',
-      network: 'polygon',
-    },
-  },
-}));
 
-jest.mock('../../../hooks/musd', () => {
-  const actual = jest.requireActual<typeof import('../../../hooks/musd')>(
-    '../../../hooks/musd',
+jest.mock('../../../hooks/musd/useMusdBalance', () => {
+  const actual = jest.requireActual('../../../hooks/musd/useMusdBalance');
+  return {
+    ...actual,
+    useMusdBalance: () => ({
+      hasMusdBalance: false,
+    }),
+  };
+});
+jest.mock('../../../hooks/musd/useMusdConversion', () => {
+  const actual = jest.requireActual('../../../hooks/musd/useMusdConversion');
+  return {
+    ...actual,
+    useMusdConversion: () => ({
+      startConversionFlow: jest.fn().mockResolvedValue(undefined),
+    }),
+  };
+});
+jest.mock('../../../hooks/musd/useMusdConversionTokens', () => {
+  const actual = jest.requireActual(
+    '../../../hooks/musd/useMusdConversionTokens',
   );
+  return {
+    ...actual,
+    useMusdConversionTokens: () => ({
+      tokens: [],
+    }),
+  };
+});
+jest.mock('../../../hooks/musd/useMusdCtaVisibility', () => {
+  const actual = jest.requireActual('../../../hooks/musd/useMusdCtaVisibility');
   return {
     ...actual,
     useMusdCtaVisibility: () => ({
       shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
       shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
-    }),
-    useMusdBalance: () => ({
-      hasMusdBalance: false,
-    }),
-    useMusdConversionTokens: () => ({
-      tokens: [],
-    }),
-    useMusdConversion: () => ({
-      startConversionFlow: jest.fn().mockResolvedValue(undefined),
     }),
   };
 });

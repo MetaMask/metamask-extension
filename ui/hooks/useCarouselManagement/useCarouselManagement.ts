@@ -14,7 +14,7 @@ import {
   getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';

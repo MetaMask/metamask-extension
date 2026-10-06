@@ -14,13 +14,11 @@ import {
   BannerAlert,
   BannerAlertSeverity,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../components/component-library';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../../hooks/bridge/useIsTxSubmittable';
@@ -29,7 +27,8 @@ import {
   getBridgeQuotes,
   getValidationErrors,
 } from '../../../../ducks/bridge/selectors';
-import { Column, Row } from '../../layout';
+import Column from '../../layout/column';
+import Row from '../../layout/row';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useBridgeAlerts } from '../../hooks/useBridgeAlerts';
 import { type BridgeAlert } from '../types';

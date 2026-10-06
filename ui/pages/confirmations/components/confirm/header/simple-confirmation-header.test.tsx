@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import type { MetaMaskReduxState } from '../../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../../store/types';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';

@@ -14,18 +14,20 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
+import { AvatarToken } from '../../../components/component-library/avatar-token/avatar-token';
+import { AvatarTokenSize } from '../../../components/component-library/avatar-token/avatar-token.types';
+import { Button } from '../../../components/component-library/button/button';
 import {
-  AvatarToken,
-  AvatarTokenSize,
-  Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
+} from '../../../components/component-library/button/button.types';
+import { Icon } from '../../../components/component-library/icon/icon';
+import {
   IconName,
   IconSize,
-  Text,
-} from '../../../components/component-library';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
+} from '../../../components/component-library/icon/icon.types';
+import { Text } from '../../../components/component-library/text/text';
+import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer/permissions-connect-footer.component';
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);

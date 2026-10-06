@@ -1,12 +1,10 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
-import {
-  SettingsTab,
-  createToggleItem,
-  createDescriptionWithLearnMore,
-} from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
+import { createDescriptionWithLearnMore } from '../shared/description-with-learn-more';
 import { TESTNET_ETH_SCAMS_LEARN_MORE_LINK } from '../../../../shared/lib/ui-utils';
-import { getShowFiatInTestnets } from '../../../selectors';
+import { getShowFiatInTestnets } from '../../../selectors/selectors';
 import { setShowFiatConversionOnTestnetsPreference } from '../../../store/actions';
 import { DEVELOPER_TOOLS_ITEMS } from '../search-config';
 import { DeleteActivityItem } from './delete-activity-item';

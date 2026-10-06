@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
-import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
-import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
+import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing/useAccountSyncing';
+import { useContactSyncing } from '../../hooks/identity/useContactSyncing/useContactSyncing';
 import { useRampsOrderSyncing } from '../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing';
-import {
-  useAutoSignIn,
-  useAutoSignOut,
-} from '../../hooks/identity/useAuthentication';
+import { useAutoSignIn } from '../../hooks/identity/useAuthentication/useAutoSignIn';
+import { useAutoSignOut } from '../../hooks/identity/useAuthentication/useAutoSignOut';
 
 export const MetamaskIdentityProvider = ({
   children,

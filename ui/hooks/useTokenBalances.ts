@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getTokenBalances } from '../ducks/metamask/metamask';
+import { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../shared/lib/selectors/assets-migration';
 
 export const useTokenBalances = () => {
   const tokenBalances = useSelector(getTokenBalances);

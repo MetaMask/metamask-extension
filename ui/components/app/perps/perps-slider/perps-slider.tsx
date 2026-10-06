@@ -15,7 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import Tooltip from '../../../ui/tooltip';
+import Tooltip from '../../../ui/tooltip/tooltip';
 
 const StyledMaterialSlider = styled(MaterialSlider)({
   height: 4,

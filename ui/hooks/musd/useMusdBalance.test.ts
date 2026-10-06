@@ -9,7 +9,7 @@ jest.mock('../../selectors/assets', () => ({
   getAssetsBySelectedAccountGroup: jest.fn(),
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/selectors', () => ({
   getSelectedAccount: jest.fn(),
 }));
 

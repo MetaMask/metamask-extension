@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImportAccount } from '.';
+import { ImportAccount } from './import-account';
 
 export default {
   title: 'Components/Multichain/ImportAccount',

@@ -11,6 +11,7 @@ import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { getFungibleAssetForRoute } from '../../selectors/assets';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { resolveAssetRouteLookup } from '../../../shared/lib/asset-route';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 import {
@@ -18,7 +19,6 @@ import {
   LocationStateToken,
   useRouteAssetToken,
 } from './hooks/useRouteAssetToken';
-import { resolveAssetRouteLookup } from './util';
 
 type LocationState = {
   token?: LocationStateToken;

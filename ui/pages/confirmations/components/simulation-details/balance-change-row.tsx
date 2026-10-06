@@ -13,13 +13,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Text,
-  IconName,
-} from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../components/component-library/button-icon/button-icon.types';
+import { Text } from '../../../../components/component-library/text/text';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

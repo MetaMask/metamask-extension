@@ -4,7 +4,7 @@ import { BottomNavBar } from '#ui/components/app/bottom-nav-bar/bottom-nav-bar';
 import { ScrollContainer } from '#ui/contexts/scroll-container';
 import { ScrollToTop } from '#ui/contexts/scroll-to-top';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
-import { AppHeader } from '../components/multichain/app-header';
+import { AppHeader } from '../components/multichain/app-header/app-header';
 
 export const MainLayout = () => {
   const showNavbar = useBottomNavBar();

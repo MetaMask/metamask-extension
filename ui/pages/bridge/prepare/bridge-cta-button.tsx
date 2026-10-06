@@ -21,13 +21,13 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
+import { ConnectionStatus } from '../../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import { isInE2eTest } from '../../../contexts/hardware-wallets/is-in-e2e-test';
 import {
-  ConnectionStatus,
-  HardwareWalletType,
-  isInE2eTest,
   useHardwareWalletConfig,
   useHardwareWalletState,
-} from '../../../contexts/hardware-wallets';
+} from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';

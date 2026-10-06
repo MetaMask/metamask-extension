@@ -10,9 +10,10 @@ import {
 
 import Box from '../../../ui/box/box';
 
-import { TextField } from '../../text-field';
-import { HelpText, HelpTextSeverity } from '../../help-text';
-import { Label } from '../../label';
+import { TextField } from '../../text-field/text-field';
+import { HelpText } from '../../help-text/help-text';
+import { HelpTextSeverity } from '../../help-text/help-text.types';
+import { Label } from '../../label/label';
 
 /**
  * @deprecated This has been deprecated in favor of the TypeScript version `<FormTextField />` component in ./ui/components/component-library/form-text-field/form-text-field.tsx

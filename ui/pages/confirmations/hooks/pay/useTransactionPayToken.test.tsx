@@ -3,7 +3,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
-import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
+
+import * as controllerActionsModule2 from '../../../../store/controller-actions/transaction-pay-controller';
 import { ConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
 
@@ -76,7 +77,7 @@ function renderHookWithProvider({
 
 describe('useTransactionPayToken', () => {
   const updatePaymentTokenMock = jest.mocked(
-    controllerActions.updateTransactionPaymentToken,
+    controllerActionsModule2.updateTransactionPaymentToken,
   );
 
   beforeEach(() => {

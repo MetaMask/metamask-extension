@@ -40,7 +40,7 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
     .mockReturnValue('getChainIdByNetworkClientId'),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/selectors', () => ({
   checkNetworkAndAccountSupports1559: jest
     .fn()
     .mockReturnValue('checkNetworkAndAccountSupports1559'),

@@ -8,11 +8,12 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
-import { Box, Text } from '../../../../component-library';
-import NicknamePopovers from '../../../modals/nickname-popovers';
+import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
+import NicknamePopovers from '../../../modals/nickname-popovers/nickname-popovers.component';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
-import { PreferredAvatar } from '../../../preferred-avatar';
+import { PreferredAvatar } from '../../../preferred-avatar/preferred-avatar';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;

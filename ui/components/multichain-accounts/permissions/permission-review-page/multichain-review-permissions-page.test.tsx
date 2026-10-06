@@ -6,6 +6,7 @@ import {
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import { CaipAccountId } from '@metamask/utils';
+import { toast } from 'react-hot-toast';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
@@ -19,10 +20,9 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
-import { toast } from '../../../ui/toast/toast';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
-jest.mock('../../../ui/toast/toast', () => ({
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
     error: jest.fn(),

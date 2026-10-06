@@ -23,14 +23,24 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('./components', () => {
-  const actual = jest.requireActual('./components');
+jest.mock('./components/add-wallets', () => {
+  const actual = jest.requireActual('./components/add-wallets');
 
   return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
     ...actual,
-    QrCodeScan: () => <div data-testid="qr-code-scan" />,
-    EnterVerificationCode: () => <div data-testid="enter-verification-code" />,
-    EnterPassword: ({
+    default: () => <div data-testid="add-wallets" />,
+  };
+});
+jest.mock('./components/enter-password', () => {
+  const actual = jest.requireActual('./components/enter-password');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: ({
       onPasswordChange,
     }: {
       onPasswordChange: (password: string) => void;
@@ -43,10 +53,56 @@ jest.mock('./components', () => {
         password
       </button>
     ),
-    AddWallets: () => <div data-testid="add-wallets" />,
-    LoadingStep: () => <div data-testid="loading-step" />,
-    Success: () => <div data-testid="success" />,
-    SyncError: ({
+  };
+});
+jest.mock('./components/enter-verification-code', () => {
+  const actual = jest.requireActual('./components/enter-verification-code');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: () => <div data-testid="enter-verification-code" />,
+  };
+});
+jest.mock('./components/loading-step', () => {
+  const actual = jest.requireActual('./components/loading-step');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: () => <div data-testid="loading-step" />,
+  };
+});
+jest.mock('./components/qr-code-scan', () => {
+  const actual = jest.requireActual('./components/qr-code-scan');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: () => <div data-testid="qr-code-scan" />,
+  };
+});
+jest.mock('./components/success', () => {
+  const actual = jest.requireActual('./components/success');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: () => <div data-testid="success" />,
+  };
+});
+jest.mock('./components/sync-error', () => {
+  const actual = jest.requireActual('./components/sync-error');
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    __esModule: true,
+    ...actual,
+    default: ({
       onRetry,
       onCancel,
     }: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import PulseLoader from '.';
+import PulseLoader from './pulse-loader';
 
 export default {
   title: 'Components/UI/PulseLoader',

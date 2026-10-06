@@ -1,9 +1,7 @@
 import { CameraPermissionState } from '../constants';
 import { LEDGER_USB_VENDOR_ID } from '../../../../shared/constants/hardware-wallets';
-import {
-  HardwareWalletType,
-  HardwareConnectionPermissionState,
-} from '../types';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import { HardwareConnectionPermissionState } from '../types';
 
 /**
  * Mock implementation of webConnectionUtils for testing

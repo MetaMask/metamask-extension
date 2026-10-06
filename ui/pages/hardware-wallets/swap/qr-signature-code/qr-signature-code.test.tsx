@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, render } from '@testing-library/react';
-import QrSignatureCode from '.';
+import QrSignatureCode from './qr-signature-code';
 
 const QR_REFRESH_RATE = 200;
 

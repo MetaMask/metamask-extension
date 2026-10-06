@@ -13,7 +13,7 @@ import { MARKET_FILTER_LABEL_KEYS, MEMECOIN_CATEGORY_ID } from '../constants';
 import {
   PERPS_SENTIMENT_ICON_SIZE_SM,
   PerpsSentimentSatisfiedIcon,
-} from '../perps-sentiment-satisfied-icon';
+} from '../perps-sentiment-satisfied-icon/perps-sentiment-satisfied-icon';
 
 /**
  * The two shapes the design gives a category control, which differ by more than

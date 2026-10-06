@@ -1,6 +1,7 @@
 import React, { ReactNode, useCallback } from 'react';
 import { type TransactionMeta } from '@metamask/transaction-controller';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   Display,
   FlexDirection,
@@ -13,14 +14,14 @@ import {
 import { CustomAmount } from '../../transactions/custom-amount/custom-amount';
 import { PayTokenAmount } from '../../pay-token-amount/pay-token-amount';
 import { PayWithRow } from '../../rows/pay-with-row/pay-with-row';
-import { FromAccountRow } from '../../rows/from-account-row';
+import { FromAccountRow } from '../../rows/from-account-row/from-account-row';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
-import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
-import { PercentageButtons } from '../../percentage-buttons';
+import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row/perps-account-picker-row';
+import { PercentageButtons } from '../../percentage-buttons/percentage-buttons';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { useTransactionCustomAmount } from '../../../hooks/transactions/useTransactionCustomAmount';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
@@ -47,8 +48,6 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 import { CustomAmountInfoSkeleton } from './custom-amount-info-skeleton';
-
-export { CustomAmountInfoSkeleton } from './custom-amount-info-skeleton';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 

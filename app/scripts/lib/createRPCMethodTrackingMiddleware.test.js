@@ -23,7 +23,7 @@ import { getDefaultPreferencesControllerState } from '../controllers/preferences
 import {
   configureAnalytics,
   setParticipateInMetaMetrics,
-} from '../controllers/analytics';
+} from '../controllers/analytics/analytics';
 import { getAnalyticsControllerInitMessenger } from '../messenger-client-init/messengers/analytics-controller-messenger';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 import * as snapKeyringMetrics from './snap-keyring/metrics';

@@ -11,7 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { selectPerpsLastWithdrawResult } from '../../../selectors/perps-controller';
-import { Toast } from '../../multichain/toast';
+import { Toast } from '../../multichain/toast/toast';
 
 /**
  * Home-screen toast for Perps withdrawal completion.

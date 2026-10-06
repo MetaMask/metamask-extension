@@ -3,20 +3,23 @@ import { screen } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { ToastMaster } from './toast-master';
 
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('../basic-functionality-migration-toast', () => ({
-  BasicFunctionalityMigrationToast: () => (
-    <div data-testid="mock-bft-migration-toast">
-      BasicFunctionalityMigrationToast
-    </div>
-  ),
-}));
+jest.mock(
+  '../basic-functionality-migration-toast/basic-functionality-migration-toast',
+  () => ({
+    BasicFunctionalityMigrationToast: () => (
+      <div data-testid="mock-bft-migration-toast">
+        BasicFunctionalityMigrationToast
+      </div>
+    ),
+  }),
+);
 
 jest.mock('../perps/perps-withdraw-toast', () => ({
   PerpsWithdrawToast: () => (

@@ -6,7 +6,7 @@ import {
   genUnapprovedTokenTransferConfirmation,
   TRANSFER_FROM_TRANSACTION_DATA,
 } from '../../../../../../../test/data/confirmations/token-transfer';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import {
   AlignItems,
   Display,

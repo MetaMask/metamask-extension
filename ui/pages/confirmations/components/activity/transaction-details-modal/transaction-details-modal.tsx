@@ -3,13 +3,11 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  Text,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   Display,
   FlexDirection,
@@ -17,8 +15,8 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { TransactionDetailsProvider } from '../transaction-details-context';
-import { TransactionDetails } from '../transaction-details';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
+import { TransactionDetails } from '../transaction-details/transaction-details';
 
 export type TransactionDetailsModalProps = {
   transactionMeta: TransactionMeta;

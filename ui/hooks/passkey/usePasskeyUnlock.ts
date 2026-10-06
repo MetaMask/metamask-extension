@@ -2,9 +2,9 @@ import { useCallback, useEffect } from 'react';
 import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
 import { WEEK } from '../../../shared/constants/time';
-import { getIsPasskeyUserHandleBased } from '../../selectors';
+import { getIsPasskeyUserHandleBased } from '../../selectors/selectors';
 import { getLastShownPrfMigrationReminderAt } from '../../ducks/metamask/metamask';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useAppSelector, useDispatch } from '../../store/hooks';

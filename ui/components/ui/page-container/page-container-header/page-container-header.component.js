@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import Button from '../../button';
+import Button from '../../button/button.component';
 
 export default class PageContainerHeader extends Component {
   static propTypes = {

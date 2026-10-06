@@ -20,7 +20,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
-} from '../../store/store';
+} from '../../store/types';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
@@ -30,8 +30,6 @@ import { captureException } from '../../../shared/lib/sentry';
 import { clearAllBridgeCacheItems } from '../../pages/bridge/utils/cache';
 import {
   bridgeSlice,
-  setSrcTokenExchangeRates,
-  setTxAlerts,
   setEVMSrcTokenBalance,
   setEVMSrcNativeBalance,
 } from './bridge';
@@ -72,13 +70,11 @@ export {
   resetInputFields,
   rehydrateBridgeStore,
   setFromTokenInputValue,
-  setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
   setSlippageUserOverride,
-  setTxAlerts,
   restoreQuoteRequestFromState,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,

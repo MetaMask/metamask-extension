@@ -15,9 +15,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { PolymorphicRef, Tag } from '../../../components/component-library';
+import { PolymorphicRef } from '../../../components/component-library/box/box.types';
+import { Tag } from '../../../components/component-library/tag/tag';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { type BridgeToken } from '../../../ducks/bridge/types';
 import {
@@ -33,7 +34,8 @@ import {
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import { ACCOUNT_TYPE_LABELS } from '../../../components/app/assets/constants';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Column, Row } from '../layout';
+import Column from '../layout/column';
+import Row from '../layout/row';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useRWAToken } from '../hooks/useRWAToken';
 import { AssetSecurityBadge } from './asset-security-badge';

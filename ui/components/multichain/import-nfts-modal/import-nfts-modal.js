@@ -12,6 +12,7 @@ import {
   ModalOverlay,
   ModalHeader,
 } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -38,11 +39,8 @@ import {
   getNetworkConfigurationsByChainId,
   getSelectedNetworkClientId,
 } from '../../../../shared/lib/selectors/networks';
-import {
-  getIsMainnet,
-  getOpenSeaEnabled,
-  getShouldShowTestNetworks,
-} from '../../../selectors';
+import { getIsMainnet, getOpenSeaEnabled } from '../../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../../selectors/test-networks';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   addNftVerifyOwnership,
@@ -52,14 +50,17 @@ import {
 } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import NftsDetectionNoticeImportNFTs from '../../app/assets/nfts/nfts-detection-notice-import-nfts/nfts-detection-notice-import-nfts';
-import { Box, Icon, IconName, IconSize, Label } from '../../component-library';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
-import Tooltip from '../../ui/tooltip';
+import { Box } from '../../component-library/box/box';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Label } from '../../component-library/label/label';
+import { FormTextField } from '../../component-library/form-text-field/deprecated/form-text-field';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';
 import { NetworkSelectorCustomImport } from '../../app/import-token/network-selector-custom-import';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { ToastContent } from '../../ui/toast/toast';
 import { CustomTokenImportNetworkSelector } from '../../../pages/custom-token-import/custom-token-import-network-selector';
 
 const ACTION_MODES = {

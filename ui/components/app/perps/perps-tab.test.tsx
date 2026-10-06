@@ -17,7 +17,9 @@ jest.mock('./perps-view-stream-boundary', () => ({
 
 jest.mock('./perps-view', () => ({
   PerpsView: () => {
-    const { useAccessRestrictedModal } = jest.requireActual('../compliance');
+    const { useAccessRestrictedModal } = jest.requireActual(
+      '../compliance/access-restricted-context',
+    );
     const { showAccessRestrictedModal } = useAccessRestrictedModal();
 
     return (
@@ -28,7 +30,7 @@ jest.mock('./perps-view', () => ({
   },
 }));
 
-jest.mock('./perps-toast', () => ({
+jest.mock('./perps-toast/perps-toast-provider', () => ({
   PerpsToastProvider: ({ children }: { children: React.ReactNode }) => children,
 }));
 

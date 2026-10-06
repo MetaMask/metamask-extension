@@ -1,12 +1,10 @@
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  CHAIN_IDS,
-} from '../../../../../../shared/constants/network';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { getAvatarTokenSrc } from './asset-cell-badge';
 
 const mockMainnetImage = CHAIN_ID_TOKEN_IMAGE_MAP[CHAIN_IDS.MAINNET];
 
-jest.mock('../../../../../selectors', () => ({
+jest.mock('../../../../../selectors/selectors', () => ({
   getNativeCurrencyForChain: jest.fn((chainId: string) => {
     if (chainId === '0x1') {
       return mockMainnetImage;

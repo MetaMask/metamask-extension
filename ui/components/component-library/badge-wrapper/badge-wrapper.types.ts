@@ -3,7 +3,7 @@ import type {
   BoxProps,
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
+} from '../box/box.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

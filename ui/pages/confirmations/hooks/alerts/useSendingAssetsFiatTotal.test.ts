@@ -17,8 +17,8 @@ jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (amount: number) => `$${amount}`,
 }));
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+jest.mock('../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../selectors/selectors'),
   getShouldShowFiat: jest.fn(() => true),
 }));
 

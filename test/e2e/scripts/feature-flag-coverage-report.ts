@@ -18,7 +18,10 @@ import * as path from 'path';
 
 import type { Json } from '@metamask/utils';
 
-import { FEATURE_FLAG_REGISTRY, FeatureFlagStatus } from '../feature-flags';
+import {
+  FEATURE_FLAG_REGISTRY,
+  FeatureFlagStatus,
+} from '../feature-flags/feature-flag-registry';
 
 // ============================================================================
 // Types

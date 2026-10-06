@@ -17,7 +17,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
   getUseExternalServices,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../../shared/constants/swaps';
 import { useDispatch } from '../../../store/hooks';
 

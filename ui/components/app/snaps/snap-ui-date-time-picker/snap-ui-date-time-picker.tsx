@@ -17,8 +17,10 @@ import type { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
-import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { Label } from '../../../component-library/label/label';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

@@ -10,8 +10,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getSubjectMetadata } from '../../../selectors';
-import { AvatarFavicon, Box, Text } from '../../component-library';
+import { getSubjectMetadata } from '../../../selectors/selectors';
+import { AvatarFavicon } from '../../component-library/avatar-favicon/avatar-favicon';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 
 type OriginPillProps = {
   origin: string;

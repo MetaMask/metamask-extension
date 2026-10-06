@@ -21,7 +21,7 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getShouldShowBasicFunctionalityMigrationModal } from '../../../selectors/multichain/feature-flags';
+import { getShouldShowBasicFunctionalityMigrationModal } from '../../../selectors/multichain/basic-functionality';
 import { hideMigrationModal } from '../../../store/actions';
 import { useAppSelector, useDispatch } from '../../../store/hooks';
 import {

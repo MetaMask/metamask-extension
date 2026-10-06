@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
 import {
-  clearPerpsMarketFillsModuleCache,
   fetchFillsForCacheKey,
   peekWarmFills,
 } from '../../providers/perps/perps-cache';
-import { usePerpsLiveFills } from './stream';
+import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
-
-export { clearPerpsMarketFillsModuleCache };
 
 type UsePerpsMarketFillsParams = {
   symbol: string;

@@ -32,7 +32,7 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { stripHexPrefix } from '../../../shared/lib/hexstring-utils';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
-import type { MetaMaskReduxState } from '../../../ui/store/store';
+import type { MetaMaskReduxState } from '../../../ui/store/types';
 import { DecryptMessageControllerMethodActions } from './decrypt-message-method-action-types';
 
 const controllerName = 'DecryptMessageController';

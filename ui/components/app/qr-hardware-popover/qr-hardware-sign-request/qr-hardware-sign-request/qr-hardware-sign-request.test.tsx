@@ -6,9 +6,9 @@ import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as Actions from '../../../../../store/actions';
-import type { QrPlayerProps } from '../qr-player';
-import type { QrReaderProps } from '../qr-reader';
-import { UrType } from '../../base-qr-reader';
+import type { QrPlayerProps } from '../qr-player/qr-player.types';
+import type { QrReaderProps } from '../qr-reader/qr-reader.types';
+import { UrType } from '../../base-qr-reader/base-qr-reader.types';
 import type { QRHardwareSignRequestProps } from './qr-hardware-sign-request.types';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
@@ -17,8 +17,10 @@ jest.mock('../../../../../store/actions', () => ({
   completeQrCodeScan: jest.fn(() => () => Promise.resolve()),
 }));
 
-jest.mock('../qr-reader', () => {
-  const { UrType: MockUrType } = jest.requireActual('../../base-qr-reader');
+jest.mock('../qr-reader/qr-reader', () => {
+  const { UrType: MockUrType } = jest.requireActual(
+    '../../base-qr-reader/base-qr-reader.types',
+  );
   const { ErrorCode: MockErrorCode } = jest.requireActual(
     '@metamask/hw-wallet-sdk',
   );
@@ -60,7 +62,7 @@ jest.mock('../qr-reader', () => {
   return MockQrReader;
 });
 
-jest.mock('../qr-player', () => {
+jest.mock('../qr-player/qr-player', () => {
   const MockQrPlayer = (props: QrPlayerProps) => (
     <div data-testid="mock-qr-player">
       <span data-testid="qr-player-type">{props.type}</span>

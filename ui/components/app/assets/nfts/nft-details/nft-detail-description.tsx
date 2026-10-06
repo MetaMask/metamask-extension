@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import useIsOverflowing from '../../../../../hooks/snaps/useIsOverflowing';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  Text,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
+import { Button } from '../../../../component-library/button/button';
+import { ButtonVariant } from '../../../../component-library/button/button.types';
+import { Text } from '../../../../component-library/text/text';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   FontWeight,

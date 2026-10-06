@@ -16,7 +16,7 @@ import {
   getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
-} from '../messengers/accounts';
+} from '../messengers/accounts/multichain-account-service-messenger';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 

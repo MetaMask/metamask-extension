@@ -17,19 +17,44 @@ jest.mock('../../../components/app/assets/hooks/useTokenDisplayInfo', () => ({
   }),
 }));
 
-jest.mock('../../../components/app/assets/token-cell/cells', () => {
-  const ReactActual = jest.requireActual<typeof import('react')>('react');
-  return {
-    TokenCellPrimaryDisplay: () =>
-      ReactActual.createElement('div', {
-        'data-testid': 'token-cell-primary-display-stub',
-      }),
-    TokenCellSecondaryDisplay: () =>
-      ReactActual.createElement('div', {
-        'data-testid': 'token-cell-secondary-display-stub',
-      }),
-  };
-});
+jest.mock(
+  '../../../components/app/assets/token-cell/cells/token-cell-percent-change',
+  () => {
+    const ReactActual = jest.requireActual<typeof import('react')>('react');
+    return {};
+  },
+);
+jest.mock(
+  '../../../components/app/assets/token-cell/cells/token-cell-primary-display',
+  () => {
+    const ReactActual = jest.requireActual<typeof import('react')>('react');
+    return {
+      TokenCellPrimaryDisplay: () =>
+        ReactActual.createElement('div', {
+          'data-testid': 'token-cell-primary-display-stub',
+        }),
+    };
+  },
+);
+jest.mock(
+  '../../../components/app/assets/token-cell/cells/token-cell-secondary-display',
+  () => {
+    const ReactActual = jest.requireActual<typeof import('react')>('react');
+    return {
+      TokenCellSecondaryDisplay: () =>
+        ReactActual.createElement('div', {
+          'data-testid': 'token-cell-secondary-display-stub',
+        }),
+    };
+  },
+);
+jest.mock(
+  '../../../components/app/assets/token-cell/cells/token-cell-title',
+  () => {
+    const ReactActual = jest.requireActual<typeof import('react')>('react');
+    return {};
+  },
+);
 
 jest.mock(
   '../../../components/app/assets/asset-list/cells/asset-cell-badge',

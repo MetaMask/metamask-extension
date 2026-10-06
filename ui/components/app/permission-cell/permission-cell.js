@@ -16,16 +16,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
-import Tooltip from '../../ui/tooltip';
-import { getRequestingNetworkInfo } from '../../../selectors';
+import { AvatarIcon } from '../../component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../component-library/avatar-icon/avatar-icon.types';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
+import Tooltip from '../../ui/tooltip/tooltip';
+import { getRequestingNetworkInfo } from '../../../selectors/selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { PermissionCellOptions } from './permission-cell-options';
 import { PermissionCellStatus } from './permission-cell-status';

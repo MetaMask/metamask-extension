@@ -26,7 +26,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Modal, ModalContent, ModalHeader } from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardwareWalletRecoveryLocation';
@@ -43,25 +45,25 @@ import {
   mapHardwareWalletRecoveryErrorType,
   mapHardwareWalletTypeToMetricDeviceType,
 } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
+import { handleContinueWithPermissionCheck } from '../../../../contexts/hardware-wallets/webConnectionUtils';
 import {
-  HardwareWalletType,
-  handleContinueWithPermissionCheck,
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
-  isRetryableHardwareWalletError,
+} from '../../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { isRetryableHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
+import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
-} from '../../../../contexts/hardware-wallets';
+} from '../../../../contexts/hardware-wallets/HardwareWalletContext';
 import { useBridgeRedirectQueryString } from '../../../../contexts/hardware-wallets/useBridgeRedirectQueryString';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
   getMozExtensionOriginForDisplay,
   isFirefoxBrowser,
 } from '../../../../../shared/lib/browser-runtime.utils';
-import {
-  CameraAccessErrorContent,
-  CameraAccessErrorContentVariant,
-} from '../../camera-access-error-content';
+import { CameraAccessErrorContent } from '../../camera-access-error-content/camera-access-error-content';
+import { CameraAccessErrorContentVariant } from '../../camera-access-error-content/camera-access-error-content.types';
 import {
   buildErrorContent,
   HardwareWalletErrorContentVariant,

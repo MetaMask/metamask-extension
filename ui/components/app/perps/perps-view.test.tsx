@@ -1,11 +1,17 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+
 import { trace, endTrace } from '../../../../shared/lib/trace';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
-import * as streamHooks from '../../../hooks/perps/stream';
+
+import * as streamHooksModule5 from '../../../hooks/perps/stream/usePerpsLiveAccount';
+
+import * as streamHooksModule11 from '../../../hooks/perps/stream/usePerpsLiveOrders';
+import * as streamHooksModule12 from '../../../hooks/perps/stream/usePerpsLivePositions';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -22,7 +28,7 @@ import {
 import * as mocks from './mocks';
 import { PerpsView } from './perps-view';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
-import type { PerpsTransaction } from './types';
+import type { PerpsTransaction } from './types/transactionHistory';
 
 jest.mock('../../../../shared/lib/trace', () => ({
   ...jest.requireActual('../../../../shared/lib/trace'),
@@ -38,14 +44,16 @@ jest.mock('react-router-dom', () => ({
 }));
 
 let mockExposeCancelAllOrders = false;
-jest.mock('./perps-positions-orders', () => {
+jest.mock('./perps-positions-orders/perps-positions-orders', () => {
   const ReactActual = jest.requireActual<typeof import('react')>('react');
-  const actual = jest.requireActual('./perps-positions-orders');
+  const actual = jest.requireActual(
+    './perps-positions-orders/perps-positions-orders',
+  );
 
   return {
     ...actual,
     PerpsPositionsOrders: (
-      props: import('./perps-positions-orders').PerpsPositionsOrdersProps,
+      props: import('./perps-positions-orders/perps-positions-orders').PerpsPositionsOrdersProps,
     ) => (
       <ReactActual.Fragment>
         <actual.PerpsPositionsOrders {...props} />
@@ -116,13 +124,7 @@ jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-jest.mock('./perps-toast', () => ({
-  PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="perps-toast-provider-mock">{children}</div>
-  ),
-  usePerpsToast: () => ({
-    replacePerpsToastByKey: mockReplacePerpsToastByKey,
-  }),
+jest.mock('./perps-toast/perps-toast.constants', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_ALL_IN_PROGRESS: 'perpsToastCloseAllInProgress',
     CLOSE_ALL_PARTIAL: 'perpsToastCloseAllPartial',
@@ -130,9 +132,16 @@ jest.mock('./perps-toast', () => ({
     CLOSE_ALL_FAILED: 'perpsToastCloseAllFailed',
   },
 }));
+jest.mock('./perps-toast/perps-toast-provider', () => ({
+  PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="perps-toast-provider-mock">{children}</div>
+  ),
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: mockReplacePerpsToastByKey,
+  }),
+}));
 
-jest.mock('../../../providers/perps', () => ({
-  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+jest.mock('../../../providers/perps/PerpsControllerProvider.mock', () => ({
   usePerpsController: () => ({
     messenger: {
       subscribe: jest.fn(() => jest.fn()),
@@ -140,26 +149,85 @@ jest.mock('../../../providers/perps', () => ({
   }),
 }));
 
+jest.mock('../../../providers/perps/PerpsStreamManager', () => ({
+  getPerpsStreamManager: () => mockGetPerpsStreamManager(),
+}));
+
 // Mock the perps stream hooks (jest.fn so individual tests can override return values)
-jest.mock('../../../hooks/perps/stream', () => {
+jest.mock('../../../hooks/perps/stream/usePerpsAssetNames', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {
+    usePerpsAssetNames: jest.fn(() => ({
+      resolveAssetName: (symbol: string) => symbol,
+    })),
+  };
+});
+jest.mock('../../../hooks/perps/stream/usePerpsChannel', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveAccount', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {
+    usePerpsLiveAccount: jest.fn(() => ({
+      account: streamMocks.mockAccountState,
+      isInitialLoading: false,
+    })),
+  };
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveCandles', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveFills', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveMarketData', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveMarketListData', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveOrderBook', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLiveOrders', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {
+    usePerpsLiveOrders: jest.fn(() => ({
+      orders: streamMocks.mockOrders,
+      isInitialLoading: false,
+    })),
+  };
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLivePositions', () => {
   const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
   return {
     usePerpsLivePositions: jest.fn(() => ({
       positions: streamMocks.mockPositions,
       isInitialLoading: false,
     })),
-    usePerpsLiveOrders: jest.fn(() => ({
-      orders: streamMocks.mockOrders,
-      isInitialLoading: false,
-    })),
-    usePerpsLiveAccount: jest.fn(() => ({
-      account: streamMocks.mockAccountState,
-      isInitialLoading: false,
-    })),
-    usePerpsAssetNames: jest.fn(() => ({
-      resolveAssetName: (symbol: string) => symbol,
-    })),
   };
+});
+jest.mock('../../../hooks/perps/stream/usePerpsLivePrices', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsStreamManager', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsTopOfBook', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
+});
+jest.mock('../../../hooks/perps/stream/usePerpsViewActive', () => {
+  const streamMocks = jest.requireActual<typeof import('./mocks')>('./mocks');
+  return {};
 });
 
 jest.mock('./hooks/usePerpsTabExploreData', () => ({
@@ -185,12 +253,15 @@ jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
 // By default the compliance gate is a passthrough (wallet not blocked): it runs
 // the wrapped action. Individual tests can override it to simulate a block.
 const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
-jest.mock('../compliance', () => ({
+
+jest.mock('../compliance/useSelectedAccountComplianceGate', () => ({
   useSelectedAccountComplianceGate: () => ({ gate: mockComplianceGate }),
 }));
 
-jest.mock('./perps-tutorial-modal', () => ({
-  PerpsTutorialModal: () => null,
+jest.mock('./perps-tutorial-modal/PerpsTutorialModal', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+  __esModule: true,
+  default: () => null,
 }));
 
 jest.mock('./close-position/close-all-positions-modal', () => ({
@@ -266,15 +337,15 @@ describe('PerpsView', () => {
       action(),
     );
     mockSubmitRequestToBackground.mockResolvedValue(undefined);
-    jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+    jest.mocked(streamHooksModule12.usePerpsLivePositions).mockReturnValue({
       positions: mocks.mockPositions,
       isInitialLoading: false,
     });
-    jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
+    jest.mocked(streamHooksModule11.usePerpsLiveOrders).mockReturnValue({
       orders: mocks.mockOrders,
       isInitialLoading: false,
     });
-    jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+    jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
       account: mocks.mockAccountState,
       isInitialLoading: false,
     });
@@ -301,7 +372,7 @@ describe('PerpsView', () => {
   describe('with default mock data (positions and orders)', () => {
     it('waits for pending orders before completing the Mobile Home trace', async () => {
       jest
-        .mocked(streamHooks.usePerpsLiveOrders)
+        .mocked(streamHooksModule11.usePerpsLiveOrders)
         .mockReturnValue({ orders: [], isInitialLoading: true });
       const store = configureStore(mockState);
       const { rerender } = renderWithProvider(<PerpsView />, store);
@@ -313,7 +384,7 @@ describe('PerpsView', () => {
       );
 
       jest
-        .mocked(streamHooks.usePerpsLiveOrders)
+        .mocked(streamHooksModule11.usePerpsLiveOrders)
         .mockReturnValue({ orders: mocks.mockOrders, isInitialLoading: false });
       rerender(<PerpsView />);
 
@@ -402,7 +473,7 @@ describe('PerpsView', () => {
     });
 
     it('renders single-position summary RoE from the same position value as the card, under the Your positions header', () => {
-      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+      jest.mocked(streamHooksModule12.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
             ...mocks.mockPositions[0],
@@ -412,7 +483,7 @@ describe('PerpsView', () => {
         ],
         isInitialLoading: false,
       });
-      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
           unrealizedPnl: '1.00',
@@ -432,7 +503,7 @@ describe('PerpsView', () => {
     });
 
     it('keeps multi-position summary RoE on the account aggregate, under the Your positions header', () => {
-      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+      jest.mocked(streamHooksModule12.usePerpsLivePositions).mockReturnValue({
         positions: [
           {
             ...mocks.mockPositions[0],
@@ -445,7 +516,7 @@ describe('PerpsView', () => {
         ],
         isInitialLoading: false,
       });
-      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
           returnOnEquity: '1',
@@ -751,7 +822,7 @@ describe('PerpsView', () => {
     });
 
     it('does not show cancel all when only TP/SL trigger orders are open', () => {
-      jest.mocked(streamHooks.usePerpsLiveOrders).mockReturnValue({
+      jest.mocked(streamHooksModule11.usePerpsLiveOrders).mockReturnValue({
         orders: [
           {
             orderId: 'tp-only-1',
@@ -1132,7 +1203,7 @@ describe('PerpsView', () => {
     });
 
     it('does not fire Perp Screen Viewed while loading', () => {
-      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+      jest.mocked(streamHooksModule12.usePerpsLivePositions).mockReturnValue({
         positions: mocks.mockPositions,
         isInitialLoading: true,
       });
@@ -1148,7 +1219,7 @@ describe('PerpsView', () => {
 
     it('does not fire Perp Screen Viewed while account data is still loading', () => {
       // positions/orders/markets are ready but account hasn't arrived yet
-      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
         account: null,
         isInitialLoading: true,
       });
@@ -1163,7 +1234,7 @@ describe('PerpsView', () => {
     });
 
     it('tracks has_perp_balance when unified account funds are tradeable but not withdrawable', () => {
-      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
           spendableBalance: '0',
@@ -1185,7 +1256,7 @@ describe('PerpsView', () => {
     });
 
     it('reports no perp balance when withdrawableBalance is zero even if spendableBalance is positive', () => {
-      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+      jest.mocked(streamHooksModule5.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
           spendableBalance: '100',

@@ -20,14 +20,12 @@ import {
 import classnames from 'clsx';
 import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalFooter,
-  ModalBody,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
 import {
   setShowShieldEntryModalOnce,
   submitSubscriptionUserEvents,
@@ -40,7 +38,7 @@ import {
   getShouldSubmitEventsForShieldEntryModal,
   getShieldEntryModalTriggeringCohort,
   getModalTypeForShieldEntryModal,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldMetricsSourceEnum,
@@ -57,7 +55,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/metrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useDispatch } from '../../../store/hooks';

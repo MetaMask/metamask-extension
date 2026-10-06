@@ -21,7 +21,7 @@ import {
   ONBOARDING_ROUTE,
   ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   createNewVaultAndGetSeedPhrase,
   restoreSocialBackupAndGetSeedPhrase,
@@ -60,8 +60,9 @@ jest.mock('../../hooks/useAnalytics', () => {
 // on the importFn (or replaced with a generic solution).
 jest.mock('../../helpers/utils/mm-lazy', () => ({
   mmLazy: () =>
-    jest.requireActual('../../components/app/flask/experimental-area/index.js')
-      .default,
+    jest.requireActual(
+      '../../components/app/flask/experimental-area/experimental-area',
+    ).default,
 }));
 
 const mockUseNavigate = jest.fn();
@@ -71,7 +72,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../unlock-page', () => {
+jest.mock('../unlock-page/unlock-page.container', () => {
   const reactModule = jest.requireActual('react');
 
   return function mockUnlock({
@@ -151,7 +152,7 @@ jest.mock('./hooks/useOnboardingCompletion', () => ({
 }));
 
 // Mock the useBackupAndSync hook to avoid thunk dispatch issues
-jest.mock('../../hooks/identity/useBackupAndSync', () => ({
+jest.mock('../../hooks/identity/useBackupAndSync/useBackupAndSync', () => ({
   useBackupAndSync: () => ({
     error: null,
     setIsBackupAndSyncFeatureEnabled: jest.fn(() => Promise.resolve()),

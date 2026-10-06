@@ -15,14 +15,12 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
+import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list/multichain-address-rows-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';

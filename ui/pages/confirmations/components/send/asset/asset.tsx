@@ -5,16 +5,16 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import { useSendAssets } from '../../../hooks/send/useSendAssets';
 import { useSendAssetFilter } from '../../../hooks/send/useSendAssetFilter';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
-import { AssetList } from '../asset-list';
-import { AssetFilterInput } from '../asset-filter-input';
-import { NetworkFilter } from '../network-filter';
+import { AssetList } from '../asset-list/asset-list';
+import { AssetFilterInput } from '../asset-filter-input/asset-filter-input';
+import { NetworkFilter } from '../network-filter/network-filter';
 import { type Asset as AssetType } from '../../../types/send';
-import { type TokenTagRenderer } from '../../UI/asset';
+import type { TokenTagRenderer } from '../../UI/asset/asset';
 
 const noop = () => undefined;
 

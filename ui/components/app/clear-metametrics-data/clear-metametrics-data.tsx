@@ -10,17 +10,17 @@ import {
   openDataDeletionErrorModal,
 } from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Button } from '../../component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  Modal,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
+} from '../../component-library/button/button.types';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   BlockSize,

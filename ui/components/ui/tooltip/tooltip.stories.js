@@ -1,8 +1,10 @@
 import React from 'react';
 import Box from '../box/box';
-import { Icon, IconName, Text } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { IconColor } from '../../../helpers/constants/design-system';
-import Tooltip from '.';
+import Tooltip from './tooltip';
 
 export default {
   title: 'Components/UI/Tooltip',

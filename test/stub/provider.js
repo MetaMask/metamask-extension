@@ -3,7 +3,7 @@ import {
   createScaffoldMiddleware,
 } from '@metamask/json-rpc-engine';
 import { InternalProvider } from '@metamask/eth-json-rpc-provider';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 
 const ZERO_HASH = `0x${'0'.repeat(64)}`;
 const ZERO_BLOOM = `0x${'0'.repeat(512)}`;

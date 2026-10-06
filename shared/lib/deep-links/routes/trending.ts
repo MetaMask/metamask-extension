@@ -1,9 +1,11 @@
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DISCOVER_SEARCH_ROUTE } from '../../../../ui/helpers/constants/routes';
 import {
   DEEP_LINK_ORIGIN,
   createHomeQrCodeDestination,
   HomeQueryParams,
 } from './home';
-import { DISCOVER_SEARCH_ROUTE, Route } from './route';
+import { Route } from './route';
 
 const SEARCH_SCREEN = 'search';
 const SEARCH_QUERY_PARAM = 'q';

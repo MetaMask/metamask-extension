@@ -6,7 +6,8 @@ import domainReducer from './domains';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
 import gasReducer from './gas/gas.duck';
-import { invalidCustomNetwork, unconnectedAccount } from './alerts';
+import invalidCustomNetwork from './alerts/invalid-custom-network';
+import unconnectedAccount from './alerts/unconnected-account-slice';
 import swapsReducer from './swaps/swaps';
 import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
@@ -15,7 +16,7 @@ import sendMaxValueReducer from './send-max-value/send-max-value';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
 import moneyBalanceReducer from './money-balance';
-import { perpsTutorialReducer } from './perps';
+import perpsTutorialReducer from './perps/tutorial';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,

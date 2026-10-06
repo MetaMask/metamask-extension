@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { TokenListItem } from '../../token-list-item';
+import { TokenListItem } from '../../token-list-item/token-list-item';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   getMultichainNetworkConfigurationsByChainId,

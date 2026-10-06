@@ -36,10 +36,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  CHAIN_IDS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
   decimalToHex,
@@ -76,7 +76,7 @@ import {
 import {
   getIsRpcFailoverEnabled,
   getTokenNetworkFilter,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { useDispatch } from '../../../store/hooks';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';

@@ -36,15 +36,6 @@ import {
 } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { ShieldSubscriptionServiceMethodActions } from './shield-subscription-service-method-action-types';
 
-export type {
-  ShieldSubscriptionServiceUpdateSubscriptionCardPaymentMethodAction,
-  ShieldSubscriptionServiceUpdateSubscriptionCryptoPaymentMethodAction,
-  ShieldSubscriptionServiceStartSubscriptionWithCardAction,
-  ShieldSubscriptionServiceHandlePostTransactionAction,
-  ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction,
-  ShieldSubscriptionServiceLinkRewardToExistingSubscriptionAction,
-} from './shield-subscription-service-method-action-types';
-
 export const SERVICE_NAME = 'ShieldSubscriptionService';
 
 export type ServiceName = typeof SERVICE_NAME;

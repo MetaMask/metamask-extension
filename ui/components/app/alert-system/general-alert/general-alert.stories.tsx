@@ -1,6 +1,8 @@
 import React from 'react';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { ButtonLink, ButtonLinkSize, Text } from '../../../component-library';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { Text } from '../../../component-library/text/text';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import GeneralAlert from './general-alert';
 

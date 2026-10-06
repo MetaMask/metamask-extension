@@ -8,14 +8,12 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../../component-library';
-import Tooltip from '../../../../ui/tooltip';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 
 const InfoText = ({ text }: { text: string }) => (
   <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>

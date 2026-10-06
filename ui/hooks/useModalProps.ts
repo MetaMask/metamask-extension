@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { hideModal } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 

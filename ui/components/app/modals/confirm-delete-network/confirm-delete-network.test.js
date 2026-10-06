@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import ConfirmDeleteNetwork from '.';
+import ConfirmDeleteNetwork from './confirm-delete-network.container';
 
 describe('Confirm Delete Network', () => {
   const props = {

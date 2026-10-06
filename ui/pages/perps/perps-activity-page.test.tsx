@@ -13,7 +13,7 @@ import {
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
-import type { PerpsTransaction } from '../../components/app/perps/types';
+import type { PerpsTransaction } from '../../components/app/perps/types/transactionHistory';
 import PerpsActivityPage from './perps-activity-page';
 
 const mockNavigate = jest.fn();

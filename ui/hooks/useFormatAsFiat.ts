@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId, Hex } from '@metamask/utils';
+import type { TokenAmount } from '@metamask/client-utils';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
 } from '../../shared/lib/activity/fiat';
-import type { TokenAmount } from '../../shared/lib/activity/types';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 import { useConvertToFiat } from './useConvertToFiat';
 import { useFormatters } from './useFormatters';
 

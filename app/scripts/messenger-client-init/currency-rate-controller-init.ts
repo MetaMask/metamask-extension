@@ -4,7 +4,7 @@ import {
   CurrencyRateMessenger,
 } from '@metamask/assets-controllers';
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { CurrencyRateControllerInitMessenger } from './messengers';
+import { CurrencyRateControllerInitMessenger } from './messengers/currency-rate-controller-messenger';
 import { MessengerClientInitFunction } from './types';
 
 /**

@@ -8,10 +8,8 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { EtherDenomination } from '../../../../../../../shared/constants/common';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-} from '../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../shared/constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../../../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -21,16 +19,16 @@ import {
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
 import {
-  getCurrentCurrency,
-  getCurrencyRates,
-} from '../../../../../../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../../../../../../shared/lib/selectors/assets-migration';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import {
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax -- Preserve the existing chain-specific conversion selector.
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
-} from '../../../../../../selectors';
+} from '../../../../../../selectors/selectors';
 import { useTransactionGasLimit } from '../../../../hooks/gas/useTransactionGasLimit';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';

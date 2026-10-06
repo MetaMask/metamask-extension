@@ -1,12 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   AlignItems,

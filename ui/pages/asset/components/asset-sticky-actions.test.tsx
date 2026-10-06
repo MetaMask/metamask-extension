@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';

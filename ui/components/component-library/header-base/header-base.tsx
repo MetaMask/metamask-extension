@@ -4,9 +4,9 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../box';
+import { Box } from '../box/box';
 
-import type { PolymorphicRef, BoxProps } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box/box.types';
 
 import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 

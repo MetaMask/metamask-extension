@@ -1,5 +1,6 @@
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../stub/networks';

@@ -3,7 +3,7 @@ import { shouldStartBasicFunctionalityConsolidation } from '../../shared/lib/bas
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../shared/lib/environment';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { getIsUnlocked } from '../ducks/metamask/base-selectors';
-import { getIsBasicFunctionalityToggleEnabled } from '../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalityToggleEnabled } from '../selectors/multichain/basic-functionality';
 import { getIsBasicFunctionalitySocialLoginUser } from '../selectors/onboarding/onboarding';
 import { consolidateBasicFunctionality } from '../store/actions';
 import { useAppSelector, useDispatch } from '../store/hooks';

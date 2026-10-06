@@ -12,7 +12,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { Anvil } from '../../seeder/anvil';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import {
   getMockAssetsPrice,

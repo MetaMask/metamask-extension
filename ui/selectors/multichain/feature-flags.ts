@@ -7,14 +7,6 @@ import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/asset
 import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
-export {
-  BFT_CHILD_PREFERENCES,
-  getIsBasicFunctionalityConsolidationEnabled,
-  getIsBasicFunctionalityToggleEnabled,
-  getShouldShowBasicFunctionalityMigrationModal,
-  getShouldShowBasicFunctionalityMigrationToast,
-} from './basic-functionality';
-
 /**
  * Get the state of the `bitcoinAccounts` feature flag with version check.
  *

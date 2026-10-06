@@ -11,7 +11,7 @@ import {
   BoxFlexWrap,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import PageContainerFooter from '../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { I18nContext } from '../../contexts/i18n';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -25,14 +25,12 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
-import {
-  BUTTON_SIZES,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-  Text,
-} from '../../components/component-library';
+import { BUTTON_SIZES } from '../../components/component-library/button';
+import { ButtonIcon } from '../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../components/component-library/button-icon/button-icon.types';
+import { ButtonLink } from '../../components/component-library/button-link/button-link';
+import { IconName } from '../../components/component-library/icon/icon.types';
+import { Text } from '../../components/component-library/text/text';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import {
   getRpcPrefsForCurrentProvider,
@@ -41,7 +39,7 @@ import {
   getNetworkIdentifier,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import NftDefaultImage from '../../components/app/assets/nfts/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
@@ -60,7 +58,7 @@ import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { Nav } from '../confirmations/components/confirm/nav';
+import { Nav } from '../confirmations/components/confirm/nav/nav';
 import { hideAppHeader } from '../routes/utils';
 import { useDispatch } from '../../store/hooks';
 

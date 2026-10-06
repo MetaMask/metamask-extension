@@ -5,12 +5,10 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../../../../../components/component-library';
+import { AvatarNetwork } from '../../../../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../../../../components/component-library/avatar-network/avatar-network.types';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BlockSize,

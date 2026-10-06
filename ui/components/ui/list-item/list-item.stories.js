@@ -4,8 +4,8 @@ import Send from '../icon/send-icon.component';
 import Interaction from '../icon/interaction-icon.component';
 import Approve from '../icon/approve-icon.component';
 import Receive from '../icon/receive-icon.component';
-import Preloader from '../icon/preloader';
-import Button from '../button';
+import Preloader from '../icon/preloader/preloader-icon.component';
+import Button from '../button/button.component';
 import ListItem from './list-item.component';
 
 export default {

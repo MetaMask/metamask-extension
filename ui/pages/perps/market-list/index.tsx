@@ -35,10 +35,8 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  usePerpsLiveAccount,
-  usePerpsLiveMarketListData,
-} from '../../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../../hooks/perps/stream/usePerpsLiveAccount';
+import { usePerpsLiveMarketListData } from '../../../hooks/perps/stream/usePerpsLiveMarketListData';
 import {
   filterMarketsByQuery,
   isCryptoMarket,
@@ -68,14 +66,17 @@ import {
   type MarketFilter,
 } from '../../../../shared/constants/perps';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsAttribution } from '../../../hooks/perps/usePerpsAttribution';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
-import { MarketRow } from '../../../components/app/perps/market-row';
-import { PerpsCategoryRail } from '../../../components/app/perps/perps-market-categories';
-import { MarketRowSkeleton } from './components/market-row-skeleton';
-import { SortDropdown, SORT_FIELD_OPTIONS } from './components/sort-dropdown';
-import { SearchInput } from './components/search-input';
+import { MarketRow } from '../../../components/app/perps/market-row/market-row';
+import { PerpsCategoryRail } from '../../../components/app/perps/perps-market-categories/perps-category-rail';
+import { MarketRowSkeleton } from './components/market-row-skeleton/market-row-skeleton';
+import {
+  SortDropdown,
+  SORT_FIELD_OPTIONS,
+} from './components/sort-dropdown/sort-dropdown';
+import { SearchInput } from './components/search-input/search-input';
 
 /**
  * Settle window before a typed query counts as a real search, matching mobile

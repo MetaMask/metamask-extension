@@ -27,7 +27,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../controllers/permissions/specifications';
 import type {
   GetAccounts,
   GetCaip25PermissionFromLegacyPermissionsForOrigin,

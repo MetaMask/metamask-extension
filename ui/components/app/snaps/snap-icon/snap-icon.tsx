@@ -5,15 +5,15 @@ import { IconSize } from '@metamask/design-system-react';
 import {
   getSnapMetadata,
   getTargetSubjectMetadata,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
+import { AvatarBase } from '../../../component-library/avatar-base/avatar-base';
+import { AvatarBaseSize } from '../../../component-library/avatar-base/avatar-base.types';
+import { AvatarFavicon } from '../../../component-library/avatar-favicon/avatar-favicon';
 import {
-  AvatarBase,
-  AvatarBaseSize,
-  AvatarFavicon,
   AvatarFaviconProps,
   AvatarFaviconSize,
-} from '../../../component-library';
+} from '../../../component-library/avatar-favicon/avatar-favicon.types';
 import {
   AlignItems,
   BackgroundColor,

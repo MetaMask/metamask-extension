@@ -12,7 +12,7 @@ import { KeyringControllerError } from '@metamask/keyring-controller';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from './hardware-wallet-signatures-state-machine';
+} from './hardware-wallet-signatures-state-machine/types';
 import { SignatureStepStatus } from './types';
 import {
   cleanupPendingApproval,

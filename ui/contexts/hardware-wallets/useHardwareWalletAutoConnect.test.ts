@@ -5,12 +5,9 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
-import {
-  HardwareWalletType,
-  HardwareConnectionPermissionState,
-  ConnectionStatus,
-} from './types';
+import { HardwareConnectionPermissionState, ConnectionStatus } from './types';
 import { ConnectionState } from './connectionState';
 import {
   type HardwareWalletState,

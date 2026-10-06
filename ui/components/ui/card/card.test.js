@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import Card from '.';
+import Card from './card';
 
 describe('Card', () => {
   it('should render the Card without crashing', () => {

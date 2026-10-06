@@ -7,7 +7,7 @@ import { login } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {

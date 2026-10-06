@@ -2,14 +2,9 @@ import { createSelector } from 'reselect';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import {
-  BFT_CHILD_PREFERENCES,
-  EXTERNAL_SERVICES_OWNED_PREFERENCES,
-  type ExternalServicesOwnedPreference,
-} from '../../../shared/lib/basic-functionality-consolidation';
+import { EXTERNAL_SERVICES_OWNED_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
+import type { ExternalServicesOwnedPreference } from '../../../shared/lib/basic-functionality-consolidation';
 import { isBasicFunctionalityConsistent } from '../../../shared/lib/basic-functionality-consolidation-gate';
-
-export { BFT_CHILD_PREFERENCES };
 
 /**
  * Gets the current value of every preference that

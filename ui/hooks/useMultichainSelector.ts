@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 
 export function useMultichainSelector<
   TState = MetaMaskReduxState,

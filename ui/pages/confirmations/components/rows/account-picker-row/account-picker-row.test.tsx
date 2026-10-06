@@ -6,9 +6,12 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { AccountPickerRowContent } from './account-picker-row';
 
-jest.mock('../../../../../components/app/preferred-avatar', () => ({
-  PreferredAvatar: () => <div data-testid="preferred-avatar" />,
-}));
+jest.mock(
+  '../../../../../components/app/preferred-avatar/preferred-avatar',
+  () => ({
+    PreferredAvatar: () => <div data-testid="preferred-avatar" />,
+  }),
+);
 
 const mockStore = configureStore([thunk]);
 

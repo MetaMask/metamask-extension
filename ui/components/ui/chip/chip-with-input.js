@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { BorderColor } from '../../../helpers/constants/design-system';
-import Chip from '.';
+import Chip from './chip';
 
 export function ChipWithInput({
   dataTestId,

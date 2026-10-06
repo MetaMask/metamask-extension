@@ -4,17 +4,18 @@ import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
-import { Box, Text } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import {
   BackgroundColor,
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SnapDelineator } from '../snap-delineator';
-import { getSnapMetadata } from '../../../../selectors';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { Copyable } from '../copyable';
-import { SnapUIRenderer } from '../snap-ui-renderer';
+import { SnapDelineator } from '../snap-delineator/snap-delineator';
+import { getSnapMetadata } from '../../../../selectors/selectors';
+import { DelineatorType } from '../../../../helpers/constants/snaps/delineator';
+import { Copyable } from '../copyable/copyable';
+import { SnapUIRenderer } from '../snap-ui-renderer/snap-ui-renderer';
 import { useSnapSettings } from '../../../../hooks/snaps/useSnapSettings';
 import { useDispatch } from '../../../../store/hooks';
 

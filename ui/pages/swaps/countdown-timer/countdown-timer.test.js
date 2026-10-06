@@ -2,8 +2,8 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore } from '../../../../test/jest';
-import CountdownTimer from '.';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
+import CountdownTimer from './countdown-timer';
 
 const createProps = (customProps = {}) => {
   return {

@@ -26,7 +26,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 
-import Card from '../../../ui/card';
+import Card from '../../../ui/card/card';
 import { SrpListItem } from './srp-list-item';
 
 /**

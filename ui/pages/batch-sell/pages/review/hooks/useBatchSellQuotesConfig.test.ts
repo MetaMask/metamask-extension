@@ -5,11 +5,9 @@ import {
   getAvailableBatchSellReceiveAssetsForNetwork,
   getAvailableBatchSellSwapAssetsForNetwork,
 } from '../../../../../ducks/batch-sell/selectors';
-import {
-  buildBatchSellAsset,
-  BATCH_SELL_CHAIN_ID,
-  mockUseSelectorPassthrough,
-} from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
+import { BATCH_SELL_CHAIN_ID } from '../../../../../../test/data/batch-sell/constants';
+import { mockUseSelectorPassthrough } from '../../../../../../test/data/batch-sell/mock-selectors';
 import { useBatchSellQuotesConfig } from './useBatchSellQuotesConfig';
 
 let mockSelectionState = {

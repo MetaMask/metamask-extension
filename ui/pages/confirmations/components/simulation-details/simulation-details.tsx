@@ -11,21 +11,21 @@ import { Skeleton } from '@metamask/design-system-react';
 import { RevertReason } from '../revert-reason/revert-reason';
 import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
-import InlineAlert from '../../../../components/app/alert-system/inline-alert';
-import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import InlineAlert from '../../../../components/app/alert-system/inline-alert/inline-alert';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal/multiple-alert-modal';
 import { getAlertTextColors } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
+import { Box } from '../../../../components/component-library/box/box';
+import { Icon } from '../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../components/component-library/text/text';
 import type { ConfirmInfoSectionMarginBottom } from '../../../../components/app/confirm/info/row/section';
-import Tooltip from '../../../../components/ui/tooltip';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
   BlockSize,
@@ -41,7 +41,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { selectTransactionMetadata } from '../../../../selectors';
+import { selectTransactionMetadata } from '../../../../selectors/transactions';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Preloader from '../../../../../components/ui/icon/preloader';
+import Preloader from '../../../../../components/ui/icon/preloader/preloader-icon.component';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import useCurrentSignatureSecurityAlertResponse from '../../../hooks/useCurrentSignatureSecurityAlertResponse';
 
 const BlockaidLoadingIndicator = () => {

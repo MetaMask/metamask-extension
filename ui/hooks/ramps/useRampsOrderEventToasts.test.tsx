@@ -4,7 +4,7 @@
 import React, { type ReactElement } from 'react';
 import { renderHook, act, render, screen } from '@testing-library/react';
 import { RampsOrderStatus } from '@metamask/ramps-controller';
-import { toast } from '../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
 import { clearToastPhase } from '../../components/app/toast-listener/toast-lifecycle';
 import { useRampsOrderEventToasts } from './useRampsOrderEventToasts';
 
@@ -75,12 +75,6 @@ jest.mock('../useI18nContext', () => ({
 }));
 
 jest.mock('../../components/ui/toast/toast', () => ({
-  toast: {
-    loading: jest.fn(),
-    success: jest.fn(),
-    error: jest.fn(),
-    dismiss: jest.fn(),
-  },
   ToastContent: ({
     title,
     description,
@@ -93,6 +87,14 @@ jest.mock('../../components/ui/toast/toast', () => ({
       {description ? <p>{description}</p> : null}
     </div>
   ),
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    loading: jest.fn(),
+    success: jest.fn(),
+    error: jest.fn(),
+    dismiss: jest.fn(),
+  },
 }));
 
 describe('useRampsOrderEventToasts', () => {

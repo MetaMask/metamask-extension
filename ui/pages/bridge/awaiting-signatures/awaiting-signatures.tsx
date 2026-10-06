@@ -11,7 +11,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../../shared/lib/selectors/keyring';
-import PulseLoader from '../../../components/ui/pulse-loader';
+import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import {
   TextVariant,
   TextColor,
@@ -19,11 +19,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import {
-  AvatarBase,
-  AvatarBaseSize,
-  Text,
-} from '../../../components/component-library';
+import { AvatarBase } from '../../../components/component-library/avatar-base/avatar-base';
+import { AvatarBaseSize } from '../../../components/component-library/avatar-base/avatar-base.types';
+import { Text } from '../../../components/component-library/text/text';
 import {
   getBridgeQuotes,
   getFromChain,

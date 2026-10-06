@@ -4,11 +4,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import {
-  PerpsToastProvider,
-  PERPS_TOAST_KEYS,
-  usePerpsToast,
-} from './perps-toast-provider';
+import { PerpsToastProvider, usePerpsToast } from './perps-toast-provider';
+import { PERPS_TOAST_KEYS } from './perps-toast.constants';
 
 const ToastHarness = () => {
   const { replacePerpsToast, replacePerpsToastByKey, hidePerpsToast } =

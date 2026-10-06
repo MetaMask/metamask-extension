@@ -3,7 +3,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { mockSpotPrices } from '../tokens/utils/mocks';

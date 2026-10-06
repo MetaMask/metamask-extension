@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { CHAIN_IDS } from './chain-ids';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
   NETWORK_TO_NAME_MAP,

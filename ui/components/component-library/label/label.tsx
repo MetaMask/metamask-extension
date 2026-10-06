@@ -1,14 +1,14 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Text } from '../text';
-import type { TextProps } from '../text';
+import { Text } from '../text/text';
+import type { TextProps } from '../text/text.types';
 import {
   FontWeight,
   TextVariant,
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
+import type { PolymorphicRef } from '../box/box.types';
 import { LabelProps, LabelComponent } from './label.types';
 
 /**

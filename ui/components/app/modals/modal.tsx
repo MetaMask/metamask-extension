@@ -7,22 +7,24 @@ import * as actions from '../../../store/actions';
 
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
-import Spinner from '../../ui/spinner';
+import Spinner from '../../ui/spinner/spinner.component';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   ConfirmTurnOnBackupAndSyncModal,
+} from './identity/confirm-turn-on-backup-and-sync-modal/confirm-turn-on-backup-and-sync-modal';
+import {
   TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   TurnOnBackupAndSyncModal,
-} from './identity';
-import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
+} from './identity/turn-on-backup-and-sync-modal/turn-on-backup-and-sync-modal';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal/hardware-wallet-error-modal';
 
-import ConfirmDeleteNetwork from './confirm-delete-network';
+import ConfirmDeleteNetwork from './confirm-delete-network/confirm-delete-network.container';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
-import CustomizeNonceModal from './customize-nonce';
+import CustomizeNonceModal from './customize-nonce/customize-nonce.component';
 import FadeModal, { type FadeModalRef } from './fade-modal';
 import RampsInfoModal from './ramps/ramps-info-modal';
 
-const QRScanner = mmLazy(() => import('./qr-scanner'));
+const QRScanner = mmLazy(() => import('./qr-scanner/qr-scanner.container'));
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',

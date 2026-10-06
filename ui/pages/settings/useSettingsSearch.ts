@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
-import { selectIsTickerWidgetFeatureEnabled } from '../../selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/basic-functionality';
+import { selectIsTickerWidgetFeatureEnabled } from '../../selectors/selectors';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG, type TabSearchConfig } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';

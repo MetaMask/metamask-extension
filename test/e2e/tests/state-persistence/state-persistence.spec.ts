@@ -8,7 +8,7 @@ import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-acco
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import {
   BASE_MANIFEST_TESTING_FLAGS,
   expectDataStateStorage,

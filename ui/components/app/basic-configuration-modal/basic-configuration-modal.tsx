@@ -25,22 +25,20 @@ import {
   toggleBasicFunctionality,
   toggleExternalServices,
 } from '../../../store/actions';
-import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  Modal,
-  ModalBody,
-  ModalFooter,
-} from '../../component-library';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
 import { Display } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getUseExternalServices } from '../../../selectors';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import { getUseExternalServices } from '../../../selectors/selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {

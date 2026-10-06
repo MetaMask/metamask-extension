@@ -5,7 +5,8 @@ import type {
   AssetsControllerState,
   FungibleAssetPrice,
 } from '@metamask/assets-controller';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../constants/network';
+import { CHAIN_IDS } from '../../../constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../../constants/network';
 
 /**
  * Tempo Chain Augmentation Module

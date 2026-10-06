@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BannerAlert, IconName, Text } from '../../../component-library';
+import { BannerAlert } from '../../../component-library/banner-alert/banner-alert';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 

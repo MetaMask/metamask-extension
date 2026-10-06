@@ -7,7 +7,7 @@ import {
   setRewardsDeeplinkUrl,
 } from '../../../ducks/rewards';
 import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
-import { DeeplinkQRCode } from '../deeplink-qr-code';
+import { DeeplinkQRCode } from '../deeplink-qr-code/deeplink-qr-code';
 import { useDispatch } from '../../../store/hooks';
 import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 

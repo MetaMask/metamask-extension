@@ -23,7 +23,7 @@ import {
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
-import ToggleButton from '../../../ui/toggle-button';
+import ToggleButton from '../../../ui/toggle-button/toggle-button.component';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import {

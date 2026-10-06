@@ -1,5 +1,5 @@
 import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import {

@@ -1,5 +1,5 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { CHAIN_IDS } from './network';
+import { CHAIN_IDS } from './chain-ids';
 
 /**
  * V1 of batch sell functionality relies on a hardcoded list

@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useMemo } from 'react';
-import { DecodedTransactionDataResponse } from '../../shared/types';
+import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { hasTransactionData } from '../../shared/lib/transaction.utils';
 import { decodeTransactionData } from '../store/actions';
 import { AsyncResult, useAsyncResult } from './useAsync';

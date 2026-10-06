@@ -1,13 +1,13 @@
 import React from 'react';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../../../components/app/money/messenger';
-import { MoneyAccountWithdrawBalance } from '../../../../../components/app/money/money-account-withdraw-balance';
+import { MoneyAccountWithdrawBalance } from '../../../../../components/app/money/money-account-withdraw-balance/money-account-withdraw-balance';
 import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
 import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
-import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
-import { CustomAmountInfo } from '../custom-amount-info';
+import { CustomAmountInfo } from '../custom-amount-info/custom-amount-info';
 
 const MONEY_ACCOUNT_WITHDRAW_CURRENCY = 'usd';
 

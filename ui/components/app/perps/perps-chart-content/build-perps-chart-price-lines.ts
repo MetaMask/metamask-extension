@@ -1,7 +1,7 @@
 import { brandColor } from '@metamask/design-tokens';
 
 import { parsePerpsDisplayPrice } from '../utils/formatPerpsDisplayPrice';
-import type { ChartPriceLine } from '../perps-candlestick-chart';
+import type { ChartPriceLine } from '../perps-candlestick-chart/perps-candlestick-chart';
 
 export type BuildPerpsChartPriceLinesArgs = {
   chartCurrentPrice: number;

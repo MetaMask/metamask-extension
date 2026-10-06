@@ -18,7 +18,9 @@ import {
   ModalHeader,
   ModalContent,
 } from '@metamask/design-system-react';
-import { Box, Text, PickerNetwork } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
+import { PickerNetwork } from '../../../component-library/picker-network/picker-network';
 import {
   TextVariant,
   TextAlign,
@@ -29,10 +31,13 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getAllTokens,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+} from '../../../../../shared/lib/selectors/assets-migration';
+import {
   getSelectedEvmInternalAccount,
   getTokenExchangeRates,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
@@ -48,12 +53,11 @@ import {
   getMultichainCurrencyImage,
   getImageForChainId,
   getMultichainCurrentChainId,
-  getMultichainCurrentCurrency,
   getMultichainNativeCurrency,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainSelectedAccountCachedBalance,
-  getMultichainIsEvm,
 } from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/multichain/networks';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { isTronSpecialAsset } from '../../../../../shared/lib/asset-utils';
 

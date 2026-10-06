@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
+import { Box } from '../../../../component-library/box/box';
+import { Icon } from '../../../../component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../component-library';
+} from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
   BorderRadius,
@@ -17,11 +17,11 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
-import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
-import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
+import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill/snap-authorship-pill';
+import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
-import Tooltip from '../../../../ui/tooltip';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type ConfirmInfoRowUrlProps = {

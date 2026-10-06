@@ -109,7 +109,7 @@ jest.mock('../../hooks/money/use-money-activity-items', () => ({
   useMoneyActivityItems: () => mockUseMoneyActivityItems(),
 }));
 
-jest.mock('../../components/app/token-icon', () => ({
+jest.mock('../../components/app/token-icon/token-icon', () => ({
   TokenIcon: ({
     chainId,
     tokenAddress,

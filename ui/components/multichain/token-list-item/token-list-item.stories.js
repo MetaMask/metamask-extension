@@ -2,12 +2,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { TokenListItem } from '.';
+import { TokenListItem } from './token-list-item';
 
 export default {
   title: 'Components/Multichain/MultichainTokenListItem',

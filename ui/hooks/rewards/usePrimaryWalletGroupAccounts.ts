@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getSelectedAccount } from '../../selectors';
+import { getSelectedAccount } from '../../selectors/selectors';
 import {
   getMultichainAccountsByWalletId,
   getWalletIdAndNameByAccountAddress,

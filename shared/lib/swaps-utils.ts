@@ -4,7 +4,7 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
 } from '@metamask/bridge-controller';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,

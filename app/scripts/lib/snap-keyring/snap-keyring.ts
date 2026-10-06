@@ -16,14 +16,15 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { t } from '../../../../shared/lib/translate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { IconName } from '../../../../ui/components/component-library/icon';
+import { IconName } from '../../../../ui/components/component-library/icon/icon.types';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
 import { isFlask } from '../../../../shared/lib/build-types';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -486,8 +487,6 @@ export class SnapKeyringImpl implements SnapKeyringCallbacks {
     }
   }
 }
-
-export { getSnapKeyringBuilderMessenger } from '../../messenger-client-init/messengers/accounts/snap-keyring-builder-messenger';
 
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.

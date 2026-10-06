@@ -2,11 +2,11 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
+import { BATCH_SELL_ASSET_IDS } from '../../../../../test/data/batch-sell/constants';
 import {
-  BATCH_SELL_ASSET_IDS,
   buildSendAssetConfigEntry,
   buildReceivedAsset,
-} from '../../../../../test/data/batch-sell';
+} from '../../../../../test/data/batch-sell/factories';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { useRefreshSmartTransactionsLiveness } from '../../../bridge/hooks/useRefreshSmartTransactionsLiveness';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';

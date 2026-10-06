@@ -7,8 +7,8 @@ import { TextProps, ValidTagType } from '../text/text.types';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
-import { IconName as IconNameLegacy, IconProps } from '../icon';
+} from '../box/box.types';
+import { IconName as IconNameLegacy, IconProps } from '../icon/icon.types';
 import {
   IconColor as IconColorLegacy,
   TextVariant as TextVariantLegacy,

@@ -16,17 +16,12 @@ import {
   selectIsMusdTokenListItemCtaEnabled,
   selectIsMusdAssetOverviewCtaEnabled,
   selectMusdCtaTokens,
-  selectMusdConversionDismissedCtaKeys,
-} from '../../selectors/musd';
+} from '../../selectors/musd/feature-flags';
+import { selectMusdConversionDismissedCtaKeys } from '../../selectors/musd/persisted-state';
 import { isMusdSupportedChain } from '../../components/app/musd/constants';
 import { isTokenInWildcardList } from '../../components/app/musd/utils/token-allowlist';
 import { useMusdGeoBlocking } from './useMusdGeoBlocking';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
-
-export {
-  isTokenInWildcardList,
-  checkTokenAllowed,
-} from '../../components/app/musd/utils/token-allowlist';
 
 // ============================================================================
 // Types

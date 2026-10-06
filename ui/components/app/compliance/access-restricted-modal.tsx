@@ -10,14 +10,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type AccessRestrictedModalProps = {

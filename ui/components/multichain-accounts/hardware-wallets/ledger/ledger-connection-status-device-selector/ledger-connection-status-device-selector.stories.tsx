@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { LedgerConnectionStatusDeviceSelector } from '.';
+import { LedgerConnectionStatusDeviceSelector } from './ledger-connection-status-device-selector';
 import type { LedgerConnectionStatusDeviceSelectorProps } from './ledger-connection-status-device-selector.types';
 
 const STORY_FRAME_WIDTH = 460;

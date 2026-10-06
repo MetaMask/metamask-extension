@@ -3,9 +3,9 @@ import React from 'react';
 
 import { Box } from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 
-import Card from '../card';
+import Card from '../card/card';
 
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';

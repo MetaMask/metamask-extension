@@ -5,17 +5,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getNewTokensImported,
   getNewTokensImportedError,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   setNewTokensImported,
   setNewTokensImportedError,
 } from '../../../store/actions';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../component-library/banner-alert/banner-alert.types';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
 

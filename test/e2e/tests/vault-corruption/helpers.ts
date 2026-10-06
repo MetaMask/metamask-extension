@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { type ManifestFlags } from '../../../../shared/lib/manifestFlags';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 

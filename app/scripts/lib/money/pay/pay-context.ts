@@ -14,10 +14,8 @@ import type {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
-import {
-  getMoneyAccountVaultConfig,
-  type MoneyAccountVaultConfig,
-} from '../../../../../shared/lib/money/vault-config';
+import { getMoneyAccountVaultConfig } from '@metamask/money-account-utils';
+import type { MoneyAccountVaultConfig } from '@metamask/money-account-utils';
 import type { DelegationMessengerActions } from '../../transaction/delegation';
 
 export type MoneyPayActions =

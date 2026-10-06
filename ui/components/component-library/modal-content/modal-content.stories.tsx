@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 
-import { Text } from '../text';
+import { Text } from '../text/text';
 
 import { ModalContent } from './modal-content';
 
-import { Button, ButtonVariant } from '../button';
-import { Modal } from '../modal';
-import { ModalHeader } from '../modal-header';
-import { ModalBody } from '../modal-body';
-import { ModalFooter } from '../modal-footer';
+import { Button } from '../button/button';
+import { ButtonVariant } from '../button/button.types';
+import { Modal } from '../modal/modal';
+import { ModalHeader } from '../modal-header/modal-header';
+import { ModalBody } from '../modal-body/modal-body';
+import { ModalFooter } from '../modal-footer/modal-footer';
 
 export default {
   title: 'Components/ComponentLibrary/ModalContent (deprecated)',

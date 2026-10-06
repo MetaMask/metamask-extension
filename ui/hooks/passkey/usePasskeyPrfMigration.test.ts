@@ -10,7 +10,7 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
   startPasskeyRegistration,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
 import { PasskeyPRFRequiredError } from '../../../shared/lib/passkey/passkey-capabilities';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { usePasskeyPrfMigration } from './usePasskeyPrfMigration';
@@ -23,10 +23,8 @@ jest.mock('../../store/actions', () => {
   };
 });
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
   startPasskeyAuthentication: jest.fn(),
   startPasskeyRegistration: jest.fn(),

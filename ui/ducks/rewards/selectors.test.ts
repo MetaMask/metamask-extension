@@ -36,7 +36,7 @@ describe('rewards selectors', () => {
     return {
       rewards,
       metamask,
-    } as unknown as import('../../store/store').MetaMaskReduxState;
+    } as unknown as import('../../store/types').MetaMaskReduxState;
   };
 
   describe('simple state selectors', () => {

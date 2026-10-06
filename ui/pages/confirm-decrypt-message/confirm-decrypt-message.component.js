@@ -7,20 +7,18 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
-import AccountListItem from '../../components/app/account-list-item';
-import Tooltip from '../../components/ui/tooltip';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import AccountListItem from '../../components/app/account-list-item/account-list-item';
+import Tooltip from '../../components/ui/tooltip/tooltip';
+import PageContainerFooter from '../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { Numeric } from '../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Icon,
-} from '../../components/component-library';
+import { ButtonIcon } from '../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../components/component-library/icon/icon.types';
+import { Icon } from '../../components/component-library/icon/icon';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useScrollRequired } from '../../hooks/useScrollRequired';
@@ -37,12 +35,10 @@ import {
   cancelDecryptMsg,
   decryptMsgInline,
 } from '../../store/actions';
-import {
-  getTargetAccountWithSendEtherInfo,
-  unconfirmedTransactionsListSelector,
-} from '../../selectors';
+import { getTargetAccountWithSendEtherInfo } from '../../selectors/selectors';
+import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { Nav } from '../confirmations/components/confirm/nav';
+import { Nav } from '../confirmations/components/confirm/nav/nav';
 import { useDispatch } from '../../store/hooks';
 
 const Header = ({ approvalId }) => {

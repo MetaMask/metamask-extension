@@ -20,7 +20,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useMusdConversion } from '../../../hooks/musd';
+import { useMusdConversion } from '../../../hooks/musd/useMusdConversion';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
 import {
   createMusdCtaClickedEventProperties,

@@ -27,10 +27,8 @@ import {
   getIsUpdatingMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import {
-  NotificationsSettingsBox,
-  NotificationsSettingsType,
-} from '../../components/multichain';
+import { NotificationsSettingsBox } from '../../components/multichain/notifications-settings-box/notifications-settings-box';
+import { NotificationsSettingsType } from '../../components/multichain/notifications-settings-type/notifications-settings-type';
 
 export function NotificationsSettingsAllowNotifications({
   loading,

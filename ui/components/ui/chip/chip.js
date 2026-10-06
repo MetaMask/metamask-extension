@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { omit } from 'lodash';
-import { Text } from '../../component-library';
-import UrlIcon from '../url-icon';
+import { Text } from '../../component-library/text/text';
+import UrlIcon from '../url-icon/url-icon';
 import {
   BackgroundColor,
   BorderColor,

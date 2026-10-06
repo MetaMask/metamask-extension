@@ -12,7 +12,8 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import { PerpsTokenLogo } from '../perps-token-logo';
+import type { PerpsMarketData } from '@metamask/perps-controller';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
 import {
   getDisplaySymbol,
   getChangeColor,
@@ -20,7 +21,6 @@ import {
 } from '../utils';
 import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import type { PerpsMarketData } from '../types';
 
 /**
  * Which metric to display below the symbol. Mirrors `SortField` from

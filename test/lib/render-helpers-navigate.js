@@ -321,7 +321,37 @@ export async function integrationTestRender(extendedRenderOptions) {
   } = extendedRenderOptions;
 
   // Dynamically import to avoid triggering full UI import chain during test setup
-  const { setupInitialStore, connectToBackground } = await import('../../ui');
+  const { setupInitialStore, connectToBackground } = await Promise.all([
+    import('../../ui/helpers/utils/display-critical-error'),
+    import('../../ui/helpers/utils/critical-startup-error-handler'),
+    import('../../ui'),
+  ]).then((modules) => ({
+    get CriticalErrorTranslationKey() {
+      return modules[0].CriticalErrorTranslationKey;
+    },
+
+    get CriticalStartupErrorHandler() {
+      return modules[1].CriticalStartupErrorHandler;
+    },
+    get connectToBackground() {
+      return modules[2].connectToBackground;
+    },
+    get displayCriticalErrorMessage() {
+      return modules[0].displayCriticalErrorMessage;
+    },
+    get getCleanAppState() {
+      return modules[2].getCleanAppState;
+    },
+    get launchMetamaskUi() {
+      return modules[2].launchMetamaskUi;
+    },
+    get runInitialActions() {
+      return modules[2].runInitialActions;
+    },
+    get setupInitialStore() {
+      return modules[2].setupInitialStore;
+    },
+  }));
   const { default: Root } = await import('../../ui/pages');
 
   connectToBackground(backgroundConnection, noop);

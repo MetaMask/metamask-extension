@@ -23,8 +23,11 @@ const mockUsePerpsLiveAccount = jest.fn<
 }));
 const mockTrack = jest.fn();
 
-jest.mock('../../../../hooks/perps', () => ({
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
@@ -38,7 +41,7 @@ jest.mock('../../../../hooks/useFormatters', () => ({
   }),
 }));
 
-jest.mock('../../../../hooks/perps/stream', () => ({
+jest.mock('../../../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: () => mockUsePerpsLiveAccount(),
 }));
 

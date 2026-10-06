@@ -4,7 +4,7 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream/usePerpsLiveAccount';
 import { PerpsWithdrawBalance } from './perps-withdraw-balance';
 
 const renderWithPrivacyMode = (privacyMode: boolean) => {
@@ -21,7 +21,7 @@ const renderWithPrivacyMode = (privacyMode: boolean) => {
   return renderWithProvider(<PerpsWithdrawBalance />, store);
 };
 
-jest.mock('../../../../../hooks/perps/stream', () => ({
+jest.mock('../../../../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: jest.fn(),
 }));
 

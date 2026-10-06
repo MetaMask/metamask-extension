@@ -4,7 +4,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { Tag } from '../../../component-library';
+import { Tag } from '../../../component-library/tag/tag';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const AssetInactiveBadge = () => {

@@ -14,8 +14,9 @@ import {
   ButtonIcon,
   ButtonIconSize,
 } from '@metamask/design-system-react';
-import { Header, Page } from '../../components/multichain/pages/page';
-import { toast } from '../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   CONTACTS_ADD_ROUTE,
@@ -24,12 +25,11 @@ import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { getCompleteAddressBook, getInternalAccounts } from '../../selectors';
+import { getCompleteAddressBook } from '../../selectors/selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../components/component-library';
+import { BannerAlert } from '../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../components/component-library/banner-alert/banner-alert.types';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

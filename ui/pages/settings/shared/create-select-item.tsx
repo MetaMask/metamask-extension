@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import type { SettingItemProps } from '../types';
 import { SettingsSelectItem } from './settings-select-item';
 

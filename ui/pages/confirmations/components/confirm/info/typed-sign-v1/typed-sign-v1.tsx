@@ -2,10 +2,8 @@ import React from 'react';
 
 import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowUrl,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import {

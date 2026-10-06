@@ -6,7 +6,7 @@ import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getSelectedNetworkControllerMessenger } from './messengers';
+import { getSelectedNetworkControllerMessenger } from './messengers/selected-network-controller-messenger';
 import { SelectedNetworkControllerInit } from './selected-network-controller-init';
 
 jest.mock('@metamask/selected-network-controller');

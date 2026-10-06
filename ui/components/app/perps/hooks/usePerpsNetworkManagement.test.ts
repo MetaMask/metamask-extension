@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { usePerpsNetworkManagement } from './usePerpsNetworkManagement';
 
 const mockDispatch = jest.fn();

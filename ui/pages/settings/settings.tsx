@@ -36,7 +36,7 @@ import {
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
-import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page/snap-settings-renderer';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -46,11 +46,11 @@ import {
   getUseExternalServices,
   getSettingsPageSnapsIds,
   getSnapsMetadata,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getSnapName } from '../../helpers/utils/util';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
-import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal/shield-entry-modal';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import { toRelativeRoutePath } from '../routes/utils';
@@ -67,7 +67,8 @@ import {
   SETTINGS_RENDERABLE_ROUTES,
   getSettingsRouteMeta,
 } from './settings-registry';
-import { SettingsRoot, SettingsSearchResults } from './shared';
+import { SettingsRoot } from './shared/settings-root';
+import { SettingsSearchResults } from './shared/settings-search-results';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
 

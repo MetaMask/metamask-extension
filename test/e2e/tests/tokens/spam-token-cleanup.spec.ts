@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import { Driver } from '../../webdriver/driver';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { DEFAULT_FIXTURE_ACCOUNT_ID, NETWORK_CLIENT_ID } from '../../constants';
 
 /**

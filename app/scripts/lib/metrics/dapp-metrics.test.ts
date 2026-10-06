@@ -3,7 +3,8 @@ import {
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { getPartnerByOrigin } from '../../../../shared/constants/defi-referrals';
 import { ReferralTriggerType } from '../defi-referrals/createDefiReferralMiddleware';
 import { createDappMetrics, type DappMetricsController } from './dapp-metrics';
@@ -12,9 +13,11 @@ jest.mock('../../../../shared/constants/defi-referrals', () => ({
   getPartnerByOrigin: jest.fn(),
 }));
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.fn(),
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.fn(),
 }));
 
 jest.mock('../util', () => ({

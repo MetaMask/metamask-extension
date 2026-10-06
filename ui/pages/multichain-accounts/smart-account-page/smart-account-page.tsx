@@ -9,17 +9,15 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section';
+import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section/smart-contract-account-toggle-section';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
-import { getInternalAccountByAddress } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 
 export const SmartAccountPage = () => {
   const t = useI18nContext();

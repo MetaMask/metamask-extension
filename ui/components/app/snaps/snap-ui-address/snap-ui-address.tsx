@@ -5,7 +5,8 @@ import {
   parseCaipAccountId,
 } from '@metamask/utils';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import { Box, Text } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -14,7 +15,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
-import { SnapUIAvatar } from '../snap-ui-avatar';
+import { SnapUIAvatar } from '../snap-ui-avatar/snap-ui-avatar';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
 export type SnapUIAddressProps = {

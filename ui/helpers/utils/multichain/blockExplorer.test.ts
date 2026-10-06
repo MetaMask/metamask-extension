@@ -2,8 +2,8 @@ import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   ETH_TOKEN_IMAGE_URL,

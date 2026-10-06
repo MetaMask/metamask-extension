@@ -50,7 +50,7 @@ jest.mock(
   }),
 );
 
-jest.mock('../../modals/pay-with-modal', () => ({
+jest.mock('../../modals/pay-with-modal/pay-with-modal', () => ({
   PayWithModal: ({
     isOpen,
     onClose,

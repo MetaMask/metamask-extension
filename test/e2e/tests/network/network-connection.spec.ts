@@ -13,7 +13,7 @@ import TokensTab from '../../page-objects/pages/home/tokens-tab';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 // Network configuration type
 type NetworkConfig = {

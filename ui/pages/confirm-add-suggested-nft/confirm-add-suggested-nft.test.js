@@ -10,10 +10,10 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as util from '../../helpers/utils/util';
-import ConfirmAddSuggestedNFT from '.';
+import ConfirmAddSuggestedNFT from './confirm-add-suggested-nft';
 
 const mockNavigate = jest.fn();
 const mockUseLocation = jest.fn();

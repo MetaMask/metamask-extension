@@ -1,13 +1,11 @@
 import { renderHook, act } from '@testing-library/react';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
-import {
-  HardwareWalletType,
-  ConnectionStatus,
-  type HardwareWalletAdapter,
-} from './types';
+import { ConnectionStatus } from './types';
+import type { HardwareWalletAdapter } from './types';
 import { ConnectionState } from './connectionState';
-import { createHardwareWalletError } from './errors';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import { MockHardwareWalletAdapter } from './__mocks__/MockHardwareWalletAdapter';
 

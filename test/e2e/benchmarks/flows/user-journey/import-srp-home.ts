@@ -27,7 +27,7 @@ import {
   type WebVitalsMetrics,
 } from '../../../../../shared/constants/benchmarks';
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
-import { collectWebVitals } from '../../utils';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 const SECOND_SRP = process.env.TEST_SRP_2;

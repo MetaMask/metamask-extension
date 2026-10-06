@@ -27,7 +27,7 @@ import {
   isAssetsUnifyStateTracesEnabled,
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 const ARC_CAIP_CHAIN_ID = toEvmCaipChainId(CHAIN_IDS.ARC);
 

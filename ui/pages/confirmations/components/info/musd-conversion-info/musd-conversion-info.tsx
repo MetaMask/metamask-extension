@@ -13,14 +13,14 @@ import {
 } from '../../../../../selectors/transactionPayController';
 import { selectIsPayAmountPrefillEnabled } from '../../../selectors/feature-flags';
 import { useConfirmContext } from '../../../context/confirm';
-import { CustomAmountInfo } from '../custom-amount-info';
+import { CustomAmountInfo } from '../custom-amount-info/custom-amount-info';
 import { useTransactionCustomAmountAlerts } from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
-import { useMusdConversionTokens } from '../../../../../hooks/musd';
+import { useMusdConversionTokens } from '../../../../../hooks/musd/useMusdConversionTokens';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BridgeFeeRow } from '../../rows/bridge-fee-row/bridge-fee-row';
 import { TotalRow } from '../../rows/total-row/total-row';

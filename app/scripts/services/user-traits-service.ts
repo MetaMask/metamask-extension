@@ -15,8 +15,9 @@ import type { MetaMetricsUserTraits } from '../../../shared/constants/metametric
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
-import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
-import { getDeviceType, getInstallType, getOs, getPlatform } from '../lib/util';
+import type { FlattenedBackgroundStateProxy } from '../../../shared/types/background';
+import { getDeviceType, getOs, getPlatform } from '../lib/util';
+import { getInstallType } from '../lib/install-type';
 import * as analytics from '../controllers/analytics/analytics';
 import type {
   AppMetadataControllerGetStateAction,

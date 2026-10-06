@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getInternalAccounts } from '../selectors/accounts';
 import {

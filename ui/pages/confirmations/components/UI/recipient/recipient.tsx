@@ -2,8 +2,9 @@ import React from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
-import { Box, Text } from '../../../../../components/component-library';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -15,7 +16,7 @@ import {
 import { type Recipient as RecipientType } from '../../../hooks/send/useRecipients';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { accountTypeLabel } from '../../../constants/network';
-import { AccountTypeLabel } from '../account-type-label';
+import { AccountTypeLabel } from '../account-type-label/account-type-label';
 
 export const Recipient = ({
   isAccount,

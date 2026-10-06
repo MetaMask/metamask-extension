@@ -31,10 +31,8 @@ import {
   timeout as timeoutOperator,
 } from 'rxjs';
 
-import {
-  HardwareWalletType,
-  toHardwareWalletError,
-} from '../../../shared/lib/hardware-wallets';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { toHardwareWalletError } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import {
   LEDGER_DEVICE_DISCOVERY_TIMEOUT_MS,
   LedgerAction,

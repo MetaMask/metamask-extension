@@ -20,10 +20,8 @@ import {
   BoxBackgroundColor,
   BoxBorderColor,
 } from '@metamask/design-system-react';
-import {
-  TextField,
-  TextFieldType,
-} from '../../../components/component-library';
+import { TextField } from '../../../components/component-library/text-field/text-field';
+import { TextFieldType } from '../../../components/component-library/text-field/text-field.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 

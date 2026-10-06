@@ -3,22 +3,26 @@ import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import Name from '../../../../components/app/name';
+import Name from '../../../../components/app/name/name';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
+import { AvatarNetwork } from '../../../../components/component-library/avatar-network/avatar-network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
 import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
-jest.mock('../../../../components/component-library/avatar-network', () => ({
-  AvatarNetworkSize: { Sm: 'Sm' },
-  AvatarNetwork: jest.fn(() => null),
-}));
+jest.mock(
+  '../../../../components/component-library/avatar-network/avatar-network',
+  () => ({ AvatarNetwork: jest.fn(() => null) }),
+);
+jest.mock(
+  '../../../../components/component-library/avatar-network/avatar-network.types',
+  () => ({ AvatarNetworkSize: { Sm: 'Sm' } }),
+);
 
-jest.mock('../../../../components/app/name', () => ({
+jest.mock('../../../../components/app/name/name', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,

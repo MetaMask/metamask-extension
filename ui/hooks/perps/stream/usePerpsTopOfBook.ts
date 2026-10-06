@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import type { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { usePerpsChannel } from './usePerpsChannel';
 
 /**

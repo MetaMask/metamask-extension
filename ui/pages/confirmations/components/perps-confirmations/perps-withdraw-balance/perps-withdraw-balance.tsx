@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  Box,
-  Text,
-  SensitiveText,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
+import { SensitiveText } from '../../../../../components/component-library/sensitive-text/sensitive-text';
 import {
   AlignItems,
   Display,
@@ -16,7 +14,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../../hooks/useFormatters';
-import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../../../../hooks/perps/stream/usePerpsLiveAccount';
 import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 

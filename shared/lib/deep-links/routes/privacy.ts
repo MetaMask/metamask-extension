@@ -1,4 +1,6 @@
-import { PRIVACY_ROUTE, Route } from './route';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { PRIVACY_ROUTE } from '../../../../ui/helpers/constants/routes';
+import { Route } from './route';
 
 /**
  * Where a `privacy` deeplink lands when no `setting` is given, or when the one

@@ -1,8 +1,6 @@
+import { WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import { Driver } from '../../webdriver/driver';
-import {
-  WalletConnectionType,
-  TestDappBitcoin,
-} from '../pages/test-dapp-bitcoin';
+import { TestDappBitcoin } from '../pages/test-dapp-bitcoin';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
 

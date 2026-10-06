@@ -1,12 +1,13 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import { toast } from 'react-hot-toast';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 
 import { AddWalletPage } from './add-wallet-page';
 
@@ -18,12 +19,14 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../../components/ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
   ToastContent: jest.fn(({ title, dataTestId }) => (
     <div data-testid={dataTestId}>{title}</div>
   )),
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
 }));
 
 // Mock the ImportAccount component to test onActionComplete function is passed

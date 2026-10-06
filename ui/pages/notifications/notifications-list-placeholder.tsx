@@ -1,11 +1,11 @@
 import React from 'react';
+import { Box } from '../../components/component-library/box/box';
 import {
-  Box,
   IconName,
   IconSize,
-  Text,
-  Icon,
-} from '../../components/component-library';
+} from '../../components/component-library/icon/icon.types';
+import { Text } from '../../components/component-library/text/text';
+import { Icon } from '../../components/component-library/icon/icon';
 import {
   BlockSize,
   Display,

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
-import { Box } from '../../../components/component-library';
+import { Box } from '../../../components/component-library/box/box';
 import {
   BlockSize,
   Display,

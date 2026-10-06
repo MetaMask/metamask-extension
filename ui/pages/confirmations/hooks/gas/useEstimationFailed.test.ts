@@ -8,7 +8,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { useEstimationFailed } from './useEstimationFailed';
 
-jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors/smart-transactions');
 jest.mock('../../../../store/controller-actions/transaction-controller');
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({

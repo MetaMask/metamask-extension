@@ -9,15 +9,13 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../../components/component-library/modal-content/modal-content.types';
+import { ModalFooter } from '../../../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { GAS_INPUT_HELP_TEXT_ID, GasInput } from '../../gas-input/gas-input';
 

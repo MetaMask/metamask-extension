@@ -9,7 +9,7 @@ import {
   isEip712PrimaryTypeField,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
-} from '../../utils';
+} from '../../utils/confirm';
 import { SignatureRequestType } from '../../types/confirm';
 import {
   parseApprovalTransactionData,

@@ -9,7 +9,7 @@ import {
   type TransactionState,
 } from '../../selectors/transactionController';
 import { transformWalletPerpsWithdrawalsToTransactions } from '../../components/app/perps/utils/transactionTransforms';
-import type { PerpsTransaction } from '../../components/app/perps/types';
+import type { PerpsTransaction } from '../../components/app/perps/types/transactionHistory';
 
 const PERPS_WITHDRAWAL_TRANSACTION_TYPES = [TransactionType.perpsWithdraw];
 

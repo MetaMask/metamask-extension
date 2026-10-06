@@ -80,7 +80,7 @@ jest.mock('../../../hooks/subscription/useSubscription', () => ({
   useUserSubscriptions: jest.fn(() => ({ subscriptions: [] })),
 }));
 
-jest.mock('../notifications-tag-counter', () => ({
+jest.mock('../notifications-tag-counter/notifications-tag-counter', () => ({
   NotificationsTagCounter: () => <span data-testid="notifications-tag" />,
 }));
 

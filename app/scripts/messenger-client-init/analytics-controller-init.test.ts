@@ -6,8 +6,10 @@ import {
 import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../shared/lib/ab-testing/configs/perps-tab-badge';
 import { getRootMessenger } from '../lib/messenger';
-import { getAnalyticsControllerMessenger } from './messengers';
-import { getAnalyticsControllerInitMessenger } from './messengers/analytics-controller-messenger';
+import {
+  getAnalyticsControllerMessenger,
+  getAnalyticsControllerInitMessenger,
+} from './messengers/analytics-controller-messenger';
 import { AnalyticsControllerInit } from './analytics-controller-init';
 import { buildControllerInitRequestMock } from './test/utils';
 

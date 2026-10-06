@@ -20,7 +20,7 @@ import {
 } from '../../helpers/constants/routes';
 import { resetBridgeController } from '../../ducks/bridge/actions';
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/types';
 import { ConfirmationRouter } from './confirmation-router';
 
 jest.mock('../../../shared/lib/environment-type', () => ({

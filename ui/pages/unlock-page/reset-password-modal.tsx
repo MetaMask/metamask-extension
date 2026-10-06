@@ -21,13 +21,11 @@ import {
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../components/component-library';
-import { getIsSocialLoginFlow } from '../../selectors';
+import { Modal } from '../../components/component-library/modal/modal';
+import { ModalContent } from '../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../components/component-library/modal-overlay/modal-overlay';
+import { getIsSocialLoginFlow } from '../../selectors/first-time-flow';
 import {
   markPasswordForgotten,
   resetWallet as resetWalletAction,

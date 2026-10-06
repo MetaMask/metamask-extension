@@ -4,16 +4,16 @@ import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
-import { getIpfsGateway } from '../../../../../selectors';
+import { getIpfsGateway } from '../../../../../selectors/selectors';
 
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../component-library';
-import { NftItem } from '../../../../multichain/nft-item';
-import { Content, Header, Page } from '../../../../multichain/pages/page';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../component-library/icon/icon.types';
+import { NftItem } from '../../../../multichain/nft-item/nft-item';
+import { Content } from '../../../../multichain/pages/page/components/content/content';
+import { Header } from '../../../../multichain/pages/page/components/header/header';
+import { Page } from '../../../../multichain/pages/page/page';
 
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
 import { isEqualCaseInsensitive } from '../../../../../../shared/lib/string-utils';

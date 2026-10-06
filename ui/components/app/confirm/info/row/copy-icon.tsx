@@ -2,11 +2,9 @@ import React, { CSSProperties, useCallback } from 'react';
 
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../component-library';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../component-library/icon/icon.types';
 
 type CopyCallback = (text: string) => Promise<boolean>;
 

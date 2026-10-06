@@ -1,4 +1,7 @@
-import { ButtonSize, ButtonVariant } from '../../component-library';
+import {
+  ButtonSize,
+  ButtonVariant,
+} from '../../component-library/button/button.types';
 
 export enum QuizStage {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

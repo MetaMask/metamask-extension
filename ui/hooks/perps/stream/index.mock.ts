@@ -171,11 +171,6 @@ export function usePerpsLiveMarketListData(
 // ============================================================================
 
 // Re-export types for convenience
-export type {
-  CandlePeriod,
-  TimeDuration,
-} from '../../../components/app/perps/constants/chartConfig';
-export type { CandleData, CandleStick } from '@metamask/perps-controller';
 
 export type UsePerpsLiveCandlesOptions = {
   symbol: string;
@@ -263,10 +258,3 @@ export function usePerpsLiveCandles(
 // ============================================================================
 // Re-export types
 // ============================================================================
-
-export type {
-  Position,
-  Order,
-  AccountState,
-  PerpsMarketData,
-} from '@metamask/perps-controller';

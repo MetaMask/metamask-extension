@@ -22,8 +22,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '../account-list-item-menu';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { AccountListItemMenu } from '../account-list-item-menu/account-list-item-menu';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY } from '../../../helpers/constants/common';
@@ -41,16 +41,16 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
   getMetaMaskKeyrings,
-  isSolanaAccount,
-} from '../../../selectors';
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
+import { isSolanaAccount } from '../../../selectors/accounts';
+import { getMultiChainBalancesControllerBalances as getMultichainBalances } from '../../../../shared/lib/selectors/assets-migration';
 import {
-  getMultichainBalances,
   getMultichainIsTestnet,
-  getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { ConnectedStatus } from '../connected-status';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
+import { ConnectedStatus } from '../connected-status/connected-status';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
@@ -59,7 +59,7 @@ import { getAccountLabels } from '../../../helpers/utils/accounts';
 
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 
-import { AccountNetworkIndicator } from '../account-network-indicator';
+import { AccountNetworkIndicator } from '../account-network-indicator/account-network-indicator';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 

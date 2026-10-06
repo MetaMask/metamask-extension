@@ -9,7 +9,7 @@ import {
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
 import { DAY } from '../../../../../../../../shared/constants/time';
 
 /**

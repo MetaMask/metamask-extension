@@ -15,11 +15,11 @@ import {
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getMultichainAccountAddressListReceivePagePath } from '../../multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.utils';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
@@ -35,14 +35,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { BlockSize, IconColor } from '../../../helpers/constants/design-system';
 import IconButton from '../../../components/ui/icon-button/icon-button';
+import { Icon } from '../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/icon.types';
 import { MoreButtonsGroup } from '../../../components/app/wallet-overview/coin-buttons';
-import { PerpsTradeButtons } from '../../../components/app/perps/perps-trade-buttons';
-import { ReceiveModal } from '../../../components/multichain/receive-modal';
+import { PerpsTradeButtons } from '../../../components/app/perps/perps-trade-buttons/perps-trade-buttons';
+import { ReceiveModal } from '../../../components/multichain/receive-modal/receive-modal';
 import { transitionForward } from '../../../components/ui/transition';
 import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { trace, TraceName } from '../../../../shared/lib/trace';
@@ -55,7 +55,7 @@ import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefault
 import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
-} from './security-trust';
+} from './security-trust/asset-page-security-trust';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 /**

@@ -1,1 +1,0 @@
-export { Loader } from './loader';

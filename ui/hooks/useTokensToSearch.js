@@ -4,15 +4,19 @@ import BigNumber from 'bignumber.js';
 import { uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getTokenExchangeRates, getSwapsDefaultToken } from '../selectors';
+import {
+  getTokenExchangeRates,
+  getSwapsDefaultToken,
+} from '../selectors/selectors';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/lib/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { TokenBucketPriority } from '../../shared/constants/swaps';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(

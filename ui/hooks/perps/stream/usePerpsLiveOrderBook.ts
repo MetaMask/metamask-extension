@@ -3,7 +3,7 @@ import type { OrderBookData } from '@metamask/perps-controller';
 import type {
   OrderBookConnectionStatus,
   PerpsStreamManager,
-} from '../../../providers/perps';
+} from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { usePerpsChannel } from './usePerpsChannel';
 import { usePerpsStreamManager } from './usePerpsStreamManager';

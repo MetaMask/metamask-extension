@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SnapPermissionCell from '../snap-permission-cell';
+import SnapPermissionCell from '../snap-permission-cell/snap-permission-cell';
 
 export default function SnapPermissionAdapter({
   snapId,

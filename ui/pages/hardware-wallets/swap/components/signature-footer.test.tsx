@@ -5,7 +5,7 @@ import {
   enLocale as messages,
   tEn,
 } from '../../../../../test/lib/i18n-helpers';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import SignatureFooter from './signature-footer';
 
 const renderWithI18n = (component: React.ReactElement) =>

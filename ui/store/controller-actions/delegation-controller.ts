@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import type { UnsignedDelegation } from '../../../shared/lib/delegation';
+import type { UnsignedDelegation } from '../../../shared/lib/delegation/delegation';
 import { submitRequestToBackground } from '../background-connection';
 
 export const signDelegation = async ({

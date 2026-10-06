@@ -5,9 +5,9 @@ import {
   POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
-import { NetworkListItem } from '.';
+import { NetworkListItem } from './network-list-item';
 
 const DEFAULT_PROPS = {
   name: POLYGON_DISPLAY_NAME,

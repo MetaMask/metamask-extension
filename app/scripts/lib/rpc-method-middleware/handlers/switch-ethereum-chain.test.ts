@@ -1,10 +1,8 @@
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import type { Hex, PendingJsonRpcResponse } from '@metamask/utils';
 import { providerErrors } from '@metamask/rpc-errors';
-import {
-  CHAIN_IDS,
-  NETWORK_TYPES,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
+import { NETWORK_TYPES } from '../../../../../shared/constants/network';
 import {
   switchEthereumChainHandler,
   type SwitchEthereumChainHooks,

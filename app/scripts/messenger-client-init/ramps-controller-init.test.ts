@@ -5,14 +5,14 @@ import {
 } from '@metamask/ramps-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { captureException } from '../../../shared/lib/sentry';
-import { trackEvent } from '../controllers/analytics';
+import { trackEvent } from '../controllers/analytics/analytics';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getRampsControllerInitMessenger,
   getRampsControllerMessenger,
-  type RampsControllerInitMessenger,
-} from './messengers';
+} from './messengers/ramps-controller-messenger';
+import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
 import { RampsControllerInit } from './ramps-controller-init';
 
 import { RAMPS_NETWORK_ACCESS_DENIED_MESSAGE } from './ramps-network-gate';
@@ -62,7 +62,7 @@ jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
 }));
 
-jest.mock('../controllers/analytics', () => ({
+jest.mock('../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
 }));
 

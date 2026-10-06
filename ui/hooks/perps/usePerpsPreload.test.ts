@@ -13,18 +13,27 @@ import { usePerpsLiveAccount } from './stream/usePerpsLiveAccount';
 import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 
 jest.mock('react-redux', () => ({ useSelector: jest.fn() }));
-jest.mock('../../selectors', () => ({
-  selectEvmAddress: jest.requireActual('../../selectors').selectEvmAddress,
-  getSelectedEvmInternalAccount:
-    jest.requireActual('../../selectors').getSelectedEvmInternalAccount,
+jest.mock('../../selectors/selectors', () => ({
+  ...jest.requireActual('../../selectors/selectors'),
+  getSelectedEvmInternalAccount: jest.requireActual('../../selectors/selectors')
+    .getSelectedEvmInternalAccount,
   getUseExternalServices: (state: { external: boolean }) => state.external,
 }));
+
+jest.mock('../../selectors/accounts', () => ({
+  ...jest.requireActual('../../selectors/accounts'),
+  selectEvmAddress: jest.requireActual('../../selectors/accounts')
+    .selectEvmAddress,
+}));
+
 jest.mock('../../selectors/perps/feature-flags', () => ({
+  ...jest.requireActual('../../selectors/perps/feature-flags'),
   getIsPerpsExperienceAvailable: (state: { available: boolean }) =>
     state.available,
   getIsPerpsTerminalBackendEnabled: (state: { terminal: boolean }) =>
     state.terminal,
 }));
+
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));

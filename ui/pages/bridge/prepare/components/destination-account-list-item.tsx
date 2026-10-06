@@ -15,12 +15,10 @@ import {
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-import {
-  Text,
-  Tag,
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/text';
+import { Tag } from '../../../../components/component-library/tag/tag';
+import { AvatarNetwork } from '../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../components/component-library/avatar-network/avatar-network.types';
 import {
   AlignItems,
   BlockSize,
@@ -32,14 +30,15 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { normalizeSafeAddress } from '../../../../../shared/lib/multichain/address';
 import { useGetFormattedTokensPerChain } from '../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
-import { Column, Row } from '../../layout';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
+import Column from '../../layout/column';
+import Row from '../../layout/row';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';

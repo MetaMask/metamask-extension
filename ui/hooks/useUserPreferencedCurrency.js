@@ -3,9 +3,9 @@ import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts'
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getMultichainNativeCurrency,
-  getMultichainCurrentCurrency,
   getMultichainShouldShowFiat,
 } from '../selectors/multichain';
+import { getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 
 import { PRIMARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';

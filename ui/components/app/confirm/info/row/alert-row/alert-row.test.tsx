@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { Text } from '../../../../../component-library';
+import { Text } from '../../../../../component-library/text/text';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import {
   Severity,

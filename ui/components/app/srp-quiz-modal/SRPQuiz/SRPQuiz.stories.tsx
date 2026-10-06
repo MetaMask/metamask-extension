@@ -1,8 +1,8 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { useArgs } from 'storybook/preview-api';
-import { Button } from '../../../component-library';
-import SRPQuiz from '.';
+import { Button } from '../../../component-library/button/button';
+import SRPQuiz from './SRPQuiz';
 
 export default {
   title: 'Components/App/SRPQuizModal',

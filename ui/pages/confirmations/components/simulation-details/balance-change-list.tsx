@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,

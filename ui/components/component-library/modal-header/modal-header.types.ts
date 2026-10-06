@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
-import type { HeaderBaseStyleUtilityProps } from '../header-base';
+import type { HeaderBaseStyleUtilityProps } from '../header-base/header-base.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import {
   DeleteRegulationStatus,
   DATA_DELETION_REQUESTED_STATUSES,
@@ -9,10 +10,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+} from '../../../selectors/metametrics';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import { PRIVACY_ITEMS } from '../search-config';
 import DeleteMetametricsModal from './delete-metametrics-modal';
 import DeletionInProgressModal from './deletion-in-progress-modal';

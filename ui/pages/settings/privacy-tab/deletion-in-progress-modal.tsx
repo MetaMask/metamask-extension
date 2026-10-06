@@ -18,9 +18,9 @@ import {
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMetricsDataDeletionTimestamp } from '../../../selectors';
+import { getMetaMetricsDataDeletionTimestamp } from '../../../selectors/selectors';
 import { formatDate } from '../../../helpers/utils/util';
-import { PrivacyPolicyLink } from '../shared';
+import { PrivacyPolicyLink } from '../shared/privacy-policy-link';
 
 type DeletionInProgressModalProps = {
   onClose: () => void;

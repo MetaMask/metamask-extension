@@ -62,9 +62,24 @@ import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
 import {
-  getTokenBalances,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
+  getTokenBalancesControllerTokenBalances as getTokenBalances,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getAccountTrackerControllerAccountsByChainId,
+  getCurrencyRateControllerCurrencyRates,
+  getIsAssetsUnifyStateEnabled,
+  getMultiChainAssetsControllerAccountsAssets,
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainAssetsControllerAssetsMetadata,
+  getMultichainAssetsRatesControllerConversionRates,
+  getMultiChainBalancesControllerBalances,
+  getTokenRatesControllerMarketData,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+  getMultiChainBalancesControllerBalances as getMultichainBalances,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getTokenRatesControllerMarketData as getMarketData,
+} from '../../shared/lib/selectors/assets-migration';
 import { findAssetByAddress } from '../pages/asset/util';
 import {
   isEvmChainId,
@@ -79,21 +94,6 @@ import {
   getNonTestNetworks,
   NetworkState,
 } from '../../shared/lib/selectors/networks';
-import {
-  getAccountTrackerControllerAccountsByChainId,
-  getCurrencyRateControllerCurrencyRates,
-  getCurrencyRateControllerCurrentCurrency,
-  getIsAssetsUnifyStateEnabled,
-  getMultiChainAssetsControllerAccountsAssets,
-  getMultiChainAssetsControllerAllIgnoredAssets,
-  getMultiChainAssetsControllerAssetsMetadata,
-  getMultichainAssetsRatesControllerConversionRates,
-  getMultiChainBalancesControllerBalances,
-  getTokenBalancesControllerTokenBalances,
-  getTokenRatesControllerMarketData,
-  getTokensControllerAllIgnoredTokens,
-  getTokensControllerAllTokens,
-} from '../../shared/lib/selectors/assets-migration';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
@@ -102,20 +102,17 @@ import {
   filterExcludedTokenBalances,
   filterExcludedAssetList,
 } from '../components/app/assets/enablement/networks-customization';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
+import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getAccountIdByAddress } from './accounts';
-import { getMultichainBalances, RatesState } from './multichain';
+import { RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
-  getAllTokens,
-  getCurrencyRates,
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
-  getEnabledNetworks,
 } from './selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
@@ -162,10 +159,6 @@ export type BalanceCalculationState = {
       snaps: Record<string, { enabled: boolean }>;
     };
 };
-
-export { getMultiChainAssetsControllerAccountsAssets as getAccountAssets };
-
-export { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata };
 
 const defaultState = getDefaultAssetsControllerState();
 
@@ -341,7 +334,6 @@ export function getUnifiedBalanceForAccountGroup(
  * @param state - Redux state object.
  * @returns An object containing non-EVM assets per accounts.
  */
-export { getMultichainAssetsRatesControllerConversionRates as getAssetsRates };
 
 /**
  * Gets DeFi positions
@@ -1524,10 +1516,10 @@ const getStateForAssetSelector = createSelector(
       internalAccounts: metamask.internalAccounts,
       allTokens: getTokensControllerAllTokens({ metamask }),
       allIgnoredTokens: getTokensControllerAllIgnoredTokens({ metamask }),
-      tokenBalances: getTokenBalancesControllerTokenBalances({ metamask }),
+      tokenBalances: getTokenBalances({ metamask }),
       marketData: getTokenRatesControllerMarketData({ metamask }),
       currencyRates: getCurrencyRateControllerCurrencyRates({ metamask }),
-      currentCurrency: getCurrencyRateControllerCurrentCurrency({ metamask }),
+      currentCurrency: getCurrentCurrency({ metamask }),
       networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
       accountsByChainId: getAccountTrackerControllerAccountsByChainId({
         metamask,

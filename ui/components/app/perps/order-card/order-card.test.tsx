@@ -1,9 +1,9 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import type { Order } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import type { Order } from '../types';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { OrderCard } from './order-card';
 

@@ -2,14 +2,11 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { MarketInfo } from '@metamask/perps-controller';
 import {
-  clearPerpsMarketInfoModuleCache,
   fetchMarketInfos,
   peekCachedMarketInfos,
 } from '../../providers/perps/perps-cache';
-import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
+import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps/feature-flags';
 import { usePerpsCacheKey } from './usePerpsCacheKey';
-
-export { clearPerpsMarketInfoModuleCache };
 
 export type UsePerpsMarketInfoReturn = {
   /** Matching market metadata, when the list has resolved and the symbol exists */

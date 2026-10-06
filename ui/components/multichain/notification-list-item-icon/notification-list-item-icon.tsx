@@ -10,14 +10,15 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import {
+  getIpfsGateway,
+  getOpenSeaEnabled,
+} from '../../../selectors/selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
-import {
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Box,
-} from '../../component-library';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { BadgeWrapperPosition } from '../../component-library/badge-wrapper/badge-wrapper.types';
+import { Box } from '../../component-library/box/box';
 import {
   BackgroundColor,
   BorderRadius,

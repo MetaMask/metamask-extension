@@ -1,6 +1,6 @@
 import React from 'react';
 import { useArgs } from 'storybook/preview-api';
-import { Button } from '../../component-library';
+import { Button } from '../../component-library/button/button';
 import SRPDetailsModal from './srp-details-modal';
 
 export default {

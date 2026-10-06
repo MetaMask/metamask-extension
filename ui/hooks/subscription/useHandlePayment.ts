@@ -14,7 +14,7 @@ import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
   getSubscriptionPaymentData,
-} from '../../../shared/lib/shield';
+} from '../../../shared/lib/shield/subscription-utils';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {

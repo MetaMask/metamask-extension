@@ -2,21 +2,20 @@ import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Box, BoxAlignItems, Checkbox } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
+import { Button } from '../../component-library/button/button';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonPrimary } from '../../component-library/button-primary/button-primary';
 import {
-  Button,
-  ButtonLink,
-  ButtonPrimary,
   ButtonSize,
   ButtonVariant,
-  IconName,
-  IconSize,
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
+} from '../../component-library/button/button.types';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

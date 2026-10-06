@@ -14,7 +14,7 @@ jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
-jest.mock('../recipient-list', () => ({
+jest.mock('../recipient-list/recipient-list', () => ({
   RecipientList: ({
     hideModal,
     onToChange,

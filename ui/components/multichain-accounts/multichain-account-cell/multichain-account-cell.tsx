@@ -26,7 +26,7 @@ import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
 } from '../../../helpers/constants/connected-sites';
-import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-default-address';
+import { MultichainAccountCellDefaultAddress } from '../multichain-account-cell-default-address/multichain-account-cell-default-address';
 
 type AccountCellAvatarProps = {
   seedAddress: string;

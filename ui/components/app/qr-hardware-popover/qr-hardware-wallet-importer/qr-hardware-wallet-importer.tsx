@@ -2,10 +2,11 @@ import React, { useCallback } from 'react';
 import type { UR } from '@ngraveio/bc-ur';
 import { completeQrCodeScan } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import BaseQrReader, {
+import BaseQrReader from '../base-qr-reader/base-qr-reader';
+import {
   CBOR_ENCODING,
   PAIRING_EXPECTED_UR_TYPES,
-} from '../base-qr-reader';
+} from '../base-qr-reader/base-qr-reader.types';
 import { useDispatch } from '../../../../store/hooks';
 import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importer.types';
 

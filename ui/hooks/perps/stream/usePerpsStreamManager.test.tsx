@@ -8,12 +8,12 @@ import {
 import {
   getIsPerpsTerminalBackendEnabled,
   getIsPerpsExperienceAvailable,
-} from '../../../selectors/perps';
+} from '../../../selectors/perps/feature-flags';
 import {
   getSelectedEvmInternalAccount,
-  selectEvmAddress,
   getUseExternalServices,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { selectEvmAddress } from '../../../selectors/accounts';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 const mockSubmitRequestToBackground = jest.fn().mockResolvedValue(undefined);
@@ -23,9 +23,12 @@ jest.mock('../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
+jest.mock('../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../selectors/selectors'),
   getSelectedEvmInternalAccount: jest.fn(),
+}));
+jest.mock('../../../selectors/accounts', () => ({
+  ...jest.requireActual('../../../selectors/accounts'),
   selectEvmAddress: jest.fn(),
 }));
 
@@ -144,7 +147,8 @@ describe('usePerpsStreamManager', () => {
         },
       };
       getSelectedMock.mockImplementation(
-        jest.requireActual('../../../selectors').getSelectedEvmInternalAccount,
+        jest.requireActual('../../../selectors/selectors')
+          .getSelectedEvmInternalAccount,
       );
       useSelectorMock.mockImplementation((selector) => {
         if (selector === getIsPerpsExperienceAvailable) {

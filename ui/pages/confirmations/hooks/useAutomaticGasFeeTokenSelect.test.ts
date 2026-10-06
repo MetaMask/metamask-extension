@@ -18,7 +18,7 @@ import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 jest.mock('./useHasInsufficientBalance');
-jest.mock('../../../../shared/lib/selectors');
+jest.mock('../../../../shared/lib/selectors/smart-transactions');
 jest.mock('./gas/useIsGaslessSupported');
 
 const mockUpdateTransactionEventFragment = jest.fn();

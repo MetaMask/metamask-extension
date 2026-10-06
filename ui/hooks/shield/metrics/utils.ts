@@ -4,8 +4,8 @@ import {
   getBillingIntervalForMetrics,
   getShieldMarketingTrackingProps,
   getUserBalanceCategory,
-} from '../../../../shared/lib/shield';
-import { CaptureShieldPaymentMethodChangeEventParams } from '../../../../shared/types';
+} from '../../../../shared/lib/shield/metrics';
+import { CaptureShieldPaymentMethodChangeEventParams } from '../../../../shared/types/metametrics';
 import {
   CaptureShieldCtaClickedEventParams,
   CaptureShieldCryptoConfirmationEventParams,

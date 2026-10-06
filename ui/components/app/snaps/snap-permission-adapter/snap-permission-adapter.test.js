@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import SnapPermissionAdapter from './snap-permission-adapter';
 

@@ -13,13 +13,16 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  getAllTokens,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+} from '../../../../../shared/lib/selectors/assets-migration';
+import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedEvmInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import {
   getNativeCurrency,
   getTokens,
@@ -29,16 +32,15 @@ import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainCurrentNetwork,
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/multichain/networks';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   ARC_USDC_ERC20_TOKEN_ADDRESS,
   STABLE_USDT0_ERC20_ADDRESS,

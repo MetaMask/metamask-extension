@@ -39,14 +39,24 @@ const mockUseCanBuyMusd = jest.fn().mockReturnValue({
   canBuyMusdInRegion: true,
   isLoading: false,
 });
-jest.mock('../../../hooks/musd', () => ({
+
+jest.mock('../../../hooks/musd/useCanBuyMusd', () => ({
+  useCanBuyMusd: () => mockUseCanBuyMusd(),
+}));
+
+jest.mock('../../../hooks/musd/useMusdConversion', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
     educationSeen: false,
   }),
-  useMusdGeoBlocking: () => mockUseMusdGeoBlocking(),
+}));
+
+jest.mock('../../../hooks/musd/useMusdConversionTokens', () => ({
   useMusdConversionTokens: () => mockUseMusdConversionTokens(),
-  useCanBuyMusd: () => mockUseCanBuyMusd(),
+}));
+
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
+  useMusdGeoBlocking: () => mockUseMusdGeoBlocking(),
 }));
 
 const mockGoToBuy = jest.fn();

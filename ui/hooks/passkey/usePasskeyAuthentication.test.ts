@@ -3,13 +3,11 @@ import { createMockUIMessenger } from '../../../test/lib/mock-ui-messenger';
 import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import type { UIMessenger } from '../../messengers/ui-messenger';
 import type { RouteMessenger } from '../../messengers/route-messenger';
-import { startPasskeyAuthentication } from '../../../shared/lib/passkey';
+import { startPasskeyAuthentication } from '../../../shared/lib/passkey/passkey-ceremony';
 import { usePasskeyAuthentication } from './usePasskeyAuthentication';
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-ceremony'),
   startPasskeyAuthentication: jest.fn(),
 }));
 

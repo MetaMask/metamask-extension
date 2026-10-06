@@ -8,8 +8,8 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { MarketRow } from '../market-row';
-import { PerpsSectionHeader } from '../perps-section-header';
+import { MarketRow } from '../market-row/market-row';
+import { PerpsSectionHeader } from '../perps-section-header/perps-section-header';
 
 /**
  * PerpsWatchlist displays a list of watched markets.

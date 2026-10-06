@@ -10,20 +10,26 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
-  HardwareWalletProvider,
-} from '../../contexts/hardware-wallets';
-import * as bridgeActions from '../../ducks/bridge/actions';
+} from '../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import * as bridgeActionsModule1 from '../../ducks/bridge/actions';
+
 import CrossChainSwap from '.';
 
-const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
+const mockResetBridgeStore = jest.spyOn(
+  bridgeActionsModule1,
+  'resetInputFields',
+);
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 const middleware = [thunk];
 
-jest.mock('../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../contexts/hardware-wallets'),
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),

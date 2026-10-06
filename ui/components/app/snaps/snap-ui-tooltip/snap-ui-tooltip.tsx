@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import Tooltip from '../../../ui/tooltip';
+import Tooltip from '../../../ui/tooltip/tooltip';
 
 export type SnapUITooltipProps = {
   content: ReactNode;

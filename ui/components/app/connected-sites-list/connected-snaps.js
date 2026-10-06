@@ -8,18 +8,19 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import { IconName, IconSize, Text } from '../../component-library';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import {
   BlockSize,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import ConnectedAccountsListOptions from '../connected-accounts-list/connected-accounts-list-options/connected-accounts-list-options.component';
+import { getOriginOfCurrentTab } from '../../../selectors/selectors';
 import { disconnectOriginFromSnap } from '../../../store/actions';
 import { getSnapRoute } from '../../../helpers/utils/util';
-import { SnapIcon } from '../snaps/snap-icon';
+import { SnapIcon } from '../snaps/snap-icon/snap-icon';
 import { useDispatch } from '../../../store/hooks';
 
 export default function ConnectedSnaps({ connectedSubjects }) {

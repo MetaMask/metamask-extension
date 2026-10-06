@@ -10,7 +10,7 @@ import { isNativeCaipAssetId } from '#shared/lib/asset-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../hooks/useTokenSecurityData';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { getFungibleAssetForRoute } from '../../../selectors/assets';
 import { getIsSecurityTrustTdpEnabled } from '../../../selectors/multichain/feature-flags';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
@@ -25,7 +25,10 @@ import {
   toSecurityTrustChainId,
 } from '../utils/security-trust-utils';
 import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
-import { processAssetParams, resolveAssetRouteLookup } from '../util';
+import {
+  processAssetParams,
+  resolveAssetRouteLookup,
+} from '../../../../shared/lib/asset-route';
 import type { SecurityTrustLocationState } from '../types/security-trust';
 
 export const useSecurityTrustPageData = () => {

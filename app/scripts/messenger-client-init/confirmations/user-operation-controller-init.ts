@@ -3,7 +3,7 @@ import {
   UserOperationControllerMessenger,
 } from '@metamask/user-operation-controller';
 import { MessengerClientInitFunction } from '../types';
-import { UserOperationControllerInitMessenger } from '../messengers';
+import { UserOperationControllerInitMessenger } from '../messengers/user-operation-controller-messenger';
 
 /**
  * Initialize the user operation controller.

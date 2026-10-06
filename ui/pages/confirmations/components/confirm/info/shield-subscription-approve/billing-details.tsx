@@ -1,9 +1,7 @@
 import React, { useMemo } from 'react';
 import { ProductPrice } from '@metamask/subscription-controller';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowText } from '../../../../../../components/app/confirm/info/row/text';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog

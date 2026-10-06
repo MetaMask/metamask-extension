@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import Chip from '../chip';
-import IconWithFallback from '../icon-with-fallback';
+import Chip from '../chip/chip';
+import IconWithFallback from '../icon-with-fallback/icon-with-fallback.component';
 import { BorderColor } from '../../../helpers/constants/design-system';
 
 export default function SiteOrigin({

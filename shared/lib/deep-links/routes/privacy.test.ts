@@ -1,5 +1,7 @@
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { PRIVACY_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { privacy } from './privacy';
-import { PRIVACY_ROUTE, type Destination } from './route';
+import type { Destination } from './route';
 
 function assertPathDestination(
   result: Destination,

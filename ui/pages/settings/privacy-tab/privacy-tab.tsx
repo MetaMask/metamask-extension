@@ -1,14 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import {
   setUseMultiAccountBalanceChecker,
   setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
-import type { MetaMaskReduxState } from '../../../store/store';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import type { MetaMaskReduxState } from '../../../store/types';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { PRIVACY_ITEMS } from '../search-config';
 import { ThirdPartyApisItem } from './third-party-apis-item';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';

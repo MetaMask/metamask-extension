@@ -5,11 +5,11 @@ import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { getInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
+import { getInterface } from '../../../../selectors/selectors';
+import { Box } from '../../../component-library/box/box';
 
-import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
-import PulseLoader from '../../../ui/pulse-loader';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps/snap-interface';
+import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 import {
   AlignItems,
   BackgroundColor,

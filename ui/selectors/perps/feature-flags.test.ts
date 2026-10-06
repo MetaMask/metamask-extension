@@ -2,13 +2,13 @@ import semver from 'semver';
 import { PerpsFeatureFlag } from '../../../shared/lib/perps-feature-flags';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { selectVipProgramEnabled as getIsVipProgramEnabled } from '../../ducks/rewards/selectors';
 import {
   getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsExperienceAvailable,
   getIsPerpsOrderBookEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
   getIsPerpsTerminalBackendEnabled,
-  getIsVipProgramEnabled,
 } from './feature-flags';
 
 jest.mock('semver');

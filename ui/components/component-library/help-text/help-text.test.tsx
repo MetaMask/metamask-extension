@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../icon';
+import { Icon } from '../icon/icon';
+import { IconName } from '../icon/icon.types';
 import { HelpText } from './help-text';
 import { HelpTextSeverity } from './help-text.types';
 

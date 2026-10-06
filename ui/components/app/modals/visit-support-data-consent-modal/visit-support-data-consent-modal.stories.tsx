@@ -1,5 +1,5 @@
 import React from 'react';
-import VisitSupportDataConsentModal from '.';
+import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 export default {
   title: 'Components/App/Modals/VisitSupportDataConsentModal',

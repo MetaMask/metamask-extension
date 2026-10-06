@@ -38,15 +38,13 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBoolean } from '../../../hooks/useBoolean';
-import { getPermissions } from '../../../selectors';
+import { getPermissions } from '../../../selectors/selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../../components/multichain/pages/page/components/footer/footer';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import {
@@ -61,7 +59,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
-import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
+import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell/multichain-account-cell';
 import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsForPermissions';
 
 import {
@@ -75,7 +73,7 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';

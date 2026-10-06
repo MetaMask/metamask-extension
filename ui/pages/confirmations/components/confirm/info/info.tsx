@@ -32,16 +32,22 @@ const AddEthereumChain = mmLazy(
   () => import('../../../external/add-ethereum-chain/add-ethereum-chain'),
 );
 const MoneyAccountDepositInfo = mmLazy(
-  () => import('../../info/money-account-deposit-info'),
+  () =>
+    import('../../info/money-account-deposit-info/money-account-deposit-info'),
 );
 const MoneyAccountWithdrawInfo = mmLazy(
-  () => import('../../info/money-account-withdraw-info'),
+  () =>
+    import('../../info/money-account-withdraw-info/money-account-withdraw-info'),
 );
 const MusdConversionInfo = mmLazy(
   () => import('../../info/musd-conversion-info/musd-conversion-info'),
 );
-const PerpsDepositInfo = mmLazy(() => import('./perps-deposit-info'));
-const PerpsWithdrawInfo = mmLazy(() => import('./perps-withdraw-info'));
+const PerpsDepositInfo = mmLazy(
+  () => import('./perps-deposit-info/perps-deposit-info'),
+);
+const PerpsWithdrawInfo = mmLazy(
+  () => import('./perps-withdraw-info/perps-withdraw-info'),
+);
 const PersonalSignInfo = mmLazy(() => import('./personal-sign/personal-sign'));
 const ShieldSubscriptionApproveInfo = mmLazy(
   () => import('./shield-subscription-approve/shield-subscription-approve'),
@@ -49,7 +55,7 @@ const ShieldSubscriptionApproveInfo = mmLazy(
 const TypedSignV1Info = mmLazy(() => import('./typed-sign-v1/typed-sign-v1'));
 const TypedSignInfo = mmLazy(() => import('./typed-sign/typed-sign'));
 const TypedSignPermissionInfo = mmLazy(
-  () => import('./typed-sign/typed-sign-permission'),
+  () => import('./typed-sign/typed-sign-permission/typed-sign-permission'),
 );
 
 const DefaultHeadingSkeleton = () => (

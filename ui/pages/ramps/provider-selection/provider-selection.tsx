@@ -23,7 +23,7 @@ import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsAnalytics } from '../../../hooks/ramps/useRampsAnalytics';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
-import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { getRampCallbackBaseUrl } from '../../../../shared/lib/ramps/callback-url';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { completedOrdersFromRampsOrders } from '../../../hooks/ramps/utils/determinePreferredProvider';
 import { parseUserFacingError } from '../../../hooks/ramps/utils/parseUserFacingError';

@@ -307,5 +307,3 @@ export const CameraAccessErrorContent = (
     </Box>
   );
 };
-
-export { CameraAccessErrorContentVariant } from './camera-access-error-content.types';

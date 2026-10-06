@@ -1,18 +1,16 @@
 import React from 'react';
 import classnames from 'clsx';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Label,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
-import Dropdown from '../../../ui/dropdown';
+import { Box } from '../../../component-library/box/box';
+import { Label } from '../../../component-library/label/label';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import Dropdown from '../../../ui/dropdown/dropdown';
 
 export type SnapUIDropdownProps = {
   name: string;

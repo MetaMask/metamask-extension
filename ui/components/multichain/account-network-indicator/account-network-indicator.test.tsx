@@ -7,7 +7,7 @@ import {
   BNB_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { AccountNetworkIndicator } from '.';
+import { AccountNetworkIndicator } from './account-network-indicator';
 
 const MOCK_SCOPES = ['eip155:0', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'];
 

@@ -12,31 +12,41 @@ const fakeSolSplAssetId =
 const usdcAssetId =
   'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
 
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual('../../shared/lib/selectors/assets-migration'),
+  ...(() => ({
+    getMultichainAssetsRatesControllerConversionRates: (state: {
+      metamask: { conversionRates: Record<string, unknown> };
+    }) => state.metamask.conversionRates,
+  }))(),
+  ...(() => ({
+    getCurrencyRateControllerCurrencyRates: (state: {
+      metamask: { currencyRates: Record<string, unknown> };
+    }) => state.metamask.currencyRates,
+  }))(),
+}));
 jest.mock('../selectors/assets', () => ({
+  ...jest.requireActual('../selectors/assets'),
   getAssetsPrice: (state: {
     metamask: { assetsPrice: Record<string, unknown> };
   }) => state.metamask.assetsPrice,
-  getAssetsRates: (state: {
-    metamask: { conversionRates: Record<string, unknown> };
-  }) => state.metamask.conversionRates,
-}));
-
-jest.mock('../ducks/metamask/metamask', () => ({
-  getCurrencyRates: (state: {
-    metamask: { currencyRates: Record<string, unknown> };
-  }) => state.metamask.currencyRates,
 }));
 
 jest.mock('../selectors/activity', () => {
   const emptyMarketRates = {};
-  return { selectMarketRates: () => emptyMarketRates };
+  return {
+    ...jest.requireActual('../selectors/activity'),
+    selectMarketRates: () => emptyMarketRates,
+  };
 });
 
 jest.mock('../selectors/multichain', () => ({
+  ...jest.requireActual('../selectors/multichain'),
   getMultichainShouldShowFiat: () => true,
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/selectors', () => ({
+  ...jest.requireActual('../selectors/selectors'),
   getUseCurrencyRateCheck: (state: {
     metamask: { useCurrencyRateCheck?: boolean };
   }) => state.metamask.useCurrencyRateCheck ?? true,

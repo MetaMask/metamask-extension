@@ -7,12 +7,10 @@ import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networks';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
+import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import { PercentageAndAmountChange } from './percentage-and-amount-change';
 
@@ -24,7 +22,7 @@ jest.mock('../../../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors', () => ({
+jest.mock('../../../../../selectors/selectors', () => ({
   getSelectedAccountCachedBalance: jest.fn(),
   getTokensMarketData: jest.fn(),
 }));
@@ -34,8 +32,10 @@ jest.mock('../../../../../../shared/lib/selectors/networks', () => ({
 }));
 
 jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
   getNativeCurrency: jest.fn(),
+}));
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
 }));
 
 jest.mock('../../../../../ducks/metamask/base-selectors', () => ({

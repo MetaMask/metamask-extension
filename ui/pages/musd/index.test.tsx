@@ -14,7 +14,7 @@ const mockUseMusdGeoBlocking = jest.fn().mockReturnValue({
   userCountry: 'US',
 });
 
-jest.mock('../../hooks/musd', () => ({
+jest.mock('../../hooks/musd/useMusdGeoBlocking', () => ({
   useMusdGeoBlocking: () => mockUseMusdGeoBlocking(),
 }));
 

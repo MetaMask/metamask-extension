@@ -2,10 +2,8 @@ import { act, fireEvent, screen, within } from '@testing-library/react';
 import nock from 'nock';
 import type { CaipAssetType } from '@metamask/utils';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
-import {
-  CHAIN_IDS,
-  HYPEREVM_DISPLAY_NAME,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { HYPEREVM_DISPLAY_NAME } from '../../../shared/constants/network';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
 import mockMetaMaskState from '../data/integration-init-state.json';

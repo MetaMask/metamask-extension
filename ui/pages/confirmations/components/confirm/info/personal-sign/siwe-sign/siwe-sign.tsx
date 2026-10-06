@@ -5,13 +5,12 @@ import { toHex } from '@metamask/controller-utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../types/confirm';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDate,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
-import { Box, Text } from '../../../../../../../components/component-library';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDate } from '../../../../../../../components/app/confirm/info/row/date';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../components/component-library/text/text';
 import {
   BlockSize,
   TextColor,

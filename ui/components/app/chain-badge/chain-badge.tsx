@@ -6,10 +6,8 @@ import {
   BadgeWrapper,
 } from '@metamask/design-system-react';
 import type { CaipChainId } from '@metamask/utils';
-import {
-  CHAIN_IDS,
-  NETWORK_TO_NAME_MAP,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';

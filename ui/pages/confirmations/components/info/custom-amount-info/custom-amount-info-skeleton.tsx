@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,
@@ -8,7 +8,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { CustomAmountSkeleton } from '../../transactions/custom-amount/custom-amount';
 import { PayTokenAmountSkeleton } from '../../pay-token-amount/pay-token-amount';
-import { PercentageButtonsSkeleton } from '../../percentage-buttons';
+import { PercentageButtonsSkeleton } from '../../percentage-buttons/percentage-buttons';
 
 const CenterContainerSkeleton = ({
   displayPercentageButtons,

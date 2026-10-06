@@ -1,17 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box';
+import Box from '../../ui/box/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  IconName,
-  ButtonIcon,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-} from '../../component-library';
-import { Menu, MenuItem } from '../../ui/menu';
+import { IconName } from '../../component-library/icon/icon.types';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { Text } from '../../component-library/text/text';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import Menu from '../../ui/menu/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import {
   TextColor,
   TextVariant,

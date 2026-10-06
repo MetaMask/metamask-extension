@@ -6,7 +6,7 @@ import {
   SignatureRequestStatus,
   SignatureRequestType,
 } from '@metamask/signature-controller';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { EMPTY_OBJECT } from './shared';
 import {
   selectSignatureRequests,

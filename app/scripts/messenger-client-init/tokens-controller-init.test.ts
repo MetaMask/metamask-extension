@@ -19,7 +19,7 @@ import {
   getTokensControllerInitMessenger,
   getTokensControllerMessenger,
   TokensControllerInitMessenger,
-} from './messengers';
+} from './messengers/tokens-controller-messenger';
 import { TokensControllerInit } from './tokens-controller-init';
 
 jest.mock('@metamask/assets-controllers');

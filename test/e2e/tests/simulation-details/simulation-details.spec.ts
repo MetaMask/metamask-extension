@@ -1,6 +1,6 @@
 import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Fixtures, withFixtures } from '../../helpers';

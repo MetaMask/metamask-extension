@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
+import { Box } from '../../../../components/component-library/box/box';
+import { Button } from '../../../../components/component-library/button/button';
+import { ButtonVariant } from '../../../../components/component-library/button/button.types';
+import { Icon } from '../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   IconColor,
   Display,
@@ -15,11 +15,9 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing';
-import {
-  devApiEnv,
-  loadAuthenticationConfig,
-} from '../../../../../shared/lib/authentication';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing/useAccountSyncing';
+import { devApiEnv } from '../../../../../shared/lib/authentication/dev-api-env';
+import { loadAuthenticationConfig } from '../../../../../shared/lib/authentication/config';
 import { performSignOut } from '../../../../store/actions';
 import { useDispatch } from '../../../../store/hooks';
 

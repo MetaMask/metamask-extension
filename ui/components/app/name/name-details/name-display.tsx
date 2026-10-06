@@ -6,11 +6,13 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
-import { Icon, IconSize, Text } from '../../../component-library';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { PreferredAvatar } from '../../preferred-avatar';
+import { PreferredAvatar } from '../../preferred-avatar/preferred-avatar';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 

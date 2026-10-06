@@ -9,7 +9,7 @@ import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
-} from './messengers';
+} from './messengers/token-detection-controller-messenger';
 import { TokenDetectionControllerInit } from './token-detection-controller-init';
 
 jest.mock('@metamask/assets-controllers');

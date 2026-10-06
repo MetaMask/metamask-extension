@@ -14,14 +14,14 @@ import {
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getNetworkEnablementControllerInitMessenger,
   getNetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
-} from '../messengers/assets';
+} from '../messengers/assets/network-enablement-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
 

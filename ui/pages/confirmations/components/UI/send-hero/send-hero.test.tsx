@@ -10,40 +10,67 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
 }));
 
-jest.mock('../../../../../components/component-library', () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  AvatarToken: ({ src, name, size, showHalo }: any) => (
-    <div
-      data-testid="avatar-token"
-      data-src={src}
-      data-name={name}
-      data-size={size}
-      data-show-halo={showHalo}
-    />
-  ),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  AvatarNetwork: ({ size, name, src }: any) => (
-    <div
-      data-testid="avatar-network"
-      data-size={size}
-      data-name={name}
-      data-src={src}
-    />
-  ),
-  AvatarNetworkSize: {
-    Xs: 'xs',
-  },
-  AvatarTokenSize: {
-    Xl: 'xl',
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  BadgeWrapper: ({ badge, children }: any) => (
-    <div data-testid="badge-wrapper">
-      {badge && <div data-testid="badge">{badge}</div>}
-      {children}
-    </div>
-  ),
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+jest.mock(
+  '../../../../../components/component-library/avatar-network/avatar-network',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Preserve the existing generic component mock props.
+    AvatarNetwork: ({ size, name, src }: any) => (
+      <div
+        data-testid="avatar-network"
+        data-size={size}
+        data-name={name}
+        data-src={src}
+      />
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/avatar-network/avatar-network.types',
+  () => ({
+    AvatarNetworkSize: {
+      Xs: 'xs',
+    },
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/avatar-token/avatar-token',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Preserve the existing generic component mock props.
+    AvatarToken: ({ src, name, size, showHalo }: any) => (
+      <div
+        data-testid="avatar-token"
+        data-src={src}
+        data-name={name}
+        data-size={size}
+        data-show-halo={showHalo}
+      />
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/avatar-token/avatar-token.types',
+  () => ({
+    AvatarTokenSize: {
+      Xl: 'xl',
+    },
+  }),
+);
+
+jest.mock(
+  '../../../../../components/component-library/badge-wrapper/badge-wrapper',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Preserve the existing generic component mock props.
+    BadgeWrapper: ({ badge, children }: any) => (
+      <div data-testid="badge-wrapper">
+        {badge && <div data-testid="badge">{badge}</div>}
+        {children}
+      </div>
+    ),
+  }),
+);
+
+jest.mock('../../../../../components/component-library/box/box', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Preserve the existing generic component mock props.
   Box: ({ children, as, src, alt, style, onError, ...props }: any) => {
     if (as === 'img') {
       return (
@@ -63,7 +90,10 @@ jest.mock('../../../../../components/component-library', () => ({
       </div>
     );
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}));
+
+jest.mock('../../../../../components/component-library/text/text', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Preserve the existing generic component mock props.
   Text: ({ variant, color, marginLeft, children }: any) => (
     <div
       data-testid="text"

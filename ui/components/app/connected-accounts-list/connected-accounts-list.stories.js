@@ -1,7 +1,7 @@
 import React from 'react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import ConnectedAccountsList from '.';
+import ConnectedAccountsList from './connected-accounts-list.component';
 
 export default {
   title: 'Components/App/ConnectedAccountsList',

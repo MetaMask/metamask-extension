@@ -5,11 +5,11 @@ import {
   type AccountsState,
   getMaybeSelectedInternalAccount,
 } from '../../../shared/lib/selectors/accounts';
-import {
-  HardwareConnectionPermissionState,
-  HardwareWalletType,
-  type HardwareWalletAdapter,
-  type HardwareWalletConnectionState,
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { HardwareConnectionPermissionState } from './types';
+import type {
+  HardwareWalletAdapter,
+  HardwareWalletConnectionState,
 } from './types';
 import { ConnectionState } from './connectionState';
 

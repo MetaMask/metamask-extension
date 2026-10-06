@@ -3,19 +3,19 @@ import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import classnames from 'clsx';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Icon } from '../../../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../../../../../components/component-library';
+} from '../../../../../../../components/component-library/icon/icon.types';
+import { Modal } from '../../../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../../../../components/component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../../../components/component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -30,10 +30,10 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
+import { GasFeeTokenListItem } from '../gas-fee-token-list-item/gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 

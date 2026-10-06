@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import Popover from '../../../components/ui/popover';
-import { Button, ButtonVariant } from '../../../components/component-library';
-import QuoteDetails from './quote-details';
-import SortList from './sort-list';
+import Popover from '../../../components/ui/popover/popover.component';
+import { Button } from '../../../components/component-library/button/button';
+import { ButtonVariant } from '../../../components/component-library/button/button.types';
+import QuoteDetails from './quote-details/quote-details';
+import SortList from './sort-list/sort-list';
 import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from './select-quote-popover-constants';
 
 const SelectQuotePopover = ({

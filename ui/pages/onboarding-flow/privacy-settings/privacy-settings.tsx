@@ -24,7 +24,7 @@ import {
 } from '@metamask/design-system-react';
 import { addUrlProtocolPrefix } from '../../../../shared/lib/url-utils';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
-import { TextField } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library/text-field/text-field';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -44,9 +44,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
-  getIsSocialLoginFlow,
-  getDataCollectionForMarketing,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
+import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   setIpfsGateway,
@@ -73,7 +73,7 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
+import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button/delete-metametrics-data-button';
 import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
 import type { MetaMaskReduxState } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';

@@ -7,8 +7,6 @@ import {
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
 import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
-export { MAX_UINT256 } from '../../../../../../../../shared/lib/gator-permissions/permission-constants';
-
 /**
  * Retrieves ERC-20 token details (label and decimals) for a given token address and chain ID.
  *

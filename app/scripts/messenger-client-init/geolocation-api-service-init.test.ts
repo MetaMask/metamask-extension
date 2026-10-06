@@ -7,7 +7,7 @@ import { isProduction } from '../../../shared/lib/environment';
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getGeolocationApiServiceMessenger } from './messengers';
+import { getGeolocationApiServiceMessenger } from './messengers/geolocation-api-service-messenger';
 import { GeolocationApiServiceInit } from './geolocation-api-service-init';
 
 jest.mock('@metamask/geolocation-controller');

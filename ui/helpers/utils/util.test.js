@@ -5,7 +5,7 @@ import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import { MinPermissionAbstractionDisplayCount } from '../../../shared/constants/permissions';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import * as util from './util';
 
 describe('util', () => {

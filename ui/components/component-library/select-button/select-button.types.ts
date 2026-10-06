@@ -1,10 +1,10 @@
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
-import { IconProps } from '../icon';
+} from '../box/box.types';
+import { IconProps } from '../icon/icon.types';
 import { LabelStyleUtilityProps } from '../label/label.types';
-import { TextStyleUtilityProps } from '../text';
+import { TextStyleUtilityProps } from '../text/text.types';
 
 export enum SelectButtonSize {
   Sm = 'sm',

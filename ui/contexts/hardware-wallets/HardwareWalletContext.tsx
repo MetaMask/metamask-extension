@@ -7,17 +7,17 @@ import React, {
   type ReactNode,
 } from 'react';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
 import { useDeviceEventHandlers } from './HardwareWalletEventHandlers';
 import { useHardwareWalletPermissions } from './useHardwareWalletPermissions';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
-import {
-  HardwareWalletType,
-  HardwareConnectionPermissionState,
-  type EnsureDeviceReadyOptions,
-  type HardwareWalletConnectionState,
+import { HardwareConnectionPermissionState } from './types';
+import type {
+  EnsureDeviceReadyOptions,
+  HardwareWalletConnectionState,
 } from './types';
 import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 

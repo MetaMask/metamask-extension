@@ -10,10 +10,12 @@ import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
+  getShowDeleteMetaMetricsDataModal,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
-  getShowDeleteMetaMetricsDataModal,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';

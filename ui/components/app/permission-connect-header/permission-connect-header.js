@@ -14,14 +14,12 @@ import {
   FontWeight,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import {
-  IconSize,
-  Text,
-  AvatarFavicon,
-  AvatarBase,
-} from '../../component-library';
+import { IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
+import { AvatarFavicon } from '../../component-library/avatar-favicon/avatar-favicon';
+import { AvatarBase } from '../../component-library/avatar-base/avatar-base';
 import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
-import { Nav } from '../../../pages/confirmations/components/confirm/nav';
+import { Nav } from '../../../pages/confirmations/components/confirm/nav/nav';
 
 const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
   const transformOriginToTitle = (rawOrigin) => {

@@ -3,8 +3,9 @@ import {
   EncryptionPublicKeyControllerMessenger,
 } from '../../controllers/encryption-public-key';
 import { MessengerClientInitFunction } from '../types';
-import { EncryptionPublicKeyControllerInitMessenger } from '../messengers';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { EncryptionPublicKeyControllerInitMessenger } from '../messengers/encryption-public-key-controller-messenger';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 /**
  * Initialize the encryption public key controller.

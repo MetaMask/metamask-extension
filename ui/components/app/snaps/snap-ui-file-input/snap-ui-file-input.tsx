@@ -6,19 +6,16 @@ import React, {
   useState,
 } from 'react';
 import classnames from 'clsx';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  HelpText,
-  HelpTextSeverity,
-  Icon,
-  IconName,
-  IconSize,
-  Label,
-  Text,
-} from '../../../component-library';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+import { Box } from '../../../component-library/box/box';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Label } from '../../../component-library/label/label';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

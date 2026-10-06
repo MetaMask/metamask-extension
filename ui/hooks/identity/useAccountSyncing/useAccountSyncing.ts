@@ -9,7 +9,7 @@ import {
   selectIsAccountSyncingEnabled,
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';

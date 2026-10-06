@@ -1,5 +1,5 @@
+import type { Hex } from '@metamask/utils';
 import {
-  type Hex,
   toHex,
   isHex,
   pad,

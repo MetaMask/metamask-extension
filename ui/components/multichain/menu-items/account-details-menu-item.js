@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { IconName } from '@metamask/design-system-react';
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
-import { getHDEntropyIndex } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 
 export const AccountDetailsMenuItem = ({

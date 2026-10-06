@@ -9,21 +9,19 @@ import { Hex, isHexString } from '@metamask/utils';
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row/divider';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import {
   Display,
   FlexWrap,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
-import { Box } from '../../../../../../../components/component-library';
+import { Box } from '../../../../../../../components/component-library/box/box';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
-import Preloader from '../../../../../../../components/ui/icon/preloader';
+import Preloader from '../../../../../../../components/ui/icon/preloader/preloader-icon.component';
 import {
   DecodedTransactionDataMethod,
   DecodedTransactionDataParam,

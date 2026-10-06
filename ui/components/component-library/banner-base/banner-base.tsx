@@ -10,11 +10,14 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
-import { Box, BoxProps, PolymorphicRef } from '../box';
-import { ButtonLink, ButtonLinkSize } from '../button-link';
-import { ButtonIcon, ButtonIconSize } from '../button-icon';
-import { IconName } from '../icon';
+import { Text } from '../text/text';
+import { Box } from '../box/box';
+import { BoxProps, PolymorphicRef } from '../box/box.types';
+import { ButtonLink } from '../button-link/button-link';
+import { ButtonLinkSize } from '../button-link/button-link.types';
+import { ButtonIcon } from '../button-icon/button-icon';
+import { ButtonIconSize } from '../button-icon/button-icon.types';
+import { IconName } from '../icon/icon.types';
 import { BannerBaseComponent, BannerBaseProps } from './banner-base.types';
 
 /**

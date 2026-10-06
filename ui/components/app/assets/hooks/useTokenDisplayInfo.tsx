@@ -3,20 +3,24 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipAssetType, isCaipChainId } from '@metamask/utils';
 import {
-  getAllTokens,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../../../shared/lib/selectors/assets-migration';
+import {
   getEnabledNetworksByNamespace,
+  selectAnyEnabledNetworksAreAvailable,
+} from '../../../../selectors/multichain/networks';
+import {
   getShowFiatInTestnets,
   getUseCurrencyRateCheck,
-  selectAnyEnabledNetworksAreAvailable,
   selectERC20TokensByChain,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { Token, TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';

@@ -13,7 +13,9 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
@@ -21,8 +23,8 @@ import {
   DEFAULT_ROUTE,
   PERPS_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
-import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
-import { PerpsFillTag } from '../../components/app/perps/perps-fill-tag';
+import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo/perps-token-logo';
+import { PerpsFillTag } from '../../components/app/perps/perps-fill-tag/perps-fill-tag';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
 import { getOrderStatusI18nKey } from '../../components/app/perps/utils/orderUtils';
 import {
@@ -32,7 +34,7 @@ import {
 import { usePerpsRecordedOrderFees } from '../../hooks/perps/usePerpsRecordedOrderFees';
 import { PERPS_EVENT_VALUE } from '../../../shared/constants/perps-events';
 import { formatPnl } from '../../../shared/lib/perps-formatters';
-import type { PerpsTransaction } from '../../components/app/perps/types';
+import type { PerpsTransaction } from '../../components/app/perps/types/transactionHistory';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { Row } from '../details/components/shared';
 

@@ -11,21 +11,21 @@ import {
   getMultichainBlockExplorerUrl,
 } from '../../../helpers/utils/multichain/blockExplorer';
 
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import {
   getBlockExplorerLinkText,
   getIsCustomNetwork,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   TEST_NETWORK_IDS,

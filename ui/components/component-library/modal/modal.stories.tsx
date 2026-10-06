@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
+import { Text } from '../text/text';
 import { Modal } from './modal';
 
-import { ButtonLink, ButtonLinkSize } from '../button-link';
-import { Box } from '../box';
-import { Button } from '../button';
-import { IconName } from '../icon';
-import { ModalOverlay } from '../modal-overlay';
-import { ModalContent } from '../modal-content';
-import { ModalHeader } from '../modal-header';
-import { ModalBody } from '../modal-body';
-import { ModalFooter } from '../modal-footer';
+import { ButtonLink } from '../button-link/button-link';
+import { ButtonLinkSize } from '../button-link/button-link.types';
+import { Box } from '../box/box';
+import { Button } from '../button/button';
+import { IconName } from '../icon/icon.types';
+import { ModalOverlay } from '../modal-overlay/modal-overlay';
+import { ModalContent } from '../modal-content/modal-content';
+import { ModalHeader } from '../modal-header/modal-header';
+import { ModalBody } from '../modal-body/modal-body';
+import { ModalFooter } from '../modal-footer/modal-footer';
 
 export default {
   title: 'Components/ComponentLibrary/Modal (deprecated)',

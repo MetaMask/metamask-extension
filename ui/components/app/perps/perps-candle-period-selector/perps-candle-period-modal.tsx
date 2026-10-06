@@ -11,12 +11,10 @@ import {
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalContentSize,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
 import {
   AlignItems,
   Display,

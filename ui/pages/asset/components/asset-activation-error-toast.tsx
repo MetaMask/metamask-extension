@@ -1,7 +1,8 @@
 import { Box } from '@metamask/design-system-react';
 import React from 'react';
 
-import { Icon, IconName } from '../../../components/component-library';
+import { Icon } from '../../../components/component-library/icon/icon';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import { Toast } from '../../../components/multichain/toast/toast';
 import { IconColor } from '../../../helpers/constants/design-system';
 

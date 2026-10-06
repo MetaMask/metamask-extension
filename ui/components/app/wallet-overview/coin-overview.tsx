@@ -13,7 +13,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
-import { ButtonLink, IconName } from '../../component-library';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { IconName } from '../../component-library/icon/icon.types';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -24,9 +25,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
-import Tooltip from '../../ui/tooltip';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.utils';
+import Tooltip from '../../ui/tooltip/tooltip';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -34,13 +35,17 @@ import {
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getDataCollectionForMarketing,
   getAnalyticsId,
+} from '../../../selectors/selectors';
+import {
+  getDataCollectionForMarketing,
   getConsentDecisionMade,
   getOptedIn,
+} from '../../../selectors/metametrics';
+import {
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
-} from '../../../selectors';
+} from '../../../selectors/multichain/networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
 import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
@@ -58,7 +63,7 @@ import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTok
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { BalanceEmptyState } from '../balance-empty-state';
+import { BalanceEmptyState } from '../balance-empty-state/balance-empty-state';
 import {
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,

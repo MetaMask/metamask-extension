@@ -1,12 +1,13 @@
 import React from 'react';
 import classnames from 'clsx';
 
-import { ButtonBase, ButtonBaseProps } from '../button-base';
+import { ButtonBase } from '../button-base/button-base';
+import { ButtonBaseProps } from '../button-base/button-base.types';
 import {
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { PolymorphicRef } from '../box';
+import { PolymorphicRef } from '../box/box.types';
 import type { ButtonSecondaryProps } from './button-secondary.types';
 import {
   ButtonSecondarySize,

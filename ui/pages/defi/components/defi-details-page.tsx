@@ -10,21 +10,19 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  SensitiveText,
-  SensitiveTextLength,
-  Text,
-} from '../../../components/component-library';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { SensitiveText } from '../../../components/component-library/sensitive-text/sensitive-text';
+import { SensitiveTextLength } from '../../../components/component-library/sensitive-text/sensitive-text.types';
+import { Text } from '../../../components/component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { DEFAULT_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 
-import { getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors/selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { getDefiPositions } from '../../../selectors/assets';

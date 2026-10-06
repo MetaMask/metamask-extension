@@ -11,13 +11,16 @@ import { ReversePositionModal } from './reverse-position-modal';
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // default gate is a passthrough; the blocked case is simulated per-test below.
 const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
-jest.mock('../../compliance', () => ({
+
+jest.mock('../../compliance/useComplianceGate', () => ({
   useComplianceGate: () => ({
     gate: mockComplianceGate,
     isComplianceEnabled: false,
     isBlocked: false,
     checkCompliance: jest.fn(),
   }),
+}));
+jest.mock('../../compliance/useSelectedAccountComplianceGate', () => ({
   useSelectedAccountComplianceGate: () => ({
     gate: mockComplianceGate,
     isComplianceEnabled: false,
@@ -34,8 +37,11 @@ jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   usePerpsOrderFees: () => mockUsePerpsOrderFees(),
 }));
 
-jest.mock('../../../../hooks/perps', () => ({
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
@@ -149,16 +155,18 @@ jest.mock('../../../../hooks/rewards/useVipTier', () => ({
   useVipTier: () => mockUseVipTier(),
 }));
 
-jest.mock('../../../../providers/perps', () => ({
+jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => mockGetPerpsStreamManager(),
 }));
 
-jest.mock('../perps-toast', () => ({
+jest.mock('../perps-toast/perps-toast.constants', () => ({
   PERPS_TOAST_KEYS: {
     REVERSE_FAILED: 'perpsToastReverseFailed',
     REVERSE_IN_PROGRESS: 'perpsToastReverseInProgress',
     REVERSE_SUCCESS: 'perpsToastReverseSuccess',
   },
+}));
+jest.mock('../perps-toast/perps-toast-provider', () => ({
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),

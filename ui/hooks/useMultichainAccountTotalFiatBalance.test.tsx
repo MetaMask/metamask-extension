@@ -6,7 +6,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTotalFiatBalance';
 

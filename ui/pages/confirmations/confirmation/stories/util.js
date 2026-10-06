@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { NetworkStatus } from '@metamask/network-controller';
 import configureStore from '../../../../store/store';
-import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets';
+import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import testData from '../../../../../.storybook/test-data';
-import { Box } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
 import {
   mockMultichainNetworkState,
   mockNetworkState,

@@ -1,7 +1,5 @@
-import {
-  BATCH_SELL_ASSET_IDS,
-  buildSendAssetConfigEntry,
-} from '../../../../../../test/data/batch-sell';
+import { BATCH_SELL_ASSET_IDS } from '../../../../../../test/data/batch-sell/constants';
+import { buildSendAssetConfigEntry } from '../../../../../../test/data/batch-sell/factories';
 import type { BatchSellQuotesConfig } from '../types';
 import { hasAnyEnabledAsset } from './hasAnyEnabledAsset';
 

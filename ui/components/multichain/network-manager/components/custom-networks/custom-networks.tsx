@@ -17,26 +17,28 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Box } from '../../../../component-library/box/box';
+import { Button } from '../../../../component-library/button/button';
 import {
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
+} from '../../../../component-library/button/button.types';
+import {
   IconName,
   IconSize,
-  Text,
-} from '../../../../component-library';
-import { NetworkListItem } from '../../../network-list-item';
+} from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
+import { NetworkListItem } from '../../../network-list-item/network-list-item';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
+  getMultichainIsEvm,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
-  getOrderedNetworksList,
-  getShouldShowTestNetworks,
-} from '../../../../../selectors';
+} from '../../../../../selectors/multichain/networks';
+import { getOrderedNetworksList } from '../../../../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../../../../selectors/test-networks';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
 

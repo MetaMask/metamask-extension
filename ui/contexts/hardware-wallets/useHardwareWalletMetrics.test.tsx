@@ -2,11 +2,12 @@ import { renderHook } from '@testing-library/react';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import { useHardwareWalletRecoveryLocation } from '../../hooks/useHardwareWalletRecoveryLocation';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from './HardwareWalletContext';
-import { ConnectionStatus, HardwareWalletType } from './types';
+import { ConnectionStatus } from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 const mockTrackEvent = jest.fn();

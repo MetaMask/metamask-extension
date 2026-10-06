@@ -11,8 +11,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { selectMusdBlockedRegions } from '../../selectors/musd';
-import { isGeoBlocked } from '../../components/app/musd/utils';
+import { selectMusdBlockedRegions } from '../../selectors/musd/feature-flags';
+import { isGeoBlocked } from '../../components/app/musd/utils/validation';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 // ============================================================================

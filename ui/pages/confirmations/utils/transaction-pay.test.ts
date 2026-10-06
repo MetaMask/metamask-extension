@@ -4,7 +4,7 @@ import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { Asset, AssetStandard } from '../types/send';
 import {

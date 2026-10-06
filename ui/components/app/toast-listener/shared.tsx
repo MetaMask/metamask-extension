@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { toast } from 'react-hot-toast';
+import { ToastContent } from '../../ui/toast/toast';
 import { useToastLabel } from './useToastLabel';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';

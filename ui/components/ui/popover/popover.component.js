@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../box';
+import Box from '../box/box';
 import {
   AlignItems,
   BackgroundColor,
@@ -19,13 +19,10 @@ import {
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 
-import {
-  ButtonIcon,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 
 const defaultHeaderProps = {
   padding: [6, 4, 4],

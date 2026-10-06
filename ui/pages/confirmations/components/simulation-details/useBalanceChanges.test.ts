@@ -9,7 +9,7 @@ import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { memoizedGetTokenStandardAndDetails } from '../../utils/token';
-import { selectConversionRateByChainId } from '../../../../selectors';
+import { selectConversionRateByChainId } from '../../../../selectors/selectors';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -17,11 +17,11 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
-jest.mock('../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../selectors/selectors', () => ({
   selectConversionRateByChainId: jest.fn(),
   getUSDConversionRateByChainId: jest.fn(() => () => 4),
 }));

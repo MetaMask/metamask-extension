@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import React, { useState } from 'react';
-import Button from '../button';
-import ButtonGroup from '../button-group';
+import Button from '../button/button.component';
+import ButtonGroup from '../button-group/button-group.component';
 import Mascot from './mascot.component';
 
 const animationEventEmitter = new EventEmitter();

@@ -7,7 +7,10 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ITEMS } from '../search-config';
-import { Toast, ToastContainer } from '../../../components/multichain/toast';
+import {
+  Toast,
+  ToastContainer,
+} from '../../../components/multichain/toast/toast';
 import { BorderRadius } from '../../../helpers/constants/design-system';
 import DownloadStateLogsModal from './download-state-logs-modal';
 

@@ -22,7 +22,7 @@ import {
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
@@ -36,8 +36,8 @@ import { useBalanceChanges } from '../../../../simulation-details/useBalanceChan
 import { useTransactionNativeTicker } from '../../../../../hooks/transactions/useTransactionNativeTicker';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
-import { SelectedGasFeeToken } from '../selected-gas-fee-token';
-import { GasSponsorshipModal } from '../gas-sponsorship-modal';
+import { SelectedGasFeeToken } from '../selected-gas-fee-token/selected-gas-fee-token';
+import { GasSponsorshipModal } from '../gas-sponsorship-modal/gas-sponsorship-modal';
 
 export const EditGasFeesRow = ({
   addedProtectionFeeFiat,

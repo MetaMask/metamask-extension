@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 export const PREDICT_CURRENCY = 'usd';
 

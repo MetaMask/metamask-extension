@@ -20,20 +20,18 @@ import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  PopoverPosition,
-} from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { PopoverPosition } from '../../../../../components/component-library/popover/popover.types';
+import { Skeleton } from '../../../../../components/component-library/skeleton/skeleton';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { AvatarGroup } from '../../../../../components/multichain/avatar-group';
+import { AvatarGroup } from '../../../../../components/multichain/avatar-group/avatar-group';
 import { AvatarType } from '../../../../../components/multichain/avatar-group/avatar-group.types';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { Tooltip } from '../../../../bridge/layout';
+import Tooltip from '../../../../bridge/layout/tooltip';
 import {
   bpsToPercentage,
   formatCurrencyAmount,
@@ -41,7 +39,7 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { IconColor } from '../../../../../helpers/constants/design-system';

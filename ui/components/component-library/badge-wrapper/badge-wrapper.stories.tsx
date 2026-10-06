@@ -8,7 +8,8 @@ import {
 } from './badge-wrapper.types';
 
 import { BadgeWrapper } from './badge-wrapper';
-import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
+import { AvatarNetwork } from '../avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../avatar-network/avatar-network.types';
 import {
   AvatarAccount,
   AvatarAccountSize,

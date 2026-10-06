@@ -2,18 +2,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
-import {
-  NotificationDetailTitle,
-  NotificationListItemSnap,
-} from '../../../../components/multichain';
-import { getSnapsMetadata } from '../../../../selectors';
+import { NotificationDetailTitle } from '../../../../components/multichain/notification-detail-title/notification-detail-title';
+import { NotificationListItemSnap } from '../../../../components/multichain/notification-list-item-snap/notification-list-item-snap';
+import { getSnapsMetadata } from '../../../../selectors/selectors';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 import {
   NotificationComponent,
   NotificationComponentType,
 } from '../types/notifications/notifications';
 import { formatIsoDateString } from '../../../../helpers/utils/notification.util';
-import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer';
+import { SnapUIRenderer } from '../../../../components/app/snaps/snap-ui-renderer/snap-ui-renderer';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,11 +19,13 @@ import {
   FlexDirection,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import { Box, IconSize, Text } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { IconSize } from '../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../components/component-library/text/text';
 import { isOfTypeNodeGuard } from '../node-guard';
-import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import { SnapIcon } from '../../../../components/app/snaps/snap-icon/snap-icon';
 import { useMarkNotificationAsRead } from '../../../../hooks/metamask-notifications/useNotifications';
-import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown';
+import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown/snap-ui-markdown';
 import { DetailedViewData, SnapNotification } from './types';
 import { SnapFooterButton } from './snap-footer-button';
 

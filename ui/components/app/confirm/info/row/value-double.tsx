@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
-import { Box, Text } from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
   Display,

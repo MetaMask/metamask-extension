@@ -1,4 +1,4 @@
-import ensRegistryAbi from './registry';
+import ensRegistryAbi from './ens-registry.json';
 
 describe('ens-registry ABI', () => {
   it('exports a non-empty fragment list', () => {

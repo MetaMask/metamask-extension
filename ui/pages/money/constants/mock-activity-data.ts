@@ -5,11 +5,9 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
-import {
-  MUSD_TOKEN,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../components/app/musd/constants';
+import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import type { AccountsApiActivity } from '../types/money-activity';
 
 /**

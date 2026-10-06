@@ -1,1 +1,0 @@
-export { Delineator } from './delineator';

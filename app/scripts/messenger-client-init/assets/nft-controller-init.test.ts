@@ -8,7 +8,7 @@ import {
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   NftControllerInitMessenger,
-} from '../messengers/assets';
+} from '../messengers/assets/nft-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { NftControllerInit } from './nft-controller-init';
 

@@ -3,12 +3,13 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { toast } from 'react-hot-toast';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import { ImportSrp } from './import-srp';
 
 jest.mock('../../../store/actions', () => ({
@@ -23,12 +24,14 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../components/ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
   ToastContent: jest.fn(({ title, dataTestId }) => (
     <div data-testid={dataTestId}>{title}</div>
   )),
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
 }));
 
 const mockNavigate = jest.fn();

@@ -18,7 +18,7 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { useDebouncedValue } from '../../../../hooks/useDebouncedValue';
 import { useRampsController } from '../../../../hooks/ramps/useRampsController';
 import { useRampsQuotes } from '../../../../hooks/ramps/useRampsQuotes';
-import { getRampCallbackBaseUrl } from '../../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { getRampCallbackBaseUrl } from '../../../../../shared/lib/ramps/callback-url';
 import { normalizeAssetIdForApi } from '../../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { parseUserFacingError } from '../../../../hooks/ramps/utils/parseUserFacingError';
 import { validateBuyWidgetUrl } from '../../../../hooks/ramps/utils/validateBuyUrl';

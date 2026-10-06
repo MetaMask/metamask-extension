@@ -13,8 +13,8 @@ import type { Hex } from '@metamask/utils';
 import type { WalletOptions } from '@metamask/wallet';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
-import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
-import { getShieldGatewayConfig } from '../../../../shared/lib/shield';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors/smart-transactions';
+import { getShieldGatewayConfig } from '../../../../shared/lib/shield/shield';
 import type {
   TransactionMetaEventPayload,
   TransactionMetricsRequest,

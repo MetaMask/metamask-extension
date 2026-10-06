@@ -2,9 +2,9 @@ import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
-import { getPendingShieldCohort } from '../../selectors';
+import { getPendingShieldCohort } from '../../selectors/selectors';
 import { setPendingShieldCohort } from '../../store/actions';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 
 /**

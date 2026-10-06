@@ -19,20 +19,26 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { Popover, PopoverPosition, PopoverRole } from '../../component-library';
-import ToggleButton from '../../ui/toggle-button';
+import { Popover } from '../../component-library/popover/popover';
+import {
+  PopoverPosition,
+  PopoverRole,
+} from '../../component-library/popover/popover.types';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { NetworkListItem } from '../network-list-item';
+import { NetworkListItem } from '../network-list-item/network-list-item';
 import {
   getAllDomains,
-  getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getOriginOfCurrentTab,
   getPermittedEVMChainsForSelectedTab,
+  getAllChainsToPoll,
+} from '../../../selectors/selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
+import {
   getShouldShowTestNetworks,
   getIsTestnetInUse,
-  getAllChainsToPoll,
-} from '../../../selectors';
+} from '../../../selectors/test-networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import {
   addPermittedChain,

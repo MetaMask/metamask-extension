@@ -11,7 +11,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 export type NotificationsSettingsAccountProps = {

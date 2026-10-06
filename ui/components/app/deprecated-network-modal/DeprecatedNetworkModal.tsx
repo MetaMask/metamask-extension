@@ -1,17 +1,15 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  ButtonLink,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonPrimary } from '../../component-library/button-primary/button-primary';
+import { ButtonPrimarySize } from '../../component-library/button-primary/button-primary.types';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextAlign,

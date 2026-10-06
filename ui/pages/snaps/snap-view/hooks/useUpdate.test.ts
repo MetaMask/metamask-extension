@@ -5,7 +5,7 @@ import type { UIMessenger } from '../../../../messengers/ui-messenger';
 import type { RouteMessenger } from '../../../../messengers/route-messenger';
 import { createMockRouteMessenger } from '../../../../../test/lib/mock-route-messenger';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { useUpdate } from './useUpdate';
 
 type RenderHookOptions = {

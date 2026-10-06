@@ -9,7 +9,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { JustifyContent } from '../../../helpers/constants/design-system';
-import { Row } from '../layout';
+import Row from '../layout/row';
 import { RewardsDiscountBadge } from '../../../components/app/rewards/RewardsDiscountBadge';
 import { RewardsVipBadge } from '../../../components/app/rewards/RewardsVipBadge';
 import { readMmFee } from '../utils/quote';

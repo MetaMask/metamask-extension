@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import { RewardsBadge } from '../../../../components/app/rewards/RewardsBadge';
 import { useDappSwapComparisonRewardText } from '../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';

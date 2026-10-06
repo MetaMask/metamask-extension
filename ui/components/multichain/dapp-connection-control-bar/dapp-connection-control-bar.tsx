@@ -34,7 +34,7 @@ import {
   getPermissions,
   getPermissionSubjects,
   getSubjectMetadata,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   getInternalAccountsFromGroupById,
   getMultichainAccountGroupById,

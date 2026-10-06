@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getOnboardingControllerMessenger } from './messengers';
+import { getOnboardingControllerMessenger } from './messengers/onboarding-controller-messenger';
 import { OnboardingControllerInit } from './onboarding-controller-init';
 
 jest.mock('../controllers/onboarding');

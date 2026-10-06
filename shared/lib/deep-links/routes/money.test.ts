@@ -1,4 +1,5 @@
-import { MONEY_HOME_ROUTE } from './route';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { MONEY_HOME_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { money } from './money';
 
 describe('money deep link route', () => {

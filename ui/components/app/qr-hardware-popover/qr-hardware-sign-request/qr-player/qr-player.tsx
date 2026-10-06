@@ -11,7 +11,7 @@ import {
 } from '@metamask/design-system-react';
 import PageContainerFooter from '../../../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { CBOR_ENCODING } from '../../base-qr-reader';
+import { CBOR_ENCODING } from '../../base-qr-reader/base-qr-reader.types';
 import { QR_PLAYER_CONFIG, type QrPlayerProps } from './qr-player.types';
 
 /**

@@ -24,7 +24,7 @@ import {
   TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
-import Dropdown from '../../../components/ui/dropdown';
+import Dropdown from '../../../components/ui/dropdown/dropdown';
 
 import { getURLHostName, shortenString } from '../../../helpers/utils/util';
 

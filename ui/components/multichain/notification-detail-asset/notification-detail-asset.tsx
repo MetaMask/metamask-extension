@@ -1,12 +1,10 @@
 import React from 'react';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 
-import { NotificationDetail } from '../notification-detail';
-import {
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Text,
-} from '../../component-library';
+import { NotificationDetail } from '../notification-detail/notification-detail';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { BadgeWrapperPosition } from '../../component-library/badge-wrapper/badge-wrapper.types';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextVariant,

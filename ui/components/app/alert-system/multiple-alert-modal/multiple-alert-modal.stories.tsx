@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 import { useArgs } from 'storybook/preview-api';
 import { Box } from '@metamask/design-system-react';
-import { Button } from '../../../component-library';
+import { Button } from '../../../component-library/button/button';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { AlertActionHandlerProvider } from '../contexts/alertActionHandler';
 

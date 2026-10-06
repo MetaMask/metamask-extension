@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { QrHardwareSigningPage } from '.';
+import { QrHardwareSigningPage } from './qr-hardware-signing-page';
 import { QrHardwareSigningPhase } from './qr-hardware-signing-page.types';
 
 const meta: Meta<typeof QrHardwareSigningPage> = {

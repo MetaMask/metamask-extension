@@ -6,7 +6,10 @@ import {
   setSelectedAccount,
   setSelectedInternalAccount,
 } from '../../store/actions';
-import { getInternalAccount, getOriginOfCurrentTab } from '../../selectors';
+import {
+  getInternalAccount,
+  getOriginOfCurrentTab,
+} from '../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   connectAccountFailed,
@@ -15,14 +18,10 @@ import {
   disableAlertFailed,
   disableAlertRequested,
   disableAlertSucceeded,
-  dismissAlert,
   switchAccountFailed,
   switchAccountRequested,
   switchAccountSucceeded,
-  switchedToUnconnectedAccount,
 } from './unconnected-account-slice';
-
-export { dismissAlert, switchedToUnconnectedAccount };
 
 const name = AlertTypes.unconnectedAccount;
 

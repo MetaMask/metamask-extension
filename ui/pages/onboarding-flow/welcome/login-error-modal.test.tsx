@@ -12,7 +12,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
-import { getSocialLoginType } from '../../../selectors';
+import { getSocialLoginType } from '../../../selectors/onboarding/onboarding';
 import LoginErrorModal from './login-error-modal';
 import { LOGIN_ERROR } from './types';
 
@@ -56,8 +56,8 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   isPopupOrSidePanelEnvironment: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
+jest.mock('../../../selectors/onboarding/onboarding', () => ({
+  ...jest.requireActual('../../../selectors/onboarding/onboarding'),
   getSocialLoginType: jest.fn(),
 }));
 

@@ -7,7 +7,7 @@ import { useConfirmationNavigation } from '../../hooks/useConfirmationNavigation
 import {
   ApprovalsMetaMaskState,
   getApprovalsByOrigin,
-} from '../../../../selectors';
+} from '../../../../selectors/approvals';
 
 export const useAlertsActions = (
   hideAlertModal: () => void,

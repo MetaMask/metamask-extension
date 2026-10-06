@@ -5,11 +5,11 @@ import configureStore from '../../../store/store';
 import {
   BNB_TOKEN_IMAGE_URL,
   BSC_DISPLAY_NAME,
-  CHAIN_IDS,
   OPTIMISM_DISPLAY_NAME,
   OPTIMISM_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/network';
-import { NetworkListMenu } from '.';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { NetworkListMenu } from './network-list-menu';
 
 const customNetworkStore = configureStore({
   ...testData,

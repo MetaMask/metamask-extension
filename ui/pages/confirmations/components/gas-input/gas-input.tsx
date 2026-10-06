@@ -7,7 +7,7 @@ import {
   hexToDecimal,
   decimalToHex,
 } from '../../../../../shared/lib/conversion.utils';
-import { FormTextField } from '../../../../components/component-library';
+import { FormTextField } from '../../../../components/component-library/form-text-field/form-text-field';
 import { validateGas } from '../../utils/gasValidations';
 
 export const GAS_INPUT_HELP_TEXT_ID = 'gas-input-help-text';

@@ -6,9 +6,9 @@ import {
   ProductPrice,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
-import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import Name from '../../../../../../components/app/name';
+import Name from '../../../../../../components/app/name/name';
 import { TextColor } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 

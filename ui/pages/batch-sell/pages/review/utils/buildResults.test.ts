@@ -1,11 +1,13 @@
 import {
   BATCH_SELL_ASSET_IDS,
   noValidationErrors,
+} from '../../../../../../test/data/batch-sell/constants';
+import {
   buildSendAssetEntry,
   buildReceivedAsset,
   buildRecommendedQuote,
   buildBatchSellControllerResult,
-} from '../../../../../../test/data/batch-sell';
+} from '../../../../../../test/data/batch-sell/factories';
 import { buildResults } from './buildResults';
 
 const ASSET_ID_A = BATCH_SELL_ASSET_IDS.USDC;

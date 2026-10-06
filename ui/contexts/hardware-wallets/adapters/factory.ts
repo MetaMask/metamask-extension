@@ -1,7 +1,7 @@
-import {
-  HardwareWalletType,
-  type HardwareWalletAdapter,
-  type HardwareWalletAdapterOptions,
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import type {
+  HardwareWalletAdapter,
+  HardwareWalletAdapterOptions,
 } from '../types';
 import { LedgerAdapter } from './LedgerAdapter';
 import { NonHardwareAdapter } from './NonHardwareAdapter';

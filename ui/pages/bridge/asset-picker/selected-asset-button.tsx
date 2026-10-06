@@ -18,11 +18,9 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { BridgeToken } from '../../../ducks/bridge/types';
-import {
-  IconName,
-  Label,
-  SelectButton,
-} from '../../../components/component-library';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { Label } from '../../../components/component-library/label/label';
+import { SelectButton } from '../../../components/component-library/select-button/select-button';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,

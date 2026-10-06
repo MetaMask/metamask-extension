@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import type { Hex } from '@metamask/utils';
 import type { NativeAssetIdentifiersMap } from '@metamask/network-enablement-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { DEFAULT_FIXTURE_ACCOUNT_ID } from '../constants';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import {

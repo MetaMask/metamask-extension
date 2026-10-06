@@ -4,7 +4,7 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getGlobalChainId } from '../../messenger-client-init/init-utils';
 import { GasFeeControllerInitMessenger } from '../messengers/gas-fee-controller-messenger';
 

@@ -1,17 +1,16 @@
 import React, { useCallback, useState } from 'react';
 
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
+import { Button } from '../../../component-library/button/button';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
 import {
-  Button,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+} from '../../../component-library/button/button.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   Severity,
@@ -19,9 +18,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
-import { AlertModal } from '../alert-modal';
-import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
-import { MultipleAlertModal } from '../multiple-alert-modal';
+import {
+  AlertModal,
+  AcknowledgeCheckboxBase,
+} from '../alert-modal/alert-modal';
+import { MultipleAlertModal } from '../multiple-alert-modal/multiple-alert-modal';
 import { MetaMetricsEventLocation } from '../../../../../shared/constants/metametrics';
 import type { OnCancelHandler } from '../../../../pages/confirmations/components/confirm/footer/footer';
 import { useBoolean } from '../../../../hooks/useBoolean';

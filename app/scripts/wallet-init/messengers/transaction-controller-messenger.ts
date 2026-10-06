@@ -59,7 +59,7 @@ import { TransactionPayControllerActions } from '@metamask/transaction-pay-contr
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
-import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
+import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/shield-subscription-service-method-action-types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,

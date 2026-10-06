@@ -16,7 +16,8 @@ import {
   InternalAccountsState,
 } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { createMockMultichainAccountsState } from '../../../../selectors/multichain-accounts/test-utils';
-import * as assetsSelectors from '../../../../selectors/assets';
+import * as assetsSelectorsModule1 from '../../../../selectors/assets';
+
 import {
   MultichainEditAccountsPage,
   SiteMetadata,
@@ -340,11 +341,15 @@ describe('MultichainEditAccountsPage', () => {
     jest.clearAllMocks();
 
     // Mock the balance selector to return empty balances
-    jest.spyOn(assetsSelectors, 'selectBalanceForAllWallets').mockReturnValue({
-      wallets: {},
-      totalBalanceInUserCurrency: 0,
-      userCurrency: 'USD',
-    } as ReturnType<typeof assetsSelectors.selectBalanceForAllWallets>);
+    jest
+      .spyOn(assetsSelectorsModule1, 'selectBalanceForAllWallets')
+      .mockReturnValue({
+        wallets: {},
+        totalBalanceInUserCurrency: 0,
+        userCurrency: 'USD',
+      } as ReturnType<
+        typeof assetsSelectorsModule1.selectBalanceForAllWallets
+      >);
   });
 
   it('renders modal with correct title', () => {

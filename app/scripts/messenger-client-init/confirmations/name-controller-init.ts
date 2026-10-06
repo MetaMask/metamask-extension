@@ -5,7 +5,7 @@ import {
   TokenNameProvider,
   NameControllerMessenger,
 } from '@metamask/name-controller';
-import { NameControllerInitMessenger } from '../messengers';
+import { NameControllerInitMessenger } from '../messengers/name-controller-messenger';
 import { MessengerClientInitFunction } from '../types';
 
 /**

@@ -6,13 +6,14 @@ import {
   RampsOrderStatus,
   type RampsOrder,
 } from '@metamask/ramps-controller';
+import { toast } from 'react-hot-toast';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   ACTIVITY_ROUTE,
   TX_DETAILS_ROUTE,
 } from '../../helpers/constants/routes';
 import { selectRampsOrdersForSelectedAccount } from '../../selectors/rampsController';
-import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { ToastContent } from '../../components/ui/toast/toast';
 import {
   clearToastPhase,
   shouldShowPendingToast,

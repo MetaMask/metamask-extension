@@ -6,9 +6,9 @@ import {
 } from '@metamask/notification-services-controller/notification-services';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import { ButtonVariant } from '../../component-library';
+import { ButtonVariant } from '../../component-library/button/button.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { NotificationDetailButton } from '../notification-detail-button';
+import { NotificationDetailButton } from '../notification-detail-button/notification-detail-button';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

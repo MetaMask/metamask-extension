@@ -5,20 +5,22 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
-import {
-  DisconnectAllGatorPermissionsModal,
-  DisconnectAllGatorPermissionsModalProps,
-} from '.';
+import { DisconnectAllGatorPermissionsModal } from './disconnect-all-gator-permissions-modal';
+import { DisconnectAllGatorPermissionsModalProps } from './types';
 
 // Mock the gator permissions utils
-jest.mock('../../../../shared/lib/gator-permissions', () => ({
-  formatGatorAmountLabel: jest.fn().mockReturnValue('1 ETH per second'),
-  getGatorPermissionDisplayMetadata: jest.fn().mockReturnValue({
-    displayNameKey: 'tokenStream',
-    amount: '0xde0b6b3a7640000',
-    frequencyKey: 'perSecond',
+
+jest.mock(
+  '../../../../shared/lib/gator-permissions/gator-permissions-utils',
+  () => ({
+    formatGatorAmountLabel: jest.fn().mockReturnValue('1 ETH per second'),
+    getGatorPermissionDisplayMetadata: jest.fn().mockReturnValue({
+      displayNameKey: 'tokenStream',
+      amount: '0xde0b6b3a7640000',
+      frequencyKey: 'perSecond',
+    }),
   }),
-}));
+);
 
 // Mock the useGatorPermissionTokenInfo hook
 jest.mock(

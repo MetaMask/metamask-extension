@@ -1,4 +1,4 @@
-import type { PerpsMarketData } from '../../../components/app/perps/types';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { MARKET_SORTING_CONFIG } from '../../../components/app/perps/constants';
 import { parseVolume } from '../../../components/app/perps/utils';
 

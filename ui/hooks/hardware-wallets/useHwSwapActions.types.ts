@@ -3,7 +3,7 @@ import type { MutableRefObject } from 'react';
 import type {
   HardwareWalletSignaturesAction,
   HardwareWalletSignaturesState,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 
 export type UseHwSwapActionsOptions = {
   /** Current hardware-wallet signature state-machine state. */

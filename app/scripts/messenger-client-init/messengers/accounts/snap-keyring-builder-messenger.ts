@@ -6,8 +6,6 @@ import {
 } from '../../../lib/messenger';
 import { SnapKeyringBuilderMessenger } from '../../../lib/snap-keyring/types';
 
-export type { SnapKeyringBuilderMessenger };
-
 /**
  * Gets the messenger for the Snap keyring, which is used to handle communication between the Snap keyring
  * and the rest of the extension.

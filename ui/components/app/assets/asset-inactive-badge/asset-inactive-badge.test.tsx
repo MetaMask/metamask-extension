@@ -6,7 +6,7 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../component-library', () => ({
+jest.mock('../../../component-library/tag/tag', () => ({
   Tag: ({
     label,
     backgroundColor,

@@ -17,14 +17,12 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list';
+import { MultichainPrivateKeyList } from '../../../components/multichain-accounts/multichain-private-key-list/multichain-private-key-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';

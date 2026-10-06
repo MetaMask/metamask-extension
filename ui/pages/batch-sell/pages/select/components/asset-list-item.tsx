@@ -13,15 +13,15 @@ import {
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 // Follow same pattern as with the global PercentageChange component.
-// eslint-disable-next-line import-x/no-restricted-paths
-import { formatValue } from '../../../../../../app/scripts/lib/util';
+
+import { formatValue } from '../../../../../../shared/lib/format-value';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../bridge/utils/quote';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 
 type AssetListItemProps = {

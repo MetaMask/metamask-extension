@@ -21,7 +21,7 @@ import {
   getAllNetworkConfigurationsByCaipChainId,
   type EvmAndMultichainNetworkConfigurationsWithCaipChainId,
 } from '../../../../shared/lib/selectors/networks';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
 
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -233,7 +233,7 @@ jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
     '0xc5b2b5ae370876c0122910f92a13bef85a133e56',
 }));
 
-jest.mock('../../../selectors/multichain', () => {
+jest.mock('../../../selectors/multichain/networks', () => {
   const mockMultichainNetwork = {
     chainId: 'eip155:1',
     nickname: 'Ethereum Mainnet',
@@ -253,7 +253,7 @@ jest.mock('../../../selectors/multichain', () => {
   };
 
   return {
-    ...jest.requireActual('../../../selectors/multichain'),
+    ...jest.requireActual('../../../selectors/multichain/networks'),
     getMultichainNetwork: jest.fn(() => mockMultichainNetwork),
   };
 });

@@ -1,6 +1,6 @@
 import { useCallback, useRef, useEffect } from 'react';
 
-import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import type { UseHwSwapSubmissionOptions } from './useHwSwapSubmission.types';
 
 const RETRY_RPC_TIMEOUT_MS = 120_000;

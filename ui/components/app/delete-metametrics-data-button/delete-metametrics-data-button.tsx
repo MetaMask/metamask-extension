@@ -2,16 +2,15 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
-import ClearMetametricsData from '../clear-metametrics-data';
+import ClearMetametricsData from '../clear-metametrics-data/clear-metametrics-data';
+import { ButtonPrimary } from '../../component-library/button-primary/button-primary';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 import {
-  ButtonPrimary,
-  Icon,
-  IconName,
-  IconSize,
   PolymorphicComponentPropWithRef,
   PolymorphicRef,
-  Text,
-} from '../../component-library';
+} from '../../component-library/box/box.types';
+import { Text } from '../../component-library/text/text';
 import {
   BlockSize,
   TextVariant,
@@ -21,13 +20,15 @@ import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import {
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../../../selectors/metametrics';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
-import DataDeletionErrorModal from '../data-deletion-error-modal';
+import DataDeletionErrorModal from '../data-deletion-error-modal/data-deletion-error-modal';
 import { formatDate } from '../../../helpers/utils/util';
 import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 import { useDispatch } from '../../../store/hooks';

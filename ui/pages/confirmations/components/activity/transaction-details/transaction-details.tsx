@@ -1,21 +1,21 @@
 import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRowDivider } from '../../../../../components/app/confirm/info/row';
-import { TransactionDetailsHero } from '../transaction-details-hero';
-import { TransactionDetailsStatusRow } from '../transaction-details-status-row';
-import { TransactionDetailsDateRow } from '../transaction-details-date-row';
-import { TransactionDetailsAccountRow } from '../transaction-details-account-row';
-import { TransactionDetailsPaidWithRow } from '../transaction-details-paid-with-row';
-import { TransactionDetailsNetworkFeeRow } from '../transaction-details-network-fee-row';
-import { TransactionDetailsBridgeFeeRow } from '../transaction-details-bridge-fee-row';
-import { TransactionDetailsTotalRow } from '../transaction-details-total-row';
-import { TransactionDetailsSummary } from '../transaction-details-summary';
-import { useTransactionDetails } from '../transaction-details-context';
+import { ConfirmInfoRowDivider } from '../../../../../components/app/confirm/info/row/divider';
+import { TransactionDetailsHero } from '../transaction-details-hero/transaction-details-hero';
+import { TransactionDetailsStatusRow } from '../transaction-details-status-row/transaction-details-status-row';
+import { TransactionDetailsDateRow } from '../transaction-details-date-row/transaction-details-date-row';
+import { TransactionDetailsAccountRow } from '../transaction-details-account-row/transaction-details-account-row';
+import { TransactionDetailsPaidWithRow } from '../transaction-details-paid-with-row/transaction-details-paid-with-row';
+import { TransactionDetailsNetworkFeeRow } from '../transaction-details-network-fee-row/transaction-details-network-fee-row';
+import { TransactionDetailsBridgeFeeRow } from '../transaction-details-bridge-fee-row/transaction-details-bridge-fee-row';
+import { TransactionDetailsTotalRow } from '../transaction-details-total-row/transaction-details-total-row';
+import { TransactionDetailsSummary } from '../transaction-details-summary/transaction-details-summary';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 export function TransactionDetails() {

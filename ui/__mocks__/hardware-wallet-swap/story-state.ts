@@ -1,4 +1,4 @@
-import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 
 export type HwSwapStoryArgs = {

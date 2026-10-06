@@ -1,5 +1,5 @@
 import React from 'react';
-import NftDefaultImage from '.';
+import NftDefaultImage from './nft-default-image';
 
 export default {
   title: 'Components/App/NftDefaultImage',

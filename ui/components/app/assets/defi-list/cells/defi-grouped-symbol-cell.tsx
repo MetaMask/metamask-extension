@@ -3,10 +3,8 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  SensitiveText,
-  SensitiveTextLength,
-} from '../../../../component-library';
+import { SensitiveText } from '../../../../component-library/sensitive-text/sensitive-text';
+import { SensitiveTextLength } from '../../../../component-library/sensitive-text/sensitive-text.types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export function DeFiSymbolGroup({

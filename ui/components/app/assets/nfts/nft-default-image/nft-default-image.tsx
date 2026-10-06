@@ -7,7 +7,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { ButtonLink } from '../../../../component-library';
+import { ButtonLink } from '../../../../component-library/button-link/button-link';
 import { showIpfsModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
 

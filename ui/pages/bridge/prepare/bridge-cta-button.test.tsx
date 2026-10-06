@@ -12,7 +12,7 @@ import {
 } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
@@ -20,9 +20,9 @@ import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
-  HardwareWalletProvider,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
+} from '../../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
@@ -54,8 +54,10 @@ const mockUseHardwareWalletState = jest.fn();
 const mockOnOpenPriceImpactWarningModal = jest.fn();
 const mockResetState = jest.fn();
 
-jest.mock('../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../contexts/hardware-wallets'),
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),

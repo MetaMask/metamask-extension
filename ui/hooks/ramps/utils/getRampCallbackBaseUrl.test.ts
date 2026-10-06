@@ -1,7 +1,7 @@
 import { getDefaultRedirectCallbackUrl } from '@metamask/ramps-controller';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { getRampsEnvironment } from '../../../../shared/lib/ramps/environment';
-import { getRampCallbackBaseUrl } from './getRampCallbackBaseUrl';
+import { getRampCallbackBaseUrl } from '../../../../shared/lib/ramps/callback-url';
 
 const PRODUCTION_CALLBACK =
   'https://on-ramp-content.api.cx.metamask.io/regions/fake-callback';

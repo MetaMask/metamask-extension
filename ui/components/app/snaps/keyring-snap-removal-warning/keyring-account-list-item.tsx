@@ -1,5 +1,8 @@
 import React from 'react';
-import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import { Box } from '../../../component-library/box/box';
 import {
   BlockSize,
   BorderColor,

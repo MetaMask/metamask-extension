@@ -3,8 +3,9 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { selectEvmAddress, getUseExternalServices } from '../../../selectors';
-import { getIsPerpsExperienceAvailable } from '../../../selectors/perps';
+import { selectEvmAddress } from '../../../selectors/accounts';
+import { getUseExternalServices } from '../../../selectors/selectors';
+import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 import { usePerpsLivePrices } from './usePerpsLivePrices';
 

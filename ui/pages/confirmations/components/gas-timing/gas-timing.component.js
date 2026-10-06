@@ -7,7 +7,8 @@ import {
   GasEstimateTypes,
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
-import { Box, Text } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,

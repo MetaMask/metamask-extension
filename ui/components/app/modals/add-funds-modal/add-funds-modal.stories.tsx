@@ -1,5 +1,5 @@
 import React from 'react';
-import AddFundsModal from '.';
+import AddFundsModal from './add-funds-modal';
 
 export default {
   title: 'Components/App/Modals/AddFundsModal',

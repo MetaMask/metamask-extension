@@ -24,7 +24,7 @@ import {
 import {
   getInternalAccounts,
   getInternalAccountByAddress,
-} from '../../selectors';
+} from '../../selectors/accounts';
 import { selectDefaultRpcEndpointByChainId } from '../../../shared/lib/selectors/networks';
 import {
   addPendingRevocation,
@@ -60,14 +60,15 @@ jest.mock('../../../shared/lib/delegation/delegation', () => ({
   getDelegationHashOffchain: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/delegation', () => ({
+jest.mock('../../../shared/lib/delegation/environment', () => ({
   getDeleGatorEnvironment: jest.fn(() => ({
     EIP7702StatelessDeleGatorImpl: '0x1234567890123456789012345678901234567890',
   })),
 }));
 
 // Mock the selectors
-jest.mock('../../selectors', () => ({
+
+jest.mock('../../selectors/accounts', () => ({
   getInternalAccounts: jest.fn(),
   getInternalAccountByAddress: jest.fn(),
 }));

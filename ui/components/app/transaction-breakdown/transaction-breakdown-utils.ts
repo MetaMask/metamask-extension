@@ -3,7 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { getShouldShowFiat } from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors/selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { isEIP1559Transaction } from '../../../../shared/lib/transaction.utils';
 
@@ -15,7 +15,7 @@ import {
   calcTokenAmount,
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
-import { MetaMaskReduxState } from '../../../store/store';
+import { MetaMaskReduxState } from '../../../store/types';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { isTransactionGasFeeSponsored } from '../../../../shared/lib/transaction-gas-fee.utils';
 

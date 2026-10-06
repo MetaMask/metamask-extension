@@ -1,5 +1,6 @@
 import React from 'react';
-import { Content, Page } from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Page } from '../../../components/multichain/pages/page/page';
 import HardwareWalletSignatures from './hardware-wallet-signatures';
 
 /**

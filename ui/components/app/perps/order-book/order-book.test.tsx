@@ -4,11 +4,11 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
+import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream/usePerpsLiveOrderBook';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { PerpsOrderBook } from './order-book';
 
-jest.mock('../../../../hooks/perps/stream', () => ({
+jest.mock('../../../../hooks/perps/stream/usePerpsLiveOrderBook', () => ({
   usePerpsLiveOrderBook: jest.fn(),
 }));
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DisconnectAllModal } from '.';
+import { DisconnectAllModal } from './disconnect-all-modal';
 
 export default {
   title: 'Components/Multichain/DisconnectAllModal',

@@ -155,7 +155,7 @@ import {
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
   getSmartTransactionsEnabled,
-} from '../../shared/lib/selectors';
+} from '../../shared/lib/selectors/smart-transactions';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
@@ -166,21 +166,26 @@ import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multicha
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
-import { getIsPerpsIncludedInBuild } from '../../shared/lib/environment';
+import {
+  getIsPerpsIncludedInBuild,
+  getBooleanFlag,
+} from '../../shared/lib/environment';
 import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
-  getIsShieldSubscriptionActive,
-} from '../../shared/lib/shield';
+} from '../../shared/lib/shield/shield';
+import { getIsShieldSubscriptionActive } from '../../shared/lib/shield/subscription-utils';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
 import { isPerpsRemoteConfigSatisfied } from '../../shared/lib/perps-feature-flags';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
+import { addHexPrefix } from '../../shared/lib/add-hex-prefix';
 import { accountSupports7702 } from './lib/account-supports-7702';
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 
@@ -205,10 +210,10 @@ import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
-  createUnsupportedMethodMiddleware,
   createMultichainApiMethodMiddleware,
   createMultichainInvokedMethodMiddleware,
 } from './lib/rpc-method-middleware';
+import { createUnsupportedMethodMiddleware } from './lib/rpc-method-middleware/createUnsupportedMethodMiddleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createRpcBlockingMiddleware, {
   createRpcBlockingCallbacks,
@@ -219,23 +224,20 @@ import createFrameIdMiddleware from './lib/createFrameIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
-  createEventBuilder,
   setParticipateInMetaMetrics,
   trackEvent,
   trackPage,
   updateEventFragment,
-} from './controllers/analytics';
-import { setDataCollectionForMarketing } from './controllers/analytics/analytics';
+  setDataCollectionForMarketing,
+} from './controllers/analytics/analytics';
 import Backup from './lib/backup';
 import { handleRampsOrderStatusChanged } from './lib/ramps/handleRampsOrderStatusChanged';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
-  addHexPrefix,
   getMethodDataName,
   previousValueComparator,
   initializeRpcProviderDomains,
   getPlatform,
-  getBooleanFlag,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { createDefiReferralMiddleware } from './lib/defi-referrals/createDefiReferralMiddleware';
@@ -246,15 +248,17 @@ import { createPopupOpener } from './popup/background';
 
 import {
   diffMap,
-  getPermittedAccountsByOrigin,
-  getPermittedChainsByOrigin,
-  NOTIFICATION_NAMES,
   getRemovedAuthorizations,
   getChangedAuthorizations,
+} from './controllers/permissions/differs';
+import {
+  getPermittedAccountsByOrigin,
+  getPermittedChainsByOrigin,
   getAuthorizedScopesByOrigin,
   getPermittedAccountsForScopesByOrigin,
   getOriginsWithSessionProperty,
-} from './controllers/permissions';
+} from './controllers/permissions/selectors';
+import { NOTIFICATION_NAMES } from './controllers/permissions/enums';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { addDappTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
@@ -277,22 +281,18 @@ import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
 import { rejectOriginApprovals } from './lib/approval/utils';
 import { InstitutionalSnapControllerInit } from './messenger-client-init/institutional-snap/institutional-snap-controller-init';
-import {
-  MultichainAssetsControllerInit,
-  MultichainTransactionsControllerInit,
-  MultichainBalancesControllerInit,
-  MultichainAssetsRatesControllerInit,
-  MultichainNetworkControllerInit,
-} from './messenger-client-init/multichain';
-import {
-  AssetsContractControllerInit,
-  AssetsControllerInit,
-  ClientControllerInit,
-  NetworkOrderControllerInit,
-  NftControllerInit,
-  NftDetectionControllerInit,
-  TokenRatesControllerInit,
-} from './messenger-client-init/assets';
+import { MultichainAssetsControllerInit } from './messenger-client-init/multichain/multichain-assets-controller-init';
+import { MultichainTransactionsControllerInit } from './messenger-client-init/multichain/multichain-transactions-controller-init';
+import { MultichainBalancesControllerInit } from './messenger-client-init/multichain/multichain-balances-controller-init';
+import { MultichainAssetsRatesControllerInit } from './messenger-client-init/multichain/multichain-rates-assets-controller-init';
+import { MultichainNetworkControllerInit } from './messenger-client-init/multichain/multichain-network-controller-init';
+import { AssetsContractControllerInit } from './messenger-client-init/assets/assets-contract-controller-init';
+import { AssetsControllerInit } from './messenger-client-init/assets/assets-controller-init';
+import { ClientControllerInit } from './messenger-client-init/assets/client-controller-init';
+import { NetworkOrderControllerInit } from './messenger-client-init/assets/network-order-controller-init';
+import { NftControllerInit } from './messenger-client-init/assets/nft-controller-init';
+import { NftDetectionControllerInit } from './messenger-client-init/assets/nft-detection-controller-init';
+import { TokenRatesControllerInit } from './messenger-client-init/assets/token-rates-controller-init';
 import { TransactionPayControllerInit } from './messenger-client-init/transaction-pay-controller-init';
 import { GeolocationApiServiceInit } from './messenger-client-init/geolocation-api-service-init';
 import { GeolocationControllerInit } from './messenger-client-init/geolocation-controller-init';
@@ -305,22 +305,18 @@ import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
-import {
-  CronjobControllerInit,
-  ExecutionServiceInit,
-  RateLimitControllerInit,
-  SnapControllerInit,
-  SnapInsightsControllerInit,
-  SnapInterfaceControllerInit,
-  SnapsNameProviderInit,
-  SnapRegistryControllerInit,
-  WebSocketServiceInit,
-  MultichainRoutingServiceInit,
-} from './messenger-client-init/snaps';
-import {
-  BackendWebSocketServiceInit,
-  AccountActivityServiceInit,
-} from './messenger-client-init/core-backend';
+import { CronjobControllerInit } from './messenger-client-init/snaps/cronjob-controller-init';
+import { ExecutionServiceInit } from './messenger-client-init/snaps/execution-service-init';
+import { RateLimitControllerInit } from './messenger-client-init/snaps/rate-limit-controller-init';
+import { SnapControllerInit } from './messenger-client-init/snaps/snap-controller-init';
+import { SnapInsightsControllerInit } from './messenger-client-init/snaps/snap-insights-controller-init';
+import { SnapInterfaceControllerInit } from './messenger-client-init/snaps/snap-interface-controller-init';
+import { SnapsNameProviderInit } from './messenger-client-init/snaps/snaps-name-provider-init';
+import { SnapRegistryControllerInit } from './messenger-client-init/snaps/snap-registry-controller-init';
+import { WebSocketServiceInit } from './messenger-client-init/snaps/websocket-service-init';
+import { MultichainRoutingServiceInit } from './messenger-client-init/snaps/multichain-routing-service-init';
+import { BackendWebSocketServiceInit } from './messenger-client-init/core-backend/backend-websocket-service-init';
+import { AccountActivityServiceInit } from './messenger-client-init/core-backend/account-activity-service-init';
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
@@ -333,7 +329,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
-import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
+import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding/oauth-service-init';
 import {
   getSendBundleSupportedChains,
   setSentinelApiAuth,
@@ -352,8 +348,8 @@ import { RatesControllerInit } from './messenger-client-init/rates-controller-in
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
 import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
-import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
-import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
+import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription/shield-subscription-service-init';
+import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner/network-connection-banner-controller-init';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './messenger-client-init/onboarding-controller-init';
 import { BridgeControllerInit } from './messenger-client-init/bridge-controller-init';
@@ -379,7 +375,7 @@ import { SignatureControllerInit } from './messenger-client-init/confirmations/s
 import { UserOperationControllerInit } from './messenger-client-init/confirmations/user-operation-controller-init';
 import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-service-init';
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
-import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
+import { QrSyncControllerInit } from './messenger-client-init/qr-sync/qr-sync-controller-init';
 import { getRootMessenger } from './lib/messenger';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
@@ -398,7 +394,7 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
-import { ExtensionConnectivityAdapter } from './controllers/connectivity';
+import { ExtensionConnectivityAdapter } from './controllers/connectivity/extension-connectivity-adapter';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -418,7 +414,7 @@ export const METAMASK_CONTROLLER_EVENTS = {
 };
 
 /**
- * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import("../../ui/store/types").MetaMaskReduxState} MetaMaskReduxState
  * @typedef {import('@metamask/seedless-onboarding-controller').SecretMetadata} SecretMetadata
  */
 

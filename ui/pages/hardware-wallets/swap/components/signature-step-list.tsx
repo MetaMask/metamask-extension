@@ -9,14 +9,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import {
   getSignatureStepDescriptionLines,
   getStepLabelColor,
 } from '../hardware-wallet-signatures.utils';
 import type { QrHardwareSignRequest } from '../types';
-import SignatureStatusIcon from '../signature-status-icon';
-import QrSignatureCode from '../qr-signature-code';
+import SignatureStatusIcon from '../signature-status-icon/signature-status-icon';
+import QrSignatureCode from '../qr-signature-code/qr-signature-code';
 import type { SignatureStepListProps } from './signature-step-list.types';
 
 const InlineQrSignatureCode = ({

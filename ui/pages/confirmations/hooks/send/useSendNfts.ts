@@ -10,7 +10,7 @@ import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from '../../../../selectors/multichain-accounts/account-tree';
-import { getInternalAccounts } from '../../../../selectors';
+import { getInternalAccounts } from '../../../../selectors/accounts';
 import { type Asset, AssetStandard } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -18,7 +19,7 @@ import {
   selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { ToastContent } from '../../ui/toast/toast';
 import {
   clearPendingUnfundedDepositFunnel,
   confirmUnfundedDepositFunnel,

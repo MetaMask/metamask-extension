@@ -43,12 +43,10 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
 import { setMusdConversionEducationSeen } from '../../../store/actions';
-import {
-  useMusdConversion,
-  useMusdGeoBlocking,
-  useMusdConversionTokens,
-  useCanBuyMusd,
-} from '../../../hooks/musd';
+import { useMusdConversion } from '../../../hooks/musd/useMusdConversion';
+import { useMusdGeoBlocking } from '../../../hooks/musd/useMusdGeoBlocking';
+import { useMusdConversionTokens } from '../../../hooks/musd/useMusdConversionTokens';
+import { useCanBuyMusd } from '../../../hooks/musd/useCanBuyMusd';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import {
   getMusdAssetIdForChain,

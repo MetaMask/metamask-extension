@@ -3,14 +3,14 @@ import React, { useMemo } from 'react';
 import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import TokenCell from '../../../components/app/assets/token-cell';
+import TokenCell from '../../../components/app/assets/token-cell/token-cell';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';

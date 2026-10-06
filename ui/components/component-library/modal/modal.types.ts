@@ -1,4 +1,4 @@
-import type { ModalFocusProps } from '../modal-focus';
+import type { ModalFocusProps } from '../modal-focus/modal-focus.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -11,26 +11,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveOrders,
-  usePerpsLiveAccount,
-} from '../../../hooks/perps/stream';
+import { usePerpsLivePositions } from '../../../hooks/perps/stream/usePerpsLivePositions';
+import { usePerpsLiveOrders } from '../../../hooks/perps/stream/usePerpsLiveOrders';
+import { usePerpsLiveAccount } from '../../../hooks/perps/stream/usePerpsLiveAccount';
 import { usePerpsTransactionHistory } from '../../../hooks/perps/usePerpsTransactionHistory';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../shared/constants/perps';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../providers/perps';
+import { getPerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import {
   selectPerpsIsFirstTimeUser,
   selectPerpsIsTestnet,
 } from '../../../selectors/perps-controller';
-import {
-  selectTutorialCompleted,
-  setTutorialModalOpen,
-} from '../../../ducks/perps';
+import { selectTutorialCompleted } from '../../../ducks/perps/selectors';
+import { setTutorialModalOpen } from '../../../ducks/perps/tutorial';
 
-import { usePerpsEligibility } from '../../../hooks/perps';
+import { usePerpsEligibility } from '../../../hooks/perps/usePerpsEligibility';
 import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
@@ -41,30 +37,29 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
-import { useSelectedAccountComplianceGate } from '../compliance';
+import { useSelectedAccountComplianceGate } from '../compliance/useSelectedAccountComplianceGate';
 import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
-import type { PerpsTransaction } from './types';
+import type { PerpsTransaction } from './types/transactionHistory';
 import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
 import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
-import { PerpsGeoBlockModal } from './perps-geo-block-modal';
+import { PerpsGeoBlockModal } from './perps-geo-block-modal/perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
-import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
+import PerpsMarketBalanceActions from './perps-market-balance-actions/perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
-import { PerpsExploreMarkets } from './perps-explore-markets';
-import { PerpsProducts } from './perps-products';
-import { PerpsPositionsOrders } from './perps-positions-orders';
-import { PerpsRecentActivity } from './perps-recent-activity';
-import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
-import {
-  PerpsBalanceActionsSkeleton,
-  PerpsSectionSkeleton,
-} from './perps-skeletons';
-import { PerpsSupportLearn } from './perps-support-learn';
-import { PerpsTutorialModal } from './perps-tutorial-modal';
-import { PerpsTopMovers } from './perps-top-movers';
-import { PerpsWatchlist } from './perps-watchlist';
+import { PerpsExploreMarkets } from './perps-explore-markets/perps-explore-markets';
+import { PerpsProducts } from './perps-products/perps-products';
+import { PerpsPositionsOrders } from './perps-positions-orders/perps-positions-orders';
+import { PerpsRecentActivity } from './perps-recent-activity/perps-recent-activity';
+import { PERPS_TOAST_KEYS } from './perps-toast/perps-toast.constants';
+import { usePerpsToast } from './perps-toast/perps-toast-provider';
+import { PerpsBalanceActionsSkeleton } from './perps-skeletons/perps-balance-actions-skeleton';
+import { PerpsSectionSkeleton } from './perps-skeletons/perps-section-skeleton';
+import { PerpsSupportLearn } from './perps-support-learn/perps-support-learn';
+import PerpsTutorialModal from './perps-tutorial-modal/PerpsTutorialModal';
+import { PerpsTopMovers } from './perps-top-movers/perps-top-movers';
+import { PerpsWatchlist } from './perps-watchlist/perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
 /**

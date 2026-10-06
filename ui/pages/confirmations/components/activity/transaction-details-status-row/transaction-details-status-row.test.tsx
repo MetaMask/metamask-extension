@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsStatusRow } from './transaction-details-status-row';
 
 const mockStore = configureMockStore([]);

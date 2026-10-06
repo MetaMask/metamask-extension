@@ -5,12 +5,9 @@ import {
   Severity,
   Category,
 } from '@metamask/hw-wallet-sdk';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { useDeviceEventHandlers } from './HardwareWalletEventHandlers';
-import {
-  DeviceEvent,
-  HardwareWalletType,
-  HardwareWalletAdapter,
-} from './types';
+import { DeviceEvent, HardwareWalletAdapter } from './types';
 import { ConnectionState } from './connectionState';
 
 describe('useDeviceEventHandlers', () => {

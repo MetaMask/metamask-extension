@@ -1,7 +1,8 @@
 import nock from 'nock';
 import { ChainId } from '@metamask/bridge-controller';
-import { MOCKS } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import * as MOCKS from '../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,

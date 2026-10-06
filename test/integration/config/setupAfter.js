@@ -55,23 +55,34 @@ jest.mock('@rive-app/react-canvas', () => {
 // Mock Pay-related components to avoid importing large dependency trees
 // These components are not used by existing integration tests
 jest.mock(
-  '../../../ui/pages/confirmations/components/confirm/info/perps-deposit-info',
+  '../../../ui/pages/confirmations/components/confirm/info/perps-deposit-info/perps-deposit-info',
   () => ({
     PerpsDepositInfo: () => null,
   }),
 );
 
 jest.mock(
-  '../../../ui/pages/confirmations/components/info/musd-conversion-info',
-  () => ({
-    MusdConversionInfo: () => null,
-  }),
+  '../../../ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-info',
+  () => ({ MusdConversionInfo: () => null }),
+);
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/musd-conversion-info/musd-override-content',
+  () => ({}),
+);
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/musd-conversion-info/output-amount-tag',
+  () => ({}),
+);
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/musd-conversion-info/musd-conversion-header-content',
+  () => ({}),
 );
 
 jest.mock(
-  '../../../ui/pages/confirmations/components/info/custom-amount-info',
-  () => ({
-    CustomAmountInfo: () => null,
-    CustomAmountInfoSkeleton: () => null,
-  }),
+  '../../../ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info',
+  () => ({ CustomAmountInfo: () => null }),
+);
+jest.mock(
+  '../../../ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info-skeleton',
+  () => ({ CustomAmountInfoSkeleton: () => null }),
 );

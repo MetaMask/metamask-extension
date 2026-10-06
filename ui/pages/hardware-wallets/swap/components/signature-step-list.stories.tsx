@@ -2,7 +2,7 @@ import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import SignatureStepList from './signature-step-list';
 import { SignatureStepStatus } from '../types';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
 const TEST_QR_SIGN_REQUEST = {

@@ -3,8 +3,8 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
   NETWORK_TYPES,
@@ -17,7 +17,7 @@ import {
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { NetworkListMenu } from '.';
+import { NetworkListMenu } from './network-list-menu';
 
 const mockSetShowTestNetworksPreference = jest.fn();
 const mockToggleNetworkMenu = jest.fn();

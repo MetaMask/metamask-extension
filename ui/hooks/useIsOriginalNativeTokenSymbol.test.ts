@@ -2,21 +2,24 @@ import { waitFor } from '@testing-library/react';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import type { MultichainNetwork } from '../selectors/multichain/networks';
-import * as SelectorsModule from '../selectors/selectors';
-import * as MultichainSelectorsModule from '../selectors/multichain';
+
+import * as SelectorsModuleModule5 from '../selectors/selectors';
+
+import * as MultichainSelectorsModuleModule1 from '../selectors/multichain';
+
 import * as IsOriginalNativeTokenSymbolModule from '../helpers/utils/isOriginalNativeTokenSymbol';
 import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol'; // Adjust the import path accordingly
 
 const arrangeMocks = () => {
   // Mock Selectors
   const mockGetUseSafeChainsListValidation = jest
-    .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
+    .spyOn(SelectorsModuleModule5, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
   const createMockProviderConfig = () =>
     ({ ticker: 'ETH' }) as MultichainNetwork['network'];
   const mockGetMultichainCurrentNetwork = jest
-    .spyOn(MultichainSelectorsModule, 'getMultichainCurrentNetwork')
+    .spyOn(MultichainSelectorsModuleModule1, 'getMultichainCurrentNetwork')
     .mockReturnValue(createMockProviderConfig());
 
   // Mock Fetch Call

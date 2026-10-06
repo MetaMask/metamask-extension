@@ -4,7 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { isLegacyTransaction } from '../../../../../../helpers/utils/transactions.util';
-import { checkNetworkAndAccountSupports1559 } from '../../../../../../selectors';
+import { checkNetworkAndAccountSupports1559 } from '../../../../../../selectors/selectors';
 
 export function useSupportsEIP1559(transactionMeta: TransactionMeta) {
   const { networkClientId, txParams } = transactionMeta ?? {};

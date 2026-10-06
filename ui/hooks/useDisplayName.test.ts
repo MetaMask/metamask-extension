@@ -11,7 +11,7 @@ import { getAssetImageUrl } from '../../shared/lib/asset-utils';
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getDomainResolutions } from '../ducks/domains';
-import { IconName } from '../components/component-library';
+import { IconName } from '../components/component-library/icon/icon.types';
 import { IconColor } from '../helpers/constants/design-system';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
 import { useDisplayName } from './useDisplayName';

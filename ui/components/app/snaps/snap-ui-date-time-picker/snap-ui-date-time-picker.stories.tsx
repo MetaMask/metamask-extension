@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
-import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps/snap-interface';
 import testData from '../../../../../.storybook/test-data';
 import { SnapUIDateTimePicker } from './snap-ui-date-time-picker';
 

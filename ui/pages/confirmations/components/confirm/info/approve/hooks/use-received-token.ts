@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { normalizeSafeAddress } from '../../../../../../../../shared/lib/multichain/address';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
-import { getSelectedAccount } from '../../../../../../../selectors';
+import { getSelectedAccount } from '../../../../../../../selectors/selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export type TokenWithBalance = {

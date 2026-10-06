@@ -16,9 +16,13 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
-import { Content, Footer, Header, Page } from '../page';
+import { toast } from 'react-hot-toast';
+import { Content } from '../page/components/content/content';
+import { Footer } from '../page/components/footer/footer';
+import { Header } from '../page/components/header/header';
+import { Page } from '../page/page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PermissionsEmptyState } from '../gator-permissions/components';
+import { PermissionsEmptyState } from '../gator-permissions/components/permissions-empty-state';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -28,14 +32,13 @@ import {
 import {
   getConnectedSitesListWithNetworkInfo,
   getPermissionSubjects,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/lib/environment';
 import { removePermissionsFor } from '../../../../store/actions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { transitionForward } from '../../../ui/transition';
-import { DisconnectAllSitesModal } from '../../disconnect-all-modal';
-import { toast } from '../../../ui/toast/toast';
+import { DisconnectAllSitesModal } from '../../disconnect-all-modal/disconnect-all-sites-modal';
 import { useDispatch } from '../../../../store/hooks';
 import { ConnectionListItem } from './connection-list-item';
 

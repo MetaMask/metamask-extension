@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import type { Hex } from '@metamask/utils';
-import { getMarketData, getCurrencyRates } from '../../../../selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../../../shared/lib/selectors/assets-migration';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { selectStablecoins } from '../../selectors/feature-flags';
 import { useDeepMemo } from '../useDeepMemo';
 

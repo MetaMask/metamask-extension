@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { getShouldShowSeedPhraseReminder } from '../../../selectors/multi-srp/multi-srp';
@@ -9,8 +10,9 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { ToastContent, type ToastWithClose, toast } from '../../ui/toast/toast';
-import type { MetaMaskReduxState } from '../../../store/store';
+import { ToastContent } from '../../ui/toast/toast';
+import type { ToastWithClose } from '../../ui/toast/toast';
+import type { MetaMaskReduxState } from '../../../store/types';
 
 const toastId = 'backup-srp-toast';
 

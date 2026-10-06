@@ -8,9 +8,9 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
+import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning/snap-install-warning';
 import {
   AlignItems,
   BackgroundColor,
@@ -26,15 +26,19 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { Text, Box } from '../../../../components/component-library';
-import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { Text } from '../../../../components/component-library/text/text';
+import { Box } from '../../../../components/component-library/box/box';
+import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getSnapsMetadata,
+} from '../../../../selectors/selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import PermissionConnectHeader from '../../../../components/app/permission-connect-header/permission-connect-header';
 
 export default function SnapInstall({
   request,

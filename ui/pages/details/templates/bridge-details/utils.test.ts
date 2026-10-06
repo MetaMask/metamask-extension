@@ -1,6 +1,6 @@
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { Status } from '../../../../../shared/lib/activity/types';
+import type { Status } from '@metamask/client-utils';
 import { getBridgeDisplayStatus } from './utils';
 
 const buildHistoryItem = (status: StatusTypes): BridgeHistoryItem =>

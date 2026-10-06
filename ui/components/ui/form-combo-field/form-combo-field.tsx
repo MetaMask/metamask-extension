@@ -8,8 +8,10 @@ import React, {
   useState,
 } from 'react';
 import classnames from 'clsx';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
-import { FormTextField } from '../../component-library/form-text-field/deprecated';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../component-library/icon/icon.types';
+import { FormTextField } from '../../component-library/form-text-field/deprecated/form-text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import { Display, IconColor } from '../../../helpers/constants/design-system';
 

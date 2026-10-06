@@ -11,18 +11,18 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider } from '../contexts/i18n';
 import { MetaMetricsProvider } from '../contexts/metametrics';
-import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
+import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import RiveWasmProvider from '../contexts/rive-wasm';
 import { queryClient } from '../contexts/query-client';
 import RampsBootstrap from '../hooks/ramps/RampsBootstrap';
-import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets';
+import { HardwareWalletErrorProvider } from '../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { UIMessengerProvider } from '../contexts/ui-messenger';
 import ErrorPageBase from './error-page/error-page.component';
 
-import Routes, { routeConfig } from './routes';
+import Routes, { routeConfig } from './routes/routes.component';
 
 const isStrictModeEnabled =
   process.env.NODE_ENV === 'development' && !process.env.IN_TEST;

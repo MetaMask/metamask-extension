@@ -1,4 +1,4 @@
-import { isUserRejectedHardwareWalletError } from '../../../contexts/hardware-wallets/rpcErrorUtils';
+import { isUserRejectedHardwareWalletError } from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
 
 /**
  * Determines whether an error thrown during a hardware-wallet signing flow

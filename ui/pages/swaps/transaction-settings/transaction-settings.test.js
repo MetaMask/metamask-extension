@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
 import { Slippage } from '../../../../shared/constants/swaps';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import TransactionSettings from './transaction-settings';

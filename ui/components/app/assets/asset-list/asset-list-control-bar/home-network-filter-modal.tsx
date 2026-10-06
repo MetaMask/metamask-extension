@@ -37,12 +37,10 @@ import {
   sortNetworks,
 } from '../../../../../../shared/lib/network.utils';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
-import {
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalOverlay,
-} from '../../../../component-library';
+import { Modal } from '../../../../component-library/modal/modal';
+import { ModalContent } from '../../../../component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../component-library/modal-content/modal-content.types';
+import { ModalOverlay } from '../../../../component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { transitionForward } from '../../../../ui/transition';
 import { NETWORKS_ROUTE } from '../../../../../helpers/constants/routes';
@@ -50,16 +48,16 @@ import {
   addNetwork,
   setEnabledAllPopularNetworks,
 } from '../../../../../store/actions';
-import type { MetaMaskReduxState } from '../../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../../store/types';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors/multichain/networks';
 import {
   getOrderedNetworksList,
-  getShouldShowTestNetworks,
   getUseExternalServices,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../../../../selectors/test-networks';
 import {
   getInternalAccountBySelectedAccountGroupAndCaip,
   getInternalAccountsFromGroupById,
@@ -69,8 +67,8 @@ import type { MultichainAccountsState } from '../../../../../selectors/multichai
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { useNetworkManagerState } from '../../../../multichain/network-manager/hooks/useNetworkManagerState';
 import { useNetworkChangeHandlers } from '../../../../multichain/network-manager/hooks/useNetworkChangeHandlers';
-import { NetworkListItem } from '../../../../multichain/network-list-item';
-import Tooltip from '../../../../ui/tooltip';
+import { NetworkListItem } from '../../../../multichain/network-list-item/network-list-item';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 import { useDispatch } from '../../../../../store/hooks';
 
 type HomeNetworkFilterModalProps = {

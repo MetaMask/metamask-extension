@@ -1,7 +1,8 @@
 import React from 'react';
 import { Skeleton } from '@metamask/design-system-react';
 import { JustifyContent } from '../../../helpers/constants/design-system';
-import { Column, Row } from '../layout';
+import Column from '../layout/column';
+import Row from '../layout/row';
 
 const QUOTE_CARD_SKELETON_ROWS = [
   { labelWidth: 92, valueWidth: 132 },

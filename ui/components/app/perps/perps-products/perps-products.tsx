@@ -9,7 +9,7 @@ import {
 } from '@metamask/design-system-react';
 import type { MarketFilter } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { PERPS_MARKET_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
@@ -17,11 +17,11 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { MARKET_CATEGORY_ICONS, PERPS_PRODUCT_CATEGORIES } from '../constants';
+import { PerpsCategoryPillVariant } from '../perps-market-categories/perps-market-category-pill';
 import {
-  PerpsCategoryPillVariant,
   PerpsCategoryRail,
   PerpsCategoryRailLayout,
-} from '../perps-market-categories';
+} from '../perps-market-categories/perps-category-rail';
 
 export type PerpsProductsProps = {
   /** Whether the tab's market data is still loading its first snapshot. */

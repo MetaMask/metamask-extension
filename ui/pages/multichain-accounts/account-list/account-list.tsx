@@ -26,7 +26,7 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 
 import { transitionBack } from '../../../components/ui/transition';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
+import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list/multichain-account-list';
 import { useAccountListSearch } from '../../../components/multichain-accounts/hooks/useAccountListSearch';
 import {
   getAccountListStats,
@@ -38,18 +38,16 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
   CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
-import {
-  Footer,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Footer } from '../../../components/multichain/pages/page/components/footer/footer';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { ScrollContainer } from '../../../contexts/scroll-container';

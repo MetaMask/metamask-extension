@@ -3,7 +3,7 @@ import 'jest-canvas-mock';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { AccountPicker } from '.';
+import { AccountPicker } from './account-picker';
 
 const DEFAULT_PROPS = {
   name: 'Account 1',

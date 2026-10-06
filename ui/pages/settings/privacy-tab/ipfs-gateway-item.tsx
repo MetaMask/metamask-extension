@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { FormTextField } from '../../../components/component-library';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
 } from '../../../store/actions';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import {
   IPFS_DEFAULT_GATEWAY_URL,
   IPFS_FORBIDDEN_GATEWAYS,

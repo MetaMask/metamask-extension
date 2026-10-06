@@ -6,21 +6,19 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../../../components/component-library';
-import { AddressCopyButton } from '../../../../../components/multichain';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../../components/component-library/text/text';
+import AddressCopyButton from '../../../../../components/multichain/address-copy-button/address-copy-button';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
@@ -40,7 +38,7 @@ import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipien
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 

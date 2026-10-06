@@ -5,15 +5,13 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../../../../../shared/constants/network';
-import {
-  AvatarToken,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarTokenSize,
-  BadgeWrapper,
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { AvatarToken } from '../../../../../components/component-library/avatar-token/avatar-token';
+import { AvatarNetwork } from '../../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../../components/component-library/avatar-network/avatar-network.types';
+import { AvatarTokenSize } from '../../../../../components/component-library/avatar-token/avatar-token.types';
+import { BadgeWrapper } from '../../../../../components/component-library/badge-wrapper/badge-wrapper';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

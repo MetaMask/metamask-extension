@@ -8,17 +8,14 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getSnapMetadata } from '../../../../selectors';
-import { SnapIcon } from '../snap-icon';
+import { getSnapMetadata } from '../../../../selectors/selectors';
+import { SnapIcon } from '../snap-icon/snap-icon';
 
 export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();

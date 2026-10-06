@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
-import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { Footer as PageFooter } from '../../../../../components/multichain/pages/page/components/footer/footer';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';

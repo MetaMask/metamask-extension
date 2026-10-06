@@ -2,14 +2,14 @@ import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SuccessPill } from '../../component-library';
-import CurrencyDisplay from '../../ui/currency-display';
-import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import HexToDecimal from '../../ui/hex-to-decimal';
+import { SuccessPill } from '../../component-library/success-pill/success-pill';
+import CurrencyDisplay from '../../ui/currency-display/currency-display.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display/user-preferenced-currency-display.component';
+import HexToDecimal from '../../ui/hex-to-decimal/hex-to-decimal.component';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
-import TransactionBreakdownRow from './transaction-breakdown-row';
+import TransactionBreakdownRow from './transaction-breakdown-row/transaction-breakdown-row.component';
 
 function TransactionBreakdown({
   showFiat = true,

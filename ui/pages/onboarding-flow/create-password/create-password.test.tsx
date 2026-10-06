@@ -45,7 +45,7 @@ jest.mock('../../../hooks/useIsFirefox', () => ({
 
 const { useIsFirefox } = jest.requireMock('../../../hooks/useIsFirefox');
 
-jest.mock('../../../../shared/lib/passkey', () => ({
+jest.mock('../../../../shared/lib/passkey/passkey-capabilities', () => ({
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 

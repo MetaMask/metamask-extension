@@ -27,8 +27,9 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
-import { TextField, TextFieldSize } from '../../../../../component-library';
-import ToggleButton from '../../../../../ui/toggle-button';
+import { TextField } from '../../../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../component-library/text-field/text-field.types';
+import ToggleButton from '../../../../../ui/toggle-button/toggle-button.component';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
 import { isUnsignedDecimalInput } from '../../utils';
 import {

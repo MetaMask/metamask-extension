@@ -11,7 +11,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { HardwareAccountAddressRow } from '../hardware-account-address-row';
+import { HardwareAccountAddressRow } from '../hardware-account-address-row/hardware-account-address-row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { HardwareAccountCardProps } from './hardware-account-card.types';
 

@@ -16,21 +16,22 @@ import {
   TextAlign,
   FontWeight,
 } from '@metamask/design-system-react';
-import type { FeeCalculationResult } from '@metamask/perps-controller';
+import type {
+  FeeCalculationResult,
+  Position,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from '../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips';
@@ -38,7 +39,6 @@ import {
   BASIS_POINTS_DIVISOR,
   ORIGINAL_METAMASK_FEE_BIPS,
 } from '../../../../hooks/perps/usePerpsOrderFees';
-import type { Position } from '../types';
 
 export type CloseAllPositionsModalProps = {
   isOpen: boolean;

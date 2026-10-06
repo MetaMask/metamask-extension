@@ -3,7 +3,7 @@
  */
 import React, { type ReactElement } from 'react';
 import { renderHook } from '@testing-library/react';
-import { toast } from '../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
 import { reportMoneyError } from '../../helpers/money/report-money-error';
 import {
   MONEY_ERROR_TOAST_DURATION_MS,
@@ -14,8 +14,8 @@ jest.mock('../../helpers/money/report-money-error', () => ({
   reportMoneyError: jest.fn(),
 }));
 
-jest.mock('../../components/ui/toast/toast', () => {
-  const actual = jest.requireActual('../../components/ui/toast/toast');
+jest.mock('react-hot-toast', () => {
+  const actual = jest.requireActual('react-hot-toast');
   return {
     ...actual,
     toast: {

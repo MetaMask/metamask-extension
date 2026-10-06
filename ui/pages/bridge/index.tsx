@@ -18,12 +18,10 @@ import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networ
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import useBridging from '../../hooks/bridge/useBridging';
-import {
-  Content,
-  Footer,
-  Header,
-  Page,
-} from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../components/multichain/pages/page/components/footer/footer';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -42,7 +40,7 @@ import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeToken
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
-import AwaitingSignatures from './awaiting-signatures';
+import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';

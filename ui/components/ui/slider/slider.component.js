@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 
 const sliderSx = {
   height: 6,

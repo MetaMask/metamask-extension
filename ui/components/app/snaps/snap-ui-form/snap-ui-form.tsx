@@ -1,7 +1,7 @@
 import React, { FormEvent } from 'react';
 import { UserInputEventType } from '@metamask/snaps-sdk';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { Box } from '../../../component-library';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+import { Box } from '../../../component-library/box/box';
 import {
   Display,
   FlexDirection,

@@ -20,7 +20,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
-import { getDefaultHomeActiveTabName } from '../../../selectors';
+import { getDefaultHomeActiveTabName } from '../../../selectors/selectors';
 import { transitionForward } from '../../ui/transition';
 import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
 import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';

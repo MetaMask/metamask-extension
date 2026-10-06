@@ -1,10 +1,10 @@
 import React from 'react';
 
+import { Button } from '../../../../../components/component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/button/button.types';
 
 export type DeveloperButtonProps = {
   disabled?: boolean;

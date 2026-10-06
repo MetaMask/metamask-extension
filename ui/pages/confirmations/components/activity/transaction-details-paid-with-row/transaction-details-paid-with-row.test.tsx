@@ -7,7 +7,7 @@ import {
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsPaidWithRow } from './transaction-details-paid-with-row';
 
 const CHAIN_ID = '0x1';
@@ -16,7 +16,7 @@ const TOKEN_SYMBOL = 'USDC';
 
 jest.mock('../../../hooks/tokens/useTokenWithBalance');
 
-jest.mock('../../token-icon', () => ({
+jest.mock('../../../../../components/app/token-icon/token-icon', () => ({
   TokenIcon: () => <span data-testid="token-icon" />,
 }));
 

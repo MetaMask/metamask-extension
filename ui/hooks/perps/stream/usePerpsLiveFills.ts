@@ -1,5 +1,5 @@
 import type { OrderFill } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import type { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { usePerpsChannel } from './usePerpsChannel';
 
 /**

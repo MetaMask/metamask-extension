@@ -8,13 +8,13 @@ import {
 import {
   getMetaMaskHdKeyrings,
   getPendingShieldCohortTxType,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import {
   formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/metrics';
 import { useDispatch } from '../../../store/hooks';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
@@ -22,7 +22,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import {
   CaptureShieldPaymentMethodChangeEventParams,
   ExistingSubscriptionEventParams,
-} from '../../../../shared/types';
+} from '../../../../shared/types/metametrics';
 import { useAnalytics } from '../../useAnalytics';
 
 import {

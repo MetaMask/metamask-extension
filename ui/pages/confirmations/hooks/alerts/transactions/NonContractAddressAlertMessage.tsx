@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

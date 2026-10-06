@@ -43,16 +43,16 @@ import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import TokenCell from '../../../components/app/assets/token-cell';
+import TokenCell from '../../../components/app/assets/token-cell/token-cell';
 import { isArcUsdcForBridge } from '../../../components/app/assets/enablement/arc';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import { StockBadge } from '../../../components/app/assets/stock-badge/stock-badge';
-import { AddressCopyButton } from '../../../components/multichain';
+import AddressCopyButton from '../../../components/multichain/address-copy-button/address-copy-button';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { ActivityList } from '../../activity/activity-list';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useInAppBack } from '../../../hooks/useInAppBack';
@@ -60,13 +60,15 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../../../selectors/metametrics';
+import {
   getIsBridgeChain,
   getIsSwapsChain,
   getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
   getShowFiatInTestnets,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   getAsset,
   getAssetsBySelectedAccountGroup,
@@ -80,7 +82,7 @@ import {
   getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
-import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../../selectors/musd/feature-flags';
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { useSpendableBalance } from '../hooks/useSpendableBalance';
@@ -91,10 +93,10 @@ import { getIsAssetRequireActivate } from '../../../selectors/stellar-assets';
 import { isNativeAsset, type Asset } from '../types/asset';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
-import { useMusdCtaVisibility } from '../../../hooks/musd';
-import { MusdAssetCta } from '../../../components/app/musd';
+import { useMusdCtaVisibility } from '../../../hooks/musd/useMusdCtaVisibility';
+import { MusdAssetCta } from '../../../components/app/musd/musd-asset-cta';
 import { isMusdToken } from '../../../components/app/musd/constants';
-import { processAssetParams } from '../util';
+import { processAssetParams } from '../../../../shared/lib/asset-route';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
 import { AssetMarketDetails } from './asset-market-details';
 import { AssetPageHeader } from './asset-page-header';
@@ -112,7 +114,7 @@ import {
   AssetPageSecurityTrustHeaderBadge,
   AssetPageSecurityTrustProvider,
   AssetPageSecurityTrustSection,
-} from './security-trust';
+} from './security-trust/asset-page-security-trust';
 
 /**
  * Activates live Perps stream emission while the asset page is resolving or

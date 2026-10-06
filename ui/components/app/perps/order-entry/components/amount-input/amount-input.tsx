@@ -26,8 +26,9 @@ import { useFormatters } from '../../../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { formatPositionSize } from '../../../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../../../shared/lib/selectors/preferences';
-import { TextField, TextFieldSize } from '../../../../../component-library';
-import { PerpsSlider } from '../../../perps-slider';
+import { TextField } from '../../../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../component-library/text-field/text-field.types';
+import { PerpsSlider } from '../../../perps-slider/perps-slider';
 import { getDisplaySymbol } from '../../../utils';
 import type { AmountInputProps } from '../../order-entry.types';
 import {

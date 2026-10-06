@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 
-import {
-  Box,
-  Popover,
-  PopoverPosition,
-  Text,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
+import { Popover } from '../../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../../component-library/popover/popover.types';
+import { Text } from '../../../../component-library/text/text';
 import {
   BackgroundColor,
   Display,

@@ -10,23 +10,21 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
+import type { Position, AccountState } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { Position, AccountState } from '../types';
 import { EditMarginModalContent } from './edit-margin-modal-content';
 
 export type EditMarginModalProps = {

@@ -1,5 +1,6 @@
 import { NetworkState } from '@metamask/network-controller';
-import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { migrate, version } from './182';
 
 // Mock uuid

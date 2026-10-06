@@ -24,27 +24,87 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { WebAuthenticator } from '../oauth/types';
-import { createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
-import { SHIELD_ERROR } from '../../../../shared/lib/shield';
-import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
+import { SHIELD_ERROR } from '../../../../shared/lib/shield/constants';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors/smart-transactions';
 import { ShieldSubscriptionService } from './shield-subscription-service';
 import { ShieldSubscriptionServiceMessenger } from './types';
 
-jest.mock('../../../../shared/lib/selectors', () => ({
+jest.mock('../../../../shared/lib/selectors/smart-transactions', () => ({
   getIsSmartTransaction: jest.fn(),
 }));
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
 }));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
+}));
 
-const { trackEvent: mockTrackEvent } = jest.requireMock(
-  '../../controllers/analytics',
-) as { trackEvent: jest.Mock };
+const { trackEvent: mockTrackEvent } = {
+  get canSubmitAnalytics() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .canSubmitAnalytics;
+  },
+  get configureAnalytics() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .configureAnalytics;
+  },
+  get createEventBuilder() {
+    return jest.requireMock(
+      '../../../../shared/lib/analytics/create-event-builder',
+    ).createEventBuilder;
+  },
+  get createEventFragment() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .createEventFragment;
+  },
+  get finalizeEventFragment() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .finalizeEventFragment;
+  },
+  get getEventFragmentById() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .getEventFragmentById;
+  },
+  get identify() {
+    return jest.requireMock('../../controllers/analytics/analytics').identify;
+  },
+  get setDataCollectionForMarketing() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .setDataCollectionForMarketing;
+  },
+  get setParticipateInMetaMetrics() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .setParticipateInMetaMetrics;
+  },
+  get trackEvent() {
+    return jest.requireMock('../../controllers/analytics/analytics').trackEvent;
+  },
+  get trackPage() {
+    return jest.requireMock('../../controllers/analytics/analytics').trackPage;
+  },
+  get updateEventFragment() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .updateEventFragment;
+  },
+  get updateProfileSessionData() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .updateProfileSessionData;
+  },
+  get upsertEventFragment() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .upsertEventFragment;
+  },
+  get validateIdentifyPayload() {
+    return jest.requireMock('../../controllers/analytics/analytics')
+      .validateIdentifyPayload;
+  },
+} as { trackEvent: jest.Mock };
 
 type Actions = MessengerActions<ShieldSubscriptionServiceMessenger>;
 

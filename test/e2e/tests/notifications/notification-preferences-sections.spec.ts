@@ -5,7 +5,7 @@ import {
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
 import { withFixtures } from '../../helpers';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { goToNotificationsSettingsPage } from '../../page-objects/flows/notifications.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';

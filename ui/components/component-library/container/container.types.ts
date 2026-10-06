@@ -1,7 +1,7 @@
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+} from '../box/box.types';
 
 export enum ContainerMaxWidth {
   Sm = 'sm',

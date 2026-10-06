@@ -8,11 +8,14 @@ import {
   BackgroundColor,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text';
-import { Box, BoxProps, PolymorphicRef } from '../box';
-import { AvatarGroup } from '../../multichain/avatar-group';
-import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { Icon, IconName, IconSize } from '../icon';
+import { Text } from '../text/text';
+import { Box } from '../box/box';
+import { BoxProps, PolymorphicRef } from '../box/box.types';
+import { AvatarGroup } from '../../multichain/avatar-group/avatar-group';
+import { AvatarNetwork } from '../avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../avatar-network/avatar-network.types';
+import { Icon } from '../icon/icon';
+import { IconName, IconSize } from '../icon/icon.types';
 import {
   PickerNetworkComponent,
   PickerNetworkProps,

@@ -6,7 +6,7 @@ import { SDK } from '@metamask/profile-sync-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getProfileMetricsServiceMessenger } from './messengers';
+import { getProfileMetricsServiceMessenger } from './messengers/profile-metrics-service-messenger';
 import { ProfileMetricsServiceInit } from './profile-metrics-service-init';
 
 jest.mock('@metamask/profile-metrics-controller');

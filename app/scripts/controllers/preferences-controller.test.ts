@@ -14,7 +14,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   DEFAULT_AUTO_LOCK_TIME_LIMIT,
   ThemeType,
@@ -37,8 +37,8 @@ import {
 
 const mockTrackEvent = jest.fn();
 
-jest.mock('./analytics', () => {
-  const actual = jest.requireActual('./analytics');
+jest.mock('./analytics/analytics', () => {
+  const actual = jest.requireActual('./analytics/analytics');
   return {
     ...actual,
     trackEvent: (...args: unknown[]) => mockTrackEvent(...args),

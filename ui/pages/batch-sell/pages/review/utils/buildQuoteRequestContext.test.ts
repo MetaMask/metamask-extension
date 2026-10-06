@@ -1,6 +1,6 @@
 import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { buildReceivedAsset } from '../../../../../../test/data/batch-sell';
+import { buildReceivedAsset } from '../../../../../../test/data/batch-sell/factories';
 import {
   buildQuoteRequestContext,
   computeUsdAmountSource,

@@ -1,5 +1,5 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
-import { MetaMaskReduxState } from '../../../store/store';
+import { MetaMaskReduxState } from '../../../store/types';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 

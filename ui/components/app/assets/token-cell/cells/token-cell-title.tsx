@@ -4,7 +4,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { StakeableLink } from '../../../../multichain/token-list-item/stakeable-link';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import { AssetInactiveBadge } from '../../asset-inactive-badge/asset-inactive-badge';
-import { Tag } from '../../../../component-library';
+import { Tag } from '../../../../component-library/tag/tag';
 import { ACCOUNT_TYPE_LABELS } from '../../constants';
 import { useRWAToken } from '../../../../../pages/bridge/hooks/useRWAToken';
 import { StockBadge } from '../../stock-badge/stock-badge';

@@ -2,13 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
-} from '../../../../component-library';
-import { getNativeCurrencyForChain } from '../../../../../selectors';
+import { AvatarNetwork } from '../../../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../component-library/avatar-network/avatar-network.types';
+import { AvatarToken } from '../../../../component-library/avatar-token/avatar-token';
+import { BadgeWrapper } from '../../../../component-library/badge-wrapper/badge-wrapper';
+import { getNativeCurrencyForChain } from '../../../../../selectors/selectors';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import {

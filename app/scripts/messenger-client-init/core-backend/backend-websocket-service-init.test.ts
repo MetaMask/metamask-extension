@@ -13,7 +13,7 @@ import {
   BackendWebSocketServiceInitMessenger,
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
-} from '../messengers/core-backend';
+} from '../messengers/core-backend/backend-websocket-service-messenger';
 import * as manifestFlagsModule from '../../../../shared/lib/manifestFlags';
 import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 

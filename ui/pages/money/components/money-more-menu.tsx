@@ -11,12 +11,12 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
+import { Popover } from '../../../components/component-library/popover/popover';
 import {
-  Popover,
   PopoverPosition,
   PopoverRole,
-} from '../../../components/component-library';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+} from '../../../components/component-library/popover/popover.types';
+import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal/visit-support-data-consent-modal';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';

@@ -3,7 +3,7 @@ import contentHash from '@ensdomains/content-hash';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import type { NetworkController } from '@metamask/network-controller';
-import registryAbi from './contracts/registry';
+import registryAbi from './contracts/ens-registry.json';
 import resolverAbi from './contracts/resolver';
 
 /**

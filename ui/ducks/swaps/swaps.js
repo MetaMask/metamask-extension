@@ -5,7 +5,7 @@ import log from 'loglevel';
 import { TransactionType } from '@metamask/transaction-controller';
 import { createProjectLogger } from '@metamask/utils';
 import { captureMessage } from '../../../shared/lib/sentry';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -61,7 +61,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getSelectedNetwork,
   getHDEntropyIndex,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   isHardwareWallet,
@@ -72,7 +72,7 @@ import {
   getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../shared/lib/selectors';
+} from '../../../shared/lib/selectors/smart-transactions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

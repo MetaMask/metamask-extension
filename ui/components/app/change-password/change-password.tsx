@@ -20,21 +20,18 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  TextFieldType,
-} from '../../component-library';
+import { toast } from 'react-hot-toast';
+import { FormTextField } from '../../component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../component-library/form-text-field/form-text-field.types';
+import { TextFieldType } from '../../component-library/text-field/text-field.types';
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
-import Mascot from '../../ui/mascot';
-import Spinner from '../../ui/spinner';
-import ToggleButton from '../../ui/toggle-button';
+import Mascot from '../../ui/mascot/mascot.component';
+import Spinner from '../../ui/spinner/spinner.component';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createSentryError } from '../../../../shared/lib/error';
-import {
-  getPasskeyAuthMethodKey,
-  cancelPasskeyCeremony,
-} from '../../../../shared/lib/passkey';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   getPasskeyErrorCode,
@@ -46,7 +43,7 @@ import {
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
-import { getIsSocialLoginFlow } from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import {
   useIsPasskeyActive,
   useIsPasskeyIncompatibleInSidepanel,
@@ -56,7 +53,7 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
-import { toast, ToastContent } from '../../ui/toast/toast';
+import { ToastContent } from '../../ui/toast/toast';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -65,11 +62,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
-import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
+import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal/passkey-troubleshoot-modal';
 import {
   PasskeyVerification,
   runPasskeyVerificationCeremony,
-} from '../passkey-verification';
+} from '../passkey-verification/passkey-verification';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useDispatch } from '../../../store/hooks';

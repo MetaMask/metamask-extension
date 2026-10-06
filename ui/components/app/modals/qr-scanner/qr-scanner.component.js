@@ -8,7 +8,7 @@ import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { getURL } from '../../../../helpers/utils/util';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
-import Spinner from '../../../ui/spinner';
+import Spinner from '../../../ui/spinner/spinner.component';
 
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { SECOND } from '../../../../../shared/constants/time';

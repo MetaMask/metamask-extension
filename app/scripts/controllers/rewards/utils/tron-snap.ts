@@ -1,7 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
-import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
+import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/tron-wallet-snap';
 
 export type SignRewardsMessageResult = {
   signature: string;

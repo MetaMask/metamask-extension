@@ -5,7 +5,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ButtonIcon, IconName, IconSize } from '../../../../component-library';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import {
+  IconName,
+  IconSize,
+} from '../../../../component-library/icon/icon.types';
 import NftDetailInformationFrame from './nft-detail-information-frame';
 
 export default {

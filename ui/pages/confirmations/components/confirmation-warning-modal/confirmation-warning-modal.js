@@ -12,20 +12,22 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 
+import { Box } from '../../../../components/component-library/box/box';
+import { Button } from '../../../../components/component-library/button/button';
 import {
-  Box,
-  Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
-  Icon,
+} from '../../../../components/component-library/button';
+import { Icon } from '../../../../components/component-library/icon/icon';
+import {
   IconName,
   IconSize,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../../../components/component-library';
-import { ModalContent } from '../../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../../components/component-library/modal-header/deprecated';
+} from '../../../../components/component-library/icon/icon.types';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../components/component-library/text/text';
+import { ModalContent } from '../../../../components/component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../../components/component-library/modal-header/deprecated/modal-header';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();

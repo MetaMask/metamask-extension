@@ -4,14 +4,11 @@ import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   Display,

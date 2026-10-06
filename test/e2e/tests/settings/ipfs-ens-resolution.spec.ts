@@ -7,7 +7,7 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 describe('Settings', function () {

@@ -1,19 +1,17 @@
 import React from 'react';
 import classnames from 'clsx';
 import { Checkbox } from '@metamask/design-system-react';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Label,
-  HelpText,
-  HelpTextSeverity,
-} from '../../../component-library';
-import ToggleButton from '../../../ui/toggle-button';
+import { Box } from '../../../component-library/box/box';
+import { Label } from '../../../component-library/label/label';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import ToggleButton from '../../../ui/toggle-button/toggle-button.component';
 
 export type SnapUICheckboxProps = {
   name: string;

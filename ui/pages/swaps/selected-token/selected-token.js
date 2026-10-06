@@ -2,13 +2,13 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
+import { Icon } from '../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/icon.types';
 import { IconColor } from '../../../helpers/constants/design-system';
-import UrlIcon from '../../../components/ui/url-icon';
+import UrlIcon from '../../../components/ui/url-icon/url-icon';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function SelectedToken({

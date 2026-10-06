@@ -1,9 +1,7 @@
 import React from 'react';
 import { Subscription } from '@metamask/subscription-controller';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../../components/component-library';
+import { BannerAlert } from '../../../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../../components/component-library/banner-alert/banner-alert.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';

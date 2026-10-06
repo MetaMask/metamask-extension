@@ -34,7 +34,8 @@ const mockUseTransactionFunctions = jest.mocked(useTransactionFunctions);
 const mockUseSupportsEIP1559 = jest.mocked(useSupportsEIP1559);
 
 const mockSelectTransactionMetadata = jest.fn();
-jest.mock('../../../selectors', () => ({
+
+jest.mock('../../../selectors/transactions', () => ({
   selectTransactionMetadata: (...args: unknown[]) =>
     mockSelectTransactionMetadata(...args),
 }));

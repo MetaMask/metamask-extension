@@ -7,7 +7,7 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../store/actions';
-import { getAllTokens } from '../../../../selectors/selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../../../../shared/lib/selectors/assets-migration';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getAssetsPrice } from '../../../../selectors/assets';
 import {

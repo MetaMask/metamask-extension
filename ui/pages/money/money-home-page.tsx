@@ -23,8 +23,8 @@ import {
   MONEY_EARN_ROUTE,
   MONEY_HOW_IT_WORKS_ROUTE,
 } from '../../helpers/constants/routes';
-import { PopoverPosition } from '../../components/component-library';
-import { TooltipText } from '../../components/app/money/tooltip-text';
+import { PopoverPosition } from '../../components/component-library/popover/popover.types';
+import { TooltipText } from '../../components/app/money/tooltip-text/tooltip-text';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -68,7 +68,7 @@ import { MoneyPotentialEarnings } from './components/money-potential-earnings';
 import { MoneyEarnings } from './components/money-earnings';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { MoneyActivityFilter } from './utils/money-activity-filters';
-import { MoneyTransferSheet } from './components/money-transfer-sheet';
+import { MoneyTransferSheet } from './components/money-transfer-sheet/money-transfer-sheet';
 
 /**
  * Whether Send on Money home opens the "Send funds to" sheet.

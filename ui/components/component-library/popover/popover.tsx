@@ -11,8 +11,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '../box';
-import type { BoxProps, PolymorphicRef } from '../box';
+import { Box } from '../box/box';
+import type { BoxProps, PolymorphicRef } from '../box/box.types';
 
 import {
   PopoverProps,

@@ -5,8 +5,6 @@ import { useTransactionAccountOverride } from '../transactions/useTransactionAcc
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from './useAutomaticTransactionPayToken';
 
-export { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS };
-
 /**
  * Whether the funding account changed recently and its own balance has not
  * been resolved yet.

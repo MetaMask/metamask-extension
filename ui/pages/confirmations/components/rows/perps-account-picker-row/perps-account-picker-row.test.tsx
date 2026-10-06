@@ -28,9 +28,12 @@ jest.mock('../../../hooks/transactions/usePerpsSubAccounts', () => ({
   ...jest.requireActual('../../../hooks/transactions/usePerpsSubAccounts'),
   usePerpsSubAccounts: jest.fn(),
 }));
-jest.mock('../../../../../components/app/preferred-avatar', () => ({
-  PreferredAvatar: () => <div data-testid="preferred-avatar" />,
-}));
+jest.mock(
+  '../../../../../components/app/preferred-avatar/preferred-avatar',
+  () => ({
+    PreferredAvatar: () => <div data-testid="preferred-avatar" />,
+  }),
+);
 jest.mock('../../../../../../shared/lib/perps-formatters', () => ({
   formatPerpsFiat: (value: string | number) => `$${value}`,
 }));

@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { MOCKS } from '../../../../test/jest';
+import * as MOCKS from '../../../../test/jest/mocks';
 
 import {
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -18,7 +18,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
-import FeeCard from '.';
+import FeeCard from './fee-card';
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),

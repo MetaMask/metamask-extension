@@ -16,7 +16,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { setConnectedStatusPopoverHasBeenShown } from '../../store/actions';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 
 export function ConnectedStatusPopoverContainer() {

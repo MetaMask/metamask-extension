@@ -11,29 +11,29 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import { TermsOfUsePopupContainer } from '../../components/app/terms-of-use-popup';
+import { TermsOfUsePopupContainer } from '../../components/app/terms-of-use-popup/terms-of-use-popup-container';
 import { MetaMetricsConsentContainer } from '../../components/app/metametrics-consent/metametrics-consent-container';
-import { RecoveryPhraseReminderContainer } from '../../components/app/recovery-phrase-reminder';
+import { RecoveryPhraseReminderContainer } from '../../components/app/recovery-phrase-reminder/recovery-phrase-reminder-container';
 import { ImportedTokensNotificationContainer } from '../../components/app/imported-tokens-notification/imported-tokens-notification-container';
 import { MultiRpcEditModalContainer } from '../../components/app/multi-rpc-edit-modal/multi-rpc-edit-modal-container';
 import { UpdateModalContainer } from '../../components/app/update-modal/update-modal-container';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import ConnectedSites from '../connected-sites';
+import ConnectedSites from '../connected-sites/connected-sites.container';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import ConnectedAccounts from '../connected-accounts';
+import ConnectedAccounts from '../connected-accounts/connected-accounts.container';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
 } from '../../helpers/constants/routes';
-import { AccountOverview } from '../../components/multichain';
-import { PasswordOutdatedModalContainer } from '../../components/app/password-outdated-modal';
-import { ShieldEntryModalContainer } from '../../components/app/shield-entry-modal';
+import { AccountOverview } from '../../components/multichain/account-overview/account-overview';
+import { PasswordOutdatedModalContainer } from '../../components/app/password-outdated-modal/password-outdated-modal-container';
+import { ShieldEntryModalContainer } from '../../components/app/shield-entry-modal/shield-entry-modal-container';
 import { RewardsModalContainer } from '../../components/app/rewards/onboarding/rewards-modal-container';
 import { Pna25ModalContainer } from '../../components/app/modals/pna25-modal/pna25-modal-container';
-import { AppHeader } from '../../components/multichain/app-header';
-import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar';
+import { AppHeader } from '../../components/multichain/app-header/app-header';
+import { DappConnectionControlBar } from '../../components/multichain/dapp-connection-control-bar/dapp-connection-control-bar';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useSegmentContext } from '../../hooks/useSegmentContext';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
@@ -47,10 +47,10 @@ import {
   getTotalUnapprovedCount,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getApprovalFlows,
   getPendingRedirectRoute,
   getLastVisitedPerpsRoute,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getApprovalFlows } from '../../selectors/approvals';
 import {
   attemptCloseNotificationPopup,
   lookupSelectedNetworks,

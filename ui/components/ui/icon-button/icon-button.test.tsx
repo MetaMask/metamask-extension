@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { BlockSize, IconColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
 import IconButton from './icon-button';
 
 describe('IconButton', () => {

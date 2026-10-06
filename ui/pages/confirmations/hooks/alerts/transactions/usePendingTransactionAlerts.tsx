@@ -6,7 +6,7 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { submittedPendingTransactionsSelector } from '../../../../../selectors';
+import { submittedPendingTransactionsSelector } from '../../../../../selectors/transactions';
 import { useConfirmContext } from '../../../context/confirm';
 import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 

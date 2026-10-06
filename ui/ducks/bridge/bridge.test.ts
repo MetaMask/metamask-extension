@@ -2,8 +2,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { zeroAddress } from 'ethereumjs-util';
 import { FeatureId, RequestStatus } from '@metamask/bridge-controller';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
-import * as networkConstants from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import * as networkConstantsModule1 from '../../../shared/constants/network';
+
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -153,7 +155,7 @@ describe('Ducks - Bridge', () => {
         .mockImplementation(jest.fn());
 
       const featuredRpcsHandle = jest.replaceProperty(
-        networkConstants,
+        networkConstantsModule1,
         'FEATURED_RPCS',
         [] as never,
       );

@@ -7,16 +7,14 @@ import type { RouteMessenger } from '../../messengers/route-messenger';
 import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
 import {
   useRemovePasskeyWithPasskey,
   useRemovePasskeyWithPassword,
 } from './usePasskeyRemoval';
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
   startPasskeyAuthentication: jest.fn(),
 }));

@@ -3,7 +3,7 @@ import type {
   OAuthServiceGetNewRefreshTokenAction,
   OAuthServiceRenewRefreshTokenAction,
   OAuthServiceRevokeRefreshTokenAction,
-} from '../../services/oauth/types';
+} from '../../services/oauth/oauth-service-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 export type SeedlessOnboardingControllerInitMessengerActions =

@@ -1,6 +1,6 @@
 import { MetaMaskSessionManager } from './metamask-provider';
 
-jest.mock('.', () => ({
+jest.mock('./extension-launcher', () => ({
   MetaMaskExtensionLauncher: jest.fn().mockImplementation(() => ({
     launch: jest.fn(),
     cleanup: jest.fn(),

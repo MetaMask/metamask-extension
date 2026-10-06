@@ -1,20 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { AvatarIconSize } from '../../../component-library/avatar-icon/avatar-icon.types';
+import { Box } from '../../../component-library/box/box';
+import { Button } from '../../../component-library/button/button';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
 import {
-  AvatarIconSize,
-  Box,
-  Button,
-  ButtonLink,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+} from '../../../component-library/button/button.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
+import { ModalContent } from '../../../component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated/modal-header';
 import {
   AlignItems,
   BackgroundColor,

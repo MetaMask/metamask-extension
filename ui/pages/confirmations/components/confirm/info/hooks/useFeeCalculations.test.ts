@@ -11,7 +11,7 @@ import {
   genUnapprovedContractInteractionConfirmation,
   mockBridgeQuotes,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
-import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../shared/constants/chain-ids';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import * as DappSwapContext from '../../../../context/dapp-swap';

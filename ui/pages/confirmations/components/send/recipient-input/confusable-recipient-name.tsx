@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
 import {
@@ -8,7 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import Tooltip from '../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 
 type Confusable = {
   point: string;

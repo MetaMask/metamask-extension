@@ -56,34 +56,20 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import {
-  isWebAuthnSupported,
-  isPasskeyAaguidIncompatibleWithSidepanel,
-} from '../../shared/lib/passkey';
+import { isWebAuthnSupported } from '../../shared/lib/passkey/passkey-capabilities';
+import { isPasskeyAaguidIncompatibleWithSidepanel } from '../../shared/lib/passkey/passkey-sidepanel-aaguid';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
 import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
 import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
-import {
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-  getIsTronSupportEnabled,
-  getIsStellarSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
-  getIsTronTestnetSupportEnabled,
-} from './multichain/feature-flags';
 
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 // TODO: Remove restricted import
-import {
-  addHexPrefix,
-  getDeviceType,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../app/scripts/lib/util';
+import { addHexPrefix } from '../../shared/lib/add-hex-prefix';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { getDeviceType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   MAINNET_DISPLAY_NAME,
@@ -91,7 +77,6 @@ import {
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_IDS,
   NETWORK_TYPES,
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
@@ -117,6 +102,7 @@ import {
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
 } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import {
   WebHIDConnectedStatuses,
   LedgerTransportTypes,
@@ -200,30 +186,20 @@ import {
   getMultichainNetwork,
 } from './multichain/networks';
 import { getApprovalRequestsByType } from './approvals';
-import { getHasShieldEntryModalShownOnce } from './subscription';
+import { getHasShieldEntryModalShownOnce } from './subscription/subscription';
 import { getIsSocialLoginFlow } from './first-time-flow';
 import { getInternalAccounts } from './accounts';
 
 const PERMITTED_ACCOUNTS_LRU_CACHE_SIZE = 5;
 
 /**
- * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ * @typedef {import("../store/types").MetaMaskReduxState} MetaMaskReduxState
  * @typedef {import('../../shared/lib/pending-redirect-state').PendingRedirectRoute} PendingRedirectRoute
  * @typedef {import('../../shared/lib/deep-links/types').DeferredDeepLink} DeferredDeepLink
  */
 
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
-export {
-  getEnabledNetworks,
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-  getIsTronSupportEnabled,
-  getIsStellarSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
-  getIsTronTestnetSupportEnabled,
-};
 
 /** `appState` slice selectors */
 
@@ -1054,8 +1030,6 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-export { getTokensControllerAllTokens as getAllTokens };
-
 /**
  * Get a flattened list of all ERC-20 tokens owned by the user.
  * Includes all tokens from all chains and accounts.
@@ -1148,8 +1122,6 @@ export const getTokensMarketData = (state) => {
   const chainId = getCurrentChainId(state);
   return getTokenRatesControllerMarketData(state)?.[chainId];
 };
-
-export { getTokenRatesControllerMarketData as getMarketData };
 
 export const getAddressBook = createSelector(
   getCurrentChainId,
@@ -1919,8 +1891,6 @@ export const getUSDConversionRateByChainId = (chainId) =>
       return currencyRates[nativeCurrency]?.usdConversionRate;
     },
   );
-
-export { getCurrencyRateControllerCurrencyRates as getCurrencyRates };
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
   return state.metamask.web3ShimUsageOrigins[origin];
@@ -3994,7 +3964,7 @@ function isExtensionVersionNewer(newerCandidate, olderCandidate) {
  * versions (e.g. beta builds 10.2.3.111, 10.2.3.112) so the update prompt
  * is shown when a newer build is available.
  *
- * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @param {import("../store/types").MetaMaskReduxState} state - The MetaMask state.
  * @returns {boolean} True if the update modal should be shown, false otherwise.
  */
 export function getShowUpdateModal(state) {
@@ -4043,7 +4013,7 @@ export function getShowUpdateModal(state) {
 /**
  * Gets the previous version that the extension was updated from.
  *
- * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @param {import("../store/types").MetaMaskReduxState} state - The MetaMask state.
  * @returns {string | null} The previous version string, or null if not available.
  */
 export const selectNonZeroUnusedApprovalsAllowList = createSelector(

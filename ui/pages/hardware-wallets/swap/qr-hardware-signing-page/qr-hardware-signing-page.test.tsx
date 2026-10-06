@@ -13,7 +13,7 @@ import { QrHardwareSigningPage } from './qr-hardware-signing-page';
 let mockUr: UR | undefined;
 
 jest.mock(
-  '../../../../components/app/qr-hardware-popover/base-qr-reader',
+  '../../../../components/app/qr-hardware-popover/base-qr-reader/base-qr-reader.types',
   () => {
     const MockBaseQrReader = ({
       handleCancel,
@@ -48,9 +48,8 @@ jest.mock(
     );
     MockBaseQrReader.displayName = 'MockBaseQrReader';
     return {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
       __esModule: true,
-      default: MockBaseQrReader,
       UrType: {
         CryptoHdkey: 'crypto-hdkey',
         CryptoAccount: 'crypto-account',
@@ -60,6 +59,45 @@ jest.mock(
       SIGNING_EXPECTED_UR_TYPES: ['eth-signature'],
       CBOR_ENCODING: 'hex',
     };
+  },
+);
+jest.mock(
+  '../../../../components/app/qr-hardware-popover/base-qr-reader/base-qr-reader',
+  () => {
+    const MockBaseQrReader = ({
+      handleCancel,
+      handleSuccess,
+      setErrorTitle,
+      setErrorActive,
+    }: {
+      handleCancel: () => void;
+      handleSuccess: (ur: UR) => Promise<void>;
+      setErrorTitle: (title: string) => void;
+      setErrorActive: (active: boolean) => void;
+    }) => (
+      <div data-testid="mock-base-qr-reader">
+        <button
+          data-testid="base-qr-reader__success"
+          onClick={() => {
+            if (mockUr) {
+              handleSuccess(mockUr);
+            }
+          }}
+        />
+        <button data-testid="base-qr-reader__cancel" onClick={handleCancel} />
+        <button
+          data-testid="base-qr-reader__set-error-title"
+          onClick={() => setErrorTitle('error')}
+        />
+        <button
+          data-testid="base-qr-reader__set-error-active"
+          onClick={() => setErrorActive(true)}
+        />
+      </div>
+    );
+    MockBaseQrReader.displayName = 'MockBaseQrReader';
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    return { __esModule: true, default: MockBaseQrReader };
   },
 );
 

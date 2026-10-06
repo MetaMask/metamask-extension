@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from '@metamask/design-system-react';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
-import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import type { TokenAmount } from '@metamask/client-utils';
+import { ActivityListItemAvatar as ActivityAvatar } from '../../../components/app/activity-list-item-avatar/activity-list-item-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensData } from '../../../hooks/useTokensData';
 

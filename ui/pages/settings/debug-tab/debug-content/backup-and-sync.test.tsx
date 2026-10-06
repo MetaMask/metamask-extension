@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing';
+import { useDeleteAccountSyncingDataFromUserStorage } from '../../../../hooks/identity/useAccountSyncing/useAccountSyncing';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { performSignOut } from '../../../../store/actions';
@@ -11,7 +11,7 @@ import {
   useDeleteAccountSyncDataProps,
 } from './backup-and-sync';
 
-jest.mock('../../../../hooks/identity/useAccountSyncing');
+jest.mock('../../../../hooks/identity/useAccountSyncing/useAccountSyncing');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   performSignOut: jest.fn(() => async () => undefined),

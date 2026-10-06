@@ -1,6 +1,6 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { getMetaMaskHdKeyrings } from '../../selectors';
+import { getMetaMaskHdKeyrings } from '../../selectors/selectors';
 import { getInternalAccounts } from '../../selectors/accounts';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import mockState from '../../../test/data/mock-state.json';
@@ -49,8 +49,8 @@ const mockHdKeyring2 = {
   },
 };
 
-jest.mock('../../selectors', () => ({
-  ...jest.requireActual('../../selectors'),
+jest.mock('../../selectors/selectors', () => ({
+  ...jest.requireActual('../../selectors/selectors'),
   getMetaMaskHdKeyrings: jest.fn(),
 }));
 

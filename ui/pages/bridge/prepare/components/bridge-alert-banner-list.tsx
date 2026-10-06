@@ -17,7 +17,7 @@ import {
 } from '../../../../ducks/bridge/selectors';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Column } from '../../layout';
+import Column from '../../layout/column';
 import { getCurrentKeyring } from '../../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { useIsTxSubmittable } from '../../../../hooks/bridge/useIsTxSubmittable';

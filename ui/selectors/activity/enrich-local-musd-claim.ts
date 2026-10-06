@@ -1,11 +1,9 @@
 import type { CaipChainId } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { TokenAmount } from '@metamask/client-utils';
 import { getTokenMetadataFromKnownToken } from '../../../shared/lib/activity/adapters/helpers';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../shared/lib/activity/types';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import {
   MUSD_DECIMALS,

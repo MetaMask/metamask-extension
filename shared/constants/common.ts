@@ -1,6 +1,6 @@
 import { type CaipChainId, isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { CHAIN_IDS } from './network';
+import { CHAIN_IDS } from './chain-ids';
 
 export enum EtherDenomination {
   ETH = 'ETH',

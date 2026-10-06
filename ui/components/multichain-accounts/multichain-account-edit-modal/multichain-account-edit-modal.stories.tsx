@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StoryObj, Meta } from '@storybook/react-webpack5';
-import { ButtonPrimary } from '../../component-library';
+import { ButtonPrimary } from '../../component-library/button-primary/button-primary';
 import { MultichainAccountEditModal } from './multichain-account-edit-modal';
 import { AccountGroupId } from '@metamask/account-api';
 

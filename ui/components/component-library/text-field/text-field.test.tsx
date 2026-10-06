@@ -3,8 +3,8 @@ import PropTypes, { Validator } from 'prop-types';
 import { fireEvent, render } from '@testing-library/react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Box } from '../box';
-import { InputComponent } from '../input';
+import { Box } from '../box/box';
+import { InputComponent } from '../input/input.types';
 import { TextField } from './text-field';
 import { TextFieldSize, TextFieldType } from './text-field.types';
 

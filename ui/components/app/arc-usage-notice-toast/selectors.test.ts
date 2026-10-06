@@ -1,5 +1,5 @@
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { selectShowArcUsageNoticeToast } from './selectors';
 
 const ACCOUNT = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';

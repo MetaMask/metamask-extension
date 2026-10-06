@@ -3,14 +3,12 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import { NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
-import {
-  useNotificationPreferences,
-  type NotificationPreferences,
-} from '../../../hooks/metamask-notifications/useNotificationPreferences';
+import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';

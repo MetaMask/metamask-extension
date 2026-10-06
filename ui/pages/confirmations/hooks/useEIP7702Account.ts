@@ -6,7 +6,6 @@ import {
   createEIP7702UpgradeTransaction,
   createEIP7702DowngradeTransaction,
   isAccountUpgraded,
-  EIP_7702_REVOKE_ADDRESS,
 } from '../../../../shared/lib/eip7702-utils';
 import {
   addTransactionAndRouteToConfirmationPage,
@@ -100,5 +99,3 @@ export function useEIP7702Account(
 
   return { isUpgraded, downgradeAccount, upgradeAccount };
 }
-
-export { EIP_7702_REVOKE_ADDRESS };

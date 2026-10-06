@@ -1,17 +1,18 @@
 import React from 'react';
 
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   Display,
   FlexWrap,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { MoneyAccountDepositButton } from '../money-account-deposit-button';
-import { MoneyAccountWithdrawButton } from '../money-account-withdraw-button';
-import { MoneyAccountToPerpsButton } from '../money-account-to-perps-button';
-import { MusdConversionButton } from '../musd-conversion-button';
-import { PerpsDepositButton } from '../perps-deposit-button';
-import { PerpsWithdrawButton } from '../perps-withdraw-button';
+import { MoneyAccountDepositButton } from '../money-account-deposit-button/money-account-deposit-button';
+import { MoneyAccountWithdrawButton } from '../money-account-withdraw-button/money-account-withdraw-button';
+import { MoneyAccountToPerpsButton } from '../money-account-to-perps-button/money-account-to-perps-button';
+import { MusdConversionButton } from '../musd-conversion-button/musd-conversion-button';
+import { PerpsDepositButton } from '../perps-deposit-button/perps-deposit-button';
+import { PerpsWithdrawButton } from '../perps-withdraw-button/perps-withdraw-button';
 
 export const ConfirmationsDeveloperOptions = () => {
   return (

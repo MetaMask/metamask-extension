@@ -4,7 +4,7 @@ import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { CustomAmountInfo } from '../../../info/custom-amount-info/custom-amount-info';
 import { ARBITRUM_USDC, PERPS_CURRENCY } from '../../../../constants/perps';
 import { PerpsDepositInfo } from './perps-deposit-info';
 
@@ -16,7 +16,7 @@ jest.mock('../../../../hooks/pay/useDefaultPaySelectedSection', () => ({
   useDefaultPaySelectedSection: jest.fn(),
 }));
 
-jest.mock('../../../info/custom-amount-info', () => ({
+jest.mock('../../../info/custom-amount-info/custom-amount-info', () => ({
   CustomAmountInfo: jest.fn(() => (
     <div data-testid="custom-amount-info-mock" />
   )),

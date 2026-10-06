@@ -48,12 +48,10 @@ import {
   getFromTokenBalance,
   getQuoteStreamComplete,
 } from '../../../ducks/bridge/selectors';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  ButtonIcon,
-  IconName,
-} from '../../../components/component-library';
+import { AvatarFavicon } from '../../../components/component-library/avatar-favicon/avatar-favicon';
+import { AvatarFaviconSize } from '../../../components/component-library/avatar-favicon/avatar-favicon.types';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import {
   BackgroundColor,
   BlockSize,
@@ -64,28 +62,29 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
-import { Column } from '../layout';
+import Column from '../layout/column';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainProviderConfig } from '../../../selectors/multichain';
-import { Toast, ToastContainer } from '../../../components/multichain';
+import {
+  Toast,
+  ToastContainer,
+} from '../../../components/multichain/toast/toast';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
 import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
-import {
-  MultichainBridgeQuoteCard,
-  MultichainBridgeQuoteCardSkeleton,
-} from '../quotes/multichain-bridge-quote-card';
+import { MultichainBridgeQuoteCard } from '../quotes/multichain-bridge-quote-card';
+import { MultichainBridgeQuoteCardSkeleton } from '../quotes/multichain-bridge-quote-card-skeleton';
 import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
 import { useDispatch } from '../../../store/hooks';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
 import { useSourceInputAmount } from '../../../hooks/bridge/useSourceInputAmount';
 import { swapQuoteFetchTrace } from '../utils/swap-quote-fetch-trace';

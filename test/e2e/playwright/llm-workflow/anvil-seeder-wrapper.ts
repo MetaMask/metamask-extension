@@ -3,8 +3,6 @@ import type { Anvil } from '../../seeder/anvil';
 import AnvilSeeder from '../../seeder/anvil-seeder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
-export type { SmartContractName, Hardfork };
-
 export type DeployerOptions = {
   fromAddress?: string;
   fromPrivateKey?: string;

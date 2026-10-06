@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import type { CaipAccountId } from '@metamask/utils';
-import type { Funding } from '@metamask/perps-controller';
+import type { Funding, Order, OrderFill } from '@metamask/perps-controller';
 import {
   transformFillsToTransactions,
   transformOrdersToTransactions,
@@ -15,14 +15,10 @@ import {
   transformUserHistoryToTransactions,
   dedupeWalletTransactionsByTxHash,
 } from '../../components/app/perps/utils/transactionTransforms';
-import type {
-  Order,
-  OrderFill,
-  PerpsTransaction,
-} from '../../components/app/perps/types';
+import type { PerpsTransaction } from '../../components/app/perps/types/transactionHistory';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { useUserHistory } from './useUserHistory';
-import { usePerpsLiveFills } from './stream';
+import { usePerpsLiveFills } from './stream/usePerpsLiveFills';
 import {
   coalesceBackgroundRequest,
   invalidateCoalescedRequest,

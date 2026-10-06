@@ -30,9 +30,11 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
-import { MarketRow } from '../../components/app/perps/market-row';
-import { Tab, Tabs } from '../../components/ui/tabs';
-import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
+import { MarketRow } from '../../components/app/perps/market-row/market-row';
+import { Tab } from '../../components/ui/tabs/tab/tab';
+import { Tabs } from '../../components/ui/tabs/tabs';
+import { ToastContent } from '../../components/ui/toast/toast';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import {

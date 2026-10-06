@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { getAllTokens } from '../selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { useGetFormattedTokensPerChain } from './useGetFormattedTokensPerChain';
 import { stringifyBalance } from './useTokenBalances';
@@ -13,8 +13,8 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
-  getAllTokens: jest.fn(),
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  getTokensControllerAllTokens: jest.fn(),
 }));
 
 const mockGetAllTokens = getAllTokens as jest.Mock;

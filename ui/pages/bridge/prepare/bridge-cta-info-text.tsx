@@ -2,7 +2,7 @@ import React from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { BRIDGE_MM_FEE_RATE, sumAmounts } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/text';
 import {
   getBridgeQuotes,
   BridgeAppState,
@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Row } from '../layout';
+import Row from '../layout/row';
 import { readMmFee } from '../utils/quote';
 
 export const BridgeCTAInfoText = () => {

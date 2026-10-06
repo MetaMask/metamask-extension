@@ -11,19 +11,16 @@ import {
   getSnapRegistryData,
   getSnapMetadata,
   getTargetSubjectMetadata,
-} from '../../../../selectors';
-import {
-  Box,
-  ButtonLink,
-  Icon,
-  IconName,
-  IconSize,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
+} from '../../../../selectors/selectors';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -39,11 +36,11 @@ import {
 import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { ShowMore } from '../show-more';
+import { ShowMore } from '../show-more/show-more';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
-import Tooltip from '../../../ui/tooltip';
-import { SnapIcon } from '../snap-icon';
+import Tooltip from '../../../ui/tooltip/tooltip';
+import { SnapIcon } from '../snap-icon/snap-icon';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();

@@ -4,7 +4,7 @@ import type { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
   lockAndWaitForLoginPage,

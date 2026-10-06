@@ -1,10 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import React from 'react';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import {
-  CameraAccessErrorContent,
-  CameraAccessErrorContentVariant,
-} from './camera-access-error-content';
+import { CameraAccessErrorContent } from './camera-access-error-content';
+import { CameraAccessErrorContentVariant } from './camera-access-error-content.types';
 import type {
   CameraAccessErrorContentBlockedProps,
   CameraAccessErrorContentNeededProps,

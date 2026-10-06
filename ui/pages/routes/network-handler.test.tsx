@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/react';
 import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useAppSelector, useDispatch } from '../../store/hooks';
 import { automaticallySwitchNetwork } from '../../store/actions';

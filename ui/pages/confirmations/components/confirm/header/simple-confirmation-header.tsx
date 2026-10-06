@@ -13,7 +13,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { HeaderBase } from '../../../../../components/component-library';
+import { HeaderBase } from '../../../../../components/component-library/header-base/header-base';
 import {
   AlignItems,
   BackgroundColor,

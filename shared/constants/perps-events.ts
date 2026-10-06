@@ -10,10 +10,7 @@
 import {
   PERPS_EVENT_PROPERTY as CONTROLLER_PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE as CONTROLLER_PERPS_EVENT_VALUE,
-  PerpsAnalyticsEvent,
 } from '@metamask/perps-controller';
-
-export { PerpsAnalyticsEvent };
 
 /**
  * Controller property keys plus Extension UI-only keys not yet in the package.

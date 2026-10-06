@@ -1,12 +1,10 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
-import { TabEmptyState } from '../../../../ui/tab-empty-state';
+import { TabEmptyState } from '../../../../ui/tab-empty-state/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getTheme,
-  getIsEvmMultichainNetworkSelected,
-} from '../../../../../selectors';
+import { getTheme } from '../../../../../selectors/selectors';
+import { getIsEvmMultichainNetworkSelected } from '../../../../../selectors/multichain/networks';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

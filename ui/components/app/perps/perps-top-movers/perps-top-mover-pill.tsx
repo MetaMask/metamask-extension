@@ -6,13 +6,13 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import { PerpsTokenLogo } from '../perps-token-logo';
+import type { PerpsMarketData } from '@metamask/perps-controller';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
 import {
   getChangeColor,
   getDisplaySymbol,
   formatSignedChangePercent,
 } from '../utils';
-import type { PerpsMarketData } from '../types';
 
 export type PerpsTopMoverPillProps = {
   /** Market to render in the pill */

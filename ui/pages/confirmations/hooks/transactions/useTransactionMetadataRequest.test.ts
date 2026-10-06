@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   useTransactionMetadataRequest,
   useTransactionMetadataRequestOptional,

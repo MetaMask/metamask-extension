@@ -16,6 +16,7 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { TotalRow, TotalRowProps } from './total-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+
 jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);

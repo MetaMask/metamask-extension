@@ -1,10 +1,14 @@
 import { renderHook } from '@testing-library/react';
 import type { Position } from '@metamask/perps-controller';
-import { usePerpsLivePositions, usePerpsStreamManager } from './stream';
+import { usePerpsLivePositions } from './stream/usePerpsLivePositions';
+import { usePerpsStreamManager } from './stream/usePerpsStreamManager';
 import { usePerpsPositionForAsset } from './usePerpsPositionForAsset';
 
-jest.mock('./stream', () => ({
+jest.mock('./stream/usePerpsLivePositions', () => ({
   usePerpsLivePositions: jest.fn(),
+}));
+
+jest.mock('./stream/usePerpsStreamManager', () => ({
   usePerpsStreamManager: jest.fn(),
 }));
 

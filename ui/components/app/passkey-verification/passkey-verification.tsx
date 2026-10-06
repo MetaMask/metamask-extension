@@ -11,22 +11,23 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import { createSentryError } from '../../../../shared/lib/error';
 import { captureException } from '../../../../shared/lib/sentry';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
 import {
-  getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
-  translatePasskeyError,
-  type TranslateFn,
-} from '../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey/passkey-ceremony';
+import { translatePasskeyError } from '../../../../shared/lib/passkey/passkey-error';
+import type { TranslateFn } from '../../../../shared/lib/passkey/passkey-error';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePasskeyAuthentication } from '../../../hooks/passkey/usePasskeyAuthentication';
-import Spinner from '../../ui/spinner';
-import { toast, ToastContent } from '../../ui/toast/toast';
-import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
+import Spinner from '../../ui/spinner/spinner.component';
+import { ToastContent } from '../../ui/toast/toast';
+import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal/passkey-troubleshoot-modal';
 
 function getPasskeyVerificationSentryContext(flow: string): string {
   return `Passkey verification in ${flow}`;

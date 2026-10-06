@@ -6,8 +6,8 @@ import BigNumber from 'bignumber.js';
 import SunCheckIcon from '../../../../components/ui/icon/sun-check-icon.component';
 import { I18nContext } from '../../../../contexts/i18n';
 import { QUOTE_DATA_ROWS_PROPTYPES_SHAPE } from '../select-quote-popover-constants';
-import InfoTooltip from '../../../../components/ui/info-tooltip';
-import { getUseCurrencyRateCheck } from '../../../../selectors';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
+import { getUseCurrencyRateCheck } from '../../../../selectors/selectors';
 
 const ToggleArrows = () => (
   <svg

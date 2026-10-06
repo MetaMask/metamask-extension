@@ -2,9 +2,9 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { renderHook } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { removeNetwork, showModal } from '../../../../store/actions';
-import { getSelectedMultichainNetworkChainId } from '../../../../selectors';
+import { getSelectedMultichainNetworkChainId } from '../../../../selectors/multichain/networks';
 import { useNetworkItemCallbacks } from './useNetworkItemCallbacks';
 
 const mockDispatch = jest.fn();
@@ -35,7 +35,11 @@ jest.mock('../../../../store/actions', () => ({
   showModal: jest.fn((payload) => ({ type: 'SHOW_MODAL', payload })),
 }));
 
-jest.mock('../../../../selectors', () => ({
+jest.mock('../../../../selectors/selectors', () => ({
+  getNetworkDiscoverButtonEnabled: () => ({}),
+}));
+
+jest.mock('../../../../selectors/multichain/networks', () => ({
   getMultichainNetworkConfigurationsByChainId: () => [
     {},
     {
@@ -51,7 +55,6 @@ jest.mock('../../../../selectors', () => ({
       },
     },
   ],
-  getNetworkDiscoverButtonEnabled: () => ({}),
   getSelectedMultichainNetworkChainId: jest.fn(() => 'eip155:1'),
 }));
 

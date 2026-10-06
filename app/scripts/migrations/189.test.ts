@@ -4,7 +4,7 @@ const mockUnitTestInfuraIdInitialValue = 'unitTestInfuraId';
 let mockUnitTestInfuraId: string | undefined = mockUnitTestInfuraIdInitialValue;
 
 jest.mock('../../../shared/constants/network', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
   __esModule: true,
   ...jest.requireActual('../../../shared/constants/network'),
   get infuraProjectId() {

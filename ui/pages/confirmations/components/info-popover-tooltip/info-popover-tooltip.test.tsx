@@ -5,7 +5,7 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../../components/component-library';
+import { PopoverPosition } from '../../../../components/component-library/popover/popover.types';
 import { InfoPopoverTooltip } from './info-popover-tooltip';
 
 describe('InfoPopoverTooltip', () => {

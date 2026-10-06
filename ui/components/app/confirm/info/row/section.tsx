@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import { Box } from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
 import {
   BackgroundColor,
   BorderRadius,

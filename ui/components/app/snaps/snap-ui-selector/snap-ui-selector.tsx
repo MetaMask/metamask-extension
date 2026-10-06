@@ -8,21 +8,18 @@ import React, {
 import classnames from 'clsx';
 import { State } from '@metamask/snaps-sdk';
 import { isObject } from '@metamask/utils';
-import {
-  Box,
-  ButtonBase,
-  HelpText,
-  HelpTextSeverity,
-  IconName,
-  IconSize,
-  Label,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { ButtonBase } from '../../../component-library/button-base/button-base';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Label } from '../../../component-library/label/label';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
 import {
   BackgroundColor,
   BlockSize,
@@ -33,7 +30,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 
 export type SnapUISelectorProps = {
   className?: string;

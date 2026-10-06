@@ -6,7 +6,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getMoneyAccountApiDataServiceMessenger } from './messengers';
+import { getMoneyAccountApiDataServiceMessenger } from './messengers/money-account-api-data-service-messenger';
 import { MoneyAccountApiDataServiceInit } from './money-account-api-data-service-init';
 
 jest.mock('@metamask/money-account-api-data-service');

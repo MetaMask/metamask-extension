@@ -3,12 +3,10 @@ import type {
   ContractDeployment,
   ContractInfo,
   DeployOptions,
+  SmartContractName,
 } from '@metamask/client-mcp-core';
-import {
-  AnvilSeederWrapper,
-  type SmartContractName,
-  type DeployContractOptions,
-} from '../anvil-seeder-wrapper';
+import { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
+import type { DeployContractOptions } from '../anvil-seeder-wrapper';
 import type { MetaMaskChainCapability } from './chain';
 
 export const AVAILABLE_CONTRACTS: SmartContractName[] = [

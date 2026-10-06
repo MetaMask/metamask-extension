@@ -2,12 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { Hex, isHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
-import {
-  Box,
-  Text,
-  TextField,
-  TextFieldSize,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
+import { TextField } from '../../../../../components/component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../components/component-library/text-field/text-field.types';
 import {
   BlockSize,
   Display,

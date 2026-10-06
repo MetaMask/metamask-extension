@@ -6,9 +6,9 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { type Asset } from '../../types/send';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 import { usePayWithNoFeeToken } from './usePayWithNoFeeToken';

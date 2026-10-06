@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { TransactionStatus } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 

@@ -1,14 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-import {
-  AssetStandard,
-  type AssetType,
-} from '../../../../components/app/asset-picker';
-import {
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-  CHAIN_IDS,
-} from '../../../../../shared/constants/network';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { AssetStandard } from '../../../confirmations/types/send';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import type { Asset as AssetType } from '../../../confirmations/types/send';
+import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   filterRampsTokensByEnabledNetworks,
   mapRampsTokenToSendAsset,

@@ -1,6 +1,0 @@
-export {
-  MoneyAccountBalance,
-  MONEY_ACCOUNT_BALANCE_TEST_ID,
-  MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID,
-  MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
-} from './money-account-balance';

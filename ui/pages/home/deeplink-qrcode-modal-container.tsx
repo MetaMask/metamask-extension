@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code';
+import { DeeplinkQRCode } from '../../components/app/deeplink-qr-code/deeplink-qr-code';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getHomeDeepLinkQrCode,

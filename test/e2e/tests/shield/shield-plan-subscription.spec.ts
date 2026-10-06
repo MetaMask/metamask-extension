@@ -13,7 +13,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
-} from '../btc/mocks';
+} from '../btc/mocks/tokens-api';
 import {
   mockAccountsApiV2SupportedNetworks,
   mockAccountsApiV5MultiaccountBalances,

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import CurrencyInput from '../currency-input';
+import CurrencyInput from '../currency-input/currency-input';
 
 // Noticed this component is not used in codebase;
 // removing usage of useNativeCurrencyAsPrimaryCurrency because its being removed in this PR

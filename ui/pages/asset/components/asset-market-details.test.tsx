@@ -27,9 +27,7 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
   useMultichainSelector: jest.fn(),
 }));
 
-jest.mock('../util', () => ({
-  getPricePrecision: jest.fn(() => 2),
-}));
+jest.mock('../util', () => ({ getPricePrecision: jest.fn(() => 2) }));
 
 jest.mock('../../../helpers/utils/confirm-tx.util', () => ({
   formatCurrency: jest.fn((value, _currency, _precision) => `$${value}`),

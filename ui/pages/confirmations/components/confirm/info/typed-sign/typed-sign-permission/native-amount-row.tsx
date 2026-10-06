@@ -10,7 +10,7 @@ import {
 import React from 'react';
 
 import { ConfirmInfoRowTextTokenUnits } from '../../../../../../../components/app/confirm/info/row/text-token-units';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
 
 /**
  * Component for displaying a row with a native token amount,

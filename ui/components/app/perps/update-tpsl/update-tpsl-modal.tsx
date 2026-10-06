@@ -1,21 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import type { Position } from '@metamask/perps-controller';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import type { Position } from '../types';
 import {
   UpdateTPSLModalContent,
   type UpdateTPSLSubmitState,

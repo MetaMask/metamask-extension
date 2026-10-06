@@ -1,10 +1,8 @@
 import React from 'react';
-import {
-  IconName,
-  ButtonIcon,
-  ButtonIconSize,
-  HeaderBase,
-} from '../../../components/component-library';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { HeaderBase } from '../../../components/component-library/header-base/header-base';
 
 export const NotificationDetailsHeader = ({
   children,

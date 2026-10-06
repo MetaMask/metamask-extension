@@ -7,14 +7,14 @@ import {
   IconName,
   IconColor,
 } from '@metamask/design-system-react';
+import { Label } from '../../components/component-library/label/label';
+import { TextField } from '../../components/component-library/text-field/text-field';
 import {
-  Label,
-  TextField,
   TextFieldSize,
   TextFieldType,
-  HelpText,
-  HelpTextSeverity,
-} from '../../components/component-library';
+} from '../../components/component-library/text-field/text-field.types';
+import { HelpText } from '../../components/component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../components/component-library/help-text/help-text.types';
 import { BlockSize } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 

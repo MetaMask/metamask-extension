@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,

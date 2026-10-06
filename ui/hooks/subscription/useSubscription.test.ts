@@ -15,7 +15,7 @@ import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-
 import * as actions from '../../store/actions';
 import { openWindow } from '../../helpers/utils/window';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,

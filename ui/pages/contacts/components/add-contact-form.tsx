@@ -23,19 +23,17 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { isHexString } from '@metamask/utils';
 import { useDispatch } from '../../../store/hooks';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  SelectButton,
-  SelectButtonSize,
-  Label,
-} from '../../../components/component-library';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../components/component-library/form-text-field/form-text-field.types';
+import { SelectButton } from '../../../components/component-library/select-button/select-button';
+import { SelectButtonSize } from '../../../components/component-library/select-button/select-button.types';
+import { Label } from '../../../components/component-library/label/label';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell';
+import { DomainInputResolutionCell } from '../../../components/multichain/domain-input-resolution-cell/domain-input-resolution-cell';
 import { getImageForChainId } from '../../../selectors/multichain';
 import {
   getCurrentChainId,
@@ -54,10 +52,8 @@ import {
   lookupDomainName,
   initializeDomainSlice,
 } from '../../../ducks/domains';
-import {
-  getCompleteAddressBook,
-  getInternalAccounts,
-} from '../../../selectors';
+import { getCompleteAddressBook } from '../../../selectors/selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import { isDuplicateContact } from '../utils';
 import {
   isBurnAddress,

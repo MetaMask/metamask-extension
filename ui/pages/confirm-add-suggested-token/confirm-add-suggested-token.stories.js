@@ -6,7 +6,7 @@ import configureStore from '../../store/store';
 
 import mockState from '../../../.storybook/test-data';
 
-import ConfirmAddSuggestedToken from '.';
+import ConfirmAddSuggestedToken from './confirm-add-suggested-token';
 
 const store = configureStore({
   metamask: {

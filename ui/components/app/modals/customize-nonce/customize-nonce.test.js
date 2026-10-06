@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import CustomizeNonce from '.';
+import CustomizeNonce from './customize-nonce.component';
 
 const mockHideModal = jest.fn();
 

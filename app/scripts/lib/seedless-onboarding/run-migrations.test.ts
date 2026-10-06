@@ -11,10 +11,13 @@ jest.mock('../../../../shared/lib/sentry', () => ({
 
 const mockTrackEvent = jest.fn();
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
 }));
 
 const mockedCaptureException = jest.mocked(captureException);

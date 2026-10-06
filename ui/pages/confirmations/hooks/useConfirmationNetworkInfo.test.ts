@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getMockTypedSignConfirmStateForRequest } from '../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { mockNetworkState } from '../../../../test/stub/networks';

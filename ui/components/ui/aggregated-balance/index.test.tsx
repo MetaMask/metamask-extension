@@ -8,7 +8,7 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { mockMultichainNetworkState } from '../../../../test/stub/networks';
 import { AggregatedBalance } from './aggregated-balance';
 

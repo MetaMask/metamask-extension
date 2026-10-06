@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getAppMetadataControllerMessenger } from './messengers';
+import { getAppMetadataControllerMessenger } from './messengers/app-metadata-controller-messenger';
 import { AppMetadataControllerInit } from './app-metadata-controller-init';
 
 jest.mock('../controllers/app-metadata');

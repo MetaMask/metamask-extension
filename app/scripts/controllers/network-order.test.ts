@@ -12,7 +12,7 @@ import {
   NetworkState,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   NetworkOrderController,
   NetworkOrderControllerMessenger,

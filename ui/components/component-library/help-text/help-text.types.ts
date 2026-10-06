@@ -1,6 +1,6 @@
 import type React from 'react';
-import type { TextStyleUtilityProps } from '../text';
-import type { PolymorphicComponentPropWithRef } from '../box';
+import type { TextStyleUtilityProps } from '../text/text.types';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
 import { Severity, TextColor } from '../../../helpers/constants/design-system';
 
 export enum HelpTextSeverity {

@@ -18,9 +18,11 @@ import {
   mockFiatExchangeRates,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+} from '../btc/mocks/price-api';
+import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
-} from '../btc/mocks';
+} from '../btc/mocks/tokens-api';
 import { proxyBitcoinBlockchainCalls } from '../btc/mocks/local-bitcoin-node-mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
 

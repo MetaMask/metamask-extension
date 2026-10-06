@@ -3,9 +3,12 @@ import { render } from '@testing-library/react';
 import type { ActivityListItem } from '../../../../../shared/lib/activity/types';
 import { RampTokensSection } from './ramp-tokens-section';
 
-jest.mock('../../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: () => <div data-testid="activity-avatar" />,
-}));
+jest.mock(
+  '../../../../components/app/activity-list-item-avatar/activity-list-item-avatar',
+  () => ({
+    ActivityListItemAvatar: () => <div data-testid="activity-avatar" />,
+  }),
+);
 
 jest.mock('../../components/sections', () => ({
   TokensSection: ({

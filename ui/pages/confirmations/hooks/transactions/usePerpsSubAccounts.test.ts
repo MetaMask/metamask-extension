@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
 import { resetCoalesceCacheForTests } from '../../../../hooks/perps/coalesceBackgroundRequest';
-import { getSelectedEvmInternalAccount } from '../../../../selectors';
+import { getSelectedEvmInternalAccount } from '../../../../selectors/selectors';
 import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getAllAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
 import { selectPerpsCachedUserData } from '../../../../selectors/perps-controller';

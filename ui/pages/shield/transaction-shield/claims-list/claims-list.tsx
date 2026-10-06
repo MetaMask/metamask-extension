@@ -17,11 +17,12 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Claim, ClaimDraft } from '@metamask/claims-controller';
-import LoadingScreen from '../../../../components/ui/loading-screen';
+import LoadingScreen from '../../../../components/ui/loading-screen/loading-screen.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
-import { Tab, Tabs } from '../../../../components/ui/tabs';
+import { Tab } from '../../../../components/ui/tabs/tab/tab';
+import { Tabs } from '../../../../components/ui/tabs/tabs';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import { ThemeType } from '../../../../../shared/constants/preferences';

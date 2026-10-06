@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/chain-ids';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';

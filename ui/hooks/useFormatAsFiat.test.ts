@@ -25,8 +25,8 @@ jest.mock('./useConvertToFiat', () => ({
   },
 }));
 
-jest.mock('../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: () => 'usd',
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: () => 'usd',
 }));
 
 describe('useFormatAsFiat', () => {

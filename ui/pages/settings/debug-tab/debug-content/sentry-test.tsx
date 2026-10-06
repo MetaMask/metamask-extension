@@ -1,14 +1,16 @@
 import React, { useState, useCallback, ReactElement } from 'react';
+import { Box } from '../../../../components/component-library/box/box';
+import { Button } from '../../../../components/component-library/button/button';
 import {
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
+} from '../../../../components/component-library/button/button.types';
+import { Icon } from '../../../../components/component-library/icon/icon';
+import {
   IconName,
   IconSize,
-  Text,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   AlignItems,
   Display,

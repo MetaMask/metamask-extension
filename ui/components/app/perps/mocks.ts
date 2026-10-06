@@ -18,7 +18,7 @@ import {
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
 } from './types/transactionHistory';
-import type { PerpsTransaction } from './types';
+import type { PerpsTransaction } from './types/transactionHistory';
 
 /**
  * Mock account state data

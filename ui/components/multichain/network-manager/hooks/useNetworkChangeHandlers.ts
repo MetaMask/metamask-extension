@@ -17,12 +17,12 @@ import {
   setNextNonce,
   updateCustomNonce,
 } from '../../../../store/actions';
+import { getAllChainsToPoll } from '../../../../selectors/selectors';
 import {
-  getAllChainsToPoll,
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
-} from '../../../../selectors';
+} from '../../../../selectors/multichain/networks';
 import {
   BUILT_IN_NETWORKS,
   FEATURED_RPCS,

@@ -1,9 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { OrderFill } from '@metamask/perps-controller';
-import {
-  usePerpsMarketFills,
-  clearPerpsMarketFillsModuleCache,
-} from './usePerpsMarketFills';
+import { clearPerpsMarketFillsModuleCache } from '../../providers/perps/perps-cache';
+import { usePerpsMarketFills } from './usePerpsMarketFills';
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({

@@ -11,7 +11,7 @@ import {
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+} from '../box/box.types';
 
 export enum TextDirection {
   LeftToRight = 'ltr',

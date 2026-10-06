@@ -6,22 +6,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmation.utils';
 import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
-import { isSignatureTransactionType } from '../../pages/confirmations/utils';
+import { isSignatureTransactionType } from '../../pages/confirmations/utils/confirm';
+import {
+  isHardwareWalletError,
+  isUserRejectedHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from './HardwareWalletContext';
 import { useHardwareWalletError } from './HardwareWalletErrorProvider';
-import {
-  isHardwareWalletError,
-  isUserRejectedHardwareWalletError,
-} from './rpcErrorUtils';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-  type EnsureDeviceReadyOptions,
-} from './types';
+import { ConnectionStatus } from './types';
+import type { EnsureDeviceReadyOptions } from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {

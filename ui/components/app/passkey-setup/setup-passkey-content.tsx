@@ -8,8 +8,6 @@ import type {
   SetupPasskeyContentProps,
 } from './passkey-setup.types';
 
-export type { SetupPasskeyContentProps } from './passkey-setup.types';
-
 /**
  * Reusable passkey setup content used by onboarding, restore-vault, and PRF
  * migration flows.

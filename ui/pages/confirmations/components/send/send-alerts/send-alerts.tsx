@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendContext } from '../../../context/send';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
-import { SendAlertModal } from '../send-alert-modal';
+import { SendAlertModal } from '../send-alert-modal/send-alert-modal';
 
 type NetworkAlertDismissState = {
   networkStatusKey: string;

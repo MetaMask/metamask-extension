@@ -13,9 +13,9 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { LedgerConnectionStatusDeviceSelector } from '../ledger-connection-status-device-selector';
-import { LedgerConnectionStatusIllustration } from '../ledger-connection-status-illustration';
-import { LedgerConnectionStatusInstructions } from '../ledger-connection-status-instructions';
+import { LedgerConnectionStatusDeviceSelector } from '../ledger-connection-status-device-selector/ledger-connection-status-device-selector';
+import { LedgerConnectionStatusIllustration } from '../ledger-connection-status-illustration/ledger-connection-status-illustration';
+import { LedgerConnectionStatusInstructions } from '../ledger-connection-status-instructions/ledger-connection-status-instructions';
 import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,

@@ -1,5 +1,5 @@
 import React from 'react';
-import CreateNewVault from '.';
+import CreateNewVault from './create-new-vault';
 
 export default {
   title: 'Components/App/CreateNewVault',

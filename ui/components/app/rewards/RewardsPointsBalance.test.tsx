@@ -59,7 +59,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   }),
 }));
 
-jest.mock('../../component-library/skeleton', () => ({
+jest.mock('../../component-library/skeleton/skeleton', () => ({
   Skeleton: ({ width }: { width: string }) => (
     <div data-testid="skeleton" style={{ width }}>
       Loading...

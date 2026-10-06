@@ -13,7 +13,7 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import ToggleButton from '../../ui/toggle-button';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PREFERENCES_AND_DISPLAY_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -23,7 +23,7 @@ import {
 import {
   getDefaultAddressScope,
   getShowDefaultAddressPreference,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { setShowDefaultAddress } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,

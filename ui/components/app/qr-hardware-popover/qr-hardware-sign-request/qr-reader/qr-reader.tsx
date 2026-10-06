@@ -2,10 +2,11 @@ import React, { useCallback } from 'react';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
 import * as uuid from 'uuid';
 import type { UR } from '@ngraveio/bc-ur';
-import BaseQrReader, {
+import BaseQrReader from '../../base-qr-reader/base-qr-reader';
+import {
   CBOR_ENCODING,
   SIGNING_EXPECTED_UR_TYPES,
-} from '../../base-qr-reader';
+} from '../../base-qr-reader/base-qr-reader.types';
 import { QrMismatchedTransactionError } from '../../qr-utils/qr-utils';
 import type { QrReaderProps } from './qr-reader.types';
 

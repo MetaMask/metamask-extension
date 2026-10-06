@@ -9,9 +9,10 @@ import {
   PERPS_TRANSACTION_DETAILS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { usePerpsMarketFills } from '../../../../hooks/perps';
+import { usePerpsMarketFills } from '../../../../hooks/perps/usePerpsMarketFills';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
-import { FillType, type PerpsTransaction } from '../types';
+import { FillType } from '../types/transactionHistory';
+import type { PerpsTransaction } from '../types/transactionHistory';
 import { PERPS_CONSTANTS } from '../constants';
 import { PerpsMarketRecentActivity } from './perps-market-recent-activity';
 
@@ -22,9 +23,12 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../hooks/perps', () => ({
-  usePerpsMarketFills: jest.fn(),
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: jest.fn() }),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsMarketFills', () => ({
+  usePerpsMarketFills: jest.fn(),
 }));
 
 jest.mock('../utils/transactionTransforms', () => ({

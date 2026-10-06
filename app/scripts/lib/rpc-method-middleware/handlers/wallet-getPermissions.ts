@@ -16,7 +16,7 @@ import {
   MethodHandler,
 } from '@metamask/json-rpc-engine';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../controllers/permissions/specifications';
 import {
   CaveatTypes,
   RestrictedMethods,

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getIpfsGateway } from '../../../selectors';
+import { getIpfsGateway } from '../../../selectors/selectors';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
 
 export function useNftImageUrl(imageUrl?: string) {

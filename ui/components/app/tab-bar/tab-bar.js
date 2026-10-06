@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
 import { Box } from '@metamask/design-system-react';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 import { BorderRadius, Color } from '../../../helpers/constants/design-system';
 
 const TabBar = (props) => {

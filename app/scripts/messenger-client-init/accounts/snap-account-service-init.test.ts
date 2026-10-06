@@ -4,7 +4,7 @@ import { MessengerClientInitRequest } from '../types';
 import {
   getSnapAccountServiceMessenger,
   SnapAccountServiceMessenger,
-} from '../messengers/accounts';
+} from '../messengers/accounts/snap-account-service-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { SnapAccountServiceInit } from './snap-account-service-init';
 

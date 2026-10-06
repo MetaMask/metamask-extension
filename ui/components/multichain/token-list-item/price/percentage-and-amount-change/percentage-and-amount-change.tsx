@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { isHexString } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { Text, Box } from '../../../../component-library';
+import { Text } from '../../../../component-library/text/text';
+import { Box } from '../../../../component-library/box/box';
 import {
   Display,
   TextColor,
@@ -13,21 +14,17 @@ import { getCurrentChainId } from '../../../../../../shared/lib/selectors/networ
 import {
   getSelectedAccountCachedBalance,
   getTokensMarketData,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { EtherDenomination } from '../../../../../../shared/constants/common';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
+import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
 import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import {
   formatValue,
   isValidAmount,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../../../../app/scripts/lib/util';
+} from '../../../../../../shared/lib/format-value';
 
 export const renderPercentageWithNumber = (
   value: string,

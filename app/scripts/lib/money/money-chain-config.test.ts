@@ -1,6 +1,6 @@
+import type { MoneyAccountVaultConfig } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
-import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import {
   createMoneyChainConfigurator,
   type MoneyChainConfigLock,

@@ -10,14 +10,14 @@ import {
   AvatarFavicon,
   AvatarFaviconSize,
 } from '@metamask/design-system-react';
-import { IconName as LegacyIconName } from '../../../../components/component-library';
+import { IconName as LegacyIconName } from '../../../../components/component-library/icon/icon.types';
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row/row';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { getSubjectMetadata } from '../../../../selectors';
+import { getSubjectMetadata } from '../../../../selectors/selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol } from '../../utils/confirm';

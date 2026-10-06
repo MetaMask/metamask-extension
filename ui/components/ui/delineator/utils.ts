@@ -4,7 +4,9 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { AvatarIconSize, IconProps, Text } from '../../component-library';
+import { AvatarIconSize } from '../../component-library/avatar-icon/avatar-icon.types';
+import { IconProps } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { DelineatorType } from './delineator.types';
 
 const defaultIconProps = {

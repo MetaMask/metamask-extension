@@ -1,5 +1,5 @@
 import React from 'react';
-import Slider from '.';
+import Slider from './slider.component';
 
 export default {
   title: 'Components/UI/Slider',

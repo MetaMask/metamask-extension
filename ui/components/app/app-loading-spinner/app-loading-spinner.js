@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getAppIsLoading } from '../../../selectors';
-import Spinner from '../../ui/spinner';
+import { getAppIsLoading } from '../../../selectors/selectors';
+import Spinner from '../../ui/spinner/spinner.component';
 
 const AppLoadingSpinner = ({ className }) => {
   const appIsLoading = useSelector(getAppIsLoading);

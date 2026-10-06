@@ -9,8 +9,9 @@ import React, {
   useState,
 } from 'react';
 import classnames from 'clsx';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
-import { FormTextField, FormTextFieldProps } from '../../../component-library';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+import { FormTextField } from '../../../component-library/form-text-field/form-text-field';
+import { FormTextFieldProps } from '../../../component-library/form-text-field/form-text-field.types';
 
 export type SnapUIInputProps = {
   name: string;

@@ -3,7 +3,7 @@ import { ReactComponentLike } from 'prop-types';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useConfirmContext } from '../../../context/confirm';
-import { SnapsSection } from '../snaps/snaps-section';
+import { SnapsSection } from '../snaps/snaps-section/snaps-section';
 import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 

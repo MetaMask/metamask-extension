@@ -1,4 +1,6 @@
-import { Box, IconName, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 
 export type DelineatorProps = {
   children?: React.ReactNode;

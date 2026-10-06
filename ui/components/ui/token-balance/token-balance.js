@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CurrencyDisplay from '../currency-display';
+import CurrencyDisplay from '../currency-display/currency-display.component';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextVariant,

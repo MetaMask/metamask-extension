@@ -19,10 +19,6 @@ jest.mock('../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../../ui/ducks/bridge/actions', () => ({
-  ...jest.requireActual('../../../ui/ducks/bridge/actions'),
-}));
-
 jest.mock(
   '../../../ui/pages/onboarding-flow/welcome/fox-appear-animation',
   () => ({

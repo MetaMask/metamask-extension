@@ -23,7 +23,7 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
-import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../shared/lib/selectors/smart-transactions';
 import {
   formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
@@ -39,9 +39,10 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
-  SHIELD_ERROR,
-} from '../../../../shared/lib/shield';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+} from '../../../../shared/lib/shield/subscription-utils';
+import { SHIELD_ERROR } from '../../../../shared/lib/shield/constants';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import {
   ShieldSubscriptionServiceOptions,
   SERVICE_NAME,

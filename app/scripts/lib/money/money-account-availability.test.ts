@@ -1,8 +1,8 @@
 import type { Hex } from '@metamask/utils';
+import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '@metamask/money-account-utils';
 import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { MONEY_ACCOUNT_GEO_BLOCKED_COUNTRIES_FLAG_NAME } from '../../../../shared/lib/money/feature-flags';
-import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '../../../../shared/lib/money/vault-config';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
   MoneyAccountAvailabilityService,

@@ -66,13 +66,17 @@ jest.mock('../../pay-token-amount/pay-token-amount', () => ({
   ),
   PayTokenAmountSkeleton: () => <div data-testid="pay-token-amount-skeleton" />,
 }));
+
 jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
-jest.mock('../../rows/perps-account-picker-row', () => ({
-  PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
-}));
+jest.mock(
+  '../../rows/perps-account-picker-row/perps-account-picker-row',
+  () => ({
+    PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
+  }),
+);
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));

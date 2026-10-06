@@ -9,7 +9,7 @@ import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { addHexPrefix } from '../lib/util';
+import { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 
 const version = 25;

@@ -2,9 +2,9 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName, IconColor } from '@metamask/design-system-react';
 import {
   getHardwareWalletErrorCode,
-  HardwareWalletType,
   isTrezorDesktopConnectionMissingError,
-} from '../../../../contexts/hardware-wallets';
+} from '../../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
 
 /** Discriminant values for {@link ErrorContent}; use for comparisons and `buildErrorContent` returns. */
 export const HardwareWalletErrorContentVariant = {

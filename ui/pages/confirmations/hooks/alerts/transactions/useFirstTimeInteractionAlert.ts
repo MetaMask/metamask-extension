@@ -11,7 +11,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { PAY_TRANSACTION_TYPES } from '../../../constants/pay';
-import { getInternalAccounts } from '../../../../../selectors';
+import { getInternalAccounts } from '../../../../../selectors/accounts';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 import {
   useTrustSignal,

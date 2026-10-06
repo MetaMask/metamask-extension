@@ -8,7 +8,7 @@ import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import type { SettingsSearchResult } from '../useSettingsSearch';
 import { SettingsSearchResults } from './settings-search-results';
 
-jest.mock('../../../../shared/lib/passkey', () => ({
+jest.mock('../../../../shared/lib/passkey/passkey-auth-method', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
 }));
 

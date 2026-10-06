@@ -2,8 +2,8 @@ import {
   DelegationController,
   type DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
-import { type Hex } from '../../../../shared/lib/delegation/utils';
-import { getDeleGatorEnvironment } from '../../../../shared/lib/delegation';
+import type { Hex } from '@metamask/utils';
+import { getDeleGatorEnvironment } from '../../../../shared/lib/delegation/environment';
 import type { MessengerClientInitFunction } from '../types';
 
 const getDelegationEnvironment = (chainId: Hex) => {

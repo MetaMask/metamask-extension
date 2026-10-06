@@ -4,7 +4,7 @@ import {
   BoxBackgroundColor,
   TextColor,
 } from '@metamask/design-system-react';
-import Disclosure from '../../../../../components/ui/disclosure';
+import Disclosure from '../../../../../components/ui/disclosure/disclosure';
 import { DisclosureVariant } from '../../../../../components/ui/disclosure/disclosure.constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { DiffHighlightedAddress } from '../diff-highlighted-address/diff-highlighted-address';

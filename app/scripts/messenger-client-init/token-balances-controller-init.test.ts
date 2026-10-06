@@ -15,7 +15,7 @@ import {
   getTokenBalancesControllerInitMessenger,
   getTokenBalancesControllerMessenger,
   TokenBalancesControllerInitMessenger,
-} from './messengers';
+} from './messengers/token-balances-controller-messenger';
 import { TokenBalancesControllerInit } from './token-balances-controller-init';
 
 jest.mock('@metamask/assets-controllers');

@@ -6,8 +6,8 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
 import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
-import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream/usePerpsLiveAccount';
+import { CustomAmountInfo } from '../../../info/custom-amount-info/custom-amount-info';
 import { ARBITRUM_USDC, PERPS_CURRENCY } from '../../../../constants/perps';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 
@@ -28,19 +28,25 @@ jest.mock('../../../../hooks/pay/usePerpsWithdrawDefaultToken', () => ({
 // produces a "Background connection not initialized" warning and an
 // out-of-act `setIsReady` update. Stub it — the only thing this test cares
 // about is that `PerpsWithdrawInfo` forwards the right props.
-jest.mock('../../../../../../hooks/perps/stream', () => ({
+
+jest.mock('../../../../../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: jest.fn(),
 }));
 
-jest.mock('../../../info/custom-amount-info', () => ({
+jest.mock('../../../info/custom-amount-info/custom-amount-info', () => ({
   CustomAmountInfo: jest.fn(({ children }) => (
     <div data-testid="custom-amount-info-mock">{children}</div>
   )),
 }));
 
-jest.mock('../../../perps-confirmations/perps-withdraw-balance', () => ({
-  PerpsWithdrawBalance: () => <div data-testid="perps-withdraw-balance-mock" />,
-}));
+jest.mock(
+  '../../../perps-confirmations/perps-withdraw-balance/perps-withdraw-balance',
+  () => ({
+    PerpsWithdrawBalance: () => (
+      <div data-testid="perps-withdraw-balance-mock" />
+    ),
+  }),
+);
 
 const useAddTokenMock = jest.mocked(useAddToken);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);

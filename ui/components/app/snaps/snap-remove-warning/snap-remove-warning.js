@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Text } from '../../../component-library/text/text';
+import { Box } from '../../../component-library/box/box';
+import { Button } from '../../../component-library/button/button';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
 import {
-  Text,
-  Box,
-  Button,
-  Modal,
-  ModalOverlay,
   BUTTON_VARIANT,
   BUTTON_SIZES,
-} from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
+} from '../../../component-library/button';
+import { ModalContent } from '../../../component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated/modal-header';
 
 import {
   BlockSize,

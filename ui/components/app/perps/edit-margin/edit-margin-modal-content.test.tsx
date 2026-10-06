@@ -23,7 +23,7 @@ const mockTrack = jest.fn();
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
 // useComplianceGate.test.tsx.
-jest.mock('../../compliance', () => {
+jest.mock('../../compliance/access-restricted-modal', () => {
   // Stable references so components that put `gate` in effect/callback deps
   // don't re-run on every render.
   const gate = async (action: () => unknown) => action();
@@ -33,10 +33,43 @@ jest.mock('../../compliance', () => {
     isBlocked: false,
     checkCompliance: jest.fn(),
   };
-  return {
-    useComplianceGate: () => value,
-    useSelectedAccountComplianceGate: () => value,
+  return {};
+});
+jest.mock('../../compliance/access-restricted-context', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
   };
+  return {};
+});
+jest.mock('../../compliance/useComplianceGate', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return { useComplianceGate: () => value };
+});
+jest.mock('../../compliance/useSelectedAccountComplianceGate', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return { useSelectedAccountComplianceGate: () => value };
 });
 
 jest.mock('../../../../store/background-connection', () => ({
@@ -44,8 +77,11 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
-jest.mock('../../../../hooks/perps', () => ({
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
@@ -53,7 +89,7 @@ jest.mock('../../../../hooks/perps/usePerpsMarginCalculations', () => ({
   usePerpsMarginCalculations: () => mockUsePerpsMarginCalculations(),
 }));
 
-jest.mock('../../../../providers/perps', () => ({
+jest.mock('../../../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => ({
     pushPositionsWithOverrides: jest.fn(),
     positions: {
@@ -63,7 +99,7 @@ jest.mock('../../../../providers/perps', () => ({
   }),
 }));
 
-jest.mock('../perps-toast', () => ({
+jest.mock('../perps-toast/perps-toast.constants', () => ({
   PERPS_TOAST_KEYS: {
     MARGIN_ADD_FAILED: 'perpsToastMarginAddFailed',
     MARGIN_ADD_IN_PROGRESS: 'perpsToastMarginAddInProgress',
@@ -73,6 +109,8 @@ jest.mock('../perps-toast', () => ({
     MARGIN_REMOVE_IN_PROGRESS: 'perpsToastMarginRemoveInProgress',
     MARGIN_REMOVE_SUCCESS: 'perpsToastMarginRemoveSuccess',
   },
+}));
+jest.mock('../perps-toast/perps-toast-provider', () => ({
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),

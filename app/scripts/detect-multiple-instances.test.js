@@ -9,11 +9,12 @@ import {
   METAMASK_MMI_PROD_CHROME_ID,
   METAMASK_MMI_BETA_CHROME_ID,
 } from '../../shared/constants/app';
+
+import * as utilModule3 from './lib/util';
 import {
   checkForMultipleVersionsRunning,
   onMessageReceived,
 } from './detect-multiple-instances';
-import * as util from './lib/util';
 
 describe('multiple instances running detector', function () {
   const PING_MESSAGE = 'isRunning';
@@ -26,7 +27,7 @@ describe('multiple instances running detector', function () {
       sendMessage: sendMessageStub,
       id: METAMASK_BETA_CHROME_ID,
     });
-    jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
+    jest.spyOn(utilModule3, 'getPlatform').mockReturnValue(PLATFORM_CHROME);
   });
 
   afterEach(function () {
@@ -53,7 +54,7 @@ describe('multiple instances running detector', function () {
     });
 
     it('should send ping message using Chrome IDs for non-Firefox browsers', async function () {
-      jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_EDGE);
+      jest.spyOn(utilModule3, 'getPlatform').mockReturnValue(PLATFORM_EDGE);
 
       await checkForMultipleVersionsRunning();
 
@@ -65,7 +66,7 @@ describe('multiple instances running detector', function () {
     });
 
     it('should send ping message using Firefox IDs for Firefox', async function () {
-      jest.spyOn(util, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
+      jest.spyOn(utilModule3, 'getPlatform').mockReturnValue(PLATFORM_FIREFOX);
 
       await checkForMultipleVersionsRunning();
 

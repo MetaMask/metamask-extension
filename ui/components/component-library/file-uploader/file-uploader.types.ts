@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { FileInputProps } from 'react-simple-file-input';
 import { BoxProps } from '@metamask/design-system-react';
-import { HelpTextProps } from '../help-text';
-import { LabelProps } from '../label';
+import { HelpTextProps } from '../help-text/help-text.types';
+import { LabelProps } from '../label/label.types';
 
 export type FileUploaderProps = Omit<Partial<BoxProps>, 'children' | 'ref'> & {
   /*

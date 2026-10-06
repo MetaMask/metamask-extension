@@ -33,7 +33,6 @@ export type NotificationPreferenceSectionUpdate<
 > =
   | NotificationPreferences[PreferenceType]
   | NotificationPreferenceSectionUpdater<PreferenceType>;
-export type { NotificationPreferences };
 
 export function useNotificationPreferences() {
   const dispatch = useDispatch();

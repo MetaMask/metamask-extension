@@ -23,20 +23,17 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import { useSendingAssetsFiatTotal } from '../../../../pages/confirmations/hooks/alerts/useSendingAssetsFiatTotal';
 import { REASON_TO_REQUEST_TYPE_TKEY } from '../../../../pages/confirmations/hooks/alerts/constants';
-import {
-  Button,
-  ButtonSize,
-  Icon,
-  IconName,
-  IconSize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
+import { Button } from '../../../component-library/button/button';
+import { ButtonSize } from '../../../component-library/button/button.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
 

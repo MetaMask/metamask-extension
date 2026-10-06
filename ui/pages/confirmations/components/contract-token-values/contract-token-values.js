@@ -5,12 +5,10 @@ import { AvatarAccountSize } from '@metamask/design-system-react';
 import Box from '../../../../components/ui/box/box';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
-import {
-  Text,
-  ButtonIcon,
-  IconName,
-} from '../../../../components/component-library';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
+import { Text } from '../../../../components/component-library/text/text';
+import { ButtonIcon } from '../../../../components/component-library/button-icon/button-icon';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
 import {
   TextVariant,
   DISPLAY,

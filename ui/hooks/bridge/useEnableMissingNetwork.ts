@@ -6,7 +6,7 @@ import {
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getEnabledNetworksByNamespace } from '../../selectors';
+import { getEnabledNetworksByNamespace } from '../../selectors/multichain/networks';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../shared/constants/network';
 import { setEnabledAllPopularNetworks } from '../../store/actions';
 import { useDispatch } from '../../store/hooks';

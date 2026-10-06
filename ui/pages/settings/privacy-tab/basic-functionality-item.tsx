@@ -1,21 +1,21 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import {
   toggleBasicFunctionality,
   toggleExternalServices,
 } from '../../../store/actions';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
-import { getIsBasicFunctionalitySocialLoginUser } from '../../../selectors/onboarding';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
+import { getIsBasicFunctionalitySocialLoginUser } from '../../../selectors/onboarding/onboarding';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { PrivacyPolicyLink } from '../shared';
+import { PrivacyPolicyLink } from '../shared/privacy-policy-link';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useDispatch } from '../../../store/hooks';
 

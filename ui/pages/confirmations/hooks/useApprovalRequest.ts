@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   ApprovalsMetaMaskState,
   internalSelectPendingApproval,
-} from '../../../selectors';
+} from '../../../selectors/approvals';
 import { useConfirmationId } from './useConfirmationId';
 
 export function useApprovalRequest() {

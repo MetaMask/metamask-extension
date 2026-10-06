@@ -4,14 +4,12 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   AlignItems,
@@ -20,16 +18,18 @@ import {
 import {
   selectTutorialModalOpen,
   selectTutorialActiveStep,
+} from '../../../../ducks/perps/selectors';
+import {
   setTutorialActiveStep,
   markTutorialCompleted,
   PerpsTutorialStep,
   TUTORIAL_STEPS_ORDER,
-} from '../../../../ducks/perps';
+} from '../../../../ducks/perps/tutorial';
 import { useTheme } from '../../../../hooks/useTheme';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { useDispatch } from '../../../../store/hooks';
 import WhatArePerpsStep from './steps/WhatArePerpsStep';

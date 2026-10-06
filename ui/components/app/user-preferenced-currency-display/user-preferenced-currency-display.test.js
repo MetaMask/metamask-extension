@@ -3,8 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import UserPreferencedCurrencyDisplay from '.';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component';
 
 describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {

@@ -4,7 +4,7 @@ import type { MarketInfo } from '@metamask/perps-controller';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
-} from '../../../selectors/perps';
+} from '../../../selectors/perps/feature-flags';
 import { getDisplaySymbol } from '../../../components/app/perps/utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 

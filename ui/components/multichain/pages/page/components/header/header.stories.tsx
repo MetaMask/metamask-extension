@@ -4,7 +4,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { Header } from '.';
+import { Header } from './header';
 
 const story = {
   title: 'Components/Multichain/Page/Header',

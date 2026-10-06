@@ -12,12 +12,12 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { PerpsTokenLogo } from '../perps-token-logo';
-import { PerpsFillTag } from '../perps-fill-tag';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
+import { PerpsFillTag } from '../perps-fill-tag/perps-fill-tag';
 import { getDisplaySymbol } from '../utils';
 import { getOrderStatusI18nKey } from '../utils/orderUtils';
-import { FillType } from '../types';
-import type { PerpsTransaction } from '../types';
+import { FillType } from '../types/transactionHistory';
+import type { PerpsTransaction } from '../types/transactionHistory';
 
 export type TransactionCardProps = {
   transaction: PerpsTransaction;

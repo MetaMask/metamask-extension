@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
+import withModalProps from '../../../../helpers/higher-order-components/with-modal-props/with-modal-props';
 import { removeNetwork, setEnabledNetworks } from '../../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,

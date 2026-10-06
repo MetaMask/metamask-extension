@@ -1,20 +1,24 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import {
-  buildBatchSellAsset,
-  seedCurrencyLocaleSelectors,
-} from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
+import { seedCurrencyLocaleSelectors } from '../../../../../../test/data/batch-sell/mock-selectors';
 import { AssetListItem } from './asset-list-item';
 
 // Provide stub selectors that simply read from whatever state object is passed.
 // The real selectors have deep chains; for unit-testing the component we only
 // need to control the *values* returned via useSelector.
-jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: (state: { currency?: string }) => state?.currency,
+
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/selectors/assets-migration',
+  ),
+  getCurrencyRateControllerCurrentCurrency: (state: { currency?: string }) =>
+    state?.currency,
 }));
 
 jest.mock('../../../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../../../ducks/locale/locale'),
   getIntlLocale: (state: { locale?: string }) => state?.locale,
 }));
 

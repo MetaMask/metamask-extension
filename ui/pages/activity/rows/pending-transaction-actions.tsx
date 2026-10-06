@@ -7,7 +7,7 @@ import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-tr
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
 import { selectBridgeHistoryItemForTx } from '../../../selectors/activity';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 
 type TransactionMetaWithSmartTransaction = TransactionMeta & {
   isSmartTransaction?: boolean;

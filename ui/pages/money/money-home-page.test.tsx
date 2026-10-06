@@ -139,7 +139,7 @@ jest.mock('../../hooks/money/useMoneyAnalytics', () => ({
   useMoneyAnalytics: jest.fn(),
 }));
 const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
-jest.mock('./components/money-transfer-sheet', () => ({
+jest.mock('./components/money-transfer-sheet/money-transfer-sheet', () => ({
   MoneyTransferSheet: ({
     isOpen,
     onClose,

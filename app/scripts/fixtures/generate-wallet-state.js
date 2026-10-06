@@ -10,7 +10,7 @@ import FixtureBuilderV2 from '../../../test/e2e/fixtures/fixture-builder-v2';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';

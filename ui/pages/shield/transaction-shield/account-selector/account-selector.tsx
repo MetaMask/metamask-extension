@@ -14,15 +14,13 @@ import {
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../components/component-library';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../components/component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { shortenAddress } from '../../../../helpers/utils/util';

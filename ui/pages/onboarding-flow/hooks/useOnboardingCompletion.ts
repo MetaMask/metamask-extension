@@ -25,12 +25,14 @@ import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
-  getFirstTimeFlowType,
-  getOptedIn,
   getDeferredDeepLink,
-  getAccountTypeForOnboardingMetrics,
+} from '../../../selectors/selectors';
+import {
+  getFirstTimeFlowType,
   getIsSocialLoginFlow,
-} from '../../../selectors';
+} from '../../../selectors/first-time-flow';
+import { getOptedIn } from '../../../selectors/metametrics';
+import { getAccountTypeForOnboardingMetrics } from '../../../selectors/onboarding/onboarding';
 import { getExternalServicesOwnedPreferences } from '../../../selectors/multichain/basic-functionality';
 import {
   getCompletedOnboarding,

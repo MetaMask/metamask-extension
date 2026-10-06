@@ -1,6 +1,7 @@
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import * as ActionsModule from '../../../store/actions';
 import { useEnsureNetworkEnabled } from './useEnsureNetworkEnabled';

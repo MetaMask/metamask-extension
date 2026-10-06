@@ -1,6 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   addTransaction,
   findNetworkClientIdByChainId,

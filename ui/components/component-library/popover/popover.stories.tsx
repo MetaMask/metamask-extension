@@ -7,7 +7,7 @@ import {
 
 import { Popover } from './popover';
 import { PopoverPosition } from './popover.types';
-import { Box } from '../box';
+import { Box } from '../box/box';
 
 export default {
   title: 'Components/ComponentLibrary/Popover (deprecated)',

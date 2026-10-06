@@ -5,10 +5,8 @@ import { useSelector } from 'react-redux';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
-import {
-  Box,
-  Text,
-} from '../../../../../../../../components/component-library';
+import { Box } from '../../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../../components/component-library/text/text';
 import {
   BlockSize,
   BorderRadius,
@@ -16,9 +14,9 @@ import {
   JustifyContent,
   TextAlign,
 } from '../../../../../../../../helpers/constants/design-system';
-import Tooltip from '../../../../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../../../../components/ui/tooltip/tooltip';
 import { shortenString } from '../../../../../../../../helpers/utils/util';
-import { selectConversionRateByChainId } from '../../../../../../../../selectors';
+import { selectConversionRateByChainId } from '../../../../../../../../selectors/selectors';
 import { AssetPill } from '../../../../../simulation-details/asset-pill';
 import {
   formatAmount,

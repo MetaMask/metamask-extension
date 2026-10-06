@@ -19,7 +19,7 @@ import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';

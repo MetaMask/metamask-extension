@@ -9,15 +9,14 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE, SNAPS_ROUTE } from '../../../helpers/constants/routes';
-import { getPermissions, getSnap } from '../../../selectors';
-import {
-  ButtonIcon,
-  Box,
-  ButtonIconSize,
-} from '../../../components/component-library';
-import { Content, Page } from '../../../components/multichain/pages/page';
-import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
+import { getPermissions, getSnap } from '../../../selectors/selectors';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { Box } from '../../../components/component-library/box/box';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Page } from '../../../components/multichain/pages/page/page';
+import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu/snap-home-menu';
 import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
 

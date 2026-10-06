@@ -2,7 +2,7 @@ import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { buildMoneyAccountWithdrawPlaceholderBatch } from '@metamask/money-account-utils';
 import { bytesToHex, type Hex } from '@metamask/utils';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 import { submitPlaceholderBatch } from './submit-placeholder-batch';
 

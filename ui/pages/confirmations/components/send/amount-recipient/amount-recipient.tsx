@@ -7,7 +7,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import LoadingScreen from '../../../../../components/ui/loading-screen';
+import LoadingScreen from '../../../../../components/ui/loading-screen/loading-screen.component';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Asset } from '../../../types/send';
 import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmountSelectionMetrics';
@@ -19,12 +19,12 @@ import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useAddressPoisoningDetection } from '../../../hooks/send/useAddressPoisoningDetection';
 import { useSendType } from '../../../hooks/send/useSendType';
 import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
-import { SendHero } from '../../UI/send-hero';
+import { SendHero } from '../../UI/send-hero/send-hero';
 import { Amount } from '../amount/amount';
-import { Recipient } from '../recipient';
-import { HexData } from '../hex-data';
-import { SendAlertModal } from '../send-alert-modal';
-import { SendAlerts } from '../send-alerts';
+import { Recipient } from '../recipient/recipient';
+import { HexData } from '../hex-data/hex-data';
+import { SendAlertModal } from '../send-alert-modal/send-alert-modal';
+import { SendAlerts } from '../send-alerts/send-alerts';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();

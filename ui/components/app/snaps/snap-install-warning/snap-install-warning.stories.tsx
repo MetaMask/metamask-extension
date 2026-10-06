@@ -1,8 +1,8 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
-import { Button } from '../../../component-library';
-import SnapInstallWarning from '.';
+import { Button } from '../../../component-library/button/button';
+import SnapInstallWarning from './snap-install-warning';
 
 const meta: Meta<typeof SnapInstallWarning> = {
   title: 'Components/App/Snaps/SnapInstallWarning',

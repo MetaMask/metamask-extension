@@ -15,6 +15,7 @@ import { SmartContractAccountToggleSection } from './smart-contract-account-togg
 
 // Mock the hooks
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Networks');
+jest.mock('../../../../shared/lib/eip7702-utils');
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 

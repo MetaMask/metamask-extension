@@ -14,7 +14,7 @@ import { keccak } from 'ethereumjs-util';
 
 type Address = Hex;
 
-export type { Address, Hex };
+export type { Address };
 
 function stringToHex(value: string): Hex {
   return bytesToHex(stringToBytes(value));

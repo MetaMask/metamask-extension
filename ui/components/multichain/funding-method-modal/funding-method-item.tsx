@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import {
   Display,
   FlexDirection,

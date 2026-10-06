@@ -8,7 +8,9 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 
 export type InlineAlertProps = {
   /** The key of the alert */

@@ -21,8 +21,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { CameraPermissionState } from '../../../../contexts/hardware-wallets/constants';
-import EnhancedQrReader from '../enhanced-qr-reader';
-import { QrErrorFlowContext } from '../qr-error-content';
+import EnhancedQrReader from '../enhanced-qr-reader/enhanced-qr-reader';
+import { QrErrorFlowContext } from '../qr-error-content/qr-error-content.types';
 import {
   QrMismatchedTransactionError,
   ScanErrorCategory,
@@ -70,7 +70,7 @@ jest.mock('../../../../../shared/lib/browser-runtime.utils', () => ({
 
 jest.mock('../../../../helpers/utils/webcam-utils');
 
-jest.mock('../enhanced-qr-reader');
+jest.mock('../enhanced-qr-reader/enhanced-qr-reader');
 
 jest.mock('@ngraveio/bc-ur', () => ({
   ...jest.requireActual('@ngraveio/bc-ur'),

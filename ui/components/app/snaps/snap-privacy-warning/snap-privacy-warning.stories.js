@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SnapPrivacyWarning from '.';
+import SnapPrivacyWarning from './snap-privacy-warning';
 
 export default {
   title: 'Components/App/snaps/SnapPrivacyWarning',

@@ -2,7 +2,7 @@ import {
   conversionRateSelector,
   currentCurrencySelector,
   unconfirmedTransactionsHashSelector,
-} from '../../selectors';
+} from '../../selectors/confirm-transaction';
 import { getNativeCurrency, getTokens } from '../metamask/metamask';
 
 import {

@@ -3,7 +3,7 @@ import {
   TextColor,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import MetaMaskTemplateRenderer from '.';
+import MetaMaskTemplateRenderer from './metamask-template-renderer';
 
 export default {
   title: 'Components/App/MetamaskTemplateRenderer',

@@ -5,7 +5,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getExecutionServiceMessenger } from '../messengers/snaps';
+import { getExecutionServiceMessenger } from '../messengers/snaps/execution-service-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { ExecutionServiceInit } from './execution-service-init';
 

@@ -3,7 +3,7 @@ import React from 'react';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+} from '../box/box.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

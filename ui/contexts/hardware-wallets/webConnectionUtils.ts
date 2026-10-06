@@ -4,8 +4,9 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { CameraPermissionState } from './constants';
-import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
+import { HardwareConnectionPermissionState } from './types';
 
 /**
  * Check if WebHID is available in the current browser

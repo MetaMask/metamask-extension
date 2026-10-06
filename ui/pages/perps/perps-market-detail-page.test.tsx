@@ -26,7 +26,7 @@ import {
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
 // useComplianceGate.test.tsx.
-jest.mock('../../components/app/compliance', () => {
+jest.mock('../../components/app/compliance/access-restricted-modal', () => {
   // Stable references so components that put `gate` in effect/callback deps
   // don't re-run on every render.
   const gate = async (action: () => unknown) => action();
@@ -36,11 +36,47 @@ jest.mock('../../components/app/compliance', () => {
     isBlocked: false,
     checkCompliance: jest.fn(),
   };
-  return {
-    useComplianceGate: () => value,
-    useSelectedAccountComplianceGate: () => value,
-  };
+  return {};
 });
+jest.mock('../../components/app/compliance/access-restricted-context', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return {};
+});
+jest.mock('../../components/app/compliance/useComplianceGate', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return { useComplianceGate: () => value };
+});
+jest.mock(
+  '../../components/app/compliance/useSelectedAccountComplianceGate',
+  () => {
+    // Stable references so components that put `gate` in effect/callback deps
+    // don't re-run on every render.
+    const gate = async (action: () => unknown) => action();
+    const value = {
+      gate,
+      isComplianceEnabled: false,
+      isBlocked: false,
+      checkCompliance: jest.fn(),
+    };
+    return { useSelectedAccountComplianceGate: () => value };
+  },
+);
 
 jest.mock('@metamask/perps-controller', () => ({
   ...jest.requireActual('@metamask/perps-controller'),
@@ -194,11 +230,20 @@ jest.mock('../../store/background-connection', () => ({
 }));
 
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.0001,
-    isLoading: false,
-    hasError: false,
-  }),
+  ...(() => ({
+    usePerpsOrderFees: () => ({
+      feeRate: 0.0001,
+      isLoading: false,
+      hasError: false,
+    }),
+  }))(),
+  ...(() => ({
+    usePerpsOrderFees: () => ({
+      feeRate: 0.00145,
+      isLoading: false,
+      hasError: false,
+    }),
+  }))(),
 }));
 
 jest.mock('../../selectors/accounts', () => ({
@@ -206,7 +251,7 @@ jest.mock('../../selectors/accounts', () => ({
   getSelectedInternalAccount: () => ({ address: '0x123' }),
 }));
 
-jest.mock('../../providers/perps', () => ({
+jest.mock('../../providers/perps/PerpsStreamManager', () => ({
   getPerpsStreamManager: () => ({
     positions: {
       getCachedData: () => [],
@@ -233,13 +278,22 @@ jest.mock('../../providers/perps', () => ({
 
 const mockReplacePerpsToastByKey = jest.fn();
 const mockSetPendingOrder = jest.fn();
-jest.mock('../../components/app/perps/perps-toast', () => {
+jest.mock(
+  '../../components/app/perps/perps-toast/perps-toast.constants',
+  () => {
+    const { PERPS_TOAST_KEYS } = jest.requireActual(
+      '../../components/app/perps/perps-toast/perps-toast.constants',
+    );
+
+    return { PERPS_TOAST_KEYS };
+  },
+);
+jest.mock('../../components/app/perps/perps-toast/perps-toast-provider', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
-    '../../components/app/perps/perps-toast/perps-toast-provider',
+    '../../components/app/perps/perps-toast/perps-toast.constants',
   );
 
   return {
-    PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
       setPendingOrder: mockSetPendingOrder,
@@ -267,8 +321,12 @@ const mockPerpsScreenViewedOptions: {
   eventName?: unknown;
   properties?: Record<string, unknown>;
 }[] = [];
-jest.mock('../../hooks/perps', () => ({
+
+jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: (options?: {
     eventName?: unknown;
     properties?: Record<string, unknown>;
@@ -279,15 +337,37 @@ jest.mock('../../hooks/perps', () => ({
     }
     return { track: mockPerpsTrack };
   },
-  usePerpsOrderForm: jest.fn(),
-  useUserHistory: jest.fn(),
-  usePerpsTransactionHistory: jest.fn(),
-  usePerpsMarginCalculations: jest.fn(),
+}));
+
+jest.mock('../../hooks/perps/usePerpsMarketFills', () => ({
   usePerpsMarketFills: (...args: unknown[]) => mockUsePerpsMarketFills(...args),
+}));
+jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: jest.fn(() => ({
     market: undefined,
     isLoading: false,
   })),
+}));
+
+jest.mock('../../hooks/perps/usePerpsOrderForm', () => ({
+  usePerpsOrderForm: jest.fn(),
+}));
+
+jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
+  ...(() => ({
+    usePerpsTransactionHistory: jest.fn(),
+  }))(),
+  ...(() => ({
+    usePerpsTransactionHistory: () => ({
+      transactions: mockTransactions,
+      isLoading: false,
+      error: null,
+      refetch: jest.fn(),
+    }),
+  }))(),
+}));
+jest.mock('../../hooks/perps/useUserHistory', () => ({
+  useUserHistory: jest.fn(),
 }));
 // Cancel/close/reverse/TP-SL modals call usePerpsAttribution; keep them
 // renderable without mounting PerpsAttributionProvider in this page suite.
@@ -323,14 +403,11 @@ const mockLiveMarketData = jest.fn(() => ({
 }));
 
 // Mock the perps stream hooks
-jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLivePositions: () => mockLivePositions(),
-  usePerpsLiveOrders: () => ({
-    orders: mockOrders,
-    isInitialLoading: false,
-  }),
+
+jest.mock('../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => mockLiveMarketData(),
+}));
+jest.mock('../../hooks/perps/stream/usePerpsLiveCandles', () => ({
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -354,45 +431,60 @@ jest.mock('../../hooks/perps/stream', () => ({
   }),
 }));
 
-jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({
-    feeRate: 0.00145,
-    isLoading: false,
-    hasError: false,
+jest.mock('../../hooks/perps/stream/usePerpsLiveMarketData', () => ({
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
+}));
+
+jest.mock('../../hooks/perps/stream/usePerpsLiveOrders', () => ({
+  usePerpsLiveOrders: () => ({
+    orders: mockOrders,
+    isInitialLoading: false,
   }),
+}));
+jest.mock('../../hooks/perps/stream/usePerpsLivePositions', () => ({
+  usePerpsLivePositions: () => mockLivePositions(),
 }));
 
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
-jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
-  usePerpsTransactionHistory: () => ({
-    transactions: mockTransactions,
-    isLoading: false,
-    error: null,
-    refetch: jest.fn(),
+
+jest.mock(
+  '../../components/app/perps/perps-tutorial-modal/PerpsTutorialModal',
+  () => ({
+    __esModule: true,
+    default: () => null,
   }),
-}));
+);
 
-jest.mock('../../components/app/perps/perps-tutorial-modal', () => ({
-  PerpsTutorialModal: () => null,
-}));
-
-jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
-  // require React inside factory to avoid jest.mock hoisting scope restrictions
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const mockReact = require('react');
-  return {
-    PerpsCandlestickChart: mockReact.forwardRef(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (props: any, _ref: any) =>
-        mockReact.createElement('div', {
-          'data-testid': 'perps-candlestick-chart',
-          'data-price-lines': JSON.stringify(props.priceLines ?? []),
-          'data-visible-candle-count': props.initialVisibleCandleCount,
-          onClick: () => props.onVisibleCandleCountChange?.(75),
-        }),
-    ),
-  };
-});
+jest.mock(
+  '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart',
+  () => {
+    // require React inside factory to avoid jest.mock hoisting scope restrictions
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mockReact = require('react');
+    return {
+      __esModule: true,
+      default: mockReact.forwardRef(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (props: any, _ref: any) =>
+          mockReact.createElement('div', {
+            'data-testid': 'perps-candlestick-chart',
+            'data-price-lines': JSON.stringify(props.priceLines ?? []),
+            'data-visible-candle-count': props.initialVisibleCandleCount,
+            onClick: () => props.onVisibleCandleCountChange?.(75),
+          }),
+      ),
+    };
+  },
+);
+jest.mock(
+  '../../components/app/perps/perps-candlestick-chart/chart-utils',
+  () => {
+    // require React inside factory to avoid jest.mock hoisting scope restrictions
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mockReact = require('react');
+    return {};
+  },
+);
 
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();

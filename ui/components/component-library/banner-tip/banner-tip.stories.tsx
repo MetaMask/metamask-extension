@@ -6,10 +6,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { BannerTip } from './banner-tip';
 import { BannerTipLogoType } from './banner-tip.types';
-import { Box } from '../box';
-import { ButtonLink, ButtonLinkSize } from '../button-link';
-import { Icon, IconName } from '../icon';
-import { ButtonPrimary } from '../button-primary';
+import { Box } from '../box/box';
+import { ButtonLink } from '../button-link/button-link';
+import { ButtonLinkSize } from '../button-link/button-link.types';
+import { Icon } from '../icon/icon';
+import { IconName } from '../icon/icon.types';
+import { ButtonPrimary } from '../button-primary/button-primary';
 
 export default {
   title: 'Components/ComponentLibrary/BannerTip',

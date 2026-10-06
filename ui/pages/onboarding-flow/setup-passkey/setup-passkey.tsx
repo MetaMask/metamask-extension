@@ -6,10 +6,8 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-import {
-  getFirstTimeFlowType,
-  getConsentDecisionMade,
-} from '../../../selectors';
+import { getFirstTimeFlowType } from '../../../selectors/first-time-flow';
+import { getConsentDecisionMade } from '../../../selectors/metametrics';
 import SetupPasskeyContent from '../../../components/app/passkey-setup/setup-passkey-content';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';

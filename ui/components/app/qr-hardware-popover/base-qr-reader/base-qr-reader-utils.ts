@@ -14,11 +14,9 @@ import {
   buildHardwareWalletRecoverySegmentProperties,
   mapHardwareWalletRecoveryErrorType,
 } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
-import {
-  createHardwareWalletError,
-  HardwareWalletType,
-} from '../../../../contexts/hardware-wallets';
-import type { QrErrorFlowContext } from '../qr-error-content';
+import { createHardwareWalletError } from '../../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
+import type { QrErrorFlowContext } from '../qr-error-content/qr-error-content.types';
 import {
   ScanErrorCategory,
   type ScanErrorClassification,

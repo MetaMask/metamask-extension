@@ -1,6 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 
 /** Action types dispatched by the sign tracker to the hardware wallet state machine. */
 export type HwSignTrackerAction =

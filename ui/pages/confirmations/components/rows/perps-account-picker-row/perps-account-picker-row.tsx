@@ -18,10 +18,8 @@ import {
   usePerpsSubAccounts,
   type SubAccountInfo,
 } from '../../../hooks/transactions/usePerpsSubAccounts';
-import {
-  AccountPickerRowContent,
-  type AccountPickerTestIds,
-} from '../account-picker-row';
+import { AccountPickerRowContent } from '../account-picker-row/account-picker-row';
+import type { AccountPickerTestIds } from '../account-picker-row/account-picker-row';
 
 export const PERPS_ACCOUNT_PICKER_TEST_IDS: AccountPickerTestIds = {
   row: 'perps-account-picker-row',

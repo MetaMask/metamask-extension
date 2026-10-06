@@ -11,7 +11,7 @@ import {
   Text,
 } from '@metamask/design-system-react';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
-import { AvatarGroup } from '../../../avatar-group';
+import { AvatarGroup } from '../../../avatar-group/avatar-group';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 

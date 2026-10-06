@@ -9,14 +9,12 @@ import {
   sumAmounts,
 } from '@metamask/bridge-controller';
 import { Skeleton } from '@metamask/design-system-react';
-import {
-  SuccessPill,
-  Text,
-  PopoverPosition,
-  IconName,
-  ButtonIcon,
-  ButtonIconSize,
-} from '../../../components/component-library';
+import { SuccessPill } from '../../../components/component-library/success-pill/success-pill';
+import { Text } from '../../../components/component-library/text/text';
+import { PopoverPosition } from '../../../components/component-library/popover/popover.types';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
 import {
   getBridgeQuotes,
   getFromChain,
@@ -31,14 +29,16 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Row, Column, Tooltip } from '../layout';
+import Row from '../layout/row';
+import Column from '../layout/column';
+import Tooltip from '../layout/tooltip';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
@@ -59,8 +59,6 @@ import {
   readMmFee,
 } from '../utils/quote';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
-
-export { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
 
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {

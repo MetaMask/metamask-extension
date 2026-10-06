@@ -5,12 +5,10 @@ import { isSnapId } from '@metamask/snaps-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { parseTypedDataMessage } from '../../../../../../../shared/lib/transaction.utils';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
-  ConfirmInfoRowUrl,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDivider } from '../../../../../../components/app/confirm/info/row/divider';
+import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../types/confirm';
@@ -19,13 +17,13 @@ import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
   parseSanitizeTypedDataMessage,
-} from '../../../../utils';
+} from '../../../../utils/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
-import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
+import TypedSignV4Simulation from './typed-sign-v4-simulation/typed-sign-v4-simulation';
 
 const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();

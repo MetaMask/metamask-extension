@@ -1,5 +1,6 @@
 import { prependZero } from '../../../shared/lib/string-utils';
-import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../controllers/analytics/analytics';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 
 export default class Backup {

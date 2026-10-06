@@ -13,7 +13,7 @@ import {
   isBtcTestnetAddress,
   isTronAddress,
 } from '../../../../shared/lib/multichain/accounts';
-import { getInternalAccountByAddress } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import { shortenString } from '../../../helpers/utils/util';
 import { useDispatch } from '../../../store/hooks';
 

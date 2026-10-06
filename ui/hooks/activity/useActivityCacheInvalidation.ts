@@ -7,7 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import { defineAllowedRouteCapabilities } from '../../helpers/route-messenger-helpers';
 import type { RouteMessengerFromCapabilities } from '../../messengers/route-messenger';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { useMessenger } from '../useMessenger';
 import { activityQueryKey } from './useCachedEvmTransaction';
 

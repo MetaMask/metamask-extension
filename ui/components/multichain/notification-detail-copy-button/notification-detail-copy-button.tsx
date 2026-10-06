@@ -7,12 +7,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  ButtonBase,
-  IconName,
-  Box,
-  ButtonBaseSize,
-} from '../../component-library';
+import { ButtonBase } from '../../component-library/button-base/button-base';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Box } from '../../component-library/box/box';
+import { ButtonBaseSize } from '../../component-library/button-base/button-base.types';
 import {
   AlignItems,
   BackgroundColor,

@@ -2,10 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
-import {
-  useMusdConversionConfirmTrace,
-  useMusdConversionToastStatus,
-} from '../../../hooks/musd';
+import { useMusdConversionConfirmTrace } from '../../../hooks/musd/useMusdConversionConfirmTrace';
+import { useMusdConversionToastStatus } from '../../../hooks/musd/useMusdConversionToastStatus';
 import { MoneyAccountToastListener } from '../money/money-account-toast/money-account-toast-listener';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { RampsOrderToastListener } from '../ramps/ramps-order-toast-listener';

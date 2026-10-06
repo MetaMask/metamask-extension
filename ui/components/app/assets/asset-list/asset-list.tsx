@@ -9,11 +9,11 @@ import {
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { useScreenViewedEvent } from '../../../../hooks/useScreenViewedEvent';
-import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../selectors/multichain/networks';
 import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
-import { usePrimaryCurrencyProperties } from '../hooks';
-import TokenList from '../token-list';
-import AssetListControlBar from './asset-list-control-bar';
+import usePrimaryCurrencyProperties from '../hooks/usePrimaryCurrencyProperties';
+import TokenList from '../token-list/token-list';
+import AssetListControlBar from './asset-list-control-bar/asset-list-control-bar';
 
 export type AssetListProps = {
   onClickAsset: (

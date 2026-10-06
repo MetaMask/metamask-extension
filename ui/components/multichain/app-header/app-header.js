@@ -6,7 +6,7 @@ import {
   BackgroundColor,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library';
+import { Box } from '../../component-library/box/box';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';

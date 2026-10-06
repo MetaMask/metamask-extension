@@ -15,9 +15,8 @@ import configureStore from '../../../store/store';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../selectors/selectors', () => ({
   checkNetworkAndAccountSupports1559: () => true,
-  getCurrentChainId: jest.fn().mockReturnValue('0x1'),
 }));
 
 const wrapper = ({ children }) => (

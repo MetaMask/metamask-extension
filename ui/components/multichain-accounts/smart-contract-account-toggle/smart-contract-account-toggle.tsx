@@ -15,16 +15,16 @@ import {
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 
-import ToggleButton from '../../ui/toggle-button';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { unconfirmedTransactionsListSelector } from '../../../selectors';
+import { unconfirmedTransactionsListSelector } from '../../../selectors/confirm-transaction';
 import { setRedirectAfterDefaultPage } from '../../../ducks/history/history';
 import {
   setToggleState,
   selectToggleState,
 } from '../../../ducks/smart-accounts/smart-accounts';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 
 type SmartContractAccountToggleProps = {

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import SnapInstall from '.';
+import SnapInstall from './snap-install';
 
 const store = configureStore(mockState);
 

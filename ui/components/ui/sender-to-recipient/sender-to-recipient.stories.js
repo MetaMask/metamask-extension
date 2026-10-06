@@ -4,7 +4,7 @@ import {
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
-import SenderToRecipient from '.';
+import SenderToRecipient from './sender-to-recipient.component';
 
 export default {
   title: 'Components/UI/SenderToRecipient',

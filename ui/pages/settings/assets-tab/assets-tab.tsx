@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
 import {
   getUseTokenDetection,
   getShouldHideZeroBalanceTokens,
   getShowNativeTokenAsMainBalance,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   setUseTokenDetection,
   setHideZeroBalanceTokens,
@@ -15,7 +16,7 @@ import {
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import { ASSET_ITEMS } from '../search-config';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 
 const ShowNetworkTokenToggleItem = createToggleItem({
   name: 'ShowNetworkTokenToggleItem',

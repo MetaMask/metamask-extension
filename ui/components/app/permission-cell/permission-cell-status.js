@@ -7,12 +7,10 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarTokenSize,
-  Text,
-} from '../../component-library';
+import { AvatarNetwork } from '../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../component-library/avatar-network/avatar-network.types';
+import { AvatarTokenSize } from '../../component-library/avatar-token/avatar-token.types';
+import { Text } from '../../component-library/text/text';
 import {
   BlockSize,
   Display,
@@ -20,8 +18,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../../ui/tooltip';
-import { AvatarGroup } from '../../multichain/avatar-group';
+import Tooltip from '../../ui/tooltip/tooltip';
+import { AvatarGroup } from '../../multichain/avatar-group/avatar-group';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatDate } from '../../../helpers/utils/util';

@@ -7,8 +7,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TooltipText } from '../../../components/app/money/tooltip-text';
-import { PopoverPosition } from '../../../components/component-library';
+import { TooltipText } from '../../../components/app/money/tooltip-text/tooltip-text';
+import { PopoverPosition } from '../../../components/component-library/popover/popover.types';
 
 const EARNINGS_ROWS = [
   {

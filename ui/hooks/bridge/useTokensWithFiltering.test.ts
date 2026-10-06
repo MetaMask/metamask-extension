@@ -6,7 +6,7 @@ import { MultichainNetwork } from '@metamask/multichain-transactions-controller'
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { MINUTE } from '../../../shared/constants/time';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import type { BridgeToken } from '../../ducks/bridge/types';

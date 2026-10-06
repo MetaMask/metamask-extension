@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { SignatureStepStatus } from '../types';
-import SignatureStatusIcon from '.';
+import SignatureStatusIcon from './signature-status-icon';
 
 describe('SignatureStatusIcon', () => {
   it('renders check icon when status is Complete', () => {

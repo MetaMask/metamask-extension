@@ -1,6 +1,6 @@
 import React from 'react';
 import type { BannerBaseStyleUtilityProps } from '../banner-base/banner-base.types';
-import type { PolymorphicComponentPropWithRef } from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
 
 export enum BannerAlertSeverity {
   Danger = 'danger',

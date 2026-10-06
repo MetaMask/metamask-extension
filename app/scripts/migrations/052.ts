@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import type { LegacyMigration, MigrationState } from '../lib/migrator';
 
 const version = 52;

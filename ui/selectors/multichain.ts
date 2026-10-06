@@ -33,19 +33,15 @@ import { convertCaipToHexChainId } from '../../shared/lib/network.utils';
 import {
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
-  getRatesControllerRates,
 } from '../../shared/lib/selectors/assets-migration';
-import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import {
   getNetworkConfigurationsByChainId,
   getProviderConfig,
@@ -74,7 +70,6 @@ import {
 } from './multichain/networks';
 
 // TODO: Update all references to use networks.ts
-export { getMultichainNetwork, getMultichainIsEvm };
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -230,8 +225,6 @@ export function getMultichainNativeCurrency(
     : getMultichainProviderConfig(state, account).ticker;
 }
 
-export { getCurrentCurrency as getMultichainCurrentCurrency };
-
 export function getMultichainCurrencyImage(
   state: MultichainState,
   account?: InternalAccount,
@@ -332,9 +325,6 @@ export function getMultichainIsTestnet(
 }
 
 // TODO: Update all references to use asset-migration.ts
-export { getMultiChainBalancesControllerBalances as getMultichainBalances };
-
-export { getRatesControllerRates as getMultichainCoinRates };
 
 function getNonEvmCachedBalance(
   state: MultichainState,

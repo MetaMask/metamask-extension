@@ -8,7 +8,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { TOKEN_MANAGEMENT_ROUTE } from '../../../helpers/constants/routes';
 import { NetworkManager } from './network-manager';
 

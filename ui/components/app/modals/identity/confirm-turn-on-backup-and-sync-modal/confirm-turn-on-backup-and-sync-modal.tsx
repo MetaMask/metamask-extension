@@ -12,13 +12,11 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-} from '../../../../component-library';
+import { Modal } from '../../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../component-library/modal-header/modal-header';
+import { ModalFooter } from '../../../../component-library/modal-footer/modal-footer';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export const CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME =

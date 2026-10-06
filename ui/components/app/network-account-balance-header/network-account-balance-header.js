@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import IconWithFallback from '../../ui/icon-with-fallback';
+import IconWithFallback from '../../ui/icon-with-fallback/icon-with-fallback.component';
 import {
   Display,
   FlexDirection,
@@ -15,8 +15,8 @@ import {
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { Text } from '../../component-library';
-import { PreferredAvatar } from '../preferred-avatar';
+import { Text } from '../../component-library/text/text';
+import { PreferredAvatar } from '../preferred-avatar/preferred-avatar';
 
 export default function NetworkAccountBalanceHeader({
   networkName,

@@ -19,15 +19,15 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import MetaFoxLogo from '../../../components/ui/metafox-logo/metafox-logo.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Dropdown from '../../../components/ui/dropdown';
+import Dropdown from '../../../components/ui/dropdown/dropdown';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { updateCurrentLocale } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
-import { BannerTip } from '../../../components/component-library';
+import { BannerTip } from '../../../components/component-library/banner-tip/banner-tip';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,

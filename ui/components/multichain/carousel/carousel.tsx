@@ -5,12 +5,13 @@ import {
   CSSTransition as CSSTransitionComponent,
   TransitionGroup,
 } from 'react-transition-group';
-import { Box, BoxProps } from '../../component-library';
-import { getSelectedAccount } from '../../../selectors';
+import { Box } from '../../component-library/box/box';
+import { BoxProps } from '../../component-library/box/box.types';
+import { getSelectedAccount } from '../../../selectors/selectors';
 import type { CarouselProps, CarouselState } from './types';
 import { MAX_SLIDES } from './constants';
-import { StackCard } from './stack-card';
-import { StackCardEmpty } from './stack-card-empty';
+import { StackCard } from './stack-card/stack-card';
+import { StackCardEmpty } from './stack-card-empty/stack-card-empty';
 import { useTransitionToNextCard } from './animations/useTransitionToNextCard';
 
 export const Carousel = React.forwardRef(

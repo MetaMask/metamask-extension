@@ -19,7 +19,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CandlePeriod, DEFAULT_CANDLE_PERIODS } from '../constants/chartConfig';
 import { PerpsCandlePeriodModal } from './perps-candle-period-modal';

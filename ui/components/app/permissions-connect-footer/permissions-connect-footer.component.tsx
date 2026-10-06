@@ -7,7 +7,9 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../component-library/button-link/button-link.types';
+import { Text } from '../../component-library/text/text';
 
 export default function PermissionsConnectFooter() {
   const t = useI18nContext();

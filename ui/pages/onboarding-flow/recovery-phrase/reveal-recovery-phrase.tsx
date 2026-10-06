@@ -20,7 +20,7 @@ import {
 } from '@metamask/design-system-react';
 import { createSentryError } from '../../../../shared/lib/error';
 import { captureException } from '../../../../shared/lib/sentry';
-import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   MetaMetricsEventCategory,
@@ -30,11 +30,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  FormTextFieldSize,
-  FormTextField,
-  TextFieldType,
-} from '../../../components/component-library';
+import { FormTextFieldSize } from '../../../components/component-library/form-text-field/form-text-field.types';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
+import { TextFieldType } from '../../../components/component-library/text-field/text-field.types';
 import { FontWeight as DesignSystemFontWeight } from '../../../helpers/constants/design-system';
 import { getSeedPhrase } from '../../../store/actions';
 import {
@@ -51,9 +49,9 @@ import {
   useIsPasskeyActive,
   useIsPasskeyIncompatibleInSidepanel,
 } from '../../../hooks/usePasskeyAvailability';
-import { getHDEntropyIndex } from '../../../selectors';
-import { PasskeyVerification } from '../../../components/app/passkey-verification';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { PasskeyVerification } from '../../../components/app/passkey-verification/passkey-verification';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
 import { usePasskeySeedPhraseExport } from '../../../hooks/passkey/usePasskeySeedPhraseExport';
 

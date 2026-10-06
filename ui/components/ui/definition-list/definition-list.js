@@ -8,8 +8,10 @@ import {
   TextColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../tooltip';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import Tooltip from '../tooltip/tooltip';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 
 const MARGIN_MAP = {
   [Size.XS]: 0,

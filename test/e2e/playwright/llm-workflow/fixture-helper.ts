@@ -1,4 +1,3 @@
-import { FIXTURE_STATE_METADATA_VERSION } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import type { FixtureData } from './launcher-types';
 
@@ -152,5 +151,3 @@ export function createFixturePresets(options: FixtureBuildOptions = {}) {
 }
 
 export const FixturePresets = createFixturePresets();
-
-export { FIXTURE_STATE_METADATA_VERSION };

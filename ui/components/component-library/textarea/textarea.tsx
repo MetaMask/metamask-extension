@@ -7,9 +7,10 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
-import { Text, TextProps } from '../text';
+import { Text } from '../text/text';
+import { TextProps } from '../text/text.types';
 
-import { PolymorphicRef } from '../box';
+import { PolymorphicRef } from '../box/box.types';
 import {
   TextareaComponent,
   TextareaProps,

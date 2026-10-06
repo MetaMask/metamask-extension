@@ -21,9 +21,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Menu } from '../../ui/menu';
+import Menu from '../../ui/menu/menu';
 
 export const ProductTour = ({
   className = '',

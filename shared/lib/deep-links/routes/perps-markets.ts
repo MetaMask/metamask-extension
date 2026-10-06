@@ -1,4 +1,6 @@
-import { DEFAULT_ROUTE, Route } from './route';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEFAULT_ROUTE } from '../../../../ui/helpers/constants/routes';
+import { Route } from './route';
 
 /**
  * Deeplink alias for the Perps home tab (wallet home with Perps tab selected).

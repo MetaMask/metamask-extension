@@ -15,14 +15,14 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsMarketFills } from '../../../../hooks/perps';
+import { usePerpsMarketFills } from '../../../../hooks/perps/usePerpsMarketFills';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
 import { getPerpsTransactionDestination } from '../utils/getPerpsTransactionDestination';
-import { TransactionCard } from '../transaction-card';
+import { TransactionCard } from '../transaction-card/transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
-import type { PerpsTransaction } from '../types';
+import type { PerpsTransaction } from '../types/transactionHistory';
 
 const SKELETON_ITEMS = [1, 2, 3];
 

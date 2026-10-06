@@ -12,13 +12,13 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TransactionCard } from '../transaction-card';
+import { TransactionCard } from '../transaction-card/transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { PerpsCardSkeleton } from '../perps-skeletons/perps-card-skeleton';
-import { PerpsSectionHeader } from '../perps-section-header';
-import type { PerpsTransaction } from '../types';
+import { PerpsSectionHeader } from '../perps-section-header/perps-section-header';
+import type { PerpsTransaction } from '../types/transactionHistory';
 
 export type PerpsRecentActivityProps = {
   transactions?: PerpsTransaction[];

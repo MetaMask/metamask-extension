@@ -1,9 +1,9 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import type { PerpsMarketData } from '../types';
 import { PerpsTopMoverPill } from './perps-top-mover-pill';
 
 const mockStore = configureStore({ metamask: { ...mockState.metamask } });

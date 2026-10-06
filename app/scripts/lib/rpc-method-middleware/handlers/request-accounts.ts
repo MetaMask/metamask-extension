@@ -12,7 +12,7 @@ import type { OriginString } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types';
+import type { FlattenedBackgroundStateProxy } from '../../../../../shared/types/background';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,

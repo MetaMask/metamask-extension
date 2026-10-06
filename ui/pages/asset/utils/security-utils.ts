@@ -1,16 +1,16 @@
 import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
-import {
-  getSecurityTrustBadgeConfig,
-  type SecurityTrustInlineBadgeConfig,
-  type SecurityTrustTranslate,
-} from '../../../components/app/security-trust';
 import type {
-  FeatureTag,
   TokenSecurityData,
   TokenSecurityFeature,
   TokenSecurityFees,
   TokenSecurityFinancialStats,
-} from '../types/security-trust';
+} from '@metamask/assets-controllers';
+import { getSecurityTrustBadgeConfig } from '../../../components/app/security-trust/security-trust-inline-badge';
+import type {
+  SecurityTrustInlineBadgeConfig,
+  SecurityTrustTranslate,
+} from '../../../components/app/security-trust/security-trust-inline-badge';
+import type { FeatureTag } from '../types/security-trust';
 
 export type SecurityAlertSeverity = 'success' | 'warning' | 'danger';
 

@@ -25,7 +25,7 @@ import {
 } from '../../helpers/money/money-transaction-guards';
 import type { RouteMessengerFromCapabilities } from '../../messengers/route-messenger';
 import { selectPrimaryMoneyAccount } from '../../selectors/money-account';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { useMessenger } from '../useMessenger';
 
 const LOG_PREFIX = '[Money Balance Refresh]';

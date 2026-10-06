@@ -4,15 +4,13 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalBody,
-  ModalFooter,
-  Text,
-  ModalHeader,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { Text } from '../../component-library/text/text';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Display,

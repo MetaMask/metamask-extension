@@ -12,7 +12,7 @@ import {
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { getSubscriptionPricing } from '../../selectors/subscription';
+import { getSubscriptionPricing } from '../../selectors/subscription/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptionPricing as getSubscriptionPricingAction,

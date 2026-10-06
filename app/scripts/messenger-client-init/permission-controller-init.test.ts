@@ -1,7 +1,8 @@
 import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
 import { PermissionController } from '@metamask/permission-controller';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
-import * as permissions from '../controllers/permissions';
+import * as permissionsModule1 from '../controllers/permissions/specifications';
+
 import { getRootMessenger } from '../lib/messenger';
 import type {
   MessengerClientByName,
@@ -14,15 +15,15 @@ import {
   getPermissionControllerMessenger,
   PermissionControllerInitMessenger,
   PermissionControllerMessenger,
-} from './messengers';
+} from './messengers/permission-controller-messenger';
 import { PermissionControllerInit } from './permission-controller-init';
 
 jest.mock('@metamask/permission-controller');
 
-jest.mock('../controllers/permissions', () => {
-  const actual = jest.requireActual<
-    typeof import('../controllers/permissions')
-  >('../controllers/permissions');
+jest.mock('../controllers/permissions/specifications', () => {
+  const actual = jest.requireActual(
+    '../controllers/permissions/specifications',
+  );
   return {
     ...actual,
     getCaveatSpecifications: jest.fn((deps) =>
@@ -110,7 +111,7 @@ describe('PermissionControllerInit', () => {
   });
 
   it('forwards initMessenger actions through caveat dependency hooks', () => {
-    jest.mocked(permissions.getCaveatSpecifications).mockClear();
+    jest.mocked(permissionsModule1.getCaveatSpecifications).mockClear();
 
     const request = getInitRequestMock();
     const callMock = jest.spyOn(request.initMessenger, 'call');
@@ -137,9 +138,9 @@ describe('PermissionControllerInit', () => {
     try {
       PermissionControllerInit(request);
 
-      const deps = jest.mocked(permissions.getCaveatSpecifications).mock
+      const deps = jest.mocked(permissionsModule1.getCaveatSpecifications).mock
         .calls[0][0] as Parameters<
-        typeof permissions.getCaveatSpecifications
+        typeof permissionsModule1.getCaveatSpecifications
       >[0];
 
       expect(deps.listAccounts()).toStrictEqual([

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BannerAlert } from '../../component-library';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
 import { Severity } from '../../../helpers/constants/design-system';
-import TextField from '.';
+import TextField from './text-field.component';
 
 const Deprecated = ({ children }) => (
   <>

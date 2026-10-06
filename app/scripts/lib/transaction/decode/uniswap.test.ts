@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../../test/data/confirmations/transaction-decode';
 import {
   UNISWAP_UNIVERSAL_ROUTER_ADDRESSES,

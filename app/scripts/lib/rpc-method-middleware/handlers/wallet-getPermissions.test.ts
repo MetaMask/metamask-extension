@@ -8,7 +8,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../controllers/permissions/specifications';
 import { getPermissionsHandler } from './wallet-getPermissions';
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({

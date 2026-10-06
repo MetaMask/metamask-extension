@@ -4,12 +4,13 @@ import {
 } from '@metamask/assets-controllers';
 import { AssetType } from '@metamask/bridge-controller';
 import { MessengerClientInitFunction } from '../types';
-import { NftControllerInitMessenger } from '../messengers/assets';
+import { NftControllerInitMessenger } from '../messengers/assets/nft-controller-messenger';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 /**
  * Initialize the NFT controller.

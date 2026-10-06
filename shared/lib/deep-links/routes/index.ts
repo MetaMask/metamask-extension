@@ -21,8 +21,6 @@ import { swap } from './swap';
 import { topTraders } from './top-traders';
 import { trending } from './trending';
 
-export type { Route } from './route';
-
 export const routes = new Map<Route['pathname'], Route>();
 
 /**

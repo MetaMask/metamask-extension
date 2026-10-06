@@ -1,6 +1,6 @@
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import React from 'react';
-import { Text } from '../text';
+import { Text } from '../text/text';
 import {
   Display,
   TextColor,
@@ -9,14 +9,15 @@ import {
 
 import { SelectButtonSize } from './select-button.types';
 import { SelectButton } from './select-button';
-import { AvatarBase, AvatarBaseSize } from '../avatar-base';
-import { SelectWrapper } from '../select-wrapper';
-import { Box } from '../box';
+import { AvatarBase } from '../avatar-base/avatar-base';
+import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
+import { SelectWrapper } from '../select-wrapper/select-wrapper';
+import { Box } from '../box/box';
 import {
   AvatarAccount,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
-import { SelectOption } from '../select-option';
+import { SelectOption } from '../select-option/select-option';
 
 export default {
   title: 'Components/ComponentLibrary/SelectButton',

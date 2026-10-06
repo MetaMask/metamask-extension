@@ -1,5 +1,5 @@
 import React from 'react';
-import SelectedAccount from '.';
+import SelectedAccount from './selected-account.container';
 
 export default {
   title: 'Components/App/SelectedAccount',

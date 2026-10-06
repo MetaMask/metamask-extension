@@ -5,7 +5,7 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID, DEFAULT_FIXTURE_ACCOUNT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { login } from '../../page-objects/flows/login.flow';
 import {
   mockFiatExchangeRates,

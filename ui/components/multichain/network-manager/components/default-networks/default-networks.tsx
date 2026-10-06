@@ -42,24 +42,26 @@ import {
   hideModal,
   setActiveNetwork,
 } from '../../../../../store/actions';
-import { Box, SuccessPill, Text } from '../../../../component-library';
-import { NetworkListItem } from '../../../network-list-item';
+import { Box } from '../../../../component-library/box/box';
+import { SuccessPill } from '../../../../component-library/success-pill/success-pill';
+import { Text } from '../../../../component-library/text/text';
+import { NetworkListItem } from '../../../network-list-item/network-list-item';
 import { useAdditionalNetworkHandlers } from '../../hooks/useAdditionalNetworkHandlers';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
-import { AdditionalNetworksInfo } from '../additional-networks-info';
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { AdditionalNetworksInfo } from '../additional-networks-info/additional-networks-info';
 import {
+  getMultichainIsEvm,
   getAllEnabledNetworksForAllNamespaces,
   getSelectedMultichainNetworkConfiguration,
+  getMultichainNetworkConfigurationsByChainId,
 } from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
-  getMultichainNetworkConfigurationsByChainId,
   getUseExternalServices,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';

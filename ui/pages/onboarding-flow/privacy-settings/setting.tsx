@@ -10,7 +10,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import ToggleButton from '../../../components/ui/toggle-button';
+import ToggleButton from '../../../components/ui/toggle-button/toggle-button.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type SettingProps = {

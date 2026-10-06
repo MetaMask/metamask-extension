@@ -1,5 +1,5 @@
-import { MetaMaskReduxState } from '../../../store/store';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { MetaMaskReduxState } from '../../../store/types';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getTokenBalancesControllerTokenBalances } from '../../../../shared/lib/selectors/assets-migration';
 
 const hasNonZeroBalance = (balance?: string) =>

@@ -17,18 +17,15 @@ import {
 } from '../../../../../shared/lib/browser-runtime.utils';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  CameraAccessErrorContent,
-  CameraAccessErrorContentVariant,
-} from '../../camera-access-error-content';
-import {
-  useBaseReaderReducer,
-  useDecoderLifecycle,
-  useCameraPermission,
-} from '../qr-hooks';
-import { QrErrorContent, QrErrorFlowContext } from '../qr-error-content';
+import { CameraAccessErrorContent } from '../../camera-access-error-content/camera-access-error-content';
+import { CameraAccessErrorContentVariant } from '../../camera-access-error-content/camera-access-error-content.types';
+import { useBaseReaderReducer } from '../qr-hooks/base-reader-reducer/useBaseReaderReducer';
+import { useDecoderLifecycle } from '../qr-hooks/decoder-lifecycle/useDecoderLifecycle';
+import { useCameraPermission } from '../qr-hooks/camera-permission/useCameraPermission';
+import { QrErrorContent } from '../qr-error-content/qr-error-content';
+import { QrErrorFlowContext } from '../qr-error-content/qr-error-content.types';
 import { scanCategoryToQrErrorType } from '../qr-utils/qr-utils';
-import EnhancedQrReader from '../enhanced-qr-reader';
+import EnhancedQrReader from '../enhanced-qr-reader/enhanced-qr-reader';
 import {
   cameraReadyStateToErrorCode,
   buildQrCameraRecoveryTrackEventArgs,

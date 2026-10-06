@@ -18,15 +18,13 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../../../components/component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../../../components/component-library/modal-footer/modal-footer';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { SortField, SortDirection } from '../../../utils/sortMarkets';
 

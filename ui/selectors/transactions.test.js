@@ -8,7 +8,7 @@ import {
   SmartTransactionStatuses,
   SmartTransactionMinedTx,
 } from '@metamask/smart-transactions-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import {
   ETH_4337_METHODS,
   ETH_EOA_METHODS,

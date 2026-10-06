@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
+import type { TokenAmount } from '@metamask/client-utils';
 import {
   applyDisplaySign,
   getDisplaySignPrefix,
   getHumanReadableTokenAmount,
 } from '../../../../shared/lib/activity/fiat';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
 
 export function useFormatTokenAmount() {

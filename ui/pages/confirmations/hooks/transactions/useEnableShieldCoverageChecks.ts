@@ -8,10 +8,10 @@ import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscrip
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
-} from '../../../../../shared/lib/shield';
-import { getUseExternalServices } from '../../../../selectors';
+} from '../../../../../shared/lib/shield/subscription-utils';
+import { getUseExternalServices } from '../../../../selectors/selectors';
 import { useConfirmContext } from '../../context/confirm';
-import { isSignatureTransactionType } from '../../utils';
+import { isSignatureTransactionType } from '../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 
 export const useEnableShieldCoverageChecks = () => {

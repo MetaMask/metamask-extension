@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../constants/swaps';
 import {
   isSwapsDefaultTokenAddress,

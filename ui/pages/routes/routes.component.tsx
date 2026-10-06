@@ -10,10 +10,10 @@ import type { Json } from '@metamask/utils';
 import { MainLayout } from '#ui/layouts/main-layout';
 import { usePerpsPreload } from '../../hooks/perps/usePerpsPreload';
 import { useAppSelector, useDispatch } from '../../store/hooks';
-import Loading from '../../components/ui/loading-screen';
-import { Modal } from '../../components/app/modals';
+import Loading from '../../components/ui/loading-screen/loading-screen.component';
+import Modal from '../../components/app/modals/modal';
 import Alert from '../../components/ui/alert';
-import Alerts from '../../components/app/alerts';
+import Alerts from '../../components/app/alerts/alerts';
 
 import {
   ASSET_DETAILS_ROUTE,
@@ -95,7 +95,7 @@ import {
   getNetworkIdentifier,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getIsDiscoverSearchEnabled } from '../../selectors/multichain/feature-flags';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
@@ -121,17 +121,17 @@ import {
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
-import QRHardwarePopover from '../../components/app/qr-hardware-popover';
+import QRHardwarePopover from '../../components/app/qr-hardware-popover/qr-hardware-popover';
 import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
-import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
-import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal';
-import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
+import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal/basic-configuration-modal';
+import { BasicFunctionalityMigrationModal } from '../../components/app/basic-functionality-migration-modal/basic-functionality-migration-modal';
+import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal/keyring-snap-removal-result-modal';
 
 import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { MultichainAccountIntroModalContainer } from '../../components/app/modals/multichain-accounts/intro-modal/multichain-account-intro-modal.container';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { useCloseSidePanelOnWalletReset } from '../../hooks/useCloseSidePanelOnWalletReset';
 import { useNavigateRouteListener } from '../../hooks/useNavigateRouteListener';
@@ -140,7 +140,7 @@ import { useBasicFunctionalityConsolidation } from '../../hooks/useBasicFunction
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
 import { RequireOnboarded } from '../../layouts/require-onboarded';
-import { contactsRoutes } from '../contacts';
+import { contactsRoutes } from '../contacts/contacts-router';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
@@ -160,53 +160,69 @@ import { NetworkHandler } from './network-handler';
 import { GlobalMenuRouteTransition } from './global-menu-route-transition';
 
 // Begin Lazy Routes
-const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
-const Lock = mmLazy(() => import('../lock/index.ts'));
-const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
+const OnboardingFlow = mmLazy(
+  () => import('../onboarding-flow/onboarding-flow'),
+);
+const Lock = mmLazy(() => import('../lock/lock.container'));
+const UnlockPage = mmLazy(() => import('../unlock-page/unlock-page.container'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
-const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
+const ImportSrpPage = mmLazy(
+  () => import('../multi-srp/import-srp/import-srp'),
+);
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.ts'));
-const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
-const NetworksPage = mmLazy(() => import('../networks/index.ts'));
-const TokenManagementPage = mmLazy(
-  () => import('../token-management/index.ts'),
+const Settings = mmLazy(() => import('../settings/settings'));
+const SyncAccounts = mmLazy(() =>
+  Promise.all([import('../settings/sync-accounts/sync-accounts-tab')]).then(
+    (modules) => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+      get SyncAccountsTab() {
+        return modules[0].default;
+      },
+    }),
+  ),
 );
-const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
+const NetworksPage = mmLazy(() => import('../networks/networks-page'));
+const TokenManagementPage = mmLazy(
+  () => import('../token-management/token-management'),
+);
+const DiscoverSearchPage = mmLazy(
+  () => import('../discover-search/discover-search'),
+);
 const CustomTokenImportPage = mmLazy(
-  () => import('../custom-token-import/index.ts'),
+  () => import('../custom-token-import/custom-token-import'),
 );
 const NotificationDetails = mmLazy(
-  () => import('../notification-details/index.js'),
+  () => import('../notification-details/notification-details'),
 );
-const Notifications = mmLazy(() => import('../notifications/index.js'));
-const SnapList = mmLazy(() => import('../snaps/snaps-list/index.js'));
-const SnapView = mmLazy(() => import('../snaps/snap-view/index.js'));
+const Notifications = mmLazy(() => import('../notifications/notifications'));
+const SnapList = mmLazy(() => import('../snaps/snaps-list/snap-list'));
+const SnapView = mmLazy(() => import('../snaps/snap-view/snap-view'));
 const ConfirmEncryptionPublicKey = mmLazy(
-  () => import('../confirm-encryption-public-key/index.js'),
+  () =>
+    import('../confirm-encryption-public-key/confirm-encryption-public-key.container'),
 );
 const ConfirmDecryptMessage = mmLazy(
-  () => import('../confirm-decrypt-message/index.js'),
+  () => import('../confirm-decrypt-message/confirm-decrypt-message.component'),
 );
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
-const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
+const SendPage = mmLazy(() => import('../confirmations/send/send'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
 const HardwareWalletSignaturesPage = mmLazy(
   () => import('../hardware-wallets/swap/hardware-wallet-signatures-page.tsx'),
 );
 const PermissionsConnect = mmLazy(
-  () => import('../permissions-connect/index.js'),
+  () => import('../permissions-connect/permissions-connect'),
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
-  () => import('../confirm-add-suggested-token/index.js'),
+  () => import('../confirm-add-suggested-token/confirm-add-suggested-token'),
 );
 const ConfirmAddSuggestedNftPage = mmLazy(
-  () => import('../confirm-add-suggested-nft/index.js'),
+  () => import('../confirm-add-suggested-nft/confirm-add-suggested-nft'),
 );
 const ConfirmationPage = mmLazy(
-  () => import('../confirmations/confirmation/index.js'),
+  () => import('../confirmations/confirmation/confirmation'),
 );
 const CreateAccountPage = mmLazy(
   () => import('../create-account/create-account.component.js'),
@@ -215,21 +231,25 @@ const NftFullImage = mmLazy(
   () =>
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
-const Asset = mmLazy(() => import('../asset/index.js'));
+const Asset = mmLazy(() => import('../asset/asset'));
 const SecurityTrustPage = mmLazy(
-  () => import('../asset/security-trust/index.ts'),
+  () => import('../asset/security-trust/security-trust-page'),
 );
 const DeFiPage = mmLazy(
   () => import('../defi/components/defi-details-page.tsx'),
 );
-const RampsBuildQuote = mmLazy(() => import('../ramps/build-quote/index.ts'));
+const RampsBuildQuote = mmLazy(
+  () => import('../ramps/build-quote/build-quote'),
+);
 const RampsTokenSelection = mmLazy(
-  () => import('../ramps/token-selection/index.ts'),
+  () => import('../ramps/token-selection/token-selection'),
 );
 const RampsPaymentMethod = mmLazy(
-  () => import('../ramps/payment-method/index.ts'),
+  () => import('../ramps/payment-method/payment-method'),
 );
-const RampsCompleteBuy = mmLazy(() => import('../ramps/complete-buy/index.ts'));
+const RampsCompleteBuy = mmLazy(
+  () => import('../ramps/complete-buy/complete-buy'),
+);
 const PermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/permissions-page/permissions-page.js'),
@@ -253,12 +273,12 @@ const BasicFunctionalityOff = mmLazy(
 );
 const MultichainAccountDetailsPage = mmLazy(
   () =>
-    import('../multichain-accounts/multichain-account-details-page/index.ts'),
+    import('../multichain-accounts/multichain-account-details-page/multichain-account-details-page'),
 );
 const SmartAccountPage = mmLazy(
-  () => import('../multichain-accounts/smart-account-page/index.ts'),
+  () => import('../multichain-accounts/smart-account-page/smart-account-page'),
 );
-const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
+const ShieldPlan = mmLazy(() => import('../shield/plan/shield-plan'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );
@@ -271,7 +291,7 @@ const PerpsTransactionDetailsPage = mmLazy(
 );
 const ActivityPage = mmLazy(() => import('../activity/activity-page.tsx'));
 const PerpsPage = mmLazy(() => import('../perps/perps-home-page.tsx'));
-const MoneyHomePage = mmLazy(() => import('../money/index.ts'));
+const MoneyHomePage = mmLazy(() => import('../money/money-home-page'));
 const MoneyActivityPage = mmLazy(
   () => import('../money/money-activity-page.tsx'),
 );
@@ -290,8 +310,18 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
-const HardwareWalletRepair = mmLazy(
-  () => import('../hardware-wallet-repair/index.ts'),
+const HardwareWalletRepair = mmLazy(() =>
+  Promise.all([
+    import('../hardware-wallet-repair/hardware-wallet-repair'),
+  ]).then((modules) => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+    get HardwareWalletRepair() {
+      return modules[0].HardwareWalletRepair;
+    },
+    get default() {
+      return modules[0].HardwareWalletRepair;
+    },
+  })),
 );
 const TransactionDetailsRoute = mmLazy(
   () => import('../details/transaction-details-route.tsx'),
@@ -330,7 +360,8 @@ const RampsFlowLayout = mmLazy(() =>
   })),
 );
 const ImportNftsModal = mmLazy(
-  () => import('../../components/multichain/import-nfts-modal/index.js'),
+  () =>
+    import('../../components/multichain/import-nfts-modal/import-nfts-modal'),
 );
 // End Lazy Routes
 

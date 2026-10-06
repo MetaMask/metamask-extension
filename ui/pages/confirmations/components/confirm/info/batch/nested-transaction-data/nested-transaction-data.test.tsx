@@ -6,7 +6,7 @@ import {
   DecodedTransactionDataMethod,
   DecodedTransactionDataResponse,
   DecodedTransactionDataSource,
-} from '../../../../../../../../shared/types';
+} from '../../../../../../../../shared/types/transaction-decode';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import configureStore from '../../../../../../../store/store';

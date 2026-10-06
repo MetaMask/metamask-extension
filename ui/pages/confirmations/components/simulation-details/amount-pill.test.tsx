@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import Tooltip from '../../../../components/ui/tooltip';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../confirm/info/shared/constants';
 import { AmountPill } from './amount-pill';
 import {
@@ -19,7 +19,7 @@ jest.mock('../../../../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(() => 'en-US'),
 }));
 
-jest.mock('../../../../components/ui/tooltip', () => ({
+jest.mock('../../../../components/ui/tooltip/tooltip', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,

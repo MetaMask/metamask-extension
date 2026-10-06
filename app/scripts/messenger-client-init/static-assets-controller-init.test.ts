@@ -9,7 +9,7 @@ import {
   getStaticAssetsControllerInitMessenger,
   getStaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger,
-} from './messengers';
+} from './messengers/static-assets-controller-messenger';
 import { StaticAssetsControllerInit } from './static-assets-controller-init';
 
 jest.mock('../controllers/static-assets-controller');

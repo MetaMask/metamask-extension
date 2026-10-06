@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/multichain';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
-import { getIsSwapsChain, getIsBridgeChain } from '../../../selectors';
+import {
+  getIsSwapsChain,
+  getIsBridgeChain,
+} from '../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CoinOverview } from './coin-overview';
 

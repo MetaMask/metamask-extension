@@ -13,13 +13,13 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
+import PermissionsConnectPermissionList from '../../permissions-connect-permission-list/permissions-connect-permission-list';
 import {
   FontWeight,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import { getURLHost } from '../../../../helpers/utils/util';
 
 function PermissionPageContainerContent({

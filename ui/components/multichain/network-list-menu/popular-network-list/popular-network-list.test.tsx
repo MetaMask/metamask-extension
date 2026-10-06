@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { getUnapprovedConfirmations } from '../../../../selectors';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { getUnapprovedConfirmations } from '../../../../selectors/selectors';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { useDispatch } from '../../../../store/hooks';
 import PopularNetworkList from './popular-network-list';
 

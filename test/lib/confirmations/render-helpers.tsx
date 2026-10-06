@@ -18,7 +18,7 @@ import {
 } from '../render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
 import { GasFeeModalContextProvider } from '../../../ui/pages/confirmations/context/gas-fee-modal';
-import { HardwareWalletErrorProvider } from '../../../ui/contexts/hardware-wallets';
+import { HardwareWalletErrorProvider } from '../../../ui/contexts/hardware-wallets/HardwareWalletErrorProvider';
 
 export function renderWithConfirmContextProvider(
   component: ReactElement,

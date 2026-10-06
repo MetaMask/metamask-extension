@@ -39,7 +39,7 @@ import {
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
-import { useDispatch } from '../../store/store';
+import { useDispatch } from '../../store/hooks';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';
 import { getDestChainId } from '../../pages/bridge/utils/quote';
 import {

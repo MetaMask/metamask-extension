@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { SignatureRequestType } from '../../../../../types/confirm';
-import { isPermitSignatureRequest } from '../../../../../utils';
+import { isPermitSignatureRequest } from '../../../../../utils/confirm';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDecodedSignatureMetrics } from '../../../../../hooks/useDecodedSignatureMetrics';
 import { useTypesSignSimulationEnabledInfo } from '../../../../../hooks/useTypesSignSimulationEnabledInfo';
-import { DecodedSimulation } from './decoded-simulation';
-import { PermitSimulation } from './permit-simulation';
+import DecodedSimulation from './decoded-simulation/decoded-simulation';
+import PermitSimulation from './permit-simulation/permit-simulation';
 
 const TypedSignV4Simulation = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();

@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags/feature-flag-registry';
 
 // Bitcoin mainnet chain ID formats
 export const BTC_CHAIN_ID = 'bip122:000000000019d6689c085ae165831e93';

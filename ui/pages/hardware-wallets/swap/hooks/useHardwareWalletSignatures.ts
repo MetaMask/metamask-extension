@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import type { QuoteResponse } from '@metamask/bridge-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { useAppSelector } from '../../../../store/store';
+import { useAppSelector } from '../../../../store/hooks';
 
 import { getIsStxEnabled } from '../../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -25,8 +25,8 @@ import { useHwSwapActions } from '../../../../hooks/hardware-wallets/useHwSwapAc
 import {
   useHardwareWalletActions,
   useHardwareWalletState,
-  isInE2eTest,
-} from '../../../../contexts/hardware-wallets';
+} from '../../../../contexts/hardware-wallets/HardwareWalletContext';
+import { isInE2eTest } from '../../../../contexts/hardware-wallets/is-in-e2e-test';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import {
   getTransactionDataRecipient,
@@ -34,8 +34,8 @@ import {
 } from '../../../../../shared/lib/transaction.utils';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTracker';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import { internalSelectPendingApproval } from '../../../../selectors';
+import type { MetaMaskReduxDispatch } from '../../../../store/types';
+import { internalSelectPendingApproval } from '../../../../selectors/approvals';
 import type { SignatureStepListProps } from '../components/signature-step-list.types';
 import type { SignatureFooterProps } from '../components/signature-footer.types';
 import {
@@ -47,9 +47,11 @@ import {
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
+} from '../hardware-wallet-signatures-state-machine/types';
+import {
   getInitialHardwareWalletSignaturesState,
   hardwareWalletSignaturesReducer,
-} from '../hardware-wallet-signatures-state-machine';
+} from '../hardware-wallet-signatures-state-machine/hardware-wallet-signatures-state-machine';
 import type { UseHardwareWalletSignaturesReturn } from './useHardwareWalletSignatures.types';
 import { useSendBundleSubmission } from './useSendBundleSubmission';
 

@@ -3,50 +3,56 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesResults } from '../types';
-import {
-  buildBatchSellAsset,
-  seedCurrencyLocaleSelectors,
-} from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
+import { seedCurrencyLocaleSelectors } from '../../../../../../test/data/batch-sell/mock-selectors';
 import { QuotesListItem } from './quotes-list-item';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: (state: { currency?: string }) => state?.currency,
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/selectors/assets-migration',
+  ),
+  getCurrencyRateControllerCurrentCurrency: (state: { currency?: string }) =>
+    state?.currency,
 }));
 
 jest.mock('../../../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../../../ducks/locale/locale'),
   getIntlLocale: (state: { locale?: string }) => state?.locale,
 }));
 
-jest.mock('../../../../../components/app/perps/perps-slider', () => ({
-  PerpsSlider: ({
-    onChange,
-    value,
-  }: {
-    value: number;
-    onChange: (e: unknown, v: number | number[]) => void;
-  }) => (
-    <>
-      <input
-        type="range"
-        aria-label="perps-slider"
-        value={value}
-        onChange={(e) => onChange(e, Number(e.target.value))}
-        readOnly
-      />
-      <button
-        type="button"
-        aria-label="perps-slider-array"
-        onClick={() => onChange(null, [42, 99])}
-      >
-        slider-array
-      </button>
-    </>
-  ),
-}));
+jest.mock(
+  '../../../../../components/app/perps/perps-slider/perps-slider',
+  () => ({
+    PerpsSlider: ({
+      onChange,
+      value,
+    }: {
+      value: number;
+      onChange: (e: unknown, v: number | number[]) => void;
+    }) => (
+      <>
+        <input
+          type="range"
+          aria-label="perps-slider"
+          value={value}
+          onChange={(e) => onChange(e, Number(e.target.value))}
+          readOnly
+        />
+        <button
+          type="button"
+          aria-label="perps-slider-array"
+          onClick={() => onChange(null, [42, 99])}
+        >
+          slider-array
+        </button>
+      </>
+    ),
+  }),
+);
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),

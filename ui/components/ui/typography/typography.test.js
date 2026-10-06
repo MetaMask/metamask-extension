@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import Typography from '.';
+import Typography from './typography';
 
 describe('Typography', () => {
   it('should render the Typography without crashing', () => {

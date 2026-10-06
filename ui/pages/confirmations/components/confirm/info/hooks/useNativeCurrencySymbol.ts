@@ -1,7 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { getAllMultichainNetworkConfigurations } from '../../../../../../selectors';
+import { getAllMultichainNetworkConfigurations } from '../../../../../../selectors/multichain/networks';
 
 const currencySymbolOverrides: {
   [key: Hex | CaipChainId]: string;

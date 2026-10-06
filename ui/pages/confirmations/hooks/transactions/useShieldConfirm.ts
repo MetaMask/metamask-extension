@@ -15,11 +15,11 @@ import {
   TRANSACTION_SHIELD_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { getModalTypeForShieldEntryModal } from '../../../../selectors';
+import { getModalTypeForShieldEntryModal } from '../../../../selectors/selectors';
 import {
   getLastUsedShieldSubscriptionPaymentDetails,
   getUserSubscriptions,
-} from '../../../../selectors/subscription';
+} from '../../../../selectors/subscription/subscription';
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldCryptoConfirmationEventParams } from '../../../../hooks/shield/metrics/types';
 import {

@@ -7,7 +7,7 @@ import {
   TransactionGroupCategory,
   TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
-import TransactionIcon from '.';
+import TransactionIcon from './transaction-icon';
 
 const mockCaptureSingleException = jest.fn();
 jest.mock('../../../store/actions', () => ({

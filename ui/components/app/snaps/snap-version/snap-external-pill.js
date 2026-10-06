@@ -10,14 +10,11 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import {
-  Box,
-  ButtonLink,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 
 const SnapExternalPill = ({ value, url }) => {

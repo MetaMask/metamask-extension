@@ -1,4 +1,4 @@
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {

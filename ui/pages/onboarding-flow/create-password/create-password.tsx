@@ -14,14 +14,18 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
   getIsSocialLoginFlow,
+} from '../../../selectors/first-time-flow';
+import {
+  getAnalyticsId,
   getIsPasskeyFeatureAvailable,
   getDeferredDeepLinkParameters,
-  getAccountTypeForOnboardingMetrics,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import {
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../../../selectors/metametrics';
+import { getAccountTypeForOnboardingMetrics } from '../../../selectors/onboarding/onboarding';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -41,7 +45,7 @@ import { useOnboardingReset } from '../hooks/useOnboardingReset';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { CreatePasswordForm } from '../../create-password-form';
+import CreatePasswordForm from '../../create-password-form/create-password-form';
 import { useDispatch } from '../../../store/hooks';
 
 type CreatePasswordProps = {

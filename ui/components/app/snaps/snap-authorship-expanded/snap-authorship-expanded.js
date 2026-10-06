@@ -22,10 +22,12 @@ import {
 import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { getSnapRegistryData } from '../../../../selectors';
+import { getSnapRegistryData } from '../../../../selectors/selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
-import { Box, ButtonLink, Text } from '../../../component-library';
-import ToggleButton from '../../../ui/toggle-button';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { Text } from '../../../component-library/text/text';
+import ToggleButton from '../../../ui/toggle-button/toggle-button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapExternalPill from '../snap-version/snap-external-pill';
 import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';

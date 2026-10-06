@@ -119,6 +119,8 @@ describe('<ApproveInfo />', () => {
       expect(screen.getByText(messages.speed.message)).toBeInTheDocument();
     });
 
+    // Wait for the network avatar's fallback after its mount effect.
+    expect(await screen.findByText('G')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 });

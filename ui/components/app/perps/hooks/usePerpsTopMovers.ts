@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import {
   sortMarkets,
   type SortDirection,
 } from '../../../../pages/perps/utils/sortMarkets';
 import { MARKET_SORTING_CONFIG, PERPS_CONSTANTS } from '../constants';
-import type { PerpsMarketData } from '../types';
 
 export type UsePerpsTopMoversOptions = {
   /** Live markets to rank, supplied by the Perps tab's market-list stream owner. */

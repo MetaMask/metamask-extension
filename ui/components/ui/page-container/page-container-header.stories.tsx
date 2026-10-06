@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import PageContainerHeader from './page-container-header';
+import PageContainerHeader from './page-container-header/page-container-header.component';
 
 const meta: Meta<typeof PageContainerHeader> = {
   title: 'Components/UI/PageContainer/PageContainerHeader',

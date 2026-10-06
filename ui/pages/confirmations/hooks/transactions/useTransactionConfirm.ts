@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
-import { getCustomNonceValue } from '../../../../selectors';
+import { getCustomNonceValue } from '../../../../selectors/selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
@@ -17,8 +17,8 @@ import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference'
 import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
-  useHardwareWalletError,
-} from '../../../../contexts/hardware-wallets';
+} from '../../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { useHardwareWalletError } from '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/useSendBundleHwNavigation';
 import { useDispatch } from '../../../../store/hooks';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';

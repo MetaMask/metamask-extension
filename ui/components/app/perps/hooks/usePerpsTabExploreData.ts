@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
+import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream/usePerpsLiveMarketListData';
 import {
   selectPerpsIsTestnet,
   selectPerpsWatchlistMarkets,

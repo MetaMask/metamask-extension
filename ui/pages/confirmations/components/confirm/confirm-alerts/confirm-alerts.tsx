@@ -1,5 +1,5 @@
 import React, { type ReactElement, Suspense } from 'react';
-import LoadingScreen from '../../../../../components/ui/loading-screen';
+import LoadingScreen from '../../../../../components/ui/loading-screen/loading-screen.component';
 import { mmLazy } from '../../../../../helpers/utils/mm-lazy';
 import { useConfirmContext } from '../../../context/confirm';
 import { isSIWESignatureRequest } from '../../../utils/confirm';

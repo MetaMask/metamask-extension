@@ -3,13 +3,6 @@ import type {
   ActivityKind as ClientActivityKind,
 } from '@metamask/client-utils';
 
-export type {
-  Status,
-  TokenAmount,
-  FiatAmount,
-  Fee as ActivityFee,
-} from '@metamask/client-utils';
-
 /**
  * Money-account deposits and withdrawals are extension-local activity kinds:
  * `@metamask/client-utils` has no money-account mapping (the transactions are

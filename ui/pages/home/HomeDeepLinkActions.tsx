@@ -5,7 +5,7 @@ import {
   BATCH_SELL_SELECT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
-import { selectIsNetworkMenuOpen } from '../../selectors';
+import { selectIsNetworkMenuOpen } from '../../selectors/selectors';
 import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';

@@ -4,12 +4,14 @@ import {
   getTokenExchangeRates,
   getShouldShowFiat,
   getConfirmationExchangeRates,
-  getMarketData,
-  getCurrencyRates,
-} from '../selectors';
+} from '../selectors/selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../shared/lib/selectors/assets-migration';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { isEqualCaseInsensitive } from '../../shared/lib/string-utils';
 

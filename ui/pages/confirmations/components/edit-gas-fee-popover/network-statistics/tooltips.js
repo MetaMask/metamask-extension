@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import Box from '../../../../../components/ui/box';
-import Tooltip from '../../../../../components/ui/tooltip';
+import Box from '../../../../../components/ui/box/box';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 
 import {
   DISPLAY,

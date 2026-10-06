@@ -14,8 +14,6 @@ import {
 import { getTradeableBalance } from './getTradeableBalance';
 import type { MarginRiskAssessment } from './marginUtils';
 
-export type { MarginRiskAssessment } from './marginUtils';
-
 export type UsePerpsMarginCalculationsParams = {
   position: Position;
   /** Live mark / current price for the symbol (extension: chart or market tick). */

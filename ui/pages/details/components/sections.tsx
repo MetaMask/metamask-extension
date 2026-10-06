@@ -1,8 +1,6 @@
 import React from 'react';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import { AccountName } from '../../../components/app/transaction/account-name';
 import { NetworkName } from '../../../components/app/transaction/network-name';

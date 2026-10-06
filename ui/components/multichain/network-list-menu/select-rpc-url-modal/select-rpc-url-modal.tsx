@@ -9,7 +9,8 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
-import { Box, Text } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,7 +22,7 @@ import {
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain/networks';
 import { useDispatch } from '../../../../store/hooks';
 
 export const SelectRpcUrlModal = ({

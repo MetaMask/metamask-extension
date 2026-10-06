@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  Box,
-  IconName,
-  Text,
-} from '../../components/component-library';
+import { AvatarIcon } from '../../components/component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../components/component-library/avatar-icon/avatar-icon.types';
+import { Box } from '../../components/component-library/box/box';
+import { IconName } from '../../components/component-library/icon/icon.types';
+import { Text } from '../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -20,7 +18,7 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 import { SnapAccountCard } from './snap-account-card';
 
 export type RemoveSnapAccountProps = {

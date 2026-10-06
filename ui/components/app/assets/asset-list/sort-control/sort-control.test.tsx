@@ -3,8 +3,8 @@ import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { getTokenSortConfig } from '../../../../../selectors';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getTokenSortConfig } from '../../../../../selectors/selectors';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

@@ -17,7 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { type GasOption, type GasOptionTooltipProps } from '../../types/gas';
-import Tooltip from '../../../../components/ui/tooltip';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import EditGasToolTip from '../edit-gas-fee-popover/edit-gas-tooltip/edit-gas-tooltip';
 
 const SelectedIndicator = () => {

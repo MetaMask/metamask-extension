@@ -21,8 +21,11 @@ jest.mock('../../../../../hooks/useTheme', () => ({
   useTheme: () => mockUseTheme(),
 }));
 
-jest.mock('../../../../../selectors', () => ({
+jest.mock('../../../../../selectors/selectors', () => ({
   getAnalyticsId: jest.fn(),
+}));
+
+jest.mock('../../../../../selectors/metametrics', () => ({
   getConsentDecisionMade: jest.fn(),
   getOptedIn: jest.fn(),
   getDataCollectionForMarketing: jest.fn(),

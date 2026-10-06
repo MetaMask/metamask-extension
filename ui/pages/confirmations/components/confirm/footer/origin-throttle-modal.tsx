@@ -1,20 +1,20 @@
 import React, { useContext, useState } from 'react';
 import { useModalProps } from '../../../../../hooks/useModalProps';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonSize } from '../../../../../components/component-library/button/button.types';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContentSize } from '../../../../../components/component-library/modal-content/modal-content.types';
+import { Text } from '../../../../../components/component-library/text/text';
+import { ModalFooter } from '../../../../../components/component-library/modal-footer/modal-footer';
+import { Icon } from '../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  ButtonSize,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalContentSize,
-  Text,
-  ModalFooter,
-  Icon,
   IconName,
   IconSize,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/icon/icon.types';
 import {
   AlignItems,
   Display,

@@ -1,7 +1,9 @@
 import { waitFor, act } from '@testing-library/react';
 import * as NotificationHooks from '../../hooks/metamask-notifications/useNotifications';
 import * as NotificationsSelectors from '../../selectors/metamask-notifications/metamask-notifications';
-import * as Selectors from '../../selectors/selectors';
+
+import * as SelectorsModule5 from '../../selectors/selectors';
+
 import * as MetamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
 import * as Actions from '../../store/actions';
@@ -49,7 +51,7 @@ describe('useBasicFunctionalityDisableEffect', () => {
 
   const arrangeSelectors = () => {
     const mockGetUseExternalServices = jest
-      .spyOn(Selectors, 'getUseExternalServices')
+      .spyOn(SelectorsModule5, 'getUseExternalServices')
       .mockReturnValue(true);
 
     const mockIsNotifsEnabled = jest
@@ -196,7 +198,7 @@ describe('useFetchInitialNotificationsEffect', () => {
       .mockReturnValue(true);
 
     const mockGetUseExternalServices = jest
-      .spyOn(Selectors, 'getUseExternalServices')
+      .spyOn(SelectorsModule5, 'getUseExternalServices')
       .mockReturnValue(true);
 
     const mockGetIsUnlocked = jest
@@ -468,7 +470,7 @@ describe('useEnableNotificationsByDefaultEffect', () => {
       .mockReturnValue(false);
 
     const mockGetUseExternalServices = jest
-      .spyOn(Selectors, 'getUseExternalServices')
+      .spyOn(SelectorsModule5, 'getUseExternalServices')
       .mockReturnValue(true);
 
     const mockGetIsUnlocked = jest

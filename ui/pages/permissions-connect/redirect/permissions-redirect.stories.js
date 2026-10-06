@@ -1,5 +1,5 @@
 import React from 'react';
-import PermissionsRedirect from '.';
+import PermissionsRedirect from './permissions-redirect.component';
 
 export default {
   title: 'Pages/PermissionsConnect/Redirect/PermissionsRedirect',

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling';
 import { updateThrottledOriginState } from '../../../store/actions';
 
-import { selectThrottledOrigins } from '../../../selectors';
+import { selectThrottledOrigins } from '../../../selectors/origin-throttling';
 import { useDispatch } from '../../../store/hooks';
 import useCurrentConfirmation from './useCurrentConfirmation';
 

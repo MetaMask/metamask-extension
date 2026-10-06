@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import { Checkbox } from '@metamask/design-system-react';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { AccountListItem, AccountListItemMenuTypes } from '.';
+import AccountListItem from './account-list-item';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const store = configureStore(testData);
 

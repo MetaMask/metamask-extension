@@ -11,6 +11,7 @@ import { AccountNetwork } from './account-network';
 
 const mockDowngradeAccount = jest.fn();
 const mockUpgradeAccount = jest.fn();
+
 jest.mock('../../../../hooks/useEIP7702Account', () => ({
   useEIP7702Account: () => ({
     downgradeAccount: mockDowngradeAccount,

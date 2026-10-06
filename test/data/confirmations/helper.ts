@@ -2,7 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   Confirmation,
   SignatureRequestType,

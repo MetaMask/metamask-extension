@@ -16,28 +16,27 @@ import {
   TextVariant,
   TextColor,
 } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  TextFieldType,
-} from '../../../components/component-library';
+import { toast } from 'react-hot-toast';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../components/component-library/form-text-field/form-text-field.types';
+import { TextFieldType } from '../../../components/component-library/text-field/text-field.types';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
 import {
-  getPasskeyAuthMethodKey,
   translatePasskeyError,
-  isPasskeyCeremonySilentError,
-} from '../../../../shared/lib/passkey';
-import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+  getPasskeyErrorCode,
+} from '../../../../shared/lib/passkey/passkey-error';
+import { isPasskeyCeremonySilentError } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
@@ -52,11 +51,9 @@ import {
   getIsPasskeyRegistered,
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
-} from '../../../selectors';
-import {
-  PasskeyEnrollmentSteps,
-  type PasskeyEnrollmentStepStatus,
-} from '../../../components/app/passkey-enrollment-steps';
+} from '../../../selectors/selectors';
+import { PasskeyEnrollmentSteps } from '../../../components/app/passkey-enrollment-steps/passkey-enrollment-steps';
+import type { PasskeyEnrollmentStepStatus } from '../../../components/app/passkey-enrollment-steps/passkey-enrollment-steps';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 

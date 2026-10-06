@@ -31,11 +31,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { MultichainAccountList } from '../../multichain-account-list';
+import { MultichainAccountList } from '../../multichain-account-list/multichain-account-list';
 import { useAccountListSearch } from '../../hooks/useAccountListSearch';
 import { getAccountTree } from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-import { Footer, Header, Page } from '../../../multichain/pages/page';
+import { Footer } from '../../../multichain/pages/page/components/footer/footer';
+import { Header } from '../../../multichain/pages/page/components/header/header';
+import { Page } from '../../../multichain/pages/page/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
 import { ScrollContainer } from '../../../../contexts/scroll-container';
 import { DisconnectAllModal } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';

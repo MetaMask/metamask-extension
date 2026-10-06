@@ -17,7 +17,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TokenIcon } from '../../../components/app/token-icon';
+import { TokenIcon } from '../../../components/app/token-icon/token-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import type { AccountsApiActivity } from '../types/money-activity';

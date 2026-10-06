@@ -11,15 +11,13 @@ import {
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
 import useRampsNavigation from '../../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
-import { ReceiveModal } from '../../../multichain/receive-modal';
+import { ReceiveModal } from '../../../multichain/receive-modal/receive-modal';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
   MetaMetricsEventCategory,

@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN } from '../../../store/actionConstants';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -21,18 +21,34 @@ jest.mock('../../../../shared/lib/environment', () => ({
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
 }));
 
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
+const mockTrackEvent = jest.fn();
 
-  return {
-    useAnalytics: () => ({
-      trackEvent: jest.fn(),
-      createEventBuilder,
-    }),
-  };
-});
+jest.mock('../../../hooks/useAnalytics', () => ({
+  ...(() => {
+    const { createEventBuilder } = jest.requireActual(
+      '../../../../shared/lib/analytics/create-event-builder',
+    );
+
+    return {
+      useAnalytics: () => ({
+        trackEvent: jest.fn(),
+        createEventBuilder,
+      }),
+    };
+  })(),
+  ...(() => {
+    const { createEventBuilder } = jest.requireActual(
+      '../../../../shared/lib/analytics/create-event-builder',
+    );
+
+    return {
+      useAnalytics: () => ({
+        trackEvent: mockTrackEvent,
+        createEventBuilder,
+      }),
+    };
+  })(),
+}));
 
 const mockOpenBasicFunctionalityModal = jest.fn().mockImplementation(() => {
   return {
@@ -45,21 +61,6 @@ jest.mock('../../../ducks/app/app.ts', () => {
     openBasicFunctionalityModal: () => {
       return mockOpenBasicFunctionalityModal();
     },
-  };
-});
-
-const mockTrackEvent = jest.fn();
-
-jest.mock('../../../hooks/useAnalytics', () => {
-  const { createEventBuilder } = jest.requireActual(
-    '../../../../shared/lib/analytics/create-event-builder',
-  );
-
-  return {
-    useAnalytics: () => ({
-      trackEvent: mockTrackEvent,
-      createEventBuilder,
-    }),
   };
 });
 

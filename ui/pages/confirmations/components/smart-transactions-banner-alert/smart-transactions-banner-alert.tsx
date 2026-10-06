@@ -2,13 +2,11 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  BannerAlert,
-  ButtonLink,
-  Box,
-  Text,
-  BannerAlertSeverity,
-} from '../../../../components/component-library';
+import { BannerAlert } from '../../../../components/component-library/banner-alert/banner-alert';
+import { ButtonLink } from '../../../../components/component-library/button-link/button-link';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
+import { BannerAlertSeverity } from '../../../../components/component-library/banner-alert/banner-alert.types';
 import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
@@ -18,11 +16,9 @@ import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/con
 import {
   getSmartTransactionsOptInStatusInternal,
   getSmartTransactionsMigrationAppliedInternal,
-} from '../../../../../shared/lib/selectors/smart-transactions';
-import {
   getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
-} from '../../../../../shared/lib/selectors';
+} from '../../../../../shared/lib/selectors/smart-transactions';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 

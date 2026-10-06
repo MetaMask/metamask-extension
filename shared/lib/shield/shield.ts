@@ -10,7 +10,7 @@ import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { setParticipateInMetaMetrics } from '../../../app/scripts/controllers/analytics';
+import { setParticipateInMetaMetrics } from '../../../app/scripts/controllers/analytics/analytics';
 import { getIsShieldSubscriptionActive } from './subscription-utils';
 import { loadShieldConfig } from './config';
 

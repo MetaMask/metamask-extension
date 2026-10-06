@@ -4,7 +4,7 @@ import type { SignatureRequest } from '@metamask/signature-controller';
 import { SignTypedDataVersion } from '@metamask/keyring-controller';
 import type { JsonRpcRequest } from '@metamask/utils';
 import { normalizeSignatureRequest as normalizePpomSignatureRequest } from '../../lib/ppom/ppom-util';
-import { loadShieldConfig } from '../../../../shared/lib/shield';
+import { loadShieldConfig } from '../../../../shared/lib/shield/config';
 import { captureException } from '../../../../shared/lib/sentry';
 
 type ShieldControllerInstanceOptions = NonNullable<

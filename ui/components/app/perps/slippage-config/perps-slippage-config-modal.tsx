@@ -16,14 +16,12 @@ import {
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalContentSize,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,

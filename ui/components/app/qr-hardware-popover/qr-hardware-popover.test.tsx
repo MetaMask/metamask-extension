@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: mockPathname }),
 }));
 
-jest.mock('./qr-hardware-wallet-importer', () => {
+jest.mock('./qr-hardware-wallet-importer/qr-hardware-wallet-importer', () => {
   const Mock = (props: {
     setErrorTitle: (title: string) => void;
     setErrorActive: (active: boolean) => void;
@@ -57,33 +57,36 @@ jest.mock('./qr-hardware-wallet-importer', () => {
   return Mock;
 });
 
-jest.mock('./qr-hardware-sign-request', () => {
-  const Mock = (props: {
-    setErrorTitle: (title: string) => void;
-    setErrorActive: (active: boolean) => void;
-  }) => (
-    <div data-testid="qr-hardware-sign-request">
-      <button
-        data-testid="sign-set-error-title"
-        onClick={() => props.setErrorTitle('Sign Error')}
-      />
-      <button
-        data-testid="sign-clear-error-title"
-        onClick={() => props.setErrorTitle('')}
-      />
-      <button
-        data-testid="sign-set-error-active"
-        onClick={() => props.setErrorActive(true)}
-      />
-      <button
-        data-testid="sign-clear-error-active"
-        onClick={() => props.setErrorActive(false)}
-      />
-    </div>
-  );
-  Mock.displayName = 'QRHardwareSignRequest';
-  return Mock;
-});
+jest.mock(
+  './qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request',
+  () => {
+    const Mock = (props: {
+      setErrorTitle: (title: string) => void;
+      setErrorActive: (active: boolean) => void;
+    }) => (
+      <div data-testid="qr-hardware-sign-request">
+        <button
+          data-testid="sign-set-error-title"
+          onClick={() => props.setErrorTitle('Sign Error')}
+        />
+        <button
+          data-testid="sign-clear-error-title"
+          onClick={() => props.setErrorTitle('')}
+        />
+        <button
+          data-testid="sign-set-error-active"
+          onClick={() => props.setErrorActive(true)}
+        />
+        <button
+          data-testid="sign-clear-error-active"
+          onClick={() => props.setErrorActive(false)}
+        />
+      </div>
+    );
+    Mock.displayName = 'QRHardwareSignRequest';
+    return Mock;
+  },
+);
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 

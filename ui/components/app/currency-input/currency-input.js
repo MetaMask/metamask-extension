@@ -3,17 +3,15 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { Box } from '@metamask/design-system-react';
-import UnitInput from '../../ui/unit-input';
-import CurrencyDisplay from '../../ui/currency-display';
-import {
-  getNativeCurrency,
-  getCurrentCurrency,
-} from '../../../ducks/metamask/metamask';
+import UnitInput from '../../ui/unit-input/unit-input.component';
+import CurrencyDisplay from '../../ui/currency-display/currency-display.component';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../../../shared/lib/selectors/networks';
-import { getShouldShowFiat } from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors/selectors';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';

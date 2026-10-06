@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
 

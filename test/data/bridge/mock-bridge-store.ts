@@ -18,7 +18,7 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
 import type { ChainValueOrderOverride } from '../../../shared/lib/bridge/chain-value-order';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import type {
   BridgeAppState,
   getValidationErrors,

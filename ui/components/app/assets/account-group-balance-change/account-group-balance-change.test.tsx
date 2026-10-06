@@ -8,7 +8,6 @@ import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 const mockStore = configureMockStore()(mockState);
 
-jest.mock('../../../../selectors');
 jest.mock('./useAccountGroupBalanceDisplay');
 
 describe('AccountGroupBalanceChange', () => {

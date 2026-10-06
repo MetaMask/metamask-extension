@@ -2,15 +2,15 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { Box } from '../../../../components/component-library/box/box';
+import { Button } from '../../../../components/component-library/button/button';
+import { ButtonVariant } from '../../../../components/component-library/button/button.types';
+import { Icon } from '../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Button,
-  ButtonVariant,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   IconColor,
   TextColor,
@@ -31,7 +31,7 @@ import { getEnvironmentType } from '../../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options';
+import { ConfirmationsDeveloperOptions } from '../../../confirmations/components/developer/confirmations-developer-options/confirmations-developer-options';
 import { useDispatch } from '../../../../store/hooks';
 import ToggleRow from './toggle-row-component';
 import SentryTest from './sentry-test';

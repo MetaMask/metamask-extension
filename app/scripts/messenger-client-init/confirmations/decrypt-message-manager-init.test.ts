@@ -4,7 +4,7 @@ import {
 } from '@metamask/message-manager';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getDecryptMessageManagerMessenger } from '../messengers';
+import { getDecryptMessageManagerMessenger } from '../messengers/decrypt-message-manager-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { DecryptMessageManagerInit } from './decrypt-message-manager-init';
 

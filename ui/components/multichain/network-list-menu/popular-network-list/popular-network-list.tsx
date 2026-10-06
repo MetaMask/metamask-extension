@@ -12,12 +12,10 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  Text,
-  Popover,
-  PopoverPosition,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
+import { Popover } from '../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../component-library/popover/popover.types';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
   setEnabledNetworks,

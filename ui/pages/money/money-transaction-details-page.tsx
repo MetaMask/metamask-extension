@@ -28,8 +28,8 @@ import {
   MONEY_ACTIVITY_ROUTE,
   MONEY_HOME_ROUTE,
 } from '../../helpers/constants/routes';
-import { PopoverPosition } from '../../components/component-library';
-import { TooltipText } from '../../components/app/money/tooltip-text';
+import { PopoverPosition } from '../../components/component-library/popover/popover.types';
+import { TooltipText } from '../../components/app/money/tooltip-text/tooltip-text';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../shared/lib/money/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -45,7 +45,7 @@ import {
   selectTransactionById,
   type TransactionState,
 } from '../../selectors/transactionController';
-import { TokenIcon } from '../../components/app/token-icon';
+import { TokenIcon } from '../../components/app/token-icon/token-icon';
 import { isAccountsApiActivityId, onchainItem } from './types/money-activity';
 import {
   getMoneyActivityDisplayInfo,

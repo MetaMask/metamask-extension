@@ -5,11 +5,9 @@ import {
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDivider } from '../../../../../../components/app/confirm/info/row/divider';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';

@@ -1,11 +1,9 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../component-library/icon/icon.types';
 import {
   Display,
   IconColor,

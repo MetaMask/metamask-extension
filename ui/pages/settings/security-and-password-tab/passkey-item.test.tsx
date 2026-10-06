@@ -29,10 +29,13 @@ jest.mock('../../../../shared/lib/environment', () => ({
   getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../../shared/lib/passkey'),
-  isWebAuthnSupported: jest.fn().mockReturnValue(true),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-capabilities'),
+  isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 
 const backgroundConnectionMock = new Proxy(

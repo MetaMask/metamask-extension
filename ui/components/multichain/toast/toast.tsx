@@ -5,13 +5,11 @@ import {
   ButtonVariant,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import {
-  BannerBase,
-  Box,
-  BoxProps,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { BannerBase } from '../../component-library/banner-base/banner-base';
+import { Box } from '../../component-library/box/box';
+import { BoxProps } from '../../component-library/box/box.types';
+import { IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import {
   BackgroundColor,
   BorderColor,

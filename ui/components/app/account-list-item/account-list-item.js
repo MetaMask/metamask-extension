@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AvatarBaseSize } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../preferred-avatar';
+import { PreferredAvatar } from '../preferred-avatar/preferred-avatar';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 

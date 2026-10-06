@@ -16,7 +16,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';

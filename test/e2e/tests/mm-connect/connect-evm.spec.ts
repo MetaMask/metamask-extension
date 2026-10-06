@@ -8,7 +8,7 @@ import {
   DAPP_URL,
   WINDOW_TITLES,
 } from '../../constants';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { buildEvmEip1193FixtureScopes } from '../../fixtures/permission-scopes';

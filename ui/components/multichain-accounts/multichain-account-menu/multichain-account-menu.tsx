@@ -16,7 +16,9 @@ import {
   IconName,
   TextColor,
 } from '@metamask/design-system-react';
-import { ModalFocus, Popover, PopoverPosition } from '../../component-library';
+import { ModalFocus } from '../../component-library/modal-focus/modal-focus';
+import { Popover } from '../../component-library/popover/popover';
+import { PopoverPosition } from '../../component-library/popover/popover.types';
 import { BorderRadius } from '../../../helpers/constants/design-system';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,

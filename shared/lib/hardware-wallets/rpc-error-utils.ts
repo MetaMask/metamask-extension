@@ -504,8 +504,6 @@ export function isTrezorDesktopConnectionMissingError(error: unknown): boolean {
   );
 }
 
-export { extractMessageFromUnknownError };
-
 /**
  * Check whether an error's message/stack contains user-cancel text.
  *

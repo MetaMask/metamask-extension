@@ -8,7 +8,7 @@ import {
   getIsSwapsChain,
   getSelectedAccountCachedBalance,
   getIsBridgeChain,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { CoinOverview } from './coin-overview';
 

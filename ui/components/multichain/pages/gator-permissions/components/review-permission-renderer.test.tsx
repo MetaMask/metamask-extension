@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../shared/lib/gator-permissions';
+import { ALL_METAMASK_FACILITATOR_ADDRESSES } from '../../../../../../shared/lib/gator-permissions/facilitator-addresses';
 import { ReviewPermissionRenderer } from './review-permission-renderer';
 
 const store = configureStore(mockState);
@@ -24,11 +24,14 @@ const PERIODIC_PERMISSION_DATA = {
   startTime: 1736271776,
 };
 
-jest.mock('../../../../app/modals/nickname-popovers', () => {
-  return function mockNicknamePopovers() {
-    return <div data-testid="nickname-popovers" />;
-  };
-});
+jest.mock(
+  '../../../../app/modals/nickname-popovers/nickname-popovers.component',
+  () => {
+    return function mockNicknamePopovers() {
+      return <div data-testid="nickname-popovers" />;
+    };
+  },
+);
 
 function renderReviewPermissionRenderer(
   props: Partial<React.ComponentProps<typeof ReviewPermissionRenderer>> = {},

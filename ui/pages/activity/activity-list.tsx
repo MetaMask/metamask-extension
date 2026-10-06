@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { PendingTransactionCancelSpeedUpProvider } from '../../components/app/pending-transaction-action-buttons/pending-transaction-cancel-speed-up-provider';
 import AssetListControlBar from '../../components/app/assets/asset-list/asset-list-control-bar/asset-list-control-bar';
-import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state';
-import { SectionHeader } from '../../components/ui/section-header';
+import { TransactionActivityEmptyState } from '../../components/app/transaction-activity-empty-state/transaction-activity-empty-state';
+import { SectionHeader } from '../../components/ui/section-header/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { useRelativeMediumDate } from '../../hooks/useRelativeMediumDate';

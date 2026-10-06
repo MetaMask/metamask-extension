@@ -22,7 +22,7 @@ type TooltipProps = {
   title?: string;
 };
 
-jest.mock('../../../../ui/tooltip', () => {
+jest.mock('../../../../ui/tooltip/tooltip', () => {
   const MockTooltip = ({ children, disabled, title }: TooltipProps) => (
     <div data-testid="tooltip" data-disabled={disabled} data-title={title}>
       {children}

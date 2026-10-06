@@ -10,8 +10,6 @@ import {
   YEAR,
 } from '../../constants/time';
 
-export type { Rule };
-
 /**
  * Generates a human-readable description for a period duration in seconds to be used for translation.
  *

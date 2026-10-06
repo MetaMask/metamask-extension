@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
+import { createHardwareWalletError } from '../../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
 const createStore = () => configureStore(mockState);

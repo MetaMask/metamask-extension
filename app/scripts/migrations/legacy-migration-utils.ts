@@ -1,4 +1,4 @@
-import type { LegacyMigration, MigrationState } from '../lib/migrator';
+import type { MigrationState } from '../lib/migrator';
 
 export type LegacyToken = {
   decimals?: string | number;
@@ -172,5 +172,3 @@ export type LegacyState = MigrationState['data'] &
     CollectiblesController: LegacyCollectiblesController;
   }>;
 /* eslint-enable @typescript-eslint/naming-convention */
-
-export type { LegacyMigration, MigrationState };

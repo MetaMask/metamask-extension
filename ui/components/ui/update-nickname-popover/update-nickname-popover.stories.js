@@ -1,7 +1,7 @@
 import { useArgs } from 'storybook/preview-api';
 import React from 'react';
-import Button from '../button';
-import UpdateNicknamePopover from '.';
+import Button from '../button/button.component';
+import UpdateNicknamePopover from './update-nickname-popover';
 
 export default {
   title: 'Components/UI/UpdateNicknamePopover',

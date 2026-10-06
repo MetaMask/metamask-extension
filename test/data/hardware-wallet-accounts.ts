@@ -1,6 +1,6 @@
 import { ETH_TOKEN_IMAGE_URL } from '../../shared/constants/network';
-import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row';
-import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card';
+import type { HardwareWalletAccountAddress } from '../../ui/components/multichain-accounts/hardware-account-address-row/hardware-account-address-row.types';
+import type { HardwareWalletAccount } from '../../ui/components/multichain-accounts/hardware-account-card/hardware-account-card.types';
 
 /** Default Ethereum address fixture for hardware wallet tests and stories. */
 export const MOCK_ETHEREUM_HARDWARE_ADDRESS: HardwareWalletAccountAddress = {

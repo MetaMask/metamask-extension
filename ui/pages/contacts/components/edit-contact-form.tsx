@@ -16,12 +16,10 @@ import {
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { useDispatch } from '../../../store/hooks';
-import { PreferredAvatar } from '../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  FormTextField,
-  FormTextFieldSize,
-} from '../../../components/component-library';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../components/component-library/form-text-field/form-text-field.types';
 import {
   BackgroundColor,
   BorderColor,
@@ -33,10 +31,8 @@ import {
   addToAddressBook,
   removeFromAddressBook,
 } from '../../../store/actions';
-import {
-  getCompleteAddressBook,
-  getInternalAccounts,
-} from '../../../selectors';
+import { getCompleteAddressBook } from '../../../selectors/selectors';
+import { getInternalAccounts } from '../../../selectors/accounts';
 import { isDuplicateContact } from '../utils';
 import {
   isBurnAddress,

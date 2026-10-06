@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PermissionsConnectList from '.';
+import PermissionsConnectList from './permissions-connect-permission-list';
 
 export default {
   title: 'Components/App/PermissionsConnectList',

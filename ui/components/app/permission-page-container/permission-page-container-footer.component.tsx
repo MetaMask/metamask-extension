@@ -1,8 +1,8 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTemplateAlertContext } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
-import { IconName } from '../../component-library';
-import { PageContainerFooter } from '../../ui/page-container';
+import { IconName } from '../../component-library/icon/icon.types';
+import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 
 export const PermissionPageContainerFooter = ({
   cancelText,

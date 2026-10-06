@@ -1,5 +1,5 @@
 import React from 'react';
-import PageContainer from '.';
+import PageContainer from './page-container.component';
 
 export default {
   title: 'Components/UI/PageContainer',

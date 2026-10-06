@@ -11,8 +11,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import Card from '../../../ui/card';
-import { Label } from '../../../component-library';
+import Card from '../../../ui/card/card';
+import { Label } from '../../../component-library/label/label';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type SelectSrpProps = {

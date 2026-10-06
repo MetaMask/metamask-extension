@@ -7,7 +7,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { RESIZE } from './textarea.constants';
-import Textarea from '.';
+import Textarea from './textarea';
 
 export default {
   title: 'Components/UI/Textarea (deprecated)',

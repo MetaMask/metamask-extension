@@ -20,7 +20,7 @@ jest.mock('../../context/dapp-swap', () => ({
   useDappSwapContext: jest.fn(),
 }));
 
-jest.mock('../../../../components/app/confirm/info/row', () => ({
+jest.mock('../../../../components/app/confirm/info/row/row', () => ({
   ConfirmInfoRow: ({
     children,
     label,

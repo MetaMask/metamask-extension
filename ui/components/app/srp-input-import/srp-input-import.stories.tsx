@@ -1,5 +1,5 @@
 import React from 'react';
-import SrpInputImport from '.';
+import SrpInputImport from './srp-input-import';
 
 export default {
   title: 'Components/App/SrpInputImport',

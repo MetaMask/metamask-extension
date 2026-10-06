@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { Box, Button, ButtonSize } from '@metamask/design-system-react';
-import CancelButton from '../cancel-button';
+import CancelButton from '../cancel-button/cancel-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { PendingTransactionSpeedUpAction } from '../../../hooks/usePendingTransactionActions';
 
