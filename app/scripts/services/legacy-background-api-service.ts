@@ -5424,12 +5424,4 @@ export class LegacyBackgroundApiService {
       >[0]['approvedPermissions'],
     });
   }
-
-  foo() {
-    return 42;
-  }
-
-  bar() {
-    return 'qux';
-  }
 }
