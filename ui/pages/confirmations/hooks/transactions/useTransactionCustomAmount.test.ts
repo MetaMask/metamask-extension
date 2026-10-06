@@ -64,6 +64,7 @@ function createDepositPrefillMock(
   return {
     prefillAmount: undefined,
     percentage: undefined,
+    isLimitCapped: false,
     isUncappedMaxPrefill: false,
     status: DepositPrefillStatus.Prefilled,
     ...overrides,
@@ -1169,6 +1170,8 @@ describe('useTransactionCustomAmount', () => {
         payTokenBalanceUsd: 1000,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: false,
+          percentage: 100,
+          isLimitCapped: true,
           prefillAmount: '500',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1257,6 +1260,14 @@ describe('useTransactionCustomAmount', () => {
       expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
         moneyAccountDepositMeta.id,
         true,
+      );
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_prefilled_amount: 500,
+          }),
+        }),
       );
     });
 

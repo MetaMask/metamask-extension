@@ -83,6 +83,7 @@ export enum DepositPrefillStatus {
 export type DepositPrefillResult = {
   prefillAmount: string | undefined;
   percentage: number | undefined;
+  isLimitCapped: boolean;
   /**
    * True when prefill is uncapped 100% of balance (stablecoin route token,
    * not limited by depositLimit). Consumers should apply this via
@@ -155,63 +156,68 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const tokenKey = `${transactionMeta?.id ?? ''}:${payToken?.address}:${payToken?.chainId}:${accountOverride ?? ''}`;
   const [committedKey, setCommittedKey] = useState<string | null>(null);
 
-  const { prefillAmount, percentage, isUncappedMaxPrefill } = useMemo(() => {
-    const balanceUsdValue = new BigNumber(balanceUsd);
+  const { prefillAmount, percentage, isLimitCapped, isUncappedMaxPrefill } =
+    useMemo(() => {
+      const balanceUsdValue = new BigNumber(balanceUsd);
 
-    if (!enabled || !payToken) {
+      if (!enabled || !payToken) {
+        return {
+          prefillAmount: undefined,
+          percentage: undefined,
+          isLimitCapped: false,
+          isUncappedMaxPrefill: false,
+        };
+      }
+
+      if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
+        return {
+          prefillAmount: ZERO_PREFILL_AMOUNT,
+          percentage: undefined,
+          isLimitCapped: false,
+          isUncappedMaxPrefill: false,
+        };
+      }
+
+      const stable = isRouteToken(relayFixedSpread, {
+        chainId: payToken.chainId,
+        address: payToken.address,
+      });
+      const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
+        TransactionType.moneyAccountDeposit,
+      ]);
+      const nextPercentage = isMoneyAccountDeposit && stable ? 100 : 50;
+
+      const raw = new BigNumber(nextPercentage)
+        .div(100)
+        .times(balanceUsdValue)
+        .round(2, BigNumber.ROUND_DOWN);
+
+      const isCapped =
+        depositLimit !== undefined && raw.gt(String(depositLimit));
+
       return {
-        prefillAmount: undefined,
-        percentage: undefined,
-        isUncappedMaxPrefill: false,
+        prefillAmount: formatFiatAmount(
+          isCapped ? new BigNumber(String(depositLimit)) : raw,
+        ),
+        percentage: nextPercentage,
+        isLimitCapped: isCapped,
+        // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
+        // is only a Max deposit when the raw balance is the funding account's
+        // own. The snapshot fallback can belong to a previously selected account;
+        // committing it as Max would submit that account's balance and suppress
+        // the insufficient-funds alert.
+        isUncappedMaxPrefill:
+          nextPercentage === 100 && !isCapped && isLiveBalance,
       };
-    }
-
-    if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
-      return {
-        prefillAmount: ZERO_PREFILL_AMOUNT,
-        percentage: undefined,
-        isUncappedMaxPrefill: false,
-      };
-    }
-
-    const stable = isRouteToken(relayFixedSpread, {
-      chainId: payToken.chainId,
-      address: payToken.address,
-    });
-    const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
-      TransactionType.moneyAccountDeposit,
+    }, [
+      balanceUsd,
+      depositLimit,
+      enabled,
+      isLiveBalance,
+      payToken,
+      relayFixedSpread,
+      transactionMeta,
     ]);
-    const nextPercentage = isMoneyAccountDeposit && stable ? 100 : 50;
-
-    const raw = new BigNumber(nextPercentage)
-      .div(100)
-      .times(balanceUsdValue)
-      .round(2, BigNumber.ROUND_DOWN);
-
-    const isCapped = depositLimit !== undefined && raw.gt(String(depositLimit));
-
-    return {
-      prefillAmount: formatFiatAmount(
-        isCapped ? new BigNumber(String(depositLimit)) : raw,
-      ),
-      percentage: nextPercentage,
-      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
-      // is only a Max deposit when the raw balance is the funding account's
-      // own. The snapshot fallback can belong to a previously selected account;
-      // committing it as Max would submit that account's balance and suppress
-      // the insufficient-funds alert.
-      isUncappedMaxPrefill:
-        nextPercentage === 100 && !isCapped && isLiveBalance,
-    };
-  }, [
-    balanceUsd,
-    depositLimit,
-    enabled,
-    isLiveBalance,
-    payToken,
-    relayFixedSpread,
-    transactionMeta,
-  ]);
 
   // Uncapped 100% prefill must wait for live balanceRaw — otherwise consumers
   // fall back to the fiat path and can request slightly more than available.
@@ -286,6 +292,7 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   return {
     prefillAmount,
     percentage,
+    isLimitCapped,
     isUncappedMaxPrefill,
     status,
   };

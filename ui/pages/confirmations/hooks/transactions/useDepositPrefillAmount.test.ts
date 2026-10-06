@@ -194,6 +194,7 @@ describe('useDepositPrefillAmount', () => {
       expect(result.current).toEqual({
         prefillAmount: undefined,
         percentage: undefined,
+        isLimitCapped: false,
         isUncappedMaxPrefill: false,
         status: DepositPrefillStatus.Disabled,
       });

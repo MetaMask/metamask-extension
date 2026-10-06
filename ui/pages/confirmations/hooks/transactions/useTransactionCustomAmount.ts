@@ -682,7 +682,10 @@ export function useTransactionCustomAmount({
       // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
       // and arms isMaxAmount like pressing Max. The fiat literal path can
       // ROUND_UP past available balance and yield "No quotes".
-      if (depositPrefill.percentage === undefined) {
+      if (
+        depositPrefill.percentage === undefined ||
+        depositPrefill.isLimitCapped
+      ) {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- apply deposit prefill when hasPrefilled commits
         applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
       } else {
