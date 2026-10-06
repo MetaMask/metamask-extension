@@ -371,3 +371,75 @@
     }
   }
 }
+
+html[data-theme='light'] .critical-error {
+  background-color: var(--color-background-default);
+  color: var(--color-text-default);
+
+  .critical-error__icon {
+    color: var(--color-warning-default);
+  }
+
+  .critical-error__title,
+  .critical-error__link,
+  .critical-error__link:visited,
+  .critical-error__link:hover,
+  .critical-error__link:active,
+  .critical-error__report {
+    color: var(--color-text-default);
+  }
+
+  .critical-error__intro,
+  .critical-error__footer,
+  .critical-error__details,
+  .critical-error__divider,
+  .critical-error__body > p:not(.critical-error__intro) {
+    color: var(--color-text-alternative);
+  }
+
+  .critical-error__error-section,
+  .critical-error__legal-text {
+    border: 1px solid var(--color-border-muted);
+  }
+
+  .critical-error__details {
+    border-bottom: 1px solid var(--color-border-muted);
+  }
+
+  .critical-error__report-checkbox {
+    border-color: var(--color-icon-default);
+
+    &:checked {
+      background-color: var(--color-icon-default);
+      border-color: var(--color-icon-default);
+    }
+
+    &:checked::after {
+      border-color: var(--color-icon-inverse);
+    }
+  }
+
+  .critical-error__info-icon {
+    fill: var(--color-icon-alternative);
+  }
+
+  .critical-error__legal-text {
+    background-color: var(--color-background-default);
+    color: var(--color-text-default);
+  }
+
+  .critical-error__divider::before,
+  .critical-error__divider::after {
+    background-color: var(--color-border-muted);
+  }
+
+  .critical-error__button-restore {
+    color: var(--color-icon-inverse);
+    background-color: var(--color-icon-default);
+  }
+
+  .critical-error__button-secondary,
+  .critical-error__button-secondary:hover {
+    color: var(--color-text-default);
+  }
+}

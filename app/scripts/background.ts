@@ -504,6 +504,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
               : {}),
             currentLocale:
               controller?.preferencesController?.state?.currentLocale,
+            theme: controller?.preferencesController?.state?.theme,
           },
         );
       }

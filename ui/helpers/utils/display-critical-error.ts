@@ -15,14 +15,17 @@ import {
   METHOD_REPAIR_DATABASE,
 } from '../../../shared/constants/critical-error';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   hasVault,
   type Backup,
 } from '../../../shared/lib/stores/persistence-manager';
+import { setTheme } from '../../pages/routes/utils';
 
 const SAFE_GET_VAULT_BACKUP_TIMEOUT_MS = 5_000;
 const REPAIR_BUTTON_ENABLE_DELAY_MS = 5_000;
 const SENTRY_REPORT_TIMEOUT_MS = 2_000;
+const STORED_THEME_TIMEOUT_MS = 1_000;
 
 /**
  * Reads backup with a timeout so a hanging IndexedDB cannot block the critical error UI.
@@ -91,6 +94,62 @@ function getBuildSentryTags(): Record<string, string> {
 export enum CriticalErrorTranslationKey {
   TroubleStarting = 'troubleStarting',
   SomethingIsWrong = 'somethingIsWrong',
+}
+
+function isThemeType(value: unknown): value is ThemeType {
+  return (
+    value === ThemeType.light ||
+    value === ThemeType.dark ||
+    value === ThemeType.os
+  );
+}
+
+function themeFromControllerState(value: unknown): ThemeType | undefined {
+  if (typeof value !== 'object' || value === null || !('theme' in value)) {
+    return undefined;
+  }
+  return isThemeType(value.theme) ? value.theme : undefined;
+}
+
+/**
+ * Reads the selected theme from extension storage.
+ *
+ * The critical error screen replaces the app before React applies
+ * `html[data-theme]`. PreferencesController may also be uninitialized when
+ * startup fails, so the stored value is the source of truth.
+ *
+ * @returns The stored theme, or undefined when storage is missing or too slow.
+ */
+async function readStoredTheme(): Promise<ThemeType | undefined> {
+  try {
+    const stored = await Promise.race([
+      browser.storage.local.get(['data', 'PreferencesController']),
+      new Promise<undefined>((resolve) => {
+        setTimeout(() => resolve(undefined), STORED_THEME_TIMEOUT_MS);
+      }),
+    ]);
+    if (!stored) {
+      return undefined;
+    }
+
+    const splitTheme = themeFromControllerState(stored.PreferencesController);
+    if (splitTheme) {
+      return splitTheme;
+    }
+
+    const { data } = stored;
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      !('PreferencesController' in data)
+    ) {
+      return undefined;
+    }
+    return themeFromControllerState(data.PreferencesController);
+  } catch (error) {
+    log.warn('Failed to read stored theme for critical error screen', error);
+    return undefined;
+  }
 }
 
 /**
@@ -208,6 +267,11 @@ async function handleRestartAction(
  */
 export type DisplayCriticalErrorMessageOptions = {
   currentLocale?: string;
+  /**
+   * Theme preference from PreferencesController (`light` | `dark` | `os`).
+   * Applied before the critical error HTML is shown.
+   */
+  theme?: ThemeType;
   port?: browser.Runtime.Port;
   criticalErrorType?: CriticalErrorType;
   repairActionFromBackground?: CriticalErrorRepairAction;
@@ -225,6 +289,7 @@ export type DisplayCriticalErrorMessageOptions = {
  * @param error - The error object to log.
  * @param options - Optional display context.
  * @param options.currentLocale - Locale context for translations.
+ * @param options.theme - Theme preference from PreferencesController.
  * @param options.port - Port for background communication (needed for vault recovery).
  * @param options.criticalErrorType - Type of critical error (for analytics). Defaults to Other.
  * @param options.repairActionFromBackground - Repair action derived by the background.
@@ -239,6 +304,7 @@ export async function displayCriticalErrorMessage(
   error: ErrorLike,
   {
     currentLocale,
+    theme: themeFromPreferences,
     port,
     criticalErrorType,
     repairActionFromBackground,
@@ -246,6 +312,9 @@ export async function displayCriticalErrorMessage(
     backgroundCaptureAttempted = false,
   }: DisplayCriticalErrorMessageOptions = {},
 ): Promise<never> {
+  const storedThemePromise = themeFromPreferences
+    ? Promise.resolve(themeFromPreferences)
+    : readStoredTheme();
   let repairAction =
     repairActionFromBackground ?? CriticalErrorRepairAction.None;
   let analyticsOptedIn = analyticsConsentFromBackground ?? false;
@@ -288,6 +357,14 @@ export async function displayCriticalErrorMessage(
     criticalErrorType,
     !analyticsOptedIn,
   );
+
+  const storedTheme = await storedThemePromise;
+  // Apply light or dark, including when the document already has the other
+  // theme. Skip only when no preference is available. Dark dialog colors stay
+  // the original brand palette; light overrides apply only for data-theme=light.
+  if (storedTheme) {
+    setTheme(storedTheme);
+  }
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);
   if (criticalErrorContainer) {

@@ -7,6 +7,7 @@ import {
   isStateCorruptionErrorType,
 } from '../../../shared/constants/critical-error';
 import { MISSING_VAULT_ERROR } from '../../../shared/constants/errors';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { CRITICAL_ERROR_SCREEN_VIEWED } from '../../../shared/constants/start-up-errors';
 import * as errorUtils from '../../../shared/lib/error-utils';
 import type { Backup } from '../../../shared/lib/stores/persistence-manager';
@@ -27,6 +28,11 @@ jest.mock('webextension-polyfill', () => ({
   runtime: {
     reload: jest.fn(),
     getManifest: jest.fn(() => ({ version: MOCK_RELEASE_VERSION })),
+  },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+    },
   },
 }));
 
@@ -232,6 +238,75 @@ describe('displayCriticalError', () => {
     expect(
       rootContainer.querySelector('[data-testid="critical-error-content"]'),
     ).not.toBeNull();
+  });
+
+  it('applies the theme preference from options before rendering', async () => {
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          theme: ThemeType.light,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(browser.storage.local.get).not.toHaveBeenCalled();
+    expect(document.documentElement.dataset.theme).toBe('light');
+    delete document.documentElement.dataset.theme;
+  });
+
+  it('applies an explicit dark preference over an existing light theme', async () => {
+    document.documentElement.dataset.theme = ThemeType.light;
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      data: {
+        PreferencesController: { theme: ThemeType.dark },
+      },
+    });
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(document.documentElement.dataset.theme).toBe(ThemeType.dark);
+    delete document.documentElement.dataset.theme;
+  });
+
+  it('resolves the os theme preference the same way as the app', async () => {
+    const matchMediaSpy = jest.spyOn(window, 'matchMedia').mockReturnValue({
+      matches: false,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    } as MediaQueryList);
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          theme: ThemeType.os,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(document.documentElement.dataset.theme).toBe('light');
+    delete document.documentElement.dataset.theme;
+    matchMediaSpy.mockRestore();
   });
 
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
