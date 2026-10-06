@@ -1,0 +1,131 @@
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, closed]
+    # UI, background, and the event catalog. New paths outside these trees do not start this workflow.
+    # Test globs stay because tests live inside ui/ and app/scripts/.
+    paths:
+      - 'app/scripts/**/*.ts'
+      - 'ui/**/*.ts'
+      - 'ui/**/*.tsx'
+      - 'shared/constants/metametrics.ts'
+    paths-ignore:
+      - '**/*.test.*'
+      - '**/*.spec.*'
+      - '**/__snapshots__/**'
+  issue_comment:
+    types: [created]
+jobs:
+  propose:
+    # All six must be true. Any one false skips the job.
+    # 1. pull_request, not an issue comment
+    # 2. not closed (close-segment-schema-pr owns that)
+    # 3. ready for review, not a draft
+    # 4. author is a person, not a Bot
+    # 5. head branch is in this repo, not a fork
+    # 6. no no-schema-pr label
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.action != 'closed' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.type != 'Bot' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !contains(github.event.pull_request.labels.*.name, 'no-schema-pr')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: segment-schema
+    concurrency:
+      group: draft-segment-schema-propose-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
+        with:
+          platform: extension
+          mode: propose
+          segment-schema-token: ${{ steps.app-token.outputs.token }}
+          segment-schema-repository: Consensys/segment-schema
+  # Author opt-in. Skipped comments do not start a runner. The action still requires
+  # the first line to be exactly the agreement sentence.
+  did-user-agree-to-create-pr:
+    if: >
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      github.event.comment.user.login == github.event.issue.user.login &&
+      startsWith(github.event.comment.body, 'I agree to open a draft Segment schema PR')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo "PR author agreed to open a draft Segment schema PR"
+  # Fork check after agreement, so create does not mint the App token for a fork.
+  is-cross-repo-pr:
+    needs: did-user-agree-to-create-pr
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
+    steps:
+      - id: is-cross-repo
+        run: echo "IS_CROSS_REPO_PR=$(gh pr view -R "$GITHUB_REPOSITORY" --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}")" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+  create:
+    needs: is-cross-repo-pr
+    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: segment-schema
+    concurrency:
+      group: draft-segment-schema-write-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
+        with:
+          platform: extension
+          mode: create
+          segment-schema-token: ${{ steps.app-token.outputs.token }}
+          segment-schema-repository: Consensys/segment-schema
+  # Unmerged close ends opt-in and closes the schema draft. The bot does not delete
+  # metamaskbot/extension-pr-<N>, so a person can reopen that schema PR. A merged
+  # client PR leaves the schema draft open.
+  close-segment-schema-pr:
+    if: >
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: segment-schema
+    concurrency:
+      group: draft-segment-schema-write-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
+        with:
+          platform: extension
+          mode: close
+          segment-schema-token: ${{ steps.app-token.outputs.token }}
+          segment-schema-repository: Consensys/segment-schema
