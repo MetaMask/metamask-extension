@@ -80,6 +80,29 @@ export default function CreatePassword({
   const analyticsId = useSelector(getAnalyticsId);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const base64AnalyticsId = Buffer.from(analyticsId ?? '').toString('base64');
+
+  const startOnboardingWalletSetupTrace = (traceName: TraceName) => {
+    bufferedTrace?.({
+      name: traceName,
+      op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
+      parentContext: onboardingParentContext?.current,
+    });
+  };
+
+  const endOnboardingWalletSetupTrace = useCallback(
+    (traceName: TraceName, success: boolean) => {
+      bufferedEndTrace?.({
+        name: traceName,
+        data: { success },
+      });
+    },
+    [bufferedEndTrace],
+  );
+
   const shouldInjectMetametricsIframe = Boolean(
     consentDecisionMade && isOptedIn && base64AnalyticsId,
   );
@@ -170,27 +193,19 @@ export default function CreatePassword({
     );
 
     setWalletSetupInProgress(true);
-    bufferedTrace?.({
-      name: TraceName.OnboardingSRPAccountImportTime,
-      op: TraceOperation.OnboardingUserJourney,
-      data: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountTypeForMetrics,
-      },
-      parentContext: onboardingParentContext?.current,
-    });
+    startOnboardingWalletSetupTrace(TraceName.OnboardingSRPAccountImportTime);
 
     try {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      bufferedEndTrace?.({
-        name: TraceName.OnboardingSRPAccountImportTime,
-        data: { success: true },
-      });
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountImportTime,
+        true,
+      );
     } catch (error) {
-      bufferedEndTrace?.({
-        name: TraceName.OnboardingSRPAccountImportTime,
-        data: { success: false },
-      });
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountImportTime,
+        false,
+      );
       throw error;
     }
 
@@ -246,7 +261,21 @@ export default function CreatePassword({
     );
 
     setWalletSetupInProgress(true);
-    await createNewAccount(password);
+    startOnboardingWalletSetupTrace(TraceName.OnboardingSRPAccountCreationTime);
+
+    try {
+      await createNewAccount(password);
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountCreationTime,
+        true,
+      );
+    } catch (error) {
+      endOnboardingWalletSetupTrace(
+        TraceName.OnboardingSRPAccountCreationTime,
+        false,
+      );
+      throw error;
+    }
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
