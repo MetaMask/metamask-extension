@@ -7,6 +7,7 @@ import {
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REFERRAL_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../helpers/constants/routes';
 
@@ -53,25 +54,27 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
 /**
  * The onboarding flow first asks the user what process they wish to use to
  * initialize their wallet (either create, import, or restore). After that it
- * asks the user to opt into MetaMetrics. This function returns the route the
- * user should be directed to after they opt in or out of MetaMetrics. Note
- * that this differs from getFirstTimeFlowTypeRouteAfterUnlock only for the
- * restore option because the restore option is atypical from the other two
- * options and removes an entire screen from the onboarding flow.
+ * asks the user to opt into MetaMetrics. New wallets then see the referral
+ * step before completion. This function returns the route the user should be
+ * directed to after they opt in or out of MetaMetrics. Note that this differs
+ * from getFirstTimeFlowTypeRouteAfterUnlock only for the restore option
+ * because the restore option is atypical from the other two options and
+ * removes an entire screen from the onboarding flow.
  *
  * @param {object} state - MetaMask state tree
  * @returns {string} Route to redirect the user to
  */
 export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
-  if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_COMPLETION_ROUTE;
+  if (
+    firstTimeFlowType === FirstTimeFlowType.create ||
+    firstTimeFlowType === FirstTimeFlowType.socialCreate
+  ) {
+    return ONBOARDING_REFERRAL_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_REVIEW_SRP_ROUTE;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
     return ONBOARDING_DOWNLOAD_APP_ROUTE;
   }

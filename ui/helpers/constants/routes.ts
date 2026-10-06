@@ -175,6 +175,7 @@ export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
+export const ONBOARDING_REFERRAL_ROUTE = '/onboarding/referral';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
@@ -841,6 +842,11 @@ export const ROUTES = [
   {
     path: ONBOARDING_METAMETRICS,
     label: 'Onboarding Metametrics',
+    trackInAnalytics: false,
+  },
+  {
+    path: ONBOARDING_REFERRAL_ROUTE,
+    label: 'Onboarding Referral',
     trackInAnalytics: false,
   },
   {
