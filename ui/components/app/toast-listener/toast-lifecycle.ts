@@ -12,7 +12,9 @@ export function setApprovedOrSignedToastPhase(id: string) {
 
 export function shouldShowPendingToast(id: string) {
   const phase = toastPhaseById.get(id);
-  if (phase === 'pending' || phase === 'terminal') {
+  const isApprovedOrSignedOrUndefined = phase === 'approvedOrSigned' || phase === undefined;
+
+  if (!isApprovedOrSignedOrUndefined) {
     return false;
   }
 
@@ -22,7 +24,9 @@ export function shouldShowPendingToast(id: string) {
 
 export function shouldShowTerminalToast(id: string) {
   const phase = toastPhaseById.get(id);
-  if (phase !== 'approvedOrSigned' && phase !== 'pending') {
+  const isApprovedOrSignedOrPending = phase === 'approvedOrSigned' || phase === 'pending';
+
+  if (!isApprovedOrSignedOrPending) {
     return false;
   }
 
