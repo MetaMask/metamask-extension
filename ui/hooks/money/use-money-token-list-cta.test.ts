@@ -201,6 +201,17 @@ describe('useMoneyTokenListCta', () => {
   });
 
   describe('onClick', () => {
+    it('reports token_has_balance from the token balance, not its fiat value', () => {
+      const token = createToken({ balance: '0', tokenFiatAmount: 100 });
+      const cta = renderCta([token]);
+
+      cta?.onClick(token);
+
+      expect(moneyAnalytics.trackTokenButtonClicked).toHaveBeenCalledWith(
+        expect.objectContaining({ tokenHasBalance: false }),
+      );
+    });
+
     it('tracks the click and deposits with the token pre-selected', () => {
       const otherToken = createToken({
         address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',

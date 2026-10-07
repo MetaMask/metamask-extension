@@ -129,7 +129,7 @@ export function useMoneyTokenListCta(
         tokenPositionInList:
           tokens.findIndex((listToken) => isSameToken(listToken, token)) + 1,
         tokensInList: tokens.length,
-        tokenHasBalance: (token.tokenFiatAmount ?? 0) > 0,
+        tokenHasBalance: Number(token.balance) > 0,
       });
 
       initiateDeposit({
