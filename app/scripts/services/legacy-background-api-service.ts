@@ -2364,9 +2364,10 @@ export class LegacyBackgroundApiService {
     await this.#seedlessOperationMutex.runExclusive(async () => {
       let isRecovery = false;
       try {
-        const passwordSyncInstruction = await this.resolveSeedlessPasswordSyncInstruction({
-          skipCache: true,
-        });
+        const passwordSyncInstruction =
+          await this.resolveSeedlessPasswordSyncInstruction({
+            skipCache: true,
+          });
 
         if (passwordSyncInstruction === PasswordSyncInstruction.InSync) {
           await this.#unlockSeedlessWallet(password);
@@ -2379,7 +2380,10 @@ export class LegacyBackgroundApiService {
         log.error('error while syncing password and unlocking wallet', error);
         if (isRecovery) {
           this.#messenger.captureException?.(
-            createSentryError(TraceName.OnboardingSocialLoginPasswordSyncError, error),
+            createSentryError(
+              TraceName.OnboardingSocialLoginPasswordSyncError,
+              error,
+            ),
           );
         }
 
@@ -2419,39 +2423,36 @@ export class LegacyBackgroundApiService {
    *
    * @param password - The submitted global password.
    */
-  async #recoverSeedlessPassword(
-    password: string,
-  ): Promise<void> {
+  async #recoverSeedlessPassword(password: string): Promise<void> {
     let changePasswordSuccess = false;
     this.#messenger.call('SentryTracingService:bufferedTrace', {
       name: TraceName.OnboardingSocialLoginPasswordSync,
       op: TraceOperation.OnboardingSecurityOp,
     });
 
-    const isKeyringPasswordValid =
-            await this.#isKeyringPasswordValid(password);
-    const recoveryInstruction = await this.#messenger.call(
-      'SeedlessOnboardingController:reconcilePassword',
-      {
+    const isKeyringPasswordValid = await this.#isKeyringPasswordValid(password);
+    const recoveryInstruction = await this.#messenger
+      .call('SeedlessOnboardingController:reconcilePassword', {
         globalPassword: password,
-      },
-    ).catch((error: Error) => {
-      if (error instanceof RecoveryError) {
-        // Keyring controller password verification succeeds and seedless controller failed.
-        if (
-          error?.message ===
-            SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
-          isKeyringPasswordValid
-        ) {
-          throw new Error(
-            SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-          );
+        maxKeyChainLength: 20,
+      })
+      .catch((error: Error) => {
+        if (error instanceof RecoveryError) {
+          // Keyring controller password verification succeeds and seedless controller failed.
+          if (
+            error?.message ===
+              SeedlessOnboardingControllerErrorMessage.IncorrectPassword &&
+            isKeyringPasswordValid
+          ) {
+            throw new Error(
+              SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+            );
+          }
+          throw new JsonRpcError(-32603, error.message, error.data);
         }
-        throw new JsonRpcError(-32603, error.message, error.data);
-      }
-      log.error('error while reconciling password', error);
-      throw error;
-    });
+        log.error('error while reconciling password', error);
+        throw error;
+      });
 
     try {
       switch (recoveryInstruction) {
