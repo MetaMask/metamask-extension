@@ -48,6 +48,7 @@ export enum MoneyComponentName {
   HomeTab = 'money_home_tab',
   ActionButtonRow = 'money_action_button_row',
   More = 'money_more',
+  TokenListItemCta = 'money_token_list_item_cta',
 }
 
 export enum MoneyButtonIntent {

@@ -10,6 +10,7 @@ import {
   calculateMoneyProjectedEarnings,
   convertMoneyFiatToUsd,
   filterMoneyDepositTokens,
+  getMoneyDepositFiatAmountUsd,
   isNoFeeMoneyDepositToken,
   parseMoneySubsidizedRoutes,
 } from './money-deposit-token-utils';
@@ -41,6 +42,49 @@ describe('convertMoneyFiatToUsd', () => {
 
   it('returns undefined when rates are unavailable', () => {
     expect(convertMoneyFiatToUsd(100, undefined, 1)).toBeUndefined();
+  });
+});
+
+describe('getMoneyDepositFiatAmountUsd', () => {
+  const options = {
+    blockedTokens: { chainIds: [], tokens: [] },
+    minBalance: 0.01,
+    currentCurrency: 'usd',
+    currencyRates: {},
+    networkConfigurations: {},
+  };
+
+  it('returns the USD value of an eligible asset', () => {
+    expect(getMoneyDepositFiatAmountUsd(createAsset(), options)).toBe(10);
+  });
+
+  it('returns undefined for a non-EVM asset', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(
+        createAsset({
+          accountType: 'solana:data-account' as KeyringAccountType,
+        }),
+        options,
+      ),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined for a blocked chain', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(createAsset(), {
+        ...options,
+        blockedTokens: { chainIds: [CHAIN_IDS.MAINNET], tokens: [] },
+      }),
+    ).toBeUndefined();
+  });
+
+  it('returns undefined below the minimum balance', () => {
+    expect(
+      getMoneyDepositFiatAmountUsd(createAsset(), {
+        ...options,
+        minBalance: 50,
+      }),
+    ).toBeUndefined();
   });
 });
 
