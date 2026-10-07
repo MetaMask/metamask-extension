@@ -38,6 +38,10 @@ class AddEditNetworkPage {
     testId: 'network-form-chain-id',
   };
 
+  private readonly chainlistNameList = {
+    testId: 'networks-page-chainlist-network-list',
+  };
+
   private readonly currencySymbolInputField = '#nativeCurrency';
 
   private readonly currencySymbolWarning =
@@ -173,6 +177,29 @@ class AddEditNetworkPage {
   }
 
   /**
+   * The chainlist name popover is portaled over the form and stays open after
+   * a name is typed. Close it before clicking a control underneath it.
+   */
+  private async closeChainlistNamePopover(): Promise<void> {
+    const isOpen = await this.driver.isElementPresentAndVisible(
+      this.chainlistNameList,
+      250,
+    );
+    if (!isOpen) {
+      return;
+    }
+
+    await this.driver.executeScript(() => {
+      document.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }),
+      );
+    });
+    await this.driver.assertElementNotPresent(this.chainlistNameList, {
+      timeout: 2000,
+    });
+  }
+
+  /**
    * Fill the currency symbol input field on the add/edit network page.
    *
    * @param symbol - The symbol to fill in the input field.
@@ -220,6 +247,7 @@ class AddEditNetworkPage {
    */
   async openAddRpcUrlPage(): Promise<void> {
     console.log('Open the add RPC URL page');
+    await this.closeChainlistNamePopover();
     await this.driver.clickElement(this.rpcDropDownButton);
     await this.driver.clickElementAndWaitToDisappear(this.addRpcUrlButton);
   }

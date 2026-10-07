@@ -188,7 +188,9 @@ export const NetworksForm = ({
   // Save writes this chain into network configurations before the form closes.
   // Skip the duplicate warning for that chain so the network just added is not
   // reported as already saved.
-  const submittedChainIdRef = useRef<string | undefined>(undefined);
+  const [submittedChainId, setSubmittedChainId] = useState<string | undefined>(
+    undefined,
+  );
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
 
@@ -275,11 +277,7 @@ export const NetworksForm = ({
       error = ['invalidChainIdTooBig', t('invalidChainIdTooBig')];
     }
 
-    if (
-      !error &&
-      !existingNetwork &&
-      chainIdHex !== submittedChainIdRef.current
-    ) {
+    if (!error && !existingNetwork && chainIdHex !== submittedChainId) {
       const matchingNetwork = chainIdHex
         ? networkConfigurations[chainIdHex]
         : undefined;
@@ -292,7 +290,14 @@ export const NetworksForm = ({
     }
 
     return error ? { key: error[0], msg: error[1] } : undefined;
-  }, [chainId, chainIdHex, existingNetwork, networkConfigurations, t]);
+  }, [
+    chainId,
+    chainIdHex,
+    existingNetwork,
+    networkConfigurations,
+    submittedChainId,
+    t,
+  ]);
 
   const rpcMismatchError = useMemo(() => {
     if (fetchedChainId && chainIdHex && fetchedChainId !== chainIdHex) {
@@ -458,7 +463,7 @@ export const NetworksForm = ({
           // network from the Networks page should only persist the
           // configuration; switching is reserved for the homepage network
           // modal (`toggleNetworkMenuAfterSubmit=true`).
-          submittedChainIdRef.current = chainIdHex;
+          setSubmittedChainId(chainIdHex);
           await dispatch(
             addNetwork(networkPayload, {
               setActive: toggleNetworkMenuAfterSubmit,
