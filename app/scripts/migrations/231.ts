@@ -43,7 +43,10 @@ export const migrate = (async (versionedData, changedKeys) => {
   const remappedClientIds = new Map<string, string>();
 
   for (const configuration of Object.values(configurations)) {
-    if (!isObject(configuration) || !Array.isArray(configuration.rpcEndpoints)) {
+    if (
+      !isObject(configuration) ||
+      !Array.isArray(configuration.rpcEndpoints)
+    ) {
       continue;
     }
 
@@ -92,8 +95,9 @@ export const migrate = (async (versionedData, changedKeys) => {
     typeof networkState.selectedNetworkClientId === 'string' &&
     remappedClientIds.has(networkState.selectedNetworkClientId)
   ) {
-    networkState.selectedNetworkClientId =
-      remappedClientIds.get(networkState.selectedNetworkClientId);
+    networkState.selectedNetworkClientId = remappedClientIds.get(
+      networkState.selectedNetworkClientId,
+    );
   }
 
   changedKeys.add('NetworkController');

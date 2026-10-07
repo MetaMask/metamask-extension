@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { migrate, version } from './231';
 
