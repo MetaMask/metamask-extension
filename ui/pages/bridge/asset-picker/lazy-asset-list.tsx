@@ -10,6 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Column } from '../layout';
 import { useInitialBridgeTokens } from '../../../hooks/bridge/useInitialBridgeTokens';
 import { usePopularTokens } from '../../../hooks/bridge/usePopularTokens';
+import { filterExcludedAssetList } from '../../../components/app/assets/enablement/networks-customization';
 import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
@@ -55,7 +56,9 @@ export const BridgeAssetList = ({
   /**
    * If there is a search query, use the search results, otherwise use the popular token list
    */
-  const tokenList = searchQuery.length > 0 ? searchResults : popularTokensList;
+  const tokenList = filterExcludedAssetList(
+    searchQuery.length > 0 ? searchResults : popularTokensList,
+  );
 
   const shouldFetchMoreResults =
     searchQuery.length > 0 && hasMoreResults && !isSearchResultsLoading;
