@@ -11,6 +11,7 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import { MMPAY_RPC_METHOD } from '../../mmpay-dapp/constants';
+import type { MmPayResult } from '../../mmpay-dapp/types';
 
 type RequestExtras = Partial<{
   origin: string;
@@ -25,20 +26,20 @@ export type WalletMmPayHooks = {
   /** Returns the list of permitted EVM account addresses for the current origin. */
   getAccounts: () => string[];
   /**
-   * Creates a dApp-origin perps transaction and awaits the tx hash.
-   * Implemented in metamask-controller.js (T7).
+   * Creates a dApp-origin perps transaction and resolves once the transfer
+   * completes, with the provider and both sides' chains and hashes.
    */
   mmPayAddDappTransaction: (
     params: unknown,
     req: WalletMmPayRequest,
-  ) => Promise<string>;
+  ) => Promise<MmPayResult>;
 };
 
 type WalletMmPayConstraint = MethodHandler<
   WalletMmPayHooks,
   never,
   [Json],
-  string,
+  MmPayResult,
   RequestExtras
 >;
 
@@ -61,7 +62,7 @@ export default walletMmPayHandlers;
  *
  * Validates params shape and connected-account precondition, then delegates
  * to the `mmPayAddDappTransaction` hook which performs further validation
- * and returns the final transaction hash.
+ * and returns the transfer result (provider, chains, hashes).
  *
  * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
@@ -73,7 +74,7 @@ export default walletMmPayHandlers;
  */
 async function walletMmPayImplementation(
   req: WalletMmPayRequest,
-  res: PendingJsonRpcResponse<string>,
+  res: PendingJsonRpcResponse<MmPayResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getAccounts, mmPayAddDappTransaction }: WalletMmPayHooks,

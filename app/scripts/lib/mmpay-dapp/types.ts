@@ -52,6 +52,37 @@ export type MmPayBuiltTransaction = {
  * on, which token it moves, how to check whether it is available, and how to
  * build the final {@link MmPayBuiltTransaction} from a validated context.
  */
+/** One side (source or destination) of an MMPay transfer. */
+export type MmPayResultSide = {
+  /** Chain the funds left from or arrived on. HyperCore is `0x539`. */
+  chainId?: Hex;
+  /** Transaction hash on that chain, when known. */
+  hash?: Hex;
+};
+
+/**
+ * Result returned by `wallet_mmPay` once the user confirms and the transfer
+ * completes. Fields are omitted when the data isn't available, e.g. no hash
+ * when Relay reports none.
+ */
+export type MmPayResult = {
+  /** MetaMask transaction ID, useful for support. */
+  transactionId?: string;
+  /** Pay strategy that executed the transfer, e.g. `relay`. */
+  provider?: string;
+  /** The payment side: the token the user paid with (deposit) or HyperCore (withdraw). */
+  source: MmPayResultSide;
+  /** The funds' final landing side. */
+  destination: MmPayResultSide;
+};
+
+/** Provider and chain details read from the Pay quote. */
+export type MmPayQuoteSides = {
+  provider?: string;
+  sourceChainId?: Hex;
+  destinationChainId?: Hex;
+};
+
 export type MmPayDefinition = {
   type: MmPayType;
   chainId: Hex;
