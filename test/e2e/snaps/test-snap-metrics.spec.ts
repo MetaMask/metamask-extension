@@ -389,6 +389,7 @@ describe('Test Snap Metrics', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
+          { snapId: 'npm:@metamask/notification-example-snap' },
         );
 
         await driver.switchToWindowWithTitle(
