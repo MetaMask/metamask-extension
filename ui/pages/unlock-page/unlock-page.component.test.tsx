@@ -104,7 +104,7 @@ describe('UnlockPage component (passkey UI)', () => {
     onSubmit: jest.fn().mockResolvedValue(undefined),
     navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
-    resolveSeedlessPasswordSyncState: jest
+    resolveSeedlessPasswordSyncInstruction: jest
       .fn()
       .mockResolvedValue(PasswordSyncStatus.InSync),
     getIsSeedlessOnboardingUserAuthenticated: jest.fn().mockResolvedValue(true),
@@ -196,19 +196,19 @@ describe('UnlockPage component (passkey UI)', () => {
   });
 
   it('resolves the cached recovery status on mount', async () => {
-    const resolveSeedlessPasswordSyncState = jest
+    const resolveSeedlessPasswordSyncInstruction = jest
       .fn()
       .mockResolvedValue(PasswordSyncStatus.PasswordOutdated);
     const props = buildProps({
       isSocialLoginFlow: true,
       isPasskeyActive: false,
-      resolveSeedlessPasswordSyncState,
+      resolveSeedlessPasswordSyncInstruction,
     });
 
     renderWithProvider(<UnlockPage {...props} />, mockStore, '/unlock');
 
     await waitFor(() => {
-      expect(resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+      expect(resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
         skipCache: false,
       });
     });

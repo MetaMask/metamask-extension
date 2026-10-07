@@ -371,7 +371,7 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('resolveSeedlessPasswordSyncState', function () {
+  describe('resolveSeedlessPasswordSyncInstruction', function () {
     it('delegates to LegacyBackgroundApiService', async function () {
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
@@ -379,10 +379,10 @@ describe('MetaMaskController', function () {
 
       await metamaskController
         .getApi()
-        .resolveSeedlessPasswordSyncState({ skipCache: true });
+        .resolveSeedlessPasswordSyncInstruction({ skipCache: true });
 
       expect(callSpy).toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:resolveSeedlessPasswordSyncState',
+        'LegacyBackgroundApiService:resolveSeedlessPasswordSyncInstruction',
         { skipCache: true },
       );
     });

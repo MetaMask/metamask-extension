@@ -45,7 +45,7 @@ jest.mock('../shared/lib/i18n', () => ({
 
 jest.mock('./store/actions', () => ({
   ...jest.requireActual('./store/actions'),
-  resolveSeedlessPasswordSyncState: jest.fn(),
+  resolveSeedlessPasswordSyncInstruction: jest.fn(),
   lockMetamask: jest.fn(),
 }));
 
@@ -207,11 +207,11 @@ describe('Index Tests', () => {
     });
 
     it('resolves the password sync status on the initial run when the wallet is unlocked', async () => {
-      const resolveSeedlessPasswordSyncStateAction = {
+      const resolveSeedlessPasswordSyncInstructionAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
-      actions.resolveSeedlessPasswordSyncState.mockReturnValue(
-        resolveSeedlessPasswordSyncStateAction,
+      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
+        resolveSeedlessPasswordSyncInstructionAction,
       );
 
       const store = {
@@ -228,20 +228,20 @@ describe('Index Tests', () => {
 
       await runInitialActions(store);
 
-      expect(actions.resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+      expect(actions.resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
         skipCache: false,
       });
       expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncStateAction,
+        resolveSeedlessPasswordSyncInstructionAction,
       );
     });
 
     it('resolves the password sync status on the interval when the wallet is unlocked', async () => {
-      const resolveSeedlessPasswordSyncStateAction = {
+      const resolveSeedlessPasswordSyncInstructionAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
-      actions.resolveSeedlessPasswordSyncState.mockReturnValue(
-        resolveSeedlessPasswordSyncStateAction,
+      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
+        resolveSeedlessPasswordSyncInstructionAction,
       );
 
       const store = {
@@ -257,28 +257,28 @@ describe('Index Tests', () => {
       };
 
       await runInitialActions(store);
-      actions.resolveSeedlessPasswordSyncState.mockClear();
+      actions.resolveSeedlessPasswordSyncInstruction.mockClear();
       store.dispatch.mockClear();
 
       await jest.advanceTimersByTimeAsync(
         SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS,
       );
 
-      expect(actions.resolveSeedlessPasswordSyncState).toHaveBeenCalledWith({
+      expect(actions.resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
         skipCache: false,
       });
       expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncStateAction,
+        resolveSeedlessPasswordSyncInstructionAction,
       );
     });
 
     it('does not lock the wallet when polling finds an unfinished recovery', async () => {
-      const resolveSeedlessPasswordSyncStateAction = {
+      const resolveSeedlessPasswordSyncInstructionAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
       actions.lockMetamask.mockClear();
-      actions.resolveSeedlessPasswordSyncState.mockReturnValue(
-        resolveSeedlessPasswordSyncStateAction,
+      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
+        resolveSeedlessPasswordSyncInstructionAction,
       );
 
       const store = {
@@ -291,7 +291,7 @@ describe('Index Tests', () => {
           },
         }),
         dispatch: jest.fn((action) =>
-          action === resolveSeedlessPasswordSyncStateAction
+          action === resolveSeedlessPasswordSyncInstructionAction
             ? Promise.resolve(PasswordSyncStatus.EnterNewPassword)
             : Promise.resolve(),
         ),
@@ -301,20 +301,20 @@ describe('Index Tests', () => {
 
       expect(actions.lockMetamask).not.toHaveBeenCalled();
       expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncStateAction,
+        resolveSeedlessPasswordSyncInstructionAction,
       );
     });
 
     it('does not lock the wallet when a status refresh fails', async () => {
-      const resolveSeedlessPasswordSyncStateAction = {
+      const resolveSeedlessPasswordSyncInstructionAction = {
         type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
       };
       const logErrorSpy = jest
         .spyOn(log, 'error')
         .mockImplementation(() => undefined);
       actions.lockMetamask.mockClear();
-      actions.resolveSeedlessPasswordSyncState.mockReturnValue(
-        resolveSeedlessPasswordSyncStateAction,
+      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
+        resolveSeedlessPasswordSyncInstructionAction,
       );
 
       const store = {
@@ -329,7 +329,7 @@ describe('Index Tests', () => {
         // A failed refresh is logged by the poller but must not lock the
         // unlocked wallet.
         dispatch: jest.fn((action) =>
-          action === resolveSeedlessPasswordSyncStateAction
+          action === resolveSeedlessPasswordSyncInstructionAction
             ? Promise.reject(new Error('resolver failed'))
             : Promise.resolve(),
         ),

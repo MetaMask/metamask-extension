@@ -43,7 +43,7 @@ import {
 import {
   changePassword,
   forceUpdateMetamaskState,
-  resolveSeedlessPasswordSyncState,
+  resolveSeedlessPasswordSyncInstruction,
   verifyPassword,
 } from '../../../store/actions';
 import { getIsSocialLoginFlow } from '../../../selectors';
@@ -337,7 +337,7 @@ const ChangePassword = ({
   useEffect(() => {
     (async () => {
       if (isSocialLoginFlow) {
-        await dispatch(resolveSeedlessPasswordSyncState({ skipCache: false }));
+        await dispatch(resolveSeedlessPasswordSyncInstruction({ skipCache: false }));
       }
     })();
   }, [dispatch, isSocialLoginFlow]);

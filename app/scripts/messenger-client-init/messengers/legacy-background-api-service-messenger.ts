@@ -110,7 +110,7 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PasskeyController:changePasswordWithPasskeyVerification',
       'PasskeyController:exportSeedPhraseWithPasskey',
       'OnboardingController:getState',
-      'SeedlessOnboardingController:clearPasswordChangePhase',
+      'SeedlessOnboardingController:completePasswordChange',
       'SeedlessOnboardingController:getState',
       'SeedlessOnboardingController:runMigrations',
       'AnalyticsController:getEventFragmentById',

@@ -88,7 +88,7 @@ type UnlockPageProps = UnlockPageContext & {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
   isPasskeyActive: boolean;
-  resolveSeedlessPasswordSyncState: (options?: {
+  resolveSeedlessPasswordSyncInstruction: (options?: {
     skipCache?: boolean;
   }) => Promise<PasswordSyncStatus>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
@@ -184,7 +184,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     /**
      * Resolve the Seedless password synchronization state for social login.
      */
-    resolveSeedlessPasswordSyncState: PropTypes.func,
+    resolveSeedlessPasswordSyncInstruction: PropTypes.func,
     /**
      * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
      */
@@ -283,7 +283,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
       try {
-        await this.props.resolveSeedlessPasswordSyncState({
+        await this.props.resolveSeedlessPasswordSyncInstruction({
           skipCache: false,
         });
       } catch (error) {

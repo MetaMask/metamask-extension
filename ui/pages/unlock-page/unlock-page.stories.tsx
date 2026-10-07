@@ -11,8 +11,8 @@ export default {
     onRestore: { action: 'onRestore' },
     onSubmit: { action: 'onSubmit' },
     forceUpdateMetamaskState: { action: 'forceUpdateMetamaskState' },
-    resolveSeedlessPasswordSyncState: {
-      action: 'resolveSeedlessPasswordSyncState',
+    resolveSeedlessPasswordSyncInstruction: {
+      action: 'resolveSeedlessPasswordSyncInstruction',
     },
     getIsSeedlessOnboardingUserAuthenticated: {
       action: 'getIsSeedlessOnboardingUserAuthenticated',

@@ -163,13 +163,13 @@ import { BridgeStatusControllerWipeBridgeStatusAction } from '@metamask/bridge-s
 import {
   EncAccountDataType,
   InvalidPrimarySecretDataTypeError,
-  PasswordSyncStatus,
+  PasswordSyncInstruction,
   RecoveryError,
   SecretMetadata,
   SecretType,
   SeedlessOnboardingControllerAddNewSecretDataAction,
   SeedlessOnboardingControllerChangePasswordAction,
-  SeedlessOnboardingControllerClearPasswordChangePhaseAction,
+  SeedlessOnboardingControllerCompletePasswordChangeAction,
   SeedlessOnboardingControllerClearStateAction,
   SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction,
   SeedlessOnboardingControllerErrorMessage,
@@ -186,7 +186,7 @@ import {
   SeedlessOnboardingControllerStoreKeyringEncryptionKeyAction,
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
-  SeedlessPasswordChangePhase,
+  SeedlessOnboardingCheckpoint,
 } from '@metamask/seedless-onboarding-controller';
 import {
   CaveatSpecificationConstraint,
@@ -557,7 +557,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'resetAccount',
   'resetWallet',
   'restoreSocialBackupAndGetSeedPhrase',
-  'resolveSeedlessPasswordSyncState',
+  'resolveSeedlessPasswordSyncInstruction',
   'setAccountLabel',
   'setCurrentCurrency',
   'setEnabledAllPopularNetworks',
@@ -718,7 +718,7 @@ type AllowedActions =
   | RemoteFeatureFlagControllerGetStateAction
   | SeedlessOnboardingControllerAddNewSecretDataAction
   | SeedlessOnboardingControllerChangePasswordAction
-  | SeedlessOnboardingControllerClearPasswordChangePhaseAction
+  | SeedlessOnboardingControllerCompletePasswordChangeAction
   | SeedlessOnboardingControllerClearStateAction
   | SeedlessOnboardingControllerCreateToprfKeyAndBackupSeedPhraseAction
   | SeedlessOnboardingControllerFetchAllSecretDataAction
@@ -2279,9 +2279,9 @@ export class LegacyBackgroundApiService {
    * remote check.
    * @returns The current password synchronization and recovery status.
    */
-  async resolveSeedlessPasswordSyncState({
+  async resolveSeedlessPasswordSyncInstruction({
     skipCache = false,
-  }: { skipCache?: boolean } = {}): Promise<PasswordSyncStatus> {
+  }: { skipCache?: boolean } = {}): Promise<PasswordSyncInstruction> {
     const isSocialLoginFlow = this.#messenger.call(
       'OnboardingController:getIsSocialLoginFlow',
     );
@@ -2290,19 +2290,12 @@ export class LegacyBackgroundApiService {
     );
 
     if (!isSocialLoginFlow || !completedOnboarding) {
-      return PasswordSyncStatus.InSync;
+      return PasswordSyncInstruction.InSync;
     }
-
-    const { passwordChangePhase } = this.#messenger.call(
-      'SeedlessOnboardingController:getState',
-    );
-    const shouldSkipCache =
-      skipCache ||
-      passwordChangePhase === SeedlessPasswordChangePhase.SeedlessChangePending;
 
     return this.#messenger.call(
       'SeedlessOnboardingController:resolvePasswordSyncState',
-      { skipCache: shouldSkipCache },
+      { skipCache: skipCache },
     );
   }
 
@@ -2336,7 +2329,7 @@ export class LegacyBackgroundApiService {
         { skipCache },
       );
 
-      return passwordSyncState !== PasswordSyncStatus.InSync;
+      return passwordSyncState !== PasswordSyncInstruction.InSync;
     } catch (error) {
       if (captureSentryError) {
         this.#messenger.captureException?.(
@@ -2371,11 +2364,11 @@ export class LegacyBackgroundApiService {
     await this.#seedlessOperationMutex.runExclusive(async () => {
       let isRecovery = false;
       try {
-        const passwordSyncState = await this.resolveSeedlessPasswordSyncState({
+        const passwordSyncState = await this.resolveSeedlessPasswordSyncInstruction({
           skipCache: true,
         });
 
-        if (passwordSyncState === PasswordSyncStatus.InSync) {
+        if (passwordSyncState === PasswordSyncInstruction.InSync) {
           await this.#unlockSeedlessWallet(password);
           return;
         }
@@ -2429,16 +2422,16 @@ export class LegacyBackgroundApiService {
    */
   async #recoverSeedlessPassword(
     password: string,
-    passwordSyncState: PasswordSyncStatus,
+    passwordSyncState: PasswordSyncInstruction,
   ): Promise<void> {
     let changePasswordSuccess = false;
-    this.#messenger.call('MetaMetricsController:bufferedTrace', {
+    this.#messenger.call('SentryTracingService:bufferedTrace', {
       name: TraceName.OnboardingResetPassword,
       op: TraceOperation.OnboardingSecurityOp,
     });
 
     try {
-      if (passwordSyncState === PasswordSyncStatus.Unknown) {
+      if (passwordSyncState === PasswordSyncInstruction.Unknown) {
         throw new Error(
           SeedlessOnboardingControllerErrorMessage.CouldNotRecoverPassword,
         );
@@ -2452,10 +2445,10 @@ export class LegacyBackgroundApiService {
       );
 
       switch (recoveryStatus) {
-        case PasswordSyncStatus.InSync:
+        case PasswordSyncInstruction.InSync:
           await this.#unlockSeedlessWallet(password);
           break;
-        case PasswordSyncStatus.ReconcileKeyring: {
+        case PasswordSyncInstruction.ReconcileKeyring: {
           const isKeyringPasswordValid =
             await this.#isKeyringPasswordValid(password);
 
@@ -2489,18 +2482,18 @@ export class LegacyBackgroundApiService {
           }
           break;
         }
-        case PasswordSyncStatus.SyncKey:
+        case PasswordSyncInstruction.SyncKey:
           await this.#unlockSeedlessWallet(password);
           await this.#syncAndCompleteKeyringEncryptionKey();
           break;
-        case PasswordSyncStatus.Unknown: {
+        case PasswordSyncInstruction.Unknown: {
           const isKeyringPasswordValid =
             await this.#isKeyringPasswordValid(password);
 
           if (
             isKeyringPasswordValid &&
-            (passwordSyncState === PasswordSyncStatus.PasswordOutdated ||
-              passwordSyncState === PasswordSyncStatus.EnterNewPassword)
+            (passwordSyncState === PasswordSyncInstruction.PasswordOutdated ||
+              passwordSyncState === PasswordSyncInstruction.EnterNewPassword)
           ) {
             throw new Error(
               SeedlessOnboardingControllerErrorMessage.OutdatedPassword,

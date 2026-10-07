@@ -1112,7 +1112,7 @@ export function checkIsSeedlessPasswordOutdated(
  * state.
  * @returns The current recovery status.
  */
-export function resolveSeedlessPasswordSyncState({
+export function resolveSeedlessPasswordSyncInstruction({
   skipCache = false,
 }: { skipCache?: boolean } = {}): ThunkAction<
   Promise<PasswordSyncStatus>,
@@ -1124,7 +1124,7 @@ export function resolveSeedlessPasswordSyncState({
     try {
       const passwordSyncState =
         await submitRequestToBackground<PasswordSyncStatus>(
-          'resolveSeedlessPasswordSyncState',
+          'resolveSeedlessPasswordSyncInstruction',
           [{ skipCache }],
         );
 
@@ -1135,7 +1135,7 @@ export function resolveSeedlessPasswordSyncState({
 
       return passwordSyncState;
     } catch (error) {
-      log.warn('resolveSeedlessPasswordSyncState error', error);
+      log.warn('resolveSeedlessPasswordSyncInstruction error', error);
       // Match the previous outdated-password check: a failed status refresh
       // must not block the periodic check or change the current UX state.
       return PasswordSyncStatus.InSync;

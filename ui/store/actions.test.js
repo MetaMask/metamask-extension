@@ -344,32 +344,32 @@ describe('Actions', () => {
     });
   });
 
-  describe('#resolveSeedlessPasswordSyncState', () => {
+  describe('#resolveSeedlessPasswordSyncInstruction', () => {
     afterEach(() => {
       sinon.restore();
     });
 
     it('returns the recovery status from the background service', async () => {
       const store = mockStore();
-      const resolveSeedlessPasswordSyncStateStub = sinon
+      const resolveSeedlessPasswordSyncInstructionStub = sinon
         .stub()
         .resolves(PasswordSyncStatus.EnterNewPassword);
       const getStatePatchesStub = sinon.stub().resolves([]);
 
       background.getApi.returns({
-        resolveSeedlessPasswordSyncState: resolveSeedlessPasswordSyncStateStub,
+        resolveSeedlessPasswordSyncInstruction: resolveSeedlessPasswordSyncInstructionStub,
         getStatePatches: getStatePatchesStub,
       });
 
       setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
-        actions.resolveSeedlessPasswordSyncState(),
+        actions.resolveSeedlessPasswordSyncInstruction(),
       );
 
       expect(result).toStrictEqual(PasswordSyncStatus.EnterNewPassword);
       expect(
-        resolveSeedlessPasswordSyncStateStub.calledOnceWith({
+        resolveSeedlessPasswordSyncInstructionStub.calledOnceWith({
           skipCache: false,
         }),
       ).toStrictEqual(true);
@@ -379,7 +379,7 @@ describe('Actions', () => {
     it('returns in-sync when the background resolver fails', async () => {
       const store = mockStore();
       background.getApi.returns({
-        resolveSeedlessPasswordSyncState: sinon
+        resolveSeedlessPasswordSyncInstruction: sinon
           .stub()
           .rejects(new Error('resolver failed')),
       });
@@ -387,7 +387,7 @@ describe('Actions', () => {
       setBackgroundConnection(background.getApi());
 
       const result = await store.dispatch(
-        actions.resolveSeedlessPasswordSyncState({ skipCache: true }),
+        actions.resolveSeedlessPasswordSyncInstruction({ skipCache: true }),
       );
 
       expect(result).toStrictEqual(PasswordSyncStatus.InSync);

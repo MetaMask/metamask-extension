@@ -497,9 +497,9 @@ export type LegacyBackgroundApiServiceChangePasswordAction = {
  * remote check.
  * @returns The current password synchronization and recovery status.
  */
-export type LegacyBackgroundApiServiceResolveSeedlessPasswordSyncStateAction = {
-  type: `LegacyBackgroundApiService:resolveSeedlessPasswordSyncState`;
-  handler: LegacyBackgroundApiService['resolveSeedlessPasswordSyncState'];
+export type LegacyBackgroundApiServiceResolveSeedlessPasswordSyncInstructionAction = {
+  type: `LegacyBackgroundApiService:resolveSeedlessPasswordSyncInstruction`;
+  handler: LegacyBackgroundApiService['resolveSeedlessPasswordSyncInstruction'];
 };
 
 /**
@@ -1206,7 +1206,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceSetSelectedInternalAccountAction
   | LegacyBackgroundApiServiceGetNextNonceAction
   | LegacyBackgroundApiServiceChangePasswordAction
-  | LegacyBackgroundApiServiceResolveSeedlessPasswordSyncStateAction
+  | LegacyBackgroundApiServiceResolveSeedlessPasswordSyncInstructionAction
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction

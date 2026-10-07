@@ -324,7 +324,7 @@ export async function runInitialActions(store) {
 
       try {
         await store.dispatch(
-          actions.resolveSeedlessPasswordSyncState({ skipCache: false }),
+          actions.resolveSeedlessPasswordSyncInstruction({ skipCache: false }),
         );
       } catch (error) {
         log.error('[Metamask] Seedless password state check error', error);

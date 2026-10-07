@@ -12,7 +12,7 @@ import { getRedirectAfterUnlock } from '../../helpers/utils/redirect-after-unloc
 import {
   tryUnlockMetamask,
   forceUpdateMetamaskState,
-  resolveSeedlessPasswordSyncState,
+  resolveSeedlessPasswordSyncInstruction,
   resetOnboarding,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
@@ -42,7 +42,7 @@ type OwnProps = {
   /** Injected by withRouterHooks; stripped in mergeProps — UnlockPage does not use URL params. */
   params: RouterHooksProps['params'];
   onSubmit?: (password: string) => Promise<void>;
-  resolveSeedlessPasswordSyncState?: (options?: {
+  resolveSeedlessPasswordSyncInstruction?: (options?: {
     skipCache?: boolean;
   }) => Promise<PasswordSyncStatus>;
   /**
@@ -90,8 +90,8 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
       dispatch(tryUnlockMetamask(password)),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
-    resolveSeedlessPasswordSyncState: (options?: { skipCache?: boolean }) =>
-      dispatch(resolveSeedlessPasswordSyncState(options)),
+    resolveSeedlessPasswordSyncInstruction: (options?: { skipCache?: boolean }) =>
+      dispatch(resolveSeedlessPasswordSyncInstruction(options)),
     getIsSeedlessOnboardingUserAuthenticated: () =>
       dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
@@ -144,7 +144,7 @@ const UnlockPageConnected = compose(
 )(UnlockPage) as React.ComponentType<
   React.PropsWithChildren<{
     onSubmit?: (password: string) => Promise<void>;
-    resolveSeedlessPasswordSyncState?: (options?: {
+    resolveSeedlessPasswordSyncInstruction?: (options?: {
       skipCache?: boolean;
     }) => Promise<PasswordSyncStatus>;
     navigateAfterUnlock?: (
