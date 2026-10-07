@@ -525,6 +525,7 @@ describe('getMoneyDepositCtaTokenAddresses', () => {
     ).toStrictEqual({ '0x1': [USDC.toLowerCase(), USDT.toLowerCase()] });
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     ['unserved', undefined],
     ['not an object', 42],
@@ -534,11 +535,14 @@ describe('getMoneyDepositCtaTokenAddresses', () => {
     ['a CAIP chain ID', { 'eip155:1': [USDC] }],
     ['an invalid address', { '0x1': ['0x1234'] }],
     ['a non-array address list', { '0x1': USDC }],
-  ])('returns an empty list when the flag is %s', (_case, value) => {
-    expect(
-      getMoneyDepositCtaTokenAddresses({
-        [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: value,
-      }),
-    ).toStrictEqual({});
-  });
+  ])(
+    'returns an empty list when the flag is %s',
+    (_case: string, value: unknown) => {
+      expect(
+        getMoneyDepositCtaTokenAddresses({
+          [MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME]: value,
+        }),
+      ).toStrictEqual({});
+    },
+  );
 });

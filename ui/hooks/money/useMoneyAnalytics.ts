@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { mapKeys, omit, snakeCase } from 'lodash';
+import { mapKeys, snakeCase } from 'lodash';
 import {
   TransactionType,
   type TransactionMeta,
@@ -183,13 +183,18 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
 
   const trackButtonClicked = useCallback(
     (properties: MoneyButtonClickedProperties) => {
+      const { labelKey, labelSubstitutions, ...wireProperties } = {
+        labelKey: undefined,
+        labelSubstitutions: undefined,
+        ...properties,
+      };
       const label =
-        properties.buttonType === MoneyButtonType.Text
-          ? resolveLabel(properties.labelKey, properties.labelSubstitutions)
-          : {};
+        labelKey === undefined
+          ? {}
+          : resolveLabel(labelKey, labelSubstitutions);
 
       track(MetaMetricsEventName.MoneyButtonClicked, {
-        ...omit(properties, ['labelKey', 'labelSubstitutions']),
+        ...wireProperties,
         ...label,
         redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
       });
