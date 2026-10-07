@@ -773,6 +773,13 @@ describe('MarketListView', () => {
           filter_category: 'crypto',
         }),
       );
+      expect(mockTrack).toHaveBeenCalledWith(
+        MetaMetricsEventName.PerpsUiInteraction,
+        expect.objectContaining({
+          interaction_type: 'button_clicked',
+          button_clicked: 'crypto',
+        }),
+      );
     });
   });
 
