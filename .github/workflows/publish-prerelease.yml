@@ -105,6 +105,7 @@ jobs:
       - name: Upload test plan to S3
         if: ${{ steps.generate-test-plan.outputs.test_plan_generated == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        continue-on-error: true
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -221,6 +222,7 @@ jobs:
         id: token
         if: ${{ env.PR_NUMBER && vars.AWS_CLOUDFRONT_URL }}
         uses: MetaMask/github-tools/.github/actions/get-token@v1
+        continue-on-error: true
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
