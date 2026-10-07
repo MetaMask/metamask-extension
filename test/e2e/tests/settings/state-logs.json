@@ -318,7 +318,7 @@
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object",
-      "eventsConfig": "object"
+      "eventsConfig": "null"
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
