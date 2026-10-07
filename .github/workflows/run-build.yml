@@ -103,6 +103,7 @@ jobs:
       - name: Upload bundle analyzer report to S3
         if: ${{ inputs.bundle-analyzer && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        continue-on-error: true
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -124,6 +125,7 @@ jobs:
       - name: Upload 'builds' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@bd5fd59aef9f5f31c77ffc63c2bbd53127e4f7b9 # v1.16.0
+        continue-on-error: true
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
