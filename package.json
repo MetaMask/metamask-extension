@@ -365,7 +365,19 @@
     "braces@npm:^3.0.3": "npm:npm-empty-package@1.0.0",
     "braces@npm:^2.3.1": "npm:npm-empty-package@1.0.0",
     "pbkdf2": "^3.1.7",
-    "shell-quote": "^1.11.0"
+    "shell-quote": "^1.11.0",
+    "@graphql-tools/utils@npm:8.9.0": "12.0.3",
+    "@graphql-tools/utils@npm:^8.8.0": "12.0.3",
+    "joi@npm:^18.2.3": "18.2.9",
+    "tinypool@npm:2.1.0": "2.1.2",
+    "tinypool@npm:^1.0.2": "2.1.2",
+    "@opentelemetry/instrumentation-knex@npm:0.55.0": "0.65.0",
+    "@opentelemetry/instrumentation-mongoose@npm:0.57.0": "0.67.0",
+    "@opentelemetry/instrumentation-mysql@npm:0.57.0": "0.67.0",
+    "@opentelemetry/instrumentation-mysql2@npm:0.57.0": "0.67.0",
+    "@opentelemetry/instrumentation-pg@npm:0.63.0": "0.73.0",
+    "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
+    "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
