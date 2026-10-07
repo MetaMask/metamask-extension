@@ -106,6 +106,7 @@
     "ConfigRegistryController": {
       "configs": "object",
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },

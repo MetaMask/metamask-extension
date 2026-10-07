@@ -317,7 +317,8 @@
     "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
-      "networks": "object"
+      "networks": "object",
+      "eventsConfig": "object"
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -441,6 +442,7 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
+    "eventsConfigEtag": "null",
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
