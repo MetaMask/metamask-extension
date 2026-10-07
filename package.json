@@ -363,7 +363,9 @@
     "micromatch@npm:^4.0.5": "patch:micromatch@npm%3A4.0.8#~/.yarn/patches/micromatch-npm-4.0.8-c9570e4aca.patch",
     "micromatch@npm:4.0.8": "patch:micromatch@npm%3A4.0.8#~/.yarn/patches/micromatch-npm-4.0.8-c9570e4aca.patch",
     "braces@npm:^3.0.3": "npm:npm-empty-package@1.0.0",
-    "braces@npm:^2.3.1": "npm:npm-empty-package@1.0.0"
+    "braces@npm:^2.3.1": "npm:npm-empty-package@1.0.0",
+    "pbkdf2": "^3.1.7",
+    "shell-quote": "^1.11.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -842,7 +844,7 @@
     "selenium-webdriver": "^4.44.0",
     "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
-    "sharp": "^0.35.4",
+    "sharp": "^0.35.5",
     "sinon": "^9.0.0",
     "source-map": "^0.7.4",
     "sprintf-js": "^1.1.3",
