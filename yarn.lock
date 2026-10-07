@@ -8956,10 +8956,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:1.0.0-dev.51":
-  version: 1.0.0-dev.51
-  resolution: "@metamask/stellar-wallet-snap@npm:1.0.0-dev.51"
-  checksum: 10/eac575cc3b31ce5d7951d718e27ddd79b498ec6e2ec1cd8fa3af8bf7004e6a02dfa873b75b8c9898c3a196c4d8d4f77e3076fb8d0972c9abd3bad8056b641bdc
+"@metamask/stellar-wallet-snap@npm:1.1.1-dev.3":
+  version: 1.1.1-dev.3
+  resolution: "@metamask/stellar-wallet-snap@npm:1.1.1-dev.3"
+  checksum: 10/5b7f87ec64e50d1231c516ddb3d0ddceea7ccbb30063fb0ecb177bf3fba78856814d1df1844960f15a90da632013d9ff4aa0bed40648caf69c4cc037ed15496a
   languageName: node
   linkType: hard
 
@@ -32042,7 +32042,7 @@ __metadata:
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
     "@metamask/solana-wallet-snap": "npm:^5.0.1"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:1.0.0-dev.51"
+    "@metamask/stellar-wallet-snap": "npm:1.1.1-dev.3"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"

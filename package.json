@@ -347,7 +347,7 @@
     "@metamask/profile-sync-controller": "^33.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
     "@metamask/ramps-controller": "^22.0.0",
-    "@metamask/stellar-wallet-snap": "1.0.0-dev.51"
+    "@metamask/stellar-wallet-snap": "1.1.1-dev.3"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -501,7 +501,7 @@
     "@metamask/snaps-utils": "^12.6.0",
     "@metamask/solana-wallet-snap": "^5.0.1",
     "@metamask/solana-wallet-standard": "^1.0.0",
-    "@metamask/stellar-wallet-snap": "1.0.0-dev.51",
+    "@metamask/stellar-wallet-snap": "1.1.1-dev.3",
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^8.0.1",
     "@metamask/transaction-controller": "^72.0.1",
