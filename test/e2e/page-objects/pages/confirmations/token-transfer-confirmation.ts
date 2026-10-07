@@ -1,4 +1,3 @@
-import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
@@ -20,24 +19,19 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
   private readonly interactingWithParagraph = {
-    css: 'p',
-    text: tEn('interactingWith'),
+    testId: 'transaction-details-recipient-row',
   };
 
   private readonly networkFee = '[data-testid="first-gas-field"]';
 
-  private readonly networkFeeParagraph = {
-    css: 'p',
-    text: tEn('networkFee'),
-  };
+  private readonly networkFeeParagraph = { testId: 'edit-gas-fees-row' };
 
   private readonly networkParagraph = {
-    css: 'p',
-    text: tEn('transactionFlowNetwork'),
+    testId: 'confirmation__details-network-name',
   };
 
   private readonly networkTextElement = (networkText: string) => ({
-    css: 'p',
+    testId: 'confirmation__details-network-name',
     text: networkText,
   });
 
