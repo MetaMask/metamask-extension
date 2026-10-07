@@ -13,6 +13,7 @@ import {
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
 import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
+import { BrazeBanner } from '../braze-banner';
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -105,12 +106,14 @@ export const Carousel = () => {
     [createEventBuilder, trackEvent],
   );
 
-  if (!isCarouselEnabled) {
-    return null;
+  // if (!isCarouselEnabled) {
+  if (isCarouselEnabled) {
+    return <BrazeBanner />;
   }
 
   return (
     <>
+      <BrazeBanner />
       <CarouselWithEmptyState
         slides={slides}
         isLoading={isLoading}
