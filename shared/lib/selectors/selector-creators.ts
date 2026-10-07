@@ -52,17 +52,31 @@ export type EqualityMode = (typeof EqualityMode)[keyof typeof EqualityMode];
  * | Mode   | Cache Size | Memory     | Best For                              |
  * |--------|------------|------------|---------------------------------------|
  * | `Lru`  | Bounded    | Predictable| Most selectors, parameterized lookups |
- * | `Weak` | Unbounded  | Auto-GC    | Many unique object keys               |
+ * | `Weak` | Unbounded  | Auto-GC *  | Many unique **object** keys           |
+ *
+ * \* `Weak` only auto-collects **object** keys. A result keyed on a primitive
+ * (string, number, boolean) is held strongly until `clearCache()`, so `Weak`
+ * never releases it. Never reach for `Weak` to cope with ever-changing
+ * primitive arguments such as timestamps, offsets or incrementing ids: that
+ * is the one case where it leaks for the lifetime of the page. Either keep
+ * the changing value out of the selector and compute with it afterwards, or
+ * bound the cache with `maxSize`.
  *
  * **Decision tree:**
  * 1. Do you pass objects as selector arguments? → Consider `Weak`
  * 2. Is the argument set bounded (e.g., chain IDs)? → `Lru` with `maxSize`
- * 3. Default case? → `Lru` (size 1)
+ * 3. Does an argument change constantly (e.g., `Date.now()`)? → keep it out
+ * of the selector, or set `maxSize`
+ * 4. Default case? → `Lru` (size 1)
  */
 export const MemoizeMode = {
   /** LRU cache with configurable size. Predictable memory usage. */
   Lru: 'lru',
-  /** WeakMap-based. Auto garbage collection when object keys are dereferenced. */
+  /**
+   * WeakMap-based. Auto garbage collection when **object** keys are
+   * dereferenced. Primitive keys are never released, so pair with `maxSize`
+   * if a primitive argument's set of values is not fixed.
+   */
   Weak: 'weakmap',
 } as const;
 
@@ -109,12 +123,18 @@ export type SelectorOptions = {
   memoize?: MemoizeMode;
 
   /**
-   * Maximum entries in the LRU cache. Only applies when `memoize` is `Lru`.
+   * Maximum entries to keep, applied to both of the selector's caches: the
+   * result cache keyed on input selector results, and the arguments cache
+   * keyed on the arguments the selector is called with.
    *
    * Increase for parameterized selectors called with multiple argument
    * combinations (e.g., `getTokensForChain(state, chainId)`).
    *
-   * @default 1
+   * Set this whenever a selector takes a primitive argument whose set of
+   * values is not fixed. Without it the arguments cache keeps one entry per
+   * distinct primitive it has ever seen, for the lifetime of the page.
+   *
+   * @default 1 for the result cache; the arguments cache is unbounded
    */
   maxSize?: number;
 };
@@ -204,7 +224,7 @@ export function createSelectorWith(
     equalityCheck: inputEqualityFn,
   };
 
-  if (memoize === MemoizeMode.Lru && maxSize !== undefined) {
+  if (maxSize !== undefined) {
     memoizeOptions.maxSize = maxSize;
   }
 
@@ -212,7 +232,19 @@ export function createSelectorWith(
     memoizeOptions.resultEqualityCheck = equalityFunctions[resultEquality];
   }
 
-  return createSelectorCreator(memoizeFn, memoizeOptions);
+  // A selector keeps two independent caches, so `maxSize` has to reach both or
+  // it bounds only half of it. `memoizeOptions` bounds the result cache, keyed
+  // on what the input selectors return. The arguments cache, keyed on the
+  // arguments the selector is called with, is reselect's own `weakMapMemoize`
+  // and stays unbounded unless told otherwise. That cache does release object
+  // keys once they are garbage collected, but it holds a result keyed on a
+  // primitive until `clearCache()`, so a selector called with an ever-changing
+  // primitive grows forever even when `maxSize` is set.
+  return createSelectorCreator({
+    memoize: memoizeFn,
+    memoizeOptions,
+    ...(maxSize === undefined ? {} : { argsMemoizeOptions: { maxSize } }),
+  });
 }
 
 // ============================================================================
@@ -285,8 +317,10 @@ export const createDeepEqualSelector = createSelectorWith({
  * should be garbage-collected when source objects are no longer referenced
  *
  * ## When to Avoid
- * 1. **Primitive arguments** - WeakMap only accepts objects as keys; use
- * {@link createParameterizedSelector} for selectors with string/number parameters
+ * 1. **Primitive arguments** - a primitive key is not rejected, it is stored in
+ * a plain `Map` that is never collected, so the cache grows for the lifetime of
+ * the page. Use {@link createParameterizedSelector} for selectors with
+ * string/number parameters
  * 2. **Unstable references** - If input selectors create new objects on each call,
  * the cache will never hit; use an equality-based selector instead
  * 3. **Small, bounded argument sets** - Standard LRU memoization is simpler and
@@ -330,8 +364,12 @@ export const createWeakMapSelector = createSelectorWith({
  * within a render cycle or across navigation
  *
  * ## When to Avoid
- * 1. **Unbounded argument variety** - If arguments are highly unique (e.g., timestamps),
- * cache will thrash; consider {@link createWeakMapSelector} for object keys
+ * 1. **Unbounded argument variety** - If arguments are highly unique (e.g.,
+ * timestamps), the cache thrashes and every call recomputes. Reaching for
+ * {@link createWeakMapSelector} makes this worse rather than better, because it
+ * never releases primitive keys. Keep the changing value out of the selector:
+ * memoize the state-derived inputs, then combine them with the value in a plain
+ * function, the way `getIsStockMarketClosed` does in `ui/ducks/bridge`
  * 2. **Single argument pattern** - If selector is always called with the same argument,
  * standard `createSelector` (cache size 1) is sufficient
  * 3. **Memory-constrained environments** - Large cache sizes with large result
