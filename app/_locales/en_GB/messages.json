@@ -5672,6 +5672,24 @@
     "message": "Step $1 of $2",
     "description": "$1 is the current step, $2 the number of steps"
   },
+  "mfaSettingsDescription": {
+    "message": "Used to confirm it's you before sensitive actions."
+  },
+  "mfaSettingsEmailLinked": {
+    "message": "Linked to your sign-in"
+  },
+  "mfaSettingsEmailPending": {
+    "message": "Setup not finished"
+  },
+  "mfaSettingsFinishSetup": {
+    "message": "Finish setup"
+  },
+  "mfaSettingsSetUp": {
+    "message": "Set up"
+  },
+  "mfaSettingsTitle": {
+    "message": "Verification methods"
+  },
   "mfaSuccessDone": {
     "message": "Done"
   },
