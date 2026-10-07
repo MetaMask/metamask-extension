@@ -92,8 +92,6 @@ import {
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
-jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
-
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
@@ -162,168 +160,11 @@ describe('LegacyBackgroundApiService', () => {
     });
   });
 
-  describe('isAssetsUnifyStateEnabled', () => {
-    it('returns false when the feature flag is undefined', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({ RemoteFeatureFlags: {} }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag is disabled', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag has an unsupported version', async () => {
-      await withService(({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '2' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns true when the feature flag is enabled with the correct version', async () => {
-      await withService(({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false when the feature flag is enabled but the build gate is disabled', async () => {
-      await withService(({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const result = rootMessenger.call(
-          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
-        );
-
-        expect(result).toStrictEqual(false);
-      });
-    });
-  });
-
   describe('setCurrentCurrency', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      // Clear the require cache and resets process.env before each test to ensure a clean environment.
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      // Restore original environment
-      process.env = originalEnv;
-    });
-
-    it('sets the currency in the CurrencyRateController', async () => {
+    it('sets the currency in the AssetsController and CurrencyRateController', async () => {
       const currencyCode: SupportedCurrency = 'usd';
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'CurrencyRateController:setCurrentCurrency',
-          jest.fn(),
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:setCurrentCurrency',
-            currencyCode,
-          ),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'CurrencyRateController:setCurrentCurrency',
-          currencyCode,
-        );
-      });
-    });
-
-    it('sets the currency in the AssetsController and CurrencyRateController when assets unify state is enabled', async () => {
-      const currencyCode: SupportedCurrency = 'usd';
-
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'CurrencyRateController:setCurrentCurrency',
           jest.fn(),
@@ -357,34 +198,12 @@ describe('LegacyBackgroundApiService', () => {
   });
 
   describe('getAssets', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      process.env = originalEnv;
-    });
-
-    it('fetches assets from the AssetsController with forceUpdate when the feature is enabled', async () => {
+    it('fetches assets from the AssetsController with forceUpdate', async () => {
       const accounts = [{ id: 'account-1' }] as never;
       const options = { chainIds: ['eip155:1'] };
       const assets = { 'account-1': {} };
 
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         const getAssetsHandler = jest.fn().mockResolvedValue(assets);
         rootMessenger.registerActionHandler(
           'AssetsController:getAssets',
@@ -411,56 +230,9 @@ describe('LegacyBackgroundApiService', () => {
         );
       });
     });
-
-    it('resolves to undefined and does not call the AssetsController when the feature is not enabled', async () => {
-      const accounts = [{ id: 'account-1' }] as never;
-
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const getAssetsHandler = jest.fn();
-        rootMessenger.registerActionHandler(
-          'AssetsController:getAssets',
-          getAssetsHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call('LegacyBackgroundApiService:getAssets', accounts),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).not.toHaveBeenCalledWith(
-          'AssetsController:getAssets',
-          expect.anything(),
-          expect.anything(),
-        );
-        expect(getAssetsHandler).not.toHaveBeenCalled();
-      });
-    });
   });
 
   describe('addToken', () => {
-    const originalEnv = process.env;
-
-    beforeEach(() => {
-      jest.resetModules();
-      process.env = { ...originalEnv };
-    });
-
-    afterEach(() => {
-      process.env = originalEnv;
-    });
-
     const token = {
       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
       symbol: 'DAI',
@@ -469,19 +241,8 @@ describe('LegacyBackgroundApiService', () => {
       networkClientId: 'mainnet',
     };
 
-    it('adds the token as a custom asset via the AssetsController when assets unify state is enabled', async () => {
+    it('adds the token as a custom asset via the AssetsController', async () => {
       await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ id: 'account-1' }),
@@ -522,17 +283,6 @@ describe('LegacyBackgroundApiService', () => {
 
     it('throws when an assetId cannot be built for the token', async () => {
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: true, featureVersion: '1' },
-            },
-          }),
-        );
-
         rootMessenger.registerActionHandler(
           'AccountsController:getSelectedAccount',
           jest.fn().mockReturnValue({ id: 'account-1' }),
@@ -558,41 +308,6 @@ describe('LegacyBackgroundApiService', () => {
         expect(addCustomAssetHandler).not.toHaveBeenCalled();
       });
     });
-
-    it('adds the token via the TokensController when assets unify state is not enabled', async () => {
-      await withService(async ({ serviceMessenger, rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
-
-        rootMessenger.registerActionHandler(
-          'RemoteFeatureFlagController:getState',
-          jest.fn().mockReturnValue({
-            remoteFeatureFlags: {
-              assetsUnifyState: { enabled: false, featureVersion: '1' },
-            },
-          }),
-        );
-
-        const addTokenHandler = jest.fn().mockResolvedValue([]);
-        rootMessenger.registerActionHandler(
-          'TokensController:addToken',
-          addTokenHandler,
-        );
-
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        await expect(
-          rootMessenger.call('LegacyBackgroundApiService:addToken', token),
-        ).resolves.toBeUndefined();
-
-        expect(callSpy).toHaveBeenCalledWith('TokensController:addToken', {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image,
-          networkClientId: token.networkClientId,
-        });
-      });
-    });
   });
 
   describe('getTokenStandardAndDetails', () => {
@@ -611,10 +326,21 @@ describe('LegacyBackgroundApiService', () => {
       });
 
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -661,10 +387,21 @@ describe('LegacyBackgroundApiService', () => {
 
     it('falls back to the AssetsContractController when the token is not in any list', async () => {
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -717,10 +454,21 @@ describe('LegacyBackgroundApiService', () => {
       });
 
       await withService(async ({ rootMessenger }) => {
-        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
         rootMessenger.registerActionHandler(
           'RemoteFeatureFlagController:getState',
           jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
         );
         rootMessenger.registerActionHandler(
           'NetworkController:getState',
@@ -2688,7 +2436,7 @@ describe('LegacyBackgroundApiService', () => {
      */
     function registerResetWalletHandlers(rootMessenger: RootMessenger): void {
       rootMessenger.registerActionHandler(
-        'AuthenticationController:performSignOut',
+        'AuthenticationController:clearState',
         jest.fn(),
       );
       rootMessenger.registerActionHandler(
@@ -2744,6 +2492,9 @@ describe('LegacyBackgroundApiService', () => {
         );
 
         expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
           'AuthenticationController:performSignOut',
         );
         expect(callSpy).toHaveBeenCalledWith(
@@ -2801,6 +2552,12 @@ describe('LegacyBackgroundApiService', () => {
         expect(callSpy).not.toHaveBeenCalledWith(
           'AppStateController:setIsWalletResetInProgress',
           true,
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AuthenticationController:clearState',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AuthenticationController:performSignOut',
         );
         // Non-onboarding cleanup still runs.
         expect(callSpy).toHaveBeenCalledWith('PasskeyController:clearState');
@@ -5350,10 +5107,6 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
           'KeyringController:changePassword',
           jest.fn().mockResolvedValue(undefined),
         );
@@ -5376,10 +5129,6 @@ describe('LegacyBackgroundApiService', () => {
         rootMessenger.registerActionHandler(
           'SeedlessOnboardingController:revokePendingRefreshTokens',
           jest.fn().mockResolvedValue(undefined),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
         );
         registerUnlockSideEffectHandlers(rootMessenger);
 
@@ -5410,7 +5159,7 @@ describe('LegacyBackgroundApiService', () => {
           'keyring-encryption-key',
         );
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedTrace',
+          'SentryTracingService:bufferedTrace',
           {
             name: TraceName.OnboardingResetPassword,
             op: TraceOperation.OnboardingSecurityOp,
@@ -5444,7 +5193,7 @@ describe('LegacyBackgroundApiService', () => {
           'SeedlessOnboardingController:revokePendingRefreshTokens',
         );
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedEndTrace',
+          'SentryTracingService:bufferedEndTrace',
           {
             name: TraceName.OnboardingResetPassword,
             data: { success: true },
@@ -6046,16 +5795,8 @@ describe('LegacyBackgroundApiService', () => {
           jest.fn().mockResolvedValue(undefined),
         );
         rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
           'KeyringController:changePassword',
           jest.fn().mockRejectedValue(error),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
         );
         // Handlers used while re-locking the wallet on failure.
         rootMessenger.registerActionHandler(
@@ -6099,7 +5840,7 @@ describe('LegacyBackgroundApiService', () => {
         );
         expect(callSpy).toHaveBeenCalledWith('KeyringController:setLocked');
         expect(callSpy).toHaveBeenCalledWith(
-          'MetaMetricsController:bufferedEndTrace',
+          'SentryTracingService:bufferedEndTrace',
           {
             name: TraceName.OnboardingResetPassword,
             data: { success: false },
@@ -7094,7 +6835,10 @@ describe('LegacyBackgroundApiService', () => {
           true,
         );
 
-        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(true);
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          true,
+          undefined,
+        );
         expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.enableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.startShield).toHaveBeenCalledTimes(1);
@@ -7121,6 +6865,27 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
 
+    it('forwards owned preference overrides when enabling', async () => {
+      mockGetIsShieldSubscriptionActive.mockReturnValue(false);
+
+      await withService(({ rootMessenger }) => {
+        const handlers = registerToggleExternalServicesHandlers(rootMessenger);
+        const ownedPreferences = { useTokenDetection: false };
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:toggleExternalServices',
+          true,
+          ownedPreferences,
+        );
+
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          true,
+          ownedPreferences,
+        );
+        expect(handlers.enableTokenDetection).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it('disables external services and stops shield when a subscription is active', async () => {
       mockGetIsShieldSubscriptionActive.mockReturnValue(true);
 
@@ -7132,7 +6897,10 @@ describe('LegacyBackgroundApiService', () => {
           false,
         );
 
-        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(false);
+        expect(handlers.toggleExternalServices).toHaveBeenCalledWith(
+          false,
+          undefined,
+        );
         expect(handlers.disableTokenDetection).toHaveBeenCalledTimes(1);
         expect(handlers.disableGasFeeApis).toHaveBeenCalledTimes(1);
         expect(handlers.stopAllPolling).toHaveBeenCalledTimes(1);
@@ -7218,14 +6986,6 @@ describe('LegacyBackgroundApiService', () => {
         async ({ rootMessenger, service, serviceMessenger }) => {
           const error = new Error('backup failed');
           rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedEndTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
             'SeedlessOnboardingController:createToprfKeyAndBackupSeedPhrase',
             jest.fn().mockRejectedValue(error),
           );
@@ -7234,6 +6994,7 @@ describe('LegacyBackgroundApiService', () => {
             serviceMessenger,
             'captureException',
           );
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
 
           await expect(
             service.createSeedPhraseBackup(
@@ -7248,6 +7009,20 @@ describe('LegacyBackgroundApiService', () => {
               TraceName.OnboardingCreateKeyAndBackupSrpError,
               error,
             ),
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedTrace',
+            {
+              name: TraceName.OnboardingCreateKeyAndBackupSrp,
+              op: TraceOperation.OnboardingSecurityOp,
+            },
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedEndTrace',
+            {
+              name: TraceName.OnboardingCreateKeyAndBackupSrp,
+              data: { success: false },
+            },
           );
         },
       );
@@ -7342,47 +7117,55 @@ describe('LegacyBackgroundApiService', () => {
 
   describe('syncSeedPhrases', () => {
     it('imports private key secrets that are not backed up locally', async () => {
-      await withService(async ({ rootMessenger, service }) => {
-        const privateKeyData = new Uint8Array(32).fill(1);
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:fetchAllSecretData',
-          jest.fn().mockResolvedValue([
-            { data: new Uint8Array([1]), type: SecretType.Mnemonic },
-            { data: privateKeyData, type: SecretType.PrivateKey },
-          ]),
-        );
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:getSecretDataBackupState',
-          jest.fn().mockReturnValue(null),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedTrace',
-          jest.fn(),
-        );
-        rootMessenger.registerActionHandler(
-          'MetaMetricsController:bufferedEndTrace',
-          jest.fn(),
-        );
+      await withService(
+        async ({ rootMessenger, service, serviceMessenger }) => {
+          const privateKeyData = new Uint8Array(32).fill(1);
+          rootMessenger.registerActionHandler(
+            'OnboardingController:getIsSocialLoginFlow',
+            jest.fn().mockReturnValue(true),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:fetchAllSecretData',
+            jest.fn().mockResolvedValue([
+              { data: new Uint8Array([1]), type: SecretType.Mnemonic },
+              { data: privateKeyData, type: SecretType.PrivateKey },
+            ]),
+          );
+          rootMessenger.registerActionHandler(
+            'SeedlessOnboardingController:getSecretDataBackupState',
+            jest.fn().mockReturnValue(null),
+          );
+          const importSpy = jest
+            .spyOn(service, 'importAccountWithStrategy')
+            .mockResolvedValue(undefined);
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
 
-        const importSpy = jest
-          .spyOn(service, 'importAccountWithStrategy')
-          .mockResolvedValue(undefined);
+          await service.syncSeedPhrases();
 
-        await service.syncSeedPhrases();
-
-        expect(importSpy).toHaveBeenCalledWith(
-          AccountImportStrategy.privateKey,
-          [expect.any(String)],
-          {
-            shouldCreateSocialBackup: false,
-            shouldSelectAccount: false,
-          },
-        );
-      });
+          expect(importSpy).toHaveBeenCalledWith(
+            AccountImportStrategy.privateKey,
+            [expect.any(String)],
+            {
+              shouldCreateSocialBackup: false,
+              shouldSelectAccount: false,
+            },
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedTrace',
+            {
+              name: TraceName.OnboardingFetchSrps,
+              op: TraceOperation.OnboardingSecurityOp,
+            },
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedEndTrace',
+            {
+              name: TraceName.OnboardingFetchSrps,
+              data: { success: true },
+            },
+          );
+        },
+      );
     });
   });
 
@@ -7399,14 +7182,6 @@ describe('LegacyBackgroundApiService', () => {
             jest.fn().mockReturnValue({ completedOnboarding: false }),
           );
           rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
-            'MetaMetricsController:bufferedEndTrace',
-            jest.fn(),
-          );
-          rootMessenger.registerActionHandler(
             'SeedlessOnboardingController:addNewSecretData',
             jest.fn().mockRejectedValue(error),
           );
@@ -7415,6 +7190,7 @@ describe('LegacyBackgroundApiService', () => {
             serviceMessenger,
             'captureException',
           );
+          const callSpy = jest.spyOn(serviceMessenger, 'call');
 
           await expect(
             service.addNewSeedPhraseBackup(mnemonic, 'keyring-id', true),
@@ -7422,6 +7198,20 @@ describe('LegacyBackgroundApiService', () => {
 
           expect(captureExceptionSpy).toHaveBeenCalledWith(
             createSentryError(TraceName.OnboardingAddSrpError, error),
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedTrace',
+            {
+              name: TraceName.OnboardingAddSrp,
+              op: TraceOperation.OnboardingSecurityOp,
+            },
+          );
+          expect(callSpy).toHaveBeenCalledWith(
+            'SentryTracingService:bufferedEndTrace',
+            {
+              name: TraceName.OnboardingAddSrp,
+              data: { success: false },
+            },
           );
         },
       );
@@ -9405,10 +9195,19 @@ type WithServiceOptions = {
  * @returns The root messenger.
  */
 function getRootMessenger(): RootMessenger {
-  return new Messenger({
+  const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
     captureException: jest.fn(),
   });
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:bufferedTrace',
+    jest.fn(),
+  );
+  rootMessenger.registerActionHandler(
+    'SentryTracingService:bufferedEndTrace',
+    jest.fn(),
+  );
+  return rootMessenger;
 }
 
 /**
@@ -9548,13 +9347,14 @@ function getMessenger(
       'SubscriptionController:stopAllPolling',
       'AuthenticationController:getState',
       'AuthenticationController:performSignOut',
+      'AuthenticationController:clearState',
       'AppStateController:setPasskeyAutoUnlockSuppressed',
       'AppStateController:setTrezorModel',
       'KeyringController:withKeyringV2Unsafe',
       'AnalyticsController:getEventFragmentById',
       'AnalyticsController:upsertEventFragment',
-      'MetaMetricsController:bufferedTrace',
-      'MetaMetricsController:bufferedEndTrace',
+      'SentryTracingService:bufferedTrace',
+      'SentryTracingService:bufferedEndTrace',
       'TransactionController:updateEditableParams',
       'TransactionController:estimateGas',
       'TransactionController:isAtomicBatchSupported',
@@ -9631,6 +9431,7 @@ async function withService<ReturnValue>(
     getPermittedAccounts: jest.fn().mockResolvedValue([]),
     getTabUrl: jest.fn().mockResolvedValue(undefined),
     updateTabUrl: jest.fn().mockResolvedValue(undefined),
+    closeNotificationPopup: jest.fn().mockResolvedValue(undefined),
     markNotificationPopupAsAutomaticallyClosed: jest.fn(),
     requestSafeReload: jest.fn(),
     sendUpdate: jest.fn(),

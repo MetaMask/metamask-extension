@@ -3,15 +3,14 @@ import type { Runtime } from 'webextension-polyfill';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsUserTrait,
 } from '#shared/constants/metametrics';
 import {
   getInstallAttribution,
   type InstallAttribution,
 } from '#shared/lib/install-attribution';
 import type { FlattenedBackgroundStateProxy } from '#shared/types';
-import type { MetaMetricsController } from '../../controllers/metametrics-controller';
 import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type { AppMetadataController } from '../../controllers/app-metadata';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { onUpdate } from '../../on-update';
 import type ExtensionPlatform from '../../platforms/extension';
@@ -24,7 +23,7 @@ type InstallLifecycleAppStateController =
     Pick<AppStateController, 'setDeferredDeepLink'>;
 
 type InstallLifecycleController = OnUpdateController & {
-  metaMetricsController: Pick<MetaMetricsController, 'updateTraits'>;
+  appMetadataController: Pick<AppMetadataController, 'setInstallAttribution'>;
   appStateController: InstallLifecycleAppStateController;
   getState: () => Pick<
     FlattenedBackgroundStateProxy,
@@ -47,24 +46,25 @@ export type InstallLifecycleDependencies = {
  * consent already exists.
  *
  * @param installAttributionPromise - Promise resolving to install attribution data.
- * @param controller - Controller APIs used for traits, deeplink, and consent state.
+ * @param controller - Controller APIs used for install attribution, deeplink, and consent state.
  */
 async function addAppInstalledEvent(
   installAttributionPromise: Promise<InstallAttribution>,
   controller: Pick<
     InstallLifecycleController,
-    'metaMetricsController' | 'appStateController' | 'getState'
+    'appMetadataController' | 'appStateController' | 'getState'
   >,
 ): Promise<void> {
   const { deferredDeepLink, traits: installAttributionTraits } =
     await installAttributionPromise;
 
-  controller.metaMetricsController.updateTraits({
-    [MetaMetricsUserTrait.InstallDateExt]: new Date()
-      .toISOString()
-      .split('T')[0],
-    ...installAttributionTraits,
-  });
+  const cookieId = installAttributionTraits.cookie_id;
+  if (cookieId) {
+    controller.appMetadataController.setInstallAttribution({
+      cookieId,
+      gaClientId: installAttributionTraits.ga_client_id,
+    });
+  }
   const eventProperties: Record<string, string> = {};
 
   if (deferredDeepLink) {

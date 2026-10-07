@@ -58,7 +58,7 @@ jobs:
           skip-allow-scripts: true
 
       - name: Install anvil with retry
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4.0.0
         with:
           timeout_minutes: 1
           max_attempts: 4
@@ -110,6 +110,7 @@ jobs:
             vars.AWS_S3_BUCKET != ''
           }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        continue-on-error: true
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -200,6 +201,7 @@ jobs:
             vars.AWS_S3_BUCKET != ''
           }}
         uses: MetaMask/github-tools/.github/actions/upload-s3@v1
+        continue-on-error: true
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}

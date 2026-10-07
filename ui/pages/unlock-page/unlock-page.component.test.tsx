@@ -8,6 +8,7 @@ import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
+import { ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE } from '../../helpers/constants/routes';
 import UnlockPage from './unlock-page.component';
 
 const mockTrackEvent = jest.fn();
@@ -86,6 +87,14 @@ describe('UnlockPage component (passkey UI)', () => {
     },
   });
 
+  function setMockPasskeyRecord(passkeyRecord: unknown) {
+    (
+      mockStore.getState() as {
+        metamask: { passkeyRecord?: unknown };
+      }
+    ).metamask.passkeyRecord = passkeyRecord;
+  }
+
   const buildProps = (overrides: Record<string, unknown> = {}) => ({
     navigate: jest.fn(),
     location: { pathname: '/unlock', state: undefined },
@@ -115,6 +124,7 @@ describe('UnlockPage component (passkey UI)', () => {
   beforeEach(() => {
     mockUnlockWithPasskey.mockReset();
     mockUnlockWithPasskey.mockResolvedValue(undefined);
+    setMockPasskeyRecord(null);
   });
 
   afterEach(() => {
@@ -136,6 +146,33 @@ describe('UnlockPage component (passkey UI)', () => {
       expect(mockUnlockWithPasskey).toHaveBeenCalled();
       expect(props.navigateAfterUnlock).toHaveBeenCalled();
     });
+  });
+
+  it('navigates to passkey migration after a legacy passkey unlock', async () => {
+    setMockPasskeyRecord({
+      keyDerivation: { method: 'userHandle' },
+    });
+    const props = buildProps();
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPage {...props} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(mockUnlockWithPasskey).toHaveBeenCalledTimes(1);
+      expect(props.navigate).toHaveBeenCalledWith(
+        ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE,
+        {
+          replace: true,
+          state: undefined,
+        },
+      );
+    });
+    expect(props.navigateAfterUnlock).not.toHaveBeenCalled();
   });
 
   it('navigates after a successful password unlock', async () => {

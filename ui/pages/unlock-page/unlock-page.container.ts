@@ -34,6 +34,7 @@ import withRouterHooks, {
 } from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
+import type { PasskeyUnlockSuccessContext } from './passkey';
 
 type OwnProps = {
   navigate: NavigateFunction;
@@ -49,7 +50,9 @@ type OwnProps = {
    * Previously, navigation was handled immediately after `onSubmit` is called.
    * This prop allows for custom logics (e.g. metrics) before the navigation.
    */
-  navigateAfterUnlock?: () => Promise<void>;
+  navigateAfterUnlock?: (
+    context?: PasskeyUnlockSuccessContext,
+  ) => Promise<void>;
 };
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
@@ -144,7 +147,9 @@ const UnlockPageConnected = compose(
     resolveSeedlessPasswordSyncState?: (options?: {
       skipCache?: boolean;
     }) => Promise<PasswordSyncStatus>;
-    navigateAfterUnlock?: () => Promise<void>;
+    navigateAfterUnlock?: (
+      context?: PasskeyUnlockSuccessContext,
+    ) => Promise<void>;
   }>
 >;
 

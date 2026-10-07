@@ -70,7 +70,9 @@ describe.skip('Upgrade Account', function (this: Suite) {
         await upgradeAndBatchTxConfirmation.checkBatchTxListIsPresent();
 
         // Confirm upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -138,7 +140,10 @@ describe.skip('Upgrade Account', function (this: Suite) {
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
 
         // Reject batch tx
-        await upgradeAndBatchTxConfirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await upgradeAndBatchTxConfirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         // We check that we continue to have an EOA account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);

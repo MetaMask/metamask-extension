@@ -9,7 +9,7 @@ import {
   ButtonVariant,
 } from '../../components/component-library/button';
 import { parse } from '../../../shared/lib/deep-links/parse';
-import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -94,7 +94,7 @@ async function updateStateFromUrl(
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   try {
-    const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
+    const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
     const parsed = await parse(url);
@@ -209,7 +209,7 @@ export const DeepLink = () => {
 
           if (urlStr) {
             try {
-              const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
+              const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlStr}`;
               const url = new URL(fullUrlStr);
               const signature = await verify(url);
 

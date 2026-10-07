@@ -1,39 +1,40 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  getTokenDisplaySymbol,
+  MUSD_TOKEN,
+  MUSD_TOKEN_ADDRESS,
+} from '@metamask/money-account-utils';
+import type { Hex } from '@metamask/utils';
 import BigNumber from 'bignumber.js';
 import { moneyFormatUsd } from '../../../helpers/money/format';
+import { shortenString } from '../../../helpers/utils/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isValidTransactionHash } from '../../../../shared/lib/transactions.utils';
 import type { MoneyActivityTransactionMeta } from '../constants/mock-activity-data';
+import type { AccountsApiActivity } from '../types/money-activity';
 import {
   classifyMoneyActivity,
   getMoneyActivityStatus,
   isIncomingMoneyActivityKind,
 } from './classify-money-activity';
+import { resolveOnchainAmount } from './money-activity-display';
 
 export type MoneyTransactionDetailsHeroAmount = {
   amount: string;
   isSuccessColor: boolean;
 };
 
-function getTransferAmount(tx: TransactionMeta): BigNumber | undefined {
-  const amount = tx.transferInformation?.amount;
-  const decimals = tx.transferInformation?.decimals;
-  if (amount === undefined || decimals === undefined) {
-    return undefined;
-  }
-
-  const parsed = new BigNumber(amount).dividedBy(
-    new BigNumber(10).pow(decimals),
-  );
-  if (parsed.isNaN() || !parsed.isFinite()) {
-    return undefined;
-  }
-  return parsed;
-}
+export type MoneyActivityAsset = {
+  chainId: Hex;
+  tokenAddress: Hex;
+  symbol: string | undefined;
+};
 
 /**
  * Formats the details-page hero amount. Failed rows keep the attempted
  * amount (unsigned); confirmed/pending rows keep the signed fiat prefix.
+ * Amounts use the same resolution as the activity list so live Money Pay
+ * deposits without `transferInformation` do not render as $0.
  *
  * @param tx - The transaction to present.
  * @returns Formatted fiat amount and whether to use the success color.
@@ -44,7 +45,7 @@ export function getMoneyTransactionDetailsHeroAmount(
   const kind = classifyMoneyActivity(tx);
   const status = getMoneyActivityStatus(tx);
   const isIncoming = isIncomingMoneyActivityKind(kind);
-  const transferAmount = getTransferAmount(tx) ?? new BigNumber(0);
+  const transferAmount = resolveOnchainAmount(tx) ?? new BigNumber(0);
   const formatted = moneyFormatUsd(transferAmount);
 
   if (status === 'failed') {
@@ -54,6 +55,64 @@ export function getMoneyTransactionDetailsHeroAmount(
   return {
     amount: `${isIncoming ? '+' : '-'}${formatted}`,
     isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Formats the details-page hero amount for an Accounts API settlement.
+ *
+ * @param activity - Parsed Accounts API card, cashback, or refund.
+ * @returns Formatted fiat amount and whether to use the success color.
+ */
+export function getMoneyApiActivityDetailsHeroAmount(
+  activity: AccountsApiActivity,
+): MoneyTransactionDetailsHeroAmount {
+  const isIncoming = activity.kind === 'cashback' || activity.kind === 'refund';
+  const amount = new BigNumber(activity.amount).dividedBy(
+    new BigNumber(10).pow(activity.token.decimals),
+  );
+
+  return {
+    amount: `${isIncoming ? '+' : '-'}${moneyFormatUsd(amount)}`,
+    isSuccessColor: isIncoming,
+  };
+}
+
+/**
+ * Resolves the asset to show on the Money activity details hero.
+ * Prefers the MetaMask Pay token when the deposit was not fiat-funded,
+ * then the transferred token, then mUSD on the transaction chain.
+ *
+ * @param tx - The transaction to present.
+ * @returns Chain, token address, and display symbol for the hero icon.
+ */
+export function getMoneyActivityAsset(tx: TransactionMeta): MoneyActivityAsset {
+  const { metamaskPay, transferInformation, chainId } = tx;
+  const isFiatDeposit = Boolean(metamaskPay?.fiat);
+
+  if (!isFiatDeposit && metamaskPay?.tokenAddress && metamaskPay?.chainId) {
+    return {
+      chainId: metamaskPay.chainId,
+      tokenAddress: metamaskPay.tokenAddress,
+      symbol: getTokenDisplaySymbol(metamaskPay.tokenAddress),
+    };
+  }
+
+  if (transferInformation?.contractAddress) {
+    return {
+      chainId: chainId as Hex,
+      tokenAddress: transferInformation.contractAddress as Hex,
+      symbol: getTokenDisplaySymbol(
+        transferInformation.contractAddress,
+        transferInformation.symbol,
+      ),
+    };
+  }
+
+  return {
+    chainId: chainId as Hex,
+    tokenAddress: MUSD_TOKEN_ADDRESS,
+    symbol: MUSD_TOKEN.symbol,
   };
 }
 
@@ -85,10 +144,12 @@ export function formatMoneyActivityDetailsDate(timeMs: number): string {
  * @returns A truncated representation.
  */
 export function shortenMoneyActivityHex(value: string): string {
-  if (value.length <= 11) {
-    return value;
-  }
-  return `${value.slice(0, 6)}...${value.slice(-4)}`;
+  return shortenString(value, {
+    truncatedCharLimit: 12,
+    truncatedStartChars: 6,
+    truncatedEndChars: 4,
+    skipCharacterInEnd: false,
+  });
 }
 
 /**

@@ -262,6 +262,7 @@ async function verifyEnglishLocale() {
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
       'app/scripts/platforms/**/*.js',
+      'app/scripts/platforms/**/*.ts',
       'app/scripts/controllers/**/*.ts',
     ],
     {
@@ -314,6 +315,7 @@ async function verifyEnglishLocale() {
     'appDescription',
     'rejected',
     'signed',
+    'unexpectedError',
     // used via CSS
     'CSS_loadingTakingTooLongMessageText',
     'CSS_loadingTakingTooLongActionText',

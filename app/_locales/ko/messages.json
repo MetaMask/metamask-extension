@@ -105,6 +105,10 @@
   "accountIdenticon": {
     "message": "계정 식별 아이콘"
   },
+  "accountImported": {
+    "message": "계정 가져오기 완료",
+    "description": "Success toast shown after a private key or JSON account is imported"
+  },
   "accountName": {
     "message": "계정 이름"
   },
@@ -167,6 +171,9 @@
   },
   "activity": {
     "message": "활동"
+  },
+  "activityAndNonceDataDeleted": {
+    "message": "활동 내역 및 논스 데이터가 삭제되었습니다"
   },
   "activityEmptyDescription": {
     "message": "오늘 첫 토큰을 스왑하세요."
@@ -476,6 +483,28 @@
   },
   "activity_marketShort_success_title": {
     "message": "숏 청산 완료 - 시장가"
+  },
+  "activity_moneyAccountDeposit_failed_title": {
+    "message": "예치 실패"
+  },
+  "activity_moneyAccountDeposit_pending_title": {
+    "message": "$1 예치 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountDeposit_success_title": {
+    "message": "$1 예치 완료",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_failed_title": {
+    "message": "받기 실패"
+  },
+  "activity_moneyAccountWithdraw_pending_title": {
+    "message": "$1 받는 중",
+    "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_title": {
+    "message": "$1 받음",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "매수 실패"
@@ -1438,6 +1467,9 @@
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "더 적은 액수를 추가하거나 다른 결제 수단을 사용하세요."
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "자금 부족"
   },
@@ -1469,8 +1501,8 @@
   "alertMessageGasFeeLow": {
     "message": "낮은 수수료를 선택하면 트랜잭션 속도가 느려지고 대기 시간이 길어집니다. 트랜잭션 속도를 높이려면 시장 수수료 또는 공격적 수수료 옵션을 선택하세요."
   },
-  "alertMessageGasTooLow": {
-    "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 21000 이상으로 늘려야 합니다."
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "이 트랜잭션을 계속 진행하려면, 가스 한도를 12000 이상으로 늘려야 합니다."
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "계정에 네트워크 수수료를 지불할 만큼의 $1(이)가 부족합니다."
@@ -1688,6 +1720,12 @@
     "message": "$2 관련하여 $1에 승인됨",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "arcUsageNoticeDescription": {
+    "message": "Arc에 오신 것을 환영합니다! Arc 체인의 원활한 이용과 이용 내역 확인을 위해 Arc 팀과 정보를 공유할 수 있습니다."
+  },
+  "arcUsageNoticeTitle": {
+    "message": "알림"
+  },
   "areYouSure": {
     "message": "확실한가요?"
   },
@@ -1828,6 +1866,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "연락처"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "매수 및 매도 주문"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "동기화할 항목 관리"
   },
@@ -1886,6 +1927,15 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "기본 기능 켜기"
+  },
+  "basicFunctionalityMigrationSocialModalBlogPostLink": {
+    "message": "블로그 포스트"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "개인정보 처리 안내"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "설정 > 개인정보 보호"
   },
   "basicFunctionalityRequired_description": {
     "message": "기본 기능이 꺼져 있는 경우 이 기능을 사용할 수 없습니다. 아래 토글을 사용해 기능을 켤 수 있습니다."
@@ -2145,9 +2195,6 @@
   },
   "bridgeLowestCost": {
     "message": "최저 비용"
-  },
-  "bridgeMalicious": {
-    "message": "악성"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "악성 토큰"
@@ -2429,9 +2476,6 @@
     "message": "먼저 Stellar에서 $1 활성화",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "의심됨"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "의심스러운 토큰"
   },
@@ -2454,7 +2498,7 @@
     "message": "최대 허용량 사용"
   },
   "bridgeValidationInsufficientGasMessage": {
-    "message": "이 브릿지의 가스비를 지불할 $1(이)가 부족합니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 매수하세요."
+    "message": "$1(이)가 부족해 이 브릿지에 대한 가스비를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "가스비를 위해 더 많은 $1 필요"
@@ -3015,14 +3059,14 @@
   "copiedToClipboard": {
     "message": "클립보드에 복사되었습니다"
   },
+  "copy": {
+    "message": "복사"
+  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
   "copyAddressShort": {
     "message": "주소 복사"
-  },
-  "copyPrivateKey": {
-    "message": "개인 키 복사"
   },
   "copyToClipboard": {
     "message": "클립보드로 복사"
@@ -3082,6 +3126,9 @@
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask 재설치"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask 상태 초기화"
+  },
   "criticalErrorStillHavingIssues": {
     "message": "여전히 문제가 발생하나요?"
   },
@@ -3103,9 +3150,6 @@
   },
   "current": {
     "message": "현재"
-  },
-  "currentAccountNotConnected": {
-    "message": "현재 계정이 연결되어 있지 있습니다."
   },
   "currentEstimatedBaseFee": {
     "message": "현재: $1 GWEI"
@@ -3347,6 +3391,9 @@
   "deepLink_thePredictPage": {
     "message": "예측 시장 페이지"
   },
+  "deepLink_thePrivacySettingsPage": {
+    "message": "개인정보 보호 설정 페이지"
+  },
   "deepLink_theRewardsPage": {
     "message": "MetaMask 보상 페이지"
   },
@@ -3497,7 +3544,7 @@
     "message": "비활성화"
   },
   "disabledGasOptionToolTipMessage": {
-    "message": "“$1” 유형은 오리지널 가스비를 최소 10% 인상해야 하는 기준에 미치지 못하므로 비활성화되었습니다.",
+    "message": "‘$1’은(는) 기존 네트워크 수수료보다 최소 10% 높아야 한다는 조건을 충족하지 않아 비활성화되었습니다.",
     "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
@@ -3521,9 +3568,6 @@
   "disconnectAllSitesQuestion": {
     "message": "모두 연결 해제?"
   },
-  "disconnectAllSitesSuccess": {
-    "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
-  },
   "disconnectPrompt": {
     "message": "$1 연결 해제"
   },
@@ -3532,10 +3576,6 @@
   },
   "disconnectSiteDescriptionText": {
     "message": "이 작업을 하면 사용자 계정과 $1의 연결이 해제됩니다. 이 디앱을 다시 사용하려면 다시 연결해야 합니다.",
-    "description": "$1 is the site hostname"
-  },
-  "disconnectSiteSuccess": {
-    "message": "$1에서 연결을 해제했습니다.",
     "description": "$1 is the site hostname"
   },
   "disconnectThisAccount": {
@@ -3670,7 +3710,7 @@
     "message": "연락처 편집"
   },
   "editGasFeeModalTitle": {
-    "message": "가스비 편집"
+    "message": "네트워크 수수료 편집"
   },
   "editGasLimitOutOfBounds": {
     "message": "가스 한도는 $1 이상이어야 합니다."
@@ -4126,14 +4166,14 @@
   "gasLimit": {
     "message": "가스 한도"
   },
-  "gasLimitTooLow": {
-    "message": "가스 한도는 21000 이상이어야 합니다."
+  "gasLimitBelowMinimum": {
+    "message": "가스 한도는 12000 이상이어야 합니다."
   },
   "gasPrice": {
     "message": "가스 가격(GWEI)"
   },
   "gasPriceExcessive": {
-    "message": "가스비가 불필요하게 높게 설정되었습니다. 가격을 낮추는 것을 고려해 보세요."
+    "message": "네트워크 수수료가 불필요하게 높게 설정되었습니다. 금액을 낮춰 보세요."
   },
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
@@ -4404,6 +4444,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "계속"
   },
+  "hardwareWalletErrorOnlyV4SupportedDescription": {
+    "message": "$1에서는 버전 4(V4) 형식의 유형화된 데이터만 서명할 수 있습니다. 이 사이트가 요청한 이전 서명 방식은 지원되지 않습니다",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletErrorReconnectButton": {
     "message": "다시 연결하고 다시 시도해 주세요",
     "description": "Button label shown when a hardware wallet is disconnected during signing."
@@ -4492,9 +4536,6 @@
   },
   "hardwareWalletRepairStepTwoTitle": {
     "message": "장치 잠금 해제"
-  },
-  "hardwareWalletRepairSuccessDescription": {
-    "message": "장치가 다시 연결되었습니다. 이 탭을 닫아도 됩니다."
   },
   "hardwareWalletRepairSuccessTitle": {
     "message": "장치 연결됨"
@@ -4633,6 +4674,22 @@
   },
   "honeypotTitle": {
     "message": "허니팟"
+  },
+  "hyperliquidDepositPromptDescription": {
+    "message": "원하는 토큰을 입금하세요. 해당 토큰을 스왑하여 Hyperliquid 계정으로 보내드립니다. MetaMask 수수료는 없습니다.",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "아니요, 직접 입금하겠습니다",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
+  "hyperliquidDepositPromptTitle": {
+    "message": "MetaMask로 Hyperliquid에 자금 입금",
+    "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "이제 Hyperliquid 및 MetaMask 무기한 선물 거래에 자금을 사용할 수 있습니다.",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquid의 $1에 따라 향후 모든 거래에 MetaMask 추천인 코드를 적용합니다. MetaMask는 수수료를 받습니다.",
@@ -4923,9 +4980,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "안전을 위해 지금은 이 텍스트를 선택할 수 없습니다."
-  },
   "learnHow": {
     "message": "방법 확인하기"
   },
@@ -5133,7 +5187,7 @@
     "message": "로그인"
   },
   "loginErrorSessionExpiredDescription": {
-    "message": "세션이 만료되었습니다. 계속하려면 다시 로그인하세요."
+    "message": "계속 진행하려면 다시 로그인하세요."
   },
   "loginErrorSessionExpiredTitle": {
     "message": "세션이 만료되었습니다"
@@ -5162,8 +5216,8 @@
     "message": "낮음"
   },
   "lowValueAssets": {
-    "message": "저가치 토큰($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "소액 잔액 토큰($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "이더리움 메인넷"
@@ -5182,6 +5236,10 @@
   },
   "manage": {
     "message": "관리"
+  },
+  "manageAccounts": {
+    "message": "계정 관리",
+    "description": "Title of the account list page while edit mode is active, and label for the control that toggles it"
   },
   "manageConnectedAccounts": {
     "message": "연결된 계정 관리"
@@ -5346,12 +5404,13 @@
   "money": {
     "message": "머니"
   },
-  "moneyAccountApyPitch": {
-    "message": "$1% APY 수익 적립",
+  "moneyAccountApyPitchApy": {
+    "message": "$1% APY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY 정보"
+  "moneyAccountApyPitchEarn": {
+    "message": "$1의 수익 얻기",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "표시된 수익률은 현재 시장 상황에 기반한 예상 연간수익률(APY)입니다. APY는 변동되며 보장되지 않습니다."
@@ -5363,15 +5422,15 @@
   "moneyAccountProjectedBalance": {
     "message": "1년 후 예상 잔액:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1년 후 예상 잔액"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "이 예상치는 연간수익률(APY) $1%가 1년 동안 변함 없이 유지된다는 가정하에 계산되었습니다. APY는 변동되며 보장되지 않습니다.",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "활동"
+  },
+  "moneyActivityCard": {
+    "message": "카드"
   },
   "moneyActivityConversionFailed": {
     "message": "전환 실패"
@@ -5391,11 +5450,32 @@
   "moneyActivityDepositing": {
     "message": "예치 중"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "결제 대상:"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "보낸 사람"
+  },
+  "moneyActivityDetailsTransactionId": {
+    "message": "트랜잭션 ID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "수익:"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "지출 금액:"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "환불되었습니다"
+  },
   "moneyActivityEmpty": {
     "message": "아직 활동이 없습니다"
   },
   "moneyActivityFilterAll": {
     "message": "모두"
+  },
+  "moneyActivityFilterCard": {
+    "message": "카드"
   },
   "moneyActivityFilterDeposits": {
     "message": "예치"
@@ -5403,11 +5483,17 @@
   "moneyActivityFilterSends": {
     "message": "전송"
   },
+  "moneyActivityLoadError": {
+    "message": "활동 내역을 불러올 수 없습니다"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSD 캐시백"
+  },
   "moneyActivityPending": {
     "message": "보류 중"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "머니 활동 내역이 여기에 표시됩니다."
+  "moneyActivityPurchase": {
+    "message": "매수"
   },
   "moneyActivityReceived": {
     "message": "받음"
@@ -5418,6 +5504,12 @@
   "moneyActivityReceiving": {
     "message": "받는 중"
   },
+  "moneyActivityRefund": {
+    "message": "환불"
+  },
+  "moneyActivityRetry": {
+    "message": "다시 시도"
+  },
   "moneyActivitySendFailed": {
     "message": "전송 실패"
   },
@@ -5426,6 +5518,10 @@
   },
   "moneyActivitySent": {
     "message": "전송됨"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "전환 수수료에는 네트워크 비용과 제공업체 수수료가 포함될 수 있습니다.",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "모두 보기"
@@ -5436,26 +5532,27 @@
   "moneyApy": {
     "message": "$1 APY"
   },
-  "moneyBalanceInfoBody": {
-    "message": "항상 사용 가능한 달러 기반 mUSD 잔액으로, 언제든지 결제하거나 송금하거나 거래할 수 있습니다. 해당 금액은 총 계정 잔액 계산에 포함되지 않습니다."
-  },
   "moneyBalanceInfoWithdrawals": {
     "message": "출금은 즉시 처리되며, 관련 블록체인의 일반적인 네트워크 확인 시간이 적용됩니다. 유동성이 부족한 경우 일시적으로 지연될 수 있습니다."
   },
   "moneyBalanceLastKnown": {
     "message": "마지막으로 확인된 잔액"
   },
-  "moneyBalanceTitle": {
-    "message": "머니 잔액"
+  "moneyBalanceRetry": {
+    "message": "다시 시도"
   },
   "moneyBalanceUnavailable": {
     "message": "잔액을 확인할 수 없음"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "일시적으로 잔액을 표시할 수 없습니다. 자금은 안전하게 보관되고 있습니다. 잠시 후 다시 시도해 보세요."
   },
   "moneyBenefitAutoEarn": {
     "message": "머니 잔액에 대한 수익을 자동으로 적립하세요."
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "최대 $1 APY로 자동 수익을 적립하세요"
+    "message": "자동으로 최대 $1의 수익 얻기",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "락업 없이 완전한 유동성을 제공하므로 언제든지 거래하거나 출금할 수 있습니다"
@@ -5468,6 +5565,12 @@
   },
   "moneyBenefits": {
     "message": "혜택"
+  },
+  "moneyContactSupport": {
+    "message": "지원팀에 문의"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "암호자산 전환"
   },
   "moneyEarnApyTitle": {
     "message": "최대 $1 APY 수익 적립"
@@ -5490,6 +5593,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "요금 없음"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "예상 수익은 $1%의 연이율(APY)이 1년 동안 유지되는 경우를 가정하여 계산됩니다. APY는 변동될 수 있으며 보장되지 않습니다. 수익은 보장되지 않습니다.",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "잔액으로 수익을 적립하세요"
   },
@@ -5505,6 +5612,9 @@
   "moneyFundDescriptionWithApy": {
     "message": "머니 계정에 자금을 추가하면 최대 $1 APY로 잔액이 늘어납니다."
   },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money Account는 Monad에서 제공합니다."
+  },
   "moneyHowItWorks": {
     "message": "작동 방식"
   },
@@ -5515,6 +5625,22 @@
     "message": "mUSD를 추가하면 최대 $1의 수익이 적립됩니다. 잔액은 달러 연동 방식으로 유지되며 언제든지 결제 또는 거래에 사용하거나 송금할 수 있습니다.",
     "description": "$1 is the current mUSD APY."
   },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Account는 은행 계좌, 저축 계좌 또는 보험이 적용되는 예금 상품이 아닙니다. APY는 변동되며 보장되지 않습니다. Money Account에는 스마트 계약, 프로토콜, 유동성 및 기타 위험이 수반되며, 자금의 일부 또는 전부가 손실될 수 있습니다. 지역별 제한이 적용될 수 있으며, 약관이 적용됩니다."
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "최대 $1의 APY를 얻을 수 있습니다. 이 수익률은 변동되며 시장 상황에 따라 달라집니다. 현재 수익률은 언제든지 Money Account에서 확인할 수 있습니다.",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQ"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "자금을 예치하면 해당 자금은 Aave, Morpho와 같이 검증된 디파이프로토콜에 투입되어 실제 경제 활동에서 발생하는 수익을 창출합니다. 이렇게 발생한 수익은 APY 형태로 사용자에게 제공됩니다. \n\nSteakhouse Financial이라는 제삼자 서비스 제공업체가 프로토콜 내 자금 배분 방식을 모니터링합니다. 제삼자 인프라 제공업체인 Veda는 사용자의 자금을 보관하는 볼트 스마트 계약을 배포하고 유지 관리합니다.\n\n수익은 MetaMask 또는 mUSD 발행자가 지급하는 이자가 아닙니다. 이는 제삼자 디파이 프로토콜의 포지션에서 발생하는 온체인 수익입니다."
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "수익은 어디에서 발생하나요?"
+  },
   "moneyHowYourMoneyGrows": {
     "message": "자산이 늘어나는 방식"
   },
@@ -5524,8 +5650,14 @@
   "moneyLifetime": {
     "message": "전체 기간"
   },
+  "moneyLifetimeTooltip": {
+    "message": "지금까지 머니 계정 잔액으로 적립한 총수익입니다."
+  },
   "moneyMeetMusd": {
     "message": "mUSD 소개"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "지난 30일 동안 머니 계정 잔액으로 적립한 총수익입니다."
   },
   "moneyMoreInformation": {
     "message": "더 많은 정보"
@@ -5538,6 +5670,93 @@
   },
   "moneySend": {
     "message": "전송"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "자금을 추가할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "전환할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "예치 실패"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "자금 추가 실패"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "전환 실패"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "카드 신청에 몇 분 정도 걸릴 수 있습니다."
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "자금 추가"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "예치 중"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "암호자산 전환 중"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "Money 계정에 $1 추가됨.",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money Account에 추가됨"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "자금 추가됨"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "예치 완료"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "전환 완료"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "몇 분 정도 소요될 수 있습니다."
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "자금을 이체할 수 없습니다. 다시 시도하세요."
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "이체 실패"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "내 계정"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "전송 중"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$2에 $1 추가됨.",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1에 추가됨.",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "전송 완료"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "다른 계정"
+  },
+  "moneyTransferComingSoon": {
+    "message": "곧 추가 예정"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "무기한 선물 계정"
+  },
+  "moneyTransferSendExternal": {
+    "message": "외부 주소"
+  },
+  "moneyTransferTitle": {
+    "message": "자금 전송 대상:"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "은행 계좌"
   },
   "month": {
     "message": "월"
@@ -5877,9 +6096,6 @@
   "networkFeeExplanationTitle": {
     "message": "네트워크 수수료"
   },
-  "networkMenu": {
-    "message": "네트워크 메뉴"
-  },
   "networkMenuHeading": {
     "message": "네트워크 선택"
   },
@@ -5927,7 +6143,7 @@
     "message": "우선 요금의 범위(일명 \"채굴자 팁\"). 이것은 채굴자에게 전달되어 트랜잭션의 우선 순위를 정하도록 장려합니다."
   },
   "networkStatusStabilityFeeTooltip": {
-    "message": "가스비가 지난 72시간에 비해 $1 상태입니다.",
+    "message": "현재 네트워크 수수료는 최근 72시간과 비교해 $1 수준입니다.",
     "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
@@ -5969,9 +6185,6 @@
   "newContract": {
     "message": "새 계약"
   },
-  "newCustomTokenAdded": {
-    "message": "“$1”(을)를 성공적으로 추가했습니다!"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "설정 > 자산"
   },
@@ -5985,15 +6198,6 @@
   "newNFTsAutodetected": {
     "message": "NFT 자동 감지"
   },
-  "newNetworkAdded": {
-    "message": "“$1”(을)를 성공적으로 추가했습니다!"
-  },
-  "newNetworkEdited": {
-    "message": "“$1”(을)를 성공적으로 편집했습니다!"
-  },
-  "newNftAddedMessage": {
-    "message": "NFT를 성공적으로 추가했습니다!"
-  },
   "newPassword": {
     "message": "새 비밀번호(8자 이상)"
   },
@@ -6005,10 +6209,6 @@
   },
   "newPrivacyPolicyTitle": {
     "message": "개인정보 처리방침이 개정되었습니다"
-  },
-  "newTokensImportedMessage": {
-    "message": "$1 토큰을 성공적으로 불러왔습니다.",
-    "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
     "message": "불러온 토큰"
@@ -6114,9 +6314,6 @@
   "noTokensToManage": {
     "message": "아직 보유 중인 토큰이 없습니다. 이름이나 주소로 인기 있는 토큰을 검색해 보세요."
   },
-  "noWebcamFound": {
-    "message": "컴퓨터의 웹캠을 찾을 수 없습니다. 다시 시도하세요."
-  },
   "noWebcamFoundTitle": {
     "message": "웹캠을 찾을 수 없음"
   },
@@ -6183,18 +6380,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "출금 준비 완료"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "이제 언스테이킹한 $1을(를) 출금할 수 있습니다"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1 언스테이킹 요청이 전송되었습니다"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "수취한 NFT 출처:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "전송한 NFT 수취 대상:"
-  },
   "notificationItemNetwork": {
     "message": "네트워크:"
   },
@@ -6203,18 +6388,6 @@
   },
   "notificationItemReceived": {
     "message": "받음"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "발신처:"
-  },
-  "notificationItemSent": {
-    "message": "전송됨"
-  },
-  "notificationItemSentTo": {
-    "message": "수신처:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "스테이킹 완료"
   },
   "notificationItemStaked": {
     "message": "스테이킹됨"
@@ -6228,17 +6401,11 @@
   "notificationItemSwapped": {
     "message": "스왑 완료"
   },
-  "notificationItemSwappedFor": {
-    "message": "지금 스와프를 "
-  },
   "notificationItemTo": {
     "message": "수신:"
   },
   "notificationItemTransactionId": {
     "message": "트랜잭션 ID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "언스테이킹 완료"
   },
   "notificationItemUnStaked": {
     "message": "언스테이킹됨"
@@ -6294,23 +6461,20 @@
   "notificationsPageEmptyTitle": {
     "message": "표시할 항목이 없습니다"
   },
-  "notificationsPageErrorContent": {
-    "message": "이 페이지를 다시 방문해 주세요."
-  },
   "notificationsPageErrorTitle": {
     "message": "오류가 발생했습니다"
   },
   "notificationsPageNoNotificationsContent": {
     "message": "아직 알림을 받지 못했습니다."
   },
+  "notificationsSettingsAccountsLoadError": {
+    "message": "계정 알림 설정을 불러올 수 없습니다. 나중에 다시 시도하세요."
+  },
   "notificationsSettingsAgenticCliDescription": {
     "message": "에이전트 지갑을 위한 CLI 연결 요청, 승인, 세션 업데이트"
   },
   "notificationsSettingsAgenticCliTitle": {
     "message": "에이전트 지갑"
-  },
-  "notificationsSettingsBoxError": {
-    "message": "오류가 발생했습니다. 다시 시도해 주세요."
   },
   "notificationsSettingsDeselectAll": {
     "message": "모두 선택 해제"
@@ -6414,9 +6578,6 @@
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
-  },
-  "onboardingAdvancedPrivacyIPFSInvalid": {
-    "message": "유효한 URL을 입력하세요"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
     "message": "사용자 지정 IPFS 게이트웨이 추가"
@@ -6658,6 +6819,10 @@
     "message": "$1을(를) 인증할 수 없습니다. 다시 시도하거나 비밀번호를 사용하세요.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "다시 시도",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
   "passkeySetupStepRegister": {
     "message": "$1 등록",
     "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -6739,7 +6904,7 @@
     "message": "비밀번호 표시"
   },
   "passwordsDontMatch": {
-    "message": "비밀번호가 일치하지 않습니다"
+    "message": "비밀번호가 일치하지 않습니다."
   },
   "paste": {
     "message": "붙여넣기"
@@ -7199,6 +7364,12 @@
   "perpsCandlePeriodMinutes": {
     "message": "분"
   },
+  "perpsChart": {
+    "message": "가격 차트"
+  },
+  "perpsChartLoadError": {
+    "message": "차트 데이터를 불러올 수 없음"
+  },
   "perpsCloseAll": {
     "message": "모두 종료"
   },
@@ -7247,14 +7418,14 @@
   "perpsCloseShort": {
     "message": "숏 청산"
   },
+  "perpsCollapseChart": {
+    "message": "차트 접기"
+  },
   "perpsConfirmCloseLong": {
     "message": "롱 청산"
   },
   "perpsConfirmCloseShort": {
     "message": "숏 청산"
-  },
-  "perpsConnectionTimeout": {
-    "message": "연결 시간이 초과되었습니다. 다시 시도하세요."
   },
   "perpsContactSupport": {
     "message": "지원팀에 문의"
@@ -7345,6 +7516,9 @@
     "message": "거래를 시작하려면 자금을 추가하세요.",
     "description": "Error shown when the wallet has no exchange account yet, which is created on the first deposit"
   },
+  "perpsExpandChart": {
+    "message": "차트 펼치기"
+  },
   "perpsExploreMarkets": {
     "message": "시장 살펴보기"
   },
@@ -7366,6 +7540,10 @@
   "perpsFilterAll": {
     "message": "모두"
   },
+  "perpsFilterClear": {
+    "message": "$1, 필터 초기화",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "상품"
   },
@@ -7379,7 +7557,18 @@
     "message": "외환"
   },
   "perpsFilterIndex": {
-    "message": "지수 가격"
+    "message": "지수"
+  },
+  "perpsFilterMemecoins": {
+    "message": "Memecoin"
+  },
+  "perpsFilterMore": {
+    "message": "더 보기",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "더 보기, $1개 선택됨",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "신규"
@@ -7477,6 +7666,18 @@
   "perpsMarket": {
     "message": "시장"
   },
+  "perpsMarketCategories": {
+    "message": "시장 카테고리",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1개 시장",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1개 시장",
+    "description": "Count of markets currently listed, when exactly one is listed"
+  },
   "perpsMarketNotFound": {
     "message": "시장 찾을 수 없음"
   },
@@ -7502,9 +7703,6 @@
   },
   "perpsMore": {
     "message": "더 보기"
-  },
-  "perpsNetworkError": {
-    "message": "네트워크 오류가 발생했습니다. 다시 시도해 주세요."
   },
   "perpsNoMarketsFound": {
     "message": "시장을 찾을 수 없음"
@@ -7663,8 +7861,9 @@
   "perpsPositions": {
     "message": "포지션"
   },
-  "perpsRateLimitExceeded": {
-    "message": "요청이 너무 많습니다. 잠시 기다린 후 다시 시도해 주세요."
+  "perpsProducts": {
+    "message": "상품",
+    "description": "Heading of the Perps tab section listing market categories as chips"
   },
   "perpsRecentActivity": {
     "message": "최근 활동"
@@ -7712,9 +7911,6 @@
   "perpsSeeAll": {
     "message": "모두 보기",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
-  },
-  "perpsServiceUnavailable": {
-    "message": "서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
   },
   "perpsShort": {
     "message": "숏"
@@ -7777,14 +7973,8 @@
   "perpsSortByPriceChange": {
     "message": "가격 변동"
   },
-  "perpsSortByRank": {
-    "message": "순위"
-  },
-  "perpsSortBySection": {
-    "message": "정렬 기준"
-  },
   "perpsSortByTitle": {
-    "message": "필터"
+    "message": "정렬 기준"
   },
   "perpsSortByVolume": {
     "message": "거래량"
@@ -7901,10 +8091,6 @@
     "message": "마진 조정 실패",
     "description": "Error toast text shown when adding or removing margin fails"
   },
-  "perpsToastMarginAdjustmentFailedDescriptionFallback": {
-    "message": "마진을 조정할 수 없습니다. 다시 시도하세요.",
-    "description": "Fallback description shown when margin adjustment fails without a usable error message."
-  },
   "perpsToastMarginRemoveSuccess": {
     "message": "$2 포지션에서 $1의 마진을 제거함",
     "description": "$1 is the dollar-prefixed amount (e.g. $100) and $2 is the asset symbol for successful margin removal"
@@ -7969,6 +8155,10 @@
     "message": "거래 제출 중",
     "description": "In-progress toast text shown while a perps trade is being submitted"
   },
+  "perpsToastTradeEntryFailed": {
+    "message": "거래를 시작할 수 없습니다",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
+  },
   "perpsToastTradeSuccess": {
     "message": "포지션 종료 완료",
     "description": "Success toast text shown when a perps position is closed"
@@ -7981,9 +8171,17 @@
     "message": "익절/손절 업데이트 중...",
     "description": "In-progress toast text shown while updating TP/SL settings"
   },
-  "perpsToastUpdateSuccess": {
-    "message": "익절/손절이 업데이트되었습니다",
-    "description": "Success toast text shown when TP/SL settings are updated"
+  "perpsTopMovers": {
+    "message": "급등락",
+    "description": "Heading of the Perps tab section ranking markets by 24h price change"
+  },
+  "perpsTopMoversGainers": {
+    "message": "상승",
+    "description": "Toggle option showing the markets that rose the most over 24h in the Top movers section"
+  },
+  "perpsTopMoversLosers": {
+    "message": "하락",
+    "description": "Toggle option showing the markets that fell the most over 24h in the Top movers section"
   },
   "perpsTrades": {
     "message": "거래하기"
@@ -8164,9 +8362,6 @@
   "pinned": {
     "message": "고정됨"
   },
-  "pleaseConfirm": {
-    "message": "컨펌하세요"
-  },
   "pna25ModalBlogPostLink": {
     "message": "블로그 게시물에서 확인할 수 있습니다."
   },
@@ -8226,10 +8421,6 @@
     "message": "비공개 키",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1 비공개 키",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "개인 키 입력이 표시되지 않습니다",
     "description": "Explains that the private key input is hidden"
@@ -8241,9 +8432,6 @@
   "privateKeyShown": {
     "message": "이 개인 키 입력은 표시됩니다",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "경고: 이 키를 노출하지 마세요. 비공개 키가 있는 사람이라면 누구든 회원님의 계정에 있는 자산을 훔칠 수 있습니다."
   },
   "privateKeys": {
     "message": "개인 키",
@@ -8376,15 +8564,16 @@
   "quotedTotalCost": {
     "message": "총비용: $1"
   },
+  "rampsBackToWallet": {
+    "message": "지갑으로 돌아가기",
+    "description": "Secondary button on the ramps complete-buy interstitial that returns to the wallet home"
+  },
   "rampsBestRate": {
     "message": "최적 환율"
   },
   "rampsBuyToken": {
     "message": "$1 매수",
     "description": "$1 is the token symbol being purchased"
-  },
-  "rampsBuyWidgetError": {
-    "message": "매수를 시작할 수 없습니다. 다시 시도하세요."
   },
   "rampsBuyingViaProvider": {
     "message": "$1을(를) 통해 매수합니다.",
@@ -8393,8 +8582,24 @@
   "rampsChangeProvider": {
     "message": "공급자를 변경하세요."
   },
-  "rampsEligibilityFailedDescription": {
-    "message": "다시 시도해 보세요. 계속 문제가 발생하면 고객지원팀에 문의하세요."
+  "rampsChangeProviders": {
+    "message": "공급업체를 변경하세요",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
+  },
+  "rampsChooseProvider": {
+    "message": "공급업체 선택"
+  },
+  "rampsCompleteBuyTitle": {
+    "message": "구매 완료하기",
+    "description": "Title of the interstitial shown after opening a ramps provider checkout tab"
+  },
+  "rampsCompletePurchaseInProviderTab": {
+    "message": "$1 탭에서 구매 완료하기",
+    "description": "$1 is the on-ramp provider name (e.g. Transak)"
+  },
+  "rampsContinueInBrowser": {
+    "message": "브라우저에서 계속하기",
+    "description": "Banner title on the ramps complete-buy interstitial"
   },
   "rampsEligibilityFailedTitle": {
     "message": "사용자 지역을 확인할 수 없습니다"
@@ -8404,6 +8609,10 @@
   },
   "rampsErrorLoadingTokens": {
     "message": "토큰을 불러오지 못했습니다"
+  },
+  "rampsEstimatedToReceive": {
+    "message": "예상 수령액",
+    "description": "Label for the estimated crypto amount on the ramps complete-buy interstitial"
   },
   "rampsMaxPurchaseLimit": {
     "message": "최대 매수 금액은 $1입니다",
@@ -8521,21 +8730,25 @@
   "rampsPaymentDelayInstant": {
     "message": "즉시"
   },
-  "rampsPaymentDelayLessThan": {
-    "message": "다음 미만:"
-  },
   "rampsPaymentDelayMinute": {
     "message": "분"
   },
   "rampsPaymentDelayMinutes": {
     "message": "분"
   },
+  "rampsPaymentMethod": {
+    "message": "결제 방법",
+    "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
+  },
   "rampsPaymentMethodMinLimit": {
     "message": "최소 $1",
     "description": "$1 is the minimum fiat buy amount"
   },
+  "rampsPreviouslyUsed": {
+    "message": "마지막 사용"
+  },
   "rampsQuoteFetchError": {
-    "message": "견적을 불러오지 못했습니다."
+    "message": "견적을 가져오는 중 오류가 발생했습니다. 더 낮은 금액을 입력하거나"
   },
   "rampsQuoteUnavailable": {
     "message": "견적을 확인할 수 없습니다."
@@ -8543,14 +8756,16 @@
   "rampsSelectPaymentMethod": {
     "message": "결제 방법 선택"
   },
-  "rampsServiceDisruptionDescription": {
-    "message": "서비스 장애가 발생했습니다. 나중에 다시 시도하세요."
-  },
   "rampsServiceDisruptionTitle": {
     "message": "현재 일시적으로 매수 기능을 이용할 수 없습니다"
   },
-  "rampsShowAllTokens": {
-    "message": "모든 토큰 표시"
+  "rampsTokenUnavailableDescription": {
+    "message": "이 토큰은 현재 지역에서 사용할 수 없습니다.",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "토큰 사용 불가",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "사용자 지역에서는 아직 암호화폐를 매수할 수 없습니다."
@@ -8563,9 +8778,6 @@
   },
   "rateIncludesMMFee": {
     "message": "$1% MM 수수료 포함."
-  },
-  "readdToken": {
-    "message": "나중에 계정 옵션 메뉴의 '토큰 추가'로 이동하면 이 토큰을 다시 추가할 수 있습니다."
   },
   "receive": {
     "message": "받기"
@@ -8633,11 +8845,26 @@
   "rejected": {
     "message": "거부됨"
   },
+  "relayerFee": {
+    "message": "릴레이어 수수료"
+  },
+  "remindMeLater": {
+    "message": "확인",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "제거"
   },
   "removeAccount": {
     "message": "계정 제거"
+  },
+  "removeAccountConfirmDescription": {
+    "message": "언제든지 개인 키로 이 계정을 가져와서 복구할 수 있습니다.",
+    "description": "Description shown in the account remove confirmation modal from the account list edit mode."
+  },
+  "removeAccountConfirmTitle": {
+    "message": "$1 제거하기",
+    "description": "Title of the account remove confirmation modal. $1 is the account name."
   },
   "removeAccountModalBannerDescription": {
     "message": "이 계정을 제거하기 전에 비밀복구구문 또는 개인 키를 반드시 확보하세요.",
@@ -8661,9 +8888,6 @@
   },
   "removeNftErrorMessage": {
     "message": "이 NFT를 제거할 수 없습니다."
-  },
-  "removeNftMessage": {
-    "message": "NFT가 성공적으로 제거되었습니다!"
   },
   "removeSnap": {
     "message": "스냅 제거"
@@ -8764,9 +8988,6 @@
   "resultPageSuccess": {
     "message": "성공"
   },
-  "resultPageSuccessDefaultMessage": {
-    "message": "작업을 완료했습니다."
-  },
   "reusedTokenNameWarning": {
     "message": "여기에 있는 토큰은 사용자가 주시 중인 다른 토큰의 기호를 재사용하기 때문에 혼동되거나 속기 쉽습니다."
   },
@@ -8830,26 +9051,11 @@
   "reward": {
     "message": "보상"
   },
-  "rewardsAuthFailDescription": {
-    "message": "보상 프로그램에 대한 계정 인증 중 알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
-  },
   "rewardsAuthFailTitle": {
     "message": "알 수 없는 오류입니다."
   },
-  "rewardsErrorMessagesAccountAlreadyRegistered": {
-    "message": "이 계정은 이미 다른 보상 프로필에 등록되어 있습니다. 계정을 변경한 후 계속 진행하세요."
-  },
-  "rewardsErrorMessagesFailedToClaimReward": {
-    "message": "보상을 수령할 수 없습니다. 잠시 후 다시 시도해 주세요."
-  },
   "rewardsErrorMessagesRequestRejected": {
     "message": "요청을 거부하셨습니다."
-  },
-  "rewardsErrorMessagesServiceNotAvailable": {
-    "message": "현재 서비스를 이용할 수 없습니다. 잠시 후 다시 시도해 주세요."
-  },
-  "rewardsErrorMessagesSomethingWentWrong": {
-    "message": "알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
   },
   "rewardsLinkAccount": {
     "message": "계정 추가"
@@ -8862,9 +9068,6 @@
   },
   "rewardsOnboardingDescription": {
     "message": "MetaMask를 사용하기만 해도 상품을 받고, 혜택을 청구하며, 더 많은 수익 기회를 발견할 수 있습니다."
-  },
-  "rewardsOnboardingIntroGeoCheckFailedDescription": {
-    "message": "현재 사용자의 국가에서 보상 프로그램에 참여할 수 있는지 확인할 수 없습니다. 인터넷 연결 상태를 확인하고 다시 시도해 주세요."
   },
   "rewardsOnboardingIntroGeoCheckFailedTitle": {
     "message": "참여할 자격이 있는지 확인할 수 없습니다"
@@ -8967,6 +9170,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "이 RPC 공급업체가 요청을 제한하고 있습니다. 나중에 다시 시도하거나 다른 RPC URL을 사용하세요."
   },
   "safeTransferFrom": {
     "message": "다음에서 안전하게 송금:"
@@ -9092,6 +9298,10 @@
   "searchAnAcccountOrContact": {
     "message": "계정 또는 연락처 검색"
   },
+  "searchAnAccount": {
+    "message": "계정 검색",
+    "description": "Search input placeholder for the Perps destination account picker"
+  },
   "searchForAnAssetToSend": {
     "message": "전송할 자산 검색"
   },
@@ -9146,9 +9356,6 @@
   },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
-  },
-  "securityChangePasswordToastError": {
-    "message": "비밀번호를 변경할 수 없습니다. 다시 시도하세요."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "새 비밀번호가 저장되었지만, $1 잠금 해제를 켤 수 없습니다.",
@@ -9531,6 +9738,9 @@
   "selectPathHelp": {
     "message": "원하는 계정이 표시되지 않으면 HD 경로나 현재 선택한 네트워크를 바꿔 보세요."
   },
+  "selectPerpsAccount": {
+    "message": "무기한 선물 계정 선택"
+  },
   "selectRecipient": {
     "message": "수취인 선택"
   },
@@ -9559,9 +9769,6 @@
   "sendAlertNewAddressTitle": {
     "message": "새 주소"
   },
-  "sendBugReport": {
-    "message": "버그 리포트 전송."
-  },
   "sendBundleHwGasPayment": {
     "message": "$1(으)로 네트워크 수수료 지불",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -9571,6 +9778,9 @@
   },
   "sendSelectSendAsset": {
     "message": "전송할 자산 선택"
+  },
+  "sendToPerps": {
+    "message": "무기한 선물로 보내기"
   },
   "sendingAsset": {
     "message": "$1 전송하기"
@@ -9654,14 +9864,8 @@
   "shieldClaimDraftDeleteFailed": {
     "message": "초안 삭제 실패"
   },
-  "shieldClaimDraftDeleteFailedDescription": {
-    "message": "청구 초안을 삭제할 수 없습니다. 다시 시도해 주세요."
-  },
   "shieldClaimDraftSaveFailed": {
     "message": "초안 저장 실패"
-  },
-  "shieldClaimDraftSaveFailedDescription": {
-    "message": "청구 초안을 저장할 수 없습니다. 다시 시도해 주세요."
   },
   "shieldClaimDraftSaved": {
     "message": "초안 저장 완료"
@@ -9693,9 +9897,6 @@
   "shieldClaimFileUploaderAcceptText": {
     "message": "PDF, PNG, JPG(최대 $1MB)",
     "description": "The $1 is the maximum file size in MB"
-  },
-  "shieldClaimFileUploaderHelpText": {
-    "message": "추가 증거가 있으면 여기에 업로드하세요."
   },
   "shieldClaimGroupActive": {
     "message": "진행 중인 청구"
@@ -9743,26 +9944,11 @@
   "shieldClaimIncidentDetails": {
     "message": "사건 세부 정보"
   },
-  "shieldClaimInvalidChainId": {
-    "message": "올바른 체인 ID를 입력해 주세요"
-  },
-  "shieldClaimInvalidEmail": {
-    "message": "올바른 이메일 주소를 입력하세요"
-  },
   "shieldClaimInvalidRequired": {
     "message": "이 입력란은 필수 입력 항목입니다"
   },
   "shieldClaimInvalidTxHash": {
     "message": "올바른 트랜잭션 해시를 입력해 주세요"
-  },
-  "shieldClaimInvalidWalletAddress": {
-    "message": "올바른 지갑 주소를 입력하세요"
-  },
-  "shieldClaimMaxClaimsLimitExceeded": {
-    "message": "진행 중인 청구 건수가 최대치에 도달했습니다. 추가로 청구를 제출하려면 고객지원팀에 문의하세요."
-  },
-  "shieldClaimMaxDraftsReached": {
-    "message": "초안 저장 한도에 도달했습니다. 새 초안을 저장하려면 기존 초안을 삭제해 주세요."
   },
   "shieldClaimNetwork": {
     "message": "네트워크 선택"
@@ -9772,9 +9958,6 @@
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "환불용 지갑 주소"
-  },
-  "shieldClaimReimbursementWalletAddressHelpText": {
-    "message": "보안이 침해된 지갑은 사용하지 마세요."
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "영향을 받은 지갑 주소와 보상 지급 지갑 주소는 서로 달라야 합니다."
@@ -10168,9 +10351,6 @@
   "shieldTxMembershipErrorPausedCardAction": {
     "message": "카드 세부 정보 업데이트"
   },
-  "shieldTxMembershipErrorPausedCardTooltip": {
-    "message": "결제가 거부되었습니다. 보장을 유지하려면 결제 수단을 업데이트하세요."
-  },
   "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
     "message": "잔액 부족으로 인해 플랜이 일시 중지되었습니다. 결제 정보 업데이트는 최대 $1시간이 소요될 수 있습니다.",
     "description": "The $1 is the number of hours"
@@ -10279,12 +10459,6 @@
   },
   "showPermissions": {
     "message": "권한 표시"
-  },
-  "showPrivateKey": {
-    "message": "개인 키 표시"
-  },
-  "showSRP": {
-    "message": "비밀복구구문 표시"
   },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 표시"
@@ -10622,10 +10796,6 @@
     "message": "귀하는 Consensys $1에 정의된 바와 같이 달리 명시되지 않는 한 설치하는 모든 Snap이 타사 서비스임을 인정합니다. 타사 서비스 이용은 해당 타사 서비스 제공업체가 정한 별도의 약관이 적용됩니다. Consensys는 특정인이 특정한 이유로 Snap을 사용하는 것을 권장하지 않습니다. 타사 서비스에 액세스, 신뢰, 사용하는 것은 본인의 책임입니다. Consensys는 타사 서비스 사용으로 인해 귀하의 계정에 발생하는 손실에 대한 모든 책임과 의무를 부인합니다.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsPrivacyWarningThirdMessage": {
     "message": "Consensys는 귀하가 타사와 공유한 정보에 접근할 수 없습니다.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
@@ -10892,44 +11062,22 @@
   "stateCorruptionAreYouSure": {
     "message": "계속 진행하시겠습니까?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1에 따라 볼트를 복원하기로 결정하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1에 따라 MetaMask를 초기화하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "볼트를 자동으로 복구할 수 없습니다."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "자동 백업으로 볼트를 복구할 수 있습니다. 자동 복구는 현재 설정과 기본 설정을 삭제하고 볼트만 복원합니다."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "내부 오류: 데이터베이스에 접근할 수 없습니다"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask 상태 초기화"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "데이터베이스 초기화 중…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "계정 복원"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "데이터베이스 복원 중…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "이 지침",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "비밀복구구문 복구 방법"
-  },
-  "stateLogError": {
-    "message": "상태 기록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도하세요."
   },
   "stateLogFileName": {
     "message": "MetaMask 상태 로그"
@@ -10969,17 +11117,13 @@
     "message": "스왑이 실패했을 것입니다"
   },
   "stxCancelledDescription": {
-    "message": "트랜잭션 실패가 예상되었습니다. 불필요한 가스비 지출을 방지하기 위해 트랜잭션이 취소되었습니다."
+    "message": "트랜잭션 실패가 예상되어 불필요한 네트워크 수수료가 부과되지 않도록 트랜잭션을 취소했습니다."
   },
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
   },
   "stxFailure": {
     "message": "스왑 실패"
-  },
-  "stxFailureDescription": {
-    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 $1(으)로 문의하세요.",
-    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
     "message": "더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
@@ -11014,7 +11158,7 @@
     "message": "스왑 취소됨"
   },
   "stxUserCancelledDescription": {
-    "message": "트랜잭션이 취소되어 가스비를 지급하지 않았습니다."
+    "message": "트랜잭션이 취소되어 네트워크 수수료를 지불하지 않았습니다."
   },
   "submit": {
     "message": "제출"
@@ -11146,7 +11290,7 @@
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
+    "message": "MetaMask는 네트워크 수수료로 수익을 얻지 않습니다. 이 수수료는 추정치이며 네트워크 혼잡도와 트랜잭션 복잡성에 따라 변동될 수 있습니다. 자세히 알아보기 $1",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -11157,7 +11301,7 @@
     "message": " 포함됨"
   },
   "swapGasFeesSplit": {
-    "message": "이전 화면의 가스비는 이 두 트랜잭션으로 나뉩니다."
+    "message": "이전 화면에 표시된 네트워크 수수료는 이 두 건의 트랜잭션에 나뉘어 적용됩니다."
   },
   "swapGasFeesSponsored": {
     "message": "MetaMask가 지불함"
@@ -11201,9 +11345,6 @@
   },
   "swapQuoteSource": {
     "message": "견적 소스"
-  },
-  "swapQuotesExpiredErrorDescription": {
-    "message": "새 견적을 요청해 최신 요율을 확인하세요."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "견적 만료"
@@ -11250,6 +11391,9 @@
   "swapSlippageAutoDescription": {
     "message": "자동"
   },
+  "swapSlippageCappedDescription": {
+    "message": "슬리피지 허용 범위의 상한이 100%로 제한되었습니다."
+  },
   "swapSlippageHighDescription": {
     "message": "입력한 슬리피지($1%)가 매우 높은 것으로 간주되어 불량률이 발생할 수 있습니다.",
     "description": "$1 is the amount of % for slippage"
@@ -11293,7 +11437,7 @@
     "message": "유동성 소스"
   },
   "swapSuggestedGasSettingToolTipMessage": {
-    "message": "스왑은 복잡하고 시간에 민감한 트랜잭션입니다. 성공적인 스왑의 비용과 확신 사이의 적절한 균형을 위해 이 가스비를 권장합니다."
+    "message": "스왑은 복잡하고 신속한 처리가 필요한 거래입니다. 비용과 스왑 성공 가능성을 균형 있게 고려하여 이 네트워크 수수료를 권장합니다."
   },
   "swapToConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 컨펌하기 위해"
@@ -11318,7 +11462,7 @@
     "message": "알 수 없음"
   },
   "swapValidationInsufficientGasMessage": {
-    "message": "$1이 부족해서 이 스왑에 대한 가스비를 지불할 수 없습니다. 더 적은 금액을 입력하거나 $1을(를) 더 구매하세요."
+    "message": "$1(이)가 부족해 이 스왑에 대한 네트워크 수수료를 지불할 수 없습니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 구매하세요."
   },
   "swapZeroSlippage": {
     "message": "0% 슬리패지"
@@ -11395,9 +11539,6 @@
   },
   "termsOfUseAgreeText": {
     "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
-  },
-  "termsOfUseFooterText": {
-    "message": "스크롤하여 모든 섹션의 내용을 확인하세요"
   },
   "termsOfUseTitle": {
     "message": "이용약관이 개정되었습니다"
@@ -11478,9 +11619,6 @@
     "message": "$1 토큰 권한",
     "description": "$1 is the count of token permissions (plural form)"
   },
-  "tokenSearchError": {
-    "message": "검색 결과를 불러올 수 없습니다. 다시 시도해 주세요."
-  },
   "tokenStandard": {
     "message": "토큰 표준"
   },
@@ -11521,9 +11659,6 @@
   "totalReceived": {
     "message": " 총 수령량"
   },
-  "totalVolume": {
-    "message": "총 거래량"
-  },
   "transaction": {
     "message": "트랜잭션"
   },
@@ -11534,7 +11669,7 @@
     "message": "기능"
   },
   "transactionDetailGasHeading": {
-    "message": "예상 가스비"
+    "message": "예상 네트워크 수수료"
   },
   "transactionError": {
     "message": "트랜잭션 오류입니다. 계약 코드에 예외가 발생했습니다."
@@ -11555,7 +11690,7 @@
     "message": "기본 수수료 (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "총 L1 가스비"
+    "message": "총 L1 네트워크 수수료"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2 가스 한도"
@@ -11570,7 +11705,7 @@
     "message": "우선 수수료 (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "가스비 합계"
+    "message": "총 네트워크 수수료"
   },
   "transactionIdCopied": {
     "message": "트랜잭션 ID 복사됨"
@@ -11612,10 +11747,6 @@
   "trezor": {
     "message": "Trezor",
     "description": "Hardware device name"
-  },
-  "trezorDesktopAppRequiredError": {
-    "message": "Trezor Suite Desktop이 있어야 Trezor를 사용할 수 있습니다. Trezor Suite(suite.trezor.io)를 설치하고 실행하여 다시 시도하세요.",
-    "description": "An error message shown to the user during the hardware connect flow."
   },
   "tronBandwidth": {
     "message": "대역폭 포인트"
@@ -11679,9 +11810,6 @@
   "turnOff": {
     "message": "끄기"
   },
-  "turnOffMetamaskNotificationsError": {
-    "message": "알림을 비활성화하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."
-  },
   "turnOffPasskey": {
     "message": "$1 끄기",
     "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
@@ -11692,9 +11820,6 @@
   },
   "turnOn": {
     "message": "켜기"
-  },
-  "turnOnMetamaskNotificationsError": {
-    "message": "알림을 생성하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."
   },
   "turnOnTokenDetection": {
     "message": "향상된 토큰 감지 켜기"
@@ -11728,9 +11853,6 @@
   "unavailableNetworkConnectionDescription": {
     "message": "$1과(와)의 연결이 불안정합니다. 계속하기 전에 네트워크 연결 세부 정보를 업데이트하거나 나중에 다시 시도하세요.",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
-  },
-  "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
   },
   "unexpectedError": {
     "message": "예기치 않은 오류가 발생했습니다.",
@@ -11771,9 +11893,6 @@
   },
   "unlock": {
     "message": "잠금해제"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "비밀번호가 올바르지 않습니다. 다시 시도하세요."
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "시도 횟수가 너무 많습니다. 다음 시간이 지난 후에 다시 시도하세요. "
@@ -12000,10 +12119,6 @@
     "message": "$1의 경고",
     "description": "$1 represents the name of the snap"
   },
-  "watchEthereumAccountsDescription": {
-    "message": "이 옵션을 켜면 공개 주소 또는 ENS 이름을 통해 이더리움 계정을 볼 수 있게 됩니다. 이 베타 기능에 대한 피드백을 보내주시려면 이 $1을(를) 작성해 주세요.",
-    "description": "$1 is the link to a product feedback form"
-  },
   "watchEthereumAccountsToggle": {
     "message": "이더리움 계정 모니터(베타)"
   },
@@ -12013,10 +12128,6 @@
   },
   "web3": {
     "message": "웹3"
-  },
-  "web3ShimUsageNotification": {
-    "message": "현재의 웹사이트가 제거된 window.web3 API를 이용하려고 합니다. 이 사이트가 제대로 작동하지 않는 경우, $1을(를) 클릭해 자세히 알아보세요.",
-    "description": "$1 is a clickable link."
   },
   "webhid": {
     "message": "WebHID",
@@ -12046,7 +12157,7 @@
     "message": "기록에 따르면 네트워크 이름이 이 체인 ID와 일치하지 않습니다."
   },
   "wrongPassword": {
-    "message": "잘못된 비밀번호",
+    "message": "잘못된 비밀번호입니다. 다시 시도해 주세요.",
     "description": "Displayed when the user enters an incorrect password"
   },
   "year": {

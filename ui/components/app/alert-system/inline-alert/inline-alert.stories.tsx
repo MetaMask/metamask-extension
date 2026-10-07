@@ -1,7 +1,7 @@
 import React from 'react';
 import InlineAlert, { InlineAlertProps } from './inline-alert';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 
 export default {
   title: 'Confirmations/Components/Alerts/InlineAlert',

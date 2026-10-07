@@ -7,6 +7,7 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BasicFunctionalityToggleItem } from './basic-functionality-item';
 
 const mockToggleExternalServices = jest.fn();
@@ -152,5 +153,27 @@ describe('BasicFunctionalityToggleItem', () => {
     expect(mockToggleBasicFunctionality).toHaveBeenCalledWith(true);
     expect(mockToggleExternalServices).not.toHaveBeenCalled();
     expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+  });
+
+  it('locks the consolidated toggle for a social flow without an auth connection', () => {
+    const store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        authConnection: undefined,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        useExternalServices: true,
+        preferences: {
+          ...mockState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: true,
+        },
+      },
+    });
+    renderWithProvider(<BasicFunctionalityToggleItem />, store);
+
+    fireEvent.click(screen.getByTestId('basic-functionality-toggle'));
+
+    expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+    expect(mockToggleBasicFunctionality).not.toHaveBeenCalled();
   });
 });

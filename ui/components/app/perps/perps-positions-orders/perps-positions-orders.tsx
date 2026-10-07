@@ -123,7 +123,7 @@ export const PerpsPositionsOrders = ({
                 disabled={isCloseAllPending || !onCloseAllPositions}
                 onClick={onCloseAllPositions}
                 data-testid="perps-close-all-positions"
-                className="min-w-0 rounded-md border-0 bg-transparent px-1 py-0.5 -mr-1 shadow-none hover:bg-transparent active:bg-transparent focus-visible:bg-transparent disabled:opacity-50"
+                className="min-w-0 border-0 bg-transparent px-1 py-0.5 -mr-1 shadow-none hover:bg-transparent active:bg-transparent focus-visible:bg-transparent disabled:opacity-50"
                 textProps={{
                   variant: TextVariant.BodySm,
                   color: TextColor.TextAlternative,
@@ -207,7 +207,7 @@ export const PerpsPositionsOrders = ({
               disabled={isCancelAllPending || !onCancelAllOrders}
               onClick={onCancelAllOrders}
               data-testid="perps-cancel-all-orders"
-              className="min-w-0 rounded-md border-0 bg-transparent px-1 py-0.5 -mr-1 shadow-none hover:bg-transparent active:bg-transparent focus-visible:bg-transparent disabled:opacity-50"
+              className="min-w-0 border-0 bg-transparent px-1 py-0.5 -mr-1 shadow-none hover:bg-transparent active:bg-transparent focus-visible:bg-transparent disabled:opacity-50"
               textProps={{
                 variant: TextVariant.BodySm,
                 color: TextColor.TextAlternative,

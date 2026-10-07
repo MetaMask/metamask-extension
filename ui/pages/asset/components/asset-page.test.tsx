@@ -22,6 +22,8 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
+import type { Asset } from '../types/asset';
 import AssetPage from './asset-page';
 
 jest.mock('../../../hooks/useAnalytics', () => {
@@ -57,6 +59,47 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../store/controller-actions/transaction-controller');
+
+const mockUseAssetPerpsMarket = jest.fn(
+  (): { market: { name: string } | undefined; isLoading: boolean } => ({
+    market: undefined,
+    isLoading: false,
+  }),
+);
+jest.mock('../hooks/useAssetPerpsMarket', () => ({
+  useAssetPerpsMarket: () => mockUseAssetPerpsMarket(),
+}));
+
+const mockUsePerpsPositionForAsset = jest.fn(() => ({
+  position: undefined,
+  isLoading: false,
+}));
+jest.mock('../../../hooks/perps/usePerpsPositionForAsset', () => ({
+  usePerpsPositionForAsset: () => mockUsePerpsPositionForAsset(),
+}));
+
+jest.mock('../../../components/app/perps/perps-view-stream-boundary', () => ({
+  PerpsViewStreamBoundary: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
+}));
+
+// The Perps row and position card have their own suites; here we only assert
+// that the asset page mounts them for the native path with the matched market.
+jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
+  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+  ),
+}));
+
+jest.mock('./asset-perps-position-section', () => ({
+  AssetPerpsPositionSection: ({ marketSymbol }: { marketSymbol: string }) => (
+    <div
+      data-testid="asset-perps-position-section"
+      data-market={marketSymbol}
+    />
+  ),
+}));
 
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({
@@ -104,6 +147,13 @@ jest.mock('../../../hooks/musd', () => {
 });
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
+}));
+
+const mockUseParams = jest.fn((): Record<string, string | undefined> => ({}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => mockUseParams(),
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
@@ -347,6 +397,17 @@ describe('AssetPage', () => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 
+    mockUseParams.mockReturnValue({});
+
+    mockUseAssetPerpsMarket.mockReturnValue({
+      market: undefined,
+      isLoading: false,
+    });
+    mockUsePerpsPositionForAsset.mockReturnValue({
+      position: undefined,
+      isLoading: false,
+    });
+
     // Return a stable (same-reference) default so Reselect's input stability
     // check does not trigger a warning when getAsset calls this selector twice.
     (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
@@ -589,6 +650,114 @@ describe('AssetPage', () => {
     expect(getByTestId('asset-name')).toHaveTextContent(native.symbol);
   });
 
+  describe('Perps actions on the native asset page', () => {
+    const renderNative = () =>
+      renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+        '/0x1',
+      );
+
+    it('holds a skeleton while the market lookup is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('holds a skeleton while the position lookup for a matched market is in flight', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: true,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('asset-perps-actions-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+    });
+
+    it('renders the Perps row when position loading settled with none', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+      mockUsePerpsPositionForAsset.mockReturnValue({
+        position: undefined,
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+    });
+
+    it('renders the Perps row and the open position section once the lookups resolve', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('asset-perps-position-section')).toHaveAttribute(
+        'data-market',
+        'ETH',
+      );
+      expect(queryByTestId('coin-overview-buy')).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-swap')).not.toBeInTheDocument();
+    });
+
+    it('renders Receive rather than Send for a zero-balance native Perps asset', () => {
+      mockUseAssetPerpsMarket.mockReturnValue({
+        market: { name: 'ETH' },
+        isLoading: false,
+      });
+
+      const { queryByTestId } = renderNative();
+
+      expect(queryByTestId('coin-overview-receive')).toBeInTheDocument();
+      expect(queryByTestId('coin-overview-send')).not.toBeInTheDocument();
+    });
+
+    it('keeps the standard row and no position section when the asset has no market', () => {
+      const { queryByTestId } = renderNative();
+
+      expect(
+        queryByTestId('asset-perps-actions-skeleton'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('perps-trade-buttons')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('asset-perps-position-section'),
+      ).not.toBeInTheDocument();
+      expect(queryByTestId('coin-overview-buy')).toBeInTheDocument();
+    });
+  });
+
   it('should render an ERC20 asset without prices', async () => {
     const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
@@ -717,6 +886,126 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('route CAIP asset id', () => {
+    const stellarChainId = 'stellar:pubnet';
+    const stellarUsdcAssetId =
+      'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const stellarXlmAssetId = 'stellar:pubnet/slip44:148';
+    const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+    const groupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0';
+
+    const createStellarAssetPageStore = (
+      assetsBalance: Record<string, Record<string, unknown>> = {},
+    ) => {
+      const wallet = mockStore.metamask.accountTree.wallets[walletId];
+
+      return configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          assetsBalance,
+          accountTree: {
+            wallets: {
+              [walletId]: {
+                ...wallet,
+                groups: {
+                  ...wallet.groups,
+                  [groupId]: {
+                    ...wallet.groups[groupId],
+                    accounts: [
+                      selectedAccountAddress,
+                      MOCK_ACCOUNT_STELLAR_PUBNET.id,
+                    ],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockStore.metamask.internalAccounts,
+            accounts: {
+              ...mockStore.metamask.internalAccounts.accounts,
+              [MOCK_ACCOUNT_STELLAR_PUBNET.id]: MOCK_ACCOUNT_STELLAR_PUBNET,
+            },
+          },
+        },
+      });
+    };
+
+    beforeEach(() => {
+      // No account-group asset, so bip44Asset and assetId cannot supply the id.
+      (getAssetsBySelectedAccountGroup as unknown as jest.Mock).mockReturnValue(
+        {},
+      );
+    });
+
+    it('shows the activate card when the route CAIP asset id requires activation', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarUsdcAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={
+            {
+              type: AssetType.token,
+              chainId: stellarChainId,
+              address: stellarUsdcAssetId,
+              symbol: 'USDC',
+              decimals: 7,
+              image: '',
+            } as unknown as Asset
+          }
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore(),
+      );
+
+      expect(getByTestId('asset-activate-card')).toBeInTheDocument();
+    });
+
+    it('shows the XLM spendable balance when the route CAIP asset id is native XLM', () => {
+      mockUseParams.mockReturnValue({
+        chainId: stellarChainId,
+        asset: stellarXlmAssetId,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage
+          asset={
+            {
+              type: AssetType.native,
+              chainId: stellarChainId,
+              symbol: 'XLM',
+              image: '',
+              isOriginalNativeSymbol: true,
+              decimals: 7,
+            } as unknown as Asset
+          }
+          optionsButton={null}
+        />,
+        createStellarAssetPageStore({
+          [MOCK_ACCOUNT_STELLAR_PUBNET.id]: {
+            [stellarXlmAssetId]: {
+              amount: '10',
+              metadata: {
+                minimumReserveBalance: '25000000',
+                spendableBalance: '75000000',
+                decimal: 7,
+              },
+            },
+          },
+        }),
+      );
+
+      expect(getByTestId('spendable-balance-section')).toBeInTheDocument();
+      expect(
+        getByTestId('spendable-balance-spendable-balance'),
+      ).toHaveTextContent('7.5 XLM');
     });
   });
 });

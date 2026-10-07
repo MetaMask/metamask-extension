@@ -78,6 +78,10 @@ jest.mock('@metamask/perps-controller', () => ({
     ORDER_CHASE_LIMIT_REACHED: 'ORDER_CHASE_LIMIT_REACHED',
     ORDER_CHASE_ABANDONED: 'ORDER_CHASE_ABANDONED',
     ORDER_CHASE_TOUCH_UNAVAILABLE: 'ORDER_CHASE_TOUCH_UNAVAILABLE',
+    ORDER_MARGIN_MODE_INVALID: 'ORDER_MARGIN_MODE_INVALID',
+    ORDER_MARGIN_MODE_UNSUPPORTED: 'ORDER_MARGIN_MODE_UNSUPPORTED',
+    ORDER_MARGIN_MODE_POSITION_OPEN: 'ORDER_MARGIN_MODE_POSITION_OPEN',
+    ORDER_MARGIN_MODE_ORDER_OPEN: 'ORDER_MARGIN_MODE_ORDER_OPEN',
     EXCHANGE_ACCOUNT_NOT_FOUND: 'EXCHANGE_ACCOUNT_NOT_FOUND',
     EXCHANGE_MULTI_SIG_REQUIRED: 'EXCHANGE_MULTI_SIG_REQUIRED',
     EXCHANGE_INVALID_NONCE: 'EXCHANGE_INVALID_NONCE',
@@ -98,6 +102,7 @@ jest.mock('@metamask/perps-controller', () => ({
     INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
     REDUCE_ONLY_VIOLATION: 'REDUCE_ONLY_VIOLATION',
     POSITION_WOULD_FLIP: 'POSITION_WOULD_FLIP',
+    POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
     MARGIN_ADJUSTMENT_FAILED: 'MARGIN_ADJUSTMENT_FAILED',
     TPSL_UPDATE_FAILED: 'TPSL_UPDATE_FAILED',
     TPSL_PROTECTION_LOST: 'TPSL_PROTECTION_LOST',
@@ -167,7 +172,7 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
   });
 
   it('translates every error code introduced after v12', () => {
-    // Controller 13.0.0-15.1.0 widened `PerpsErrorCode`. Named literally rather
+    // Controller 13.0.0-16.2.0 widened `PerpsErrorCode`. Named literally rather
     // than derived from the enum so a code dropped from a later release fails
     // here instead of silently shrinking the assertion to nothing.
     const codesAddedAfterV12 = [
@@ -176,6 +181,11 @@ describe('ERROR_CODE_TO_I18N_KEY', () => {
       ['ORDER_STRATEGY_ROUTE_UNAVAILABLE', '[perpsOrderFailed]'],
       ['ORDER_CHASE_MAX_DISTANCE_INVALID', '[perpsOrderFailed]'],
       ['TPSL_PROTECTION_LOST', '[somethingWentWrong]'],
+      ['POSITION_NOT_FOUND', '[somethingWentWrong]'],
+      ['ORDER_MARGIN_MODE_INVALID', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_UNSUPPORTED', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_POSITION_OPEN', '[perpsOrderFailed]'],
+      ['ORDER_MARGIN_MODE_ORDER_OPEN', '[perpsOrderFailed]'],
     ] as const;
 
     const translated = codesAddedAfterV12.map(([code]) =>

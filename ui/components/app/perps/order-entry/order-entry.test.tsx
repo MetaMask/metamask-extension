@@ -29,7 +29,7 @@ jest.mock('../../../../hooks/perps/usePerpsTransactionHistory', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
-  usePerpsMarketInfo: () => undefined,
+  usePerpsMarketInfo: () => ({ market: undefined, isLoading: false }),
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({

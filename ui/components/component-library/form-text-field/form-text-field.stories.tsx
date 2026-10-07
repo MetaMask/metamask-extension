@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/preview-api';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { useArgs } from 'storybook/preview-api';
 
 import { FormTextField } from './form-text-field';
 

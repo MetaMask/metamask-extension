@@ -70,6 +70,7 @@ type ResolvedOptions = {
 export function buildChromiumLaunchArgs(
   extensionPath: string,
   proxyServer?: string,
+  headless = false,
 ): string[] {
   const launchArgs = [
     `--disable-extensions-except=${extensionPath}`,
@@ -79,6 +80,10 @@ export function buildChromiumLaunchArgs(
     '--disable-renderer-backgrounding',
     '--disable-features=TranslateUI',
   ];
+
+  if (headless) {
+    launchArgs.push('--headless=new');
+  }
 
   if (proxyServer) {
     launchArgs.unshift('--allow-insecure-localhost');
@@ -230,10 +235,13 @@ export class MetaMaskExtensionLauncher {
       const launchArgs = buildChromiumLaunchArgs(
         this.options.extensionPath,
         this.options.proxyServer,
+        this.options.headless,
       );
 
       this.context = await chromium.launchPersistentContext(this.userDataDir, {
-        headless: this.options.headless,
+        // Playwright's headless-shell does not load browser extensions. Use
+        // full Chromium with the modern headless flag so MV3 workers attach.
+        headless: false,
         channel: 'chromium',
         args: launchArgs,
         ignoreHTTPSErrors: Boolean(this.options.proxyServer),

@@ -23,13 +23,13 @@ const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [
   'SEGMENT_WRITE_KEY_REF',
   'SEGMENT_PROD_WRITE_KEY',
   'TEST_GAS_FEE_FLOWS',
-  'DEEP_LINK_HOST',
+  'CANONICAL_DEEP_LINK_HOST',
+  'DEEP_LINK_HOSTS',
   'DEEP_LINK_PUBLIC_KEY',
   'SEEDLESS_ONBOARDING_ENABLED',
   'METAMASK_SHIELD_ENABLED',
   'PERPS_ENABLED',
   'QR_SYNC_ENABLED',
-  'ASSETS_UNIFIED_STATE_ENABLED',
   'COMPLIANCE_API_URL',
 ];
 
@@ -49,13 +49,13 @@ function getVariablesForSetEnvironmentVariables() {
     SEGMENT_WRITE_KEY_REF: 'SEGMENT_PROD_WRITE_KEY',
     SEGMENT_PROD_WRITE_KEY: 'prod-segment-write-key',
     TEST_GAS_FEE_FLOWS: false,
-    DEEP_LINK_HOST: 'https://deep-link.example.test',
+    CANONICAL_DEEP_LINK_HOST: 'deep-link.example.test',
+    DEEP_LINK_HOSTS: 'deep-link.example.test,deep-link-alt.example.test',
     DEEP_LINK_PUBLIC_KEY: 'public-key',
     SEEDLESS_ONBOARDING_ENABLED: 'false',
     METAMASK_SHIELD_ENABLED: 'false',
     PERPS_ENABLED: 'false',
     QR_SYNC_ENABLED: 'false',
-    ASSETS_UNIFIED_STATE_ENABLED: 'false',
     COMPLIANCE_API_URL: 'https://compliance.example.test',
   });
 
