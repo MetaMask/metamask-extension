@@ -351,13 +351,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
       userOptInV2: true,
     },
   },
-  SeedlessOnboardingController: {
-    // Recovery diagnostics may expose lifecycle/status signals only.
-    passwordChangePhase: true,
-    passwordOutdatedCache: {
-      isExpiredPwd: true,
-    },
-  },
   SnapController: {
     snaps: false,
   },
