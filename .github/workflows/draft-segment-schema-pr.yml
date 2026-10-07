@@ -43,8 +43,11 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
+          # Schema reads and writes use this token, so it must be the Consensys installation.
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: Consensys
+          repositories: segment-schema
       - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
         with:
           platform: extension
@@ -92,8 +95,11 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
+          # Schema reads and writes use this token, so it must be the Consensys installation.
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: Consensys
+          repositories: segment-schema
       - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
         with:
           platform: extension
@@ -121,8 +127,11 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
+          # Schema reads and writes use this token, so it must be the Consensys installation.
           client-id: ${{ vars.APP_CLIENT_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: Consensys
+          repositories: segment-schema
       - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@cc9baac1474257c08135f9ea3208b9bc15951e59
         with:
           platform: extension
