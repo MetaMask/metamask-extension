@@ -354,6 +354,32 @@ describe('analytics', () => {
     );
   });
 
+  it('uses the primary keyring session instead of a stale first session', () => {
+    updateProfileSessionData(
+      {
+        stale: Object.values(SAMPLE_SRP_SESSION_DATA)[0],
+        current: {
+          ...Object.values(SAMPLE_SRP_SESSION_DATA)[0],
+          profile: {
+            ...Object.values(SAMPLE_SRP_SESSION_DATA)[0].profile,
+            canonicalProfileId: 'current-canonical',
+          },
+        },
+      },
+      'current',
+    );
+
+    expect(getProfileIdentityProperties().canonical_profile_id).toBe(
+      'current-canonical',
+    );
+  });
+
+  it('omits identity when the primary keyring is unavailable', () => {
+    updateProfileSessionData(SAMPLE_SRP_SESSION_DATA, null);
+
+    expect(getProfileIdentityProperties()).toEqual({});
+  });
+
   describe('setParticipateInMetaMetrics', () => {
     it('opts in and out via AnalyticsController and records the consent decision', async () => {
       const {
