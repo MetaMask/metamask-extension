@@ -152,6 +152,24 @@ const gnosisNetworkConfiguration = {
   },
 };
 
+const multiRpcNetworkConfiguration = {
+  '0x12c': {
+    chainId: '0x12c',
+    name: 'Multi RPC Network',
+    rpcEndpoints: [
+      {
+        url: 'https://rpc-primary.example.com',
+        type: RpcEndpointType.Custom,
+        networkClientId: 'multi-rpc',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'MULTI',
+  },
+};
+
 const testNetworkConfiguration = {
   '0xaa36a7': {
     chainId: '0xaa36a7',
@@ -605,21 +623,7 @@ describe('NetworksPage', () => {
       editedNetwork: { chainId: '0x12c', nickname: 'Multi RPC Network' },
       networkConfigurationsByChainId: {
         ...mockNetworkConfigurations,
-        '0x12c': {
-          chainId: '0x12c',
-          name: 'Multi RPC Network',
-          rpcEndpoints: [
-            {
-              url: 'https://rpc-primary.example.com',
-              type: RpcEndpointType.Custom,
-              networkClientId: 'multi-rpc',
-            },
-          ],
-          defaultRpcEndpointIndex: 0,
-          blockExplorerUrls: [],
-          defaultBlockExplorerUrlIndex: 0,
-          nativeCurrency: 'MULTI',
-        },
+        ...multiRpcNetworkConfiguration,
       },
     });
 
