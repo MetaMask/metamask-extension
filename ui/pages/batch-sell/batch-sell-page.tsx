@@ -84,10 +84,6 @@ const BatchSellPage = () => {
                 )}
                 element={<BatchSellReviewPage />}
               />
-              <Route
-                path="*"
-                element={<Navigate to={BATCH_SELL_SELECT_ROUTE} replace />}
-              />
             </Routes>
           </Content>
         </Page>

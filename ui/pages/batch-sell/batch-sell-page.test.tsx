@@ -80,14 +80,6 @@ describe('BatchSellPage', () => {
     mockUseSelector.mockReturnValue(true);
   });
 
-  it('redirects unknown batch sell paths to the select page', () => {
-    const { getByTestId } = renderBatchSellPage(
-      `${BATCH_SELL_ROOT_ROUTE}/not-a-page`,
-    );
-
-    expect(getByTestId('batch-sell-select-page')).toBeInTheDocument();
-  });
-
   it('renders the batch sell flow when the feature is enabled', () => {
     const { getByTestId } = renderBatchSellPage();
 

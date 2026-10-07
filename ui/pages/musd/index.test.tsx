@@ -134,13 +134,6 @@ describe('MusdConversionPage', () => {
     expect(screen.getByTestId('musd-education-screen')).toBeInTheDocument();
   });
 
-  it('redirects unknown musd paths to the education screen', () => {
-    const store = createMockStore();
-    renderPage(store, '/musd/not-a-page');
-
-    expect(screen.getByTestId('musd-education-screen')).toBeInTheDocument();
-  });
-
   it('renders education screen when feature is enabled and not blocked', () => {
     const store = createMockStore();
     renderPage(store);

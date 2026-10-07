@@ -10,7 +10,6 @@ import {
   useNavigate,
   useLocation,
   useParams,
-  Navigate,
   Routes,
   Route,
 } from 'react-router-dom';
@@ -788,15 +787,6 @@ function PermissionsConnect() {
                     setPermissionsApproved(true);
                   }}
                   targetSubjectMetadata={targetSubjectMetadata}
-                />
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <Navigate
-                  to={permissionsRequestId ? connectPath : DEFAULT_ROUTE}
-                  replace
                 />
               }
             />
