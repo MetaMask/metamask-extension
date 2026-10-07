@@ -14,12 +14,18 @@ import type {
 } from './types';
 
 /**
- * Methods the kit supports, cheapest to verify first. Picker order, the
- * "confirm it's you" default and setup order (after the `verifyWith` methods
- * move last) all follow it.
+ * Credential types the server knows, cheapest to verify first. Picker
+ * order, the "confirm it's you" default and setup order (after the
+ * `verifyWith` methods move last) all follow it. Each platform only offers
+ * the ones it can run (`PLATFORM_METHODS`).
  */
 const METHOD_COST_RANKING: readonly MfaMethod[] = ['passkey', 'email_otp'];
 
+/**
+ * Methods each client's kit is built for. On mobile, passkeys also need the
+ * passkey adapter, which is not shipped yet: until then the flow rejects any
+ * request that includes a passkey with `passkey_unsupported`.
+ */
 const PLATFORM_METHODS: Record<MfaPlatform, readonly MfaMethod[]> = {
   mobile: ['passkey', 'email_otp'],
   extension: ['email_otp'],
