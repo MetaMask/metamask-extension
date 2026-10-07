@@ -86,6 +86,7 @@ app/scripts/messenger-client-init/braze-service*                  @MetaMask/enga
 app/scripts/messenger-client-init/messengers/braze-service*       @MetaMask/engagement
 app/scripts/services/braze-service*                               @MetaMask/engagement
 shared/lib/braze*                                                 @MetaMask/engagement
+app/scripts/lib/segment/README.md                                 @MetaMask/engagement
 
 # Accounts team is responsible for code related with: Snap accounts,
 # Multichain accounts, Authentication, Backup and sync, Hardware Wallets

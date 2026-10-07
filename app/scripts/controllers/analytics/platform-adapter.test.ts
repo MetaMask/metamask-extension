@@ -349,6 +349,40 @@ describe('createPlatformAdapter', () => {
         callback,
       );
     });
+
+    it('adds the canonical profile ID to context without changing the user ID or traits', () => {
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          getProfileIdentityProperties: () => ({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            profile_id: 'profileId',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
+          }),
+        }),
+      );
+
+      adapter.identify('user-1', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_marketing_consent: true,
+      });
+
+      expect(segment.identify).toHaveBeenCalledWith(
+        {
+          userId: 'user-1',
+          traits: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_marketing_consent: true,
+          },
+          context: {
+            ...DEFAULT_APP_CONTEXT,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
+          },
+        },
+        undefined,
+      );
+    });
   });
 
   describe('view', () => {
