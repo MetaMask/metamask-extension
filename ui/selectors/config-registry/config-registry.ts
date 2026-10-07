@@ -10,7 +10,6 @@ import type {
   ConfigRegistryControllerState,
   RegistryNetworkConfig,
 } from '@metamask/config-registry-controller';
-import { isInfuraNetworkType } from '@metamask/controller-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
@@ -88,9 +87,15 @@ function registryConfigToAddNetworkFields(
       : [];
     const nativeCurrency = config.assets?.native?.symbol ?? 'ETH';
 
-    const rpcEndpoint: AddNetworkCustomRpcEndpointFields | InfuraRpcEndpoint =
-      defaultRpc.type === RpcEndpointType.Infura &&
-      isInfuraNetworkType(defaultRpc.networkClientId)
+    // Registry chains may reference Infura networks that are not built-in
+    // `InfuraNetworkType`s (e.g. 'arc-mainnet'). NetworkController rebuilds the
+    // URL for Infura-type endpoints from the networkClientId and the real
+    // project ID, so the placeholder in the stored URL is fine. Saving these
+    // as Custom endpoints would call the URL verbatim and get rejected by
+    // Infura. The cast is needed because InfuraRpcEndpoint.url is typed as a
+    // template over the stale InfuraNetworkType list.
+    const rpcEndpoint = (
+      defaultRpc.type === RpcEndpointType.Infura
         ? {
             type: RpcEndpointType.Infura,
             networkClientId: defaultRpc.networkClientId,
@@ -99,7 +104,8 @@ function registryConfigToAddNetworkFields(
         : {
             type: RpcEndpointType.Custom,
             url: defaultRpc.url,
-          };
+          }
+    ) as AddNetworkCustomRpcEndpointFields | InfuraRpcEndpoint;
 
     return {
       chainId: hexChainId,
