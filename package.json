@@ -350,7 +350,7 @@
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
     "@blockaid/ppom_release": "^1.5.3",
-    "@braze/web-sdk": "^6.13.0",
+    "@braze/web-sdk": "^7.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ensdomains/content-hash": "^2.5.7",

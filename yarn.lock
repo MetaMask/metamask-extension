@@ -1945,10 +1945,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@braze/web-sdk@npm:^6.13.0":
-  version: 6.13.0
-  resolution: "@braze/web-sdk@npm:6.13.0"
-  checksum: 10/b417408b287f6a158e40c1960e99df64abf35c0fe5c0d2882878dbae4889bc6d37cf070acca7125aacaafadfe9a6924da752f4dea0129dad4ab9de2705b69a70
+"@braze/web-sdk@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@braze/web-sdk@npm:7.0.0"
+  checksum: 10/d89cf77379543b1144743b14771eeaafde697e70e78753080d94fd9ac23c87113305fc0b3b84eb607071a5dc2f3c580d3319d2b90e6d22ba554accf207b1c393
   languageName: node
   linkType: hard
 
@@ -35554,7 +35554,7 @@ __metadata:
     "@babel/register": "npm:^7.25.9"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch"
     "@blockaid/ppom_release": "npm:^1.5.3"
-    "@braze/web-sdk": "npm:^6.13.0"
+    "@braze/web-sdk": "npm:^7.0.0"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@ensdomains/content-hash": "npm:^2.5.7"
