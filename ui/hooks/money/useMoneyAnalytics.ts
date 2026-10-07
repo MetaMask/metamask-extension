@@ -58,6 +58,7 @@ export type MoneyButtonClickedProperties =
   | ({
       buttonType: MoneyButtonType.Text;
       labelKey: string;
+      labelSubstitutions?: string[];
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
@@ -153,9 +154,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
   }, [bottomSheetName, componentName, moneyAccountAddress, screenName]);
 
   const resolveLabel = useCallback(
-    (labelKey: string) => ({
-      labelEn: asLabel(getMessage('en', enMessages ?? {}, labelKey), labelKey),
-      labelLocalized: asLabel(t(labelKey), labelKey),
+    (labelKey: string, substitutions?: string[]) => ({
+      labelEn: asLabel(
+        getMessage('en', enMessages ?? {}, labelKey, substitutions),
+        labelKey,
+      ),
+      labelLocalized: asLabel(t(labelKey, substitutions), labelKey),
     }),
     [enMessages, t],
   );
@@ -181,11 +185,11 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     (properties: MoneyButtonClickedProperties) => {
       const label =
         properties.buttonType === MoneyButtonType.Text
-          ? resolveLabel(properties.labelKey)
+          ? resolveLabel(properties.labelKey, properties.labelSubstitutions)
           : {};
 
       track(MetaMetricsEventName.MoneyButtonClicked, {
-        ...omit(properties, 'labelKey'),
+        ...omit(properties, ['labelKey', 'labelSubstitutions']),
         ...label,
         redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
       });

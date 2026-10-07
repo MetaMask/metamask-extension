@@ -67,6 +67,10 @@ jest.mock('../../musd', () => ({
   MusdConvertLink: () => <div data-testid="musd-convert-link-mock" />,
 }));
 
+jest.mock('../../money/money-token-list-cta', () => ({
+  MoneyTokenListCta: () => <div data-testid="money-token-list-cta-mock" />,
+}));
+
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
@@ -372,6 +376,59 @@ describe('Token Cell', () => {
         mockStore,
       );
 
+      expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('moneyCta', () => {
+    const createMoneyCta = (shouldShow: boolean) => ({
+      label: 'Get 6% APY',
+      shouldShow: jest.fn().mockReturnValue(shouldShow),
+      onClick: jest.fn(),
+    });
+
+    it('shows the Money CTA instead of the percent change when the token is eligible', () => {
+      const moneyCta = createMoneyCta(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell {...(props as TokenCellProps)} moneyCta={moneyCta} />,
+        mockStore,
+      );
+
+      expect(moneyCta.shouldShow).toHaveBeenCalledWith(props.token);
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
+      expect(
+        queryByTestId(/^token-increase-decrease-percentage/u),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not show the Money CTA when the token is not eligible', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          moneyCta={createMoneyCta(false)}
+        />,
+        mockStore,
+      );
+
+      expect(
+        queryByTestId('money-token-list-cta-mock'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the Money CTA over the mUSD convert CTA when both are eligible', () => {
+      mockShouldShowTokenListItemCta.mockReturnValue(true);
+
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+          moneyCta={createMoneyCta(true)}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-link-mock')).not.toBeInTheDocument();
     });
   });
