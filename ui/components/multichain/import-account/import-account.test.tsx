@@ -16,9 +16,7 @@ import { ImportAccount } from './import-account';
 
 jest.mock('../../../store/actions', () => ({
   importNewAccount: jest.fn(),
-  checkIsSeedlessPasswordOutdated: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue(false)),
+  checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
 const mockTrackEvent = jest.fn();

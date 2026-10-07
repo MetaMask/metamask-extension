@@ -12,10 +12,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
-import {
-  PasswordSyncStatus,
-  SeedlessOnboardingControllerErrorMessage,
-} from '@metamask/seedless-onboarding-controller';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   TextVariant,
   TextColor,
@@ -32,7 +29,6 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import { log } from 'loglevel';
 import {
   FormTextField,
   TextFieldType,
@@ -88,9 +84,7 @@ type UnlockPageProps = UnlockPageContext & {
   onSubmit: (password: string) => Promise<void>;
   navigateAfterUnlock: (context?: PasskeyUnlockSuccessContext) => Promise<void>;
   isPasskeyActive: boolean;
-  resolveSeedlessPasswordSyncInstruction: (options?: {
-    skipCache?: boolean;
-  }) => Promise<PasswordSyncStatus>;
+  checkIsSeedlessPasswordOutdated: () => Promise<void>;
   getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
   forceUpdateMetamaskState: () => Promise<void>;
   isSocialLoginFlow: boolean;
@@ -182,9 +176,9 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
      */
     navigateAfterUnlock: PropTypes.func,
     /**
-     * Resolve the Seedless password synchronization state for social login.
+     * check password is outdated for social login flow
      */
-    resolveSeedlessPasswordSyncInstruction: PropTypes.func,
+    checkIsSeedlessPasswordOutdated: PropTypes.func,
     /**
      * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
      */
@@ -282,13 +276,7 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
-      try {
-        await this.props.resolveSeedlessPasswordSyncInstruction({
-          skipCache: false,
-        });
-      } catch (error) {
-        log.error('Failed to resolve Seedless password sync state', error);
-      }
+      await this.props.checkIsSeedlessPasswordOutdated();
     } else if (isSocialLoginFlow) {
       // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
       // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.

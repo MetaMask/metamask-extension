@@ -1,8 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import log from 'loglevel';
-import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { setupLocale } from '../shared/lib/error-utils';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
 import * as actions from './store/actions';
@@ -45,13 +44,13 @@ jest.mock('../shared/lib/i18n', () => ({
 
 jest.mock('./store/actions', () => ({
   ...jest.requireActual('./store/actions'),
-  resolveSeedlessPasswordSyncInstruction: jest.fn(),
-  lockMetamask: jest.fn(),
+  checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
 jest.mock('./selectors', () => ({
   ...jest.requireActual('./selectors'),
   getNetworkToAutomaticallySwitchTo: jest.fn(),
+  getFirstTimeFlowType: jest.fn(),
   getIsSocialLoginFlow: jest.fn(),
 }));
 
@@ -195,6 +194,9 @@ describe('Index Tests', () => {
       metamaskBaseSelectors.getIsUnlocked.mockImplementation(
         (state) => state.metamask.isUnlocked,
       );
+      selectors.getFirstTimeFlowType.mockImplementation(
+        (state) => state.metamask.firstTimeFlowType,
+      );
       selectors.getIsSocialLoginFlow.mockImplementation(
         (state) => state.metamask.isSocialLoginFlow,
       );
@@ -206,146 +208,82 @@ describe('Index Tests', () => {
       jest.restoreAllMocks();
     });
 
-    it('resolves the password sync status on the initial run when the wallet is unlocked', async () => {
-      const resolveSeedlessPasswordSyncInstructionAction = {
-        type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
+    it('dispatches the outdated-password check on the initial run when the wallet is unlocked', async () => {
+      const checkIsSeedlessPasswordOutdatedAction = {
+        type: 'CHECK_IS_SEEDLESS_PASSWORD_OUTDATED',
       };
-      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
-        resolveSeedlessPasswordSyncInstructionAction,
-      );
+      jest
+        .spyOn(actions, 'checkIsSeedlessPasswordOutdated')
+        .mockReturnValue(checkIsSeedlessPasswordOutdatedAction);
 
       const store = {
         getState: jest.fn().mockReturnValue({
           metamask: {
             browserEnvironment: {},
             isUnlocked: true,
-            firstTimeFlowType: 'socialCreate',
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
             isSocialLoginFlow: true,
           },
         }),
-        dispatch: jest.fn().mockResolvedValue(PasswordSyncStatus.InSync),
+        dispatch: jest.fn().mockResolvedValue(undefined),
       };
 
       await runInitialActions(store);
 
-      expect(actions.resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
-        skipCache: false,
-      });
+      expect(actions.checkIsSeedlessPasswordOutdated).toHaveBeenCalledWith(
+        false,
+        false,
+      );
       expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncInstructionAction,
+        checkIsSeedlessPasswordOutdatedAction,
       );
     });
 
-    it('resolves the password sync status on the interval when the wallet is unlocked', async () => {
-      const resolveSeedlessPasswordSyncInstructionAction = {
-        type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
+    it('dispatches the outdated-password check on the interval tick when the wallet is unlocked', async () => {
+      const checkIsSeedlessPasswordOutdatedAction = {
+        type: 'CHECK_IS_SEEDLESS_PASSWORD_OUTDATED',
       };
-      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
-        resolveSeedlessPasswordSyncInstructionAction,
-      );
+      jest
+        .spyOn(actions, 'checkIsSeedlessPasswordOutdated')
+        .mockReturnValue(checkIsSeedlessPasswordOutdatedAction);
 
       const store = {
         getState: jest.fn().mockReturnValue({
           metamask: {
             browserEnvironment: {},
             isUnlocked: true,
-            firstTimeFlowType: 'socialCreate',
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
             isSocialLoginFlow: true,
           },
         }),
-        dispatch: jest.fn().mockResolvedValue(PasswordSyncStatus.InSync),
+        dispatch: jest.fn().mockResolvedValue(undefined),
       };
 
       await runInitialActions(store);
-      actions.resolveSeedlessPasswordSyncInstruction.mockClear();
+      actions.checkIsSeedlessPasswordOutdated.mockClear();
       store.dispatch.mockClear();
 
       await jest.advanceTimersByTimeAsync(
         SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS,
       );
 
-      expect(actions.resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
-        skipCache: false,
-      });
+      expect(actions.checkIsSeedlessPasswordOutdated).toHaveBeenCalledWith(
+        false,
+        false,
+      );
       expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncInstructionAction,
+        checkIsSeedlessPasswordOutdatedAction,
       );
     });
 
-    it('does not lock the wallet when polling finds an unfinished recovery', async () => {
-      const resolveSeedlessPasswordSyncInstructionAction = {
-        type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
-      };
-      actions.lockMetamask.mockClear();
-      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
-        resolveSeedlessPasswordSyncInstructionAction,
-      );
-
-      const store = {
-        getState: jest.fn().mockReturnValue({
-          metamask: {
-            browserEnvironment: {},
-            isUnlocked: true,
-            firstTimeFlowType: 'socialCreate',
-            isSocialLoginFlow: true,
-          },
-        }),
-        dispatch: jest.fn((action) =>
-          action === resolveSeedlessPasswordSyncInstructionAction
-            ? Promise.resolve(PasswordSyncStatus.EnterNewPassword)
-            : Promise.resolve(),
-        ),
-      };
-
-      await runInitialActions(store);
-
-      expect(actions.lockMetamask).not.toHaveBeenCalled();
-      expect(store.dispatch).toHaveBeenCalledWith(
-        resolveSeedlessPasswordSyncInstructionAction,
-      );
-    });
-
-    it('does not lock the wallet when a status refresh fails', async () => {
-      const resolveSeedlessPasswordSyncInstructionAction = {
-        type: 'RESOLVE_SEEDLESS_PASSWORD_SYNC_STATE',
-      };
-      const logErrorSpy = jest
-        .spyOn(log, 'error')
-        .mockImplementation(() => undefined);
-      actions.lockMetamask.mockClear();
-      actions.resolveSeedlessPasswordSyncInstruction.mockReturnValue(
-        resolveSeedlessPasswordSyncInstructionAction,
-      );
-
-      const store = {
-        getState: jest.fn().mockReturnValue({
-          metamask: {
-            browserEnvironment: {},
-            isUnlocked: true,
-            firstTimeFlowType: 'socialCreate',
-            isSocialLoginFlow: true,
-          },
-        }),
-        // A failed refresh is logged by the poller but must not lock the
-        // unlocked wallet.
-        dispatch: jest.fn((action) =>
-          action === resolveSeedlessPasswordSyncInstructionAction
-            ? Promise.reject(new Error('resolver failed'))
-            : Promise.resolve(),
-        ),
-      };
-
-      await runInitialActions(store);
-
-      expect(actions.lockMetamask).not.toHaveBeenCalled();
-      expect(logErrorSpy).toHaveBeenCalledWith(
-        '[Metamask] Seedless password state check error',
-        expect.any(Error),
-      );
-    });
-
-    it('stops the password sync interval after reset to a non-social login flow', async () => {
+    it('stops the outdated-password interval after reset to a non-social login flow', async () => {
       const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+      const checkIsSeedlessPasswordOutdatedAction = {
+        type: 'CHECK_IS_SEEDLESS_PASSWORD_OUTDATED',
+      };
+      jest
+        .spyOn(actions, 'checkIsSeedlessPasswordOutdated')
+        .mockReturnValue(checkIsSeedlessPasswordOutdatedAction);
 
       const store = {
         getState: jest
@@ -354,7 +292,7 @@ describe('Index Tests', () => {
             metamask: {
               browserEnvironment: {},
               isUnlocked: true,
-              firstTimeFlowType: 'socialCreate',
+              firstTimeFlowType: FirstTimeFlowType.socialCreate,
               isSocialLoginFlow: true,
             },
           })
@@ -362,7 +300,7 @@ describe('Index Tests', () => {
             metamask: {
               browserEnvironment: {},
               isUnlocked: true,
-              firstTimeFlowType: 'create',
+              firstTimeFlowType: FirstTimeFlowType.create,
               isSocialLoginFlow: false,
             },
           }),
@@ -371,6 +309,7 @@ describe('Index Tests', () => {
 
       await runInitialActions(store);
       clearIntervalSpy.mockClear();
+      actions.checkIsSeedlessPasswordOutdated.mockClear();
       store.dispatch.mockClear();
       store.getState.mockClear();
 
@@ -379,6 +318,7 @@ describe('Index Tests', () => {
       );
 
       expect(clearIntervalSpy).toHaveBeenCalledTimes(1);
+      expect(actions.checkIsSeedlessPasswordOutdated).not.toHaveBeenCalled();
       expect(store.dispatch).not.toHaveBeenCalled();
       expect(store.getState).toHaveBeenCalledTimes(1);
 

@@ -39,6 +39,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getAllPermittedAccountsForCurrentTab,
   getIsSocialLoginFlow,
+  getFirstTimeFlowType,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -315,34 +316,29 @@ export async function runInitialActions(store) {
   }
 
   try {
-    const refreshSeedlessPasswordSyncState = async (state) => {
+    const validateSeedlessPasswordOutdated = async (state) => {
       const isUnlocked = getIsUnlocked(state);
-      const isSocialLoginFlow = getIsSocialLoginFlow(state);
-      if (!isUnlocked || !isSocialLoginFlow) {
-        return;
-      }
-
-      try {
+      if (isUnlocked) {
         await store.dispatch(
-          actions.resolveSeedlessPasswordSyncInstruction({ skipCache: false }),
+          actions.checkIsSeedlessPasswordOutdated(false, false), // don't skip cache, don't capture sentry error, we don't want to report to sentry if the check fails
         );
-      } catch (error) {
-        log.error('[Metamask] Seedless password state check error', error);
       }
     };
-    await refreshSeedlessPasswordSyncState(initialState);
-    // Periodically check Seedless password state while the app UI is open.
+    await validateSeedlessPasswordOutdated(initialState);
+    // periodically check seedless password outdated when app UI is open
     const pwdCheckIntervalId = setInterval(() => {
       const state = store.getState();
+      const firstTimeFlowType = getFirstTimeFlowType(state);
       const isSocialLoginFlow = getIsSocialLoginFlow(state);
-      if (!isSocialLoginFlow) {
+      if (firstTimeFlowType !== null && !isSocialLoginFlow) {
+        // if the onboarding type is not social login, after wallet reset, we should stop checking for password outdated
         clearInterval(pwdCheckIntervalId);
         return;
       }
-      refreshSeedlessPasswordSyncState(state);
+      validateSeedlessPasswordOutdated(state);
     }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
   } catch (e) {
-    log.error('[Metamask] Seedless password state check error', e);
+    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
   }
 }
 

@@ -120,7 +120,6 @@ jest.mock('../../../store/actions', () => ({
     return mockVerifyPassword(_pwd);
   },
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
-  resolveSeedlessPasswordSyncInstruction: () => Promise.resolve('in-sync'),
 }));
 
 jest.mock('../../../../shared/lib/passkey', () => ({

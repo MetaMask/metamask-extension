@@ -4,7 +4,6 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
-import { PasswordSyncStatus } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import * as passkeyCeremony from '../../../shared/lib/passkey/passkey-ceremony';
@@ -104,9 +103,7 @@ describe('UnlockPage component (passkey UI)', () => {
     onSubmit: jest.fn().mockResolvedValue(undefined),
     navigateAfterUnlock: jest.fn(),
     isPasskeyActive: true,
-    resolveSeedlessPasswordSyncInstruction: jest
-      .fn()
-      .mockResolvedValue(PasswordSyncStatus.InSync),
+    checkIsSeedlessPasswordOutdated: jest.fn().mockResolvedValue(undefined),
     getIsSeedlessOnboardingUserAuthenticated: jest.fn().mockResolvedValue(true),
     forceUpdateMetamaskState: jest.fn().mockResolvedValue(undefined),
     isSocialLoginFlow: false,
@@ -192,25 +189,6 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalledWith('test-password');
       expect(props.navigateAfterUnlock).toHaveBeenCalled();
-    });
-  });
-
-  it('resolves the cached recovery status on mount', async () => {
-    const resolveSeedlessPasswordSyncInstruction = jest
-      .fn()
-      .mockResolvedValue(PasswordSyncStatus.PasswordOutdated);
-    const props = buildProps({
-      isSocialLoginFlow: true,
-      isPasskeyActive: false,
-      resolveSeedlessPasswordSyncInstruction,
-    });
-
-    renderWithProvider(<UnlockPage {...props} />, mockStore, '/unlock');
-
-    await waitFor(() => {
-      expect(resolveSeedlessPasswordSyncInstruction).toHaveBeenCalledWith({
-        skipCache: false,
-      });
     });
   });
 
