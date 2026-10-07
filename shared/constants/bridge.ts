@@ -6,6 +6,7 @@ import {
   ChainId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  QuoteMetadataMigrationPhase,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { CaipChainId, CaipAssetType } from '@metamask/utils';
@@ -71,6 +72,9 @@ export const BRIDGE_ONLY_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number];
+
+export const BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE =
+  QuoteMetadataMigrationPhase.V2WithV1Fallback;
 
 /**
  * Resolves the Bridge API base URL to use based on the current MetaMask

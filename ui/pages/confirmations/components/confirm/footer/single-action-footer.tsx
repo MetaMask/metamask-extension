@@ -17,6 +17,7 @@ import {
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 
 type ButtonState = {
   buttonText: string;
@@ -37,6 +38,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const transactionType = getConfirmationTransactionType(currentConfirmation);
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
@@ -61,8 +63,10 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   );
 
   return useMemo(() => {
-    const i18nKey =
-      (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
+    const i18nKey = isMoneyAccountPerpsDeposit
+      ? 'send'
+      : ((transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ??
+        'confirm');
     const defaultButtonText = t(i18nKey);
 
     // Money-account withdraw batches have no `requiredAssets`, so Pay never
@@ -104,6 +108,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
+    isMoneyAccountPerpsDeposit,
     lastWithdrawAmount,
     primaryRequiredToken,
     totals,

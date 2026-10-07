@@ -265,7 +265,7 @@ describe('useAmountValidation', () => {
   });
 
   it('snap validation is debounced with 300ms delay for non-EVM send flows', async () => {
-    mockDebounce.mockClear();
+    jest.useFakeTimers();
 
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: {
@@ -278,11 +278,19 @@ describe('useAmountValidation', () => {
       value: '1',
     } as unknown as SendContext.SendContextType);
 
+    mockValidateAmountWithSnap.mockResolvedValue({ valid: true, errors: [] });
+
     renderHookWithProvider(() => useAmountValidation(), mockState);
 
+    expect(mockValidateAmountWithSnap).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(300);
+
     await waitFor(() => {
-      expect(mockDebounce).toHaveBeenCalledWith(expect.any(Function), 300);
+      expect(mockValidateAmountWithSnap).toHaveBeenCalled();
     });
+
+    jest.useRealTimers();
   });
 
   it('return error for invalid amount value', async () => {

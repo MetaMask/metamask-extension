@@ -36,7 +36,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Column, Row } from '../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import { useRWAToken } from '../hooks/useRWAToken';
-import { AssetBanner } from './asset-banner';
+import { AssetSecurityBadge } from './asset-security-badge';
 
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
@@ -105,7 +105,8 @@ export const BridgeAsset = React.forwardRef(
                   formatChainIdToCaip(asset.chainId)
                 ]
               }
-              style={{ width: 20, height: 20, borderWidth: 2, borderRadius: 4 }}
+              className="rounded-md"
+              style={{ width: 15, height: 15, borderWidth: 1 }}
               hasBorder
             />
           }
@@ -122,11 +123,11 @@ export const BridgeAsset = React.forwardRef(
           style={{ overflow: 'hidden', marginLeft: 8 }}
         >
           <Row alignItems={AlignItems.flexStart} gap={4}>
-            <Row gap={2}>
+            <Row gap={1}>
               <Text ellipsis data-testid="bridge-asset-symbol">
                 {asset.symbol}
               </Text>
-              <AssetBanner asset={asset} />
+              <AssetSecurityBadge asset={asset} />
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}

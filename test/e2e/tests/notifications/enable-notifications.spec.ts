@@ -10,6 +10,7 @@ import {
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
+import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
@@ -62,7 +63,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → General notifications: requires manual re-enable
      * → Product notifications: disabled (persisted in AUS)
      * → First account: enabled
-     * → Second account: disabled (persisted in AUS from Part 1)
+     * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
       // server that persists trigger settings.
@@ -138,6 +139,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
     });
     async function onboardAndAddAccount(driver: Driver) {
       await completeOnboardFlowIdentity(driver);
+      await waitUntilAccountTreeSyncIdle(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.checkPageIsLoaded();

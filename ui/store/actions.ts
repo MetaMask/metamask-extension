@@ -56,7 +56,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import { enablePatches, Immer, Patch } from 'immer';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -98,7 +98,10 @@ import {
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
+import { isInE2eTest } from '../contexts/hardware-wallets/is-in-e2e-test';
+import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -141,10 +144,9 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventFragment,
+  MetaMetricsEventFragmentPayload,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
   MetaMetricsPageObject,
@@ -153,7 +155,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
-  MetaMetricsUserTraits,
   MetaMetricsUserTrait,
 } from '../../shared/constants/metametrics';
 import {
@@ -217,6 +218,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
@@ -1398,25 +1400,12 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const inE2eTest =
-          process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
-        let connectedDevices: HIDDevice[] = [];
-        if (!inE2eTest) {
-          connectedDevices = await window.navigator.hid.requestDevice({
-            // The types for web hid were provided by @types/w3c-web-hid and may
-            // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
-            // string and this integration with Navigator.hid works before
-            // TypeScript. As a note, on the next declaration we convert the
-            // LEDGER_USB_VENDOR_ID to a number for a different API so....
-            // TODO: Get David Walsh's opinion here
-            filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
-          });
-        }
+        const inE2eTest = isInE2eTest();
+        const connectedDevices = inE2eTest
+          ? []
+          : await requestWebHidDevices(HardwareWalletType.Ledger);
         const userApprovedWebHidConnection =
-          inE2eTest ||
-          connectedDevices.some(
-            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-          );
+          inE2eTest || connectedDevices.length > 0;
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
@@ -1902,12 +1891,14 @@ export async function addTransaction(
  * @param txMeta - The transaction metadata
  * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
  * @param loadingIndicatorMessage - Message to show during loading
+ * @param signingAccountAddress - Account that signs funding transactions
  * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
  */
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  signingAccountAddress?: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1917,10 +1908,10 @@ export function updateAndApproveTx(
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
-      txMeta.txParams.from,
+      signingAccountAddress ?? txMeta.txParams.from,
     );
 
-    if (isHardwareAccount(fromAccount)) {
+    if (isUiHardwareAccount(fromAccount)) {
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareWalletTransaction(
         dispatch,
@@ -4016,7 +4007,7 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
 }
 
-export function setShowTestNetworks(value: boolean) {
+export function setShowTestNetworksPreference(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
@@ -4624,11 +4615,15 @@ export function setIpfsGateway(
 
 export function toggleExternalServices(
   val: boolean,
+  ownedPreferences?: Record<string, boolean>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleExternalServices`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
+      await submitRequestToBackground(
+        'toggleExternalServices',
+        ownedPreferences ? [val, ownedPreferences] : [val],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -4642,19 +4637,89 @@ export function toggleBasicFunctionality(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleBasicFunctionality`);
     try {
-      await submitRequestToBackground('toggleExternalServices', [val]);
-      await Promise.all([
-        submitRequestToBackground('setUseMultiAccountBalanceChecker', [val]),
-        submitRequestToBackground('setUseTransactionSimulations', [val]),
-        submitRequestToBackground('setSecurityAlertsEnabled', [val]),
-        submitRequestToBackground('setUse4ByteResolution', [val]),
-        submitRequestToBackground('setUseExternalNameSources', [val]),
-      ]);
+      await submitRequestToBackground('toggleBasicFunctionality', [val]);
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
   };
+}
+
+/**
+ * Turns Basic Functionality on using the path that matches the wallet's
+ * consolidation state when this runs, rather than the state read when the
+ * caller rendered. Consolidation can complete while a confirmation dialog is
+ * open, and the legacy path only owns seven of the child preferences, so it
+ * would leave the rest off behind a consolidated toggle.
+ */
+export function enableBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await dispatch(
+      getIsBasicFunctionalityConsolidationEnabled(getState())
+        ? toggleBasicFunctionality(true)
+        : toggleExternalServices(true),
+    );
+  };
+}
+
+export function consolidateBasicFunctionality(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('consolidateBasicFunctionality');
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('[consolidateBasicFunctionality] error', error);
+    }
+  };
+}
+
+function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground(
+        'dismissBasicFunctionalityMigrationNotification',
+      );
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error(
+        '[dismissBasicFunctionalityMigrationNotification] error',
+        error,
+      );
+    }
+  };
+}
+
+export function hideMigrationModal(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
+}
+
+export function hideMigrationToast(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return dismissBasicFunctionalityMigrationNotification();
 }
 
 export function setIsIpfsGatewayEnabled(
@@ -4815,6 +4880,7 @@ export function fetchAndSetQuotes(
     const [quotes, selectedAggId] = await trace(
       {
         name: TraceName.SwapQuotesFetched,
+        op: TraceOperation.BridgeDataFetch,
       },
       async () =>
         await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
@@ -6033,6 +6099,21 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
+/**
+ * Closes the notification window remotely from the browser action popup.
+ * This is different from `attemptCloseNotificationPopup` which closes the
+ * current window (used by notification to close itself).
+ */
+export async function closeNotificationFromPopup(): Promise<void> {
+  if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+    console.warn(
+      'closeNotificationFromPopup: Can only be called from popup context',
+    );
+    return;
+  }
+  await submitRequestToBackground('closeNotificationPopup');
+}
+
 export async function attemptCloseNotificationPopup() {
   // Check if the current window is NOT a popup - if confirmed, we should not close it
   try {
@@ -6088,15 +6169,9 @@ export function trackAnalyticsEvent(
   return submitRequestToBackground('trackAnalyticsEvent', [payload, options]);
 }
 
-export function createEventFragment(
-  options: MetaMetricsEventFragment,
-): Promise<string> {
-  return submitRequestToBackground('createEventFragment', [options]);
-}
-
 export function upsertTransactionUIMetricsFragment(
   transactionId: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
     transactionId,
@@ -6106,20 +6181,9 @@ export function upsertTransactionUIMetricsFragment(
 
 export function updateEventFragment(
   id: string,
-  payload: Partial<MetaMetricsEventFragment>,
+  payload: MetaMetricsEventFragmentPayload,
 ) {
   return submitRequestToBackground('updateEventFragment', [id, payload]);
-}
-
-export function finalizeEventFragment(
-  id: string,
-  options?: {
-    abandoned?: boolean;
-    page?: MetaMetricsPageObject;
-    referrer?: MetaMetricsReferrerObject;
-  },
-) {
-  return submitRequestToBackground('finalizeEventFragment', [id, options]);
 }
 
 /**
@@ -6127,10 +6191,6 @@ export function finalizeEventFragment(
  */
 export function trackMetaMetricsPage(payload: MetaMetricsPagePayload) {
   return submitRequestToBackground('trackMetaMetricsPage', [payload]);
-}
-
-export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
-  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
 }
 
 export function resetViewedNotifications() {
@@ -6213,24 +6273,14 @@ type TemporarySmartTransactionGasFees = {
 const createSignedTransactions = async (
   unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
-  areCancelTransactions?: boolean,
 ): Promise<TransactionParams[]> => {
-  const unsignedTransactionsWithFees = fees.map((fee) => {
-    const unsignedTransactionWithFees = {
-      ...unsignedTransaction,
-      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
-      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
-      gas: areCancelTransactions
-        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : unsignedTransaction.gas,
-      value: unsignedTransaction.value,
-    };
-    if (areCancelTransactions) {
-      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
-      unsignedTransactionWithFees.data = '0x';
-    }
-    return unsignedTransactionWithFees;
-  });
+  const unsignedTransactionsWithFees = fees.map((fee) => ({
+    ...unsignedTransaction,
+    maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+    maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+    gas: unsignedTransaction.gas,
+    value: unsignedTransaction.value,
+  }));
   const signedTransactions = await submitRequestToBackground<
     TransactionParams[]
   >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
@@ -6244,7 +6294,6 @@ export function signAndSendSmartTransaction({
   unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
-    cancelFees: TemporarySmartTransactionGasFees[];
   };
 }): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -6258,9 +6307,6 @@ export function signAndSendSmartTransaction({
         [
           {
             signedTransactions,
-            // The "signedCanceledTransactions" parameter is still expected by the STX controller but is no longer used.
-            // So we are passing an empty array. The parameter may be deprecated in a future update.
-            signedCanceledTransactions: [],
             txParams: unsignedTransaction,
           },
         ],
@@ -7461,6 +7507,12 @@ export function setPerpsTabBadgeSeen(value: boolean) {
   };
 }
 
+export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
+  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
+    entryPoint,
+  ]);
+}
+
 /**
  * Persist a dismissed mUSD asset-detail CTA key (chainId-tokenAddress).
  * Stored in AppStateController until uninstall.
@@ -7544,6 +7596,8 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
+enablePatches();
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],

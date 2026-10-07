@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type SecurityTrustTranslate = (
   key: string,
@@ -43,7 +44,7 @@ export const getSecurityTrustBadgeConfig = (
     case 'Warning':
     case 'Spam':
       return {
-        icon: IconName.Warning,
+        icon: IconName.Danger,
         iconColor: IconColor.WarningDefault,
         alertSeverity: 'warning',
         label: t('securityTrustRisky'),
@@ -83,6 +84,7 @@ export const SecurityTrustInlineBadge = ({
         name={badge.icon}
         size={IconSize.Sm}
         color={badge.iconColor}
+        className="shrink-0"
       />
     );
 
@@ -93,7 +95,7 @@ export const SecurityTrustInlineBadge = ({
           onClick={onClick}
           data-testid={testId}
           aria-label={badge.accessibleLabel ?? testId ?? 'security-badge'}
-          className="cursor-pointer border-0 bg-transparent p-0 leading-none"
+          className="shrink-0 cursor-pointer border-0 bg-transparent p-0 leading-none"
         >
           {verifiedIcon}
         </button>
@@ -112,7 +114,7 @@ export const SecurityTrustInlineBadge = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      className={`inline-flex self-start items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
+      className={`inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-0.5 ${tagBackgroundClass}`}
       data-testid={onClick ? undefined : testId}
     >
       <Icon name={badge.icon} size={IconSize.Sm} color={badge.iconColor} />
@@ -135,27 +137,20 @@ export const SecurityTrustInlineBadge = ({
       type="button"
       onClick={onClick}
       data-testid={testId}
-      className="cursor-pointer border-0 bg-transparent p-0"
+      className="shrink-0 cursor-pointer border-0 bg-transparent p-0"
     >
       {tag}
     </button>
   );
 };
 
-export const SecurityTrustVerifiedBadge = ({
-  badge,
-  testId = 'security-badge-verified',
-  onClick,
-}: {
-  badge: SecurityTrustInlineBadgeConfig;
-  testId?: string;
-  onClick?: () => void;
-}) => (
-  <Box
-    flexDirection={BoxFlexDirection.Row}
-    alignItems={BoxAlignItems.Center}
-    data-testid={onClick ? undefined : testId}
-  >
-    <SecurityTrustInlineBadge badge={badge} testId={testId} onClick={onClick} />
-  </Box>
-);
+export const SecurityBadge = ({ value }: { value?: string }) => {
+  const t = useI18nContext() as SecurityTrustTranslate;
+  const badge = getSecurityTrustBadgeConfig(value, t);
+
+  if (!badge) {
+    return null;
+  }
+
+  return <SecurityTrustInlineBadge badge={badge} testId="security-badge" />;
+};

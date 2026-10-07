@@ -6,13 +6,14 @@ import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from '../../../../selectors/multichain-accounts/account-tree';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../types/confirm';
 import { useConfirmContext } from '../../context/confirm';
-import { getMoneyAccountTransactionType } from '../../utils/confirm';
+import { PAY_TRANSACTION_TYPES } from '../../constants/pay';
 
 export const useSelectedAccountAlerts = (): Alert[] => {
   const t = useI18nContext();
@@ -39,15 +40,16 @@ export const useSelectedAccountAlerts = (): Alert[] => {
   const confirmationAccountSameAsSelectedAccount =
     !fromAccount || isAccountFromSelectedAccountGroup;
 
-  // Money account deposits/withdrawals are wallet-initiated and always sent
-  // from the dedicated money account, never the selected account group, so
+  // MM Pay flows are wallet-initiated and often sign from a dedicated account
+  // (money account, perps, etc.) rather than the selected account group, so
   // the "different account" warning is noise there.
-  const isMoneyAccountTransaction = Boolean(
-    getMoneyAccountTransactionType(currentConfirmation as TransactionMeta),
+  const isPayTransaction = hasTransactionType(
+    currentConfirmation as TransactionMeta,
+    PAY_TRANSACTION_TYPES,
   );
 
   return useMemo<Alert[]>((): Alert[] => {
-    if (confirmationAccountSameAsSelectedAccount || isMoneyAccountTransaction) {
+    if (confirmationAccountSameAsSelectedAccount || isPayTransaction) {
       return [];
     }
 
@@ -60,5 +62,5 @@ export const useSelectedAccountAlerts = (): Alert[] => {
         message: t('alertSelectedAccountWarning'),
       },
     ];
-  }, [confirmationAccountSameAsSelectedAccount, isMoneyAccountTransaction, t]);
+  }, [confirmationAccountSameAsSelectedAccount, isPayTransaction, t]);
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';

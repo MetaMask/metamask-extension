@@ -70,6 +70,10 @@ export class PerpsTab extends PerpsPositionsBase {
 
   private readonly perpsWatchlist = { testId: 'perps-watchlist' };
 
+  private readonly perpsWatchlistHeader = {
+    testId: 'perps-watchlist-header',
+  };
+
   private readonly perpsWatchlistMarket = (symbol: string) => {
     return {
       testId: `perps-watchlist-${symbol}`,
@@ -129,6 +133,14 @@ export class PerpsTab extends PerpsPositionsBase {
   }
 
   /**
+   * Clicks the Watchlist section header, which opens the market list with the
+   * watchlist filter pre-selected.
+   */
+  async clickWatchlistHeader(): Promise<void> {
+    await this.driver.clickElement(this.perpsWatchlistHeader);
+  }
+
+  /**
    * Clicks the Withdraw button. On Perps Home the button lives in the balance
    * header (no dropdown to open first) and is only rendered when the account
    * has a non-zero balance — callers must fund the account first.
@@ -165,6 +177,17 @@ export class PerpsTab extends PerpsPositionsBase {
     await this.driver.waitForSelector(this.accountOverviewPerpsTab);
     await this.driver.clickElement(this.accountOverviewPerpsTab);
     await this.checkPageIsLoaded();
+  }
+
+  /**
+   * Opens Withdraw from Perps Home. The destination is fixture-dependent:
+   * the legacy form (`PerpsWithdrawPage`) or the confirmation flow
+   * (`PerpsWithdrawConfirmation`).
+   */
+  async openWithdraw(): Promise<void> {
+    await this.navigateToPerpsHome();
+    await this.waitForBalanceSection();
+    await this.clickWithdraw();
   }
 
   /**

@@ -215,9 +215,6 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitTooLow": {
-    "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
-  },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
   },
@@ -399,9 +396,6 @@
   "privateKey": {
     "message": "የግል ቁልፍ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "ማስጠንቀቂያ፡ ይህን ቁልፍ በጭራሽ ለሌላ ሰው አይግለጹ። የግል ቁልፍዎን የያዘ ማንኛውም ሰው በመለያዎ ውስጥ የሚገኙ ማናቸውንም ሐብቶች ሊሰርቅ ይችላል።"
   },
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"

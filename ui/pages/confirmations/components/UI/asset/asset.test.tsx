@@ -142,6 +142,69 @@ describe('TokenAsset', () => {
 
     expect(getByTestId('custom-token-tag')).toBeInTheDocument();
   });
+
+  it('applies ellipsis to long token names so virtualized rows do not overlap', () => {
+    const { getByText } = render(
+      <Asset
+        asset={{
+          ...mockTokenAsset,
+          name: 'Coinbase Wrapped BTC',
+        }}
+      />,
+    );
+
+    expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
+  });
+
+  it('keeps a pay-with tag next to a long token name that ellipsizes', () => {
+    const { getByText, getByTestId } = render(
+      <Asset
+        asset={{
+          ...mockTokenAsset,
+          name: 'Coinbase Wrapped BTC',
+        }}
+        tagRenderers={[
+          () => <span data-testid="custom-token-tag">No fee</span>,
+        ]}
+      />,
+    );
+
+    expect(getByText('Coinbase Wrapped BTC')).toHaveClass('mm-text--ellipsis');
+    expect(getByTestId('custom-token-tag')).toBeInTheDocument();
+  });
+
+  it('renders a security badge for a flagged token', () => {
+    const { getByTestId, getByText } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Malicious" />,
+    );
+
+    expect(getByTestId('security-badge')).toBeInTheDocument();
+    expect(
+      getByText(messages.securityTrustMalicious.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders a security badge for a verified token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Verified" />,
+    );
+
+    expect(queryByTestId('security-badge')).toBeInTheDocument();
+  });
+
+  it('does not render a security badge when there is no safety result', () => {
+    const { queryByTestId } = render(<Asset asset={mockTokenAsset} />);
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
+
+  it('does not render a security badge for a benign token', () => {
+    const { queryByTestId } = render(
+      <Asset asset={mockTokenAsset} safetyResult="Benign" />,
+    );
+
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
+  });
 });
 
 describe('NFTAsset', () => {

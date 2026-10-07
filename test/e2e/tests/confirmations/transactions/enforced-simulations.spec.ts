@@ -254,7 +254,7 @@ describe('Enforced Simulations', function (this: Suite) {
     await withFixtures(
       enforcedSimulationsFixtureOptions(
         this.test?.fullTitle(),
-        setupMocks(ResultType.Benign),
+        setupMocks(ResultType.Malicious),
       ),
       async ({ driver, localNodes }) => {
         await login(driver, { expectedBalance: '10' });
@@ -278,6 +278,7 @@ describe('Enforced Simulations', function (this: Suite) {
           confirmation,
           localNodes[0],
           'confirmed',
+          true,
         );
 
         assert.strictEqual(
@@ -396,13 +397,13 @@ async function confirmAndGetTransaction(
   expectedStatus: 'confirmed' | 'failed',
   acknowledgeDangerAlert = false,
 ) {
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterButton({ button: 'confirm' });
 
   if (acknowledgeDangerAlert) {
     const alertModal = new ConfirmAlertModal(driver);
     await alertModal.acknowledgeAlert();
     await alertModal.confirmFromAlertModal();
-    await confirmation.clickFooterConfirmButton();
+    await confirmation.clickFooterButton({ button: 'confirm' });
   }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);

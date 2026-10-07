@@ -48,7 +48,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await assertInfoValues(driver);
 
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await assertAccountDetailsMetrics(
           driver,
@@ -84,7 +87,10 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
           SignatureType.SignTypedData,
         );
 
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
 
         await assertSignatureRejectedMetrics({
           driver,

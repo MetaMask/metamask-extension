@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  HelpText,
+  HelpTextSeverity,
 } from '@metamask/design-system-react';
 import {
   Box,
   FormTextField,
   FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
 } from '../../../component-library';
 import {
   BackgroundColor,
@@ -30,15 +30,8 @@ const AddBlockExplorerModal = ({
 }) => {
   const t = useI18nContext();
   const [url, setUrl] = useState<string>();
-  const [error, setError] = useState<string>();
-
-  useEffect(() => {
-    if (url && url?.length > 0 && !isWebUrl(url)) {
-      setError(t('urlErrorMsg'));
-    } else {
-      setError(undefined);
-    }
-  }, [url]);
+  const error =
+    url && url.length > 0 && !isWebUrl(url) ? t('urlErrorMsg') : undefined;
 
   return (
     <Box

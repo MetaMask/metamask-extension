@@ -130,7 +130,7 @@ export const BridgeInputGroup = ({
   );
 
   // useCopyToClipboard analysis: Copies a public address
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const assetReference = token

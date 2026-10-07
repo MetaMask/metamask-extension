@@ -1,5 +1,9 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { render } from '@testing-library/react';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
@@ -9,12 +13,15 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     substitutions ? `${key}|${substitutions.join(',')}` : key,
 }));
 
+const mockFormatTokenAmount = jest.fn();
+const mockFormatAsFiat = jest.fn();
+
 jest.mock('./useFormatTokenAmount', () => ({
-  useFormatTokenAmount: () => jest.fn(),
+  useFormatTokenAmount: () => mockFormatTokenAmount,
 }));
 
 jest.mock('../../../hooks/useFormatAsFiat', () => ({
-  useFormatAsFiat: () => jest.fn(),
+  useFormatAsFiat: () => mockFormatAsFiat,
 }));
 
 const mockFormatCurrencyWithMinThreshold = jest.fn(
@@ -73,6 +80,9 @@ const buildActivity = (type: 'assetActivation' | 'assetDeactivation') =>
 
 describe('useActivityRowContent', () => {
   beforeEach(() => {
+    mockFormatTokenAmount.mockReset();
+    mockFormatAsFiat.mockReset();
+    mockFormatCurrencyWithMinThreshold.mockClear();
     mockGetDisplayName.mockImplementation((address?: string) =>
       address ? '0x11111...11111' : '',
     );
@@ -342,5 +352,160 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe(
       'activity_receive_success_description|Bob',
     );
+  });
+
+  describe('money account rows', () => {
+    const MUSD_ASSET_ID = 'eip155:1/erc20:0xmusd';
+
+    const buildMoneyActivity = (
+      type: MoneyAccountActivityItem['type'],
+      fiatAmount?: string,
+      status: MoneyAccountActivityItem['status'] = 'success',
+    ): MoneyAccountActivityItem => ({
+      type,
+      chainId: 'eip155:1',
+      status,
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
+        token: {
+          assetId: MUSD_ASSET_ID,
+          direction: type === 'moneyAccountDeposit' ? 'out' : 'in',
+          symbol: 'mUSD',
+          decimals: 6,
+          amount: '25500000',
+        },
+      },
+    });
+
+    it('renders a deposit like a send to the money account', () => {
+      mockFormatTokenAmount.mockReturnValue('-25.5 mUSD');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountDeposit_success_title|mUSD',
+      );
+      expect(result.current.subtitle).toBe(
+        'activity_moneyAccountDeposit_success_description',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('-25.5 mUSD');
+      expect(result.current.primaryAmount.props.className).toBe('');
+    });
+
+    it('renders a withdrawal like a receive from the money account', () => {
+      mockFormatTokenAmount.mockReturnValue('+25.5 mUSD');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountWithdraw_success_title|mUSD',
+      );
+      expect(result.current.subtitle).toBe(
+        'activity_moneyAccountWithdraw_success_description',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('+25.5 mUSD');
+      expect(result.current.primaryAmount.props.className).toBe(
+        'text-success-default',
+      );
+    });
+
+    it('prefers the market-rate fiat amount as the secondary amount', () => {
+      mockFormatAsFiat.mockReturnValue('-€23.10');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(result.current.secondaryAmount).toBe('-€23.10');
+    });
+
+    it('falls back to the pegged USD amount when no market rate is available', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        -25.5,
+        'usd',
+      );
+      expect(result.current.secondaryAmount).toBe('-25.5 usd');
+    });
+
+    it('adds a plus sign to the pegged USD amount of a withdrawal', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(result.current.secondaryAmount).toBe('+25.5 usd');
+    });
+
+    it('omits the secondary amount when the activity has no fiat value', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit')),
+      );
+
+      expect(result.current.secondaryAmount).toBeUndefined();
+    });
+
+    it('shows the quoted fiat as the primary amount before the mUSD amount is known', () => {
+      mockFormatTokenAmount.mockReturnValue('-0 mUSD');
+      mockFormatAsFiat.mockReturnValue('-$0.00');
+      const activity = buildMoneyActivity(
+        'moneyAccountDeposit',
+        '25',
+        'pending',
+      );
+      delete activity.data.token?.amount;
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(activity),
+      );
+
+      expect(result.current.primaryAmount.props.children).toBe('-25 usd');
+      expect(result.current.secondaryAmount).toBeUndefined();
+      expect(mockFormatTokenAmount).not.toHaveBeenCalled();
+      expect(mockFormatAsFiat).not.toHaveBeenCalled();
+    });
+
+    it('marks a failed deposit title as an error', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5', 'failed'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountDeposit_failed_title|mUSD',
+      );
+      expect(result.current.title.props.className).toContain(
+        'text-error-default',
+      );
+    });
+
+    it('shows the mUSD token avatar', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit', '1')),
+      );
+
+      const { getByTestId } = render(result.current.avatar);
+      expect(getByTestId('activity-avatar')).toHaveTextContent(MUSD_ASSET_ID);
+    });
   });
 });
