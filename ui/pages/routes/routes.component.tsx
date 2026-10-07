@@ -722,6 +722,12 @@ export const routeConfig = [
       },
     ],
   },
+  // createHashRouter treats an unmatched location as a fatal routing error.
+  // Send those URLs home instead of rendering the error page.
+  {
+    path: '*',
+    element: <Navigate to={DEFAULT_ROUTE} replace />,
+  },
 ];
 
 export default function Routes() {

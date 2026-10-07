@@ -3,16 +3,19 @@ import { Provider } from 'react-redux';
 import {
   createMemoryRouter,
   matchRoutes,
+  Navigate,
   RouterProvider,
 } from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
+  ACCOUNT_LIST_PAGE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
+  SETTINGS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -221,6 +224,64 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  it('sends unknown routes home instead of the error page', async () => {
+    const unknownPath = '/multichain-account-list';
+    const matches = matchRoutes(routeConfig, unknownPath);
+    const fallback = matches?.at(-1)?.route;
+
+    expect(fallback?.path).toBe('*');
+    expect(fallback?.element.type).toBe(Navigate);
+    expect(fallback?.element.props.to).toBe(DEFAULT_ROUTE);
+    expect(fallback?.element.props.replace).toBe(true);
+
+    const matchedRouter = createMemoryRouter(routeConfig, {
+      initialEntries: [unknownPath],
+    });
+    expect(matchedRouter.state.errors).toBeNull();
+
+    expect(
+      matchRoutes(routeConfig, ACCOUNT_LIST_PAGE_ROUTE)?.at(-1)?.route.path,
+    ).toBe(ACCOUNT_LIST_PAGE_ROUTE);
+    expect(
+      matchRoutes(routeConfig, `${SETTINGS_ROUTE}/not-a-real-page`)?.at(-1)
+        ?.route.path,
+    ).toBe(`${SETTINGS_ROUTE}/*`);
+    expect(
+      matchRoutes(routeConfig, `${CROSS_CHAIN_SWAP_ROUTE}/not-a-page`)?.at(-1)
+        ?.route.path,
+    ).toBe(`${CROSS_CHAIN_SWAP_ROUTE}/*`);
+    expect(
+      matchRoutes(routeConfig, DEFAULT_ROUTE)?.some(
+        ({ route }) => route.path === '*',
+      ),
+    ).toBe(false);
+
+    const router = createMemoryRouter(
+      [
+        {
+          path: '*',
+          element: fallback?.element,
+        },
+        {
+          path: DEFAULT_ROUTE,
+          element: <div>home</div>,
+        },
+      ],
+      { initialEntries: [unknownPath] },
+    );
+
+    rtlRender(
+      <RouterProvider
+        router={router}
+        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+      />,
+    );
+
+    expect(await screen.findByText('home')).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe(DEFAULT_ROUTE);
+    expect(router.state.historyAction).toBe('REPLACE');
   });
 
   it('registers the hardware wallet signing page outside guarded swap routes', () => {
