@@ -26,6 +26,7 @@ import type {
   NetworkConfig,
 } from './launcher-types';
 import { resolveRepoRoot } from './resolve-repo-root';
+import { runSelfOnboarding } from './self-onboarding';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
@@ -260,6 +261,21 @@ export class MetaMaskExtensionLauncher {
       await this.waitForExtensionReady();
 
       this.ensureExtensionInitialized();
+
+      if (this.options.selfOnboarding) {
+        let phrase = this.options.srp ?? '';
+        this.options.srp = undefined;
+        try {
+          await runSelfOnboarding(this.extensionPage as Page, phrase);
+        } finally {
+          phrase = '';
+        }
+        await this.navigateToHome();
+        await (this.extensionPage as Page).waitForSelector(
+          '[data-testid="account-menu-icon"]',
+          { timeout: 30_000 },
+        );
+      }
 
       return {
         context: this.context as BrowserContext,
