@@ -48,8 +48,7 @@ const HANDLING: Record<MfaFlowErrorCode, MfaErrorHandling> = {
  */
 export const getFlowErrorCode = (error: unknown): MfaFlowErrorCode => {
   const code = getMfaErrorCode(error);
-  return code !== undefined &&
-    Object.prototype.hasOwnProperty.call(HANDLING, code)
+  return code !== undefined && Object.hasOwn(HANDLING, code)
     ? (code as MfaFlowErrorCode)
     : 'server_error';
 };

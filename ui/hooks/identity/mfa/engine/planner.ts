@@ -51,7 +51,7 @@ const getMethodStatus = (
     canVerify: isActive && isSupported,
     // One email per profile; passkeys can always be added.
     canEnroll: isSupported && (method === 'passkey' || !isActive),
-    pendingEmail:
+    pendingIdentifier:
       pendingRow?.type === 'email_otp' ? pendingRow.email : undefined,
     credentials: rows,
   };
@@ -227,7 +227,7 @@ export const planVerifyOrEnroll = (
     steps.push({
       kind: 'setup',
       method,
-      prefillEmail: statuses[method].pendingEmail,
+      prefillEmail: statuses[method].pendingIdentifier,
     });
     simulation.active.add(method);
     // The enrollment opens a session proven with this method; if the token
@@ -290,7 +290,7 @@ export const planEnroll = (method: MfaMethod, context: PlanContext): Plan => {
   steps.push({
     kind: 'setup',
     method,
-    prefillEmail: statuses[method].pendingEmail,
+    prefillEmail: statuses[method].pendingIdentifier,
   });
   return { ok: true, steps };
 };

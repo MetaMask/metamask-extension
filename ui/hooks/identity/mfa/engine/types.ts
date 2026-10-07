@@ -40,8 +40,11 @@ export interface MethodStatus {
   canVerify: boolean;
   /** This platform can run the setup ceremony and the server would accept it. */
   canEnroll: boolean;
-  /** Address of an email setup that was started but never confirmed. */
-  pendingEmail?: string;
+  /**
+   * Identifier of a setup that was started but never confirmed (the email
+   * address for `email_otp`).
+   */
+  pendingIdentifier?: string;
   /** Rows of this type, as returned by the server. */
   credentials: EnrolledCredential[];
 }

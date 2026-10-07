@@ -76,7 +76,7 @@ describe('getMethodStatuses', () => {
       isActive: true,
       canVerify: true,
       canEnroll: true,
-      pendingEmail: undefined,
+      pendingIdentifier: undefined,
       credentials: [passkey],
     });
   });
@@ -101,7 +101,7 @@ describe('getMethodStatuses', () => {
         isActive: false,
         canVerify: false,
         canEnroll: true,
-        pendingEmail: 'pending@b.co',
+        pendingIdentifier: 'pending@b.co',
       },
     );
   });
