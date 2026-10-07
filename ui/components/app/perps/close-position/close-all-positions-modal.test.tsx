@@ -6,6 +6,11 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { CloseAllPositionsModal } from './close-all-positions-modal';
 
+const mockFeeDiscountBips = jest.fn();
+jest.mock('../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips', () => ({
+  usePerpsMetamaskFeeDiscountBips: () => mockFeeDiscountBips(),
+}));
+
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -68,6 +73,7 @@ function setDefaultBackgroundResponses() {
 describe('CloseAllPositionsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFeeDiscountBips.mockReturnValue(undefined);
     setDefaultBackgroundResponses();
   });
 
@@ -246,11 +252,11 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'ETH' })],
+        [expect.objectContaining({ symbol: 'ETH', amount: '7125' })],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'BTC' })],
+        [expect.objectContaining({ symbol: 'BTC', amount: '22500' })],
       );
     });
 
@@ -264,7 +270,46 @@ describe('CloseAllPositionsModal', () => {
     });
   });
 
-  it('uses fallback fee rate when background call fails', async () => {
+  it('uses resolved v19 rates without applying rewards twice', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
+    mockSubmitRequestToBackground.mockResolvedValue({
+      ...defaultFeeResult,
+      feeRate: 0.00095,
+      metamaskFeeRate: 0.0005,
+    });
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$28.14');
+    });
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$3,846.86');
+  });
+
+  it('discounts only the fallback portion when one symbol quote fails', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
+    mockSubmitRequestToBackground.mockImplementation(
+      (_method: string, [{ symbol }]: [{ symbol: string }]) =>
+        symbol === 'BTC'
+          ? Promise.reject(new Error('Background unreachable'))
+          : Promise.resolve({ ...defaultFeeResult, metamaskFeeRate: 0.0005 }),
+    );
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$28.14');
+    });
+  });
+
+  it('discounts local fallback rates once when background calls fail', async () => {
+    mockFeeDiscountBips.mockReturnValue(5000);
     mockSubmitRequestToBackground.mockRejectedValue(
       new Error('Background unreachable'),
     );
@@ -274,7 +319,7 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('perps-close-all-fees-value'),
-      ).toBeInTheDocument();
+      ).toHaveTextContent('-$28.14');
     });
   });
 });

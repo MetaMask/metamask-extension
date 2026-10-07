@@ -100,6 +100,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
   const [rawProtocolFees, setRawProtocolFees] = useState(0);
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
+  const [fallbackMetamaskFees, setFallbackMetamaskFees] = useState(0);
   const [isLoadingFees, setIsLoadingFees] = useState(positions.length > 0);
   const feeRequestId = useRef(0);
   const feeFetchKey = isOpen ? symbolNotionalKey : '';
@@ -111,6 +112,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       const entries: [string, number][] = JSON.parse(symbolNotionalKey);
       setRawProtocolFees(0);
       setRawMetamaskFees(0);
+      setFallbackMetamaskFees(0);
       setIsLoadingFees(entries.length > 0);
     }
   }
@@ -138,21 +140,29 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     Promise.all(
       entries.map(([symbol, notional]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
-          { orderType: 'market' as const, isMaker: false, symbol },
+          {
+            orderType: 'market' as const,
+            isMaker: false,
+            symbol,
+            amount: String(notional),
+          },
         ])
           .then((result) => ({
             protocolFee:
               notional *
               (result?.protocolFeeRate ??
                 PERPS_FALLBACK_FEE_RATES.protocolFeeRate),
-            metamaskFee:
-              notional *
-              (result?.metamaskFeeRate ??
-                PERPS_FALLBACK_FEE_RATES.metamaskFeeRate),
+            metamaskFee: notional * (result?.metamaskFeeRate ?? 0),
+            fallbackMetamaskFee:
+              result?.metamaskFeeRate === undefined
+                ? notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate
+                : 0,
           }))
           .catch(() => ({
             protocolFee: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
-            metamaskFee: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+            metamaskFee: 0,
+            fallbackMetamaskFee:
+              notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
           })),
       ),
     )
@@ -163,6 +173,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
           );
           setRawMetamaskFees(
             perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
+          );
+          setFallbackMetamaskFees(
+            perSymbolFees.reduce((sum, f) => sum + f.fallbackMetamaskFee, 0),
           );
           setIsLoadingFees(false);
         }
@@ -183,8 +196,16 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       metamaskFeeDiscountBips !== undefined && metamaskFeeDiscountBips > 0
         ? 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR
         : 1;
-    return rawProtocolFees + rawMetamaskFees * discountFactor;
-  }, [rawProtocolFees, rawMetamaskFees, metamaskFeeDiscountBips]);
+    // Controller rates are resolved; discount only local fallback estimates.
+    return (
+      rawProtocolFees + rawMetamaskFees + fallbackMetamaskFees * discountFactor
+    );
+  }, [
+    rawProtocolFees,
+    rawMetamaskFees,
+    fallbackMetamaskFees,
+    metamaskFeeDiscountBips,
+  ]);
 
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,
