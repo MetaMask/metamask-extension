@@ -42,9 +42,6 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Temporary OIDC workaround always fail
-        run: exit 1
-
       # NOTE on output naming: actions/github-script@v8 reserves
       # outputs.result for the script's return value (JSON.stringified).
       # We use 'checkResult' to avoid that collision.
