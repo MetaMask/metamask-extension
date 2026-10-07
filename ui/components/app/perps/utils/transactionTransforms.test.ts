@@ -305,6 +305,24 @@ describe('Transaction Transform Utilities', () => {
       expect(result[0].fill?.fillType).toBe(FillType.Liquidation);
     });
 
+    it('preserves liquidation metadata without a liquidated user', () => {
+      const fill = createMockFill({
+        direction: 'Close Long',
+        liquidation: {
+          markPx: '49000',
+          method: 'market',
+        },
+      });
+
+      const result = transformFillsToTransactions([fill]);
+
+      expect(result[0].fill?.liquidation).toStrictEqual({
+        markPx: '49000',
+        method: 'market',
+      });
+      expect(result[0].fill?.fillType).toBe(FillType.Liquidation);
+    });
+
     it('sets fillType to TakeProfit when detailedOrderType includes Take Profit', () => {
       const fill = createMockFill({
         direction: 'Close Long',
