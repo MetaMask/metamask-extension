@@ -6,7 +6,7 @@ import { uniqBy } from 'lodash';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getBearerToken } from '../../store/actions';
 import { fetchPopularTokens } from '../../pages/bridge/utils/tokens';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { useAsyncResult } from '../useAsync';
 import {
   getFromAccount,

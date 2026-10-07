@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getMoneyAccountBalanceServiceMessenger } from './messengers';
+import { getMoneyAccountBalanceServiceMessenger } from './messengers/money-account-balance-service-messenger';
 import { MoneyAccountBalanceServiceInit } from './money-account-balance-service-init';
 
 jest.mock('@metamask/money-account-balance-service');

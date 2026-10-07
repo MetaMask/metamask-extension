@@ -17,7 +17,7 @@ import {
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import { getNotificationPreferences } from '../../store/actions';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { useDispatch } from '../../store/hooks';

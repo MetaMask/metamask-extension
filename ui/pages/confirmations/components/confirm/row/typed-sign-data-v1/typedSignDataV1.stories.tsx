@@ -3,7 +3,7 @@ import React from 'react';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
-} from '../../../../../../components/app/confirm/info/row';
+} from '../../../../../../components/app/confirm/info/row/row';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { ConfirmInfoRowTypedSignDataV1 } from './typedSignDataV1';
 

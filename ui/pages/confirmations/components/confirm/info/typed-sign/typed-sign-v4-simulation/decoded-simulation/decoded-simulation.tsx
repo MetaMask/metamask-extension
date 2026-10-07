@@ -7,8 +7,8 @@ import {
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../../../../../../shared/constants/transaction';
-import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
-import { Text } from '../../../../../../../../components/component-library';
+import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row/row';
+import { Text } from '../../../../../../../../components/component-library/text/text';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { SignatureRequestType } from '../../../../../../types/confirm';
 import { useConfirmContext } from '../../../../../../context/confirm';

@@ -15,7 +15,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRampsController } from '../../../hooks/ramps/useRampsController';
 import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed';
 import { useRampsQuotes } from '../../../hooks/ramps/useRampsQuotes';
-import { getRampCallbackBaseUrl } from '../../../hooks/ramps/utils/getRampCallbackBaseUrl';
+import { getRampCallbackBaseUrl } from '../../../../shared/lib/ramps/callback-url';
 import { normalizeAssetIdForApi } from '../../../hooks/ramps/utils/normalizeAssetIdForApi';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -27,7 +27,7 @@ import {
 } from '../components/ramps-selection-page';
 import { getProviderLimitMessage } from '../utils/getProviderLimitMessage';
 import { getRampsTokenDisplaySymbol } from '../utils/token-display';
-import { RampsProviderSelectionModal } from '../provider-selection';
+import { RampsProviderSelectionModal } from '../provider-selection/provider-selection';
 import RampsChangeProviderFooter from './components/ramps-change-provider-footer';
 import RampsPaymentMethodListItem from './components/ramps-payment-method-list-item';
 import {

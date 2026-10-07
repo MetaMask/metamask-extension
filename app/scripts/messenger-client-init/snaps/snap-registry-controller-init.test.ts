@@ -4,7 +4,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getSnapRegistryControllerMessenger } from '../messengers/snaps';
+import { getSnapRegistryControllerMessenger } from '../messengers/snaps/snap-registry-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { SnapRegistryControllerInit } from './snap-registry-controller-init';
 

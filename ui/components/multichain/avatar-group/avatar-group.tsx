@@ -11,7 +11,7 @@ import {
   AvatarToken,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import { Text } from '../../component-library/text';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   BorderRadius,
@@ -19,7 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../../component-library/box';
+import { Box } from '../../component-library/box/box';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 /**

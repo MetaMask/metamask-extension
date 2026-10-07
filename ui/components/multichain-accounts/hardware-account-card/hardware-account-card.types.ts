@@ -1,4 +1,4 @@
-import type { HardwareWalletAccountAddress } from '../hardware-account-address-row';
+import type { HardwareWalletAccountAddress } from '../hardware-account-address-row/hardware-account-address-row.types';
 
 /** Hardware wallet account available for import during onboarding. */
 export type HardwareWalletAccount = {

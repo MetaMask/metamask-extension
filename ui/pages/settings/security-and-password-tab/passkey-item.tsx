@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { TextButton, TextColor } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
@@ -11,16 +12,18 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import { createSentryError } from '../../../../shared/lib/error';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
 import {
-  getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey/passkey-ceremony';
+import {
   translatePasskeyError,
   getPasskeyErrorCode,
-} from '../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey/passkey-error';
 import { captureException } from '../../../../shared/lib/sentry';
-import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal/passkey-troubleshoot-modal';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import {
   transitionBack,
   transitionForward,
@@ -34,7 +37,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';

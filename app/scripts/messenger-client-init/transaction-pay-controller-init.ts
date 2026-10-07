@@ -36,7 +36,7 @@ import type {
   MessengerClientInitFunction,
   MessengerClientInitResult,
 } from './types';
-import type { TransactionPayControllerInitMessenger } from './messengers';
+import type { TransactionPayControllerInitMessenger } from './messengers/transaction-pay-controller-messenger';
 
 export const TransactionPayControllerInit: MessengerClientInitFunction<
   TransactionPayController,

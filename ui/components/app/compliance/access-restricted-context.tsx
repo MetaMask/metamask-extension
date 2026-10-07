@@ -12,7 +12,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { AccessRestrictedModal } from './access-restricted-modal';
 
 type AccessRestrictedContextValue = {

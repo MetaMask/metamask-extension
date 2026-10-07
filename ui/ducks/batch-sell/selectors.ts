@@ -15,11 +15,11 @@ import {
 } from '@metamask/bridge-controller';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
-import { getAssetsRates } from '../../selectors/assets';
 import {
-  getAllMultichainNetworkConfigurations,
-  getMarketData,
-} from '../../selectors';
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getTokenRatesControllerMarketData as getMarketData,
+} from '../../../shared/lib/selectors/assets-migration';
+import { getAllMultichainNetworkConfigurations } from '../../selectors/multichain/networks';
 import {
   getAssetImageUrl,
   isEvmChainId,

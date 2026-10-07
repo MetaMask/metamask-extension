@@ -7,7 +7,7 @@ import {
   setSelectedQuote,
   updateQuoteRequestParams,
 } from '../../../../../ducks/bridge/actions';
-import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors/smart-transactions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   getBatchSellQuotes,
@@ -19,11 +19,13 @@ import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
 import type { BatchSellQuotesConfig } from '../types';
 import {
   noValidationErrors,
+  BATCH_SELL_CHAIN_ID,
+} from '../../../../../../test/data/batch-sell/constants';
+import {
   buildBatchSellAsset,
   buildReceivedAsset,
-  mockUseSelectorPassthrough,
-  BATCH_SELL_CHAIN_ID,
-} from '../../../../../../test/data/batch-sell';
+} from '../../../../../../test/data/batch-sell/factories';
+import { mockUseSelectorPassthrough } from '../../../../../../test/data/batch-sell/mock-selectors';
 import { useDispatch } from '../../../../../store/hooks';
 import { useBatchSellQuotesFetching } from './useBatchSellQuotesFetching';
 
@@ -44,7 +46,7 @@ jest.mock('../../../../../ducks/bridge/actions', () => ({
   })),
 }));
 
-jest.mock('../../../../../../shared/lib/selectors', () => ({
+jest.mock('../../../../../../shared/lib/selectors/smart-transactions', () => ({
   getIsSmartTransaction: jest.fn(),
 }));
 

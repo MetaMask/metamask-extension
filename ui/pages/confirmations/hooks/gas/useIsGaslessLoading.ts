@@ -3,7 +3,7 @@ import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { getMoneyAccountFlow } from '../../../../../shared/lib/money/money-account-flow';
 import { useConfirmContext } from '../../context/confirm';
-import { getUseTransactionSimulations } from '../../../../selectors';
+import { getUseTransactionSimulations } from '../../../../selectors/selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
 import { useIsGaslessSupported } from './useIsGaslessSupported';

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { useSettingsSearch } from './useSettingsSearch';
 
-jest.mock('../../../shared/lib/passkey', () => ({
+jest.mock('../../../shared/lib/passkey/passkey-auth-method', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
 }));
 

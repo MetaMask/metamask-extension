@@ -1,6 +1,6 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { UNKNOWN_BATCH_ID } from './constants';
 import type { HwSignTrackerAction } from './types';
 

@@ -20,19 +20,17 @@ import {
   AlignItems,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '../../../../component-library';
-import { useBackupAndSync } from '../../../../../hooks/identity/useBackupAndSync';
+import { Modal } from '../../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../../component-library/modal-footer/modal-footer';
+import { useBackupAndSync } from '../../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getUseExternalServices } from '../../../../../selectors';
+import { getUseExternalServices } from '../../../../../selectors/selectors';
 import { showModal } from '../../../../../store/actions';
-import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
+import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal/confirm-turn-on-backup-and-sync-modal';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

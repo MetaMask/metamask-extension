@@ -5,10 +5,10 @@ import classnames from 'clsx';
 
 import { Text, TextVariant } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import ButtonGroup from '../../../components/ui/button-group';
-import Button from '../../../components/ui/button';
-import InfoTooltip from '../../../components/ui/info-tooltip';
-import Box from '../../../components/ui/box';
+import ButtonGroup from '../../../components/ui/button-group/button-group.component';
+import Button from '../../../components/ui/button/button.component';
+import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
+import Box from '../../../components/ui/box/box';
 
 import {
   AlignItems,
@@ -24,14 +24,12 @@ import {
   SLIPPAGE_NEGATIVE_ERROR,
   isStablePair,
 } from '../../../../shared/constants/swaps';
-import {
-  BannerAlert,
-  Modal,
-  ModalOverlay,
-  ButtonPrimary,
-} from '../../../components/component-library';
-import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
+import { BannerAlert } from '../../../components/component-library/banner-alert/banner-alert';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { ButtonPrimary } from '../../../components/component-library/button-primary/button-primary';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated/modal-header';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
 import { useDispatch } from '../../../store/hooks';

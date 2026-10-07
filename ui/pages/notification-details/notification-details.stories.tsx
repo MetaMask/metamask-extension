@@ -5,7 +5,7 @@ import configureStore from '../../store/store';
 import NotificationDetails from './notification-details';
 import testData from '../../../.storybook/test-data';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { Box } from '../../components/component-library';
+import { Box } from '../../components/component-library/box/box';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
@@ -30,7 +30,8 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { Content, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Page } from '../../components/multichain/pages/page/page';
 import { NotificationComponents } from '../notifications/notification-components';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';

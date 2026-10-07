@@ -5,8 +5,8 @@ import {
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
-} from '../selectors';
+} from '../selectors/selectors';
+import { getIsSocialLoginFlow } from '../selectors/first-time-flow';
 
 /**
  * Whether the current side panel environment cannot run WebAuthn for the

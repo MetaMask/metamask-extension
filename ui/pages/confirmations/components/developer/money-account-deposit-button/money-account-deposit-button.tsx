@@ -3,7 +3,7 @@ import React from 'react';
 import { useMoneyAccountDeposit } from '../../../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
 import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
-import { DeveloperButton } from '../developer-button';
+import { DeveloperButton } from '../developer-button/developer-button';
 import { MONEY_ACCOUNT_DEPOSIT_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 
 /**

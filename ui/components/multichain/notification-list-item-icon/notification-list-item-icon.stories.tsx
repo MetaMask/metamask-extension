@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react-webpack5';
 import { IconName } from '@metamask/design-system-react';
-import { BadgeWrapperPosition } from '../../component-library';
+import { BadgeWrapperPosition } from '../../component-library/badge-wrapper/badge-wrapper.types';
 import {
   NotificationListItemIcon,
   NotificationListItemIconProps,

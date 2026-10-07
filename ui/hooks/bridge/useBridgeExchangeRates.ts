@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { getFromToken } from '../../ducks/bridge/selectors';
-import { getMarketData } from '../../selectors';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../shared/lib/selectors/assets-migration';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
 import { useDispatch } from '../../store/hooks';
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../../../shared/constants/metametrics';
@@ -35,10 +35,8 @@ import {
 } from '../../../../../../shared/constants/app';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-} from '../../../../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../../../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../../../../shared/lib/hardware-wallets/types';
 import * as confirmContext from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
@@ -162,43 +160,65 @@ jest.mock('../../../../../hooks/subscription/useSubscription');
 jest.mock(
   '../../../../../contexts/hardware-wallets/HardwareWalletContext',
   () => ({
-    ...jest.requireActual(
-      '../../../../../contexts/hardware-wallets/HardwareWalletContext',
-    ),
-    useHardwareWalletState: () => mockUseHardwareWalletState(),
-    useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
-    useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../contexts/hardware-wallets/HardwareWalletContext',
+      ),
+      useHardwareWalletState: () => mockUseHardwareWalletState(),
+      useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+      useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+    }))(),
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../contexts/hardware-wallets/HardwareWalletContext',
+      ),
+      useHardwareWalletState: () => mockUseHardwareWalletState(),
+      useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+      useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+    }))(),
   }),
 );
 jest.mock(
   '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
   () => ({
-    ...jest.requireActual(
-      '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
-    ),
-    useHardwareWalletError: () => mockUseHardwareWalletError(),
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+      ),
+      useHardwareWalletError: () => mockUseHardwareWalletError(),
+    }))(),
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+      ),
+      useHardwareWalletError: () => mockUseHardwareWalletError(),
+    }))(),
   }),
 );
-jest.mock('../../../../../contexts/hardware-wallets/rpcErrorUtils', () => ({
-  ...jest.requireActual(
-    '../../../../../contexts/hardware-wallets/rpcErrorUtils',
-  ),
-  isHardwareWalletError: (...args: unknown[]) =>
-    mockIsHardwareWalletError(...args),
-  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
-    mockIsUserRejectedHardwareWalletError(...args),
-}));
-jest.mock('../../../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../../../contexts/hardware-wallets'),
-  useHardwareWalletState: () => mockUseHardwareWalletState(),
-  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
-  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
-  useHardwareWalletError: () => mockUseHardwareWalletError(),
-  isHardwareWalletError: (...args: unknown[]) =>
-    mockIsHardwareWalletError(...args),
-  isUserRejectedHardwareWalletError: (...args: unknown[]) =>
-    mockIsUserRejectedHardwareWalletError(...args),
-}));
+jest.mock(
+  '../../../../../../shared/lib/hardware-wallets/rpc-error-utils',
+  () => ({
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../../shared/lib/hardware-wallets/rpc-error-utils',
+      ),
+      isHardwareWalletError: (...args: unknown[]) =>
+        mockIsHardwareWalletError(...args),
+      isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+        mockIsUserRejectedHardwareWalletError(...args),
+    }))(),
+    ...(() => ({
+      ...jest.requireActual(
+        '../../../../../../shared/lib/hardware-wallets/rpc-error-utils',
+      ),
+      isHardwareWalletError: (...args: unknown[]) =>
+        mockIsHardwareWalletError(...args),
+      isUserRejectedHardwareWalletError: (...args: unknown[]) =>
+        mockIsUserRejectedHardwareWalletError(...args),
+    }))(),
+  }),
+);
+
 jest.mock('../../../hooks/useAddEthereumChain', () => ({
   useAddEthereumChain: jest.fn(() => ({
     onSubmit: jest.fn().mockResolvedValue(undefined),
@@ -251,7 +271,9 @@ const render = (
   mockStore = store;
 
   return renderWithConfirmContextProvider(
-    <Footer />,
+    <Suspense fallback={null}>
+      <Footer />
+    </Suspense>,
     store,
     options?.pathname ?? DEFAULT_ROUTE,
     options?.confirmationId,
@@ -599,7 +621,7 @@ describe('ConfirmFooter', () => {
     expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
-  it('opens the scam questionnaire instead of the alert modal for a malicious wallet-initiated send', () => {
+  it('opens the scam questionnaire instead of the alert modal for a malicious wallet-initiated send', async () => {
     const transaction = {
       ...genUnapprovedTokenTransferConfirmation({
         isWalletInitiatedConfirmation: true,
@@ -609,7 +631,7 @@ describe('ConfirmFooter', () => {
       securityAlertResponse: { result_type: BlockaidResultType.Malicious },
     } as unknown as Confirmation;
 
-    const { getByTestId, getByText, queryByTestId } = render(
+    const { getByTestId, findByTestId, getByText, queryByTestId } = render(
       getMockConfirmStateForTransaction(transaction, {
         metamask: {
           remoteFeatureFlags: {
@@ -635,12 +657,13 @@ describe('ConfirmFooter', () => {
     fireEvent.click(getByTestId('confirm-footer-button'));
 
     // Questionnaire opens (its back control + first question are shown)...
-    expect(getByTestId('scam-questionnaire-back')).toBeInTheDocument();
+    expect(await findByTestId('scam-questionnaire-back')).toBeInTheDocument();
     expect(
       getByText(messages.scamQuestionnaireQ1Title.message),
     ).toBeInTheDocument();
     // ...and the standard danger-alert modal is not shown instead.
     expect(queryByTestId('confirm-alert-modal')).not.toBeInTheDocument();
+    expect(mockOnTransactionConfirm).not.toHaveBeenCalled();
   });
 
   it('suppresses hardware wallet error modal while danger alerts are unconfirmed and hardware wallet is ready', async () => {
@@ -762,7 +785,7 @@ describe('ConfirmFooter', () => {
     expect(setErrorModalSuppressedMock).toHaveBeenLastCalledWith(false);
   });
 
-  it('no action is taken when the origin is on threshold and cancel button is clicked', () => {
+  it('no action is taken when the origin is on threshold and cancel button is clicked', async () => {
     mockUseOriginThrottling.mockReturnValue({
       shouldThrottleOrigin: true,
     });
@@ -1276,10 +1299,10 @@ describe('ConfirmFooter', () => {
       expect(getByText(messages.confirm.message)).toBeInTheDocument();
     });
 
-    it('sets the alert modal visible when the review alerts button is clicked', () => {
-      const { getByTestId } = render(stateWithAlertsMock);
+    it('sets the alert modal visible when the review alerts button is clicked', async () => {
+      const { getByTestId, findByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
-      expect(getByTestId('alert-modal-button')).toBeDefined();
+      expect(await findByTestId('alert-modal-button')).toBeDefined();
     });
 
     describe('navigates to the next confirmation', () => {
@@ -1358,7 +1381,7 @@ describe('ConfirmFooter', () => {
     });
   });
 
-  it('renders SingleActionFooter for musdConversion transaction type', () => {
+  it('renders SingleActionFooter for musdConversion transaction type', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1368,15 +1391,15 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  it('renders SingleActionFooter for perpsDeposit transaction type', () => {
+  it('renders SingleActionFooter for perpsDeposit transaction type', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1386,18 +1409,18 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
     );
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  it('renders SingleActionFooter for perpsWithdraw transaction type', () => {
+  it('renders SingleActionFooter for perpsWithdraw transaction type', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1407,18 +1430,18 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.perpsWithdraw.message,
     );
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  it('renders SingleActionFooter for moneyAccountDeposit transaction type', () => {
+  it('renders SingleActionFooter for moneyAccountDeposit transaction type', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1428,18 +1451,18 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
     );
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  it('renders SingleActionFooter for moneyAccountWithdraw transaction type', () => {
+  it('renders SingleActionFooter for moneyAccountWithdraw transaction type', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1449,18 +1472,18 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.send.message,
     );
     expect(queryByText(messages.cancel.message)).not.toBeInTheDocument();
   });
 
-  it('renders SingleActionFooter for moneyAccountDeposit batch with approve companion', () => {
+  it('renders SingleActionFooter for moneyAccountDeposit batch with approve companion', async () => {
     jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
       currentConfirmation: {
         ...genUnapprovedContractInteractionConfirmation(),
@@ -1474,11 +1497,11 @@ describe('ConfirmFooter', () => {
       setIsScrollToBottomCompleted: () => undefined,
     } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
-    const { getByTestId, queryByText } = render(
+    const { getByTestId, findByTestId, queryByText } = render(
       getMockContractInteractionConfirmState(),
     );
 
-    expect(getByTestId('confirm-footer-button')).toBeInTheDocument();
+    expect(await findByTestId('confirm-footer-button')).toBeInTheDocument();
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
     );

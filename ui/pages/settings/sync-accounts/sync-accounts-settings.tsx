@@ -12,15 +12,13 @@ import {
   selectQrSyncError,
   selectQrSyncPhase,
 } from '../../../selectors/qr-sync/qr-sync';
-import {
-  AddWallets,
-  EnterPassword,
-  EnterVerificationCode,
-  LoadingStep,
-  QrCodeScan,
-  Success,
-  SyncError,
-} from './components';
+import AddWallets from './components/add-wallets';
+import EnterPassword from './components/enter-password';
+import EnterVerificationCode from './components/enter-verification-code';
+import LoadingStep from './components/loading-step';
+import QrCodeScan from './components/qr-code-scan';
+import Success from './components/success';
+import SyncError from './components/sync-error';
 import type { AddDeviceSyncRequest } from './types';
 
 const SyncAccountsSettings = () => {

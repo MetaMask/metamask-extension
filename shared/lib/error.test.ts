@@ -1,6 +1,6 @@
 import log from 'loglevel';
+import { isErrorWithMessage } from '@metamask/utils';
 import {
-  isErrorWithMessage,
   logErrorWithMessage,
   createErrorFromNetworkRequest,
   getErrorBodyMessage,

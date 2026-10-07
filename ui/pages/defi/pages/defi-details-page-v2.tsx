@@ -22,7 +22,7 @@ import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedCurrency } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
-import PulseLoader from '../../../components/ui/pulse-loader';
+import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import DefiDetailsListV2 from '../components/defi-details-list-v2';
 

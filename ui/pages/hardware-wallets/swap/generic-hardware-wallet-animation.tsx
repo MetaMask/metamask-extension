@@ -14,7 +14,7 @@ import {
   useRiveWasmContext,
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
-import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine/types';
 
 const GENERIC_HARDWARE_WALLET_RIVE_URL =
   './images/riv_animations/generic_hardware_wallet.riv';

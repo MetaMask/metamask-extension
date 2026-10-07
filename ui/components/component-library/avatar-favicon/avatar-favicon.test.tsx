@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from './avatar-favicon';
 

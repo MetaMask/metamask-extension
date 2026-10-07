@@ -15,26 +15,24 @@ import {
   BoxFlexDirection,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalContentSize,
-  HelpText,
-  HelpTextSeverity,
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContentSize } from '../../../../../components/component-library/modal-content/modal-content.types';
+import { HelpText } from '../../../../../components/component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../../../components/component-library/help-text/help-text.types';
+import { BannerAlert } from '../../../../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../../../components/component-library/banner-alert/banner-alert.types';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { AddressPoisoningDetectionResult } from '../../../hooks/send/useAddressPoisoningDetection';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { RecipientList } from '../recipient-list';
-import { RecipientInput } from '../recipient-input';
+import { RecipientList } from '../recipient-list/recipient-list';
+import { RecipientInput } from '../recipient-input/recipient-input';
 import { AddressPoisoningAlertContent } from '../address-poisoning-alert-content/address-poisoning-alert-content';
 
 export const Recipient = ({

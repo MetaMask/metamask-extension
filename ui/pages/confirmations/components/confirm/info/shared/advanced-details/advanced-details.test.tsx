@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -30,7 +30,7 @@ describe('<AdvancedDetails />', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders component when the state property is true', () => {
+  it('renders component when the state property is true', async () => {
     const state = {
       ...mockState,
       metamask: {
@@ -43,15 +43,18 @@ describe('<AdvancedDetails />', () => {
     };
 
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithConfirmContextProvider(
-      <AdvancedDetails />,
+    const { container, findByTestId } = renderWithConfirmContextProvider(
+      <Suspense fallback={null}>
+        <AdvancedDetails />
+      </Suspense>,
       mockStore,
     );
 
+    await findByTestId('advanced-details-nonce-section');
     expect(container).toMatchSnapshot();
   });
 
-  it('renders component when the prop override is passed', () => {
+  it('renders component when the prop override is passed', async () => {
     const state = {
       ...mockState,
       metamask: {
@@ -64,11 +67,14 @@ describe('<AdvancedDetails />', () => {
     };
 
     const mockStore = configureMockStore(middleware)(state);
-    const { container } = renderWithConfirmContextProvider(
-      <AdvancedDetails overrideVisibility />,
+    const { container, findByTestId } = renderWithConfirmContextProvider(
+      <Suspense fallback={null}>
+        <AdvancedDetails overrideVisibility />
+      </Suspense>,
       mockStore,
     );
 
+    await findByTestId('advanced-details-nonce-section');
     expect(container).toMatchSnapshot();
   });
 });

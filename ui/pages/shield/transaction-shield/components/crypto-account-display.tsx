@@ -12,7 +12,7 @@ import {
 } from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
 
 const CryptoAccountDisplay = ({
   payerAddress,

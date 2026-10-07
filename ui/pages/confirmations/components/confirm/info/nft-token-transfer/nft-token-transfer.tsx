@@ -1,7 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useConfirmContext } from '../../../../context/confirm';
-import { SimulationDetails } from '../../../simulation-details';
+import { SimulationDetails } from '../../../simulation-details/simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import NFTSendHeading from '../shared/nft-send-heading/nft-send-heading';

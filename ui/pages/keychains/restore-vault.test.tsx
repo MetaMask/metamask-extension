@@ -7,10 +7,8 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createMockRouteMessenger } from '../../../test/lib/mock-route-messenger';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import {
-  getIsPasskeyFeatureAvailable,
-  getIsSocialLoginFlow,
-} from '../../selectors';
+import { getIsPasskeyFeatureAvailable } from '../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../selectors/first-time-flow';
 import RestoreVaultPage from './restore-vault';
 
 const mockTrackEvent = jest.fn();
@@ -35,16 +33,17 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../../selectors', () => ({
-  ...jest.requireActual('../../selectors'),
+jest.mock('../../selectors/selectors', () => ({
+  ...jest.requireActual('../../selectors/selectors'),
   getIsPasskeyFeatureAvailable: jest.fn(),
+}));
+jest.mock('../../selectors/first-time-flow', () => ({
+  ...jest.requireActual('../../selectors/first-time-flow'),
   getIsSocialLoginFlow: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-capabilities'),
   isPasskeyPRFSupported: jest.fn().mockResolvedValue(true),
 }));
 

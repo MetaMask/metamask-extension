@@ -27,14 +27,17 @@ import type {
   MetaMetricsEventPayload,
   MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
-import { trackEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { SmartTransactionsControllerInit } from './smart-transactions-controller-init';
 
 jest.mock('@metamask/smart-transactions-controller');
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
 }));
 
 // Define mock types for the dependencies

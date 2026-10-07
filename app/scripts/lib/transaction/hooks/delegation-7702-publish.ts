@@ -8,7 +8,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
-import { ExecutionStruct } from '../../../../../shared/lib/delegation';
+import { ExecutionStruct } from '../../../../../shared/lib/delegation/execution';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,

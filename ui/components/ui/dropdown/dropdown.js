@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 
 const Dropdown = ({
   className,

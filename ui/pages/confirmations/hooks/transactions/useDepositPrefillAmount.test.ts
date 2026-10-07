@@ -6,7 +6,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useSelector } from 'react-redux';
-import { getMarketData } from '../../../../selectors';
+import { getTokenRatesControllerMarketData as getMarketData } from '../../../../../shared/lib/selectors/assets-migration';
 import { getRemoteFeatureFlags } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import {
   selectDepositLimits,

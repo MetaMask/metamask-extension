@@ -32,15 +32,15 @@ import type { Provider } from '@metamask/network-controller';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { launchMetamaskUi, connectToBackground } from '../../ui';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { CriticalStartupErrorHandler } from '../../ui/helpers/utils/critical-startup-error-handler';
 import {
-  launchMetamaskUi,
-  CriticalStartupErrorHandler,
-  connectToBackground,
   displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../ui';
+  // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+} from '../../ui/helpers/utils/display-critical-error';
 import {
   type EnvironmentType,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -56,9 +56,10 @@ import {
   TraceName,
   type TraceContext,
 } from '../../shared/lib/trace';
+import { getEnvironmentType } from '../../shared/lib/environment-type';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
-import { getEnvironmentType, getPlatform } from './lib/util';
+import { getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second

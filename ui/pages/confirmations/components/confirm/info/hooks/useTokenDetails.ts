@@ -1,7 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getAllTokens } from '../../../../../../selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../../../../../../shared/lib/selectors/assets-migration';
 
 export const useTokenDetails = (transactionMeta: TransactionMeta) => {
   const t = useI18nContext();

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../../shared/constants/time';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -13,13 +14,16 @@ import {
   getLastViewedUserSurvey,
   getUseExternalServices,
   getAnalyticsId,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
 import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
-import { ToastContent, type ToastWithClose, toast } from '../toast/toast';
+import { ToastContent } from '../toast/toast';
+import type { ToastWithClose } from '../toast/toast';
 import { useDispatch } from '../../../store/hooks';
 
 type Survey = {

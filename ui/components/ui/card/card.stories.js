@@ -10,7 +10,7 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 
-import Card from '.';
+import Card from './card';
 
 const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 

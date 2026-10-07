@@ -16,10 +16,10 @@ import {
 } from '../../../../../../../../shared/constants/network';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import { selectConversionRateByChainId } from '../../../../../../../selectors';
+import { selectConversionRateByChainId } from '../../../../../../../selectors/selectors';
 import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { formatAmount } from '../../../../../../../../shared/lib/format-amount';

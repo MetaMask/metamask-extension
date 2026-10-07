@@ -5,8 +5,8 @@ import {
   UrType,
   PAIRING_EXPECTED_UR_TYPES,
   SIGNING_EXPECTED_UR_TYPES,
-  type BaseQrReaderProps,
-} from '../../base-qr-reader';
+} from '../../base-qr-reader/base-qr-reader.types';
+import type { BaseQrReaderProps } from '../../base-qr-reader/base-qr-reader.types';
 import {
   ScanErrorCategory,
   QrMismatchedTransactionError,

@@ -12,7 +12,7 @@ import {
 
 const mockTrack = jest.fn();
 
-jest.mock('../../../hooks/perps', () => ({
+jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 

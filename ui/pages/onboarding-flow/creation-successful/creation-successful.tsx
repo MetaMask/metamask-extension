@@ -30,7 +30,7 @@ import {
   getIsPrimarySeedPhraseBackedUp,
   getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
-import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import { LottieAnimation } from '../../../components/component-library/lottie-animation/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';

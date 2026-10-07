@@ -4,7 +4,7 @@ import {
   AvatarAccount,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
-import { SelectWrapper } from '../select-wrapper';
+import { SelectWrapper } from '../select-wrapper/select-wrapper';
 import { SelectButton } from './select-button';
 import { SelectButtonSize } from './select-button.types';
 

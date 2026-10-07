@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Box from '../box';
+import Box from '../box/box';
 import {
   BackgroundColor,
   BorderColor,

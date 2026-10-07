@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { syncSeedPhrases } from '../../store/actions';
-import { getIsSocialLoginFlow } from '../../selectors';
+import { getIsSocialLoginFlow } from '../../selectors/first-time-flow';
 import { useDispatch } from '../../store/hooks';
 
 export const useSyncSRPs = () => {

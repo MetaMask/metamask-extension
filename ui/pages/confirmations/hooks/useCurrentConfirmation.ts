@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
   ApprovalsMetaMaskState,
-  getUnapprovedTransaction,
-  firstPendingConfirmationSelector,
   internalSelectPendingApproval,
-} from '../../../selectors';
+} from '../../../selectors/approvals';
+import { getUnapprovedTransaction } from '../../../selectors/selectors';
+import { firstPendingConfirmationSelector } from '../selectors/confirm';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,

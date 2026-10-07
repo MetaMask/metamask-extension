@@ -1,8 +1,6 @@
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import {
-  IconName,
-  InvisibleCharacter,
-} from '../../components/component-library';
+import { IconName } from '../../components/component-library/icon/icon.types';
+import { InvisibleCharacter } from '../../components/component-library/text/text.types';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,

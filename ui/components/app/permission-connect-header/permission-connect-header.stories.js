@@ -1,5 +1,5 @@
 import React from 'react';
-import PermissionConnectHeader from '.';
+import PermissionConnectHeader from './permission-connect-header';
 
 export default {
   title: 'Components/App/PermissionConnectHeader',

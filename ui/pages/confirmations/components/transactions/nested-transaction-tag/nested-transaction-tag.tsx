@@ -12,12 +12,10 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  IconName,
-  Tag,
-} from '../../../../../components/component-library';
-import Tooltip from '../../../../../components/ui/tooltip';
+import { Box } from '../../../../../components/component-library/box/box';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Tag } from '../../../../../components/component-library/tag/tag';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 /**

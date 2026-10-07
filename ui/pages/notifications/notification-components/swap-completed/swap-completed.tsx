@@ -8,17 +8,15 @@ import {
 } from '../types/notifications/notifications';
 import { t } from '../../../../../shared/lib/translate';
 
-import {
-  NotificationListItem,
-  NotificationDetailInfo,
-  NotificationDetailAsset,
-  NotificationDetailNetworkFee,
-  NotificationDetailBlockExplorerButton,
-  NotificationDetailCopyButton,
-  NotificationDetailAddress,
-} from '../../../../components/multichain';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
+import { NotificationDetailInfo } from '../../../../components/multichain/notification-detail-info/notification-detail-info';
+import { NotificationDetailAsset } from '../../../../components/multichain/notification-detail-asset/notification-detail-asset';
+import { NotificationDetailNetworkFee } from '../../../../components/multichain/notification-detail-network-fee/notification-detail-network-fee';
+import { NotificationDetailBlockExplorerButton } from '../../../../components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button';
+import { NotificationDetailCopyButton } from '../../../../components/multichain/notification-detail-copy-button/notification-detail-copy-button';
+import { NotificationDetailAddress } from '../../../../components/multichain/notification-detail-address/notification-detail-address';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library/badge-wrapper/badge-wrapper.types';
 
 import {
   createTextItems,

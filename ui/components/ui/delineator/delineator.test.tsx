@@ -2,7 +2,8 @@ import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { IconName, Text } from '../../component-library';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { DelineatorType } from './delineator.types';
 import { Delineator } from './delineator';
 

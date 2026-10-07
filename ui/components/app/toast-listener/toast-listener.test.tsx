@@ -26,10 +26,12 @@ jest.mock('../perps/perps-deposit-toast', () => ({
   PerpsDepositToast: () => mockPerpsDepositToast(),
 }));
 
-jest.mock('../../../hooks/musd', () => ({
-  useMusdConversionToastStatus: () => mockUseMusdConversionToastStatus(),
+jest.mock('../../../hooks/musd/useMusdConversionConfirmTrace', () => ({
   useMusdConversionConfirmTrace: (...args: unknown[]) =>
     mockUseMusdConversionConfirmTrace(...args),
+}));
+jest.mock('../../../hooks/musd/useMusdConversionToastStatus', () => ({
+  useMusdConversionToastStatus: () => mockUseMusdConversionToastStatus(),
 }));
 
 jest.mock('./transaction-event-toast-listener', () => ({

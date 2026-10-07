@@ -6,7 +6,7 @@ import {
   DEVICE_NOT_FOUND_INSTRUCTION_MESSAGE_KEYS,
   getLocalizedMessage,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
-import { LedgerConnectionStatusInstructions } from '.';
+import { LedgerConnectionStatusInstructions } from './ledger-connection-status-instructions';
 
 describe('LedgerConnectionStatusInstructions', () => {
   it('renders exactly four troubleshooting steps for device-not-found', () => {

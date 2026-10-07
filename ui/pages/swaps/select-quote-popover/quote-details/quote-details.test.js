@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
-import { createSwapsMockStore } from '../../../../../test/jest';
+import { createSwapsMockStore } from '../../../../../test/jest/mock-store';
 import quoteDataRows from '../mock-quote-data';
 import QuoteDetails from './quote-details';
 

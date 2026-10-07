@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useArgs } from 'storybook/preview-api';
-import { Button } from '../../../components/component-library';
+import { Button } from '../../../components/component-library/button/button';
 import ConfirmSrpModal from './confirm-srp-modal';
 
 export default {

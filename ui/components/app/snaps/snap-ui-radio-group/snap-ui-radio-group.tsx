@@ -5,15 +5,13 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import { TextVariant } from '../../../../helpers/constants/design-system';
-import {
-  HelpText,
-  HelpTextSeverity,
-  Label,
-  Text,
-} from '../../../component-library';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { Label } from '../../../component-library/label/label';
+import { Text } from '../../../component-library/text/text';
 
 export type SnapUIRadioOption = {
   value: string;

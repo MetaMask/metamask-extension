@@ -14,7 +14,7 @@ import {
 } from '../../../../ducks/rewards';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 import { useDispatch, useAppSelector } from '../../../../store/hooks';
 import RewardsModal from './RewardsModal';
 

@@ -8,14 +8,12 @@ import {
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
 } from '@metamask/bridge-controller';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Tag,
-  Text,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { Tag } from '../../../components/component-library/tag/tag';
+import { Text } from '../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -34,8 +32,9 @@ import {
   getBridgeQuotes,
   getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
-import { Column, Row } from '../layout';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import Column from '../layout/column';
+import Row from '../layout/row';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';

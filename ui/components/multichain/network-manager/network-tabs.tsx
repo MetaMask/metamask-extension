@@ -1,11 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { hideModal } from '../../../store/actions';
-import { ModalHeader, ModalBody, Box } from '../../component-library';
-import { Tab, Tabs } from '../../ui/tabs';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { Box } from '../../component-library/box/box';
+import { Tab } from '../../ui/tabs/tab/tab';
+import { Tabs } from '../../ui/tabs/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useDispatch } from '../../../store/hooks';
-import { CustomNetworks } from './components/custom-networks';
-import { DefaultNetworks } from './components/default-networks';
+import { CustomNetworks } from './components/custom-networks/custom-networks';
+import { DefaultNetworks } from './components/default-networks/default-networks';
 
 type NetworkTabsProps = {
   initialTab: string;

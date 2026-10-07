@@ -11,7 +11,7 @@ import {
 } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
-import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/chain-ids';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import {
   downgradeAccountConfirmation,

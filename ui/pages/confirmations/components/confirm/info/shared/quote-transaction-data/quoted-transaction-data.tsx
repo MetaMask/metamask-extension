@@ -5,7 +5,7 @@ import { Hex } from '@metamask/utils';
 import { QuoteResponseV1, TxData } from '@metamask/bridge-controller';
 
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
-import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';

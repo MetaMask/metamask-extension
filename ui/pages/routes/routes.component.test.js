@@ -19,11 +19,14 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
-import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
+import Routes, {
+  routeConfig,
+  TokenManagementFeatureRoute,
+} from './routes.component';
 
 const middlewares = [thunk];
 
@@ -80,7 +83,7 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
-jest.mock('../token-management/index.ts', () => ({
+jest.mock('../token-management/token-management', () => ({
   __esModule: true,
   default: () => <div data-testid="token-management-route" />,
 }));
@@ -94,7 +97,7 @@ jest.mock('../../helpers/utils/mm-lazy', () => {
     mmLazy: (importFn) => {
       if (importFn.toString().includes('token-management')) {
         const { default: TokenManagementMock } = jest.requireMock(
-          '../token-management/index.ts',
+          '../token-management/token-management',
         );
         return TokenManagementMock;
       }
@@ -113,7 +116,50 @@ jest.mock(
   () => () => mockFetchWithCache,
 );
 
-jest.mock('../../hooks/musd', () => ({
+jest.mock('../../components/app/musd/utils/token-allowlist', () => ({
+  isTokenInWildcardList: jest.fn().mockReturnValue(false),
+  checkTokenAllowed: jest.fn().mockReturnValue(false),
+}));
+jest.mock('../../hooks/musd/useCanBuyMusd', () => ({
+  useCanBuyMusd: () => ({
+    canBuyMusd: false,
+  }),
+}));
+jest.mock('../../hooks/musd/useCustomAmount', () => ({
+  useCustomAmount: () => ({
+    customAmount: null,
+    setCustomAmount: jest.fn(),
+  }),
+}));
+jest.mock('../../hooks/musd/useMusdBalance', () => ({
+  useMusdBalance: () => ({
+    hasMusdBalance: false,
+    totalMusdBalance: '0',
+    musdBalancesByChain: {},
+    isLoading: false,
+  }),
+}));
+jest.mock('../../hooks/musd/useMusdConversion', () => ({
+  useMusdConversion: () => ({
+    startConversionFlow: jest.fn(),
+    educationSeen: false,
+  }),
+}));
+
+jest.mock('../../hooks/musd/useMusdConversionToastStatus', () => ({
+  useMusdConversionToastStatus: () => ({
+    shouldShowToast: false,
+    toastMessage: null,
+    dismissToast: jest.fn(),
+  }),
+}));
+jest.mock('../../hooks/musd/useMusdConversionTokens', () => ({
+  useMusdConversionTokens: () => ({
+    tokens: [],
+    isLoading: false,
+  }),
+}));
+jest.mock('../../hooks/musd/useMusdCtaVisibility', () => ({
   useMusdCtaVisibility: () => ({
     shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
     shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
@@ -122,25 +168,8 @@ jest.mock('../../hooks/musd', () => ({
     isGeoBlocked: false,
     isGeoBlockingLoading: false,
   }),
-  useMusdBalance: () => ({
-    hasMusdBalance: false,
-    totalMusdBalance: '0',
-    musdBalancesByChain: {},
-    isLoading: false,
-  }),
-  useMusdNetworkFilter: () => ({
-    isPopularNetworksFilterActive: false,
-    selectedChainId: null,
-    enabledChainIds: [],
-  }),
-  useMusdConversionTokens: () => ({
-    tokens: [],
-    isLoading: false,
-  }),
-  useMusdConversion: () => ({
-    startConversionFlow: jest.fn(),
-    educationSeen: false,
-  }),
+}));
+jest.mock('../../hooks/musd/useMusdGeoBlocking', () => ({
   useMusdGeoBlocking: () => ({
     isBlocked: false,
     userCountry: 'US',
@@ -150,20 +179,13 @@ jest.mock('../../hooks/musd', () => ({
     blockedMessage: null,
     refreshGeolocation: jest.fn(),
   }),
-  useMusdConversionToastStatus: () => ({
-    shouldShowToast: false,
-    toastMessage: null,
-    dismissToast: jest.fn(),
+}));
+jest.mock('../../hooks/musd/useMusdNetworkFilter', () => ({
+  useMusdNetworkFilter: () => ({
+    isPopularNetworksFilterActive: false,
+    selectedChainId: null,
+    enabledChainIds: [],
   }),
-  useCanBuyMusd: () => ({
-    canBuyMusd: false,
-  }),
-  useCustomAmount: () => ({
-    customAmount: null,
-    setCustomAmount: jest.fn(),
-  }),
-  isTokenInWildcardList: jest.fn().mockReturnValue(false),
-  checkTokenAllowed: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../hooks/useMultiPolling', () => ({

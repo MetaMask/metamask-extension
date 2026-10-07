@@ -9,15 +9,13 @@ import {
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { Box } from '../../../../../../../components/component-library';
+import { Box } from '../../../../../../../components/component-library/box/box';
 import { ERC20_DEFAULT_DECIMALS } from '../../../../../utils/token';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';

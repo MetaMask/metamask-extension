@@ -3,7 +3,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   getMoneyPayChainIds,
   isMoneyAccountTx,

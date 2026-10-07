@@ -1,16 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { mmLazy } from '../../../../../helpers/utils/mm-lazy';
 import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { ConfirmInfoRowSize, PayWithRow } from '../pay-with-row/pay-with-row';
-import { BridgeFeeRow } from '../bridge-fee-row/bridge-fee-row';
-import { TotalRow } from '../total-row/total-row';
-import { RequiredTokensRow } from '../required-tokens-row';
 import { selectIsMetaMaskPayDappsEnabled } from '../../../selectors/feature-flags';
+
+const TransactionPaySectionContent = mmLazy(
+  () => import('./transaction-pay-section-content'),
+);
 
 export const TransactionPaySection = () => {
   const requiredTokens = useTransactionPayRequiredTokens();
@@ -31,16 +31,5 @@ export const TransactionPaySection = () => {
     return null;
   }
 
-  return (
-    <ConfirmInfoSection data-testid="transaction-pay-section">
-      <RequiredTokensRow />
-      <PayWithRow variant={ConfirmInfoRowSize.Default} />
-      {hasPaymentToken && (
-        <>
-          <BridgeFeeRow />
-          <TotalRow />
-        </>
-      )}
-    </ConfirmInfoSection>
-  );
+  return <TransactionPaySectionContent hasPaymentToken={hasPaymentToken} />;
 };

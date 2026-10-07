@@ -5,8 +5,8 @@ import { Box, BoxFlexDirection, Skeleton } from '@metamask/design-system-react';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { SensitiveText } from '../../../component-library';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
+import { SensitiveText } from '../../../component-library/sensitive-text/sensitive-text';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {

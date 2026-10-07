@@ -1,5 +1,5 @@
 import React from 'react';
-import { EthOverview } from '../../app/wallet-overview';
+import EthOverview from '../../app/wallet-overview/eth-overview';
 import { AccountOverviewLayout } from './account-overview-layout';
 import { AccountOverviewCommonProps } from './common';
 

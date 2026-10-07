@@ -5,16 +5,14 @@ import {
   TextVariant,
   TextColor,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from '../../../components/component-library';
-import type { ButtonProps } from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../components/component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../components/component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../components/component-library/modal-footer/modal-footer';
+import type { ButtonProps } from '../../../components/component-library/button/button.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type DeleteContactModalProps = {

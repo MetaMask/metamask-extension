@@ -4,7 +4,9 @@ import qrCode from 'qrcode-generator';
 import { isHexPrefixed } from 'ethereumjs-util';
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   IconColor,

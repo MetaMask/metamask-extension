@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
-import UserPreferencedCurrencyInput from '.';
+import UserPreferencedCurrencyInput from './user-preferenced-currency-input.container';
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {

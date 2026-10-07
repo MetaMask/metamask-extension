@@ -1,17 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import {
+  getIpfsGateway,
+  getOpenSeaEnabled,
+} from '../../../selectors/selectors';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
-import { NotificationDetail } from '../notification-detail';
-import {
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  Box,
-  Text,
-} from '../../component-library';
+import { NotificationDetail } from '../notification-detail/notification-detail';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { BadgeWrapperPosition } from '../../component-library/badge-wrapper/badge-wrapper.types';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import {
   BackgroundColor,
   BorderRadius,

@@ -9,9 +9,9 @@ import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
-} from '../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey/passkey-ceremony';
 import { TraceName, trace, endTrace } from '../../../../shared/lib/trace';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/solana-wallet-snap';
 import { useDispatch } from '../../../store/hooks';
 import { MultichainPrivateKeyList } from './multichain-private-key-list';
 
@@ -88,8 +88,8 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn().mockReturnValue('popup'),
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../../shared/lib/passkey'),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   startPasskeyAuthentication: jest.fn(),
   cancelPasskeyCeremony: jest.fn(),
   isPasskeyCeremonySilentError: jest.fn(),

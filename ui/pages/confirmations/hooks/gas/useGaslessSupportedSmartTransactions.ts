@@ -4,7 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   getIsSmartTransaction,
   SmartTransactionsState,
-} from '../../../../../shared/lib/selectors';
+} from '../../../../../shared/lib/selectors/smart-transactions';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isSendBundleSupported } from '../../../../store/actions';
 import { useConfirmContext } from '../../context/confirm';

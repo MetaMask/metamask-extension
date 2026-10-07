@@ -12,20 +12,18 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
 import { usePerpsPositionForAsset } from '../../../../hooks/perps/usePerpsPositionForAsset';
-import {
-  AccessRestrictedProvider,
-  useSelectedAccountComplianceGate,
-} from '../../compliance';
+import { AccessRestrictedProvider } from '../../compliance/access-restricted-context';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
 import { PERPS_ORDER_ENTRY_ROUTE } from '../../../../helpers/constants/routes';
 import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { captureException } from '../../../../../shared/lib/sentry';
 import { getPositionDirection } from '../utils';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
 import {
-  PERPS_TOAST_KEYS,
   PerpsToastProvider,
   usePerpsToast,
-} from '../perps-toast';
+} from '../perps-toast/perps-toast-provider';
 
 export type PerpsTradeButtonsProps = {
   /** The Perps market name to trade (e.g. 'ETH'), as returned by the provider */

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AddressCopyButton } from '.';
+import AddressCopyButton from './address-copy-button';
 
 export default {
   title: 'Components/Multichain/AddressCopyButton',

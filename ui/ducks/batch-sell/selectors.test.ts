@@ -2,18 +2,16 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
 import { setGlobalDevModeChecks } from 'reselect';
-import { BATCH_SELL_ASSET_IDS } from '../../../test/data/batch-sell';
+import { BATCH_SELL_ASSET_IDS } from '../../../test/data/batch-sell/constants';
+import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import {
-  getAssetsBySelectedAccountGroup,
-  getAssetsRates,
-} from '../../selectors/assets';
-import {
-  getAllMultichainNetworkConfigurations,
-  getMarketData,
-} from '../../selectors';
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getTokenRatesControllerMarketData as getMarketData,
+} from '../../../shared/lib/selectors/assets-migration';
+import { getAllMultichainNetworkConfigurations } from '../../selectors/multichain/networks';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getBridgeFeatureFlags } from '../bridge/selectors';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import {
   getAvailableBatchSellNetworks,
@@ -22,21 +20,32 @@ import {
   getAvailableBatchSellSwapAssetsForNetwork,
 } from './selectors';
 
+jest.mock('../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/assets-migration'),
+  ...(() => ({
+    getMultichainAssetsRatesControllerConversionRates: jest.fn(),
+  }))(),
+  ...(() => ({
+    getTokenRatesControllerMarketData: jest.fn(),
+  }))(),
+}));
 jest.mock('../../selectors/assets', () => ({
+  ...jest.requireActual('../../selectors/assets'),
   getAssetsBySelectedAccountGroup: jest.fn(),
-  getAssetsRates: jest.fn(),
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../selectors/multichain/networks'),
   getAllMultichainNetworkConfigurations: jest.fn(),
-  getMarketData: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/selectors/accounts', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/accounts'),
   getSelectedInternalAccount: jest.fn(),
 }));
 
 jest.mock('../bridge/selectors', () => ({
+  ...jest.requireActual('../bridge/selectors'),
   getBridgeFeatureFlags: jest.fn(),
   getPriceImpactThresholds: jest.fn(),
   computeQuoteValidationErrors: jest.fn(),
@@ -47,6 +56,7 @@ jest.mock('../bridge/asset-selectors', () => ({
 }));
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual('../../selectors/multichain-accounts/account-tree'),
   getSelectedAccountGroup: jest.fn().mockReturnValue(undefined),
 }));
 

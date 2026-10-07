@@ -1,8 +1,8 @@
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import type { SortDirection } from '../../../../pages/perps/utils/sortMarkets';
 import { PERPS_CONSTANTS } from '../constants';
-import type { PerpsMarketData } from '../types';
 import { usePerpsTopMovers } from './usePerpsTopMovers';
 
 const createMarket = (

@@ -11,7 +11,9 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { ButtonIcon, IconName, Text } from '../../component-library';
+import { ButtonIcon } from '../../component-library/button-icon/button-icon';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type EditableLabelProps = {

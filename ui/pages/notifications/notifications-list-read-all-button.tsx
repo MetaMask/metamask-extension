@@ -8,7 +8,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { Box, Button, ButtonVariant } from '../../components/component-library';
+import { Box } from '../../components/component-library/box/box';
+import { Button } from '../../components/component-library/button/button';
+import { ButtonVariant } from '../../components/component-library/button/button.types';
 import { BlockSize } from '../../helpers/constants/design-system';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
 

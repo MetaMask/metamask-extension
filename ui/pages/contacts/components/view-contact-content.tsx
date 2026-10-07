@@ -20,7 +20,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
 } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar/preferred-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';

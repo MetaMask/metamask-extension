@@ -40,7 +40,8 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import type { LegacyBackgroundApiServiceToggleExternalServicesAction } from '../services/legacy-background-api-service-method-action-types';
-import { createEventBuilder, trackEvent } from './analytics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from './analytics/analytics';
 import type { OnboardingControllerGetStateAction } from './onboarding';
 import { PreferencesControllerMethodActions } from './preferences-controller-method-action-types';
 

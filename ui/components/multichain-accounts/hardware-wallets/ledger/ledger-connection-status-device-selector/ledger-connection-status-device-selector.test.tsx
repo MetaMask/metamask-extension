@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import type { LedgerConnectionStatusDeviceSelectorProps } from './ledger-connection-status-device-selector.types';
-import { LedgerConnectionStatusDeviceSelector } from '.';
+import { LedgerConnectionStatusDeviceSelector } from './ledger-connection-status-device-selector';
 
 const renderDeviceSelector = (
   props: LedgerConnectionStatusDeviceSelectorProps,

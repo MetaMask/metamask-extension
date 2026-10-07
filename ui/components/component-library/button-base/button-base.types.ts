@@ -1,9 +1,13 @@
 import { ReactNode } from 'react';
-import type { PolymorphicComponentPropWithRef } from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
-import { IconName } from '../icon';
-import type { IconProps } from '../icon';
+import {
+  TextDirection,
+  TextProps,
+  TextStyleUtilityProps,
+} from '../text/text.types';
+import { IconName } from '../icon/icon.types';
+import type { IconProps } from '../icon/icon.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

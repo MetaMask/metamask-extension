@@ -24,7 +24,7 @@ import {
 import { isKnownMoneyBatchChild } from '../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../messengers/route-messenger';
 import { defineAllowedRouteCapabilities } from '../../../helpers/route-messenger-helpers';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { selectTransactions } from '../../../selectors/transactionController';
 import {
   dismissToast,

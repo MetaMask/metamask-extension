@@ -2,13 +2,13 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { toast } from 'react-hot-toast';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { toast } from '../../../components/ui/toast/toast';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import DeveloperToolsTab from './developer-tools-tab';
 
-jest.mock('../../../components/ui/toast/toast', () => ({
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
   },

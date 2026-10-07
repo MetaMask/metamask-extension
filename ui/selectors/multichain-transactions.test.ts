@@ -1,7 +1,7 @@
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { Transaction } from '@metamask/keyring-api';
 import { AccountGroupId } from '@metamask/account-api';
-import type { MetaMaskReduxState as _MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState as _MetaMaskReduxState } from '../store/types';
 import type { AccountTreeState } from './multichain-accounts/account-tree.types';
 import { selectCurrentAccountNonEvmTransactions } from './multichain-transactions';
 

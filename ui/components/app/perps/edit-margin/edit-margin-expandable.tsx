@@ -8,8 +8,8 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import type { Position, AccountState } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { Position, AccountState } from '../types';
 import { EditMarginModalContent } from './edit-margin-modal-content';
 
 export type EditMarginExpandableProps = {

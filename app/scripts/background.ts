@@ -6,7 +6,8 @@
 
 // This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-// eslint-disable-next-line import-x/order -- intentional first import for Sentry
+
+/* eslint-disable import-x/order -- Initialize Sentry hooks and Infura globals before other modules. */
 import { persistenceManager } from './lib/setup-initial-state-hooks';
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
@@ -72,17 +73,19 @@ import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mo
 import {
   isPhishingWarningPageUrl,
   loadPhishingWarningPage,
-  maybeDetectPhishing,
-} from './lib/phishing';
+} from './lib/phishing/phishing-warning-page';
+import { maybeDetectPhishing } from './lib/phishing/phishing-detection';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
 import NotificationManager from './lib/notification-manager';
 import MetamaskController from './metamask-controller';
-import { createEventBuilder, trackEvent } from './controllers/analytics';
+import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from './controllers/analytics/analytics';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform, initInstallType } from './lib/util';
+import { getPlatform } from './lib/util';
+import { initInstallType } from './lib/install-type';
 import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
 import { createDappMetrics } from './lib/metrics/dapp-metrics';
 import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
@@ -124,8 +127,8 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
 import type { EthProvider } from './lib/ens-ipfs/resolver';
+import type { Backup } from '../../shared/lib/stores/persistence-manager';
 import type {
-  Backup,
   BackgroundInitializationState,
   ConnectExternallyConnectableHandler,
   ConnectRemotePortHandler,
@@ -140,6 +143,7 @@ import type {
 import type { InstallLifecycleDependencies } from './lib/lifecycle/install-lifecycle';
 import type { ActiveTabTrackerController } from './lib/active-tab/active-tab-tracker';
 import type { BadgeManagerController } from './lib/badge/badge-manager';
+/* eslint-enable import-x/order */
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,

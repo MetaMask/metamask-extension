@@ -10,7 +10,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getInternalAccountByAddress } from '../../selectors';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
   encodeDisableDelegation,
   getDelegationHashOffchain,

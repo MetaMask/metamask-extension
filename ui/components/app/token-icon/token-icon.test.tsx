@@ -4,10 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import type { Hex } from '@metamask/utils';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import {
-  MUSD_TOKEN,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../pages/confirmations/constants/musd';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
 import { TokenIcon } from './token-icon';
 

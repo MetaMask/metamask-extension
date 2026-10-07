@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { startPasskeyAuthentication } from '../../../shared/lib/passkey';
+import { startPasskeyAuthentication } from '../../../shared/lib/passkey/passkey-ceremony';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
 

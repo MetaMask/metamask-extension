@@ -12,7 +12,7 @@ import {
   MethodHandler,
 } from '@metamask/json-rpc-engine';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../controllers/permissions';
+import { PermissionNames } from '../../../controllers/permissions/specifications';
 
 export type RevokePermissionsHooks = {
   revokePermissionsForOrigin: (permissionKeys: string[]) => void;

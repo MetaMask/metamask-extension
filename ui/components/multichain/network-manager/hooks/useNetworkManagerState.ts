@@ -18,7 +18,7 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
-} from '../../../../selectors';
+} from '../../../../selectors/multichain/networks';
 
 export const useNetworkManagerState = ({
   showDefaultNetworks = false,

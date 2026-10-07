@@ -6,7 +6,7 @@ import {
   TransactionStatus,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { getEnvironmentType } from '../lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths

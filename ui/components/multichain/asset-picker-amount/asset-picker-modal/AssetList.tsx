@@ -8,7 +8,7 @@ import { isStrictHexString, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { Box } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
 import { MarketClosedModal } from '../../../app/assets/market-closed-modal';
 import {
   AlignItems,
@@ -17,11 +17,11 @@ import {
   Display,
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
-import { TokenListItem } from '../../token-list-item';
-import LoadingScreen from '../../../ui/loading-screen';
+import { TokenListItem } from '../../token-list-item/token-list-item';
+import LoadingScreen from '../../../ui/loading-screen/loading-screen.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import {
-  getMultichainCurrentCurrency,
   getMultichainCurrentChainId,
   getImageForChainId,
   getMultichainCurrentNetwork,

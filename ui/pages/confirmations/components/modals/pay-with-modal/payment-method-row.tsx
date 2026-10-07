@@ -1,11 +1,11 @@
 import React from 'react';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Icon } from '../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

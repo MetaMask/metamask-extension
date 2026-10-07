@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   getAccountTypeForOnboardingMetrics,
-  getFirstTimeFlowType,
   getSocialLoginEmail,
   getSocialLoginType,
-} from '../../../selectors';
+} from '../../../selectors/onboarding/onboarding';
+import { getFirstTimeFlowType } from '../../../selectors/first-time-flow';
 import {
   AuthConnection,
   FirstTimeFlowType,

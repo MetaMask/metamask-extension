@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import Tooltip from '../tooltip';
+import Tooltip from '../tooltip/tooltip';
 import InfoTooltipIcon from './info-tooltip-icon';
 
 const positionArrowClassMap = {

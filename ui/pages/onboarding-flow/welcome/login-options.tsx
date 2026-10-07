@@ -22,7 +22,7 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
-import { PolymorphicRef } from '../../../components/component-library';
+import { PolymorphicRef } from '../../../components/component-library/box/box.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';

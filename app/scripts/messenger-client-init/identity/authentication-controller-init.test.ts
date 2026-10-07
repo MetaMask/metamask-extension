@@ -9,7 +9,7 @@ import {
   getAuthenticationControllerMessenger,
   AuthenticationControllerMessenger,
   AuthenticationControllerInitMessenger,
-} from '../messengers/identity';
+} from '../messengers/identity/authentication-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { AuthenticationControllerInit } from './authentication-controller-init';
 

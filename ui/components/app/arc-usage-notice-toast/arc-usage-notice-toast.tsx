@@ -12,7 +12,7 @@ import {
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { Toast } from '../../multichain/toast';
+import { Toast } from '../../multichain/toast/toast';
 import { selectShowArcUsageNoticeToast } from './selectors';
 
 const ARC_CAIP_CHAIN_ID = 'eip155:5042';

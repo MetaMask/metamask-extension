@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getAppStateControllerMessenger } from './messengers';
+import { getAppStateControllerMessenger } from './messengers/app-state-controller-messenger';
 import { AppStateControllerInit } from './app-state-controller-init';
 
 jest.mock('../controllers/app-state-controller');

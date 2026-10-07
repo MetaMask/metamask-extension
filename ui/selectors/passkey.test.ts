@@ -13,8 +13,8 @@ jest.mock('../../shared/lib/environment', () => ({
   getIsPasskeyFeatureEnabled: jest.fn(),
 }));
 
-jest.mock('../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../shared/lib/passkey'),
+jest.mock('../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../shared/lib/passkey/passkey-capabilities'),
   isWebAuthnSupported: jest.fn(),
 }));
 
@@ -37,9 +37,66 @@ const { getIsPasskeyFeatureEnabled } = jest.requireMock(
   getIsPasskeyFeatureEnabled: jest.Mock;
 };
 
-const { isWebAuthnSupported } = jest.requireMock(
-  '../../shared/lib/passkey',
-) as {
+const { isWebAuthnSupported } = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get PasskeyCeremonyTimeoutError() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-ceremony')
+      .PasskeyCeremonyTimeoutError;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get PasskeyPRFRequiredError() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-capabilities')
+      .PasskeyPRFRequiredError;
+  },
+  get cancelPasskeyCeremony() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-ceremony')
+      .cancelPasskeyCeremony;
+  },
+  get getPasskeyAuthMethodKey() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-auth-method')
+      .getPasskeyAuthMethodKey;
+  },
+  get getPasskeyErrorCode() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-error')
+      .getPasskeyErrorCode;
+  },
+  get hasPasskeyPRFEnabled() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-capabilities')
+      .hasPasskeyPRFEnabled;
+  },
+  get hasPasskeyPRFResult() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-capabilities')
+      .hasPasskeyPRFResult;
+  },
+  get isPasskeyAaguidIncompatibleWithSidepanel() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-sidepanel-aaguid')
+      .isPasskeyAaguidIncompatibleWithSidepanel;
+  },
+  get isPasskeyCeremonySilentError() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-ceremony')
+      .isPasskeyCeremonySilentError;
+  },
+  get isPasskeyPRFSupported() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-capabilities')
+      .isPasskeyPRFSupported;
+  },
+  get isWebAuthnSupported() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-capabilities')
+      .isWebAuthnSupported;
+  },
+  get startPasskeyAuthentication() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-ceremony')
+      .startPasskeyAuthentication;
+  },
+  get startPasskeyRegistration() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-ceremony')
+      .startPasskeyRegistration;
+  },
+  get translatePasskeyError() {
+    return jest.requireMock('../../shared/lib/passkey/passkey-error')
+      .translatePasskeyError;
+  },
+} as {
   isWebAuthnSupported: jest.Mock;
 };
 
@@ -49,7 +106,107 @@ const { isFirefoxBrowser } = jest.requireMock(
   isFirefoxBrowser: jest.Mock;
 };
 
-const { getDeviceType } = jest.requireMock('../../app/scripts/lib/util') as {
+const { getDeviceType } = {
+  get addHexPrefix() {
+    return jest.requireMock('../../shared/lib/add-hex-prefix').addHexPrefix;
+  },
+  get addUrlProtocolPrefix() {
+    return jest.requireMock('../../shared/lib/url-utils').addUrlProtocolPrefix;
+  },
+  get checkAlarmExists() {
+    return jest.requireMock('../../app/scripts/lib/util').checkAlarmExists;
+  },
+  get convertEnglishWordlistIndicesToCodepoints() {
+    return jest.requireMock('../../app/scripts/lib/util')
+      .convertEnglishWordlistIndicesToCodepoints;
+  },
+  get extractRpcDomain() {
+    return jest.requireMock('../../app/scripts/lib/util').extractRpcDomain;
+  },
+  get formatTxMetaForRpcResult() {
+    return jest.requireMock('../../app/scripts/lib/util')
+      .formatTxMetaForRpcResult;
+  },
+  get formatValue() {
+    return jest.requireMock('../../shared/lib/format-value').formatValue;
+  },
+  get generateRandomId() {
+    return jest.requireMock('../../app/scripts/lib/util').generateRandomId;
+  },
+  get getBooleanFlag() {
+    return jest.requireMock('../../shared/lib/environment').getBooleanFlag;
+  },
+  get getChainType() {
+    return jest.requireMock('../../app/scripts/lib/util').getChainType;
+  },
+  get getConversionRatesForNativeAsset() {
+    return jest.requireMock('../../shared/lib/asset-conversion-rates')
+      .getConversionRatesForNativeAsset;
+  },
+  get getDeviceType() {
+    return jest.requireMock('../../app/scripts/lib/util').getDeviceType;
+  },
+  get getEnvironmentType() {
+    return jest.requireMock('../../shared/lib/environment-type')
+      .getEnvironmentType;
+  },
+  get getInstallType() {
+    return jest.requireMock('../../app/scripts/lib/install-type')
+      .getInstallType;
+  },
+  get getMethodDataName() {
+    return jest.requireMock('../../app/scripts/lib/util').getMethodDataName;
+  },
+  get getOs() {
+    return jest.requireMock('../../app/scripts/lib/util').getOs;
+  },
+  get getPlatform() {
+    return jest.requireMock('../../app/scripts/lib/util').getPlatform;
+  },
+  get getValidUrl() {
+    return jest.requireMock('../../shared/lib/url-utils').getValidUrl;
+  },
+  get initInstallType() {
+    return jest.requireMock('../../app/scripts/lib/install-type')
+      .initInstallType;
+  },
+  get initializeRpcProviderDomains() {
+    return jest.requireMock('../../app/scripts/lib/util')
+      .initializeRpcProviderDomains;
+  },
+  get isKnownDomain() {
+    return jest.requireMock('../../app/scripts/lib/util').isKnownDomain;
+  },
+  get isPublicEndpointUrl() {
+    return jest.requireMock('../../app/scripts/lib/util').isPublicEndpointUrl;
+  },
+  get isSpecialUseDomain() {
+    return jest.requireMock('../../app/scripts/lib/util').isSpecialUseDomain;
+  },
+  get isValidAmount() {
+    return jest.requireMock('../../shared/lib/format-value').isValidAmount;
+  },
+  get isValidDate() {
+    return jest.requireMock('../../app/scripts/lib/util').isValidDate;
+  },
+  get isValidEmail() {
+    return jest.requireMock('../../shared/lib/url-utils').isValidEmail;
+  },
+  get isWebOrigin() {
+    return jest.requireMock('../../shared/lib/url-utils').isWebOrigin;
+  },
+  get isWebUrl() {
+    return jest.requireMock('../../shared/lib/url-utils').isWebUrl;
+  },
+  get previousValueComparator() {
+    return jest.requireMock('../../app/scripts/lib/util')
+      .previousValueComparator;
+  },
+  get shouldEmitDappViewedEvent() {
+    return jest.requireMock('../../app/scripts/lib/util')
+      .shouldEmitDappViewedEvent;
+  },
+} as {
   getDeviceType: jest.Mock;
 };
 

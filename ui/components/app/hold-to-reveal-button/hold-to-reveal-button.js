@@ -18,7 +18,7 @@ import {
   BlockSize,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Button } from '../../component-library';
+import { Button } from '../../component-library/button/button';
 
 const radius = 14;
 const strokeWidth = 2;

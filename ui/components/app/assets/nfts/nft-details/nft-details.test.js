@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { removeAndIgnoreNft } from '../../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import {
   getAssetImageURL,
@@ -39,11 +39,13 @@ const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 
 jest.mock('../../../../ui/toast/toast', () => ({
+  ToastContent: ({ title }) => title,
+}));
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: (...args) => mockToastSuccess(...args),
     error: (...args) => mockToastError(...args),
   },
-  ToastContent: ({ title }) => title,
 }));
 
 jest.mock('../../../../../store/actions.ts', () => ({

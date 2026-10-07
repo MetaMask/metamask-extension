@@ -5,12 +5,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import {
   getFirstTimeFlowType,
-  getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+} from '../../../selectors/first-time-flow';
+import {
+  getIsPasskeyRegistered,
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
-  getSocialLoginType,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { getSocialLoginType } from '../../../selectors/onboarding/onboarding';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   MetaMetricsEventAccountType,
@@ -18,19 +20,19 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { createSentryError } from '../../../../shared/lib/error';
-import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
-  getPasskeyAuthMethodKey,
+  getPasskeyErrorCode,
   translatePasskeyError,
-  isPasskeyCeremonySilentError,
-} from '../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey/passkey-error';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
+import { isPasskeyCeremonySilentError } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { PasskeyPRFRequiredError } from '../../../../shared/lib/passkey/passkey-capabilities';
 import { captureException } from '../../../../shared/lib/sentry';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
-import type { PasskeyEnrollmentStepStatus } from '../passkey-enrollment-steps';
+import type { PasskeyEnrollmentStepStatus } from '../passkey-enrollment-steps/passkey-enrollment-steps';
 import type {
   PasskeySetupOperation,
   SetupPasskeyContentProps,

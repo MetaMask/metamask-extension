@@ -1,5 +1,5 @@
 import { MessengerClientInitRequest } from '../types';
-import { getOAuthServiceMessenger } from '../messengers/seedless-onboarding';
+import { getOAuthServiceMessenger } from '../messengers/seedless-onboarding/oauth-service-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { OAuthService } from '../../services/oauth/oauth-service';

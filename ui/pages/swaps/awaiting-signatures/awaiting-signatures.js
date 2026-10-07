@@ -16,10 +16,10 @@ import {
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/lib/selectors';
+} from '../../../../shared/lib/selectors/smart-transactions';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
-import PulseLoader from '../../../components/ui/pulse-loader';
-import Box from '../../../components/ui/box';
+import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
+import Box from '../../../components/ui/box/box';
 import {
   BLOCK_SIZES,
   TextVariant,
@@ -27,10 +27,10 @@ import {
   DISPLAY,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import SwapsFooter from '../swaps-footer';
+import SwapsFooter from '../swaps-footer/swaps-footer';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/text';
 import { useDispatch } from '../../../store/hooks';
 import SwapStepIcon from './swap-step-icon';
 

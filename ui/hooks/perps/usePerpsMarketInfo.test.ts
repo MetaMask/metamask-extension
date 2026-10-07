@@ -6,10 +6,8 @@ import {
   MOCK_ACCOUNT_PRIVATE_KEY,
 } from '../../../test/data/mock-accounts';
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
-import {
-  clearPerpsMarketInfoModuleCache,
-  usePerpsMarketInfo,
-} from './usePerpsMarketInfo';
+import { clearPerpsMarketInfoModuleCache } from '../../providers/perps/perps-cache';
+import { usePerpsMarketInfo } from './usePerpsMarketInfo';
 
 const mockSubmitRequestToBackground = jest.fn();
 jest.mock('../../store/background-connection', () => ({

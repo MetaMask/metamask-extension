@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
 import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({

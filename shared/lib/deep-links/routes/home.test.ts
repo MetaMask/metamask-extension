@@ -1,5 +1,7 @@
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEFAULT_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { home, HomeQueryParams } from './home';
-import { DEFAULT_ROUTE, Destination } from './route';
+import { Destination } from './route';
 
 function assertPathDestination(
   result: Destination,

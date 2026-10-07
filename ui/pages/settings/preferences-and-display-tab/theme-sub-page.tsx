@@ -15,7 +15,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { setTheme } from '../../../store/actions';
-import { getTheme } from '../../../selectors';
+import { getTheme } from '../../../selectors/selectors';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,

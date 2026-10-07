@@ -5,11 +5,9 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../component-library/icon/icon.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type SecurityCheckHeaderProps = {

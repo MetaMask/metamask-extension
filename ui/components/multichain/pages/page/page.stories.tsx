@@ -7,7 +7,10 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
-import { Page, Header, Content, Footer } from '.';
+import { Page } from './page';
+import { Header } from './components/header/header';
+import { Content } from './components/content/content';
+import { Footer } from './components/footer/footer';
 
 const story = {
   title: 'Components/Multichain/Page',

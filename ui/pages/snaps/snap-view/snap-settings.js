@@ -14,10 +14,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
-import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
-import ConnectedSitesList from '../../../components/app/connected-sites-list';
-import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
+import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded/snap-authorship-expanded';
+import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning/snap-remove-warning';
+import ConnectedSitesList from '../../../components/app/connected-sites-list/connected-sites-list.container';
+import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning/keyring-snap-removal-warning';
 import {
   removeSnap,
   showKeyringSnapRemovalModal,
@@ -28,20 +28,20 @@ import {
   getPermissions,
   getSnapLatestVersion,
   getSnapMetadata,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { Box } from '../../../components/component-library/box/box';
+import { Button } from '../../../components/component-library/button/button';
 import {
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
-  Text,
-} from '../../../components/component-library';
-import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
-import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
-import { DelineatorType } from '../../../helpers/constants/snaps';
-import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
+} from '../../../components/component-library/button/button.types';
+import { Text } from '../../../components/component-library/text/text';
+import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list/snap-permissions-list';
+import { SnapDelineator } from '../../../components/app/snaps/snap-delineator/snap-delineator';
+import { DelineatorType } from '../../../helpers/constants/snaps/delineator';
+import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert/snap-update-alert';
 import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
-import { ShowMore } from '../../../components/app/snaps/show-more';
+import { ShowMore } from '../../../components/app/snaps/show-more/show-more';
 import { useMessenger } from '../../../hooks/useMessenger';
 import { useDispatch } from '../../../store/hooks';
 import { KeyringSnapRemovalResultStatus } from './constants';

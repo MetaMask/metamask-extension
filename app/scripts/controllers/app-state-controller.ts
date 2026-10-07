@@ -58,16 +58,14 @@ import {
 import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
-} from '../../../shared/types';
+} from '../../../shared/types/metametrics';
 import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
-import { ShieldSubscriptionError } from '../../../shared/lib/shield';
+import { ShieldSubscriptionError } from '../../../shared/lib/shield/type';
 import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type { Preferences } from '../../../shared/types/preferences';
-import {
-  createHardwareWalletError,
-  HardwareWalletType,
-  toHardwareWalletError,
-} from '../../../shared/lib/hardware-wallets';
+import { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { toHardwareWalletError } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import { LegacyBackgroundApiServiceSetLockedAction } from '../services/legacy-background-api-service-method-action-types';
 import type {
   PreferencesControllerGetStateAction,

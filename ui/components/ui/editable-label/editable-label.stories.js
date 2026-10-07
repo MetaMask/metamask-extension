@@ -1,5 +1,5 @@
 import React from 'react';
-import EditableLabel from '.';
+import EditableLabel from './editable-label';
 
 export default {
   title: 'Components/UI/EditableLabel',

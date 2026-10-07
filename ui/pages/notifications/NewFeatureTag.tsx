@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsMetamaskNotificationsFeatureSeen } from '../../selectors/metamask-notifications/metamask-notifications';
-import { Tag } from '../../components/component-library';
+import { Tag } from '../../components/component-library/tag/tag';
 import {
   BackgroundColor,
   BorderRadius,

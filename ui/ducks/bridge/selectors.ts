@@ -57,6 +57,7 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
+import { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
   BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
@@ -66,27 +67,27 @@ import {
   createDeepEqualSelector,
   createParameterizedSelector,
 } from '../../../shared/lib/selectors/selector-creators';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getCurrencyRateControllerCurrencyRates,
   getTokenRatesControllerMarketData,
+  getMultiChainBalancesControllerBalances as getMultichainBalances,
+  getRatesControllerRates as getMultichainCoinRates,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
 } from '../../../shared/lib/selectors/assets-migration';
 import {
-  getMultichainBalances,
-  getMultichainCoinRates,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
-import { getAssetsRates } from '../../selectors/assets';
 import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import {
-  getIsSmartTransaction,
-  type SmartTransactionsState,
-} from '../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../shared/lib/selectors/smart-transactions';
+import type { SmartTransactionsState } from '../../../shared/lib/selectors/smart-transactions';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import {
   safeAmountForCalc,
@@ -100,7 +101,7 @@ import {
   getInternalAccountByAddress,
 } from '../../selectors/accounts';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
-import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
+import { getGasFeesSponsoredNetworkEnabled } from '../../selectors/selectors';
 import {
   getHardwareWalletType,
   isHardwareWallet,
@@ -126,8 +127,7 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { parsePositionOverrides } from '../../../shared/lib/bridge/chain-value-order';
-import { getCurrentCurrency } from '../metamask/metamask';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import {
   buildInsufficientNativeReserveError,
   resolveGasCheckMinimumBalance,
@@ -139,7 +139,6 @@ import {
   tokenPriceInNativeAsset,
   getDefaultToToken,
   toBridgeToken,
-  isNonEvmChain,
   getMaybeHexChainId,
   isSupportedBridgeChain,
   getDefaultFromToken,

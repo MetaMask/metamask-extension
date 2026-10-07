@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import {
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { automaticallySwitchNetwork } from '../../store/actions';
 import { useAppSelector, useDispatch } from '../../store/hooks';

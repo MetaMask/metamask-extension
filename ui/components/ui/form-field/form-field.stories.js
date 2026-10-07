@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FormField from '.';
+import FormField from './form-field';
 
 export default {
   title: 'Components/UI/FormField (deprecated)',

@@ -42,7 +42,7 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
 jest.mock('../../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));
-jest.mock('../../../components/token-icon', () => ({
+jest.mock('../../../../../components/app/token-icon/token-icon', () => ({
   TokenIcon: () => <span data-testid="token-icon" />,
 }));
 

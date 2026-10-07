@@ -15,7 +15,7 @@ import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
 } from '../../../../../shared/lib/conversion.utils';
-import { FormTextField } from '../../../../components/component-library';
+import { FormTextField } from '../../../../components/component-library/form-text-field/form-text-field';
 import { validateGasPrice } from '../../utils/gasValidations';
 
 export const GasPriceInput = ({

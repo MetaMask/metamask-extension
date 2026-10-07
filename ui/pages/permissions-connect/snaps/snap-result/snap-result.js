@@ -7,7 +7,7 @@ import {
   AvatarIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../../components/ui/box/box';
@@ -23,11 +23,11 @@ import {
   TextAlign,
   Display,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/text';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { getSnapMetadata } from '../../../../selectors';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { getSnapMetadata } from '../../../../selectors/selectors';
 
 export default function SnapResult({
   request,

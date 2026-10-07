@@ -2,15 +2,13 @@ import React, { useEffect, useRef } from 'react';
 
 import { Hex } from '@metamask/utils';
 
+import { toast } from 'react-hot-toast';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { SECOND } from '../../../../../../../../shared/constants/time';
-import {
-  toast,
-  ToastContent,
-} from '../../../../../../../components/ui/toast/toast';
+import { ToastContent } from '../../../../../../../components/ui/toast/toast';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useTransactionMetadataRequestOptional } from '../../../../../hooks/transactions/useTransactionMetadataRequest';
-import { TokenIcon } from '../../../../token-icon';
+import { TokenIcon } from '../../../../../../../components/app/token-icon/token-icon';
 import {
   useGasFeeToken,
   useSelectedGasFeeToken,

@@ -4,9 +4,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { MetaMaskReduxState } from '../../../../store/store';
+import { MetaMaskReduxState } from '../../../../store/types';
 import mockState from '../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,7 +17,7 @@ import useMultiPolling from '../../../../hooks/useMultiPolling';
 import { getTokenSymbol } from '../../../../store/actions';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import AssetList from '.';
+import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
 const CONVERSION_RATE = 1597.32;
@@ -47,9 +47,9 @@ const getMockTrackEvent = () =>
   jest.requireMock('../../../../hooks/useAnalytics')
     .mockTrackEvent as jest.Mock;
 
-jest.mock('../token-list', () => {
+jest.mock('../token-list/token-list', () => {
   const { CHAIN_IDS: chainIds } = jest.requireActual(
-    '../../../../../shared/constants/network',
+    '../../../../../shared/constants/chain-ids',
   );
   const usdcContract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
@@ -125,8 +125,10 @@ jest.mock('../../../../../shared/lib/trace', () => ({
   },
 }));
 
-jest.mock('../hooks', () => ({
-  usePrimaryCurrencyProperties: () => ({
+jest.mock('../hooks/usePrimaryCurrencyProperties', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+  __esModule: true,
+  default: () => ({
     primaryCurrencyProperties: { suffix: 'ETH' },
   }),
 }));

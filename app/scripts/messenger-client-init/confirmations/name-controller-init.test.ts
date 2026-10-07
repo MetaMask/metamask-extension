@@ -8,7 +8,7 @@ import {
   getNameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
-} from '../messengers';
+} from '../messengers/name-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { NameControllerInit } from './name-controller-init';
 

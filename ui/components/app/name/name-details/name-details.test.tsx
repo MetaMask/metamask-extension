@@ -8,11 +8,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { getDomainResolutions } from '../../../../ducks/domains';
-import { getNames, getNameSources } from '../../../../selectors';
+import { getNames, getNameSources } from '../../../../selectors/selectors';
 import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';

@@ -24,14 +24,14 @@ import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opene
 import useBridging from '../../../hooks/bridge/useBridging';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { useBalanceAwareSwapDefaults } from '../hooks/useBalanceAwareSwapDefaults';
 import { isNativeAsset, type Asset } from '../types/asset';
 import { getUsdAmountRange } from '../utils/get-usd-amount-range';
 import {
   useAssetPageSecurityTrustCtaGate,
   useAssetPageSecurityTrustCtaGateReady,
-} from './security-trust';
+} from './security-trust/asset-page-security-trust';
 
 /** Fiat holding above this makes Swap the filled primary CTA instead of Buy. */
 const SWAP_PRIMARY_FIAT_THRESHOLD = 100;

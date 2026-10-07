@@ -5,7 +5,7 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+} from '../box/box.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

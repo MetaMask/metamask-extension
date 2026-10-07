@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from './network';
+import { CHAIN_IDS } from './chain-ids';
 import {
   getFailoverUrlsByChainId,
   getFailoverUrlsForChainId,

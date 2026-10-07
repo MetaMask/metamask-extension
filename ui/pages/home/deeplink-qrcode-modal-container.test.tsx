@@ -8,7 +8,7 @@ import { clearHomeDeepLinkQrCode } from '../../ducks/app/app';
 import { DeeplinkQrCodeModalContainer } from './deeplink-qrcode-modal-container';
 import type { HomeDeepLinkQrCode } from './HomeDeepLinkActions';
 
-jest.mock('../../components/app/deeplink-qr-code', () => {
+jest.mock('../../components/app/deeplink-qr-code/deeplink-qr-code', () => {
   const { enLocale: mockMessages } = jest.requireActual(
     '../../../test/lib/i18n-helpers',
   );

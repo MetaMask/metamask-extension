@@ -1,9 +1,5 @@
 import { Size } from '../../../helpers/constants/design-system';
 
-export { Button } from './button';
-export { ButtonSize, ButtonVariant } from './button.types';
-export type { ButtonProps } from './button.types';
-
 /**
  * @deprecated `BUTTON_SIZES` const has been deprecated in favor of the `ButtonSize` enum which can still be imported from `ui/components/component-library`
  */

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { Token } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { getAllTokens } from '../selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../shared/lib/selectors/assets-migration';
 import { getCurrentChainId } from '../../shared/lib/selectors/networks';
 import { hexToDecimal } from '../../shared/lib/conversion.utils';
 

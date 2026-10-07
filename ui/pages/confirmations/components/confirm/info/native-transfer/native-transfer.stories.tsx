@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import {
   AlignItems,
   Display,

@@ -89,10 +89,6 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../components/ui/toast/toast', () => ({
-  toast: {
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-  },
   ToastContent: ({
     title,
     dataTestId,
@@ -100,6 +96,12 @@ jest.mock('../../components/ui/toast/toast', () => ({
     title: string;
     dataTestId?: string;
   }) => <div data-testid={dataTestId}>{title}</div>,
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
 }));
 
 jest.mock('../../selectors/assets', () => ({

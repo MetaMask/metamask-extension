@@ -9,14 +9,12 @@ import {
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../components/component-library';
-import { NetworkListItem } from '../../components/multichain/network-list-item';
+import { Modal } from '../../components/component-library/modal/modal';
+import { ModalBody } from '../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../components/component-library/modal-overlay/modal-overlay';
+import { NetworkListItem } from '../../components/multichain/network-list-item/network-list-item';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';

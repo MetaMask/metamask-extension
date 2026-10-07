@@ -9,14 +9,15 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../components/component-library';
+import { PopoverPosition } from '../../../components/component-library/popover/popover.types';
 import {
   getValidationErrors,
   getFormattedPriceImpactPercentage,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { JustifyContent } from '../../../helpers/constants/design-system';
-import { Row, Tooltip } from '../layout';
+import Row from '../layout/row';
+import Tooltip from '../layout/tooltip';
 
 type PriceImpactRowProps = {
   onOpenPriceImpactWarningModal: () => void;

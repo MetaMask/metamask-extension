@@ -7,12 +7,12 @@ import {
   getCaveatSpecifications,
   getPermissionSpecifications,
   unrestrictedMethods,
-} from '../controllers/permissions';
+} from '../controllers/permissions/specifications';
 import { getSnapPermissionSpecifications } from '../controllers/permissions/snaps/specifications';
 import {
   PermissionControllerInitMessenger,
   PermissionControllerMessenger,
-} from './messengers';
+} from './messengers/permission-controller-messenger';
 import { MessengerClientInitFunction } from './types';
 
 /**

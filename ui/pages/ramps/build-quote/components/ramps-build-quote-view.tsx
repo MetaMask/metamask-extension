@@ -15,7 +15,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import RampsTokenSelectionHeader from '../../token-selection/components/ramps-token-selection-header';
-import RampsProviderSelectionModal from '../../provider-selection';
+import RampsProviderSelectionModal from '../../provider-selection/provider-selection';
 import type { RampsBuildQuoteReadyViewModel } from '../hooks/useRampsBuildQuote';
 import { parseFiatAmount } from '../utils/build-quote';
 import RampsPaymentMethodPill from './ramps-payment-method-pill';

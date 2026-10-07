@@ -2,10 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
-import {
-  BITCOIN_WALLET_SNAP_ID,
-  SOLANA_WALLET_SNAP_ID,
-} from '../../../../../../shared/lib/accounts';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../../../shared/lib/accounts/solana-wallet-snap';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
 import { Loader } from './loader';
 
@@ -21,12 +19,15 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../components/ui/loading-screen', () => ({
-  // This is the name of the property that turns this into an ES module.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => <div data-testid="loading-screen">Loading...</div>,
-}));
+jest.mock(
+  '../../../../../components/ui/loading-screen/loading-screen.component',
+  () => ({
+    // This is the name of the property that turns this into an ES module.
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="loading-screen">Loading...</div>,
+  }),
+);
 
 describe('Loader', () => {
   const mockUseSelector = jest.mocked(useSelector);

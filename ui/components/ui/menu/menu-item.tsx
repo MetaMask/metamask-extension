@@ -16,12 +16,12 @@ import {
   FontWeight,
   twMerge,
 } from '@metamask/design-system-react';
+import { Icon as IconLegacy } from '../../component-library/icon/icon';
 import {
-  Icon as IconLegacy,
   IconName as IconNameLegacy,
   IconSize as IconSizeLegacy,
-  Text as TextLegacy,
-} from '../../component-library';
+} from '../../component-library/icon/icon.types';
+import { Text as TextLegacy } from '../../component-library/text/text';
 import {
   IconColor as IconColorLegacy,
   TextVariant as TextVariantLegacy,

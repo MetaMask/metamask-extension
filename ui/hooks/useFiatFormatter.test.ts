@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { getIntlLocale } from '../ducks/locale/locale';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 import { useFiatFormatter } from './useFiatFormatter';
 
 jest.mock('react-redux', () => ({
@@ -11,8 +11,8 @@ jest.mock('../ducks/locale/locale', () => ({
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock('../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
 }));
 
 const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;

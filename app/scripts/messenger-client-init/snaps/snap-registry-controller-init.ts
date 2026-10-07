@@ -3,7 +3,7 @@ import {
   SnapRegistryControllerMessenger,
 } from '@metamask/snaps-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { getBooleanFlag } from '../../lib/util';
+import { getBooleanFlag } from '../../../../shared/lib/environment';
 import { getClientConfig } from './utils';
 
 /**

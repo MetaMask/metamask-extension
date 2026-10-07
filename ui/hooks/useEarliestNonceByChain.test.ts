@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import {
   getEarliestNonceKey,
   isTransactionEarliestNonce,

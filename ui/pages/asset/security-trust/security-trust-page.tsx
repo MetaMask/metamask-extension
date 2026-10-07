@@ -17,11 +17,20 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type {
+  TokenSecurityFees,
+  TokenSecurityFinancialStats,
+  TokenSecurityMetadata,
+} from '@metamask/assets-controllers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { buildAssetRoutePath } from '../../../../shared/lib/asset-route';
+import {
+  buildAssetRoutePath,
+  processAssetParams,
+  resolveAssetRouteLookup,
+} from '../../../../shared/lib/asset-route';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { transitionBack } from '../../../components/ui/transition';
@@ -29,21 +38,15 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useTheme } from '../../../hooks/useTheme';
 import { SecurityTrustAnalyticsProperty } from '../components/security-trust/security-trust-analytics-properties';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../../selectors/multichain/feature-flags';
 import {
   formatCompactSupply,
   formatFeePercent,
   hasNoHiddenFees,
 } from '../utils/security-utils';
-import type {
-  FeatureTag,
-  TokenSecurityFees,
-  TokenSecurityFinancialStats,
-  TokenSecurityMetadata,
-} from '../types/security-trust';
+import type { FeatureTag } from '../types/security-trust';
 import type { ResultTypeConfig } from '../utils/security-utils';
-import { processAssetParams, resolveAssetRouteLookup } from '../util';
 import { useSecurityTrustPageData } from './useSecurityTrustPageData';
 
 const OTHER_HOLDERS_BAR_BG_LIGHT = 'bg-[rgba(133,139,154,0.77)]';

@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
 import { KnownCaipNamespace, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getMetaMaskAccountsOrdered } from '../../selectors';
+import { getMetaMaskAccountsOrdered } from '../../selectors/selectors';
 import { useAccountNetworkAvailability } from './useAccountNetworkAvailability';
 
 jest.mock('react-redux', () => ({

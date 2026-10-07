@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { getTokensControllerAllTokens as getAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import {
-  getAllTokens,
   selectERC20TokensByChain,
   getUseExternalServices,
 } from '../../selectors/selectors';
@@ -15,8 +15,6 @@ import {
   type GatorTokenInfo,
 } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
 import { useAsyncResult } from '../useAsync';
-
-export type { GatorTokenInfo } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
 
 export type UseGatorPermissionTokenInfoResult = {
   /**

@@ -1,4 +1,7 @@
-import { formatPerpsPrice, PRICE_RANGES_UNIVERSAL } from './formatPerpsPrice';
+import {
+  formatPerpsPrice,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
 
 describe('PRICE_RANGES_UNIVERSAL', () => {
   it('has 7 entries covering the full range', () => {

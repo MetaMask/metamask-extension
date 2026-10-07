@@ -7,7 +7,7 @@ import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import { enrichLocalActivity } from './enrich-local-activity';

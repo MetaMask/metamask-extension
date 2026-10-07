@@ -15,12 +15,12 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../components/component-library';
-import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { ButtonIcon } from '../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../components/component-library/icon/icon.types';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -28,9 +28,9 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import { TransactionCard } from '../../components/app/perps/transaction-card';
+import { TransactionCard } from '../../components/app/perps/transaction-card/transaction-card';
 import { getPerpsTransactionDestination } from '../../components/app/perps/utils/getPerpsTransactionDestination';
-import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { PerpsActivityPageSkeleton } from '../../components/app/perps/perps-skeletons/perps-activity-page-skeleton';
 import {
   groupTransactionsByDate,
   filterTransactionsByType,
@@ -38,14 +38,12 @@ import {
 import type {
   PerpsTransaction,
   PerpsTransactionFilter,
-} from '../../components/app/perps/types';
+} from '../../components/app/perps/types/transactionHistory';
 import { usePerpsTransactionHistory } from '../../hooks/perps/usePerpsTransactionHistory';
-import { usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsEventTracking } from '../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
-import {
-  Dropdown,
-  type DropdownOption,
-} from '../../components/app/perps/dropdown';
+import { Dropdown } from '../../components/app/perps/dropdown/dropdown';
+import type { DropdownOption } from '../../components/app/perps/dropdown/dropdown';
 
 const ACTIVITY_FILTERS: PerpsTransactionFilter[] = [
   'trade',

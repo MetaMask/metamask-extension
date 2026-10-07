@@ -10,9 +10,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { Icon } from '../icon';
-import type { PolymorphicRef } from '../box';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import { Icon } from '../icon/icon';
+import type { PolymorphicRef } from '../box/box.types';
+import { AvatarBase } from '../avatar-base/avatar-base';
+import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
 import type { AvatarIconComponent } from './avatar-icon.types';
 import {
   AvatarIconProps,

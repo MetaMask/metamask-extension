@@ -11,7 +11,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
 import {
   getAccountLabels,
   getAccountNameErrorMessage,

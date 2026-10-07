@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -14,7 +15,6 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_CONSTANTS } from '../constants';
-import type { PerpsMarketData } from '../types';
 import { PerpsTopMovers } from './perps-top-movers';
 
 const mockNavigate = jest.fn();
@@ -26,8 +26,8 @@ jest.mock('react-router-dom', () => ({
 
 const mockTrack = jest.fn();
 
-jest.mock('../../../../hooks/perps', () => ({
-  ...jest.requireActual('../../../../hooks/perps'),
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  ...jest.requireActual('../../../../hooks/perps/usePerpsEventTracking'),
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 

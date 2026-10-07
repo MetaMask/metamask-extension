@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import ActionableMessage from '.';
+import ActionableMessage from './actionable-message';
 
 const createProps = (customProps = {}) => {
   return {

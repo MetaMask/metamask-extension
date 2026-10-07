@@ -11,7 +11,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { getNotificationTypeForAnalytics } from '../../helpers/utils/notification.util';
-import { Box } from '../../components/component-library';
+import { Box } from '../../components/component-library/box/box';
 import {
   BlockSize,
   Display,

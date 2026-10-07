@@ -2,24 +2,25 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
-import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
-import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
+import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing/useAccountSyncing';
+import { useContactSyncing } from '../../hooks/identity/useContactSyncing/useContactSyncing';
 import { useRampsOrderSyncing } from '../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing';
-import {
-  useAutoSignIn,
-  useAutoSignOut,
-} from '../../hooks/identity/useAuthentication';
+import { useAutoSignIn } from '../../hooks/identity/useAuthentication/useAutoSignIn';
+import { useAutoSignOut } from '../../hooks/identity/useAuthentication/useAutoSignOut';
 import { MetamaskIdentityProvider } from '.';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
 }));
-jest.mock('../../hooks/identity/useBackupAndSync');
-jest.mock('../../hooks/identity/useAccountSyncing');
-jest.mock('../../hooks/identity/useContactSyncing');
+jest.mock('../../hooks/identity/useBackupAndSync/useBackupAndSync');
+jest.mock('../../hooks/identity/useAccountSyncing/useAccountSyncing');
+jest.mock('../../hooks/identity/useContactSyncing/useContactSyncing');
 jest.mock('../../hooks/identity/useRampsOrderSyncing/useRampsOrderSyncing');
-jest.mock('../../hooks/identity/useAuthentication');
+jest.mock('../../hooks/identity/useAuthentication/useAutoSignIn');
+jest.mock('../../hooks/identity/useAuthentication/useAutoSignOut');
+jest.mock('../../hooks/identity/useAuthentication/useSignIn');
+jest.mock('../../hooks/identity/useAuthentication/useSignOut');
 
 const mockUseSelector = jest.mocked(redux.useSelector);
 

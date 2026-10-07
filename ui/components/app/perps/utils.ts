@@ -1,12 +1,11 @@
 import { TextColor } from '@metamask/design-system-react';
 import { getPerpsDisplaySymbol } from '@metamask/perps-controller';
+import type { Order, PerpsMarketData } from '@metamask/perps-controller';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import type {
-  Order,
-  PerpsMarketData,
   PerpsTransaction,
   PerpsTransactionFilter,
-} from './types';
+} from './types/transactionHistory';
 import {
   HYPERLIQUID_ASSET_ICONS_BASE_URL,
   METAMASK_PERPS_ICONS_BASE_URL,
@@ -16,7 +15,6 @@ import {
 // Re-exported here because callers importing `'../../components/app/perps/utils'`
 // resolve to this file (TypeScript prefers sibling `utils.ts` over the
 // `utils/index.ts` barrel). Keep the surface area in sync with `utils/index.ts`.
-export { willFlipPosition } from './utils/orderUtils';
 
 /**
  * Determines if a position is long (positive size) or short (negative size)

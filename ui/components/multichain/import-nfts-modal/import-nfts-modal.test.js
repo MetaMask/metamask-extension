@@ -11,9 +11,9 @@ import {
   updateNftDropDownState,
 } from '../../../store/actions';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { ImportNftsModal } from '.';
+import { ImportNftsModal } from './import-nfts-modal';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
@@ -50,11 +50,13 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
+  ToastContent: ({ title }) => title,
+}));
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: (...args) => mockToastSuccess(...args),
     error: (...args) => mockToastError(...args),
   },
-  ToastContent: ({ title }) => title,
 }));
 
 const mockUseNavigate = jest.fn();

@@ -31,7 +31,7 @@ import {
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream';
+import { usePerpsLiveOrderBook } from '../../../../hooks/perps/stream/usePerpsLiveOrderBook';
 import { getDisplaySymbol } from '../utils';
 import {
   calculateAggregationParams,

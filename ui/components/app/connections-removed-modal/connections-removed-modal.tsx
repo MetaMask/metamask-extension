@@ -8,20 +8,17 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  Button,
-  Icon,
-  IconSize,
-  IconName,
-  ModalFooter,
-  ModalBody,
-  ButtonSize,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
+import { Button } from '../../component-library/button/button';
+import { Icon } from '../../component-library/icon/icon';
+import { IconSize, IconName } from '../../component-library/icon/icon.types';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ButtonSize } from '../../component-library/button/button.types';
 import { resetWallet } from '../../../store/actions';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';

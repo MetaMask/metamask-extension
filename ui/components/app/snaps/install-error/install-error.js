@@ -14,13 +14,11 @@ import {
   Severity,
 } from '../../../../helpers/constants/design-system';
 
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  Text,
-  Box,
-  BannerAlert,
-} from '../../../component-library';
+import { AvatarIcon } from '../../../component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../../component-library/avatar-icon/avatar-icon.types';
+import { Text } from '../../../component-library/text/text';
+import { Box } from '../../../component-library/box/box';
+import { BannerAlert } from '../../../component-library/banner-alert/banner-alert';
 
 const InstallError = ({ title, error, description, iconName }) => {
   return (

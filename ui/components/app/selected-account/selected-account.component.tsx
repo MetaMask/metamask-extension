@@ -4,9 +4,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import {
   IconColor,
   TextVariant,

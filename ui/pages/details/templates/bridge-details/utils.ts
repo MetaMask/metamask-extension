@@ -1,6 +1,6 @@
 import { StatusTypes } from '@metamask/bridge-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import type { Status } from '../../../../../shared/lib/activity/types';
+import type { Status } from '@metamask/client-utils';
 
 /**
  * Resolves the status to display for a bridge activity item.

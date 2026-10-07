@@ -662,12 +662,6 @@ function formatTimerDetails(entry: BenchmarkEntry): string {
 /** Minimum absolute delta (%) to include a metric in the relative summary. */
 const RELATIVE_DELTA_MIN_PCT = 0.1;
 
-export type {
-  BenchmarkAnnounceSamples,
-  BenchmarkAnnounceSection,
-} from '../../shared/constants/benchmarks';
-export { BENCHMARK_ANNOUNCE_SECTIONS };
-
 /**
  * User journey benchmarks use the real API on `main` and `release/*` branches; other
  * branches use a mock API. Aligns with `BRANCH` / `GITHUB_HEAD_REF` in prerelease publish.

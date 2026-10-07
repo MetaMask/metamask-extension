@@ -23,15 +23,6 @@ export const SERVICE_NAME = 'OAuthService';
 
 export type ServiceName = typeof SERVICE_NAME;
 
-export type {
-  OAuthServiceStartOAuthLoginAction,
-  OAuthServiceGetNewRefreshTokenAction,
-  OAuthServiceRenewRefreshTokenAction,
-  OAuthServiceRevokeRefreshTokenAction,
-  OAuthServiceGetMarketingConsentAction,
-  OAuthServiceSetMarketingConsentAction,
-} from './oauth-service-method-action-types';
-
 /**
  * All possible actions for the OAuthService.
  */

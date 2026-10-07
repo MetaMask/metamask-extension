@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import {
   setIsMaxAmount,
   setLastMoneyAccountWithdrawAmount,
@@ -31,10 +32,7 @@ import {
   useTransactionPayTotals,
 } from '../pay/useTransactionPayData';
 import { getTokenAddress } from '../../utils/transaction-pay';
-import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-  MUSD_TOKEN_ADDRESS,
-} from '../../constants/musd';
+import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import {
   DepositPrefillStatus,

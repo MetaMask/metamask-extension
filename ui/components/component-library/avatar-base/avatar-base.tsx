@@ -12,9 +12,9 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 
-import type { PolymorphicRef } from '../box';
-import { Text } from '../text';
-import type { TextProps } from '../text';
+import type { PolymorphicRef } from '../box/box.types';
+import { Text } from '../text/text';
+import type { TextProps } from '../text/text.types';
 import {
   AvatarBaseComponent,
   AvatarBaseProps,

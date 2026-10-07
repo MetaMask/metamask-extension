@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../../components/ui/tab-empty-state';
+import { TabEmptyState } from '../../../../components/ui/tab-empty-state/tab-empty-state';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 
 export const AssetChartEmptyState = () => {

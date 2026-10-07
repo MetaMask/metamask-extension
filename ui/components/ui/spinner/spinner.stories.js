@@ -1,5 +1,5 @@
 import React from 'react';
-import Spinner from '.';
+import Spinner from './spinner.component';
 
 export default {
   title: 'Components/UI/Spinner',

@@ -2,11 +2,12 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, ButtonLink } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
 import {
   getMultipleTargetsSubjectMetadata,
   getSnapsMetadata,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import {
   BlockSize,
   Display,
@@ -23,7 +24,7 @@ import {
   getSnapName,
 } from '../../../../helpers/utils/util';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
-import SnapPermissionAdapter from '../snap-permission-adapter';
+import SnapPermissionAdapter from '../snap-permission-adapter/snap-permission-adapter';
 
 export default function SnapPermissionsList({
   snapId,

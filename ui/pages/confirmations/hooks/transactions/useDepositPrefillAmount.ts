@@ -19,7 +19,7 @@ import {
 } from '../../selectors/feature-flags';
 import { getDepositLimitForTransaction } from '../../utils/pay-deposit-limit';
 import { isRouteToken } from '../../utils/relay-fixed-spread';
-import { getMarketData } from '../../../../selectors';
+import { getTokenRatesControllerMarketData as getMarketData } from '../../../../../shared/lib/selectors/assets-migration';
 import { usePayTokenAccountBalance } from '../pay/usePayTokenAccountBalance';
 import { useTransactionPayAvailableTokens } from '../pay/useTransactionPayAvailableTokens';
 import { useTransactionPayToken } from '../pay/useTransactionPayToken';

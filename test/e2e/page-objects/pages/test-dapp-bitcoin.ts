@@ -3,8 +3,6 @@ import { dataTestIds, WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import { WINDOW_TITLES } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 
-export { WalletConnectionType };
-
 export const availableConnectionTypes: WalletConnectionType[] = [
   WalletConnectionType.Standard,
   WalletConnectionType.SatsConnectV3,

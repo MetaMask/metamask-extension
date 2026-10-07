@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
-import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 
 type UseHardwareWalletNavigationOptions = {
   signatureState: HardwareWalletSignaturesState;

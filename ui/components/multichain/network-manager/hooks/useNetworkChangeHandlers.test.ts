@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   setActiveNetwork,
   setEnabledNetworks,
@@ -48,9 +48,9 @@ jest.mock('../../../../store/actions', () => ({
   updateCustomNonce: jest.fn(() => ({ type: 'UPDATE_CUSTOM_NONCE' })),
 }));
 
-jest.mock('../../../../selectors', () => {
+jest.mock('../../../../selectors/selectors', () => {
   const { CHAIN_IDS: mockChainIds } = jest.requireActual(
-    '../../../../../shared/constants/network',
+    '../../../../../shared/constants/chain-ids',
   );
   const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
     '@metamask/multichain-network-controller',
@@ -59,7 +59,78 @@ jest.mock('../../../../selectors', () => {
   const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
 
   return {
+    ...jest.requireActual('../../../../selectors/selectors'),
     getAllChainsToPoll: () => [],
+  };
+});
+jest.mock('../../../../selectors/confirm-transaction', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/confirm-transaction'),
+  };
+});
+jest.mock('../../../../pages/confirmations/selectors/confirm', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../pages/confirmations/selectors/confirm'),
+  };
+});
+jest.mock('../../../../selectors/accounts', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/accounts'),
+  };
+});
+jest.mock('../../../../selectors/onboarding/onboarding', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/onboarding/onboarding'),
+  };
+});
+jest.mock('../../../../selectors/multichain/networks', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/multichain/networks'),
     getEnabledNetworksByNamespace: () => ({}),
     getSelectedMultichainNetworkChainId: () => mainnetCaip,
     getMultichainNetworkConfigurationsByChainId: () => [
@@ -98,6 +169,148 @@ jest.mock('../../../../selectors', () => {
         },
       },
     ],
+  };
+});
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual(
+      '../../../../../shared/lib/selectors/assets-migration',
+    ),
+  };
+});
+jest.mock('../../../../selectors/approvals', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/approvals'),
+  };
+});
+jest.mock('../../../../selectors/transactions', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/transactions'),
+  };
+});
+jest.mock('../../../../selectors/custom-gas', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/custom-gas'),
+  };
+});
+jest.mock('../../../../selectors/metametrics', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/metametrics'),
+  };
+});
+jest.mock('../../../../../shared/lib/selectors/multichain', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../../shared/lib/selectors/multichain'),
+  };
+});
+jest.mock('../../../../selectors/first-time-flow', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/first-time-flow'),
+  };
+});
+jest.mock('../../../../selectors/multichain/feature-flags', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/multichain/feature-flags'),
+  };
+});
+jest.mock('../../../../selectors/test-networks', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/test-networks'),
+  };
+});
+jest.mock('../../../../selectors/origin-throttling', () => {
+  const { CHAIN_IDS: mockChainIds } = jest.requireActual(
+    '../../../../../shared/constants/chain-ids',
+  );
+  const { toEvmCaipChainId: mockToEvmCaipChainId } = jest.requireActual(
+    '@metamask/multichain-network-controller',
+  );
+  const mainnetCaip = mockToEvmCaipChainId(mockChainIds.MAINNET);
+  const lineaCaip = mockToEvmCaipChainId(mockChainIds.LINEA_MAINNET);
+
+  return {
+    ...jest.requireActual('../../../../selectors/origin-throttling'),
   };
 });
 

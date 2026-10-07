@@ -4,15 +4,12 @@ import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { ThemeProvider } from '@mui/material/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { getInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
+import { getInterface } from '../../../../selectors/selectors';
+import { Box } from '../../../component-library/box/box';
 
-import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
-import PulseLoader from '../../../ui/pulse-loader';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps/snap-interface';
+import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,12 +18,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import {
-  mapToExtensionCompatibleColor,
-  mapToTemplate,
-  muiPickerTheme,
-} from './utils';
+import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
 import { COMPONENT_MAPPING } from './components';
 import { PerformanceTracker } from './performance-tracker';
 
@@ -109,7 +101,6 @@ const SnapUIRendererComponent = ({
   }, []);
 
   const t = useI18nContext();
-  const locale = useSelector(getIntlLocale);
 
   const interfaceState = useSelector(
     (state) => getInterface(state, interfaceId),
@@ -145,15 +136,6 @@ const SnapUIRendererComponent = ({
     mapToExtensionCompatibleColor(content?.props?.backgroundColor) ??
     BackgroundColor.backgroundAlternative;
 
-  const pickerLocaleText = useMemo(
-    () => ({
-      clearButtonLabel: t('clear'),
-      cancelButtonLabel: t('cancel'),
-      okButtonLabel: t('ok').toUpperCase(),
-    }),
-    [t],
-  );
-
   if (isLoading || !content) {
     return (
       <Box
@@ -176,34 +158,26 @@ const SnapUIRendererComponent = ({
       interfaceId={interfaceId}
       initialState={initialState}
     >
-      <ThemeProvider theme={muiPickerTheme}>
-        <LocalizationProvider
-          dateAdapter={AdapterLuxon}
-          adapterLocale={locale}
-          localeText={pickerLocaleText}
-        >
-          <Box
-            className="snap-ui-renderer__content"
-            height={BlockSize.Full}
-            backgroundColor={backgroundColor}
-            style={{
-              overflowY: 'auto',
-            }}
-          >
-            <SnapUIContent
-              content={content}
-              onCancel={onCancel}
-              useFooter={useFooter}
-              promptLegacyProps={promptLegacyProps}
-              t={t}
-              backgroundColor={backgroundColor}
-              scrollableContainerRef={scrollableContainerRef}
-              setScroll={setScroll}
-            />
-            {PERF_DEBUG && <PerformanceTracker content={rawContent} />}
-          </Box>
-        </LocalizationProvider>
-      </ThemeProvider>
+      <Box
+        className="snap-ui-renderer__content"
+        height={BlockSize.Full}
+        backgroundColor={backgroundColor}
+        style={{
+          overflowY: 'auto',
+        }}
+      >
+        <SnapUIContent
+          content={content}
+          onCancel={onCancel}
+          useFooter={useFooter}
+          promptLegacyProps={promptLegacyProps}
+          t={t}
+          backgroundColor={backgroundColor}
+          scrollableContainerRef={scrollableContainerRef}
+          setScroll={setScroll}
+        />
+        {PERF_DEBUG && <PerformanceTracker content={rawContent} />}
+      </Box>
     </SnapInterfaceContextProvider>
   );
 };

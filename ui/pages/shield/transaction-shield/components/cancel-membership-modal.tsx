@@ -1,22 +1,18 @@
 import React from 'react';
 import { CANCEL_TYPES, Subscription } from '@metamask/subscription-controller';
 import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../components/component-library';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
-import {
-  getIsShieldSubscriptionPaused,
-  getIsSubscriptionCancelNotAllowed,
-} from '../../../../../shared/lib/shield';
+import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield/subscription-utils';
+import { getIsSubscriptionCancelNotAllowed } from '../../../../../shared/lib/shield/shield';
 
 export default function CancelMembershipModal({
   onConfirm,

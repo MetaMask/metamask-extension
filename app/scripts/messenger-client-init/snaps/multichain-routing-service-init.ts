@@ -4,7 +4,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import type { Json } from '@metamask/utils';
-import { MultichainRoutingServiceInitMessenger } from '../messengers/snaps';
+import { MultichainRoutingServiceInitMessenger } from '../messengers/snaps/multichain-routing-service-messenger';
 import { MessengerClientInitFunction } from '../types';
 
 type WithSnapKeyringFn = ConstructorParameters<

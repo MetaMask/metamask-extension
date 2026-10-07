@@ -5,7 +5,7 @@ import { program, Option } from 'commander';
 import {
   BuildType,
   getBuildLinks,
-} from '../development/metamaskbot-build-announce/artifacts';
+} from '../development/metamaskbot-build-announce/build-links';
 
 const getBranch = () => {
   try {

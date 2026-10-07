@@ -33,7 +33,8 @@ import {
   type Os,
   type Platform,
 } from '../../../shared/constants/app';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 import { getMethodDataAsync } from '../../../shared/lib/four-byte';
 import {
   getSafeChainsListFromCacheOnly,
@@ -44,18 +45,6 @@ import { getIsQuicknodeEndpointUrl } from '../../../shared/constants/network-fai
 import { isLocalhostOrIPAddress } from '../../../shared/lib/url-utils';
 // Re-export install type utilities from dedicated module to avoid circular dependencies
 // and keep the sentry bundle lightweight
-export { getInstallType, initInstallType } from './install-type';
-export { getEnvironmentType } from '../../../shared/lib/environment-type';
-export {
-  getValidUrl,
-  isWebUrl,
-  addUrlProtocolPrefix,
-  isValidEmail,
-  isWebOrigin,
-} from '../../../shared/lib/url-utils';
-export { formatValue, isValidAmount } from '../../../shared/lib/format-value';
-export { addHexPrefix } from '../../../shared/lib/add-hex-prefix';
-export { getConversionRatesForNativeAsset } from '../../../shared/lib/asset-conversion-rates';
 
 /**
  * Minimal type for User-Agent Client Hints API (NavigatorUAData).
@@ -546,7 +535,6 @@ export const getMethodDataName = async (
  * getBooleanFlag('false'); // false
  * getBooleanFlag(false); // false
  */
-export { getBooleanFlag } from '../../../shared/lib/environment';
 
 // Cache for known domains
 let knownDomainsSet: Set<string> | null = null;

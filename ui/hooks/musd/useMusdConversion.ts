@@ -18,10 +18,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
-import {
-  selectIsMusdConversionFlowEnabled,
-  selectMusdConversionEducationSeen,
-} from '../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd/feature-flags';
+import { selectMusdConversionEducationSeen } from '../../selectors/musd/persisted-state';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getUnapprovedTransactions } from '../../selectors/transactions';
 import {
@@ -29,12 +27,12 @@ import {
   findNetworkClientIdByChainId,
   setMusdConversionEducationSeen,
 } from '../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/types';
 import {
   buildMusdConversionTx,
-  ensureMusdTokenImportedForChain,
   isMatchingMusdConversion,
-} from '../../components/app/musd/utils';
+} from '../../components/app/musd/utils/transaction-utils';
+import { ensureMusdTokenImportedForChain } from '../../components/app/musd/utils/ensure-musd-token-imported';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   PREVIOUS_ROUTE,

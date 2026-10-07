@@ -8,7 +8,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { TabEmptyState } from '../../../ui/tab-empty-state';
+import { TabEmptyState } from '../../../ui/tab-empty-state/tab-empty-state';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type PerpsEmptyStateProps = {

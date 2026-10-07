@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import { PaymentOverride } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import { Icon } from '../../../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/icon/icon.types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
@@ -16,7 +16,7 @@ import {
   type TransactionPayState,
 } from '../../../../../selectors/transactionPayController';
 import { useConfirmContext } from '../../../context/confirm';
-import { TokenIcon } from '../../../components/token-icon';
+import { TokenIcon } from '../../../../../components/app/token-icon/token-icon';
 import type {
   PayWithRowConfig,
   PayWithSectionConfig,

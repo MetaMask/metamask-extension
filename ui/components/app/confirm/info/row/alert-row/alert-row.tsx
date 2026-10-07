@@ -6,10 +6,10 @@ import {
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../../hooks/useAlerts';
-import { Box } from '../../../../../component-library';
+import { Box } from '../../../../../component-library/box/box';
 import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
-import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal/multiple-alert-modal';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,

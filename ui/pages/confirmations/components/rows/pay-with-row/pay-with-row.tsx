@@ -2,13 +2,13 @@
 import React from 'react';
 import { Skeleton } from '@metamask/design-system-react';
 
+import { Box } from '../../../../../components/component-library/box/box';
+import { Icon } from '../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ConfirmInfoAlertRow } from '../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
@@ -29,9 +29,7 @@ import {
   type PayWithDisplayToken,
 } from '../../../hooks/pay/usePayWithToken';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
-import { TokenIcon } from '../../token-icon';
-
-export { ConfirmInfoRowSize };
+import { TokenIcon } from '../../../../../components/app/token-icon/token-icon';
 
 export const PayWithRowSkeleton = () => {
   return (

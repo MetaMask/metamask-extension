@@ -7,7 +7,7 @@ import {
   getIsAssetRequireActivate,
   isAssetSupportActivation,
 } from '../../../selectors/stellar-assets';
-import { getMultichainBalances } from '../../../selectors/multichain';
+import { getMultiChainBalancesControllerBalances as getMultichainBalances } from '../../../../shared/lib/selectors/assets-migration';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import {

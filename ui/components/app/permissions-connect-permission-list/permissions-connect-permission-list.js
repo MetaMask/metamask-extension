@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import { getWeightedPermissions } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSnapsMetadata } from '../../../selectors';
+import { getSnapsMetadata } from '../../../selectors/selectors';
 import { getSnapName } from '../../../helpers/utils/util';
-import PermissionCell from '../permission-cell';
+import PermissionCell from '../permission-cell/permission-cell';
 
 /**
  * Get one or more permission descriptions for a permission name.

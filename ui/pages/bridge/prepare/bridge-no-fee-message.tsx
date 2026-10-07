@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { sumAmounts } from '@metamask/bridge-controller';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/text';
 import { getBridgeQuotes } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -9,7 +9,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Row } from '../layout';
+import Row from '../layout/row';
 import { readMmFee } from '../utils/quote';
 
 export const BridgeNoFeeMessage = () => {

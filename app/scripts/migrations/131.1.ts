@@ -3,10 +3,10 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import {
   allowedInfuraHosts,
-  CHAIN_IDS,
   infuraChainIdsTestNets,
   infuraProjectId,
 } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 
 export const version = 131.1;
 const BASE_CHAIN_ID = '0x2105';

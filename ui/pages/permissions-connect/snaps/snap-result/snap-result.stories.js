@@ -1,5 +1,5 @@
 import React from 'react';
-import SnapResult from '.';
+import SnapResult from './snap-result';
 
 export default {
   title: 'Pages/Snaps/SnapResult',

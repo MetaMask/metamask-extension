@@ -23,10 +23,7 @@ import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransaction
 import * as useTransactionPayWithdrawModule from '../../../hooks/pay/useTransactionPayWithdraw';
 import * as usePayWithNoFeeTokenModule from '../../../hooks/pay/usePayWithNoFeeToken';
 import * as useAccountNoFundsAlertModule from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
-import {
-  CustomAmountInfo,
-  CustomAmountInfoSkeleton,
-} from './custom-amount-info';
+import { CustomAmountInfo } from './custom-amount-info';
 
 jest.mock('../../../hooks/transactions/useTransactionCustomAmount');
 jest.mock('../../../hooks/transactions/useTransactionCustomAmountAlerts');
@@ -69,13 +66,17 @@ jest.mock('../../pay-token-amount/pay-token-amount', () => ({
   ),
   PayTokenAmountSkeleton: () => <div data-testid="pay-token-amount-skeleton" />,
 }));
+
 jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
 }));
-jest.mock('../../rows/perps-account-picker-row', () => ({
-  PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
-}));
+jest.mock(
+  '../../rows/perps-account-picker-row/perps-account-picker-row',
+  () => ({
+    PerpsAccountPickerRow: () => <div data-testid="perps-account-picker-row" />,
+  }),
+);
 jest.mock('../../rows/bridge-fee-row/bridge-fee-row', () => ({
   BridgeFeeRow: () => <div data-testid="bridge-fee-row" />,
 }));
@@ -1134,32 +1135,5 @@ describe('CustomAmountInfo', () => {
       expect(getByTestId('override-content').textContent).toBe('50');
       expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
     });
-  });
-});
-
-describe('CustomAmountInfoSkeleton', () => {
-  it('renders skeleton components', () => {
-    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId, queryByTestId } = renderWithConfirmContextProvider(
-      <CustomAmountInfoSkeleton />,
-      mockStore(state),
-    );
-
-    expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
-    expect(getByTestId('custom-amount-skeleton')).toBeInTheDocument();
-    expect(getByTestId('pay-token-amount-skeleton')).toBeInTheDocument();
-    expect(
-      queryByTestId('percentage-buttons-skeleton'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders the percentage buttons skeleton when the flow displays them', () => {
-    const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
-    const { getByTestId } = renderWithConfirmContextProvider(
-      <CustomAmountInfoSkeleton displayPercentageButtons />,
-      mockStore(state),
-    );
-
-    expect(getByTestId('percentage-buttons-skeleton')).toBeInTheDocument();
   });
 });

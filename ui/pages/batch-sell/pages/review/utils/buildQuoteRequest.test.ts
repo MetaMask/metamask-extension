@@ -2,9 +2,11 @@ import { CaipChainId } from '@metamask/utils';
 import {
   BATCH_SELL_ASSET_IDS,
   BATCH_SELL_CHAIN_ID,
+} from '../../../../../../test/data/batch-sell/constants';
+import {
   buildBatchSellAsset,
   buildSendAssetEntry,
-} from '../../../../../../test/data/batch-sell';
+} from '../../../../../../test/data/batch-sell/factories';
 import {
   buildSrcTokenAmountSmallestUnit,
   buildQuoteRequestForEntry,

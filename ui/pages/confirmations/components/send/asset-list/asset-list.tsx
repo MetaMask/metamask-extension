@@ -6,13 +6,13 @@ import React, {
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
+import { Text } from '../../../../../components/component-library/text/text';
+import { Button } from '../../../../../components/component-library/button/button';
 import {
-  Text,
-  Button,
   ButtonVariant,
   ButtonSize,
-  Box,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/button/button.types';
+import { Box } from '../../../../../components/component-library/box/box';
 import {
   TextColor,
   TextVariant,
@@ -26,7 +26,8 @@ import { type Asset } from '../../../types/send';
 import { useNavigateSendPage } from '../../../hooks/send/useNavigateSendPage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { SendContext } from '../../../context/send';
-import { Asset as AssetComponent, type TokenTagRenderer } from '../../UI/asset';
+import { Asset as AssetComponent } from '../../UI/asset/asset';
+import type { TokenTagRenderer } from '../../UI/asset/asset';
 import { useScrollContainer } from '../../../../../contexts/scroll-container';
 import { toNormalizedCaipAssetId } from '../../../../../../shared/lib/asset-utils';
 import { useTokenAssetSecurityResults } from '../../../../../hooks/token-asset/useTokenAssetSecurityResults';

@@ -8,11 +8,9 @@ import {
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  ButtonRow,
-  ButtonRowContainer,
-  MembershipErrorBanner,
-} from '../components';
+import ButtonRow from '../components/button-row';
+import ButtonRowContainer from '../components/button-row-container';
+import MembershipErrorBanner from '../components/membership-error-banner';
 import {
   useCancelSubscription,
   useOpenGetSubscriptionBillingPortal,
@@ -22,9 +20,9 @@ import {
   useUserSubscriptions,
 } from '../../../../hooks/subscription/useSubscription';
 import CancelMembershipModal from '../components/cancel-membership-modal';
-import ApiErrorHandler from '../../../../components/app/api-error-handler';
+import ApiErrorHandler from '../../../../components/app/api-error-handler/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
-import LoadingScreen from '../../../../components/ui/loading-screen';
+import LoadingScreen from '../../../../components/ui/loading-screen/loading-screen.component';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import { PaymentMethodRow } from '../payment-method-row';
@@ -33,9 +31,9 @@ import { useHandlePayment } from '../../../../hooks/subscription/useHandlePaymen
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
-} from '../../../../../shared/lib/shield';
+} from '../../../../../shared/lib/shield/subscription-utils';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
-import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
+import AddFundsModal from '../../../../components/app/modals/add-funds-modal/add-funds-modal';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import CryptoAccountDisplay from '../components/crypto-account-display';
 

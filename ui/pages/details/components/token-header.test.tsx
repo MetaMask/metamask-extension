@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
 import type { TokenAsset } from '../../../hooks/useTokensData';
 import { useTokensData } from '../../../hooks/useTokensData';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
@@ -17,11 +17,16 @@ jest.mock('../../../hooks/useTokensData', () => ({
   useTokensData: jest.fn(() => ({})),
 }));
 
-jest.mock('../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: ({ tokens }: { tokens: (string | undefined)[] }) => (
-    <div data-testid="activity-avatar">{JSON.stringify(tokens)}</div>
-  ),
-}));
+jest.mock(
+  '../../../components/app/activity-list-item-avatar/activity-list-item-avatar',
+  () => ({
+    ActivityListItemAvatar: ({
+      tokens,
+    }: {
+      tokens: (string | undefined)[];
+    }) => <div data-testid="activity-avatar">{JSON.stringify(tokens)}</div>,
+  }),
+);
 
 const mockUseTokensData = jest.mocked(useTokensData);
 

@@ -11,7 +11,7 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
-import { ViewExplorerMenuItem } from '.';
+import { ViewExplorerMenuItem } from './view-explorer-menu-item';
 
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',

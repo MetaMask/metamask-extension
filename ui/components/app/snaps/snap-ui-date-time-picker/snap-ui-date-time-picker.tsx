@@ -5,6 +5,10 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
+import { useSelector } from 'react-redux';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ThemeProvider } from '@mui/material/styles';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
@@ -13,8 +17,14 @@ import type { PickersActionBarProps } from '@mui/x-date-pickers/PickersActionBar
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
-import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { Label } from '../../../component-library/label/label';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
+
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { muiPickerTheme } from './theme';
 
 export type SnapUIDateTimePickerProps = {
   name: string;
@@ -29,7 +39,7 @@ export type SnapUIDateTimePickerProps = {
 };
 
 // MUI action identifiers — not display text. MUI resolves these to translated
-// labels via the localeText passed to LocalizationProvider in snap-ui-renderer.
+// labels via the localeText passed to LocalizationProvider below.
 const PICKER_ACTION_BAR_ACTIONS = ['clear', 'cancel', 'accept'] as const;
 
 /**
@@ -99,6 +109,16 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disablePast = false,
   disableFuture = false,
 }) => {
+  const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
+  const pickerLocaleText = useMemo(
+    () => ({
+      clearButtonLabel: t('clear'),
+      cancelButtonLabel: t('cancel'),
+      okButtonLabel: t('ok').toUpperCase(),
+    }),
+    [t],
+  );
   const { handleInputChange, getValue } = useSnapInterfaceContext();
   const initialValue = getValue(name, form) as string | undefined | null;
 
@@ -230,44 +250,52 @@ export const SnapUIDateTimePicker: FunctionComponent<
   };
 
   return (
-    <Box
-      className={classnames('snap-ui-renderer__date-time-picker', {
-        'snap-ui-renderer__field': label !== undefined,
-      })}
-    >
-      {label && <Label htmlFor={name}>{label}</Label>}
-      {type === 'datetime' && (
-        <MobileDateTimePicker
-          className="snap-ui-renderer__date-time-picker--datetime"
-          {...sharedPickerProps}
-          disablePast={disablePast}
-          disableFuture={disableFuture}
-          localeText={{ toolbarTitle: '' }}
-          ampm={false}
-        />
-      )}
-      {type === 'date' && (
-        <MobileDatePicker
-          className="snap-ui-renderer__date-time-picker--date"
-          {...sharedPickerProps}
-          disablePast={disablePast}
-          disableFuture={disableFuture}
-          localeText={{ toolbarTitle: '' }}
-        />
-      )}
-      {type === 'time' && (
-        <MobileTimePicker
-          className="snap-ui-renderer__date-time-picker--time"
-          {...sharedPickerProps}
-          ampm={false}
-          localeText={{ toolbarTitle: '' }}
-        />
-      )}
-      {error && (
-        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
-          {error}
-        </HelpText>
-      )}
-    </Box>
+    <ThemeProvider theme={muiPickerTheme}>
+      <LocalizationProvider
+        dateAdapter={AdapterLuxon}
+        adapterLocale={locale}
+        localeText={pickerLocaleText}
+      >
+        <Box
+          className={classnames('snap-ui-renderer__date-time-picker', {
+            'snap-ui-renderer__field': label !== undefined,
+          })}
+        >
+          {label && <Label htmlFor={name}>{label}</Label>}
+          {type === 'datetime' && (
+            <MobileDateTimePicker
+              className="snap-ui-renderer__date-time-picker--datetime"
+              {...sharedPickerProps}
+              disablePast={disablePast}
+              disableFuture={disableFuture}
+              localeText={{ toolbarTitle: '' }}
+              ampm={false}
+            />
+          )}
+          {type === 'date' && (
+            <MobileDatePicker
+              className="snap-ui-renderer__date-time-picker--date"
+              {...sharedPickerProps}
+              disablePast={disablePast}
+              disableFuture={disableFuture}
+              localeText={{ toolbarTitle: '' }}
+            />
+          )}
+          {type === 'time' && (
+            <MobileTimePicker
+              className="snap-ui-renderer__date-time-picker--time"
+              {...sharedPickerProps}
+              ampm={false}
+              localeText={{ toolbarTitle: '' }}
+            />
+          )}
+          {error && (
+            <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+              {error}
+            </HelpText>
+          )}
+        </Box>
+      </LocalizationProvider>
+    </ThemeProvider>
   );
 };

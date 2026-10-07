@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { formatWithThreshold } from '../components/app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../ducks/locale/locale';
 import { TransactionGroupStatus } from '../../shared/constants/transaction';
-import { getAssetsMetadata } from '../selectors/assets';
+import { getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata } from '../../shared/lib/selectors/assets-migration';
 import { useI18nContext } from './useI18nContext';
 
 export const KEYRING_TRANSACTION_STATUS_KEY = {

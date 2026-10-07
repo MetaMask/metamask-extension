@@ -10,10 +10,10 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import {
   getOptedIn,
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
-import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
+  getDataCollectionForMarketing,
+} from '../../../selectors/metametrics';
+import { getUseExternalServices } from '../../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import {
   setDataCollectionForMarketing,
   setMarketingConsent,

@@ -7,11 +7,9 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
+import type { NotificationServicesPushControllerMessenger } from '@metamask/notification-services-controller/push-services';
 import { MessengerClientInitFunction } from '../types';
-import type {
-  NotificationServicesPushControllerMessenger,
-  NotificationServicesPushControllerInitMessenger,
-} from '../messengers/notifications';
+import type { NotificationServicesPushControllerInitMessenger } from '../messengers/notifications/notification-services-push-controller-messenger';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import {
   onPushNotificationClicked,
@@ -21,7 +19,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import ExtensionPlatform from '../../platforms/extension';
 
 /**

@@ -2,21 +2,19 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { isSnapId } from '@metamask/snaps-utils';
-import {
-  ConfirmInfoRowText,
-  ConfirmInfoRowUrl,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowText } from '../../../../../../components/app/confirm/info/row/text';
+import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { Box } from '../../../../../../components/component-library/box/box';
+import { Icon } from '../../../../../../components/component-library/icon/icon';
 import {
-  Box,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../../../components/component-library';
-import Tooltip from '../../../../../../components/ui/tooltip';
+} from '../../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../../components/component-library/text/text';
+import Tooltip from '../../../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
   BorderColor,
@@ -36,11 +34,11 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectUseTransactionSimulations } from '../../../../selectors/preferences';
 import { SignatureRequestType } from '../../../../types/confirm';
-import { isSIWESignatureRequest } from '../../../../utils';
+import { isSIWESignatureRequest } from '../../../../utils/confirm';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { isValidUTF8 } from '../utils';
-import { SIWESignInfo } from './siwe-sign';
+import SIWESignInfo from './siwe-sign/siwe-sign';
 
 const getMessageText = (hexString?: string) => {
   if (!hexString) {

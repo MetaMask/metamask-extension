@@ -2,24 +2,19 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import type { Hex } from '@metamask/utils';
+import { isMusdToken, MUSD_TOKEN } from '@metamask/money-account-utils';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
-} from '../../component-library';
+import { AvatarNetwork } from '../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../component-library/avatar-network/avatar-network.types';
+import { AvatarToken } from '../../component-library/avatar-token/avatar-token';
+import { AvatarTokenSize } from '../../component-library/avatar-token/avatar-token.types';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
 import {
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../shared/lib/selectors/networks';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
 import { useSendTokens } from '../../../pages/confirmations/hooks/send/useSendTokens';
-import {
-  isMusdToken,
-  MUSD_TOKEN,
-} from '../../../pages/confirmations/constants/musd';
 
 export type TokenIconSize = 'xs' | 'sm' | 'md' | 'xl';
 

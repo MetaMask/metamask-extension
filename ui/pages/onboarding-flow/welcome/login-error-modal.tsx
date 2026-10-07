@@ -16,12 +16,10 @@ import {
   TextButtonSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -29,7 +27,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
-import { getSocialLoginType } from '../../../selectors';
+import { getSocialLoginType } from '../../../selectors/onboarding/onboarding';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useSegmentContext } from '../../../hooks/useSegmentContext';
 import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';

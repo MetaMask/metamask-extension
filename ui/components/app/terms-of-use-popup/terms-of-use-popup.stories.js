@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from 'storybook/preview-api';
-import { Button } from '../../component-library';
-import TermsOfUsePopup from '.';
+import { Button } from '../../component-library/button/button';
+import TermsOfUsePopup from './terms-of-use-popup';
 
 export default {
   title: 'Components/App/TermsOfUsePopup',

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Point } from 'chart.js';
 import { Box } from '@metamask/design-system-react';
-import { Text, TextDirection } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/text';
+import { TextDirection } from '../../../../components/component-library/text/text.types';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   TextAlign,

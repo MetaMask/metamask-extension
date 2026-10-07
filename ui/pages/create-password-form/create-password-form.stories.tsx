@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { CreatePasswordForm } from '.';
+import CreatePasswordForm from './create-password-form';
 
 const meta: Meta<typeof CreatePasswordForm> = {
   title: 'Pages/CreatePasswordForm',

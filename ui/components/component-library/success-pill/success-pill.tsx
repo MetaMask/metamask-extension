@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextColor, TextVariant } from '@metamask/design-system-react';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Tag } from '../tag';
+import { Tag } from '../tag/tag';
 import type {
   SuccessPillComponent,
   SuccessPillProps,

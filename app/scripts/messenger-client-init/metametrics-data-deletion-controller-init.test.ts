@@ -6,7 +6,7 @@ import { DataDeletionService } from '../services/data-deletion-service';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getMetaMetricsDataDeletionControllerMessenger } from './messengers';
+import { getMetaMetricsDataDeletionControllerMessenger } from './messengers/metametrics-data-deletion-controller-messenger';
 import { MetaMetricsDataDeletionControllerInit } from './metametrics-data-deletion-controller-init';
 import { getDataDeletionServiceMessenger } from './messengers/data-deletion-service-messenger';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { getMockTokenTransferConfirmState } from '../../../../../../../test/data/confirmations/helper';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import {
   AlignItems,
   Display,

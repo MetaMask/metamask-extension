@@ -71,7 +71,7 @@ import { isRelaySupported } from '../lib/transaction/transaction-relay';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { decodeTransactionData } from '../lib/transaction/decode/util';
 import { openUpdateTabAndReload } from '../lib/open-update-tab-and-reload';
-import { HardwareWalletType } from '../../../shared/lib/hardware-wallets';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   DEFI_REFERRAL_PARTNERS,
@@ -81,7 +81,7 @@ import { ReferralStatus } from '../controllers/preferences-controller';
 import { ReferralTriggerType } from '../lib/defi-referrals/createDefiReferralMiddleware';
 import { checkGmxHasReferralCode } from '../lib/defi-referrals/referral-onchain-check';
 import { checkHyperliquidHasReferralCode } from '../lib/defi-referrals/referral-api-check';
-import { trackEvent } from '../controllers/analytics';
+import { trackEvent } from '../controllers/analytics/analytics';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import * as NetworkSelectors from '../../../shared/lib/selectors/networks';
@@ -94,8 +94,8 @@ import {
 const mockToHardwareWalletError = jest.fn();
 const mockIsUserRejectedHardwareWalletError = jest.fn().mockReturnValue(false);
 
-jest.mock('../../../shared/lib/hardware-wallets', () => ({
-  ...jest.requireActual('../../../shared/lib/hardware-wallets'),
+jest.mock('../../../shared/lib/hardware-wallets/rpc-error-utils', () => ({
+  ...jest.requireActual('../../../shared/lib/hardware-wallets/rpc-error-utils'),
   toHardwareWalletError: (...args: unknown[]) =>
     mockToHardwareWalletError(...args),
   isUserRejectedHardwareWalletError: (...args: unknown[]) =>
@@ -119,8 +119,8 @@ const mockGetIsShieldSubscriptionActive = jest.mocked(
   getIsShieldSubscriptionActive,
 );
 
-jest.mock('../controllers/analytics', () => ({
-  ...jest.requireActual('../controllers/analytics'),
+jest.mock('../controllers/analytics/analytics', () => ({
+  ...jest.requireActual('../controllers/analytics/analytics'),
   trackEvent: jest.fn(),
 }));
 

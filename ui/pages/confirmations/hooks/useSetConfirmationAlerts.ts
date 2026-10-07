@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import {
+  type Alert,
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
@@ -8,10 +9,10 @@ import { useConfirmContext } from '../context/confirm';
 import { useDispatch } from '../../../store/hooks';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
-const useSetConfirmationAlerts = () => {
+const useSetConfirmationAlerts = (domainMismatchAlerts?: Alert[]) => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
-  const alerts = useConfirmationAlerts();
+  const alerts = useConfirmationAlerts(domainMismatchAlerts);
   const ownerId = currentConfirmation?.id as string;
 
   useEffect(() => {

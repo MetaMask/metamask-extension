@@ -1,5 +1,6 @@
 import React from 'react';
-import { BannerAlert, BannerAlertSeverity } from '../../../component-library';
+import { BannerAlert } from '../../../component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../component-library/banner-alert/banner-alert.types';
 
 export type SnapUIBannerProps = {
   severity: BannerAlertSeverity | undefined;

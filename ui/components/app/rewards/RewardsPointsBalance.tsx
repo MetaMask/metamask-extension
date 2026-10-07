@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { IconName } from '@metamask/design-system-react';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { Skeleton } from '../../component-library/skeleton';
+import { Skeleton } from '../../component-library/skeleton/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setRewardsModalOpen,

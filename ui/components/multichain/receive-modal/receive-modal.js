@@ -7,10 +7,10 @@ import {
 import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Box } from '../../component-library';
-import QrCodeView from '../../ui/qr-code-view';
+import { Box } from '../../component-library/box/box';
+import QrCodeView from '../../ui/qr-code-view/qr-code-view';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getInternalAccountByAddress } from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
 import {
   AlignItems,
   Display,

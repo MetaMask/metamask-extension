@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { updateBalancesFoAccounts } from '../store/actions';
-import { getEnabledChainIds } from '../selectors';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 
@@ -18,7 +18,7 @@ jest.mock('../store/actions', () => ({
   updateBalancesFoAccounts: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/multichain/networks', () => ({
   getEnabledChainIds: jest.fn(),
 }));
 

@@ -1,7 +1,7 @@
 import { BorderColor } from '../../../helpers/constants/design-system';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
-import { PolymorphicComponentPropWithRef } from '../box';
-import { IconProps } from '../icon';
+import { PolymorphicComponentPropWithRef } from '../box/box.types';
+import { IconProps } from '../icon/icon.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

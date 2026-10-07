@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfirmationNetworkSwitch from '.';
+import ConfirmationNetworkSwitch from './confirmation-network-switch';
 
 export default {
   title: 'Pages/Confirmations/Components/ConfirmationNetworkSwitch',

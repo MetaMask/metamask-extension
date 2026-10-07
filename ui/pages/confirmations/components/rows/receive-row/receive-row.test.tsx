@@ -18,6 +18,7 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { ReceiveRow, ReceiveRowProps } from './receive-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/sponsored-network-fees');
 jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);

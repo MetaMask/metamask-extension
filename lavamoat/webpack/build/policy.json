@@ -2367,6 +2367,18 @@
         "thread-loader": true
       }
     },
+    "webpack>loader-runner": {
+      "packages": {
+        "$root$": true,
+        "@lavamoat/webpack": true,
+        "css-loader": true,
+        "html-bundler-webpack-plugin": true,
+        "postcss-loader": true,
+        "react-compiler-webpack": true,
+        "sass-loader": true,
+        "thread-loader": true
+      }
+    },
     "lodash": {
       "globals": {
         "define": true

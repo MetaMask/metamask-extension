@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slider as MaterialSlider } from '@mui/material';
+import MaterialSlider from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -15,7 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import Tooltip from '../../../ui/tooltip';
+import Tooltip from '../../../ui/tooltip/tooltip';
 
 const StyledMaterialSlider = styled(MaterialSlider)({
   height: 4,

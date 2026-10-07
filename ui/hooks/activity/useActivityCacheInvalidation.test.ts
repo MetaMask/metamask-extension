@@ -27,7 +27,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/selectors', () => ({
   getUseExternalServices: jest.fn(),
 }));
 

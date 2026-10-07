@@ -3,8 +3,6 @@ import type { Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../shared/lib/money/withdraw-amount-commit';
 import { submitRequestToBackground } from '../background-connection';
 
-export type { MoneyAccountWithdrawAmountUpdate };
-
 export async function updateTransactionPaymentToken({
   transactionId,
   tokenAddress,

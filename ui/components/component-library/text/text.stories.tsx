@@ -17,7 +17,7 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '../box';
+import { Box } from '../box/box';
 
 import { Text } from './text';
 import { TextDirection } from './text.types';

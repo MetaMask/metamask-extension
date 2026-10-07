@@ -5,7 +5,6 @@ import {
   BASE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   CELO_DISPLAY_NAME,
-  CHAIN_IDS,
   CURRENCY_SYMBOLS,
   GNOSIS_DISPLAY_NAME,
   infuraProjectId,
@@ -16,6 +15,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
 } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 
 export const FIXTURES_NETWORKS = {
   providerConfig: {

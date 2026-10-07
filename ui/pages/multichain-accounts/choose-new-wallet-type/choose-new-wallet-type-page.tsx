@@ -18,11 +18,9 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -41,8 +39,8 @@ import {
   getIsAddSnapAccountEnabled,
   getIsWatchEthereumAccountEnabled,
   getManageInstitutionalWallets,
-} from '../../../selectors';
-import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+} from '../../../selectors/selectors';
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,

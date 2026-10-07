@@ -2,10 +2,8 @@ import { type CurrencyRateState } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import { isMusdToken } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
-import {
-  getCurrencyRates,
-  getUseExternalServices,
-} from '../../../../selectors';
+import { getCurrencyRateControllerCurrencyRates as getCurrencyRates } from '../../../../../shared/lib/selectors/assets-migration';
+import { getUseExternalServices } from '../../../../selectors/selectors';
 
 const lowValueAssetFiatThresholdUsd = 1;
 

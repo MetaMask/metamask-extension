@@ -35,8 +35,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
-import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getFirstTimeFlowType } from '../../../selectors/first-time-flow';
+import SRPDetailsModal from '../../../components/app/srp-details-modal/srp-details-modal';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import { TraceName } from '../../../../shared/lib/trace';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';

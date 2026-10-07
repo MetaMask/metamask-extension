@@ -5,8 +5,9 @@ import {
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
-import { Box, Text } from '../../../../../components/component-library';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import {
   AlignItems,
   Display,

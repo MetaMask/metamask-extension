@@ -13,12 +13,14 @@ import {
   mockExchangeRates,
   mockCurrencyExchangeRates,
   mockFiatExchangeRates,
-  mockInitialFullScan,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+} from './mocks/price-api';
+import { mockInitialFullScan } from './mocks/esplora';
+import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
-} from './mocks';
+} from './mocks/tokens-api';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 async function mockBtcActivityMocks(mockServer: Mockttp) {

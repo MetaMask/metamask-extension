@@ -5,7 +5,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
-import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
+import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity/confirm-turn-on-backup-and-sync-modal/confirm-turn-on-backup-and-sync-modal';
 import { showModal } from '../../../../store/actions';
 import {
   onboardingToggleBackupAndSyncOff,

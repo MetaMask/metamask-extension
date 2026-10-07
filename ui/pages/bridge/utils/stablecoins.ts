@@ -3,7 +3,7 @@
  * Only includes USDC and USDT for now
  */
 
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 
 /**

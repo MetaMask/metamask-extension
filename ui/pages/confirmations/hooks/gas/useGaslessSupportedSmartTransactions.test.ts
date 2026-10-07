@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
-import { getIsSmartTransaction } from '../../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../../shared/lib/selectors/smart-transactions';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
@@ -8,15 +8,12 @@ import { isSendBundleSupported } from '../../../../store/actions';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors/smart-transactions');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isSendBundleSupported: jest.fn(),
 }));
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
-}));
 jest.mock('../../../../hooks/useIsHardwareWalletAccount');
 
 const CHAIN_ID_MOCK = '0x5';

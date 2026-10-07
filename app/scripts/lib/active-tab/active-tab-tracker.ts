@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import type { Tabs, Windows } from 'webextension-polyfill';
-import { isWebOrigin } from '../util';
+import { isWebOrigin } from '../../../../shared/lib/url-utils';
 
 export type AppActiveTabData = {
   id: number;

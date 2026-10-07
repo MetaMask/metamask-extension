@@ -14,8 +14,8 @@ import { mockTransactions } from '../../components/app/perps/mocks';
 import {
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
-} from '../../components/app/perps/types';
-import type { PerpsTransaction } from '../../components/app/perps/types';
+} from '../../components/app/perps/types/transactionHistory';
+import type { PerpsTransaction } from '../../components/app/perps/types/transactionHistory';
 import { usePerpsRecordedOrderFees } from '../../hooks/perps/usePerpsRecordedOrderFees';
 import PerpsTransactionDetailsPage from './perps-transaction-details-page';
 

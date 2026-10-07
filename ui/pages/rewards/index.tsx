@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '@metamask/design-system-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import LoadingIndicator from '../../components/ui/loading-indicator';
+import LoadingIndicator from '../../components/ui/loading-indicator/loading-indicator';
 import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {

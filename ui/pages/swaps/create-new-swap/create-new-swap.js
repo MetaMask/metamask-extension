@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
-import Box from '../../../components/ui/box';
+import Box from '../../../components/ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -15,8 +15,10 @@ import {
   setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getSwapsDefaultToken } from '../../../selectors';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
+  getSwapsDefaultToken,
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
 import { useDispatch } from '../../../store/hooks';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {

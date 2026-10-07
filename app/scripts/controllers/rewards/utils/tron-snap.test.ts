@@ -1,6 +1,6 @@
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
-import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
+import { TRON_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/tron-wallet-snap';
 import { signTronRewardsMessage, SignRewardsMessageResult } from './tron-snap';
 
 // Mock the snap request handler

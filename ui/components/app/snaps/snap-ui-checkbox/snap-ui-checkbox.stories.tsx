@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import configureStore from '../../../../store/store';
 import { SnapUICheckbox } from './snap-ui-checkbox';
-import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps/snap-interface';
 import testData from '../../../../../.storybook/test-data';
 
 // Create mock store with test data (following pattern from other snap stories)

@@ -12,9 +12,9 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { PAGES } from '../../webdriver/driver';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 import { TxToastNotification } from '../../page-objects/components/tx-toast-notification';
 

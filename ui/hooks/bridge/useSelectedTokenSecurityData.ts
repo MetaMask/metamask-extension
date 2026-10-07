@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BridgeToken } from '../../ducks/bridge/types';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import {
   fetchCachedTokenAssets,

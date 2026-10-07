@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { Duration } from 'luxon';
 import { I18nContext } from '../../../contexts/i18n';
-import InfoTooltip from '../../../components/ui/info-tooltip';
+import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import {
   getSwapsQuoteRefreshTime,
   getSwapsQuotePrefetchingRefreshTime,

@@ -2,7 +2,7 @@ import type {
   AvatarAccountVariant,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
-import type { StyleUtilityProps } from '../../component-library/box';
+import type { StyleUtilityProps } from '../../component-library/box/box.types';
 
 export type AvatarGroupProps = StyleUtilityProps & {
   /** * Additional class name for the AvatarGroup component */

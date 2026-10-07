@@ -32,16 +32,17 @@ import {
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { NetworkListItem } from '../../network-list-item';
+import { NetworkListItem } from '../../network-list-item/network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { getShouldShowTestNetworks } from '../../../../selectors';
+import { getShouldShowTestNetworks } from '../../../../selectors/test-networks';
 import { getNetworkSections } from '../../../../helpers/utils/network-sections';
 
 // TODO use MultichainNetworkConfiguration type

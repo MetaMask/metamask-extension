@@ -15,19 +15,17 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  ButtonPrimary,
-  ButtonSize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../component-library';
+import { ButtonLink } from '../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../component-library/button-link/button-link.types';
+import { ButtonPrimary } from '../../component-library/button-primary/button-primary';
+import { ButtonSize } from '../../component-library/button/button.types';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../component-library/text/text';
 
 export default function RecoveryPhraseReminder({ onConfirm }) {
   const t = useI18nContext();

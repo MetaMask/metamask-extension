@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import availableCurrencies from '../../../helpers/constants/available-conversions.json';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { setCurrentCurrency } from '../../../store/actions';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

@@ -1,4 +1,5 @@
 import { ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
+import type { Hex } from '@metamask/utils';
 import {
   toDelegationStruct,
   type Delegation,
@@ -9,7 +10,7 @@ import {
   encodeDisableDelegation,
   encodeRedeemDelegations,
 } from './delegation';
-import { type Hex, toFunctionSelector } from './utils';
+import { toFunctionSelector } from './utils';
 import {
   ExecutionMode,
   type ExecutionStruct,

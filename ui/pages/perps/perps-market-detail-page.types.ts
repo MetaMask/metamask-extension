@@ -6,7 +6,7 @@ import type {
   Position,
   Order,
   PerpsMarketData,
-} from '../../components/app/perps/types';
+} from '@metamask/perps-controller';
 
 /**
  * Route params for the perps market detail page

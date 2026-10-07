@@ -16,7 +16,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../component-library';
+import { PopoverPosition } from '../../../component-library/popover/popover.types';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   selectMoneyBalanceShowMusdLabelEnabled,
@@ -37,7 +37,7 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../../../pages/money/constants/money-events';
-import { TooltipText } from '../tooltip-text';
+import { TooltipText } from '../tooltip-text/tooltip-text';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =

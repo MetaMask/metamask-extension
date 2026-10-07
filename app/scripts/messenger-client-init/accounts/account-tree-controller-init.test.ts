@@ -8,7 +8,7 @@ import {
   getAccountTreeControllerMessenger,
   getAccountTreeControllerInitMessenger,
   AccountTreeControllerInitMessenger,
-} from '../messengers/accounts';
+} from '../messengers/accounts/account-tree-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 

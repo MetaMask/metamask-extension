@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import { EtherDenomination } from '../constants/common';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 import { Numeric } from './Numeric';
 import {
   calcGasTotal,

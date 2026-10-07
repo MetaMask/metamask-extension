@@ -10,7 +10,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 import { SignatureRequestType } from '../../../types/confirm';
-import { isSIWESignatureRequest } from '../../../utils';
+import { isSIWESignatureRequest } from '../../../utils/confirm';
 import { useConfirmContext } from '../../../context/confirm';
 
 export default function useDomainMismatchAlerts(): Alert[] {

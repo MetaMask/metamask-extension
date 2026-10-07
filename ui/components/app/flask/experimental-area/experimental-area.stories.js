@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ExperimentalArea from '.';
+import ExperimentalArea from './experimental-area';
 
 export default {
   title: 'Components/App/Flask/ExperimentalArea',

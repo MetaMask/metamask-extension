@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { NavigateFunction } from 'react-router-dom';
-import Loading from '../../components/ui/loading-screen';
+import Loading from '../../components/ui/loading-screen/loading-screen.component';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 type LockProps = {

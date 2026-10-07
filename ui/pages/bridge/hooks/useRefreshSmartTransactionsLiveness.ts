@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { isCaipChainId, Hex, CaipChainId } from '@metamask/utils';
+import { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors/smart-transactions';
 import { fetchSmartTransactionsLiveness } from '../../../store/actions';
-import { isNonEvmChain } from '../../../ducks/bridge/utils';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 
 /**

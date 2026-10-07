@@ -2,17 +2,18 @@ import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { toast } from 'react-hot-toast';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
+import { ToastContent } from '../../../../ui/toast/toast';
 import { PRIVACY_ROUTE } from '../../../../../helpers/constants/routes';
-import NftsTab from '.';
+import NftsTab from './nfts-tab';
 
 const mockNavigate = jest.fn();
 
@@ -33,12 +34,14 @@ jest.mock('../../../../../hooks/useAnalytics', () => ({
 }));
 
 jest.mock('../../../../ui/toast/toast', () => ({
-  toast: {
-    success: jest.fn(),
-  },
   ToastContent: jest.fn(({ title, dataTestId }) => (
     <div data-testid={dataTestId}>{title}</div>
   )),
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
 }));
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH

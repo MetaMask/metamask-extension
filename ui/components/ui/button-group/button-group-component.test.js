@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import ButtonGroup from '.';
+import ButtonGroup from './button-group.component';
 
 describe('ButtonGroup Component', () => {
   const props = {

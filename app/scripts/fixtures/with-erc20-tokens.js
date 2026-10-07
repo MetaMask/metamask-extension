@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 
 export const FIXTURES_ERC20_TOKENS = {
   allTokens: {

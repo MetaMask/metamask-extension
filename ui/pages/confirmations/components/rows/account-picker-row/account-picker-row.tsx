@@ -24,7 +24,7 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
 } from '../../../../../components/app/confirm/info/row/row';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';

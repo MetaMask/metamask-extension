@@ -17,7 +17,7 @@ jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
 }));
 
-jest.mock('../../../components/app/perps/position-card', () => ({
+jest.mock('../../../components/app/perps/position-card/position-card', () => ({
   PositionCard: ({
     position,
     assetName,

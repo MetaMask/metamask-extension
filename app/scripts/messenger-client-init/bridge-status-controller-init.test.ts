@@ -10,7 +10,7 @@ import { captureException } from '../../../shared/lib/sentry';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest, MessengerClientName } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getBridgeStatusControllerMessenger } from './messengers';
+import { getBridgeStatusControllerMessenger } from './messengers/bridge-status-controller-messenger';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 
 jest.mock('@metamask/bridge-status-controller', () => ({

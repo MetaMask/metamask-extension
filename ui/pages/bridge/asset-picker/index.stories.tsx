@@ -8,7 +8,7 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { setFromToken } from '../../../ducks/bridge/actions';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';

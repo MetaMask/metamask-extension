@@ -15,7 +15,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Popover } from '../../../../components/component-library'; // NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
+import { Popover } from '../../../../components/component-library/popover/popover'; // NOSONAR: migrating this fallback to the design-system Popover would add @floating-ui to the bundle and require LavaMoat policy changes, which is deferred to a dedicated design-system follow-up
 import type { useFormatters } from '../../../../hooks/useFormatters';
 
 export type RampsQuoteDisplayProps = {

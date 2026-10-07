@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo } from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-  TextField,
-  TextFieldSize,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
+import { TextField } from '../../../../../components/component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../components/component-library/text-field/text-field.types';
 import {
   AlignItems,
   BlockSize,
@@ -21,7 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import {
   isResolvableName,
   shortenAddress,

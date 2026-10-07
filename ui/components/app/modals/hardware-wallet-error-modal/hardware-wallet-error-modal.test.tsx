@@ -23,8 +23,8 @@ import {
   MetaMetricsHardwareWalletDeviceType,
   MetaMetricsHardwareWalletRecoveryErrorType,
 } from '../../../../../shared/constants/metametrics';
-import { createHardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../../shared/lib/hardware-wallets/types';
 import configureStore from '../../../../store/store';
 import {
   getChromiumExtensionCameraSiteSettingsUrl,
@@ -86,19 +86,30 @@ const mockClearError = jest.fn();
 const mockSetConnectionReady = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockHandleContinueWithPermissionCheck = jest.fn();
-jest.mock('../../../../contexts/hardware-wallets', () => {
-  const actual = jest.requireActual('../../../../contexts/hardware-wallets');
+jest.mock('../../../../contexts/hardware-wallets/HardwareWalletContext', () => {
+  const actual = jest.requireActual(
+    '../../../../contexts/hardware-wallets/HardwareWalletContext',
+  );
 
   return {
     ...actual,
-    handleContinueWithPermissionCheck: (...args: unknown[]) =>
-      mockHandleContinueWithPermissionCheck(...args),
     useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
     useHardwareWalletActions: () => ({
       ensureDeviceReady: mockEnsureDeviceReady,
       clearError: mockClearError,
       setConnectionReady: mockSetConnectionReady,
     }),
+  };
+});
+jest.mock('../../../../contexts/hardware-wallets/webConnectionUtils', () => {
+  const actual = jest.requireActual(
+    '../../../../contexts/hardware-wallets/webConnectionUtils',
+  );
+
+  return {
+    ...actual,
+    handleContinueWithPermissionCheck: (...args: unknown[]) =>
+      mockHandleContinueWithPermissionCheck(...args),
   };
 });
 

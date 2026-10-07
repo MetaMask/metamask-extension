@@ -27,10 +27,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  ButtonBase,
-  ButtonBaseSize,
-} from '../../../../components/component-library';
+import { ButtonBase } from '../../../../components/component-library/button-base/button-base';
+import { ButtonBaseSize } from '../../../../components/component-library/button-base/button-base.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';

@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
-import { getAddressSecurityAlertResponse } from '../../../selectors';
+import { getAddressSecurityAlertResponse } from '../../../selectors/selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useConfirmContext } from '../../confirmations/context/confirm';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { isSignatureTransactionType } from '../../confirmations/utils';
+import { isSignatureTransactionType } from '../../confirmations/utils/confirm';
 import type {
   Confirmation,
   SignatureRequestType,

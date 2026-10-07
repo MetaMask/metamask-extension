@@ -1,9 +1,10 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
-import Name from '../../../../../../../components/app/name';
-import { Box, Text } from '../../../../../../../components/component-library';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import Name from '../../../../../../../components/app/name/name';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

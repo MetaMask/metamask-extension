@@ -5,12 +5,11 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
-import {
-  DeviceEvent,
-  ConnectionStatus,
-  type DeviceEventPayload,
-  type HardwareWalletConnectionState,
-  HardwareWalletType,
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { DeviceEvent, ConnectionStatus } from './types';
+import type {
+  DeviceEventPayload,
+  HardwareWalletConnectionState,
 } from './types';
 import { ConnectionState } from './connectionState';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';

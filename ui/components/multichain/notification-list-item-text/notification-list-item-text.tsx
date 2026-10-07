@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextColor,

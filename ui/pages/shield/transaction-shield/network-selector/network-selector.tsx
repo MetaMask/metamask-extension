@@ -15,17 +15,15 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
-import {
-  IconSize as LegacyIconSize,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../components/component-library';
+import { IconSize as LegacyIconSize } from '../../../../components/component-library/icon/icon.types';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../components/component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
-import { NetworkListItem } from '../../../../components/multichain/network-list-item';
+import { NetworkListItem } from '../../../../components/multichain/network-list-item/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
 import { getSupportedNetworksForClaim } from '../../../../selectors/shield/claims';

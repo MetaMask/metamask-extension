@@ -7,8 +7,8 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Box } from '../../../../component-library/box';
-import { Text } from '../../../../component-library/text';
+import { Box } from '../../../../component-library/box/box';
+import { Text } from '../../../../component-library/text/text';
 
 /**
  * AdditionalNetworksInfo Component

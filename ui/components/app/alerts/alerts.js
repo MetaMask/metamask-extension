@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { alertIsOpen as invalidCustomNetworkAlertIsOpen } from '../../../ducks/alerts/invalid-custom-network';
-import InvalidCustomNetworkAlert from './invalid-custom-network-alert';
+import InvalidCustomNetworkAlert from './invalid-custom-network-alert/invalid-custom-network-alert';
 
 const Alerts = () => {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../../pages/confirmations/hooks/useConfirmationNavigation';
-import { getSelectedEvmInternalAccount } from '../../../../selectors';
+import { getSelectedEvmInternalAccount } from '../../../../selectors/selectors';
 import { createPerpsWithdrawTransaction } from './createPerpsWithdrawTransaction';
 import { usePerpsWithdrawNavigation } from './usePerpsWithdrawNavigation';
 
@@ -19,8 +19,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+jest.mock('../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../selectors/selectors'),
   getSelectedEvmInternalAccount: jest.fn(),
 }));
 

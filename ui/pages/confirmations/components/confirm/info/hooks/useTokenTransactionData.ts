@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
 import { parseStandardTokenTransactionData } from '../../../../../../../shared/lib/transaction.utils';
@@ -8,9 +9,11 @@ export function useTokenTransactionData() {
     currentConfirmation?.txParamsOriginal?.data ??
     currentConfirmation?.txParams?.data;
 
-  if (!transactionData) {
-    return undefined;
-  }
-
-  return parseStandardTokenTransactionData(transactionData);
+  return useMemo(
+    () =>
+      transactionData
+        ? parseStandardTokenTransactionData(transactionData)
+        : undefined,
+    [transactionData],
+  );
 }

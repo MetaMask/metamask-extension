@@ -1,8 +1,8 @@
 import React from 'react';
-import type { PolymorphicRef } from '../box';
-import { ButtonPrimary } from '../button-primary';
-import { ButtonSecondary } from '../button-secondary';
-import { ButtonLink } from '../button-link';
+import type { PolymorphicRef } from '../box/box.types';
+import { ButtonPrimary } from '../button-primary/button-primary';
+import { ButtonSecondary } from '../button-secondary/button-secondary';
+import { ButtonLink } from '../button-link/button-link';
 import type { ButtonPrimaryProps } from '../button-primary/button-primary.types';
 import type { ButtonSecondaryProps } from '../button-secondary/button-secondary.types';
 import type { ButtonLinkProps } from '../button-link/button-link.types';

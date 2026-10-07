@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useMessenger } from '../../../../hooks/useMessenger';
 import type { RouteMessengerInstance } from '../messenger';
 import { forceUpdateMetamaskState } from '../../../../store/actions';
-import { getFirstSnapInstallOrUpdateRequest } from '../../../../selectors';
+import { getFirstSnapInstallOrUpdateRequest } from '../../../../selectors/selectors';
 import { useDispatch } from '../../../../store/hooks';
 
 type UpdateFunction = (snaps: RequestSnapsParams) => void;

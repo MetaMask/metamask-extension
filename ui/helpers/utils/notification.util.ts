@@ -8,8 +8,8 @@ import type {
   BlockExplorer,
 } from '@metamask/notification-services-controller/notification-services';
 import { TextVariant } from '../constants/design-system';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
   FEATURED_RPCS,

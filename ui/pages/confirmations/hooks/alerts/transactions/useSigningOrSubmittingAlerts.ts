@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import {
   getApprovedAndSignedTransactions,
   getTransactions,
-} from '../../../../../selectors';
+} from '../../../../../selectors/transactions';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';

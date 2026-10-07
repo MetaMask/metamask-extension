@@ -4,12 +4,22 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, type MemoryRouterProps } from 'react-router-dom';
 import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useHardwareWalletConfig } from '../../contexts/hardware-wallets';
-import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
+import { useHardwareWalletConfig } from '../../contexts/hardware-wallets/HardwareWalletContext';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
 import * as hardwareWalletRepairUtils from './hardware-wallet-repair-utils';
-import * as hardwareWalletRepairPageModule from '.';
+import * as hardwareWalletRepairPageModuleModule1 from './hardware-wallet-repair';
+
+const hardwareWalletRepairPageModule = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get HardwareWalletRepair() {
+    return hardwareWalletRepairPageModuleModule1.HardwareWalletRepair;
+  },
+  get default() {
+    return hardwareWalletRepairPageModuleModule1.HardwareWalletRepair;
+  },
+};
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -19,7 +29,7 @@ const mockEnsureDeviceReady = jest.fn();
 const mockSetConnectionReady = jest.fn();
 const mockRequestHardwareWalletPermission = jest.fn();
 
-jest.mock('../../contexts/hardware-wallets', () => ({
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => ({
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,
     setConnectionReady: mockSetConnectionReady,

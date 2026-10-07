@@ -7,15 +7,15 @@ import {
   TextVariant,
   FontWeight,
 } from '../../../helpers/constants/design-system';
-import Card from '../card';
-import Box from '../box';
-import { Text } from '../../component-library';
+import Card from '../card/card';
+import Box from '../box/box';
+import { Text } from '../../component-library/text/text';
 
 import Approve from './approve-icon.component';
 import InfoIcon from './info-icon.component';
 import InfoIconInverted from './info-icon-inverted.component';
 import Interaction from './interaction-icon.component';
-import Preloader from './preloader';
+import Preloader from './preloader/preloader-icon.component';
 import ReceiveIcon from './receive-icon.component';
 import SendIcon from './send-icon.component';
 import Sign from './sign-icon.component';

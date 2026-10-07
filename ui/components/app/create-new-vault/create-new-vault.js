@@ -2,11 +2,12 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import TextField from '../../ui/text-field';
-import { ButtonVariant, Button } from '../../component-library';
-import SrpInput from '../srp-input';
+import TextField from '../../ui/text-field/text-field.component';
+import { ButtonVariant } from '../../component-library/button/button.types';
+import { Button } from '../../component-library/button/button';
+import SrpInput from '../srp-input/srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import { useSignOut } from '../../../hooks/identity/useAuthentication';
+import { useSignOut } from '../../../hooks/identity/useAuthentication/useSignOut';
 
 export default function CreateNewVault({
   disabled = false,

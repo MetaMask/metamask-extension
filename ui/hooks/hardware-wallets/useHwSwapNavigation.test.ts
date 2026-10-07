@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react';
-import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapNavigation } from './useHwSwapNavigation';

@@ -1,6 +1,6 @@
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import type { MultichainTokenScanKey } from '../helpers/utils/token-scan';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { getTokenScanCache } from './selectors';
 import { EMPTY_OBJECT } from './shared';
 

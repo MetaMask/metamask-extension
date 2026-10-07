@@ -3,13 +3,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@metamask/design-system-react';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
-import {
-  AvatarToken,
-  AvatarTokenSize,
-  Box,
-  Text,
-} from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+import { AvatarToken } from '../../../../../../../components/component-library/avatar-token/avatar-token';
+import { AvatarTokenSize } from '../../../../../../../components/component-library/avatar-token/avatar-token.types';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../components/component-library/text/text';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
   BackgroundColor,

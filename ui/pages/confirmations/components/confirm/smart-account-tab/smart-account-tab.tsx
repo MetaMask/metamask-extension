@@ -7,15 +7,13 @@ import {
   Display,
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../../../components/component-library';
-import Preloader from '../../../../../components/ui/icon/preloader';
+import { BannerAlert } from '../../../../../components/component-library/banner-alert/banner-alert';
+import { BannerAlertSeverity } from '../../../../../components/component-library/banner-alert/banner-alert.types';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonLink } from '../../../../../components/component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../../../components/component-library/button-link/button-link.types';
+import { Text } from '../../../../../components/component-library/text/text';
+import Preloader from '../../../../../components/ui/icon/preloader/preloader-icon.component';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useEIP7702Networks } from '../../../hooks/useEIP7702Networks';
 import { AccountNetwork } from './account-network/account-network';

@@ -8,15 +8,14 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { toast } from 'react-hot-toast';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ImportAccount } from '../../../components/multichain/import-account/import-account';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,

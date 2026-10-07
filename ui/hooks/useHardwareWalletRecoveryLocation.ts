@@ -8,7 +8,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   SIGNATURE_REQUEST_PATH,
 } from '../helpers/constants/routes';
-import { getUnapprovedTransaction } from '../selectors';
+import { getUnapprovedTransaction } from '../selectors/selectors';
 import { selectUnapprovedSignatureRequestById } from '../selectors/signatures';
 
 const SWAP_FLOW_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([

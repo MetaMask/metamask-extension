@@ -1,6 +1,6 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../constants/network';
+import { CHAIN_IDS } from '../../constants/chain-ids';
 // Import the module to spy on
 import * as featureFlags from '../feature-flags';
 import {

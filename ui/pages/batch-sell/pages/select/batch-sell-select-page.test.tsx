@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { buildBatchSellAsset } from '../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../test/data/batch-sell/factories';
 import { BatchSellSelectPage } from './batch-sell-select-page';
 
 const CHAIN_ID = 'eip155:1' as CaipChainId;

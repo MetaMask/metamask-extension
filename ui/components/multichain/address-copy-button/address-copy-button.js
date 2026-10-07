@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { ButtonBase, Box, IconName } from '../../component-library';
+import { ButtonBase } from '../../component-library/button-base/button-base';
+import { Box } from '../../component-library/box/box';
+import { IconName } from '../../component-library/icon/icon.types';
 import {
   AlignItems,
   BackgroundColor,

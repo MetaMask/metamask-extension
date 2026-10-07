@@ -3,7 +3,7 @@ import { Confirmation, SignatureRequestType } from '../../types/confirm';
 import {
   isEip712PrimaryTypeField,
   parseSanitizeTypedDataMessage,
-} from '../../utils';
+} from '../../utils/confirm';
 import { DAI_CONTRACT_ADDRESS } from './info/shared/constants';
 
 export const getConfirmationSender = (

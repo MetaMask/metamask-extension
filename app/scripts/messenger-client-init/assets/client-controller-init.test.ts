@@ -1,7 +1,7 @@
 import { ClientController } from '@metamask/client-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getRootMessenger } from '../../lib/messenger';
-import { getClientControllerMessenger } from '../messengers/assets';
+import { getClientControllerMessenger } from '../messengers/assets/client-controller-messenger';
 import { ClientControllerInit } from './client-controller-init';
 
 describe('ClientControllerInit', () => {

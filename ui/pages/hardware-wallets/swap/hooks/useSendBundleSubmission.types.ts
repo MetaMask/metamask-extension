@@ -1,8 +1,8 @@
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import type { internalSelectPendingApproval } from '../../../../selectors';
-import type { HardwareWalletSignaturesAction } from '../hardware-wallet-signatures-state-machine';
+import type { MetaMaskReduxDispatch } from '../../../../store/types';
+import type { internalSelectPendingApproval } from '../../../../selectors/approvals';
+import type { HardwareWalletSignaturesAction } from '../hardware-wallet-signatures-state-machine/types';
 
 export type UseSendBundleSubmissionOptions = {
   /** Reactive sendBundle txMeta; retry replaces it with a fresh TransactionMeta. */

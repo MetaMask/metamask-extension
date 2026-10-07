@@ -10,8 +10,8 @@ import {
   FillType,
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
-  type PerpsTransaction,
-} from '../types';
+} from '../types/transactionHistory';
+import type { PerpsTransaction } from '../types/transactionHistory';
 import { PerpsRecentActivity } from './perps-recent-activity';
 
 const mockNavigate = jest.fn();

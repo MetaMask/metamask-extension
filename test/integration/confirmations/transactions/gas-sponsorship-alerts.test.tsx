@@ -1,7 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';

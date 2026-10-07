@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import { type Asset } from '../../types/send';
-import { getUseExternalServices } from '../../../../selectors';
+import { getUseExternalServices } from '../../../../selectors/selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { useSendTokens } from './useSendTokens';

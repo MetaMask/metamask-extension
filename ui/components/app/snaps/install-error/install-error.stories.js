@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconName } from '../../../component-library';
+import { IconName } from '../../../component-library/icon/icon.types';
 import InstallError from './install-error';
 
 export default {

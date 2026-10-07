@@ -27,13 +27,11 @@ import {
   getTokenBalancesControllerTokenBalances,
   getTokenRatesControllerMarketData,
   getTokensControllerAllTokens,
+  getMultiChainBalancesControllerBalances as getMultichainBalances,
+  getMultiChainAssetsControllerAccountsAssets as getAccountAssets,
+  getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
 } from '../../../shared/lib/selectors/assets-migration';
-import { getMultichainBalances } from '../../selectors/multichain';
-import {
-  getAccountAssets,
-  getAssetsMetadata,
-  getAssetsRates,
-} from '../../selectors/assets';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';

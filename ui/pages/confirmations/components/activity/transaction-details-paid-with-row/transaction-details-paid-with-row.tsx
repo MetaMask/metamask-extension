@@ -1,7 +1,8 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Text, Box } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
+import { Box } from '../../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,
@@ -9,10 +10,10 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { TransactionDetailsRow } from '../transaction-details-row';
-import { useTransactionDetails } from '../transaction-details-context';
+import { TransactionDetailsRow } from '../transaction-details-row/transaction-details-row';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
 import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
-import { TokenIcon } from '../../token-icon';
+import { TokenIcon } from '../../../../../components/app/token-icon/token-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
 export function TransactionDetailsPaidWithRow() {

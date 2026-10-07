@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
-import { ReceiveModal } from '.';
+import { ReceiveModal } from './receive-modal';
 
 describe('ReceiveModal', () => {
   const render = (address) =>

@@ -9,7 +9,7 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import {
   getNativeTokenInfo,
   getUSDConversionRateByChainId,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../../../shared/lib/string-utils';
 
 // This should be common helper

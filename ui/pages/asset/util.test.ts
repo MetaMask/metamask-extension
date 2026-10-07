@@ -1,11 +1,11 @@
 import { Token } from '@metamask/assets-controllers';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { type AssetRouteParams } from '../../../shared/lib/asset-route';
+import { processAssetParams } from '../../../shared/lib/asset-route';
 import {
   findAssetByAddress,
   fromIso8601DurationToPriceApiTimePeriod,
   getDynamicShortDate,
-  processAssetParams,
 } from './util';
 
 describe('utils', () => {

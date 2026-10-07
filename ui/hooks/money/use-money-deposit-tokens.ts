@@ -4,9 +4,9 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
-  getCurrencyRates,
-  getCurrentCurrency,
-} from '../../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../shared/lib/selectors/assets-migration';
 import { useSendTokens } from '../../pages/confirmations/hooks/send/useSendTokens';
 import { selectBlockedPayTokens } from '../../pages/confirmations/selectors/feature-flags';
 import { selectMoneyDepositMinBalance } from '../../selectors/money/money-account-feature-flags';

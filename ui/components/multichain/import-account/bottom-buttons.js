@@ -5,7 +5,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import { Box } from '../../component-library';
+import { Box } from '../../component-library/box/box';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

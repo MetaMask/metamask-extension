@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { MUSD_DECIMALS, MUSD_TOKEN } from '@metamask/money-account-utils';
 import { BigNumber } from 'bignumber.js';
-import { Text, Box } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
+import { Box } from '../../../../../components/component-library/box/box';
 import {
   Display,
   AlignItems,
@@ -11,7 +12,7 @@ import {
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getMoneyAccountWithdrawTransferDetails } from '../../../utils/money-account-withdraw';
-import { useTransactionDetails } from '../transaction-details-context';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
 
 /**
  * Amount-plus-symbol label for the activity hero (e.g. `1.5 mUSD`).

@@ -10,7 +10,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../../app/preferred-avatar';
+import { PreferredAvatar } from '../../../app/preferred-avatar/preferred-avatar';
 import { getIconSeedAddressByAccountGroupId } from '../../../../selectors/multichain-accounts/account-tree';
 
 type SrpListItemProps = {

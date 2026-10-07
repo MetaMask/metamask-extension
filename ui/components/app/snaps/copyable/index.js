@@ -1,1 +1,0 @@
-export { Copyable } from './copyable';

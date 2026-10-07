@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 

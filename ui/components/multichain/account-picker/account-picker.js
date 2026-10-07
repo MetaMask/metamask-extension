@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  IconName,
-  Text,
-} from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { ButtonBase } from '../../component-library/button-base/button-base';
+import { ButtonBaseSize } from '../../component-library/button-base/button-base.types';
+import { IconName } from '../../component-library/icon/icon.types';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,7 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 
 const AccountMenuStyle = { height: 'auto' };
 

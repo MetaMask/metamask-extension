@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import useSnapNavigation from '../../../../hooks/snaps/useSnapNavigation';
-import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning';
-import { NotificationDetailButton } from '../../../../components/multichain';
-import { ButtonVariant } from '../../../../components/component-library';
+import SnapLinkWarning from '../../../../components/app/snaps/snap-link-warning/snap-link-warning';
+import { NotificationDetailButton } from '../../../../components/multichain/notification-detail-button/notification-detail-button';
+import { ButtonVariant } from '../../../../components/component-library/button/button.types';
 import { useAnalytics } from '../../../../hooks/useAnalytics';
 import { getNotificationTypeForAnalytics } from '../../../../helpers/utils/notification.util';
 import {

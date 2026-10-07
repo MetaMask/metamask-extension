@@ -6,12 +6,10 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import { Box } from '../box';
+import { Box } from '../box/box';
 import { PickerNetwork } from './picker-network';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 

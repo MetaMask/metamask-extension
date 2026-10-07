@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { DeFiProtocolPositionGroup } from '@metamask/assets-controllers';
-import { getTokenSortConfig } from '../../../selectors';
+import { getTokenSortConfig } from '../../../selectors/selectors';
 import { getSelectedCurrency } from '../../../selectors/assets';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { sortAssets } from '../../../components/app/assets/util/sort';

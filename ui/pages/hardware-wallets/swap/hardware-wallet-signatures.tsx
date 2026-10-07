@@ -11,11 +11,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Header } from '../../../components/multichain/pages/page';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
-import QrHardwareSigningPage, {
-  QrHardwareSigningPhase,
-} from './qr-hardware-signing-page';
+import QrHardwareSigningPage from './qr-hardware-signing-page/qr-hardware-signing-page';
+import { QrHardwareSigningPhase } from './qr-hardware-signing-page/qr-hardware-signing-page.types';
 import SignatureStepList from './components/signature-step-list';
 import SignatureFooter from './components/signature-footer';
 import { useHardwareWalletSignatures } from './hooks/useHardwareWalletSignatures';

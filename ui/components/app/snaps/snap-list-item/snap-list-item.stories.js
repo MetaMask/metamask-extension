@@ -1,5 +1,5 @@
 import React from 'react';
-import SnapListItem from '.';
+import SnapListItem from './snap-list-item';
 
 export default {
   title: 'Components/App/Snaps/SnapListItem',

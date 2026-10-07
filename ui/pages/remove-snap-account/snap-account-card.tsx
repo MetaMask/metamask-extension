@@ -11,14 +11,12 @@ import {
   AlignItems,
   TextAlign,
 } from '../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  Tag,
-  SensitiveText,
-} from '../../components/component-library';
-import { Skeleton } from '../../components/component-library/skeleton';
-import { PreferredAvatar } from '../../components/app/preferred-avatar';
+import { Box } from '../../components/component-library/box/box';
+import { Text } from '../../components/component-library/text/text';
+import { Tag } from '../../components/component-library/tag/tag';
+import { SensitiveText } from '../../components/component-library/sensitive-text/sensitive-text';
+import { Skeleton } from '../../components/component-library/skeleton/skeleton';
+import { PreferredAvatar } from '../../components/app/preferred-avatar/preferred-avatar';
 import { getSnapName, shortenAddress } from '../../helpers/utils/util';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { selectAccountGroupNameByInternalAccount } from '../confirmations/selectors/accounts';
@@ -32,14 +30,14 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getSnapsMetadata,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../../selectors/selectors.types';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { AccountNetworkIndicator } from '../../components/multichain/account-network-indicator';
+import { AccountNetworkIndicator } from '../../components/multichain/account-network-indicator/account-network-indicator';
 import { getAccountLabels } from '../../helpers/utils/accounts';
 import { useFormatters } from '../../hooks/useFormatters';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { normalizeSafeAddress } from '../../../shared/lib/multichain/address';
 
 // Component to display snap account information (avatar, address, account group name, balance, network indicator, and snap name)

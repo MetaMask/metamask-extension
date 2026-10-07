@@ -11,15 +11,16 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import {
   mockBtcSpotPrices,
   mockCurrencyExchangeRates,
-  mockEmptyInitialFullScan,
   mockExchangeRates,
   mockFiatExchangeRates,
-  mockInitialFullScan,
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
+} from './mocks/price-api';
+import { mockEmptyInitialFullScan, mockInitialFullScan } from './mocks/esplora';
+import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,
-} from './mocks';
+} from './mocks/tokens-api';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
 async function buildBtcAssetsBaseMocks(mockServer: Mockttp) {

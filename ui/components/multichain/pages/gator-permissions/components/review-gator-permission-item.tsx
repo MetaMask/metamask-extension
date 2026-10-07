@@ -22,7 +22,7 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getURLHost } from '../../../../../helpers/utils/util';
-import Card from '../../../../ui/card';
+import Card from '../../../../ui/card/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';

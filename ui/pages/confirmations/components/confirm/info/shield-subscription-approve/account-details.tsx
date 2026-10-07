@@ -1,8 +1,6 @@
 import React from 'react';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 

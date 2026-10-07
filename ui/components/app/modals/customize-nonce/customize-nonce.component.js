@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, BoxAlignItems } from '@metamask/design-system-react';
-import Modal from '../../modal';
-import TextField from '../../../ui/text-field';
+import Modal from '../../modal/modal.component';
+import TextField from '../../../ui/text-field/text-field.component';
 import {
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
+import withModalProps from '../../../../helpers/higher-order-components/with-modal-props/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-  Text,
-} from '../../../component-library';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 
 const CustomizeNonce = ({
   hideModal,

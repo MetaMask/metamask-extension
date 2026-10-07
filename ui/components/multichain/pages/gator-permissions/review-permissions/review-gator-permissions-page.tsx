@@ -21,7 +21,9 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { PermissionInfoWithMetadata } from '@metamask/gator-permissions-controller';
-import { Content, Header, Page } from '../../page';
+import { Content } from '../../page/components/content/content';
+import { Header } from '../../page/components/header/header';
+import { Page } from '../../page/page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -29,17 +31,15 @@ import {
   getDisplayOrigin,
   safeDecodeURIComponent,
 } from '../helper';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors/multichain/networks';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import {
   AppState,
   getAggregatedGatorPermissionByChainId,
   getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
-import {
-  ReviewGatorPermissionItem,
-  PermissionsEmptyState,
-} from '../components';
+import { ReviewGatorPermissionItem } from '../components/review-gator-permission-item';
+import { PermissionsEmptyState } from '../components/permissions-empty-state';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
 export const ReviewGatorPermissionsPage = () => {

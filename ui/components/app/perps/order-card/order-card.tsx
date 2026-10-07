@@ -14,14 +14,14 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { Order } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps/feature-flags';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
 import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { getDisplaySymbol } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
-import type { Order } from '../types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type OrderCardProps = {

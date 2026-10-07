@@ -11,8 +11,6 @@ import {
 } from './amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
-export type { MoneyAccountWithdrawAmountUpdate };
-
 const LOG_TAG = '[Money Account]';
 
 /**

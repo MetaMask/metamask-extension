@@ -1,15 +1,13 @@
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { useTransactionAccountOverride } from '../transactions/useTransactionAccountOverride';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
-import {
-  ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS,
-  useIsFundingAccountBalanceSettling,
-} from './useIsFundingAccountBalanceSettling';
+import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from './useAutomaticTransactionPayToken';
+import { useIsFundingAccountBalanceSettling } from './useIsFundingAccountBalanceSettling';
 
 jest.mock('../transactions/useTransactionAccountOverride');
 jest.mock('../send/useAccountTokensLoading');

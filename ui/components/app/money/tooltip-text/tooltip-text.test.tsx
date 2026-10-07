@@ -8,7 +8,7 @@ import {
   SensitiveTextLength,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../component-library';
+import { PopoverPosition } from '../../../component-library/popover/popover.types';
 import { TooltipText } from './tooltip-text';
 
 const renderTooltipText = (

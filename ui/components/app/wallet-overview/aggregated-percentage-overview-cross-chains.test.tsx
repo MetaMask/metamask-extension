@@ -5,12 +5,14 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getMarketData,
-  getAllTokens,
   getChainIdsToPoll,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getTokensControllerAllTokens as getAllTokens,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../../shared/lib/selectors/assets-migration';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
@@ -27,16 +29,30 @@ jest.mock('../../../hooks/useGetFormattedTokensPerChain', () => ({
 }));
 
 jest.mock('../../../ducks/locale/locale', () => ({
+  ...jest.requireActual('../../../ducks/locale/locale'),
   getIntlLocale: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../selectors/selectors'),
   getSelectedAccount: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
-  getMarketData: jest.fn(),
-  getAllTokens: jest.fn(),
   getChainIdsToPoll: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../../selectors/multichain/networks'),
   selectAnyEnabledNetworksAreAvailable: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/assets-migration'),
+  ...(() => ({
+    getTokenRatesControllerMarketData: jest.fn(),
+    getTokensControllerAllTokens: jest.fn(),
+  }))(),
+  ...(() => ({
+    getCurrencyRateControllerCurrentCurrency: jest.fn(),
+  }))(),
 }));
 
 jest.mock('../../../../shared/lib/selectors/preferences', () => ({
@@ -44,11 +60,8 @@ jest.mock('../../../../shared/lib/selectors/preferences', () => ({
   getPreferences: jest.fn(),
 }));
 
-jest.mock('../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn(),
-}));
-
 jest.mock('../../../../shared/lib/selectors/networks', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/networks'),
   getNetworkConfigurationsByChainId: jest.fn(),
 }));
 

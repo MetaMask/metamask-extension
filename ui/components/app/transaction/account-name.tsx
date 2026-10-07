@@ -3,7 +3,7 @@ import { AvatarBaseSize } from '@metamask/design-system-shared';
 import { useSelector } from 'react-redux';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { selectAccountGroupNameByAddress } from '../../../selectors/multichain-accounts/account-tree';
-import { PreferredAvatar } from '../preferred-avatar';
+import { PreferredAvatar } from '../preferred-avatar/preferred-avatar';
 
 export function AccountName({ address }: { address?: string | null }) {
   const accountName = useSelector((state) =>

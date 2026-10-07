@@ -16,7 +16,7 @@ import {
   ModalOverlay,
   ModalContent,
 } from '@metamask/design-system-react';
-import { toast } from '../../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { resetAccount } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';

@@ -11,11 +11,8 @@ import {
   type MetaMetricsReferrerObject,
 } from '../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
-import {
-  getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
-} from '../selectors';
+import { getAnalyticsId } from '../selectors/selectors';
+import { getConsentDecisionMade, getOptedIn } from '../selectors/metametrics';
 import { trackAnalyticsEvent } from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 

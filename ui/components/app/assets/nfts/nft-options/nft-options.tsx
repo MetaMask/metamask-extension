@@ -1,15 +1,15 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { I18nContext } from '../../../../../contexts/i18n';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { Icon } from '../../../../component-library/icon/icon';
 import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
   IconName,
   IconSize,
-  Popover,
-  PopoverPosition,
-} from '../../../../component-library';
+} from '../../../../component-library/icon/icon.types';
+import { Popover } from '../../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../../component-library/popover/popover.types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import { SelectableListItem } from '../../asset-list/sort-control/sort-control';
 

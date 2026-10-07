@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { getEnabledChainIds } from '../selectors';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { useDispatch } from '../store/hooks';
 

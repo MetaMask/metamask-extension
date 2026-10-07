@@ -3,11 +3,13 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   getMultichainCurrencyImage,
-  getMultichainBalances,
-  getMultichainNetwork,
-  getMultichainCurrentCurrency,
   getMultichainConversionRate,
 } from '../selectors/multichain';
+import {
+  getMultiChainBalancesControllerBalances as getMultichainBalances,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+} from '../../shared/lib/selectors/assets-migration';
+import { getMultichainNetwork } from '../selectors/multichain/networks';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../shared/constants/multichain/assets';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';

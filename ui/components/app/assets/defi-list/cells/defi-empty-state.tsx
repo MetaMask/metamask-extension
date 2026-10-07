@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../../hooks/useTheme';
-import { TabEmptyState } from '../../../../ui/tab-empty-state';
+import { TabEmptyState } from '../../../../ui/tab-empty-state/tab-empty-state';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
@@ -12,11 +12,11 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import {
   getDataCollectionForMarketing,
-  getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
-  getIsEvmMultichainNetworkSelected,
-} from '../../../../../selectors';
+} from '../../../../../selectors/metametrics';
+import { getAnalyticsId } from '../../../../../selectors/selectors';
+import { getIsEvmMultichainNetworkSelected } from '../../../../../selectors/multichain/networks';
 
 const EMPTY_STATE_CLASSNAME = 'mx-auto mt-5 mb-6 max-w-48';
 

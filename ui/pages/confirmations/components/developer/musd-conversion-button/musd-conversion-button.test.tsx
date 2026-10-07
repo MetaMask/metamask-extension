@@ -1,11 +1,8 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-  MUSD_TOKEN,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../constants/musd';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../../constants/musd';
 import { useDeveloperTransferTransaction } from '../utils';
 import { MusdConversionButton } from './musd-conversion-button';
 

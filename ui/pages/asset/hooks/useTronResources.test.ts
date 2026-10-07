@@ -3,7 +3,8 @@ import { CaipAssetId } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
-import * as assetsSelectors from '../../../selectors/assets';
+import * as assetsSelectorsModule1 from '../../../selectors/assets';
+
 import { useTronResources } from './useTronResources';
 
 jest.mock('../../../selectors/assets', () => ({
@@ -42,7 +43,7 @@ describe('useTronResources', () => {
       Record<string, { amount: string }>
     > = {},
   ) => {
-    (assetsSelectors.getAssetsBalance as jest.Mock).mockReturnValue(
+    (assetsSelectorsModule1.getAssetsBalance as jest.Mock).mockReturnValue(
       assetsControllerBalances,
     );
   };

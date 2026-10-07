@@ -1,8 +1,6 @@
 import { HardwareWalletError, ErrorCode } from '@metamask/hw-wallet-sdk';
 import { DeviceEvent } from './types';
 
-export { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
-
 /**
  * Map an error code to the appropriate device event
  *

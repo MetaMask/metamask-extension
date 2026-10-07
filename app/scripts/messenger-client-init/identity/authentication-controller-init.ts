@@ -3,14 +3,14 @@ import {
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
 import { Platform } from '@metamask/profile-sync-controller/sdk';
-import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication/config';
 import { getIsBasicFunctionalityConsolidationGateEnabled } from '../../../../shared/lib/basic-functionality-consolidation-gate';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { MessengerClientInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
-} from '../messengers/identity';
+} from '../messengers/identity/authentication-controller-messenger';
 
 /**
  * Initialize the Authentication controller.

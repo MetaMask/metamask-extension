@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
-import { SnapUIRenderer } from '.';
+import { SnapUIRenderer } from './snap-ui-renderer';
 
 const store = configureStore(testData);
 

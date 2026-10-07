@@ -1,6 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';

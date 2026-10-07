@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { getIsSmartTransaction } from '../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../shared/lib/selectors/smart-transactions';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -16,8 +16,8 @@ jest.mock('../../store/actions', () => ({
   forceUpdateMetamaskState: jest.fn(),
 }));
 
-jest.mock('../../../shared/lib/selectors', () => ({
-  ...jest.requireActual('../../../shared/lib/selectors'),
+jest.mock('../../../shared/lib/selectors/smart-transactions', () => ({
+  ...jest.requireActual('../../../shared/lib/selectors/smart-transactions'),
   getIsSmartTransaction: jest.fn(),
 }));
 

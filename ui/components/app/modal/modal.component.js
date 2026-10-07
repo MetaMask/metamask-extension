@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import Button from '../../ui/button';
+import Button from '../../ui/button/button.component';
 
 /**
  * @deprecated The `<Modal />` component has been deprecated in favor of the new `<Modal>` component from the component-library.

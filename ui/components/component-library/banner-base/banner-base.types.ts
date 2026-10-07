@@ -3,11 +3,11 @@ import React from 'react';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
+} from '../box/box.types';
 
-import type { TextProps } from '../text';
-import type { ButtonLinkProps } from '../button-link';
-import type { ButtonIconProps } from '../button-icon';
+import type { TextProps } from '../text/text.types';
+import type { ButtonLinkProps } from '../button-link/button-link.types';
+import type { ButtonIconProps } from '../button-icon/button-icon.types';
 
 /**
  * Makes all props optional so that if a prop object is used not ALL required props need to be passed

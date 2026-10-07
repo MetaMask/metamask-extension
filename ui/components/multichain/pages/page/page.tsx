@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useLocation } from 'react-router-dom';
-import { Box } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
 import {
   BackgroundColor,
   BlockSize,
@@ -11,7 +11,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 
-import type { StyleUtilityProps } from '../../../component-library/box';
+import type { StyleUtilityProps } from '../../../component-library/box/box.types';
 import { hideAppHeader } from '../../../../pages/routes/utils';
 
 // TODO: Convert to a `type` in a future major version.

@@ -3,11 +3,11 @@ import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { Checkbox } from '@metamask/design-system-react';
+import { Button } from '../../components/component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-} from '../../components/component-library/button';
+} from '../../components/component-library/button/button.types';
 import { parse } from '../../../shared/lib/deep-links/parse';
 import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -27,7 +27,8 @@ import {
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import { ButtonLink, Label } from '../../components/component-library';
+import { ButtonLink } from '../../components/component-library/button-link/button-link';
+import { Label } from '../../components/component-library/label/label';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import type { MetaMaskReduxState } from '../../store/types';

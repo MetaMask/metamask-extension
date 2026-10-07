@@ -5,16 +5,18 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { Box, PolymorphicRef } from '../box';
-import type { BoxProps } from '../box';
+import { Box } from '../box/box';
+import { PolymorphicRef } from '../box/box.types';
+import type { BoxProps } from '../box/box.types';
 import {
   TextFieldProps,
   TextFieldSize,
   TextFieldType,
 } from '../text-field/text-field.types';
-import { Label } from '../label';
-import { TextField } from '../text-field';
-import { HelpText, HelpTextSeverity } from '../help-text';
+import { Label } from '../label/label';
+import { TextField } from '../text-field/text-field';
+import { HelpText } from '../help-text/help-text';
+import { HelpTextSeverity } from '../help-text/help-text.types';
 import {
   FormTextFieldSize,
   FormTextFieldProps,

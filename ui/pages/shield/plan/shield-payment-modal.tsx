@@ -13,24 +13,22 @@ import {
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../components/component-library';
+import { AvatarNetwork } from '../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../components/component-library/avatar-network/avatar-network.types';
+import { AvatarToken } from '../../../components/component-library/avatar-token/avatar-token';
+import { AvatarTokenSize } from '../../../components/component-library/avatar-token/avatar-token.types';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
 import { BorderColor } from '../../../helpers/constants/design-system';
-import { AssetPickerModal } from '../../../components/multichain/asset-picker-amount/asset-picker-modal';
+import { AssetPickerModal } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { TokenWithApprovalAmount } from '../../../hooks/subscription/useSubscriptionPricing';
 import {
   AssetWithDisplayData,

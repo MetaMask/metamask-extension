@@ -7,7 +7,7 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import { getQrScanButtonLabelKey } from '../hardware-wallet-signatures.utils';
 import type { SignatureFooterProps } from './signature-footer.types';
 

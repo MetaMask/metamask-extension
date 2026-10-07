@@ -9,7 +9,7 @@ import {
   ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
   getEnabledAdvancedPermissions,
 } from '../../../../shared/lib/gator-permissions/feature-flags';
-import { getGatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
+import { getGatorPermissionsControllerMessenger } from '../messengers/gator-permissions/gator-permissions-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 

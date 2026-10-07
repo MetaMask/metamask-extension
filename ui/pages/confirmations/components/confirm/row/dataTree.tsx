@@ -9,16 +9,14 @@ import {
 import { isValidHexAddress } from '../../../../../../shared/lib/hexstring-utils';
 
 import { sanitizeString } from '../../../../../helpers/utils/util';
-import { Box } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
 import { BlockSize } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDate,
-  ConfirmInfoRowText,
-  ConfirmInfoRowTextTokenUnits,
-} from '../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowAddress } from '../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDate } from '../../../../../components/app/confirm/info/row/date';
+import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
+import { ConfirmInfoRowTextTokenUnits } from '../../../../../components/app/confirm/info/row/text-token-units';
 import { useGetTokenStandardAndDetails } from '../../../hooks/useGetTokenStandardAndDetails';
 
 type ValueType = string | Record<string, TreeData> | TreeData[];

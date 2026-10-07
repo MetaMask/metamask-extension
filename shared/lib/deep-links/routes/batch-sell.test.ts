@@ -1,6 +1,7 @@
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEFAULT_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { batchSell } from './batch-sell';
 import { HomeQueryParams } from './home';
-import { DEFAULT_ROUTE } from './route';
 
 describe('batch-sell deep link route', () => {
   it('opens the default route with QR modal params for the batch sell deeplink', () => {

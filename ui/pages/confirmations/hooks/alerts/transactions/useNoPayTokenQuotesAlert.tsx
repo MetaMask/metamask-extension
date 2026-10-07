@@ -8,7 +8,7 @@ import {
   hasTransactionType,
   isPerpsWithdrawTransaction,
 } from '../../../../../../shared/lib/transactions.utils';
-import { NoQuoteAlert } from '../../../components/no-quote-alert';
+import { NoQuoteAlert } from '../../../components/no-quote-alert/no-quote-alert';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import {

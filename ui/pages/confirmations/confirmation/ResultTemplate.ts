@@ -4,7 +4,10 @@ import {
   ErrorOptions,
   SuccessOptions,
 } from '@metamask/approval-controller';
-import { IconName, IconSize } from '../../../components/component-library';
+import {
+  IconName,
+  IconSize,
+} from '../../../components/component-library/icon/icon.types';
 import {
   FontWeight,
   BlockSize,

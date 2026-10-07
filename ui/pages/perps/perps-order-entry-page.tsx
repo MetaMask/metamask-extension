@@ -69,13 +69,11 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  usePerpsLivePositions,
-  usePerpsLiveOrders,
-  usePerpsLiveAccount,
-  usePerpsLiveMarketData,
-  usePerpsLiveCandles,
-} from '../../hooks/perps/stream';
+import { usePerpsLivePositions } from '../../hooks/perps/stream/usePerpsLivePositions';
+import { usePerpsLiveOrders } from '../../hooks/perps/stream/usePerpsLiveOrders';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream/usePerpsLiveAccount';
+import { usePerpsLiveMarketData } from '../../hooks/perps/stream/usePerpsLiveMarketData';
+import { usePerpsLiveCandles } from '../../hooks/perps/stream/usePerpsLiveCandles';
 import {
   type PerpsState,
   selectPerpsDepositPending,
@@ -93,19 +91,15 @@ import {
   CandlePeriod,
   TimeDuration,
 } from '../../components/app/perps/constants/chartConfig';
-import {
-  PerpsCandlestickChart,
-  type PerpsCandlestickChartRef,
-} from '../../components/app/perps/perps-candlestick-chart';
-import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import PerpsCandlestickChart from '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart';
+import type { PerpsCandlestickChartRef } from '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart';
+import PerpsCandlePeriodSelector from '../../components/app/perps/perps-candle-period-selector/perps-candle-period-selector';
 import { PerpsExpandableChartPanel } from '../../components/app/perps/perps-chart-content/perps-expandable-chart-panel';
 import { buildPerpsChartPriceLines } from '../../components/app/perps/perps-chart-content/build-perps-chart-price-lines';
-import {
-  usePerpsEligibility,
-  usePerpsEstimatedSlippage,
-  usePerpsEventTracking,
-  usePerpsMaxSlippage,
-} from '../../hooks/perps';
+import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility';
+import { usePerpsEstimatedSlippage } from '../../hooks/perps/usePerpsEstimatedSlippage';
+import { usePerpsEventTracking } from '../../hooks/perps/usePerpsEventTracking';
+import { usePerpsMaxSlippage } from '../../hooks/perps/usePerpsMaxSlippage';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
@@ -117,12 +111,12 @@ import {
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../../components/app/perps/utils/track-perps-error-screen';
-import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
-import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config';
+import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal/perps-geo-block-modal';
+import { PerpsSlippageConfigModal } from '../../components/app/perps/slippage-config/perps-slippage-config-modal';
 import { bpsToPercent } from '../../components/app/perps/constants/slippageConfig';
-import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
+import { useSelectedAccountComplianceGate } from '../../components/app/compliance/useSelectedAccountComplianceGate';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
-import { getPerpsStreamManager } from '../../providers/perps';
+import { getPerpsStreamManager } from '../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { PerpsBackgroundResult } from '../../components/app/perps/types';
 import {
@@ -131,10 +125,12 @@ import {
   normalizeTpslPrices,
   safeDecodeURIComponent,
   formatSignedChangePercent,
-  willFlipPosition,
   getPositionDirection,
 } from '../../components/app/perps/utils';
-import { derivePositionTpslPricesFromOrders } from '../../components/app/perps/utils/orderUtils';
+import {
+  willFlipPosition,
+  derivePositionTpslPricesFromOrders,
+} from '../../components/app/perps/utils/orderUtils';
 import { derivePerpsTradeAction } from '../../components/app/perps/utils/deriveTradeAction';
 import {
   parsePerpsDisplayPrice,
@@ -147,7 +143,7 @@ import {
   isValidStopLossPrice,
   isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
-import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
+import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons/perps-detail-page-skeleton';
 import {
   PERPS_MIN_MARKET_ORDER_USD,
   PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC,
@@ -156,26 +152,24 @@ import {
   consumeUnfundedDepositFunnel,
   markUnfundedDepositFunnel,
 } from '../../components/app/perps/utils/unfunded-deposit-funnel';
-import {
-  OrderEntry,
-  OrderEntryHeader,
-  DirectionTabs,
-  OrderSummary,
-  type OrderDirection,
-  type OrderFormDraft,
-  type OrderFormState,
-  type OrderMode,
-  type OrderCalculations,
-} from '../../components/app/perps/order-entry';
-import {
-  PERPS_TOAST_KEYS,
-  type PerpsToastKey,
-  type PerpsToastRouteState,
-  usePerpsToast,
-} from '../../components/app/perps/perps-toast';
+import { OrderEntry } from '../../components/app/perps/order-entry/order-entry';
+import { OrderEntryHeader } from '../../components/app/perps/order-entry/components/order-entry-header/order-entry-header';
+import { DirectionTabs } from '../../components/app/perps/order-entry/components/direction-tabs/direction-tabs';
+import { OrderSummary } from '../../components/app/perps/order-entry/components/order-summary/order-summary';
+import type {
+  OrderDirection,
+  OrderFormDraft,
+  OrderFormState,
+  OrderMode,
+  OrderCalculations,
+} from '../../components/app/perps/order-entry/order-entry.types';
+import { PERPS_TOAST_KEYS } from '../../components/app/perps/perps-toast/perps-toast.constants';
+import type { PerpsToastKey } from '../../components/app/perps/perps-toast/perps-toast.constants';
+import type { PerpsToastRouteState } from '../../components/app/perps/perps-toast/perps-toast-provider';
+import { usePerpsToast } from '../../components/app/perps/perps-toast/perps-toast-provider';
 import { calculatePositionSize } from '../../components/app/perps/order-entry/order-entry.mocks';
+import { PerpsOrderBook } from '../../components/app/perps/order-book/order-book';
 import {
-  PerpsOrderBook,
   ORDER_BOOK_DEFAULT_WIDTH_PCT,
   ORDER_BOOK_MIN_WIDTH_PCT,
   ORDER_BOOK_MAX_WIDTH_PCT,
@@ -185,7 +179,7 @@ import {
   computeOrderBookWidthPct,
   computeOrderBookWidthPctFromLeft,
   getOrderBookMaxWidthPct,
-} from '../../components/app/perps/order-book';
+} from '../../components/app/perps/order-book/order-book.utils';
 import { useVipTier } from '../../hooks/rewards/useVipTier';
 
 /** Percentage points the order-book divider moves per arrow-key press. */

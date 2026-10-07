@@ -7,10 +7,8 @@ import {
   cancelEncryptionPublicKeyMsg,
 } from '../../store/actions';
 
-import {
-  unconfirmedTransactionsListSelector,
-  getTargetAccountWithSendEtherInfo,
-} from '../../selectors';
+import { unconfirmedTransactionsListSelector } from '../../selectors/confirm-transaction';
+import { getTargetAccountWithSendEtherInfo } from '../../selectors/selectors';
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';

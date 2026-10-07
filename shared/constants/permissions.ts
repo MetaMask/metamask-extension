@@ -157,5 +157,3 @@ export const PermissionWeight = Object.freeze({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   unknown_permission: 3,
 });
-
-export * from './snaps/permissions';

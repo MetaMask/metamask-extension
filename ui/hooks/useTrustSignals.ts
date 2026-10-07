@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import type { Hex } from '@metamask/utils';
 import isEqual from 'lodash/isEqual';
-import { getAddressSecurityAlertResponse } from '../selectors';
+import { getAddressSecurityAlertResponse } from '../selectors/selectors';
 import { ResultType, createCacheKey } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 import { useI18nContext } from './useI18nContext';

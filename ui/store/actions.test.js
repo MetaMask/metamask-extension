@@ -28,7 +28,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';

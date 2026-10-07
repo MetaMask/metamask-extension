@@ -9,13 +9,10 @@ import {
   JustifyContent,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  Icon,
-  Box,
-  IconName,
-  IconSize,
-} from '../../component-library';
+import { AvatarIcon } from '../../component-library/avatar-icon/avatar-icon';
+import { Icon } from '../../component-library/icon/icon';
+import { Box } from '../../component-library/box/box';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 import Preloader from '../icon/preloader/preloader-icon.component';
 import { DelineatorProps, DelineatorType } from './delineator.types';
 import { getIconPropsByType, overrideTextComponentColorByType } from './utils';

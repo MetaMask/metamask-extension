@@ -9,7 +9,7 @@ import {
   getHardwareWalletSignatureErrorEvent,
   cleanupPendingApproval,
 } from '../hardware-wallet-signatures.utils';
-import { HardwareWalletSignatureEvent } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../hardware-wallet-signatures-state-machine/types';
 import type {
   UseSendBundleSubmissionOptions,
   UseSendBundleSubmissionReturn,

@@ -1,17 +1,15 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   checkHardwareWalletPermission,
   getConnectedDevices,
   subscribeToWebHidEvents,
   subscribeToWebUsbEvents,
 } from './webConnectionUtils';
-import {
-  HardwareWalletType,
-  HardwareConnectionPermissionState,
-  type HardwareWalletConnectionState,
-} from './types';
+import { HardwareConnectionPermissionState } from './types';
+import type { HardwareWalletConnectionState } from './types';
 import {
   type HardwareWalletState,
   type HardwareWalletRefs,

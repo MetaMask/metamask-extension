@@ -3,17 +3,15 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/lib/conversion.utils';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  TextField,
-  TextFieldType,
-} from '../../../../../../../components/component-library';
+import { Modal } from '../../../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../../../components/component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../../../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../../../components/component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../../../../components/component-library/text/text';
+import { TextField } from '../../../../../../../components/component-library/text-field/text-field';
+import { TextFieldType } from '../../../../../../../components/component-library/text-field/text-field.types';
 import {
   AlignItems,
   Display,

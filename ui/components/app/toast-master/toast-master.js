@@ -24,13 +24,14 @@ import {
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toggleDefaultView } from '../../../store/actions';
-import { Icon, IconName, IconSize } from '../../component-library';
-import { Toast, ToastContainer } from '../../multichain';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
+import { Toast, ToastContainer } from '../../multichain/toast/toast';
 import { SurveyToast } from '../../ui/survey-toast/survey-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
-import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast';
+import { BasicFunctionalityMigrationToast } from '../basic-functionality-migration-toast/basic-functionality-migration-toast';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
-import { ArcUsageNoticeToast } from '../arc-usage-notice-toast';
+import { ArcUsageNoticeToast } from '../arc-usage-notice-toast/arc-usage-notice-toast';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -40,7 +41,7 @@ import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
   getSubscriptionPaymentData,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/subscription-utils';
 import {
   isCardPaymentMethod,
   isCryptoPaymentMethod,

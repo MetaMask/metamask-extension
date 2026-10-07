@@ -10,8 +10,8 @@ import { createSelector } from 'reselect';
 import {
   getIsShieldSubscriptionActive,
   getShieldSubscription,
-  ShieldSubscriptionError,
-} from '../../../shared/lib/shield';
+} from '../../../shared/lib/shield/subscription-utils';
+import { ShieldSubscriptionError } from '../../../shared/lib/shield/type';
 
 type SubscriptionState = {
   metamask: SubscriptionControllerState & {

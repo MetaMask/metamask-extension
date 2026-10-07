@@ -34,11 +34,8 @@ import {
 } from '../../shared/constants/metametrics';
 import { createEventBuilder } from '../../shared/lib/analytics/create-event-builder';
 import { useSegmentContext } from '../hooks/useSegmentContext';
-import {
-  getAnalyticsId,
-  getConsentDecisionMade,
-  getOptedIn,
-} from '../selectors';
+import { getAnalyticsId } from '../selectors/selectors';
+import { getConsentDecisionMade, getOptedIn } from '../selectors/metametrics';
 import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {

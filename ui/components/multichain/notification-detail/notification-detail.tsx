@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box } from '../../component-library';
+import { Box } from '../../component-library/box/box';
 import {
   AlignItems,
   BackgroundColor,

@@ -1,6 +1,6 @@
+import { WalletConnectionType } from '@metamask/test-dapp-bitcoin';
 import {
   TestDappBitcoin,
-  WalletConnectionType,
   availableConnectionTypes,
 } from '../../page-objects/pages/test-dapp-bitcoin';
 import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.flow';

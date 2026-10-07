@@ -12,7 +12,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync';
+import { useBackupAndSync } from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -25,19 +25,19 @@ import {
 } from '../../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { enableBasicFunctionality, showModal } from '../../../../store/actions';
-import ToggleButton from '../../../ui/toggle-button';
+import ToggleButton from '../../../ui/toggle-button/toggle-button.component';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import {
   getBackupAndSyncOnboardingToggleState,
   getExternalServicesOnboardingToggleState,
   getUseExternalServices,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import {
   onboardingToggleBackupAndSyncOff,
   onboardingToggleBackupAndSyncOn,
   onboardingToggleBasicFunctionalityOn,
 } from '../../../../ducks/app/app';
-import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity';
+import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../modals/identity/confirm-turn-on-backup-and-sync-modal/confirm-turn-on-backup-and-sync-modal';
 import { useDispatch } from '../../../../store/hooks';
 
 export const backupAndSyncToggleTestIds = {

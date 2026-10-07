@@ -15,7 +15,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import { Json } from '@metamask/utils';
-import { MetaMaskReduxState } from '../../ui/store/store';
+import { MetaMaskReduxState } from '../../ui/store/types';
 import mockState from '../data/mock-state.json';
 import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
@@ -51,8 +51,6 @@ export const TOP_ASSETS_GET_RESPONSE = [
 export const REFRESH_TIME_GET_RESPONSE = {
   seconds: 3600,
 };
-
-export const AGGREGATOR_METADATA_GET_RESPONSE = {};
 
 export const GAS_PRICES_GET_RESPONSE = {
   SafeGasPrice: '10',
@@ -301,3 +299,5 @@ export function overrideAccountsFromMockState<
     },
   };
 }
+
+export const AGGREGATOR_METADATA_GET_RESPONSE = {};

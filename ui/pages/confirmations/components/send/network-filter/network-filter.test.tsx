@@ -59,41 +59,93 @@ jest.mock(
       ) : null,
   }),
 );
-jest.mock('../../../../../components/component-library', () => ({
+
+jest.mock(
+  '../../../../../components/component-library/avatar-network/avatar-network',
+  () => ({
+    AvatarNetwork: ({ name, src }: { name: string; src: string }) => (
+      <div data-testid="avatar-network" data-name={name} data-src={src} />
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/avatar-network/avatar-network.types',
+  () => ({ AvatarNetworkSize: { Sm: 'sm', Xl: 'xl' } }),
+);
+
+jest.mock('../../../../../components/component-library/box/box', () => ({
   Box: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="box">{children}</div>
   ),
-  ButtonBase: ({
-    children,
-    onClick,
-    startIconName,
-  }: {
-    children: React.ReactNode;
-    onClick: () => void;
-    startIconName?: string;
-  }) => (
-    <button data-testid="send-network-filter-toggle" onClick={onClick}>
-      {startIconName ? <div data-testid={`icon-${startIconName}`} /> : null}
-      {children}
-    </button>
-  ),
-  ButtonIcon: ({
-    onClick,
-    iconName,
-    ariaLabel,
-  }: {
-    onClick: () => void;
-    iconName: string;
-    ariaLabel: string;
-  }) => (
-    <button
-      data-testid="close-recipient-modal-btn"
-      onClick={onClick}
-      aria-label={ariaLabel}
-    >
-      <div data-testid={`icon-${iconName}`} />
-    </button>
-  ),
+}));
+
+jest.mock(
+  '../../../../../components/component-library/button-base/button-base',
+  () => ({
+    ButtonBase: ({
+      children,
+      onClick,
+      startIconName,
+    }: {
+      children: React.ReactNode;
+      onClick: () => void;
+      startIconName?: string;
+    }) => (
+      <button data-testid="send-network-filter-toggle" onClick={onClick}>
+        {startIconName ? <div data-testid={`icon-${startIconName}`} /> : null}
+        {children}
+      </button>
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/button-base/button-base.types',
+  () => ({ ButtonBaseSize: { Md: 'md', Sm: 'sm' } }),
+);
+jest.mock(
+  '../../../../../components/component-library/button-icon/button-icon',
+  () => ({
+    ButtonIcon: ({
+      onClick,
+      iconName,
+      ariaLabel,
+    }: {
+      onClick: () => void;
+      iconName: string;
+      ariaLabel: string;
+    }) => (
+      <button
+        data-testid="close-recipient-modal-btn"
+        onClick={onClick}
+        aria-label={ariaLabel}
+      >
+        <div data-testid={`icon-${iconName}`} />
+      </button>
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/button-icon/button-icon.types',
+  () => ({ ButtonIconSize: { Sm: 'sm' } }),
+);
+
+jest.mock('../../../../../components/component-library/icon/icon', () => ({
+  Icon: ({ name }: { name: string }) => <div data-testid={`icon-${name}`} />,
+}));
+jest.mock(
+  '../../../../../components/component-library/icon/icon.types',
+  () => ({
+    IconName: {
+      ArrowDown: 'arrow-down',
+      Filter: 'filter',
+      Global: 'global',
+      Close: 'close',
+    },
+    IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
+  }),
+);
+
+jest.mock('../../../../../components/component-library/modal/modal', () => ({
   Modal: ({
     children,
     isOpen,
@@ -101,58 +153,74 @@ jest.mock('../../../../../components/component-library', () => ({
     children: React.ReactNode;
     isOpen: boolean;
   }) => (isOpen ? <div data-testid="modal">{children}</div> : null),
-  ModalOverlay: () => <div data-testid="modal-overlay" />,
-  ModalContent: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="modal-content">{children}</div>
-  ),
-  ModalHeader: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="modal-header">{children}</div>
-  ),
-  ModalBody: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="modal-body">{children}</div>
-  ),
+}));
+jest.mock(
+  '../../../../../components/component-library/modal-body/modal-body',
+  () => ({
+    ModalBody: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="modal-body">{children}</div>
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/modal-content/modal-content',
+  () => ({
+    ModalContent: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="modal-content">{children}</div>
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/modal-content/modal-content.types',
+  () => ({ ModalContentSize: { Md: 'md' } }),
+);
+
+jest.mock(
+  '../../../../../components/component-library/modal-header/modal-header',
+  () => ({
+    ModalHeader: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="modal-header">{children}</div>
+    ),
+  }),
+);
+jest.mock(
+  '../../../../../components/component-library/modal-overlay/modal-overlay',
+  () => ({ ModalOverlay: () => <div data-testid="modal-overlay" /> }),
+);
+
+jest.mock('../../../../../components/component-library/text/text', () => ({
   Text: ({ children }: { children: React.ReactNode }) => (
     <span data-testid="text">{children}</span>
   ),
-  Icon: ({ name }: { name: string }) => <div data-testid={`icon-${name}`} />,
-  AvatarNetwork: ({ name, src }: { name: string; src: string }) => (
-    <div data-testid="avatar-network" data-name={name} data-src={src} />
-  ),
-  ButtonBaseSize: { Md: 'md', Sm: 'sm' },
-  ButtonIconSize: { Sm: 'sm' },
-  ModalContentSize: { Md: 'md' },
-  IconName: {
-    ArrowDown: 'arrow-down',
-    Filter: 'filter',
-    Global: 'global',
-    Close: 'close',
-  },
-  IconSize: { Sm: 'sm', Md: 'md', Xl: 'xl' },
-  AvatarNetworkSize: { Sm: 'sm', Xl: 'xl' },
 }));
-jest.mock('../../../../../components/multichain', () => ({
-  NetworkListItem: ({
-    name,
-    onClick,
-    selected,
-    iconSrc,
-  }: {
-    name: string;
-    onClick: () => void;
-    selected: boolean;
-    iconSrc: string;
-  }) => (
-    <button
-      data-testid="network-list-item"
-      data-name={name}
-      data-selected={selected}
-      data-icon={iconSrc}
-      onClick={onClick}
-    >
-      {name}
-    </button>
-  ),
-}));
+
+jest.mock(
+  '../../../../../components/multichain/network-list-item/network-list-item',
+  () => ({
+    NetworkListItem: ({
+      name,
+      onClick,
+      selected,
+      iconSrc,
+    }: {
+      name: string;
+      onClick: () => void;
+      selected: boolean;
+      iconSrc: string;
+    }) => (
+      <button
+        data-testid="network-list-item"
+        data-name={name}
+        data-selected={selected}
+        data-icon={iconSrc}
+        onClick={onClick}
+      >
+        {name}
+      </button>
+    ),
+  }),
+);
+
 jest.mock('../../../utils/network');
 
 describe('NetworkFilter', () => {

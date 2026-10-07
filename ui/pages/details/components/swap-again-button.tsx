@@ -8,7 +8,7 @@ import {
   FeatureId,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import { BridgeQueryParams } from '../../../../shared/lib/deep-links/routes/swap';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';

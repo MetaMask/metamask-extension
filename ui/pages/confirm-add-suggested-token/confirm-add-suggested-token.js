@@ -5,20 +5,18 @@ import classnames from 'clsx';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { ERC20 } from '@metamask/controller-utils';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-import {
-  BannerAlert,
-  Button,
-  ButtonLinkSize,
-  ButtonVariant,
-  Text,
-} from '../../components/component-library';
+import { BannerAlert } from '../../components/component-library/banner-alert/banner-alert';
+import { Button } from '../../components/component-library/button/button';
+import { ButtonLinkSize } from '../../components/component-library/button-link/button-link.types';
+import { ButtonVariant } from '../../components/component-library/button/button.types';
+import { Text } from '../../components/component-library/text/text';
 import {
   TextVariant,
   TextAlign,
   Severity,
 } from '../../helpers/constants/design-system';
-import TokenBalance from '../../components/ui/token-balance';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import TokenBalance from '../../components/ui/token-balance/token-balance';
+import PageContainerFooter from '../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { I18nContext } from '../../contexts/i18n';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -35,9 +33,9 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
-import { getSuggestedTokens } from '../../selectors';
+import { getSuggestedTokens } from '../../selectors/selectors';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { Nav } from '../confirmations/components/confirm/nav';
+import { Nav } from '../confirmations/components/confirm/nav/nav';
 import { hideAppHeader } from '../routes/utils';
 import { useDispatch } from '../../store/hooks';
 

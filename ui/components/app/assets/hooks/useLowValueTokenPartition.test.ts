@@ -1,14 +1,17 @@
 import { Hex } from '@metamask/utils';
 import { MUSD_TOKEN_ADDRESS } from '#ui/components/app/musd/constants';
 import { type TokenWithFiatAmount } from '#ui/components/app/assets/types';
-import { getUseExternalServices } from '../../../../selectors';
+import { getUseExternalServices } from '../../../../selectors/selectors';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useLowValueTokenPartition } from './useLowValueTokenPartition';
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
-  getCurrencyRates: jest.fn(() => ({})),
+jest.mock('../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../selectors/selectors'),
   getUseExternalServices: jest.fn(() => true),
+}));
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/assets-migration'),
+  getCurrencyRateControllerCurrencyRates: jest.fn(() => ({})),
 }));
 
 const createToken = ({

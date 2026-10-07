@@ -13,7 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Skeleton } from '../../../../components/component-library/skeleton';
+import { Skeleton } from '../../../../components/component-library/skeleton/skeleton';
 import { selectQrSyncQrPayload } from '../../../../selectors/qr-sync/qr-sync';
 import { QR_SYNC_TIMEOUT_MS } from '../../../../../shared/constants/qr-sync';
 

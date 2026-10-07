@@ -1,5 +1,5 @@
 import type { InputMethod } from '@metamask/perps-controller';
-import { OrderType } from '../types';
+import { OrderType } from '@metamask/perps-controller';
 
 /**
  * Order direction for perps trading

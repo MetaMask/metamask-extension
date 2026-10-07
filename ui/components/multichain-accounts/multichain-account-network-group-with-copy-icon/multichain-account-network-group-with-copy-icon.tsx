@@ -18,7 +18,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
-import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group/multichain-account-network-group';
 import { DEFAULT_ADDRESS_DISPLAY_KEY_BY_SCOPE } from '../../../../shared/constants/default-address';
 import { useDefaultAddress } from '../hooks/useDefaultAddress';
 

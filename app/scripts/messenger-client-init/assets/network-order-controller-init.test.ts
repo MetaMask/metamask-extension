@@ -1,9 +1,9 @@
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   NetworkOrderController,
   NetworkOrderControllerState,
 } from '../../controllers/network-order';
-import { getNetworkOrderControllerMessenger } from '../messengers/assets';
+import { getNetworkOrderControllerMessenger } from '../messengers/assets/network-order-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { NetworkOrderControllerInit } from './network-order-controller-init';

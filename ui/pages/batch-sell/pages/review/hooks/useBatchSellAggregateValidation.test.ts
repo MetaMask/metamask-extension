@@ -5,7 +5,7 @@ import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import {
   BATCH_SELL_ASSET_IDS,
   BATCH_SELL_CHAIN_ID,
-} from '../../../../../../test/data/batch-sell';
+} from '../../../../../../test/data/batch-sell/constants';
 import { useBatchSellAggregateValidation } from './useBatchSellAggregateValidation';
 
 jest.mock('react-redux', () => ({

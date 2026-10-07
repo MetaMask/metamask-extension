@@ -4,7 +4,8 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@metamask/design-system-react';
-import { Box, Text } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

@@ -11,8 +11,8 @@ import {
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BadgeStatus } from '../badge-status';
-import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
+import { BadgeStatus } from '../badge-status/badge-status';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors/selectors';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 

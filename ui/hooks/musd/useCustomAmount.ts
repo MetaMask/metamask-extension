@@ -13,7 +13,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd/feature-flags';
 import { useConfirmContext } from '../../pages/confirmations/context/confirm';
 
 export type UseCustomAmountParams = {

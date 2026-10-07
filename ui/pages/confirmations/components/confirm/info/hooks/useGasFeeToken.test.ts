@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { GasFeeToken } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../shared/constants/chain-ids';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';

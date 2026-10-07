@@ -32,17 +32,19 @@ import { isPrefixedFormattedHexString } from '../../../shared/lib/network.utils'
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import {
-  shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
+  getValidUrl,
+  isWebUrl,
+  isWebOrigin,
+} from '../../../shared/lib/url-utils';
+import { getBooleanFlag } from '../../../shared/lib/environment';
+import {
+  shouldEmitDappViewedEvent,
   formatTxMetaForRpcResult,
   getDeviceType,
   getOs,
   getPlatform,
-  getValidUrl,
-  isWebUrl,
-  isWebOrigin,
   getMethodDataName,
-  getBooleanFlag,
   extractRpcDomain,
   isKnownDomain,
   initializeRpcProviderDomains,

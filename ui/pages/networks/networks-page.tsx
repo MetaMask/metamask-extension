@@ -35,8 +35,8 @@ import { useNetworkFormState } from '../../components/multichain/networks-form/n
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
-import { AddNetwork } from '../../components/multichain/network-manager/components/add-network';
-import { Header } from '../../components/multichain/pages/page';
+import { AddNetwork } from '../../components/multichain/network-manager/components/add-network/AddNetwork';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {

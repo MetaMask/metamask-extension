@@ -2,7 +2,7 @@ import {
   ProfileMetricsService,
   ProfileMetricsServiceMessenger,
 } from '@metamask/profile-metrics-controller';
-import { loadAuthenticationConfig } from '../../../shared/lib/authentication';
+import { loadAuthenticationConfig } from '../../../shared/lib/authentication/config';
 import { MessengerClientInitFunction } from './types';
 
 /**

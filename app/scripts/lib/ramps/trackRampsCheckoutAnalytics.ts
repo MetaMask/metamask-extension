@@ -14,7 +14,8 @@ import {
   RAMPS_RAMP_TYPE,
 } from '../../../../shared/lib/ramps/analytics';
 import { sanitizeUrlPath } from '../../../../shared/lib/ramps/url-path';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 export type RampsCheckoutAnalyticsContext = {
   checkoutSessionId: string;

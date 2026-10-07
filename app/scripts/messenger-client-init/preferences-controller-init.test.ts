@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getPreferencesControllerMessenger } from './messengers';
+import { getPreferencesControllerMessenger } from './messengers/preferences-controller-messenger';
 import { PreferencesControllerInit } from './preferences-controller-init';
 
 jest.mock('../controllers/preferences-controller');

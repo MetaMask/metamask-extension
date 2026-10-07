@@ -5,11 +5,9 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';

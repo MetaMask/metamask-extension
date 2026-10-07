@@ -14,19 +14,16 @@ import {
   JustifyContent,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  Icon,
-  AvatarIconSize,
-  Box,
-  IconName,
-  Text,
-  IconSize,
-} from '../../../component-library';
+import { AvatarIcon } from '../../../component-library/avatar-icon/avatar-icon';
+import { Icon } from '../../../component-library/icon/icon';
+import { AvatarIconSize } from '../../../component-library/avatar-icon/avatar-icon.types';
+import { Box } from '../../../component-library/box/box';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
 import {
   DelineatorType,
   getDelineatorTitle,
-} from '../../../../helpers/constants/snaps';
+} from '../../../../helpers/constants/snaps/delineator';
 import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 
 export const SnapDelineator = ({

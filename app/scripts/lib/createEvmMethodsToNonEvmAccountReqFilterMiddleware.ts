@@ -4,7 +4,7 @@ import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-c
 import { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { RestrictedEthMethods } from '../../../shared/constants/permissions';
-import { unrestrictedEthSigningMethods } from '../controllers/permissions';
+import { unrestrictedEthSigningMethods } from '../controllers/permissions/specifications';
 
 type AllowedActions = AccountsControllerGetSelectedAccountAction;
 

@@ -16,7 +16,7 @@ import {
   TrustSignalDisplayState,
 } from '../../../../../hooks/useTrustSignals';
 import { getExperience } from '../../../../../../shared/constants/verification';
-import { getInternalAccounts } from '../../../../../selectors';
+import { getInternalAccounts } from '../../../../../selectors/accounts';
 import { checkFirstTimeInteraction } from '../../../../../store/actions';
 import { useSendContext } from '../../../context/send';
 import type { SendAlert } from './types';

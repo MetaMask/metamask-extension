@@ -6,7 +6,7 @@ import {
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getIsPayAmountPrefillEnabled } from '../../../../shared/lib/transaction/pay-prefill';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getDepositLimits } from '../utils/pay-deposit-limit';
 import {
   getRelayFixedSpreadFromConfig,

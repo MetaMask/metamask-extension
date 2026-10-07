@@ -1,9 +1,9 @@
 import { it } from '@jest/globals';
+import { PerpsAnalyticsEvent } from '@metamask/perps-controller';
 import { trace, endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-  PerpsAnalyticsEvent,
 } from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
@@ -20,8 +20,8 @@ jest.mock('../../../../shared/lib/trace', () => ({
 
 const mockTrackEvent = jest.fn();
 
-jest.mock('../analytics', () => {
-  const actual = jest.requireActual('../analytics');
+jest.mock('../analytics/analytics', () => {
+  const actual = jest.requireActual('../analytics/analytics');
   return {
     ...actual,
     trackEvent: (...args: unknown[]) => mockTrackEvent(...args),

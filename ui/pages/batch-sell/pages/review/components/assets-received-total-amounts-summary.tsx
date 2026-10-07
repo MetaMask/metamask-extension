@@ -16,9 +16,9 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { Tooltip } from '../../../../bridge/layout';
-import { PopoverPosition } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import Tooltip from '../../../../bridge/layout/tooltip';
+import { PopoverPosition } from '../../../../../components/component-library/popover/popover.types';
+import { Skeleton } from '../../../../../components/component-library/skeleton/skeleton';
 
 type AssetsReceivedTotalAmountsSummaryProps = {
   receivedAsset: {

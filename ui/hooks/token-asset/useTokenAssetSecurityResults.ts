@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import { type CaipAssetType } from '@metamask/utils';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../selectors/multichain/feature-flags';
 import { useTokenAssetQueries } from './useTokenAssetQueries';
 import { getUniqueTokenAssetIds } from './token-asset-query';

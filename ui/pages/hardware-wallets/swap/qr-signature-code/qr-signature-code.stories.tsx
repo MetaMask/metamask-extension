@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import QrSignatureCode from '.';
+import QrSignatureCode from './qr-signature-code';
 
 const meta: Meta<typeof QrSignatureCode> = {
   title: 'Pages/HardwareWallets/Swap/QrSignatureCode',

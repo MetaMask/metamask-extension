@@ -13,9 +13,9 @@ import type { CaipChainId, CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
 } from './network';
+import { CHAIN_IDS } from './chain-ids';
 import { ENVIRONMENT } from './build';
 
 export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [

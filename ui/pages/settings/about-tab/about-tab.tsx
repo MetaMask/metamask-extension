@@ -1,5 +1,5 @@
 import React from 'react';
-import { SettingsTab } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
 import { SettingItemConfig } from '../types';
 import AboutInfo from './about-info';
 

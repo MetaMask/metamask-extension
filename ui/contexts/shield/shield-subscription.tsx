@@ -14,14 +14,14 @@ import {
   setPendingShieldCohort,
   setShowShieldEntryModalOnce,
 } from '../../store/actions';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/lib/environment';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../../shared/constants/subscriptions';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
-} from '../../selectors/subscription';
+} from '../../selectors/subscription/subscription';
 import { useDispatch } from '../../store/hooks';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';

@@ -13,11 +13,11 @@ import {
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { ConnectionStatus } from '../../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../../contexts/hardware-wallets/types';
 import * as backgroundConnection from '../../../store/background-connection';
 import useSubmitBridgeTransaction from '../../../hooks/bridge/useSubmitBridgeTransaction';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import HardwareWalletSignatures from '.';
+import HardwareWalletSignatures from './hardware-wallet-signatures';
 
 jest.mock('../../../hooks/bridge/useSubmitBridgeTransaction');
 jest.mock('./generic-hardware-wallet-animation', () => ({
@@ -26,29 +26,42 @@ jest.mock('./generic-hardware-wallet-animation', () => ({
   default: () => <div data-testid="generic-hardware-wallet-animation" />,
 }));
 
-jest.mock('../../../components/app/qr-hardware-popover/base-qr-reader', () => {
-  const MockBaseQrReader = () => <div data-testid="mock-base-qr-reader" />;
-  MockBaseQrReader.displayName = 'MockBaseQrReader';
-  return {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    __esModule: true,
-    default: MockBaseQrReader,
-    UrType: {
-      CryptoHdkey: 'crypto-hdkey',
-      CryptoAccount: 'crypto-account',
-      EthSignature: 'eth-signature',
-    },
-    PAIRING_EXPECTED_UR_TYPES: ['crypto-hdkey', 'crypto-account'],
-    SIGNING_EXPECTED_UR_TYPES: ['eth-signature'],
-    CBOR_ENCODING: 'hex',
-  };
-});
+jest.mock(
+  '../../../components/app/qr-hardware-popover/base-qr-reader/base-qr-reader.types',
+  () => {
+    const MockBaseQrReader = () => <div data-testid="mock-base-qr-reader" />;
+    MockBaseQrReader.displayName = 'MockBaseQrReader';
+    return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+      __esModule: true,
+      UrType: {
+        CryptoHdkey: 'crypto-hdkey',
+        CryptoAccount: 'crypto-account',
+        EthSignature: 'eth-signature',
+      },
+      PAIRING_EXPECTED_UR_TYPES: ['crypto-hdkey', 'crypto-account'],
+      SIGNING_EXPECTED_UR_TYPES: ['eth-signature'],
+      CBOR_ENCODING: 'hex',
+    };
+  },
+);
+jest.mock(
+  '../../../components/app/qr-hardware-popover/base-qr-reader/base-qr-reader',
+  () => {
+    const MockBaseQrReader = () => <div data-testid="mock-base-qr-reader" />;
+    MockBaseQrReader.displayName = 'MockBaseQrReader';
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+    return { __esModule: true, default: MockBaseQrReader };
+  },
+);
 
 const mockUseHardwareWalletState = jest.fn();
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 
-jest.mock('../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../contexts/hardware-wallets'),
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,

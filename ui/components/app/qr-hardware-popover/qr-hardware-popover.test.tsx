@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: mockPathname }),
 }));
 
-jest.mock('./qr-hardware-wallet-importer', () => {
+jest.mock('./qr-hardware-wallet-importer/qr-hardware-wallet-importer', () => {
   const Mock = (props: {
     setErrorTitle: (title: string) => void;
     setErrorActive: (active: boolean) => void;
@@ -57,33 +57,36 @@ jest.mock('./qr-hardware-wallet-importer', () => {
   return Mock;
 });
 
-jest.mock('./qr-hardware-sign-request', () => {
-  const Mock = (props: {
-    setErrorTitle: (title: string) => void;
-    setErrorActive: (active: boolean) => void;
-  }) => (
-    <div data-testid="qr-hardware-sign-request">
-      <button
-        data-testid="sign-set-error-title"
-        onClick={() => props.setErrorTitle('Sign Error')}
-      />
-      <button
-        data-testid="sign-clear-error-title"
-        onClick={() => props.setErrorTitle('')}
-      />
-      <button
-        data-testid="sign-set-error-active"
-        onClick={() => props.setErrorActive(true)}
-      />
-      <button
-        data-testid="sign-clear-error-active"
-        onClick={() => props.setErrorActive(false)}
-      />
-    </div>
-  );
-  Mock.displayName = 'QRHardwareSignRequest';
-  return Mock;
-});
+jest.mock(
+  './qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request',
+  () => {
+    const Mock = (props: {
+      setErrorTitle: (title: string) => void;
+      setErrorActive: (active: boolean) => void;
+    }) => (
+      <div data-testid="qr-hardware-sign-request">
+        <button
+          data-testid="sign-set-error-title"
+          onClick={() => props.setErrorTitle('Sign Error')}
+        />
+        <button
+          data-testid="sign-clear-error-title"
+          onClick={() => props.setErrorTitle('')}
+        />
+        <button
+          data-testid="sign-set-error-active"
+          onClick={() => props.setErrorActive(true)}
+        />
+        <button
+          data-testid="sign-clear-error-active"
+          onClick={() => props.setErrorActive(false)}
+        />
+      </div>
+    );
+    Mock.displayName = 'QRHardwareSignRequest';
+    return Mock;
+  },
+);
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 
@@ -124,24 +127,26 @@ describe('QRHardwarePopover', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders the PAIR popover with the wallet importer title', () => {
+  it('renders the PAIR popover with the wallet importer title', async () => {
     renderPopover(buildStore({ type: QrScanRequestType.PAIR }));
     expect(
-      screen.getByTestId('qr-hardware-wallet-importer'),
+      await screen.findByTestId('qr-hardware-wallet-importer'),
     ).toBeInTheDocument();
     expect(
       screen.getByText(en.QRHardwareWalletImporterTitle.message),
     ).toBeInTheDocument();
   });
 
-  it('renders the SIGN popover with the sign request title', () => {
+  it('renders the SIGN popover with the sign request title', async () => {
     renderPopover(
       buildStore({
         type: QrScanRequestType.SIGN,
         request: { requestId: 'req-1', payload: {} },
       }),
     );
-    expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('qr-hardware-sign-request'),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(en.QRHardwareSignRequestTitle.message),
     ).toBeInTheDocument();
@@ -163,7 +168,7 @@ describe('QRHardwarePopover', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('still renders the SIGN popover in sidepanel mode', () => {
+  it('still renders the SIGN popover in sidepanel mode', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
     renderPopover(
       buildStore({
@@ -171,10 +176,12 @@ describe('QRHardwarePopover', () => {
         request: { requestId: 'req-1', payload: {} },
       }),
     );
-    expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('qr-hardware-sign-request'),
+    ).toBeInTheDocument();
   });
 
-  it('still renders the SIGN popover in popup mode', () => {
+  it('still renders the SIGN popover in popup mode', async () => {
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
     renderPopover(
       buildStore({
@@ -182,7 +189,9 @@ describe('QRHardwarePopover', () => {
         request: { requestId: 'req-1', payload: {} },
       }),
     );
-    expect(screen.getByTestId('qr-hardware-sign-request')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('qr-hardware-sign-request'),
+    ).toBeInTheDocument();
   });
 
   it('does not render the SIGN popover on the bridge hardware wallet signing page', () => {
@@ -217,7 +226,7 @@ describe('title behavior', () => {
       screen.getByText(en.QRHardwareSignRequestTitle.message),
     ).toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('sign-set-error-title'));
+    await userEvent.click(await screen.findByTestId('sign-set-error-title'));
 
     expect(screen.getByText('Sign Error')).toBeInTheDocument();
     expect(
@@ -233,10 +242,10 @@ describe('title behavior', () => {
       }),
     );
 
-    await userEvent.click(screen.getByTestId('sign-set-error-title'));
+    await userEvent.click(await screen.findByTestId('sign-set-error-title'));
     expect(screen.getByText('Sign Error')).toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('sign-clear-error-title'));
+    await userEvent.click(await screen.findByTestId('sign-clear-error-title'));
     expect(
       screen.getByText(en.QRHardwareSignRequestTitle.message),
     ).toBeInTheDocument();
@@ -253,7 +262,9 @@ describe('title behavior', () => {
       screen.getByText(en.QRHardwareWalletImporterTitle.message),
     ).toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('importer-set-error-active'));
+    await userEvent.click(
+      await screen.findByTestId('importer-set-error-active'),
+    );
 
     expect(
       screen.queryByText(en.QRHardwareWalletImporterTitle.message),
@@ -267,12 +278,16 @@ describe('title behavior', () => {
       }),
     );
 
-    await userEvent.click(screen.getByTestId('importer-set-error-active'));
+    await userEvent.click(
+      await screen.findByTestId('importer-set-error-active'),
+    );
     expect(
       screen.queryByText(en.QRHardwareWalletImporterTitle.message),
     ).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByTestId('importer-clear-error-active'));
+    await userEvent.click(
+      await screen.findByTestId('importer-clear-error-active'),
+    );
     expect(
       screen.getByText(en.QRHardwareWalletImporterTitle.message),
     ).toBeInTheDocument();
@@ -286,7 +301,7 @@ describe('title behavior', () => {
       }),
     );
 
-    await userEvent.click(screen.getByTestId('sign-set-error-active'));
+    await userEvent.click(await screen.findByTestId('sign-set-error-active'));
 
     const closeButton = screen.getByRole('button', { name: /close/iu });
     const header = closeButton.closest('.mm-header-base');
@@ -303,8 +318,8 @@ describe('title behavior', () => {
       }),
     );
 
-    await userEvent.click(screen.getByTestId('sign-set-error-active'));
-    await userEvent.click(screen.getByTestId('sign-set-error-title'));
+    await userEvent.click(await screen.findByTestId('sign-set-error-active'));
+    await userEvent.click(await screen.findByTestId('sign-set-error-title'));
 
     expect(screen.getByText('Sign Error')).toBeInTheDocument();
   });

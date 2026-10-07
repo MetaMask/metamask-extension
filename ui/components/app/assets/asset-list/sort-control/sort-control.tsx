@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { Text } from '../../../../component-library';
+import { Text } from '../../../../component-library/text/text';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
   AlignItems,
@@ -17,8 +17,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getTokenSortConfig } from '../../../../../selectors';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getTokenSortConfig } from '../../../../../selectors/selectors';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 import { useDispatch } from '../../../../../store/hooks';

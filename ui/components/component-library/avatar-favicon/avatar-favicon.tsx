@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import classnames from 'clsx';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
-import { IconName, Icon, IconSize } from '../icon';
+import { AvatarBase } from '../avatar-base/avatar-base';
+import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
+import { IconName, IconSize } from '../icon/icon.types';
+import { Icon } from '../icon/icon';
 import {
   BorderColor,
   Display,
@@ -11,7 +13,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarFallbackLetter } from '../../../helpers/utils/util';
-import { PolymorphicRef } from '../box';
+import { PolymorphicRef } from '../box/box.types';
 import {
   AvatarFaviconComponent,
   AvatarFaviconProps,

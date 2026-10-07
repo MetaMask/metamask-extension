@@ -1,7 +1,7 @@
 import React from 'react';
-import { SettingsTab } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
 import { SettingItemConfig } from '../types';
-import DebugContent from './debug-content';
+import DebugContent from './debug-content/debug-content';
 
 const DEBUG_SETTING_ITEMS: SettingItemConfig[] = [
   { id: 'debug', component: DebugContent },

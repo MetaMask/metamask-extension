@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getMessage } from '../ui/helpers/utils/i18n-helper';
 import { I18nContext } from '../ui/contexts/i18n';
 
-export { I18nContext };
+
 
 export const I18nProvider = ({ currentLocale, current, en, children }) => {
   const t = useMemo(() => {

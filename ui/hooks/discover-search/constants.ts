@@ -2,7 +2,7 @@ import type { CaipChainId } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { TrxScope } from '@metamask/keyring-api';
 
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 /** Popular networks used for crypto trending / search (aligned with mobile Explore). */

@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
+import { Box } from '../../../../components/component-library/box/box';
+import { Button } from '../../../../components/component-library/button/button';
 import {
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../../components/component-library';
+} from '../../../../components/component-library/button/button.types';
 import {
   BlockSize,
   Display,

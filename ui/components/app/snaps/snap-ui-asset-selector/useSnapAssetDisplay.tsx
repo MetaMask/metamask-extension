@@ -8,12 +8,12 @@ import {
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { getInternalAccountByAddress } from '../../../../selectors';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {

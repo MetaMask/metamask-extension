@@ -1,1 +1,0 @@
-export { useDefaultAddress } from './useDefaultAddress';

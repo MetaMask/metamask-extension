@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../../components/component-library';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 import {
   selectNetworkConfigurationByChainId,

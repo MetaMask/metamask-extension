@@ -14,7 +14,8 @@ import {
   BENCHMARK_PERSONA,
   BENCHMARK_TYPE,
 } from '../../../../../shared/constants/benchmarks';
-import { runUserActionBenchmark, collectWebVitals } from '../../utils';
+import { runUserActionBenchmark } from '../../utils/runner';
+import { collectWebVitals } from '../../utils/web-vitals-collector';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
 
 export const testTitle = 'benchmark-user-actions-load-new-account';

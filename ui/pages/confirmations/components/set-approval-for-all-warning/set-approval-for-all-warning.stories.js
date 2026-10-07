@@ -1,5 +1,5 @@
 import React from 'react';
-import SetApproveForAllWarning from '.';
+import SetApproveForAllWarning from './set-approval-for-all-warning';
 
 export default {
   title: 'Confirmations/Components/SetApproveForAllWarning',

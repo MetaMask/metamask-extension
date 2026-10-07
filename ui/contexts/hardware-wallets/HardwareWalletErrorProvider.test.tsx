@@ -14,12 +14,13 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_REPAIR_ROUTE,
 } from '../../helpers/constants/routes';
-import { createHardwareWalletError } from './errors';
+import { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   HardwareWalletErrorProvider,
   useHardwareWalletError,
 } from './HardwareWalletErrorProvider';
-import { HardwareWalletType, ConnectionStatus } from './types';
+import { ConnectionStatus } from './types';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 
 const mockStore = configureStore([]);

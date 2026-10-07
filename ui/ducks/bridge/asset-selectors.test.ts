@@ -3,7 +3,7 @@ import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import {

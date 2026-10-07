@@ -1,4 +1,3 @@
-/* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import { type ComponentType } from 'react';
 import { IconName } from '@metamask/design-system-react';
@@ -138,7 +137,9 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
+    component: mmLazy(
+      () => import('./preferences-and-display-tab/preferences-and-display-tab'),
+    ),
     isTab: true,
     iconName: IconName.Customize,
     index: true,
@@ -175,7 +176,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./notifications-tab/index.ts')),
+    component: mmLazy(() => import('./notifications-tab/notifications-tab')),
     isTab: true,
     iconName: IconName.Notification,
   },
@@ -216,7 +217,9 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
+    component: mmLazy(
+      () => import('./security-and-password-tab/security-and-password-tab'),
+    ),
     isTab: true,
     iconName: IconName.SecurityKey,
     messengerCapabilities: PASSKEY_SECURITY_ROUTE_CAPABILITIES,
@@ -265,7 +268,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [PRIVACY_ROUTE]: {
     labelKey: 'privacy',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./privacy-tab/index.ts')),
+    component: mmLazy(() => import('./privacy-tab/privacy-tab')),
     isTab: true,
     iconName: IconName.Lock,
   },
@@ -292,8 +295,11 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_ROUTE,
-    // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-    component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
+
+    component: mmLazy(
+      // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+      () => import('../shield/transaction-shield/transaction-shield'),
+    ),
     isTab: true,
     iconName: IconName.ShieldLock,
   },
@@ -320,7 +326,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
       // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-      () => import('../shield/transaction-shield/claims-area/index.ts'),
+      () => import('../shield/transaction-shield/claims-area/claims-area'),
     ),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
@@ -344,7 +350,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [ASSETS_ROUTE]: {
     labelKey: 'assets',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./assets-tab/index.ts')),
+    component: mmLazy(() => import('./assets-tab/assets-tab')),
     isTab: true,
     iconName: IconName.Coin,
   },
@@ -353,7 +359,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTIONS_ROUTE]: {
     labelKey: 'transactions',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./transactions-tab/index.ts')),
+    component: mmLazy(() => import('./transactions-tab/transactions-tab')),
     isTab: true,
     iconName: IconName.SwapVertical,
   },
@@ -363,7 +369,16 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     ? {
         [SYNC_ACCOUNTS_ROUTE]: {
           labelKey: 'syncAccounts',
-          component: mmLazy(() => import('./sync-accounts/index.ts')),
+          component: mmLazy(() =>
+            Promise.all([import('./sync-accounts/sync-accounts-tab')]).then(
+              (modules) => ({
+                // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+                get SyncAccountsTab() {
+                  return modules[0].default;
+                },
+              }),
+            ),
+          ),
           isTab: true,
           iconName: IconName.Mobile,
           // Mounted top-level at `/sync-accounts` by the app router, not nested
@@ -388,7 +403,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
         [DEVELOPER_OPTIONS_ROUTE]: {
           labelKey: 'debug',
           parentPath: SETTINGS_ROUTE,
-          component: mmLazy(() => import('./debug-tab/index.ts')),
+          component: mmLazy(() => import('./debug-tab/debug-tab')),
           isTab: true,
           iconName: IconName.Sparkle,
         },
@@ -399,7 +414,9 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [DEVELOPER_TOOLS_ROUTE]: {
     labelKey: 'developerTools',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./developer-tools-tab/index.ts')),
+    component: mmLazy(
+      () => import('./developer-tools-tab/developer-tools-tab'),
+    ),
     isTab: true,
     iconName: IconName.Code,
   },
@@ -408,7 +425,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [ABOUT_US_ROUTE]: {
     labelKey: 'aboutMetaMask',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./about-tab/index.ts')),
+    component: mmLazy(() => import('./about-tab/about-tab')),
     isTab: true,
     iconName: IconName.Info,
   },

@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { getShouldShowFiat } from '../selectors';
+import { getShouldShowFiat } from '../selectors/selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 

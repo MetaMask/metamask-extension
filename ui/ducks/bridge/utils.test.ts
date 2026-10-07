@@ -1,6 +1,6 @@
 import { type CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { BridgeAssetSecurityDataType } from '../../pages/bridge/utils/tokens';
 import { isSupportedBridgeChain, toBridgeToken } from './utils';
 

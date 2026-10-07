@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Popover from '../../../../components/ui/popover';
-import Box from '../../../../components/ui/box';
+import Popover from '../../../../components/ui/popover/popover.component';
+import Box from '../../../../components/ui/box/box';
 
 import {
   DISPLAY,
@@ -11,15 +11,13 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar/preferred-avatar';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import {
-  Icon,
-  IconName,
-  Button,
-  BUTTON_VARIANT,
-  Text,
-} from '../../../../components/component-library';
+import { Icon } from '../../../../components/component-library/icon/icon';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
+import { Button } from '../../../../components/component-library/button/button';
+import { BUTTON_VARIANT } from '../../../../components/component-library/button';
+import { Text } from '../../../../components/component-library/text/text';
 
 const SetApproveForAllWarning = ({
   collectionName,

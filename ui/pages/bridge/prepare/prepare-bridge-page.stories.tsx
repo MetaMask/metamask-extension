@@ -6,12 +6,12 @@ import {
   QuoteResponseV1,
   RequestStatus,
 } from '@metamask/bridge-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
-import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
+import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
 import CrossChainSwap from '../index';

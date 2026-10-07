@@ -10,7 +10,7 @@ import {
   getPaths,
   type AppRoutes,
 } from '../helpers/constants/routes';
-import { txDataSelector } from '../selectors';
+import { txDataSelector } from '../selectors/confirm-transaction';
 
 /**
  * The return type of useSegmentContext hook

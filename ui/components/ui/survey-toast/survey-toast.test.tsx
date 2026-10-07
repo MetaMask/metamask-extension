@@ -3,13 +3,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act } from 'react-dom/test-utils';
+import { toast } from 'react-hot-toast';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { toast } from '../toast/toast';
 import { SurveyToast } from './survey-toast';
 
 const mockTrackEvent = jest.fn();
@@ -34,9 +34,8 @@ jest.mock('../../../../shared/lib/fetch-with-cache', () => ({
   default: jest.fn(),
 }));
 
-jest.mock('../toast/toast', () => {
-  const actual =
-    jest.requireActual<typeof import('../toast/toast')>('../toast/toast');
+jest.mock('react-hot-toast', () => {
+  const actual = jest.requireActual('react-hot-toast');
 
   return {
     ...actual,

@@ -8,20 +8,21 @@ import { useEventListener } from '../../../hooks/useEventListener';
 import {
   getPinnedAccountsList,
   getHiddenAccountsList,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
+import { ModalFocus } from '../../component-library/modal-focus/modal-focus';
+import { Popover } from '../../component-library/popover/popover';
 import {
-  ModalFocus,
-  Popover,
   PopoverPosition,
   PopoverRole,
-} from '../../component-library';
+} from '../../component-library/popover/popover.types';
 import {
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { AccountDetailsMenuItem } from '../menu-items/account-details-menu-item';
+import { ViewExplorerMenuItem } from '../menu-items/view-explorer-menu-item';
 import { useDispatch } from '../../../store/hooks';
 
 const METRICS_LOCATION = 'Account Options';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontWeight } from '../../../../../helpers/constants/design-system';
-import { Text } from '../../../../component-library';
+import { Text } from '../../../../component-library/text/text';
 import {
   TranslateFunction,
   networkTitleOverrides,

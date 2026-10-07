@@ -9,7 +9,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -18,7 +18,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 
 export type UnlockPasskeyIconButtonProps = {
   disabled: boolean;

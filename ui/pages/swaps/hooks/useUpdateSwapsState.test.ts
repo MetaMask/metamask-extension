@@ -17,7 +17,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getIsSwapsChain,
   getUseExternalServices,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { useDispatch } from '../../../store/hooks';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
@@ -48,9 +48,8 @@ jest.mock('../../../store/actions', () => ({
   setSwapsTokens: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../selectors/selectors', () => ({
   checkNetworkAndAccountSupports1559: jest.fn(),
-  getCurrentChainId: jest.fn(),
   getIsSwapsChain: jest.fn(),
   getUseExternalServices: jest.fn(),
 }));

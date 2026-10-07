@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getPhishingControllerMessenger } from './messengers';
+import { getPhishingControllerMessenger } from './messengers/phishing-controller-messenger';
 import { PhishingControllerInit } from './phishing-controller-init';
 
 jest.mock('@metamask/phishing-controller');

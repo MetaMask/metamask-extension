@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { completeQrCodeScan } from '../../../../../store/actions';
-import QrPlayer from '../qr-player';
-import QrReader from '../qr-reader';
+import QrPlayer from '../qr-player/qr-player';
+import QrReader from '../qr-reader/qr-reader';
 import { useDispatch } from '../../../../../store/hooks';
 
 import {

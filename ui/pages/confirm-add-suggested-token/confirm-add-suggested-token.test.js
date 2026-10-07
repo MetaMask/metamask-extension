@@ -11,9 +11,9 @@ import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import ConfirmAddSuggestedToken from '.';
+import ConfirmAddSuggestedToken from './confirm-add-suggested-token';
 
 const mockTrackEvent = jest.fn();
 

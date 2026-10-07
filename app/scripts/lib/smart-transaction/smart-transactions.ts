@@ -23,7 +23,7 @@ import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getIsSmartTransaction,
   getSmartTransactionsFeatureFlagsForChain,
-} from '../../../../shared/lib/selectors';
+} from '../../../../shared/lib/selectors/smart-transactions';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';

@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { NameType } from '@metamask/name-controller';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 

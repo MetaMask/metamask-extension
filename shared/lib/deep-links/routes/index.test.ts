@@ -1,4 +1,5 @@
-import { addRoute, routes, Route } from '.';
+import { Route } from './route';
+import { addRoute, routes } from '.';
 
 describe('addRoute', () => {
   const testRoute: Route = {

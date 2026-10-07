@@ -10,7 +10,7 @@ import {
   selectMusdConvertibleTokensAllowlist,
   selectMusdConvertibleTokensBlocklist,
   selectMusdMinAssetBalanceRequired,
-} from '../../selectors/musd';
+} from '../../selectors/musd/feature-flags';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import { useMusdConversionTokens } from './useMusdConversionTokens';
 import { useMusdNetworkFilter } from './useMusdNetworkFilter';
@@ -23,7 +23,7 @@ jest.mock('./useMusdNetworkFilter', () => ({
 const mockUseMusdNetworkFilter = useMusdNetworkFilter as jest.Mock;
 
 // Mock selectors
-jest.mock('../../selectors/musd', () => ({
+jest.mock('../../selectors/musd/feature-flags', () => ({
   selectMusdConvertibleTokensAllowlist: jest.fn(),
   selectMusdConvertibleTokensBlocklist: jest.fn(),
   selectMusdMinAssetBalanceRequired: jest.fn(),

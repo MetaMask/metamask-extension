@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getPasskeyAuthMethodKey } from '../../../shared/lib/passkey';
+import { getPasskeyAuthMethodKey } from '../../../shared/lib/passkey/passkey-auth-method';
 
 const PASSKEY_SUBSTITUTED_LABEL_KEYS: ReadonlySet<string> = new Set([
   'setUpPasskey',

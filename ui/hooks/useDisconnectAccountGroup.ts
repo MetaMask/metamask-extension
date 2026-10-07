@@ -8,7 +8,7 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
 } from '@metamask/chain-agnostic-permission';
-import { getPermissionSubjects } from '../selectors';
+import { getPermissionSubjects } from '../selectors/selectors';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
 import { removePermittedAccount } from '../store/actions';
 import { useDispatch } from '../store/hooks';

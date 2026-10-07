@@ -9,9 +9,11 @@ import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import {
   getConfirmationTransactionType,
   getMoneyAccountTransactionType,
+  isSIWESignatureRequest,
 } from '../../../utils/confirm';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -26,14 +28,13 @@ import { TypedSignSignaturePrimaryTypes } from '../../../constants';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
-import { isSIWESignatureRequest } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
 import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
-import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
+import { NestedTransactionTag } from '../../transactions/nested-transaction-tag/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
 import {

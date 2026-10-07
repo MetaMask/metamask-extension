@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Button from '../button';
-import ButtonGroup from '.';
+import Button from '../button/button.component';
+import ButtonGroup from './button-group.component';
 
 export default {
   title: 'Components/UI/ButtonGroup',

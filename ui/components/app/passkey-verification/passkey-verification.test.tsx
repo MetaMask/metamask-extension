@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { tEn } from '../../../../test/lib/i18n-helpers';
@@ -31,8 +31,8 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../../shared/lib/passkey'),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
 }));
 

@@ -9,20 +9,20 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { Button } from '../../../../component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../../component-library';
+} from '../../../../component-library/button/button.types';
+import { Modal } from '../../../../component-library/modal/modal';
+import { ModalBody } from '../../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../../component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../component-library/text/text';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { LottieAnimation } from '../../../../component-library/lottie-animation';
+import { LottieAnimation } from '../../../../component-library/lottie-animation/lottie-animation';
 
 export type MultichainAccountIntroModalProps = {
   isOpen: boolean;

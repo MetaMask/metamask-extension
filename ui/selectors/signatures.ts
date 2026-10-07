@@ -4,7 +4,7 @@ import {
   type SignatureControllerState,
   type SignatureRequest,
 } from '@metamask/signature-controller';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,

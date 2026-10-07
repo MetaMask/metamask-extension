@@ -1,15 +1,17 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import * as passkey from '../../shared/lib/passkey';
+
+import * as passkeyModule2 from '../../shared/lib/passkey/passkey-capabilities';
+
 import { usePasskeyPRFSupport } from './usePasskeyPRFSupport';
 
-jest.mock('../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../shared/lib/passkey')>(
-    '../../shared/lib/passkey',
-  ),
+jest.mock('../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../shared/lib/passkey/passkey-capabilities'),
   isPasskeyPRFSupported: jest.fn(),
 }));
 
-const mockIsPasskeyPRFSupported = jest.mocked(passkey.isPasskeyPRFSupported);
+const mockIsPasskeyPRFSupported = jest.mocked(
+  passkeyModule2.isPasskeyPRFSupported,
+);
 
 describe('usePasskeyPRFSupport', () => {
   beforeEach(() => {

@@ -5,7 +5,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import PulseLoader from '../../../ui/pulse-loader';
+import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { VirtualizedList } from '../../../ui/virtualized-list/virtualized-list';
 import { ASSET_CELL_HEIGHT } from '../constants';

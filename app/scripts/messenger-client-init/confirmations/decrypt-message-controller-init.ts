@@ -4,7 +4,8 @@ import {
 } from '../../controllers/decrypt-message';
 import { MessengerClientInitFunction } from '../types';
 import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-message-controller-messenger';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 /**
  * Initialize the decryptMessage controller.

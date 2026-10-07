@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { validate as isUuid } from 'uuid';
 
 import useAlerts from '../../../hooks/useAlerts';
-import { isSignatureTransactionType } from '../utils';
+import { isSignatureTransactionType } from '../utils/confirm';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';

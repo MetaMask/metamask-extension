@@ -1,15 +1,15 @@
 import React, { createContext, useMemo } from 'react';
 import { Skeleton } from '@metamask/design-system-react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { Icon } from '../../../../component-library/icon/icon';
 import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../../component-library';
+} from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

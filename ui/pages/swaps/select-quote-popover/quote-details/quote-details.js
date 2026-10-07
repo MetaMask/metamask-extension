@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
-import InfoTooltip from '../../../../components/ui/info-tooltip';
-import ExchangeRateDisplay from '../../exchange-rate-display';
-import { getUseCurrencyRateCheck } from '../../../../selectors';
+import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
+import ExchangeRateDisplay from '../../exchange-rate-display/exchange-rate-display';
+import { getUseCurrencyRateCheck } from '../../../../selectors/selectors';
 
 const QuoteDetails = ({
   slippage,

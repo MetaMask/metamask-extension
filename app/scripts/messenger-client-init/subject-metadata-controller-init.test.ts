@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getSubjectMetadataControllerMessenger } from './messengers';
+import { getSubjectMetadataControllerMessenger } from './messengers/subject-metadata-controller-messenger';
 import { SubjectMetadataControllerInit } from './subject-metadata-controller-init';
 
 jest.mock('@metamask/permission-controller');

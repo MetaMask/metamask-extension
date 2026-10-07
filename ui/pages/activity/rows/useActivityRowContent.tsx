@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import type { FiatAmount, TokenAmount } from '@metamask/client-utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
@@ -12,18 +13,14 @@ import {
 } from '../../../../shared/lib/activity/fiat';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
-import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
+import { ActivityListItemAvatar as ActivityAvatar } from '../../../components/app/activity-list-item-avatar/activity-list-item-avatar';
+import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PERPS_CURRENCY } from '../../confirmations/constants/perps';
-import type {
-  FiatAmount,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { formatPendingRampTokenLabel } from '../../../hooks/ramps/utils/formatPendingRampTokenLabel';
 import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositiveNumericAmount';

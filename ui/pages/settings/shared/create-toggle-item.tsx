@@ -6,7 +6,7 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
-} from '../../../store/store';
+} from '../../../store/types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

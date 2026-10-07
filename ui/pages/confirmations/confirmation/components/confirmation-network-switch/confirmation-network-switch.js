@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../../../components/component-library';
+import { AvatarNetwork } from '../../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../../components/component-library/avatar-network/avatar-network.types';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   Display,
   JustifyContent,

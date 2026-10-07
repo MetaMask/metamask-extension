@@ -6,7 +6,7 @@ import configureStore from '../../store/store';
 
 import mockState from '../../../.storybook/test-data';
 
-import ConfirmAddSuggestedNFT from '.';
+import ConfirmAddSuggestedNFT from './confirm-add-suggested-nft';
 
 const pendingNftApprovals = {
   1: {

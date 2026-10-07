@@ -14,7 +14,7 @@ import {
   Skeleton,
 } from '@metamask/design-system-react';
 
-import Tooltip from '../../../../ui/tooltip';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 
 export const gatorPermissionDetailRowStyle = {
   flex: '1',

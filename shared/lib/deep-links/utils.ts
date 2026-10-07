@@ -1,11 +1,12 @@
 import log from 'loglevel';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEEP_LINK_ROUTE } from '../../../ui/helpers/constants/routes';
 import {
   DeferredDeepLink,
   DeferredDeepLinkRoute,
   DeferredDeepLinkRouteType,
 } from './types';
 import { parse } from './parse';
-import { DEEP_LINK_ROUTE } from './routes/route';
 import { shouldShowDeepLinkInterstitial } from './security-policy';
 
 /**

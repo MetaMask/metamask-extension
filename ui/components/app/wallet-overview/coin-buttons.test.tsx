@@ -64,15 +64,21 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 }));
 
 jest.mock('../../../selectors/multichain', () => ({
+  ...jest.requireActual('../../../selectors/multichain'),
   getMultichainNativeCurrency: jest.fn(),
+}));
+
+jest.mock('../../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../../selectors/multichain/networks'),
   getMultichainNetwork: jest.fn(),
 }));
 
 jest.mock('../../../selectors/batch-sell/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/batch-sell/feature-flags'),
   getIsBatchSellEnabled: jest.fn(() => true),
 }));
 
-jest.mock('../perps/perps-trade-buttons', () => ({
+jest.mock('../perps/perps-trade-buttons/perps-trade-buttons', () => ({
   PerpsTradeButtons: ({
     marketSymbol,
     classPrefix,

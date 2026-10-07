@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Text } from '../../component-library';
-import MetaFoxLogo from '.';
+import { Text } from '../../component-library/text/text';
+import MetaFoxLogo from './metafox-logo.component';
 
 export default {
   title: 'Components/UI/MetaFoxLogo',

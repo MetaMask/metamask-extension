@@ -2,7 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { getOpenSeaEnabled, getUseNftDetection } from '../../../selectors';
+import {
+  getOpenSeaEnabled,
+  getUseNftDetection,
+} from '../../../selectors/selectors';
 import { setOpenSeaEnabled, setUseNftDetection } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,

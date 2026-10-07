@@ -1,19 +1,21 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { toast } from 'react-hot-toast';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
-import { toast } from '../../../components/ui/toast/toast';
 import PasskeyTurnOffSubPage from './passkey-turn-off-sub-page';
 
 jest.mock('../../../components/ui/toast/toast', () => ({
+  ToastContent: ({ title }: { title: string }) => title,
+}));
+jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
     error: jest.fn(),
   },
-  ToastContent: ({ title }: { title: string }) => title,
 }));
 
 const mockUseNavigate = jest.fn();
@@ -49,10 +51,8 @@ jest.mock('../../../store/actions', () => ({
   verifyPassword: (...args: unknown[]) => mockVerifyPassword(...args),
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
-    '../../../../shared/lib/passkey',
-  ),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   cancelPasskeyCeremony: jest.fn(),
 }));
 

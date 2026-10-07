@@ -3,8 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import HardwareWalletSignatures from './hardware-wallet-signatures';
-import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
-import { ConnectionState } from '../../../contexts/hardware-wallets';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine/types';
+import { ConnectionState } from '../../../contexts/hardware-wallets/connectionState';
 import {
   HardwareWalletActionsContext,
   HardwareWalletStateContext,

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { SensitiveText, Box } from '../../component-library';
+import { SensitiveText } from '../../component-library/sensitive-text/sensitive-text';
+import { Box } from '../../component-library/box/box';
 import {
   AlignItems,
   Display,

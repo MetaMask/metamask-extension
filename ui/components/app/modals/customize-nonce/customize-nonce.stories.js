@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomizeNonce from '.';
+import CustomizeNonce from './customize-nonce.component';
 
 export default {
   title: 'Components/App/Modals/CustomizeNonce',

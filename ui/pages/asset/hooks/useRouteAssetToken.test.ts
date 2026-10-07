@@ -20,7 +20,7 @@ jest.mock('#ui/helpers/api-client', () => ({
   },
 }));
 
-jest.mock('#ui/selectors/multichain/feature-flags', () => ({
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
   getIsSecurityTrustTdpEnabled: jest.fn(() => true),
 }));
 

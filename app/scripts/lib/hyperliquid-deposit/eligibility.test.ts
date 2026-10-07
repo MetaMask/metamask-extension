@@ -1,5 +1,5 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { HYPERLIQUID_DEPOSIT_USDC_CAIP_ID } from './constants';
 
 import {

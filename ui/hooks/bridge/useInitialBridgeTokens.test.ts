@@ -1,6 +1,6 @@
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { useInitialBridgeTokens } from './useInitialBridgeTokens';
 

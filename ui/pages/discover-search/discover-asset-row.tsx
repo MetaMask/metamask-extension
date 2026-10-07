@@ -23,14 +23,16 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/net
 import { formatCompactCurrency } from '../../helpers/utils/token-insights';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
-import { getCurrencyRates } from '../../selectors';
+import {
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../../shared/lib/selectors/assets-migration';
 import { getChangeColor } from '../../components/app/perps/utils';
 import {
   getSecurityTrustBadgeConfig,
   SecurityTrustInlineBadge,
-  type SecurityTrustTranslate,
-} from '../../components/app/security-trust';
+} from '../../components/app/security-trust/security-trust-inline-badge';
+import type { SecurityTrustTranslate } from '../../components/app/security-trust/security-trust-inline-badge';
 
 const ROW_STYLES =
   'justify-start rounded-none min-w-0 h-auto min-h-[72px] gap-3 text-left cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed';

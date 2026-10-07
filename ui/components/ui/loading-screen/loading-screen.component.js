@@ -6,7 +6,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import Spinner from '../spinner';
+import Spinner from '../spinner/spinner.component';
 
 const LoadingScreen = ({
   header,

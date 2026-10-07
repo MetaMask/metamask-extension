@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { IconName as IconNameLegacy } from '../../component-library';
+import { IconName as IconNameLegacy } from '../../component-library/icon/icon.types';
 import MenuItem from './menu-item';
 
 const meta: Meta<typeof MenuItem> = {

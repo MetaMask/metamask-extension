@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
-import { getUsePhishDetect } from '../../../selectors';
+import { SettingsTab } from '../shared/settings-tab';
+import { createSelectItem } from '../shared/create-select-item';
+import { createToggleItem } from '../shared/create-toggle-item';
+import { getUsePhishDetect } from '../../../selectors/selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { setUsePhishDetect } from '../../../store/actions';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import {
   AUTO_LOCK_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,

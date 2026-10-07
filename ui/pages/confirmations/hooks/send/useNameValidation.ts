@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { isResolvableName } from '../../../../helpers/utils/util';
 import { findConfusablesInRecipient } from '../../utils/sendValidations';
 import { lookupDomainName } from '../../../../ducks/domains';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../../store/types';
 import { useDispatch } from '../../../../store/hooks';
 
 type Resolution = {

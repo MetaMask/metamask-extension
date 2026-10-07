@@ -5,7 +5,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type ImportControlProps = {

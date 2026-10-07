@@ -9,7 +9,7 @@ import {
   IconName,
   TextVariant,
 } from '@metamask/design-system-react';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 /**

@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-hot-toast';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
@@ -6,15 +7,18 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
-import { toast } from '../../../../../../../components/ui/toast/toast';
 import { GasFeeTokenToast } from './gas-fee-token-toast';
 
-jest.mock('../../../../../../../../shared/lib/selectors');
+jest.mock('../../../../../../../../shared/lib/selectors/smart-transactions');
 
 jest.mock('../../../../../../../components/ui/toast/toast', () => {
   const actual = jest.requireActual<
     typeof import('../../../../../../../components/ui/toast/toast')
   >('../../../../../../../components/ui/toast/toast');
+  return { ...actual, ToastContent: actual.ToastContent };
+});
+jest.mock('react-hot-toast', () => {
+  const actual = jest.requireActual('react-hot-toast');
   return {
     ...actual,
     toast: {
@@ -22,7 +26,6 @@ jest.mock('../../../../../../../components/ui/toast/toast', () => {
       success: jest.fn(),
       dismiss: jest.fn(),
     },
-    ToastContent: actual.ToastContent,
   };
 });
 

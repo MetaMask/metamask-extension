@@ -3,11 +3,111 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import * as Util from '../../util';
+import * as UtilModule1 from '../../../../../shared/lib/add-hex-prefix';
+import * as UtilModule2 from '../../../../../shared/lib/url-utils';
+import * as UtilModule3 from '../../util';
+import * as UtilModule4 from '../../../../../shared/lib/format-value';
+import * as UtilModule5 from '../../../../../shared/lib/environment';
+import * as UtilModule6 from '../../../../../shared/lib/asset-conversion-rates';
+import * as UtilModule7 from '../../../../../shared/lib/environment-type';
+import * as UtilModule8 from '../../install-type';
 import {
   requestEthereumAccountsHandler,
   type RequestEthereumAccountsHooks,
 } from './request-accounts';
+
+const Util = {
+  get addHexPrefix() {
+    return UtilModule1.addHexPrefix;
+  },
+  get addUrlProtocolPrefix() {
+    return UtilModule2.addUrlProtocolPrefix;
+  },
+  get checkAlarmExists() {
+    return UtilModule3.checkAlarmExists;
+  },
+  get convertEnglishWordlistIndicesToCodepoints() {
+    return UtilModule3.convertEnglishWordlistIndicesToCodepoints;
+  },
+  get extractRpcDomain() {
+    return UtilModule3.extractRpcDomain;
+  },
+  get formatTxMetaForRpcResult() {
+    return UtilModule3.formatTxMetaForRpcResult;
+  },
+  get formatValue() {
+    return UtilModule4.formatValue;
+  },
+  get generateRandomId() {
+    return UtilModule3.generateRandomId;
+  },
+  get getBooleanFlag() {
+    return UtilModule5.getBooleanFlag;
+  },
+  get getChainType() {
+    return UtilModule3.getChainType;
+  },
+  get getConversionRatesForNativeAsset() {
+    return UtilModule6.getConversionRatesForNativeAsset;
+  },
+  get getDeviceType() {
+    return UtilModule3.getDeviceType;
+  },
+  get getEnvironmentType() {
+    return UtilModule7.getEnvironmentType;
+  },
+  get getInstallType() {
+    return UtilModule8.getInstallType;
+  },
+  get getMethodDataName() {
+    return UtilModule3.getMethodDataName;
+  },
+  get getOs() {
+    return UtilModule3.getOs;
+  },
+  get getPlatform() {
+    return UtilModule3.getPlatform;
+  },
+  get getValidUrl() {
+    return UtilModule2.getValidUrl;
+  },
+  get initInstallType() {
+    return UtilModule8.initInstallType;
+  },
+  get initializeRpcProviderDomains() {
+    return UtilModule3.initializeRpcProviderDomains;
+  },
+  get isKnownDomain() {
+    return UtilModule3.isKnownDomain;
+  },
+  get isPublicEndpointUrl() {
+    return UtilModule3.isPublicEndpointUrl;
+  },
+  get isSpecialUseDomain() {
+    return UtilModule3.isSpecialUseDomain;
+  },
+  get isValidAmount() {
+    return UtilModule4.isValidAmount;
+  },
+  get isValidDate() {
+    return UtilModule3.isValidDate;
+  },
+  get isValidEmail() {
+    return UtilModule2.isValidEmail;
+  },
+  get isWebOrigin() {
+    return UtilModule2.isWebOrigin;
+  },
+  get isWebUrl() {
+    return UtilModule2.isWebUrl;
+  },
+  get previousValueComparator() {
+    return UtilModule3.previousValueComparator;
+  },
+  get shouldEmitDappViewedEvent() {
+    return UtilModule3.shouldEmitDappViewedEvent;
+  },
+};
 
 jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),

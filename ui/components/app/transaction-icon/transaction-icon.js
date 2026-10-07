@@ -6,7 +6,9 @@ import {
   TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
-import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';
+import { AvatarIcon } from '../../component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../component-library/avatar-icon/avatar-icon.types';
+import { IconName } from '../../component-library/icon/icon.types';
 import { useDispatch } from '../../../store/hooks';
 
 import {

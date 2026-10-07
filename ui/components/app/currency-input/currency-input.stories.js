@@ -1,5 +1,5 @@
 import React from 'react';
-import CurrencyInput from '.';
+import CurrencyInput from './currency-input';
 
 export default {
   title: 'Components/App/CurrencyInput',

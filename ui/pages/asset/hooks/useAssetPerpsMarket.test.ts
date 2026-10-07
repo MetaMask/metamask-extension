@@ -3,7 +3,7 @@ import type { MarketInfo } from '@metamask/perps-controller';
 import {
   getIsPerpsExperienceAvailable,
   getIsPerpsTerminalBackendEnabled,
-} from '../../../selectors/perps';
+} from '../../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   clearAssetPerpsMarketCache,

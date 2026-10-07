@@ -16,11 +16,11 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
-import { isSignatureTransactionType } from '../utils';
+import { isSignatureTransactionType } from '../utils/confirm';
 import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
-} from '../../../selectors';
+} from '../../../selectors/approvals';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 import type { SetPayTokenRequest } from './pay/types';
 

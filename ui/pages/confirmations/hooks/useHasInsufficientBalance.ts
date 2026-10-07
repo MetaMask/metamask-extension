@@ -3,7 +3,7 @@ import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 
 import { sumHexes } from '../../../../shared/lib/conversion.utils';
-import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../selectors';
+import { getNativeTokenCachedBalanceByChainIdSelector } from '../../../selectors/selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
 import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';

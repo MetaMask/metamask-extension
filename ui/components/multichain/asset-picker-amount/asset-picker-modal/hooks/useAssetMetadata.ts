@@ -1,6 +1,6 @@
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getUseExternalServices } from '../../../../../selectors';
+import { getUseExternalServices } from '../../../../../selectors/selectors';
 import {
   fetchAssetMetadata,
   getAssetImageUrl,

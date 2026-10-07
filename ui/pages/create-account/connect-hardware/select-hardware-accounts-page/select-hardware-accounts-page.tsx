@@ -13,13 +13,11 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Content,
-  Footer,
-  Page,
-} from '../../../../components/multichain/pages/page';
+import { Content } from '../../../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../../../components/multichain/pages/page/components/footer/footer';
+import { Page } from '../../../../components/multichain/pages/page/page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { HardwareAccountCard } from '../../../../components/multichain-accounts/hardware-account-card';
+import { HardwareAccountCard } from '../../../../components/multichain-accounts/hardware-account-card/hardware-account-card';
 import type { SelectHardwareAccountsPageProps } from './select-hardware-accounts-page.types';
 
 /**

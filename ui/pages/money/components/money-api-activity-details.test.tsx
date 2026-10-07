@@ -17,7 +17,7 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
   useCopyToClipboard: jest.fn(),
 }));
 
-jest.mock('../../../components/app/token-icon', () => ({
+jest.mock('../../../components/app/token-icon/token-icon', () => ({
   TokenIcon: ({
     chainId,
     tokenAddress,

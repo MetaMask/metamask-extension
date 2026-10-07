@@ -1,4 +1,5 @@
 import { TextColor } from '@metamask/design-system-react';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import {
   getPositionDirection,
   formatOrderType,
@@ -26,7 +27,7 @@ import {
   HYPERLIQUID_ASSET_ICONS_BASE_URL,
   METAMASK_PERPS_ICONS_BASE_URL,
 } from './constants';
-import type { PerpsMarketData, PerpsTransaction } from './types';
+import type { PerpsTransaction } from './types/transactionHistory';
 
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},

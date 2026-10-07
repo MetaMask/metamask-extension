@@ -29,14 +29,14 @@ import {
   useSubscriptionPaymentMethods,
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import Tooltip from '../../../components/ui/tooltip';
+import Tooltip from '../../../components/ui/tooltip/tooltip';
 import { ShieldPaymentModal } from '../plan/shield-payment-modal';
 import {
   getIsShieldSubscriptionCanChangePaymentMethodToCard,
   getIsShieldSubscriptionEndingSoon,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/subscription-utils';
 import { isCryptoPaymentMethod } from './types';
-import { ButtonRow } from './components';
+import ButtonRow from './components/button-row';
 
 type PaymentMethodRowProps = {
   displayedShieldSubscription?: Subscription;

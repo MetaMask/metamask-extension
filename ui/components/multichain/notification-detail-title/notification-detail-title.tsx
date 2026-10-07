@@ -10,7 +10,8 @@ import {
   TextAlign,
   OverflowWrap,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 
 export type NotificationDetailTitleProps = {
   title: string;

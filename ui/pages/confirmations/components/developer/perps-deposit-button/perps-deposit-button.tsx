@@ -1,8 +1,8 @@
 import React from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
-import { DeveloperButton } from '../developer-button';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
+import { DeveloperButton } from '../developer-button/developer-button';
 import {
   ARBITRUM_USDC,
   HYPERLIQUID_BRIDGE_ADDRESS,

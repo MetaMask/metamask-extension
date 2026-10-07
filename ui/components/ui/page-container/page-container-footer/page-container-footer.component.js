@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
+import { Button } from '../../../component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-} from '../../../component-library/button';
+} from '../../../component-library/button/button.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export default function PageContainerFooter({

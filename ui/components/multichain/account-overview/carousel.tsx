@@ -2,8 +2,8 @@ import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { removeSlide } from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
-import { CarouselWithEmptyState } from '../carousel';
-import { getAppIsLoading } from '../../../selectors';
+import { CarouselWithEmptyState } from '../carousel/carousel-wrapper';
+import { getAppIsLoading } from '../../../selectors/selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
@@ -11,7 +11,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
-import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
+import { useCarouselManagement } from '../../../hooks/useCarouselManagement/useCarouselManagement';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 
 export const Carousel = () => {

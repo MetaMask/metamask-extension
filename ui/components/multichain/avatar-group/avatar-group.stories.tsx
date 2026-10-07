@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { AvatarGroup } from '.';
+import { AvatarGroup } from './avatar-group';
 import { AvatarType } from './avatar-group.types';
 
 export default {

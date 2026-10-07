@@ -31,15 +31,19 @@ const mockSetSelectedAccount = jest.fn();
 const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
-jest.mock('../../controllers/analytics', () => {
+jest.mock('../../controllers/analytics/analytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
   );
 
-  return {
-    createEventBuilder,
-    trackEvent: (...args: unknown[]) => mockTrackEvent(...args),
-  };
+  return { trackEvent: (...args: unknown[]) => mockTrackEvent(...args) };
+});
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return { createEventBuilder };
 });
 
 const mockGetAccountByAddress = jest.fn();

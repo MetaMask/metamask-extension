@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { migrate, version } from './096';
 
 const oldVersion = 95;

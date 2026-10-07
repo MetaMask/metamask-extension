@@ -9,8 +9,9 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
-import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import type { PolymorphicRef } from '../box/box.types';
+import { AvatarBase } from '../avatar-base/avatar-base';
+import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
 import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 

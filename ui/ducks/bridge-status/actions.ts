@@ -8,7 +8,7 @@ import {
 import type { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import { MetaMaskReduxDispatch } from '../../store/types';
 import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import type { ActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 

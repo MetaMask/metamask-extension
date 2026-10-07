@@ -7,9 +7,11 @@ import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics
 import {
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { DeleteMetametricsDataItem } from './delete-metametrics-data-item';
 

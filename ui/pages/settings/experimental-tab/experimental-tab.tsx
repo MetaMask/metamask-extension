@@ -5,14 +5,15 @@ import {
   getFeatureNotificationsEnabled,
   getIsAddSnapAccountEnabled,
   getIsWatchEthereumAccountEnabled,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   setAddSnapAccountEnabled,
   setFeatureNotificationsEnabled,
   setWatchEthereumAccountEnabled,
 } from '../../../store/actions';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
 import { EXPERIMENTAL_ITEMS } from '../search-config';
 
 const NotificationsItem = createToggleItem({

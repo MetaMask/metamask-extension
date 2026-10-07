@@ -6,14 +6,14 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
-import * as selectorsModule from '../../../../shared/lib/selectors';
+import * as selectorsModuleModule1 from '../../../../shared/lib/selectors/smart-transactions';
 import { createMockMessenger } from '../test-utils';
 import { getTransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { getTransactionControllerInstanceOptions } from './transaction-controller';
 
 jest.mock('../../lib/smart-transaction/smart-transactions');
 jest.mock('../../lib/transaction/sentinel-api');
-jest.mock('../../../../shared/lib/selectors');
+jest.mock('../../../../shared/lib/selectors/smart-transactions');
 jest.mock('../../lib/transaction/hooks', () => ({
   getTransactionControllerHooks: jest.fn(() => ({ beforeSign: jest.fn() })),
 }));
@@ -22,7 +22,7 @@ const CHAIN_ID_MOCK = '0x1';
 
 describe('TransactionController wallet instance options', () => {
   const getIsSmartTransactionMock = jest.mocked(
-    selectorsModule.getIsSmartTransaction,
+    selectorsModuleModule1.getIsSmartTransaction,
   );
 
   const isSendBundleSupportedMock = jest.mocked(

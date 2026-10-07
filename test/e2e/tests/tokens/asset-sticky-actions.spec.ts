@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { withFixtures } from '../../helpers';

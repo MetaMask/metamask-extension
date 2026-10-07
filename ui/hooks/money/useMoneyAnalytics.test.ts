@@ -11,7 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { I18nProvider } from '../../contexts/i18n';
 import { queryClient } from '../../contexts/query-client';
 import {

@@ -10,7 +10,7 @@ import {
 } from '../../../../../ducks/bridge/actions';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
-import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors/smart-transactions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import {
   BatchSellQuotesConfig,

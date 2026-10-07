@@ -1,14 +1,12 @@
 import React, { useCallback } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
-import Button from '../../ui/button';
-import {
-  AvatarFavicon,
-  AvatarFaviconSize,
-  IconSize,
-} from '../../component-library';
+import Button from '../../ui/button/button.component';
+import { AvatarFavicon } from '../../component-library/avatar-favicon/avatar-favicon';
+import { AvatarFaviconSize } from '../../component-library/avatar-favicon/avatar-favicon.types';
+import { IconSize } from '../../component-library/icon/icon.types';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
-import SiteOrigin from '../../ui/site-origin';
-import { SnapIcon } from '../snaps/snap-icon';
+import SiteOrigin from '../../ui/site-origin/site-origin';
+import { SnapIcon } from '../snaps/snap-icon/snap-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type ConnectedSubject = {

@@ -31,7 +31,8 @@ import {
 } from '../../../../shared/lib/perps-formatters';
 import { PERPS_EVENT_PROPERTY } from '../../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../analytics/analytics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { isBeta } from '../../../../shared/lib/build-types';

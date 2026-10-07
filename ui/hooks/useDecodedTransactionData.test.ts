@@ -12,7 +12,7 @@ import {
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../test/data/confirmations/transaction-decode';
-import { DecodedTransactionDataSource } from '../../shared/types';
+import { DecodedTransactionDataSource } from '../../shared/types/transaction-decode';
 import {
   useDecodedTransactionData,
   useDecodedTransactionDataValue,

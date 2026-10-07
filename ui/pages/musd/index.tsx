@@ -8,8 +8,8 @@
 import React from 'react';
 import { Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd';
-import { useMusdGeoBlocking } from '../../hooks/musd';
+import { selectIsMusdConversionFlowEnabled } from '../../selectors/musd/feature-flags';
+import { useMusdGeoBlocking } from '../../hooks/musd/useMusdGeoBlocking';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { MUSD_DEEPLINK_PARAM } from '../../../shared/lib/deep-links/routes/musd';
 import { MUSD_CONVERSION_ROUTES } from './constants/routes';

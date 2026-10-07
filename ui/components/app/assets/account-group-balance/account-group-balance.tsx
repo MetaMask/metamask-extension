@@ -16,16 +16,16 @@ import {
 } from '../../../../selectors/assets';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
-import { SensitiveText } from '../../../component-library';
+import { SensitiveText } from '../../../component-library/sensitive-text/sensitive-text';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
-  getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
-} from '../../../../selectors';
+} from '../../../../selectors/multichain/networks';
+import { getShowFiatInTestnets } from '../../../../selectors/selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';

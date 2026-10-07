@@ -4,7 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { TxGasFees } from '../../../shared/constants/gas';
 import { logErrorWithMessage } from '../../../shared/lib/error';
 import { submitRequestToBackground } from '../background-connection';
-import type { MetaMaskReduxState } from '../store';
+import type { MetaMaskReduxState } from '../types';
 
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(

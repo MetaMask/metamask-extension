@@ -1,7 +1,7 @@
 import React from 'react';
 import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import CurrencyDisplay from '.';
+import CurrencyDisplay from './currency-display.component';
 
 export default {
   title: 'Components/UI/CurrencyDisplay',

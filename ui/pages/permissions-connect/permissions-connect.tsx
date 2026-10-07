@@ -61,7 +61,7 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getURLHostName } from '../../helpers/utils/util';
 import {
@@ -73,7 +73,7 @@ import {
   setSnapsInstallPrivacyWarningShownStatus as setSnapsInstallPrivacyWarningShownStatusAction,
 } from '../../store/actions';
 import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
-import PermissionPageContainer from '../../components/app/permission-page-container';
+import PermissionPageContainer from '../../components/app/permission-page-container/permission-page-container.container';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
@@ -87,12 +87,12 @@ import {
   PermissionsRequest,
 } from '../../helpers/utils/caip25-permissions';
 import { useDispatch } from '../../store/hooks';
-import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
-import PermissionsRedirect from './redirect';
-import SnapsConnect from './snaps/snaps-connect';
-import SnapInstall from './snaps/snap-install';
-import SnapUpdate from './snaps/snap-update';
-import SnapResult from './snaps/snap-result';
+import { ConnectionTrustSignalGate } from './connection-trust-signal-gate/connection-trust-signal-gate';
+import PermissionsRedirect from './redirect/permissions-redirect.component';
+import SnapsConnect from './snaps/snaps-connect/snaps-connect';
+import SnapInstall from './snaps/snap-install/snap-install';
+import SnapUpdate from './snaps/snap-update/snap-update';
+import SnapResult from './snaps/snap-result/snap-result';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

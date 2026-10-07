@@ -10,7 +10,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import * as fetchWithCacheModule from '../../../shared/lib/fetch-with-cache';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import type { StaticAssetsControllerMessenger } from './static-assets-controller';

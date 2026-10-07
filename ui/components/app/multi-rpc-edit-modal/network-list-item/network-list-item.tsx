@@ -9,15 +9,13 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
-import {
-  Text,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Button,
-  Popover,
-  PopoverPosition,
-  ButtonVariant,
-} from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
+import { AvatarNetwork } from '../../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../component-library/avatar-network/avatar-network.types';
+import { Button } from '../../../component-library/button/button';
+import { Popover } from '../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../component-library/popover/popover.types';
+import { ButtonVariant } from '../../../component-library/button/button.types';
 import {
   BackgroundColor,
   TextColor,

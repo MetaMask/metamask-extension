@@ -9,7 +9,8 @@ import {
   BoxJustifyContent,
   Checkbox,
 } from '@metamask/design-system-react';
-import { Icon, IconName } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
 
 // End accessory
 const MoreOptionsAccessory = () => (

@@ -8,8 +8,9 @@ import {
   TextVariant,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
-import { SnapUIImage } from '../snap-ui-image';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
+import { SnapUIImage } from '../snap-ui-image/snap-ui-image';
 
 export type SnapUICardProps = {
   image?: string | undefined;

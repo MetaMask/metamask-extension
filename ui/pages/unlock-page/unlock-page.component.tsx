@@ -29,16 +29,14 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  TextFieldType,
-  FormTextFieldSize,
-} from '../../components/component-library';
+import { FormTextField } from '../../components/component-library/form-text-field/form-text-field';
+import { TextFieldType } from '../../components/component-library/text-field/text-field.types';
+import { FormTextFieldSize } from '../../components/component-library/form-text-field/form-text-field.types';
 import {
   BlockSize,
   TextTransform,
 } from '../../helpers/constants/design-system';
-import Mascot from '../../components/ui/mascot';
+import Mascot from '../../components/ui/mascot/mascot.component';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
@@ -51,7 +49,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { cancelPasskeyCeremony } from '../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../shared/lib/passkey/passkey-ceremony';
 import { isFlask, isBeta } from '../../../shared/lib/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -64,14 +62,12 @@ import { I18nContext } from '../../contexts/i18n';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
-import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
-import {
-  UnlockPasskeyIconButton,
-  UnlockPasskeySection,
-  type PasskeyUnlockSuccessContext,
-} from './passkey';
+import { UnlockPasskeyIconButton } from './passkey/unlock-passkey-icon-button';
+import { UnlockPasskeySection } from './passkey/unlock-passkey-section';
+import type { PasskeyUnlockSuccessContext } from './passkey/unlock-passkey-section';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';

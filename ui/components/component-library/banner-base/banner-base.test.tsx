@@ -3,7 +3,8 @@ import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Icon, IconName } from '../icon';
+import { Icon } from '../icon/icon';
+import { IconName } from '../icon/icon.types';
 import { BannerBase } from './banner-base';
 
 describe('BannerBase', () => {

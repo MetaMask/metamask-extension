@@ -2,7 +2,7 @@ import type { SnapId } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
-import { getInternalAccounts } from '../../../../selectors';
+import { getInternalAccounts } from '../../../../selectors/accounts';
 import { getSnapAccountsById } from '../../../../store/actions';
 
 /**

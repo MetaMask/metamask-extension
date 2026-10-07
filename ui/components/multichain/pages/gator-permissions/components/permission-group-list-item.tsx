@@ -20,7 +20,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors/multichain/networks';
 import { extractNetworkName } from '../helper';
 
 type PermissionGroupListItemProps = {

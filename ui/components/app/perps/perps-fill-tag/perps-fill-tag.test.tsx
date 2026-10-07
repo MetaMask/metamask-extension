@@ -5,7 +5,7 @@ import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { FillType } from '../types/transactionHistory';
-import type { PerpsTransaction } from '../types';
+import type { PerpsTransaction } from '../types/transactionHistory';
 import { PERPS_SUPPORT_ARTICLES_URLS } from '../../../../../shared/constants/perps';
 import { PerpsFillTag } from './perps-fill-tag';
 

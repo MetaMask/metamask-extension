@@ -5,7 +5,7 @@ import {
 import { NetworkClientId } from '@metamask/network-controller';
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MessengerClientInitFunction } from './types';
-import { AccountTrackerControllerInitMessenger } from './messengers';
+import { AccountTrackerControllerInitMessenger } from './messengers/account-tracker-controller-messenger';
 
 export const AccountTrackerControllerInit: MessengerClientInitFunction<
   AccountTrackerController,

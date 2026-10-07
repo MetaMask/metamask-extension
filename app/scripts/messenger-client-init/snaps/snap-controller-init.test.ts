@@ -18,7 +18,7 @@ import {
   getSnapControllerInitMessenger,
   getSnapControllerMessenger,
   SnapControllerInitMessenger,
-} from '../messengers/snaps';
+} from '../messengers/snaps/snap-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { SnapControllerInit } from './snap-controller-init';
 

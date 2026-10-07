@@ -22,10 +22,10 @@ import {
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import {
   getDataCollectionForMarketing,
-  getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
+import { getAnalyticsId } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type StakeableLinkProps = {

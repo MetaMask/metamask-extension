@@ -1,14 +1,12 @@
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
-import {
-  getInternalAccounts,
-  getPendingApprovals,
-  getTransactions,
-  selectAllTokensFlat,
-} from '../../selectors';
+import { getInternalAccounts } from '../../selectors/accounts';
+import { getPendingApprovals } from '../../selectors/approvals';
+import { getTransactions } from '../../selectors/transactions';
+import { selectAllTokensFlat } from '../../selectors/selectors';
 import { getMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { selectAllNftsFlat } from '../../selectors/nft';
-import { MetaMaskReduxState } from '../../store/store';
+import { MetaMaskReduxState } from '../../store/types';
 
 /**
  * Generate the required tags for the UI startup trace.

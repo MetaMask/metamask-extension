@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'clsx';
-import { HeaderBase, Text } from '../../../../../component-library';
+import { HeaderBase } from '../../../../../component-library/header-base/header-base';
+import { Text } from '../../../../../component-library/text/text';
 import {
   BlockSize,
   Display,
@@ -10,7 +11,7 @@ import {
   AlignItems,
 } from '../../../../../../helpers/constants/design-system';
 
-import type { StyleUtilityProps } from '../../../../../component-library/box';
+import type { StyleUtilityProps } from '../../../../../component-library/box/box.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

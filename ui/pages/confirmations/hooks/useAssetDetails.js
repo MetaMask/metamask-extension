@@ -10,7 +10,7 @@ import {
 import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { selectNftsByChainId } from '../../../selectors';
+import { selectNftsByChainId } from '../../../selectors/selectors';
 import { useDispatch } from '../../../store/hooks';
 
 export function useAssetDetails(

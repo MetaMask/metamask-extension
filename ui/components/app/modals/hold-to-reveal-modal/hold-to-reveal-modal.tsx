@@ -6,17 +6,17 @@ import {
 } from '../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Button } from '../../../component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  Container,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-} from '../../../component-library';
+} from '../../../component-library/button/button.types';
+import { Container } from '../../../component-library/container/container';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
 import HoldToRevealButton from '../../hold-to-reveal-button/hold-to-reveal-button';
 
 type HoldToRevealModalProps = {

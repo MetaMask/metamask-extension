@@ -4,10 +4,10 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import SmartTransactionStatusLabel from '.';
+import SmartTransactionStatusLabel from './smart-transaction-status';
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(

@@ -14,16 +14,16 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { TextField } from '../../../../../components/component-library/text-field/text-field';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  TextField,
   TextFieldSize,
   TextFieldType,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/text-field/text-field.types';
 import {
   BorderColor,
   BorderRadius,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Button from '../button';
-import Box from '../box';
+import Button from '../button/button.component';
+import Box from '../box/box';
 import Popover from './popover.component';
 
 export default {

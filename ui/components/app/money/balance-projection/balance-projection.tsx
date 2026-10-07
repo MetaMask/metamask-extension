@@ -22,7 +22,7 @@ import {
 import { moneyFormatUsd } from '../../../../helpers/money/format';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../messenger';
-import { TooltipText } from '../tooltip-text';
+import { TooltipText } from '../tooltip-text/tooltip-text';
 
 const PROJECTED_YEARS = 1;
 

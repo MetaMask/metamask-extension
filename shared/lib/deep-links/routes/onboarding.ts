@@ -1,4 +1,6 @@
-import { Route, ZENDESK_URLS } from './route';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import ZENDESK_URLS from '../../../../ui/helpers/constants/zendesk-url';
+import { Route } from './route';
 
 export const onboarding = new Route({
   pathname: '/onboarding',

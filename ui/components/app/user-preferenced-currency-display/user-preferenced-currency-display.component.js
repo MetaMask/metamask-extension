@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import CurrencyDisplay from '../../ui/currency-display';
+import CurrencyDisplay from '../../ui/currency-display/currency-display.component';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { getSelectedEvmInternalAccount } from '../../../selectors';
+import { getSelectedEvmInternalAccount } from '../../../selectors/selectors';
 
 /* eslint-disable jsdoc/require-param-name */
 // eslint-disable-next-line jsdoc/require-param

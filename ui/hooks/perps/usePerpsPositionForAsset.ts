@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import type { Position } from '@metamask/perps-controller';
 import { getDisplaySymbol } from '../../components/app/perps/utils';
-import { usePerpsLivePositions, usePerpsStreamManager } from './stream';
+import { usePerpsLivePositions } from './stream/usePerpsLivePositions';
+import { usePerpsStreamManager } from './stream/usePerpsStreamManager';
 
 export type UsePerpsPositionForAssetReturn = {
   /** The account's open position on this market, when one exists */

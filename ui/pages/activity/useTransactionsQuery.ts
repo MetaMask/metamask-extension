@@ -11,7 +11,7 @@ import { MINUTE } from '../../../shared/constants/time';
 import { getErrorBodyMessage } from '../../../shared/lib/error';
 import { getIntlLocale } from '../../ducks/locale/locale';
 import { apiClient } from '../../helpers/api-client';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { selectEvmAddress } from '../../selectors/activity';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListFilter } from './helpers';

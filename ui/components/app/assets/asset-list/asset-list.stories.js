@@ -1,5 +1,5 @@
 import React from 'react';
-import AssetList from '.';
+import AssetList from './asset-list';
 
 export default {
   title: 'Components/App/AssetList',

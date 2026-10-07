@@ -72,20 +72,26 @@ jest.mock('../../hooks/useAnalytics', () => {
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // default gate is a passthrough; the blocked case is simulated per-test below.
 const mockComplianceGate = jest.fn(async (action: () => unknown) => action());
-jest.mock('../../components/app/compliance', () => ({
+
+jest.mock('../../components/app/compliance/useComplianceGate', () => ({
   useComplianceGate: () => ({
     gate: mockComplianceGate,
     isComplianceEnabled: false,
     isBlocked: false,
     checkCompliance: jest.fn(),
   }),
-  useSelectedAccountComplianceGate: () => ({
-    gate: mockComplianceGate,
-    isComplianceEnabled: false,
-    isBlocked: false,
-    checkCompliance: jest.fn(),
-  }),
 }));
+jest.mock(
+  '../../components/app/compliance/useSelectedAccountComplianceGate',
+  () => ({
+    useSelectedAccountComplianceGate: () => ({
+      gate: mockComplianceGate,
+      isComplianceEnabled: false,
+      isBlocked: false,
+      checkCompliance: jest.fn(),
+    }),
+  }),
+);
 
 const mockUsePerpsMarketInfo = jest.fn(() => ({
   market: undefined,
@@ -261,13 +267,22 @@ const mockSetPendingOrder = jest.fn();
 const mockTriggerDeposit = jest.fn().mockResolvedValue({
   transactionId: 'perps-deposit-tx',
 });
-jest.mock('../../components/app/perps/perps-toast', () => {
+jest.mock(
+  '../../components/app/perps/perps-toast/perps-toast.constants',
+  () => {
+    const { PERPS_TOAST_KEYS } = jest.requireActual(
+      '../../components/app/perps/perps-toast/perps-toast.constants',
+    );
+
+    return { PERPS_TOAST_KEYS };
+  },
+);
+jest.mock('../../components/app/perps/perps-toast/perps-toast-provider', () => {
   const { PERPS_TOAST_KEYS } = jest.requireActual(
-    '../../components/app/perps/perps-toast/perps-toast-provider',
+    '../../components/app/perps/perps-toast/perps-toast.constants',
   );
 
   return {
-    PERPS_TOAST_KEYS,
     usePerpsToast: () => ({
       replacePerpsToastByKey: mockReplacePerpsToastByKey,
       hidePerpsToast: mockHidePerpsToast,
@@ -276,11 +291,11 @@ jest.mock('../../components/app/perps/perps-toast', () => {
     }),
   };
 });
-jest.mock('../../providers/perps', () => {
-  return {
-    getPerpsStreamManager: () => mockGetPerpsStreamManager(),
-  };
+
+jest.mock('../../providers/perps/PerpsStreamManager', () => {
+  return { getPerpsStreamManager: () => mockGetPerpsStreamManager() };
 });
+
 jest.mock(
   '../../components/app/perps/hooks/usePerpsDepositConfirmation',
   () => ({
@@ -337,31 +352,56 @@ const mockLiveOrders = jest.fn(() => ({
   isInitialLoading: false,
 }));
 
-jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLivePositions: () => mockLivePositions(),
-  usePerpsLiveOrders: () => mockLiveOrders(),
+jest.mock('../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => mockLiveMarketData(),
+}));
+jest.mock('../../hooks/perps/stream/usePerpsLiveCandles', () => ({
   usePerpsLiveCandles: () => mockLiveCandles(),
-  usePerpsLiveOrderBook: () => mockUsePerpsLiveOrderBook(),
 }));
 
-jest.mock('../../components/app/perps/perps-candlestick-chart', () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const mockReact = require('react');
-  return {
-    PerpsCandlestickChart: mockReact.forwardRef(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (props: any, _ref: any) =>
-        mockReact.createElement('div', {
-          'data-testid': 'perps-candlestick-chart',
-          'data-price-lines': JSON.stringify(props.priceLines ?? []),
-          'data-visible-candle-count': props.initialVisibleCandleCount,
-          onClick: () => props.onVisibleCandleCountChange?.(75),
-        }),
-    ),
-  };
-});
+jest.mock('../../hooks/perps/stream/usePerpsLiveMarketData', () => ({
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
+}));
+
+jest.mock('../../hooks/perps/stream/usePerpsLiveOrderBook', () => ({
+  usePerpsLiveOrderBook: () => mockUsePerpsLiveOrderBook(),
+}));
+jest.mock('../../hooks/perps/stream/usePerpsLiveOrders', () => ({
+  usePerpsLiveOrders: () => mockLiveOrders(),
+}));
+jest.mock('../../hooks/perps/stream/usePerpsLivePositions', () => ({
+  usePerpsLivePositions: () => mockLivePositions(),
+}));
+
+jest.mock(
+  '../../components/app/perps/perps-candlestick-chart/perps-candlestick-chart',
+  () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mockReact = require('react');
+    return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ES module interop flag.
+      __esModule: true,
+      default: mockReact.forwardRef(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (props: any, _ref: any) =>
+          mockReact.createElement('div', {
+            'data-testid': 'perps-candlestick-chart',
+            'data-price-lines': JSON.stringify(props.priceLines ?? []),
+            'data-visible-candle-count': props.initialVisibleCandleCount,
+            onClick: () => props.onVisibleCandleCountChange?.(75),
+          }),
+      ),
+    };
+  },
+);
+jest.mock(
+  '../../components/app/perps/perps-candlestick-chart/chart-utils',
+  () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const mockReact = require('react');
+    return {};
+  },
+);
 
 jest.mock('../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({

@@ -2,7 +2,7 @@ import { IconColor, IconName, TextColor } from '@metamask/design-system-react';
 import type {
   TokenSecurityFeature,
   TokenSecurityFinancialStats,
-} from '../types/security-trust';
+} from '@metamask/assets-controllers';
 import {
   formatCompactSupply,
   formatFeePercent,

@@ -27,10 +27,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, SuccessPill, Text } from '../../component-library';
+import { Box } from '../../component-library/box/box';
+import { SuccessPill } from '../../component-library/success-pill/success-pill';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { NetworkListItemMenu } from '../network-list-item-menu';
+import { NetworkListItemMenu } from '../network-list-item-menu/network-list-item-menu';
 import { useIsNetworkGasSponsored } from '../../../hooks/useIsNetworkGasSponsored';
 import { getAvatarNetworkStyle } from '../../../helpers/utils/accounts';
 

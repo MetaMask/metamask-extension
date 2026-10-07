@@ -22,7 +22,7 @@ import type {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   submitSmartTransactionHook,
   submitBatchSmartTransactionHook,

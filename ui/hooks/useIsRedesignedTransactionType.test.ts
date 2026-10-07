@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { selectIsRedesignedConfirmationType } from '../selectors';
+import { selectIsRedesignedConfirmationType } from '../selectors/transactions';
 import { useIsRedesignedConfirmationType } from './useIsRedesignedTransactionType';
 
 jest.mock('react-redux', () => ({
@@ -12,7 +12,7 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/transactions', () => ({
   selectIsRedesignedConfirmationType: jest.fn(),
 }));
 

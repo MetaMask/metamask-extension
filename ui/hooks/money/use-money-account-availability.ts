@@ -4,7 +4,7 @@ import type { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { isMoneyAccountEnabled } from '../../../shared/lib/money/feature-flags';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import {
   clearReportedMoneyQueryError,
   reportMoneyQueryErrorOnce,

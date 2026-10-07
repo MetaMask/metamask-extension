@@ -8,8 +8,8 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import {
   UrType,
   SIGNING_EXPECTED_UR_TYPES,
-  type BaseQrReaderProps,
-} from '../../base-qr-reader';
+} from '../../base-qr-reader/base-qr-reader.types';
+import type { BaseQrReaderProps } from '../../base-qr-reader/base-qr-reader.types';
 import { QrMismatchedTransactionError } from '../../qr-utils/qr-utils';
 import type { QrReaderProps } from './qr-reader.types';
 import QrReader from './qr-reader';
@@ -17,7 +17,7 @@ import QrReader from './qr-reader';
 let mockUr: UR | undefined;
 let mockLastReaderError: Error | undefined;
 
-jest.mock('../../base-qr-reader', () => {
+jest.mock('../../base-qr-reader/base-qr-reader', () => {
   const { ErrorCode: MockErrorCode } = jest.requireActual(
     '@metamask/hw-wallet-sdk',
   );
@@ -65,10 +65,7 @@ jest.mock('../../base-qr-reader', () => {
     </div>
   );
   MockBaseQrReader.displayName = 'MockBaseQrReader';
-  return Object.assign(
-    MockBaseQrReader,
-    jest.requireActual('../../base-qr-reader'),
-  );
+  return MockBaseQrReader;
 });
 
 jest.mock('@keystonehq/bc-ur-registry-eth', () => ({

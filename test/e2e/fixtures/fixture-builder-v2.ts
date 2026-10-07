@@ -51,7 +51,7 @@ import type { AppStateControllerState } from '../../../app/scripts/controllers/a
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
 import type { Preferences } from '../../../shared/types/preferences';
 import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
   ACCOUNT_2,
   ADDITIONAL_ACCOUNT_FIXTURE_VAULT,

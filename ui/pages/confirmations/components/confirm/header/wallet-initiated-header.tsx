@@ -7,13 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

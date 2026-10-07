@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotificationDetailTitle } from '../../../components/multichain';
+import { NotificationDetailTitle } from '../../../components/multichain/notification-detail-title/notification-detail-title';
 import { formatIsoDateString } from '../../../helpers/utils/notification.util';
 
 type NotificationWithTemplateTitle = {

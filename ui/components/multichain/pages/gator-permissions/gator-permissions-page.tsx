@@ -17,7 +17,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { Content, Header, Page } from '../page';
+import { Content } from '../page/components/content/content';
+import { Header } from '../page/components/header/header';
+import { Page } from '../page/page';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -32,7 +34,8 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useGlobalMenuRouteTransition } from '../../../../pages/routes/global-menu-route-transition';
 import { transitionForward } from '../../../ui/transition';
-import { PermissionListItem, PermissionsEmptyState } from './components';
+import { PermissionListItem } from './components/permission-list-item';
+import { PermissionsEmptyState } from './components/permissions-empty-state';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();

@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../../lib/messenger';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getAccountActivityServiceMessenger } from '../messengers/core-backend';
+import { getAccountActivityServiceMessenger } from '../messengers/core-backend/account-activity-service-messenger';
 import { AccountActivityServiceInit } from './account-activity-service-init';
 
 jest.mock('@metamask/core-backend');

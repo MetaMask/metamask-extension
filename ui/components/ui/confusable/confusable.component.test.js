@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import Confusable from '.';
+import Confusable from './confusable.component';
 
 describe('Confusable component', () => {
   it('should detect zero-width unicode', () => {

@@ -5,7 +5,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { getNativeCurrencyForChain } from '../../../selectors';
+import { getNativeCurrencyForChain } from '../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getProviderConfig,
@@ -19,7 +19,7 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import AssetOptions from './asset-options';

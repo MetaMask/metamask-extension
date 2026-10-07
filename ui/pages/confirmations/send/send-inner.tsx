@@ -9,12 +9,12 @@ import {
   Display,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { Box } from '../../../components/component-library';
+import { Box } from '../../../components/component-library/box/box';
 import { ScrollContainer } from '../../../contexts/scroll-container';
-import { AmountRecipient } from '../components/send/amount-recipient';
-import { Header } from '../components/send/header';
-import { Asset } from '../components/send/asset';
-import { Loader } from '../components/send/loader';
+import { AmountRecipient } from '../components/send/amount-recipient/amount-recipient';
+import { Header } from '../components/send/header/header';
+import { Asset } from '../components/send/asset/asset';
+import { Loader } from '../components/send/loader/loader';
 import { SendPages } from '../constants/send';
 import { useSendContext } from '../context/send';
 import { useSendQueryParams } from '../hooks/send/useSendQueryParams';

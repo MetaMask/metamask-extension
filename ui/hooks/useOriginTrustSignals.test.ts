@@ -14,7 +14,6 @@ jest.mock('../selectors/selectors', () => ({
 
 jest.mock('../store/actions', () => ({}));
 jest.mock('../ducks/metamask/metamask', () => ({}));
-jest.mock('../selectors', () => ({}));
 
 const ORIGIN_MOCK = 'https://example.com';
 const DOMAIN_NAME_MOCK = 'example.com';

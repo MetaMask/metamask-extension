@@ -16,9 +16,9 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 
-import Reader from '../../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader';
+import Reader from '../../../../components/app/qr-hardware-popover/qr-hardware-sign-request/qr-reader/qr-reader';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import QrSignatureCode from '../qr-signature-code';
+import QrSignatureCode from '../qr-signature-code/qr-signature-code';
 import { getQrScanButtonLabelKey } from '../hardware-wallet-signatures.utils';
 import {
   QrHardwareSigningPhase,

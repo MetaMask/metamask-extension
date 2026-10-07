@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import configureMockStore from 'redux-mock-store';
 import { Text } from '@metamask/snaps-sdk/jsx';
 
@@ -45,23 +45,27 @@ const additionalMockState = {
 };
 
 describe('SnapsSection', () => {
-  it('renders section personal sign request', () => {
+  it('renders section personal sign request', async () => {
     const state = getMockPersonalSignConfirmState({
       metamask: {
         ...additionalMockState,
       },
     });
     const mockStore = configureMockStore([])(state);
-    const { container, getByText } = renderWithConfirmContextProvider(
-      <SnapsSection />,
+    const { container, findByText } = renderWithConfirmContextProvider(
+      <Suspense fallback={null}>
+        <SnapsSection />
+      </Suspense>,
       mockStore,
     );
 
+    expect(
+      await findByText('Hello world!', {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(getByText('Hello world!')).toBeDefined();
   });
 
-  it('renders section for typed sign request', () => {
+  it('renders section for typed sign request', async () => {
     const state = getMockTypedSignConfirmStateForRequest(
       unapprovedTypedSignMsgV3,
       {
@@ -71,12 +75,16 @@ describe('SnapsSection', () => {
       },
     );
     const mockStore = configureMockStore([])(state);
-    const { container, getByText } = renderWithConfirmContextProvider(
-      <SnapsSection />,
+    const { container, findByText } = renderWithConfirmContextProvider(
+      <Suspense fallback={null}>
+        <SnapsSection />
+      </Suspense>,
       mockStore,
     );
 
+    expect(
+      await findByText('Hello world again!', {}, { timeout: 5000 }),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
-    expect(getByText('Hello world again!')).toBeDefined();
   });
 });

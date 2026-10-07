@@ -1,4 +1,5 @@
-import type { ActivityKind, Status } from './types';
+import type { Status } from '@metamask/client-utils';
+import type { ActivityKind } from './types';
 
 const fallbackLabelKey = 'activity_fallback';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import type { CaipAssetType } from '@metamask/utils';
 import type { BatchSellQuotesConfig } from '../types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
 import { QuotesList } from './quotes-list';
 
 jest.mock('./quotes-list-item', () => ({

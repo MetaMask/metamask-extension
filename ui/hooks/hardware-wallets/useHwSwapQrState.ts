@@ -4,15 +4,15 @@ import type { SerializedUR } from '@metamask/eth-qr-keyring';
 
 import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
 import { getHardwareWalletType } from '../../../shared/lib/selectors/keyring';
-import { getActiveQrCodeScanRequest } from '../../selectors';
+import { getActiveQrCodeScanRequest } from '../../selectors/selectors';
 import {
   cancelQrCodeScan,
   cancelTx,
   completeQrCodeScan,
 } from '../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../store/store';
-import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { MetaMaskReduxDispatch } from '../../store/types';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { useDispatch } from '../../store/hooks';
 
 import {

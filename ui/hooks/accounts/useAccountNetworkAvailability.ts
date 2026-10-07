@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
 import { isScopeEqualToAny } from '@metamask/keyring-utils';
-import { getMetaMaskAccountsOrdered } from '../../selectors';
+import { getMetaMaskAccountsOrdered } from '../../selectors/selectors';
 
 type UseAccountNetworkAvailabilityReturn = {
   hasAnyAccountsInNetwork: (chainId: CaipChainId) => boolean;

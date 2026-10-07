@@ -8,7 +8,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { captureException } from '../../../shared/lib/sentry';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import UnlockPageImport from '.';
+import UnlockPageImport from './unlock-page.container';
 
 // The container uses compose() which returns ComponentType, but TypeScript sees it as 'any'
 const UnlockPage = UnlockPageImport as React.ComponentType<
@@ -50,10 +50,8 @@ jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
-    '../../../shared/lib/passkey',
-  ),
+jest.mock('../../../shared/lib/passkey/passkey-capabilities', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-capabilities'),
   isWebAuthnSupported: jest.fn().mockReturnValue(true),
 }));
 

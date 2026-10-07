@@ -18,11 +18,13 @@ import {
 import {
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
+} from '../../selectors/first-time-flow';
+import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  getAccountTypeForOnboardingMetrics,
-} from '../../selectors';
+} from '../../selectors/selectors';
+import { getAccountTypeForOnboardingMetrics } from '../../selectors/onboarding/onboarding';
 import {
   getCompletedOnboarding,
   getIsWalletResetInProgress,
@@ -31,9 +33,9 @@ import {
 import withRouterHooks, {
   RouterHooksProps,
 } from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/types';
 import UnlockPage from './unlock-page.component';
-import type { PasskeyUnlockSuccessContext } from './passkey';
+import type { PasskeyUnlockSuccessContext } from './passkey/unlock-passkey-section';
 
 type OwnProps = {
   navigate: NavigateFunction;

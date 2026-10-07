@@ -1,8 +1,6 @@
 import { IconName } from '@metamask/design-system-react';
-import {
-  HardwareWalletType,
-  type HardwareWalletAdapterOptions,
-} from '../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import type { HardwareWalletAdapterOptions } from '../../contexts/hardware-wallets/types';
 import { createAdapterForHardwareWalletType } from '../../contexts/hardware-wallets/adapters/factory';
 
 export type InstructionStep = {

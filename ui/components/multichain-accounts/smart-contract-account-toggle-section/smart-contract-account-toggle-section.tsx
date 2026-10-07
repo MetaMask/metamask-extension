@@ -15,8 +15,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
-import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
-import Preloader from '../../ui/icon/preloader';
+import { SmartContractAccountToggle } from '../smart-contract-account-toggle/smart-contract-account-toggle';
+import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 type SmartContractAccountToggleSectionProps = {
   address: string;

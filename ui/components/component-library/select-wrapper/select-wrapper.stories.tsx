@@ -1,9 +1,9 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { SelectButton } from '../select-button';
-import { SelectOption } from '../select-option';
-import { Button } from '../button';
-import { Text } from '../text';
+import { SelectButton } from '../select-button/select-button';
+import { SelectOption } from '../select-option/select-option';
+import { Button } from '../button/button';
+import { Text } from '../text/text';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { SelectWrapper } from './select-wrapper';
 import { useSelectContext } from './select-wrapper.context';

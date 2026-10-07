@@ -8,9 +8,10 @@ import type {
 } from '../../../shared/constants/metametrics';
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
-import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../controllers/analytics/analytics';
 import { MessengerClientInitFunction } from './types';
-import { TokenDetectionControllerInitMessenger } from './messengers';
+import { TokenDetectionControllerInitMessenger } from './messengers/token-detection-controller-messenger';
 import { tokenListService } from './token-list-service';
 
 export const TokenDetectionControllerInit: MessengerClientInitFunction<

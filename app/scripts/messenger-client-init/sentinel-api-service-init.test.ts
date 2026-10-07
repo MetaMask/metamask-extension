@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getSentinelApiServiceMessenger } from './messengers';
+import { getSentinelApiServiceMessenger } from './messengers/sentinel-api-service-messenger';
 import { SentinelApiServiceInit } from './sentinel-api-service-init';
 
 jest.mock('@metamask/sentinel-api-service');

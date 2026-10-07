@@ -18,7 +18,7 @@ import {
   useReadNotificationsCounter,
   useUnreadNotificationsCounter,
 } from '../../../hooks/metamask-notifications/useCounter';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
+import { NotificationsTagCounter } from '../notifications-tag-counter/notifications-tag-counter';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
@@ -51,22 +51,24 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getUnapprovedTransactions } from '../../../selectors/transactions';
 import {
-  getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
   getUseExternalServices,
   getAnalyticsId,
+} from '../../../selectors/selectors';
+import {
   getConsentDecisionMade,
   getOptedIn,
   getDataCollectionForMarketing,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
   getShieldSubscription,
   getSubscriptionPaymentData,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/subscription-utils';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import type { GlobalMenuSection } from '../global-menu/global-menu-list.types';

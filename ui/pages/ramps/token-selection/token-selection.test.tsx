@@ -7,7 +7,8 @@ import { type RampsToken } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { type AssetType } from '../../../components/app/asset-picker';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import type { Asset as AssetType } from '../../confirmations/types/send';
 import { RampsTokenSelectionScreen } from './token-selection';
 
 const mockNavigate = jest.fn();
@@ -40,8 +41,8 @@ jest.mock('../../../../shared/lib/selectors/networks', () => ({
   })),
 }));
 
-jest.mock('../../../components/app/asset-picker', () => ({
-  ...jest.requireActual('../../../components/app/asset-picker'),
+jest.mock('../../confirmations/components/send/asset/asset', () => ({
+  ...jest.requireActual('../../confirmations/components/send/asset/asset'),
   Asset: ({
     tokens,
     hideBalances,

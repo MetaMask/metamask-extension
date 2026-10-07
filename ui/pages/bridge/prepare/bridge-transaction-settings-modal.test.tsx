@@ -15,15 +15,17 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
-  HardwareWalletProvider,
-} from '../../../contexts/hardware-wallets';
+} from '../../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 
-jest.mock('../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../contexts/hardware-wallets'),
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),

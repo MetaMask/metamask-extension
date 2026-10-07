@@ -43,14 +43,14 @@ import { transitionForward } from '../../ui/transition';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.utils';
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
   getSwapsDefaultToken,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -61,23 +61,21 @@ import {
   BlockSize,
   IconColor as IconColorLegacy,
 } from '../../../helpers/constants/design-system';
+import { Icon as IconLegacy } from '../../component-library/icon/icon';
 import {
-  Icon as IconLegacy,
   IconName as IconNameLegacy,
   IconSize as IconSizeLegacy,
-  Tag,
-  TagProps,
-} from '../../component-library';
-import IconButton from '../../ui/icon-button';
+} from '../../component-library/icon/icon.types';
+import { Tag } from '../../component-library/tag/tag';
+import { TagProps } from '../../component-library/tag/tag.types';
+import IconButton from '../../ui/icon-button/icon-button';
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { ReceiveModal } from '../../multichain/receive-modal';
+import { ReceiveModal } from '../../multichain/receive-modal/receive-modal';
 import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
-import {
-  getMultichainNativeCurrency,
-  getMultichainNetwork,
-} from '../../../selectors/multichain';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { getMultichainNetwork } from '../../../selectors/multichain/networks';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -87,7 +85,7 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../../../hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
 import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
-import { PerpsTradeButtons } from '../perps/perps-trade-buttons';
+import { PerpsTradeButtons } from '../perps/perps-trade-buttons/perps-trade-buttons';
 import { useBalanceAwareSwapDefaults } from '../../../pages/asset/hooks/useBalanceAwareSwapDefaults';
 import {
   ARC_ERC20_USDC_BRIDGE_ASSET,

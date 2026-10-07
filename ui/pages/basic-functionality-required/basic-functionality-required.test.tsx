@@ -67,8 +67,8 @@ jest.mock('../../hooks/useI18nContext', () => ({
   },
 }));
 
-jest.mock('../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../selectors/multichain/feature-flags'),
+jest.mock('../../selectors/multichain/basic-functionality', () => ({
+  ...jest.requireActual('../../selectors/multichain/basic-functionality'),
   getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
 

@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, ButtonIcon, IconName } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  InputType,
-} from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../component-library/form-text-field/form-text-field.types';
+import { InputType } from '../../component-library/input/input.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
-import { getEnabledNetworksByNamespace } from '../../../../selectors';
+import { getEnabledNetworksByNamespace } from '../../../../selectors/multichain/networks';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import {
   TranslateFunction,
@@ -11,7 +11,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,

@@ -6,6 +6,7 @@ import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
+import { toast } from 'react-hot-toast';
 import {
   BlockSize,
   BorderColor,
@@ -31,7 +32,7 @@ import {
   getCurrentNetwork,
   getIpfsGateway,
   getNetworkConfigurationIdByChainId,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -41,33 +42,33 @@ import {
   removeAndIgnoreNft,
   setActiveNetworkWithError,
 } from '../../../../../store/actions';
-import { toast, ToastContent } from '../../../../ui/toast/toast';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { ToastContent } from '../../../../ui/toast/toast';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import NftOptions from '../nft-options/nft-options';
-import InfoTooltip from '../../../../ui/info-tooltip';
+import InfoTooltip from '../../../../ui/info-tooltip/info-tooltip';
 import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
-import {
-  ButtonIcon,
-  IconName,
-  Text,
-  Box,
-  ButtonIconSize,
-  ButtonPrimarySize,
-  ButtonPrimary,
-  Icon,
-} from '../../../../component-library';
-import { NftItem } from '../../../../multichain/nft-item';
+import { ButtonIcon } from '../../../../component-library/button-icon/button-icon';
+import { IconName } from '../../../../component-library/icon/icon.types';
+import { Text } from '../../../../component-library/text/text';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonIconSize } from '../../../../component-library/button-icon/button-icon.types';
+import { ButtonPrimarySize } from '../../../../component-library/button-primary/button-primary.types';
+import { ButtonPrimary } from '../../../../component-library/button-primary/button-primary';
+import { Icon } from '../../../../component-library/icon/icon';
+import { NftItem } from '../../../../multichain/nft-item/nft-item';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
-import { Content, Footer, Page } from '../../../../multichain/pages/page';
+import { Content } from '../../../../multichain/pages/page/components/content/content';
+import { Footer } from '../../../../multichain/pages/page/components/footer/footer';
+import { Page } from '../../../../multichain/pages/page/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
 import {

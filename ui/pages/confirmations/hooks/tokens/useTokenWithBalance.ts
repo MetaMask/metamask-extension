@@ -9,8 +9,8 @@ import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/
 import {
   getNativeTokenCachedBalanceByChainIdSelector,
   getNativeTokenInfo,
-} from '../../../../selectors';
-import { getTokenBalances } from '../../../../ducks/metamask/metamask';
+} from '../../../../selectors/selectors';
+import { getTokenBalancesControllerTokenBalances as getTokenBalances } from '../../../../../shared/lib/selectors/assets-migration';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { useTokenFiatRate } from './useTokenFiatRates';

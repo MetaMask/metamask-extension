@@ -6,10 +6,8 @@ import {
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
-import {
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 import {
   getMarketingConsent,
   setDataCollectionForMarketing,

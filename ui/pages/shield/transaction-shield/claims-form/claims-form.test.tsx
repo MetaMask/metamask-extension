@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('../account-selector', () => {
+jest.mock('../account-selector/account-selector', () => {
   return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __esModule: true,
@@ -39,7 +39,7 @@ jest.mock('../account-selector', () => {
   };
 });
 
-jest.mock('../network-selector', () => {
+jest.mock('../network-selector/network-selector', () => {
   return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __esModule: true,

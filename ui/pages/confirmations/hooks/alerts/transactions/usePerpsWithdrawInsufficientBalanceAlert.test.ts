@@ -12,7 +12,7 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { resetCoalesceCacheForTests } from '../../../../../hooks/perps/coalesceBackgroundRequest';
 import { usePerpsCacheKey } from '../../../../../hooks/perps/usePerpsCacheKey';
-import { getPerpsStreamManager } from '../../../../../providers/perps';
+import { getPerpsStreamManager } from '../../../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../../../store/background-connection';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { AlertsName } from '../constants';
@@ -20,8 +20,8 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { usePerpsWithdrawInsufficientBalanceAlert } from './usePerpsWithdrawInsufficientBalanceAlert';
 
-jest.mock('../../../../../providers/perps', () => ({
-  ...jest.requireActual('../../../../../providers/perps'),
+jest.mock('../../../../../providers/perps/PerpsStreamManager', () => ({
+  ...jest.requireActual('../../../../../providers/perps/PerpsStreamManager'),
   getPerpsStreamManager: jest.fn(),
 }));
 jest.mock('../../../../../store/background-connection', () => ({

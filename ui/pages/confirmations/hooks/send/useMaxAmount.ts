@@ -1,7 +1,7 @@
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useCallback } from 'react';
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 import { useAppSelector } from '../../../../store/hooks';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';

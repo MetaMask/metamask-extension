@@ -4,15 +4,13 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../../context/confirm';
-import { Box } from '../../../../../../../components/component-library';
+import { Box } from '../../../../../../../components/component-library/box/box';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';

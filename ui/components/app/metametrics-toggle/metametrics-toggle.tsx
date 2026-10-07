@@ -17,13 +17,14 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import { Text } from '../../component-library';
-import ToggleButton from '../../ui/toggle-button';
+import { Text } from '../../component-library/text/text';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getOptedIn, getUseExternalServices } from '../../../selectors';
+import { getOptedIn } from '../../../selectors/metametrics';
+import { getUseExternalServices } from '../../../selectors/selectors';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,

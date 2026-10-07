@@ -6,10 +6,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
-import { getAppIsLoading } from '../../../selectors';
+import { getAppIsLoading } from '../../../selectors/selectors';
 import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
-import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
-import { CarouselWithEmptyState } from '../carousel';
+import { useCarouselManagement } from '../../../hooks/useCarouselManagement/useCarouselManagement';
+import { CarouselWithEmptyState } from '../carousel/carousel-wrapper';
 import { useDispatch } from '../../../store/hooks';
 import { Carousel } from './carousel';
 
@@ -22,11 +22,11 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../carousel', () => ({
+jest.mock('../carousel/carousel-wrapper', () => ({
   CarouselWithEmptyState: jest.fn(() => null),
 }));
 
-jest.mock('../../../hooks/useCarouselManagement', () => ({
+jest.mock('../../../hooks/useCarouselManagement/useCarouselManagement', () => ({
   useCarouselManagement: jest.fn(),
 }));
 

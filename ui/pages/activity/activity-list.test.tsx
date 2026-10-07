@@ -87,11 +87,14 @@ jest.mock(
   }),
 );
 
-jest.mock('../../components/app/transaction-activity-empty-state', () => ({
-  TransactionActivityEmptyState: () => (
-    <div data-testid="activity-empty-state">empty</div>
-  ),
-}));
+jest.mock(
+  '../../components/app/transaction-activity-empty-state/transaction-activity-empty-state',
+  () => ({
+    TransactionActivityEmptyState: () => (
+      <div data-testid="activity-empty-state">empty</div>
+    ),
+  }),
+);
 
 jest.mock('../details/transaction-details', () => ({
   TransactionDetails: () => null,

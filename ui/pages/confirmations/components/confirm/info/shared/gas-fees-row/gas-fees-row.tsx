@@ -5,9 +5,10 @@ import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowVariant,
-} from '../../../../../../../components/app/confirm/info/row';
-import { Box, Text } from '../../../../../../../components/component-library';
-import Tooltip from '../../../../../../../components/ui/tooltip';
+} from '../../../../../../../components/app/confirm/info/row/row';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { Text } from '../../../../../../../components/component-library/text/text';
+import Tooltip from '../../../../../../../components/ui/tooltip/tooltip';
 import {
   AlignItems,
   Display,

@@ -5,7 +5,7 @@ import {
   subscribeToMessengerEvent,
   submitRequestToBackground,
 } from '../../store/background-connection';
-import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { normalizeAddress } from '../../../shared/lib/multichain/address';
 import type {
   ExpectedTransactionParams,

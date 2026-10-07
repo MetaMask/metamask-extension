@@ -5,7 +5,7 @@ import {
   TokenBalancesControllerState,
 } from '@metamask/assets-controllers';
 import { AssetsControllerState } from '@metamask/assets-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 
 /**
  * The Arc USDC ERC-20 token contract. On Arc, USDC is the native gas token

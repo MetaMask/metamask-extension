@@ -6,8 +6,8 @@ import {
 } from '@metamask/design-system-react';
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { PositionCard } from '../../../components/app/perps/position-card';
-import { PerpsCardSkeleton } from '../../../components/app/perps/perps-skeletons';
+import { PositionCard } from '../../../components/app/perps/position-card/position-card';
+import { PerpsCardSkeleton } from '../../../components/app/perps/perps-skeletons/perps-card-skeleton';
 import { usePerpsPositionForAsset } from '../../../hooks/perps/usePerpsPositionForAsset';
 
 export type AssetPerpsPositionSectionProps = {

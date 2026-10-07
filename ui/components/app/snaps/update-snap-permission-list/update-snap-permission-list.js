@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, ButtonLink } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
 import {
   getMultipleTargetsSubjectMetadata,
   getSnapMetadata,
   getSnapsMetadata,
-} from '../../../../selectors';
-import SnapPermissionAdapter from '../snap-permission-adapter';
+} from '../../../../selectors/selectors';
+import SnapPermissionAdapter from '../snap-permission-adapter/snap-permission-adapter';
 import {
   BlockSize,
   Display,

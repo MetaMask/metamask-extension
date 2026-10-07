@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type {
-  ActivityListItem,
-  TokenAmount,
-} from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
+import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { parseValueTransfers } from '../../../../shared/lib/activity/adapters/helpers';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -14,9 +12,9 @@ import { Footer, Row, Section } from '../components/shared';
 import { ConvertAgainButton } from '../components/convert-again-button';
 import { MetadataSection, TokensSection } from '../components/sections';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
+import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context/transaction-details-context';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
+import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary/transaction-details-summary';
 
 // Fiat currency for `metamaskPay` is always USD
 const metamaskPayCurrency = 'usd';

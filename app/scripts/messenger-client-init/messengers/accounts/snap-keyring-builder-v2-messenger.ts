@@ -1,9 +1,7 @@
 import { MessengerActions } from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
-import {
-  getSnapKeyringBuilderMessenger,
-  SnapKeyringBuilderMessenger,
-} from './snap-keyring-builder-messenger';
+import { SnapKeyringBuilderMessenger } from '../../../lib/snap-keyring/types';
+import { getSnapKeyringBuilderMessenger } from './snap-keyring-builder-messenger';
 
 export type SnapKeyringV2BuilderMessenger = ReturnType<
   typeof getSnapKeyringV2BuilderMessenger

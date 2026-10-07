@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'clsx';
-import { Text } from '../text';
+import { Text } from '../text/text';
 import {
   IconColor,
   TextVariant,
@@ -8,9 +8,10 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { HeaderBase } from '../header-base';
-import { ButtonIcon, ButtonIconSize } from '../button-icon';
-import { IconName } from '../icon';
+import { HeaderBase } from '../header-base/header-base';
+import { ButtonIcon } from '../button-icon/button-icon';
+import { ButtonIconSize } from '../button-icon/button-icon.types';
+import { IconName } from '../icon/icon.types';
 import type { PopoverHeaderProps } from './popover-header.types';
 
 /**

@@ -11,14 +11,15 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../../../shared/constants/perps-events';
-import { TextField, TextFieldSize } from '../../../../../component-library';
+import { TextField } from '../../../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../component-library/text-field/text-field.types';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
-import { PerpsSlider } from '../../../perps-slider';
+import { PerpsSlider } from '../../../perps-slider/perps-slider';
 import { MetaMetricsEventName } from '../../../../../../../shared/constants/metametrics';
-import { usePerpsEventTracking } from '../../../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../../../hooks/perps/usePerpsEventTracking';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { LeverageSliderProps } from '../../order-entry.types';
 import { isDigitsOnlyInput } from '../../utils';

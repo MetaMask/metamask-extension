@@ -1,5 +1,5 @@
 import React from 'react';
-import SnapExternalPill from '.';
+import SnapExternalPill from './snap-external-pill';
 
 export default {
   title: 'Components/App/Snaps/SnapExternalPill',

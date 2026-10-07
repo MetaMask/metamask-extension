@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import DebugContent from '.';
+import DebugContent from './debug-content';
 
 const mockPerpsToggleTestnet = jest.fn().mockResolvedValue(undefined);
 const mockRemoteFeatureFlags = { feature1: 'value1' };

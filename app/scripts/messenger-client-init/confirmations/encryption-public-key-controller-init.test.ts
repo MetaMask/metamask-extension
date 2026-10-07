@@ -8,7 +8,7 @@ import {
   getEncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
   EncryptionPublicKeyControllerInitMessenger,
-} from '../messengers';
+} from '../messengers/encryption-public-key-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { EncryptionPublicKeyControllerInit } from './encryption-public-key-controller-init';
 

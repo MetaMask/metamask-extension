@@ -32,16 +32,14 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
-import {
-  getIsPasskeyFeatureAvailable,
-  getIsSocialLoginFlow,
-} from '../../selectors';
+import { getIsPasskeyFeatureAvailable } from '../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../selectors/first-time-flow';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SetupPasskeyContent from '../../components/app/passkey-setup/setup-passkey-content';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../srp-input-form';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { CreatePasswordForm } from '../create-password-form';
+import CreatePasswordForm from '../create-password-form/create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useDispatch } from '../../store/hooks';
 

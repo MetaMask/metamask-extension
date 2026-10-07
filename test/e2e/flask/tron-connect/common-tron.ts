@@ -8,21 +8,21 @@ import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { DAPP_PATH } from '../../constants';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
+import type { AccountResourcesRequestOptions } from './mocks/trongrid';
 import {
-  type AccountResourcesRequestOptions,
   mockExchangeRates,
   mockHistoricalPrices1d,
   mockHistoricalPrices7d,
+  mockExchangeRatesV1,
+} from './mocks/price-api';
+import {
   mockAccountRequest,
   mockTransactionsRequest,
   mockTransactionsTRC20Request,
-  mockExchangeRatesV1,
   mockAccountResourcesRequest,
-  mockTokens,
   mockGetBlock,
   mockGetNowBlock,
   mockGetBlockByNum,
-  mockScanTransaction,
   mockBroadcastTransaction,
   mockTriggerSmartContract,
   mockTriggerConstantContract,
@@ -30,7 +30,9 @@ import {
   mockGetNextMaintenanceTime,
   mockGetContract,
   mockGetNowBlockInfura,
-} from './mocks';
+} from './mocks/trongrid';
+import { mockTokens } from './mocks/tokens';
+import { mockScanTransaction } from './mocks/security-api';
 
 export const TRANSACTION_HASH_MOCK =
   '36c4096d30a82641ee9d8c12297ed330ddb0f8ae272dc2564995de7a4201a67e';

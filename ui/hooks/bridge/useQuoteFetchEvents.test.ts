@@ -8,9 +8,10 @@ import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
-import * as bridgeActions from '../../ducks/bridge/actions';
+import * as bridgeActionsModule1 from '../../ducks/bridge/actions';
+
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import { useIsTxSubmittable } from './useIsTxSubmittable';
 import { useQuoteFetchEvents } from './useQuoteFetchEvents';
@@ -48,7 +49,7 @@ describe('useQuoteFetchEvents', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     trackEventSpy = jest
-      .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+      .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
       .mockImplementation(
         (..._args: unknown[]) =>
           () =>

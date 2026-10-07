@@ -3,15 +3,18 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { AccessRestrictedProvider } from '../../compliance';
+import { AccessRestrictedProvider } from '../../compliance/access-restricted-context';
 import { StartTradeCta } from './start-trade-cta';
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockTrack = jest.fn();
 const mockSubmitRequestToBackground = jest.fn();
 
-jest.mock('../../../../hooks/perps', () => ({
+jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+}));
+
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 

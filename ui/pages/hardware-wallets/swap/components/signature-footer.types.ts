@@ -1,4 +1,4 @@
-import type { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 
 /**
  * Props for the {@link SignatureFooter} presentational component.

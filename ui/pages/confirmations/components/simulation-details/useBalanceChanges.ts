@@ -11,12 +11,12 @@ import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
 import { useDeepMemo } from '../../hooks/useDeepMemo';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import {
-  // eslint-disable-next-line no-restricted-syntax
+  // eslint-disable-next-line no-restricted-syntax -- Preserve the existing chain-specific conversion selector.
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import {
   ERC20_DEFAULT_DECIMALS,

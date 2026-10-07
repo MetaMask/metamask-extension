@@ -4,17 +4,19 @@ import {
   Controller as NotificationServicesPushController,
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
-import type { PushAnalyticsPayload } from '@metamask/notification-services-controller/push-services';
+import type {
+  PushAnalyticsPayload,
+  NotificationServicesPushControllerMessenger,
+} from '@metamask/notification-services-controller/push-services';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
   getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger,
-  type NotificationServicesPushControllerMessenger,
-} from '../messengers/notifications';
+} from '../messengers/notifications/notification-services-push-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import { trackEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -27,14 +29,17 @@ import {
 
 jest.mock('@metamask/notification-services-controller/push-services');
 
-jest.mock('../../controllers/analytics', () => {
+jest.mock('../../controllers/analytics/analytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
   );
-  return {
-    trackEvent: jest.fn(),
-    createEventBuilder,
-  };
+  return { trackEvent: jest.fn() };
+});
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  );
+  return { createEventBuilder };
 });
 
 function buildInitRequestMock(): jest.Mocked<

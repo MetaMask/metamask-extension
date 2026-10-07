@@ -15,12 +15,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { AvatarType } from '../avatar-group/avatar-group.types';
-import { AvatarGroup } from '../avatar-group';
-import { Box, Text } from '../../component-library';
+import { AvatarGroup } from '../avatar-group/avatar-group';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 
 export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
   const t = useI18nContext();

@@ -4,17 +4,19 @@ import {
   HardwareWalletError,
   Severity,
 } from '@metamask/hw-wallet-sdk';
-import { ConnectionStatus } from '../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapConnectionMonitoring } from './useHwSwapConnectionMonitoring';
 
-jest.mock('../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../contexts/hardware-wallets'),
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletState: jest.fn(),
 }));
 
@@ -28,12 +30,375 @@ jest.mock(
   }),
 );
 
-const mockUseHardwareWalletState = jest.requireMock(
-  '../../contexts/hardware-wallets',
-).useHardwareWalletState;
-const mockGetHardwareWalletSignatureErrorEvent = jest.requireMock(
-  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
-).getHardwareWalletSignatureErrorEvent;
+const mockUseHardwareWalletState = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get ConnectionState() {
+    return jest.requireMock('../../contexts/hardware-wallets/connectionState')
+      .ConnectionState;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get ConnectionStatus() {
+    return jest.requireMock('../../contexts/hardware-wallets/types')
+      .ConnectionStatus;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get DeviceEvent() {
+    return jest.requireMock('../../contexts/hardware-wallets/types')
+      .DeviceEvent;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get HardwareConnectionPermissionState() {
+    return jest.requireMock('../../contexts/hardware-wallets/types')
+      .HardwareConnectionPermissionState;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get HardwareWalletErrorProvider() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ).HardwareWalletErrorProvider;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get HardwareWalletProvider() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletContext',
+    ).HardwareWalletProvider;
+  },
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get HardwareWalletType() {
+    return jest.requireMock('../../../shared/lib/hardware-wallets/types')
+      .HardwareWalletType;
+  },
+  get checkCameraPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).checkCameraPermission;
+  },
+  get checkCameraPermissionState() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).checkCameraPermissionState;
+  },
+  get checkHardwareWalletPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).checkHardwareWalletPermission;
+  },
+  get checkWebHidPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).checkWebHidPermission;
+  },
+  get checkWebUsbPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).checkWebUsbPermission;
+  },
+  get createHardwareWalletError() {
+    return jest.requireMock('../../../shared/lib/hardware-wallets/errors')
+      .createHardwareWalletError;
+  },
+  get extractMessageFromUnknownError() {
+    return jest.requireMock('../../../shared/lib/error')
+      .extractMessageFromUnknownError;
+  },
+  get extractTrezorCodeFromMessage() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).extractTrezorCodeFromMessage;
+  },
+  get getConnectedDevices() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).getConnectedDevices;
+  },
+  get getConnectedLedgerDevices() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).getConnectedLedgerDevices;
+  },
+  get getConnectedTrezorDevices() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).getConnectedTrezorDevices;
+  },
+  get getDeviceEventForError() {
+    return jest.requireMock('../../contexts/hardware-wallets/errors')
+      .getDeviceEventForError;
+  },
+  get getHardwareWalletErrorCode() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).getHardwareWalletErrorCode;
+  },
+  get handleContinueWithPermissionCheck() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).handleContinueWithPermissionCheck;
+  },
+  get hasUserRejectedMessage() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).hasUserRejectedMessage;
+  },
+  get isCameraAvailable() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).isCameraAvailable;
+  },
+  get isHardwareConnectionReadyForConfirmFooter() {
+    return jest.requireMock('../../contexts/hardware-wallets/useHardwareFooter')
+      .isHardwareConnectionReadyForConfirmFooter;
+  },
+  get isHardwareWalletError() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).isHardwareWalletError;
+  },
+  get isInE2eTest() {
+    return jest.requireMock('../../contexts/hardware-wallets/is-in-e2e-test')
+      .isInE2eTest;
+  },
+  get isJsonRpcHardwareWalletError() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).isJsonRpcHardwareWalletError;
+  },
+  get isRestrictedCameraEnvironment() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).isRestrictedCameraEnvironment;
+  },
+  get isRetryableHardwareWalletError() {
+    return jest.requireMock('../../contexts/hardware-wallets/errors')
+      .isRetryableHardwareWalletError;
+  },
+  get isTrezorDesktopConnectionMissingError() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).isTrezorDesktopConnectionMissingError;
+  },
+  get isUserRejectedHardwareWalletError() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).isUserRejectedHardwareWalletError;
+  },
+  get isWebHidAvailable() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).isWebHidAvailable;
+  },
+  get isWebUsbAvailable() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).isWebUsbAvailable;
+  },
+  get openCameraVideoStream() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).openCameraVideoStream;
+  },
+  get queryCameraPermissionWithStatus() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).queryCameraPermissionWithStatus;
+  },
+  get redirectToFullscreen() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).redirectToFullscreen;
+  },
+  get requestCameraPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).requestCameraPermission;
+  },
+  get requestHardwareWalletPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).requestHardwareWalletPermission;
+  },
+  get requestWebHidDevices() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).requestWebHidDevices;
+  },
+  get requestWebHidPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).requestWebHidPermission;
+  },
+  get requestWebUsbPermission() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).requestWebUsbPermission;
+  },
+  get stopMediaStreamTracks() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).stopMediaStreamTracks;
+  },
+  get subscribeToHardwareWalletEvents() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).subscribeToHardwareWalletEvents;
+  },
+  get subscribeToWebHidEvents() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).subscribeToWebHidEvents;
+  },
+  get subscribeToWebUsbEvents() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/webConnectionUtils',
+    ).subscribeToWebUsbEvents;
+  },
+  get toHardwareWalletError() {
+    return jest.requireMock(
+      '../../../shared/lib/hardware-wallets/rpc-error-utils',
+    ).toHardwareWalletError;
+  },
+  get useHardwareFooter() {
+    return jest.requireMock('../../contexts/hardware-wallets/useHardwareFooter')
+      .useHardwareFooter;
+  },
+  get useHardwareWallet() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletContext',
+    ).useHardwareWallet;
+  },
+  get useHardwareWalletActions() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletContext',
+    ).useHardwareWalletActions;
+  },
+  get useHardwareWalletConfig() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletContext',
+    ).useHardwareWalletConfig;
+  },
+  get useHardwareWalletError() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ).useHardwareWalletError;
+  },
+  get useHardwareWalletMetrics() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/useHardwareWalletMetrics',
+    ).useHardwareWalletMetrics;
+  },
+  get useHardwareWalletState() {
+    return jest.requireMock(
+      '../../contexts/hardware-wallets/HardwareWalletContext',
+    ).useHardwareWalletState;
+  },
+}.useHardwareWalletState;
+const mockGetHardwareWalletSignatureErrorEvent = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+  get SignatureStepStatus() {
+    return jest.requireMock('../../pages/hardware-wallets/swap/types')
+      .SignatureStepStatus;
+  },
+  get cleanupPendingApproval() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).cleanupPendingApproval;
+  },
+  get getAllStepStatuses() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getAllStepStatuses;
+  },
+  get getFinalStepDescription() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getFinalStepDescription;
+  },
+  get getFinalStepLabel() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getFinalStepLabel;
+  },
+  get getFirstStepDescription() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getFirstStepDescription;
+  },
+  get getHardwareWalletSignatureErrorEvent() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getHardwareWalletSignatureErrorEvent;
+  },
+  get getHardwareWalletSignatureViewModel() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getHardwareWalletSignatureViewModel;
+  },
+  get getQrHardwareSigningPageTitle() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getQrHardwareSigningPageTitle;
+  },
+  get getQrScanButtonLabelKey() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getQrScanButtonLabelKey;
+  },
+  get getSignatureStepDescriptionLines() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getSignatureStepDescriptionLines;
+  },
+  get getStepDescriptions() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getStepDescriptions;
+  },
+  get getStepLabelColor() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getStepLabelColor;
+  },
+  get getStepLabels() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getStepLabels;
+  },
+  get getStepStatus() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getStepStatus;
+  },
+  get getTitle() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getTitle;
+  },
+  get getTransactionField() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).getTransactionField;
+  },
+  get hasApprovalTxForRequestId() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).hasApprovalTxForRequestId;
+  },
+  get isAwaitingSignature() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).isAwaitingSignature;
+  },
+  get isErrorStepStatus() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).isErrorStepStatus;
+  },
+  get isQrHardwareSignRequest() {
+    return jest.requireMock(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ).isQrHardwareSignRequest;
+  },
+}.getHardwareWalletSignatureErrorEvent;
 
 describe('useHwSwapConnectionMonitoring', () => {
   const mockDispatchSignatureEvent = jest.fn();

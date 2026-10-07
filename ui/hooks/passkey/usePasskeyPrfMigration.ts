@@ -7,7 +7,7 @@ import {
   cancelPasskeyCeremony,
   startPasskeyAuthentication,
   startPasskeyRegistration,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
 import {
   PASSKEY_STAGES,
   type PasskeyStage,

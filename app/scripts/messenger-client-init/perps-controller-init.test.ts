@@ -3,10 +3,10 @@ import {
   type PerpsControllerState,
   type PerpsPlatformDependencies,
 } from '@metamask/perps-controller';
+import { PerpsAnalyticsEvent } from '@metamask/perps-controller';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
-  PerpsAnalyticsEvent,
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import {
@@ -20,8 +20,8 @@ import type { MessengerClientInitRequest } from './types';
 
 const mockTrackAnalyticsEvent = jest.fn();
 
-jest.mock('../controllers/analytics', () => {
-  const actual = jest.requireActual('../controllers/analytics');
+jest.mock('../controllers/analytics/analytics', () => {
+  const actual = jest.requireActual('../controllers/analytics/analytics');
   return {
     ...actual,
     trackEvent: (...args: unknown[]) => mockTrackAnalyticsEvent(...args),

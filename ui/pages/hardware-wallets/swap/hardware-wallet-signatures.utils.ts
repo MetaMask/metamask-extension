@@ -5,27 +5,21 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { shortenAddress } from '../../../helpers/utils/util';
 import type { useI18nContext } from '../../../hooks/useI18nContext';
 import { rejectPendingApproval } from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
 import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
-} from '../../../contexts/hardware-wallets/rpcErrorUtils';
+} from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-  type HardwareWalletSignaturesState,
-} from './hardware-wallet-signatures-state-machine';
+} from './hardware-wallet-signatures-state-machine/types';
+import type { HardwareWalletSignaturesState } from './hardware-wallet-signatures-state-machine/types';
 import {
   SignatureStepStatus,
   type BridgeTxHistory,
   type QrHardwareSignRequest,
 } from './types';
-
-export {
-  SignatureStepStatus,
-  type BridgeTxHistory,
-  type QrHardwareSignRequest,
-};
 
 /**
  * Error codes that indicate the device is unavailable for signing — either

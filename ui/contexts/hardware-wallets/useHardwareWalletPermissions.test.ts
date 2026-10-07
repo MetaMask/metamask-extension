@@ -1,10 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { useHardwareWalletPermissions } from './useHardwareWalletPermissions';
-import {
-  HardwareWalletType,
-  HardwareConnectionPermissionState,
-  type HardwareWalletConnectionState,
-} from './types';
+import { HardwareConnectionPermissionState } from './types';
+import type { HardwareWalletConnectionState } from './types';
 import { ConnectionState } from './connectionState';
 import * as webConnectionUtils from './webConnectionUtils';
 import { resetwebConnectionUtilsMocks } from './__mocks__/webConnectionUtils';

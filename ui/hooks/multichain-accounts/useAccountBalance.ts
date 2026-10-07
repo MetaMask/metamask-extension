@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { formatWithThreshold } from '../../components/app/assets/util/formatWithThreshold';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../ducks/locale/locale';
 
 export function useDisplayBalanceCalc() {

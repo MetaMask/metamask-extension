@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { migrate, version } from './188';
 
 const VERSION = version;

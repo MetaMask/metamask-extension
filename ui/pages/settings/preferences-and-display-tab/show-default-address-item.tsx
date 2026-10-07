@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import Dropdown from '../../../components/ui/dropdown';
+import Dropdown from '../../../components/ui/dropdown/dropdown';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getShowDefaultAddressPreference,
   getDefaultAddressScope,
   getIsDefaultAddressEnabled,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   setShowDefaultAddress,
   setDefaultAddressScope,

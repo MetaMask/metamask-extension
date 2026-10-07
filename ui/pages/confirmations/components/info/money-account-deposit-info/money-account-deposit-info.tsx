@@ -1,14 +1,11 @@
 import React from 'react';
-import { BalanceProjection } from '../../../../../components/app/money/balance-projection';
+import { MUSD_TOKEN, MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import { BalanceProjection } from '../../../../../components/app/money/balance-projection/balance-projection';
 import { useUpgradeMoneyAccount } from '../../../../../hooks/money/use-upgrade-money-account';
-import {
-  MUSD_CONVERSION_DEFAULT_CHAIN_ID,
-  MUSD_TOKEN,
-  MUSD_TOKEN_ADDRESS,
-} from '../../../constants/musd';
+import { MUSD_CONVERSION_DEFAULT_CHAIN_ID } from '../../../constants/musd';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useConfirmationNavigationOptions } from '../../../hooks/useConfirmationNavigation';
-import { CustomAmountInfo } from '../custom-amount-info';
+import { CustomAmountInfo } from '../custom-amount-info/custom-amount-info';
 
 const MONEY_ACCOUNT_DEPOSIT_CURRENCY = 'usd';
 

@@ -16,15 +16,13 @@ import {
   TextVariant,
   Skeleton,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  AvatarToken,
-  AvatarTokenSize,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalFooter } from '../../../components/component-library/modal-footer/modal-footer';
+import { AvatarToken } from '../../../components/component-library/avatar-token/avatar-token';
+import { AvatarTokenSize } from '../../../components/component-library/avatar-token/avatar-token.types';
 
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/lib/gas.utils';
@@ -32,7 +30,7 @@ import {
   getAppIsLoading,
   getSelectedAccount,
   getShouldShowFiat,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import { isBalanceSufficient } from '../send-utils/send.utils';
@@ -41,7 +39,7 @@ import {
   GasFeeModalWrapper,
   useGasFeeModalContext,
 } from '../context/gas-fee-modal';
-import { ConfirmInfoRow } from '../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../components/app/confirm/info/row/row';
 import GasTiming from '../components/gas-timing/gas-timing.component';
 import {
   selectNetworkConfigurationByChainId,

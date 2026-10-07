@@ -10,7 +10,8 @@ import type {
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import {
   MessengerClientInitFunction,
   MessengerClientInitRequest,
@@ -18,7 +19,7 @@ import {
 import { SmartTransactionsControllerInitMessenger } from '../messengers/smart-transactions-controller-messenger';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
-import type { MetaMaskReduxState } from '../../../../ui/store/store';
+import type { MetaMaskReduxState } from '../../../../ui/store/types';
 
 type SmartTransactionsControllerInitRequest = MessengerClientInitRequest<
   SmartTransactionsControllerMessenger,

@@ -14,9 +14,9 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsEligibility } from '../../../../hooks/perps';
-import { useSelectedAccountComplianceGate } from '../../compliance';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
 
 export type StartTradeCtaProps = {
   /** Callback when the CTA is clicked */

@@ -36,13 +36,13 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
-import TokenCell from '../token-cell';
+import TokenCell from '../token-cell/token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';

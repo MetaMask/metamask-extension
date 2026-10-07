@@ -14,12 +14,12 @@ import {
   isTronSpecialAsset,
 } from '../../shared/lib/asset-utils';
 import {
-  getAccountAssets,
-  getAssetsMetadata,
-  getAssetsRates,
-  getTokenBalancesEvm,
-} from '../selectors/assets';
-import { getMultichainBalances } from '../selectors/multichain';
+  getMultiChainAssetsControllerAccountsAssets as getAccountAssets,
+  getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getMultiChainBalancesControllerBalances as getMultichainBalances,
+} from '../../shared/lib/selectors/assets-migration';
+import { getTokenBalancesEvm } from '../selectors/assets';
 import {
   getAccountGroupsByAddress,
   getInternalAccountByGroupAndCaip,

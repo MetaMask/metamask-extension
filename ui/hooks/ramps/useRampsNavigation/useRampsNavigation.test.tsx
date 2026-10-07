@@ -11,7 +11,7 @@ import { UNKNOWN_LOCATION } from '@metamask/geolocation-controller';
 import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   RAMPS_BUILD_QUOTE_ROUTE,
   RAMPS_TOKEN_SELECTION_ROUTE,

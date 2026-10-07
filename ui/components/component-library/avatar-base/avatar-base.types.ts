@@ -3,8 +3,8 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicComponentPropWithRef } from '../box';
-import type { TextStyleUtilityProps } from '../text';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
+import type { TextStyleUtilityProps } from '../text/text.types';
 
 /**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react

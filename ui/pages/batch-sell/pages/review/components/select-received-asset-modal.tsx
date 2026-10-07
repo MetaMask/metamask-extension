@@ -13,16 +13,14 @@ import {
 } from '@metamask/design-system-react';
 import { CaipAssetType } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 
 type SelectReceiveAssetModalProps = {

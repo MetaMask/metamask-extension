@@ -10,21 +10,17 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import {
-  NotificationsSettingsBox,
-  NotificationsSettingsType,
-} from '../../components/multichain';
+import { NotificationsSettingsBox } from '../../components/multichain/notifications-settings-box/notifications-settings-box';
+import { NotificationsSettingsType } from '../../components/multichain/notifications-settings-type/notifications-settings-type';
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
-import type {
-  NotificationPreferenceChannelKey,
-  NotificationPreferences,
-} from '../../hooks/metamask-notifications/useNotificationPreferences';
+import type { NotificationPreferenceChannelKey } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useSwitchAccountNotificationsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { NotificationsSettingsPerAccount } from './notifications-settings-per-account';

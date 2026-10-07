@@ -2,7 +2,7 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import type { StyleUtilityProps } from '../../component-library/box';
+import type { StyleUtilityProps } from '../../component-library/box/box.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

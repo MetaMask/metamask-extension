@@ -10,33 +10,30 @@ import {
   ButtonVariant,
   Button,
 } from '@metamask/design-system-react';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  TextFieldType,
-} from '../../../components/component-library';
+import { toast } from 'react-hot-toast';
+import { FormTextField } from '../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../components/component-library/form-text-field/form-text-field.types';
+import { TextFieldType } from '../../../components/component-library/text-field/text-field.types';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { transitionBack } from '../../../components/ui/transition';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
-import {
-  getPasskeyAuthMethodKey,
-  cancelPasskeyCeremony,
-} from '../../../../shared/lib/passkey';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { captureException } from '../../../../shared/lib/sentry';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
   verifyPassword,
 } from '../../../store/actions';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsPasskeyRegistered } from '../../../selectors';
+import { getIsPasskeyRegistered } from '../../../selectors/selectors';
 import { useDispatch } from '../../../store/hooks';
 import { useRemovePasskeyWithPassword } from '../../../hooks/passkey/usePasskeyRemoval';
 

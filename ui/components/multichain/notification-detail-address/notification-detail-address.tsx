@@ -1,13 +1,13 @@
 import React from 'react';
-import { NotificationDetail } from '../notification-detail';
-import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
-import { Text } from '../../component-library';
+import { NotificationDetail } from '../notification-detail/notification-detail';
+import { NotificationDetailCopyButton } from '../notification-detail-copy-button/notification-detail-copy-button';
+import { Text } from '../../component-library/text/text';
 import {
   FontWeight,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 
 export type NotificationDetailAddressProps = {

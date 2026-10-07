@@ -9,13 +9,11 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../../../shared/lib/hexstring-utils';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../../../components/component-library';
-import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar/preferred-avatar';
 import {
   IconColor,
   TextColor,

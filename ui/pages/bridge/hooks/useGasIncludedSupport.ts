@@ -5,7 +5,7 @@ import {
 } from '@metamask/bridge-controller';
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
+import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors/smart-transactions';
 import { getSentinelNetworkFlags } from '../../../store/actions';
 import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import {

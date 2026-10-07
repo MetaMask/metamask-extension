@@ -10,13 +10,11 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Text,
-} from '../../../component-library';
-import { AlertModal } from '../alert-modal';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import { AlertModal } from '../alert-modal/alert-modal';
 
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */

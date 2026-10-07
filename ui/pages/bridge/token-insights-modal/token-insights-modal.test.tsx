@@ -22,19 +22,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 jest.mock('../../../hooks/useTokenInsightsData');
 jest.mock('../../../hooks/useI18nContext');
-jest.mock('../../../components/multichain', () => ({
-  AddressCopyButton: ({
-    address,
-    shorten,
-  }: {
-    address: string;
-    shorten: boolean;
-  }) => (
-    <button data-testid="address-copy-button">
-      {shorten ? `${address.slice(0, 6)}...${address.slice(-4)}` : address}
-    </button>
-  ),
-}));
 
 jest.mock('../../../helpers/utils/token-insights', () => ({
   formatPercentage: jest.fn((value: number) => `${value.toFixed(2)}%`),

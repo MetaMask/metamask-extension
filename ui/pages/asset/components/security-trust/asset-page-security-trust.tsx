@@ -12,13 +12,13 @@ import React, {
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTokenSecurityData } from '../../../../hooks/useTokenSecurityData';
-import { getUseExternalServices } from '../../../../selectors';
+import { getUseExternalServices } from '../../../../selectors/selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../../../selectors/multichain/feature-flags';
 import {
   getResultTypeConfig,
   type ResultTypeConfig,
 } from '../../utils/security-utils';
-import { SecurityTrustInlineBadge } from '../../../../components/app/security-trust';
+import { SecurityTrustInlineBadge } from '../../../../components/app/security-trust/security-trust-inline-badge';
 import { SecurityBanner } from './security-banner';
 import {
   SecurityTrustEntryCard,

@@ -22,7 +22,8 @@ import {
   getToChains,
   getToToken,
 } from '../../../ducks/bridge/selectors';
-import * as actions from '../../../ducks/bridge/actions';
+import * as actionsModule1 from '../../../ducks/bridge/actions';
+
 import configureStore from '../../../store/store';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
@@ -373,11 +374,11 @@ describe('BridgeInputGroup', () => {
   it('clears picker flags when browser navigation unmounts the page', async () => {
     setupFetchMock();
     const setDestinationPickerOpenSpy = jest.spyOn(
-      actions,
+      actionsModule1,
       'setIsDestAssetPickerOpen',
     );
     const setSourcePickerOpenSpy = jest.spyOn(
-      actions,
+      actionsModule1,
       'setIsSrcAssetPickerOpen',
     );
 

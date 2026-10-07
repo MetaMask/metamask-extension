@@ -23,7 +23,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import {
   getUseTransactionSimulations,
   selectNonZeroUnusedApprovalsAllowList,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 
 type ApprovalInfo = {
   tokenAddress: Hex;

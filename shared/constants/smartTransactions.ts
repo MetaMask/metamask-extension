@@ -1,6 +1,6 @@
 import { isProduction } from '../lib/environment';
 import { SECOND } from './time';
-import { CHAIN_IDS } from './network';
+import { CHAIN_IDS } from './chain-ids';
 
 // Client identifiers for transaction metadata
 export const CLIENT_ID_EXTENSION_CHROME = 'extensionChrome';

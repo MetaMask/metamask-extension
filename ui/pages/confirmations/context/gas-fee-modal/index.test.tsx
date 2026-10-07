@@ -7,21 +7,27 @@ import {
   useGasFeeModalContext,
 } from '.';
 
-jest.mock('../../components/modals/gas-fee-modal/gas-fee-modal', () => ({
-  GasFeeModal: ({
-    setGasModalVisible,
-    initialModalType,
-  }: {
-    setGasModalVisible: () => void;
-    initialModalType: GasModalType;
-  }) => (
-    <div data-testid="gas-fee-modal" data-initial-type={initialModalType}>
-      <button data-testid="close-modal" onClick={setGasModalVisible}>
-        Close
-      </button>
-    </div>
+jest.mock('../../components/modals/gas-fee-modal/gas-fee-modal', () =>
+  Object.defineProperty(
+    {
+      GasFeeModal: ({
+        setGasModalVisible,
+        initialModalType,
+      }: {
+        setGasModalVisible: () => void;
+        initialModalType: GasModalType;
+      }) => (
+        <div data-testid="gas-fee-modal" data-initial-type={initialModalType}>
+          <button data-testid="close-modal" onClick={setGasModalVisible}>
+            Close
+          </button>
+        </div>
+      ),
+    },
+    '__esModule',
+    { value: true },
   ),
-}));
+);
 
 describe('GasFeeModalContext', () => {
   const wrapper = ({ children }: { children: ReactNode }) => (
@@ -142,8 +148,8 @@ describe('GasFeeModalContext', () => {
       expect(queryByTestId('gas-fee-modal')).not.toBeInTheDocument();
     });
 
-    it('renders modal when visible', () => {
-      const { getByTestId } = render(
+    it('renders modal when visible', async () => {
+      const { getByTestId, findByTestId } = render(
         <GasFeeModalContextProvider>
           <TestComponent />
         </GasFeeModalContextProvider>,
@@ -151,18 +157,18 @@ describe('GasFeeModalContext', () => {
 
       fireEvent.click(getByTestId('open-modal'));
 
-      expect(getByTestId('gas-fee-modal')).toBeInTheDocument();
+      expect(await findByTestId('gas-fee-modal')).toBeInTheDocument();
     });
 
-    it('closes modal when close is triggered', () => {
-      const { getByTestId, queryByTestId } = render(
+    it('closes modal when close is triggered', async () => {
+      const { getByTestId, queryByTestId, findByTestId } = render(
         <GasFeeModalContextProvider>
           <TestComponent />
         </GasFeeModalContextProvider>,
       );
 
       fireEvent.click(getByTestId('open-modal'));
-      expect(getByTestId('gas-fee-modal')).toBeInTheDocument();
+      expect(await findByTestId('gas-fee-modal')).toBeInTheDocument();
 
       fireEvent.click(getByTestId('close-modal'));
       expect(queryByTestId('gas-fee-modal')).not.toBeInTheDocument();

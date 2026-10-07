@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NumericInput from '.';
+import NumericInput from './numeric-input.component';
 
 export default {
   title: 'Components/UI/NumericInput',

@@ -4,8 +4,8 @@ import { within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import TransactionBreakdown from '.';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
+import TransactionBreakdown from './transaction-breakdown.container';
 
 function getActualDataFrom(transactionBreakdownRows) {
   return transactionBreakdownRows.map((transactionBreakdownRow) => {

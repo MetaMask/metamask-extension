@@ -1,6 +1,6 @@
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getSnapsNameProviderMessenger } from '../messengers/snaps';
+import { getSnapsNameProviderMessenger } from '../messengers/snaps/snaps-name-provider-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import {
   SnapsNameProvider,

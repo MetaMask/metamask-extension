@@ -16,7 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
-import { SettingsSelectItem } from '../shared';
+import { SettingsSelectItem } from '../shared/settings-select-item';
 import { PREFERENCES_ITEMS } from '../search-config';
 import { AVATAR_LABEL_MAP } from './account-identicon-utils';
 

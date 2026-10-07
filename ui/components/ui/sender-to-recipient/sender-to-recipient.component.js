@@ -7,9 +7,10 @@ import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Name from '../../app/name/name';
-import { Icon, IconName } from '../../component-library';
+import { Icon } from '../../component-library/icon/icon';
+import { IconName } from '../../component-library/icon/icon.types';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 import {
   CARDS_VARIANT,
   DEFAULT_VARIANT,

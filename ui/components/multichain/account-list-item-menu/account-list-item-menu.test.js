@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { AccountListItemMenu } from '.';
+import { AccountListItemMenu } from './account-list-item-menu';
 
 const mockShowModal = jest.fn();
 const mockAddPermittedAccount = jest.fn();

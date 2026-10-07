@@ -5,7 +5,7 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { AvatarIcon } from './avatar-icon';
 import { AvatarIconSize } from './avatar-icon.types';
 

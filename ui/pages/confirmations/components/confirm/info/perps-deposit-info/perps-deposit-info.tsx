@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { useDefaultPaySelectedSection } from '../../../../hooks/pay/useDefaultPaySelectedSection';
-import { CustomAmountInfo } from '../../../info/custom-amount-info';
+import { CustomAmountInfo } from '../../../info/custom-amount-info/custom-amount-info';
 import { PERPS_CURRENCY, ARBITRUM_USDC } from '../../../../constants/perps';
 
 export const PerpsDepositInfo = () => {

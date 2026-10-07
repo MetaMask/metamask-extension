@@ -5,13 +5,11 @@ import {
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-} from '../../../../../components/component-library';
-import Tooltip from '../../../../../components/ui/tooltip';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import {
   BackgroundColor,
   BorderRadius,

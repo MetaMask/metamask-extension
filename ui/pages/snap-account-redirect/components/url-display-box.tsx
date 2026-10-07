@@ -9,7 +9,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
+import { Box } from '../../../components/component-library/box/box';
+import { Text } from '../../../components/component-library/text/text';
 import RedirectUrlIcon from './redirect-url-icon';
 
 const UrlDisplayBox = ({

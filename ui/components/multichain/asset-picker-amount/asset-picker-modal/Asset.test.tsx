@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { TokenListItem } from '../../token-list-item';
+import { TokenListItem } from '../../token-list-item/token-list-item';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import Asset from './Asset';
@@ -15,7 +15,7 @@ jest.mock('../../../../hooks/useTokenFiatAmount', () => ({
   useTokenFiatAmount: jest.fn(),
 }));
 
-jest.mock('../../token-list-item', () => ({
+jest.mock('../../token-list-item/token-list-item', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
 

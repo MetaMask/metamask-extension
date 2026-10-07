@@ -1,6 +1,9 @@
 import { IconElement } from '@metamask/snaps-sdk/jsx';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import { IconName, IconSize } from '../../../../component-library';
+import {
+  IconName,
+  IconSize,
+} from '../../../../component-library/icon/icon.types';
 import { UIComponentFactory } from './types';
 
 const ICON_NAMES = new Set(Object.values(IconName));

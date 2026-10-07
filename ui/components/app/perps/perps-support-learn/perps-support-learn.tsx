@@ -27,8 +27,8 @@ import {
   FEEDBACK_CONFIG,
   SUPPORT_CONFIG,
 } from '../../../../../shared/constants/perps';
-import { setTutorialModalOpen } from '../../../../ducks/perps';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { setTutorialModalOpen } from '../../../../ducks/perps/tutorial';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { useDispatch } from '../../../../store/hooks';
 
 const LIST_ITEM_BASE =

@@ -6,8 +6,8 @@ import {
   FillType,
   PerpsOrderTransactionStatus,
   PerpsOrderTransactionStatusType,
-  type PerpsTransaction,
-} from '../types';
+} from '../types/transactionHistory';
+import type { PerpsTransaction } from '../types/transactionHistory';
 import { getPerpsTransactionDestination } from './getPerpsTransactionDestination';
 
 const createTradeTransaction = (): PerpsTransaction => ({

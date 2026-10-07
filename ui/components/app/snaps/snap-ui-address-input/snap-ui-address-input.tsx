@@ -8,19 +8,19 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import { Box } from '../../../component-library/box/box';
+import { FormTextField } from '../../../component-library/form-text-field/form-text-field';
 import {
-  Box,
-  FormTextField,
   FormTextFieldProps,
   FormTextFieldSize,
-  HelpText,
-  HelpTextSeverity,
-  Icon,
-  IconName,
-  Label,
-  Text,
-} from '../../../component-library';
-import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+} from '../../../component-library/form-text-field/form-text-field.types';
+import { HelpText } from '../../../component-library/help-text/help-text';
+import { HelpTextSeverity } from '../../../component-library/help-text/help-text.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Label } from '../../../component-library/label/label';
+import { Text } from '../../../component-library/text/text';
+import { useSnapInterfaceContext } from '../../../../contexts/snaps/snap-interface';
 import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
   AlignItems,
@@ -33,7 +33,7 @@ import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SnapUIAvatar } from '../snap-ui-avatar';
+import { SnapUIAvatar } from '../snap-ui-avatar/snap-ui-avatar';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
 type MatchedAccountInfoProps = {

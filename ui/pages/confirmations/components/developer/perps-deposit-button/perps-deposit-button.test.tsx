@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import {
   ARBITRUM_USDC,
   HYPERLIQUID_BRIDGE_ADDRESS,

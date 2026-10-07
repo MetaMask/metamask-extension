@@ -1,7 +1,7 @@
 import React from 'react';
 import { CaipAccountId, CaipChainId } from '@metamask/utils';
 
-import { SnapUISelector } from '../snap-ui-selector';
+import { SnapUISelector } from '../snap-ui-selector/snap-ui-selector';
 
 import {
   Display,
@@ -13,14 +13,12 @@ import {
   BackgroundColor,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  AvatarToken,
-  BadgeWrapper,
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
+import { AvatarToken } from '../../../component-library/avatar-token/avatar-token';
+import { BadgeWrapper } from '../../../component-library/badge-wrapper/badge-wrapper';
+import { AvatarNetwork } from '../../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../component-library/avatar-network/avatar-network.types';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';

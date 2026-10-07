@@ -29,7 +29,7 @@ import {
 import { AlertsName } from '../constants';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { NoQuoteAlert } from '../../../components/no-quote-alert';
+import { NoQuoteAlert } from '../../../components/no-quote-alert/no-quote-alert';
 import { useNoPayTokenQuotesAlert } from './useNoPayTokenQuotesAlert';
 
 jest.mock('../../pay/useTransactionPayToken');

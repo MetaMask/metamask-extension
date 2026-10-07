@@ -4,8 +4,13 @@ import { setupLocale } from '../shared/lib/error-utils';
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import * as browserRuntimeUtils from '../shared/lib/browser-runtime.utils';
+
 import * as actions from './store/actions';
-import * as selectors from './selectors';
+
+import * as selectorsModule9 from './selectors/selectors';
+
+import * as selectorsModule17 from './selectors/first-time-flow';
+
 import * as metamaskBaseSelectors from './ducks/metamask/base-selectors';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import {
@@ -47,9 +52,12 @@ jest.mock('./store/actions', () => ({
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
-jest.mock('./selectors', () => ({
-  ...jest.requireActual('./selectors'),
+jest.mock('./selectors/selectors', () => ({
+  ...jest.requireActual('./selectors/selectors'),
   getNetworkToAutomaticallySwitchTo: jest.fn(),
+}));
+jest.mock('./selectors/first-time-flow', () => ({
+  ...jest.requireActual('./selectors/first-time-flow'),
   getFirstTimeFlowType: jest.fn(),
   getIsSocialLoginFlow: jest.fn(),
 }));
@@ -190,14 +198,16 @@ describe('Index Tests', () => {
       jest
         .spyOn(browserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
-      selectors.getNetworkToAutomaticallySwitchTo.mockReturnValue(undefined);
+      selectorsModule9.getNetworkToAutomaticallySwitchTo.mockReturnValue(
+        undefined,
+      );
       metamaskBaseSelectors.getIsUnlocked.mockImplementation(
         (state) => state.metamask.isUnlocked,
       );
-      selectors.getFirstTimeFlowType.mockImplementation(
+      selectorsModule17.getFirstTimeFlowType.mockImplementation(
         (state) => state.metamask.firstTimeFlowType,
       );
-      selectors.getIsSocialLoginFlow.mockImplementation(
+      selectorsModule17.getIsSocialLoginFlow.mockImplementation(
         (state) => state.metamask.isSocialLoginFlow,
       );
     });

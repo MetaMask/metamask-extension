@@ -29,8 +29,8 @@ jest.mock('../../store/actions', () => ({
   }),
 }));
 
-jest.mock('../../selectors', () => {
-  const actual = jest.requireActual('../../selectors');
+jest.mock('../../selectors/selectors', () => {
+  const actual = jest.requireActual('../../selectors/selectors');
   return {
     ...actual,
     getSelectedAccount: jest.fn(() => ({ address: '0x111' })),

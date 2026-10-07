@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Box } from '../../../component-library/box/box';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Popover } from '../../../component-library/popover/popover';
 import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  Popover,
   PopoverPosition,
   PopoverRole,
-  Text,
-} from '../../../component-library';
+} from '../../../component-library/popover/popover.types';
+import { Text } from '../../../component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -19,7 +19,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { SnapMetadataModal } from '../snap-metadata-modal';
+import { SnapMetadataModal } from '../snap-metadata-modal/snap-metadata-modal';
 
 export default function SnapHomeMenu({
   snapId,

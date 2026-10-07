@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { trackEvent } from '../../controllers/analytics';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import {
   trackRampsCheckoutCallbackDetected,
   trackRampsCheckoutClosed,
   trackRampsCheckoutOpened,
 } from './trackRampsCheckoutAnalytics';
 
-jest.mock('../../controllers/analytics', () => ({
-  createEventBuilder: jest.requireActual('../../controllers/analytics')
-    .createEventBuilder,
+jest.mock('../../controllers/analytics/analytics', () => ({
   trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
+  createEventBuilder: jest.requireActual(
+    '../../../../shared/lib/analytics/create-event-builder',
+  ).createEventBuilder,
 }));
 
 describe('trackRampsCheckoutAnalytics', () => {

@@ -14,7 +14,7 @@ import {
   getEditedNetwork,
   getShowOutdatedBrowserWarning,
   getWeb3ShimUsageStateForOrigin,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import {
@@ -36,11 +36,11 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import { FontWeight } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import HomeNotification from '../../components/app/home-notification';
-import MultipleNotifications from '../../components/app/multiple-notifications';
-import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder';
+import HomeNotification from '../../components/app/home-notification/home-notification.component';
+import MultipleNotifications from '../../components/app/multiple-notifications/multiple-notifications.component';
+import { SeedPhraseBackupNotificationContainer } from '../../components/app/recovery-phrase-reminder/seed-phrase-backup-notification-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 
 const AUTO_HIDE_DELAY = 5 * SECOND;

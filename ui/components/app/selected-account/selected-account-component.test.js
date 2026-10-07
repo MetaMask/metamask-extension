@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import SelectedAccount from '.';
+import SelectedAccount from './selected-account.container';
 
 const mockSelectedAccount = {
   address: '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
@@ -25,16 +25,8 @@ const mockSelectedAccount = {
   type: 'eip155:eoa',
 };
 
-jest.mock('../../../selectors', () => {
-  const mockGetAccountType = jest.fn(() => undefined);
-  const mockGetSelectedAccount = jest.fn(() => mockSelectedAccount);
-
-  return {
-    getSelectedAddress: jest.fn(() => '0xselectedaddress'),
-    getAccountType: mockGetAccountType,
-    getSelectedInternalAccount: mockGetSelectedAccount,
-    getCurrentChainId: jest.fn(() => '0x5'),
-  };
+jest.mock('../../../selectors/selectors', () => {
+  return { getSelectedAddress: jest.fn(() => '0xselectedaddress') };
 });
 
 jest.mock('../../../selectors/multi-srp/multi-srp', () => ({

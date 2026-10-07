@@ -23,8 +23,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-import { NotificationDetail } from '../notification-detail';
-import { Box, Text } from '../../component-library';
+import { NotificationDetail } from '../notification-detail/notification-detail';
+import { Box } from '../../component-library/box/box';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   BackgroundColor,

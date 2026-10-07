@@ -7,8 +7,9 @@ import {
 import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import reduceMetamask, {
   getGasEstimateType,
   getGasEstimateTypeByChainId,
@@ -19,7 +20,6 @@ import reduceMetamask, {
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';

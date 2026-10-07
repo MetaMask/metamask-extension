@@ -8,12 +8,14 @@ import { Box, Skeleton } from '@metamask/design-system-react';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getMarketData,
   getChainIdsToPoll,
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../../shared/lib/selectors/assets-migration';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../selectors/multichain/networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 import {
   formatValue,
@@ -24,7 +26,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library/sensitive-text/sensitive-text';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';

@@ -1,10 +1,8 @@
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { Hex } from '@metamask/utils';
-import {
-  getKnownMethodData,
-  getUse4ByteResolution,
-} from '../../../../../../selectors';
+import { getKnownMethodData } from '../../../../../../selectors/selectors';
+import { getUse4ByteResolution } from '../../../../../../selectors/confirm-transaction';
 import { getContractMethodData } from '../../../../../../store/actions';
 import { hasTransactionData } from '../../../../../../../shared/lib/transaction.utils';
 import { useDispatch } from '../../../../../../store/hooks';

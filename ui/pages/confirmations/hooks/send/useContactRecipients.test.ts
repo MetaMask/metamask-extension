@@ -1,14 +1,31 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import * as selectors from '../../../../selectors';
+
+import * as selectorsModule9 from '../../../../selectors/selectors';
+
 import * as SendContext from '../../context/send';
 import { useContactRecipients } from './useContactRecipients';
 import * as useSendTypeModule from './useSendType';
 import { useSendType } from './useSendType';
 
 jest.mock('./useSendType');
-jest.mock('../../../../selectors');
+jest.mock('../../../../selectors/selectors');
+jest.mock('../../../../selectors/confirm-transaction');
+jest.mock('../../selectors/confirm');
+jest.mock('../../../../selectors/accounts');
+jest.mock('../../../../selectors/onboarding/onboarding');
+jest.mock('../../../../selectors/multichain/networks');
+jest.mock('../../../../../shared/lib/selectors/assets-migration');
+jest.mock('../../../../selectors/approvals');
+jest.mock('../../../../selectors/transactions');
+jest.mock('../../../../selectors/custom-gas');
+jest.mock('../../../../selectors/metametrics');
+jest.mock('../../../../../shared/lib/selectors/multichain');
+jest.mock('../../../../selectors/first-time-flow');
+jest.mock('../../../../selectors/multichain/feature-flags');
+jest.mock('../../../../selectors/test-networks');
+jest.mock('../../../../selectors/origin-throttling');
 jest.mock('./useAccountAddressSeedIconMap', () => ({
   useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
     accountAddressSeedIconMap: new Map(),
@@ -19,7 +36,7 @@ jest.mock('@metamask/bridge-controller');
 
 const mockUseSendType = jest.spyOn(useSendTypeModule, 'useSendType');
 const mockGetCompleteAddressBook = jest.spyOn(
-  selectors,
+  selectorsModule9,
   'getCompleteAddressBook',
 );
 const mockIsEvmAddress = jest.mocked(isEvmAddress);

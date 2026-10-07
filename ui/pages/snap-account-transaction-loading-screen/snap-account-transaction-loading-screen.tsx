@@ -8,7 +8,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
 } from '../../../shared/constants/metametrics';
-import { getSnapsMetadata } from '../../selectors';
+import { getSnapsMetadata } from '../../selectors/selectors';
 import { getSnapName } from '../../helpers/utils/util';
 
 const SnapAccountTransactionLoadingScreen = ({

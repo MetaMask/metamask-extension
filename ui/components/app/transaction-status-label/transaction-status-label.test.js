@@ -2,7 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel, { getStatusKey } from '.';
+import TransactionStatusLabel, {
+  getStatusKey,
+} from './transaction-status-label';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -10,7 +12,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 // Mock the Tooltip component
-jest.mock('../../ui/tooltip', () => ({
+jest.mock('../../ui/tooltip/tooltip', () => ({
   __esModule: true,
   default: ({ children, title, wrapperClassName }) => (
     <div data-testid="tooltip" data-title={title} className={wrapperClassName}>

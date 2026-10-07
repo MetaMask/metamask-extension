@@ -6,12 +6,10 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
 import { ScrollContainer } from '../../../../../contexts/scroll-container';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
@@ -19,12 +17,10 @@ import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactio
 import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import { useClearPaymentOverride } from '../../../hooks/pay/useClearPaymentOverride';
-import { Asset } from '../../send/asset';
+import { Asset } from '../../send/asset/asset';
 import { type Asset as AssetType } from '../../../types/send';
-import {
-  useMusdConversionTokens,
-  useMusdPaymentToken,
-} from '../../../../../hooks/musd';
+import { useMusdConversionTokens } from '../../../../../hooks/musd/useMusdConversionTokens';
+import { useMusdPaymentToken } from '../../../../../hooks/musd/useMusdPaymentToken';
 import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { useConfirmContext } from '../../../context/confirm';
 import {

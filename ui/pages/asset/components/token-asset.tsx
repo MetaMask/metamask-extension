@@ -13,7 +13,10 @@ import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { getFungibleAssetBlockExplorerLink } from '../../../helpers/utils/multichain/blockExplorer';
-import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
+import {
+  getTokenList,
+  selectERC20TokensByChain,
+} from '../../../selectors/selectors';
 import { getAllMultichainNetworkConfigurations } from '../../../selectors/multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { HideTokenConfirmationModal } from '../../../components/app/modals/hide-token-confirmation-modal/hide-token-confirmation-modal';

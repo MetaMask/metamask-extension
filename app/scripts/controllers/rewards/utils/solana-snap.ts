@@ -1,7 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
-import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/solana-wallet-snap';
 
 export type SignRewardsMessageResult = {
   signature: string;

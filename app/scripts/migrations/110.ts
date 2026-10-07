@@ -2,8 +2,8 @@ import { cloneDeep, isObject } from 'lodash';
 import { NetworkType } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   SEPOLIA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   NETWORK_TYPES,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { isInaccessible, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
-import ShowHideToggle from '.';
+import ShowHideToggle from './show-hide-toggle';
 
 describe('ShowHideToggle', () => {
   beforeEach(() => {

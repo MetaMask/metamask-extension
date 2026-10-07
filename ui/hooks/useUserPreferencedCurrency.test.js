@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
 import { mockNetworkState } from '../../test/stub/networks';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
 const renderUseUserPreferencedCurrency = (state, value, restProps) => {

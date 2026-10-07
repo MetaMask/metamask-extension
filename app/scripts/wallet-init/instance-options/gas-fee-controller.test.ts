@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { SWAPS_CLIENT_ID } from '../../../../shared/constants/swaps';
 import { createMockMessenger } from '../test-utils';
 import { getGasFeeControllerInitMessenger } from '../messengers/gas-fee-controller-messenger';

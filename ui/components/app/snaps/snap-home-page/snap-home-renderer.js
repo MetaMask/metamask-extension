@@ -2,21 +2,22 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Box, Text } from '../../../component-library';
-import { SnapUIRenderer } from '../snap-ui-renderer';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
+import { SnapUIRenderer } from '../snap-ui-renderer/snap-ui-renderer';
 import {
   getSnapMetadata,
   getUnapprovedConfirmations,
   getUnapprovedTemplatedConfirmations,
-} from '../../../../selectors';
-import { SnapDelineator } from '../snap-delineator';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
+} from '../../../../selectors/selectors';
+import { SnapDelineator } from '../snap-delineator/snap-delineator';
+import { DelineatorType } from '../../../../helpers/constants/snaps/delineator';
 import {
   BackgroundColor,
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Copyable } from '../copyable';
+import { Copyable } from '../copyable/copyable';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { deleteInterface } from '../../../../store/actions';
 import {

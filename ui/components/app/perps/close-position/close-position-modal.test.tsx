@@ -30,7 +30,7 @@ jest.mock('../../../../hooks/useFormatters', () => ({
 // (and never reaches the now-strict AccessRestrictedProvider context throw). The
 // gate is a passthrough here; real gating behavior is covered in
 // useComplianceGate.test.tsx.
-jest.mock('../../compliance', () => {
+jest.mock('../../compliance/access-restricted-modal', () => {
   // Stable references so components that put `gate` in effect/callback deps
   // don't re-run on every render.
   const gate = async (action: () => unknown) => action();
@@ -40,10 +40,43 @@ jest.mock('../../compliance', () => {
     isBlocked: false,
     checkCompliance: jest.fn(),
   };
-  return {
-    useComplianceGate: () => value,
-    useSelectedAccountComplianceGate: () => value,
+  return {};
+});
+jest.mock('../../compliance/access-restricted-context', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
   };
+  return {};
+});
+jest.mock('../../compliance/useComplianceGate', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return { useComplianceGate: () => value };
+});
+jest.mock('../../compliance/useSelectedAccountComplianceGate', () => {
+  // Stable references so components that put `gate` in effect/callback deps
+  // don't re-run on every render.
+  const gate = async (action: () => unknown) => action();
+  const value = {
+    gate,
+    isComplianceEnabled: false,
+    isBlocked: false,
+    checkCompliance: jest.fn(),
+  };
+  return { useSelectedAccountComplianceGate: () => value };
 });
 
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
@@ -203,7 +236,7 @@ jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
   },
 }));
 
-jest.mock('../perps-toast', () => ({
+jest.mock('../perps-toast/perps-toast.constants', () => ({
   PERPS_TOAST_KEYS: {
     CLOSE_FAILED: 'perpsToastCloseFailed',
     CLOSE_IN_PROGRESS: 'perpsToastCloseInProgress',
@@ -216,6 +249,8 @@ jest.mock('../perps-toast', () => ({
     ORDER_SUBMITTED: 'perpsToastOrderSubmitted',
     TRADE_SUCCESS: 'perpsToastTradeSuccess',
   },
+}));
+jest.mock('../perps-toast/perps-toast-provider', () => ({
   usePerpsToast: () => ({
     replacePerpsToastByKey: mockReplacePerpsToastByKey,
   }),

@@ -4,16 +4,14 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import {
-  getCurrencyRates,
-  getNetworkConfigurationIdByChainId,
-} from '../../../selectors';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import { getCurrencyRateControllerCurrencyRates as getCurrencyRates } from '../../../../shared/lib/selectors/assets-migration';
+import { getNetworkConfigurationIdByChainId } from '../../../selectors/selectors';
+import { getMultichainIsEvm } from '../../../selectors/multichain/networks';
 import { getIsRWATokensEnabled } from '../../../selectors/rwa/feature-flags';
-import { TokenListItem } from '.';
+import { TokenListItem } from './token-list-item';
 
 const mockTrackEvent = jest.fn();
 

@@ -20,15 +20,14 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-  Modal,
-  ModalOverlay,
-} from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
-import QuizContent from '../QuizContent';
+} from '../../../component-library/button/button.types';
+import { Icon } from '../../../component-library/icon/icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated/modal-header';
+import QuizContent from '../QuizContent/QuizContent';
 import { JSXDict, QuizStage } from '../types';
 import { getHDEntropyIndex } from '../../../../selectors/selectors';
 

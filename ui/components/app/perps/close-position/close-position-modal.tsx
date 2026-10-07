@@ -27,20 +27,19 @@ import type {
   ClosePositionParams,
   InputMethod,
   OrderType,
+  Position,
 } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
@@ -49,10 +48,8 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../../../hooks/perps/usePerpsAbandonOrderTracking';
 import {
@@ -64,21 +61,16 @@ import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
-import { PerpsFeesDisplay } from '../perps-fees-display';
-import {
-  CloseAmountSection,
-  LimitPriceInput,
-  OrderEntryHeader,
-  OrderTypeToggle,
-} from '../order-entry';
-import {
-  PERPS_TOAST_KEYS,
-  usePerpsToast,
-  type PerpsToastKeyConfig,
-} from '../perps-toast';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { useSelectedAccountComplianceGate } from '../../compliance';
-import type { Position } from '../types';
+import { PerpsFeesDisplay } from '../perps-fees-display/perps-fees-display';
+import { CloseAmountSection } from '../order-entry/components/close-amount-section/close-amount-section';
+import { LimitPriceInput } from '../order-entry/components/limit-price-input/limit-price-input';
+import { OrderEntryHeader } from '../order-entry/components/order-entry-header/order-entry-header';
+import { OrderTypeToggle } from '../order-entry/components/order-type-toggle/order-type-toggle';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
+import { usePerpsToast } from '../perps-toast/perps-toast-provider';
+import type { PerpsToastKeyConfig } from '../perps-toast/perps-toast-provider';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
 import {

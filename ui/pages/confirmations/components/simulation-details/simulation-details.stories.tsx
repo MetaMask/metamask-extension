@@ -11,7 +11,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { ConfirmContextProvider } from '../../context/confirm';
 

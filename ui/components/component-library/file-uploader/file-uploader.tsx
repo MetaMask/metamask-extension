@@ -19,8 +19,9 @@ import {
 } from '@metamask/design-system-react';
 
 // Legacy components
-import { Label } from '../label';
-import { HelpText, HelpTextSeverity } from '../help-text';
+import { Label } from '../label/label';
+import { HelpText } from '../help-text/help-text';
+import { HelpTextSeverity } from '../help-text/help-text.types';
 import { TextColor as TextColorLegacy } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FileUploaderProps } from './file-uploader.types';

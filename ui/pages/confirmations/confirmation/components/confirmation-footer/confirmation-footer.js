@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
+import { Button } from '../../../../../components/component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/button/button.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
 import { useTemplateAlertContext } from '../../alerts/TemplateAlertContext';
 
 export default function ConfirmationFooter({

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
-import { getAddressSecurityAlertResponse } from '../selectors';
+import { getAddressSecurityAlertResponse } from '../selectors/selectors';
 import { ResultType } from '../../shared/lib/trust-signals';
 import {
   useTrustSignal,
@@ -15,7 +15,7 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: any) => selector(),
 }));
 
-jest.mock('../selectors', () => ({
+jest.mock('../selectors/selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
 }));
 

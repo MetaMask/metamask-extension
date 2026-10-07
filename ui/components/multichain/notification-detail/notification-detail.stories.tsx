@@ -6,7 +6,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 import {
   NotificationDetail,
   NotificationDetailProps,

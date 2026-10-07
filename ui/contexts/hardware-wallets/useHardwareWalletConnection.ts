@@ -1,17 +1,17 @@
 import { useCallback, useEffect } from 'react';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
-import { createHardwareWalletError } from './errors';
+import { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import { toHardwareWalletError } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
-import {
-  HardwareWalletType,
-  type EnsureDeviceReadyOptions,
-  type HardwareWalletConnectionState,
-  type HardwareWalletAdapterOptions,
-  type DeviceEventPayload,
+import type {
+  EnsureDeviceReadyOptions,
+  HardwareWalletConnectionState,
+  HardwareWalletAdapterOptions,
+  DeviceEventPayload,
 } from './types';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
-import { toHardwareWalletError } from './rpcErrorUtils';
 
 type UseHardwareWalletConnectionParams = {
   refs: HardwareWalletRefs;

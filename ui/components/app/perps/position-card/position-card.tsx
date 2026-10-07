@@ -20,7 +20,7 @@ import { getIsPerpsShowFullAssetNamesEnabled } from '../../../../selectors/perps
 import { formatPnl } from '../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { formatPerpsFiatMinimal } from '../utils/formatPerpsDisplayPrice';
-import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
 import {
   getDisplaySymbol,
   getPositionDirection,

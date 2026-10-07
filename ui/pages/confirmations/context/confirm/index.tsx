@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
+import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors/selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNavigation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';

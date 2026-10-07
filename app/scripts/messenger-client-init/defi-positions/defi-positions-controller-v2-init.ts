@@ -5,7 +5,7 @@ import {
 import { createApiPlatformClient } from '@metamask/core-backend';
 import type { ApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitFunction } from '../types';
-import { DeFiPositionsControllerV2InitMessenger } from '../messengers/defi-positions';
+import { DeFiPositionsControllerV2InitMessenger } from '../messengers/defi-positions/defi-positions-controller-v2-messenger';
 import {
   DEFI_CONTROLLER_V2_FLAG,
   isDefiControllerV2Enabled,

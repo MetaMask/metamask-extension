@@ -16,24 +16,25 @@ import {
   hideModal,
   closeCurrentNotificationWindow,
 } from '../../store/actions';
-import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
+import { getIsHardwareWalletErrorModalVisible } from '../../selectors/selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/hooks';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import {
+  getHardwareWalletErrorCode,
+  isUserRejectedHardwareWalletError,
+} from '../../../shared/lib/hardware-wallets/rpc-error-utils';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-import { ConnectionStatus, HardwareWalletType } from './types';
+import { ConnectionStatus } from './types';
 import {
   HARDWARE_WALLET_ERROR_MODAL_NAME,
   HARDWARE_WALLET_REPAIR_WALLET_TYPE_PARAM,
 } from './constants';
-import {
-  getHardwareWalletErrorCode,
-  isUserRejectedHardwareWalletError,
-} from './rpcErrorUtils';
 import { isInE2eTest } from './is-in-e2e-test';
 import { isHardwareWalletRoute } from './utils';
 

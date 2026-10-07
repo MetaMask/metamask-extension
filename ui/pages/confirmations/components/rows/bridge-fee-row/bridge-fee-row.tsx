@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PopoverPosition } from '../../../../../components/component-library';
+import { PopoverPosition } from '../../../../../components/component-library/popover/popover.types';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowSize,
@@ -34,9 +34,9 @@ import { getUserPaidNetworkFeeUsd } from '../../../hooks/pay/sponsored-network-f
 import {
   useIsPaidByMetaMask,
   useSponsoredNetworkFeeFlags,
-  type SponsoredNetworkFeeFlags,
 } from '../../../hooks/pay/useIsPaidByMetaMask';
-import { InfoPopoverTooltip } from '../../info-popover-tooltip';
+import type { SponsoredNetworkFeeFlags } from '../../../hooks/pay/sponsored-network-fees';
+import { InfoPopoverTooltip } from '../../info-popover-tooltip/info-popover-tooltip';
 
 export type BridgeFeeRowProps = {
   variant?: ConfirmInfoRowSize;

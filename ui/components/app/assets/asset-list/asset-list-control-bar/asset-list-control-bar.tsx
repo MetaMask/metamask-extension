@@ -16,23 +16,23 @@ import {
   getIsMainnet,
   getTokenNetworkFilter,
   getUseNftDetection,
-} from '../../../../../selectors';
+} from '../../../../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
   selectEnabledNetworksAsCaipChainIds,
+  getMultichainIsEvm,
+  getMultichainNetwork,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  Popover,
-  PopoverPosition,
-  Text,
-} from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonBase } from '../../../../component-library/button-base/button-base';
+import { ButtonBaseSize } from '../../../../component-library/button-base/button-base.types';
+import { Popover } from '../../../../component-library/popover/popover';
+import { PopoverPosition } from '../../../../component-library/popover/popover.types';
+import { Text } from '../../../../component-library/text/text';
 import SortControl, { SelectableListItem } from '../sort-control/sort-control';
 import {
   AlignItems,
@@ -43,7 +43,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import ImportControl from '../import-control';
+import ImportControl from '../import-control/import-control';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useAnalytics } from '../../../../../hooks/useAnalytics';
 import { useBoolean } from '../../../../../hooks/useBoolean';
@@ -65,12 +65,8 @@ import {
   setTokenNetworkFilter,
   showImportNftsModal,
 } from '../../../../../store/actions';
-import type { MetaMaskReduxState } from '../../../../../store/store';
-import Tooltip from '../../../../ui/tooltip';
-import {
-  getMultichainIsEvm,
-  getMultichainNetwork,
-} from '../../../../../selectors/multichain';
+import type { MetaMaskReduxState } from '../../../../../store/types';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   ASSETS_ROUTE,

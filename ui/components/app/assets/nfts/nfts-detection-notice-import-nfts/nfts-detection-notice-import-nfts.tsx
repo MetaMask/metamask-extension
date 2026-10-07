@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { BannerAlert } from '../../../../component-library';
+import { BannerAlert } from '../../../../component-library/banner-alert/banner-alert';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ASSETS_ROUTE } from '../../../../../helpers/constants/routes';
 

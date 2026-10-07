@@ -5465,15 +5465,6 @@
         "buffer>ieee754": true
       }
     },
-    "remote-redux-devtools>socketcluster-client>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "buffer>ieee754": true
-      }
-    },
     "@metamask/snaps-utils>validate-npm-package-name>builtins": {
       "globals": {
         "process.version": true
@@ -5604,14 +5595,6 @@
       },
       "packages": {
         "buffer": true
-      }
-    },
-    "remote-redux-devtools>socketcluster-client>clone": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "remote-redux-devtools>socketcluster-client>buffer": true
       }
     },
     "cockatiel": {
@@ -6299,11 +6282,6 @@
         "eslint-plugin-react>array-includes>math-intrinsics": true
       }
     },
-    "remote-redux-devtools>redux-devtools-core>get-params": {
-      "globals": {
-        "GetParams": "write"
-      }
-    },
     "string.prototype.matchall>es-abstract>get-proto": {
       "packages": {
         "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": true,
@@ -6619,11 +6597,6 @@
       },
       "packages": {
         "process": true
-      }
-    },
-    "remote-redux-devtools>jsan": {
-      "globals": {
-        "console.warn": true
       }
     },
     "@ngraveio/bc-ur>jsbi": {
@@ -7144,62 +7117,6 @@
         "react": true
       }
     },
-    "react-devtools-core": {
-      "globals": {
-        "CSSStyleRule": true,
-        "ElementTypeClass": true,
-        "ElementTypeForwardRef": true,
-        "ElementTypeFunction": true,
-        "ElementTypeMemo": true,
-        "ElementTypeVirtual": true,
-        "ErrorEvent": true,
-        "HTMLElement": true,
-        "LOCAL_STORAGE_COMPONENT_FILTER_PREFERENCES_KEY": true,
-        "LOCAL_STORAGE_OPEN_IN_EDITOR_URL": true,
-        "Node.ELEMENT_NODE": true,
-        "SESSION_STORAGE_RECORD_CHANGE_DESCRIPTIONS_KEY": true,
-        "SESSION_STORAGE_RECORD_TIMELINE_KEY": true,
-        "SESSION_STORAGE_RELOAD_AND_PROFILE_KEY": true,
-        "URL": true,
-        "WebSocket": true,
-        "__REACT_DEVTOOLS_COMPONENT_FILTERS__": true,
-        "__REACT_DEVTOOLS_GLOBAL_HOOK__": true,
-        "__REACT_DEVTOOLS_TARGET_WINDOW__": true,
-        "cancelAnimationFrame": true,
-        "chrome": true,
-        "clearTimeout": true,
-        "console": true,
-        "define": true,
-        "devicePixelRatio": true,
-        "devtoolsJestTestScheduler": true,
-        "dispatchEvent": true,
-        "document": true,
-        "getComputedStyle": true,
-        "getInObject": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "localStorage.getItem": true,
-        "localStorage.removeItem": true,
-        "localStorage.setItem": true,
-        "localStorageGetItem": true,
-        "localStorageSetItem": true,
-        "navigator.userAgent": true,
-        "performance": true,
-        "queueMicrotask": true,
-        "regeneratorRuntime.mark": true,
-        "regeneratorRuntime.wrap": true,
-        "reportError": true,
-        "requestAnimationFrame": true,
-        "sessionStorage.getItem": true,
-        "sessionStorage.removeItem": true,
-        "sessionStorage.setItem": true,
-        "sessionStorageGetItem": true,
-        "sessionStorageRemoveItem": true,
-        "sessionStorageSetItem": true,
-        "setInObject": true,
-        "setTimeout": true
-      }
-    },
     "react-dom": {
       "globals": {
         "MSApp": true,
@@ -7644,35 +7561,6 @@
         "@babel/runtime": true
       }
     },
-    "remote-redux-devtools>redux-devtools-core": {
-      "globals": {
-        "ErrorUtils": true,
-        "console": true,
-        "devToolsOptions": true,
-        "onerror": "write",
-        "serializeState": true
-      },
-      "packages": {
-        "remote-redux-devtools>redux-devtools-core>get-params": true,
-        "remote-redux-devtools>jsan": true,
-        "lodash": true,
-        "remote-redux-devtools>redux-devtools-core>nanoid": true,
-        "remote-redux-devtools>redux-devtools-core>remotedev-serialize": true
-      }
-    },
-    "remote-redux-devtools>redux-devtools-instrument": {
-      "globals": {
-        "chrome": true,
-        "console.error": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "lodash": true,
-        "process": true,
-        "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": true
-      }
-    },
     "@ledgerhq/device-management-kit>reflect-metadata": {
       "globals": {
         "crypto": true,
@@ -7697,21 +7585,6 @@
     "react-markdown>remark-rehype": {
       "packages": {
         "react-markdown>remark-rehype>mdast-util-to-hast": true
-      }
-    },
-    "remote-redux-devtools": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "remote-redux-devtools>jsan": true,
-        "remote-redux-devtools>redux-devtools-core": true,
-        "remote-redux-devtools>redux-devtools-instrument": true,
-        "remote-redux-devtools>rn-host-detect": true,
-        "remote-redux-devtools>socketcluster-client": true
       }
     },
     "react-markdown>vfile>replace-ext": {
@@ -7766,13 +7639,6 @@
         "buffer": true
       }
     },
-    "remote-redux-devtools>rn-host-detect": {
-      "globals": {
-        "__DEV__": true,
-        "__fbBatchedBridgeConfig": true,
-        "console": true
-      }
-    },
     "rxjs": {
       "globals": {
         "clearInterval": true,
@@ -7804,16 +7670,6 @@
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-abstract>is-regex": true
-      }
-    },
-    "remote-redux-devtools>socketcluster-client>sc-channel": {
-      "packages": {
-        "remote-redux-devtools>socketcluster-client>component-emitter": true
-      }
-    },
-    "remote-redux-devtools>socketcluster-client>sc-formatter": {
-      "globals": {
-        "Buffer": true
       }
     },
     "react-dom>scheduler": {
@@ -7942,29 +7798,6 @@
         "string.prototype.matchall>side-channel>side-channel-weakmap": true
       }
     },
-    "remote-redux-devtools>socketcluster-client": {
-      "globals": {
-        "WebSocket": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "localStorage": true,
-        "location": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "remote-redux-devtools>socketcluster-client>buffer": true,
-        "remote-redux-devtools>socketcluster-client>clone": true,
-        "remote-redux-devtools>socketcluster-client>component-emitter": true,
-        "remote-redux-devtools>socketcluster-client>linked-list": true,
-        "remote-redux-devtools>socketcluster-client>querystring": true,
-        "remote-redux-devtools>socketcluster-client>sc-channel": true,
-        "remote-redux-devtools>socketcluster-client>sc-errors": true,
-        "remote-redux-devtools>socketcluster-client>sc-formatter": true,
-        "remote-redux-devtools>socketcluster-client>uuid": true
-      }
-    },
     "string.prototype.matchall>es-abstract>stop-iteration-iterator": {
       "globals": {
         "StopIteration": true
@@ -8037,11 +7870,6 @@
     "react-markdown>style-to-object": {
       "packages": {
         "react-markdown>style-to-object>inline-style-parser": true
-      }
-    },
-    "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": {
-      "globals": {
-        "module": true
       }
     },
     "@metamask/snaps-controllers>tar-stream": {
@@ -8348,12 +8176,6 @@
     "@metamask/transaction-controller>uuid": {
       "globals": {
         "crypto": true
-      }
-    },
-    "remote-redux-devtools>socketcluster-client>uuid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>valibot": {

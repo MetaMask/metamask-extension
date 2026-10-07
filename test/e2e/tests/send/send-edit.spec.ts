@@ -16,7 +16,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import SendPage from '../../page-objects/pages/send/send-page';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import { mockEthPrices } from '../tokens/utils/mocks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

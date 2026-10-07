@@ -19,14 +19,13 @@ import {
   ButtonSize,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-} from '../../../component-library';
+import type { Order } from '@metamask/perps-controller';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 import {
@@ -40,21 +39,19 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
-import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsTokenLogo } from '../perps-token-logo/perps-token-logo';
 import { formatOrderType, getDisplaySymbol } from '../utils';
 import { isClosingOrder, isOrderNoLongerOpenError } from '../utils/orderUtils';
 import {
   CANCEL_ORDER_I18N_KEY_OVERRIDES,
   translatePerpsError,
 } from '../utils/translate-perps-error';
-import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import type { Order } from '../types';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
+import { usePerpsToast } from '../perps-toast/perps-toast-provider';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
 
 export type CancelOrderModalProps = {
   isOpen: boolean;

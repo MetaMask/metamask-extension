@@ -9,11 +9,9 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  FormTextField,
-  FormTextFieldSize,
-  TextFieldType,
-} from '../../../../components/component-library';
+import { FormTextField } from '../../../../components/component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../../components/component-library/form-text-field/form-text-field.types';
+import { TextFieldType } from '../../../../components/component-library/text-field/text-field.types';
 import { verifyPassword } from '../../../../store/actions';
 
 type EnterPasswordProps = {

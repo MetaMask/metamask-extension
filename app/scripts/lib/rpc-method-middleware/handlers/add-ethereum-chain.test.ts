@@ -5,10 +5,8 @@ import type {
 } from '@metamask/network-controller';
 import type { Hex, PendingJsonRpcResponse } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  CHAIN_IDS,
-  FEATURED_RPCS,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
+import { FEATURED_RPCS } from '../../../../../shared/constants/network';
 import {
   addEthereumChainHandler,
   type AddEthereumChainHooks,

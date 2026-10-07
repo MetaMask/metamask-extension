@@ -1,10 +1,10 @@
 import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Icon } from '../../../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-} from '../../../../../components/component-library';
+} from '../../../../../components/component-library/icon/icon.types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
 
 type TransactionStatusIconProps = {

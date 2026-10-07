@@ -10,7 +10,10 @@ import { useRampsScreenViewed } from '../../../hooks/ramps/useRampsScreenViewed'
 import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRampsNavigation';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import { ScrollContainer } from '../../../contexts/scroll-container';
-import { Asset, type AssetType } from '../../../components/app/asset-picker';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { Asset } from '../../confirmations/components/send/asset/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import type { Asset as AssetType } from '../../confirmations/types/send';
 import {
   RampsSelectionCenteredMessage,
   RampsSelectionCenteredSpinner,

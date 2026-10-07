@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { useAddToken } from '../../../hooks/tokens/useAddToken';
 import { useTransactionPayWithdraw } from '../../../hooks/pay/useTransactionPayWithdraw';
-import { MUSD_TOKEN_ADDRESS } from '../../../constants/musd';
-import { CustomAmountInfo } from '../custom-amount-info';
+import { CustomAmountInfo } from '../custom-amount-info/custom-amount-info';
 import { useMoneyAccountBalance } from '../../../../../hooks/money/useMoneyAccountBalance';
 import { MoneyAccountWithdrawInfo } from './money-account-withdraw-info';
 
@@ -29,7 +29,7 @@ jest.mock('../../../../../contexts/route-messenger', () => ({
 }));
 
 jest.mock(
-  '../../../../../components/app/money/money-account-withdraw-balance',
+  '../../../../../components/app/money/money-account-withdraw-balance/money-account-withdraw-balance',
   () => ({
     MoneyAccountWithdrawBalance: () => (
       <div data-testid="money-account-withdraw-balance-mock" />
@@ -37,7 +37,7 @@ jest.mock(
   }),
 );
 
-jest.mock('../custom-amount-info', () => ({
+jest.mock('../custom-amount-info/custom-amount-info', () => ({
   CustomAmountInfo: jest.fn(
     ({
       amountDetails,

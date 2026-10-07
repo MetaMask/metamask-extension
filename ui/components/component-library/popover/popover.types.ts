@@ -3,7 +3,7 @@ import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
   BoxProps,
-} from '../box';
+} from '../box/box.types';
 
 export enum PopoverPosition {
   Auto = 'auto',

@@ -9,8 +9,9 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Header } from '../../multichain/pages/page';
-import { HeaderSearch, HeaderSearchVariant } from '../../component-library';
+import { Header } from '../../multichain/pages/page/components/header/header';
+import { HeaderSearch } from '../../component-library/header-search/header-search';
+import { HeaderSearchVariant } from '../../component-library/header-search/header-search.types';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 type PageHeaderWithSearchProps = {

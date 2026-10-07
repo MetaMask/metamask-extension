@@ -15,17 +15,15 @@ import {
 } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 
-import {
-  NotificationListItem,
-  NotificationDetailBlockExplorerButton,
-  NotificationDetailAddress,
-  NotificationDetailInfo,
-  NotificationDetailCopyButton,
-  NotificationDetailAsset,
-  NotificationDetailNetworkFee,
-} from '../../../../components/multichain';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
+import { NotificationDetailBlockExplorerButton } from '../../../../components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button';
+import { NotificationDetailAddress } from '../../../../components/multichain/notification-detail-address/notification-detail-address';
+import { NotificationDetailInfo } from '../../../../components/multichain/notification-detail-info/notification-detail-info';
+import { NotificationDetailCopyButton } from '../../../../components/multichain/notification-detail-copy-button/notification-detail-copy-button';
+import { NotificationDetailAsset } from '../../../../components/multichain/notification-detail-asset/notification-detail-asset';
+import { NotificationDetailNetworkFee } from '../../../../components/multichain/notification-detail-network-fee/notification-detail-network-fee';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library/badge-wrapper/badge-wrapper.types';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;

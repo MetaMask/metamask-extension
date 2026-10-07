@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from '../../../../../store/store';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import EditGasToolTip from './edit-gas-tooltip';
 
 const LOW_GAS_OPTION = {

@@ -179,26 +179,29 @@ describe('Info', () => {
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
-  it('renders info section for personal sign request', () => {
+  it('renders info section for personal sign request', async () => {
     const state = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    await waitFor(() => expect(container.firstChild).not.toBeNull());
     expect(container).toMatchSnapshot();
   });
 
-  it('renders info section for typed sign request', () => {
+  it('renders info section for typed sign request', async () => {
     const state = getMockTypedSignConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    await waitFor(() => expect(container.firstChild).not.toBeNull());
     expect(container).toMatchSnapshot();
   });
 
-  it('renders info section for typed sign request with permission', () => {
+  it('renders info section for typed sign request with permission', async () => {
     const state = getMockTypedSignPermissionConfirmState(
       unapprovedTypedSignMsgV4WithPermission.decodedPermission,
     );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    await waitFor(() => expect(container.firstChild).not.toBeNull());
     expect(container).toMatchSnapshot();
   });
 
@@ -226,10 +229,11 @@ describe('Info', () => {
     );
   });
 
-  it('renders info section for contract interaction request', () => {
+  it('renders info section for contract interaction request', async () => {
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    await waitFor(() => expect(container.firstChild).not.toBeNull());
     expect(container).toMatchSnapshot();
   });
 
@@ -265,7 +269,7 @@ describe('Info', () => {
     expect(normalizeTippyIds(container)).toMatchSnapshot();
   });
 
-  it('renders info section for addEthereumChain request', () => {
+  it('renders info section for addEthereumChain request', async () => {
     mockedUseParams.mockReturnValue({ id: MOCK_CONFIRMATION_ID });
 
     const state = getMockAddEthereumChainConfirmState();
@@ -277,7 +281,7 @@ describe('Info', () => {
       MOCK_CONFIRMATION_ID,
     );
 
-    expect(screen.getByText('Test Network')).toBeInTheDocument();
+    expect(await screen.findByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
     expect(screen.getByText('RPC')).toBeInTheDocument();
@@ -310,7 +314,7 @@ describe('Info', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders CustomAmountInfoSkeleton when loader is CustomAmount', () => {
+    it('renders CustomAmountInfoSkeleton when loader is CustomAmount', async () => {
       mockUseConfirmationNavigationOptions.mockReturnValue({
         loader: ConfirmationLoader.CustomAmount,
       });
@@ -320,7 +324,7 @@ describe('Info', () => {
       renderWithConfirmContextProvider(<Info />, mockStore);
 
       expect(
-        screen.getByTestId('custom-amount-info-skeleton'),
+        await screen.findByTestId('custom-amount-info-skeleton'),
       ).toBeInTheDocument();
     });
 

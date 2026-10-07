@@ -1,5 +1,5 @@
 import React from 'react';
-import RecoveryPhraseReminder from '.';
+import RecoveryPhraseReminder from './recovery-phrase-reminder';
 
 export default {
   title: 'Components/App/RecoveryPhraseReminder',

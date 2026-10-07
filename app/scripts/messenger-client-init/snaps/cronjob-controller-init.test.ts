@@ -4,7 +4,7 @@ import {
 } from '@metamask/snaps-controllers';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import { getCronjobControllerMessenger } from '../messengers/snaps';
+import { getCronjobControllerMessenger } from '../messengers/snaps/cronjob-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { CronjobControllerInit } from './cronjob-controller-init';
 

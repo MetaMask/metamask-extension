@@ -10,8 +10,8 @@ import { useSelector } from 'react-redux';
 import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
-import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import { getUnapprovedConfirmations } from '../../../../selectors';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal/multiple-alert-modal';
+import { getUnapprovedConfirmations } from '../../../../selectors/selectors';
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 import { useAlertsActions } from './useAlertsActions';
 

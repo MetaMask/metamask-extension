@@ -3,7 +3,7 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { capitalize } from 'lodash';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box';
+import Box from '../../ui/box/box';
 import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
 
 export const threeStepStages = {

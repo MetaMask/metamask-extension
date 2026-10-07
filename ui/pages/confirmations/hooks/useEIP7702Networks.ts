@@ -8,10 +8,8 @@ import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyr
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import type { AccountsState } from '../../../../shared/lib/selectors/accounts';
-import {
-  getInternalAccountByAddress,
-  getMultichainNetworkConfigurationsByChainId,
-} from '../../../selectors';
+import { getInternalAccountByAddress } from '../../../selectors/accounts';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { useRive, useRiveFile } from '@rive-app/react-canvas';
 
 import { useRiveWasmFile } from '../../../contexts/rive-wasm';
-import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine/types';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
 
 const mockBuffer = new ArrayBuffer(1);

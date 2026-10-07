@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Box, Skeleton } from '@metamask/design-system-react';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../selectors/multichain/networks';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
@@ -23,7 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { SensitiveText } from '../../component-library';
+import { SensitiveText } from '../../component-library/sensitive-text/sensitive-text';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
 import { formatWithThreshold } from '../assets/util/formatWithThreshold';

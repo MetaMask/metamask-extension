@@ -8,7 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { clearABTestExposureTrackingForTest } from '../../../hooks/useABTest';
 import { setPerpsTabBadgeSeen } from '../../../store/actions';
 import { PERPS_TAB_BADGE_AB_KEY } from '../../../../shared/lib/ab-testing/configs/perps-tab-badge';
@@ -35,7 +35,7 @@ jest.mock('../../../store/actions', () => ({
   setPerpsTabBadgeSeen: jest.fn(() => () => Promise.resolve()),
 }));
 
-jest.mock('../../app/assets/asset-list', () => ({
+jest.mock('../../app/assets/asset-list/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
@@ -49,13 +49,13 @@ jest.mock('../../../pages/activity/useTransactionsQuery', () => ({
   usePrefetchTransactions: () => jest.fn(),
 }));
 
-jest.mock('../../app/assets/nfts/nfts-tab', () => ({
+jest.mock('../../app/assets/nfts/nfts-tab/nfts-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
 }));
 
-jest.mock('../../app/assets/defi-list/defi-tab', () => ({
+jest.mock('../../../pages/defi/pages/defi-tab', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,

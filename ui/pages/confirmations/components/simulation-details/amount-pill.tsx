@@ -1,7 +1,8 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
-import { Box, Text } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   AlignItems,
   BorderRadius,
@@ -12,7 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import Tooltip from '../../../../components/ui/tooltip';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { shortenString as shortenAssetId } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import type { CaipAssetType } from '@metamask/utils';
 import { updateBatchSellTrades } from '../../../../../ducks/batch-sell/actions';
 import type { SendAssetEntry } from '../types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
 import { useDispatch } from '../../../../../store/hooks';
 import { useBatchSellTradesFetching } from './useBatchSellTradesFetching';
 

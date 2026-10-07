@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 export const PERPS_CURRENCY = 'usd';
 export const PERPS_MINIMUM_DEPOSIT = 0.01;

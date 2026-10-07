@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { DEFI_CONTROLLER_V2_FLAG } from '../../../../shared/lib/defi-controller-v2/remote-feature-flag';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import DeFiTab from './defi-tab';

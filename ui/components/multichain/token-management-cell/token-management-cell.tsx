@@ -13,7 +13,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import ToggleButton from '../../ui/toggle-button';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import { ASSET_CELL_HEIGHT } from '../../app/assets/constants';
 import { AssetCellBadge } from '../../app/assets/asset-list/cells/asset-cell-badge';
 import { SecurityBadge } from '../../app/security-trust/security-trust-inline-badge';

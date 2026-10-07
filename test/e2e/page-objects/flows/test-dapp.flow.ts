@@ -10,7 +10,7 @@ import ReviewPermissionsConfirmation from '../pages/confirmations/review-permiss
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import TokenTransferTransactionConfirmation from '../pages/confirmations/token-transfer-confirmation';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions/specifications';
 
 export type ConfirmationExpectedDetails = {
   chainId: string;

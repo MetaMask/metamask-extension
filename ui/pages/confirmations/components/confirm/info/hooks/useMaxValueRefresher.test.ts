@@ -5,7 +5,7 @@ import { merge } from 'lodash';
 import { updateEditableParams } from '../../../../../../store/actions';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
-import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors';
+import { getCrossChainMetaMaskCachedBalances } from '../../../../../../selectors/selectors';
 import { selectMaxValueModeForTransaction } from '../../../../../../ducks/send-max-value/send-max-value';
 import { useIsGaslessSupported } from '../../../../hooks/gas/useIsGaslessSupported';
 import { useMaxValueRefresher } from './useMaxValueRefresher';
@@ -28,11 +28,15 @@ jest.mock('../../../../../../store/actions', () => ({
   updateEditableParams: jest.fn(),
 }));
 
-jest.mock('../../../../../../selectors', () => ({
+jest.mock('../../../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../../../selectors/selectors'),
   getCrossChainMetaMaskCachedBalances: jest.fn(),
 }));
 
 jest.mock('../../../../../../ducks/send-max-value/send-max-value', () => ({
+  ...jest.requireActual(
+    '../../../../../../ducks/send-max-value/send-max-value',
+  ),
   selectMaxValueModeForTransaction: jest.fn(),
 }));
 

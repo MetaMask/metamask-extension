@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { DeepPartial, Reducer } from 'redux';
 import { RenderResult } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
-import configureStore, { MetaMaskReduxState } from '../../../../store/store';
+import configureStore from '../../../../store/store';
+import { MetaMaskReduxState } from '../../../../store/types';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
@@ -114,14 +115,16 @@ export function renderInterface(
   };
 
   const result = renderWithProvider(
-    <SnapUIRenderer
-      snapId={snapId}
-      interfaceId={MOCK_INTERFACE_ID}
-      useFooter={useFooter}
-      onCancel={onCancel}
-      contentBackgroundColor={contentBackgroundColor}
-      PERF_DEBUG
-    />,
+    <Suspense fallback={null}>
+      <SnapUIRenderer
+        snapId={snapId}
+        interfaceId={MOCK_INTERFACE_ID}
+        useFooter={useFooter}
+        onCancel={onCancel}
+        contentBackgroundColor={contentBackgroundColor}
+        PERF_DEBUG
+      />
+    </Suspense>,
     store,
   );
 

@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
 import { IconSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, Text } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   FlexDirection,
   TextVariant,
@@ -17,7 +18,7 @@ import {
   OverflowWrap,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
 import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -26,9 +27,9 @@ import {
   getPermissions,
   getPreinstalledSnaps,
   getSnapMetadata,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import { SnapIcon } from '../../../../components/app/snaps/snap-icon/snap-icon';
 
 function SnapsConnectContent({ origin, isLoading, snaps, snapName, t }) {
   let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
 import {
   Slippage,
   QUOTES_EXPIRED_ERROR,
@@ -16,7 +16,7 @@ import {
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../../shared/constants/swaps';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import AwaitingSwap from '.';
+import AwaitingSwap from './awaiting-swap';
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(

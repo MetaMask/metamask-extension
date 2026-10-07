@@ -36,26 +36,28 @@ import {
   WITHDRAWAL_CONSTANTS,
 } from '@metamask/perps-controller';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
-import { Content, Footer, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Footer } from '../../components/multichain/pages/page/components/footer/footer';
+import { Page } from '../../components/multichain/pages/page/page';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { FlexDirection } from '../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
-import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
-import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
-import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
+import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input/perps-fiat-hero-amount-input';
+import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows/perps-fiat-summary-rows';
+import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons/perps-withdraw-percentage-buttons';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
-import { usePerpsEventTracking } from '../../hooks/perps';
+import { usePerpsEventTracking } from '../../hooks/perps/usePerpsEventTracking';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
-import { usePerpsLiveAccount } from '../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream/usePerpsLiveAccount';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';

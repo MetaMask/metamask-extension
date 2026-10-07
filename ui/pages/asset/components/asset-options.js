@@ -11,8 +11,9 @@ import {
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { Menu, MenuItem } from '../../../components/ui/menu';
-import { getBlockExplorerLinkText } from '../../../selectors';
+import Menu from '../../../components/ui/menu/menu';
+import MenuItem from '../../../components/ui/menu/menu-item';
+import { getBlockExplorerLinkText } from '../../../selectors/selectors';
 import { selectIsAssetInAssetsBalance } from '../../../selectors/assets';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import {

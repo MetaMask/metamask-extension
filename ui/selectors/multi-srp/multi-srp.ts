@@ -7,8 +7,8 @@ import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
   getMetaMaskHdKeyrings,
-  getInternalAccounts,
-} from '..';
+} from '../selectors';
+import { getInternalAccounts } from '../accounts';
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';

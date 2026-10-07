@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SnapPermissionsList from '.';
+import SnapPermissionsList from './snap-permissions-list';
 
 export default {
   title: 'Components/App/Snaps/SnapPermissionsList',

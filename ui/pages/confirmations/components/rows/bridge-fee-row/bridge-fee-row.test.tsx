@@ -28,6 +28,7 @@ import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/r
 import { BridgeFeeRow, BridgeFeeRowProps } from './bridge-fee-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
+
 jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 
 const mockStore = configureMockStore([]);

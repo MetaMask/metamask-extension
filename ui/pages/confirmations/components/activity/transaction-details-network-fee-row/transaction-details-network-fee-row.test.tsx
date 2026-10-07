@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsNetworkFeeRow } from './transaction-details-network-fee-row';
 
 const mockStore = configureMockStore([]);

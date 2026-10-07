@@ -16,15 +16,19 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../components/component-library/skeleton', () => ({
-  Skeleton: ({
-    isLoading,
-    children,
-  }: {
-    isLoading?: boolean;
-    children: React.ReactNode;
-  }) => (isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>),
-}));
+jest.mock(
+  '../../../../../components/component-library/skeleton/skeleton',
+  () => ({
+    Skeleton: ({
+      isLoading,
+      children,
+    }: {
+      isLoading?: boolean;
+      children: React.ReactNode;
+    }) =>
+      isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>,
+  }),
+);
 
 const mockUseSelector = jest.mocked(useSelector);
 

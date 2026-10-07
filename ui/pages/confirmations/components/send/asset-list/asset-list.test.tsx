@@ -12,13 +12,13 @@ const mockUpdateAsset = jest.fn();
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
-jest.mock('../../../../../components/component-library', () => ({
+
+jest.mock('../../../../../components/component-library/box/box', () => ({
   Box: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="box">{children}</div>
   ),
-  Text: ({ children }: { children: React.ReactNode }) => (
-    <span data-testid="text">{children}</span>
-  ),
+}));
+jest.mock('../../../../../components/component-library/button/button', () => ({
   Button: ({
     children,
     onClick,
@@ -32,10 +32,20 @@ jest.mock('../../../../../components/component-library', () => ({
       {children}
     </button>
   ),
-  ButtonVariant: { Link: 'link' },
-  ButtonSize: { Sm: 'sm' },
 }));
-jest.mock('../../UI/asset', () => ({
+
+jest.mock(
+  '../../../../../components/component-library/button/button.types',
+  () => ({ ButtonVariant: { Link: 'link' }, ButtonSize: { Sm: 'sm' } }),
+);
+
+jest.mock('../../../../../components/component-library/text/text', () => ({
+  Text: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="text">{children}</span>
+  ),
+}));
+
+jest.mock('../../UI/asset/asset', () => ({
   Asset: ({
     asset,
     onClick,

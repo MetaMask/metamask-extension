@@ -87,5 +87,3 @@ export default function configureStore(preloadedState: any) {
     preloadedState,
   });
 }
-export type { MetaMaskReduxDispatch, MetaMaskReduxState } from './types';
-export { useDispatch, useAppSelector } from './hooks';

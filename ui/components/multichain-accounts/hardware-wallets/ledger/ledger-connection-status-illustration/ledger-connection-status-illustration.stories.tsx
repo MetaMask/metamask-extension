@@ -9,7 +9,7 @@ import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_LIST,
 } from '../ledger-connection-status.constants';
-import { LedgerConnectionStatusIllustration } from '.';
+import { LedgerConnectionStatusIllustration } from './ledger-connection-status-illustration';
 
 const STORY_FRAME_WIDTH = 460;
 

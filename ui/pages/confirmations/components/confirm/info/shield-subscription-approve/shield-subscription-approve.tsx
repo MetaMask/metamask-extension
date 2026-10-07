@@ -23,7 +23,7 @@ import {
   useSubscriptionProductPlans,
 } from '../../../../../../hooks/subscription/useSubscriptionPricing';
 import { useDecodedTransactionDataValue } from '../../../../../../hooks/useDecodedTransactionData';
-import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../../../../selectors/subscription';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../../../../selectors/subscription/subscription';
 import { AccountDetails } from './account-details';
 import { EstimatedChanges } from './estimated-changes';
 import ShieldSubscriptionApproveLoader from './shield-subscription-approve-loader';

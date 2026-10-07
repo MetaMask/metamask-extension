@@ -1,18 +1,18 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import {
   isSubsidizedRoute,
   isSubsidizedSource,
 } from '../../utils/relay-fixed-spread';
 import type { RelayFixedSpreadConfig } from '../../utils/relay-fixed-spread';
 import { selectRelayFixedSpread } from '../../selectors/feature-flags';
-import { NoFeeTag } from '../../components/UI/no-fee-tag';
-import { type TokenTagRenderer } from '../../components/UI/asset';
+import { NoFeeTag } from '../../components/UI/no-fee-tag/no-fee-tag';
+import type { TokenTagRenderer } from '../../components/UI/asset/asset';
 import { type Asset } from '../../types/send';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';

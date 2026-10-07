@@ -12,8 +12,8 @@ import { createEventBuilder } from '../../../../shared/lib/analytics/create-even
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
-import { loadAuthenticationConfig } from '../../../../shared/lib/authentication';
-import { trackEvent } from '../../controllers/analytics';
+import { loadAuthenticationConfig } from '../../../../shared/lib/authentication/config';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 /**
  * Initialize the UserStorage controller.

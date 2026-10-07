@@ -6,7 +6,7 @@ import {
   getIllustrationImage,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
 import { LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL } from '../ledger-connection-status.constants';
-import { LedgerConnectionStatusIllustration } from '.';
+import { LedgerConnectionStatusIllustration } from './ledger-connection-status-illustration';
 
 describe('LedgerConnectionStatusIllustration', () => {
   ALL_LEDGER_CONNECTION_STATUSES.forEach((status) => {

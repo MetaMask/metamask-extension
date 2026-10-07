@@ -1,14 +1,13 @@
 import React from 'react';
-import {
-  Skeleton,
-  SkeletonProps,
-} from '../../../components/component-library/skeleton';
+import { Skeleton } from '../../../components/component-library/skeleton/skeleton';
+import { SkeletonProps } from '../../../components/component-library/skeleton/skeleton.types';
 import {
   BlockSize,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-import { PolymorphicRef } from '../../../components/component-library';
-import { Column, Row } from '../layout';
+import { PolymorphicRef } from '../../../components/component-library/box/box.types';
+import Column from '../layout/column';
+import Row from '../layout/row';
 
 export const LoadingSkeleton = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(

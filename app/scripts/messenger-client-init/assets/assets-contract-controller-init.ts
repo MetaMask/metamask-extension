@@ -3,7 +3,7 @@ import {
   AssetsContractControllerMessenger,
 } from '@metamask/assets-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { AssetsContractControllerInitMessenger } from '../messengers/assets';
+import { AssetsContractControllerInitMessenger } from '../messengers/assets/assets-contract-controller-messenger';
 import { getGlobalChainId } from '../init-utils';
 
 /**

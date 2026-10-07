@@ -1,6 +1,6 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
+import type { NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
 import { MessengerClientInitFunction } from '../types';
-import { type NotificationServicesControllerMessenger } from '../messengers/notifications';
 import packageJson from '../../../../package.json';
 
 const APP_VERSION = packageJson.version;

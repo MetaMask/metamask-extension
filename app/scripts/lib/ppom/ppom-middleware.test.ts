@@ -1,7 +1,7 @@
 import { type Hex, JsonRpcResponseStruct } from '@metamask/utils';
 import { detectSIWE, SIWEMessage } from '@metamask/controller-utils';
 
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   BlockaidReason,
   BlockaidResultType,

@@ -5,7 +5,7 @@ import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
 import { apiClient } from '../../helpers/api-client';
-import { getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors/selectors';
 import { getIsSecurityTrustTdpEnabled } from '../../selectors/multichain/feature-flags';
 import { getTokenAssetQueryKey } from './token-asset-query';
 import { useTokenAssetSecurityResults } from './useTokenAssetSecurityResults';
@@ -22,7 +22,7 @@ jest.mock('../../helpers/api-client', () => ({
   },
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/selectors', () => ({
   getUseExternalServices: jest.fn(),
 }));
 

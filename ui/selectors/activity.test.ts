@@ -9,7 +9,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import mockState from '../../test/data/mock-state.json';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../test/data/mock-accounts';

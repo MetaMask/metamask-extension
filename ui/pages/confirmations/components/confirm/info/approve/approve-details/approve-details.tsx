@@ -1,10 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowDivider,
-} from '../../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../../components/app/confirm/info/row/address';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row/divider';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';

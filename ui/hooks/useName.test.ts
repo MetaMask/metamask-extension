@@ -6,7 +6,7 @@ import {
   NameOrigin,
   NameType,
 } from '@metamask/name-controller';
-import { getNames } from '../selectors';
+import { getNames } from '../selectors/selectors';
 import { useName } from './useName';
 
 jest.mock('react-redux', () => ({
@@ -15,9 +15,7 @@ jest.mock('react-redux', () => ({
   useSelector: (selector: any) => selector(),
 }));
 
-jest.mock('../selectors', () => ({
-  getNames: jest.fn(),
-}));
+jest.mock('../selectors/selectors', () => ({ getNames: jest.fn() }));
 
 const VARIATION_MOCK = '0x1';
 const VARIATION_2_MOCK = '0x2';

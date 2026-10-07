@@ -18,7 +18,7 @@ import {
   hexWEIToDecGWEI,
   decGWEIToHexWEI,
 } from '../../../../../shared/lib/conversion.utils';
-import { FormTextField } from '../../../../components/component-library';
+import { FormTextField } from '../../../../components/component-library/form-text-field/form-text-field';
 import { limitToMaximumDecimalPlaces } from '../../utils/number';
 import { validateMaxBaseFee } from '../../utils/gasValidations';
 

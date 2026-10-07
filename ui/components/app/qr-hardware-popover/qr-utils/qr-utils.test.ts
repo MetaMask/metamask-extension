@@ -1,8 +1,8 @@
 import {
   PAIRING_EXPECTED_UR_TYPES,
   SIGNING_EXPECTED_UR_TYPES,
-} from '../base-qr-reader';
-import { QrErrorType } from '../qr-error-content';
+} from '../base-qr-reader/base-qr-reader.types';
+import { QrErrorType } from '../qr-error-content/qr-error-content.types';
 import {
   classifyScanResult,
   isQrMismatchedTransactionError,

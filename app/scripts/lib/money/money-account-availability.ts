@@ -8,12 +8,12 @@ import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
+import { getMoneyAccountVaultConfig } from '@metamask/money-account-utils';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
   isMoneyAccountGeoEligible,
 } from '../../../../shared/lib/money/feature-flags';
-import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
 import {
@@ -51,8 +51,6 @@ export type MoneyAccountAvailabilityMessenger = Messenger<
   | MoneyAccountAvailabilityAllowedActions,
   MoneyAccountAvailabilityEvents
 >;
-
-export type { MoneyAccountAvailability };
 
 const UNAVAILABLE: MoneyAccountAvailability = { isAvailable: false };
 

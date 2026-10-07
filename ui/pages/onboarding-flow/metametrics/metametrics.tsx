@@ -23,11 +23,13 @@ import {
 } from '../../../store/actions';
 import {
   getDataCollectionForMarketing,
-  getFirstTimeFlowType,
-  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
+import {
+  getFirstTimeFlowType,
+  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
+} from '../../../selectors/first-time-flow';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
 import {

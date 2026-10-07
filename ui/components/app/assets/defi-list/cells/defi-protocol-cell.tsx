@@ -7,7 +7,7 @@ import {
 } from '@metamask/design-system-react';
 import GenericAssetCellLayout from '../../asset-list/cells/generic-asset-cell-layout';
 import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
-import { SensitiveText } from '../../../../component-library';
+import { SensitiveText } from '../../../../component-library/sensitive-text/sensitive-text';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
 import {

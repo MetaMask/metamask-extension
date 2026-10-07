@@ -6,7 +6,7 @@ import {
   isPermitSignatureRequest,
   isSignatureTransactionType,
   parseSanitizeTypedDataMessage,
-} from '../utils';
+} from '../utils/confirm';
 import { SignatureRequestType } from '../types/confirm';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';

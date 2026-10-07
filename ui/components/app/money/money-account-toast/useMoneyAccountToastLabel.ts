@@ -7,7 +7,7 @@ import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
 import type { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { getMoneyAccountFiatAmount } from '../../../../selectors/activity/enrich-local-activity';
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 import type { MoneyAccountDepositIntent } from '../../../../helpers/money/deposit-intent';
 import {
   isMoneyDepositTx,

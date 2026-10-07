@@ -1,7 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useConfirmContext } from '../../../../context/confirm';
-import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../../../shared/lib/eip7702-utils';
 
 export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();

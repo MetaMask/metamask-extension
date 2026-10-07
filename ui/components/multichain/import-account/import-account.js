@@ -9,8 +9,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, Label, Text } from '../../component-library';
-import Dropdown from '../../ui/dropdown';
+import { Box } from '../../component-library/box/box';
+import { Label } from '../../component-library/label/label';
+import { Text } from '../../component-library/text/text';
+import Dropdown from '../../ui/dropdown/dropdown';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BlockSize,
@@ -23,7 +25,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
 import { useDispatch } from '../../../store/hooks';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { getIsSocialLoginFlow } from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
 
 // Subviews
 import JsonImportView from './json';

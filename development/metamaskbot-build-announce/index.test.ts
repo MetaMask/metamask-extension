@@ -1,5 +1,7 @@
 jest.mock('./artifacts');
+jest.mock('./build-links');
 jest.mock('./bundle-size');
+jest.mock('../../shared/constants/benchmarks');
 jest.mock('./performance-benchmarks');
 jest.mock('./utils');
 jest.mock('./cherry-picks-section');
@@ -39,9 +41,54 @@ async function flushPromises(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getMocks(): Record<string, any> {
   return {
-    artifacts: jest.requireMock('./artifacts'),
+    artifacts: {
+      get buildArtifactsBody() {
+        return jest.requireMock('./artifacts').buildArtifactsBody;
+      },
+      get getArtifactLinks() {
+        return jest.requireMock('./artifacts').getArtifactLinks;
+      },
+      get getBuildLinks() {
+        return jest.requireMock('./build-links').getBuildLinks;
+      },
+    },
     bundleSize: jest.requireMock('./bundle-size'),
-    perf: jest.requireMock('./performance-benchmarks'),
+    perf: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+      get BENCHMARK_ANNOUNCE_SECTIONS() {
+        return jest.requireMock('../../shared/constants/benchmarks')
+          .BENCHMARK_ANNOUNCE_SECTIONS;
+      },
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Preserve the module export name.
+      get EntryHealth() {
+        return jest.requireMock('./performance-benchmarks').EntryHealth;
+      },
+      get buildBenchmarkSection() {
+        return jest.requireMock('./performance-benchmarks')
+          .buildBenchmarkSection;
+      },
+      get buildPerformanceBenchmarksSection() {
+        return jest.requireMock('./performance-benchmarks')
+          .buildPerformanceBenchmarksSection;
+      },
+      get computeEntryHealth() {
+        return jest.requireMock('./performance-benchmarks').computeEntryHealth;
+      },
+      get extractEntries() {
+        return jest.requireMock('./performance-benchmarks').extractEntries;
+      },
+      get fetchBenchmarkEntries() {
+        return jest.requireMock('./performance-benchmarks')
+          .fetchBenchmarkEntries;
+      },
+      get fetchBenchmarkJson() {
+        return jest.requireMock('./performance-benchmarks').fetchBenchmarkJson;
+      },
+      get getUserJourneyBenchmarkApiModeFromBranch() {
+        return jest.requireMock('./performance-benchmarks')
+          .getUserJourneyBenchmarkApiModeFromBranch;
+      },
+    },
     utils: jest.requireMock('./utils'),
     cherryPicks: jest.requireMock('./cherry-picks-section'),
   };

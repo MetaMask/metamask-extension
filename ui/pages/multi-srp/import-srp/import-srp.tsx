@@ -10,21 +10,21 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
-import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { Header, Page } from '../../../components/multichain/pages/page';
-import {
-  getIsSocialLoginFlow,
-  getMetaMaskHdKeyrings,
-} from '../../../selectors';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
+import { getIsSocialLoginFlow } from '../../../selectors/first-time-flow';
+import { getMetaMaskHdKeyrings } from '../../../selectors/selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
-import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
+import PasswordOutdatedModal from '../../../components/app/password-outdated-modal/password-outdated-modal';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog

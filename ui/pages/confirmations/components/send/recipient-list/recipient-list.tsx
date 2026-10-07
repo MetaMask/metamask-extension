@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 
-import { Recipient } from '../../UI/recipient';
+import { Recipient } from '../../UI/recipient/recipient';
 import {
   type Recipient as RecipientType,
   useRecipients,
 } from '../../../hooks/send/useRecipients';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,
@@ -13,7 +13,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useDeferredSearchQuery } from '../../../../../hooks/useDeferredSearchQuery';
 import { useSendRecipientFilter } from '../../../hooks/send/useSendRecipientFilter';
-import { RecipientFilterInput } from '../recipient-filter-input';
+import { RecipientFilterInput } from '../recipient-filter-input/recipient-filter-input';
 
 const AccountsList = ({
   recipients,

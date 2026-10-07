@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from '../../../components/component-library/icon/icon';
 import {
-  Icon,
   IconName,
   IconSize,
-} from '../../../components/component-library';
+} from '../../../components/component-library/icon/icon.types';
 
 const AssetBreadcrumb = ({ accountName, assetName, onBack }) => {
   return (

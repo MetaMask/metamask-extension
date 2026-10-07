@@ -13,7 +13,7 @@ import {
   createBridgeMockStore,
   DEFAULT_VALIDATION_ERRORS,
 } from '../../../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../../store/background-connection';
@@ -21,8 +21,8 @@ import configureStore from '../../../../store/store';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
-  HardwareWalletProvider,
-} from '../../../../contexts/hardware-wallets';
+} from '../../../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import PrepareBridgePage from '../prepare-bridge-page';
 
@@ -38,12 +38,17 @@ const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 
-jest.mock('../../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../../contexts/hardware-wallets'),
-  useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
-  useHardwareWalletActions: () => mockUseHardwareWalletActions(),
-  useHardwareWalletState: () => mockUseHardwareWalletState(),
-}));
+jest.mock(
+  '../../../../contexts/hardware-wallets/HardwareWalletContext',
+  () => ({
+    ...jest.requireActual(
+      '../../../../contexts/hardware-wallets/HardwareWalletContext',
+    ),
+    useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
+    useHardwareWalletActions: () => mockUseHardwareWalletActions(),
+    useHardwareWalletState: () => mockUseHardwareWalletState(),
+  }),
+);
 
 setBackgroundConnection({
   resetState: async () => jest.fn(),

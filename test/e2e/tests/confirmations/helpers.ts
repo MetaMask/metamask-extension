@@ -9,7 +9,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   MOCK_ANALYTICS_ID,
 } from '../../constants';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =

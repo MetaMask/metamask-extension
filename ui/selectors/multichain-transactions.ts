@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 import { Transaction } from '@metamask/keyring-api';
+import { MetaMaskReduxState } from '../store/types';
 import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from './multichain-accounts/account-tree';
 import { selectNonEvmChainIds } from './multichain/networks';
-import { MetaMaskReduxState } from '.';
 
 // Lightweight shape for nonEvmTransactions state map
 // accountId -> chainId -> TransactionStateEntry

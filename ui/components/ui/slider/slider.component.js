@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Slider as MaterialSlider } from '@mui/material';
+import MaterialSlider from '@mui/material/Slider';
 
 import {
   TextColor,
@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/text';
 
 const sliderSx = {
   height: 6,

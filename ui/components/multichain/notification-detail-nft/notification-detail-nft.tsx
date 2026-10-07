@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box } from '../../component-library';
-import { NftItem } from '../nft-item';
+import { Box } from '../../component-library/box/box';
+import { NftItem } from '../nft-item/nft-item';
 import {
   AlignItems,
   Display,

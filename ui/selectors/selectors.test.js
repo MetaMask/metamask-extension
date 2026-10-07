@@ -15,7 +15,8 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { KeyringType } from '../../shared/constants/keyring';
 import mockState from '../../test/data/mock-state.json';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
+import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
@@ -25,9 +26,11 @@ import {
   FeatureFlagNames,
 } from '../../shared/lib/feature-flags';
 
-import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import * as keyringSelectors from '../../shared/lib/selectors/keyring';
-import * as selectors from './selectors';
+
+import * as selectorsModule7 from '../../shared/lib/selectors/multichain';
+import * as selectorsModule5 from './selectors';
 
 jest.mock('../../shared/lib/selectors/networks', () => ({
   ...jest.requireActual('../../shared/lib/selectors/networks'),
@@ -98,7 +101,7 @@ describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
       expect(
-        selectors.getSelectedAddress({
+        selectorsModule5.getSelectedAddress({
           metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
         }),
       ).toBeUndefined();
@@ -114,7 +117,7 @@ describe('Selectors', () => {
       };
 
       expect(
-        selectors.getSelectedAddress({ metamask: { internalAccounts } }),
+        selectorsModule5.getSelectedAddress({ metamask: { internalAccounts } }),
       ).toStrictEqual(mockInternalAccount.address);
     });
   });
@@ -122,13 +125,16 @@ describe('Selectors', () => {
   describe('#checkIfMethodIsEnabled', () => {
     it('returns true if the method is enabled', () => {
       expect(
-        selectors.checkIfMethodIsEnabled(mockState, EthMethod.SignTransaction),
+        selectorsModule5.checkIfMethodIsEnabled(
+          mockState,
+          EthMethod.SignTransaction,
+        ),
       ).toBe(true);
     });
 
     it('returns false if the method is not enabled', () => {
       expect(
-        selectors.checkIfMethodIsEnabled(
+        selectorsModule5.checkIfMethodIsEnabled(
           {
             metamask: {
               internalAccounts: {
@@ -157,13 +163,13 @@ describe('Selectors', () => {
   describe('#getInternalAccount', () => {
     it("returns undefined if the account doesn't exist", () => {
       expect(
-        selectors.getInternalAccount(mockState, 'unknown'),
+        selectorsModule5.getInternalAccount(mockState, 'unknown'),
       ).toBeUndefined();
     });
 
     it('returns the account', () => {
       expect(
-        selectors.getInternalAccount(
+        selectorsModule5.getInternalAccount(
           mockState,
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         ),
@@ -178,7 +184,7 @@ describe('Selectors', () => {
   describe('#getNumberOfAllUnapprovedTransactionsAndMessages', () => {
     it('returns no unapproved transactions and messages', () => {
       expect(
-        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+        selectorsModule5.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [],
           },
@@ -188,7 +194,7 @@ describe('Selectors', () => {
 
     it('returns correct number of unapproved transactions', () => {
       expect(
-        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+        selectorsModule5.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             transactions: [
               {
@@ -232,7 +238,7 @@ describe('Selectors', () => {
 
     it('returns correct number of unapproved transactions and messages', () => {
       expect(
-        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+        selectorsModule5.getNumberOfAllUnapprovedTransactionsAndMessages({
           metamask: {
             networkConfigurationsByChainId: {
               [CHAIN_IDS.MAINNET]: {
@@ -309,69 +315,73 @@ describe('Selectors', () => {
 
     it('should return the network to switch to', () => {
       const networkToSwitchTo =
-        selectors.getNetworkToAutomaticallySwitchTo(state);
+        selectorsModule5.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
     });
 
     it('should return no network to switch to because we are already on it', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          selectedNetworkClientId: 'linea-sepolia',
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.LINEA_SEPOLIA]: {
-              chainId: CHAIN_IDS.LINEA_SEPOLIA,
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'linea-sepolia',
-                  type: 'custom',
-                },
-              ],
+      const networkToSwitchTo =
+        selectorsModule5.getNetworkToAutomaticallySwitchTo({
+          ...state,
+          metamask: {
+            ...state.metamask,
+            selectedNetworkClientId: 'linea-sepolia',
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.LINEA_SEPOLIA]: {
+                chainId: CHAIN_IDS.LINEA_SEPOLIA,
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'https://testrpc.com',
+                    networkClientId: 'linea-sepolia',
+                    type: 'custom',
+                  },
+                ],
+              },
             },
           },
-        },
-      });
+        });
       expect(networkToSwitchTo).toBe(null);
     });
 
     it('should return no network to switch to because there are pending transactions', () => {
-      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
-        ...state,
-        metamask: {
-          ...state.metamask,
-          selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
-          networkConfigurationsByChainId: {
-            [CHAIN_IDS.LINEA_SEPOLIA]: {
-              chainId: CHAIN_IDS.LINEA_SEPOLIA,
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  url: 'https://testrpc.com',
-                  networkClientId: 'linea-sepolia',
-                  type: 'custom',
-                },
-              ],
+      const networkToSwitchTo =
+        selectorsModule5.getNetworkToAutomaticallySwitchTo({
+          ...state,
+          metamask: {
+            ...state.metamask,
+            selectedNetworkClientId: NETWORK_TYPES.LINEA_SEPOLIA,
+            networkConfigurationsByChainId: {
+              [CHAIN_IDS.LINEA_SEPOLIA]: {
+                chainId: CHAIN_IDS.LINEA_SEPOLIA,
+                defaultRpcEndpointIndex: 0,
+                rpcEndpoints: [
+                  {
+                    url: 'https://testrpc.com',
+                    networkClientId: 'linea-sepolia',
+                    type: 'custom',
+                  },
+                ],
+              },
             },
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                status: TransactionStatus.approved,
+              },
+            ],
           },
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.approved,
-            },
-          ],
-        },
-      });
+        });
       expect(networkToSwitchTo).toBe(null);
     });
   });
 
   describe('#getSuggestedTokens', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
-      expect(selectors.getSuggestedTokens({ metamask: {} })).toStrictEqual([]);
+      expect(
+        selectorsModule5.getSuggestedTokens({ metamask: {} }),
+      ).toStrictEqual([]);
     });
 
     it('returns suggestedTokens from filtered pending approvals', () => {
@@ -430,7 +440,7 @@ describe('Selectors', () => {
       };
 
       expect(
-        selectors.getSuggestedTokens({ metamask: { pendingApprovals } }),
+        selectorsModule5.getSuggestedTokens({ metamask: { pendingApprovals } }),
       ).toStrictEqual([
         {
           id: '1',
@@ -467,7 +477,9 @@ describe('Selectors', () => {
 
   describe('#getSuggestedNfts', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
-      expect(selectors.getSuggestedNfts({ metamask: {} })).toStrictEqual([]);
+      expect(selectorsModule5.getSuggestedNfts({ metamask: {} })).toStrictEqual(
+        [],
+      );
     });
 
     it('returns suggestedNfts from filtered pending approvals', () => {
@@ -527,7 +539,7 @@ describe('Selectors', () => {
       };
 
       expect(
-        selectors.getSuggestedNfts({ metamask: { pendingApprovals } }),
+        selectorsModule5.getSuggestedNfts({ metamask: { pendingApprovals } }),
       ).toStrictEqual([
         {
           id: '4',
@@ -549,12 +561,14 @@ describe('Selectors', () => {
 
   describe('#getNewNetworkAdded', () => {
     it('returns undefined if newNetworkAddedName is undefined', () => {
-      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+      expect(
+        selectorsModule5.getNewNetworkAdded({ appState: {} }),
+      ).toBeUndefined();
     });
 
     it('returns newNetworkAddedName', () => {
       expect(
-        selectors.getNewNetworkAdded({
+        selectorsModule5.getNewNetworkAdded({
           appState: { newNetworkAddedName: 'test-chain' },
         }),
       ).toStrictEqual('test-chain');
@@ -563,12 +577,14 @@ describe('Selectors', () => {
 
   describe('#getEditedNetwork', () => {
     it('returns undefined if getEditedNetwork is undefined', () => {
-      expect(selectors.getNewNetworkAdded({ appState: {} })).toBeUndefined();
+      expect(
+        selectorsModule5.getNewNetworkAdded({ appState: {} }),
+      ).toBeUndefined();
     });
 
     it('returns getEditedNetwork', () => {
       expect(
-        selectors.getEditedNetwork({
+        selectorsModule5.getEditedNetwork({
           appState: { editedNetwork: 'test-chain' },
         }),
       ).toStrictEqual('test-chain');
@@ -579,7 +595,7 @@ describe('Selectors', () => {
   describe('#getRpcPrefsForCurrentProvider', () => {
     it('returns rpcPrefs from the providerConfig', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({
+        selectorsModule5.getRpcPrefsForCurrentProvider({
           metamask: {
             ...mockNetworkState({
               chainId: '0x1',
@@ -594,7 +610,7 @@ describe('Selectors', () => {
   describe('#getNetworksTabSelectedNetworkConfigurationId', () => {
     it('returns undefined if selectedNetworkConfigurationId is undefined', () => {
       expect(
-        selectors.getNetworksTabSelectedNetworkConfigurationId({
+        selectorsModule5.getNetworksTabSelectedNetworkConfigurationId({
           appState: {},
         }),
       ).toBeUndefined();
@@ -602,7 +618,7 @@ describe('Selectors', () => {
 
     it('returns selectedNetworkConfigurationId', () => {
       expect(
-        selectors.getNetworksTabSelectedNetworkConfigurationId({
+        selectorsModule5.getNetworksTabSelectedNetworkConfigurationId({
           appState: {
             selectedNetworkConfigurationId: 'testNetworkConfigurationId',
           },
@@ -622,7 +638,8 @@ describe('Selectors', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA, id: 'sepolia' }),
         },
       };
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      const currentNetwork =
+        selectorsModule5.getCurrentNetwork(modifiedMockState);
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
@@ -656,7 +673,8 @@ describe('Selectors', () => {
         },
       };
 
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      const currentNetwork =
+        selectorsModule5.getCurrentNetwork(modifiedMockState);
 
       expect(currentNetwork).toMatchInlineSnapshot(`
         {
@@ -698,7 +716,8 @@ describe('Selectors', () => {
         },
       };
 
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      const currentNetwork =
+        selectorsModule5.getCurrentNetwork(modifiedMockState);
       expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
       expect(currentNetwork.chainId).toBe('0x1');
     });
@@ -711,7 +730,8 @@ describe('Selectors', () => {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         },
       };
-      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      const currentNetwork =
+        selectorsModule5.getCurrentNetwork(modifiedMockState);
       expect(currentNetwork.nickname).toBe('Ethereum');
     });
   });
@@ -741,7 +761,7 @@ describe('Selectors', () => {
     };
 
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
-      const networks = selectors.getAllEnabledNetworks({
+      const networks = selectorsModule5.getAllEnabledNetworks({
         metamask: {
           preferences: { showTestNetworks: false },
           networkConfigurationsByChainId,
@@ -751,7 +771,7 @@ describe('Selectors', () => {
     });
 
     it('returns networks with showTestNetworks on', () => {
-      const networks = selectors.getAllEnabledNetworks({
+      const networks = selectorsModule5.getAllEnabledNetworks({
         metamask: {
           preferences: {
             showTestNetworks: true,
@@ -797,7 +817,7 @@ describe('Selectors', () => {
     });
 
     it('returns only non-test chain IDs', () => {
-      const chainIds = selectors.getChainIdsToPoll({
+      const chainIds = selectorsModule5.getChainIdsToPoll({
         metamask: {
           enabledNetworkMap: {
             eip155: {
@@ -854,7 +874,7 @@ describe('Selectors', () => {
     });
 
     it('returns only non-test chain IDs', () => {
-      const chainIds = selectors.getNetworkClientIdsToPoll({
+      const chainIds = selectorsModule5.getNetworkClientIdsToPoll({
         metamask: {
           enabledNetworkMap: {
             eip155: {
@@ -964,7 +984,7 @@ describe('Selectors', () => {
   });
 
   it('returns selected account', () => {
-    const account = selectors.getSelectedAccount(mockState);
+    const account = selectorsModule5.getSelectedAccount(mockState);
     expect(account.balance).toStrictEqual('0x346ba7725f412cbfdb');
     expect(account.address).toStrictEqual(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -973,7 +993,8 @@ describe('Selectors', () => {
 
   describe('#getTokenExchangeRates', () => {
     it('returns token exchange rates', () => {
-      const tokenExchangeRates = selectors.getTokenExchangeRates(mockState);
+      const tokenExchangeRates =
+        selectorsModule5.getTokenExchangeRates(mockState);
       expect(tokenExchangeRates).toStrictEqual({
         '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.00039345803819379796,
         '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': 0.00008189274407698049,
@@ -985,47 +1006,49 @@ describe('Selectors', () => {
 
   describe('#checkNetworkOrAccountNotSupports1559', () => {
     it('returns false if network and account supports EIP-1559', () => {
-      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.GOERLI,
-            metadata: { EIPS: { 1559: true } },
-          }),
-          keyrings: [
-            {
-              type: KeyringType.ledger,
-              accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-              metadata: {
-                name: 'Ledger',
-                id: 'ledger',
+      const not1559Network =
+        selectorsModule5.checkNetworkOrAccountNotSupports1559({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.GOERLI,
+              metadata: { EIPS: { 1559: true } },
+            }),
+            keyrings: [
+              {
+                type: KeyringType.ledger,
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  name: 'Ledger',
+                  id: 'ledger',
+                },
               },
-            },
-          ],
-        },
-      });
+            ],
+          },
+        });
       expect(not1559Network).toStrictEqual(false);
     });
 
     it('returns true if network does not support EIP-1559', () => {
-      const not1559Network = selectors.checkNetworkOrAccountNotSupports1559({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          ...mockNetworkState({
-            chainId: CHAIN_IDS.GOERLI,
-            metadata: { EIPS: { 1559: false } },
-          }),
-        },
-      });
+      const not1559Network =
+        selectorsModule5.checkNetworkOrAccountNotSupports1559({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.GOERLI,
+              metadata: { EIPS: { 1559: false } },
+            }),
+          },
+        });
       expect(not1559Network).toStrictEqual(true);
     });
   });
 
   describe('#getAddressBook', () => {
     it('should return the address book', () => {
-      expect(selectors.getAddressBook(mockState)).toStrictEqual([
+      expect(selectorsModule5.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
           chainId: '0x5',
@@ -1039,7 +1062,7 @@ describe('Selectors', () => {
 
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
-      selectors.accountsWithSendEtherInfoSelector(mockState);
+      selectorsModule5.accountsWithSendEtherInfoSelector(mockState);
     expect(accountsWithSendEther).toHaveLength(6);
     expect(accountsWithSendEther[0].balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
@@ -1054,7 +1077,7 @@ describe('Selectors', () => {
 
   it('returns selected account with balance, address, and name from accountsWithSendEtherInfoSelector', () => {
     const currentAccountwithSendEther =
-      selectors.getCurrentAccountWithSendEtherInfo(mockState);
+      selectorsModule5.getCurrentAccountWithSendEtherInfo(mockState);
     expect(currentAccountwithSendEther.balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
     );
@@ -1067,7 +1090,8 @@ describe('Selectors', () => {
   });
 
   it('#getTotalUnapprovedCount', () => {
-    const totalUnapprovedCount = selectors.getTotalUnapprovedCount(mockState);
+    const totalUnapprovedCount =
+      selectorsModule5.getTotalUnapprovedCount(mockState);
     expect(totalUnapprovedCount).toStrictEqual(1);
   });
 
@@ -1114,28 +1138,36 @@ describe('Selectors', () => {
     };
 
     beforeEach(() => {
-      selectors.getUnapprovedTransaction.clearCache();
-      selectors.getUnapprovedTransaction.resetRecomputations();
-      selectors.getTransaction.clearCache();
-      selectors.getTransaction.resetRecomputations();
-      selectors.getFullTxData.clearCache();
-      selectors.getFullTxData.resetRecomputations();
+      selectorsModule5.getUnapprovedTransaction.clearCache();
+      selectorsModule5.getUnapprovedTransaction.resetRecomputations();
+      selectorsModule5.getTransaction.clearCache();
+      selectorsModule5.getTransaction.resetRecomputations();
+      selectorsModule5.getFullTxData.clearCache();
+      selectorsModule5.getFullTxData.resetRecomputations();
     });
 
     it('caches unapproved transaction lookups per transaction ID', () => {
-      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
-      expect(selectors.getUnapprovedTransaction(state, 'tx-4').id).toBe('tx-4');
-      expect(selectors.getUnapprovedTransaction(state, 'tx-3').id).toBe('tx-3');
+      expect(selectorsModule5.getUnapprovedTransaction(state, 'tx-3').id).toBe(
+        'tx-3',
+      );
+      expect(selectorsModule5.getUnapprovedTransaction(state, 'tx-4').id).toBe(
+        'tx-4',
+      );
+      expect(selectorsModule5.getUnapprovedTransaction(state, 'tx-3').id).toBe(
+        'tx-3',
+      );
 
-      expect(selectors.getUnapprovedTransaction.recomputations()).toBe(2);
+      expect(selectorsModule5.getUnapprovedTransaction.recomputations()).toBe(
+        2,
+      );
     });
 
     it('caches current-network transaction lookups per transaction ID', () => {
-      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
-      expect(selectors.getTransaction(state, 'tx-2').id).toBe('tx-2');
-      expect(selectors.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectorsModule5.getTransaction(state, 'tx-1').id).toBe('tx-1');
+      expect(selectorsModule5.getTransaction(state, 'tx-2').id).toBe('tx-2');
+      expect(selectorsModule5.getTransaction(state, 'tx-1').id).toBe('tx-1');
 
-      expect(selectors.getTransaction.recomputations()).toBe(2);
+      expect(selectorsModule5.getTransaction.recomputations()).toBe(2);
     });
 
     it('returns updated transaction when transaction object is replaced in state', () => {
@@ -1161,9 +1193,9 @@ describe('Selectors', () => {
         },
       };
 
-      expect(selectors.getTransaction(mutableState, 'tx-1').txParams.to).toBe(
-        '0x1',
-      );
+      expect(
+        selectorsModule5.getTransaction(mutableState, 'tx-1').txParams.to,
+      ).toBe('0x1');
 
       const updatedState = {
         ...mutableState,
@@ -1178,9 +1210,9 @@ describe('Selectors', () => {
         },
       };
 
-      expect(selectors.getTransaction(updatedState, 'tx-1').txParams.to).toBe(
-        '0xupdated',
-      );
+      expect(
+        selectorsModule5.getTransaction(updatedState, 'tx-1').txParams.to,
+      ).toBe('0xupdated');
     });
 
     it('recomputes unapproved transaction when txParams mutate in place', () => {
@@ -1200,21 +1232,21 @@ describe('Selectors', () => {
       };
 
       expect(
-        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+        selectorsModule5.getUnapprovedTransaction(mutableState, 'tx-3').txParams
           .maxFeePerGas,
       ).toBe('0x1');
 
       mutableState.metamask.transactions[0].txParams.maxFeePerGas = '0x999';
 
       expect(
-        selectors.getUnapprovedTransaction(mutableState, 'tx-3').txParams
+        selectorsModule5.getUnapprovedTransaction(mutableState, 'tx-3').txParams
           .maxFeePerGas,
       ).toBe('0x999');
     });
 
     it('caches full transaction data per transaction ID', () => {
       expect(
-        selectors.getFullTxData(
+        selectorsModule5.getFullTxData(
           state,
           'tx-1',
           TransactionStatus.submitted,
@@ -1227,7 +1259,7 @@ describe('Selectors', () => {
         value: '0x10',
       });
       expect(
-        selectors.getFullTxData(
+        selectorsModule5.getFullTxData(
           state,
           'tx-2',
           TransactionStatus.submitted,
@@ -1240,7 +1272,7 @@ describe('Selectors', () => {
         value: '0x10',
       });
       expect(
-        selectors.getFullTxData(
+        selectorsModule5.getFullTxData(
           state,
           'tx-1',
           TransactionStatus.submitted,
@@ -1253,7 +1285,7 @@ describe('Selectors', () => {
         value: '0x10',
       });
 
-      expect(selectors.getFullTxData.recomputations()).toBe(2);
+      expect(selectorsModule5.getFullTxData.recomputations()).toBe(2);
     });
 
     it('recomputes full transaction data when nested transaction fields mutate in place', () => {
@@ -1282,7 +1314,7 @@ describe('Selectors', () => {
       };
 
       expect(
-        selectors.getFullTxData(
+        selectorsModule5.getFullTxData(
           mutableState,
           'tx-1',
           TransactionStatus.submitted,
@@ -1294,7 +1326,7 @@ describe('Selectors', () => {
       mutableState.metamask.transactions[0].simulationFails.reason = 'updated';
 
       expect(
-        selectors.getFullTxData(
+        selectorsModule5.getFullTxData(
           mutableState,
           'tx-1',
           TransactionStatus.submitted,
@@ -1303,7 +1335,7 @@ describe('Selectors', () => {
         ).simulationFails,
       ).toStrictEqual({ reason: 'updated' });
 
-      expect(selectors.getFullTxData.recomputations()).toBe(2);
+      expect(selectorsModule5.getFullTxData.recomputations()).toBe(2);
     });
   });
 
@@ -1346,38 +1378,38 @@ describe('Selectors', () => {
     };
 
     beforeEach(() => {
-      selectors.selectNftsByChainId.clearCache();
-      selectors.selectNftsByChainId.resetRecomputations();
-      selectors.getTokenScanResultsForAddresses.clearCache();
-      selectors.getTokenScanResultsForAddresses.resetRecomputations();
+      selectorsModule5.selectNftsByChainId.clearCache();
+      selectorsModule5.selectNftsByChainId.resetRecomputations();
+      selectorsModule5.getTokenScanResultsForAddresses.clearCache();
+      selectorsModule5.getTokenScanResultsForAddresses.resetRecomputations();
     });
 
     it('caches NFT lookups per chain ID', () => {
-      expect(selectors.selectNftsByChainId.recomputations()).toBe(0);
+      expect(selectorsModule5.selectNftsByChainId.recomputations()).toBe(0);
 
-      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
-        { address: '0xnft-1' },
-      ]);
-      expect(selectors.selectNftsByChainId(state, chainIdTwo)).toStrictEqual([
-        { address: '0xnft-2' },
-      ]);
-      expect(selectors.selectNftsByChainId(state, chainIdOne)).toStrictEqual([
-        { address: '0xnft-1' },
-      ]);
+      expect(
+        selectorsModule5.selectNftsByChainId(state, chainIdOne),
+      ).toStrictEqual([{ address: '0xnft-1' }]);
+      expect(
+        selectorsModule5.selectNftsByChainId(state, chainIdTwo),
+      ).toStrictEqual([{ address: '0xnft-2' }]);
+      expect(
+        selectorsModule5.selectNftsByChainId(state, chainIdOne),
+      ).toStrictEqual([{ address: '0xnft-1' }]);
 
-      expect(selectors.selectNftsByChainId.recomputations()).toBe(2);
+      expect(selectorsModule5.selectNftsByChainId.recomputations()).toBe(2);
     });
 
     it('caches token scan lookups across equivalent address arrays', () => {
       const addressesForChainOne = [tokenAddressOne, tokenAddressTwo];
       const equivalentAddressesForChainOne = [tokenAddressOne, tokenAddressTwo];
 
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
-        0,
-      );
+      expect(
+        selectorsModule5.getTokenScanResultsForAddresses.recomputations(),
+      ).toBe(0);
 
       expect(
-        selectors.getTokenScanResultsForAddresses(
+        selectorsModule5.getTokenScanResultsForAddresses(
           state,
           chainIdOne,
           addressesForChainOne,
@@ -1391,7 +1423,7 @@ describe('Selectors', () => {
         },
       });
       expect(
-        selectors.getTokenScanResultsForAddresses(
+        selectorsModule5.getTokenScanResultsForAddresses(
           state,
           chainIdOne,
           equivalentAddressesForChainOne,
@@ -1405,7 +1437,7 @@ describe('Selectors', () => {
         },
       });
       expect(
-        selectors.getTokenScanResultsForAddresses(state, chainIdTwo, [
+        selectorsModule5.getTokenScanResultsForAddresses(state, chainIdTwo, [
           tokenAddressOne,
           tokenAddressTwo,
         ]),
@@ -1415,7 +1447,7 @@ describe('Selectors', () => {
         },
       });
       expect(
-        selectors.getTokenScanResultsForAddresses(state, chainIdOne, [
+        selectorsModule5.getTokenScanResultsForAddresses(state, chainIdOne, [
           tokenAddressOne,
           tokenAddressTwo,
         ]),
@@ -1428,19 +1460,19 @@ describe('Selectors', () => {
         },
       });
 
-      expect(selectors.getTokenScanResultsForAddresses.recomputations()).toBe(
-        2,
-      );
+      expect(
+        selectorsModule5.getTokenScanResultsForAddresses.recomputations(),
+      ).toBe(2);
     });
   });
 
   it('#getUseTokenDetection', () => {
-    const useTokenDetection = selectors.getUseTokenDetection(mockState);
+    const useTokenDetection = selectorsModule5.getUseTokenDetection(mockState);
     expect(useTokenDetection).toStrictEqual(true);
   });
 
   it('#getTokenList', () => {
-    const tokenList = selectors.getTokenList(mockState);
+    const tokenList = selectorsModule5.getTokenList(mockState);
     expect(tokenList).toStrictEqual({
       '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': {
         address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -1490,7 +1522,7 @@ describe('Selectors', () => {
     });
   });
   it('#getAdvancedGasFeeValues', () => {
-    const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
+    const advancedGasFee = selectorsModule5.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
       userFeeLevel: 'custom',
       maxBaseFee: '75',
@@ -1498,19 +1530,20 @@ describe('Selectors', () => {
     });
   });
   it('#getAppIsLoading', () => {
-    const appIsLoading = selectors.getAppIsLoading(mockState);
+    const appIsLoading = selectorsModule5.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
   });
 
   it('#getUseCurrencyRateCheck', () => {
-    const useCurrencyRateCheck = selectors.getUseCurrencyRateCheck(mockState);
+    const useCurrencyRateCheck =
+      selectorsModule5.getUseCurrencyRateCheck(mockState);
     expect(useCurrencyRateCheck).toStrictEqual(true);
   });
 
   describe('#getNames', () => {
     it('returns a stable empty object when names are unavailable', () => {
-      const result1 = selectors.getNames({ metamask: {} });
-      const result2 = selectors.getNames({ metamask: {} });
+      const result1 = selectorsModule5.getNames({ metamask: {} });
+      const result2 = selectorsModule5.getNames({ metamask: {} });
 
       expect(result1).toStrictEqual({});
       expect(Object.isFrozen(result1)).toBe(true);
@@ -1533,8 +1566,8 @@ describe('Selectors', () => {
         },
       };
 
-      const result1 = selectors.getNames(state);
-      const result2 = selectors.getNames({
+      const result1 = selectorsModule5.getNames(state);
+      const result2 = selectorsModule5.getNames({
         metamask: {
           ...state.metamask,
         },
@@ -1547,8 +1580,8 @@ describe('Selectors', () => {
 
   describe('#getNameSources', () => {
     it('returns a stable empty object when name sources are unavailable', () => {
-      const result1 = selectors.getNameSources({ metamask: {} });
-      const result2 = selectors.getNameSources({ metamask: {} });
+      const result1 = selectorsModule5.getNameSources({ metamask: {} });
+      const result2 = selectorsModule5.getNameSources({ metamask: {} });
 
       expect(result1).toStrictEqual({});
       expect(Object.isFrozen(result1)).toBe(true);
@@ -1565,8 +1598,8 @@ describe('Selectors', () => {
         },
       };
 
-      const result1 = selectors.getNameSources(state);
-      const result2 = selectors.getNameSources({
+      const result1 = selectorsModule5.getNameSources(state);
+      const result2 = selectorsModule5.getNameSources({
         metamask: {
           ...state.metamask,
         },
@@ -1583,7 +1616,7 @@ describe('Selectors', () => {
     timestamp.setDate(timestamp.getDate() - 1);
     mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
     const showOutdatedBrowserWarning =
-      selectors.getShowOutdatedBrowserWarning(mockState);
+      selectorsModule5.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(false);
   });
 
@@ -1593,12 +1626,12 @@ describe('Selectors', () => {
     timestamp.setDate(timestamp.getDate() - 3);
     mockState.metamask.outdatedBrowserWarningLastShown = timestamp.getTime();
     const showOutdatedBrowserWarning =
-      selectors.getShowOutdatedBrowserWarning(mockState);
+      selectorsModule5.getShowOutdatedBrowserWarning(mockState);
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
   it('#getIsBridgeChain', () => {
-    const isOptimismSupported = selectors.getIsBridgeChain({
+    const isOptimismSupported = selectorsModule5.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
         internalAccounts: {
@@ -1609,7 +1642,7 @@ describe('Selectors', () => {
     });
     expect(isOptimismSupported).toBeTruthy();
 
-    const isFantomSupported = selectors.getIsBridgeChain({
+    const isFantomSupported = selectorsModule5.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
         internalAccounts: {
@@ -1620,7 +1653,7 @@ describe('Selectors', () => {
     });
     expect(isFantomSupported).toBeFalsy();
 
-    const isSolanaSupported = selectors.getIsBridgeChain({
+    const isSolanaSupported = selectorsModule5.getIsBridgeChain({
       metamask: {
         ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
         internalAccounts: {
@@ -1637,21 +1670,31 @@ describe('Selectors', () => {
 
   it('returns proper values for snaps privacy warning shown status', () => {
     mockState.metamask.snapsInstallPrivacyWarningShown = false;
-    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+    expect(selectorsModule5.getSnapsInstallPrivacyWarningShown(mockState)).toBe(
+      false,
+    );
 
     mockState.metamask.snapsInstallPrivacyWarningShown = true;
-    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(true);
+    expect(selectorsModule5.getSnapsInstallPrivacyWarningShown(mockState)).toBe(
+      true,
+    );
 
     mockState.metamask.snapsInstallPrivacyWarningShown = undefined;
-    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+    expect(selectorsModule5.getSnapsInstallPrivacyWarningShown(mockState)).toBe(
+      false,
+    );
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
-    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+    expect(selectorsModule5.getSnapsInstallPrivacyWarningShown(mockState)).toBe(
+      false,
+    );
   });
 
   it('#getSnapRegistryData', () => {
     const mockSnapId = 'npm:@metamask/test-snap-bip44';
-    expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
+    expect(
+      selectorsModule5.getSnapRegistryData(mockState, mockSnapId),
+    ).toStrictEqual(
       expect.objectContaining({
         id: mockSnapId,
         versions: {
@@ -1675,13 +1718,13 @@ describe('Selectors', () => {
 
   it('#getSnapLatestVersion', () => {
     const mockSnapId = 'npm:@metamask/test-snap-bip44';
-    expect(selectors.getSnapLatestVersion(mockState, mockSnapId)).toStrictEqual(
-      '6.0.0',
-    );
+    expect(
+      selectorsModule5.getSnapLatestVersion(mockState, mockSnapId),
+    ).toStrictEqual('6.0.0');
   });
 
   it('#getAllSnapAvailableUpdates', () => {
-    const snapMap = selectors.getAllSnapAvailableUpdates(mockState);
+    const snapMap = selectorsModule5.getAllSnapAvailableUpdates(mockState);
     expect(Object.fromEntries(snapMap)).toStrictEqual({
       'npm:@metamask/test-snap-bip32': false,
       'npm:@metamask/test-snap-bip44': true,
@@ -1695,11 +1738,13 @@ describe('Selectors', () => {
   });
 
   it('#getAnySnapUpdateAvailable', () => {
-    expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
+    expect(selectorsModule5.getAnySnapUpdateAvailable(mockState)).toStrictEqual(
+      true,
+    );
   });
 
   it('#getTargetSubjectMetadata', () => {
-    const targetSubjectsMetadata = selectors.getTargetSubjectMetadata(
+    const targetSubjectsMetadata = selectorsModule5.getTargetSubjectMetadata(
       mockState,
       'npm:@metamask/test-snap-bip44',
     );
@@ -1712,13 +1757,11 @@ describe('Selectors', () => {
   });
 
   it('#getMultipleTargetsSubjectMetadata', () => {
-    const targetSubjectsMetadata = selectors.getMultipleTargetsSubjectMetadata(
-      mockState,
-      {
+    const targetSubjectsMetadata =
+      selectorsModule5.getMultipleTargetsSubjectMetadata(mockState, {
         'npm:@metamask/test-snap-bip44': {},
         'https://snaps.metamask.io': {},
-      },
-    );
+      });
     expect(targetSubjectsMetadata).toStrictEqual({
       'https://snaps.metamask.io': {
         extensionId: null,
@@ -2003,7 +2046,7 @@ describe('Selectors', () => {
       },
     ];
     expect(
-      selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
+      selectorsModule5.getUpdatedAndSortedAccounts(pinnedAccountState),
     ).toStrictEqual(expectedResult);
   });
 });
@@ -2037,7 +2080,7 @@ describe('#getKeyringSnapAccounts', () => {
       },
     };
 
-    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([]);
+    expect(selectorsModule5.getKeyringSnapAccounts(state)).toStrictEqual([]);
   });
 
   it('returns an array of keyring snap accounts', () => {
@@ -2077,7 +2120,7 @@ describe('#getKeyringSnapAccounts', () => {
       },
     };
 
-    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([
+    expect(selectorsModule5.getKeyringSnapAccounts(state)).toStrictEqual([
       {
         address: '0x987654321',
         metadata: {
@@ -2151,11 +2194,12 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
       },
     };
 
-    const result = selectors.getConnectedSitesListWithNetworkInfo.resultFunc(
-      sitesList,
-      domains,
-      networks,
-    );
+    const result =
+      selectorsModule5.getConnectedSitesListWithNetworkInfo.resultFunc(
+        sitesList,
+        domains,
+        networks,
+      );
 
     expect(result).toStrictEqual(expectedSitesList);
   });
@@ -2166,7 +2210,7 @@ describe('#getConnectedSitesList', () => {
     const internalAccounts = [];
     const connectedAddresses = [];
 
-    const result = selectors.getConnectedSitesList.resultFunc(
+    const result = selectorsModule5.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
       internalAccounts,
       connectedAddresses,
@@ -2200,7 +2244,7 @@ describe('#getConnectedSitesList', () => {
 
     const connectedAddresses = ['0x123', '0x456'];
 
-    const result = selectors.getConnectedSitesList.resultFunc(
+    const result = selectorsModule5.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
       internalAccounts,
       connectedAddresses,
@@ -2237,7 +2281,7 @@ describe('#getConnectedSitesList', () => {
   describe('#getShowDeleteMetaMetricsDataModal', () => {
     it('returns state of showDeleteMetaMetricsDataModal', () => {
       expect(
-        selectors.getShowDeleteMetaMetricsDataModal({
+        selectorsModule5.getShowDeleteMetaMetricsDataModal({
           appState: {
             showDeleteMetaMetricsDataModal: true,
           },
@@ -2248,7 +2292,7 @@ describe('#getConnectedSitesList', () => {
   describe('#getShowDataDeletionErrorModal', () => {
     it('returns state of showDataDeletionErrorModal', () => {
       expect(
-        selectors.getShowDataDeletionErrorModal({
+        selectorsModule5.getShowDataDeletionErrorModal({
           appState: {
             showDataDeletionErrorModal: true,
           },
@@ -2259,7 +2303,7 @@ describe('#getConnectedSitesList', () => {
   describe('#getMetaMetricsDataDeletionId', () => {
     it('returns metaMetricsDataDeletionId', () => {
       expect(
-        selectors.getMetaMetricsDataDeletionId({
+        selectorsModule5.getMetaMetricsDataDeletionId({
           metamask: {
             metaMetricsDataDeletionId: '123',
             metaMetricsDataDeletionTimestamp: '123345',
@@ -2272,7 +2316,7 @@ describe('#getConnectedSitesList', () => {
   describe('#getMetaMetricsDataDeletionTimestamp', () => {
     it('returns metaMetricsDataDeletionTimestamp', () => {
       expect(
-        selectors.getMetaMetricsDataDeletionTimestamp({
+        selectorsModule5.getMetaMetricsDataDeletionTimestamp({
           metamask: {
             metaMetricsDataDeletionId: '123',
             metaMetricsDataDeletionTimestamp: '123345',
@@ -2285,7 +2329,7 @@ describe('#getConnectedSitesList', () => {
   describe('#getMetaMetricsDataDeletionStatus', () => {
     it('returns metaMetricsDataDeletionStatus', () => {
       expect(
-        selectors.getMetaMetricsDataDeletionStatus({
+        selectorsModule5.getMetaMetricsDataDeletionStatus({
           metamask: {
             metaMetricsDataDeletionId: '123',
             metaMetricsDataDeletionTimestamp: '123345',
@@ -2326,7 +2370,7 @@ describe('#getConnectedSitesList', () => {
 
     it('returns all EVM accounts when only EVM accounts are present', () => {
       const state = mockAccountsState(evmAccounts);
-      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+      expect(selectorsModule5.getEvmInternalAccounts(state)).toStrictEqual(
         evmAccounts,
       );
     });
@@ -2337,14 +2381,14 @@ describe('#getConnectedSitesList', () => {
         nonEvmAccount1,
         nonEvmAccount2,
       ]);
-      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual(
+      expect(selectorsModule5.getEvmInternalAccounts(state)).toStrictEqual(
         evmAccounts,
       );
     });
 
     it('returns an empty array when there are no EVM accounts', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
-      expect(selectors.getEvmInternalAccounts(state)).toStrictEqual([]);
+      expect(selectorsModule5.getEvmInternalAccounts(state)).toStrictEqual([]);
     });
   });
 
@@ -2371,7 +2415,9 @@ describe('#getConnectedSitesList', () => {
 
     it('returns the last selected EVM account', () => {
       const state = mockAccountsState([account1, account2, account3]);
-      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+      expect(selectorsModule5.getSelectedEvmInternalAccount(state)).toBe(
+        account3,
+      );
     });
 
     it('returns the last selected EVM account when there are non-EVM accounts', () => {
@@ -2382,12 +2428,16 @@ describe('#getConnectedSitesList', () => {
         nonEvmAccount1,
         nonEvmAccount2,
       ]);
-      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(account3);
+      expect(selectorsModule5.getSelectedEvmInternalAccount(state)).toBe(
+        account3,
+      );
     });
 
     it('returns `undefined` if there are no EVM accounts', () => {
       const state = mockAccountsState([nonEvmAccount1, nonEvmAccount2]);
-      expect(selectors.getSelectedEvmInternalAccount(state)).toBe(undefined);
+      expect(selectorsModule5.getSelectedEvmInternalAccount(state)).toBe(
+        undefined,
+      );
     });
   });
 
@@ -2404,7 +2454,7 @@ describe('#getConnectedSitesList', () => {
         chainId: '0x5',
       };
 
-      const result = selectors.getSwapsDefaultToken(mockState);
+      const result = selectorsModule5.getSwapsDefaultToken(mockState);
 
       expect(result).toStrictEqual(expectedToken);
     });
@@ -2421,7 +2471,7 @@ describe('#getConnectedSitesList', () => {
         chainId: '0x89',
       };
 
-      const result = selectors.getSwapsDefaultToken(
+      const result = selectorsModule5.getSwapsDefaultToken(
         mockState,
         CHAIN_IDS.POLYGON,
       );
@@ -2430,24 +2480,25 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns a stable reference for identical inputs', () => {
-      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const firstResult = selectorsModule5.getSwapsDefaultToken(mockState);
       const equivalentState = {
         ...mockState,
       };
-      const secondResult = selectors.getSwapsDefaultToken(equivalentState);
+      const secondResult =
+        selectorsModule5.getSwapsDefaultToken(equivalentState);
 
       expect(firstResult).toBe(secondResult);
     });
 
     it('returns a stable reference for identical overrideChainId inputs', () => {
-      const firstResult = selectors.getSwapsDefaultToken(
+      const firstResult = selectorsModule5.getSwapsDefaultToken(
         mockState,
         CHAIN_IDS.POLYGON,
       );
       const equivalentState = {
         ...mockState,
       };
-      const secondResult = selectors.getSwapsDefaultToken(
+      const secondResult = selectorsModule5.getSwapsDefaultToken(
         equivalentState,
         CHAIN_IDS.POLYGON,
       );
@@ -2456,7 +2507,7 @@ describe('#getConnectedSitesList', () => {
     });
 
     it('returns a new reference when current chainId changes', () => {
-      const firstResult = selectors.getSwapsDefaultToken(mockState);
+      const firstResult = selectorsModule5.getSwapsDefaultToken(mockState);
       const stateWithDifferentChainId = {
         ...mockState,
         metamask: {
@@ -2465,7 +2516,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const secondResult = selectors.getSwapsDefaultToken(
+      const secondResult = selectorsModule5.getSwapsDefaultToken(
         stateWithDifferentChainId,
       );
 
@@ -2486,7 +2537,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsSwapsChain(state);
+      const result = selectorsModule5.getIsSwapsChain(state);
 
       expect(result).toBe(true);
     });
@@ -2502,7 +2553,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsSwapsChain(state);
+      const result = selectorsModule5.getIsSwapsChain(state);
 
       expect(result).toBe(true);
     });
@@ -2533,7 +2584,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsSwapsChain(state);
+      const result = selectorsModule5.getIsSwapsChain(state);
 
       expect(result).toBe(false);
     });
@@ -2564,7 +2615,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsSwapsChain(state);
+      const result = selectorsModule5.getIsSwapsChain(state);
 
       expect(result).toBe(false);
     });
@@ -2572,7 +2623,7 @@ describe('#getConnectedSitesList', () => {
     it('respects the overrideChainId parameter', () => {
       process.env.METAMASK_ENVIRONMENT = 'production';
 
-      const result = selectors.getIsSwapsChain(mockState, '0x89');
+      const result = selectorsModule5.getIsSwapsChain(mockState, '0x89');
       expect(result).toBe(true);
     });
   });
@@ -2587,7 +2638,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsBridgeChain(state);
+      const result = selectorsModule5.getIsBridgeChain(state);
 
       expect(result).toBe(true);
     });
@@ -2616,13 +2667,13 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getIsBridgeChain(state);
+      const result = selectorsModule5.getIsBridgeChain(state);
 
       expect(result).toBe(false);
     });
 
     it('respects the overrideChainId parameter', () => {
-      const result = selectors.getIsBridgeChain(mockState, '0x89');
+      const result = selectorsModule5.getIsBridgeChain(mockState, '0x89');
 
       expect(result).toBe(true);
     });
@@ -2665,9 +2716,9 @@ describe('#getConnectedSitesList', () => {
           isEvmSelected: true,
         },
       };
-      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
-        true,
-      );
+      expect(
+        selectorsModule5.getIsTokenNetworkFilterEqualCurrentNetwork(state),
+      ).toBe(true);
     });
 
     it('returns false when the token network filter is on multiple networks', () => {
@@ -2694,9 +2745,9 @@ describe('#getConnectedSitesList', () => {
           isEvmSelected: true,
         },
       };
-      expect(selectors.getIsTokenNetworkFilterEqualCurrentNetwork(state)).toBe(
-        false,
-      );
+      expect(
+        selectorsModule5.getIsTokenNetworkFilterEqualCurrentNetwork(state),
+      ).toBe(false);
     });
   });
 
@@ -2735,7 +2786,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+      expect(selectorsModule7.getEnabledNetworks(state)).toStrictEqual({
         eip155: {
           [CHAIN_IDS.MAINNET]: true,
         },
@@ -2766,7 +2817,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+      expect(selectorsModule7.getEnabledNetworks(state)).toStrictEqual({
         eip155: {
           '0xNotPopularNetwork': true,
         },
@@ -2818,7 +2869,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
+      expect(selectorsModule7.getEnabledNetworks(state)).toStrictEqual({
         eip155: {
           [CHAIN_IDS.MAINNET]: true,
           [CHAIN_IDS.LINEA_MAINNET]: true,
@@ -2878,8 +2929,8 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result1 = selectors.getTokenNetworkFilter(state);
-      const result2 = selectors.getTokenNetworkFilter(state);
+      const result1 = selectorsModule5.getTokenNetworkFilter(state);
+      const result2 = selectorsModule5.getTokenNetworkFilter(state);
       expect(result1 === result2).toBe(true);
     });
   });
@@ -2907,7 +2958,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccountBalances(state);
+      const result = selectorsModule5.getMetaMaskAccountBalances(state);
 
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toStrictEqual({
         balance: BALANCE_1,
@@ -2933,7 +2984,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccountBalances(state);
+      const result = selectorsModule5.getMetaMaskAccountBalances(state);
 
       expect(result).toStrictEqual({});
       expect(Object.isFrozen(result)).toBe(true);
@@ -2951,7 +3002,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccountBalances(state);
+      const result = selectorsModule5.getMetaMaskAccountBalances(state);
 
       expect(result).toStrictEqual({});
       expect(Object.isFrozen(result)).toBe(true);
@@ -2974,7 +3025,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccountBalances(state);
+      const result = selectorsModule5.getMetaMaskAccountBalances(state);
 
       expect(result[mixedCaseAddress.toLowerCase()]).toStrictEqual({
         balance: BALANCE_1,
@@ -2998,8 +3049,8 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result1 = selectors.getMetaMaskAccountBalances(state);
-      const result2 = selectors.getMetaMaskAccountBalances(state);
+      const result1 = selectorsModule5.getMetaMaskAccountBalances(state);
+      const result2 = selectorsModule5.getMetaMaskAccountBalances(state);
 
       expect(result1).toBe(result2);
     });
@@ -3034,7 +3085,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
       expect(result[ACCOUNT_ADDRESS_2.toLowerCase()]).toBe(BALANCE_2);
@@ -3064,7 +3115,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       // Should use MAINNET balance since it's the only enabled network
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
@@ -3095,7 +3146,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(
+      const result = selectorsModule5.getMetaMaskCachedBalances(
         state,
         CHAIN_IDS.MAINNET,
       );
@@ -3128,7 +3179,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_2);
     });
@@ -3151,7 +3202,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       expect(result).toStrictEqual({});
       expect(Object.isFrozen(result)).toBe(true);
@@ -3174,7 +3225,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
     });
@@ -3205,7 +3256,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskCachedBalances(state);
+      const result = selectorsModule5.getMetaMaskCachedBalances(state);
 
       // Should use MAINNET since it's the only enabled network
       expect(result[ACCOUNT_ADDRESS_1.toLowerCase()]).toBe(BALANCE_1);
@@ -3232,8 +3283,8 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result1 = selectors.getMetaMaskCachedBalances(state);
-      const result2 = selectors.getMetaMaskCachedBalances(state);
+      const result1 = selectorsModule5.getMetaMaskCachedBalances(state);
+      const result2 = selectorsModule5.getMetaMaskCachedBalances(state);
 
       expect(result1).toBe(result2);
     });
@@ -3276,7 +3327,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getAccountsWithLabels(state);
+      const result = selectorsModule5.getAccountsWithLabels(state);
 
       expect(result).toHaveLength(1);
       expect(result[0]).toMatchObject({
@@ -3325,7 +3376,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getAccountsWithLabels(state);
+      const result = selectorsModule5.getAccountsWithLabels(state);
 
       // Name should be truncated to TRUNCATED_NAME_CHAR_LIMIT - 1 chars + '...'
       const truncatedName = `${longName.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`;
@@ -3368,7 +3419,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getAccountsWithLabels(state);
+      const result = selectorsModule5.getAccountsWithLabels(state);
 
       // The name portion should not be truncated
       expect(result[0].addressLabel).toMatch(/^Short \(/u);
@@ -3415,7 +3466,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getAccountsWithLabels(state);
+      const result = selectorsModule5.getAccountsWithLabels(state);
 
       expect(result).toHaveLength(2);
       expect(result[0].label).toBe('Account 1');
@@ -3456,8 +3507,8 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result1 = selectors.getAccountsWithLabels(state);
-      const result2 = selectors.getAccountsWithLabels(state);
+      const result1 = selectorsModule5.getAccountsWithLabels(state);
+      const result2 = selectorsModule5.getAccountsWithLabels(state);
 
       expect(result1).toBe(result2);
     });
@@ -3482,7 +3533,8 @@ describe('#getConnectedSitesList', () => {
         },
       };
       expect(
-        selectors.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS].balance,
+        selectorsModule5.getMetaMaskAccounts(state, '0x1')[ACCOUNT_ADDRESS]
+          .balance,
       ).toStrictEqual(BALANCE);
     });
 
@@ -3519,7 +3571,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccounts(state);
+      const result = selectorsModule5.getMetaMaskAccounts(state);
 
       expect(result[ACCOUNT_ADDRESS].balance).toBe(CURRENT_CHAIN_BALANCE);
     });
@@ -3570,7 +3622,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccounts(modifiedState);
+      const result = selectorsModule5.getMetaMaskAccounts(modifiedState);
 
       expect(result[ACCOUNT_ADDRESS].balance).toBe(CACHED_BALANCE);
     });
@@ -3603,7 +3655,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccounts(state);
+      const result = selectorsModule5.getMetaMaskAccounts(state);
 
       expect(result[ACCOUNT_ADDRESS].balance).toBe('0x0');
     });
@@ -3659,7 +3711,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccounts(state);
+      const result = selectorsModule5.getMetaMaskAccounts(state);
 
       expect(result[ACCOUNT_1].balance).toBe(BALANCE_1);
       expect(result[ACCOUNT_2].balance).toBe(BALANCE_2);
@@ -3704,28 +3756,28 @@ describe('#getConnectedSitesList', () => {
       };
 
       // Call with mainnet chainId
-      const mainnetResult1 = selectors.getMetaMaskAccounts(
+      const mainnetResult1 = selectorsModule5.getMetaMaskAccounts(
         state,
         CHAIN_IDS.MAINNET,
       );
       expect(mainnetResult1[ACCOUNT_ADDRESS].balance).toBe(MAINNET_BALANCE);
 
       // Call with goerli chainId
-      const goerliResult1 = selectors.getMetaMaskAccounts(
+      const goerliResult1 = selectorsModule5.getMetaMaskAccounts(
         state,
         CHAIN_IDS.GOERLI,
       );
       expect(goerliResult1[ACCOUNT_ADDRESS].balance).toBe(GOERLI_BALANCE);
 
       // Call again with mainnet - should return cached result
-      const mainnetResult2 = selectors.getMetaMaskAccounts(
+      const mainnetResult2 = selectorsModule5.getMetaMaskAccounts(
         state,
         CHAIN_IDS.MAINNET,
       );
       expect(mainnetResult2).toBe(mainnetResult1);
 
       // Call again with goerli - should return cached result
-      const goerliResult2 = selectors.getMetaMaskAccounts(
+      const goerliResult2 = selectorsModule5.getMetaMaskAccounts(
         state,
         CHAIN_IDS.GOERLI,
       );
@@ -3766,7 +3818,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      const result = selectors.getMetaMaskAccounts(state);
+      const result = selectorsModule5.getMetaMaskAccounts(state);
       const account = result[ACCOUNT_ADDRESS];
 
       expect(account.address).toBe(ACCOUNT_ADDRESS);
@@ -3786,7 +3838,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
+      expect(selectorsModule5.getManageInstitutionalWallets(state)).toBe(true);
     });
   });
 
@@ -3852,7 +3904,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBe(0);
     });
 
     it('should return the index based on metadata if account not in HD keyring but entropySource matches', () => {
@@ -3898,7 +3950,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBe(2);
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBe(2);
     });
 
     it('should return undefined if account not in HD keyring and entropySource does not match any metadata id', () => {
@@ -3928,7 +3980,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBeUndefined();
     });
 
     it('should return undefined if account not in HD keyring and no entropySource in account options', () => {
@@ -3949,7 +4001,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBeUndefined();
     });
 
     it('should return undefined if account not in HD keyring and no selected internal account found', () => {
@@ -3973,7 +4025,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBeUndefined();
     });
 
     it('should return undefined if no HD keyrings and no matching entropySource', () => {
@@ -4008,7 +4060,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBeUndefined();
     });
 
     it('should return correct index from metadata if no HD keyrings but matching entropySource', () => {
@@ -4046,7 +4098,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBe(1);
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBe(1);
     });
 
     it('should correctly identify the first HD keyring if multiple HD keyrings exist and selected address is in the first one', () => {
@@ -4082,7 +4134,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBe(0);
     });
 
     it('should correctly identify a later HD keyring if selected address is not in earlier ones', () => {
@@ -4118,7 +4170,7 @@ describe('#getConnectedSitesList', () => {
           ],
         },
       };
-      expect(selectors.getHDEntropyIndex(state)).toBe(1); // 1st HD keyring (index 1 of filtered hdKeyrings)
+      expect(selectorsModule5.getHDEntropyIndex(state)).toBe(1); // 1st HD keyring (index 1 of filtered hdKeyrings)
     });
   });
 });
@@ -4141,7 +4193,7 @@ describe('getNativeTokenInfo', () => {
       name: 'MyToken',
     };
 
-    const result = selectors.getNativeTokenInfo(
+    const result = selectorsModule5.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
       '0x1337',
     );
@@ -4159,7 +4211,7 @@ describe('getNativeTokenInfo', () => {
       name: undefined,
     };
 
-    const result = selectors.getNativeTokenInfo(
+    const result = selectorsModule5.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
       '0x1337',
     );
@@ -4173,7 +4225,7 @@ describe('getNativeTokenInfo', () => {
   it('provides native token from known list of hardcoded native tokens', () => {
     const mocks = arrange();
 
-    const result = selectors.getNativeTokenInfo(
+    const result = selectorsModule5.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
       '0x89',
     );
@@ -4186,7 +4238,7 @@ describe('getNativeTokenInfo', () => {
 
   it('fallbacks for unknown native token info', () => {
     const mocks = arrange();
-    const result = selectors.getNativeTokenInfo(
+    const result = selectorsModule5.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
       '0xFakeToken',
     );
@@ -4291,7 +4343,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       },
     };
 
-    const result = selectors.getInternalAccountsSortedByKeyring(
+    const result = selectorsModule5.getInternalAccountsSortedByKeyring(
       mockStateWithSnapAccounts,
     );
     expect(result).toStrictEqual([
@@ -4332,7 +4384,7 @@ describe('getInternalAccountsSortedByKeyring', () => {
       },
     };
 
-    const result = selectors.getInternalAccountsSortedByKeyring(state);
+    const result = selectorsModule5.getInternalAccountsSortedByKeyring(state);
     expect(result).not.toContain(undefined);
     expect(result).toHaveLength(0); // address mismatch: account not found
   });
@@ -4340,12 +4392,12 @@ describe('getInternalAccountsSortedByKeyring', () => {
 
 describe('getUrlScanCacheResult', () => {
   it('returns undefined for empty hostname', () => {
-    const result = selectors.getUrlScanCacheResult(mockState, '');
+    const result = selectorsModule5.getUrlScanCacheResult(mockState, '');
     expect(result).toBeUndefined();
   });
 
   it('returns undefined for invalid URL hostname', () => {
-    const result = selectors.getUrlScanCacheResult(
+    const result = selectorsModule5.getUrlScanCacheResult(
       mockState,
       'not-a-valid-url',
     );
@@ -4363,7 +4415,10 @@ describe('getUrlScanCacheResult', () => {
       },
     };
 
-    const result = selectors.getUrlScanCacheResult(mockState, 'example.com');
+    const result = selectorsModule5.getUrlScanCacheResult(
+      mockState,
+      'example.com',
+    );
     expect(result).toStrictEqual({
       result: {
         domainName: 'example.com',
@@ -4389,7 +4444,7 @@ describe('getGasFeesSponsoredNetworkEnabled', () => {
         },
       },
     };
-    const result = selectors.getGasFeesSponsoredNetworkEnabled(state);
+    const result = selectorsModule5.getGasFeesSponsoredNetworkEnabled(state);
     expect(result).toStrictEqual(gasFeesSponsoredNetwork);
     expect(result['0x1']).toBe(true);
     expect(result['0x2']).toBe(false);
@@ -4408,7 +4463,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(true);
   });
 
   it('returns false when no EVM networks are enabled', () => {
@@ -4422,7 +4477,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(false);
   });
 
   it('returns false when EVM namespace is empty', () => {
@@ -4433,7 +4488,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(false);
   });
 
   it('returns false when EVM namespace is not present', () => {
@@ -4446,7 +4501,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(false);
   });
 
   it('returns true when multiple EVM networks are enabled', () => {
@@ -4461,7 +4516,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(true);
   });
 
   it('returns true when mixed enabled/disabled EVM networks with at least one enabled', () => {
@@ -4479,7 +4534,7 @@ describe('getHasAnyEvmNetworkEnabled', () => {
         },
       },
     };
-    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+    expect(selectorsModule5.getHasAnyEvmNetworkEnabled(state)).toBe(true);
   });
 });
 
@@ -4494,7 +4549,8 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
       },
     };
 
-    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    const result =
+      selectorsModule5.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(true);
   });
 
@@ -4512,7 +4568,8 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
       },
     };
 
-    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    const result =
+      selectorsModule5.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(true);
   });
 
@@ -4529,7 +4586,8 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
       },
     };
 
-    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    const result =
+      selectorsModule5.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(false);
   });
 
@@ -4546,7 +4604,8 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
       },
     };
 
-    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    const result =
+      selectorsModule5.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(false);
   });
 
@@ -4561,7 +4620,8 @@ describe('getShouldSubmitEventsForShieldEntryModal', () => {
       },
     };
 
-    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    const result =
+      selectorsModule5.getShouldSubmitEventsForShieldEntryModal(state);
     expect(result).toBe(false);
   });
 });
@@ -4611,7 +4671,8 @@ describe('getPermissionsForActiveTab', () => {
     const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('popup');
 
-    const result = selectors.getPermissionsForActiveTab(permissionsTestState);
+    const result =
+      selectorsModule5.getPermissionsForActiveTab(permissionsTestState);
 
     expect(result).toStrictEqual([
       { key: 'eth_accounts', value: { date: 1234567890 } },
@@ -4622,7 +4683,8 @@ describe('getPermissionsForActiveTab', () => {
     const util = jest.requireMock('../../shared/lib/environment-type');
     util.getEnvironmentType.mockReturnValue('sidepanel');
 
-    const result = selectors.getPermissionsForActiveTab(permissionsTestState);
+    const result =
+      selectorsModule5.getPermissionsForActiveTab(permissionsTestState);
 
     expect(result).toStrictEqual([
       { key: 'eth_accounts', value: { date: 1234567890 } },
@@ -4642,7 +4704,7 @@ describe('getPermissionsForActiveTab', () => {
       },
     };
 
-    const result = selectors.getPermissionsForActiveTab(
+    const result = selectorsModule5.getPermissionsForActiveTab(
       stateWithoutPermissions,
     );
 
@@ -4658,7 +4720,8 @@ describe('getPermissionsForActiveTab', () => {
       activeTab: {},
     };
 
-    const result = selectors.getPermissionsForActiveTab(stateWithoutOrigin);
+    const result =
+      selectorsModule5.getPermissionsForActiveTab(stateWithoutOrigin);
 
     expect(result).toStrictEqual([]);
   });
@@ -4675,7 +4738,7 @@ describe('getPermissionsForActiveTab', () => {
       },
     };
 
-    const result = selectors.getPermissionsForActiveTab(
+    const result = selectorsModule5.getPermissionsForActiveTab(
       stateWithoutAppActiveTab,
     );
 
@@ -4694,7 +4757,7 @@ describe('getIsDefiPositionsEnabled', () => {
         },
       },
     };
-    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(true);
+    expect(selectorsModule5.getIsDefiPositionsEnabled(state)).toBe(true);
   });
 
   it('returns false when assetsDefiPositionsEnabled flag is false', () => {
@@ -4707,7 +4770,7 @@ describe('getIsDefiPositionsEnabled', () => {
         },
       },
     };
-    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(false);
+    expect(selectorsModule5.getIsDefiPositionsEnabled(state)).toBe(false);
   });
 
   it('returns true (default) when assetsDefiPositionsEnabled flag is undefined', () => {
@@ -4718,7 +4781,7 @@ describe('getIsDefiPositionsEnabled', () => {
         remoteFeatureFlags: {},
       },
     };
-    expect(selectors.getIsDefiPositionsEnabled(state)).toBe(
+    expect(selectorsModule5.getIsDefiPositionsEnabled(state)).toBe(
       DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     );
   });
@@ -4750,7 +4813,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('returns false when pending version is not greater than current version', () => {
@@ -4763,7 +4826,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('returns false when current version is not below minimum (no modal even with newer update)', () => {
@@ -4778,7 +4841,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('returns false when not enough time passed since last dismissal', () => {
@@ -4793,7 +4856,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('returns false when not enough time passed since last update', () => {
@@ -4808,7 +4871,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('returns true when newer update exists, current version is below minimum, and cooldowns have passed', () => {
@@ -4822,7 +4885,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(true);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(true);
   });
 
   it('returns true when cooldowns are exceeded (dismissed and updated more than 24h ago)', () => {
@@ -4836,7 +4899,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(true);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(true);
   });
 
   it('returns false when platform getVersion is missing (no current version)', () => {
@@ -4851,7 +4914,7 @@ describe('getShowUpdateModal', () => {
         remoteFeatureFlags: { extensionUpdatePromptMinimumVersion: '10.0.0' },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 
   it('treats four-segment pending as newer than four-segment current (e.g. beta builds)', () => {
@@ -4868,7 +4931,7 @@ describe('getShowUpdateModal', () => {
         },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(true);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(true);
   });
 
   it('returns false when four-segment pending is not greater than four-segment current', () => {
@@ -4885,7 +4948,7 @@ describe('getShowUpdateModal', () => {
         },
       },
     };
-    expect(selectors.getShowUpdateModal(state)).toBe(false);
+    expect(selectorsModule5.getShowUpdateModal(state)).toBe(false);
   });
 });
 
@@ -4897,7 +4960,9 @@ describe('getPendingRedirectRoute', () => {
         pendingRedirectRoute: route,
       },
     };
-    expect(selectors.getPendingRedirectRoute(state)).toStrictEqual(route);
+    expect(selectorsModule5.getPendingRedirectRoute(state)).toStrictEqual(
+      route,
+    );
   });
 
   it('returns null when not set', () => {
@@ -4906,12 +4971,12 @@ describe('getPendingRedirectRoute', () => {
         pendingRedirectRoute: null,
       },
     };
-    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+    expect(selectorsModule5.getPendingRedirectRoute(state)).toBeNull();
   });
 
   it('returns null when metamask is undefined', () => {
     const state = {};
-    expect(selectors.getPendingRedirectRoute(state)).toBeNull();
+    expect(selectorsModule5.getPendingRedirectRoute(state)).toBeNull();
   });
 });
 
@@ -4927,7 +4992,9 @@ describe('getDeferredDeepLink', () => {
       },
     };
 
-    expect(selectors.getDeferredDeepLink(state)).toStrictEqual(mockDeepLink);
+    expect(selectorsModule5.getDeferredDeepLink(state)).toStrictEqual(
+      mockDeepLink,
+    );
   });
 
   it('returns null when deferredDeepLink is undefined', () => {
@@ -4937,7 +5004,7 @@ describe('getDeferredDeepLink', () => {
       },
     };
 
-    expect(selectors.getDeferredDeepLink(state)).toBeNull();
+    expect(selectorsModule5.getDeferredDeepLink(state)).toBeNull();
   });
 });
 
@@ -4953,10 +5020,12 @@ describe('getDeferredDeepLinkParameters', () => {
       },
     };
 
-    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
-      utm_source: 'newsletter',
-      utm_medium: 'email',
-    });
+    expect(selectorsModule5.getDeferredDeepLinkParameters(state)).toStrictEqual(
+      {
+        utm_source: 'newsletter',
+        utm_medium: 'email',
+      },
+    );
   });
 
   it('returns null when deferredDeepLink is not set', () => {
@@ -4966,7 +5035,9 @@ describe('getDeferredDeepLinkParameters', () => {
       },
     };
 
-    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual(null);
+    expect(selectorsModule5.getDeferredDeepLinkParameters(state)).toStrictEqual(
+      null,
+    );
   });
 });
 
@@ -4977,7 +5048,9 @@ describe('getLastQrScanCompletedSuccessfully', () => {
         lastQrScanCompletedSuccessfully: true,
       },
     };
-    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(true);
+    expect(selectorsModule5.getLastQrScanCompletedSuccessfully(state)).toBe(
+      true,
+    );
   });
 
   it('returns false when last QR scan was cancelled', () => {
@@ -4986,7 +5059,9 @@ describe('getLastQrScanCompletedSuccessfully', () => {
         lastQrScanCompletedSuccessfully: false,
       },
     };
-    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBe(false);
+    expect(selectorsModule5.getLastQrScanCompletedSuccessfully(state)).toBe(
+      false,
+    );
   });
 
   it('returns null when no recent QR scan completion', () => {
@@ -4995,12 +5070,16 @@ describe('getLastQrScanCompletedSuccessfully', () => {
         lastQrScanCompletedSuccessfully: null,
       },
     };
-    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeNull();
+    expect(
+      selectorsModule5.getLastQrScanCompletedSuccessfully(state),
+    ).toBeNull();
   });
 
   it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
     const state = { metamask: {} };
-    expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+    expect(
+      selectorsModule5.getLastQrScanCompletedSuccessfully(state),
+    ).toBeUndefined();
   });
 });
 
@@ -5011,7 +5090,9 @@ describe('getLastVisitedPerpsRoute', () => {
       metamask: { lastVisitedRoute: { name: 'perps', ...entry } },
     };
 
-    expect(selectors.getLastVisitedPerpsRoute(state)).toStrictEqual(entry);
+    expect(selectorsModule5.getLastVisitedPerpsRoute(state)).toStrictEqual(
+      entry,
+    );
   });
 
   it('returns null when lastVisitedRoute is for another feature', () => {
@@ -5025,13 +5106,13 @@ describe('getLastVisitedPerpsRoute', () => {
       },
     };
 
-    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+    expect(selectorsModule5.getLastVisitedPerpsRoute(state)).toBeNull();
   });
 
   it('returns null when lastVisitedRoute is undefined', () => {
     const state = { metamask: {} };
 
-    expect(selectors.getLastVisitedPerpsRoute(state)).toBeNull();
+    expect(selectorsModule5.getLastVisitedPerpsRoute(state)).toBeNull();
   });
 
   it('returns a stable reference when a state push replaces the route object', () => {
@@ -5045,8 +5126,8 @@ describe('getLastVisitedPerpsRoute', () => {
       },
     });
 
-    expect(selectors.getLastVisitedPerpsRoute(buildState())).toBe(
-      selectors.getLastVisitedPerpsRoute(buildState()),
+    expect(selectorsModule5.getLastVisitedPerpsRoute(buildState())).toBe(
+      selectorsModule5.getLastVisitedPerpsRoute(buildState()),
     );
   });
 });
@@ -5111,16 +5192,20 @@ describe('snap selectors', () => {
   };
 
   it('selects parameterized snap values', () => {
-    expect(selectors.getHideSnapBranding(snapState, 'npm:foo')).toBe(true);
-    expect(selectors.getSnap(snapState, 'npm:foo')).toStrictEqual(
+    expect(selectorsModule5.getHideSnapBranding(snapState, 'npm:foo')).toBe(
+      true,
+    );
+    expect(selectorsModule5.getSnap(snapState, 'npm:foo')).toStrictEqual(
       snapState.metamask.snaps['npm:foo'],
     );
-    expect(selectors.getSnapMetadata(snapState, 'npm:foo')).toStrictEqual({
+    expect(
+      selectorsModule5.getSnapMetadata(snapState, 'npm:foo'),
+    ).toStrictEqual({
       name: 'Foo',
       description: 'Foo snap',
       hidden: false,
     });
-    expect(selectors.getSnapInsights(snapState, 'one')).toStrictEqual({
+    expect(selectorsModule5.getSnapInsights(snapState, 'one')).toStrictEqual({
       value: 1,
     });
   });
@@ -5137,32 +5222,42 @@ describe('snap selectors', () => {
       },
     };
 
-    selectors.getSnapInsights.resetRecomputations();
+    selectorsModule5.getSnapInsights.resetRecomputations();
 
-    const firstInsight = selectors.getSnapInsights(cachingState, 'alpha');
-    const secondInsight = selectors.getSnapInsights(cachingState, 'beta');
+    const firstInsight = selectorsModule5.getSnapInsights(
+      cachingState,
+      'alpha',
+    );
+    const secondInsight = selectorsModule5.getSnapInsights(
+      cachingState,
+      'beta',
+    );
 
-    expect(selectors.getSnapInsights(cachingState, 'alpha')).toBe(firstInsight);
-    expect(selectors.getSnapInsights(cachingState, 'beta')).toBe(secondInsight);
-    expect(selectors.getSnapInsights.recomputations()).toBe(2);
+    expect(selectorsModule5.getSnapInsights(cachingState, 'alpha')).toBe(
+      firstInsight,
+    );
+    expect(selectorsModule5.getSnapInsights(cachingState, 'beta')).toBe(
+      secondInsight,
+    );
+    expect(selectorsModule5.getSnapInsights.recomputations()).toBe(2);
   });
 
   it('filters snap collections for snap permissions and enabled state', () => {
     expect(
-      Object.keys(selectors.getPreinstalledSnaps(snapState)),
+      Object.keys(selectorsModule5.getPreinstalledSnaps(snapState)),
     ).toStrictEqual(['npm:foo', 'npm:baz']);
-    expect(selectors.getNameLookupSnapsIds(snapState)).toStrictEqual([
+    expect(selectorsModule5.getNameLookupSnapsIds(snapState)).toStrictEqual([
       'npm:foo',
       'npm:bar',
     ]);
-    expect(selectors.getSettingsPageSnapsIds(snapState)).toStrictEqual([
+    expect(selectorsModule5.getSettingsPageSnapsIds(snapState)).toStrictEqual([
       'npm:foo',
     ]);
     expect(
-      selectors.getNotifySnaps(snapState).map(({ id }) => id),
+      selectorsModule5.getNotifySnaps(snapState).map(({ id }) => id),
     ).toStrictEqual(['npm:foo', 'npm:bar']);
     expect(
-      selectors.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
+      selectorsModule5.getThirdPartyNotifySnaps(snapState).map(({ id }) => id),
     ).toStrictEqual(['npm:bar']);
   });
 });
@@ -5203,7 +5298,7 @@ describe('getUnconnectedAccounts', () => {
   };
 
   it('returns accounts that are not connected to the active dapp', () => {
-    const result = selectors.getUnconnectedAccounts(
+    const result = selectorsModule5.getUnconnectedAccounts(
       stateWithConnectedAccount,
       origin,
     );
@@ -5213,13 +5308,13 @@ describe('getUnconnectedAccounts', () => {
   });
 
   it('returns all accounts when no accounts are connected to the dapp', () => {
-    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
-    const result = selectors.getUnconnectedAccounts(mockState, origin);
+    const allAccounts = selectorsModule5.getMetaMaskAccountsOrdered(mockState);
+    const result = selectorsModule5.getUnconnectedAccounts(mockState, origin);
     expect(result).toHaveLength(allAccounts.length);
   });
 
   it('returns an empty array when all accounts are connected', () => {
-    const allAccounts = selectors.getMetaMaskAccountsOrdered(mockState);
+    const allAccounts = selectorsModule5.getMetaMaskAccountsOrdered(mockState);
     const allAddresses = allAccounts.map((a) => a.address);
 
     const stateWithAllConnected = {
@@ -5255,7 +5350,7 @@ describe('getUnconnectedAccounts', () => {
       },
     };
 
-    const result = selectors.getUnconnectedAccounts(
+    const result = selectorsModule5.getUnconnectedAccounts(
       stateWithAllConnected,
       origin,
     );
@@ -5263,11 +5358,11 @@ describe('getUnconnectedAccounts', () => {
   });
 
   it('does not include the connected account in the result', () => {
-    const result = selectors.getUnconnectedAccounts(
+    const result = selectorsModule5.getUnconnectedAccounts(
       stateWithConnectedAccount,
       origin,
     );
-    const allAccounts = selectors.getMetaMaskAccountsOrdered(
+    const allAccounts = selectorsModule5.getMetaMaskAccountsOrdered(
       stateWithConnectedAccount,
     );
     expect(result).toHaveLength(allAccounts.length - 1);
@@ -5280,18 +5375,18 @@ describe('getUnconnectedAccounts', () => {
 describe('selectHasBatchSellQuotes', () => {
   it('returns false when there are no quotes', () => {
     const state = { metamask: { quotes: [] } };
-    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+    expect(selectorsModule5.selectHasBatchSellQuotes(state)).toBe(false);
   });
 
   it('returns false when quotes exist but none came from batch sell', () => {
     const state = {
       metamask: { quotes: [{ featureId: 'unified_swap_bridge' }] },
     };
-    expect(selectors.selectHasBatchSellQuotes(state)).toBe(false);
+    expect(selectorsModule5.selectHasBatchSellQuotes(state)).toBe(false);
   });
 
   it('returns true when a quote came from batch sell', () => {
     const state = { metamask: { quotes: [{ featureId: 'batch_sell' }] } };
-    expect(selectors.selectHasBatchSellQuotes(state)).toBe(true);
+    expect(selectorsModule5.selectHasBatchSellQuotes(state)).toBe(true);
   });
 });

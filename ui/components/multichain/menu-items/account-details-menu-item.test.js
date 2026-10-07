@@ -6,7 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { AccountDetailsMenuItem } from '.';
+import { AccountDetailsMenuItem } from './account-details-menu-item';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
 

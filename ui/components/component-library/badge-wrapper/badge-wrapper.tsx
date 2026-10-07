@@ -3,7 +3,8 @@ import classnames from 'clsx';
 
 import { Display } from '../../../helpers/constants/design-system';
 
-import { Box, type BoxProps, type PolymorphicRef } from '../box';
+import { Box } from '../box/box';
+import type { BoxProps, PolymorphicRef } from '../box/box.types';
 import {
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,

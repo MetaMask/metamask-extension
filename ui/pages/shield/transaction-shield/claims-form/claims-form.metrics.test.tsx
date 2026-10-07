@@ -8,7 +8,7 @@ import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 import { useClaimState } from '../../../../hooks/shield/useClaimState';
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { submitShieldClaim } from '../../../../store/actions';
-import { getLatestShieldSubscription } from '../../../../selectors/subscription';
+import { getLatestShieldSubscription } from '../../../../selectors/subscription/subscription';
 import ClaimsForm from './claims-form';
 
 const mockNavigate = jest.fn();
@@ -42,26 +42,29 @@ jest.mock('../../../../store/actions', () => ({
   submitShieldClaim: jest.fn(),
 }));
 
-jest.mock('../../../../selectors/subscription', () => ({
-  ...jest.requireActual('../../../../selectors/subscription'),
+jest.mock('../../../../selectors/subscription/subscription', () => ({
+  ...jest.requireActual('../../../../selectors/subscription/subscription'),
   getLatestShieldSubscription: jest.fn(),
 }));
 
-jest.mock('../account-selector', () => ({
+jest.mock('../account-selector/account-selector', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
 }));
 
-jest.mock('../network-selector', () => ({
+jest.mock('../network-selector/network-selector', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => null,
 }));
 
-jest.mock('../../../../components/component-library/file-uploader', () => ({
-  FileUploader: () => null,
-}));
+jest.mock(
+  '../../../../components/component-library/file-uploader/file-uploader',
+  () => ({
+    FileUploader: () => null,
+  }),
+);
 
 describe('ClaimsForm metrics', () => {
   beforeEach(() => {

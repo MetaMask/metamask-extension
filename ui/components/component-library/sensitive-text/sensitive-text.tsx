@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Text } from '../text';
+import { Text } from '../text/text';
 import {
   SensitiveTextProps,
   SensitiveTextLength,

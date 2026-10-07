@@ -9,7 +9,7 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors
 import { parseStandardTokenTransactionData } from '../../../shared/lib/transaction.utils';
 import { formatAmount } from '../../../shared/lib/format-amount';
 import { getIntlLocale } from '../../ducks/locale/locale';
-import { getAllTokens } from '../../selectors';
+import { getTokensControllerAllTokens as getAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import { useI18nContext } from '../useI18nContext';
 
 export type SendBundleAmountSymbol = {

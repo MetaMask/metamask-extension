@@ -6,10 +6,10 @@ import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getDataCollectionForMarketing,
-  getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
+import { getAnalyticsId } from '../../../selectors/selectors';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';

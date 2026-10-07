@@ -1,5 +1,5 @@
-import { HardwareWalletSignatureStatus } from '.';
-import type { HardwareWalletSignaturesState, SigningStatus } from '.';
+import { HardwareWalletSignatureStatus } from './types';
+import type { HardwareWalletSignaturesState, SigningStatus } from './types';
 
 export const createSignatureState = (
   status: HardwareWalletSignatureStatus,

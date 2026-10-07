@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
-import ConnectedSitesList from '../../components/app/connected-sites-list';
+import ConnectedSitesList from '../../components/app/connected-sites-list/connected-sites-list.container';
 import Popover from '../../components/ui/popover/popover.component';
-import { Button, ButtonVariant } from '../../components/component-library';
+import { Button } from '../../components/component-library/button/button';
+import { ButtonVariant } from '../../components/component-library/button/button.types';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 export default function ConnectedSites({

@@ -1,7 +1,7 @@
 import {
   getLastConnectedInfo,
   getPermittedAccountsByOrigin,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   getStorageItem,
   setStorageItem,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   AlignItems,
   Display,
@@ -9,9 +10,9 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { TransactionDetailsRow } from '../transaction-details-row';
-import { useTransactionDetails } from '../transaction-details-context';
-import { TransactionStatusIcon } from '../transaction-status-icon';
+import { TransactionDetailsRow } from '../transaction-details-row/transaction-details-row';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
+import { TransactionStatusIcon } from '../transaction-status-icon/transaction-status-icon';
 
 function getStatusTextColor(status: TransactionStatus): TextColor {
   switch (status) {

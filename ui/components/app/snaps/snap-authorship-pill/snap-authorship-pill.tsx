@@ -1,8 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, IconSize, Text } from '../../../component-library';
-import { SnapIcon } from '../snap-icon';
-import { getSnapMetadata } from '../../../../selectors';
+import { Box } from '../../../component-library/box/box';
+import { IconSize } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import { SnapIcon } from '../snap-icon/snap-icon';
+import { getSnapMetadata } from '../../../../selectors/selectors';
 import {
   AlignItems,
   BorderRadius,

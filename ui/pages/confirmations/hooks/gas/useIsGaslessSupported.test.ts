@@ -9,16 +9,12 @@ import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalle
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
-jest.mock('../../../../../shared/lib/selectors');
+jest.mock('../../../../../shared/lib/selectors/smart-transactions');
 jest.mock('../../../../store/controller-actions/transaction-controller');
 
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   isRelaySupported: jest.fn(),
-}));
-
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
 }));
 
 jest.mock('./useGaslessSupportedSmartTransactions');

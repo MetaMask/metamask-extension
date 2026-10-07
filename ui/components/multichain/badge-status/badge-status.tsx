@@ -8,9 +8,11 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { BadgeWrapper, Box, BoxProps } from '../../component-library';
-import { PreferredAvatar } from '../../app/preferred-avatar';
-import Tooltip from '../../ui/tooltip';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { Box } from '../../component-library/box/box';
+import { BoxProps } from '../../component-library/box/box.types';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
+import Tooltip from '../../ui/tooltip/tooltip';
 
 import { BadgeStatusProps } from './badge-status.types';
 

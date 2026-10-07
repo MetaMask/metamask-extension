@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import classnames from 'clsx';
 import { formatSwapsValueForDisplay } from '../swaps.util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import Box from '../../../components/ui/box';
+import Box from '../../../components/ui/box/box';
 import {
   JustifyContent,
   DISPLAY,
@@ -12,7 +12,8 @@ import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../../../components/component-library';
+import { Icon } from '../../../components/component-library/icon/icon';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import { I18nContext } from '../../../contexts/i18n';
 
 export default function ExchangeRateDisplay({

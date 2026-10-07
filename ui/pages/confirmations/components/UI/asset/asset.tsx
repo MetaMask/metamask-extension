@@ -6,15 +6,13 @@ import {
 } from '@metamask/design-system-react';
 import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
-import {
-  AvatarToken,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-  Box,
-  Text,
-  AvatarTokenSize,
-} from '../../../../../components/component-library';
+import { AvatarToken } from '../../../../../components/component-library/avatar-token/avatar-token';
+import { AvatarNetwork } from '../../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../../components/component-library/avatar-network/avatar-network.types';
+import { BadgeWrapper } from '../../../../../components/component-library/badge-wrapper/badge-wrapper';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
+import { AvatarTokenSize } from '../../../../../components/component-library/avatar-token/avatar-token.types';
 import {
   AlignItems,
   BackgroundColor,
@@ -31,7 +29,7 @@ import {
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
-import { AccountTypeLabel } from '../account-type-label';
+import { AccountTypeLabel } from '../account-type-label/account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 

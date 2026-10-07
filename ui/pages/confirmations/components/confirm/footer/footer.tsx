@@ -2,20 +2,19 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Button } from '../../../../../components/component-library/button/button';
 import {
-  Box,
-  Button,
   ButtonSize,
   ButtonVariant,
-  IconName,
-} from '../../../../../components/component-library';
-import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+} from '../../../../../components/component-library/button/button.types';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Footer as PageFooter } from '../../../../../components/multichain/pages/page/components/footer/footer';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   Display,
@@ -39,20 +38,27 @@ import {
   isAddEthereumChainType,
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
-import { isSignatureTransactionType } from '../../../utils';
-import ScamQuestionnaire from '../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire';
+import { isSignatureTransactionType } from '../../../utils/confirm';
 import { useScamQuestionnaire } from '../../../../../components/app/product-safety/scam-questionnaire/useScamQuestionnaire';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
-import {
-  useHardwareFooter,
-  useHardwareWalletError,
-} from '../../../../../contexts/hardware-wallets';
+import { useHardwareFooter } from '../../../../../contexts/hardware-wallets/useHardwareFooter';
+import { useHardwareWalletError } from '../../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import { useDispatch } from '../../../../../store/hooks';
-import OriginThrottleModal from './origin-throttle-modal';
+import { mmLazy } from '../../../../../helpers/utils/mm-lazy';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
-import { SingleActionFooter } from './single-action-footer';
+
+const ConfirmAlertModal = mmLazy(
+  () =>
+    import('../../../../../components/app/alert-system/confirm-alert-modal/confirm-alert-modal'),
+);
+const ScamQuestionnaire = mmLazy(
+  () =>
+    import('../../../../../components/app/product-safety/scam-questionnaire/scam-questionnaire'),
+);
+const OriginThrottleModal = mmLazy(() => import('./origin-throttle-modal'));
+const SingleActionFooter = mmLazy(() => import('./single-action-footer'));
 
 const SINGLE_ACTION_FOOTER_TYPES = [
   TransactionType.moneyAccountDeposit,
@@ -233,15 +239,19 @@ const ConfirmButton = ({
   return (
     <>
       {confirmModalVisible && (
-        <ConfirmAlertModal
-          ownerId={alertOwnerId}
-          onClose={handleCloseConfirmModal}
-          onCancel={onCancel}
-          onSubmit={handleSubmitConfirmModal}
-        />
+        <Suspense fallback={null}>
+          <ConfirmAlertModal
+            ownerId={alertOwnerId}
+            onClose={handleCloseConfirmModal}
+            onCancel={onCancel}
+            onSubmit={handleSubmitConfirmModal}
+          />
+        </Suspense>
       )}
       {isScamQuestionnaireVisible && (
-        <ScamQuestionnaire {...scamQuestionnaireProps} />
+        <Suspense fallback={null}>
+          <ScamQuestionnaire {...scamQuestionnaireProps} />
+        </Suspense>
       )}
       {shouldShowDangerConfirmButton ? (
         <Button
@@ -546,10 +556,14 @@ const Footer = () => {
             : undefined
         }
       >
-        <OriginThrottleModal
-          isOpen={showOriginThrottleModal}
-          onConfirmationCancel={onCancel}
-        />
+        {showOriginThrottleModal && (
+          <Suspense fallback={null}>
+            <OriginThrottleModal
+              isOpen={showOriginThrottleModal}
+              onConfirmationCancel={onCancel}
+            />
+          </Suspense>
+        )}
         <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
           <CancelButton handleFooterCancel={handleFooterCancel} />
           {shouldShowReconnectButton ? (

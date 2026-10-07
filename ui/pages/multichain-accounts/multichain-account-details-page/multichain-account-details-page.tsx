@@ -23,15 +23,13 @@ import {
 
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
-import { PreferredAvatar } from '../../../components/app/preferred-avatar';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar/preferred-avatar';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
+import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row/account-details-row';
 import {
   getMultichainAccountGroupById,
   getNetworkAddressCount,
@@ -50,10 +48,10 @@ import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
+import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
-import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
-import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
+import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal/multichain-account-edit-modal';
+import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,

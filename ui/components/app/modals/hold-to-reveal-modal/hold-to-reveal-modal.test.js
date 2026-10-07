@@ -6,7 +6,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import HoldToRevealModal from '.';
+import HoldToRevealModal from './hold-to-reveal-modal';
 
 describe('Hold to Reveal Modal', () => {
   const mockStore = configureMockState([thunk])(mockState);

@@ -19,13 +19,13 @@ import {
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/lib/selectors';
+} from '../../../../shared/lib/selectors/smart-transactions';
 import { I18nContext } from '../../../contexts/i18n';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import Mascot from '../../../components/ui/mascot';
+import Mascot from '../../../components/ui/mascot/mascot.component';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import SwapsFooter from '../swaps-footer';
-import { Text } from '../../../components/component-library';
+import SwapsFooter from '../swaps-footer/swaps-footer';
+import { Text } from '../../../components/component-library/text/text';
 import {
   TextVariant,
   TextColor,

@@ -23,7 +23,7 @@ import {
   DEFAULT_BTC_CONVERSION_RATE,
 } from '../../constants';
 import { getEventPayloads } from '../../helpers';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import { mockSegment } from '../metrics/mocks/segment';
 import {
   BRIDGE_ETH_USD_SPOT_PRICE,

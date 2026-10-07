@@ -1,16 +1,16 @@
 import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box } from '../../component-library/box/box';
+import { IconName } from '../../component-library/icon/icon.types';
+import { ModalFocus } from '../../component-library/modal-focus/modal-focus';
+import { Popover } from '../../component-library/popover/popover';
 import {
-  Box,
-  IconName,
-  ModalFocus,
-  Popover,
   PopoverPosition,
   PopoverRole,
-  Text,
-} from '../../component-library';
-import { MenuItem } from '../../ui/menu';
+} from '../../component-library/popover/popover.types';
+import { Text } from '../../component-library/text/text';
+import MenuItem from '../../ui/menu/menu-item';
 
 export const NetworkListItemMenu = ({
   anchorElement,

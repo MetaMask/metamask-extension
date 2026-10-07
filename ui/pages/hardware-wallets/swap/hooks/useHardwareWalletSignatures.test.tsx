@@ -14,7 +14,7 @@ import {
   I18nProvider,
   en,
 } from '../../../../../test/lib/render-helpers-navigate';
-import { ConnectionStatus } from '../../../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../../../contexts/hardware-wallets/types';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -30,7 +30,7 @@ import { useHwSignTracker } from '../../../../hooks/hardware-wallets/useHwSignTr
 import { useBridgeNavigation } from '../../../../hooks/bridge/useBridgeNavigation';
 import useSubmitBridgeTransaction from '../../../../hooks/bridge/useSubmitBridgeTransaction';
 import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import { cleanupPendingApproval } from '../hardware-wallet-signatures.utils';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import { useHardwareWalletSignatures } from './useHardwareWalletSignatures';
@@ -60,14 +60,19 @@ const mockSetSigningInProgress = jest.fn();
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 const mockNavigate = jest.fn();
 
-jest.mock('../../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../../contexts/hardware-wallets'),
-  useHardwareWalletState: () => mockUseHardwareWalletState(),
-  useHardwareWalletActions: () => ({
-    setSigningInProgress: mockSetSigningInProgress,
-    ensureDeviceReady: mockEnsureDeviceReady,
+jest.mock(
+  '../../../../contexts/hardware-wallets/HardwareWalletContext',
+  () => ({
+    ...jest.requireActual(
+      '../../../../contexts/hardware-wallets/HardwareWalletContext',
+    ),
+    useHardwareWalletState: () => mockUseHardwareWalletState(),
+    useHardwareWalletActions: () => ({
+      setSigningInProgress: mockSetSigningInProgress,
+      ensureDeviceReady: mockEnsureDeviceReady,
+    }),
   }),
-}));
+);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),

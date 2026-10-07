@@ -6,7 +6,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { getPlatform } from '../util';
 import { phishingPageHref, phishingPageUrl } from './phishing-warning-page';
 import type { PhishingDetectionController } from './types';

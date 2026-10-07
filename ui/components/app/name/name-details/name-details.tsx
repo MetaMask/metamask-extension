@@ -15,24 +15,24 @@ import {
 } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { toChecksumAddress } from 'ethereumjs-util';
+import { Box } from '../../../component-library/box/box';
+import { Button } from '../../../component-library/button/button';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
 import {
-  Box,
-  Button,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonVariant,
-  FormTextField,
-  IconName,
-  Label,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  ModalBody,
-  ModalFooter,
   ButtonSize,
-} from '../../../component-library';
+} from '../../../component-library/button/button.types';
+import { FormTextField } from '../../../component-library/form-text-field/form-text-field';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Label } from '../../../component-library/label/label';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../component-library/text/text';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import {
   AlignItems,
   BlockSize,
@@ -47,7 +47,7 @@ import {
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
+import { getNameSources } from '../../../../selectors/selectors';
 import {
   setName as saveName,
   updateProposedNames,

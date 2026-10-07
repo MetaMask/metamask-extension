@@ -7,7 +7,7 @@ import {
   upgradeAccountConfirmationOnly,
 } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
-import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../../../../shared/lib/eip7702-utils';
 import {
   useIsDowngradeTransaction,
   useIsUpgradeTransaction,

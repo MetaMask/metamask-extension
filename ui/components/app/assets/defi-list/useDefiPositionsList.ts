@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
+import { getEnabledNetworksByNamespace } from '../../../../selectors/multichain/networks';
 import {
-  getEnabledNetworksByNamespace,
   getSelectedAccount,
   getTokenSortConfig,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { filterAssets } from '../util/filter';

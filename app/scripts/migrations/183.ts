@@ -1,7 +1,7 @@
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 
 type VersionedData = {
   meta: { version: number };

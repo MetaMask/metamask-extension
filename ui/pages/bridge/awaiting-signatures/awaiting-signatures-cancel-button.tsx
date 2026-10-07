@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button } from '../../../components/component-library';
+import { Button } from '../../../components/component-library/button/button';
 import { I18nContext } from '../../../contexts/i18n';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 

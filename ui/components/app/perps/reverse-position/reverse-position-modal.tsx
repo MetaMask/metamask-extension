@@ -15,48 +15,44 @@ import {
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  ModalContentSize,
-  ModalBody,
-  ModalFooter,
-} from '../../../component-library';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../component-library/modal-overlay/modal-overlay';
+import { ModalContentSize } from '../../../component-library/modal-content/modal-content.types';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
+import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
 import { getPositionDirection, getDisplaySymbol } from '../utils';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
-import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { PerpsFeesDisplay } from '../perps-fees-display';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
+import { usePerpsToast } from '../perps-toast/perps-toast-provider';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display/perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
-import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-import { useSelectedAccountComplianceGate } from '../../compliance';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
 
 export type ReversePositionModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  position: Position;
+  position: PerpsPosition;
   currentPrice: number;
   sizeDecimals?: number;
 };
 
-function toFlipPositionPayload(pos: Position): Position {
+function toFlipPositionPayload(pos: PerpsPosition): PerpsPosition {
   if (typeof pos.leverage === 'object' && pos.leverage !== null) {
     return pos;
   }

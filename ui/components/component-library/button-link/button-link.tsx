@@ -4,9 +4,10 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
-import { ButtonBase, type ButtonBaseProps } from '../button-base';
-import { IconSize } from '../icon';
+import type { PolymorphicRef } from '../box/box.types';
+import { ButtonBase } from '../button-base/button-base';
+import type { ButtonBaseProps } from '../button-base/button-base.types';
+import { IconSize } from '../icon/icon.types';
 import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 

@@ -1,12 +1,10 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
-import {
-  BannerAlert,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../component-library';
-import Disclosure from '../../../ui/disclosure';
+import { BannerAlert } from '../../../component-library/banner-alert/banner-alert';
+import { ButtonLink } from '../../../component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../component-library/button-link/button-link.types';
+import { Text } from '../../../component-library/text/text';
+import Disclosure from '../../../ui/disclosure/disclosure';
 import { DisclosureVariant } from '../../../ui/disclosure/disclosure.constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -17,7 +15,7 @@ import {
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
-import { AlertProvider } from '../alert-provider';
+import { AlertProvider } from '../alert-provider/alert-provider';
 import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type GeneralAlertProps = {

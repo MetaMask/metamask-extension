@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
@@ -47,11 +47,14 @@ jest.mock('../../../selectors/assets', () => ({
 
 // The Long / Short buttons have their own tests; here we only verify that
 // TokenButtons swaps in the Perps action row when a market symbol is set.
-jest.mock('../../../components/app/perps/perps-trade-buttons', () => ({
-  PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
-    <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
-  ),
-}));
+jest.mock(
+  '../../../components/app/perps/perps-trade-buttons/perps-trade-buttons',
+  () => ({
+    PerpsTradeButtons: ({ marketSymbol }: { marketSymbol: string }) => (
+      <div data-testid="perps-trade-buttons" data-market={marketSymbol} />
+    ),
+  }),
+);
 
 const mockTrackEvent = jest.fn();
 jest.mock('../../../hooks/useAnalytics', () => {

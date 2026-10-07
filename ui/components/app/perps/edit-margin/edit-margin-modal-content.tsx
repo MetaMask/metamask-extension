@@ -18,7 +18,10 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import type {
+  Position as PerpsPosition,
+  AccountState,
+} from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -26,28 +29,28 @@ import {
 } from '../../../../../shared/lib/perps-formatters';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../component-library';
+import { TextField } from '../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../component-library/text-field/text-field.types';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
-import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { useSelectedAccountComplianceGate } from '../../compliance';
-import type { Position, AccountState, PerpsBackgroundResult } from '../types';
-import { PerpsSlider } from '../perps-slider';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
+import { usePerpsToast } from '../perps-toast/perps-toast-provider';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
+import type { PerpsBackgroundResult } from '../types';
+import { PerpsSlider } from '../perps-slider/perps-slider';
 import { getDisplaySymbol } from '../utils';
 import {
   formatPerpsLiquidationPrice,
@@ -94,7 +97,7 @@ const getMarginAdjustmentFailedToast = (
 };
 
 export type EditMarginModalContentProps = {
-  position: Position;
+  position: PerpsPosition;
   account: AccountState | null;
   currentPrice: number;
   /** When used in modal: 'add' or 'remove' for single-purpose modal. No in-content toggle. */

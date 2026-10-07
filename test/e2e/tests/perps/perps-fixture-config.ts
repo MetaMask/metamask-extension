@@ -11,7 +11,7 @@ import {
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
 import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { formatUnits } from '../../../../shared/lib/unit';
 import {
   MOCK_ETH_OPEN_LONG_FILL,

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import type { HomeDeepLinkQrCode } from '../pages/home/HomeDeepLinkActions';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import {
   getIsPrimarySeedPhraseBackedUp,
   getIsSeedlessPasswordOutdated,

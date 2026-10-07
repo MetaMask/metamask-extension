@@ -2,17 +2,16 @@ import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import { Icon, IconName, IconSize } from '@metamask/design-system-react';
-import { isTronChainId } from '../../../../ducks/bridge/utils';
-import {
-  TextField,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalProps,
-  ModalBody,
-  ModalHeader,
-} from '../../../../components/component-library';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { isTronChainId } from '../../../confirmations/utils/network';
+import { TextField } from '../../../../components/component-library/text-field/text-field';
+import { Text } from '../../../../components/component-library/text/text';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalProps } from '../../../../components/component-library/modal/modal.types';
+import { ModalBody } from '../../../../components/component-library/modal-body/modal-body';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
 import {
   BackgroundColor,
   BorderRadius,

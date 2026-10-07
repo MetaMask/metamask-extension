@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsHero } from './transaction-details-hero';
 
 const mockStore = configureMockStore([]);

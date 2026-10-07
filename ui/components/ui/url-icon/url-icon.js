@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import IconWithFallback from '../icon-with-fallback';
+import IconWithFallback from '../icon-with-fallback/icon-with-fallback.component';
 
 /**
  * @deprecated `<UrlIcon />` has been deprecated in favor of one of the avatar components `<AvatarNetwork />`, `<AvatarToken/>` or `<AvatarFavicon/>`

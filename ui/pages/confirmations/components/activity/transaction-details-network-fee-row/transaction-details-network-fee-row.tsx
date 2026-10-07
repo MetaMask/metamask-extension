@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import { TextVariant } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
-import { TransactionDetailsRow } from '../transaction-details-row';
-import { useTransactionDetails } from '../transaction-details-context';
+import { TransactionDetailsRow } from '../transaction-details-row/transaction-details-row';
+import { useTransactionDetails } from '../transaction-details-context/transaction-details-context';
 
 export function TransactionDetailsNetworkFeeRow() {
   const t = useI18nContext();

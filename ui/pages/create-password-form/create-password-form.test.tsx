@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { CreatePasswordForm } from '.';
+import CreatePasswordForm from './create-password-form';
 
 const mockTrackEvent = jest.fn();
 

@@ -8,7 +8,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import Spinner from '../../../components/ui/spinner';
+import Spinner from '../../../components/ui/spinner/spinner.component';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 
 type RampsSelectionPageProps = {

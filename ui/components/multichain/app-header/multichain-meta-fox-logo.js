@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import Logo from '../../ui/metafox-logo';
+import Logo from '../../ui/metafox-logo/metafox-logo.component';
 
 export const MultichainMetaFoxLogo = () => {
   const theme = useTheme();

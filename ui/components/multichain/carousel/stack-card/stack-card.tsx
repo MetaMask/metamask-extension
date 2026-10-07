@@ -7,15 +7,15 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   isInternalRouteHref,
-  resolveCarouselHref,
-} from '../resolve-carousel-href';
+  resolveTrustedDeepLinkHref as resolveCarouselHref,
+} from '../../../../helpers/utils/resolve-deep-link-href';
 import type { StackCardProps } from './stack-card.types';
 
 export const StackCard = ({

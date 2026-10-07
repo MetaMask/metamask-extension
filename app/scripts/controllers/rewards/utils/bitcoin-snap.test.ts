@@ -1,6 +1,6 @@
 import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import { HandlerType } from '@metamask/snaps-utils';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../../../shared/lib/accounts/bitcoin-wallet-snap';
 import {
   signBitcoinRewardsMessage,
   SignRewardsMessageResult,

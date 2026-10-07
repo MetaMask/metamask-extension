@@ -1,5 +1,5 @@
 import React from 'react';
-import { AccountListItemMenu } from '.';
+import { AccountListItemMenu } from './account-list-item-menu';
 
 export default {
   title: 'Components/Multichain/AccountListItemMenu',

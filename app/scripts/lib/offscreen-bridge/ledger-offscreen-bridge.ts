@@ -14,10 +14,8 @@ import {
   LedgerAction,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
-import {
-  HardwareWalletType,
-  toHardwareWalletError,
-} from '../../../../shared/lib/hardware-wallets';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import { toHardwareWalletError } from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
 import {
   SerializedLedgerError,
   isSerializedLedgerError,

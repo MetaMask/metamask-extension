@@ -1,17 +1,15 @@
 import React from 'react';
 
-import { Box } from '../../../../../../../components/component-library';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../../components/app/confirm/info/row';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row/text';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
   AlignItems,
   Display,
   JustifyContent,
 } from '../../../../../../../helpers/constants/design-system';
-import Preloader from '../../../../../../../components/ui/icon/preloader';
+import Preloader from '../../../../../../../components/ui/icon/preloader/preloader-icon.component';
 
 const CollapsedSectionStyles = {
   display: Display.Flex,

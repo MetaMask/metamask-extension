@@ -8,9 +8,11 @@ import {
 import { isCaipChainId, Hex } from '@metamask/utils';
 import { handleFetch } from '@metamask/controller-utils';
 import { isEvmChainId, toAssetId } from '../../shared/lib/asset-utils';
-import { getMarketData } from '../selectors';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
-import { getCurrencyRates } from '../selectors/selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+} from '../../shared/lib/selectors/assets-migration';
 import { formatCompactCurrency } from '../helpers/utils/token-insights';
 import { useFormatters } from './useFormatters';
 

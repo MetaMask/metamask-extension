@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 

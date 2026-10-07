@@ -27,7 +27,8 @@ import {
   getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
   getActiveQrCodeScanRequest,
-} from '../../../selectors';
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { SECOND } from '../../../../shared/constants/time';
@@ -45,7 +46,6 @@ import {
   DEVICE_KEYRING_MAP,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   MetaMetricsEventAccountType,
@@ -53,12 +53,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  toHardwareWalletError,
-  HardwareWalletType,
-} from '../../../contexts/hardware-wallets';
+import { toHardwareWalletError } from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 import AccountList from './account-list';
 import SelectHardware from './select-hardware';

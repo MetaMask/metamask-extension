@@ -6,12 +6,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  SensitiveText,
-  SensitiveTextLength,
-} from '../../../../component-library';
+import { SensitiveText } from '../../../../component-library/sensitive-text/sensitive-text';
+import { SensitiveTextLength } from '../../../../component-library/sensitive-text/sensitive-text.types';
 import { TokenFiatDisplayInfo } from '../../types';
-import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors/multichain/networks';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 

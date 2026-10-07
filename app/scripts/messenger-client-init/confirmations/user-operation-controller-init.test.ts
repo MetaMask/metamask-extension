@@ -8,7 +8,7 @@ import {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
   UserOperationControllerInitMessenger,
-} from '../messengers';
+} from '../messengers/user-operation-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { UserOperationControllerInit } from './user-operation-controller-init';
 

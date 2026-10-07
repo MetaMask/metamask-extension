@@ -33,7 +33,7 @@ import {
   useTransactionPayRequiredTokens,
   useTransactionPayTotals,
 } from '../../pay/useTransactionPayData';
-import { getNativeTokenInfo } from '../../../../../selectors';
+import { getNativeTokenInfo } from '../../../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { AlertsName } from '../constants';
 

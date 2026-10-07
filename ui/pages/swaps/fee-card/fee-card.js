@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
-import InfoTooltip from '../../../components/ui/info-tooltip';
+import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
@@ -15,12 +15,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { getUseCurrencyRateCheck } from '../../../selectors';
-import {
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../components/component-library';
+import { getUseCurrencyRateCheck } from '../../../selectors/selectors';
+import { Text } from '../../../components/component-library/text/text';
+import { ButtonLink } from '../../../components/component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../components/component-library/button-link/button-link.types';
 
 export default function FeeCard({
   primaryFee,

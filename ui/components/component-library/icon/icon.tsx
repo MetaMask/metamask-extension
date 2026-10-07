@@ -3,8 +3,9 @@ import classnames from 'clsx';
 
 import { IconColor, Display } from '../../../helpers/constants/design-system';
 
-import { Box, BoxProps } from '../box';
-import type { PolymorphicRef } from '../box';
+import { Box } from '../box/box';
+import { BoxProps } from '../box/box.types';
+import type { PolymorphicRef } from '../box/box.types';
 
 import { IconSize, IconProps, IconComponent } from './icon.types';
 

@@ -4,7 +4,7 @@ import { MessengerClientInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
-} from '../messengers/core-backend';
+} from '../messengers/core-backend/backend-websocket-service-messenger';
 import { trace } from '../../../../shared/lib/trace';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 

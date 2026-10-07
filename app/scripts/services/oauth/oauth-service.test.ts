@@ -460,10 +460,10 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('preserves the browser auth flow error for sentry when no redirect URL is returned', async () => {
-    const ErrorUtils = jest.requireActual<
-      typeof import('../../../../shared/lib/error')
-    >('../../../../shared/lib/error');
-    const createSentryErrorSpy = jest.spyOn(ErrorUtils, 'createSentryError');
+    const createSentryErrorSpy = jest.spyOn(
+      jest.requireActual('../../../../shared/lib/error'),
+      'createSentryError',
+    );
     const captureException = jest.fn();
     messenger.captureException = captureException;
     const browserAuthFlowErrorMessage =

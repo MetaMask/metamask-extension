@@ -1,16 +1,18 @@
 import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
 import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
+import { BFT_CHILD_PREFERENCES } from '../../../shared/lib/basic-functionality-consolidation';
 import {
-  BFT_CHILD_PREFERENCES,
   getIsAdvancedChartsEnabled,
-  getIsBasicFunctionalityConsolidationEnabled,
-  getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
   getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
+} from './feature-flags';
+import {
+  getIsBasicFunctionalityConsolidationEnabled,
+  getIsBasicFunctionalityToggleEnabled,
   getShouldShowBasicFunctionalityMigrationModal,
   getShouldShowBasicFunctionalityMigrationToast,
-} from './feature-flags';
+} from './basic-functionality';
 
 const buildState = (
   remoteFeatureFlags: Record<string, unknown> = {},

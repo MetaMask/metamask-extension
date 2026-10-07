@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
-import { Header } from '.';
+import { Header } from './header';
 
 const HEADER_TEXT = 'Connections';
 

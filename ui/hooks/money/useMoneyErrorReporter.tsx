@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
+import { toast } from 'react-hot-toast';
 import { SECOND } from '../../../shared/constants/time';
-import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { ToastContent } from '../../components/ui/toast/toast';
 import {
   reportMoneyError,
   type MoneyErrorExtra,

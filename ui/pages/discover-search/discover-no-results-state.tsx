@@ -16,10 +16,8 @@ import {
 } from '@metamask/design-system-react';
 import type { CaipAssetType } from '@metamask/utils';
 
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { getCaipAssetImageUrl } from '../../../shared/lib/asset-utils';

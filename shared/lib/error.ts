@@ -6,8 +6,6 @@ import {
   isErrorWithMessage,
 } from '@metamask/utils';
 
-export { isErrorWithMessage } from '@metamask/utils';
-
 /**
  * Attempts to obtain the message from a possible error object, defaulting to an
  * empty string if it is impossible to do so.

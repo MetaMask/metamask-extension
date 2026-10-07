@@ -16,10 +16,10 @@ import { PERPS_SUPPORT_ARTICLES_URLS } from '../../../../../shared/constants/per
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { FillType } from '../types/transactionHistory';
-import type { PerpsTransaction } from '../types';
+import type { PerpsTransaction } from '../types/transactionHistory';
 
 type FillTagConfig = {
   label: string;

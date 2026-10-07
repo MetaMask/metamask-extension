@@ -7,10 +7,10 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text } from '../../../../components/component-library';
-import Tooltip from '../../../../components/ui/tooltip';
+import { Text } from '../../../../components/component-library/text/text';
+import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { getShouldShowFiat } from '../../../../selectors';
+import { getShouldShowFiat } from '../../../../selectors/selectors';
 import { FIAT_UNAVAILABLE, FiatAmount } from './types';
 
 const textStyle = {

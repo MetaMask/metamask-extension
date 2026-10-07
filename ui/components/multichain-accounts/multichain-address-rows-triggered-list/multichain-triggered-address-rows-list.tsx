@@ -22,7 +22,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { Popover, PopoverPosition } from '../../component-library';
+import { Popover } from '../../component-library/popover/popover';
+import { PopoverPosition } from '../../component-library/popover/popover.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {

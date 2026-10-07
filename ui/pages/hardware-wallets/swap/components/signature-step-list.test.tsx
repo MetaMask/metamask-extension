@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
-import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import { SignatureStepStatus } from '../types';
 import SignatureStepList from './signature-step-list';
 

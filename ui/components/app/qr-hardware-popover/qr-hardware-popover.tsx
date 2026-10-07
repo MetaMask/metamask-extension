@@ -1,17 +1,21 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { getActiveQrCodeScanRequest } from '../../../selectors';
+import { getActiveQrCodeScanRequest } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-} from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
 import { AlignItems } from '../../../helpers/constants/design-system';
 import {
   cancelTx,
@@ -27,12 +31,20 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
 } from '../../../helpers/constants/routes';
-import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../contexts/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../../shared/lib/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
 import { useDispatch } from '../../../store/hooks';
+import { mmLazy } from '../../../helpers/utils/mm-lazy';
+import Spinner from '../../ui/spinner/spinner.component';
 import type { ConfirmTransactionSlice } from './qr-hardware-popover.types';
-import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
-import QRHardwareSignRequest from './qr-hardware-sign-request';
+
+const QRHardwareWalletImporter = mmLazy(
+  () => import('./qr-hardware-wallet-importer/qr-hardware-wallet-importer'),
+);
+const QRHardwareSignRequest = mmLazy(
+  () =>
+    import('./qr-hardware-sign-request/qr-hardware-sign-request/qr-hardware-sign-request'),
+);
 
 // Keeps the ModalHeader children slot rendered so the close button stays on the right.
 const EMPTY_HEADER_PLACEHOLDER = '\u00A0';
@@ -175,23 +187,25 @@ const QRHardwarePopover = () => {
         <ModalHeader onClose={onClose}>
           {title || EMPTY_HEADER_PLACEHOLDER}
         </ModalHeader>
-        {activeScanRequest.type === QrScanRequestType.PAIR && (
-          <QRHardwareWalletImporter
-            handleCancel={walletImporterCancel}
-            setErrorTitle={setErrorTitle}
-            setErrorActive={setErrorActive}
-            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
-          />
-        )}
-        {activeScanRequest.type === QrScanRequestType.SIGN && (
-          <QRHardwareSignRequest
-            setErrorTitle={setErrorTitle}
-            setErrorActive={setErrorActive}
-            setCameraPermissionErrorCode={setCameraPermissionErrorCode}
-            handleCancel={signRequestCancel}
-            request={activeScanRequest.request}
-          />
-        )}
+        <Suspense fallback={<Spinner />}>
+          {activeScanRequest.type === QrScanRequestType.PAIR && (
+            <QRHardwareWalletImporter
+              handleCancel={walletImporterCancel}
+              setErrorTitle={setErrorTitle}
+              setErrorActive={setErrorActive}
+              setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+            />
+          )}
+          {activeScanRequest.type === QrScanRequestType.SIGN && (
+            <QRHardwareSignRequest
+              setErrorTitle={setErrorTitle}
+              setErrorActive={setErrorActive}
+              setCameraPermissionErrorCode={setCameraPermissionErrorCode}
+              handleCancel={signRequestCancel}
+              request={activeScanRequest.request}
+            />
+          )}
+        </Suspense>
       </ModalContent>
     </Modal>
   );

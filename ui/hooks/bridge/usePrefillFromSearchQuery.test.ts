@@ -7,7 +7,7 @@ import {
   MOCK_SOLANA_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../test/stub/networks';
 
 import { usePrefillFromSearchQuery } from './usePrefillFromSearchQuery';

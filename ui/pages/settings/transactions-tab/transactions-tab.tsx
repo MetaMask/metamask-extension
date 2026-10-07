@@ -7,18 +7,16 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/lib/selectors/smart-transactions';
 import { SettingItemConfig } from '../types';
-import {
-  SettingsTab,
-  createToggleItem,
-  createDescriptionWithLearnMore,
-} from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
+import { createDescriptionWithLearnMore } from '../shared/description-with-learn-more';
 import {
   getIsSecurityAlertsEnabled,
   getUseExternalNameSources,
-} from '../../../selectors';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+} from '../../../selectors/selectors';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
+import { getIsActiveShieldSubscription } from '../../../selectors/subscription/subscription';
 import {
   setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
@@ -27,7 +25,7 @@ import {
   setUseExternalNameSources,
   setUseTransactionSimulations,
 } from '../../../store/actions';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { TRANSACTION_ITEMS } from '../search-config';
 
 const selectIsDisabledByShieldSubscription = (state: MetaMaskReduxState) =>

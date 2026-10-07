@@ -46,9 +46,13 @@ jest.mock('../../../hooks/perps/usePerpsAttribution', () => ({
     setFlowAttribution: mockSetFlowAttribution,
   }),
 }));
-jest.mock('../../../hooks/perps/stream', () => ({
-  usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
+
+jest.mock('../../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: () => ({ account: null }),
+}));
+
+jest.mock('../../../hooks/perps/stream/usePerpsLiveMarketListData', () => ({
+  usePerpsLiveMarketListData: () => mockUsePerpsLiveMarketListData(),
 }));
 
 const mockStore = configureStore({

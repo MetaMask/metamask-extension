@@ -6,8 +6,6 @@ import {
 } from '../../../lib/messenger';
 import type { MoneyKeyringBuilderMessenger } from '../../../lib/money/money-keyring-builder';
 
-export type { MoneyKeyringBuilderMessenger };
-
 /**
  * Gets the messenger for the Money keyring builder, scoped to the single
  * action the keyring needs: reading the mnemonic of its entropy source

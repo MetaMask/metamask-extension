@@ -4,9 +4,11 @@ import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
 import * as useSubscription from '../../hooks/subscription/useSubscription';
 import * as useSubscriptionMetrics from '../../hooks/shield/metrics/useSubscriptionMetrics';
-import * as selectors from '../../selectors';
+
+import * as selectorsModule9 from '../../selectors/selectors';
+
 import * as authSelectors from '../../selectors/identity/authentication';
-import * as subscriptionSelectors from '../../selectors/subscription';
+import * as subscriptionSelectorsModule1 from '../../selectors/subscription/subscription';
 import * as metamaskBaseSelectors from '../../ducks/metamask/base-selectors';
 import * as environment from '../../../shared/lib/environment';
 import { useDispatch } from '../../store/hooks';
@@ -52,7 +54,7 @@ describe('ShieldSubscriptionProvider', () => {
 
     mockUseAppDispatch.mockReturnValue(mockDispatch);
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === selectors.getUseExternalServices) {
+      if (selector === selectorsModule9.getUseExternalServices) {
         return true;
       }
       if (selector === metamaskBaseSelectors.getIsUnlocked) {
@@ -61,10 +63,15 @@ describe('ShieldSubscriptionProvider', () => {
       if (selector === authSelectors.selectIsSignedIn) {
         return true;
       }
-      if (selector === subscriptionSelectors.getIsActiveShieldSubscription) {
+      if (
+        selector === subscriptionSelectorsModule1.getIsActiveShieldSubscription
+      ) {
         return false;
       }
-      if (selector === subscriptionSelectors.getHasShieldEntryModalShownOnce) {
+      if (
+        selector ===
+        subscriptionSelectorsModule1.getHasShieldEntryModalShownOnce
+      ) {
         return false;
       }
       return false;
@@ -254,7 +261,7 @@ describe('ShieldSubscriptionProvider', () => {
       let isBasicFunctionalityEnabled = false;
 
       mockUseSelector.mockImplementation((selector) => {
-        if (selector === selectors.getUseExternalServices) {
+        if (selector === selectorsModule9.getUseExternalServices) {
           return isBasicFunctionalityEnabled;
         }
         if (selector === metamaskBaseSelectors.getIsUnlocked) {
@@ -263,11 +270,15 @@ describe('ShieldSubscriptionProvider', () => {
         if (selector === authSelectors.selectIsSignedIn) {
           return true;
         }
-        if (selector === subscriptionSelectors.getIsActiveShieldSubscription) {
+        if (
+          selector ===
+          subscriptionSelectorsModule1.getIsActiveShieldSubscription
+        ) {
           return false;
         }
         if (
-          selector === subscriptionSelectors.getHasShieldEntryModalShownOnce
+          selector ===
+          subscriptionSelectorsModule1.getHasShieldEntryModalShownOnce
         ) {
           return false;
         }

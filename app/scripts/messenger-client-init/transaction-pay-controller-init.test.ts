@@ -26,7 +26,7 @@ import {
   getTransactionPayControllerMessenger,
   getTransactionPayControllerInitMessenger,
   TransactionPayControllerInitMessenger,
-} from './messengers';
+} from './messengers/transaction-pay-controller-messenger';
 import { TransactionPayControllerInit } from './transaction-pay-controller-init';
 
 jest.mock('@metamask/transaction-pay-controller');

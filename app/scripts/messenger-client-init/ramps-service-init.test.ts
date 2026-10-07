@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import type { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getRampsServiceMessenger } from './messengers';
+import { getRampsServiceMessenger } from './messengers/ramps-service-messenger';
 import { RampsServiceInit } from './ramps-service-init';
 
 jest.mock('@metamask/ramps-controller');

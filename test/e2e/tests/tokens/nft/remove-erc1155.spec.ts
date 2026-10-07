@@ -12,7 +12,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   NETWORK_CLIENT_ID,
 } from '../../../constants';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [

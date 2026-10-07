@@ -8,7 +8,7 @@ import {
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../../../../../shared/constants/metametrics';
 import { HARDWARE_WALLET_RECOVERY_SEGMENT_PAYLOAD_KEYS } from '../../../../../shared/lib/hardware-wallet-recovery-metrics';
-import { QrErrorFlowContext } from '../qr-error-content';
+import { QrErrorFlowContext } from '../qr-error-content/qr-error-content.types';
 import {
   ScanErrorCategory,
   type ScanErrorClassification,

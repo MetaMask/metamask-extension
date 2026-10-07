@@ -16,18 +16,16 @@ import {
 } from '../../../../helpers/utils/notification.util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 
-import {
-  NotificationListItem,
-  NotificationDetailAddress,
-  NotificationDetailInfo,
-  NotificationDetailAsset,
-  NotificationDetailNetworkFee,
-  NotificationDetailBlockExplorerButton,
-  NotificationDetailNft,
-  NotificationDetailCollection,
-} from '../../../../components/multichain';
+import { NotificationListItem } from '../../../../components/multichain/notification-list-item/notification-list-item';
+import { NotificationDetailAddress } from '../../../../components/multichain/notification-detail-address/notification-detail-address';
+import { NotificationDetailInfo } from '../../../../components/multichain/notification-detail-info/notification-detail-info';
+import { NotificationDetailAsset } from '../../../../components/multichain/notification-detail-asset/notification-detail-asset';
+import { NotificationDetailNetworkFee } from '../../../../components/multichain/notification-detail-network-fee/notification-detail-network-fee';
+import { NotificationDetailBlockExplorerButton } from '../../../../components/multichain/notification-detail-block-explorer-button/notification-detail-block-explorer-button';
+import { NotificationDetailNft } from '../../../../components/multichain/notification-detail-nft/notification-detail-nft';
+import { NotificationDetailCollection } from '../../../../components/multichain/notification-detail-collection/notification-detail-collection';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import { BadgeWrapperPosition } from '../../../../components/component-library';
+import { BadgeWrapperPosition } from '../../../../components/component-library/badge-wrapper/badge-wrapper.types';
 import { OnChainNotificationDetailsTitle } from '../notification-details-title';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;

@@ -1,15 +1,15 @@
 import React, { type ReactNode } from 'react';
 import { Text } from '@metamask/design-system-react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Status } from '../../../../shared/lib/activity/types';
-import { ActivityAvatar } from '../../../components/app/activity-list-item-avatar';
+import type { Status } from '@metamask/client-utils';
+import { ActivityListItemAvatar as ActivityAvatar } from '../../../components/app/activity-list-item-avatar/activity-list-item-avatar';
 import { TransactionStatus } from '../../../components/app/transaction/transaction-status';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context';
+import { TransactionDetailsProvider } from '../../confirmations/components/activity/transaction-details-context/transaction-details-context';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary';
+import { TransactionDetailsSummary } from '../../confirmations/components/activity/transaction-details-summary/transaction-details-summary';
 import { Footer, Row, Section } from '../components/shared';
 
 type MmPayFeeFields = {

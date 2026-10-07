@@ -22,7 +22,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../app/srp-quiz-modal', () => ({
+jest.mock('../../app/srp-quiz-modal/SRPQuiz/SRPQuiz', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>

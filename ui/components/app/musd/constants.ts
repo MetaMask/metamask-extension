@@ -7,7 +7,7 @@
 
 import type { Hex } from '@metamask/utils';
 import { MUSD_TOKEN } from '@metamask/money-account-utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 /**
  * The Merkl Distributor contract that paid out mUSD bonus claims.
@@ -39,7 +39,6 @@ export const MUSD_TOKEN_ADDRESS: Hex =
  * the shared single source of truth for mUSD token metadata across clients
  * (symbol "mUSD", name "MetaMask USD", matching the on-chain token).
  */
-export { MUSD_TOKEN };
 
 /**
  * mUSD token decimals (derived from MUSD_TOKEN for single source of truth)

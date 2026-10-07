@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getUseExternalServices } from '../../selectors/selectors';
 import {

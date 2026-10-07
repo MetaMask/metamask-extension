@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import {
-  NotificationsSettingsBox,
-  NotificationsSettingsAccount,
-} from '../../components/multichain';
+import { NotificationsSettingsBox } from '../../components/multichain/notifications-settings-box/notifications-settings-box';
+import { NotificationsSettingsAccount } from '../../components/multichain/notifications-settings-account/notifications-settings-account';
 import { shortenAddress } from '../../helpers/utils/util';
 
 type NotificationsSettingsPerAccountProps = {

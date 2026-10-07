@@ -1,12 +1,12 @@
-import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
+import {
+  Controller as UserStorageController,
+  UserStorageControllerMessenger,
+} from '@metamask/profile-sync-controller/user-storage';
 import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
   getUserStorageControllerMessenger,
-  UserStorageControllerMessenger,
-} from '../messengers/identity';
-import {
   getUserStorageControllerInitMessenger,
   UserStorageControllerInitMessenger,
 } from '../messengers/identity/user-storage-controller-messenger';

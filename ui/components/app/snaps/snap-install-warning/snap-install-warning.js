@@ -14,19 +14,17 @@ import {
   BorderRadius,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  Box,
-  IconName,
-  Text,
-  Modal,
-  ModalFooter,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-} from '../../../component-library';
-import PermissionCell from '../../permission-cell';
+import { AvatarIcon } from '../../../component-library/avatar-icon/avatar-icon';
+import { AvatarIconSize } from '../../../component-library/avatar-icon/avatar-icon.types';
+import { Box } from '../../../component-library/box/box';
+import { IconName } from '../../../component-library/icon/icon.types';
+import { Text } from '../../../component-library/text/text';
+import { Modal } from '../../../component-library/modal/modal';
+import { ModalFooter } from '../../../component-library/modal-footer/modal-footer';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { ModalContent } from '../../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../component-library/modal-header/modal-header';
+import PermissionCell from '../../permission-cell/permission-cell';
 
 export default function SnapInstallWarning({
   onCancel,

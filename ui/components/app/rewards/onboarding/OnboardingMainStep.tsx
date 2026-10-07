@@ -14,11 +14,9 @@ import {
   TextButtonSize,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  ModalBody,
-  TextField,
-  TextFieldSize,
-} from '../../../component-library';
+import { ModalBody } from '../../../component-library/modal-body/modal-body';
+import { TextField } from '../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../component-library/text-field/text-field.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOptIn } from '../../../../hooks/rewards/useOptIn';
 import {
@@ -37,9 +35,9 @@ import {
   selectVipProgramEnabled,
 } from '../../../../ducks/rewards/selectors';
 import { useAppSelector, useDispatch } from '../../../../store/hooks';
-import LoadingIndicator from '../../../ui/loading-indicator';
+import LoadingIndicator from '../../../ui/loading-indicator/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
-import { RewardsVipReferralTag } from '../RewardsVipReferralTag';
+import { RewardsVipReferralTag } from '../RewardsVipReferralTag/RewardsVipReferralTag';
 
 import {
   REWARDS_ONBOARD_HERO_IMAGE_URL,

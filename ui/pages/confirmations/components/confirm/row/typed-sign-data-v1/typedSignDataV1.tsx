@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import { BlockSize } from '../../../../../../helpers/constants/design-system';
 import { TypedSignDataV1Type } from '../../../../types/confirm';
 import { DataTree } from '../dataTree';

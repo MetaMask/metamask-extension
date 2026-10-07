@@ -12,16 +12,15 @@ import {
 import { getAccountLink } from '@metamask/etherscan-link';
 import { parseCaipAssetType } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
-import {
-  IconName,
-  Text,
-  TextField,
-  TextFieldType,
-  ButtonLink,
-} from '../../../components/component-library';
+import { IconName } from '../../../components/component-library/icon/icon.types';
+import { Text } from '../../../components/component-library/text/text';
+import { TextField } from '../../../components/component-library/text-field/text-field';
+import { TextFieldType } from '../../../components/component-library/text-field/text-field.types';
+import { ButtonLink } from '../../../components/component-library/button-link/button-link';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount, sanitizeAmountInput } from '../utils/quote';
-import { Column, Row } from '../layout';
+import Column from '../layout/column';
+import Row from '../layout/row';
 import {
   Display,
   FontWeight,

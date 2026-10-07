@@ -13,13 +13,11 @@ import {
   mapHardwareWalletTypeToMetricDeviceType,
   nextHardwareWalletRecoveryInlineCtaViewCount,
 } from '../../../shared/lib/hardware-wallet-recovery-metrics';
-import { createHardwareWalletError } from '../../contexts/hardware-wallets/errors';
-import { getHardwareWalletErrorCode } from '../../contexts/hardware-wallets/rpcErrorUtils';
-import {
-  ConnectionStatus,
-  HardwareWalletType,
-  type HardwareWalletConnectionState,
-} from '../../contexts/hardware-wallets/types';
+import { createHardwareWalletError } from '../../../shared/lib/hardware-wallets/errors';
+import { getHardwareWalletErrorCode } from '../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
+import type { HardwareWalletConnectionState } from '../../contexts/hardware-wallets/types';
 
 /**
  * MetaMetrics: {@link MetaMetricsEventName.HardwareWalletRecoveryCtaClicked} when the user

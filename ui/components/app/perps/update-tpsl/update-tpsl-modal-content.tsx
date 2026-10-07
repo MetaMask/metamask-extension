@@ -34,31 +34,30 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TextField, TextFieldSize } from '../../../component-library';
+import { TextField } from '../../../component-library/text-field/text-field';
+import { TextFieldSize } from '../../../component-library/text-field/text-field.types';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  usePerpsEligibility,
-  usePerpsEventTracking,
-} from '../../../../hooks/perps';
+import { usePerpsEligibility } from '../../../../hooks/perps/usePerpsEligibility';
+import { usePerpsEventTracking } from '../../../../hooks/perps/usePerpsEventTracking';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
-import { getPerpsStreamManager } from '../../../../providers/perps';
-import { usePerpsToast } from '../perps-toast';
-import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
-import { useSelectedAccountComplianceGate } from '../../compliance';
-import type { Position, PerpsBackgroundResult } from '../types';
+import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { usePerpsToast } from '../perps-toast/perps-toast-provider';
+import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast.constants';
+import { useSelectedAccountComplianceGate } from '../../compliance/useSelectedAccountComplianceGate';
+import type { PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
   formatRoePercent,
   getPnlDisplayColor,
   getPrivacyAwareColor,
 } from '../utils';
-import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsGeoBlockModal } from '../perps-geo-block-modal/perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
@@ -97,7 +96,7 @@ export type UpdateTPSLSubmitState = {
 };
 
 export type UpdateTPSLModalContentProps = {
-  position: Position;
+  position: PerpsPosition;
   currentPrice: number;
   onClose: () => void;
   /** Wired by UpdateTPSLModal to place the primary action in ModalFooter */

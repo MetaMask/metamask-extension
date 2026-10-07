@@ -7,8 +7,12 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
 
-jest.mock('../../../../../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: (state: { currency?: string }) => state?.currency,
+jest.mock('../../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/selectors/assets-migration',
+  ),
+  getCurrencyRateControllerCurrentCurrency: (state: { currency?: string }) =>
+    state?.currency,
 }));
 
 jest.mock('react-redux', () => ({
@@ -16,15 +20,19 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../components/component-library/skeleton', () => ({
-  Skeleton: ({
-    isLoading,
-    children,
-  }: {
-    isLoading?: boolean;
-    children: React.ReactNode;
-  }) => (isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>),
-}));
+jest.mock(
+  '../../../../../components/component-library/skeleton/skeleton',
+  () => ({
+    Skeleton: ({
+      isLoading,
+      children,
+    }: {
+      isLoading?: boolean;
+      children: React.ReactNode;
+    }) =>
+      isLoading ? <div data-testid="skeleton-loading" /> : <>{children}</>,
+  }),
+);
 
 const mockUseSelector = jest.mocked(useSelector);
 

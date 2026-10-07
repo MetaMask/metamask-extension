@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/text';
 import {
   TextVariant,
   TextColor,

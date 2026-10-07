@@ -6,7 +6,7 @@ import type {
   FailedNetwork,
   NetworkConnectionBannerStatus,
 } from '@metamask/network-connection-banner-controller';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import type { RouteMessengerInstance } from '../pages/home/messenger';
 import {
   MetaMetricsEventCategory,

@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { ProductTour } from '../../multichain/product-tour-popover';
+import { ProductTour } from '../../multichain/product-tour-popover/product-tour-popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { clearProductTour } from '../../../store/actions';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 
 const options = {

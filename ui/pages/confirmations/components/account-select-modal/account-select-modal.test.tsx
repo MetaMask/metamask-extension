@@ -9,9 +9,12 @@ import { AccountSelectModal } from './account-select-modal';
 
 jest.mock('../../../../selectors/multichain-accounts/account-tree');
 
-jest.mock('../../../../components/app/preferred-avatar', () => ({
-  PreferredAvatar: () => <div data-testid="preferred-avatar" />,
-}));
+jest.mock(
+  '../../../../components/app/preferred-avatar/preferred-avatar',
+  () => ({
+    PreferredAvatar: () => <div data-testid="preferred-avatar" />,
+  }),
+);
 
 const ACCOUNT_1_ADDRESS = '0xabcdef1234567890abcdef1234567890abcdef12';
 const ACCOUNT_2_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';

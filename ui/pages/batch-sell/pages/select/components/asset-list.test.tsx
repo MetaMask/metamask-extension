@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../../../../test/data/batch-sell/factories';
 import { AssetList } from './asset-list';
 
 // Stub AssetListItem so AssetList tests don't need Redux

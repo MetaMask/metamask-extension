@@ -1,5 +1,5 @@
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { MUSD_TOKEN_ADDRESS } from '../constants';
 import { ensureMusdTokenImportedForChain } from './ensure-musd-token-imported';
 

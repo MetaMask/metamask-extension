@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { BannerAlert } from '../../../../components/component-library';
+import { BannerAlert } from '../../../../components/component-library/banner-alert/banner-alert';
 import { Severity } from '../../../../helpers/constants/design-system';
 
-import { I18nContext } from '../../../../../.storybook/i18n';
+import { I18nContext } from '../../../../contexts/i18n';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

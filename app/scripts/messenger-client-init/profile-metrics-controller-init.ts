@@ -4,7 +4,7 @@ import {
 } from '@metamask/profile-metrics-controller';
 import { getIsBasicFunctionalityConsolidationGateEnabled } from '../../../shared/lib/basic-functionality-consolidation-gate';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
-import type { ProfileMetricsControllerInitMessenger } from './messengers';
+import type { ProfileMetricsControllerInitMessenger } from './messengers/profile-metrics-controller-messenger';
 import type { MessengerClientInitFunction } from './types';
 
 const isTestEnvironment = Boolean(process.env.IN_TEST);

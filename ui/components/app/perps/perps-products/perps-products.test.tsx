@@ -24,8 +24,8 @@ jest.mock('react-router-dom', () => ({
 
 const mockTrack = jest.fn();
 
-jest.mock('../../../../hooks/perps', () => ({
-  ...jest.requireActual('../../../../hooks/perps'),
+jest.mock('../../../../hooks/perps/usePerpsEventTracking', () => ({
+  ...jest.requireActual('../../../../hooks/perps/usePerpsEventTracking'),
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 

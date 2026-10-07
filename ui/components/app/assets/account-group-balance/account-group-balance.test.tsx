@@ -5,13 +5,13 @@ import { CaipChainId, Hex } from '@metamask/utils';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
-  getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
-} from '../../../../selectors';
+} from '../../../../selectors/multichain/networks';
+import { getShowFiatInTestnets } from '../../../../selectors/selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainNativeTokenBalance,
@@ -29,10 +29,29 @@ const SEPOLIA_CHAIN_ID = '0xaa36a7';
 const MAINNET_CHAIN_ID = '0x1';
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
-jest.mock('../../../../selectors/assets');
-jest.mock('../../../../selectors');
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/assets-migration'),
+  getCurrencyRateControllerCurrentCurrency: jest.fn(),
+}));
+jest.mock('../../../../selectors/assets', () => ({
+  ...jest.requireActual('../../../../selectors/assets'),
+  getMultichainNativeTokenBalance: jest.fn(),
+  selectUnifiedBalanceBySelectedAccountGroup: jest.fn(),
+}));
+jest.mock('../../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../../selectors/selectors'),
+  getShowFiatInTestnets: jest.fn(),
+}));
+
+jest.mock('../../../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../../../selectors/multichain/networks'),
+  getEnabledNetworksByNamespace: jest.fn(),
+  getMultichainNetwork: jest.fn(),
+  selectAnyEnabledNetworksAreAvailable: jest.fn(),
+}));
+
 jest.mock('../../../../ducks/locale/locale');
-jest.mock('../../../../ducks/metamask/metamask');
+
 jest.mock('../../../../../shared/lib/selectors/preferences');
 
 describe('AccountGroupBalance', () => {

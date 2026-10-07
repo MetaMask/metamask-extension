@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { Hex } from 'viem';
+import { toast } from 'react-hot-toast';
 import { TX_DETAILS_ROUTE } from '../../../../helpers/constants/routes';
 import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { useMessenger } from '../../../../hooks/useMessenger';
@@ -24,9 +25,9 @@ import {
   registerMoneyBatchTransaction,
 } from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
-import type { MetaMaskReduxState } from '../../../../store/store';
+import type { MetaMaskReduxState } from '../../../../store/types';
 import { selectTransactions } from '../../../../selectors/transactionController';
-import { toast, ToastContent } from '../../../ui/toast/toast';
+import { ToastContent } from '../../../ui/toast/toast';
 import type { ToastStatus } from '../../toast-listener/shared';
 import {
   clearToastPhase,

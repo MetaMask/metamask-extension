@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
-import { PermissionPageContainerContent } from '../../components/app/permission-page-container';
-import PermissionsConnectFooter from '../../components/app/permissions-connect-footer';
-import { PageContainerFooter } from '../../components/ui/page-container';
+import PermissionPageContainerContent from '../../components/app/permission-page-container/permission-page-container-content/permission-page-container-content.component';
+import PermissionsConnectFooter from '../../components/app/permissions-connect-footer/permissions-connect-footer.component';
+import PageContainerFooter from '../../components/ui/page-container/page-container-footer/page-container-footer.component';
 
 export default {
   title: 'Pages/PermissionsConnect',

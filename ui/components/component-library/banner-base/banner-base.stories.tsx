@@ -1,7 +1,8 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { BannerBase } from './banner-base';
-import { Icon, IconName, IconSize } from '../icon';
+import { Icon } from '../icon/icon';
+import { IconName, IconSize } from '../icon/icon.types';
 
 export default {
   title: 'Components/ComponentLibrary/BannerBase (deprecated)',

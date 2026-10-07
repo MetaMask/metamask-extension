@@ -1,7 +1,7 @@
 import type { Hex } from '@metamask/utils';
 import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
+import type { MoneyAccountVaultConfig } from '@metamask/money-account-utils';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 
 export type MoneyAccountPayToken = {
   address: Hex;

@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { SEVERITIES } from '../../../helpers/constants/design-system';
-import { BannerAlert } from '../../component-library';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
 
 import IconTokenSearch from '../icon/icon-token-search';
 
-import Button from '.';
+import Button from './button.component';
 
 export default {
   title: 'Components/UI/Button',

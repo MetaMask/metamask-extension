@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
-import IconWithFallback from '.';
+import IconWithFallback from './icon-with-fallback.component';
 
 describe('IconWithFallback', () => {
   const args = {

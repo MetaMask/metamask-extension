@@ -8,18 +8,19 @@ import {
   type TransactionPayTotals,
 } from '@metamask/transaction-pay-controller';
 import { act } from '@testing-library/react';
+import { MUSD_TOKEN_ADDRESS } from '@metamask/money-account-utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
-import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
+
+import * as TransactionPayControllerActionsModule2 from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as usePayWithNoFeeTokenModule from '../pay/usePayWithNoFeeToken';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../pay/useTransactionPayToken';
 import * as usePayTokenAccountBalanceModule from '../pay/usePayTokenAccountBalance';
 import { useMoneyAccountWithdrawableFiat } from '../../../../hooks/money/useMoneyAccountWithdrawableFiat';
-import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import {
   useTransactionCustomAmount,
@@ -224,7 +225,7 @@ function runHook({
 
 describe('useTransactionCustomAmount', () => {
   const setIsMaxAmountMock = jest.mocked(
-    TransactionPayControllerActions.setIsMaxAmount,
+    TransactionPayControllerActionsModule2.setIsMaxAmount,
   );
 
   beforeEach(() => {

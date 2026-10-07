@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { FormTextField } from '../../component-library/form-text-field/form-text-field';
 import {
-  FormTextField,
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+} from '../../component-library/text-field/text-field.types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ShowHideToggle from '../../ui/show-hide-toggle';
+import ShowHideToggle from '../../ui/show-hide-toggle/show-hide-toggle';
 import BottomButtons from './bottom-buttons';
 
 export default function PrivateKeyImportView({

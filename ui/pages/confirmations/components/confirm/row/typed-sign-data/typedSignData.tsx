@@ -1,13 +1,11 @@
 import React from 'react';
 
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import { BlockSize } from '../../../../../../helpers/constants/design-system';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
-import { parseSanitizeTypedDataMessage } from '../../../../utils';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row/row';
+import { ConfirmInfoRowText } from '../../../../../../components/app/confirm/info/row/text';
+import { parseSanitizeTypedDataMessage } from '../../../../utils/confirm';
 import { DataTree } from '../dataTree';
 
 export const ConfirmInfoRowTypedSignData = ({

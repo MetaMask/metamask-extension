@@ -1,6 +1,6 @@
 import React from 'react';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
-import { NftItem } from '.';
+import { NftItem } from './nft-item';
 
 export default {
   title: 'Components/Multichain/NftItem',

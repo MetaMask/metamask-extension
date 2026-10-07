@@ -11,7 +11,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { isMetamaskSuggestedGasEstimate } from '../../../../../helpers/utils/gas';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 
 const EditGasToolTip = ({
   editGasMode,

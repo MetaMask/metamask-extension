@@ -9,7 +9,7 @@ import {
   UserFeeLevel,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../../../shared/constants/chain-ids';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { getGasFeeTimeEstimate } from '../../../../../../../store/actions';

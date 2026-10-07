@@ -12,7 +12,7 @@ import {
 } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
-import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
+import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield/subscription-utils';
 import { useAsyncCallback } from '../useAsync';
 import { MINUTE } from '../../../shared/constants/time';
 import { useThrottle } from '../useThrottle';

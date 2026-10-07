@@ -5,7 +5,7 @@ import {
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
-import { getAccountOrderControllerMessenger } from './messengers';
+import { getAccountOrderControllerMessenger } from './messengers/account-order-controller-messenger';
 import { AccountOrderControllerInit } from './account-order-controller-init';
 
 jest.mock('../controllers/account-order');

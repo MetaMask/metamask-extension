@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, IconColor, IconName } from '@metamask/design-system-react';
-import { ToastContent, toast } from '../../components/ui/toast/toast';
+import { toast } from 'react-hot-toast';
+import { ToastContent } from '../../components/ui/toast/toast';
 
 /**
  * Shows the "Continue in your browser tab" toast used whenever a buy flow

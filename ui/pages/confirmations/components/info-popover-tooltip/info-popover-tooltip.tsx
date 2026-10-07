@@ -8,10 +8,8 @@ import {
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
-import {
-  Popover,
-  PopoverPosition,
-} from '../../../../components/component-library';
+import { Popover } from '../../../../components/component-library/popover/popover';
+import { PopoverPosition } from '../../../../components/component-library/popover/popover.types';
 
 const POPOVER_STYLE = {
   zIndex: 3,

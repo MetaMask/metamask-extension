@@ -1,1 +1,0 @@
-export { Recipient } from './recipient';

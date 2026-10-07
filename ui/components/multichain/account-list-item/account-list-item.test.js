@@ -7,13 +7,12 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import {
-  SEPOLIA_DISPLAY_NAME,
-  CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { SEPOLIA_DISPLAY_NAME } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
-import { AccountListItem, AccountListItemMenuTypes } from '.';
+import AccountListItem from './account-list-item';
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const mockAccount = {
   ...mockState.metamask.internalAccounts.accounts[

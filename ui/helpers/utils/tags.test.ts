@@ -1,6 +1,6 @@
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
-import { MetaMaskReduxState } from '../../store/store';
+import { MetaMaskReduxState } from '../../store/types';
 import { getStartupTraceTags } from './tags';
 
 jest.mock('../../../shared/lib/environment-type', () => ({

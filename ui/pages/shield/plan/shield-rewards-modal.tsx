@@ -7,13 +7,11 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

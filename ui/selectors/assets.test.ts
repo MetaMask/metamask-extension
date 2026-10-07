@@ -15,21 +15,23 @@ import {
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import type { AccountGroupAssets } from '@metamask/assets-controllers';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import {
+  getMultiChainAssetsControllerAccountsAssets as getAccountAssets,
+  getMultiChainAssetsControllerAssetsMetadata as getAssetsMetadata,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+} from '../../shared/lib/selectors/assets-migration';
 import {
   AssetsRatesState,
   AssetsState,
-  getAccountAssets,
   getAssetsInfo,
-  getAssetsMetadata,
   getAssetsBalance,
   selectIsAssetInAssetsBalance,
   getAssetsPrice,
   getAssetPreferences,
   getCustomAssets,
   getSelectedCurrency,
-  getAssetsRates,
   getMultiChainAssets,
   getMultichainNativeAssetType,
   getTokenByAccountAndAddressAndChainId,
@@ -37,7 +39,6 @@ import {
   selectBalanceForAllWallets,
   selectBalanceByAccountGroup,
   selectBalanceByWallet,
-  type BalanceCalculationState,
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
@@ -48,6 +49,7 @@ import {
   getFungibleAssetForRoute,
   getAssetsBySelectedAccountGroupWithTronSpecialAssets,
 } from './assets';
+import type { BalanceCalculationState } from './assets';
 
 /**
  * State shape for asset selector tests. Cast to this when passing partial state

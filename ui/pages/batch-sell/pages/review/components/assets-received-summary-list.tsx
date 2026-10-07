@@ -15,7 +15,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Skeleton } from '../../../../../components/component-library/skeleton/skeleton';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 
 type AssetsReceivedSummaryListProps = {

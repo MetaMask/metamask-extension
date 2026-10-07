@@ -4,7 +4,7 @@ import {
   TRIGGER_TYPES,
   type INotification,
 } from '@metamask/notification-services-controller/notification-services';
-import { Box } from '../../components/component-library';
+import { Box } from '../../components/component-library/box/box';
 import {
   BlockSize,
   Display,
@@ -12,7 +12,8 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
-import { Content, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Page } from '../../components/multichain/pages/page/page';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { getMetamaskNotificationById } from '../../selectors/metamask-notifications/metamask-notifications';
 import {

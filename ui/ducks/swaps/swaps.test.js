@@ -2,9 +2,10 @@ import nock from 'nock';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { MOCKS, createSwapsMockStore } from '../../../test/jest';
+import { createSwapsMockStore } from '../../../test/jest/mock-store';
+import * as MOCKS from '../../../test/jest/mocks';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { mockNetworkState } from '../../../test/stub/networks';

@@ -13,7 +13,11 @@ import {
   toChecksumHexAddress,
 } from '../../shared/lib/hexstring-utils';
 import { shortenAddress } from '../helpers/utils/util';
-import { getCompleteAddressBook, getNames, getTokenList } from '../selectors';
+import {
+  getCompleteAddressBook,
+  getNames,
+  getTokenList,
+} from '../selectors/selectors';
 import { getAccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree';
 import type { AccountGroupWithInternalAccounts } from '../selectors/multichain-accounts/account-tree.types';
 

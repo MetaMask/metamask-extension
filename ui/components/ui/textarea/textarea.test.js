@@ -6,7 +6,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { RESIZE } from './textarea.constants';
-import TextArea from '.';
+import TextArea from './textarea';
 
 describe('TextArea', () => {
   const text =

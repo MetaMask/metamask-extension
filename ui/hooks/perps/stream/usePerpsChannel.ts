@@ -1,8 +1,6 @@
 import { useEffect, useLayoutEffect, useState, useRef } from 'react';
-import type {
-  PerpsDataChannel,
-  PerpsStreamManager,
-} from '../../../providers/perps';
+import type { PerpsDataChannel } from '../../../providers/perps/PerpsDataChannel';
+import type { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**

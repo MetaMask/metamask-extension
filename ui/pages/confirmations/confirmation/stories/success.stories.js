@@ -2,7 +2,7 @@ import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isArray } from 'lodash';
 import { Display } from '../../../../helpers/constants/design-system';
-import { IconName } from '../../../../components/component-library';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 

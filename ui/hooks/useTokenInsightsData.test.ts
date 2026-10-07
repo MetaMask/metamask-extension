@@ -17,16 +17,20 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
-  getMarketData: jest.fn((state) => state.marketData),
-}));
-
-jest.mock('../ducks/metamask/metamask', () => ({
-  getCurrentCurrency: jest.fn((state) => state.currentCurrency),
-}));
-
-jest.mock('../selectors/selectors', () => ({
-  getCurrencyRates: jest.fn((state) => state.currencyRates),
+jest.mock('../../shared/lib/selectors/assets-migration', () => ({
+  ...(() => ({
+    getTokenRatesControllerMarketData: jest.fn((state) => state.marketData),
+  }))(),
+  ...(() => ({
+    getCurrencyRateControllerCurrentCurrency: jest.fn(
+      (state) => state.currentCurrency,
+    ),
+  }))(),
+  ...(() => ({
+    getCurrencyRateControllerCurrencyRates: jest.fn(
+      (state) => state.currencyRates,
+    ),
+  }))(),
 }));
 
 jest.mock('@metamask/bridge-controller', () => ({

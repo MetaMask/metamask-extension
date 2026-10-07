@@ -10,9 +10,10 @@ import {
 } from '@metamask/multichain-network-controller';
 import * as metamaskBaseSelectors from '../ducks/metamask/base-selectors';
 import {
-  getCurrentCurrency,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+} from '../../shared/lib/selectors/assets-migration';
+import { getNativeCurrency } from '../ducks/metamask/metamask';
 import {
   MULTICHAIN_NETWORK_TO_NICKNAME,
   MULTICHAIN_TOKEN_IMAGE_MAP,
@@ -30,8 +31,8 @@ import {
   MOCK_ACCOUNT_STELLAR_PUBNET,
   MOCK_ACCOUNT_ID_BY_ADDRESS,
 } from '../../test/data/mock-accounts';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   ETH_TOKEN_IMAGE_URL,
   MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
@@ -39,18 +40,15 @@ import { MultichainNativeAssets } from '../../shared/constants/multichain/assets
 import * as utilModule from '../../shared/lib/asset-conversion-rates';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
-import type { MetaMaskReduxState } from '../store/store';
+import type { MetaMaskReduxState } from '../store/types';
 import { AccountsState } from '../../shared/lib/selectors/accounts';
 import {
   MultichainState,
   getMultichainCurrentChainId,
-  getMultichainCurrentCurrency,
   getMultichainCurrentNetwork,
   getMultichainDefaultToken,
-  getMultichainIsEvm,
   getMultichainIsMainnet,
   getMultichainNativeCurrency,
-  getMultichainNetwork,
   getMultichainProviderConfig,
   getMultichainSelectedAccountCachedBalance,
   getMultichainShouldShowFiat,
@@ -69,10 +67,14 @@ import {
   getLastSelectedSolanaAccount,
 } from './multichain';
 import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from './multichain/networks';
+import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
-} from '.';
+} from './selectors';
 
 type TestState = MultichainState &
   AccountsState & {

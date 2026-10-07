@@ -9,15 +9,15 @@ import * as Actions from '../../../../store/actions';
 import {
   UrType,
   PAIRING_EXPECTED_UR_TYPES,
-  type BaseQrReaderProps,
-} from '../base-qr-reader';
+} from '../base-qr-reader/base-qr-reader.types';
+import type { BaseQrReaderProps } from '../base-qr-reader/base-qr-reader.types';
 import type { QRHardwareWalletImporterProps } from './qr-hardware-wallet-importer.types';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 
 let mockUr: UR | undefined;
 let mockLastReaderError: Error | undefined;
 
-jest.mock('../base-qr-reader', () => {
+jest.mock('../base-qr-reader/base-qr-reader', () => {
   const MockBaseQrReader = (mockProps: BaseQrReaderProps) => (
     <div data-testid="mock-base-qr-reader">
       <span data-testid="base-qr-reader-is-reading-wallet">
@@ -54,10 +54,7 @@ jest.mock('../base-qr-reader', () => {
     </div>
   );
   MockBaseQrReader.displayName = 'MockBaseQrReader';
-  return Object.assign(
-    MockBaseQrReader,
-    jest.requireActual('../base-qr-reader'),
-  );
+  return MockBaseQrReader;
 });
 
 jest.mock('../../../../store/actions', () => ({

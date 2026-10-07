@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -16,7 +16,7 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { mockEmptyPrices, mockSpotPrices } from '../tokens/utils/mocks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
   UserStorageMockttpController,
   UserStorageResponseData,

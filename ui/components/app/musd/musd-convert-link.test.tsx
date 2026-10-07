@@ -34,10 +34,14 @@ jest.mock('../../../hooks/useAnalytics', () => {
 
 // Mock useMusdConversion
 const mockStartConversionFlow = jest.fn();
-jest.mock('../../../hooks/musd', () => ({
+
+jest.mock('../../../hooks/musd/useMusdConversion', () => ({
   useMusdConversion: () => ({
     startConversionFlow: mockStartConversionFlow,
   }),
+}));
+
+jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   useMusdGeoBlocking: () => ({
     isBlocked: false,
     userCountry: 'US',

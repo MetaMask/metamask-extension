@@ -24,9 +24,9 @@ import {
   BATCH_DEFAULT_MODE,
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
-  encodeRedeemDelegations,
-  getDeleGatorEnvironment,
-} from '../../../../shared/lib/delegation';
+} from '../../../../shared/lib/delegation/execution';
+import { encodeRedeemDelegations } from '../../../../shared/lib/delegation/delegation';
+import { getDeleGatorEnvironment } from '../../../../shared/lib/delegation/environment';
 
 import {
   convertTransactionToRedeemDelegations,
@@ -36,9 +36,12 @@ import {
   SUBSIDIZED_ORDER_ID_PLACEHOLDER,
 } from './delegation';
 
-jest.mock('../../../../shared/lib/delegation', () => ({
-  ...jest.requireActual('../../../../shared/lib/delegation'),
+jest.mock('../../../../shared/lib/delegation/delegation', () => ({
+  ...jest.requireActual('../../../../shared/lib/delegation/delegation'),
   encodeRedeemDelegations: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/delegation/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/delegation/environment'),
   getDeleGatorEnvironment: jest.fn(),
 }));
 

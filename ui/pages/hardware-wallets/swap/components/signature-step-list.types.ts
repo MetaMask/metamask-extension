@@ -1,4 +1,4 @@
-import type { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignatureStatus } from '../hardware-wallet-signatures-state-machine/types';
 import type { QrHardwareSignRequest, SignatureStepStatus } from '../types';
 import type { SignatureStepDescription } from '../hardware-wallet-signatures.utils';
 

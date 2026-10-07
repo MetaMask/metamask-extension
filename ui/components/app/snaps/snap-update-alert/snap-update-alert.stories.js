@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SnapUpdateAlert from '.';
+import SnapUpdateAlert from './snap-update-alert';
 
 export default {
   title: 'Components/App/snaps/SnapUpdateAlert',

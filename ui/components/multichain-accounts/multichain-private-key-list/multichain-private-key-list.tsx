@@ -14,14 +14,16 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BlockSize } from '../../../helpers/constants/design-system';
+import { Button } from '../../component-library/button/button';
 import {
-  Button,
   ButtonSize,
   ButtonVariant,
-  TextField,
+} from '../../component-library/button/button.types';
+import { TextField } from '../../component-library/text-field/text-field';
+import {
   TextFieldSize,
   TextFieldType,
-} from '../../component-library';
+} from '../../component-library/text-field/text-field.types';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { getInternalAccountsFromGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { verifyPassword, exportAccounts } from '../../../store/actions';
@@ -29,7 +31,7 @@ import {
   useIsPasskeyActive,
   useIsPasskeyIncompatibleInSidepanel,
 } from '../../../hooks/usePasskeyAvailability';
-import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   createSentryError,
@@ -51,7 +53,7 @@ import {
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import { MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
-import { PasskeyVerification } from '../../app/passkey-verification';
+import { PasskeyVerification } from '../../app/passkey-verification/passkey-verification';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPrivateKeyExport } from '../../../hooks/passkey/usePasskeyPrivateKeyExport';
 import { MultichainPrivateKeyRow } from './multichain-private-key-row';

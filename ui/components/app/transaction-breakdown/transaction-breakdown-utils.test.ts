@@ -5,7 +5,7 @@ import {
 } from '@metamask/transaction-controller';
 import { getTransactionBreakdownData } from './transaction-breakdown-utils';
 
-jest.mock('../../../selectors', () => ({
+jest.mock('../../../selectors/selectors', () => ({
   getShouldShowFiat: () => false,
 }));
 

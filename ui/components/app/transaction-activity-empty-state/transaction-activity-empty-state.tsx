@@ -8,10 +8,10 @@ import {
   SolMethod,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { TabEmptyState } from '../../ui/tab-empty-state';
+import { TabEmptyState } from '../../ui/tab-empty-state/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   MetaMetricsEventCategory,
@@ -24,7 +24,7 @@ import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/acc
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import { FundingMethodModal } from '../../multichain/funding-method-modal/funding-method-modal';
-import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
+import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/multichain-accounts/multichain-account-address-list-page/multichain-account-address-list-page.utils';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 
 const SWAP_SIGNING_METHODS = [

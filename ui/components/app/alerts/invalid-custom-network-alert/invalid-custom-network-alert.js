@@ -2,14 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { ALERT_STATE } from '../../../../ducks/alerts';
+import { ALERT_STATE } from '../../../../ducks/alerts/enums';
 import {
   dismissAlert,
   getAlertState,
   getNetworkName,
 } from '../../../../ducks/alerts/invalid-custom-network';
-import Popover from '../../../ui/popover';
-import { Button, ButtonVariant } from '../../../component-library';
+import Popover from '../../../ui/popover/popover.component';
+import { Button } from '../../../component-library/button/button';
+import { ButtonVariant } from '../../../component-library/button/button.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { useDispatch } from '../../../../store/hooks';

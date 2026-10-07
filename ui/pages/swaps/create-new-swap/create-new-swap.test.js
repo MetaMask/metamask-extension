@@ -5,13 +5,13 @@ import thunk from 'redux-thunk';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
 import {
   setSwapsFromToken,
   navigateBackToPrepareSwap,
 } from '../../../ducks/swaps/swaps';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import CreateNewSwap from '.';
+import CreateNewSwap from './create-new-swap';
 
 const mockTrackAnalyticsEvent = jest.fn();
 

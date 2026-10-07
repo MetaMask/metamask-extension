@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box } from '../../../../components/component-library';
+import { Box } from '../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import ToggleButton from '../../../../components/ui/toggle-button';
+import ToggleButton from '../../../../components/ui/toggle-button/toggle-button.component';
 
 const ToggleRow = ({
   title,

@@ -12,7 +12,8 @@ import {
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import { lightTheme } from '@metamask/design-tokens';
-import { Tab, Tabs } from '../../components/ui/tabs';
+import { Tab } from '../../components/ui/tabs/tab/tab';
+import { Tabs } from '../../components/ui/tabs/tabs';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import RecoveryPhraseChips from '../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 import { useI18nContext } from '../../hooks/useI18nContext';

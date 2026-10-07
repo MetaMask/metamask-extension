@@ -19,8 +19,10 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => ({ pathname: '/asset/0x1/0xtest', search: '' }),
 }));
 
-jest.mock('../../selectors/musd', () => ({
+jest.mock('../../selectors/musd/feature-flags', () => ({
   selectIsMusdConversionFlowEnabled: jest.fn(),
+}));
+jest.mock('../../selectors/musd/persisted-state', () => ({
   selectMusdConversionEducationSeen: jest.fn(),
 }));
 
@@ -57,11 +59,13 @@ jest.mock('../../store/controller-actions/transaction-pay-controller', () => ({
 const mockBuildMusdConversionTx = jest.fn();
 const mockIsMatchingMusdConversion = jest.fn();
 
-jest.mock('../../components/app/musd/utils', () => ({
+jest.mock('../../components/app/musd/utils/transaction-utils', () => ({
   buildMusdConversionTx: (...args: unknown[]) =>
     mockBuildMusdConversionTx(...args),
   isMatchingMusdConversion: (...args: unknown[]) =>
     mockIsMatchingMusdConversion(...args),
+}));
+jest.mock('../../components/app/musd/utils/ensure-musd-token-imported', () => ({
   ensureMusdTokenImportedForChain: (chainId: unknown, dispatch: unknown) =>
     mockEnsureMusdTokenImportedForChain(chainId, dispatch),
 }));
@@ -98,7 +102,72 @@ const { getUnapprovedTransactions } = jest.requireMock(
   '../../selectors/transactions',
 );
 const { selectMusdConversionEducationSeen, selectIsMusdConversionFlowEnabled } =
-  jest.requireMock('../../selectors/musd');
+  {
+    get selectAllMusdFeatureFlags() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectAllMusdFeatureFlags;
+    },
+    get selectIsMusdAssetOverviewCtaEnabled() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectIsMusdAssetOverviewCtaEnabled;
+    },
+    get selectIsMusdConversionFlowEnabled() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectIsMusdConversionFlowEnabled;
+    },
+    get selectIsMusdCtaEnabled() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectIsMusdCtaEnabled;
+    },
+    get selectIsMusdRewardsUiEnabled() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectIsMusdRewardsUiEnabled;
+    },
+    get selectIsMusdTokenListItemCtaEnabled() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectIsMusdTokenListItemCtaEnabled;
+    },
+    get selectMusdBlockedRegions() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdBlockedRegions;
+    },
+    get selectMusdBuyableChainIds() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdBuyableChainIds;
+    },
+    get selectMusdConversionDismissedCtaKeys() {
+      return jest.requireMock('../../selectors/musd/persisted-state')
+        .selectMusdConversionDismissedCtaKeys;
+    },
+    get selectMusdConversionEducationSeen() {
+      return jest.requireMock('../../selectors/musd/persisted-state')
+        .selectMusdConversionEducationSeen;
+    },
+    get selectMusdConvertibleTokensAllowlist() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdConvertibleTokensAllowlist;
+    },
+    get selectMusdConvertibleTokensBlocklist() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdConvertibleTokensBlocklist;
+    },
+    get selectMusdCtaTokens() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdCtaTokens;
+    },
+    get selectMusdGeoBlockedCountries() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdGeoBlockedCountries;
+    },
+    get selectMusdMinAssetBalanceRequired() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectMusdMinAssetBalanceRequired;
+    },
+    get selectShouldShowAnyMusdCta() {
+      return jest.requireMock('../../selectors/musd/feature-flags')
+        .selectShouldShowAnyMusdCta;
+    },
+  };
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 const MOCK_TX_ID = 'tx-abc-123';

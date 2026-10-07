@@ -6,14 +6,14 @@ import {
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { getRootMessenger } from '../lib/messenger';
-import { trackEvent } from '../controllers/analytics';
+import { trackEvent } from '../controllers/analytics/analytics';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getBridgeControllerMessenger,
   getBridgeControllerInitMessenger,
   BridgeControllerInitMessenger,
-} from './messengers';
+} from './messengers/bridge-controller-messenger';
 import { BridgeControllerInit } from './bridge-controller-init';
 
 jest.mock('@metamask/bridge-controller', () => {
@@ -23,8 +23,8 @@ jest.mock('@metamask/bridge-controller', () => {
   };
 });
 
-jest.mock('../controllers/analytics', () => ({
-  ...jest.requireActual('../controllers/analytics'),
+jest.mock('../controllers/analytics/analytics', () => ({
+  ...jest.requireActual('../controllers/analytics/analytics'),
   trackEvent: jest.fn(),
 }));
 

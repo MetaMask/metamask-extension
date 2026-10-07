@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import classNames from 'clsx';
-import { Text, ButtonBase } from '../../component-library';
+import { Text } from '../../component-library/text/text';
+import { ButtonBase } from '../../component-library/button-base/button-base';
 import type { ButtonBaseProps } from '../../component-library/button-base/button-base.types';
 import {
   AlignItems,

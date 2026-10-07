@@ -1,6 +1,6 @@
 import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { Modal } from '../modal';
+import { Modal } from '../modal/modal';
 import { ModalContent } from './modal-content';
 import { ModalContentSize } from './modal-content.types';
 

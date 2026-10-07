@@ -6,11 +6,6 @@ import {
 import type { GeolocationControllerMessenger } from '@metamask/geolocation-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-export type {
-  GeolocationControllerActions,
-  GeolocationControllerEvents,
-} from '@metamask/geolocation-controller';
-
 /**
  * Get the messenger for the GeolocationController. Delegates the
  * GeolocationApiService:fetchGeolocation action so the controller can

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 
-import { DisconnectAllModal } from '.';
+import { DisconnectAllModal } from './disconnect-all-modal';
 
 describe('DisconnectAllModal', () => {
   const onClick = jest.fn();

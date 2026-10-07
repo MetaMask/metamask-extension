@@ -10,7 +10,7 @@ import {
   FlexWrap,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/text';
 
 export default function TransactionDetailItem({
   'data-testid': dataTestId,

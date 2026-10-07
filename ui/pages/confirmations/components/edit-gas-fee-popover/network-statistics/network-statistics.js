@@ -9,10 +9,10 @@ import { isNullish } from '../../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useGasFeeEstimates } from '../../../../../hooks/useGasFeeEstimates';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import { useConfirmContext } from '../../../context/confirm';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
-import StatusSlider from './status-slider';
+import StatusSlider from './status-slider/status-slider';
 
 const NetworkStatistics = ({ useRedesigned }) => {
   const t = useContext(I18nContext);

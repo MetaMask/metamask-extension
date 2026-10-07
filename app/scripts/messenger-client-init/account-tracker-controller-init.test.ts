@@ -26,7 +26,7 @@ import {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
   AccountTrackerControllerInitMessenger,
-} from './messengers';
+} from './messengers/account-tracker-controller-messenger';
 import { AccountTrackerControllerInit } from './account-tracker-controller-init';
 
 jest.mock('@metamask/assets-controllers');

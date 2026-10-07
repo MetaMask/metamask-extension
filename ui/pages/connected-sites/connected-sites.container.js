@@ -10,7 +10,7 @@ import {
   getOriginOfCurrentTab,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { CONNECT_ROUTE } from '../../helpers/constants/routes';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';

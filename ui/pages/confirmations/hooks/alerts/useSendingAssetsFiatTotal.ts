@@ -1,7 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
-import { getShouldShowFiat } from '../../../../selectors';
+import { getShouldShowFiat } from '../../../../selectors/selectors';
 import { useBalanceChanges } from '../../components/simulation-details/useBalanceChanges';
 import { calculateTotalFiat } from '../../components/simulation-details/fiat-display';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';

@@ -51,7 +51,7 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../plan/utils';
 import { useFormatters } from '../../../hooks/useFormatters';
-import LoadingScreen from '../../../components/ui/loading-screen';
+import LoadingScreen from '../../../components/ui/loading-screen/loading-screen.component';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
 import RewardsModal from '../../../components/app/rewards/onboarding/RewardsModal';
@@ -59,7 +59,7 @@ import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
   getIsShieldSubscriptionTrialing,
-} from '../../../../shared/lib/shield';
+} from '../../../../shared/lib/shield/subscription-utils';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
@@ -68,7 +68,7 @@ import {
   ShieldCtaActionClickedEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
-import ApiErrorHandler from '../../../components/app/api-error-handler';
+import ApiErrorHandler from '../../../components/app/api-error-handler/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import type { MetaMaskReduxDispatch } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
@@ -76,12 +76,10 @@ import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import {
-  ButtonRow,
-  ButtonRowContainer,
-  MembershipErrorBanner,
-  MembershipHeader,
-} from './components';
+import ButtonRow from './components/button-row';
+import ButtonRowContainer from './components/button-row-container';
+import MembershipErrorBanner from './components/membership-error-banner';
+import MembershipHeader from './components/membership-header';
 import ReactivateButton from './components/reactivate-button';
 import CryptoAccountDisplay from './components/crypto-account-display';
 

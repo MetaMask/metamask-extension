@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { ButtonIcon } from './button-icon';
-import { IconName } from '../icon';
+import { IconName } from '../icon/icon.types';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonIcon (deprecated)',

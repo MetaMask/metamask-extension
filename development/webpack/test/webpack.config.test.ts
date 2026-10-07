@@ -209,6 +209,43 @@ ${Object.entries(env)
     );
   }
 
+  for (const enabled of [false, true]) {
+    it(`resolves installed developer tools only when enabled: ${enabled}`, async () => {
+      mockOptionalRcFiles();
+      const config = getWebpackConfig(['--no-cache'], {
+        METAMASK_REACT_REDUX_DEVTOOLS: enabled ? 'true' : '',
+      });
+      const compiler = webpack(config);
+      const resolver = compiler.resolverFactory.get('normal');
+      for (const request of ['react-devtools-core', 'remote-redux-devtools']) {
+        const resolved = await new Promise<string | false | undefined>(
+          (resolveModule, reject) => {
+            resolver.resolve(
+              {},
+              resolve(__dirname, '../../..'),
+              request,
+              {},
+              (error, result) => {
+                if (error) reject(error);
+                else resolveModule(result);
+              },
+            );
+          },
+        );
+        assert.strictEqual(
+          resolved,
+          enabled ? require.resolve(request) : false,
+        );
+      }
+      await new Promise<void>((resolveClose, reject) =>
+        compiler.close((error) => {
+          if (error) reject(error);
+          else resolveClose();
+        }),
+      );
+    });
+  }
+
   it('should have the correct defaults', () => {
     mockOptionalRcFiles();
 
@@ -222,9 +259,9 @@ ${Object.entries(env)
     assert.strictEqual(options.devtool, 'source-map');
     const stats = options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
+    const aliases = options.resolve.alias as Record<string, false>;
+    assert.strictEqual(typeof aliases['react-devtools-core'], 'boolean');
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
     assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
@@ -442,9 +479,9 @@ ${Object.entries(env)
     assert.strictEqual(instance.options.devtool, 'hidden-source-map');
     const stats = instance.options.stats as { preset: string };
     assert.strictEqual(stats.preset, 'none');
-    const fallback = instance.options.resolve.fallback as Record<string, false>;
-    assert.strictEqual(typeof fallback['react-devtools-core'], 'string');
-    assert.strictEqual(typeof fallback['remote-redux-devtools'], 'string');
+    const aliases = instance.options.resolve.alias as Record<string, string>;
+    assert.strictEqual(typeof aliases['react-devtools-core'], 'string');
+    assert.strictEqual(typeof aliases['remote-redux-devtools'], 'string');
     assert.strictEqual(instance.options.optimization.minimize, true);
     assert.strictEqual(instance.options.optimization.sideEffects, true);
     assert.strictEqual(instance.options.optimization.providedExports, true);

@@ -2,7 +2,7 @@ import React from 'react';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 
 import { EtherDenomination } from '../../../../shared/constants/common';
-import UserPreferencedCurrencyDisplay from '.';
+import UserPreferencedCurrencyDisplay from './user-preferenced-currency-display.component';
 
 export default {
   title: 'Components/App/UserPreferencedCurrencyDisplay',

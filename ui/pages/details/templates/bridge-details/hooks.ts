@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import type { TokenAmount } from '@metamask/client-utils';
 import { selectBridgeHistoryItemByHash } from '../../../../ducks/bridge-status/selectors';
-import type { MetaMaskReduxState } from '../../../../store/store';
-import type { TokenAmount } from '../../../../../shared/lib/activity/types';
+import type { MetaMaskReduxState } from '../../../../store/types';
 
 export const useBridgeHistoryItem = (sourceTxHash?: string) => {
   return useSelector((state) =>

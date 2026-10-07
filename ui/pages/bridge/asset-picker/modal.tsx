@@ -1,13 +1,11 @@
 import React, { useRef } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalHeader,
-  ButtonIconSize,
-  ModalContentSize,
-} from '../../../components/component-library';
+import { Modal } from '../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../components/component-library/modal-content/modal-content';
+import { ModalBody } from '../../../components/component-library/modal-body/modal-body';
+import { ModalHeader } from '../../../components/component-library/modal-header/modal-header';
+import { ButtonIconSize } from '../../../components/component-library/button-icon/button-icon.types';
+import { ModalContentSize } from '../../../components/component-library/modal-content/modal-content.types';
 import {
   BlockSize,
   Display,

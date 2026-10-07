@@ -15,7 +15,7 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   TokenRatesControllerInitMessenger,
-} from '../messengers/assets';
+} from '../messengers/assets/token-rates-controller-messenger';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 

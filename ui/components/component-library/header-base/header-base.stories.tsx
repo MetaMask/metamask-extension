@@ -1,14 +1,15 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { Text } from '../text';
+import { Text } from '../text/text';
 
 import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { HeaderBase } from './header-base';
-import { ButtonIcon, ButtonIconSize } from '../button-icon';
-import { IconName } from '../icon';
+import { ButtonIcon } from '../button-icon/button-icon';
+import { ButtonIconSize } from '../button-icon/button-icon.types';
+import { IconName } from '../icon/icon.types';
 
 export default {
   title: 'Components/ComponentLibrary/HeaderBase (deprecated)',

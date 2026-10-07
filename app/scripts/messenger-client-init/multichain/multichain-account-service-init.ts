@@ -8,7 +8,7 @@ import {
   XlmAccountProvider,
 } from '@metamask/multichain-account-service';
 import { MessengerClientInitFunction } from '../types';
-import { MultichainAccountServiceInitMessenger } from '../messengers/accounts';
+import { MultichainAccountServiceInitMessenger } from '../messengers/accounts/multichain-account-service-messenger';
 import { previousValueComparator } from '../../lib/util';
 import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 import { trace } from '../../../../shared/lib/trace';

@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectIsRedesignedConfirmationType } from '../selectors';
+import { selectIsRedesignedConfirmationType } from '../selectors/transactions';
 
 export const useIsRedesignedConfirmationType = () => {
   const location = useLocation();

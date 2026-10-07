@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import type { PerpsMarketData } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { MarketRow } from '../market-row';
-import { PerpsSectionHeader } from '../perps-section-header';
+import { MarketRow } from '../market-row/market-row';
+import { PerpsSectionHeader } from '../perps-section-header/perps-section-header';
 import { PERPS_CONSTANTS } from '../constants';
-import type { PerpsMarketData } from '../types';
 
 export type PerpsExploreMarketsProps = {
   markets: PerpsMarketData[];

@@ -13,16 +13,16 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import ErrorBoundary from '../error-boundary/error-boundary';
 import { PerpsAttributionProvider } from '../../../providers/perps/PerpsAttributionContext';
-import { AccessRestrictedProvider } from '../compliance';
+import { AccessRestrictedProvider } from '../compliance/access-restricted-context';
 import { PerpsView } from './perps-view';
 import { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
-import { PerpsToastProvider } from './perps-toast';
+import { PerpsToastProvider } from './perps-toast/perps-toast-provider';
 
 /**
  * Perps tab content for the account overview.

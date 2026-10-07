@@ -3,7 +3,7 @@ import {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { Driver } from '../../webdriver/driver';
-import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
+import { PermissionNames } from '../../../../app/scripts/controllers/permissions/specifications';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
 
 export const getPermittedChains = async (driver: Driver) => {

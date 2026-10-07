@@ -5,7 +5,7 @@ import {
 import { getIsDeprecatedController } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
 import { MessengerClientInitFunction } from './types';
-import { TokenBalancesControllerInitMessenger } from './messengers';
+import { TokenBalancesControllerInitMessenger } from './messengers/token-balances-controller-messenger';
 
 export const TokenBalancesControllerInit: MessengerClientInitFunction<
   TokenBalancesController,

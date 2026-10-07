@@ -5,7 +5,7 @@ import { captureException } from '../../../../../../shared/lib/sentry';
 import { submitBatchSellTrade } from '../../../../../ducks/bridge-status/actions';
 import { getFromAccount } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
-import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors/smart-transactions';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';
 import useBatchSellSubmitQuotes from './useBatchSellSubmitQuotes';
@@ -44,7 +44,7 @@ jest.mock('../../../../../ducks/bridge/utils', () => ({
   ),
 }));
 
-jest.mock('../../../../../../shared/lib/selectors', () => ({
+jest.mock('../../../../../../shared/lib/selectors/smart-transactions', () => ({
   getIsSmartTransaction: jest.fn(),
 }));
 

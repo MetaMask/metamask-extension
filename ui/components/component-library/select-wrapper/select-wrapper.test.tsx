@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import { Button, type ButtonProps } from '../button';
-import { SelectButton } from '../select-button';
-import { SelectOption } from '../select-option';
+import { Button } from '../button/button';
+import type { ButtonProps } from '../button/button.types';
+import { SelectButton } from '../select-button/select-button';
+import { SelectOption } from '../select-option/select-option';
 import { SelectWrapper } from './select-wrapper';
 import { useSelectContext } from './select-wrapper.context';
 

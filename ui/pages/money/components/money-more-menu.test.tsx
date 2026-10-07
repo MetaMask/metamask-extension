@@ -17,7 +17,7 @@ import { createMoneyAnalyticsMock } from '../../../hooks/money/useMoneyAnalytics
 import { MoneyMoreMenu } from './money-more-menu';
 
 jest.mock(
-  '../../../components/app/modals/visit-support-data-consent-modal',
+  '../../../components/app/modals/visit-support-data-consent-modal/visit-support-data-consent-modal',
   () => ({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __esModule: true,

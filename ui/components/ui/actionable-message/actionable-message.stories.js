@@ -1,6 +1,6 @@
 import React from 'react';
 
-import ActionableMessage from '.';
+import ActionableMessage from './actionable-message';
 
 export default {
   title: 'Components/UI/ActionableMessage (deprecated)',

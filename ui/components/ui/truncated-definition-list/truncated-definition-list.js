@@ -2,8 +2,8 @@ import { pick } from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { BorderColor, Size } from '../../../helpers/constants/design-system';
-import Box from '../box';
-import Button from '../button';
+import Box from '../box/box';
+import Button from '../button/button.component';
 import DefinitionList from '../definition-list/definition-list';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

@@ -6,14 +6,15 @@ import {
   getLedgerAppConfiguration,
   getLedgerPublicKey,
 } from '../../../store/actions';
-import { createHardwareWalletError, getDeviceEventForError } from '../errors';
-import { toHardwareWalletError } from '../rpcErrorUtils';
-import {
-  DeviceEvent,
-  HardwareWalletType,
-  type EnsureDeviceReadyOptions,
-  type HardwareWalletAdapter,
-  type HardwareWalletAdapterOptions,
+import { createHardwareWalletError } from '../../../../shared/lib/hardware-wallets/errors';
+import { getDeviceEventForError } from '../errors';
+import { toHardwareWalletError } from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { DeviceEvent } from '../types';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import type {
+  EnsureDeviceReadyOptions,
+  HardwareWalletAdapter,
+  HardwareWalletAdapterOptions,
 } from '../types';
 import {
   getConnectedLedgerDevices,

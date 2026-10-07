@@ -6,7 +6,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEligibility } from '../../hooks/perps/usePerpsEligibility';
 import * as accountsSelectors from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -14,7 +14,7 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EXTENSION_EVENT_PROPERTY,
 } from '../../../shared/constants/perps-events';
-import { usePerpsLiveAccount } from '../../hooks/perps/stream';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream/usePerpsLiveAccount';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -106,8 +106,11 @@ jest.mock('../../selectors/perps/feature-flags', () => ({
 
 const mockTrack = jest.fn();
 
-jest.mock('../../hooks/perps', () => ({
+jest.mock('../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: jest.fn(() => ({ isEligible: true })),
+}));
+
+jest.mock('../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
@@ -115,7 +118,7 @@ const mockUsePerpsEligibility = usePerpsEligibility as jest.MockedFunction<
   typeof usePerpsEligibility
 >;
 
-jest.mock('../../hooks/perps/stream', () => ({
+jest.mock('../../hooks/perps/stream/usePerpsLiveAccount', () => ({
   usePerpsLiveAccount: jest.fn(),
 }));
 

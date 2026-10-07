@@ -4,10 +4,12 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { CaipAssetType, Hex } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { getMarketData } from '../../../../../selectors';
+import {
+  getTokenRatesControllerMarketData as getMarketData,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+} from '../../../../../../shared/lib/selectors/assets-migration';
 import { TokenFiatDisplayInfo } from '../../types';
-import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change';
-import { getAssetsRates } from '../../../../../selectors/assets';
+import { PercentageChange } from '../../../../multichain/token-list-item/price/percentage-change/percentage-change';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type TokenCellPercentChangeProps = {

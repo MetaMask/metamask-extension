@@ -1,20 +1,20 @@
 import { useCallback, useEffect } from 'react';
 import {
   cancelPasskeyCeremony,
-  isPasskeyPRFSupported,
   startPasskeyAuthentication,
   startPasskeyRegistration,
-} from '../../../shared/lib/passkey';
+} from '../../../shared/lib/passkey/passkey-ceremony';
+import {
+  isPasskeyPRFSupported,
+  hasPasskeyPRFResult,
+  PasskeyPRFRequiredError,
+} from '../../../shared/lib/passkey/passkey-capabilities';
 import {
   PASSKEY_STAGES,
   type PasskeyStage,
 } from '../../../shared/constants/passkey';
 import type { RouteMessenger } from '../../messengers/route-messenger';
 import { useMessenger } from '../useMessenger';
-import {
-  hasPasskeyPRFResult,
-  PasskeyPRFRequiredError,
-} from '../../../shared/lib/passkey/passkey-capabilities';
 
 type PasskeyEnrollmentMessenger = RouteMessenger<
   | 'PasskeyController:generateRegistrationOptions'

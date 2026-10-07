@@ -22,9 +22,9 @@ import { Box } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import PermissionsConnectFooter from '../permissions-connect-footer';
+import PermissionsConnectFooter from '../permissions-connect-footer/permissions-connect-footer.component';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
-import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
+import SnapPrivacyWarning from '../snaps/snap-privacy-warning/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 import {
   getCaip25CaveatValueFromPermissions,
@@ -33,7 +33,7 @@ import {
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
-import PermissionPageContainerContent from './permission-page-container-content';
+import PermissionPageContainerContent from './permission-page-container-content/permission-page-container-content.component';
 
 function PermissionPageContainerBase({
   approvePermissionsRequest,

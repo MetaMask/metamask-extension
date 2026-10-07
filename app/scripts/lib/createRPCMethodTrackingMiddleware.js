@@ -28,13 +28,13 @@ import {
   // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import {
-  createEventBuilder,
   createEventFragment,
   finalizeEventFragment,
   trackEvent,
   updateEventFragment,
-} from '../controllers/analytics';
+} from '../controllers/analytics/analytics';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 import { getIframeProperties } from './getIframeProperties';
 

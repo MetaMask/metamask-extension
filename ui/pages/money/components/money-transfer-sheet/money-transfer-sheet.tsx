@@ -10,13 +10,11 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-} from '../../../../components/component-library';
+import { Modal } from '../../../../components/component-library/modal/modal';
+import { ModalOverlay } from '../../../../components/component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../../../components/component-library/modal-content/modal-content';
+import { ModalHeader } from '../../../../components/component-library/modal-header/modal-header';
+import { ModalBody } from '../../../../components/component-library/modal-body/modal-body';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useMoneyAccountWithdrawal } from '../../../../hooks/money/useMoneyAccountWithdrawal';
 import { useMoneyPerpsDeposit } from '../../../../hooks/money/useMoneyPerpsDeposit';

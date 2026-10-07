@@ -8,16 +8,17 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import * as environmentTypeUtils from '../../../shared/lib/environment-type';
-import * as bridgeActions from '../../ducks/bridge/actions';
 import {
+  DEFAULT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import * as environmentTypeUtils from '../../../shared/lib/environment-type';
+import * as bridgeActionsModule1 from '../../ducks/bridge/actions';
+
 import type { BridgeToken } from '../../ducks/bridge/types';
 import { useBridgeNavigation } from './useBridgeNavigation';
 
@@ -193,7 +194,7 @@ describe('useBridgeNavigation', () => {
   describe('navigateToBridgePage', () => {
     it('tracks page view and navigates without replace on entrypoint', () => {
       const trackUnifiedSwapBridgeEventSpy = jest
-        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
       jest
         .spyOn(environmentTypeUtils, 'getEnvironmentType')
@@ -358,7 +359,7 @@ describe('useBridgeNavigation', () => {
   describe('navigateToDefaultRoute', () => {
     it('resets the bridge controller and navigates home by default', async () => {
       const resetBridgeControllerSpy = jest
-        .spyOn(bridgeActions, 'resetBridgeController')
+        .spyOn(bridgeActionsModule1, 'resetBridgeController')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
 
       const { result } = renderUseBridgeNavigation();
@@ -380,7 +381,7 @@ describe('useBridgeNavigation', () => {
 
     it('navigates to transaction shield when the query param is present', async () => {
       jest
-        .spyOn(bridgeActions, 'resetBridgeController')
+        .spyOn(bridgeActionsModule1, 'resetBridgeController')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
 
       mockUseLocation.mockReturnValue({

@@ -27,8 +27,8 @@ jest.mock('../store/actions', () => ({
   staticAssetsStopPollingByPollingToken: jest.fn(),
 }));
 
-jest.mock('../selectors', () => ({
-  ...jest.requireActual('../selectors'),
+jest.mock('../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../selectors/multichain/networks'),
   getEnabledChainIds: jest.fn(() => mockEnabledChainIds),
 }));
 

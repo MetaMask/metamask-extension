@@ -3,10 +3,10 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-n
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockCryptoMarkets, mockHip3Markets } from '../mocks';
 import { PERPS_CONSTANTS } from '../constants';
-import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream';
+import { usePerpsLiveMarketListData } from '../../../../hooks/perps/stream/usePerpsLiveMarketListData';
 import { usePerpsTabExploreData } from './usePerpsTabExploreData';
 
-jest.mock('../../../../hooks/perps/stream', () => ({
+jest.mock('../../../../hooks/perps/stream/usePerpsLiveMarketListData', () => ({
   usePerpsLiveMarketListData: jest.fn(),
 }));
 

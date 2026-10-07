@@ -37,8 +37,8 @@ jest.mock('../../../ducks/app/app', () => ({
   onboardingToggleBasicFunctionalityOff: jest.fn(),
 }));
 
-jest.mock('../../../selectors/multichain/feature-flags', () => ({
-  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+jest.mock('../../../selectors/multichain/basic-functionality', () => ({
+  ...jest.requireActual('../../../selectors/multichain/basic-functionality'),
   getIsBasicFunctionalityConsolidationEnabled: () => false,
 }));
 

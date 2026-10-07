@@ -1,7 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { SnapUISelector } from './snap-ui-selector';
-import { Box, Text } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { Text } from '../../../component-library/text/text';
 import {
   Display,
   FlexDirection,
@@ -11,7 +12,7 @@ import { shortenAddress } from '../../../../helpers/utils/util';
 import { SnapUICard } from '../snap-ui-card/snap-ui-card';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
-import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
+import { SnapInterfaceContextProvider } from '../../../../contexts/snaps/snap-interface';
 
 const store = configureStore(testData);
 

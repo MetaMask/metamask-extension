@@ -13,18 +13,18 @@ import {
   ButtonBaseSize,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import type { AccountState, Position, Order } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { usePerpsAssetNames } from '../../../../hooks/perps/stream';
+import { usePerpsAssetNames } from '../../../../hooks/perps/stream/usePerpsAssetNames';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../../../shared/lib/perps-formatters';
-import { PositionCard } from '../position-card';
-import { OrderCard } from '../order-card';
+import { PositionCard } from '../position-card/position-card';
+import { OrderCard } from '../order-card/order-card';
 import { getPrivacyAwareColor } from '../utils';
-import type { AccountState, Position, Order } from '../types';
 
 export type PerpsPositionsOrdersProps = {
   positions: Position[];

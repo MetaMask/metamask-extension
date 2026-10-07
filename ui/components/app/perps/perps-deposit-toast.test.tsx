@@ -32,14 +32,14 @@ jest.mock('../../../hooks/perps/usePerpsEventTracking', () => ({
   usePerpsEventTracking: () => ({ track: mockTrack }),
 }));
 
-jest.mock('../../ui/toast/toast', () => ({
+jest.mock('../../ui/toast/toast', () => ({ ToastContent: () => null }));
+jest.mock('react-hot-toast', () => ({
   toast: {
     dismiss: (...args: unknown[]) => mockToastDismiss(...args),
     error: (...args: unknown[]) => mockToastError(...args),
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
   },
-  ToastContent: () => null,
 }));
 
 function buildPendingDepositTransaction(

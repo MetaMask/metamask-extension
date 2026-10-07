@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import classnames from 'clsx';
 import { SubjectType } from '@metamask/permission-controller';
-import SiteOrigin from '../../ui/site-origin';
-import Box from '../../ui/box';
+import SiteOrigin from '../../ui/site-origin/site-origin';
+import Box from '../../ui/box/box';
 import {
   FLEX_DIRECTION,
   JustifyContent,

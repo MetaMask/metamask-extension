@@ -2,7 +2,7 @@ import { RpcEndpointType } from '@metamask/network-controller';
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
 import { escapeRegExp } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 
 type VersionedData = {
   meta: { version: number };

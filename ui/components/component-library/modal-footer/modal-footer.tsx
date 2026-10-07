@@ -6,9 +6,13 @@ import {
   Display,
   FlexWrap,
 } from '../../../helpers/constants/design-system';
-import { type PolymorphicRef, type BoxProps, Box } from '../box';
-import { Button, ButtonSize, ButtonVariant, type ButtonProps } from '../button';
-import { Container, ContainerMaxWidth } from '../container';
+import type { PolymorphicRef, BoxProps } from '../box/box.types';
+import { Box } from '../box/box';
+import { Button } from '../button/button';
+import { ButtonSize, ButtonVariant } from '../button/button.types';
+import type { ButtonProps } from '../button/button.types';
+import { Container } from '../container/container';
+import { ContainerMaxWidth } from '../container/container.types';
 import { ModalFooterProps, ModalFooterComponent } from './modal-footer.types';
 
 /**

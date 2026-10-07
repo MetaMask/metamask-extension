@@ -1,10 +1,8 @@
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
-import {
-  CHAIN_IDS,
-  LINEA_MAINNET_DISPLAY_NAME,
-} from '../shared/constants/network';
+import { CHAIN_IDS } from "../shared/constants/chain-ids";
+import { LINEA_MAINNET_DISPLAY_NAME } from "../shared/constants/network";
 import { FirstTimeFlowType } from '../shared/constants/onboarding';
 import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
 import {

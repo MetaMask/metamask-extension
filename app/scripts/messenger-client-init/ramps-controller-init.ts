@@ -14,7 +14,7 @@ import {
 import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
 import { trace } from '../../../shared/lib/trace';
 import { captureException } from '../../../shared/lib/sentry';
-import { trackEvent } from '../controllers/analytics';
+import { trackEvent } from '../controllers/analytics/analytics';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';

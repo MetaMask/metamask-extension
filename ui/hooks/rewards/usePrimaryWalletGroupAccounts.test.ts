@@ -12,7 +12,7 @@ const mockGetWalletIdAndNameByAccountAddress = jest.fn();
 const mockGetMultichainAccountsByWalletId = jest.fn();
 const mockGetInternalAccountsFromGroupById = jest.fn();
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../selectors/selectors', () => ({
   getSelectedAccount: (...args: unknown[]) => mockGetSelectedAccount(...args),
 }));
 

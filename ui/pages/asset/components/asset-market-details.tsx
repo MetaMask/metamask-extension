@@ -16,14 +16,17 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
 import { getPricePrecision } from '../util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getTokenRatesControllerMarketData as getMarketData,
+} from '../../../../shared/lib/selectors/assets-migration';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
-import { getAssetsRates } from '../../../selectors/assets';
-import { getCurrencyRates, getMarketData } from '../../../selectors/selectors';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 import { getConversionRatesForNativeAsset } from '../../../../shared/lib/asset-conversion-rates';

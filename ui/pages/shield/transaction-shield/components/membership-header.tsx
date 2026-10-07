@@ -17,7 +17,7 @@ import {
   BorderRadius,
   BorderStyle,
 } from '../../../../helpers/constants/design-system';
-import { Tag } from '../../../../components/component-library';
+import { Tag } from '../../../../components/component-library/tag/tag';
 import ShieldBannerAnimation from '../shield-banner-animation';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog

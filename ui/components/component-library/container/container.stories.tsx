@@ -1,6 +1,6 @@
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import React from 'react';
-import { Box } from '../box';
+import { Box } from '../box/box';
 import {
   Display,
   FlexDirection,

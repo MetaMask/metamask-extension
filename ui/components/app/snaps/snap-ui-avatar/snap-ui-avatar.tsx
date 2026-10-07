@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { PreferredAvatar } from '../../preferred-avatar';
+import { PreferredAvatar } from '../../preferred-avatar/preferred-avatar';
 import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../../../selectors/multichain-accounts/account-tree.types';
 

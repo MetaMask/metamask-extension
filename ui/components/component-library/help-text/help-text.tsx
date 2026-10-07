@@ -4,9 +4,9 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text';
-import type { PolymorphicRef } from '../box';
-import type { TextProps } from '../text';
+import { Text } from '../text/text';
+import type { PolymorphicRef } from '../box/box.types';
+import type { TextProps } from '../text/text.types';
 import {
   type HelpTextProps,
   type HelpTextComponent,

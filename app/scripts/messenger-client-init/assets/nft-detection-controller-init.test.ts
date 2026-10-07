@@ -5,7 +5,7 @@ import {
 import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
-import { getNftDetectionControllerMessenger } from '../messengers/assets';
+import { getNftDetectionControllerMessenger } from '../messengers/assets/nft-detection-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
 import { NftDetectionControllerInit } from './nft-detection-controller-init';
 

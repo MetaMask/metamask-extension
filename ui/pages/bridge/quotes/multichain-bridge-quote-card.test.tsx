@@ -14,7 +14,7 @@ import {
   createBridgeMockStore,
   MOCK_LEDGER_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20';
 import { mockNetworkState } from '../../../../test/stub/networks';
@@ -26,10 +26,8 @@ import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { getToAccounts } from '../../../ducks/bridge/selectors';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
-import {
-  MultichainBridgeQuoteCard,
-  MultichainBridgeQuoteCardSkeleton,
-} from './multichain-bridge-quote-card';
+import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
+import { MultichainBridgeQuoteCardSkeleton } from './multichain-bridge-quote-card-skeleton';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),

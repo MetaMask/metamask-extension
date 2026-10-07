@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../../../../../../shared/lib/string-utils';
-import { NftItem } from '../../../../../../../components/multichain/nft-item';
+import { NftItem } from '../../../../../../../components/multichain/nft-item/nft-item';
 import { getNFTsByChainId } from '../../../../../../../ducks/metamask/metamask';
 import {
   getNftImage,

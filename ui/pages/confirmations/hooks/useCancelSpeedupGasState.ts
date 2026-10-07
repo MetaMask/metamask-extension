@@ -10,7 +10,7 @@ import {
   EditGasModes,
   GasRecommendations,
 } from '../../../../shared/constants/gas';
-import { selectTransactionMetadata } from '../../../selectors';
+import { selectTransactionMetadata } from '../../../selectors/transactions';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import {
   hexToDecimal,

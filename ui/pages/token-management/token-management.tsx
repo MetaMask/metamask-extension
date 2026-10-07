@@ -36,7 +36,8 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { ERC20 } from '@metamask/controller-utils';
-import { TokenManagementCell } from '../../components/multichain/token-management-cell';
+import { toast } from 'react-hot-toast';
+import { TokenManagementCell } from '../../components/multichain/token-management-cell/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   getNativeCurrencyForChain,
@@ -44,7 +45,7 @@ import {
   getTokenSortConfig,
   getUseExternalServices,
   getSelectedAddress,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
@@ -85,7 +86,7 @@ import {
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
-import { Header } from '../../components/multichain/pages/page';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
@@ -113,7 +114,7 @@ import { filterExcludedAssetList } from '../../components/app/assets/enablement/
 import { getFeaturedEvmNetworks } from '../../selectors/config-registry/config-registry';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../selectors/network-blacklist/network-blacklist';
 import { getFilteredFeaturedNetworks } from '../../../shared/lib/network.utils';
-import { toast, ToastContent } from '../../components/ui/toast/toast';
+import { ToastContent } from '../../components/ui/toast/toast';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SiteOrigin from '.';
+import SiteOrigin from './site-origin';
 
 export default {
   title: 'Components/UI/SiteOrigin (deprecated)',

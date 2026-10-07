@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetailsBridgeFeeRow } from './transaction-details-bridge-fee-row';
 
 const mockStore = configureMockStore([]);

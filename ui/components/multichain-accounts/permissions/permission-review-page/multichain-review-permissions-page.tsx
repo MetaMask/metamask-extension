@@ -7,20 +7,21 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
+import { toast } from 'react-hot-toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getAllPermittedChainsForSelectedTab,
   getConnectedSitesList,
   getPermissions,
   getPermissionSubjects,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import {
   removePermissionsFor,
   setPermittedAccounts,
 } from '../../../../store/actions';
 import { SubjectsType } from '../../../multichain/pages/connections/components/connections.types';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
-import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-all-gator-permissions-modal';
+import { DisconnectAllGatorPermissionsModal } from '../../../multichain/disconnect-all-gator-permissions-modal/disconnect-all-gator-permissions-modal';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../helpers/utils/caip25-permissions';
@@ -33,7 +34,6 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 import { useDispatch } from '../../../../store/hooks';
-import { toast } from '../../../ui/toast/toast';
 import { getURLHost } from '../../../../helpers/utils/util';
 
 export const MultichainReviewPermissions = () => {

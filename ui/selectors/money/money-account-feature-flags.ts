@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { isObject } from '@metamask/utils';
+import { getMoneyAccountVaultConfig } from '@metamask/money-account-utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
@@ -9,7 +10,6 @@ import {
   isMoneyEarningSectionEnabled,
   isMoneyHomeScreenCardEnabled,
 } from '../../../shared/lib/money/feature-flags';
-import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
 /**
  * The APY controls from the `earnMoneyVaultApyControl` remote feature flag.

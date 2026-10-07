@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../ducks/locale/locale';
-import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../shared/lib/selectors/assets-migration';
 import { shortenString } from '../helpers/utils/util';
 
 /**

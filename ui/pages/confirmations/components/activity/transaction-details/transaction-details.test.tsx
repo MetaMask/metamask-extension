@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { TransactionDetailsProvider } from '../transaction-details-context';
+import { TransactionDetailsProvider } from '../transaction-details-context/transaction-details-context';
 import { TransactionDetails } from './transaction-details';
 
 jest.mock('../../../hooks/send/useSendTokens', () => ({

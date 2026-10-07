@@ -4,7 +4,7 @@ import type { Hex } from '@metamask/utils';
 
 import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { createPerpsWithdrawTransaction } from '../../../../../components/app/perps/hooks/createPerpsWithdrawTransaction';
-import { DeveloperButton } from '../developer-button';
+import { DeveloperButton } from '../developer-button/developer-button';
 import {
   ConfirmationLoader,
   useConfirmationNavigation,

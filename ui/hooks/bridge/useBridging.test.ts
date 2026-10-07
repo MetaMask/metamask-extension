@@ -10,10 +10,11 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
-import * as bridgeActions from '../../ducks/bridge/actions';
+import * as bridgeActionsModule1 from '../../ducks/bridge/actions';
+
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -38,7 +39,10 @@ jest.mock('react-redux', () => ({
       mockDispatch(...args),
 }));
 
-const resetInputFieldsSpy = jest.spyOn(bridgeActions, 'resetInputFields');
+const resetInputFieldsSpy = jest.spyOn(
+  bridgeActionsModule1,
+  'resetInputFields',
+);
 
 const MOCK_ANALYTICS_ID = '0xtestMetaMetricsId';
 const BRIDGE_PREPARE_PATH = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
@@ -133,16 +137,16 @@ describe('useBridging', () => {
         expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const trackUnifiedSwapBridgeEventSpy = jest
-          .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+          .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const setBridgeLocationSpy = jest
-          .spyOn(bridgeActions, 'setBridgeLocation')
+          .spyOn(bridgeActionsModule1, 'setBridgeLocation')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
-          .spyOn(bridgeActions, 'resetInputFields')
+          .spyOn(bridgeActionsModule1, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerSpy = jest
-          .spyOn(bridgeActions, 'resetBridgeController')
+          .spyOn(bridgeActionsModule1, 'resetBridgeController')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging(
@@ -240,13 +244,13 @@ describe('useBridging', () => {
 
     it('sets the to query param when destTokenAssetId is provided', async () => {
       jest
-        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
       jest
-        .spyOn(bridgeActions, 'resetInputFields')
+        .spyOn(bridgeActionsModule1, 'resetInputFields')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
       jest
-        .spyOn(bridgeActions, 'resetBridgeController')
+        .spyOn(bridgeActionsModule1, 'resetBridgeController')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
 
       const sourceToken = {
@@ -299,13 +303,13 @@ describe('useBridging', () => {
 
     it('does not set the to query param when destTokenAssetId is undefined', async () => {
       jest
-        .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+        .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
       jest
-        .spyOn(bridgeActions, 'resetInputFields')
+        .spyOn(bridgeActionsModule1, 'resetInputFields')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
       jest
-        .spyOn(bridgeActions, 'resetBridgeController')
+        .spyOn(bridgeActionsModule1, 'resetBridgeController')
         .mockImplementation((...args: unknown[]) => jest.fn()(...args));
 
       const sourceToken = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
@@ -487,13 +491,13 @@ describe('useBridging', () => {
         expectedState: { token: { chainId: string } | null } = { token: null },
       ) => {
         const trackUnifiedSwapBridgeEventSpy = jest
-          .spyOn(bridgeActions, 'trackUnifiedSwapBridgeEvent')
+          .spyOn(bridgeActionsModule1, 'trackUnifiedSwapBridgeEvent')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const setBridgeLocationSpy = jest
-          .spyOn(bridgeActions, 'setBridgeLocation')
+          .spyOn(bridgeActionsModule1, 'setBridgeLocation')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const resetBridgeControllerAndCacheSpy = jest
-          .spyOn(bridgeActions, 'resetInputFields')
+          .spyOn(bridgeActionsModule1, 'resetInputFields')
           .mockImplementation((...args: unknown[]) => jest.fn()(...args));
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest

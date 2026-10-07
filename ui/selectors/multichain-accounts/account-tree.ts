@@ -36,7 +36,7 @@ import { MergedInternalAccount } from '../selectors.types';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getInternalAccounts, getInternalAccountsObject } from '../accounts';
 
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
 import { isTestNetwork } from '../../helpers/utils/network-helper';
 import { DefaultAddressScope } from '../../../shared/constants/default-address';

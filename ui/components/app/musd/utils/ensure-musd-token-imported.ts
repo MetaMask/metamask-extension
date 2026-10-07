@@ -1,10 +1,11 @@
 import type { Hex } from '@metamask/utils';
-import { MUSD_TOKEN, getMusdTokenAddressForChain } from '../constants';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
+import { getMusdTokenAddressForChain } from '../constants';
 import {
   addImportedTokens,
   findNetworkClientIdByChainId,
 } from '../../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../../store/types';
 
 /**
  * Ensures mUSD is present in the user's imported token list for `chainId` so

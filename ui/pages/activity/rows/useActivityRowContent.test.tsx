@@ -34,11 +34,16 @@ jest.mock('../../../hooks/useFormatters', () => ({
   }),
 }));
 
-jest.mock('../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: ({ tokens }: { tokens: (string | undefined)[] }) => (
-    <div data-testid="activity-avatar">{JSON.stringify(tokens)}</div>
-  ),
-}));
+jest.mock(
+  '../../../components/app/activity-list-item-avatar/activity-list-item-avatar',
+  () => ({
+    ActivityListItemAvatar: ({
+      tokens,
+    }: {
+      tokens: (string | undefined)[];
+    }) => <div data-testid="activity-avatar">{JSON.stringify(tokens)}</div>,
+  }),
+);
 
 jest.mock('../../../components/app/chain-badge/chain-badge', () => ({
   ChainBadge: ({ children }: { children: React.ReactNode }) => (

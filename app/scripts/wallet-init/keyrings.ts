@@ -28,7 +28,7 @@ import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
-import { snapKeyringBuilder } from '../lib/snap-keyring';
+import { snapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import {
   RootMessenger,
   RootMessengerActions,

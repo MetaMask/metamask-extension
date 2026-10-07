@@ -1,5 +1,3 @@
-export { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
-
 /**
  * Hardware wallet connection status
  */

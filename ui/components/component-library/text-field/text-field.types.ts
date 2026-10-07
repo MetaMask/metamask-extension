@@ -2,9 +2,8 @@ import React from 'react';
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
-import { InputProps } from '../input';
-import { InputComponent } from '../input/input.types';
+} from '../box/box.types';
+import { InputProps, InputComponent } from '../input/input.types';
 
 export enum TextFieldSize {
   Sm = 'sm',

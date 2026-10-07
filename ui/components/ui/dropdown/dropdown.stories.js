@@ -1,5 +1,5 @@
 import React from 'react';
-import Dropdown from '.';
+import Dropdown from './dropdown';
 
 const unnamedOptions = [...Array(10).keys()].map((index) => {
   return { value: `option${index}` };

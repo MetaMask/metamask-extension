@@ -7,14 +7,12 @@ import {
   TextAlign,
 } from '@metamask/design-system-react';
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalContentSize } from '../../../../../components/component-library/modal-content/modal-content.types';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
 import NetworkStatistics from '../../edit-gas-fee-popover/network-statistics/network-statistics';
 import { GasModalType } from '../../../constants/gas';
 import { useGasOptions } from '../../../hooks/gas/useGasOptions';

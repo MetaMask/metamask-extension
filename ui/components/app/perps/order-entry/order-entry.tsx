@@ -14,22 +14,22 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
+import type { OrderType } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { usePerpsOrderForm } from '../../../../hooks/perps/usePerpsOrderForm';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
-import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
-import { AmountInput } from './components/amount-input';
-import { LimitPriceInput } from './components/limit-price-input';
-import { LeverageSlider } from './components/leverage-slider';
-import { OrderSummary } from './components/order-summary';
-import { AutoCloseSection } from './components/auto-close-section';
-import { CloseAmountSection } from './components/close-amount-section';
-import { OrderTypeToggle } from './components/order-type-toggle';
+import { AmountInput } from './components/amount-input/amount-input';
+import { LimitPriceInput } from './components/limit-price-input/limit-price-input';
+import { LeverageSlider } from './components/leverage-slider/leverage-slider';
+import { OrderSummary } from './components/order-summary/order-summary';
+import { AutoCloseSection } from './components/auto-close-section/auto-close-section';
+import { CloseAmountSection } from './components/close-amount-section/close-amount-section';
+import { OrderTypeToggle } from './components/order-type-toggle/order-type-toggle';
 /**
  * OrderEntry - Main component for creating perps orders
  *

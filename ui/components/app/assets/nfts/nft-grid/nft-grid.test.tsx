@@ -10,7 +10,7 @@ import NftGrid from './nft-grid';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockVar = any;
 
-jest.mock('../../../../../selectors', () => ({
+jest.mock('../../../../../selectors/selectors', () => ({
   getCurrentNetwork: jest
     .fn()
     .mockReturnValue({ chainId: '0x1', nickname: 'Mainnet' }),

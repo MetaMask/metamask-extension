@@ -9,8 +9,8 @@ import {
   twMerge,
 } from '@metamask/design-system-react';
 
+import type { OrderType } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import type { OrderType } from '../../../types';
 
 export type OrderTypeToggleProps = {
   orderType: OrderType;

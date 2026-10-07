@@ -14,11 +14,6 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 
-export {
-  getUserPaidNetworkFeeUsd,
-  type SponsoredNetworkFeeFlags,
-} from './sponsored-network-fees';
-
 const SUPPORTED_TYPES: TransactionType[] = [
   TransactionType.musdConversion,
   TransactionType.moneyAccountDeposit,

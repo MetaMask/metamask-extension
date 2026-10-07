@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { buildBatchSellAsset } from '../../../test/data/batch-sell';
+import { buildBatchSellAsset } from '../../../test/data/batch-sell/factories';
 import { useSortBatchSellAssetsByBalance } from './useSortBatchSellAssetsByBalance';
 
 const makeAsset = (symbol: string, tokenFiatAmount: number | undefined) =>

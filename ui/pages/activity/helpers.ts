@@ -12,7 +12,7 @@ import {
   getStatusKey,
   QUEUED_PSEUDO_STATUS,
   SIGNING_PSUEDO_STATUS,
-} from '../../components/app/transaction-status-label';
+} from '../../components/app/transaction-status-label/transaction-status-label';
 import type { TransactionGroup } from '../../../shared/lib/multichain/types';
 import type { LocalActivityListItem } from './types';
 

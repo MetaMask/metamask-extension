@@ -4,9 +4,9 @@ import { PrimaryType } from '../../../../../../../../../shared/constants/signatu
 import {
   getEip712TokenId,
   parseSanitizeTypedDataMessage,
-} from '../../../../../../utils';
-import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
-import { Box } from '../../../../../../../../components/component-library';
+} from '../../../../../../utils/confirm';
+import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row/row';
+import { Box } from '../../../../../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,

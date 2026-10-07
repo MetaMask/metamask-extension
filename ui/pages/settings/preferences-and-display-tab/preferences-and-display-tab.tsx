@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem, createSelectItem } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
+import { createSelectItem } from '../shared/create-select-item';
 import {
   selectIsTickerWidgetFeatureEnabled,
   getManageInstitutionalWallets,
   getShowExtensionInFullSizeView,
   selectShowTickerWidget,
   getTheme,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import {
   setManageInstitutionalWallets,
   setShowExtensionInFullSizeView,
@@ -17,7 +19,7 @@ import {
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { THEME_ROUTE, LANGUAGE_ROUTE } from '../../../helpers/constants/routes';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';

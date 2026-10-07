@@ -28,8 +28,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { getChainIdFromAssetId } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
-import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import {
+  DEFAULT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,

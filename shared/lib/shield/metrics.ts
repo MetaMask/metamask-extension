@@ -25,7 +25,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ExistingSubscriptionEventParams,
   ShieldSubscriptionMetricsPropsFromUI,
-} from '../../types';
+} from '../../types/metametrics';
 import {
   getDefaultSubscriptionPaymentOptions,
   getIsTrialedSubscription,

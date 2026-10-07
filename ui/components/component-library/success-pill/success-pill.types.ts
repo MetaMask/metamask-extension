@@ -1,7 +1,7 @@
 import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
-} from '../box';
+} from '../box/box.types';
 
 export type SuccessPillStyleUtilityProps = {
   /**

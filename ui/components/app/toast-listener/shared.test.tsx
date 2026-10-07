@@ -15,12 +15,6 @@ const mockToastDismiss = jest.fn();
 const mockUseToastLabel = jest.fn();
 
 jest.mock('../../ui/toast/toast', () => ({
-  toast: {
-    loading: (...args: unknown[]) => mockToastLoading(...args),
-    success: (...args: unknown[]) => mockToastSuccess(...args),
-    error: (...args: unknown[]) => mockToastError(...args),
-    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
-  },
   ToastContent: ({
     title,
     description,
@@ -35,6 +29,14 @@ jest.mock('../../ui/toast/toast', () => ({
       {description ? <p>{description}</p> : null}
     </div>
   ),
+}));
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    loading: (...args: unknown[]) => mockToastLoading(...args),
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
+  },
 }));
 
 jest.mock('./useToastLabel', () => ({

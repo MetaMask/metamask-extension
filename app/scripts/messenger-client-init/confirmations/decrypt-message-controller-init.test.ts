@@ -7,9 +7,9 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getDecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
-} from '../messengers';
+  DecryptMessageControllerInitMessenger,
+} from '../messengers/decrypt-message-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
-import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-message-controller-messenger';
 import { DecryptMessageControllerInit } from './decrypt-message-controller-init';
 
 jest.mock('../../controllers/decrypt-message');

@@ -2,8 +2,9 @@ import React from 'react';
 import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
-import { Icon, IconName } from '../../../../components/component-library';
-import TransactionDetail from '.';
+import { Icon } from '../../../../components/component-library/icon/icon';
+import { IconName } from '../../../../components/component-library/icon/icon.types';
+import TransactionDetail from './transaction-detail.component';
 
 export default {
   title: 'Confirmations/Components/TransactionDetail',

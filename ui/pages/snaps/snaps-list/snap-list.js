@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import SnapListItem from '../../../components/app/snaps/snap-list-item';
+import SnapListItem from '../../../components/app/snaps/snap-list-item/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -21,23 +21,24 @@ import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 import {
-  Box,
-  BannerTip,
-  BannerTipLogoType,
-  ButtonLink,
-  Icon,
+  getAllSnapAvailableUpdates,
+  getSnapsList,
+} from '../../../selectors/selectors';
+import { Box } from '../../../components/component-library/box/box';
+import { BannerTip } from '../../../components/component-library/banner-tip/banner-tip';
+import { BannerTipLogoType } from '../../../components/component-library/banner-tip/banner-tip.types';
+import { ButtonLink } from '../../../components/component-library/button-link/button-link';
+import { Icon } from '../../../components/component-library/icon/icon';
+import {
   IconName,
   IconSize,
-  Text,
-  ButtonIcon,
-} from '../../../components/component-library';
-import {
-  Content,
-  Header,
-  Page,
-} from '../../../components/multichain/pages/page';
+} from '../../../components/component-library/icon/icon.types';
+import { Text } from '../../../components/component-library/text/text';
+import { ButtonIcon } from '../../../components/component-library/button-icon/button-icon';
+import { Content } from '../../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../../components/multichain/pages/page/page';
 import { getSnapRoute } from '../../../helpers/utils/util';
 import { useGlobalMenuRouteTransition } from '../../routes/global-menu-route-transition';
 

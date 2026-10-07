@@ -1,14 +1,14 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { getAllMultichainNetworkConfigurations } from '../../../../../../selectors';
+import { getAllMultichainNetworkConfigurations } from '../../../../../../selectors/multichain/networks';
 import { useNativeCurrencySymbol } from './useNativeCurrencySymbol';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../../../../../selectors', () => ({
+jest.mock('../../../../../../selectors/multichain/networks', () => ({
   getAllMultichainNetworkConfigurations: jest.fn(),
 }));
 

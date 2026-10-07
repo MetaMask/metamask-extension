@@ -6,7 +6,7 @@ import {
   AvatarAccountSize,
 } from '@metamask/design-system-react';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { Toast } from '.';
+import { Toast } from './toast';
 
 const mockInternalAccount = createMockInternalAccount();
 

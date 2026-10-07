@@ -4,12 +4,10 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import {
-  SelectButton,
-  SelectButtonSize,
-  AvatarNetwork,
-  AvatarNetworkSize,
-} from '../../../component-library';
+import { SelectButton } from '../../../component-library/select-button/select-button';
+import { SelectButtonSize } from '../../../component-library/select-button/select-button.types';
+import { AvatarNetwork } from '../../../component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../component-library/avatar-network/avatar-network.types';
 import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({

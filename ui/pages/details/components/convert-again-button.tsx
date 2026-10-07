@@ -5,9 +5,9 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@metamask/design-system-react';
-import type { TokenAmount } from '../../../../shared/lib/activity/types';
+import type { TokenAmount } from '@metamask/client-utils';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { useMusdConversion } from '../../../hooks/musd';
+import { useMusdConversion } from '../../../hooks/musd/useMusdConversion';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 

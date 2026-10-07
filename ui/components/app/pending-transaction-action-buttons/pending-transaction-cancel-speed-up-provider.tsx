@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { EditGasModes } from '../../../../shared/constants/gas';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { selectTransactionById } from '../../../selectors/transactionController';
 
 export type PendingTransactionGasModalProps = {

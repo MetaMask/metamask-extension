@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'clsx';
-import type { PolymorphicRef, BoxProps } from '../box';
-import { Box } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box/box.types';
+import { Box } from '../box/box';
 
 import { ContainerProps, ContainerComponent } from './container.types';
 

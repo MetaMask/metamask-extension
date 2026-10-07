@@ -7,7 +7,7 @@ import { type BridgeToken } from '../../../ducks/bridge/types';
 import { useTokenSearchResults } from '../../../hooks/bridge/useTokenSearchResults';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Column } from '../layout';
+import Column from '../layout/column';
 import { useInitialBridgeTokens } from '../../../hooks/bridge/useInitialBridgeTokens';
 import { usePopularTokens } from '../../../hooks/bridge/usePopularTokens';
 import { filterOutArcNativeAsset } from '../../../components/app/assets/enablement/arc';

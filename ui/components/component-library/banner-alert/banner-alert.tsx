@@ -5,9 +5,11 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { PolymorphicRef } from '../box';
-import { BannerBase, BannerBaseProps } from '../banner-base';
-import { Icon, IconName, IconSize } from '../icon';
+import { PolymorphicRef } from '../box/box.types';
+import { BannerBase } from '../banner-base/banner-base';
+import { BannerBaseProps } from '../banner-base/banner-base.types';
+import { Icon } from '../icon/icon';
+import { IconName, IconSize } from '../icon/icon.types';
 import {
   BannerAlertComponent,
   BannerAlertProps,

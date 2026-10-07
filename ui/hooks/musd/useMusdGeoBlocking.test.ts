@@ -5,7 +5,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-jest.mock('../../components/app/musd/utils', () => ({
+jest.mock('../../components/app/musd/utils/validation', () => ({
   isGeoBlocked: jest.fn(),
 }));
 
@@ -14,7 +14,45 @@ jest.mock('../../store/background-connection', () => ({
 }));
 
 const { useSelector } = jest.requireMock('react-redux');
-const { isGeoBlocked } = jest.requireMock('../../components/app/musd/utils');
+const { isGeoBlocked } = {
+  get buildMusdConversionTx() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .buildMusdConversionTx;
+  },
+  get createMusdConversionTransaction() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .createMusdConversionTransaction;
+  },
+  get ensureMusdTokenImportedForChain() {
+    return jest.requireMock(
+      '../../components/app/musd/utils/ensure-musd-token-imported',
+    ).ensureMusdTokenImportedForChain;
+  },
+  get extractMusdConversionTransferDetails() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .extractMusdConversionTransferDetails;
+  },
+  get generateERC20TransferData() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .generateERC20TransferData;
+  },
+  get isGeoBlocked() {
+    return jest.requireMock('../../components/app/musd/utils/validation')
+      .isGeoBlocked;
+  },
+  get isMatchingMusdConversion() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .isMatchingMusdConversion;
+  },
+  get isMusdConversionTransaction() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .isMusdConversionTransaction;
+  },
+  get replaceMusdConversionTransactionForPayToken() {
+    return jest.requireMock('../../components/app/musd/utils/transaction-utils')
+      .replaceMusdConversionTransactionForPayToken;
+  },
+};
 const { submitRequestToBackground } = jest.requireMock(
   '../../store/background-connection',
 );

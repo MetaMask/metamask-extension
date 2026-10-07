@@ -2,18 +2,16 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
-import Box from '../../../components/ui/box';
+import { BannerAlert } from '../../../components/component-library/banner-alert/banner-alert';
+import Box from '../../../components/ui/box/box';
 import {
   AlignItems,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '../../../components/component-library';
+import { ButtonLink } from '../../../components/component-library/button-link/button-link';
+import { ButtonLinkSize } from '../../../components/component-library/button-link/button-link.types';
+import { Text } from '../../../components/component-library/text/text';
 
 import {
   QUOTES_EXPIRED_ERROR,

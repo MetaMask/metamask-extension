@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import ReactDOM from 'react-dom';
 import { Box } from '@metamask/design-system-react';
-import { Toast } from '../../../multichain/toast';
+import { Toast } from '../../../multichain/toast/toast';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   type PerpsToastKey,
@@ -21,9 +21,6 @@ import {
   PERPS_TOAST_PRESENTATION_BY_VARIANT,
   type PerpsToastPresentation,
 } from './perps-toast.presentation';
-
-export { PERPS_TOAST_KEYS } from './perps-toast.constants';
-export type { PerpsToastKey, PerpsToastVariant };
 
 export type PerpsToastRouteState = {
   perpsToastKey?: PerpsToastKey;

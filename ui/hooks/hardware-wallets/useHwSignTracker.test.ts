@@ -4,7 +4,7 @@ import {
   subscribeToMessengerEvent,
   submitRequestToBackground,
 } from '../../store/background-connection';
-import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { useHwSignTracker } from './useHwSignTracker';
 import { UNKNOWN_BATCH_ID } from './hw-sign-tracker/constants';
 

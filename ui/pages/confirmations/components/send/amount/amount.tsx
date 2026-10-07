@@ -1,16 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
 
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-  Text,
-  TextField,
-  TextFieldSize,
-} from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { ButtonIcon } from '../../../../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../../../../components/component-library/button-icon/button-icon.types';
+import { ButtonLink } from '../../../../../components/component-library/button-link/button-link';
+import { IconName } from '../../../../../components/component-library/icon/icon.types';
+import { Text } from '../../../../../components/component-library/text/text';
+import { TextField } from '../../../../../components/component-library/text-field/text-field';
+import { TextFieldSize } from '../../../../../components/component-library/text-field/text-field.types';
 import {
   BlockSize,
   Display,

@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { CHAIN_IDS } from '../constants/network';
+import { CHAIN_IDS } from '../constants/chain-ids';
 import { TransactionMetricsRequest } from '../types/metametrics';
 import { getSmartTransactionMetricsProperties } from './metametrics';
 

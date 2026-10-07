@@ -1,10 +1,11 @@
-import { perps } from './perps';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
-  type Destination,
-} from './route';
+  // eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+} from '../../../../ui/helpers/constants/routes';
+import { perps } from './perps';
+import type { Destination } from './route';
 
 function assertPathDestination(
   result: Destination,

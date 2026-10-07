@@ -19,7 +19,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CopyParams } from '../multichain-address-row/multichain-address-row';
 import { getNetworksByScopes } from '../../../../shared/lib/selectors/networks';
-import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
+import { MultichainAccountNetworkGroup } from '../multichain-account-network-group/multichain-account-network-group';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
 
 type MultichainAggregatedAddressListRowProps = {

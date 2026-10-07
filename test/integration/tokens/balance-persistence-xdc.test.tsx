@@ -2,8 +2,8 @@ import type { CaipAssetType, Hex } from '@metamask/utils';
 import { act, cleanup, screen, within } from '@testing-library/react';
 import nock from 'nock';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
 import {
-  CHAIN_IDS,
   CURRENCY_SYMBOLS,
   XDC_DISPLAY_NAME,
 } from '../../../shared/constants/network';

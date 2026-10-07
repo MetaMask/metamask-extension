@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThreeStepProgressBar, TwoStepProgressBar } from '.';
+import { ThreeStepProgressBar, TwoStepProgressBar } from './step-progress-bar';
 
 export default {
   title: 'Components/App/StepProgressBar',

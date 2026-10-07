@@ -1,6 +1,7 @@
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { DEFAULT_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { predict } from './predict';
 import { HomeQueryParams } from './home';
-import { DEFAULT_ROUTE } from './route';
 
 describe('predict deep link route', () => {
   it('opens the default route with QR modal params and includes query parameters in the encoded deeplink', () => {

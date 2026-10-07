@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Icon, IconName } from '../icon';
+import { Icon } from '../icon/icon';
+import { IconName } from '../icon/icon.types';
 import { HeaderBase } from './header-base';
 
 describe('HeaderBase', () => {

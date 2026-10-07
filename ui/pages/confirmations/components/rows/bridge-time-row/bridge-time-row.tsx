@@ -3,7 +3,7 @@ import type {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Text } from '../../../../../components/component-library';
+import { Text } from '../../../../../components/component-library/text/text';
 import {
   TextColor,
   TextVariant,

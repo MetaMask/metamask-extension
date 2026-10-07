@@ -1,30 +1,25 @@
-import React, { ReactElement } from 'react';
-import { AlertActionHandlerProvider } from '../../../../../components/app/alert-system/contexts/alertActionHandler';
-import useConfirmationAlertActions from '../../../hooks/useConfirmationAlertActions';
-import useSetConfirmationAlerts from '../../../hooks/useSetConfirmationAlerts';
-import { AlertMetricsProvider } from '../../../../../components/app/alert-system/contexts/alertMetricsContext';
-import { useConfirmationAlertMetrics } from '../../../hooks/useConfirmationAlertMetrics';
+import React, { type ReactElement, Suspense } from 'react';
+import LoadingScreen from '../../../../../components/ui/loading-screen/loading-screen.component';
+import { mmLazy } from '../../../../../helpers/utils/mm-lazy';
+import { useConfirmContext } from '../../../context/confirm';
+import { isSIWESignatureRequest } from '../../../utils/confirm';
+import ConfirmAlertsBase from './confirm-alerts-base';
+
+const SiweConfirmAlerts = mmLazy(() => import('./siwe-confirm-alerts'));
 
 const ConfirmAlerts = ({ children }: { children: ReactElement }) => {
-  const { trackAlertActionClicked, trackAlertRender, trackInlineAlertClicked } =
-    useConfirmationAlertMetrics();
+  const { currentConfirmation } = useConfirmContext();
 
-  const processAction = useConfirmationAlertActions();
-  useSetConfirmationAlerts();
+  if (isSIWESignatureRequest(currentConfirmation)) {
+    // Validation must load before the request details and approval controls.
+    return (
+      <Suspense fallback={<LoadingScreen />}>
+        <SiweConfirmAlerts>{children}</SiweConfirmAlerts>
+      </Suspense>
+    );
+  }
 
-  return (
-    <AlertMetricsProvider
-      metrics={{
-        trackAlertActionClicked,
-        trackAlertRender,
-        trackInlineAlertClicked,
-      }}
-    >
-      <AlertActionHandlerProvider onProcessAction={processAction}>
-        {children}
-      </AlertActionHandlerProvider>
-    </AlertMetricsProvider>
-  );
+  return <ConfirmAlertsBase>{children}</ConfirmAlertsBase>;
 };
 
 export default ConfirmAlerts;

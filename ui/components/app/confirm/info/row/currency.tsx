@@ -5,7 +5,7 @@ import {
   Display,
   FlexWrap,
 } from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library';
+import { Box } from '../../../../component-library/box/box';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display/user-preferenced-currency-display.component';
 import CurrencyDisplay from '../../../../ui/currency-display/currency-display.component';
 

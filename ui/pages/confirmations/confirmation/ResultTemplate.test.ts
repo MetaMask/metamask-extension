@@ -5,7 +5,7 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { IconName } from '../../../components/component-library';
+import { IconName } from '../../../components/component-library/icon/icon.types';
 import { ResultTemplate, ResultTemplateActions } from './ResultTemplate';
 import { TemplateRendererComponent } from './util';
 

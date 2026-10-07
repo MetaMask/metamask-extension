@@ -8,7 +8,7 @@ import { MessengerClientInitFunction } from '../types';
 import {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
-} from '../messengers/snaps';
+} from '../messengers/snaps/rate-limit-controller-messenger';
 
 /**
  * Initialize the rate limit controller.

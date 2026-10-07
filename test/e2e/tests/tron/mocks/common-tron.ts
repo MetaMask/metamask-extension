@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
-import { getProductionRemoteFlagApiResponse } from '../../../feature-flags';
+import { getProductionRemoteFlagApiResponse } from '../../../feature-flags/feature-flag-registry';
 import {
   mockTokensV2SupportedNetworks,
   mockTokensV3Assets,

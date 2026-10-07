@@ -9,7 +9,7 @@ import {
   type BridgeAppState,
 } from '../../../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../../../ducks/bridge/utils';
-import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors';
+import { getIsSmartTransaction } from '../../../../../../shared/lib/selectors/smart-transactions';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { useDispatch } from '../../../../../store/hooks';

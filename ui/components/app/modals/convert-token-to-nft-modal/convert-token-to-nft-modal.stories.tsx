@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider, useSelector } from 'react-redux';
 import configureStore from '../../../../store/store';
 import ConvertTokenToNFTModal from './convert-token-to-nft-modal';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 
 const storeMock = configureStore({

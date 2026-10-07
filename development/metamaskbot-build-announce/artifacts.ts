@@ -12,13 +12,6 @@ import {
 } from '../webpack/utils/plugins/ManifestPlugin/stats';
 import { getBuildLinks, type BuildLinks } from './build-links';
 
-export {
-  getBuildLinks,
-  type BuildBrowser,
-  type BuildLinks,
-  type BuildType,
-} from './build-links';
-
 type ArtifactLink = { url: string; label: string };
 
 type ArtifactLinkMap = {

@@ -20,7 +20,7 @@ import {
   formatGatorAmountLabel,
   getGatorPermissionDisplayMetadata,
   GatorPermissionData,
-} from '../../../../shared/lib/gator-permissions';
+} from '../../../../shared/lib/gator-permissions/gator-permissions-utils';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useDisplayName } from '../../../hooks/snaps/useDisplayName';

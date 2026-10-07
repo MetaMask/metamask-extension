@@ -6,7 +6,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 
-import { HardwareWalletType } from './types';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 
 /**
  * Route prefixes where hardware wallet error handling and auto-connect apply.

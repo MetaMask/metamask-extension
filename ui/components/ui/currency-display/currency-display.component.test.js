@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import CurrencyDisplay from '.';
+import CurrencyDisplay from './currency-display.component';
 
 describe('CurrencyDisplay Component', () => {
   const mockStore = configureMockStore()(mockState);

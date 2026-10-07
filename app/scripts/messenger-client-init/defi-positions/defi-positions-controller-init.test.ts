@@ -16,13 +16,15 @@ import { DeFiPositionsControllerInit } from './defi-positions-controller-init';
 
 jest.mock('@metamask/assets-controllers');
 
-jest.mock('../../controllers/analytics', () => ({
+jest.mock('../../controllers/analytics/analytics', () => ({
+  trackEvent: jest.fn(),
+}));
+jest.mock('../../../../shared/lib/analytics/create-event-builder', () => ({
   createEventBuilder: jest.fn(() => ({
     addProperties: jest.fn().mockReturnThis(),
     addSensitiveProperties: jest.fn().mockReturnThis(),
     build: jest.fn().mockReturnValue({}),
   })),
-  trackEvent: jest.fn(),
 }));
 
 function buildInitRequestMock(

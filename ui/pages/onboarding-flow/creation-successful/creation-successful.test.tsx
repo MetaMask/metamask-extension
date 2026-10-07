@@ -54,9 +54,12 @@ jest.mock('./wallet-ready-animation', () => ({
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
 
-jest.mock('../../../components/component-library/lottie-animation', () => ({
-  LottieAnimation: () => <div data-testid="lottie-fox" />,
-}));
+jest.mock(
+  '../../../components/component-library/lottie-animation/lottie-animation',
+  () => ({
+    LottieAnimation: () => <div data-testid="lottie-fox" />,
+  }),
+);
 
 jest.mock('webextension-polyfill', () => ({
   tabs: {

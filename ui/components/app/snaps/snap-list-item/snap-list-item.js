@@ -11,8 +11,9 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
-import { SnapIcon } from '../snap-icon';
+import { Text } from '../../../component-library/text/text';
+import { Box } from '../../../component-library/box/box';
+import { SnapIcon } from '../snap-icon/snap-icon';
 
 const SnapListItem = ({
   name,

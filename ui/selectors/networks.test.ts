@@ -1,7 +1,7 @@
 import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import mockState from '../../test/data/mock-state.json';
 import { mockNetworkState } from '../../test/stub/networks';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/chain-ids';
 import * as networks from '../../shared/lib/selectors/networks';
 
 describe('Network Selectors', () => {

@@ -3,7 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent as userEventApi } from '@testing-library/user-event';
 import { enLocale } from '../../../../test/lib/i18n-helpers';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
-import SrpInput from '.';
+import SrpInput from './srp-input';
 
 const tooFewWords = new Array(11).fill('test').join(' ');
 const tooManyWords = new Array(25).fill('test').join(' ');

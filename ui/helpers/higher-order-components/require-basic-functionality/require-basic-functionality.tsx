@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getUseExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors/selectors';
 import { BASIC_FUNCTIONALITY_OFF_ROUTE } from '../../constants/routes';
 
 export type BasicFunctionalityOffState = {

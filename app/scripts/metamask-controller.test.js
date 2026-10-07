@@ -62,19 +62,21 @@ import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
-import * as utils from './lib/util';
+
+import * as utilsModule3 from './lib/util';
+
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
   getAuthorizedScopesByOrigin,
   getOriginsWithSessionProperty,
   getPermittedAccountsForScopesByOrigin,
-} from './controllers/permissions';
+} from './controllers/permissions/selectors';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
-import { trackEvent } from './controllers/analytics';
+import { trackEvent } from './controllers/analytics/analytics';
 import MetaMaskController from './metamask-controller';
 
-jest.mock('./controllers/analytics', () => ({
-  ...jest.requireActual('./controllers/analytics'),
+jest.mock('./controllers/analytics/analytics', () => ({
+  ...jest.requireActual('./controllers/analytics/analytics'),
   trackEvent: jest.fn(),
 }));
 
@@ -254,8 +256,8 @@ jest.mock('./controllers/permissions/specifications', () => ({
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
-jest.mock('./lib/rpc-method-middleware', () => ({
-  ...jest.requireActual('./lib/rpc-method-middleware'),
+jest.mock('./lib/rpc-method-middleware/index', () => ({
+  ...jest.requireActual('./lib/rpc-method-middleware/index'),
   createEip1193MethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
@@ -272,10 +274,18 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   createMultichainInvokedMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
-  createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
-    next();
-  },
 }));
+jest.mock(
+  './lib/rpc-method-middleware/createUnsupportedMethodMiddleware',
+  () => ({
+    ...jest.requireActual(
+      './lib/rpc-method-middleware/createUnsupportedMethodMiddleware',
+    ),
+    createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
+      next();
+    },
+  }),
+);
 
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
@@ -311,8 +321,8 @@ jest.mock('../../shared/lib/mv3.utils', () => ({
   },
 }));
 
-jest.mock('./controllers/permissions', () => ({
-  ...jest.requireActual('./controllers/permissions'),
+jest.mock('./controllers/permissions/selectors', () => ({
+  ...jest.requireActual('./controllers/permissions/selectors'),
   getAuthorizedScopesByOrigin: jest.fn(() => new Map()),
   getOriginsWithSessionProperty: jest.fn(),
   getPermittedAccountsForScopesByOrigin: jest.fn(() => new Map()),
@@ -3893,7 +3903,7 @@ describe('MetaMaskController', () => {
             'importMnemonicToVault',
           )
           .mockResolvedValue();
-        jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
+        jest.spyOn(utilsModule3, 'convertEnglishWordlistIndicesToCodepoints');
       });
 
       afterEach(() => {
@@ -3942,7 +3952,7 @@ describe('MetaMaskController', () => {
           }) // First SRP exists
           .mockReturnValueOnce(null); // Second SRP doesn't exist
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValueOnce(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
@@ -4016,7 +4026,7 @@ describe('MetaMaskController', () => {
           return arr1.every((value, index) => value === arr2[index]);
         }
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockImplementation(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockImplementation(
           (wordlistIndices) => {
             if (isEqualUint8Array(wordlistIndices, mockOtherSRP1)) {
               return Buffer.from(mockMnemonic1, 'utf8');
@@ -4067,7 +4077,7 @@ describe('MetaMaskController', () => {
           'SeedlessOnboardingController:fetchAllSecretData',
         );
 
-        jest.spyOn(utils, 'convertEnglishWordlistIndicesToCodepoints');
+        jest.spyOn(utilsModule3, 'convertEnglishWordlistIndicesToCodepoints');
 
         jest.spyOn(
           metamaskController.legacyBackgroundApiService,
@@ -4108,7 +4118,7 @@ describe('MetaMaskController', () => {
           ...mockRemainingSecretData,
         ]);
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
@@ -4119,7 +4129,7 @@ describe('MetaMaskController', () => {
 
         expect(fetchAllSecretDataMock).toHaveBeenCalledWith(mockPassword);
         expect(
-          utils.convertEnglishWordlistIndicesToCodepoints,
+          utilsModule3.convertEnglishWordlistIndicesToCodepoints,
         ).toHaveBeenCalledWith(mockEncodedMnemonic);
         expect(
           metamaskController.legacyBackgroundApiService
@@ -4144,7 +4154,7 @@ describe('MetaMaskController', () => {
 
         fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
@@ -4205,7 +4215,7 @@ describe('MetaMaskController', () => {
           ...mockRemainingSecretData,
         ]);
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
@@ -4244,7 +4254,7 @@ describe('MetaMaskController', () => {
 
         fetchAllSecretDataMock.mockResolvedValue([mockFirstSecretData]);
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 
@@ -4285,7 +4295,7 @@ describe('MetaMaskController', () => {
           ...mockRemainingSecretData,
         ]);
 
-        utils.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
+        utilsModule3.convertEnglishWordlistIndicesToCodepoints.mockReturnValue(
           Buffer.from(mockMnemonic, 'utf8'),
         );
 

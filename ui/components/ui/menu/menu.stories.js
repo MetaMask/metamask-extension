@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconName, BannerAlert } from '../../component-library';
+import { IconName } from '../../component-library/icon/icon.types';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
 import { Severity } from '../../../helpers/constants/design-system';
-import { Menu, MenuItem } from '.';
+import Menu from './menu';
+import MenuItem from './menu-item';
 
 export default {
   title: 'Components/UI/Menu (deprecated)',

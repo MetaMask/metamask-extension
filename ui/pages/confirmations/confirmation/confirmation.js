@@ -28,8 +28,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
-import ConfirmationWarningModal from '../components/confirmation-warning-modal';
+import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer/metamask-template-renderer';
+import ConfirmationWarningModal from '../components/confirmation-warning-modal/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useHideToasts } from '../../../hooks/useHideToasts';
@@ -37,27 +37,27 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
-  getApprovalFlows,
   getTotalUnapprovedCount,
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
   getIsHardwareWalletErrorModalVisible,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { getApprovalFlows } from '../../../selectors/approvals';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
-import Callout from '../../../components/ui/callout';
-import { Box } from '../../../components/component-library';
-import Loading from '../../../components/ui/loading-screen';
-import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
+import Callout from '../../../components/ui/callout/callout';
+import { Box } from '../../../components/component-library/box/box';
+import Loading from '../../../components/ui/loading-screen/loading-screen.component';
+import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer/snap-ui-renderer';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { DAY } from '../../../../shared/constants/time';
-import { Nav } from '../components/confirm/nav';
+import { Nav } from '../components/confirm/nav/nav';
 import { ConfirmContextProvider } from '../context/confirm';
 import { useConfirmationNavigation } from '../hooks/useConfirmationNavigation';
 import { useDispatch } from '../../../store/hooks';
 import { TemplateAlertContextProvider } from './alerts/TemplateAlertContext';
-import ConfirmationFooter from './components/confirmation-footer';
+import ConfirmationFooter from './components/confirmation-footer/confirmation-footer';
 
 import {
   getTemplateValues,

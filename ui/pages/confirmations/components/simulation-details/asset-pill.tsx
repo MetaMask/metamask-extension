@@ -2,12 +2,10 @@ import React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../../../components/component-library';
+import { AvatarNetwork } from '../../../../components/component-library/avatar-network/avatar-network';
+import { AvatarNetworkSize } from '../../../../components/component-library/avatar-network/avatar-network.types';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import {
   AlignItems,
   BorderColor,
@@ -16,7 +14,7 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Name from '../../../../components/app/name';
+import Name from '../../../../components/app/name/name';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/network';

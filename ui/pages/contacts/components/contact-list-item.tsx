@@ -20,16 +20,14 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { PreferredAvatar } from '../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../components/app/preferred-avatar/preferred-avatar';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import { getImageForChainId } from '../../../selectors/multichain';
-import Tooltip from '../../../components/ui/tooltip';
+import Tooltip from '../../../components/ui/tooltip/tooltip';
 import type { ContactListItemProps } from '../contacts.types';
-
-export type { ContactListItemProps } from '../contacts.types';
 
 export function ContactListItem({
   address,

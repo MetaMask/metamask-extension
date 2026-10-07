@@ -15,16 +15,14 @@ import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../networks-form/networks-form-state';
-import {
-  getEditedNetwork,
-  getMultichainNetworkConfigurationsByChainId,
-} from '../../../selectors';
+import { getEditedNetwork } from '../../../selectors/selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain/networks';
 import { hideModal, setEditedNetwork } from '../../../store/actions';
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { useDispatch } from '../../../store/hooks';
-import { AddNetwork } from './components/add-network';
+import { AddNetwork } from './components/add-network/AddNetwork';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 

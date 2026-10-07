@@ -21,8 +21,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
 import locales from '../../../../app/_locales/index.json';
 import { isMaintainedLocale } from '../../../../shared/constants/locales';
-import type { MetaMaskReduxState } from '../../../store/store';
-import { Divider } from '../shared';
+import type { MetaMaskReduxState } from '../../../store/types';
+import { Divider } from '../shared/divider';
 import { transitionBack } from '../../../components/ui/transition';
 import { useDispatch } from '../../../store/hooks';
 

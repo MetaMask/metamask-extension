@@ -11,21 +11,24 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
   IconSize,
-  ButtonIcon,
-  ButtonIconSize,
-  Box,
-} from '../../components/component-library';
-import { Tabs, Tab } from '../../components/ui/tabs';
+} from '../../components/component-library/icon/icon.types';
+import { ButtonIcon } from '../../components/component-library/button-icon/button-icon';
+import { ButtonIconSize } from '../../components/component-library/button-icon/button-icon.types';
+import { Box } from '../../components/component-library/box/box';
+import { Tabs } from '../../components/ui/tabs/tabs';
+import { Tab } from '../../components/ui/tabs/tab/tab';
 import {
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { Content, Header, Page } from '../../components/multichain/pages/page';
+import { Content } from '../../components/multichain/pages/page/components/content/content';
+import { Header } from '../../components/multichain/pages/page/components/header/header';
+import { Page } from '../../components/multichain/pages/page/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
-import { getNotifySnaps } from '../../selectors';
+import { getNotifySnaps } from '../../selectors/selectors';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsFeatureAnnouncementsEnabled,

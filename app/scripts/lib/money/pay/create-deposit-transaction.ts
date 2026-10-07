@@ -4,7 +4,7 @@ import {
   getMoneyAccountDepositAssetAddress,
 } from '@metamask/money-account-utils';
 import type { Hex } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 import { submitPlaceholderBatch } from './submit-placeholder-batch';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { Display } from '../../../../../../helpers/constants/design-system';
-import { Footer } from '.';
+import { Footer } from './footer';
 
 const story = {
   title: 'Components/Multichain/Page/Footer',

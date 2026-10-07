@@ -14,7 +14,7 @@ import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import type { Hex } from '@metamask/utils';
 
 import { MUSD_TOKEN_ADDRESS } from '../constants';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
 import {
   generateERC20TransferData,
   buildMusdConversionTx,

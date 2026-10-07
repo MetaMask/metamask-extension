@@ -7,9 +7,9 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
+import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning/snap-install-warning';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,14 +24,18 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 
-import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
+import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { Box, Text } from '../../../../components/component-library';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { Box } from '../../../../components/component-library/box/box';
+import { Text } from '../../../../components/component-library/text/text';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getSnapsMetadata,
+} from '../../../../selectors/selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({

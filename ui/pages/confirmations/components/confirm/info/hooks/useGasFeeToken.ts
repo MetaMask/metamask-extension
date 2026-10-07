@@ -11,14 +11,12 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/lib/selectors/networks';
-import { getCurrencyRates } from '../../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrencyRates as getCurrencyRates } from '../../../../../../../shared/lib/selectors/assets-migration';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
-import {
-  getShouldShowFiat,
-  selectTransactionAvailableBalance,
-} from '../../../../../../selectors';
+import { getShouldShowFiat } from '../../../../../../selectors/selectors';
+import { selectTransactionAvailableBalance } from '../../../../../../selectors/confirm-transaction';
 import { formatAmount } from '../../../../../../../shared/lib/format-amount';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';

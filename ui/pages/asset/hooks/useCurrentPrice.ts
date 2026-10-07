@@ -8,9 +8,12 @@ import { CaipAssetType, Hex, isCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
-import { getCurrencyRates, getMarketData } from '../../../selectors';
-import { getAssetsRates } from '../../../selectors/assets';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrencyRateControllerCurrencyRates as getCurrencyRates,
+  getTokenRatesControllerMarketData as getMarketData,
+  getMultichainAssetsRatesControllerConversionRates as getAssetsRates,
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+} from '../../../../shared/lib/selectors/assets-migration';
 import { apiClient } from '../../../helpers/api-client';
 import { Asset } from '../types/asset';
 import { isEvmChainId, toAssetId } from '../../../../shared/lib/asset-utils';

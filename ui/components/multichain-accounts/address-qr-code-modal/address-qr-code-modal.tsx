@@ -28,14 +28,12 @@ import {
   BackgroundColor,
   TextColor as DesignSystemTextColor,
 } from '../../../helpers/constants/design-system';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-} from '../../component-library';
-import type { ModalProps } from '../../component-library';
+import { Modal } from '../../component-library/modal/modal';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import type { ModalProps } from '../../component-library/modal/modal.types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useAnalytics } from '../../../hooks/useAnalytics';

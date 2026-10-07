@@ -2,16 +2,16 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import type { Hex } from 'viem';
+import type { Fee as ActivityFee, TokenAmount } from '@metamask/client-utils';
 import {
   BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
   BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN,
 } from '../../../constants/bridge';
-import { CHAIN_IDS } from '../../../constants/network';
+import { CHAIN_IDS } from '../../../constants/chain-ids';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { TransactionGroup } from '../../multichain/types';
-import type { ActivityFee, TokenAmount } from '../types';
 
 type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']

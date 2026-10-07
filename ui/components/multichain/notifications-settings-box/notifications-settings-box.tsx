@@ -8,7 +8,7 @@ import {
   TextColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import ToggleButton from '../../ui/toggle-button';
+import ToggleButton from '../../ui/toggle-button/toggle-button.component';
 import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 export type NotificationsSettingsBoxProps = {

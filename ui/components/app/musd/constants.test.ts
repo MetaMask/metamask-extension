@@ -1,6 +1,6 @@
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { MUSD_TOKEN } from '@metamask/money-account-utils';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import {
-  MUSD_TOKEN,
   MUSD_DECIMALS,
   MUSD_TOKEN_ADDRESS,
   MUSD_CONVERSION_DEFAULT_CHAIN_ID,

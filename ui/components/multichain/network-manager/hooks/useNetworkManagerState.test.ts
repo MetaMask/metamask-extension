@@ -1,10 +1,10 @@
 import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { useNetworkManagerInitialTab } from './useNetworkManagerState';
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+jest.mock('../../../../selectors/multichain/networks', () => ({
+  ...jest.requireActual('../../../../selectors/multichain/networks'),
   getAllEnabledNetworksForAllNamespaces: jest.fn(),
 }));
 

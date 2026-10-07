@@ -7,10 +7,13 @@ import configureMockState from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getConsentDecisionMade, getOptedIn } from '../../selectors';
+import {
+  getConsentDecisionMade,
+  getOptedIn,
+} from '../../selectors/metametrics';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
-import { getUserSubscriptions } from '../../selectors/subscription';
+import { getUserSubscriptions } from '../../selectors/subscription/subscription';
 import mockState from '../../../test/data/mock-state.json';
 import { reloadExtensionFromUi } from '../../helpers/utils/reload-extension-from-ui';
 import ErrorPage from './error-page.component';

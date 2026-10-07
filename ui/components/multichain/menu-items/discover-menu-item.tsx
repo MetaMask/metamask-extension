@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, IconName } from '@metamask/design-system-react';
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   getDataCollectionForMarketing,
-  getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
-} from '../../../selectors';
+} from '../../../selectors/metametrics';
+import { getAnalyticsId } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,

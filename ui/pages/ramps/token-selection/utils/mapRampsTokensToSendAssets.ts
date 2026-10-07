@@ -1,9 +1,9 @@
 import { type RampsToken } from '@metamask/ramps-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
-import {
-  AssetStandard,
-  type AssetType,
-} from '../../../../components/app/asset-picker';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import { AssetStandard } from '../../../confirmations/types/send';
+// eslint-disable-next-line import-x/no-restricted-paths -- Preserve the existing dependency exposed by removing its barrel.
+import type { Asset as AssetType } from '../../../confirmations/types/send';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,

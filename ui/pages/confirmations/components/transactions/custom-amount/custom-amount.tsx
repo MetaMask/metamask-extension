@@ -11,9 +11,10 @@ import {
   TextColor,
   TextAlign,
 } from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../../components/component-library';
+import { Box } from '../../../../../components/component-library/box/box';
+import { Text } from '../../../../../components/component-library/text/text';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
-import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../../shared/lib/selectors/assets-migration';
 
 const FIAT_DISPLAY_DECIMALS = 2;
 

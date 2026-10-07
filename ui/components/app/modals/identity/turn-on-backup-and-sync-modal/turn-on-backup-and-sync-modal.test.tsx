@@ -6,7 +6,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { useModalProps } from '../../../../../hooks/useModalProps';
 import { MetamaskIdentityProvider } from '../../../../../contexts/identity';
 import { showModal } from '../../../../../store/actions';
-import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal';
+import { CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../confirm-turn-on-backup-and-sync-modal/confirm-turn-on-backup-and-sync-modal';
 import { BACKUPANDSYNC_ROUTE } from '../../../../../helpers/constants/routes';
 import {
   TurnOnBackupAndSyncModal,
@@ -47,12 +47,15 @@ jest.mock('react-router-dom', () => {
 });
 
 const mockSetIsBackupAndSyncFeatureEnabled = jest.fn();
-jest.mock('../../../../../hooks/identity/useBackupAndSync', () => ({
-  useBackupAndSync: () => ({
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    error: null,
+jest.mock(
+  '../../../../../hooks/identity/useBackupAndSync/useBackupAndSync',
+  () => ({
+    useBackupAndSync: () => ({
+      setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
+      error: null,
+    }),
   }),
-}));
+);
 
 const mockStore = configureMockStore();
 const initialStore = () => ({

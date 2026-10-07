@@ -55,6 +55,4 @@ export const eip1193OnlyHandlers = {
   ...revokePermissions,
 };
 
-export type { EthAccountsHooks };
-
 export const ethAccountsHandler = ethAccounts;

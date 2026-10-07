@@ -9,7 +9,8 @@ import {
 import type { MarketFilter } from '../../../../../shared/constants/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MARKET_FILTER_LABEL_KEYS } from '../constants';
-import { Dropdown, type DropdownOption } from '../dropdown';
+import { Dropdown } from '../dropdown/dropdown';
+import type { DropdownOption } from '../dropdown/dropdown';
 import {
   PerpsCategoryPillVariant,
   PerpsMarketCategoryPill,

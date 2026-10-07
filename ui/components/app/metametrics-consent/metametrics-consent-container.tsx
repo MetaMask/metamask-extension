@@ -25,7 +25,7 @@ import {
 } from '../../../selectors/metametrics';
 import { setDataCollectionForMarketing } from '../../../store/actions';
 import { METAMETRICS_SETTINGS_LINK } from '../../../helpers/constants/common';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
 
 export function MetaMetricsConsentContainer() {

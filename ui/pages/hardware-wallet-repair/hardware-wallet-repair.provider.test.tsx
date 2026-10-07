@@ -5,8 +5,8 @@ import { MemoryRouter, type MemoryRouterProps } from 'react-router-dom';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { HardwareWalletErrorProvider } from '../../contexts/hardware-wallets';
-import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
+import { HardwareWalletErrorProvider } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
 
 const memoryRouterFuture = {

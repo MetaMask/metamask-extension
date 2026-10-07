@@ -3,9 +3,9 @@ import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getCrossChainTokenExchangeRates } from '../../../../selectors';
+import { getCrossChainTokenExchangeRates } from '../../../../selectors/selectors';
 import { getCurrencySymbol } from '../../../../helpers/utils/common.util';
-import { getMultichainCurrentCurrency } from '../../../../selectors/multichain';
+import { getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { Asset } from '../../types/send';
 import { convertedCurrency, formatToFixedDecimals } from '../../utils/send';

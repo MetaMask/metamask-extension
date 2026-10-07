@@ -9,7 +9,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
+import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar/preferred-avatar';
 import {
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,

@@ -12,20 +12,19 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ModalOverlay } from '../../component-library/modal-overlay/modal-overlay';
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { Modal } from '../../component-library/modal/modal';
+import { Text } from '../../component-library/text/text';
+import { ModalFooter } from '../../component-library/modal-footer/modal-footer';
+import { Button } from '../../component-library/button/button';
+import { IconName, IconSize } from '../../component-library/icon/icon.types';
 import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  Modal,
-  Text,
-  ModalFooter,
-  Button,
-  IconName,
   ButtonVariant,
-  Icon,
-  IconSize,
   ButtonSize,
-} from '../../component-library';
+} from '../../component-library/button/button.types';
+import { Icon } from '../../component-library/icon/icon';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
 import { useDispatch } from '../../../store/hooks';
 

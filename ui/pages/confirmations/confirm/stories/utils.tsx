@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../../store/store';
-import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets';
+import { HardwareWalletErrorProvider } from '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider';
 import ConfirmPage from '../confirm';
 
 export const CONFIRM_PAGE_DECORATOR = [

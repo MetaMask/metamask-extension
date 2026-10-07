@@ -11,13 +11,13 @@ import {
   STATUSES_WITHOUT_INSTRUCTIONS,
   STATUSES_WITH_DESCRIPTION,
 } from '../../../../../../test/unit/hardware-wallets/ledger/helpers';
-import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
 import {
   LEDGER_CONNECTION_STATUS,
   LEDGER_CONNECTION_STATUS_CONTENT,
   LEDGER_CONNECTION_STATUS_ILLUSTRATION_URL,
-  LedgerConnectionStatus,
-} from '.';
+} from '../ledger-connection-status.constants';
+import type { LedgerConnectionStatusProps } from './ledger-connection-status.types';
+import { LedgerConnectionStatus } from './ledger-connection-status';
 
 const renderLedgerConnectionStatus = (props: LedgerConnectionStatusProps) =>
   renderWithLocalization(<LedgerConnectionStatus {...props} />);

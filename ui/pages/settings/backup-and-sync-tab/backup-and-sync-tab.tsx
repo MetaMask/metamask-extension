@@ -4,7 +4,7 @@ import { BackupAndSyncFeaturesToggles } from '../../../components/app/identity/b
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { SettingItemConfig } from '../types';
-import { SettingsTab } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
 
 const BackupAndSyncToggleSettingItem = () => <BackupAndSyncToggle />;
 

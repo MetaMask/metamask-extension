@@ -1,5 +1,5 @@
 import { Variables } from '../lib/variables';
-import { ENVIRONMENT } from './constants';
+import ENVIRONMENT from '../../shared/constants/build-environment.json';
 import { setEnvironmentVariables } from './set-environment-variables';
 
 const SET_ENVIRONMENT_VARIABLES_DECLARED_VARIABLES = [

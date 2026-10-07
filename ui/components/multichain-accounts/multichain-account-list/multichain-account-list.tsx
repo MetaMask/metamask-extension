@@ -30,7 +30,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MultichainAccountCell } from '../multichain-account-cell';
+import { MultichainAccountCell } from '../multichain-account-cell/multichain-account-cell';
 import {
   AccountTreeWallets,
   MultichainAccountsState,
@@ -60,13 +60,13 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
 import { getInternalAccountsObject } from '../../../selectors/accounts';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
-import { MultichainAccountMenu } from '../multichain-account-menu';
-import { AddMultichainAccount } from '../add-multichain-account';
-import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
-import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal';
+import { MultichainAccountMenu } from '../multichain-account-menu/multichain-account-menu';
+import { AddMultichainAccount } from '../add-multichain-account/add-multichain-account';
+import { MultichainAccountEditModal } from '../multichain-account-edit-modal/multichain-account-edit-modal';
+import { AccountDeleteConfirmModal } from '../account-delete-confirm-modal/account-delete-confirm-modal';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import {
   STATUS_CONNECTED,

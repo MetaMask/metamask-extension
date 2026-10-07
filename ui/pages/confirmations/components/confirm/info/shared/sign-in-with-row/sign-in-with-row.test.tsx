@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
-import * as utils from '../../../../../utils';
+import * as utilsModule1 from '../../../../../utils/confirm';
 import { SigningInWithRow } from './sign-in-with-row';
 
 jest.mock(
@@ -16,8 +16,8 @@ jest.mock(
   }),
 );
 
-jest.mock('../../../../../utils', () => {
-  const originalUtils = jest.requireActual('../../../../../utils');
+jest.mock('../../../../../utils/confirm', () => {
+  const originalUtils = jest.requireActual('../../../../../utils/confirm');
   return {
     ...originalUtils,
     isSIWESignatureRequest: jest.fn().mockReturnValue(false),
@@ -38,7 +38,7 @@ describe('<TransactionDetails />', () => {
   });
 
   it('renders component for SIWE transaction details', () => {
-    (utils.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
+    (utilsModule1.isSIWESignatureRequest as jest.Mock).mockReturnValue(true);
 
     const state = getMockContractInteractionConfirmState();
     const mockStore = configureMockStore(middleware)(state);

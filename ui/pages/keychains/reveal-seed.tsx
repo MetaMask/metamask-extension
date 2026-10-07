@@ -21,7 +21,7 @@ import {
 } from '@metamask/phishing-controller';
 import { createSentryError, getErrorMessage } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
-import { cancelPasskeyCeremony } from '../../../shared/lib/passkey';
+import { cancelPasskeyCeremony } from '../../../shared/lib/passkey/passkey-ceremony';
 import { getPasskeyErrorCode } from '../../../shared/lib/passkey/passkey-error';
 import {
   MetaMetricsEventCategory,
@@ -38,7 +38,10 @@ import {
   requestRevealSeedWords,
   scanUrlForPhishing,
 } from '../../store/actions';
-import { getHDEntropyIndex, getOriginOfCurrentTab } from '../../selectors';
+import {
+  getHDEntropyIndex,
+  getOriginOfCurrentTab,
+} from '../../selectors/selectors';
 import {
   useIsPasskeyActive,
   useIsPasskeyIncompatibleInSidepanel,
@@ -48,7 +51,7 @@ import {
   PREVIOUS_ROUTE,
   REVEAL_SEED_ROUTE,
 } from '../../helpers/constants/routes';
-import { PasskeyVerification } from '../../components/app/passkey-verification';
+import { PasskeyVerification } from '../../components/app/passkey-verification/passkey-verification';
 import { useBoolean } from '../../hooks/useBoolean';
 import { useDispatch } from '../../store/hooks';
 import { usePasskeySeedPhraseExport } from '../../hooks/passkey/usePasskeySeedPhraseExport';

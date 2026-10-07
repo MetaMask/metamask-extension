@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { createSwapsMockStore } from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest/mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';

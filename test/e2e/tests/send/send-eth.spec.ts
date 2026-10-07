@@ -13,7 +13,7 @@
 
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from 'mockttp';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import ActivityTab from '../../page-objects/pages/home/activity-tab';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';

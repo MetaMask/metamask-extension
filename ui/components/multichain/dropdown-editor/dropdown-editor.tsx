@@ -25,7 +25,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 
 export enum DropdownEditorStyle {
   /** When open, the dropdown overlays elements that follow  */

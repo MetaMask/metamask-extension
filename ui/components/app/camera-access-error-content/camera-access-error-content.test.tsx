@@ -3,10 +3,8 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
-import {
-  CameraAccessErrorContent,
-  CameraAccessErrorContentVariant,
-} from './camera-access-error-content';
+import { CameraAccessErrorContent } from './camera-access-error-content';
+import { CameraAccessErrorContentVariant } from './camera-access-error-content.types';
 
 describe('CameraAccessErrorContent', () => {
   describe('needed variant', () => {

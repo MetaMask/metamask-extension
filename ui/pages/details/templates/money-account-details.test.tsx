@@ -33,11 +33,18 @@ jest.mock('../../../hooks/useFormatters', () => ({
   }),
 }));
 
-jest.mock('../../../components/app/activity-list-item-avatar', () => ({
-  ActivityAvatar: ({ tokens }: { tokens?: (string | undefined)[] }) => (
-    <div data-testid="activity-avatar" data-tokens={String(tokens?.[0])} />
-  ),
-}));
+jest.mock(
+  '../../../components/app/activity-list-item-avatar/activity-list-item-avatar',
+  () => ({
+    ActivityListItemAvatar: ({
+      tokens,
+    }: {
+      tokens?: (string | undefined)[];
+    }) => (
+      <div data-testid="activity-avatar" data-tokens={String(tokens?.[0])} />
+    ),
+  }),
+);
 
 jest.mock('../../../components/app/transaction/transaction-status', () => ({
   TransactionStatus: ({ status }: { status: string }) => (
@@ -46,7 +53,7 @@ jest.mock('../../../components/app/transaction/transaction-status', () => ({
 }));
 
 jest.mock(
-  '../../confirmations/components/activity/transaction-details-context',
+  '../../confirmations/components/activity/transaction-details-context/transaction-details-context',
   () => ({
     TransactionDetailsProvider: ({
       children,
@@ -57,7 +64,7 @@ jest.mock(
 );
 
 jest.mock(
-  '../../confirmations/components/activity/transaction-details-summary',
+  '../../confirmations/components/activity/transaction-details-summary/transaction-details-summary',
   () => ({
     TransactionDetailsSummary: () => <div data-testid="details-summary" />,
   }),

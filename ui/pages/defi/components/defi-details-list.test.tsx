@@ -1,14 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import type { TokenCellProps } from '../../../components/app/assets/token-cell/token-cell';
-import TokenCell from '../../../components/app/assets/token-cell';
+import TokenCell from '../../../components/app/assets/token-cell/token-cell';
 import DefiDetailsList from './defi-details-list';
 
-jest.mock('../../../components/app/assets/token-cell', () => {
+jest.mock('../../../components/app/assets/token-cell/token-cell', () => {
   const ReactActual = jest.requireActual<typeof import('react')>('react');
   const moduleExports: { default: ReturnType<typeof jest.fn> } = {
     default: jest.fn(() =>

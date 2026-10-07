@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes as RouterRoutes, Route } from 'react-router-dom';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
-import ClaimsList from '../claims-list';
-import ClaimsForm from '../claims-form';
+import ClaimsList from '../claims-list/claims-list';
+import ClaimsForm from '../claims-form/claims-form';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { CLAIMS_FORM_MODES } from '../types';
 

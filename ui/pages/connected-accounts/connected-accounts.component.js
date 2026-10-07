@@ -3,15 +3,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import { Box } from '@metamask/design-system-react';
-import Popover from '../../components/ui/popover';
-import ConnectedAccountsList from '../../components/app/connected-accounts-list';
-import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
+import Popover from '../../components/ui/popover/popover.component';
+import ConnectedAccountsList from '../../components/app/connected-accounts-list/connected-accounts-list.component';
+import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions/connected-accounts-permissions';
 import { getURLHost } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 import { TextColor, TextVariant } from '../../helpers/constants/design-system';
-import { Text } from '../../components/component-library';
-import { getInternalAccounts } from '../../selectors';
+import { Text } from '../../components/component-library/text/text';
+import { getInternalAccounts } from '../../selectors/accounts';
 
 export default function ConnectedAccounts({
   accountToConnect = null,

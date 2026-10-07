@@ -3,7 +3,7 @@ import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import log from 'loglevel';
 import { MILLISECOND } from '../../../../../shared/constants/time';
-import Spinner from '../../../ui/spinner';
+import Spinner from '../../../ui/spinner/spinner.component';
 import type { EnhancedQrReaderProps } from './enhanced-qr-reader.types';
 
 // Delay after a failed decode attempt. Kept moderate to prevent CPU

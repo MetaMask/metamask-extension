@@ -8,9 +8,11 @@ import type {
   NormalizedVaultApyResponse,
 } from '@metamask/money-account-balance-service';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
-import { MUSD_UNIT } from '../../../shared/lib/money/withdrawable-balance';
+import {
+  MUSD_UNIT,
+  projectVmusdValueInMusdToHuman,
+} from '../../../shared/lib/money/withdrawable-balance';
 import { moneyFormatUsd } from '../../helpers/money/format';
-import { projectVmusdValueInMusdToHuman } from '../../helpers/money/withdrawable-balance';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
 import {
   clearReportedMoneyQueryError,

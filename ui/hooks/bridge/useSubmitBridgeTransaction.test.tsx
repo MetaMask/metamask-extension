@@ -26,9 +26,10 @@ import {
 import * as keyringSelectors from '../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
-import * as bridgeActions from '../../ducks/bridge/actions';
+import * as bridgeActionsModule1 from '../../ducks/bridge/actions';
+
 import { setBackgroundConnection } from '../../store/background-connection';
-import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import { HardwareWalletProvider } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
@@ -46,15 +47,6 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-
-jest.mock('../../ducks/bridge/utils', () => ({
-  ...jest.requireActual('../../ducks/bridge/utils'),
-  getTxGasEstimates: jest.fn(() => ({
-    baseAndPriorityFeePerGas: '0',
-    maxFeePerGas: '0x1036640',
-    maxPriorityFeePerGas: '0x0',
-  })),
-}));
 
 const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
@@ -144,8 +136,8 @@ jest.mock('../../../shared/lib/selectors/networks', () => {
   };
 });
 
-jest.mock('../../selectors', () => {
-  const original = jest.requireActual('../../selectors');
+jest.mock('../../selectors/selectors', () => {
+  const original = jest.requireActual('../../selectors/selectors');
   return {
     ...original,
     getIsBridgeEnabled: () => true,
@@ -208,7 +200,10 @@ const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
 const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
-const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
+const resetBridgeStoreSpy = jest.spyOn(
+  bridgeActionsModule1,
+  'resetInputFields',
+);
 
 describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
   describe('submitBridgeTransaction', () => {

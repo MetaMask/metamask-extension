@@ -8,17 +8,19 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import Confusable from '../../ui/confusable';
-import { Box, BadgeWrapper, Text } from '../../component-library';
+import Confusable from '../../ui/confusable/confusable.component';
+import { Box } from '../../component-library/box/box';
+import { BadgeWrapper } from '../../component-library/badge-wrapper/badge-wrapper';
+import { Text } from '../../component-library/text/text';
 import {
   AlignItems,
   Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Tooltip from '../../ui/tooltip';
+import Tooltip from '../../ui/tooltip/tooltip';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { PreferredAvatar } from '../../app/preferred-avatar';
+import { PreferredAvatar } from '../../app/preferred-avatar/preferred-avatar';
 
 type DomainInputResolutionCellArgs = {
   address: string;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import { AvatarNetworkSize } from '@metamask/design-system-react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { ChainBadge } from './chain-badge';
 
 const mockGetImage = jest.fn();

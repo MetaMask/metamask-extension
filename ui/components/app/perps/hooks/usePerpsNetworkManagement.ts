@@ -1,13 +1,11 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  CHAIN_IDS,
-  FEATURED_RPCS,
-} from '../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../shared/constants/chain-ids';
+import { FEATURED_RPCS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { addNetwork } from '../../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../../store/store';
+import type { MetaMaskReduxDispatch } from '../../../../store/types';
 import { useDispatch } from '../../../../store/hooks';
 
 /**

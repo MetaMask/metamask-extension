@@ -2,7 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { SettingItemConfig } from '../types';
-import { SettingsTab, createToggleItem } from '../shared';
+import { SettingsTab } from '../shared/settings-tab';
+import { createToggleItem } from '../shared/create-toggle-item';
 import { DisplayNftMediaToggleItem } from '../shared/display-nft-media-item';
 import { AutodetectNftsToggleItem } from '../shared/autodetect-nfts-item';
 import {
@@ -11,10 +12,10 @@ import {
   setUseExternalNameSources,
   setUseSafeChainsListValidation,
 } from '../../../store/actions';
-import type { MetaMaskReduxState } from '../../../store/store';
+import type { MetaMaskReduxState } from '../../../store/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
-import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/feature-flags';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../selectors/multichain/basic-functionality';
 import { THIRD_PARTY_API_ITEMS } from '../search-config';
 
 const NetworkDetailsCheckToggleItem = createToggleItem({

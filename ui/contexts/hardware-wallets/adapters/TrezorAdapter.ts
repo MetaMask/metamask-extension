@@ -1,13 +1,14 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
-import { createHardwareWalletError, getDeviceEventForError } from '../errors';
-import { toHardwareWalletError } from '../rpcErrorUtils';
-import {
-  DeviceEvent,
-  HardwareWalletType,
-  type HardwareWalletAdapter,
-  type HardwareWalletAdapterOptions,
+import { createHardwareWalletError } from '../../../../shared/lib/hardware-wallets/errors';
+import { getDeviceEventForError } from '../errors';
+import { toHardwareWalletError } from '../../../../shared/lib/hardware-wallets/rpc-error-utils';
+import { DeviceEvent } from '../types';
+import { HardwareWalletType } from '../../../../shared/lib/hardware-wallets/types';
+import type {
+  HardwareWalletAdapter,
+  HardwareWalletAdapterOptions,
 } from '../types';
 import {
   getConnectedTrezorDevices,

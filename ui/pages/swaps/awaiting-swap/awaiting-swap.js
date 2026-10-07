@@ -13,21 +13,21 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../shared/lib/selectors/assets-migration';
 import {
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
   getFullTxData,
-} from '../../../selectors';
+  getHDEntropyIndex,
+} from '../../../selectors/selectors';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../../shared/lib/selectors/keyring';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
-} from '../../../../shared/lib/selectors';
+} from '../../../../shared/lib/selectors/smart-transactions';
 
 import {
   getUsedQuote,
@@ -42,7 +42,7 @@ import {
   getFromTokenInputValue,
   getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
-import Mascot from '../../../components/ui/mascot';
+import Mascot from '../../../components/ui/mascot/mascot.component';
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -53,17 +53,17 @@ import {
 } from '../../../../shared/constants/swaps';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/common';
 import { isSwapsDefaultTokenSymbol } from '../../../../shared/lib/swaps.utils';
-import PulseLoader from '../../../components/ui/pulse-loader';
+import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { stopPollingForQuotes } from '../../../store/actions';
 
 import { getRenderableNetworkFeesForQuote } from '../swaps.util';
-import SwapsFooter from '../swaps-footer';
+import SwapsFooter from '../swaps-footer/swaps-footer';
 
-import CreateNewSwap from '../create-new-swap';
-import ViewOnBlockExplorer from '../view-on-block-explorer';
+import CreateNewSwap from '../create-new-swap/create-new-swap';
+import ViewOnBlockExplorer from '../view-on-block-explorer/view-on-block-explorer';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { useDispatch } from '../../../store/hooks';
 import SwapFailureIcon from './swap-failure-icon';

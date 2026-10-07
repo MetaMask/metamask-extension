@@ -11,8 +11,10 @@ import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransacti
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
 import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
-import * as useIsPaidByMetaMaskModule from '../../../hooks/pay/useIsPaidByMetaMask';
-import * as useMusdConversionTokensModule from '../../../../../hooks/musd';
+
+import * as useIsPaidByMetaMaskModuleModule2 from '../../../hooks/pay/useIsPaidByMetaMask';
+import * as useMusdConversionTokensModuleModule1 from '../../../../../hooks/musd/useMusdConversionTokens';
+
 import * as confirmationsFeatureFlagsModule from '../../../selectors/feature-flags';
 import { MusdConversionInfo } from './musd-conversion-info';
 
@@ -41,11 +43,13 @@ jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/pay/useTransactionPayToken');
+jest.mock('../../../hooks/pay/sponsored-network-fees');
 jest.mock('../../../hooks/pay/useIsPaidByMetaMask');
 jest.mock('../../../hooks/musd/useMusdConversionQuoteTrace', () => ({
   useMusdConversionQuoteTrace: jest.fn(),
 }));
-jest.mock('../../../../../hooks/musd', () => ({
+
+jest.mock('../../../../../hooks/musd/useMusdConversionTokens', () => ({
   useMusdConversionTokens: jest.fn(),
 }));
 
@@ -67,6 +71,7 @@ jest.mock('../../pay-token-amount/pay-token-amount', () => ({
   ),
   PayTokenAmountSkeleton: () => <div data-testid="pay-token-amount-skeleton" />,
 }));
+
 jest.mock('../../rows/pay-with-row/pay-with-row', () => ({
   PayWithRow: () => <div data-testid="pay-with-row" />,
   PayWithRowSkeleton: () => <div data-testid="pay-with-row-skeleton" />,
@@ -208,10 +213,10 @@ function setupDefaultMocks({
       setPayToken: jest.fn(),
     });
   jest
-    .mocked(useIsPaidByMetaMaskModule.useIsPaidByMetaMask)
+    .mocked(useIsPaidByMetaMaskModuleModule2.useIsPaidByMetaMask)
     .mockReturnValue(isPaidByMetaMask);
   jest
-    .mocked(useMusdConversionTokensModule.useMusdConversionTokens)
+    .mocked(useMusdConversionTokensModuleModule1.useMusdConversionTokens)
     .mockReturnValue({
       filterAllowedTokens: (tokens) => tokens,
       filterTokens: (tokens) => tokens,

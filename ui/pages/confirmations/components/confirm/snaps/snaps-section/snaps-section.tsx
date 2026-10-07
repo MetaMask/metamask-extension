@@ -1,12 +1,14 @@
 import React from 'react';
 import { useInsightSnaps } from '../../../../../../hooks/snaps/useInsightSnaps';
-import { Box } from '../../../../../../components/component-library';
+import { Box } from '../../../../../../components/component-library/box/box';
 import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../context/confirm';
-import { SnapInsight } from './snap-insight';
+import { mmLazy } from '../../../../../../helpers/utils/mm-lazy';
+
+const SnapInsight = mmLazy(() => import('./snap-insight'));
 
 export const SnapsSection = () => {
   const { currentConfirmation } = useConfirmContext();

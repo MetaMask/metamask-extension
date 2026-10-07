@@ -1,5 +1,5 @@
 import React from 'react';
-import UnitInput from '../../../ui/unit-input';
+import UnitInput from '../../../ui/unit-input/unit-input.component';
 import { Numeric } from '../../../../../shared/lib/Numeric';
 
 type NFTInputProps = {

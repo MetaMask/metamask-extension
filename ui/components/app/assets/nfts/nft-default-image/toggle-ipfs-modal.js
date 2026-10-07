@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Box,
-  ButtonPrimary,
-  Modal,
-  ModalOverlay,
-  Text,
-} from '../../../../component-library';
-import { ModalContent } from '../../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../../component-library/modal-header/deprecated';
+import { Box } from '../../../../component-library/box/box';
+import { ButtonPrimary } from '../../../../component-library/button-primary/button-primary';
+import { Modal } from '../../../../component-library/modal/modal';
+import { ModalOverlay } from '../../../../component-library/modal-overlay/modal-overlay';
+import { Text } from '../../../../component-library/text/text';
+import { ModalContent } from '../../../../component-library/modal-content/deprecated/modal-content';
+import { ModalHeader } from '../../../../component-library/modal-header/deprecated/modal-header';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   hideIpfsModal,

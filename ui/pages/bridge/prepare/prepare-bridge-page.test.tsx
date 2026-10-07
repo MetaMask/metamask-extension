@@ -18,15 +18,15 @@ import {
   createBridgeMockStore,
   MOCK_BITCOIN_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
-  HardwareWalletProvider,
-} from '../../../contexts/hardware-wallets';
+} from '../../../contexts/hardware-wallets/types';
+import { HardwareWalletProvider } from '../../../contexts/hardware-wallets/HardwareWalletContext';
 import PrepareBridgePage from './prepare-bridge-page';
 
 const mockQuoteTraceStart = jest.fn();
@@ -50,8 +50,10 @@ const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
 const mockUseHardwareWalletState = jest.fn();
 
-jest.mock('../../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../../contexts/hardware-wallets'),
+jest.mock('../../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletConfig: () => mockUseHardwareWalletConfig(),
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),

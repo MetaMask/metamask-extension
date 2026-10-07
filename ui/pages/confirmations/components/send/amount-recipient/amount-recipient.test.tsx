@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));
 
-jest.mock('../../UI/send-hero', () => ({
+jest.mock('../../UI/send-hero/send-hero', () => ({
   SendHero: () => <div data-testid="send-hero">SendHero</div>,
 }));
 

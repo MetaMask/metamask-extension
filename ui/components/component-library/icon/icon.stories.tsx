@@ -16,16 +16,19 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
+import { Text } from '../text/text';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
 import { TextFieldSearch } from '@metamask/design-system-react';
-import { Box } from '../box';
-import { Label } from '../label';
-import { TextField, TextFieldSize } from '../text-field';
-import { ButtonIcon, ButtonIconSize } from '../button-icon';
-import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { Box } from '../box/box';
+import { Label } from '../label/label';
+import { TextField } from '../text-field/text-field';
+import { TextFieldSize } from '../text-field/text-field.types';
+import { ButtonIcon } from '../button-icon/button-icon';
+import { ButtonIconSize } from '../button-icon/button-icon.types';
+import { ButtonLink } from '../button-link/button-link';
+import { ButtonLinkSize } from '../button-link/button-link.types';
 
 export default {
   title: 'Components/ComponentLibrary/Icon (deprecated)',

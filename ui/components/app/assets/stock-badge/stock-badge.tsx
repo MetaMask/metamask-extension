@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconName, IconSize } from '@metamask/design-system-react';
-import { Tag } from '../../../component-library';
+import { Tag } from '../../../component-library/tag/tag';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type StockBadgeProps = {

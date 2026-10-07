@@ -20,17 +20,17 @@ import {
 } from '@metamask/design-system-react';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
+import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
-import { AccountPicker } from '../account-picker';
-import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import { getIsDefaultAddressEnabled } from '../../../selectors';
-import { NotificationsTagCounter } from '../notifications-tag-counter';
+import { AccountPicker } from '../account-picker/account-picker';
+import { GlobalMenuDrawerWithList } from '../global-menu-drawer/global-menu-drawer-with-list';
+import { getIsDefaultAddressEnabled } from '../../../selectors/selectors';
+import { NotificationsTagCounter } from '../notifications-tag-counter/notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
@@ -38,7 +38,7 @@ import {
   DISCOVER_SEARCH_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
-import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal/visit-support-data-consent-modal';
 import { getShowSupportDataConsentModal } from '../../../ducks/app/app';
 import {
   getAccountListStats,
@@ -46,7 +46,7 @@ import {
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
-import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon';
+import { MultichainAccountNetworkGroupWithCopyIcon } from '../../multichain-accounts/multichain-account-network-group-with-copy-icon/multichain-account-network-group-with-copy-icon';
 import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 

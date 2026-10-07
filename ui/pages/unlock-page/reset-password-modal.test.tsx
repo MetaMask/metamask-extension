@@ -51,8 +51,8 @@ jest.mock('../../store/actions.ts', () => ({
 }));
 
 const mockGetIsSocialLoginFlow = jest.fn().mockReturnValue(false);
-jest.mock('../../selectors', () => ({
-  ...jest.requireActual('../../selectors'),
+jest.mock('../../selectors/first-time-flow', () => ({
+  ...jest.requireActual('../../selectors/first-time-flow'),
   getIsSocialLoginFlow: (...args: unknown[]) =>
     mockGetIsSocialLoginFlow(...args),
 }));

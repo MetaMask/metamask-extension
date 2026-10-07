@@ -14,8 +14,8 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../shared/constants/snaps/permissions';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import { SnapControllerInitMessenger } from '../messengers/snaps';
-import { getBooleanFlag } from '../../lib/util';
+import { SnapControllerInitMessenger } from '../messengers/snaps/snap-controller-messenger';
+import { getBooleanFlag } from '../../../../shared/lib/environment';
 import { OnboardingControllerState } from '../../controllers/onboarding';
 import { getMnemonicSeed } from '../../controllers/permissions/snaps/utils';
 import { isFlask } from '../../../../shared/lib/build-types';

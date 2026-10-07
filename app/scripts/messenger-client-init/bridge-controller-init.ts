@@ -12,14 +12,15 @@ import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
-import { getEnvironmentType } from '../lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   getActiveTabDomainAllowlist,
   getActiveTabDomainForMetrics,
 } from '../../../shared/lib/active-tab-domain-metrics';
-import { createEventBuilder, trackEvent } from '../controllers/analytics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../controllers/analytics/analytics';
 import { MessengerClientInitFunction } from './types';
-import { BridgeControllerInitMessenger } from './messengers';
+import { BridgeControllerInitMessenger } from './messengers/bridge-controller-messenger';
 
 /**
  * Initialize the bridge controller.

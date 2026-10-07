@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ORIGIN_METAMASK } from '@metamask/approval-controller';
-import Popover from '../../../ui/popover';
+import Popover from '../../../ui/popover/popover.component';
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
-import { getUnapprovedConfirmations } from '../../../../selectors';
+import { getUnapprovedConfirmations } from '../../../../selectors/selectors';
 import { useBoolean } from '../../../../hooks/useBoolean';
 
 const NetworkConfirmationPopover = () => {

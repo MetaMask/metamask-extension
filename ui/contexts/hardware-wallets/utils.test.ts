@@ -7,7 +7,7 @@ import {
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 
-import { HardwareWalletType } from './types';
+import { HardwareWalletType } from '../../../shared/lib/hardware-wallets/types';
 import {
   isHardwareWalletRoute,
   keyringTypeToHardwareWalletType,

@@ -31,7 +31,7 @@ import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
 import {
   getShieldSubscriptionError,
   getUserSubscriptions,
-} from '../../selectors/subscription';
+} from '../../selectors/subscription/subscription';
 import {
   addTransaction,
   cancelSubscription,
@@ -56,13 +56,17 @@ import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,
   getSubscriptionPaymentData,
+} from '../../../shared/lib/shield/subscription-utils';
+import {
   determineSubscriptionMetricsSourceFromMarketingUtmParams,
-  getIsSubscriptionCancelNotAllowed,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
+} from '../../../shared/lib/shield/metrics';
+import { getIsSubscriptionCancelNotAllowed } from '../../../shared/lib/shield/shield';
+import {
   isNonUISubscriptionError,
   SHIELD_ERROR,
-} from '../../../shared/lib/shield';
+} from '../../../shared/lib/shield/constants';
 import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
 import {
   decimalToHex,
@@ -77,14 +81,14 @@ import {
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
-} from '../../selectors';
+} from '../../selectors/selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
 import {
   ShieldMetricsSourceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
 } from '../../../shared/constants/subscriptions';
-import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
+import { DefaultSubscriptionPaymentOptions } from '../../../shared/types/metametrics';
 import { useI18nContext } from '../useI18nContext';
 import { openWindow } from '../../helpers/utils/window';
 import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-link';

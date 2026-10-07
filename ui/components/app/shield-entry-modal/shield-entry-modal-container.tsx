@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { getShowShieldEntryModal } from '../../../selectors';
+import { getShowShieldEntryModal } from '../../../selectors/selectors';
 import ShieldEntryModal from './shield-entry-modal';
 
 export function ShieldEntryModalContainer() {

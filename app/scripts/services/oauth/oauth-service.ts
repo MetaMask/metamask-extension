@@ -15,7 +15,7 @@ import {
   AuthConnection,
   FirstTimeFlowType,
 } from '../../../../shared/constants/onboarding';
-import { createEventBuilder } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
 import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';

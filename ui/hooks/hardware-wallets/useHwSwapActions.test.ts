@@ -1,11 +1,11 @@
 import { act } from '@testing-library/react';
 
-import { ConnectionStatus } from '../../contexts/hardware-wallets';
+import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { cleanupPendingApproval } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+} from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/types';
 import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine/test-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapActions } from './useHwSwapActions';
@@ -35,8 +35,10 @@ jest.mock('../bridge/useBridgeNavigation', () => ({
   }),
 }));
 
-jest.mock('../../contexts/hardware-wallets', () => ({
-  ...jest.requireActual('../../contexts/hardware-wallets'),
+jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => ({
+  ...jest.requireActual(
+    '../../contexts/hardware-wallets/HardwareWalletContext',
+  ),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
 

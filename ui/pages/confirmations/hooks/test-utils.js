@@ -3,13 +3,16 @@ import { useSelector } from 'react-redux';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getCurrencyRateControllerCurrentCurrency as getCurrentCurrency,
+  getCurrencyRateControllerCurrentCurrency as getMultichainCurrentCurrency,
+} from '../../../../shared/lib/selectors/assets-migration';
 import {
   getShouldShowFiat,
-  txDataSelector,
   getTokenExchangeRates,
   selectConversionRateByChainId,
-} from '../../../selectors';
+} from '../../../selectors/selectors';
+import { txDataSelector } from '../../../selectors/confirm-transaction';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { selectNetworkConfigurationByChainId } from '../../../../shared/lib/selectors/networks';
@@ -21,9 +24,8 @@ import {
 import { Numeric } from '../../../../shared/lib/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { getMultichainIsEvm } from '../../../selectors/multichain/networks';
 import {
-  getMultichainCurrentCurrency,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';

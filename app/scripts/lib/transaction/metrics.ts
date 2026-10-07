@@ -6,7 +6,8 @@ import type {
   TransactionMetaEventPayload,
   TransactionMetricsRequest,
 } from '../../../../shared/types/metametrics';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import { getBuilderMetrics } from './metrics-builders';
 import { handleSwapPostTransactionMetricHandler } from './swap-post-transaction-metric-handler';
 

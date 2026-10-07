@@ -2,11 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { toast } from 'react-hot-toast';
 import {
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
-} from '../../../../shared/lib/passkey';
-import { toast } from '../../ui/toast/toast';
+} from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -16,7 +16,11 @@ import {
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as selectors from '../../../selectors';
+
+import * as selectorsModule9 from '../../../selectors/selectors';
+
+import * as selectorsModule17 from '../../../selectors/first-time-flow';
+
 import ChangePassword from './change-password';
 
 const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
@@ -25,6 +29,10 @@ jest.mock('../../ui/toast/toast', () => {
   const actual = jest.requireActual<typeof import('../../ui/toast/toast')>(
     '../../ui/toast/toast',
   );
+  return { ...actual, ToastContent: actual.ToastContent };
+});
+jest.mock('react-hot-toast', () => {
+  const actual = jest.requireActual('react-hot-toast');
   return {
     ...actual,
     toast: {
@@ -32,7 +40,6 @@ jest.mock('../../ui/toast/toast', () => {
       error: jest.fn(),
       success: jest.fn(),
     },
-    ToastContent: actual.ToastContent,
   };
 });
 
@@ -122,20 +129,23 @@ jest.mock('../../../store/actions', () => ({
   forceUpdateMetamaskState: async () => mockForceUpdateMetamaskState(),
 }));
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../../shared/lib/passkey'),
+jest.mock('../../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../../shared/lib/passkey/passkey-ceremony'),
   startPasskeyAuthentication: jest.fn(),
   cancelPasskeyCeremony: jest.fn(),
 }));
 
-jest.mock('../../../selectors', () => ({
-  ...jest.requireActual('../../../selectors'),
-  getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
+jest.mock('../../../selectors/selectors', () => ({
+  ...jest.requireActual('../../../selectors/selectors'),
   getIsPasskeyRegistered: jest.fn().mockReturnValue(false),
   getIsPasskeyFeatureAvailable: jest.fn().mockReturnValue(false),
   getIsEnrolledPasskeyIncompatibleWithSidepanel: jest
     .fn()
     .mockReturnValue(false),
+}));
+jest.mock('../../../selectors/first-time-flow', () => ({
+  ...jest.requireActual('../../../selectors/first-time-flow'),
+  getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
 }));
 
 describe('ChangePassword', () => {
@@ -146,13 +156,17 @@ describe('ChangePassword', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.mocked(getEnvironmentType).mockReturnValue('popup');
-    (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(false);
-    (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
-    (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
+    (selectorsModule17.getIsSocialLoginFlow as jest.Mock).mockReturnValue(
+      false,
+    );
+    (selectorsModule9.getIsPasskeyRegistered as jest.Mock).mockReturnValue(
       false,
     );
     (
-      selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+      selectorsModule9.getIsPasskeyFeatureAvailable as jest.Mock
+    ).mockReturnValue(false);
+    (
+      selectorsModule9.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
     ).mockReturnValue(false);
     (startPasskeyAuthentication as jest.Mock).mockResolvedValue({
       id: 'mock-credential',
@@ -232,10 +246,12 @@ describe('ChangePassword', () => {
 
   describe('Passkey feature without enrollment', () => {
     beforeEach(() => {
-      (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(false);
-      (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
-        true,
+      (selectorsModule9.getIsPasskeyRegistered as jest.Mock).mockReturnValue(
+        false,
       );
+      (
+        selectorsModule9.getIsPasskeyFeatureAvailable as jest.Mock
+      ).mockReturnValue(true);
     });
 
     it('does not show the passkey unlock toggle on change password', async () => {
@@ -297,7 +313,9 @@ describe('ChangePassword', () => {
 
   describe('Step 2: set new password (social login flow)', () => {
     beforeEach(() => {
-      (selectors.getIsSocialLoginFlow as jest.Mock).mockReturnValue(true);
+      (selectorsModule17.getIsSocialLoginFlow as jest.Mock).mockReturnValue(
+        true,
+      );
     });
 
     it('shows the warning modal on form submission instead of immediately changing the password', async () => {
@@ -382,12 +400,14 @@ describe('ChangePassword', () => {
     const mockAssertion = { id: 'mock-credential' };
 
     beforeEach(() => {
-      (selectors.getIsPasskeyRegistered as jest.Mock).mockReturnValue(true);
-      (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
+      (selectorsModule9.getIsPasskeyRegistered as jest.Mock).mockReturnValue(
         true,
       );
       (
-        selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+        selectorsModule9.getIsPasskeyFeatureAvailable as jest.Mock
+      ).mockReturnValue(true);
+      (
+        selectorsModule9.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
       ).mockReturnValue(false);
       (startPasskeyAuthentication as jest.Mock).mockResolvedValue(
         mockAssertion,
@@ -660,7 +680,7 @@ describe('ChangePassword', () => {
         .mocked(getEnvironmentType)
         .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
       (
-        selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+        selectorsModule9.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
       ).mockReturnValue(true);
 
       const { getByTestId, queryByTestId } = renderWithProvider(

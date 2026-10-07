@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextFieldSearch } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box } from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
 
 const NetworkListSearch = ({
   searchQuery,

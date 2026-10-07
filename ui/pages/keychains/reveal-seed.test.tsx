@@ -102,17 +102,20 @@ jest.mock('../../store/actions.ts', () => ({
   scanUrlForPhishing: (...args: unknown[]) => mockScanUrlForPhishing(...args),
 }));
 
-jest.mock('../../selectors', () => ({
-  ...jest.requireActual('../../selectors'),
+jest.mock('../../selectors/selectors', () => ({
+  ...jest.requireActual('../../selectors/selectors'),
   getIsPasskeyRegistered: () => mockGetIsPasskeyRegistered(),
   getIsPasskeyFeatureAvailable: () => mockGetIsPasskeyFeatureAvailable(),
-  getIsSocialLoginFlow: () => mockGetIsSocialLoginFlow(),
   getIsEnrolledPasskeyIncompatibleWithSidepanel: () =>
     mockGetIsEnrolledPasskeyIncompatibleWithSidepanel(),
 }));
+jest.mock('../../selectors/first-time-flow', () => ({
+  ...jest.requireActual('../../selectors/first-time-flow'),
+  getIsSocialLoginFlow: () => mockGetIsSocialLoginFlow(),
+}));
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual('../../../shared/lib/passkey'),
+jest.mock('../../../shared/lib/passkey/passkey-ceremony', () => ({
+  ...jest.requireActual('../../../shared/lib/passkey/passkey-ceremony'),
   startPasskeyAuthentication: (...args: unknown[]) =>
     mockStartPasskeyAuthentication(...args),
   cancelPasskeyCeremony: (...args: unknown[]) =>

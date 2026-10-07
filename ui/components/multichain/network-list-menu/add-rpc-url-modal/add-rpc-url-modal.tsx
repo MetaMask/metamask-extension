@@ -6,11 +6,9 @@ import {
   HelpText,
   HelpTextSeverity,
 } from '@metamask/design-system-react';
-import {
-  Box,
-  FormTextField,
-  FormTextFieldSize,
-} from '../../../component-library';
+import { Box } from '../../../component-library/box/box';
+import { FormTextField } from '../../../component-library/form-text-field/form-text-field';
+import { FormTextFieldSize } from '../../../component-library/form-text-field/form-text-field.types';
 import {
   BackgroundColor,
   BlockSize,

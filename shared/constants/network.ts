@@ -117,7 +117,6 @@ export const CHAIN_SPEC_URL = 'https://chainid.network/chains.json';
 // `CHAIN_IDS` lives in its own leaf module so that other constant modules can
 // reference chain ids without importing this large file. It is re-exported here
 // so existing importers of `shared/constants/network` are unaffected.
-export { CHAIN_IDS } from './chain-ids';
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
   ...CHAIN_IDS,

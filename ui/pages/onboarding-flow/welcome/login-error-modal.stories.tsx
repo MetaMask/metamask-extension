@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from 'storybook/preview-api';
 import LoginErrorModal from './login-error-modal';
-import { Button } from '../../../components/component-library';
+import { Button } from '../../../components/component-library/button/button';
 import { LOGIN_ERROR } from './types';
 
 export default {

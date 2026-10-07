@@ -18,7 +18,7 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import Unlock from '../unlock-page';
+import Unlock from '../unlock-page/unlock-page.container';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -62,7 +62,7 @@ import {
 import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
-} from '../../selectors';
+} from '../../selectors/first-time-flow';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../contexts/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
@@ -76,9 +76,9 @@ import {
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
-import LoadingScreen from '../../components/ui/loading-screen';
+import LoadingScreen from '../../components/ui/loading-screen/loading-screen.component';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
-import type { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/types';
 import { useTheme } from '../../hooks/useTheme';
 import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -113,8 +113,8 @@ import { PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES } from './passkey-prf-migratio
 // This is not just for performance, it is necessary so non-Flask builds don't try
 // to import Flask-only code and fail.
 const ExperimentalArea = mmLazy(
-  // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
-  () => import('../../components/app/flask/experimental-area/index.js'),
+  () =>
+    import('../../components/app/flask/experimental-area/experimental-area'),
 ) as React.LazyExoticComponent<
   React.ComponentType<React.PropsWithChildren<{ redirectTo: string }>>
 >;

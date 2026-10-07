@@ -17,12 +17,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
+import { getCurrencyRateControllerCurrencyRates as getCurrencyRates } from '../../../../../shared/lib/selectors/assets-migration';
 import {
-  getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
-} from '../../../../selectors';
+} from '../../../../selectors/selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getIsEvmMultichainNetworkSelected,
@@ -50,7 +50,7 @@ jest.mock('../../../../hooks/useAnalytics', () => {
   };
 });
 
-jest.mock('../token-cell', () => {
+jest.mock('../token-cell/token-cell', () => {
   const ReactActual = jest.requireActual('react');
 
   return {
@@ -97,11 +97,14 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
   },
 }));
 
-jest.mock('../../../../selectors', () => ({
-  getCurrencyRates: jest.fn(),
+jest.mock('../../../../selectors/selectors', () => ({
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokenSortConfig: jest.fn(),
   getUseExternalServices: jest.fn(),
+}));
+
+jest.mock('../../../../../shared/lib/selectors/assets-migration', () => ({
+  getCurrencyRateControllerCurrencyRates: jest.fn(),
 }));
 
 jest.mock('../../../../../shared/lib/selectors/preferences', () => ({

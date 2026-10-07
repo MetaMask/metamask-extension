@@ -1,12 +1,14 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { useDisplayBalanceCalc } from './useAccountBalance';
 
 jest.mock('react-redux');
+jest.mock('../../../shared/lib/selectors/assets-migration');
 jest.mock('../../selectors/assets');
 jest.mock('../../ducks/metamask/metamask');
+jest.mock('../../../shared/lib/selectors/assets-migration');
 jest.mock('../../ducks/locale/locale');
 jest.mock('../../selectors/multichain-accounts/account-tree');
 

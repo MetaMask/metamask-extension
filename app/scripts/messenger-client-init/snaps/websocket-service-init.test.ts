@@ -5,7 +5,7 @@ import {
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getRootMessenger } from '../../lib/messenger';
-import { getWebSocketServiceMessenger } from '../messengers/snaps';
+import { getWebSocketServiceMessenger } from '../messengers/snaps/websocket-service-messenger';
 import { WebSocketServiceInit } from './websocket-service-init';
 
 function getInitRequestMock(): jest.Mocked<

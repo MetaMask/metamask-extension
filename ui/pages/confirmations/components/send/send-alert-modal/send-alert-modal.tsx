@@ -14,14 +14,12 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../../../components/component-library';
+import { Modal } from '../../../../../components/component-library/modal/modal';
+import { ModalBody } from '../../../../../components/component-library/modal-body/modal-body';
+import { ModalContent } from '../../../../../components/component-library/modal-content/modal-content';
+import { ModalFooter } from '../../../../../components/component-library/modal-footer/modal-footer';
+import { ModalHeader } from '../../../../../components/component-library/modal-header/modal-header';
+import { ModalOverlay } from '../../../../../components/component-library/modal-overlay/modal-overlay';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { SendAlertModalProps } from './send-alert-modal.types';

@@ -7,7 +7,7 @@ import {
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
 import { MessengerClientInitFunction } from './types';
-import { StaticAssetsControllerInitMessenger } from './messengers';
+import { StaticAssetsControllerInitMessenger } from './messengers/static-assets-controller-messenger';
 
 function getRemoteFeatureFlagControllerState(
   initMessenger: StaticAssetsControllerInitMessenger,

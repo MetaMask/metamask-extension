@@ -10,7 +10,7 @@ import {
   TransactionPaymentToken,
   PaymentOverride,
 } from '@metamask/transaction-pay-controller';
-import { CHAIN_IDS } from '../../../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../../../shared/constants/chain-ids';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -33,6 +33,7 @@ import { useInsufficientPayTokenBalanceAlert } from './useInsufficientPayTokenBa
 jest.mock('../../pay/useTransactionPayToken');
 jest.mock('../../pay/useTransactionPayData');
 jest.mock('../../send/useSendTokens');
+jest.mock('../../pay/useAutomaticTransactionPayToken');
 jest.mock('../../pay/useIsFundingAccountBalanceSettling');
 jest.mock('../../tokens/useTokenWithBalance');
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({

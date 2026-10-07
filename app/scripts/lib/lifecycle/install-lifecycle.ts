@@ -8,8 +8,9 @@ import {
   getInstallAttribution,
   type InstallAttribution,
 } from '#shared/lib/install-attribution';
-import type { FlattenedBackgroundStateProxy } from '#shared/types';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types/background';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import type { AppMetadataController } from '../../controllers/app-metadata';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { onUpdate } from '../../on-update';

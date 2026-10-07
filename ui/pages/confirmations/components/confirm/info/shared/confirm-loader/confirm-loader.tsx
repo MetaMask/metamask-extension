@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box } from '../../../../../../../components/component-library';
-import Preloader from '../../../../../../../components/ui/icon/preloader';
+import { Box } from '../../../../../../../components/component-library/box/box';
+import Preloader from '../../../../../../../components/ui/icon/preloader/preloader-icon.component';
 import {
   AlignItems,
   Display,

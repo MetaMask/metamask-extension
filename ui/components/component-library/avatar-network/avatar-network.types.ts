@@ -1,4 +1,4 @@
-import type { PolymorphicComponentPropWithRef } from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 /**

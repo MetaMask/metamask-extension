@@ -14,7 +14,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { MenuItem } from '../../ui/menu';
+import MenuItem from '../../ui/menu/menu-item';
 import { preserveDrawerOpen } from '../global-menu-drawer/global-menu-drawer';
 import { GlobalMenuListProps, isRouteItem } from './global-menu-list.types';
 

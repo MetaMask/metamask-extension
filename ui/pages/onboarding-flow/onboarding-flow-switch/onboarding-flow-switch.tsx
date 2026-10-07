@@ -21,10 +21,10 @@ import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import {
   getFirstTimeFlowType,
-  getConsentDecisionMade,
   getIsSocialLoginFlow,
-  getIsSocialLoginUserAuthenticated,
-} from '../../../selectors';
+} from '../../../selectors/first-time-flow';
+import { getConsentDecisionMade } from '../../../selectors/metametrics';
+import { getIsSocialLoginUserAuthenticated } from '../../../selectors/onboarding/onboarding';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   isBeta,

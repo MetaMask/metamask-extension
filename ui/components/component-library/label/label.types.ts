@@ -1,5 +1,5 @@
-import type { PolymorphicComponentPropWithRef } from '../box';
-import type { TextStyleUtilityProps } from '../text';
+import type { PolymorphicComponentPropWithRef } from '../box/box.types';
+import type { TextStyleUtilityProps } from '../text/text.types';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -10,8 +10,8 @@ import {
 } from '@metamask/design-system-react';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-import { Text } from '../../../component-library';
-import { PreferredAvatar } from '../../preferred-avatar';
+import { Text } from '../../../component-library/text/text';
+import { PreferredAvatar } from '../../preferred-avatar/preferred-avatar';
 import {
   BackgroundColor,
   TextColor,

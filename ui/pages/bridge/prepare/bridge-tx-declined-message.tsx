@@ -4,11 +4,9 @@ import {
   Display,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import {
-  ButtonLinkSize,
-  Text,
-  ButtonLink,
-} from '../../../components/component-library';
+import { ButtonLinkSize } from '../../../components/component-library/button-link/button-link.types';
+import { Text } from '../../../components/component-library/text/text';
+import { ButtonLink } from '../../../components/component-library/button-link/button-link';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { useDispatch } from '../../../store/hooks';
 

@@ -11,7 +11,10 @@ import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImag
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/lib/selectors/networks';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { getAllNfts } from '../../../../../ducks/metamask/metamask';
-import { getIpfsGateway, getOpenSeaEnabled } from '../../../../../selectors';
+import {
+  getIpfsGateway,
+  getOpenSeaEnabled,
+} from '../../../../../selectors/selectors';
 import NftFullImage from './nft-full-image';
 
 const selectedAddress =

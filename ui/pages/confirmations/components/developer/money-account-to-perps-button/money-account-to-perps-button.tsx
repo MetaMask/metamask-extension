@@ -4,7 +4,7 @@ import { usePerpsDepositConfirmation } from '../../../../../components/app/perps
 import { useMoneyAccountInfo } from '../../../../../hooks/money/useMoneyAccountInfo';
 import { RouteMessengerProvider } from '../../../../../contexts/route-messenger';
 import { PayWithOption } from '../../../hooks/useConfirmationNavigation';
-import { DeveloperButton } from '../developer-button';
+import { DeveloperButton } from '../developer-button/developer-button';
 import { MONEY_ACCOUNT_TO_PERPS_BUTTON_ALLOWED_CAPABILITIES } from './messenger';
 
 /**

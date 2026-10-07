@@ -384,6 +384,18 @@
         "document.visibilityState": false,
         "addEventListener": false
       }
+    },
+    "webpack>loader-runner": {
+      "packages": {
+        "$root$": true,
+        "html-bundler-webpack-plugin": true,
+        "css-loader": true,
+        "postcss-loader": true,
+        "sass-loader": true,
+        "@lavamoat/webpack": true,
+        "react-compiler-webpack": true,
+        "thread-loader": true
+      }
     }
   }
 }

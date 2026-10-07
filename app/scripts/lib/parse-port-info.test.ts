@@ -14,11 +14,103 @@ jest.mock('webextension-polyfill', () => ({
   runtime: { id: 'extension-id' },
 }));
 
-jest.mock('./util', () => ({
-  getPlatform: jest.fn(),
-}));
+jest.mock('./util', () => ({ getPlatform: jest.fn() }));
 
-const { getPlatform } = jest.requireMock('./util') as {
+const { getPlatform } = {
+  get addHexPrefix() {
+    return jest.requireMock('../../../shared/lib/add-hex-prefix').addHexPrefix;
+  },
+  get addUrlProtocolPrefix() {
+    return jest.requireMock('../../../shared/lib/url-utils')
+      .addUrlProtocolPrefix;
+  },
+  get checkAlarmExists() {
+    return jest.requireMock('./util').checkAlarmExists;
+  },
+  get convertEnglishWordlistIndicesToCodepoints() {
+    return jest.requireMock('./util').convertEnglishWordlistIndicesToCodepoints;
+  },
+  get extractRpcDomain() {
+    return jest.requireMock('./util').extractRpcDomain;
+  },
+  get formatTxMetaForRpcResult() {
+    return jest.requireMock('./util').formatTxMetaForRpcResult;
+  },
+  get formatValue() {
+    return jest.requireMock('../../../shared/lib/format-value').formatValue;
+  },
+  get generateRandomId() {
+    return jest.requireMock('./util').generateRandomId;
+  },
+  get getBooleanFlag() {
+    return jest.requireMock('../../../shared/lib/environment').getBooleanFlag;
+  },
+  get getChainType() {
+    return jest.requireMock('./util').getChainType;
+  },
+  get getConversionRatesForNativeAsset() {
+    return jest.requireMock('../../../shared/lib/asset-conversion-rates')
+      .getConversionRatesForNativeAsset;
+  },
+  get getDeviceType() {
+    return jest.requireMock('./util').getDeviceType;
+  },
+  get getEnvironmentType() {
+    return jest.requireMock('../../../shared/lib/environment-type')
+      .getEnvironmentType;
+  },
+  get getInstallType() {
+    return jest.requireMock('./install-type').getInstallType;
+  },
+  get getMethodDataName() {
+    return jest.requireMock('./util').getMethodDataName;
+  },
+  get getOs() {
+    return jest.requireMock('./util').getOs;
+  },
+  get getPlatform() {
+    return jest.requireMock('./util').getPlatform;
+  },
+  get getValidUrl() {
+    return jest.requireMock('../../../shared/lib/url-utils').getValidUrl;
+  },
+  get initInstallType() {
+    return jest.requireMock('./install-type').initInstallType;
+  },
+  get initializeRpcProviderDomains() {
+    return jest.requireMock('./util').initializeRpcProviderDomains;
+  },
+  get isKnownDomain() {
+    return jest.requireMock('./util').isKnownDomain;
+  },
+  get isPublicEndpointUrl() {
+    return jest.requireMock('./util').isPublicEndpointUrl;
+  },
+  get isSpecialUseDomain() {
+    return jest.requireMock('./util').isSpecialUseDomain;
+  },
+  get isValidAmount() {
+    return jest.requireMock('../../../shared/lib/format-value').isValidAmount;
+  },
+  get isValidDate() {
+    return jest.requireMock('./util').isValidDate;
+  },
+  get isValidEmail() {
+    return jest.requireMock('../../../shared/lib/url-utils').isValidEmail;
+  },
+  get isWebOrigin() {
+    return jest.requireMock('../../../shared/lib/url-utils').isWebOrigin;
+  },
+  get isWebUrl() {
+    return jest.requireMock('../../../shared/lib/url-utils').isWebUrl;
+  },
+  get previousValueComparator() {
+    return jest.requireMock('./util').previousValueComparator;
+  },
+  get shouldEmitDappViewedEvent() {
+    return jest.requireMock('./util').shouldEmitDappViewedEvent;
+  },
+} as {
   getPlatform: jest.Mock;
 };
 

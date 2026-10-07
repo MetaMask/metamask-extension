@@ -21,13 +21,15 @@ import {
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { createSentryError } from '../../../../shared/lib/error';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey/passkey-auth-method';
 import {
-  getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
+} from '../../../../shared/lib/passkey/passkey-ceremony';
+import {
   translatePasskeyError,
   getPasskeyErrorCode,
-} from '../../../../shared/lib/passkey';
+} from '../../../../shared/lib/passkey/passkey-error';
 import { captureException } from '../../../../shared/lib/sentry';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -41,8 +43,8 @@ import {
   getPasskeyAuthenticatorId,
   getPasskeyDerivationMethod,
   getIsPasskeyUserHandleBased,
-} from '../../../selectors';
-import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
+} from '../../../selectors/selectors';
+import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal/passkey-troubleshoot-modal';
 import { usePasskeyUnlock } from '../../../hooks/passkey/usePasskeyUnlock';
 
 export type PasskeyUnlockSuccessContext = {

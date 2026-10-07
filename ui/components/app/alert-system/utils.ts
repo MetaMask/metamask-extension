@@ -1,5 +1,5 @@
 import { Severity } from '../../../helpers/constants/design-system';
-import { BannerAlertSeverity } from '../../component-library';
+import { BannerAlertSeverity } from '../../component-library/banner-alert/banner-alert.types';
 
 /**
  * Converts the severity of a banner alert to the corresponding BannerAlertSeverity.

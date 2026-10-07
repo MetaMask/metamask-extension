@@ -20,7 +20,7 @@ import {
   PerpsMarketData,
   Position,
 } from '@metamask/perps-controller';
-import type { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
 import { mockPositions } from '../../components/app/perps/mocks';
 import { getPerpsStreamManager } from './PerpsStreamManager';
 

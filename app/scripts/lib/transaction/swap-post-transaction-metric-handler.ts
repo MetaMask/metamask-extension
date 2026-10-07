@@ -11,7 +11,8 @@ import {
   getSwapsTokensReceivedFromTxMeta,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { hexWEIToDecETH } from '../../../../shared/lib/conversion.utils';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 
 export async function handleSwapPostTransactionMetricHandler(
   { getParticipateInMetrics, getHDEntropyIndex }: TransactionMetricsRequest,

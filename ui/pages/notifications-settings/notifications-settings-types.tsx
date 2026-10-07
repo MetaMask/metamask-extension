@@ -12,7 +12,7 @@ import type { NotificationPreferences } from '@metamask/authenticated-user-stora
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { SettingsSelectItem } from '../settings/shared';
+import { SettingsSelectItem } from '../settings/shared/settings-select-item';
 import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
 
 export type NotificationsSettingsSectionType =

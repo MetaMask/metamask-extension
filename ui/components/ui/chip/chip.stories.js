@@ -14,10 +14,10 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { BannerAlert } from '../../component-library';
+import { BannerAlert } from '../../component-library/banner-alert/banner-alert';
 import ApproveIcon from '../icon/approve-icon.component';
 
-import Chip from '.';
+import Chip from './chip';
 
 export default {
   title: 'Components/UI/Chip (deprecated)',

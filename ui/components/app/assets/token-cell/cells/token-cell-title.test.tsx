@@ -26,7 +26,7 @@ jest.mock('../../../../multichain/token-list-item/stakeable-link', () => ({
   ),
 }));
 
-jest.mock('../../../../component-library', () => ({
+jest.mock('../../../../component-library/tag/tag', () => ({
   Tag: ({ label }: { label: string }) => (
     <span data-testid="tag" data-label={label}>
       {label}

@@ -21,11 +21,9 @@ import {
 } from '@metamask/delegation-core';
 import { TransactionControllerInitMessenger } from '../../../wallet-init/messengers/transaction-controller-messenger';
 import { getEnforcedSimulationsSlippage } from '../../../../../shared/lib/transaction/enforced-simulations';
-import {
-  getDeleGatorEnvironment,
-  type Caveat,
-  type DeleGatorEnvironment,
-} from '../../../../../shared/lib/delegation';
+import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation/environment';
+import type { Caveat } from '../../../../../shared/lib/delegation';
+import type { DeleGatorEnvironment } from '../../../../../shared/lib/delegation/environment';
 import {
   type DelegationMessenger,
   convertTransactionToRedeemDelegations,

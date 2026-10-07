@@ -2,12 +2,10 @@ import { BalanceChangeResult } from '@metamask/assets-controllers';
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency } from '../../../../../shared/lib/selectors/assets-migration';
 import { TextColor } from '../../../../helpers/constants/design-system';
-import {
-  getPrivacyMode,
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../../selectors';
+import { getPrivacyMode } from '../../../../selectors/selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors/multichain/networks';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
 import { determineBalanceColor } from './get-display-balance';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
@@ -15,7 +13,24 @@ import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 jest.mock('react-redux');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');
-jest.mock('../../../../selectors');
+jest.mock('../../../../../shared/lib/selectors/assets-migration');
+jest.mock('../../../../selectors/selectors');
+jest.mock('../../../../selectors/confirm-transaction');
+jest.mock('../../../../pages/confirmations/selectors/confirm');
+jest.mock('../../../../selectors/accounts');
+jest.mock('../../../../selectors/onboarding/onboarding');
+jest.mock('../../../../selectors/multichain/networks');
+jest.mock('../../../../../shared/lib/selectors/assets-migration');
+jest.mock('../../../../selectors/approvals');
+jest.mock('../../../../selectors/transactions');
+jest.mock('../../../../selectors/custom-gas');
+jest.mock('../../../../selectors/metametrics');
+jest.mock('../../../../../shared/lib/selectors/multichain');
+jest.mock('../../../../selectors/first-time-flow');
+jest.mock('../../../../selectors/multichain/feature-flags');
+jest.mock('../../../../selectors/test-networks');
+jest.mock('../../../../selectors/origin-throttling');
+jest.mock('../../../../../shared/lib/selectors/assets-migration');
 jest.mock('../../../../selectors/assets');
 jest.mock('./get-display-balance');
 

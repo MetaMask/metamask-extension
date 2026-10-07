@@ -64,7 +64,7 @@ jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
 jest.mock('../../../../hooks/useFiatFormatter', () => ({
   useFiatFormatter: () => (value: number) => `$${value.toFixed(2)}`,
 }));
-jest.mock('../../components/modals/pay-with-modal', () => ({
+jest.mock('../../components/modals/pay-with-modal/pay-with-modal', () => ({
   PayWithModal: ({ isOpen }: { isOpen: boolean }) =>
     isOpen ? <div data-testid="pay-with-modal" /> : null,
 }));

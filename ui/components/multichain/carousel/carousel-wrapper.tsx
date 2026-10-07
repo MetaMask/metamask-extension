@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Carousel } from './carousel';
-import { EmptyStateComponent } from './stack-card-empty';
+import { EmptyStateComponent } from './stack-card-empty/stack-card-empty';
 import type { CarouselProps } from './types';
 
 export const CarouselWithEmptyState = (props: CarouselProps) => {

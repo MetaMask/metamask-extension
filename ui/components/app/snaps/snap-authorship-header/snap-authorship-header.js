@@ -12,20 +12,17 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import { getSnapMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors/selectors';
 
-import {
-  Text,
-  Box,
-  AvatarIcon,
-  IconName,
-  IconSize,
-  ButtonIconSize,
-  ButtonIcon,
-} from '../../../component-library';
-import { SnapMetadataModal } from '../snap-metadata-modal';
+import { Text } from '../../../component-library/text/text';
+import { Box } from '../../../component-library/box/box';
+import { AvatarIcon } from '../../../component-library/avatar-icon/avatar-icon';
+import { IconName, IconSize } from '../../../component-library/icon/icon.types';
+import { ButtonIconSize } from '../../../component-library/button-icon/button-icon.types';
+import { ButtonIcon } from '../../../component-library/button-icon/button-icon';
+import { SnapMetadataModal } from '../snap-metadata-modal/snap-metadata-modal';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SnapIcon } from '../snap-icon';
+import { SnapIcon } from '../snap-icon/snap-icon';
 
 const SnapAuthorshipHeader = ({
   snapId,

@@ -6,10 +6,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  PasskeyEnrollmentSteps,
-  type PasskeyEnrollmentStepStatus,
-} from '../passkey-enrollment-steps';
+import { PasskeyEnrollmentSteps } from '../passkey-enrollment-steps/passkey-enrollment-steps';
+import type { PasskeyEnrollmentStepStatus } from '../passkey-enrollment-steps/passkey-enrollment-steps';
 
 type PasskeySetupProgressProps = Readonly<{
   passkeyMethodLabel: string;

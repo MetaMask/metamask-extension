@@ -3,7 +3,7 @@ import {
   getUseExternalServices,
   getUseTokenDetection,
   getUseTransactionSimulations,
-} from '../selectors';
+} from '../selectors/selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenListStartPolling,

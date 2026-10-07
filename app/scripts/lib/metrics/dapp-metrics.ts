@@ -24,9 +24,10 @@ import {
   getActiveTabDomainAllowlist,
   getActiveTabDomainForMetrics,
 } from '../../../../shared/lib/active-tab-domain-metrics';
-import type { FlattenedBackgroundStateProxy } from '../../../../shared/types';
+import type { FlattenedBackgroundStateProxy } from '../../../../shared/types/background';
 import type { AppStateControllerState } from '../../controllers/app-state-controller';
-import { createEventBuilder, trackEvent } from '../../controllers/analytics';
+import { createEventBuilder } from '../../../../shared/lib/analytics/create-event-builder';
+import { trackEvent } from '../../controllers/analytics/analytics';
 import type { LegacyBackgroundApiServiceHandleDefiReferralAction } from '../../services/legacy-background-api-service-method-action-types';
 import { ReferralTriggerType } from '../defi-referrals/createDefiReferralMiddleware';
 import { getIframeProperties } from '../getIframeProperties';
