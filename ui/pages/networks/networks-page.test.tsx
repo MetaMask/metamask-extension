@@ -278,12 +278,14 @@ describe('NetworksPage', () => {
     expect(testnetToggle).toBeDisabled();
 
     await userEvent.click(screen.getByTestId('page-header-search-button'));
-    await userEvent.type(
-      screen.getByTestId('page-header-search-input'),
-      'ugtfvh',
-    );
-
-    expect(screen.getByTestId('networks-page-no-results')).toBeInTheDocument();
+    fireEvent.change(screen.getByTestId('page-header-search-input'), {
+      target: { value: 'ugtfvh' },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('networks-page-no-results'),
+      ).toBeInTheDocument();
+    });
     expect(
       screen.getByText(messages.settingsSearchMatchingNotFound.message),
     ).toBeInTheDocument();
@@ -406,14 +408,15 @@ describe('NetworksPage', () => {
       showTestNetworks: false,
     });
 
-    await userEvent.type(
+    fireEvent.change(
       await screen.findByPlaceholderText(
         messages.searchNetworkNameOrChainId.message,
       ),
-      'Sepolia',
+      { target: { value: 'Sepolia' } },
     );
-
-    expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Sepolia')).not.toBeInTheDocument();
+    });
     expect(
       screen.queryByTestId('networks-page-chainlist-added-pill'),
     ).not.toBeInTheDocument();
@@ -430,13 +433,12 @@ describe('NetworksPage', () => {
       showTestNetworks: true,
     });
 
-    await userEvent.type(
+    fireEvent.change(
       await screen.findByPlaceholderText(
         messages.searchNetworkNameOrChainId.message,
       ),
-      'Sepolia',
+      { target: { value: 'Sepolia' } },
     );
-
     expect(await screen.findByText('Sepolia')).toBeInTheDocument();
     expect(
       screen.getByTestId('networks-page-chainlist-added-pill'),
@@ -449,11 +451,11 @@ describe('NetworksPage', () => {
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
-    await userEvent.type(
+    fireEvent.change(
       await screen.findByPlaceholderText(
         messages.searchNetworkNameOrChainId.message,
       ),
-      'Multi RPC',
+      { target: { value: 'Multi RPC' } },
     );
 
     const multiRpcButton = (
@@ -503,16 +505,17 @@ describe('NetworksPage', () => {
       remoteFeatureFlags: { extensionUxChainlist: true },
     });
 
-    await userEvent.type(
+    fireEvent.change(
       await screen.findByPlaceholderText(
         messages.searchNetworkNameOrChainId.message,
       ),
-      'ugtfvh',
+      { target: { value: 'ugtfvh' } },
     );
-
-    expect(
-      screen.getByTestId('networks-page-chainlist-no-results'),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('networks-page-chainlist-no-results'),
+      ).toBeInTheDocument();
+    });
     expect(
       screen.getByText(messages.settingsSearchMatchingNotFound.message),
     ).toBeInTheDocument();
