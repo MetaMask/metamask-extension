@@ -98,7 +98,10 @@ import {
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
-import { isInE2eTest } from '../contexts/hardware-wallets/is-in-e2e-test';
+import {
+  isInE2eTest,
+  getIsSidePanelFeatureEnabled,
+} from '../../shared/lib/environment';
 import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
@@ -221,7 +224,7 @@ import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
-import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
+
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
