@@ -104,6 +104,26 @@ function isThemeType(value: unknown): value is ThemeType {
   );
 }
 
+/**
+ * Applies the stored preference and, for the OS theme, keeps the dialog in
+ * sync with later system color-scheme changes. This screen is not React, so
+ * it cannot use `useTheme`.
+ *
+ * @param theme - Theme preference from PreferencesController.
+ */
+function applyStoredTheme(theme: ThemeType) {
+  setTheme(theme);
+  if (theme !== ThemeType.os || typeof window.matchMedia !== 'function') {
+    return;
+  }
+
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', () => {
+      setTheme(ThemeType.os);
+    });
+}
+
 function themeFromControllerState(value: unknown): ThemeType | undefined {
   if (typeof value !== 'object' || value === null || !('theme' in value)) {
     return undefined;
@@ -359,11 +379,11 @@ export async function displayCriticalErrorMessage(
   );
 
   const storedTheme = await storedThemePromise;
-  // Apply light or dark, including when the document already has the other
+  // Apply light, dark, or OS, including when the document already has another
   // theme. Skip only when no preference is available. Dark dialog colors stay
   // the original brand palette; light overrides apply only for data-theme=light.
   if (storedTheme) {
-    setTheme(storedTheme);
+    applyStoredTheme(storedTheme);
   }
 
   const criticalErrorContainer = displayCriticalErrorPage(container, html);

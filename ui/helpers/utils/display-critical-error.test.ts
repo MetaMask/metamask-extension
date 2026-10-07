@@ -309,6 +309,66 @@ describe('displayCriticalError', () => {
     matchMediaSpy.mockRestore();
   });
 
+  it('updates an OS theme when the system color scheme changes', async () => {
+    let onChange: ((event: MediaQueryListEvent) => void) | undefined;
+    const mediaQuery = {
+      matches: false,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(
+        (_event: string, listener: (event: MediaQueryListEvent) => void) => {
+          onChange = listener;
+        },
+      ),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    };
+    const matchMediaSpy = jest
+      .spyOn(window, 'matchMedia')
+      .mockReturnValue(mediaQuery as unknown as MediaQueryList);
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+        {
+          theme: ThemeType.os,
+        },
+      ),
+    ).rejects.toThrow(error);
+
+    expect(document.documentElement.dataset.theme).toBe(ThemeType.light);
+
+    mediaQuery.matches = true;
+    onChange?.({ matches: true } as MediaQueryListEvent);
+
+    expect(document.documentElement.dataset.theme).toBe(ThemeType.dark);
+    delete document.documentElement.dataset.theme;
+    matchMediaSpy.mockRestore();
+  });
+
+  it('applies the theme from split-state PreferencesController storage', async () => {
+    (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
+      PreferencesController: { theme: ThemeType.light },
+    });
+    const error = new Error(MOCK_ERROR_MESSAGE);
+
+    await expect(
+      displayCriticalErrorMessage(
+        container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error,
+      ),
+    ).rejects.toThrow(error);
+
+    expect(document.documentElement.dataset.theme).toBe(ThemeType.light);
+    delete document.documentElement.dataset.theme;
+  });
+
   it('clicking restart button calls fetch and reload if checkbox checked', async () => {
     const error = new Error(MOCK_ERROR_MESSAGE);
     const mockPort = createMockPort();
