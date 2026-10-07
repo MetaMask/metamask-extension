@@ -3486,6 +3486,9 @@
   "deepLink_theHomePage": {
     "message": "the home page"
   },
+  "deepLink_theMmPayPage": {
+    "message": "MetaMask Pay"
+  },
   "deepLink_theMoneyPage": {
     "message": "the Money page"
   },
@@ -5551,6 +5554,19 @@
   },
   "mmFee": {
     "message": "$1% MetaMask fee"
+  },
+  "mmPayDappError": {
+    "message": "We couldn't start this MetaMask Pay request: $1",
+    "description": "Error message shown on the MMPay dApp landing page. $1 is the error message.",
+    "placeholders": {
+      "mm_pay_error_message": {
+        "content": "$1",
+        "example": "Arbitrum network unavailable"
+      }
+    }
+  },
+  "mmPayDappLoading": {
+    "message": "Preparing your transaction…"
   },
   "money": {
     "message": "Money"

@@ -77,6 +77,7 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_TRANSACTION_DETAILS_ROUTE,
   PERPS_WITHDRAW_ROUTE,
+  MMPAY_DAPP_ROUTE,
   ACTIVITY_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
   MONEY_HOME_ROUTE,
@@ -299,6 +300,8 @@ const PerpsWithdrawPage = mmLazy(
 const PerpsOrderEntryPage = mmLazy(
   () => import('../perps/perps-order-entry-page.tsx'),
 );
+// MMPay dApp PoC
+const MmPayDappLanding = mmLazy(() => import('../mmpay-dapp'));
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 const HardwareWalletRepair = mmLazy(
@@ -628,6 +631,10 @@ export const routeConfig = [
           {
             path: RAMPS_COMPLETE_BUY_ROUTE,
             element: <RampsCompleteBuy />,
+          },
+          {
+            path: MMPAY_DAPP_ROUTE,
+            element: <MmPayDappLanding />, // MMPay dApp PoC
           },
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,

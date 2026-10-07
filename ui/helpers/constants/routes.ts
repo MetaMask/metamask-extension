@@ -207,6 +207,7 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_TRANSACTION_DETAILS_ROUTE = '/perps/transaction-details';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
+export const MMPAY_DAPP_ROUTE = '/mmpay-dapp'; // MMPay dApp PoC
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 export const PERPS_HOME_PAGE_ROUTE = '/perps-home';
 export const MONEY_HOME_ROUTE = '/money-home';
@@ -294,6 +295,11 @@ export const ROUTES = [
     path: PERPS_WITHDRAW_ROUTE,
     label: 'Perps Withdraw',
     trackInAnalytics: true,
+  },
+  {
+    path: MMPAY_DAPP_ROUTE,
+    label: 'MMPay dApp PoC',
+    trackInAnalytics: false,
   },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
