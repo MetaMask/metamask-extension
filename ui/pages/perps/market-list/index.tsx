@@ -356,7 +356,11 @@ export const MarketListView = () => {
   // price ticks rewrite `price`/`change24hPercent` on every market several times
   // a second, so anything keyed on `matchingMarkets` itself re-runs constantly.
   const matchingSymbolsKey = useMemo(
-    () => matchingMarkets.map((market) => market.symbol).sort().join('|'),
+    () =>
+      matchingMarkets
+        .map((market) => market.symbol)
+        .sort()
+        .join('|'),
     [matchingMarkets],
   );
 
