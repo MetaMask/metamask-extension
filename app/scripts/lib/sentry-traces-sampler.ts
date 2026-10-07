@@ -11,7 +11,16 @@ import { TraceName } from '../../../shared/lib/trace';
  *
  * Perps preload and market-fetch transactions use a 0.1% starting rate,
  * including initial loads and periodic refreshes. Remote overrides can adjust it.
+ *
+ * `Swap Quote Fetch` carries the same 0.1% starting rate so it holds an explicit
+ * per-name budget instead of inheriting the global rate. Its trigger is a
+ * debounced user edit rather than a discrete action, and `trace()` marks a span
+ * started under an active parent as `forceTransaction`, which makes the sampler
+ * re-consult this map. Without a pinned rate the `parentSampled` path would
+ * return `1`, recording every nested quote fetch at full rate.
  */
+export const SWAP_QUOTE_FETCH_SAMPLE_RATE = 0.001;
+
 export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   Record<string, number>
 > = Object.freeze({
@@ -23,6 +32,7 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   'Perps Market Data Preload': 0.001,
   'Perps User Data Preload': 0.001,
   'Perps Get Market Data With Prices': 0.001,
+  'Swap Quote Fetch': SWAP_QUOTE_FETCH_SAMPLE_RATE,
 });
 
 /**

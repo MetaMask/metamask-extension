@@ -15,6 +15,10 @@ import {
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../../shared/constants/multichain/networks';
 import { getAssetImageUrl } from '../../../../../shared/lib/asset-utils';
 import { convertCaipToHexChainId } from '../../../../../shared/lib/network.utils';
+import {
+  getErc20AddressFromAssetId,
+  getRampsTokenDisplaySymbol,
+} from '../../utils/token-display';
 
 export function getRampsNetworkDetailsForCaipChainId(
   caipChainId: CaipChainId,
@@ -62,19 +66,6 @@ export function filterRampsTokensByEnabledNetworks(
   );
 }
 
-function parseAddressFromAssetId(assetId: string): string | undefined {
-  const [, assetReference] = assetId.split('/');
-  if (!assetReference) {
-    return undefined;
-  }
-
-  if (assetReference.startsWith('erc20:')) {
-    return assetReference.slice('erc20:'.length);
-  }
-
-  return undefined;
-}
-
 function normalizeSendAssetChainId(chainId: string): string {
   if (chainId.startsWith('eip155:')) {
     try {
@@ -118,10 +109,10 @@ export function mapRampsTokenToSendAsset(
 
   return {
     assetId: token.assetId,
-    address: parseAddressFromAssetId(token.assetId),
+    address: getErc20AddressFromAssetId(token.assetId),
     chainId,
     name: token.name,
-    symbol: token.symbol,
+    symbol: getRampsTokenDisplaySymbol(token),
     decimals: token.decimals,
     image: resolveRampsTokenImage(token, isNative, chainId),
     networkName: networkDetails.networkName,
