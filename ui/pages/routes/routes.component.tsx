@@ -88,9 +88,12 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa';
+import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -181,6 +184,7 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
 const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
+const MfaFlowHost = mmLazy(() => import('../mfa/mfa-flow-host.tsx'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -423,6 +427,14 @@ export const routeConfig = [
             {
               path: SYNC_ACCOUNTS_ROUTE,
               element: <SyncAccounts />,
+            },
+          ]
+        : []),
+      ...(isMfaKitEnabled()
+        ? [
+            {
+              path: MFA_FLOW_ROUTE,
+              element: <MfaFlowHost />,
             },
           ]
         : []),
@@ -906,6 +918,7 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
+      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
