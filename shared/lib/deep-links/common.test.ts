@@ -3,7 +3,7 @@ import {
   CANONICAL_DEEP_LINK_HOST,
   DEEP_LINK_HOSTS,
   isDeepLinkHost,
-} from './constants';
+} from './common';
 
 describe('deep-link host constants', () => {
   it('configures metamask.io as the primary host and metamask.com as an alternate host', () => {
@@ -16,17 +16,18 @@ describe('deep-link host constants', () => {
 });
 
 describe('isDeepLinkHost', () => {
-  jestIt.each([
-    'link.metamask.io',
-    'links.link.metamask.io',
-    'link.metamask.com',
-    'links.link.metamask.com',
-  ])('accepts configured host %s', (hostname) => {
-    expect(isDeepLinkHost(hostname)).toBe(true);
-  });
+  jestIt.each(['link.metamask.io', 'link.metamask.com'])(
+    'accepts configured host %s',
+    (hostname) => {
+      expect(isDeepLinkHost(hostname)).toBe(true);
+    },
+  );
 
   jestIt.each([
     'metamask.com',
+    'invalid.link.metamask.io',
+    'invalid.link.metamask.com',
+    'nested.invalid.link.metamask.com',
     'link.metamask.com.evil.com',
     'link.metamask.io.evil.com',
   ])('rejects unconfigured host %s', (hostname) => {
