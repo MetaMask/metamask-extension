@@ -195,10 +195,11 @@ export const AccountOverviewTabs = ({
         onTabClick={handleTabClick}
         tabListProps={{
           className:
-            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade bg-background-default stuck-top-border',
+            'px-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] tablist-fade bg-background-default border-b border-b-transparent transition-[border-color] duration-200 ease-out stuck-top-border',
         }}
         tabListWrapperProps={{
-          className: 'sticky top-0 z-10 [container-type:scroll-state]',
+          className:
+            'sticky top-0 z-10 [container-name:overview-tabs] [container-type:scroll-state]',
         }}
       >
         {showTokens && (
