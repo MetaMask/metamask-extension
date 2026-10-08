@@ -56,9 +56,11 @@ const MembershipErrorBanner = ({
     return (
       <BannerAlert
         description={t('shieldTxMembershipErrorInsufficientFunds', [
-          getShortDateFormatterV2().format(
-            new Date(currentShieldSubscription.currentPeriodEnd),
-          ),
+          currentShieldSubscription.currentPeriodEnd
+            ? getShortDateFormatterV2().format(
+                new Date(currentShieldSubscription.currentPeriodEnd),
+              )
+            : '—',
         ])}
         severity={BannerAlertSeverity.Warning}
         marginBottom={4}

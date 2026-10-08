@@ -55,9 +55,11 @@ export default function CancelMembershipModal({
             fontWeight={FontWeight.Medium}
           >
             <span>
-              {getShortDateFormatterV2().format(
-                new Date(subscription.currentPeriodEnd),
-              )}
+              {subscription.currentPeriodEnd
+                ? getShortDateFormatterV2().format(
+                    new Date(subscription.currentPeriodEnd),
+                  )
+                : '—'}
             </span>
           </Text>,
         ]);

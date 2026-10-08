@@ -39,6 +39,21 @@ import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import CryptoAccountDisplay from '../components/crypto-account-display';
 
+/**
+ * Formats an optional ISO date string for display. `currentPeriodStart` and
+ * `currentPeriodEnd` are optional on subscriptions (subscription-controller
+ * >= 10), and formatting an undefined date throws a RangeError. Used for
+ * three call sites in this file that must stay in lockstep.
+ *
+ * @param dateString - The ISO date string, if present.
+ * @returns The formatted date, or an em dash when absent.
+ */
+function formatOptionalDate(dateString?: string): string {
+  return dateString
+    ? getShortDateFormatterV2().format(new Date(dateString))
+    : '—';
+}
+
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -158,9 +173,11 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     }
     return t('shieldTxDetails2Description', [
       isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly'),
-      getShortDateFormatterV2().format(
-        new Date(displayedShieldSubscription?.currentPeriodEnd),
-      ),
+      displayedShieldSubscription.currentPeriodEnd
+        ? getShortDateFormatterV2().format(
+            new Date(displayedShieldSubscription.currentPeriodEnd),
+          )
+        : '—',
     ]);
   }, [displayedShieldSubscription, isPastPlan, t]);
 
@@ -199,8 +216,10 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
             {isPastPlan && (
               <ButtonRow
                 title={t('shieldTxDetails1Title')}
-                description={`${getShortDateFormatterV2().format(new Date(displayedShieldSubscription?.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                  new Date(displayedShieldSubscription?.currentPeriodEnd),
+                description={`${formatOptionalDate(
+                  displayedShieldSubscription.currentPeriodStart,
+                )} - ${formatOptionalDate(
+                  displayedShieldSubscription.currentPeriodEnd,
                 )}`}
               />
             )}

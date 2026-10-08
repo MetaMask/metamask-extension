@@ -318,7 +318,12 @@
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object",
-      "eventsConfig": "null"
+      "eventsConfig": {
+        "schemaVersion": "string",
+        "version": "string",
+        "timestamp": "number",
+        "events": "object"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",

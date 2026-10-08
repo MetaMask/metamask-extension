@@ -540,9 +540,13 @@ const TransactionShield = () => {
                     RECURRING_INTERVALS.year
                       ? t('shieldPlanYearly')
                       : t('shieldPlanMonthly'),
-                    getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription?.currentPeriodEnd),
-                    ),
+                    displayedShieldSubscription?.currentPeriodEnd
+                      ? getShortDateFormatterV2().format(
+                          new Date(
+                            displayedShieldSubscription.currentPeriodEnd,
+                          ),
+                        )
+                      : '—',
                   ])}
                   descriptionTestId="shield-detail-next-billing"
                   loading={showSkeletonLoader}
