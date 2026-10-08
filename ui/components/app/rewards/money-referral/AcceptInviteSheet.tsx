@@ -6,14 +6,21 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  FormTextField,
+  HelpText,
+  HelpTextSeverity,
+  Label,
   Modal,
   ModalBody,
   ModalContent,
+  ModalContentSize,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
+  TextColor,
+  TextField,
+  TextFieldSize,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
@@ -71,7 +78,7 @@ export function AcceptInviteSheet({
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { referralMe, isSettled, fetchReferralMe } = useReferralMe();
-  useGeoRewardsMetadata();
+  useGeoRewardsMetadata({});
 
   const [code, setCode] = useState(() =>
     normalizeMoneyReferralCode(initialCode),
@@ -226,7 +233,7 @@ export function AcceptInviteSheet({
   return (
     <Modal isOpen onClose={handleDismiss} data-testid="money-referral-invite">
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent className="items-center" size={ModalContentSize.Md}>
         <ModalHeader
           onClose={handleDismiss}
           closeButtonProps={{ ariaLabel: t('close') }}
@@ -235,28 +242,52 @@ export function AcceptInviteSheet({
         </ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Text>{copy?.inviteMessageBody ?? ''}</Text>
-            <FormTextField
-              id="money-referral-code"
-              label={copy?.inviteReferralCode ?? ''}
-              value={code}
-              isError={Boolean(fieldError)}
-              helpText={fieldError || undefined}
-              onChange={(event) => {
-                setCode(normalizeMoneyReferralCode(event.target.value));
-              }}
-              inputProps={{
-                'data-testid': 'money-referral-code-input',
-                autoCapitalize: 'characters',
-              }}
-            />
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
+              {copy?.inviteMessageBody ?? ''}
+            </Text>
+            <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+              <Label
+                htmlFor="money-referral-code"
+                color={TextColor.TextAlternative}
+              >
+                {copy?.inviteReferralCode ?? ''}
+              </Label>
+              <TextField
+                id="money-referral-code"
+                value={code}
+                size={TextFieldSize.Lg}
+                isError={Boolean(fieldError)}
+                className="h-14 w-full"
+                onChange={(event) => {
+                  setCode(normalizeMoneyReferralCode(event.target.value));
+                }}
+                inputProps={{
+                  className: 'px-4 font-medium',
+                  'data-testid': 'money-referral-code-input',
+                  autoCapitalize: 'characters',
+                }}
+              />
+              {fieldError ? (
+                <HelpText severity={HelpTextSeverity.Danger}>
+                  {fieldError}
+                </HelpText>
+              ) : null}
+            </Box>
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            gap={2}
+            className="w-full"
+          >
             <Button
-              size={ButtonSize.Lg}
               variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isFullWidth
               isDisabled={!canAccept}
               onClick={handleAccept}
               data-testid="money-referral-accept"
@@ -264,9 +295,11 @@ export function AcceptInviteSheet({
               {copy?.inviteAccept ?? ''}
             </Button>
             <Button
-              size={ButtonSize.Lg}
               variant={ButtonVariant.Tertiary}
+              size={ButtonSize.Lg}
+              isFullWidth
               onClick={handleDecline}
+              className="text-default"
               data-testid="money-referral-decline"
             >
               {copy?.inviteDecline ?? ''}
