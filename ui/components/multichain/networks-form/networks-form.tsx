@@ -147,6 +147,8 @@ export const NetworksForm = ({
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
+    source,
+    setSource,
     name,
     setName,
     chainId,
@@ -497,6 +499,7 @@ export const NetworksForm = ({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               source_connection_method:
                 MetaMetricsNetworkEventSource.CustomNetworkForm,
+              source,
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               token_symbol: ticker,
@@ -607,10 +610,12 @@ export const NetworksForm = ({
               searchValue={name}
               showSearchField={false}
               onSelect={(network, searchQuery) => {
+                setSource('chainlist');
                 setIsChainlistOpen(false);
                 chainlist.onSelect(network, searchQuery);
               }}
               onUseTypedName={(typedName) => {
+                setSource('manual');
                 setName(typedName);
                 setIsChainlistOpen(false);
               }}

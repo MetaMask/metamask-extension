@@ -9,6 +9,21 @@ import mockState from '../../../test/data/mock-state.json';
 import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
 import { NetworksPage } from './networks-page';
 
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
+
 const mockSafeChains = [
   {
     name: 'Gnosis',
@@ -189,6 +204,10 @@ const testNetworkConfiguration = {
 };
 
 describe('NetworksPage', () => {
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
   const renderNetworksPage = ({
     pathname = NETWORKS_ROUTE,
     networkConfigurationsByChainId = mockNetworkConfigurations,
@@ -718,7 +737,7 @@ describe('NetworksPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('suggests Chainlist RPCs for the network being edited', () => {
+  it('tracks a Chainlist RPC added to the network being edited', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=edit-rpc`,
       remoteFeatureFlags: { extensionUxChainlistV2: true },
@@ -739,5 +758,25 @@ describe('NetworksPage', () => {
     expect(
       screen.queryByText('https://rpc.gnosischain.com'),
     ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('rpc-secondary.example.com'));
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
+    );
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Chainlist RPC Selected',
+        /* eslint-disable @typescript-eslint/naming-convention */
+        properties: expect.objectContaining({
+          category: 'Network',
+          chain_id: '0x12c',
+          network_name: 'Multi RPC Network',
+          rpc_domain: 'rpc-secondary.example.com',
+        }),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      }),
+    );
   });
 });

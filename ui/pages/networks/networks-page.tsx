@@ -57,7 +57,7 @@ import { PageHeaderWithSearch } from '../../components/app/page-header-with-sear
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
-import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
+import { AddRpcUrlPageForm, type RpcUrlSource } from './add-rpc-url-page-form';
 import {
   ChainlistNetworkPicker,
   getHexChainId,
@@ -291,6 +291,7 @@ export const NetworksPage = () => {
         network.name;
 
       networkFormState.setName(canonicalNetworkName);
+      networkFormState.setSource('chainlist');
       networkFormState.setChainId(String(network.chainId));
       networkFormState.setTicker(network.nativeCurrency.symbol);
       networkFormState.setRpcUrls({
@@ -317,7 +318,7 @@ export const NetworksPage = () => {
   );
 
   const handleAddRPC = useCallback(
-    (url: string, name?: string) => {
+    (url: string, name: string | undefined, source: RpcUrlSource) => {
       if (
         networkFormState.rpcUrls.rpcEndpoints?.every(
           (endpoint) => !URI.equal(endpoint.url, url),
@@ -331,10 +332,25 @@ export const NetworksPage = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
+        if (source === 'chainlist') {
+          /* eslint-disable @typescript-eslint/naming-convention */
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
+              .addCategory(MetaMetricsEventCategory.Network)
+              .addProperties({
+                chain_id: getHexChainId(networkFormState.chainId),
+                network_name: networkFormState.name,
+                rpc_domain: name,
+              })
+              .build(),
+          );
+          /* eslint-enable @typescript-eslint/naming-convention */
+        }
+
         setView(getViewAfterRpcAdd(view));
       }
     },
-    [networkFormState, setView, view],
+    [createEventBuilder, networkFormState, setView, trackEvent, view],
   );
 
   const handleAddExplorerUrl = useCallback(

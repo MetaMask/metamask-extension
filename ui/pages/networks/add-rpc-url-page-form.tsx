@@ -64,9 +64,15 @@ const getUrlErrorKey = (
 
 const EMPTY_RPC_URLS: string[] = [];
 
+export type RpcUrlSource = 'chainlist' | 'manual';
+
 type AddRpcUrlPageFormProps = {
   onCancel: () => void;
-  onAdded: (url: string, name?: string) => void;
+  onAdded: (
+    url: string,
+    name: string | undefined,
+    source: RpcUrlSource,
+  ) => void;
   chainId?: string;
   networkName?: string;
   existingRpcUrls?: string[];
@@ -98,6 +104,7 @@ export const AddRpcUrlPageForm = ({
   const [suggestionsDismissed, setSuggestionsDismissed] = useState(false);
   const [urlFeedback, setUrlFeedback] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [source, setSource] = useState<RpcUrlSource>('manual');
   const validationRequestIdRef = useRef(0);
   const latestUrlRef = useRef(url);
   const debouncedUrl = useDebouncedValue(url);
@@ -141,6 +148,7 @@ export const AddRpcUrlPageForm = ({
     setRpcValidationError(undefined);
     setValidatedUrl(undefined);
     setSuggestionsDismissed(false);
+    setSource('manual');
   };
 
   const handleSuggestionSelect = (suggestion: ChainlistRpcSuggestion) => {
@@ -151,6 +159,7 @@ export const AddRpcUrlPageForm = ({
     setValidatedUrl(undefined);
     setUrlFeedback(true);
     setSuggestionsDismissed(true);
+    setSource('chainlist');
   };
 
   const handleLearnHowToStaySafe = () => {
@@ -219,7 +228,7 @@ export const AddRpcUrlPageForm = ({
       return;
     }
 
-    onAdded(trimmedUrl, name.trim() || undefined);
+    onAdded(trimmedUrl, name.trim() || undefined, source);
   };
 
   return (

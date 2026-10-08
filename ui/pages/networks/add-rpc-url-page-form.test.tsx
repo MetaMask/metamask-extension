@@ -133,7 +133,11 @@ describe('AddRpcUrlPageForm', () => {
 
     fireEvent.click(screen.getByTestId('page-container-footer-next'));
 
-    expect(onAdded).toHaveBeenCalledWith('https://rpc.example.com', undefined);
+    expect(onAdded).toHaveBeenCalledWith(
+      'https://rpc.example.com',
+      undefined,
+      'manual',
+    );
   });
 
   it('does not validate RPC when the URL format is invalid', () => {
@@ -195,7 +199,8 @@ describe('AddRpcUrlPageForm', () => {
     expect(screen.queryByText('invalidRPC')).not.toBeInTheDocument();
   });
 
-  it('suggests RPCs for the form chain and fills the URL and domain nickname', () => {
+  it('suggests RPCs for the form chain and fills the URL and domain nickname', async () => {
+    const onAdded = jest.fn();
     mockUseSafeChains.mockReturnValue({
       safeChains: [
         {
@@ -223,7 +228,7 @@ describe('AddRpcUrlPageForm', () => {
         networkName="Gnosis"
         existingRpcUrls={['https://rpc.gnosischain.com']}
         onCancel={() => undefined}
-        onAdded={() => undefined}
+        onAdded={onAdded}
       />,
     );
 
@@ -251,6 +256,20 @@ describe('AddRpcUrlPageForm', () => {
     expect(
       screen.queryByTestId('add-rpc-chainlist-suggestions'),
     ).not.toBeInTheDocument();
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
+    );
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(onAdded).toHaveBeenCalledWith(
+      'https://gnosis-rpc.publicnode.com/foo',
+      'gnosis-rpc.publicnode.com',
+      'chainlist',
+    );
   });
 
   it('does not suggest Chainlist RPCs when the feature flag is off', () => {
