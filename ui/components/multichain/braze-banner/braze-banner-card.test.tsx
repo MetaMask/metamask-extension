@@ -47,9 +47,25 @@ describe('BrazeBannerCard', () => {
     expect(props.onClick).toHaveBeenCalledTimes(1);
   });
 
-  it('disables the action and omits the CTA for unapproved links', () => {
+  it.each(['Welcome', null])(
+    'uses a noninteractive exclusion area for title %s',
+    (title) => {
+      render(<BrazeBannerCard {...props} title={title} />);
+      const spacer = screen.getByTestId('braze-banner-dismiss-spacer');
+      expect(spacer).toHaveAttribute('aria-hidden', 'true');
+      expect(spacer).toBeEmptyDOMElement();
+      expect(screen.getByTestId('braze-banner-action')).toContainElement(
+        spacer,
+      );
+      expect(screen.getByTestId('braze-banner-action')).not.toContainElement(
+        screen.getByTestId('braze-banner-dismiss'),
+      );
+    },
+  );
+
+  it('renders a passive card and omits the CTA for unapproved links', () => {
     render(<BrazeBannerCard {...props} title={null} onClick={undefined} />);
-    expect(screen.getByTestId('braze-banner-action')).toBeDisabled();
+    expect(screen.getByTestId('braze-banner-action').tagName).toBe('DIV');
     expect(screen.queryByText('Learn more')).not.toBeInTheDocument();
     expect(screen.getByTestId('braze-banner-dismiss')).not.toBeDisabled();
   });

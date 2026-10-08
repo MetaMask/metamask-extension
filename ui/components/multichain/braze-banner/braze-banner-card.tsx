@@ -8,6 +8,7 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -53,6 +54,9 @@ export function BrazeBannerCard({
   // out and removed from the accessibility tree.
   const cardClasses =
     'flex w-full items-center gap-3 rounded-xl p-3 pr-10 text-left';
+
+  // Text is top-aligned; the image is vertically centered within the content row.
+  const cardClasses = 'flex w-full items-start gap-3 rounded-xl p-3 text-left';
   const cardContent = (
     <>
       {safeImageUrl && (
@@ -60,24 +64,31 @@ export function BrazeBannerCard({
           src={safeImageUrl}
           alt=""
           referrerPolicy="no-referrer"
-          className="h-16 w-16 shrink-0 rounded-xl object-contain"
+          className="h-16 w-16 shrink-0 self-center rounded-xl object-contain"
         />
       )}
-      <Box className="min-w-0 flex-1">
+      <Box className="flow-root min-w-0 flex-1">
+        {/* A noninteractive float reserves the top-right icon area.
+            Text beside it wraps; lines below it use the full column width. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none float-right h-4 w-8"
+          data-testid="braze-banner-dismiss-spacer"
+        />
         {title && (
           <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
             {title}
           </Text>
         )}
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyXs}
           color={title ? TextColor.TextAlternative : TextColor.TextDefault}
         >
           {body}
         </Text>
         {!title && ctaLabel && onClick && (
           <Text
-            variant={TextVariant.BodySm}
+            variant={TextVariant.BodyXs}
             color={TextColor.PrimaryDefault}
             fontWeight={FontWeight.Medium}
           >
@@ -90,7 +101,9 @@ export function BrazeBannerCard({
 
   return (
     <Box
-      className="relative flex w-full items-center rounded-xl bg-background-muted"
+      // Centered and capped at 458px, matching the Money account balance
+      // and wallet overview action buttons.
+      className="relative flex w-full max-w-[458px] items-center self-center rounded-xl bg-background-muted"
       data-testid="braze-banner"
     >
       {onClick ? (
@@ -109,9 +122,10 @@ export function BrazeBannerCard({
           {cardContent}
         </Box>
       )}
+      {/* The dismiss button is a sibling of the campaign action button. */}
       <ButtonIcon
         iconName={IconName.Close}
-        size={ButtonIconSize.Md}
+        size={ButtonIconSize.Sm}
         ariaLabel={t('close')}
         onClick={onDismiss}
         className="absolute right-2 top-2"
