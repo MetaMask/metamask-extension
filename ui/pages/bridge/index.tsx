@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -12,7 +12,6 @@ import {
   AWAITING_SIGNATURES_ROUTE,
   PREPARE_SWAP_ASSETS_ROUTE,
   PREPARE_SWAP_ROUTE,
-  PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -40,6 +39,7 @@ import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSear
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
 import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
@@ -56,18 +56,13 @@ const CrossChainSwap = () => {
 
   useBridging();
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { key: locationKey, state: locationState } = useLocation();
   const {
     navigateToDefaultRoute,
     search,
     swapViewTraceId,
     swapViewPrefilledAmount,
   } = useBridgeNavigation();
-  const hasNoInAppHistory =
-    locationKey === 'default' ||
-    (locationState as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -147,19 +142,19 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-  const handleBack = () => {
-    transitionBack(() => {
+  const handleBack = useInAppBack(
+    () => {
       // Direct open or deep link: leave Swap for Home, or Transaction Shield.
-      if (hasNoInAppHistory) {
-        navigateToDefaultRoute();
-        return;
-      }
-
-      // Opened from another page: reset Swap and return to that page.
-      dispatch(resetBridgeController()).catch(() => undefined);
-      navigate(PREVIOUS_ROUTE);
-    });
-  };
+      transitionBack(() => navigateToDefaultRoute());
+    },
+    (navigateBack) => {
+      transitionBack(() => {
+        // Opened from another page: reset Swap and return to that page.
+        dispatch(resetBridgeController()).catch(() => undefined);
+        navigateBack();
+      });
+    },
+  );
 
   const prepareBody = (
     <>

@@ -31,6 +31,7 @@ import {
 import { setFromToken, setToToken } from '../../../ducks/bridge/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
+import { useInAppBack } from '../../../hooks/useInAppBack';
 import { useDispatch } from '../../../store/hooks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 
@@ -77,9 +78,7 @@ const BridgeAssetPickerPage = () => {
 
   const contentRef = useRef<BridgeAssetPickerContentHandle>(null);
 
-  const handleClose = () => {
-    navigateToBridgePage();
-  };
+  const handleClose = useInAppBack(navigateToBridgePage);
 
   const selectedAsset = isDestination ? toToken : fromToken;
   const networks = isDestination ? toChains : fromChains;

@@ -46,6 +46,7 @@ import {
 import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { useDispatch } from '../../store/hooks';
 import { trace, TraceName, TraceOperation } from '../../../shared/lib/trace';
+import { getHasNoInAppHistory } from '../useInAppBack';
 
 export type BridgeNavigationOptions = Omit<NavigateOptions, 'state'> & {
   state: {
@@ -153,6 +154,23 @@ export const startSwapViewLoadTrace = ({
 };
 
 /**
+ * `fromFreshTab` marks the Swap entry that replaced a direct open. Later pages
+ * have their own history, so the flag must not follow them.
+ *
+ * @param locationState - The location state being copied onto another page.
+ * @returns That state without the direct-open mark.
+ */
+const withoutFreshTab = (
+  locationState: BridgeNavigationOptions['state'],
+): BridgeNavigationOptions['state'] => {
+  const { fromFreshTab, ...rest } =
+    locationState as BridgeNavigationOptions['state'] & {
+      fromFreshTab?: boolean;
+    };
+  return rest;
+};
+
+/**
  * Builds a "cleared" bridge navigation state: preserves any extra props from
  * `baseState` while resetting `bridgeState`, `token`, and any existing
  * `sendBundle` to null and setting `stayOnHomePage` to the given value.
@@ -165,7 +183,7 @@ const clearedBridgeState = (
   baseState: BridgeNavigationOptions['state'],
   stayOnHomePage: boolean,
 ): BridgeNavigationOptions['state'] => ({
-  ...baseState,
+  ...withoutFreshTab(baseState),
   bridgeState: null,
   token: null,
   ...clearSendBundleIfPresent(baseState),
@@ -183,11 +201,14 @@ export const useBridgeNavigation = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { search, pathname, state: maybeState } = useLocation();
+  const { search, pathname, key, state: maybeState } = useLocation();
   const state: BridgeNavigationOptions['state'] = useMemo(
     () => maybeState ?? {},
     [maybeState],
   );
+  // Replacing this entry assigns a new history key. Remember a direct open
+  // so Back still leaves Swap for Home or Transaction Shield.
+  const openedDirectly = getHasNoInAppHistory({ key, state: maybeState });
   const bridgeState = useSelector(getBridgeState);
 
   /**
@@ -200,12 +221,20 @@ export const useBridgeNavigation = () => {
       options: { replace?: boolean } = {},
       stayOnHomePage = false,
     ) => {
+      const replacingCurrentPage =
+        options.replace === true && typeof to !== 'string';
+
       navigate(to, {
-        state: clearedBridgeState(state, stayOnHomePage),
+        state: {
+          ...clearedBridgeState(state, stayOnHomePage),
+          ...(replacingCurrentPage && openedDirectly
+            ? { fromFreshTab: true }
+            : {}),
+        },
         ...options,
       });
     },
-    [navigate, state, pathname],
+    [openedDirectly, navigate, state, pathname],
   );
 
   /**
@@ -227,11 +256,14 @@ export const useBridgeNavigation = () => {
         },
         {
           replace: true,
-          state,
+          state: {
+            ...state,
+            ...(openedDirectly ? { fromFreshTab: true } : {}),
+          },
         },
       );
     },
-    [navigate, search, pathname, state],
+    [openedDirectly, navigate, search, pathname, state],
   );
 
   /**
@@ -320,7 +352,7 @@ export const useBridgeNavigation = () => {
 
       navigate(buildAssetRoutePath(asset.assetId), {
         state: {
-          ...state,
+          ...withoutFreshTab(state),
           bridgeState,
           token: {
             type: isNative ? AssetType.native : AssetType.token,
@@ -345,9 +377,7 @@ export const useBridgeNavigation = () => {
   const navigateToBridgeAssetPickerPage = useCallback(
     (field: 'src' | 'dest') => {
       navigate(`${SWAP_ASSETS_PATH}?field=${field}`, {
-        state: {
-          ...state,
-        },
+        state: withoutFreshTab(state),
       });
     },
     [navigate, state],
@@ -366,7 +396,7 @@ export const useBridgeNavigation = () => {
         // leaving a stale confirmation entry in the history stack.
         ...(hasSendBundleState ? { replace: true } : {}),
         state: {
-          ...state,
+          ...withoutFreshTab(state),
           ...clearSendBundleIfPresent(state),
           ...nextState,
         },

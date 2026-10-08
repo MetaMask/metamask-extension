@@ -64,4 +64,15 @@ describe('useInAppBack', () => {
     expect(transition).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
+
+  it('calls a fallback function when there is no in-app history', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+    const navigateToFallback = jest.fn();
+
+    const { result } = renderHook(() => useInAppBack(navigateToFallback));
+    result.current();
+
+    expect(navigateToFallback).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });
