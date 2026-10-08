@@ -157,7 +157,7 @@ describe('RampsProviderListItem', () => {
     }
   });
 
-  it('lets the provider name shrink beside non-shrinking tags', () => {
+  it('keeps tags beside the provider name rather than at the row edge', () => {
     const { getByTestId } = renderWithProvider(
       <RampsProviderListItem
         provider={provider}
@@ -171,6 +171,6 @@ describe('RampsProviderListItem', () => {
       'ramps-provider-item-name-/providers/transak',
     ) as HTMLElement;
     expect(name.className).toContain('min-w-0');
-    expect(name.className).toContain('flex-1');
+    expect(name.className).not.toContain('flex-1');
   });
 });
