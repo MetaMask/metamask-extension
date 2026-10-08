@@ -75,6 +75,7 @@ import type { DecryptMessageControllerState } from '../../app/scripts/controller
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { RewardsMoneyControllerState } from '../../app/scripts/controllers/rewards-money/rewards-money-controller-types';
 
 export type ControllerStatePropertiesEnumerated = {
   assetsInfo: AssetsControllerState['assetsInfo'];
@@ -407,6 +408,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
+  RewardsMoneyControllerState &
   ConnectivityControllerState &
   NetworkConnectionBannerControllerState;
 

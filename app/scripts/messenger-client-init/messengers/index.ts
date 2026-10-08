@@ -135,6 +135,11 @@ import {
   getRewardsControllerMessenger,
 } from './rewards-controller-messenger';
 import {
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+import { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
+import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
@@ -301,6 +306,12 @@ export {
 } from './signature-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
+export {
+  getRewardsMoneyControllerInitMessenger,
+  getRewardsMoneyControllerMessenger,
+} from './rewards-money-controller-messenger';
+export type { RewardsMoneyControllerInitMessenger } from './rewards-money-controller-messenger';
+export { getRewardsMoneyDataServiceMessenger } from './rewards-money-data-service-messenger';
 export type { TokenBalancesControllerInitMessenger } from './token-balances-controller-messenger';
 export {
   getTokenBalancesControllerMessenger,
@@ -632,6 +643,14 @@ export const MESSENGER_FACTORIES = {
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
     getInitMessenger: getRewardsControllerInitMessenger,
+  },
+  RewardsMoneyDataService: {
+    getMessenger: getRewardsMoneyDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsMoneyController: {
+    getMessenger: getRewardsMoneyControllerMessenger,
+    getInitMessenger: getRewardsMoneyControllerInitMessenger,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,

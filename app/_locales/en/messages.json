@@ -9443,6 +9443,21 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "You cannot be referred because of recent trading activity."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "You have already been referred by another user."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "You cannot use your own referral code."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "You cannot be referred by someone else."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Something went wrong. Try again shortly."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Checking region..."
   },
