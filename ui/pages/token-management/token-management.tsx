@@ -80,8 +80,8 @@ import {
   getAssetImageUrl,
   isEvmChainId,
   isTronSpecialAsset,
-  normalizeTokenAssetId,
   toAssetId,
+  toNormalizedCaipAssetId,
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
@@ -163,15 +163,6 @@ const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
   const assetType = assetId.split('/').pop();
   const assetReference = assetType?.split(':').pop();
   return assetReference || assetId;
-};
-
-// Normalized CAIP-19 ids needed for security lookups
-const toNormalizedCaipAssetId = (
-  assetId: string,
-  chainId?: Hex | CaipChainId,
-): CaipAssetType | undefined => {
-  const caipAssetId = toAssetId(assetId, chainId);
-  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
 };
 
 const hasValidAssetId = (
