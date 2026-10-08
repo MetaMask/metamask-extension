@@ -10,6 +10,7 @@ import {
 } from '@metamask/bridge-controller';
 import {
   Modal,
+  ModalBody,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -117,20 +118,17 @@ export const BridgeQuotesModal = ({
   );
 
   return (
-    <Modal className="quotes-modal" onClose={onClose} {...modalProps}>
+    <Modal onClose={onClose} {...modalProps}>
       <ModalOverlay />
 
-      <ModalContent
-        modalDialogProps={{
-          padding: 0,
-        }}
-      >
+      <ModalContent>
         <ModalHeader onBack={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t('bridgeSelectQuote')}
           </Text>
         </ModalHeader>
 
+        <ModalBody>
         {/* HEADER */}
         <Row padding={4} paddingTop={0}>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
@@ -138,7 +136,7 @@ export const BridgeQuotesModal = ({
           </Text>
         </Row>
         {/* QUOTE LIST */}
-        <Column maxWidth={BlockSize.Full} style={{ overflow: 'auto' }}>
+        <Column maxWidth={BlockSize.Full}>
           {sortedQuotes.map(
             (quote: QuoteMetadata & QuoteResponse, index: number) => {
               const {
@@ -264,6 +262,7 @@ export const BridgeQuotesModal = ({
             },
           )}
         </Column>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
