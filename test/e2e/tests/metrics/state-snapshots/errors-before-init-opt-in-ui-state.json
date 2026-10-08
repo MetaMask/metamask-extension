@@ -34,12 +34,6 @@
       "analyticsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "consentDecisionMade": true,
       "eventQueue": "object",
-      "eventsConfig": {
-        "events": "object",
-        "schemaVersion": "0",
-        "timestamp": 0,
-        "version": "0"
-      },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": "boolean",
       "optedIn": true,
@@ -114,7 +108,7 @@
       "etag": null,
       "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": "0"
+      "version": null
     },
     "CurrencyController": {},
     "DeFiPositionsControllerV2": "object",
@@ -136,12 +130,8 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MoneyAccountController": {
-      "moneyAccounts": "object"
-    },
-    "MoneyAccountUpgradeController": {
-      "upgradedAccounts": "object"
-    },
+    "MoneyAccountController": { "moneyAccounts": "object" },
+    "MoneyAccountUpgradeController": { "upgradedAccounts": "object" },
     "MultichainAssetsController": {},
     "MultichainAssetsRatesController": {},
     "MultichainBalancesController": {},
