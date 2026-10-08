@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { BottomNavBar } from '#ui/components/app/bottom-nav-bar/bottom-nav-bar';
 import { ScrollContainer } from '#ui/contexts/scroll-container';
+import { ScrollToTop } from '#ui/contexts/scroll-to-top';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import { AppHeader } from '../components/multichain/app-header';
 
@@ -18,6 +19,7 @@ export const MainLayout = () => {
             : 'flex min-h-0 flex-1 flex-col'
         }
       >
+        <ScrollToTop />
         <main
           className={
             showNavbar

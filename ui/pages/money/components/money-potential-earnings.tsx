@@ -15,6 +15,7 @@ export const MONEY_POTENTIAL_EARNINGS_VISIBLE_TOKEN_COUNT = 5;
 type MoneyPotentialEarningsProps = {
   tokens: MoneyDepositToken[];
   apyDecimal: number | undefined;
+  apyPercent: number | undefined;
   isNoFeeToken: (token: MoneyDepositToken) => boolean;
   privacyMode: boolean;
   onAddToken: (
@@ -23,16 +24,19 @@ type MoneyPotentialEarningsProps = {
     tokenCount: number,
   ) => void;
   onViewAll: () => void;
+  onProjectionTooltipOpen?: () => void;
   isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarnings({
   tokens,
   apyDecimal,
+  apyPercent,
   isNoFeeToken,
   privacyMode,
   onAddToken,
   onViewAll,
+  onProjectionTooltipOpen,
   isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
@@ -54,7 +58,9 @@ export function MoneyPotentialEarnings({
       <MoneyPotentialEarningsSummary
         tokens={eligibleTokens}
         apyDecimal={apyDecimal}
+        apyPercent={apyPercent}
         privacyMode={privacyMode}
+        onProjectionTooltipOpen={onProjectionTooltipOpen}
       />
 
       {visibleTokens.map((token, index) => (

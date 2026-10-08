@@ -1,5 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -9,9 +9,13 @@ import {
   Skeleton,
   TextVariant,
 } from '@metamask/design-system-react';
-import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
+} from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useMoneyAddDepositToken } from '../../hooks/money/use-money-add-deposit-token';
 import { useMoneyDepositTokens } from '../../hooks/money/use-money-deposit-tokens';
@@ -19,10 +23,10 @@ import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
 import { useTrackOnce } from '../../hooks/useTrackOnce';
 import { getPrivacyMode } from '../../selectors/selectors';
 import {
-  MoneyButtonIntent,
-  MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
 } from './constants/money-events';
 import { MoneyPotentialEarningsSummary } from './components/money-potential-earnings-summary';
 import { MoneyPotentialEarningsTokenRow } from './components/money-potential-earnings-token-row';
@@ -30,11 +34,10 @@ import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scr
 
 export function MoneyEarnPage() {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const privacyMode = useSelector(getPrivacyMode);
   const { availability, isLoading: isAvailabilityLoading } =
     useMoneyAccountAvailability();
-  const { apyDecimal } = useMoneyAccountBalance({
+  const { apyDecimal, apyPercent } = useMoneyAccountBalance({
     enabled: availability.isAvailable,
   });
   const { tokens, isNoFeeToken } = useMoneyDepositTokens();
@@ -42,12 +45,12 @@ export function MoneyEarnPage() {
     () => tokens.filter((token) => token.moneyFiatAmountUsd > 0),
     [tokens],
   );
-  const { handleAddToken, initiateDeposit, isDepositLoading } =
-    useMoneyAddDepositToken({
-      screenName: MoneyScreenName.MoneyEarnOnCrypto,
-    });
-  const { trackButtonClicked, trackScreenViewed } = useMoneyAnalytics({
-    screenName: MoneyScreenName.MoneyEarnOnCrypto,
+  const { handleAddToken, isDepositLoading } = useMoneyAddDepositToken({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
+    tokenRowComponentName: MoneyComponentName.PotentialEarningsTokenRow,
+  });
+  const { trackScreenViewed, trackTooltipClicked } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyPotentialEarnings,
   });
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -60,20 +63,26 @@ export function MoneyEarnPage() {
     trackScreenViewed,
   );
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
 
   const handleConvert = useCallback(() => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.AddMoney,
-      componentName: MoneyComponentName.PotentialEarningsSectionFooter,
+    const [defaultToken] = eligibleTokens;
+    if (!defaultToken) {
+      return;
+    }
+    handleAddToken(defaultToken, 0, eligibleTokens.length, {
+      componentName: MoneyComponentName.ConvertCryptoButton,
       labelKey: 'moneyConvertYourCrypto',
-      redirectTarget: MoneyScreenName.MoneyDeposit,
     });
-    initiateDeposit();
-  }, [initiateDeposit, trackButtonClicked]);
+  }, [eligibleTokens, handleAddToken]);
+
+  const handleProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.PotentialEarningsViewHeader,
+    });
+  }, [trackTooltipClicked]);
 
   let body: React.ReactNode;
   if (isAvailabilityLoading) {
@@ -107,9 +116,10 @@ export function MoneyEarnPage() {
           <MoneyPotentialEarningsSummary
             tokens={eligibleTokens}
             apyDecimal={apyDecimal}
+            apyPercent={apyPercent}
             privacyMode={privacyMode}
             headingVariant={TextVariant.HeadingLg}
-            showInfoIcon={false}
+            onProjectionTooltipOpen={handleProjectionTooltipOpen}
           />
 
           {eligibleTokens.map((token, index) => (
@@ -131,8 +141,9 @@ export function MoneyEarnPage() {
           <Button
             size={ButtonSize.Lg}
             isLoading={isDepositLoading}
+            isDisabled={eligibleTokens.length === 0}
             onClick={handleConvert}
-            className="w-full rounded-lg"
+            className="w-full"
             data-testid="money-earn-convert-cta"
           >
             {t('moneyConvertYourCrypto')}

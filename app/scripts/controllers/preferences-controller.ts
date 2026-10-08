@@ -34,6 +34,7 @@ import {
   type BasicFunctionalityPreferenceState,
   type ExternalServicesOwnedPreference,
 } from '../../../shared/lib/basic-functionality-consolidation';
+import { shouldRepairBasicFunctionalitySocialMigrationNotice } from '../../../shared/lib/linked-social-login-profile';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -177,6 +178,7 @@ export const getDefaultPreferencesControllerState =
       featureNotificationsEnabled: false,
       hideZeroBalanceTokens: false,
       isBasicFunctionalityConsolidatedEnabled: false,
+      hasLinkedSocialLoginProfile: false,
       basicFunctionalityMigrationNotification: null,
       basicFunctionalityMigrationNotificationDismissed: false,
       privacyMode: false,
@@ -615,6 +617,10 @@ export class PreferencesController extends BaseController<
           ? (ownedPreferences?.[preference] ?? true)
           : false;
       }
+
+      if (!useExternalServices) {
+        state.preferences.showTickerWidget = false;
+      }
     });
   }
 
@@ -631,6 +637,10 @@ export class PreferencesController extends BaseController<
         state[preference] = useBasicFunctionality;
       }
       state.isMultiAccountBalancesEnabled = useBasicFunctionality;
+
+      if (!useBasicFunctionality) {
+        state.preferences.showTickerWidget = false;
+      }
     });
 
     this.messenger.call(
@@ -649,9 +659,13 @@ export class PreferencesController extends BaseController<
   consolidateBasicFunctionality(): void {
     const hasBftConsolidationMarker =
       this.state.preferences.isBasicFunctionalityConsolidatedEnabled;
-    if (hasBftConsolidationMarker && this.state.useExternalServices) {
-      return;
-    }
+    const hasLinkedSocialLoginProfile =
+      this.state.preferences.hasLinkedSocialLoginProfile === true;
+    const hasDismissedNotice =
+      this.state.preferences
+        .basicFunctionalityMigrationNotificationDismissed === true;
+    const scheduledNotice =
+      this.state.preferences.basicFunctionalityMigrationNotification;
 
     const { firstTimeFlowType } = this.messenger.call(
       'OnboardingController:getState',
@@ -662,7 +676,28 @@ export class PreferencesController extends BaseController<
     const isSocialLogin = isBasicFunctionalitySocialLoginUser({
       firstTimeFlowType: firstTimeFlowType ?? undefined,
       authConnection,
+      hasLinkedSocialLoginProfile,
     });
+
+    if (
+      shouldRepairBasicFunctionalitySocialMigrationNotice({
+        hasConsolidationMarker: hasBftConsolidationMarker,
+        useExternalServices: this.state.useExternalServices,
+        isSocialLogin,
+        migrationNotification: scheduledNotice,
+        migrationNotificationDismissed: hasDismissedNotice,
+      })
+    ) {
+      this.update((state) => {
+        state.preferences.basicFunctionalityMigrationNotification = 'modal';
+      });
+      return;
+    }
+
+    if (hasBftConsolidationMarker && this.state.useExternalServices) {
+      return;
+    }
+
     if (hasBftConsolidationMarker && !isSocialLogin) {
       return;
     }
@@ -676,9 +711,6 @@ export class PreferencesController extends BaseController<
 
     const { landingState, notification, isConsistent } =
       getBasicFunctionalityConsolidationPlan(preferenceState, isSocialLogin);
-    const hasDismissedNotice =
-      this.state.preferences
-        .basicFunctionalityMigrationNotificationDismissed === true;
 
     this.update((state) => {
       state.useExternalServices = landingState;

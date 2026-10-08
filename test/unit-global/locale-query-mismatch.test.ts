@@ -225,8 +225,6 @@ const RULE_2_BASELINE: Record<string, number> = {
   'ui/components/app/snaps/snap-ui-renderer/components/address-input.test.ts': 2,
   // Perps market-row hardcodes 'N/A' for missing metrics — not locale-rendered.
   'ui/components/app/perps/market-row/market-row.test.tsx': 2,
-  // Account details tab label is hardcoded as "Type" — not locale-rendered.
-  'ui/components/multichain/account-details/account-details-display.test.tsx': 2,
   // Mocks a perps order-cancellation API error string, not a rendered locale
   // value. Coincidentally collides with the unrelated `rampsOrderDetailsNotFound`
   // locale message text ("Order not found").

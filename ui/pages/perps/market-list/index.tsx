@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
+  useLayoutEffect,
   useRef,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -28,6 +29,7 @@ import {
   matchesCategory,
   type PerpsMarketData,
 } from '@metamask/perps-controller';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
@@ -227,8 +229,12 @@ export const MarketListView = () => {
   const { setFlowAttribution } = usePerpsAttribution();
 
   // Use stream hooks for real-time market data
-  const { markets: allMarkets, isInitialLoading: marketsLoading } =
-    usePerpsLiveMarketListData();
+  const {
+    markets: allMarkets,
+    isInitialLoading: marketsLoading,
+    areMarketsLive,
+    isLive,
+  } = usePerpsLiveMarketListData();
   const { account } = usePerpsLiveAccount();
 
   // Upper-cased so lookups match `PerpsMarketData.symbol` casing.
@@ -323,48 +329,101 @@ export const MarketListView = () => {
     );
   }, [allMarkets, allowedHip3Sources]);
 
-  // Filter and sort markets
+  // Filter markets
   // When searching, bypass filters and search ALL markets (like mobile)
   // When not searching, apply filters
-  const displayedMarkets = useMemo(() => {
-    let markets: PerpsMarketData[];
-
+  const matchingMarkets = useMemo(() => {
     if (searchQuery.trim()) {
       // Searching: search across ALL markets, ignore filters
-      markets = filterMarketsByQuery(allMarkets, searchQuery);
-    } else {
-      // Not searching: apply filters
-      markets = filterByType(
-        allMarkets,
-        selectedFilter,
-        allowedHip3Sources,
-        watchlistSymbols,
-      );
+      return filterMarketsByQuery(allMarkets, searchQuery);
     }
-
-    markets = sortMarkets({
-      markets,
-      sortBy: sortField,
-      direction: sortDirection,
-    });
-    return markets;
+    // Not searching: apply filters
+    return filterByType(
+      allMarkets,
+      selectedFilter,
+      allowedHip3Sources,
+      watchlistSymbols,
+    );
   }, [
     allMarkets,
     selectedFilter,
     allowedHip3Sources,
     watchlistSymbols,
     searchQuery,
+  ]);
+
+  // Identity of the matching set, independent of the live values on it. Live
+  // price ticks rewrite `price`/`change24hPercent` on every market several times
+  // a second, so anything keyed on `matchingMarkets` itself re-runs constantly.
+  const matchingSymbolsKey = useMemo(
+    () =>
+      matchingMarkets
+        .map((market) => market.symbol)
+        .sort()
+        .join('|'),
+    [matchingMarkets],
+  );
+
+  // Everything that should establish a fresh ranking: the user changing what
+  // the ranking means, the set of matching markets changing, or the stream
+  // handing us live values for the first time. `isLive` flips false → true
+  // once, so this re-ranks on live `change24hPercent` instead of staying on
+  // the REST snapshot's values until the user touches sort, filter or search.
+  // Notably absent are the live values themselves.
+  const rankingKey = [
+    matchingSymbolsKey,
+    selectedFilter,
+    searchQuery.trim(),
     sortField,
     sortDirection,
-  ]);
+    String(isLive),
+  ].join('|');
+
+  // Deliberately stale between those events: the markets as they were when the
+  // ranking was last established, so the order below is not retriggered by
+  // later ticks. `useMemo` is a cache React is allowed to drop, not a
+  // semantic guarantee, so the snapshot lives in state and is reset
+  // synchronously during render when the key changes, matching the pattern in
+  // usePerpsLiveMarketData.ts.
+  const [rankingSnapshot, setRankingSnapshot] = useState(matchingMarkets);
+  const [prevRankingKey, setPrevRankingKey] = useState(rankingKey);
+  if (prevRankingKey !== rankingKey) {
+    setPrevRankingKey(rankingKey);
+    setRankingSnapshot(matchingMarkets);
+  }
+
+  const orderedSymbols = useMemo(
+    () =>
+      sortMarkets({
+        markets: rankingSnapshot,
+        sortBy: sortField,
+        direction: sortDirection,
+      }).map((market) => market.symbol),
+    [rankingSnapshot, sortField, sortDirection],
+  );
+
+  // Project live values onto the frozen order, so values update in place.
+  const displayedMarkets = useMemo(() => {
+    const marketsBySymbol = new Map(
+      matchingMarkets.map((market) => [market.symbol, market]),
+    );
+    return orderedSymbols
+      .map((symbol) => marketsBySymbol.get(symbol))
+      .filter((market): market is PerpsMarketData => market !== undefined);
+  }, [orderedSymbols, matchingMarkets]);
 
   // --- Market search funnel (query -> result tapped | abandoned) ------------
   // Refs, not state: these only feed analytics and must never trigger a render.
   const trackRef = useRef(track);
-  trackRef.current = track;
   // Latest settled result set, read by the tap handler for rank/count.
+  usePerpsEntryTrace(
+    'market_list',
+    displayedMarkets,
+    isLoading,
+    areMarketsLive(displayedMarkets),
+  );
+
   const displayedMarketsRef = useRef(displayedMarkets);
-  displayedMarketsRef.current = displayedMarkets;
   // Last query actually emitted, so abandonment reports what was measured.
   const emittedQueryRef = useRef('');
   const emittedResultsCountRef = useRef<number | undefined>(undefined);
@@ -377,11 +436,9 @@ export const MarketListView = () => {
   // Result count as of the render that last had this pending query on screen.
   const pendingResultCountRef = useRef<number | undefined>(undefined);
   const isLoadingRef = useRef(isLoading);
-  isLoadingRef.current = isLoading;
   // What is in the box right now, so a tap can be attributed to a search that
   // is still inside the debounce window.
   const trimmedQueryRef = useRef('');
-  trimmedQueryRef.current = searchQuery.trim();
 
   // Chips narrowing the browse context. The Extension exposes only the category
   // filter; mobile also counts its watchlist chip.
@@ -390,7 +447,14 @@ export const MarketListView = () => {
     [selectedFilter],
   );
   const activeChipsRef = useRef(activeChips);
-  activeChipsRef.current = activeChips;
+
+  useLayoutEffect(() => {
+    trackRef.current = track;
+    displayedMarketsRef.current = displayedMarkets;
+    isLoadingRef.current = isLoading;
+    trimmedQueryRef.current = searchQuery.trim();
+    activeChipsRef.current = activeChips;
+  }, [track, displayedMarkets, isLoading, searchQuery, activeChips]);
 
   /**
    * Emit PERPS_SEARCH_QUERY (and the matching screen view once counts are
@@ -609,7 +673,7 @@ export const MarketListView = () => {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
           PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
         [PERPS_EVENT_PROPERTY.TAB_NAME]: filter,
-        [PERPS_EVENT_PROPERTY.BUTTON_TYPE]: filter,
+        [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: filter,
         [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
           PERPS_EVENT_VALUE.BUTTON_LOCATION.MARKET_LIST,
       });

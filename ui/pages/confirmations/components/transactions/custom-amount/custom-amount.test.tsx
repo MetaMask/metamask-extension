@@ -122,7 +122,7 @@ describe('CustomAmount', () => {
     expect(screen.getByTestId('custom-amount-input')).toHaveValue('0.004');
   });
 
-  it('restores full precision once the user edits the amount', () => {
+  it('applies an edited amount', () => {
     const store = mockStore(getMockState());
 
     renderWithProvider(<CustomAmountHarness initialAmount="7.863083" />, store);
@@ -130,9 +130,39 @@ describe('CustomAmount', () => {
     const input = screen.getByTestId('custom-amount-input');
     expect(input).toHaveValue('7.86');
 
-    fireEvent.change(input, { target: { value: '1.2345' } });
+    fireEvent.change(input, { target: { value: '1.23' } });
 
-    expect(input).toHaveValue('1.2345');
+    expect(input).toHaveValue('1.23');
+  });
+
+  it('ignores an edit with more than 2 decimals', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmountHarness initialAmount="0.00" />, store);
+
+    const input = screen.getByTestId('custom-amount-input');
+
+    fireEvent.change(input, { target: { value: '0.001' } });
+
+    expect(input).toHaveValue('0.00');
+  });
+
+  it('ignores an edit with more than 2 decimals after a comma separator', () => {
+    const store = mockStore(getMockState());
+    const onChange = jest.fn();
+
+    renderWithProvider(
+      <CustomAmount amountFiat="0" onChange={onChange} />,
+      store,
+    );
+
+    const input = screen.getByTestId('custom-amount-input');
+
+    fireEvent.change(input, { target: { value: '0,001' } });
+    expect(onChange).not.toHaveBeenCalled();
+
+    fireEvent.change(input, { target: { value: '0,01' } });
+    expect(onChange).toHaveBeenCalledWith('0,01');
   });
 
   it('counts decimal separators as half a character when calculating input width', () => {

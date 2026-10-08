@@ -12,6 +12,7 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
+  MONEY_HOME_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getPrivacyMode } from '../../selectors/selectors';
@@ -30,6 +31,7 @@ import { formatMoneyActivityDetailsDate } from './utils/money-transaction-detail
 const mockUseMoneyAccountAvailability = jest.fn();
 const mockUseMoneyActivityItems = jest.fn();
 const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockCopyToClipboard = jest.fn();
 const mockUseParams = jest.fn();
 const mockGetPrivacyMode = jest.mocked(getPrivacyMode);
@@ -95,6 +97,7 @@ jest.mock('react-router-dom', () => ({
     <div data-testid="navigate" data-to={to} />
   ),
   useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),
 }));
 
@@ -145,6 +148,7 @@ const EXPLORER_TX_URL = `https://monadscan.com/tx/${VALID_TX_HASH}`;
 describe('MoneyTransactionDetailsPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({ key: 'ci9s3nlq' });
     mockGetPrivacyMode.mockReturnValue(false);
     mockSelectMoneyActivityDetailsEnabled.mockReturnValue(true);
     mockGetInternalAccountByAddress.mockReturnValue({
@@ -301,12 +305,12 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toHaveTextContent('<$0.01');
   });
 
-  it('opens the transaction fee information popover', async () => {
+  it('shows the transaction fee tooltip when the label is hovered', async () => {
     renderWithLocalization(<MoneyTransactionDetailsPage />);
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
@@ -332,7 +336,7 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toHaveTextContent('$0.00');
   });
 
-  it('keeps the fee amount and states network sponsorship in the tooltip when source gas is zero', async () => {
+  it('keeps the fee amount and shows a zero network fee in the tooltip when source gas is zero', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.14,
       totalUsd: 1000.14,
@@ -361,19 +365,17 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toBeInTheDocument();
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
-    expect(
-      screen.getByTestId('money-transaction-details-fee-info'),
-    ).toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    const tooltip = screen.getByTestId('money-transaction-details-fee-info');
+    expect(tooltip).toHaveTextContent(`${messages.networkFee.message}: $0.00`);
+    expect(tooltip).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
-  it('does not claim Paid by MetaMask for user-paid cross-chain source gas', async () => {
+  it('does not show a network fee tooltip line for user-paid cross-chain source gas', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.34,
       totalUsd: 1000.34,
@@ -387,16 +389,14 @@ describe('MoneyTransactionDetailsPage', () => {
     ).toHaveTextContent('$0.34');
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(`${messages.networkFee.message}:`);
   });
 
   it('does not mention Paid by MetaMask when the fee is not sponsored', async () => {
@@ -407,16 +407,14 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toBeInTheDocument();
 
     await act(async () => {
-      fireEvent.click(
-        screen.getByTestId('money-transaction-details-fee-info-button'),
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-transaction-details-fee-info-trigger'),
       );
     });
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {
@@ -436,6 +434,20 @@ describe('MoneyTransactionDetailsPage', () => {
       screen.getByTestId('money-transaction-details-back-button'),
     );
     expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('navigates back to Money home when the page was opened directly by URL', () => {
+    mockUseLocation.mockReturnValue({ key: 'default' });
+
+    renderWithLocalization(<MoneyTransactionDetailsPage />);
+
+    fireEvent.click(
+      screen.getByTestId('money-transaction-details-back-button'),
+    );
+    expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
+      replace: true,
+      state: { fromFreshTab: true },
+    });
   });
 
   it('masks the hero amount in privacy mode', () => {

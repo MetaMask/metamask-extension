@@ -16,7 +16,7 @@ import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 class TokenOverviewPage {
   private readonly assetOptionsButton = '[data-testid="asset-options__button"]';
 
-  private readonly backButton = '.asset-page__back-button';
+  private readonly backButton = '[data-testid="asset-page-back-button"]';
 
   private driver: Driver;
 
@@ -25,17 +25,11 @@ class TokenOverviewPage {
   private readonly parentSelector =
     '[data-testid="parent-selector-asset-details"]';
 
-  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
+  private readonly receiveButton = '[data-testid$="-overview-receive"]';
 
-  private readonly sendButton = {
-    text: 'Send',
-    css: '.icon-button',
-  };
+  private readonly sendButton = '[data-testid$="-overview-send"]';
 
-  private readonly swapButton = {
-    text: 'Swap',
-    css: '.icon-button',
-  };
+  private readonly swapButton = '[data-testid$="-overview-swap"]';
 
   private readonly viewAssetInExplorerButton = {
     text: 'View Asset in explorer',

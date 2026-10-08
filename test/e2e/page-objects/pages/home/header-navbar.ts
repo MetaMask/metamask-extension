@@ -25,7 +25,7 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
-  private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
+  private readonly accountSnapButton = { testId: 'global-menu-snaps' };
 
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
@@ -299,7 +299,12 @@ class HeaderNavbar {
     } catch {
       await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
     }
-    await this.driver.waitForElementToStopMoving(this.drawerBackButton);
+    try {
+      await this.driver.findVisibleElement(this.drawerBackButton);
+    } catch {
+      await this.driver.clickElementUsingMouseMove(this.globalMenuButton);
+      await this.driver.findVisibleElement(this.drawerBackButton);
+    }
   }
 
   async openGlobalNetworksMenu({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderWithLocalization } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
@@ -25,6 +25,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -49,6 +50,7 @@ describe('MoneyPotentialEarnings', () => {
           createToken(2, { moneyFiatAmountUsd: 0 }),
         ]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -67,6 +69,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(50)]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -81,7 +84,7 @@ describe('MoneyPotentialEarnings', () => {
       screen.getByTestId('money-potential-earnings-total'),
     ).toHaveTextContent('$5,000.00');
     expect(
-      screen.getByTestId('money-potential-earnings-projection'),
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
     ).toHaveTextContent('+$200.00');
     expect(
       screen.getByTestId('money-potential-earnings-token-projection'),
@@ -93,6 +96,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={undefined}
+        apyPercent={undefined}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -104,7 +108,7 @@ describe('MoneyPotentialEarnings', () => {
       screen.getByText(messages.moneyEarnOnCryptoDescription.message),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('money-potential-earnings-projection'),
+      screen.queryByTestId('money-potential-earnings-projection-trigger'),
     ).not.toBeInTheDocument();
   });
 
@@ -115,6 +119,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={Array.from({ length: 6 }, (_, index) => createToken(index + 1))}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -139,6 +144,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -156,6 +162,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(1), createToken(2)]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={({ symbol }) => symbol === 'TOK1'}
         privacyMode={false}
         onAddToken={jest.fn()}
@@ -173,6 +180,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(50)]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode
         onAddToken={jest.fn()}
@@ -184,8 +192,40 @@ describe('MoneyPotentialEarnings', () => {
       screen.getByTestId('money-potential-earnings-total'),
     ).toHaveTextContent('•'.repeat(9));
     expect(
+      screen.getByTestId('money-potential-earnings-projection-trigger'),
+    ).toHaveTextContent('•'.repeat(6));
+    expect(
       screen.getByTestId('money-potential-earnings-token-projection'),
     ).toHaveTextContent('•'.repeat(6));
+  });
+
+  it('shows the projection disclaimer tooltip with the APY on hover', async () => {
+    renderWithLocalization(
+      <MoneyPotentialEarnings
+        tokens={[createToken(50)]}
+        apyDecimal={0.04}
+        apyPercent={4}
+        isNoFeeToken={() => false}
+        privacyMode={false}
+        onAddToken={jest.fn()}
+        onViewAll={jest.fn()}
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('money-potential-earnings-projection-trigger'),
+      );
+    });
+
+    expect(
+      screen.getByTestId('money-potential-earnings-projection'),
+    ).toHaveTextContent(
+      messages.moneyEarnSectionAccountProjectedBalanceTooltip.message.replace(
+        '$1',
+        '4',
+      ),
+    );
   });
 
   it('calls onAddToken with the row token, its position and the list size when Add is clicked', () => {
@@ -196,6 +236,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={tokens}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={onAddToken}
@@ -215,6 +256,7 @@ describe('MoneyPotentialEarnings', () => {
       <MoneyPotentialEarnings
         tokens={[createToken(1)]}
         apyDecimal={0.04}
+        apyPercent={4}
         isNoFeeToken={() => false}
         privacyMode={false}
         onAddToken={jest.fn()}

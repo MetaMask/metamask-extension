@@ -91,9 +91,6 @@
   "gasLimit": {
     "message": "Gaslimiet"
   },
-  "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
-  },
   "here": {
     "message": "hier",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -178,9 +175,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
   },
   "privateNetwork": {
     "message": "Prive netwerk"

@@ -754,7 +754,9 @@ export default function PrivacySettings() {
                   {isSocialLoginFlow && (
                     <>
                       <MetametricsToggle
-                        dataCollectionForMarketing={dataCollectionForMarketing}
+                        dataCollectionForMarketing={
+                          dataCollectionForMarketing === true
+                        }
                         setDataCollectionForMarketing={
                           handleDataCollectionForMarketing
                         }

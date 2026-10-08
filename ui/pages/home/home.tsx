@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
@@ -21,10 +21,7 @@ import { UpdateModalContainer } from '../../components/app/update-modal/update-m
 import ConnectedSites from '../connected-sites';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import ConnectedAccounts from '../connected-accounts';
-import {
-  ScrollContainer,
-  useScrollContainer,
-} from '../../contexts/scroll-container';
+import { ScrollContainer } from '../../contexts/scroll-container';
 import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
@@ -238,14 +235,7 @@ export default function Home() {
   }, [setBasicFunctionalityModalOpen]);
 
   const showNavbar = useBottomNavBar();
-  const scrollRef = useScrollContainer();
   const appHeader = showNavbar ? null : <AppHeader />;
-
-  useLayoutEffect(() => {
-    if (showNavbar && scrollRef?.current) {
-      scrollRef.current.scrollTop = 0;
-    }
-  }, [showNavbar, scrollRef]);
 
   if (forgottenPassword) {
     return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
@@ -323,7 +313,7 @@ export default function Home() {
       {showNavbar ? (
         <div className="flex min-h-full flex-col">
           <div className="grow">{homeBody}</div>
-          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16">
+          <div className="sticky bottom-0 shrink-0 group-has-[.bottom-nav-bar]/shell:bottom-16 z-10">
             <DappConnectionControlBar />
           </div>
         </div>
