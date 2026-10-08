@@ -1,13 +1,13 @@
-import React, { useCallback } from "react";
-import { useSelector } from "react-redux";
-import { startCase } from "lodash";
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { startCase } from 'lodash';
 import {
   type QuoteResponse,
   FeatureId,
   QuoteMetadata,
   UnifiedSwapBridgeEventName,
   formatProviderLabel,
-} from "@metamask/bridge-controller";
+} from '@metamask/bridge-controller';
 import {
   Modal,
   ModalBody,
@@ -16,7 +16,7 @@ import {
   ModalOverlay,
   Tag,
   Text,
-} from "../../../components/component-library";
+} from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -25,34 +25,34 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from "../../../helpers/constants/design-system";
-import { useI18nContext } from "../../../hooks/useI18nContext";
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setSelectedQuote,
   trackUnifiedSwapBridgeEvent,
-} from "../../../ducks/bridge/actions";
+} from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getQuoteRequest,
-} from "../../../ducks/bridge/selectors";
-import { Column, Row } from "../layout";
-import { getCurrentCurrency } from "../../../ducks/metamask/metamask";
-import { getIntlLocale } from "../../../ducks/locale/locale";
-import { getMultichainNativeCurrency } from "../../../selectors/multichain";
-import { useMultichainSelector } from "../../../hooks/useMultichainSelector";
-import { useDispatch } from "../../../store/hooks";
+} from '../../../ducks/bridge/selectors';
+import { Column, Row } from '../layout';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getMultichainNativeCurrency } from '../../../selectors/multichain';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useDispatch } from '../../../store/hooks';
 import {
   getGasFees,
   getPriceImpactNumber,
   getTotalNetworkFee,
   formatCurrencyAmount,
   formatTokenAmount,
-} from "../utils/quote";
+} from '../utils/quote';
 
 export const BridgeQuotesModal = ({
   onClose,
   ...modalProps
-}: Omit<React.ComponentProps<typeof Modal>, "children">) => {
+}: Omit<React.ComponentProps<typeof Modal>, 'children'>) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -123,12 +123,12 @@ export const BridgeQuotesModal = ({
 
       <ModalContent
         modalDialogProps={{
-          "data-testid": "quotes-modal",
+          'data-testid': 'quotes-modal',
         }}
       >
         <ModalHeader onBack={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-            {t("bridgeSelectQuote")}
+            {t('bridgeSelectQuote')}
           </Text>
         </ModalHeader>
 
@@ -139,7 +139,7 @@ export const BridgeQuotesModal = ({
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
-              {t("bridgeQuotesSortedByCost")}
+              {t('bridgeQuotesSortedByCost')}
             </Text>
           </Row>
           {/* QUOTE LIST */}
@@ -157,7 +157,7 @@ export const BridgeQuotesModal = ({
 
                 return (
                   <Column
-                    className={`bridge-quote-option${isQuoteActive ? " bridge-quote-option--selected" : ""}`}
+                    className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
                     data-testid="bridge-quote-option"
                     alignItems={AlignItems.flexStart}
                     key={index}
@@ -168,15 +168,15 @@ export const BridgeQuotesModal = ({
                     paddingInline={4}
                     paddingTop={3}
                     paddingBottom={3}
-                    style={{ position: "relative", cursor: "pointer" }}
+                    style={{ position: 'relative', cursor: 'pointer' }}
                   >
                     {isQuoteActive && (
                       <Column
                         style={{
-                          position: "absolute",
+                          position: 'absolute',
                           left: 4,
                           top: 4,
-                          height: "calc(100% - 8px)",
+                          height: 'calc(100% - 8px)',
                           width: 4,
                           borderRadius: 8,
                         }}
@@ -195,9 +195,9 @@ export const BridgeQuotesModal = ({
                         fontWeight={FontWeight.Medium}
                         ellipsis={true}
                         style={{
-                          whiteSpace: "nowrap",
+                          whiteSpace: 'nowrap',
                           flexShrink: 1,
-                          textOverflow: "ellipsis",
+                          textOverflow: 'ellipsis',
                         }}
                       >
                         {startCase(protocols[0])}
@@ -206,7 +206,7 @@ export const BridgeQuotesModal = ({
                       <Text
                         variant={TextVariant.bodyMd}
                         fontWeight={FontWeight.Medium}
-                        style={{ whiteSpace: "nowrap" }}
+                        style={{ whiteSpace: 'nowrap' }}
                       >
                         {formatTokenAmount(
                           locale,
@@ -227,9 +227,9 @@ export const BridgeQuotesModal = ({
                           data-testid="bridge-quote-total-cost"
                           variant={TextVariant.bodySm}
                           color={TextColor.textAlternative}
-                          style={{ whiteSpace: "nowrap" }}
+                          style={{ whiteSpace: 'nowrap' }}
                         >
-                          {t("quotedTotalCost", [
+                          {t('quotedTotalCost', [
                             (quote.quote.priceData?.cost?.valueInCurrency
                               ? formatCurrencyAmount(
                                   quote.quote.priceData.cost.valueInCurrency,
@@ -241,7 +241,7 @@ export const BridgeQuotesModal = ({
                                   locale,
                                   totalNetworkFee.normalizedAmount,
                                   nativeCurrency,
-                                )) ?? "",
+                                )) ?? '',
                           ])}
                         </Text>
                         {isRecommended && (
@@ -252,12 +252,12 @@ export const BridgeQuotesModal = ({
                               fontWeight: FontWeight.Medium,
                             }}
                             style={{
-                              whiteSpace: "nowrap",
+                              whiteSpace: 'nowrap',
                               paddingInline: 6,
                               paddingTop: 0,
                               paddingBottom: 0,
                             }}
-                            label={t("bridgeLowestCost")}
+                            label={t('bridgeLowestCost')}
                           />
                         )}
                       </Row>
@@ -265,7 +265,7 @@ export const BridgeQuotesModal = ({
                       <Text
                         variant={TextVariant.bodySm}
                         color={TextColor.textAlternative}
-                        style={{ whiteSpace: "nowrap" }}
+                        style={{ whiteSpace: 'nowrap' }}
                       >
                         {formatCurrencyAmount(
                           dest.valueInCurrency,
