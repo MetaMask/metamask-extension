@@ -24,6 +24,19 @@ const buildStore = (cashtagInjection?: boolean) =>
     },
   });
 
+const buildBasicFunctionalityOffStore = () =>
+  configureMockStore([thunk])({
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      useExternalServices: false,
+      remoteFeatureFlags: {
+        ...mockState.metamask.remoteFeatureFlags,
+        cashtagInjection: true,
+      },
+    },
+  });
+
 describe('PreferencesAndDisplayTab', () => {
   const mockStore = buildStore();
 
@@ -66,6 +79,18 @@ describe('PreferencesAndDisplayTab', () => {
       });
 
       expect(view.getByTestId('show-ticker-widget')).toBeInTheDocument();
+    });
+
+    it('hides the setting when Basic Functionality is off', async () => {
+      let view!: ReturnType<typeof renderWithProvider>;
+      await act(async () => {
+        view = renderWithProvider(
+          <PreferencesAndDisplayTab />,
+          buildBasicFunctionalityOffStore(),
+        );
+      });
+
+      expect(view.queryByTestId('show-ticker-widget')).not.toBeInTheDocument();
     });
   });
 });
