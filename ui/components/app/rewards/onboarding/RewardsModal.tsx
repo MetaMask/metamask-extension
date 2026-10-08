@@ -19,7 +19,6 @@ import {
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setRewardsDeeplinkUrl,
 } from '../../../../ducks/rewards';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -75,7 +74,6 @@ export default function RewardsModal({
 
   const handleClose = useCallback(() => {
     dispatch(setRewardsModalOpen(false));
-    dispatch(setOnboardingReferralCode(null));
     dispatch(setRewardsDeeplinkUrl(null));
     onClose?.();
   }, [dispatch, onClose]);

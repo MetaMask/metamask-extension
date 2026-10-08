@@ -2660,10 +2660,6 @@ export default class MetamaskController extends EventEmitter {
       estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
         this.rewardsController,
       ),
-      validateRewardsReferralCode:
-        this.rewardsController.validateReferralCode.bind(
-          this.rewardsController,
-        ),
       getRewardsMoneyReferralMe: this.rewardsMoneyController.getReferralMe.bind(
         this.rewardsMoneyController,
       ),

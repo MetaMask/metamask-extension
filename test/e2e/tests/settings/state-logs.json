@@ -1339,7 +1339,6 @@
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
-    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",

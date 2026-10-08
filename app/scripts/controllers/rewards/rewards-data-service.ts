@@ -74,7 +74,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'mobileOptin',
   'getSeasonStatus',
   'fetchGeoLocation',
-  'validateReferralCode',
   'mobileJoin',
   'siweJoin',
   'getOptInStatus',
@@ -455,32 +454,6 @@ export class RewardsDataService {
       console.error('RewardsDataService: Failed to fetch geolocation', e);
       return location;
     }
-  }
-
-  /**
-   * Validate a referral code.
-   *
-   * @param code - The referral code to validate.
-   * @returns Promise<{valid: boolean; isVipCode?: boolean}> - Object indicating
-   * if the code is valid and whether the backend considers it a VIP code.
-   */
-  async validateReferralCode(
-    code: string,
-  ): Promise<{ valid: boolean; isVipCode?: boolean }> {
-    const response = await this.makeRequest(
-      `/referral/validate?code=${encodeURIComponent(code)}`,
-      {
-        method: 'GET',
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to validate referral code. Please try again shortly.`,
-      );
-    }
-
-    return (await response.json()) as { valid: boolean; isVipCode?: boolean };
   }
 
   /**

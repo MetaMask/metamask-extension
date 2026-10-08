@@ -55,8 +55,8 @@ const mockT = (key: string) =>
   (
     ({
       close: 'Close',
-      rewardsOnboardingReferralCodeError: 'Invalid referral code',
-      rewardsOnboardingReferralCodeUnknownError:
+      rewardsMoneyReferralCodeError: 'Invalid referral code',
+      rewardsMoneyReferralCodeUnknownError:
         'Referral code couldn’t be validated.',
     }) as Record<string, string>
   )[key] ?? key;

@@ -45,7 +45,7 @@ describe('useAcceptMoneyReferralCode', () => {
   });
 
   it.each([
-    [422, '', 'rewardsOnboardingReferralCodeError'],
+    [422, '', 'rewardsMoneyReferralCodeError'],
     [409, '', 'rewardsMoneyReferralAlreadyReferred'],
     [403, 'own referral code', 'rewardsMoneyReferralOwnCode'],
     [
