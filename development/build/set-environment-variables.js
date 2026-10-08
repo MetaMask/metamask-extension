@@ -1,6 +1,6 @@
 const { readFileSync } = require('node:fs');
 const assert = require('node:assert');
-const { ENVIRONMENT } = require('./constants');
+const ENVIRONMENT = require('../../shared/constants/build-environment.json');
 
 /**
  * Sets environment variables to inject in the current build.
@@ -74,9 +74,6 @@ function setEnvironmentVariables({
     QR_SYNC_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('QR_SYNC_ENABLED'),
-    ASSETS_UNIFIED_STATE_ENABLED: variables.getMaybe(
-      'ASSETS_UNIFIED_STATE_ENABLED',
-    ),
     COMPLIANCE_API_URL: variables.getMaybe('COMPLIANCE_API_URL'),
   });
 }

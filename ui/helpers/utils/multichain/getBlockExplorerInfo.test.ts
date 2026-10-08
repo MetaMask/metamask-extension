@@ -79,8 +79,7 @@ describe('getBlockExplorerInfo utility functions', () => {
       });
 
       expect(result).toEqual({
-        addressUrl:
-          'https://robinhoodchain.blockscout.com/address/0x1234567890abcdef',
+        addressUrl: 'https://robin.etherscan.io/address/0x1234567890abcdef',
         name: 'Robinhood Explorer',
         buttonText: 'translated_viewAddressOnExplorer_Robinhood Explorer',
       });
