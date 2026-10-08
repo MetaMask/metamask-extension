@@ -339,6 +339,10 @@ export const createMfaFlow = ({
    * the error. Only a code that was sent can expire; a send failing with
    * these codes would otherwise resend forever.
    *
+   * There is no `resendAvailableAt` check here: a resend that comes too early
+   * fails with a cooldown code, which the `cooldown` branch handles, and a
+   * successful send clears it in `sendEmailCode`.
+   *
    * @param code - The error's code.
    * @param isRecovery - Whether the failed operation was itself a recovery.
    * @returns The recovery to run, or `undefined` when the state shows the error.
@@ -557,24 +561,26 @@ export const createMfaFlow = ({
     }
   };
 
+  const start = () => {
+    flowStartedAt = now();
+    const needsPasskey =
+      request.kind === 'enroll'
+        ? request.method === 'passkey'
+        : request.methods.includes('passkey');
+    if (needsPasskey && !passkey) {
+      rejectWith('passkey_unsupported');
+      return Promise.resolve();
+    }
+    return run(async () => {
+      credentials = await controller.refreshEnrolledCredentials();
+      await advance();
+    });
+  };
+
   return {
     reason,
     result,
-    start: () => {
-      flowStartedAt = now();
-      const needsPasskey =
-        request.kind === 'enroll'
-          ? request.method === 'passkey'
-          : request.methods.includes('passkey');
-      if (needsPasskey && !passkey) {
-        rejectWith('passkey_unsupported');
-        return Promise.resolve();
-      }
-      return run(async () => {
-        credentials = await controller.refreshEnrolledCredentials();
-        await advance();
-      });
-    },
+    start,
     getState: () => state,
     subscribe: (listener) => {
       listeners.add(listener);
