@@ -1,6 +1,6 @@
-import { strict as assert } from "assert";
-import { Key } from "selenium-webdriver";
-import { Driver } from "../../../webdriver/driver";
+import { strict as assert } from 'assert';
+import { Key } from 'selenium-webdriver';
+import { Driver } from '../../../webdriver/driver';
 
 /**
  * The prepare page debounces quote parameter updates by 300ms before sending
@@ -10,7 +10,7 @@ import { Driver } from "../../../webdriver/driver";
 const QUOTE_PARAMS_DEBOUNCE_MS = 500;
 
 /** Prefix the Select quote dialog renders before each quote's cost. */
-const TOTAL_COST_LABEL = "Total cost:";
+const TOTAL_COST_LABEL = 'Total cost:';
 
 export type BridgeQuote = {
   amount: string;
@@ -43,7 +43,7 @@ export type BridgeQuote = {
  */
 class BridgeQuotePage {
   public assetInfoIcon = (assetId: string) => ({
-    tag: "button" as const,
+    tag: 'button' as const,
     testId: `bridge-asset-info-icon-${assetId}`,
   });
 
@@ -53,7 +53,7 @@ class BridgeQuotePage {
   private backButton = '[aria-label="Back"]';
 
   private readonly bridgeQuotePage = {
-    testId: "parent-selector-bridge-quote",
+    testId: 'parent-selector-bridge-quote',
   };
 
   private closeButton = '[aria-label="Close"]';
@@ -70,8 +70,8 @@ class BridgeQuotePage {
   protected driver: Driver;
 
   private fetchingQuotesLabel = {
-    tag: "p",
-    text: "Fetching quotes...",
+    tag: 'p',
+    text: 'Fetching quotes...',
   };
 
   private gasIncludedIndicator = '[data-testid="network-fees-included"]';
@@ -79,11 +79,11 @@ class BridgeQuotePage {
   private gasSponsoredIndicator = '[data-testid="network-fees-sponsored"]';
 
   private insufficientFundsButton = {
-    text: "Insufficient funds",
+    text: 'Insufficient funds',
     css: '[data-testid="bridge-cta-button"]',
   };
 
-  private maxButton = { text: "Max" };
+  private maxButton = { text: 'Max' };
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
@@ -93,7 +93,7 @@ class BridgeQuotePage {
 
   private networkFeesValue = {
     css: this.networkFees,
-    text: "$",
+    text: '$',
   };
 
   private networkNameSelector = (network: string) =>
@@ -106,7 +106,7 @@ class BridgeQuotePage {
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
 
-  private quoteOption = ".bridge-quote-option";
+  private quoteOption = '.bridge-quote-option';
 
   private quotesModal = '[data-testid="quotes-modal"]';
 
@@ -115,7 +115,7 @@ class BridgeQuotePage {
 
   private quotesModalTitle = {
     css: this.quotesModal,
-    text: "Select quote",
+    text: 'Select quote',
   };
 
   private quoteTotalCost = (position: number) =>
@@ -200,12 +200,12 @@ class BridgeQuotePage {
    */
   checkAssetPickerIsReopened = async () => {
     await this.driver.waitForSelector(this.assetPrickerSearchInput);
-    console.log("Asset picker is visible");
+    console.log('Asset picker is visible');
     // The swap form has a back button with the same label as the picker's, so
     // wait for the picker to go away instead of for the button itself.
     await this.driver.clickElement(this.backButton);
     await this.driver.assertElementNotPresent(this.assetPrickerSearchInput);
-    console.log("Asset picker closed");
+    console.log('Asset picker closed');
   };
 
   checkAssetsAreSelected = async (sourceToken: string, destToken: string) => {
@@ -236,7 +236,7 @@ class BridgeQuotePage {
     // The fee element renders empty until the quote's native exchange rate
     // lands, so wait for the formatted amount rather than for the element.
     await this.driver.waitForSelector(this.networkFeesValue);
-    console.log("Network fee is displayed");
+    console.log('Network fee is displayed');
   }
 
   async checkGasIncludedIsDisplayed(): Promise<void> {
@@ -246,7 +246,7 @@ class BridgeQuotePage {
       console.log('Expected "Gas fees included" indicator is not present');
       throw e;
     }
-    console.log("Gas fees included indicator is displayed");
+    console.log('Gas fees included indicator is displayed');
   }
 
   async checkGasSponsoredIsDisplayed(): Promise<void> {
@@ -256,7 +256,7 @@ class BridgeQuotePage {
       console.log('Expected "Gas fees sponsored" indicator is not present');
       throw e;
     }
-    console.log("Gas fees sponsored indicator is displayed");
+    console.log('Gas fees sponsored indicator is displayed');
   }
 
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
@@ -305,12 +305,12 @@ class BridgeQuotePage {
       });
     } catch (e) {
       console.log(
-        "Timeout while waiting for bridge quote page to be loaded",
+        'Timeout while waiting for bridge quote page to be loaded',
         e,
       );
       throw e;
     }
-    console.log("Bridge quote page is loaded");
+    console.log('Bridge quote page is loaded');
   }
 
   checkPriceImpactModalIsDisplayed = async () => {
@@ -342,14 +342,14 @@ class BridgeQuotePage {
 
     await this.driver.waitForSelector({
       css: `${this.quotesModal} ${this.quoteOption}:first-child`,
-      text: "Lowest cost",
+      text: 'Lowest cost',
     });
 
     await this.driver.clickElementAndWaitToDisappear(
       this.quotesModalBackButton,
     );
     console.log(
-      `Quote total costs are as expected: ${expectedTotalCosts.join(", ")}`,
+      `Quote total costs are as expected: ${expectedTotalCosts.join(', ')}`,
     );
   }
 
@@ -362,7 +362,7 @@ class BridgeQuotePage {
       );
       throw e;
     }
-    console.log("The RWA geo-restricted message is displayed");
+    console.log('The RWA geo-restricted message is displayed');
   }
 
   /**
@@ -405,14 +405,14 @@ class BridgeQuotePage {
   ): Promise<void> {
     await this.driver.waitForSelector(
       {
-        testId: "bridge-token-security",
+        testId: 'bridge-token-security',
         text: titleSubstring,
       },
       { timeout: 30000 },
     );
     if (descriptionSubstring) {
       await this.driver.waitForSelector({
-        testId: "bridge-token-security",
+        testId: 'bridge-token-security',
         text: descriptionSubstring,
       });
     }
@@ -421,7 +421,7 @@ class BridgeQuotePage {
   async clickMaxButton(): Promise<void> {
     await this.driver.waitForSelector(this.maxButton);
     await this.driver.clickElement(this.maxButton);
-    console.log("Clicked Max button");
+    console.log('Clicked Max button');
   }
 
   closeModal = async () => {
@@ -590,7 +590,7 @@ class BridgeQuotePage {
   }) {
     console.log(
       `Opening asset info icon for asset ${token}${
-        network ? ` on ${network}` : ""
+        network ? ` on ${network}` : ''
       }`,
     );
     const pickerAlreadyOpen = await this.driver.isElementPresentAndVisible(
