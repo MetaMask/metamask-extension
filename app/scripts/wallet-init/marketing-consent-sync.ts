@@ -217,35 +217,39 @@ export function setupMarketingConsentSync({
   const flushPendingConsentUpdate = async (
     currentSession: typeof session,
   ): Promise<void> => {
-    while (currentSession.pendingConsentUpdate !== undefined) {
-      if (currentSession !== session || !isReady()) {
-        return;
-      }
-
-      const { value } = currentSession.pendingConsentUpdate;
-      currentSession.pendingConsentUpdate = undefined;
-
-      if (value === currentSession.lastSynced) {
-        continue;
-      }
-
-      try {
-        await syncMessenger.call(
-          'AuthenticatedUserStorageService:putMarketingConsent',
-          { marketingConsentEnabled: value },
-          'extension',
-        );
-      } catch (error) {
-        if (currentSession === session) {
-          currentSession.pendingConsentUpdate ??= { value };
-        }
-        throw error;
-      }
-
-      if (currentSession === session) {
-        currentSession.lastSynced = value;
-      }
+    if (
+      currentSession.pendingConsentUpdate === undefined ||
+      currentSession !== session ||
+      !isReady()
+    ) {
+      return;
     }
+
+    const { value } = currentSession.pendingConsentUpdate;
+    currentSession.pendingConsentUpdate = undefined;
+
+    if (value === currentSession.lastSynced) {
+      return flushPendingConsentUpdate(currentSession);
+    }
+
+    try {
+      await syncMessenger.call(
+        'AuthenticatedUserStorageService:putMarketingConsent',
+        { marketingConsentEnabled: value },
+        'extension',
+      );
+    } catch (error) {
+      if (currentSession === session) {
+        currentSession.pendingConsentUpdate ??= { value };
+      }
+      throw error;
+    }
+
+    if (currentSession === session) {
+      currentSession.lastSynced = value;
+    }
+
+    return flushPendingConsentUpdate(currentSession);
   };
 
   const run = async (currentSession: typeof session) => {

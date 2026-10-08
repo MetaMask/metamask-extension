@@ -39,7 +39,7 @@ export function MarketingConsentSheet({
   error,
   onClose,
   onConfirm,
-}: MarketingConsentSheetProps) {
+}: Readonly<MarketingConsentSheetProps>) {
   const t = useI18nContext();
 
   return (
