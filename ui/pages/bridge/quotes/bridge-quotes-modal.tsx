@@ -121,7 +121,11 @@ export const BridgeQuotesModal = ({
     <Modal onClose={onClose} {...modalProps}>
       <ModalOverlay />
 
-      <ModalContent>
+      <ModalContent
+        modalDialogProps={{
+          'data-testid': 'quotes-modal',
+        }}
+      >
         <ModalHeader onBack={onClose}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t('bridgeSelectQuote')}

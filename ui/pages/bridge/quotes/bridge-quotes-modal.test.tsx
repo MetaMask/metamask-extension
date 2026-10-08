@@ -89,7 +89,7 @@ describe('BridgeQuotesModal', () => {
       'trackUnifiedSwapBridgeEvent',
     );
 
-    const { baseElement, findByText } = renderWithProvider(
+    const { baseElement, findByTestId, findByText } = renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
@@ -99,6 +99,7 @@ describe('BridgeQuotesModal', () => {
       configureStore(mockStore),
     );
 
+    expect(await findByTestId('quotes-modal')).toBeInTheDocument();
     expect(baseElement).toMatchSnapshot();
     await act(async () => {
       const acrossQuote = await findByText('Across');
