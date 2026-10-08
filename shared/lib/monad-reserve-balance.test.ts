@@ -126,7 +126,7 @@ describe('monad-reserve-balance', () => {
       ).toBe(false);
     });
 
-    it('returns true for a delegated account already under 10 MON', () => {
+    it('returns true for a delegated account already under 10 MON when value decreases the balance', () => {
       expect(
         wouldViolateMonadReserveBalance({
           chainId: CHAIN_IDS.MONAD,
@@ -135,6 +135,27 @@ describe('monad-reserve-balance', () => {
           isDelegatedAccount: true,
         }),
       ).toBe(true);
+    });
+
+    it('returns false for a gas-only call from a delegated account already under 10 MON', () => {
+      // Monad accepts a delegated call whose balance is unchanged, including
+      // when the account is already below the reserve.
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: balance7Mon,
+          value: '0x0',
+          isDelegatedAccount: true,
+        }),
+      ).toBe(false);
+      expect(
+        wouldViolateMonadReserveBalance({
+          chainId: CHAIN_IDS.MONAD,
+          balance: '0x0',
+          value: '0x0',
+          isDelegatedAccount: true,
+        }),
+      ).toBe(false);
     });
 
     it('returns false when remaining balance would stay at or above 10 MON', () => {
@@ -190,6 +211,31 @@ describe('monad-reserve-balance', () => {
           isDelegatedAccount: false,
         }),
       ).toBe(false);
+    });
+
+    it('does not flag a zero-value transaction for a delegated account already under 10 MON', () => {
+      expect(
+        hasMonadReserveBalanceViolation({
+          chainId: CHAIN_IDS.MONAD,
+          balance: `0x${(7n * 10n ** 18n).toString(16)}`,
+          value: '0x0',
+          isDelegatedAccount: true,
+        }),
+      ).toBe(false);
+    });
+
+    it('still reports simulation violations for a zero-value delegated transaction', () => {
+      expect(
+        hasMonadReserveBalanceViolation({
+          chainId: CHAIN_IDS.MONAD,
+          balance: '0x0',
+          value: '0x0',
+          isDelegatedAccount: true,
+          simulationFails: {
+            reason: 'execution reverted: reserve balance violation',
+          },
+        }),
+      ).toBe(true);
     });
 
     it('still reports simulation violations for undelegated accounts', () => {

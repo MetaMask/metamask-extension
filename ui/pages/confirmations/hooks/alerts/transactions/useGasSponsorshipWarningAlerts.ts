@@ -44,7 +44,8 @@ const GAS_SPONSORSHIP_WARNING_RULES: Partial<
  * Sources:
  * - Simulation `callTraceErrors` / `simulationFails` containing
  * `"reserve balance violation"`
- * - Proactive check: `balance - value < 10 MON` (gas may come from the reserve)
+ * - Proactive check: delegated account with `value > 0` and `balance - value < 10 MON`
+ * (gas may come from the reserve; a zero value does not decrement the balance)
  *
  * Shown whenever the reserve would fail, including when gas is sponsored.
  *

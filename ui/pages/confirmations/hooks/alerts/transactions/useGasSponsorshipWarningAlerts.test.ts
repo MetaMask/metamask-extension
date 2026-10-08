@@ -225,6 +225,32 @@ describe('useGasSponsorshipWarningAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns no alerts for a gas-only call from a delegated account already under 10 MON', () => {
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          delegationAddress: DELEGATION_ADDRESS,
+          isGasFeeSponsored: true,
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            value: '0x0',
+          },
+        },
+        buildMonadNetworkState({
+          accountsByChainId: {
+            [CHAIN_IDS.MONAD]: {
+              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                balance: BALANCE_7_MON,
+              },
+            },
+          },
+        }),
+      ),
+    );
+    expect(alerts).toEqual([]);
+  });
+
   it('returns no alerts for a gas-only call from an undelegated account already under 10 MON', () => {
     const alerts = runHook(
       getMockConfirmStateForTransaction(

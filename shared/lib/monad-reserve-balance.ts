@@ -8,8 +8,10 @@ import { CHAIN_IDS } from '../constants/chain-ids';
  * (stricter for EIP-7702 / Smart Accounts). MetaMask gas sponsorship simulation
  * surfaces that as `"reserve balance violation"`.
  *
- * For the sender, gas may come from the reserve, so the practical value constraint
- * is: `balance - value >= reserve` (i.e. leave at least 10 MON after value spend).
+ * For the sender, gas may come from the reserve, so a positive value spend must
+ * leave at least 10 MON (`balance - value >= reserve`). A zero `value` does not
+ * decrement the balance, so Monad still accepts that gas-only call when the
+ * account is already below the reserve.
  *
  * Related: https://github.com/MetaMask/metamask-extension/issues/42068
  */
@@ -136,8 +138,13 @@ export function simulationIndicatesMonadReserveBalanceViolation({
  * below the Monad reserve? Gas is excluded because protocol allows gas to come
  * from the reserve for the sender.
  *
- * Only applies to EIP-7702 delegated (smart) accounts. Undelegated EOAs are
- * allowed to dip below the reserve through the protocol's "emptying
+ * Only applies to EIP-7702 delegated (smart) accounts, and only when `value`
+ * actually debits the account. Monad reverts a delegated account when its
+ * balance decrements and ends below 10 MON. A gas-only call (`value` of 0)
+ * leaves the balance unchanged, so the network still mines it when the account
+ * is already under the reserve.
+ *
+ * Undelegated EOAs may dip below the reserve through the protocol's "emptying
  * transaction" exception, so the network accepts e.g. a 15 MON account sending
  * 6 MON or a gas-only call from an account already under 10 MON.
  *
@@ -152,7 +159,7 @@ export function simulationIndicatesMonadReserveBalanceViolation({
  * @param options.balance
  * @param options.value
  * @param options.isDelegatedAccount - True when the sender is EIP-7702 delegated.
- * @returns True when a delegated sender's value spend would leave less than 10 MON.
+ * @returns True when a delegated sender's positive value spend would leave less than 10 MON.
  */
 export function wouldViolateMonadReserveBalance({
   chainId,
@@ -173,13 +180,19 @@ export function wouldViolateMonadReserveBalance({
     return false;
   }
 
-  // Undelegated accounts can empty below 10 MON. When the delegation status is
-  // unknown, keep the proactive warning active so the UI does not fail open.
+  // Undelegated accounts can empty below 10 MON. Unknown delegation status
+  // skips this check and relies on simulation.
   if (!isDelegatedAccount) {
     return false;
   }
 
-  const remaining = hexToBigInt(balance) - hexToBigInt(value);
+  const valueWei = hexToBigInt(value);
+  // Zero value does not decrement the balance. Monad still accepts the call.
+  if (valueWei <= 0n) {
+    return false;
+  }
+
+  const remaining = hexToBigInt(balance) - valueWei;
   return remaining < MONAD_RESERVE_BALANCE_WEI;
 }
 

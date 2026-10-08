@@ -431,6 +431,34 @@ describe('useInsufficientBalanceAlerts', () => {
     );
   });
 
+  it('returns the generic fee alert on Monad for a delegated gas-only call already under 10 MON', () => {
+    // A zero value does not decrement the balance, so the reserve alert must
+    // not suppress the generic fee alert when gas itself cannot be paid.
+    const monadTransaction = {
+      ...TRANSACTION_MOCK,
+      chainId: '0x8f',
+      delegationAddress: '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b',
+      isGasFeeSponsored: false,
+      txParams: {
+        ...TRANSACTION_MOCK.txParams,
+        value: '0x0',
+      },
+    } as TransactionMeta;
+    const alerts = runHook({
+      balance: 1,
+      currentConfirmation: monadTransaction,
+      transaction: monadTransaction,
+      chainId: '0x8f',
+    });
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toStrictEqual(
+      expect.objectContaining({
+        key: 'insufficientBalance',
+        isBlocking: true,
+      }),
+    );
+  });
+
   it('returns no alerts on Monad for a delegated account when the proactive reserve check fails', () => {
     const monadTransaction = {
       ...TRANSACTION_MOCK,
