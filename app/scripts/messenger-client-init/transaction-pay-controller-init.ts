@@ -119,6 +119,7 @@ function getApi(
       transactionId: string,
       isMaxAmount: boolean,
       options: {
+        isAtomicMaxAllowed?: boolean;
         isMoneyAccountDeposit?: boolean;
         sourceAccountAddress?: string;
         sourceBalanceRaw?: string;
@@ -150,7 +151,18 @@ function getApi(
         config.isMaxAmount = isMaxAmount;
 
         if (options.isMoneyAccountDeposit) {
-          config.atomic = isMaxAmount ? false : undefined;
+          // Leave `atomic` unset when Core may quote Max atomically: the route
+          // match only predicts the subsidy, and Core verifies it and re-quotes
+          // non-atomically when the response is unsubsidized.
+          config.atomic =
+            isMaxAmount && !options.isAtomicMaxAllowed ? false : undefined;
+        }
+      });
+    },
+    setTransactionPayAtomic: (transactionId: string, isAllowed: boolean) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (config.isMaxAmount) {
+          config.atomic = isAllowed ? undefined : false;
         }
       });
     },
@@ -246,10 +258,15 @@ function getApi(
           const transaction = moneyPayMessenger
             .call('TransactionController:getState')
             .transactions.find(({ id }) => id === transactionId);
-          const keepNonAtomic =
+          // An armed Max deposit already holds the correct hint (`false`, or
+          // `undefined` when Core may quote it atomically). Clearing the
+          // override must not re-derive it.
+          const keepAtomicHint =
             config.isMaxAmount &&
             getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
-          config.atomic = keepNonAtomic ? false : undefined;
+          if (!keepAtomicHint) {
+            config.atomic = undefined;
+          }
           config.refundTo = undefined;
           return;
         }
