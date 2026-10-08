@@ -344,7 +344,7 @@
     "@metamask/messenger": "^3.0.0",
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
-    "@metamask/profile-sync-controller": "^33.0.0",
+    "@metamask/profile-sync-controller": "^34.0.1",
     "@metamask/account-tree-controller": "^11.0.0"
   },
   "dependencies": {
@@ -476,7 +476,7 @@
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.8.1",
     "@metamask/profile-metrics-controller": "^5.1.0",
-    "@metamask/profile-sync-controller": "^33.0.0",
+    "@metamask/profile-sync-controller": "^34.0.1",
     "@metamask/providers": "^22.1.1",
     "@metamask/ramps-controller": "^26.0.1",
     "@metamask/rate-limit-controller": "^7.0.0",
