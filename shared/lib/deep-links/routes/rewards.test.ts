@@ -21,7 +21,7 @@ describe('rewards deep link route', () => {
     expect(destination).toHaveProperty('path');
     expect((destination as { path: string }).path).toBe('/rewards');
     expect((destination as { query: URLSearchParams }).query.toString()).toBe(
-      params.toString(),
+      'sig_params=referral&sig=signature&utm_source=twitter&_hsenc=value&attributionId=attr',
     );
   });
 });

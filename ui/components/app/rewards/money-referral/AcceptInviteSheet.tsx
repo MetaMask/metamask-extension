@@ -226,8 +226,8 @@ export function AcceptInviteSheet({
   const copy = referralMe?.localized_text;
   const fieldError =
     errorMessage ||
-    (isRejectedCode ? t('rewardsOnboardingReferralCodeError') : '') ||
-    (isUnknownError ? t('rewardsOnboardingReferralCodeUnknownError') : '');
+    (isRejectedCode ? t('rewardsMoneyReferralCodeError') : '') ||
+    (isUnknownError ? t('rewardsMoneyReferralCodeUnknownError') : '');
   const canAccept = isValid && acceptAllowedForGeo && !isAccepting;
 
   return (

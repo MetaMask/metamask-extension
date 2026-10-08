@@ -28,7 +28,7 @@ export type UseOptinResult = {
   /**
    * Function to initiate the optin process
    */
-  optin: (referralCode?: string) => Promise<void>;
+  optin: () => Promise<void>;
 
   /**
    * Loading state for optin operation
@@ -73,113 +73,101 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
     accountGroupId: primaryWalletAccountGroupId,
   } = usePrimaryWalletGroupAccounts();
 
-  const handleOptIn = useCallback(
-    async (referralCode?: string) => {
-      const referred = Boolean(referralCode);
-      const metricsProps = {
-        referred,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        referral_code_used: referralCode,
-      };
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.RewardsOptInStarted)
-          .addCategory(MetaMetricsEventCategory.Rewards)
-          .addProperties(metricsProps)
-          .build(),
-      );
+  const handleOptIn = useCallback(async () => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.RewardsOptInStarted)
+        .addCategory(MetaMetricsEventCategory.Rewards)
+        .build(),
+    );
 
-      let subscriptionId: string | null = null;
+    let subscriptionId: string | null = null;
 
-      try {
-        setOptinLoading(true);
-        setOptinError(null);
+    try {
+      setOptinLoading(true);
+      setOptinError(null);
 
-        // First, opt in with side effect accounts
-        const accountsToOptIn =
-          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
-            ? primaryWalletGroupAccounts
-            : activeGroupAccounts;
+      // First, opt in with side effect accounts
+      const accountsToOptIn =
+        primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
+          ? primaryWalletGroupAccounts
+          : activeGroupAccounts;
 
-        const accountsToLinkAfterOptIn =
-          primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
-            ? activeGroupAccounts
-            : primaryWalletGroupAccounts;
+      const accountsToLinkAfterOptIn =
+        primaryWalletAccountGroupId && primaryWalletGroupAccounts.length > 0
+          ? activeGroupAccounts
+          : primaryWalletGroupAccounts;
 
-        subscriptionId = (await dispatch(
-          rewardsOptIn({ accounts: accountsToOptIn, referralCode }),
-        )) as unknown as string | null;
+      subscriptionId = (await dispatch(
+        rewardsOptIn({ accounts: accountsToOptIn }),
+      )) as unknown as string | null;
 
-        if (subscriptionId) {
-          // Prevent more than 1 explicit sign request for opting in, in case of hardware wallet
-          // Linking of other accounts for the hardware wallet can be handled later.
-          if (
-            accountsToLinkAfterOptIn.length > 0 &&
-            !isHardwareAccount(accountsToLinkAfterOptIn[0])
-          ) {
-            try {
-              await dispatch(
-                rewardsLinkAccountsToSubscriptionCandidate(
-                  accountsToLinkAfterOptIn,
-                  primaryWalletGroupAccounts,
-                ),
-              );
-            } catch {
-              // Failed to link active group accounts.
-            }
-          }
-
-          trackEvent(
-            createEventBuilder(MetaMetricsEventName.RewardsOptInCompleted)
-              .addCategory(MetaMetricsEventCategory.Rewards)
-              .addProperties(metricsProps)
-              .build(),
-          );
-
-          // Link the reward to the shield subscription if opt in from the shield subscription
-          if (options?.rewardPoints && options?.shieldSubscriptionId) {
-            try {
-              await dispatch(
-                linkRewardToShieldSubscription(
-                  options.shieldSubscriptionId,
-                  options.rewardPoints,
-                ),
-              );
-            } catch (error) {
-              // Silently fail - reward linking should not block opt-in
-              log.warn('Failed to link reward to shield subscription', error);
-            }
+      if (subscriptionId) {
+        // Prevent more than 1 explicit sign request for opting in, in case of hardware wallet
+        // Linking of other accounts for the hardware wallet can be handled later.
+        if (
+          accountsToLinkAfterOptIn.length > 0 &&
+          !isHardwareAccount(accountsToLinkAfterOptIn[0])
+        ) {
+          try {
+            await dispatch(
+              rewardsLinkAccountsToSubscriptionCandidate(
+                accountsToLinkAfterOptIn,
+                primaryWalletGroupAccounts,
+              ),
+            );
+          } catch {
+            // Failed to link active group accounts.
           }
         }
-      } catch (error) {
+
         trackEvent(
-          createEventBuilder(MetaMetricsEventName.RewardsOptInFailed)
+          createEventBuilder(MetaMetricsEventName.RewardsOptInCompleted)
             .addCategory(MetaMetricsEventCategory.Rewards)
-            .addProperties(metricsProps)
             .build(),
         );
 
-        const errorMessage = handleRewardsErrorMessage(error, t);
-        setOptinError(errorMessage);
+        // Link the reward to the shield subscription if opt in from the shield subscription
+        if (options?.rewardPoints && options?.shieldSubscriptionId) {
+          try {
+            await dispatch(
+              linkRewardToShieldSubscription(
+                options.shieldSubscriptionId,
+                options.rewardPoints,
+              ),
+            );
+          } catch (error) {
+            // Silently fail - reward linking should not block opt-in
+            log.warn('Failed to link reward to shield subscription', error);
+          }
+        }
       }
+    } catch (error) {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.RewardsOptInFailed)
+          .addCategory(MetaMetricsEventCategory.Rewards)
+          .build(),
+      );
 
-      if (subscriptionId) {
-        dispatch(setCandidateSubscriptionId(subscriptionId));
-      }
+      const errorMessage = handleRewardsErrorMessage(error, t);
+      setOptinError(errorMessage);
+    }
 
-      setOptinLoading(false);
-    },
-    [
-      trackEvent,
-      createEventBuilder,
-      primaryWalletAccountGroupId,
-      primaryWalletGroupAccounts,
-      activeGroupAccounts,
-      dispatch,
-      t,
-      options?.rewardPoints,
-      options?.shieldSubscriptionId,
-    ],
-  );
+    if (subscriptionId) {
+      dispatch(setCandidateSubscriptionId(subscriptionId));
+    }
+
+    setOptinLoading(false);
+  }, [
+    trackEvent,
+    createEventBuilder,
+    primaryWalletAccountGroupId,
+    primaryWalletGroupAccounts,
+    activeGroupAccounts,
+    dispatch,
+    t,
+    options?.rewardPoints,
+    options?.shieldSubscriptionId,
+  ]);
 
   const clearOptinError = useCallback(() => setOptinError(null), []);
 

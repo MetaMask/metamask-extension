@@ -257,27 +257,6 @@ describe('useOptIn', () => {
       expect(result.current.optinError).toBeNull();
     });
 
-    it('includes referral metrics properties when referralCode is provided', async () => {
-      const { result } = renderHookWithProvider(
-        () => useOptIn(),
-        {},
-        undefined,
-        undefined,
-      );
-
-      await act(async () => {
-        await result.current.optin('REF-CODE');
-      });
-
-      const calls = mockTrackEvent.mock.calls.map((args) => args[0]);
-      const started = calls.find(
-        (c: { name: MetaMetricsEventName }) =>
-          c.name === MetaMetricsEventName.RewardsOptInStarted,
-      );
-      expect(started?.properties?.referred).toBe(true);
-      expect(started?.properties?.referral_code_used).toBe('REF-CODE');
-    });
-
     it('uses primary wallet group accounts for opt-in when available and links active group accounts', async () => {
       (rewardsOptIn as jest.Mock).mockImplementation(
         () => async () => 'sub-side-effect',
@@ -297,7 +276,6 @@ describe('useOptIn', () => {
       // Should opt-in with primary wallet group accounts
       expect(rewardsOptIn).toHaveBeenCalledWith({
         accounts: mockSideEffectAccounts,
-        referralCode: undefined,
       });
 
       // Should link active group accounts after opt-in
@@ -332,7 +310,6 @@ describe('useOptIn', () => {
       // Should opt-in with active group accounts
       expect(rewardsOptIn).toHaveBeenCalledWith({
         accounts: mockActiveGroupAccounts,
-        referralCode: undefined,
       });
 
       // Should link primary wallet group accounts (empty in this case)
