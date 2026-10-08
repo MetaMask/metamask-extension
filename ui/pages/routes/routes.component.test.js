@@ -226,7 +226,7 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
 
-  it('shows the missing-page screen for unknown routes instead of the error page', () => {
+  it('shows the missing-page screen for unknown routes', () => {
     const unknownPath = '/multichain-account-list';
     const matches = matchRoutes(routeConfig, unknownPath);
     const fallback = matches?.at(-1)?.route;

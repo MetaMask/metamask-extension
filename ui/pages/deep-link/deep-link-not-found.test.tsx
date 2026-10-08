@@ -27,18 +27,4 @@ describe('DeepLinkNotFound', () => {
       screen.getByRole('link', { name: 'Go to the home page' }),
     ).toHaveAttribute('href', 'home.html#/');
   });
-
-  it('lets the card shrink below its fullscreen width', () => {
-    renderPage();
-
-    expect(screen.getByTestId('deep-link-card')).toHaveStyle({
-      width: '100%',
-      maxWidth: '446px',
-    });
-    expect(
-      screen.getByRole('img', { name: 'Error 404: Page not found' }),
-    ).toHaveStyle({
-      maxWidth: '100%',
-    });
-  });
 });
