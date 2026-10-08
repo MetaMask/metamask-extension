@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { startMfaFlow } from './activeFlow';
+import { getActiveMfaFlow, startMfaFlow } from './activeFlow';
 import type { MfaControllerAdapter } from './types';
 import { useActiveMfaFlow } from './useActiveMfaFlow';
 
@@ -14,6 +14,14 @@ const controller: MfaControllerAdapter = {
 };
 
 describe('useActiveMfaFlow', () => {
+  afterEach(async () => {
+    const flow = getActiveMfaFlow();
+    await act(async () => {
+      flow?.dispatch({ type: 'cancel' });
+      await flow?.result.catch(() => undefined);
+    });
+  });
+
   it('is undefined when no flow runs', () => {
     const { result } = renderHook(() => useActiveMfaFlow());
 
