@@ -44,7 +44,7 @@ function getRegisterRefereeErrorMessage(error: unknown, t: Translate): string {
   const body = (bodyText ?? '').toLowerCase();
 
   if (status === 422) {
-    return t('rewardsOnboardingReferralCodeError');
+    return t('rewardsMoneyReferralCodeError');
   }
   if (status === 409) {
     return t('rewardsMoneyReferralAlreadyReferred');

@@ -151,10 +151,6 @@ describe('RewardsDataService', () => {
         expect.any(Function),
       );
       expect(registerSpy).toHaveBeenCalledWith(
-        'RewardsDataService:validateReferralCode',
-        expect.any(Function),
-      );
-      expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:mobileJoin',
         expect.any(Function),
       );
@@ -191,7 +187,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -240,7 +236,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -289,7 +285,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -338,7 +334,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -394,7 +390,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -448,7 +444,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -498,7 +494,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await customService.validateReferralCode('TEST');
+      await customService.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -982,92 +978,6 @@ describe('RewardsDataService', () => {
     });
   });
 
-  describe('validateReferralCode', () => {
-    const mockCode = 'REF123';
-
-    beforeEach(() => {
-      service = createService();
-    });
-
-    it('successfully validates referral code', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: true }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const result = await service.validateReferralCode(mockCode);
-
-      expect(result).toEqual({ valid: true });
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(`/referral/validate?code=${mockCode}`),
-        expect.objectContaining({
-          method: 'GET',
-        }),
-      );
-    });
-
-    it('returns invalid for invalid code', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: false }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const result = await service.validateReferralCode(mockCode);
-
-      expect(result).toEqual({ valid: false });
-    });
-
-    it('surfaces the backend isVipCode flag', async () => {
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: true, isVipCode: true }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      const result = await service.validateReferralCode(mockCode);
-
-      expect(result).toEqual({ valid: true, isVipCode: true });
-    });
-
-    it('throws error for failed validation', async () => {
-      const mockResponse = {
-        ok: false,
-        status: 500,
-        json: jest.fn().mockResolvedValue({}),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await expect(service.validateReferralCode(mockCode)).rejects.toThrow(
-        'Failed to validate referral code. Please try again shortly.',
-      );
-    });
-
-    it('encodes special characters in referral code', async () => {
-      const codeWithSpecialChars = 'REF#123&test';
-      const encodedCode = encodeURIComponent(codeWithSpecialChars);
-
-      const mockResponse = {
-        ok: true,
-        json: jest.fn().mockResolvedValue({ valid: true }),
-      } as unknown as Response;
-
-      mockFetch.mockResolvedValue(mockResponse);
-
-      await service.validateReferralCode(codeWithSpecialChars);
-
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(`/referral/validate?code=${encodedCode}`),
-        expect.any(Object),
-      );
-    });
-  });
-
   describe('getOptInStatus', () => {
     const mockOptInStatusRequest = {
       addresses: ['0x123456789', '0x987654321', '0xabcdefabc'],
@@ -1383,14 +1293,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.PRD),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.PRD}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1405,14 +1315,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.PRD),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.PRD}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1427,14 +1337,14 @@ describe('RewardsDataService', () => {
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(REWARDS_API_URL.UAT),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.UAT}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.UAT}/public/seasons/status`,
         expect.any(Object),
       );
     });
@@ -1486,7 +1396,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -1529,7 +1439,7 @@ describe('RewardsDataService', () => {
 
       mockFetch.mockResolvedValue(mockResponse);
 
-      await service.validateReferralCode('TEST');
+      await service.getDiscoverSeasons();
 
       const callArgs = mockFetch.mock.calls[0];
       const headers = callArgs[1]?.headers as Record<string, string>;

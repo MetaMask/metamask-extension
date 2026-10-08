@@ -46,7 +46,7 @@ export function useValidateMoneyReferralCode(
         if (result?.success) {
           return '';
         }
-        return t('rewardsOnboardingReferralCodeError');
+        return t('rewardsMoneyReferralCodeError');
       } catch {
         return MONEY_REFERRAL_CODE_UNKNOWN_ERROR;
       }
