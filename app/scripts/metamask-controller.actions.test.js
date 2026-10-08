@@ -370,4 +370,21 @@ describe('MetaMaskController', function () {
       );
     });
   });
+
+  describe('resolveSeedlessPasswordSyncInstruction', function () {
+    it('delegates to LegacyBackgroundApiService', async function () {
+      const callSpy = jest
+        .spyOn(metamaskController.controllerMessenger, 'call')
+        .mockResolvedValue('in-sync');
+
+      await metamaskController
+        .getApi()
+        .resolveSeedlessPasswordSyncInstruction({ skipCache: true });
+
+      expect(callSpy).toHaveBeenCalledWith(
+        'LegacyBackgroundApiService:resolveSeedlessPasswordSyncInstruction',
+        { skipCache: true },
+      );
+    });
+  });
 });

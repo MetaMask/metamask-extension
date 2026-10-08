@@ -2573,6 +2573,11 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
       ),
+      resolveSeedlessPasswordSyncInstruction:
+        this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'LegacyBackgroundApiService:resolveSeedlessPasswordSyncInstruction',
+        ),
       syncPasswordAndUnlockWallet: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
