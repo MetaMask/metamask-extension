@@ -1523,6 +1523,7 @@ describe('ConfirmFooter', () => {
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
         goBackTo: '/asset/0x123',
+        suppressAutoExit: jest.fn(),
       } as unknown as ReturnType<typeof confirmContext.useConfirmContext>);
 
       const { getAllByRole } = render();

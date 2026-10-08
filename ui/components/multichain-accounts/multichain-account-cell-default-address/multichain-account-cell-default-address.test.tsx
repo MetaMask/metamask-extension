@@ -35,10 +35,6 @@ const createStore = (overrides = {}) =>
     ...mockDefaultState,
     metamask: {
       ...mockDefaultState.metamask,
-      remoteFeatureFlags: {
-        ...mockDefaultState.metamask.remoteFeatureFlags,
-        extensionUxDefaultAddressVersioned: true,
-      },
       ...overrides,
     },
   });
