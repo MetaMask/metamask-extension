@@ -172,7 +172,18 @@
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
+  "previewBuilds": {
+    "@metamask/bridge-controller": {
+      "type": "breaking",
+      "previewVersion": "82.0.2-preview-daf00d2"
+    },
+    "@metamask/bridge-status-controller": {
+      "type": "breaking",
+      "previewVersion": "76.3.5-preview-daf00d2"
+    }
+  },
   "resolutions": {
+    "@metamask/bridge-controller@npm:^82.0.2": "npm:@metamask-previews/bridge-controller@82.0.2-preview-daf00d2",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "36.0.0",
     "@metamask/transaction-controller": "72.0.1",
@@ -589,7 +600,7 @@
     "readable-stream": "^4.7.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "reselect": "^5.1.1",
+    "reselect": "^5.3.0",
     "rxjs": "^7.8.2",
     "ts-mixer": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "tslib": "~2.6.0",
