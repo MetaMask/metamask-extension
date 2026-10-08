@@ -96,8 +96,14 @@ function checkApiMemberNamesMatchSnapshot(
 
   return {
     legacyApi,
-    namesToRemoveFromLegacyApi: setSubtract(currentNames, snapshottedNames),
-    namesToRemoveFromSnapshot: setSubtract(snapshottedNames, currentNames),
+    namesToRemoveFromLegacyApi: setSubtract(
+      currentNames,
+      snapshottedNames,
+    ).sort(),
+    namesToRemoveFromSnapshot: setSubtract(
+      snapshottedNames,
+      currentNames,
+    ).sort(),
   };
 }
 
@@ -240,7 +246,7 @@ function readSnapshottedApiMemberNames(
  * @returns The values in `set1` which are not in `set2`.
  */
 function setSubtract(set1: Set<string>, set2: Set<string>): string[] {
-  return [...set1].filter((name) => !set2.has(name)).sort();
+  return [...set1].filter((name) => !set2.has(name));
 }
 
 /**
