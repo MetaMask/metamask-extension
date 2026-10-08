@@ -2,13 +2,11 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { isAssetsUnifyStateFeatureEnabled } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -19,10 +17,6 @@ import {
 } from './asset-selectors';
 
 describe('Bridge asset selectors', () => {
-  afterEach(() => {
-    jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
-  });
-
   describe('getBridgeAssetsWithBalance', () => {
     it('returns all assets with balance for the given account group and selected asset', () => {
       const state = createBridgeMockStore({
