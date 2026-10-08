@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { TransactionDescription } from '@ethersproject/abi';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
@@ -85,6 +86,67 @@ describe('useTokenTransactionData', () => {
       '0x2e0D7E8c45221FcA00d74a3609A0f7097035d09B',
     );
     expect(result.args.increment.toHexString()).toBe('0x0123');
+  });
+
+  it('updates decoded values when calldata changes and prefers original calldata', () => {
+    const transaction = genUnapprovedTokenTransferConfirmation();
+    const { result, store, rerender } = renderHookWithConfirmContextProvider(
+      useTokenTransactionData,
+      getMockConfirmStateForTransaction(transaction),
+    );
+    const initialResult = result.current;
+    rerender();
+    expect(result.current).toBe(initialResult);
+
+    const updatedTransaction = {
+      ...transaction,
+      txParams: {
+        ...transaction.txParams,
+        data: TRANSFER_FROM_TRANSACTION_DATA,
+      },
+    };
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: { transactions: [updatedTransaction] },
+      });
+    });
+    expect((result.current as TransactionDescription).name).toBe(
+      'transferFrom',
+    );
+    expect(
+      (result.current as TransactionDescription).args._value.toHexString(),
+    ).toBe('0x0123');
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            { ...updatedTransaction, txParamsOriginal: transaction.txParams },
+          ],
+        },
+      });
+    });
+    expect((result.current as TransactionDescription).name).toBe('transfer');
+    expect(
+      (result.current as TransactionDescription).args._value.toHexString(),
+    ).toBe('0x01');
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            {
+              ...transaction,
+              txParams: { ...transaction.txParams, data: '0x' },
+            },
+          ],
+        },
+      });
+    });
+    expect(result.current).toBeUndefined();
   });
 
   it('returns undefined if no transaction data', () => {
