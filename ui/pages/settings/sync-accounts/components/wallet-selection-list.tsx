@@ -18,10 +18,7 @@ import {
 import { MultichainAccountCell } from '../../../../components/multichain-accounts/multichain-account-cell';
 import { AccountTreeWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { selectBalanceForAllWallets } from '../../../../selectors/assets';
-import {
-  getIsDefaultAddressEnabled,
-  getShowDefaultAddressPreference,
-} from '../../../../selectors';
+import { getShowDefaultAddressPreference } from '../../../../selectors';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../../helpers/utils/account-group-balance';
 import { VirtualizedList } from '../../../../components/ui/virtualized-list/virtualized-list';
@@ -59,7 +56,6 @@ export const WalletSelectionList = ({
 }: WalletSelectionListProps) => {
   const allBalances = useSelector(selectBalanceForAllWallets);
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const showDefaultAddress = useSelector(getShowDefaultAddressPreference);
 
   const [collapsedWallets, setCollapsedWallets] = useState<Set<string>>(
@@ -202,14 +198,13 @@ export const WalletSelectionList = ({
           accountNameString={item.groupData.metadata.name}
           balance={balance}
           selected={false}
-          showDefaultAddress={isDefaultAddressEnabled && showDefaultAddress}
+          showDefaultAddress={showDefaultAddress}
         />
       );
     },
     [
       allBalances,
       formatCurrencyWithMinThreshold,
-      isDefaultAddressEnabled,
       showDefaultAddress,
       selectedSet,
       toggleWallet,

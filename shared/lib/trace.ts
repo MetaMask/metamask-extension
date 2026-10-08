@@ -14,6 +14,9 @@ import { sentryLogger } from './sentry';
 export enum TraceName {
   AccountList = 'Account List',
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
+  HomepageReady = 'Homepage Ready',
+  // Homepage Section Performance
+  HomepageSectionTimeToContent = 'Homepage Section Time To Content',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
@@ -71,6 +74,8 @@ export enum TraceName {
   OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
   OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
   OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingSRPAccountCreationTime = 'Onboarding SRP Account Creation Time',
+  OnboardingSRPAccountImportTime = 'Onboarding SRP Account Import Time',
   OnboardingResetPassword = 'Onboarding - Reset Password',
   OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
   OnboardingAddSrp = 'Onboarding - Add SRP',
@@ -156,6 +161,8 @@ export enum TraceOperation {
   AccountCreate = 'account.create',
   AccountUi = 'account.ui',
   AccountDiscover = 'account.discover',
+  HomepagePerformance = 'homepage.performance',
+  HomepageSectionPerformance = 'homepage.section.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
@@ -170,9 +177,29 @@ const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
+export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
+
+/**
+ * Machine-time spans summed into the overall onboarding journey. These spans
+ * represent application work and deliberately exclude user interaction such
+ * as password/SRP entry and external OAuth provider login.
+ *
+ * OnboardingCreateKeyAndBackupSrp is excluded because it is nested inside
+ * OnboardingSRPAccountCreationTime and summing both would double-count it.
+ */
+const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
+  TraceName.OnboardingSRPAccountCreationTime,
+  TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+  TraceName.OnboardingOAuthSeedlessAuthenticate,
+  TraceName.OnboardingFetchSrps,
+  TraceName.OnboardingAddSrp,
+  TraceName.OnboardingResetPassword,
+]);
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
+let onboardingMachineTimeByKey = new Map<string, number>();
 
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
@@ -189,6 +216,8 @@ type PendingTrace = {
  * A context object to associate traces with each other and generate nested traces.
  */
 export type TraceContext = unknown;
+
+export type TraceValue = string | number | boolean;
 
 /**
  * Serialized trace context for cross-boundary propagation.
@@ -282,6 +311,39 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
+/**
+ * Return the active span for a pending manual trace.
+ *
+ * This is useful when a child trace is started after navigation or another
+ * async boundary and the parent must be resolved from the local trace registry
+ * instead of being threaded through route parameters.
+ * @param request
+ */
+export function getTraceContext(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+): TraceContext {
+  return tracesByKey.get(getTraceKey(request))?.span;
+}
+
+/**
+ * Attach attributes to an active trace without requiring callers to retain the
+ * raw Sentry span. Missing or non-Sentry contexts are intentionally ignored.
+ * @param context
+ * @param attributes
+ */
+export function annotateTrace(
+  context: TraceContext,
+  attributes: Record<string, TraceValue>,
+): void {
+  if (!isValidSentrySpan(context)) {
+    return;
+  }
+
+  for (const [key, value] of Object.entries(attributes)) {
+    context.setAttribute(key, value);
+  }
+}
+
 export function trace<ResultType>(
   request: TraceRequest,
   fn: TraceCallback<ResultType>,
@@ -310,6 +372,69 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
+}
+
+function sumOnboardingMachineTime(): number {
+  let total = 0;
+
+  for (const duration of onboardingMachineTimeByKey.values()) {
+    total += duration;
+  }
+
+  return total;
+}
+
+function recordOnboardingMachineTime(
+  request: Pick<TraceRequest, 'name' | 'id'>,
+  duration: number,
+): void {
+  onboardingMachineTimeByKey.set(getTraceKey(request), Math.max(duration, 0));
+}
+
+function addOnboardingMachineTime(
+  request: EndTraceRequest,
+  duration: number,
+): void {
+  if (
+    !MACHINE_TIME_TRACE_NAMES.has(request.name) ||
+    request.data?.success === false ||
+    !Number.isFinite(duration)
+  ) {
+    return;
+  }
+
+  recordOnboardingMachineTime(request, duration);
+}
+
+function addOpenOnboardingMachineTime(
+  request: EndTraceRequest,
+  journeyEndTime: number,
+): void {
+  if (request.data?.success === false) {
+    return;
+  }
+
+  for (const pendingTrace of tracesByKey.values()) {
+    if (!MACHINE_TIME_TRACE_NAMES.has(pendingTrace.request.name as TraceName)) {
+      continue;
+    }
+
+    const duration = journeyEndTime - pendingTrace.startTime;
+    if (Number.isFinite(duration)) {
+      recordOnboardingMachineTime(pendingTrace.request, duration);
+    }
+  }
+}
+
+function finalizeOnboardingMachineTime(span?: Span | null): void {
+  if (span && typeof span.setAttribute === 'function') {
+    span.setAttribute(
+      ONBOARDING_MACHINE_TIME_ATTRIBUTE,
+      Math.round(sumOnboardingMachineTime()),
+    );
+  }
+
+  onboardingMachineTimeByKey = new Map();
 }
 
 /**
@@ -353,14 +478,21 @@ export function endTrace(request: EndTraceRequest): void {
     }
   }
 
-  pendingTrace.end(timestamp);
+  const endTime = timestamp ?? getPerformanceTimestamp();
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    addOpenOnboardingMachineTime(request, endTime);
+    finalizeOnboardingMachineTime(pendingTrace.span);
+  }
+
+  pendingTrace.end(endTime);
 
   tracesByKey.delete(key);
 
   const { request: pendingRequest, startTime } = pendingTrace;
-  const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+  addOnboardingMachineTime(request, endTime - startTime);
 }
 
 /**
@@ -489,6 +621,10 @@ function startTrace(request: TraceRequest): TraceContext {
   const { name, startTime: requestStartTime } = request;
   const startTime = requestStartTime ?? getPerformanceTimestamp();
   const id = getTraceId(request);
+
+  if (name === TraceName.OnboardingJourneyOverall) {
+    onboardingMachineTimeByKey = new Map();
+  }
 
   const callback = (span: Sentry.Span | null) => {
     const end = (timestamp?: number) => {
