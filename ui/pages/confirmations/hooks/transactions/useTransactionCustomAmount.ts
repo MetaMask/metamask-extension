@@ -691,16 +691,20 @@ export function useTransactionCustomAmount({
       // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
       // and arms isMaxAmount like pressing Max. The fiat literal path can
       // ROUND_UP past available balance and yield "No quotes".
-      if (
-        depositPrefill.percentage === undefined ||
-        depositPrefill.isLimitCapped
-      ) {
+      // A 100% prefill from the snapshot balance stays a fiat amount: the
+      // snapshot can belong to another account, so it must not arm Max.
+      const { percentage, isLimitCapped, isUncappedMaxPrefill } =
+        depositPrefill;
+      const isPercentagePrefill =
+        percentage !== undefined &&
+        !isLimitCapped &&
+        (percentage < 100 || isUncappedMaxPrefill);
+
+      if (isPercentagePrefill) {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- apply deposit prefill when hasPrefilled commits
-        applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
+        updatePendingAmountPercentage(percentage, { isPrefill: true });
       } else {
-        updatePendingAmountPercentage(depositPrefill.percentage, {
-          isPrefill: true,
-        });
+        applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
       }
 
       // A Max held for the funding-account fetch has not written the amount

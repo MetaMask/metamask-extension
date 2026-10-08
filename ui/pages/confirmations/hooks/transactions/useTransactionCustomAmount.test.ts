@@ -1514,6 +1514,33 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
+    it('applies a snapshot 100% deposit prefill as a fiat amount without arming isMaxAmount', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 55.709,
+        payTokenBalanceRaw: '55709000',
+        payTokenDecimals: 6,
+        tokenFiatRate: 1,
+        updateTokenAmountMock,
+        isMaxAmount: false,
+        depositPrefill: createDepositPrefillMock({
+          isUncappedMaxPrefill: false,
+          percentage: 100,
+          prefillAmount: '55.70',
+          status: DepositPrefillStatus.Prefilled,
+        }),
+      });
+
+      expect(result.current.amountFiat).toBe('55.70');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('55.7');
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+        expect.anything(),
+      );
+    });
+
     it('records prefilled amount metrics for deposit prefill', () => {
       runHook({
         transactionMeta: moneyAccountDepositMeta,
