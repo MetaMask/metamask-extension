@@ -87,6 +87,12 @@ export function submitRequestToBackground(
     }
   }
 
+  if (typeof background[actionOrMethod] !== 'function') {
+    throw new Error(
+      `Unknown legacy background API method: '${actionOrMethod}'`,
+    );
+  }
+
   const traceContext = getSerializedTraceContext();
   const argsWithTraceContext = traceContext
     ? // eslint-disable-next-line @typescript-eslint/naming-convention

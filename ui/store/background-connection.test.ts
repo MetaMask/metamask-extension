@@ -137,6 +137,15 @@ describe('submitRequestToBackground', () => {
     );
     expect(messengerCallMock).not.toHaveBeenCalled();
   });
+
+  it('throws if given a legacy background API method that does not exist', async () => {
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({});
+
+    expect(() => submitRequestToBackground('unknownMethod')).toThrow(
+      "Unknown legacy background API method: 'unknownMethod'",
+    );
+  });
 });
 
 describe('subscribeToMessengerEvent', () => {
