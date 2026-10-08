@@ -47,6 +47,7 @@ import {
   useDepositPrefillAmount,
 } from './useDepositPrefillAmount';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
+import { useTransactionCustomAmountPercentageMetrics } from './useTransactionCustomAmountPercentageMetrics';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
@@ -80,6 +81,8 @@ export function useTransactionCustomAmount({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { chainId, id: transactionId } = transactionMeta ?? {};
+  const trackPercentageAmount =
+    useTransactionCustomAmountPercentageMetrics(transactionId);
 
   const isMaxAmount = useTransactionPayIsMaxAmount();
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -535,29 +538,11 @@ export function useTransactionCustomAmount({
         );
       }
 
-      if (transactionId) {
-        let amountInputType = `${percentage}%`;
-        if (isPrefill) {
-          amountInputType =
-            percentage === 100 ? 'prefilled_max' : 'prefilled_50';
-        }
-        upsertTransactionUIMetricsFragment(transactionId, {
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: amountInputType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_quote_requested: true,
-            // Record the USD amount prefilled at load so the controller metrics
-            // builder can attach it to the executed transaction events.
-            ...(isPrefill
-              ? {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  mm_pay_prefilled_amount: Number(newAmountFiat),
-                }
-              : {}),
-          },
-        });
-      }
+      trackPercentageAmount({
+        amountFiat: newAmountFiat,
+        isPrefill,
+        percentage,
+      });
 
       setAmountFiat(newAmountFiat);
 
@@ -590,6 +575,7 @@ export function useTransactionCustomAmount({
       payToken?.decimals,
       setIsMax,
       tokenFiatRate,
+      trackPercentageAmount,
       transactionId,
       updateTokenAmountCallback,
     ],
@@ -666,18 +652,7 @@ export function useTransactionCustomAmount({
         return;
       }
 
-      if (transactionId) {
-        upsertTransactionUIMetricsFragment(transactionId, {
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: 'prefilled_max',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_quote_requested: true,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_prefilled_amount: Number(fiatAmount),
-          },
-        });
-      }
+      trackPercentageAmount({ amountFiat: fiatAmount, isPrefill: true });
 
       updateTokenAmountCallback(newAmountHuman);
     },
@@ -688,7 +663,7 @@ export function useTransactionCustomAmount({
       isMaxAmount,
       setIsMax,
       tokenFiatRate,
-      transactionId,
+      trackPercentageAmount,
       updateTokenAmountCallback,
     ],
   );
