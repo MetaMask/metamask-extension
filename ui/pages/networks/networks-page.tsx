@@ -48,7 +48,10 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
-import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
+import {
+  getIsChainlistEnabled,
+  getIsChainlistV2Enabled,
+} from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
@@ -145,6 +148,7 @@ export const NetworksPage = () => {
     getSelectedMultichainNetworkChainId,
   );
   const isChainlistEnabled = useSelector(getIsChainlistEnabled);
+  const isChainlistV2Enabled = useSelector(getIsChainlistV2Enabled);
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
@@ -227,6 +231,15 @@ export const NetworksPage = () => {
     );
     handleNewNetwork();
   }, [createEventBuilder, handleNewNetwork, trackEvent]);
+
+  const handleAddFromChainlist = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
+    setView('add-from-chainlist');
+  }, [createEventBuilder, setView, trackEvent]);
 
   const handleChainlistNetworkSelect = useCallback(
     (network: ChainlistNetwork, searchQuery?: string) => {
@@ -504,12 +517,17 @@ export const NetworksPage = () => {
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
             chainlist={
-              isChainlistEnabled
+              isChainlistV2Enabled
                 ? {
                     existingNetworkChainIds,
                     existingNetworkNamesByChainId,
                     onSelect: handleChainlistNetworkSelect,
                   }
+                : undefined
+            }
+            onAddFromChainlist={
+              isChainlistEnabled && !isChainlistV2Enabled
+                ? handleAddFromChainlist
                 : undefined
             }
           />

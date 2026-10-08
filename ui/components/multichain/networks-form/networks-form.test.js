@@ -245,6 +245,17 @@ describe('NetworkForm Component', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders the add from Chainlist button when chainlist v2 is off', () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      onAddFromChainlist: () => undefined,
+    });
+
+    expect(
+      screen.getByTestId('network-form-add-from-chainlist'),
+    ).toBeInTheDocument();
+  });
+
   it('should render network form correctly', () => {
     const { queryByText, getByDisplayValue } =
       renderComponent(propNetworkDisplay);

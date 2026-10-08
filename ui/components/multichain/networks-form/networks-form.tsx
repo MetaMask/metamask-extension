@@ -12,6 +12,7 @@ import {
   ButtonVariant,
   HelpText,
   HelpTextSeverity,
+  IconName,
   Label,
   Popover,
   PopoverPosition,
@@ -103,6 +104,7 @@ export const NetworksForm = ({
   usePageFooterStyle = false,
   onComplete,
   onEdit,
+  onAddFromChainlist,
   chainlist,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
@@ -114,6 +116,7 @@ export const NetworksForm = ({
   usePageFooterStyle?: boolean;
   onComplete?: () => void;
   onEdit?: () => void;
+  onAddFromChainlist?: () => void;
   chainlist?: NetworksFormChainlist;
 }) => {
   const t = useI18nContext();
@@ -541,6 +544,19 @@ export const NetworksForm = ({
       className="networks-form__scrollable h-full"
     >
       <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
+        {onAddFromChainlist && !existingNetwork && !showChainlist ? (
+          <Button
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            startIconName={IconName.FlashFilled}
+            isFullWidth
+            onClick={onAddFromChainlist}
+            className="mb-4"
+            data-testid="network-form-add-from-chainlist"
+          >
+            {t('addFromChainlist')}
+          </Button>
+        ) : null}
         <Label htmlFor="networkName" className="mb-1">
           {t('networkName')}
         </Label>

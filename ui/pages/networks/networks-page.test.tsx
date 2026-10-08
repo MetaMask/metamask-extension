@@ -315,10 +315,27 @@ describe('NetworksPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('opens the Chainlist dropdown from the network name field', async () => {
+  it('keeps the add from Chainlist button when chainlist v2 is off', () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
       remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    expect(
+      screen.getByTestId('network-form-add-from-chainlist'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the Chainlist dropdown from the network name field', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
     });
 
     expect(
@@ -340,7 +357,10 @@ describe('NetworksPage', () => {
   it('fills the add network form when a Chainlist network is chosen', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
-      remoteFeatureFlags: { extensionUxChainlist: true },
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
     });
 
     await act(async () => {
@@ -365,7 +385,10 @@ describe('NetworksPage', () => {
   it('keeps a typed network name when Chainlist has no match', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
-      remoteFeatureFlags: { extensionUxChainlist: true },
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
     });
 
     await act(async () => {

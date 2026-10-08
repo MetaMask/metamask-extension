@@ -3127,6 +3127,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  extensionUxChainlistV2: {
+    inProd: false,
+    name: 'extensionUxChainlistV2',
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   extensionUxDefaultAddressVersioned: {
     inProd: true,
     name: 'extensionUxDefaultAddressVersioned',
