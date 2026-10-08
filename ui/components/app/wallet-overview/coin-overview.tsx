@@ -19,6 +19,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -32,7 +33,7 @@ import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/m
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
@@ -302,6 +303,10 @@ export const CoinOverview = ({
     setHasZeroFiatBalanceDelayElapsed(false);
   }
 
+  const isZeroFiatBalanceDelayStateCurrent =
+    enabledNetworksDelayKey === prevDelayKey &&
+    shouldDelayZeroFiatBalance === prevShouldDelayZeroFiatBalance;
+
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
       return undefined;
@@ -317,13 +322,16 @@ export const CoinOverview = ({
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
+      ((shouldDelayZeroFiatBalance &&
+        (!isZeroFiatBalanceDelayStateCurrent ||
+          !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      isZeroFiatBalanceDelayStateCurrent,
       hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
@@ -340,6 +348,19 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    ready: balanceReady,
+    sectionId: 'balance',
+    data: {
+      success: true,
+      contentState: shouldShowBalanceEmptyState ? 'empty' : 'filled',
+    },
+  });
 
   const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));
