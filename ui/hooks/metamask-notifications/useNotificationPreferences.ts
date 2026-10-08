@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import log from 'loglevel';
-import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
+import {
+  DEFAULT_DRY_RUN_PREFERENCES,
+  type NotificationPreferences,
+} from '@metamask/authenticated-user-storage';
 import { useDispatch } from '../../store/hooks';
 
 import {
@@ -168,18 +171,35 @@ export function useNotificationPreferences() {
       key: NotificationPreferenceChannelKey,
       value: boolean,
     ) => {
-      await updatePreferencesSection(type, (currentSectionPreferences) => {
-        // TODO: type casting until agentic cli preferences are not optional (next release)
-        const sectionPreferences = currentSectionPreferences as NonNullable<
-          NotificationPreferences[typeof type]
-        >;
+      if (type === 'dryRun') {
+        await updatePreferencesSection(
+          'dryRun',
+          (currentSectionPreferences) => {
+            const sectionPreferences = {
+              ...DEFAULT_DRY_RUN_PREFERENCES,
+              ...currentSectionPreferences,
+            };
 
-        if (sectionPreferences[key] === value) {
-          return sectionPreferences;
+            if (sectionPreferences[key] === value) {
+              return currentSectionPreferences;
+            }
+
+            return {
+              ...sectionPreferences,
+              [key]: value,
+            };
+          },
+        );
+        return;
+      }
+
+      await updatePreferencesSection(type, (currentSectionPreferences) => {
+        if (currentSectionPreferences[key] === value) {
+          return currentSectionPreferences;
         }
 
         return {
-          ...sectionPreferences,
+          ...currentSectionPreferences,
           [key]: value,
         };
       });

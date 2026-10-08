@@ -6720,6 +6720,12 @@
   "notificationsSettingsDeselectAll": {
     "message": "Deselect all"
   },
+  "notificationsSettingsDryRunDescription": {
+    "message": "Manage dry-run notifications"
+  },
+  "notificationsSettingsDryRunTitle": {
+    "message": "Dry run"
+  },
   "notificationsSettingsInAppNotifications": {
     "message": "In-app"
   },

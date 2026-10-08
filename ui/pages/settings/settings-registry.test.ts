@@ -4,6 +4,7 @@ import {
   CURRENCY_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
   NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
   NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
@@ -179,6 +180,15 @@ describe('settings-registry', () => {
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
         }),
       );
+
+      expect(
+        getSettingsRouteMeta(NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE),
+      ).toEqual(
+        expect.objectContaining({
+          labelKey: 'notificationsSettingsDryRunTitle',
+          parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+        }),
+      );
     });
   });
 
@@ -258,6 +268,7 @@ describe('settings-registry', () => {
       expect(paths).toContain(NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE);
       expect(paths).toContain(NOTIFICATIONS_SETTINGS_MARKETING_ROUTE);
       expect(paths).toContain(NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE);
+      expect(paths).toContain(NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE);
     });
 
     it('does not include settings root', () => {

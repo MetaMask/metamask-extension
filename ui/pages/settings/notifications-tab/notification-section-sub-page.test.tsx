@@ -950,6 +950,13 @@ describe('NotificationSectionSubPage', () => {
         preferences: createMockNotificationPreferences(),
       },
       {
+        section: 'dryRun',
+        preferences: {
+          ...createMockNotificationPreferences(),
+          dryRun: undefined,
+        },
+      },
+      {
         section: 'agenticCli',
         preferences: {
           ...createMockNotificationPreferences(),
@@ -987,6 +994,19 @@ describe('NotificationSectionSubPage', () => {
       'writes the $section in-app and push toggles to their own preference fields',
       ({ section, preferences }: (typeof cases)[number]) => {
         const updatePreference = renderSection(section, preferences);
+
+        if (section === 'dryRun' && preferences.dryRun === undefined) {
+          expect(
+            screen
+              .getByTestId(`${section}-in-app-notifications-toggle-box`)
+              .querySelector('.toggle-button'),
+          ).toHaveClass('toggle-button--on');
+          expect(
+            screen
+              .getByTestId(`${section}-push-notifications-toggle-box`)
+              .querySelector('.toggle-button'),
+          ).toHaveClass('toggle-button--on');
+        }
 
         fireEvent.click(
           screen.getByTestId(`${section}-in-app-notifications-toggle-input`),

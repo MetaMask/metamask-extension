@@ -90,6 +90,91 @@ describe('useNotificationPreferences', () => {
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
 
+  it('uses enabled defaults when disabling a dry run channel without a preference', async () => {
+    const preferences = {
+      ...createMockNotificationPreferences(),
+      dryRun: undefined,
+    };
+    const expectedPreferences = {
+      ...preferences,
+      dryRun: {
+        pushNotificationsEnabled: false,
+        inAppNotificationsEnabled: true,
+      },
+    };
+
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return Promise.resolve(preferences);
+      }
+
+      if (action.type === 'putNotificationPreferences') {
+        return Promise.resolve();
+      }
+
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+
+    await act(async () => {
+      await result.current.updatePreference(
+        'dryRun',
+        'pushNotificationsEnabled',
+        false,
+      );
+    });
+
+    expect(mockPutNotificationPreferences).toHaveBeenCalledWith(
+      expectedPreferences,
+    );
+  });
+
+  it('does not persist enabled defaults when enabling a missing dry run preference', async () => {
+    const preferences = {
+      ...createMockNotificationPreferences(),
+      dryRun: undefined,
+    };
+
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return Promise.resolve(preferences);
+      }
+
+      if (action.type === 'putNotificationPreferences') {
+        return Promise.resolve();
+      }
+
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+
+    await act(async () => {
+      await result.current.updatePreference(
+        'dryRun',
+        'pushNotificationsEnabled',
+        true,
+      );
+    });
+
+    expect(mockPutNotificationPreferences).not.toHaveBeenCalled();
+  });
+
   it('chains rapid section updates using the optimistic cache', async () => {
     const preferences = createMockNotificationPreferences();
     const firstExpectedPreferences = {

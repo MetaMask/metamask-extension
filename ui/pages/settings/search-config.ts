@@ -1,5 +1,6 @@
 import {
   NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
   NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
@@ -112,6 +113,7 @@ export const NOTIFICATIONS_SECTION_ITEMS = {
   perps: 'notificationsSettingsPerpsTitle',
   marketing: 'notificationsSettingsMarketingTitle',
   'agentic-cli': 'notificationsSettingsAgenticCliTitle',
+  'dry-run': 'notificationsSettingsDryRunTitle',
 } as const;
 
 export const DEVELOPER_TOOLS_ITEMS = {
@@ -188,6 +190,12 @@ export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
         path: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
         items: createSearchItemMeta({
           'agentic-cli': NOTIFICATIONS_SECTION_ITEMS['agentic-cli'],
+        }),
+      },
+      {
+        path: NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
+        items: createSearchItemMeta({
+          'dry-run': NOTIFICATIONS_SECTION_ITEMS['dry-run'],
         }),
       },
     ],

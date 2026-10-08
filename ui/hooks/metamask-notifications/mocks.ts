@@ -49,4 +49,9 @@ export const createMockNotificationPreferences = (
     inAppNotificationsEnabled: true,
     ...overrides.priceAlerts,
   },
+  dryRun: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    ...overrides.dryRun,
+  },
 });

@@ -20,6 +20,7 @@ import {
   NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
   NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+  NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
@@ -210,6 +211,11 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     component: mmLazy(
       () => import('./notifications-tab/agentic-cli-sub-page.tsx'),
     ),
+  },
+  [NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE]: {
+    labelKey: 'notificationsSettingsDryRunTitle',
+    parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
+    component: mmLazy(() => import('./notifications-tab/dry-run-sub-page.tsx')),
   },
 
   // --- Security and Password tab ---

@@ -19,6 +19,12 @@
   "workspaces": [
     "test/fakes/*"
   ],
+  "previewBuilds": {
+    "@metamask/authenticated-user-storage": {
+      "type": "non-breaking",
+      "previewVersion": "4.1.0-preview-377206492"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"

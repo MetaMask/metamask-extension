@@ -10,6 +10,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { DEFAULT_DRY_RUN_PREFERENCES } from '@metamask/authenticated-user-storage';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -63,6 +64,7 @@ const SETTINGS_TYPE_BY_SECTION: Record<SectionType, string> = {
   perps: 'perps',
   marketing: 'marketing',
   agenticCli: 'agentic_cli',
+  dryRun: 'dry_run',
 };
 
 type PendingAccountToggle = {
@@ -401,12 +403,9 @@ export function NotificationSettingsSection({
     null,
   );
 
-  // TODO: type casting until agentic cli preferences are not optional (next release)
   const sectionPreferences =
-    section.type === 'agenticCli'
-      ? (preferences[section.type] as NonNullable<
-          (typeof preferences)['agenticCli']
-        >)
+    section.type === 'dryRun'
+      ? (preferences.dryRun ?? DEFAULT_DRY_RUN_PREFERENCES)
       : preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
   const showChannelToggles = section.type !== 'walletActivity';

@@ -93,6 +93,10 @@ export function getMockNotificationPreferences(): NotificationPreferences {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
     },
+    dryRun: {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    },
   };
 }
 
