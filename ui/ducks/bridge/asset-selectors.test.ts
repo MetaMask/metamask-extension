@@ -1,11 +1,20 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
 } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { isAssetsUnifyStateFeatureEnabled } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import {
+  ARC_ERC20_USDC_ASSET_ID,
+  ARC_NATIVE_ASSET_ID,
+} from '../../components/app/assets/enablement/arc';
 import {
   getBridgeBalancesByChainId,
   getBridgeAssetsByAssetId,
@@ -13,6 +22,10 @@ import {
 } from './asset-selectors';
 
 describe('Bridge asset selectors', () => {
+  afterEach(() => {
+    jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(false);
+  });
+
   describe('getBridgeAssetsWithBalance', () => {
     it('returns all assets with balance for the given account group and selected asset', () => {
       const state = createBridgeMockStore({
@@ -343,6 +356,86 @@ describe('Bridge asset selectors', () => {
         iconUrl: 'https://example.com/fall.png',
         balance: '1',
         chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+      });
+    });
+
+    it('maps Arc ERC-20 USDC bridge lookups to the native Arc balance', () => {
+      jest.mocked(isAssetsUnifyStateFeatureEnabled).mockReturnValue(true);
+
+      const arcBalance = '123';
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            refreshRate: 30000,
+            priceImpactThreshold: { normal: 1, gasless: 2 },
+            maxRefreshCount: 5,
+            support: true,
+            chains: {
+              [CHAIN_IDS.ARC]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [{ chainId: formatChainIdToCaip(CHAIN_IDS.ARC) }],
+          },
+        },
+        metamaskStateOverrides: {
+          assetsBalance: {
+            [MOCK_EVM_ACCOUNT.id]: {
+              [ARC_NATIVE_ASSET_ID]: {
+                amount: arcBalance,
+              },
+            },
+          },
+          assetsInfo: {
+            [ARC_NATIVE_ASSET_ID]: {
+              type: 'native',
+              symbol: 'USDC',
+              name: 'USDC',
+              // Native Arc USDC uses 18 decimals; only the ERC-20 wrapper uses 6
+              decimals: 18,
+            },
+          },
+          currencyRates: {
+            USDC: { conversionRate: 1 },
+          },
+        },
+      });
+      state.metamask.networkConfigurationsByChainId[CHAIN_IDS.ARC] = {
+        blockExplorerUrls: [],
+        chainId: CHAIN_IDS.ARC,
+        defaultRpcEndpointIndex: 0,
+        name: 'Arc',
+        nativeCurrency: 'USDC',
+        rpcEndpoints: [
+          {
+            networkClientId: 'arc',
+            type: RpcEndpointType.Custom,
+            url: 'https://rpc.arc.example',
+          },
+        ],
+      };
+
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
+      const balanceByAssetId = getBridgeAssetsByAssetId(state, accountGroup.id);
+
+      expect(getBridgeSortedAssets(state, accountGroup.id)).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            assetId: ARC_NATIVE_ASSET_ID,
+          }),
+        ]),
+      );
+      expect(getNativeAssetForChainId(CHAIN_IDS.ARC).assetId).toBe(
+        ARC_NATIVE_ASSET_ID,
+      );
+      expect(balanceByAssetId[ARC_ERC20_USDC_ASSET_ID]).toMatchObject({
+        assetId: ARC_ERC20_USDC_ASSET_ID,
+        balance: arcBalance,
+        decimals: 6,
+        symbol: 'USDC',
       });
     });
 
