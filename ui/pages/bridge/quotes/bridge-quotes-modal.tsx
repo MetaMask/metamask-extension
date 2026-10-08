@@ -143,132 +143,132 @@ export const BridgeQuotesModal = ({
             </Text>
           </Row>
           {/* QUOTE LIST */}
-            <Column maxWidth={BlockSize.Full}>
-            {sortedQuotes.map(
-              (quote: QuoteMetadata & QuoteResponse, index: number) => {
-                const {
-                  quote: { dest, protocols, requestId },
-                } = quote;
-                const totalNetworkFee = getTotalNetworkFee(quote);
-                const { priceImpact } = quote.quote.priceData ?? {};
-                const isQuoteActive = requestId === activeQuote?.quote.requestId;
-                const isRecommended = isRecommendedQuote(quote);
+          <Column maxWidth={BlockSize.Full}>
+          {sortedQuotes.map(
+            (quote: QuoteMetadata & QuoteResponse, index: number) => {
+              const {
+                quote: { dest, protocols, requestId },
+              } = quote;
+              const totalNetworkFee = getTotalNetworkFee(quote);
+              const { priceImpact } = quote.quote.priceData ?? {};
+              const isQuoteActive = requestId === activeQuote?.quote.requestId;
+              const isRecommended = isRecommendedQuote(quote);
 
-                return (
-                  <Column
-                    className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
-                    data-testid="bridge-quote-option"
-                    alignItems={AlignItems.flexStart}
-                    key={index}
-                    backgroundColor={
-                      isQuoteActive ? BackgroundColor.primaryMuted : undefined
-                    }
-                    onClick={() => handleQuoteSelected(quote)}
-                    paddingInline={4}
-                    paddingTop={3}
-                    paddingBottom={3}
-                    style={{ position: 'relative', cursor: 'pointer' }}
-                  >
-                    {isQuoteActive && (
-                      <Column
-                        style={{
-                          position: 'absolute',
-                          left: 4,
-                          top: 4,
-                          height: 'calc(100% - 8px)',
-                          width: 4,
-                          borderRadius: 8,
-                        }}
-                        backgroundColor={BackgroundColor.primaryDefault}
-                      />
-                    )}
+              return (
+                <Column
+                  className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
+                  data-testid="bridge-quote-option"
+                  alignItems={AlignItems.flexStart}
+                  key={index}
+                  backgroundColor={
+                    isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                  }
+                  onClick={() => handleQuoteSelected(quote)}
+                  paddingInline={4}
+                  paddingTop={3}
+                  paddingBottom={3}
+                  style={{ position: 'relative', cursor: 'pointer' }}
+                >
+                  {isQuoteActive && (
+                    <Column
+                      style={{
+                        position: 'absolute',
+                        left: 4,
+                        top: 4,
+                        height: 'calc(100% - 8px)',
+                        width: 4,
+                        borderRadius: 8,
+                      }}
+                      backgroundColor={BackgroundColor.primaryDefault}
+                    />
+                  )}
 
-                    <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
-                      {/* PROVIDER NAME */}
-                      <Text
-                        variant={TextVariant.bodyMd}
-                        fontWeight={FontWeight.Medium}
-                        ellipsis={true}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          flexShrink: 1,
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {startCase(protocols[0])}
-                      </Text>
-                      {/* DEST AMOUNT */}
-                      <Text
-                        variant={TextVariant.bodyMd}
-                        fontWeight={FontWeight.Medium}
-                        style={{ whiteSpace: 'nowrap' }}
-                      >
-                        {formatTokenAmount(
-                          locale,
-                          dest.normalizedAmount,
-                          dest.asset.symbol,
-                        )}
-                      </Text>
-                    </Row>
-
-                    <Row
-                      alignItems={AlignItems.stretch}
-                      gap={2}
-                      width={BlockSize.Full}
+                  <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
+                    {/* PROVIDER NAME */}
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                      ellipsis={true}
+                      style={{
+                        whiteSpace: 'nowrap',
+                        flexShrink: 1,
+                        textOverflow: 'ellipsis',
+                      }}
                     >
-                      {/* TOTAL COST + TAG */}
-                      <Row gap={1}>
-                        <Text
-                          data-testid="bridge-quote-total-cost"
-                          variant={TextVariant.bodySm}
-                          color={TextColor.textAlternative}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          {t('quotedTotalCost', [
-                            (quote.quote.priceData?.cost?.valueInCurrency
-                              ? formatCurrencyAmount(
-                                  quote.quote.priceData.cost.valueInCurrency,
-                                  currency,
-                                  2,
-                                )
-                              : totalNetworkFee?.normalizedAmount &&
-                                formatTokenAmount(
-                                  locale,
-                                  totalNetworkFee.normalizedAmount,
-                                  nativeCurrency,
-                                )) ?? '',
-                          ])}
-                        </Text>
-                        {isRecommended && (
-                          <Tag
-                            backgroundColor={BackgroundColor.successMuted}
-                            labelProps={{
-                              color: TextColor.successDefault,
-                              fontWeight: FontWeight.Medium,
-                            }}
-                            style={{
-                              whiteSpace: 'nowrap',
-                              paddingInline: 6,
-                              paddingTop: 0,
-                              paddingBottom: 0,
-                            }}
-                            label={t('bridgeLowestCost')}
-                          />
-                        )}
-                      </Row>
-                      {/* RECEIVED AMOUNT */}
+                      {startCase(protocols[0])}
+                    </Text>
+                    {/* DEST AMOUNT */}
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      fontWeight={FontWeight.Medium}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {formatTokenAmount(
+                        locale,
+                        dest.normalizedAmount,
+                        dest.asset.symbol,
+                      )}
+                    </Text>
+                  </Row>
+
+                  <Row
+                    alignItems={AlignItems.stretch}
+                    gap={2}
+                    width={BlockSize.Full}
+                  >
+                    {/* TOTAL COST + TAG */}
+                    <Row gap={1}>
                       <Text
+                        data-testid="bridge-quote-total-cost"
                         variant={TextVariant.bodySm}
                         color={TextColor.textAlternative}
                         style={{ whiteSpace: 'nowrap' }}
                       >
-                        {formatCurrencyAmount(dest.valueInCurrency, currency, 2)}
+                        {t('quotedTotalCost', [
+                          (quote.quote.priceData?.cost?.valueInCurrency
+                            ? formatCurrencyAmount(
+                                quote.quote.priceData.cost.valueInCurrency,
+                                currency,
+                                2,
+                              )
+                            : totalNetworkFee?.normalizedAmount &&
+                              formatTokenAmount(
+                                locale,
+                                totalNetworkFee.normalizedAmount,
+                                nativeCurrency,
+                              )) ?? '',
+                        ])}
                       </Text>
+                      {isRecommended && (
+                        <Tag
+                          backgroundColor={BackgroundColor.successMuted}
+                          labelProps={{
+                            color: TextColor.successDefault,
+                            fontWeight: FontWeight.Medium,
+                          }}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingInline: 6,
+                            paddingTop: 0,
+                            paddingBottom: 0,
+                          }}
+                          label={t('bridgeLowestCost')}
+                        />
+                      )}
                     </Row>
-                  </Column>
-                );
-              },
-            )}
+                    {/* RECEIVED AMOUNT */}
+                    <Text
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {formatCurrencyAmount(dest.valueInCurrency, currency, 2)}
+                    </Text>
+                  </Row>
+                </Column>
+              );
+            },
+          )}
           </Column>
         </ModalBody>
       </ModalContent>
