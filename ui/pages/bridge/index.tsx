@@ -12,6 +12,7 @@ import {
   PREPARE_SWAP_ROUTE,
   PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -39,6 +40,8 @@ import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBrid
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { resetBridgeController } from '../../ducks/bridge/actions';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -51,6 +54,7 @@ import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useBridging();
 
@@ -136,7 +140,17 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
   const handleBack = () => {
-    transitionBack(() => navigate(-1));
+    transitionBack(() => {
+      dispatch(resetBridgeController());
+      if (typeof window !== 'undefined' && window.history.length > 1) {
+        navigate(-1);
+        return;
+      }
+      navigate(DEFAULT_ROUTE, {
+        replace: true,
+        state: { stayOnHomePage: true },
+      });
+    });
   };
 
   const prepareBody = (
