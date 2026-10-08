@@ -18,7 +18,9 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
   FontWeight,
   TextAlign,
   TextColor,
@@ -33,6 +35,7 @@ import {
   getBridgeQuotes,
   getQuoteRequest,
 } from '../../../ducks/bridge/selectors';
+import { Column, Row } from '../layout';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
@@ -131,16 +134,16 @@ export const BridgeQuotesModal = ({
 
         <ModalBody className="p-0">
           {/* HEADER */}
-          <div className="p-4 pt-0">
+          <Row padding={4} paddingTop={0}>
             <Text
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
             >
               {t('bridgeQuotesSortedByCost')}
             </Text>
-          </div>
+          </Row>
           {/* QUOTE LIST */}
-          <div className="w-full">
+            <Column maxWidth={BlockSize.Full}>
             {sortedQuotes.map(
               (quote: QuoteMetadata & QuoteResponse, index: number) => {
                 const {
@@ -152,23 +155,35 @@ export const BridgeQuotesModal = ({
                 const isRecommended = isRecommendedQuote(quote);
 
                 return (
-                  <div
-                    className={`bridge-quote-option flex flex-col items-start px-4 py-3${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
+                  <Column
+                    className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
                     data-testid="bridge-quote-option"
+                    alignItems={AlignItems.flexStart}
                     key={index}
-                    style={{
-                      position: 'relative',
-                      cursor: 'pointer',
-                    }}
+                    backgroundColor={
+                      isQuoteActive ? BackgroundColor.primaryMuted : undefined
+                    }
                     onClick={() => handleQuoteSelected(quote)}
+                    paddingInline={4}
+                    paddingTop={3}
+                    paddingBottom={3}
+                    style={{ position: 'relative', cursor: 'pointer' }}
                   >
                     {isQuoteActive && (
-                      <div
-                        className="absolute left-1 top-1 h-[calc(100%-8px)] w-1 rounded-lg bg-primary-default"
+                      <Column
+                        style={{
+                          position: 'absolute',
+                          left: 4,
+                          top: 4,
+                          height: 'calc(100% - 8px)',
+                          width: 4,
+                          borderRadius: 8,
+                        }}
+                        backgroundColor={BackgroundColor.primaryDefault}
                       />
                     )}
 
-                    <div className="flex w-full max-w-full gap-2">
+                    <Row maxWidth={BlockSize.Full} width={BlockSize.Full} gap={2}>
                       {/* PROVIDER NAME */}
                       <Text
                         variant={TextVariant.bodyMd}
@@ -194,11 +209,15 @@ export const BridgeQuotesModal = ({
                           dest.asset.symbol,
                         )}
                       </Text>
-                    </div>
+                    </Row>
 
-                    <div className="flex w-full items-stretch gap-2">
+                    <Row
+                      alignItems={AlignItems.stretch}
+                      gap={2}
+                      width={BlockSize.Full}
+                    >
                       {/* TOTAL COST + TAG */}
-                      <div className="flex gap-1">
+                      <Row gap={1}>
                         <Text
                           data-testid="bridge-quote-total-cost"
                           variant={TextVariant.bodySm}
@@ -236,7 +255,7 @@ export const BridgeQuotesModal = ({
                             label={t('bridgeLowestCost')}
                           />
                         )}
-                      </div>
+                      </Row>
                       {/* RECEIVED AMOUNT */}
                       <Text
                         variant={TextVariant.bodySm}
@@ -245,12 +264,12 @@ export const BridgeQuotesModal = ({
                       >
                         {formatCurrencyAmount(dest.valueInCurrency, currency, 2)}
                       </Text>
-                    </div>
-                  </div>
+                    </Row>
+                  </Column>
                 );
               },
             )}
-          </div>
+          </Column>
         </ModalBody>
       </ModalContent>
     </Modal>
