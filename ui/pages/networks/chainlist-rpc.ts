@@ -1,3 +1,4 @@
+import { hexToNumber, isStrictHexString } from '@metamask/utils';
 import * as URI from 'uri-js';
 
 import { getUsableUrls } from './chainlist-network-picker';
@@ -38,8 +39,12 @@ const toDecimalChainId = (chainId: string): string | undefined => {
     return undefined;
   }
 
-  if (/^0x[0-9a-f]+$/iu.test(trimmedChainId)) {
-    return Number.parseInt(trimmedChainId, 16).toString(10);
+  if (isStrictHexString(trimmedChainId)) {
+    try {
+      return hexToNumber(trimmedChainId).toString(10);
+    } catch {
+      return undefined;
+    }
   }
 
   if (/^[0-9]+$/u.test(trimmedChainId)) {
