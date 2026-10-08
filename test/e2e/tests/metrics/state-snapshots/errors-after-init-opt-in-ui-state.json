@@ -154,6 +154,12 @@
     "etag": null,
     "eventQueue": "object",
     "events": "object",
+    "eventsConfig": {
+      "events": "object",
+      "schemaVersion": "0",
+      "timestamp": 0,
+      "version": "0"
+    },
     "eventsConfigEtag": null,
     "fcmToken": "string",
     "featureFlagThresholdGroups": "object",
@@ -455,7 +461,7 @@
     "useTransactionSimulations": true,
     "userOperations": "object",
     "userRegion": null,
-    "version": null,
+    "version": "0",
     "visibleCandleCount": "number",
     "walletComplianceStatusMap": "object",
     "watchEthereumAccountEnabled": "boolean",
