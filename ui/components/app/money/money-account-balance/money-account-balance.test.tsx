@@ -179,13 +179,15 @@ describe('MoneyAccountBalance', () => {
   it('renders the live balance when one is available', () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
-    const { getByTestId, getByText, queryByTestId, queryByText } = render();
+    const { getByTestId, getByText, queryByTestId } = render();
 
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
+    expect(
+      getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID),
+    ).not.toHaveTextContent(/mUSD/u);
     expect(getByText(tEn('money'))).toBeInTheDocument();
-    expect(queryByText('mUSD')).toBeNull();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
