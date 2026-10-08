@@ -38,7 +38,8 @@ export const startMfaFlow = (
   };
   flow.result.then(clear, clear);
   notify();
-  flow.start();
+  // `start` never rejects: failures settle `flow.result`, returned below.
+  flow.start().catch(() => undefined);
   return flow.result;
 };
 
