@@ -130,14 +130,10 @@ type TransactionControllerFixtureInput = Partial<
   transactions?: TransactionMeta[];
 };
 
-type MetaMetricsControllerFixturePatch = {
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
+type AnalyticsControllerFixturePatch = {
   analyticsId?: string | null;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   optedIn?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   consentDecisionMade?: boolean;
-  /** Patches `AnalyticsController`, not `MetaMetricsController`. */
   dataCollectionForMarketing?: boolean;
 };
 
@@ -314,7 +310,7 @@ class FixtureBuilderV2 {
     return this;
   }
 
-  withMetaMetricsController(data: MetaMetricsControllerFixturePatch): this {
+  withAnalyticsController(data: AnalyticsControllerFixturePatch): this {
     const {
       analyticsId,
       optedIn,
@@ -1637,19 +1633,6 @@ class FixtureBuilderV2 {
   withUseBasicFunctionalityDisabled(): this {
     return this.withPreferencesController({
       useExternalServices: false,
-    });
-  }
-
-  /**
-   * Uses the pre-consolidation settings layout (Assets autodetect toggles,
-   * Privacy → Third-party APIs, etc.). Required for E2E tests that exercise
-   * those surfaces when `default-fixture.json` marks the wallet consolidated.
-   */
-  withBasicFunctionalityConsolidationDisabled(): this {
-    return this.withPreferencesController({
-      preferences: {
-        isBasicFunctionalityConsolidatedEnabled: false,
-      },
     });
   }
 

@@ -35,6 +35,10 @@ describe('Test Snap manageState', function () {
         await testSnaps.fillMessage('setStateKeyInput', 'foo');
         await testSnaps.fillMessage('dataStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'encryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
         await testSnaps.fillMessage('setStateKeyInput', 'baz');
         await testSnaps.fillMessage('dataStateInput', '"qux"');
         await testSnaps.scrollAndClickButton('sendStateButton');
@@ -67,6 +71,10 @@ describe('Test Snap manageState', function () {
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'foo');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"bar"');
         await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'unencryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar' }, null, 2),
+        );
         await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'baz');
         await testSnaps.fillMessage('dataUnencryptedStateInput', '"qux"');
         await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
