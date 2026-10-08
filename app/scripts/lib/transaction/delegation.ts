@@ -26,7 +26,8 @@ import {
   type Delegation,
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
-import { getDelegationCaveats, normalizeCallData } from './caveats';
+import { getDelegationCaveats } from './caveats';
+import { normalizeCallData } from './subsidized-caveats';
 
 const log = createProjectLogger('transaction-delegation');
 

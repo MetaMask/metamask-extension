@@ -32,11 +32,8 @@ import {
   type Caveat,
 } from '../../../../shared/lib/delegation';
 
-import {
-  CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME,
-  normalizeCallData,
-  SUBSIDIZED_ORDER_ID_PLACEHOLDER,
-} from './caveats';
+import { CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME } from './caveats';
+import { SUBSIDIZED_ORDER_ID_PLACEHOLDER } from './subsidized-caveats';
 import {
   convertTransactionToRedeemDelegations,
   DelegationMessenger,
@@ -84,7 +81,6 @@ const REDEEMER_ENFORCER_MOCK =
   '0xRedeemerEnforcer0000000000000000000000000' as Hex;
 
 const REDEEMER_1_MOCK = '0xB01caEa8c6C47bbf4F4b4c5080Ca642043359C2E' as Hex;
-const REDEEMER_2_MOCK = '0xB42F812A44c22cc6b861478900401ee759EbEAD6' as Hex;
 const DELEGATEE_MOCK = '0x5555555555555555555555555555555555555555' as Hex;
 const TIMESTAMP_ENFORCER_MOCK =
   '0xTimestampEnforcer000000000000000000000000' as Hex;
@@ -102,14 +98,14 @@ const UPGRADE_CONTRACT_ADDRESS_MOCK =
 const SIGNATURE_MOCK = '0xsignature' as Hex;
 const ENCODED_MOCK = '0xencoded' as Hex;
 
-const CAVEATS_OVERRIDE_MOCK = [
-  { enforcer: '0xaa', terms: '0xbb', args: '0xcc' },
+const CAVEATS_OVERRIDE_MOCK: Caveat[] = [
+  { args: '0xcc' as Hex, enforcer: '0xaa' as Hex, terms: '0xbb' as Hex },
 ];
 
 const ADDITIONAL_EXECUTION_MOCK: ExecutionStruct = {
+  callData: '0xabcdef',
   target: '0x9999999999999999999999999999999999999999',
   value: 7n,
-  callData: '0xabcdef',
 };
 
 const TRANSACTION_META_MOCK = {
@@ -236,11 +232,11 @@ describe('delegation', () => {
       DelegationManager: DELEGATION_MANAGER_ADDRESS_MOCK,
       caveatEnforcers: {
         AllowedCalldataEnforcer: ALLOWED_CALLDATA_ENFORCER_MOCK,
-        RedeemerEnforcer: REDEEMER_ENFORCER_MOCK,
         AllowedTargetsEnforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
         ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
         ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
         LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
+        RedeemerEnforcer: REDEEMER_ENFORCER_MOCK,
         TimestampEnforcer: TIMESTAMP_ENFORCER_MOCK,
       },
     } as never);
@@ -274,19 +270,16 @@ describe('delegation', () => {
     jest.restoreAllMocks();
   });
 
-  const getTimestampTerms = (minutes: number) =>
-    createTimestampTerms({
-      afterThreshold: 0,
-      beforeThreshold: Math.floor(FIXED_NOW / 1000) + minutes * 60,
-    });
-
-  const getTimestampCaveat = (caveats: Caveat[], terms: Hex) =>
-    caveats.find((caveat) => caveat.terms === terms);
-
-  const buildTimestampCaveat = (minutes: number) => ({
-    enforcer: TIMESTAMP_ENFORCER_MOCK,
-    terms: getTimestampTerms(minutes),
+  const buildTimestampCaveat = (
+    nowSeconds: number,
+    deadlineSeconds: number,
+  ) => ({
     args: '0x',
+    enforcer: TIMESTAMP_ENFORCER_MOCK,
+    terms: createTimestampTerms({
+      afterThreshold: 0,
+      beforeThreshold: nowSeconds + deadlineSeconds,
+    }),
   });
 
   describe('convertTransactionToRedeemDelegations', () => {
@@ -313,14 +306,14 @@ describe('delegation', () => {
       expect(createExactExecutionBatchTermsMock).toHaveBeenCalledWith({
         executions: [
           {
+            callData: '0xaaaa',
             target: '0x1111111111111111111111111111111111111111',
             value: 2n,
-            callData: '0xaaaa',
           },
           {
+            callData: '0xbbbb',
             target: '0x2222222222222222222222222222222222222222',
             value: 3n,
-            callData: '0xbbbb',
           },
         ],
       });
@@ -331,14 +324,14 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xaaaa',
                 target: '0x1111111111111111111111111111111111111111',
                 value: 2n,
-                callData: '0xaaaa',
               },
               {
+                callData: '0xbbbb',
                 target: '0x2222222222222222222222222222222222222222',
                 value: 3n,
-                callData: '0xbbbb',
               },
             ],
           ],
@@ -374,9 +367,9 @@ describe('delegation', () => {
 
       expect(createExactExecutionTermsMock).toHaveBeenCalledWith({
         execution: {
+          callData: '0xdeadbeef',
           target: TRANSACTION_META_MOCK.txParams.to,
           value: 256n,
-          callData: '0xdeadbeef',
         },
       });
       expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
@@ -386,9 +379,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xdeadbeef',
                 target: TRANSACTION_META_MOCK.txParams.to,
                 value: 256n,
-                callData: '0xdeadbeef',
               },
             ],
           ],
@@ -435,9 +428,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xdeadbeef',
                 target: TRANSACTION_META_MOCK.txParams.to,
                 value: 256n,
-                callData: '0xdeadbeef',
               },
             ],
           ],
@@ -456,9 +449,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xdeadbeef',
                 target: TRANSACTION_META_MOCK.txParams.to,
                 value: 256n,
-                callData: '0xdeadbeef',
               },
             ],
           ],
@@ -479,9 +472,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xdeadbeef',
                 target: TRANSACTION_META_MOCK.txParams.to,
                 value: 256n,
-                callData: '0xdeadbeef',
               },
             ],
           ],
@@ -501,9 +494,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: '0xdeadbeef',
                 target: TRANSACTION_META_MOCK.txParams.to,
                 value: 256n,
-                callData: '0xdeadbeef',
               },
               ADDITIONAL_EXECUTION_MOCK,
             ],
@@ -522,9 +515,9 @@ describe('delegation', () => {
       expect(createExactExecutionBatchTermsMock).toHaveBeenCalledWith({
         executions: expect.arrayContaining([
           expect.objectContaining({
+            callData: ADDITIONAL_EXECUTION_MOCK.callData,
             target: ADDITIONAL_EXECUTION_MOCK.target,
             value: ADDITIONAL_EXECUTION_MOCK.value,
-            callData: ADDITIONAL_EXECUTION_MOCK.callData,
           }),
         ]),
       });
@@ -534,7 +527,7 @@ describe('delegation', () => {
       await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
-        caveats: CAVEATS_OVERRIDE_MOCK as never,
+        caveats: CAVEATS_OVERRIDE_MOCK,
       });
 
       expect(createLimitedCallsTermsMock).not.toHaveBeenCalled();
@@ -544,7 +537,7 @@ describe('delegation', () => {
       expect(signDelegationMock).toHaveBeenCalledWith(
         expect.objectContaining({
           delegation: expect.objectContaining({
-            caveats: [...CAVEATS_OVERRIDE_MOCK, buildTimestampCaveat(30)],
+            caveats: CAVEATS_OVERRIDE_MOCK,
           }),
         }),
       );
@@ -553,53 +546,6 @@ describe('delegation', () => {
     describe('with redeemers', () => {
       const getSignedCaveats = () =>
         signDelegationMock.mock.calls[0][0].delegation.caveats;
-
-      it('appends a RedeemerEnforcer caveat to the default caveats', async () => {
-        await convertTransactionToRedeemDelegations({
-          transaction: TRANSACTION_META_MOCK,
-          messenger,
-          redeemers: [REDEEMER_1_MOCK, REDEEMER_2_MOCK],
-        });
-
-        expect(getSignedCaveats()).toStrictEqual([
-          {
-            enforcer: LIMITED_CALLS_ENFORCER_MOCK,
-            terms: TERMS_LIMITED_MOCK,
-            args: '0x',
-          },
-          {
-            enforcer: EXACT_EXECUTION_ENFORCER_MOCK,
-            terms: TERMS_EXACT_MOCK,
-            args: '0x',
-          },
-          {
-            enforcer: REDEEMER_ENFORCER_MOCK,
-            terms:
-              `0x${REDEEMER_1_MOCK.slice(2)}${REDEEMER_2_MOCK.slice(2)}`.toLowerCase(),
-            args: '0x',
-          },
-          buildTimestampCaveat(30),
-        ]);
-      });
-
-      it('appends a RedeemerEnforcer caveat to provided caveats', async () => {
-        await convertTransactionToRedeemDelegations({
-          transaction: TRANSACTION_META_MOCK,
-          messenger,
-          caveats: CAVEATS_OVERRIDE_MOCK as never,
-          redeemers: [REDEEMER_1_MOCK],
-        });
-
-        expect(getSignedCaveats()).toStrictEqual([
-          ...CAVEATS_OVERRIDE_MOCK,
-          {
-            enforcer: REDEEMER_ENFORCER_MOCK,
-            terms: REDEEMER_1_MOCK.toLowerCase(),
-            args: '0x',
-          },
-          buildTimestampCaveat(30),
-        ]);
-      });
 
       it('includes the delegatee as an allowed redeemer', async () => {
         await convertTransactionToRedeemDelegations({
@@ -610,39 +556,11 @@ describe('delegation', () => {
         });
 
         expect(getSignedCaveats()).toContainEqual({
+          args: '0x',
           enforcer: REDEEMER_ENFORCER_MOCK,
           terms:
             `0x${REDEEMER_1_MOCK.slice(2)}${DELEGATEE_MOCK.slice(2)}`.toLowerCase(),
-          args: '0x',
         });
-      });
-
-      it('removes duplicate redeemers', async () => {
-        await convertTransactionToRedeemDelegations({
-          transaction: TRANSACTION_META_MOCK,
-          messenger,
-          delegatee: REDEEMER_1_MOCK.toLowerCase() as Hex,
-          redeemers: [REDEEMER_1_MOCK, REDEEMER_1_MOCK],
-        });
-
-        expect(getSignedCaveats()).toContainEqual({
-          enforcer: REDEEMER_ENFORCER_MOCK,
-          terms: REDEEMER_1_MOCK.toLowerCase(),
-          args: '0x',
-        });
-      });
-
-      it('does not add a RedeemerEnforcer caveat if redeemers is empty', async () => {
-        await convertTransactionToRedeemDelegations({
-          transaction: TRANSACTION_META_MOCK,
-          messenger,
-          delegatee: DELEGATEE_MOCK,
-          redeemers: [],
-        });
-
-        expect(getSignedCaveats()).not.toContainEqual(
-          expect.objectContaining({ enforcer: REDEEMER_ENFORCER_MOCK }),
-        );
       });
     });
 
@@ -675,25 +593,26 @@ describe('delegation', () => {
 
     it('signs delegation via DelegationController:signDelegation messenger action', async () => {
       const expectedSalt = bytesToHex(new Uint8Array(32).fill(0x42));
+      const nowSeconds = Math.floor(FIXED_NOW / 1000);
 
       const expectedUnsignedDelegation = {
-        delegator: TRANSACTION_META_MOCK.txParams.from,
-        delegate: ANY_BENEFICIARY,
         authority: ROOT_AUTHORITY,
-        salt: expectedSalt,
         caveats: [
           {
+            args: '0x',
             enforcer: LIMITED_CALLS_ENFORCER_MOCK,
             terms: TERMS_LIMITED_MOCK,
-            args: '0x',
           },
+          buildTimestampCaveat(nowSeconds, 1800),
           {
+            args: '0x',
             enforcer: EXACT_EXECUTION_ENFORCER_MOCK,
             terms: TERMS_EXACT_MOCK,
-            args: '0x',
           },
-          buildTimestampCaveat(30),
         ],
+        delegate: ANY_BENEFICIARY,
+        delegator: TRANSACTION_META_MOCK.txParams.from,
+        salt: expectedSalt,
       };
 
       await convertTransactionToRedeemDelegations({
@@ -704,9 +623,9 @@ describe('delegation', () => {
       expect(createLimitedCallsTermsMock).toHaveBeenCalledWith({ limit: 1 });
       expect(createExactExecutionTermsMock).toHaveBeenCalledWith({
         execution: {
+          callData: '0xdeadbeef',
           target: TRANSACTION_META_MOCK.txParams.to,
           value: 256n,
-          callData: '0xdeadbeef',
         },
       });
       expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
@@ -727,7 +646,7 @@ describe('delegation', () => {
     it('uses the feature flag override for the delegation deadline', async () => {
       remoteFeatureFlags = {
         [CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME]: {
-          delegationDeadlineMinutes: 45,
+          deadlineSeconds: 2700,
         },
       };
 
@@ -736,15 +655,12 @@ describe('delegation', () => {
         messenger,
       });
 
-      const expectedTerms = getTimestampTerms(45);
-      const timestampCaveat = getTimestampCaveat(
-        signDelegationMock.mock.calls[0][0].delegation.caveats,
-        expectedTerms,
-      );
+      const nowSeconds = Math.floor(FIXED_NOW / 1000);
+      const expectedTimestampCaveat = buildTimestampCaveat(nowSeconds, 2700);
 
-      expect(timestampCaveat).toEqual(
-        expect.objectContaining({ terms: expectedTerms }),
-      );
+      expect(
+        signDelegationMock.mock.calls[0][0].delegation.caveats,
+      ).toContainEqual(expectedTimestampCaveat);
     });
 
     it('uses a random salt for each delegation', async () => {
@@ -1102,19 +1018,6 @@ describe('delegation', () => {
         ],
       }) as TransactionMeta;
 
-    const parseAllowedCalldata = (terms: string) => ({
-      startIndex: parseInt(terms.slice(2, 2 + 64), 16),
-      value: terms.slice(2 + 64).toLowerCase(),
-    });
-
-    const getAllowedCalldataTerms = () => {
-      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
-      return caveats
-        .map((caveat) => caveat.terms)
-        .filter((terms) => terms.length > 2 + 64)
-        .map(parseAllowedCalldata);
-    };
-
     it('redeems the batch as a single execution in single mode', async () => {
       const data = buildBatchData(1);
 
@@ -1132,9 +1035,9 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: data,
                 target: SELF_TARGET,
                 value: 0n,
-                callData: data,
               },
             ],
           ],
@@ -1157,147 +1060,14 @@ describe('delegation', () => {
           executions: [
             [
               {
+                callData: data,
                 target: SELF_TARGET,
                 value: 0n,
-                callData: data,
               },
             ],
           ],
         }),
       );
-    });
-
-    it('signs allowedTargets and limitedCalls caveats', async () => {
-      const data = buildBatchData(1);
-
-      await convertTransactionToRedeemDelegations({
-        transaction: buildSubsidizedTransaction(data),
-        messenger,
-        isSubsidized: true,
-      });
-
-      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
-
-      expect(caveats[0]).toStrictEqual({
-        enforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
-        terms: SELF_TARGET,
-        args: '0x',
-      });
-      expect(caveats[1]).toStrictEqual({
-        enforcer: LIMITED_CALLS_ENFORCER_MOCK,
-        terms: TERMS_LIMITED_MOCK,
-        args: '0x',
-      });
-      expect(
-        caveats
-          .slice(2, -1)
-          .every(
-            (caveat) => caveat.enforcer === ALLOWED_CALLDATA_ENFORCER_MOCK,
-          ),
-      ).toBe(true);
-    });
-
-    it('splits only after order-ID-bearing call selectors', async () => {
-      const data = buildBatchData(1);
-      const body = data.slice(2).toLowerCase();
-
-      await convertTransactionToRedeemDelegations({
-        transaction: buildSubsidizedTransaction(data),
-        messenger,
-        isSubsidized: true,
-      });
-
-      const enforced = getAllowedCalldataTerms();
-      const approveSplit = body.indexOf(APPROVE_DATA) / 2 + 4;
-      const depositSplit = body.indexOf(DEPOSIT_DATA) / 2 + 4;
-      const segmentEnds = enforced.map(
-        ({ startIndex, value }) => startIndex + value.length / 2,
-      );
-
-      expect(segmentEnds).toContain(depositSplit);
-      expect(segmentEnds).not.toContain(approveSplit);
-
-      const depositStart = body.indexOf(DEPOSIT_DATA) / 2;
-      const innerApprove1 = depositStart + 4 + 4;
-      expect(segmentEnds).not.toContain(innerApprove1);
-    });
-
-    it('produces far fewer caveats than the per-selector split', async () => {
-      const data = buildBatchData(2);
-
-      await convertTransactionToRedeemDelegations({
-        transaction: buildSubsidizedTransaction(data),
-        messenger,
-        isSubsidized: true,
-      });
-
-      const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
-      expect(caveats.length).toBeLessThanOrEqual(8);
-    });
-
-    it('leaves the order-ID placeholder window free and enforces the remainder', async () => {
-      const data = buildBatchData(1);
-
-      await convertTransactionToRedeemDelegations({
-        transaction: buildSubsidizedTransaction(data),
-        messenger,
-        isSubsidized: true,
-      });
-
-      const body = data.slice(2).toLowerCase();
-      const enforced = getAllowedCalldataTerms();
-
-      for (const { value } of enforced) {
-        expect(value).not.toContain(PLACEHOLDER_BODY);
-      }
-
-      const rebuilt = Array.from(body);
-      for (const { startIndex, value } of enforced) {
-        for (let i = 0; i < value.length; i++) {
-          rebuilt[startIndex * 2 + i] = value[i];
-        }
-      }
-      expect(rebuilt.join('')).toBe(body);
-
-      const placeholderStart = body.indexOf(PLACEHOLDER_BODY) / 2;
-      const covered = enforced.some(
-        ({ startIndex, value }) =>
-          startIndex <= placeholderStart &&
-          placeholderStart < startIndex + value.length / 2,
-      );
-      expect(covered).toBe(false);
-    });
-
-    it('frees every occurrence when the placeholder appears multiple times', async () => {
-      const data = buildBatchData(2);
-
-      await convertTransactionToRedeemDelegations({
-        transaction: buildSubsidizedTransaction(data),
-        messenger,
-        isSubsidized: true,
-      });
-
-      const enforced = getAllowedCalldataTerms();
-      for (const { value } of enforced) {
-        expect(value).not.toContain(PLACEHOLDER_BODY);
-      }
-
-      const body = data.slice(2).toLowerCase();
-      let searchIndex = body.indexOf(PLACEHOLDER_BODY);
-      const placeholderStarts: number[] = [];
-      while (searchIndex !== -1) {
-        placeholderStarts.push(searchIndex / 2);
-        searchIndex = body.indexOf(PLACEHOLDER_BODY, searchIndex + 1);
-      }
-      expect(placeholderStarts).toHaveLength(3);
-
-      for (const start of placeholderStarts) {
-        const covered = enforced.some(
-          ({ startIndex, value }) =>
-            startIndex <= start && start < startIndex + value.length / 2,
-        );
-        expect(covered).toBe(false);
-      }
     });
 
     it('throws with the subsidized prefix when batch calldata is missing', async () => {
@@ -1382,41 +1152,6 @@ describe('delegation', () => {
         address: TRANSACTION_META_MOCK.txParams.from,
         chainIds: ['0x1'],
       });
-    });
-  });
-
-  describe('normalizeCallData', () => {
-    it('returns 0x for undefined', () => {
-      expect(normalizeCallData(undefined)).toBe('0x');
-    });
-
-    it('returns 0x for null', () => {
-      expect(normalizeCallData(null)).toBe('0x');
-    });
-
-    it('returns 0x for empty string', () => {
-      expect(normalizeCallData('')).toBe('0x');
-    });
-
-    it('returns 0x for 0x', () => {
-      expect(normalizeCallData('0x')).toBe('0x');
-    });
-
-    it('preserves valid hex data', () => {
-      expect(normalizeCallData('0xdeadbeef')).toBe('0xdeadbeef');
-    });
-
-    it('lowercases hex', () => {
-      expect(normalizeCallData('0xDEADBEEF')).toBe('0xdeadbeef');
-    });
-
-    it('adds 0x prefix if missing', () => {
-      expect(normalizeCallData('deadbeef')).toBe('0xdeadbeef');
-    });
-
-    it('pads odd-length hex body', () => {
-      expect(normalizeCallData('0xabc')).toBe('0x0abc');
-      expect(normalizeCallData('abc')).toBe('0x0abc');
     });
   });
 });
