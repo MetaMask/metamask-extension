@@ -10,12 +10,14 @@ const store = configureMockStore([thunk])({
 });
 
 const renderPage = () => {
-  global.platform.getExtensionURL = (route = '/') => `home.html#${route}`;
-
   return renderWithProvider(<DeepLink pageNotFound />, store, '/missing');
 };
 
 describe('DeepLink missing page', () => {
+  beforeEach(() => {
+    global.platform.getExtensionURL = (route = '/') => `home.html#${route}`;
+  });
+
   it('shows the missing-page message and a link home', () => {
     const { getByRole, getByText } = renderPage();
 
@@ -32,5 +34,13 @@ describe('DeepLink missing page', () => {
         name: messages.deepLink_GoToTheHomePageButton.message,
       }),
     ).toHaveAttribute('href', 'home.html#/');
+  });
+
+  it('renders the deep-link interstitial when no link is present', async () => {
+    const { findByText } = renderWithProvider(<DeepLink />, store, '/link');
+
+    expect(
+      await findByText(messages.deepLink_ErrorMissingUrl.message),
+    ).toBeInTheDocument();
   });
 });

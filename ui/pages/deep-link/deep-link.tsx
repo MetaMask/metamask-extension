@@ -2,7 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
-import { Checkbox } from '@metamask/design-system-react';
+import {
+  Box as DSBox,
+  Button as DSButton,
+  ButtonSize as DSButtonSize,
+  ButtonVariant as DSButtonVariant,
+  Checkbox,
+  FontWeight as DSFontWeight,
+  Text as DSText,
+  TextColor as DSTextColor,
+  TextVariant as DSTextVariant,
+} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -45,7 +55,9 @@ type Route = {
   signed: boolean;
 };
 
-const { getExtensionURL } = globalThis.platform;
+function getExtensionURL(route: string, queryString?: string | null): string {
+  return globalThis.platform.getExtensionURL(route, queryString ?? null);
+}
 
 type DeepLinkCardProps = {
   children: React.ReactNode;
@@ -355,37 +367,38 @@ export const DeepLink = ({ pageNotFound = false }: DeepLinkProps) => {
           src="./images/deep-link-error-404.png"
           style={{ maxWidth: '100%', height: 'auto' }}
         />
-        <Text
-          as="h1"
-          variant={TextVariant.headingLg}
-          fontWeight={FontWeight.Bold}
-          marginTop={4}
-          marginBottom={4}
+        <DSText
+          asChild
+          variant={DSTextVariant.HeadingLg}
+          fontWeight={DSFontWeight.Bold}
+          className="mt-4 mb-4"
         >
-          {t('deepLink_Error404Title')}
-        </Text>
-        <Box
-          as="div"
-          data-testid="deep-link-description"
-          paddingBottom={12}
-          height={BlockSize.Full}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('deepLink_Error404Description')}
-          </Text>
-          {extraDescription ? <Box>{extraDescription}</Box> : null}
-        </Box>
-        <Box width={BlockSize.Full} marginTop={12}>
-          <Button
-            width={BlockSize.Full}
-            variant={ButtonVariant.Primary}
-            href={globalThis.platform.getExtensionURL('/')}
-            size={ButtonSize.Lg}
-            data-testid="deep-link-continue-button"
+          <h1>{t('deepLink_Error404Title')}</h1>
+        </DSText>
+        <DSBox className="w-full pb-12" data-testid="deep-link-description">
+          <DSText
+            variant={DSTextVariant.BodyMd}
+            color={DSTextColor.TextAlternative}
           >
-            {t('deepLink_GoToTheHomePageButton')}
-          </Button>
-        </Box>
+            {t('deepLink_Error404Description')}
+          </DSText>
+          {extraDescription ? <DSBox>{extraDescription}</DSBox> : null}
+        </DSBox>
+        <DSBox className="mt-12 w-full">
+          <DSButton
+            asChild
+            variant={DSButtonVariant.Primary}
+            size={DSButtonSize.Lg}
+            className="w-full"
+          >
+            <a
+              href={getExtensionURL('/')}
+              data-testid="deep-link-continue-button"
+            >
+              {t('deepLink_GoToTheHomePageButton')}
+            </a>
+          </DSButton>
+        </DSBox>
       </DeepLinkCard>
     );
   }
