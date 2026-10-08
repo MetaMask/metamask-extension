@@ -115,6 +115,7 @@ const propNetworkDisplay = {
     },
     clear: () => ({}),
     name: MAINNET_DISPLAY_NAME,
+    source: 'manual',
     rpcUrls: {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [
@@ -130,6 +131,7 @@ const propNetworkDisplay = {
     setChainId: () => ({}),
     setName: () => ({}),
     setRpcUrls: () => ({}),
+    setSource: () => ({}),
     setTicker: () => ({}),
     ticker: 'ETH',
   },
@@ -576,6 +578,37 @@ describe('NetworkForm Component', () => {
           defaultBlockExplorerUrlIndex: undefined,
         },
         { setActive: true },
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'manual',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('tracks Chainlist as the source when saving a suggested network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        source: 'chainlist',
+      },
+    });
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'chainlist',
+          }),
+        }),
       );
     });
   });

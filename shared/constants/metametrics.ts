@@ -1054,6 +1054,7 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   ChainlistAddClicked = 'Chainlist Add Clicked',
   ChainlistNetworkSelected = 'Chainlist Network Selected',
+  ChainlistRpcSelected = 'Chainlist RPC Selected',
   CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',

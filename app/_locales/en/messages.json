@@ -2683,6 +2683,10 @@
     "message": "Enter network details manually",
     "description": "Subtitle for keeping a typed network name that is not on Chainlist."
   },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Enter RPC details manually",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Learn how to stay safe.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2697,11 +2701,19 @@
   },
   "chainlistNoMatches": {
     "message": "No matches from ChainList",
-    "description": "Shown in the network name dropdown when Chainlist has no network matching the typed name."
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "RPC data comes from ChainList. Always verify before adding. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
   },
   "chainlistUseTypedNetworkName": {
     "message": "Use \"$1\" as network name",
     "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Use \"$1\" as RPC URL",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Change in Settings"
