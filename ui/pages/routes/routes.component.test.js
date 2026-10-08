@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import {
   createMemoryRouter,
   matchRoutes,
-  Navigate,
   RouterProvider,
 } from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
@@ -26,6 +25,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import { DeepLinkNotFound } from '../deep-link/deep-link-not-found';
 import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
@@ -226,20 +226,19 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
 
-  it('sends unknown routes home instead of the error page', async () => {
+  it('shows the missing-page screen for unknown routes instead of the error page', () => {
     const unknownPath = '/multichain-account-list';
     const matches = matchRoutes(routeConfig, unknownPath);
     const fallback = matches?.at(-1)?.route;
 
     expect(fallback?.path).toBe('*');
-    expect(fallback?.element.type).toBe(Navigate);
-    expect(fallback?.element.props.to).toBe(DEFAULT_ROUTE);
-    expect(fallback?.element.props.replace).toBe(true);
+    expect(fallback?.element.type).toBe(DeepLinkNotFound);
 
     const matchedRouter = createMemoryRouter(routeConfig, {
       initialEntries: [unknownPath],
     });
     expect(matchedRouter.state.errors).toBeNull();
+    expect(matchedRouter.state.location.pathname).toBe(unknownPath);
 
     expect(
       matchRoutes(routeConfig, ACCOUNT_LIST_PAGE_ROUTE)?.at(-1)?.route.path,
@@ -257,31 +256,6 @@ describe('Routes Component', () => {
         ({ route }) => route.path === '*',
       ),
     ).toBe(false);
-
-    const router = createMemoryRouter(
-      [
-        {
-          path: '*',
-          element: fallback?.element,
-        },
-        {
-          path: DEFAULT_ROUTE,
-          element: <div>home</div>,
-        },
-      ],
-      { initialEntries: [unknownPath] },
-    );
-
-    rtlRender(
-      <RouterProvider
-        router={router}
-        future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-      />,
-    );
-
-    expect(await screen.findByText('home')).toBeInTheDocument();
-    expect(router.state.location.pathname).toBe(DEFAULT_ROUTE);
-    expect(router.state.historyAction).toBe('REPLACE');
   });
 
   it('registers the hardware wallet signing page outside guarded swap routes', () => {

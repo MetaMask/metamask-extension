@@ -164,6 +164,7 @@ import { REVEAL_SEED_ROUTE_CAPABILITIES } from '../keychains/reveal-seed-messeng
 import { PRIVATE_KEY_LIST_ROUTE_CAPABILITIES } from '../multichain-accounts/multichain-account-private-key-list-page/messenger';
 import BatchSell from '../batch-sell/batch-sell-page';
 import { RampsFlowLayout } from '../ramps/context/ramps-flow-context';
+import { DeepLinkNotFound } from '../deep-link/deep-link-not-found';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -722,11 +723,11 @@ export const routeConfig = [
       },
     ],
   },
-  // createHashRouter treats an unmatched location as a fatal routing error.
-  // Send those URLs home instead of rendering the error page.
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the deep-link missing-page screen instead of the crash page.
   {
     path: '*',
-    element: <Navigate to={DEFAULT_ROUTE} replace />,
+    element: <DeepLinkNotFound />,
   },
 ];
 
