@@ -389,6 +389,28 @@ describe('delegation', () => {
       );
     });
 
+    for (const [name, data, expected] of [
+      ['uppercase hex', '0xDEADBEEF', '0xdeadbeef'],
+      ['missing 0x prefix', 'deadbeef', '0xdeadbeef'],
+      ['odd-length hex', '0xabc', '0x0abc'],
+      ['empty string', '', '0x'],
+    ]) {
+      it(`normalizes txParams callData with ${name}`, async () => {
+        const transaction = {
+          ...TRANSACTION_META_MOCK,
+          txParams: { ...TRANSACTION_META_MOCK.txParams, data },
+        } as unknown as TransactionMeta;
+
+        await convertTransactionToRedeemDelegations({ transaction, messenger });
+
+        expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            executions: [[expect.objectContaining({ callData: expected })]],
+          }),
+        );
+      });
+    }
+
     it('normalizes nestedTransactions callData', async () => {
       const transaction = {
         ...TRANSACTION_META_MOCK,
@@ -1040,6 +1062,24 @@ describe('delegation', () => {
                 value: 0n,
               },
             ],
+          ],
+        }),
+      );
+    });
+
+    it('normalizes the batch calldata on the subsidized path', async () => {
+      const data = buildBatchData(1);
+
+      await convertTransactionToRedeemDelegations({
+        transaction: buildSubsidizedTransaction(data.toUpperCase() as Hex),
+        messenger,
+        isSubsidized: true,
+      });
+
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          executions: [
+            [expect.objectContaining({ callData: data.toLowerCase() })],
           ],
         }),
       );

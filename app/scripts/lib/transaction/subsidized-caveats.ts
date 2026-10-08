@@ -1,8 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { NestedTransactionMetadata } from '@metamask/transaction-controller';
 import {
   Caveat,
   DeleGatorEnvironment,
+  ExecutionStruct,
 } from '../../../../shared/lib/delegation';
 
 /**
@@ -33,70 +34,43 @@ type EnforcedSegment = {
  * signing.
  *
  * @param environment - DeleGator environment.
- * @param transaction - Transaction being delegated.
+ * @param execution - Batch execution the delegation will be redeemed with.
+ * @param nestedTransactions - Calls within the batch, used to find the order ID.
  * @returns The subsidized caveats.
  */
 export function getSubsidizedCaveats(
   environment: DeleGatorEnvironment,
-  transaction: TransactionMeta,
+  execution: ExecutionStruct | undefined,
+  nestedTransactions: NestedTransactionMetadata[] = [],
 ): Caveat[] {
   try {
-    return buildSubsidizedCaveats(environment, transaction);
+    return buildSubsidizedCaveats(environment, execution, nestedTransactions);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Subsidized Caveats: ${message}`, { cause: error });
   }
 }
 
-/**
- * Normalizes calldata to a lowercase, 0x-prefixed, even-length hex string so
- * byte offsets used by caveat terms cannot shift.
- *
- * @param data - Raw calldata value.
- * @returns Normalized calldata, or `0x` if empty or not a string.
- */
-export function normalizeCallData(data: unknown): Hex {
-  if (typeof data !== 'string' || data.length === 0) {
-    return '0x';
-  }
-
-  const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
-  const lower = data.toLowerCase();
-  const prefixed = hasHexPrefix ? `0x${lower.slice(2)}` : `0x${lower}`;
-  const hexBody = prefixed.slice(2);
-
-  if (hexBody.length === 0) {
-    return '0x';
-  }
-
-  if (hexBody.length % 2 !== 0) {
-    return normalizeCallData(`0x0${hexBody}`);
-  }
-
-  return prefixed as Hex;
-}
-
 function buildSubsidizedCaveats(
   environment: DeleGatorEnvironment,
-  transaction: TransactionMeta,
+  execution: ExecutionStruct | undefined,
+  nestedTransactions: NestedTransactionMetadata[],
 ): Caveat[] {
-  const { txParams } = transaction;
-  const target = txParams.to as Hex | undefined;
-  const calldata = txParams.data as Hex | undefined;
+  const { callData, target } = execution ?? {};
 
-  if (!target || !calldata) {
+  if (!target || !callData || callData === '0x') {
     throw new Error('Missing batch target or calldata');
   }
 
   const allowedTargetsCaveat: Caveat = {
     args: '0x',
     enforcer: environment.caveatEnforcers.AllowedTargetsEnforcer,
-    terms: concatHex([normalizeCallData(target)]),
+    terms: concatHex([target]),
   };
 
   const allowedCalldataCaveats: Caveat[] = getEnforcedSegments(
-    normalizeCallData(calldata),
-    transaction.nestedTransactions ?? [],
+    callData,
+    nestedTransactions,
   ).map(({ startIndex, value }) => ({
     args: '0x',
     enforcer: environment.caveatEnforcers.AllowedCalldataEnforcer,

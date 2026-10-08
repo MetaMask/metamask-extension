@@ -5,9 +5,12 @@ import {
   createRedeemerTerms,
   createTimestampTerms,
 } from '@metamask/delegation-core';
-import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  FeatureFlags,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import type { Hex, Json } from '@metamask/utils';
 import {
   getDeleGatorEnvironment,
   type Caveat,
@@ -62,7 +65,7 @@ const CAVEATS_OVERRIDE_MOCK: Caveat[] = [
  * @param flags
  */
 function buildMessenger(
-  flags: Record<string, unknown> = {},
+  flags: FeatureFlags = {},
 ): GetDelegationCaveatsRequest['messenger'] {
   return {
     call: jest
@@ -251,7 +254,7 @@ describe('getDelegationCaveats', () => {
   });
 
   describe('invalid flag values fall back to default deadline', () => {
-    const cases: [string, unknown][] = [
+    const cases: [string, Json | undefined][] = [
       ['zero', 0],
       ['negative', -1],
       ['NaN', NaN],
@@ -431,6 +434,23 @@ describe('getDelegationCaveats', () => {
       expect(result[2].enforcer).toBe(
         ENVIRONMENT.caveatEnforcers.AllowedTargetsEnforcer,
       );
+    });
+
+    it('builds subsidized caveats from the first execution', () => {
+      const result = getDelegationCaveats(
+        buildRequest({ executions: [EXECUTION_MOCK_2], isSubsidized: true }),
+      );
+
+      expect(result[2]).toStrictEqual({
+        args: '0x',
+        enforcer: ENVIRONMENT.caveatEnforcers.AllowedTargetsEnforcer,
+        terms: EXECUTION_MOCK_2.target,
+      });
+      expect(result[3]).toStrictEqual({
+        args: '0x',
+        enforcer: ENVIRONMENT.caveatEnforcers.AllowedCalldataEnforcer,
+        terms: `0x${'0'.repeat(64)}${EXECUTION_MOCK_2.callData.slice(2)}`,
+      });
     });
 
     it('does not include ExactExecution caveat on the subsidized path', () => {

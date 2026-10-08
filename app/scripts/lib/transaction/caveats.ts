@@ -80,7 +80,14 @@ export function getDelegationCaveats(
   const baseCaveats = getBaseCaveats(request);
 
   if (isSubsidized) {
-    return [...baseCaveats, ...getSubsidizedCaveats(environment, transaction)];
+    return [
+      ...baseCaveats,
+      ...getSubsidizedCaveats(
+        environment,
+        executions[0],
+        transaction.nestedTransactions,
+      ),
+    ];
   }
 
   return [...baseCaveats, getExactExecutionCaveat(environment, executions)];

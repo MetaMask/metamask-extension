@@ -27,7 +27,6 @@ import {
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
 import { getDelegationCaveats } from './caveats';
-import { normalizeCallData } from './subsidized-caveats';
 
 const log = createProjectLogger('transaction-delegation');
 
@@ -161,9 +160,10 @@ export async function convertTransactionToRedeemDelegations(
   const { chainId } = transaction;
   const environment = getDeleGatorEnvironment(parseInt(chainId, 16));
 
-  const defaultExecutions = isSubsidized
-    ? buildSubsidizedExecutions(transaction)
-    : getDefaultTransactionExecutions(transaction, request.useParentExecution);
+  const defaultExecutions = getDefaultTransactionExecutions(
+    transaction,
+    isSubsidized || request.useParentExecution,
+  );
 
   const additionalExecutions = isSubsidized
     ? []
@@ -276,41 +276,6 @@ function getDefaultTransactionExecutions(
       callData: normalizeCallData(txParams.data),
     },
   ];
-}
-
-/**
- * Builds the single batch execution for a subsidized Relay redeem.
- *
- * The execution target and value come from `txParams`; calldata is normalized
- * via {@link normalizeCallData} so odd-length hex cannot shift byte offsets
- * used by the AllowedCalldata caveats below.
- *
- * @param transactionMeta - Transaction whose batch calldata will be redeemed.
- * @returns A one-element execution list for the Relay redeem path.
- */
-function buildSubsidizedExecutions(
-  transactionMeta: TransactionMeta,
-): ExecutionStruct[] {
-  try {
-    const { txParams } = transactionMeta;
-    const target = txParams.to as Hex | undefined;
-    const callData = txParams.data as Hex | undefined;
-
-    if (!target || !callData) {
-      throw new Error('Missing batch target or calldata');
-    }
-
-    return [
-      {
-        target,
-        value: BigInt(txParams.value ?? '0x0'),
-        callData: normalizeCallData(callData),
-      },
-    ];
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Subsidized Caveats: ${message}`, { cause: error });
-  }
 }
 
 async function signAndWrapDelegation({
@@ -480,4 +445,32 @@ async function buildAuthorizationList(
       yParity,
     },
   ];
+}
+
+/**
+ * Normalizes calldata to a lowercase, 0x-prefixed, even-length hex string so
+ * byte offsets used by caveat terms cannot shift.
+ *
+ * @param data - Raw calldata value.
+ * @returns Normalized calldata, or `0x` if empty or not a string.
+ */
+function normalizeCallData(data: unknown): Hex {
+  if (typeof data !== 'string' || data.length === 0) {
+    return '0x';
+  }
+
+  const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
+  const lower = data.toLowerCase();
+  const prefixed = hasHexPrefix ? `0x${lower.slice(2)}` : `0x${lower}`;
+  const hexBody = prefixed.slice(2);
+
+  if (hexBody.length === 0) {
+    return '0x';
+  }
+
+  if (hexBody.length % 2 !== 0) {
+    return normalizeCallData(`0x0${hexBody}`);
+  }
+
+  return prefixed as Hex;
 }
