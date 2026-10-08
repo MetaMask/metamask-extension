@@ -110,7 +110,7 @@ export default function RampsProviderListItem({
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              className="min-w-0 flex-1 truncate text-left"
+              className="min-w-0 truncate text-left"
               data-testid={`ramps-provider-item-name-${provider.id}`}
             >
               {provider.name}
