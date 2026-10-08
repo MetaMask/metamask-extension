@@ -1,5 +1,7 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import {
+  activityMatchesAssetId,
+  activityMatchesNetworks,
   dedupeItems,
   getActivityItemIdentifier,
   getItemKey,
@@ -77,6 +79,87 @@ describe('getActivityItemIdentifier', () => {
     });
 
     expect(getActivityItemIdentifier(rampSell)).toBeUndefined();
+  });
+});
+
+describe('activityMatchesAssetId', () => {
+  it('matches equivalent EVM token asset ids with token and erc20 namespaces', () => {
+    const tokenAddress = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'swap',
+      data: {
+        from: '0x1',
+        sourceToken: {
+          assetId: `eip155:8453/token:${tokenAddress}`,
+          direction: 'out',
+        },
+      },
+    });
+
+    expect(
+      activityMatchesAssetId(
+        item,
+        `eip155:8453/erc20:${tokenAddress}` as never,
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('activityMatchesNetworks', () => {
+  it('matches an activity item by its source chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:1'])).toBe(true);
+  });
+
+  it('matches a bridge activity item by its destination chain', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:5042'])).toBe(true);
+  });
+
+  it('does not match unrelated networks', () => {
+    const item = makeItem({
+      timestamp: 1,
+      status: 'success',
+      type: 'bridge',
+      chainId: 'eip155:1',
+      data: {
+        from: '0x1',
+        destinationToken: {
+          assetId: 'eip155:5042/slip44:5042',
+          direction: 'in',
+        },
+      },
+    });
+
+    expect(activityMatchesNetworks(item, ['eip155:59144'])).toBe(false);
   });
 });
 
