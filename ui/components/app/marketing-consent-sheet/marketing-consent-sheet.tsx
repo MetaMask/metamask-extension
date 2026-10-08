@@ -42,10 +42,17 @@ export function MarketingConsentSheet({
 }: Readonly<MarketingConsentSheetProps>) {
   const t = useI18nContext();
 
+  const handleClose = () => {
+    if (isSubmitting) {
+      return;
+    }
+    onClose();
+  };
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       data-testid={testId}
@@ -67,7 +74,7 @@ export function MarketingConsentSheet({
         }}
       >
         <ModalHeader
-          onClose={onClose}
+          onClose={handleClose}
           closeButtonProps={{
             ariaLabel: t('close'),
             'data-testid': `${testId}-close`,
@@ -84,7 +91,7 @@ export function MarketingConsentSheet({
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 isFullWidth
-                onClick={onClose}
+                onClick={handleClose}
                 isDisabled={isSubmitting}
                 data-testid={`${testId}-cancel`}
               >

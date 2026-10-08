@@ -1098,6 +1098,75 @@ describe('NotificationSectionSubPage', () => {
       expect(updatePreference).not.toHaveBeenCalled();
     });
 
+    describe('while marketing consent is submitting', () => {
+      const dismissals: [string, () => void][] = [
+        [
+          'the header close button is clicked',
+          () =>
+            fireEvent.click(
+              screen.getByTestId('marketing-consent-sheet-close'),
+            ),
+        ],
+        [
+          'Escape is pressed',
+          () => fireEvent.keyDown(document.body, { key: 'Escape' }),
+        ],
+        [
+          'clicking outside the sheet',
+          () => fireEvent.mouseDown(document.body),
+        ],
+      ];
+
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each(dismissals)(
+        'keeps the sheet open when %s',
+        async (_name: string, dismiss: () => void) => {
+          let resolveConsent: () => void = () => undefined;
+          jest.mocked(setDataCollectionForMarketing).mockReturnValueOnce(() => {
+            return new Promise<[boolean, string]>((resolve) => {
+              resolveConsent = () => resolve([true, '']);
+            });
+          });
+          const updatePreference = renderSection(
+            'marketing',
+            createMockNotificationPreferences({
+              marketing: {
+                pushNotificationsEnabled: false,
+                inAppNotificationsEnabled: false,
+              },
+            }),
+          );
+
+          fireEvent.click(
+            screen.getByTestId('marketing-push-notifications-toggle-input'),
+          );
+          fireEvent.click(
+            screen.getByTestId('marketing-consent-sheet-confirm'),
+          );
+          await waitFor(() => {
+            expect(
+              screen.getByTestId('marketing-consent-sheet-confirm'),
+            ).toBeDisabled();
+          });
+
+          dismiss();
+
+          expect(
+            screen.getByTestId('marketing-consent-sheet'),
+          ).toBeInTheDocument();
+
+          resolveConsent();
+          await waitFor(() => {
+            expect(updatePreference).toHaveBeenCalledWith(
+              'marketing',
+              'pushNotificationsEnabled',
+              true,
+            );
+          });
+        },
+      );
+    });
+
     it('opts in to marketing and enables only the selected channel', async () => {
       const updatePreference = renderSection(
         'marketing',
