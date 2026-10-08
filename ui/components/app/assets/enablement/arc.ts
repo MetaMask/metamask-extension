@@ -128,3 +128,37 @@ export function filterOutArcNativeAsset<
 export function isArcTokenUSDC(assetId: CaipAssetType): boolean {
   return assetId === ARC_ERC20_USDC_BRIDGE_ASSET.assetId;
 }
+
+/**
+ * Returns alternate bridge lookup IDs for Arc assets whose swap representation
+ * differs from the wallet balance representation.
+ *
+ * @param assetId - The owned token CAIP-19 asset ID.
+ * @returns Alternate CAIP-19 asset IDs that should resolve to the same balance.
+ */
+export function getArcBridgeAssetIdAliases(
+  assetId: CaipAssetType,
+): CaipAssetType[] {
+  if (assetId === ARC_NATIVE_ASSET_ID) {
+    return [ARC_ERC20_USDC_ASSET_ID as CaipAssetType];
+  }
+
+  return [];
+}
+
+/**
+ * Returns the asset details page route asset ID for Arc assets whose swap
+ * representation differs from the wallet display representation.
+ *
+ * @param assetId - The bridge token CAIP-19 asset ID.
+ * @returns The CAIP-19 asset ID to use for the asset details route.
+ */
+export function getArcAssetDetailsRouteAssetId(
+  assetId: CaipAssetType,
+): CaipAssetType {
+  if (isArcTokenUSDC(assetId)) {
+    return ARC_NATIVE_ASSET_ID as CaipAssetType;
+  }
+
+  return assetId;
+}
