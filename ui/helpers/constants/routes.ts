@@ -144,8 +144,8 @@ export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE =
   '/settings/notifications/marketing';
 export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE =
   '/settings/notifications/agentic-cli';
-export const NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE =
-  '/settings/notifications/dry-run';
+export const NOTIFICATIONS_SETTINGS_LIMIT_ORDERS_ROUTE =
+  '/settings/notifications/limit-orders';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
@@ -729,8 +729,8 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
-    label: 'Dry Run Notifications Settings Page',
+    path: NOTIFICATIONS_SETTINGS_LIMIT_ORDERS_ROUTE,
+    label: 'Limit Orders Notifications Settings Page',
     trackInAnalytics: false,
   },
   {

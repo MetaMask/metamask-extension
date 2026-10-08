@@ -42,7 +42,6 @@ describe('NotificationsSettingsContent', () => {
     jest.mocked(useNotificationPreferences).mockReturnValue({
       preferences: {
         ...createMockNotificationPreferences(),
-        dryRun: undefined,
       },
       hasNotificationPreferences: true,
       isLoading: false,
@@ -80,7 +79,7 @@ describe('NotificationsSettingsContent', () => {
       screen.getByText(messages.notificationsSettingsAgenticCliTitle.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(messages.notificationsSettingsDryRunTitle.message),
+      screen.getByText(messages.notificationsSettingsLimitOrdersTitle.message),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('notifications-settings-section-walletActivity'),
@@ -93,7 +92,7 @@ describe('NotificationsSettingsContent', () => {
       `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
     );
     expect(
-      screen.getByTestId('notifications-settings-section-dryRun'),
+      screen.getByTestId('notifications-settings-section-limitOrders'),
     ).toHaveTextContent(
       `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
     );

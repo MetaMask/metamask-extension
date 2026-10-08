@@ -20,7 +20,7 @@ export type NotificationsSettingsSectionType =
   | 'perps'
   | 'marketing'
   | 'agenticCli'
-  | 'dryRun';
+  | 'limitOrders';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -36,13 +36,12 @@ type NotificationsSettingsTypesProps = {
 const getStatusText = (
   t: ReturnType<typeof useI18nContext>,
   prefs?: NotificationPreferences[NotificationsSettingsSectionType],
-  defaultsToEnabled = false,
 ) => {
   const active = [];
-  if (prefs?.pushNotificationsEnabled ?? defaultsToEnabled) {
+  if (prefs?.pushNotificationsEnabled) {
     active.push(t('notificationsSettingsStatusPush'));
   }
-  if (prefs?.inAppNotificationsEnabled ?? defaultsToEnabled) {
+  if (prefs?.inAppNotificationsEnabled) {
     active.push(t('notificationsSettingsStatusInApp'));
   }
 
@@ -87,9 +86,9 @@ export const getNotificationsSettingsSectionConfigs = (
   });
 
   nextSections.push({
-    type: 'dryRun',
-    title: t('notificationsSettingsDryRunTitle'),
-    description: t('notificationsSettingsDryRunDescription'),
+    type: 'limitOrders',
+    title: t('notificationsSettingsLimitOrdersTitle'),
+    description: t('notificationsSettingsLimitOrdersDescription'),
     iconName: IconName.Notification,
   });
 
@@ -120,11 +119,7 @@ export function NotificationsSettingsTypes({
           value={
             section.type === 'walletActivity'
               ? ''
-              : getStatusText(
-                  t,
-                  preferences?.[section.type],
-                  section.type === 'dryRun',
-                )
+              : getStatusText(t, preferences?.[section.type])
           }
           to={getNotificationsSettingsSectionRoute(section.type)}
           dataTestId={`notifications-settings-section-${section.type}`}

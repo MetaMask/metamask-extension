@@ -7,14 +7,14 @@ export type NotificationPreferenceSection =
   | 'perps'
   | 'marketing'
   | 'agenticCli'
-  | 'dryRun';
+  | 'limitOrders';
 
 const NOTIFICATION_PREFERENCE_SECTIONS: NotificationPreferenceSection[] = [
   'walletActivity',
   'perps',
   'marketing',
   'agenticCli',
-  'dryRun',
+  'limitOrders',
 ];
 
 /**

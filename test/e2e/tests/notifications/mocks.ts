@@ -93,7 +93,7 @@ export function getMockNotificationPreferences(): NotificationPreferences {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
     },
-    dryRun: {
+    limitOrders: {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
     },

@@ -1,6 +1,6 @@
 import {
   NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-  NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
+  NOTIFICATIONS_SETTINGS_LIMIT_ORDERS_ROUTE,
   NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
@@ -25,8 +25,8 @@ describe('notifications-settings-routes', () => {
       expect(getNotificationsSettingsSectionRoute('agenticCli')).toBe(
         NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
       );
-      expect(getNotificationsSettingsSectionRoute('dryRun')).toBe(
-        NOTIFICATIONS_SETTINGS_DRY_RUN_ROUTE,
+      expect(getNotificationsSettingsSectionRoute('limitOrders')).toBe(
+        NOTIFICATIONS_SETTINGS_LIMIT_ORDERS_ROUTE,
       );
     });
   });

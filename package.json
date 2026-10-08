@@ -21,8 +21,8 @@
   ],
   "previewBuilds": {
     "@metamask/authenticated-user-storage": {
-      "type": "non-breaking",
-      "previewVersion": "4.1.0-preview-377206492"
+      "type": "breaking",
+      "previewVersion": "4.1.0-preview-1a7a6d6d6"
     }
   },
   "repository": {
@@ -179,6 +179,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/authenticated-user-storage@npm:^4.1.0": "npm:@metamask-previews/authenticated-user-storage@4.1.0-preview-1a7a6d6d6",
     "@metamask/eth-sig-util": "^9.0.0",
     "@metamask/network-controller": "36.0.0",
     "@metamask/transaction-controller": "72.1.0",

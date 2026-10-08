@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import log from 'loglevel';
-import {
-  DEFAULT_DRY_RUN_PREFERENCES,
-  type NotificationPreferences,
-} from '@metamask/authenticated-user-storage';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useDispatch } from '../../store/hooks';
 
 import {
@@ -171,28 +168,6 @@ export function useNotificationPreferences() {
       key: NotificationPreferenceChannelKey,
       value: boolean,
     ) => {
-      if (type === 'dryRun') {
-        await updatePreferencesSection(
-          'dryRun',
-          (currentSectionPreferences) => {
-            const sectionPreferences = {
-              ...DEFAULT_DRY_RUN_PREFERENCES,
-              ...currentSectionPreferences,
-            };
-
-            if (sectionPreferences[key] === value) {
-              return currentSectionPreferences;
-            }
-
-            return {
-              ...sectionPreferences,
-              [key]: value,
-            };
-          },
-        );
-        return;
-      }
-
       await updatePreferencesSection(type, (currentSectionPreferences) => {
         if (currentSectionPreferences[key] === value) {
           return currentSectionPreferences;

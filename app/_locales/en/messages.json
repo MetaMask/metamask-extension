@@ -6720,11 +6720,11 @@
   "notificationsSettingsDeselectAll": {
     "message": "Deselect all"
   },
-  "notificationsSettingsDryRunDescription": {
-    "message": "Manage dry-run notifications"
+  "notificationsSettingsLimitOrdersDescription": {
+    "message": "Manage limit order notifications"
   },
-  "notificationsSettingsDryRunTitle": {
-    "message": "Dry run"
+  "notificationsSettingsLimitOrdersTitle": {
+    "message": "Limit orders"
   },
   "notificationsSettingsInAppNotifications": {
     "message": "In-app"
