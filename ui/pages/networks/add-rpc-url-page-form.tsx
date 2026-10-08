@@ -120,6 +120,7 @@ export const AddRpcUrlPageForm = ({
   const showSuggestions =
     isUrlFocused && !suggestionsDismissed && suggestions.length > 0;
   const showNoMatches =
+    chainlistEnabled &&
     isUrlFocused &&
     !suggestionsDismissed &&
     trimmedQuery.length > 0 &&

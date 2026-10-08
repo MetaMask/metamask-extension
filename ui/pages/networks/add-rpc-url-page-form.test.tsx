@@ -274,9 +274,15 @@ describe('AddRpcUrlPageForm', () => {
     );
 
     fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://gnosis-rpc.publicnode.com' },
+    });
 
     expect(
       screen.queryByTestId('add-rpc-chainlist-suggestions'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-no-matches'),
     ).not.toBeInTheDocument();
   });
 
