@@ -15,6 +15,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -25,6 +26,7 @@ import {
 } from '../../helpers/constants/design-system';
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
+import { Container } from '../../components/component-library/container/container';
 import { ButtonLink, Label } from '../../components/component-library';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
@@ -32,8 +34,6 @@ import type { MetaMaskReduxState } from '../../store/types';
 import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { DeepLinkNotFound } from './deep-link-not-found';
-import { DeepLinkCard } from './deep-link-card';
 
 type TranslateFunction = (
   key: string,
@@ -46,6 +46,66 @@ type Route = {
 };
 
 const { getExtensionURL } = globalThis.platform;
+
+type DeepLinkCardProps = {
+  children: React.ReactNode;
+};
+
+/**
+ * Centered deep-link card. Width follows the screen up to the fullscreen size.
+ *
+ * @param props - Card content
+ * @param props.children - Card content
+ */
+const DeepLinkCard = ({ children }: DeepLinkCardProps) => {
+  return (
+    <Container
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Column}
+      data-testid="parent-selector-deep-link-page"
+      style={{
+        marginTop: '111px',
+        width: '100%',
+        boxSizing: 'border-box',
+        paddingLeft: 16,
+        paddingRight: 16,
+      }}
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={BorderColor.borderMuted}
+        borderRadius={BorderRadius.MD}
+        data-testid="deep-link-card"
+        style={{
+          width: '100%',
+          maxWidth: '446px',
+          minHeight: '592px',
+          boxSizing: 'border-box',
+        }}
+        paddingLeft={6}
+        paddingRight={6}
+        paddingTop={12}
+        paddingBottom={8}
+        borderWidth={1}
+      >
+        {children}
+      </Box>
+    </Container>
+  );
+};
+
+type DeepLinkProps = {
+  /**
+   * Render the missing-page screen immediately, without parsing a deep link.
+   * Unknown wallet routes use this and leave the bad URL in place.
+   */
+  pageNotFound?: boolean;
+};
 
 /**
  * Sets the description and title state for a 404 error.
@@ -162,7 +222,7 @@ async function updateStateFromUrl(
   }
 }
 
-export const DeepLink = () => {
+export const DeepLink = ({ pageNotFound = false }: DeepLinkProps) => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -189,6 +249,10 @@ export const DeepLink = () => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (pageNotFound) {
+      return undefined;
+    }
+
     // Cancel any previous operation
     abortControllerRef.current?.abort();
 
@@ -271,7 +335,7 @@ export const DeepLink = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, pageNotFound, t, setPageNotFoundError]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
@@ -282,8 +346,48 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
-  if (pageNotFoundError && !isLoading) {
-    return <DeepLinkNotFound extraDescription={extraDescription} />;
+  if (pageNotFound || (pageNotFoundError && !isLoading)) {
+    return (
+      <DeepLinkCard>
+        <img
+          className="error-404-image"
+          alt="Error 404: Page not found"
+          src="./images/deep-link-error-404.png"
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
+        <Text
+          as="h1"
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
+          marginTop={4}
+          marginBottom={4}
+        >
+          {t('deepLink_Error404Title')}
+        </Text>
+        <Box
+          as="div"
+          data-testid="deep-link-description"
+          paddingBottom={12}
+          height={BlockSize.Full}
+        >
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('deepLink_Error404Description')}
+          </Text>
+          {extraDescription ? <Box>{extraDescription}</Box> : null}
+        </Box>
+        <Box width={BlockSize.Full} marginTop={12}>
+          <Button
+            width={BlockSize.Full}
+            variant={ButtonVariant.Primary}
+            href={globalThis.platform.getExtensionURL('/')}
+            size={ButtonSize.Lg}
+            data-testid="deep-link-continue-button"
+          >
+            {t('deepLink_GoToTheHomePageButton')}
+          </Button>
+        </Box>
+      </DeepLinkCard>
+    );
   }
 
   return (

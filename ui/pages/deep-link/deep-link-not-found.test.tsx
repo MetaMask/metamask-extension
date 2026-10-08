@@ -1,30 +1,36 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { en, I18nProvider } from '../../../test/lib/render-helpers-navigate';
-import { DeepLinkNotFound } from './deep-link-not-found';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { DeepLink } from './deep-link';
+
+const store = configureMockStore([thunk])({
+  metamask: { preferences: {} },
+});
 
 const renderPage = () => {
   global.platform.getExtensionURL = (route = '/') => `home.html#${route}`;
 
-  return render(
-    <I18nProvider currentLocale="en" current={en} en={en}>
-      <DeepLinkNotFound />
-    </I18nProvider>,
-  );
+  return renderWithProvider(<DeepLink pageNotFound />, store, '/missing');
 };
 
-describe('DeepLinkNotFound', () => {
+describe('DeepLink missing page', () => {
   it('shows the missing-page message and a link home', () => {
-    renderPage();
+    const { getByRole, getByText } = renderPage();
 
     expect(
-      screen.getByRole('heading', { name: "This page doesn't exist" }),
+      getByRole('heading', {
+        name: messages.deepLink_Error404Title.message,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("We can't find the page you are looking for."),
+      getByText(messages.deepLink_Error404Description.message),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Go to the home page' }),
+      getByRole('link', {
+        name: messages.deepLink_GoToTheHomePageButton.message,
+      }),
     ).toHaveAttribute('href', 'home.html#/');
   });
 });

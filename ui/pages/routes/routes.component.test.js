@@ -25,7 +25,6 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
-import { DeepLinkNotFound } from '../deep-link/deep-link-not-found';
 import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
@@ -232,7 +231,7 @@ describe('Routes Component', () => {
     const fallback = matches?.at(-1)?.route;
 
     expect(fallback?.path).toBe('*');
-    expect(fallback?.element.type).toBe(DeepLinkNotFound);
+    expect(fallback?.element.props.pageNotFound).toBe(true);
 
     const matchedRouter = createMemoryRouter(routeConfig, {
       initialEntries: [unknownPath],
