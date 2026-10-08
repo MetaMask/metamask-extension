@@ -12,7 +12,7 @@ import {
   WebpackPluginInstance,
   RuleSetRule,
 } from 'webpack';
-import { noop, type Manifest } from '../utils/helpers';
+import { noop, type Manifest, NODE_MODULES_RE } from '../utils/helpers';
 import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { getLatestCommit } from '../utils/git';
 import { version as packageVersion } from '../../../package.json';
@@ -337,6 +337,74 @@ ${Object.entries(env)
       ),
       'missing .metamaskprodrc should not be a cache dependency',
     );
+  });
+
+  type SwcEnvRule = RuleSetRule & {
+    include: unknown;
+    use: {
+      options: {
+        jsc: { transform: { optimizer: { globals: { envs: unknown } } } };
+      };
+    };
+  };
+
+  function flattenRules(rules: unknown): RuleSetRule[] {
+    if (!Array.isArray(rules)) {
+      return [];
+    }
+    return rules.flatMap((rule) => {
+      if (!rule || typeof rule !== 'object') {
+        return [];
+      }
+      const { rules: nested, oneOf } = rule as RuleSetRule;
+      return [
+        rule as RuleSetRule,
+        ...flattenRules(nested),
+        ...flattenRules(oneOf),
+      ];
+    });
+  }
+
+  function getVendorSwcRules(config: Configuration): SwcEnvRule[] {
+    // the npm and cjs loader rules are the ones scoped to node_modules
+    return flattenRules(config.module?.rules).filter(
+      (rule): rule is SwcEnvRule => {
+        const maybeRule = rule as Partial<SwcEnvRule>;
+        return (
+          String(maybeRule.include) === String(NODE_MODULES_RE) &&
+          typeof maybeRule.use?.options?.jsc?.transform?.optimizer?.globals ===
+            'object'
+        );
+      },
+    );
+  }
+
+  it('inlines only IN_TEST for the vendor loaders in test builds', () => {
+    mockOptionalRcFiles();
+
+    const config: Configuration = getWebpackConfig(['--test']);
+    const vendorRules = getVendorSwcRules(config);
+
+    assert.strictEqual(vendorRules.length, 2, 'npm and cjs loader rules');
+    for (const rule of vendorRules) {
+      assert.deepStrictEqual(rule.use.options.jsc.transform.optimizer.globals, {
+        envs: { IN_TEST: 'true' },
+      });
+    }
+  });
+
+  it('inlines only IN_TEST=false for the vendor loaders outside test builds', () => {
+    mockOptionalRcFiles();
+
+    const config: Configuration = getWebpackConfig();
+    const vendorRules = getVendorSwcRules(config);
+
+    assert.strictEqual(vendorRules.length, 2, 'npm and cjs loader rules');
+    for (const rule of vendorRules) {
+      assert.deepStrictEqual(rule.use.options.jsc.transform.optimizer.globals, {
+        envs: { IN_TEST: 'false' },
+      });
+    }
   });
 
   it('enables React Refresh for development watch builds', () => {
