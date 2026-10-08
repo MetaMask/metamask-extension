@@ -64,6 +64,35 @@ describe('AddEthereumChain', () => {
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
   });
 
+  it('renders punycode RPC hostname for IDN homograph URLs', () => {
+    const spoofedRpcUrl = 'https://iոfura.io/v3/abc';
+
+    jest.requireMock('../../hooks/useCurrentConfirmation').mockReturnValue({
+      currentConfirmation: {
+        ...mockConfirmation,
+        requestData: {
+          ...mockConfirmation.requestData,
+          rpcUrl: spoofedRpcUrl,
+        },
+      },
+    });
+
+    const mockState = {
+      confirmAlerts: {
+        alerts: {},
+      },
+      metamask: {
+        networkConfigurationsByChainId: {},
+        subjectMetadata: {},
+      },
+    };
+
+    render(<AddEthereumChain />, mockState);
+
+    expect(screen.getByText('xn--ifura-dig.io/v3/abc')).toBeInTheDocument();
+    expect(screen.queryByText(/iոfura/iu)).not.toBeInTheDocument();
+  });
+
   it('renders update network title when network exists', () => {
     const mockState = {
       confirmAlerts: {
