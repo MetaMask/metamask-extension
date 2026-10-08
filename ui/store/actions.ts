@@ -5827,11 +5827,8 @@ export function captureSingleException(
  * point in the future.
  */
 
-export function estimateGas(
-  params: TransactionParams,
-  networkClientId?: string,
-): Promise<Hex> {
-  return submitRequestToBackground('estimateGas', [params, networkClientId]);
+export function estimateGas(params: TransactionParams): Promise<Hex> {
+  return submitRequestToBackground('estimateGas', [params]);
 }
 
 export async function updateTokenType(

@@ -48,12 +48,7 @@ export const Amount = ({
     getFiatDisplayValue,
     getNativeValue,
   } = useCurrencyConversions();
-  const {
-    getMaxAmount,
-    isMaxAmountAvailable = true,
-    isMaxAmountError = false,
-    isMaxAmountPending = false,
-  } = useMaxAmount();
+  const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
   const {
     setAmountInputMethodManual,
@@ -215,43 +210,16 @@ export const Amount = ({
             {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
-            <MaxButton
-              isAvailable={isMaxAmountAvailable}
-              isError={isMaxAmountError}
-              isPending={isMaxAmountPending}
+            <ButtonLink
+              marginLeft={2}
               onClick={updateToMax}
-            />
+              variant={TextVariant.bodySm}
+            >
+              {t('max')}
+            </ButtonLink>
           )}
         </Box>
       </Box>
     </Box>
   );
 };
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function MaxButton({
-  isAvailable,
-  isError,
-  isPending,
-  onClick,
-}: {
-  isAvailable: boolean;
-  isError: boolean;
-  isPending: boolean;
-  onClick: () => void;
-}) {
-  const t = useI18nContext();
-
-  return (
-    <ButtonLink
-      disabled={!isAvailable}
-      loading={isPending}
-      marginLeft={2}
-      onClick={onClick}
-      title={isError ? t('maxAmountUnavailable') : undefined}
-      variant={TextVariant.bodySm}
-    >
-      {t('max')}
-    </ButtonLink>
-  );
-}

@@ -1141,25 +1141,17 @@ export class LegacyBackgroundApiService {
   }
 
   /**
-   * Estimates the gas for a given transaction using the requested network
-   * client, or the currently selected network client if none is provided.
+   * Estimates the gas for a given transaction using the currently selected
+   * network client.
    *
    * @param estimateGasParams - The parameters of the transaction to estimate
    * the gas for.
-   * @param networkClientId - The ID of the network client to use for the
-   * request. Defaults to the currently selected network client.
    * @returns The estimated gas as a hexadecimal string.
    */
-  async estimateGas(
-    estimateGasParams: Json,
-    networkClientId?: string,
-  ): Promise<string> {
-    const networkClient = networkClientId
-      ? this.#messenger.call(
-          'NetworkController:getNetworkClientById',
-          networkClientId,
-        )
-      : this.#messenger.call('NetworkController:getSelectedNetworkClient');
+  async estimateGas(estimateGasParams: Json): Promise<string> {
+    const networkClient = this.#messenger.call(
+      'NetworkController:getSelectedNetworkClient',
+    );
 
     if (!networkClient) {
       throw new Error('No network client available for gas estimation');

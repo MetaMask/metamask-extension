@@ -33,10 +33,6 @@ jest.mock('../../UI/send-hero', () => ({
   SendHero: () => <div data-testid="send-hero">SendHero</div>,
 }));
 
-jest.mock('../../../../../hooks/useGasFeeEstimates', () => ({
-  useGasFeeEstimates: jest.fn(() => ({ gasFeeEstimates: undefined })),
-}));
-
 jest.mock('../../../hooks/send/useAddressPoisoningDetection', () => ({
   useAddressPoisoningDetection: jest.fn(() => ({
     isPoisoningSuspect: false,
