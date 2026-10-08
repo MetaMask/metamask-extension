@@ -1,0 +1,32 @@
+diff --git a/dist/utils/transaction.cjs b/dist/utils/transaction.cjs
+index 5336822c5e96ed4c45d6456cac067de098fef80c..c2c1a35086aecd69db93fc99db6146cc8f5e0347 100644
+--- a/dist/utils/transaction.cjs
++++ b/dist/utils/transaction.cjs
+@@ -80,10 +80,7 @@ function subscribeAssetChanges(messenger, getControllerState, updateTransactionD
+             onTransactionChange(transaction, messenger, updateTransactionData);
+         }
+     };
+-    if ((0, feature_flags_1.getAssetsUnifyStateFeature)(messenger)) {
+-        messenger.subscribe('AssetsController:stateChange', buildHandler('AssetsController'));
+-        return;
+-    }
++    messenger.subscribe('AssetsController:stateChange', buildHandler('AssetsController'));
+     messenger.subscribe('TokensController:stateChange', buildHandler('TokensController'));
+     messenger.subscribe('TokenRatesController:stateChange', buildHandler('TokenRatesController'));
+     messenger.subscribe('CurrencyRateController:stateChange', buildHandler('CurrencyRateController'));
+diff --git a/dist/utils/transaction.mjs b/dist/utils/transaction.mjs
+index 8cb6b5c320af451c5144f69dae729169343a26cb..e09628fb22497255955bae2550c829292e55556a 100644
+--- a/dist/utils/transaction.mjs
++++ b/dist/utils/transaction.mjs
+@@ -76,10 +76,7 @@ export function subscribeAssetChanges(messenger, getControllerState, updateTrans
+             onTransactionChange(transaction, messenger, updateTransactionData);
+         }
+     };
+-    if (getAssetsUnifyStateFeature(messenger)) {
+-        messenger.subscribe('AssetsController:stateChange', buildHandler('AssetsController'));
+-        return;
+-    }
++    messenger.subscribe('AssetsController:stateChange', buildHandler('AssetsController'));
+     messenger.subscribe('TokensController:stateChange', buildHandler('TokensController'));
+     messenger.subscribe('TokenRatesController:stateChange', buildHandler('TokenRatesController'));
+     messenger.subscribe('CurrencyRateController:stateChange', buildHandler('CurrencyRateController'));
