@@ -19,10 +19,7 @@ import {
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../component-library';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import {
-  selectMoneyBalanceShowMusdLabelEnabled,
-  selectMoneyHomeScreenCardEnabled,
-} from '../../../../selectors/money/money-account-feature-flags';
+import { selectMoneyHomeScreenCardEnabled } from '../../../../selectors/money/money-account-feature-flags';
 import { MONEY_HOME_ROUTE } from '../../../../helpers/constants/routes';
 import { isMoneyBalanceFunded } from '../../../../helpers/money/format';
 import { transitionForward } from '../../../ui/transition';
@@ -43,12 +40,12 @@ import {
 import { TooltipText } from '../tooltip-text';
 
 export const MONEY_ACCOUNT_BALANCE_TEST_ID = 'money-account-balance';
+export const MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID =
+  'money-account-balance-summary';
 export const MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID =
   'money-account-balance-value';
 export const MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID =
   'money-account-balance-last-known';
-export const MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID =
-  'money-account-balance-musd-label';
 export const MONEY_ACCOUNT_BALANCE_APY_TEST_ID = 'money-account-balance-apy';
 export const MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID =
   'money-account-balance-apy-skeleton';
@@ -63,13 +60,11 @@ const Balance = ({
   isLoading,
   privacyMode,
   isLastKnown,
-  showMusdLabel,
 }: {
   fiatBalance: string | undefined;
   isLoading: boolean;
   privacyMode: boolean;
   isLastKnown: boolean;
-  showMusdLabel: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -91,30 +86,14 @@ const Balance = ({
           alignItems={BoxAlignItems.Start}
           className={isLastKnown ? '-mb-4 shrink-0' : 'shrink-0'}
         >
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
+          <SensitiveText
+            variant={TextVariant.HeadingMd}
+            isHidden={privacyMode}
+            fontWeight={FontWeight.Medium}
+            data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
           >
-            <SensitiveText
-              variant={TextVariant.HeadingMd}
-              isHidden={privacyMode}
-              fontWeight={FontWeight.Medium}
-              data-testid={MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID}
-            >
-              {fiatBalance}
-            </SensitiveText>
-
-            {showMusdLabel ? (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-                data-testid={MONEY_ACCOUNT_BALANCE_MUSD_LABEL_TEST_ID}
-              >
-                {t('moneyBalanceMusdLabel')}
-              </Text>
-            ) : null}
-          </Box>
+            {fiatBalance}
+          </SensitiveText>
 
           {isLastKnown ? (
             <Text
@@ -209,10 +188,10 @@ const Add = ({
  * APY slot. If the query fails with nothing to show, the slot is omitted
  * rather than inventing a rate.
  *
- * ## The card opens Money Home
+ * ## Click targets
  *
- * Clicking the card, or activating it from the keyboard, opens Money Home.
- * Add stays a deposit action: its click does not follow the card.
+ * The label, APY and balance section opens Money Home, by click or from the
+ * keyboard. The rest of the card, including Add, starts a deposit.
  *
  * @returns The balance row, or `null`.
  */
@@ -221,7 +200,6 @@ export const MoneyAccountBalance = () => {
   const navigate = useNavigate();
   const { privacyMode } = useSelector(getPreferences);
   const isHomeCardEnabled = useSelector(selectMoneyHomeScreenCardEnabled);
-  const showMusdLabel = useSelector(selectMoneyBalanceShowMusdLabelEnabled);
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const {
     tokenTotal,
@@ -256,7 +234,7 @@ export const MoneyAccountBalance = () => {
     return null;
   }
 
-  const handleCardClick = () => {
+  const openMoneyHome = () => {
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.GoToMoneyHome,
@@ -268,18 +246,25 @@ export const MoneyAccountBalance = () => {
     );
   };
 
-  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleSummaryClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    openMoneyHome();
+  };
+
+  const handleSummaryKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) {
       return;
     }
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      handleCardClick();
+      openMoneyHome();
     }
   };
 
-  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+  const startDeposit = () => {
+    if (isDepositLoading) {
+      return;
+    }
     trackButtonClicked({
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.AddMoney,
@@ -287,6 +272,11 @@ export const MoneyAccountBalance = () => {
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     initiateDeposit();
+  };
+
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    startDeposit();
   };
 
   const handleInfoOpen = () => {
@@ -299,21 +289,27 @@ export const MoneyAccountBalance = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
+      alignItems={BoxAlignItems.Stretch}
       justifyContent={BoxJustifyContent.Between}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      padding={4}
-      gap={4}
       // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
       // so this row lines up with the action buttons above it.
-      className="w-full max-w-[458px] self-center cursor-pointer rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-      role="link"
-      tabIndex={0}
-      onClick={handleCardClick}
-      onKeyDown={handleCardKeyDown}
+      className="w-full max-w-[458px] self-center cursor-pointer rounded-2xl"
+      onClick={startDeposit}
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
-      <Box flexDirection={BoxFlexDirection.Column} gap={1} className="min-w-0">
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
+        gap={1}
+        padding={4}
+        className="min-w-0 flex-1 rounded-l-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        role="link"
+        tabIndex={0}
+        onClick={handleSummaryClick}
+        onKeyDown={handleSummaryKeyDown}
+        data-testid={MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID}
+      >
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
@@ -369,15 +365,20 @@ export const MoneyAccountBalance = () => {
           isLoading={isLoading}
           privacyMode={privacyMode}
           isLastKnown={isLastKnown}
-          showMusdLabel={showMusdLabel}
         />
       </Box>
 
-      <Add
-        moneyAccountEmpty={moneyAccountEmpty}
-        onAddClick={handleAddClick}
-        isDepositLoading={isDepositLoading}
-      />
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        padding={4}
+      >
+        <Add
+          moneyAccountEmpty={moneyAccountEmpty}
+          onAddClick={handleAddClick}
+          isDepositLoading={isDepositLoading}
+        />
+      </Box>
     </Box>
   );
 };

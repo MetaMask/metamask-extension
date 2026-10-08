@@ -29,6 +29,7 @@ import {
   MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
   MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID,
   MONEY_ACCOUNT_BALANCE_TEST_ID,
   MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID,
 } from './money-account-balance';
@@ -178,12 +179,13 @@ describe('MoneyAccountBalance', () => {
   it('renders the live balance when one is available', () => {
     arrange({ totalFiatFormatted: '$2,384.34' });
 
-    const { getByTestId, getByText, queryByTestId } = render();
+    const { getByTestId, getByText, queryByTestId, queryByText } = render();
 
     expect(getByTestId(MONEY_ACCOUNT_BALANCE_VALUE_TEST_ID)).toHaveTextContent(
       '$2,384.34',
     );
     expect(getByText(tEn('money'))).toBeInTheDocument();
+    expect(queryByText('mUSD')).toBeNull();
     expect(queryByTestId(MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID)).toBeNull();
   });
 
@@ -369,15 +371,16 @@ describe('MoneyAccountBalance', () => {
       labelKey: 'moneyAdd',
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('opens Money Home when the card is clicked', () => {
+  it('opens Money Home when the summary section is clicked', () => {
     arrange({ totalFiatFormatted: '$309.90' });
 
     const { getByTestId } = render();
 
-    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID));
 
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       state: { stayOnHomePage: true },
@@ -391,18 +394,45 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
-  it('opens Money Home when the card is activated from the keyboard', () => {
+  it('opens Money Home when the summary section is activated from the keyboard', () => {
     arrange({ totalFiatFormatted: '$309.90' });
 
     const { getByTestId } = render();
 
-    fireEvent.keyDown(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID), {
+    fireEvent.keyDown(getByTestId(MONEY_ACCOUNT_BALANCE_SUMMARY_TEST_ID), {
       key: 'Enter',
     });
 
     expect(mockNavigate).toHaveBeenCalledWith(MONEY_HOME_ROUTE, {
       state: { stayOnHomePage: true },
     });
+  });
+
+  it('starts a deposit when the card outside the summary section is clicked', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+
+    expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: 'moneyAdd',
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+  });
+
+  it('does not start a second deposit from the card while one is in flight', () => {
+    arrange({ totalFiatFormatted: '$309.90', isDepositLoading: true });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
   });
 
   it('tracks the component as viewed once when it renders', () => {
