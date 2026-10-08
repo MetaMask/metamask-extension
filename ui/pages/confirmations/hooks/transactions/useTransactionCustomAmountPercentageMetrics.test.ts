@@ -18,6 +18,9 @@ function runHook(transactionId: string | undefined) {
 describe('useTransactionCustomAmountPercentageMetrics', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    jest
+      .mocked(upsertTransactionUIMetricsFragment)
+      .mockResolvedValue(undefined);
   });
 
   it('records a manual percentage selection', () => {
@@ -91,6 +94,24 @@ describe('useTransactionCustomAmountPercentageMetrics', () => {
         }),
       }),
     );
+  });
+
+  it('logs when recording the metrics fails', async () => {
+    const error = new Error('Background unavailable');
+    jest.mocked(upsertTransactionUIMetricsFragment).mockRejectedValue(error);
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const trackPercentageAmount = runHook(TRANSACTION_ID);
+
+    trackPercentageAmount({ amountFiat: '25', percentage: 25 });
+    await Promise.resolve();
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      'Failed to record amount input metrics',
+      error,
+    );
+    consoleErrorSpy.mockRestore();
   });
 
   it('does nothing without a transaction id', () => {

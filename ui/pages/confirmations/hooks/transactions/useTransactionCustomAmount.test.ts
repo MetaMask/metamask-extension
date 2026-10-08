@@ -238,6 +238,9 @@ describe('useTransactionCustomAmount', () => {
     jest.resetAllMocks();
     jest.useFakeTimers();
     useDepositPrefillAmountMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
+    jest
+      .mocked(upsertTransactionUIMetricsFragment)
+      .mockResolvedValue(undefined);
   });
 
   afterEach(() => {

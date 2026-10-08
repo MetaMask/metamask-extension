@@ -52,6 +52,8 @@ export function useTransactionCustomAmountPercentageMetrics(
               }
             : {}),
         },
+      }).catch((error) => {
+        console.error('Failed to record amount input metrics', error);
       });
     },
     [transactionId],
