@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { sign } from 'jsonwebtoken';
 import { CompletedRequest, Mockttp } from 'mockttp';
-import { gcm } from '@noble/ciphers/aes';
-import { managedNonce } from '@noble/ciphers/webcrypto';
-import { secp256k1 } from '@noble/curves/secp256k1';
-import { decrypt, encrypt } from '@toruslabs/eccrypto';
+import { encrypt } from '@toruslabs/eccrypto';
 import { SecretType } from '@metamask/seedless-onboarding-controller';
-import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
 import { E2E_SRP } from '../../constants';
 import {
   AuthServer,
@@ -27,184 +21,18 @@ import {
 } from './types';
 import {
   MockAuthPubKey,
-  InitialMockEncryptionKey,
-  MockKeyShareData,
-  MockJwtPrivateKey,
   MockAuthPubKey2,
-  NewMockPwdEncryptionKeyAfterPasswordChange,
+  PasswordSyncMockAuthPubKey,
 } from './data';
-
-/**
- * Generate a mock JWT token for OAuth Service.
- *
- * @param userId - The user ID.
- * @param expiresIn - The expiration time in seconds.
- * @param mode - Indicates if the token is a newly issued token or a refreshed token.
- * @returns The mock JWT token.
- */
-function generateMockJwtToken(
-  userId: string,
-  expiresIn: number = 120,
-  mode: 'new' | 'refreshed' = 'new',
-) {
-  const iat = Math.floor(Date.now() / 1000);
-  const payload = {
-    iss: 'torus-key-test',
-    aud: 'torus-key-test',
-    sub: userId,
-    name: userId,
-    email: userId,
-    scope: 'email',
-    iat,
-    mode, // Note: The actual tokens issued/refreshed do not have this `mode` field, it's only used for testing purposes to differentiate between newly issued and refreshed tokens.
-    eat: iat + expiresIn,
-  };
-
-  return sign(payload, MockJwtPrivateKey, {
-    expiresIn,
-    algorithm: 'ES256',
-  });
-}
-
-function padHex(hex: string, length: number = 64) {
-  if (hex.length < length) {
-    return hex.padStart(length, '0');
-  }
-  return hex;
-}
-
-/**
- * Generate a mock blinded output for TOPRF Eval response.
- *
- * @param blindedInputX - The x coordinate of the blinded input from TOPRF Eval request.
- * @param blindedInputY - The y coordinate of the blinded input from TOPRF Eval request.
- * @param nodeIndex - The index of the node.
- * @param keyShareData - The key share data to use for the blinded output.
- * @param shareCoefficient - The share coefficient from TOPRF Eval request.
- * @returns The blinded output.
- */
-async function generateBlindedOutput(
-  blindedInputX: string,
-  blindedInputY: string,
-  nodeIndex: number,
-  keyShareData: ToprfStoreKeyShareRequestParams = MockKeyShareData,
-  shareCoefficient: bigint = 1n,
-) {
-  const encShareString =
-    keyShareData.share_import_items[nodeIndex - 1].encrypted_share;
-  const nodePrivateKey = SSSNodeKeyPairs[nodeIndex].privKey;
-
-  const { data, metadata } = JSON.parse(encShareString);
-
-  const keyShare = await decrypt(Buffer.from(nodePrivateKey, 'hex'), {
-    ciphertext: Buffer.from(data, 'hex'),
-    iv: Buffer.from(metadata.iv, 'hex'),
-    ephemPublicKey: Buffer.from(metadata.ephemPublicKey, 'hex'),
-    mac: Buffer.from(metadata.mac, 'hex'),
-  });
-  const paddedShare = padHex(Buffer.from(keyShare).toString('hex'));
-  const keyShareBN = BigInt(`0x${paddedShare}`);
-
-  const ck = (keyShareBN * shareCoefficient) % secp256k1.CURVE.n;
-
-  const blindedInputPoint = secp256k1.Point.fromAffine({
-    x: BigInt(`0x${blindedInputX}`),
-    y: BigInt(`0x${blindedInputY}`),
-  });
-
-  const blinedOutputPoint = blindedInputPoint.multiply(ck);
-  const blindedOutputX = blinedOutputPoint.x.toString(16);
-  const blindedOutputY = blinedOutputPoint.y.toString(16);
-
-  return { blindedOutputX, blindedOutputY };
-}
-
-/**
- * Generate mock encrypted secret data for Metadata Service.
- *
- * @param secretDataArr - Array of secret data items.
- * @returns Parallel arrays matching the server response format (data, ids, versions, dataTypes, createdAt).
- */
-function generateEncryptedSecretData(
-  secretDataArr: {
-    data: Uint8Array;
-    timestamp?: number;
-    type?: SecretType;
-    itemId?: string;
-    dataType?: number | null;
-    createdAt?: string | null;
-    version?: string;
-  }[],
-): {
-  data: string[];
-  ids: string[];
-  versions: string[];
-  dataTypes: (number | null)[];
-  createdAt: (string | null)[];
-} {
-  const data: string[] = [];
-  const ids: string[] = [];
-  const versions: string[] = [];
-  const dataTypes: (number | null)[] = [];
-  const createdAt: (string | null)[] = [];
-
-  for (const secretData of secretDataArr) {
-    const b64SecretData = Buffer.from(secretData.data).toString('base64');
-    const secretMetadata = JSON.stringify({
-      data: b64SecretData,
-      timestamp: secretData.timestamp ?? 1752564090656,
-      type: secretData.type,
-    });
-
-    const aes = managedNonce(gcm)(InitialMockEncryptionKey);
-    const cipherText = aes.encrypt(stringToBytes(secretMetadata));
-
-    data.push(bytesToBase64(cipherText));
-    ids.push(secretData.itemId ?? '');
-    versions.push(secretData.version ?? 'v2');
-    dataTypes.push(secretData.dataType === undefined ? 1 : secretData.dataType); // Default to PrimarySrp if not specified
-    createdAt.push(secretData.createdAt ?? null);
-  }
-
-  return { data, ids, versions, dataTypes, createdAt };
-}
-
-/**
- * Generate mock encrypted password change item for Metadata Service.
- * Used to simulate the password outdated flow in social login.
- *
- * The PW_BACKUP is made self-referential (encKey points to itself) with a
- * non-matching authKeyPair.pk, causing the SDK's password chain loop to
- * exhaust and throw `maxKeyChainLengthExceeded`.
- *
- * @returns Encrypted password change item with metadata.
- */
-function generateEncryptedPasswordChangeItem(): {
-  data: string;
-  id: string;
-  version: string;
-  dataType: null;
-  createdAt: null;
-} {
-  const pwdChangeItemData = utf8ToBytes(
-    JSON.stringify({
-      pw: 'newPassword',
-      encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
-      authKeyPair: { sk: '1', pk: 'deadbeef' },
-    }),
-  );
-
-  const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
-  const cipherText = aes.encrypt(pwdChangeItemData);
-
-  return {
-    data: bytesToBase64(cipherText),
-    id: PasswordChangeItemId,
-    version: 'v2',
-    dataType: null,
-    createdAt: null,
-  };
-}
+import {
+  TOPRF_EVAL_THRESHOLD,
+  generateBlindedOutput,
+  generateEncryptedPasswordItemForMaxChainError,
+  generateEncryptedPasswordSyncItem,
+  generateEncryptedSecretData,
+  generateMockJwtToken,
+  padHex,
+} from './utils';
 
 // Mock OAuth Service and Authentication Server
 export class OAuthMockttpService {
@@ -212,6 +40,8 @@ export class OAuthMockttpService {
   #sessionPubKey: string = '';
 
   #latestAuthPubKey: string = MockAuthPubKey;
+
+  #toprfEvalRequestCount: number = 0;
 
   #numbOfRequestTokensCalls: number = 0;
 
@@ -479,7 +309,11 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostToprfEval(params: ToprfEvalRequestParams, nodeIndex: number) {
+  async onPostToprfEval(
+    params: ToprfEvalRequestParams,
+    nodeIndex: number,
+    pubKey: string = MockAuthPubKey,
+  ) {
     // Generate blinded output with blinded input and mock toprf key share
     const { blindedOutputX, blindedOutputY } = await generateBlindedOutput(
       params.blinded_input_x,
@@ -492,7 +326,7 @@ export class OAuthMockttpService {
       blinded_output_y: blindedOutputY,
       key_share_index: 1,
       node_index: nodeIndex,
-      pub_key: MockAuthPubKey,
+      pub_key: pubKey,
     };
 
     return {
@@ -505,7 +339,10 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet(requestedItemId?: string) {
+  async onPostMetadataGet(
+    requestedItemId?: string,
+    simulatePasswordSync: boolean = false,
+  ) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -515,7 +352,9 @@ export class OAuthMockttpService {
 
     // Server-side filtering
     if (requestedItemId === PasswordChangeItemId) {
-      const pwdChangeItem = generateEncryptedPasswordChangeItem();
+      const pwdChangeItem = simulatePasswordSync
+        ? generateEncryptedPasswordSyncItem()
+        : generateEncryptedPasswordItemForMaxChainError();
       return {
         statusCode: 200,
         json: {
@@ -560,6 +399,8 @@ export class OAuthMockttpService {
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
    * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
    * @param options.forceTokenExpiration - Whether to force the token expiration. If not provided, false will be used.
+   * @param options.failStoreKeyShareRequest - Whether to fail TOPRF Store Key Share requests. If not provided, false will be used.
+   * @param options.simulatePasswordSync - Whether to simulate a remote password change for password-sync recovery. If not provided, false will be used.
    */
   async setup(
     server: Mockttp,
@@ -568,6 +409,8 @@ export class OAuthMockttpService {
       passwordOutdated?: boolean;
       throwAuthenticationErrorAtUnlock?: boolean;
       forceTokenExpiration?: boolean;
+      failStoreKeyShareRequest?: boolean;
+      simulatePasswordSync?: boolean;
     },
   ) {
     const authServerMockResponses = [
@@ -649,8 +492,10 @@ export class OAuthMockttpService {
       });
 
     // Intercept the Metadata requests and mock the responses
-    const metadataMockResponses =
-      await this.#handleMetadataMockResponses(server);
+    const metadataMockResponses = await this.#handleMetadataMockResponses(
+      server,
+      options,
+    );
 
     return [
       ...authServerMockResponses,
@@ -667,6 +512,8 @@ export class OAuthMockttpService {
    * @param options.userEmail - The email of the user to mock. If not provided, random generated email will be used.
    * @param options.passwordOutdated - Whether the password is outdated. If not provided, false will be used.
    * @param options.throwAuthenticationErrorAtUnlock - Whether to throw an authentication error at unlock. If not provided, false will be used.
+   * @param options.failStoreKeyShareRequest - Whether to fail TOPRF Store Key Share requests. If not provided, false will be used.
+   * @param options.simulatePasswordSync - Whether to simulate a remote password change for password-sync recovery. If not provided, false will be used.
    */
   async #handleToprfMockResponses(
     request: CompletedRequest,
@@ -674,6 +521,8 @@ export class OAuthMockttpService {
       userEmail?: string;
       passwordOutdated?: boolean;
       throwAuthenticationErrorAtUnlock?: boolean;
+      failStoreKeyShareRequest?: boolean;
+      simulatePasswordSync?: boolean;
     },
   ) {
     const nodeIndex = this.#extractNodeIndexFromUrl(request.url);
@@ -688,6 +537,15 @@ export class OAuthMockttpService {
         nodeIndex,
       );
     } else if (method === 'TOPRFStoreKeyShareRequest') {
+      if (options?.failStoreKeyShareRequest) {
+        return {
+          statusCode: 500,
+          json: {
+            message: 'Internal server error',
+          },
+        };
+      }
+
       this.#latestAuthPubKey = (
         params as ToprfStoreKeyShareRequestParams
       ).pub_key;
@@ -704,7 +562,17 @@ export class OAuthMockttpService {
       };
     } else if (method === 'TOPRFEvalRequest') {
       // Mock the TOPRF Eval request (during Social login rehydrate or import wallet)
-      return this.onPostToprfEval(params as ToprfEvalRequestParams, nodeIndex);
+      const pubKey =
+        options?.simulatePasswordSync &&
+        this.#toprfEvalRequestCount >= TOPRF_EVAL_THRESHOLD
+          ? PasswordSyncMockAuthPubKey
+          : MockAuthPubKey;
+      this.#toprfEvalRequestCount += 1;
+      return this.onPostToprfEval(
+        params as ToprfEvalRequestParams,
+        nodeIndex,
+        pubKey,
+      );
     } else if (method === 'TOPRFResetRateLimitRequest') {
       return {
         statusCode: 200,
@@ -721,6 +589,11 @@ export class OAuthMockttpService {
       if (options?.throwAuthenticationErrorAtUnlock) {
         // To throw the authentication error at unlock, we need to enforce the password outdated with different pub key
         pubKey = MockAuthPubKey2;
+      } else if (
+        options?.simulatePasswordSync &&
+        this.#toprfEvalRequestCount >= TOPRF_EVAL_THRESHOLD
+      ) {
+        pubKey = PasswordSyncMockAuthPubKey;
       } else if (options?.passwordOutdated) {
         pubKey = MockAuthPubKey;
       }
@@ -742,7 +615,12 @@ export class OAuthMockttpService {
     return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
   }
 
-  async #handleMetadataMockResponses(server: Mockttp) {
+  async #handleMetadataMockResponses(
+    server: Mockttp,
+    options?: {
+      simulatePasswordSync?: boolean;
+    },
+  ) {
     return [
       await server.forPost(MetadataService.Set).always().thenJson(200, {
         success: true,
@@ -754,7 +632,10 @@ export class OAuthMockttpService {
         .thenCallback(async (request) => {
           const body = await request.body.getJson();
           const requestedItemId = (body as { itemId?: string })?.itemId;
-          return this.onPostMetadataGet(requestedItemId);
+          return this.onPostMetadataGet(
+            requestedItemId,
+            options?.simulatePasswordSync,
+          );
         }),
       await server
         .forPost(MetadataService.AcquireLock)

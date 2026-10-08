@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 // disable eslint naming convention to match the server response fields
 
+// Use this password for the seedless global password sync.
+export const SeedlessGlobalPassword = 'newPassword';
+
 export const MockJwtPrivateKey = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
 
 export const MockAuthPubKey =
@@ -8,6 +11,15 @@ export const MockAuthPubKey =
 
 export const MockAuthPubKey2 =
   '0447edd078db62ed5bf79652646ba30534375f05f1fbbb4b258924f65e251ac2302b718f64052b8b7a026d6cd0156e56c2522757aa07fa579384f97d097524b142';
+
+// Mock keys derived from SeedlessGlobalPassword(`newPassword`) for password-sync recovery.
+export const PasswordSyncMockAuthPubKey =
+  '04f937821f5674f09891caa19caf46389da01faf73111be1eedfe0f2dd344bf737ae5785b834efe7a11e02ae06ac6f698269af038072ecb2fa69531108beef930c';
+
+export const PasswordSyncMockPwdEncryptionKey = new Uint8Array([
+  31, 83, 94, 172, 104, 136, 249, 225, 173, 167, 246, 51, 75, 103, 186, 200,
+  152, 18, 11, 13, 159, 120, 45, 246, 134, 238, 100, 191, 238, 244, 216, 234,
+]);
 
 // Mock data for TOPRF Key shares
 export const MockKeyShareData = {
