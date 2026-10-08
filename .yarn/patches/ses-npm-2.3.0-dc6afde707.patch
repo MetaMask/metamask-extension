@@ -1,0 +1,58 @@
+diff --git a/dist/ses.cjs b/dist/ses.cjs
+index c10f41b6a6a1bfb63032ebe523063dade9048409..f5eb74a41d2496c1062121637f4cbd89e727cc9a 100644
+--- a/dist/ses.cjs
++++ b/dist/ses.cjs
+@@ -4630,12 +4630,18 @@ const freezeTypedArray = array => {
+ 
+   // WHATWG Encoding Standard
+   // https://encoding.spec.whatwg.org/
+-  // TextEncoder and TextDecoder are pure transformations between string and
+-  // Uint8Array with no static side channels and no exposed iterator
+-  // prototype. They are permitted universally; on hosts that do not provide
+-  // them (XS), the sampling pass tolerates the absence.
+-  TextEncoder: 'TextEncoder',
+-  TextDecoder: 'TextDecoder',
++  // Upstream permits these universally on the grounds that they are pure
++  // transformations between string and Uint8Array with no static side
++  // channels. That does not hold on every engine we support: on V8 before
++  // Chrome 127 these constructors are sloppy-mode functions, so they carry
++  // own `caller` and `arguments`, which is a live stack-walking channel and
++  // an undeletable one, so `lockdown()` throws while cauterizing them.
++  // Until ses repairs those properties, we keep TextEncoder/TextDecoder out
++  // of the intrinsics, as in ses 2.2.x. They stay ordinary host globals that
++  // LavaMoat grants through policy, which is what we already rely on.
++  // See https://github.com/endojs/endo/issues/3369
++  // TextEncoder: 'TextEncoder',
++  // TextDecoder: 'TextDecoder',
+ 
+   // *** Annex B
+ 
+diff --git a/src/permits.js b/src/permits.js
+index f01e556507e37766be728143b7782559564ff6b5..73e03589e7ad52c0ddfd114618fe91f8f70544cf 100644
+--- a/src/permits.js
++++ b/src/permits.js
+@@ -104,12 +104,18 @@ export const universalPropertyNames = {
+ 
+   // WHATWG Encoding Standard
+   // https://encoding.spec.whatwg.org/
+-  // TextEncoder and TextDecoder are pure transformations between string and
+-  // Uint8Array with no static side channels and no exposed iterator
+-  // prototype. They are permitted universally; on hosts that do not provide
+-  // them (XS), the sampling pass tolerates the absence.
+-  TextEncoder: 'TextEncoder',
+-  TextDecoder: 'TextDecoder',
++  // Upstream permits these universally on the grounds that they are pure
++  // transformations between string and Uint8Array with no static side
++  // channels. That does not hold on every engine we support: on V8 before
++  // Chrome 127 these constructors are sloppy-mode functions, so they carry
++  // own `caller` and `arguments`, which is a live stack-walking channel and
++  // an undeletable one, so `lockdown()` throws while cauterizing them.
++  // Until ses repairs those properties, we keep TextEncoder/TextDecoder out
++  // of the intrinsics, as in ses 2.2.x. They stay ordinary host globals that
++  // LavaMoat grants through policy, which is what we already rely on.
++  // See https://github.com/endojs/endo/issues/3369
++  // TextEncoder: 'TextEncoder',
++  // TextDecoder: 'TextDecoder',
+ 
+   // *** Annex B
+ 

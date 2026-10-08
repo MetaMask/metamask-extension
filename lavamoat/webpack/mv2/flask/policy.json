@@ -2254,6 +2254,7 @@
     },
     "@metamask/logo": {
       "globals": {
+        "Float32Array": true,
         "addEventListener": true,
         "document.body.appendChild": true,
         "document.createElementNS": true,
@@ -4150,6 +4151,12 @@
         "@google/genai>protobufjs>@protobufjs/aspromise": true
       }
     },
+    "@google/genai>protobufjs>@protobufjs/float": {
+      "globals": {
+        "Float32Array": true,
+        "Float64Array": true
+      }
+    },
     "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
       "packages": {
         "react": true
@@ -4200,6 +4207,8 @@
         "Blob": true,
         "DOMMatrix": true,
         "FinalizationRegistry": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "HTMLCanvasElement": true,
         "Image": true,
         "Iterator": true,
@@ -4393,6 +4402,8 @@
     "@sentry/browser>@sentry-internal/replay-canvas": {
       "globals": {
         "Blob": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "HTMLCanvasElement": true,
         "HTMLImageElement": true,
         "ImageData": true,
@@ -4547,6 +4558,12 @@
         "location.hostname": true,
         "navigator.credentials.create": true,
         "navigator.credentials.get": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": {
+      "globals": {
+        "Float32Array": true,
+        "Float64Array": true
       }
     },
     "@solana/addresses": {
@@ -4854,6 +4871,7 @@
     },
     "@zxing/library": {
       "globals": {
+        "Float32Array": true,
         "HTMLImageElement": true,
         "HTMLVideoElement": true,
         "TextDecoder": true,
@@ -5253,6 +5271,8 @@
     },
     "eth-lattice-keyring>gridplus-sdk>cbor": {
       "globals": {
+        "Float32Array": true,
+        "Float64Array": true,
         "TextDecoder": true,
         "URL": true
       },
@@ -5477,6 +5497,8 @@
     },
     "@metamask/ppom-validator>crypto-js": {
       "globals": {
+        "Float32Array": true,
+        "Float64Array": true,
         "crypto": true,
         "define": true,
         "msCrypto": true
@@ -6003,6 +6025,8 @@
         "AggregateError": true,
         "FinalizationRegistry": true,
         "Float16Array": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -6344,6 +6368,7 @@
     },
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
+        "Float64Array": true,
         "define": true
       }
     },
@@ -6403,6 +6428,8 @@
         "Blob": true,
         "BlobBuilder": true,
         "FileReader": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "IDBKeyRange": true,
         "MSBlobBuilder": true,
         "MozBlobBuilder": true,
@@ -6466,6 +6493,7 @@
     "lottie-web": {
       "globals": {
         "Blob": true,
+        "Float32Array": true,
         "Howl": true,
         "OffscreenCanvas": true,
         "URL.createObjectURL": true,
@@ -7751,6 +7779,7 @@
     },
     "tweetnacl": {
       "globals": {
+        "Float64Array": true,
         "crypto": true,
         "msCrypto": true,
         "nacl": "write"

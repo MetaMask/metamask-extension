@@ -1,0 +1,13 @@
+diff --git a/src/primordials.js b/src/primordials.js
+index 0d71dee8c0007fc408b844892d58b47e76a6897a..c9711da7f1e6fa9d8aa9b569c0174739aa92e05e 100644
+--- a/src/primordials.js
++++ b/src/primordials.js
+@@ -25,8 +25,6 @@ module.exports.globalPropertyNames = /** @type {const} */ ([
+   'Date',
+   'Error',
+   'EvalError',
+-  'Float32Array',
+-  'Float64Array',
+   'Function',
+   'Int8Array',
+   'Int16Array',
