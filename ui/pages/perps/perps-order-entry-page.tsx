@@ -697,44 +697,6 @@ const PerpsOrderEntryPage = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate matching the user-selected order type. Used for both:
-  // 1. Reverse-engineering the original (pre-discount) fee from
-  //    orderCalculations.estimatedFees (which OrderEntry computes with the
-  //    same orderType).
-  // 2. Order submission tracking — passed as hlFeeRate on all order types
-  //    (new / modify / close).
-  const {
-    feeRate: currentFeeRate,
-    undiscountedFeeRate: currentUndiscountedFeeRate,
-    protocolFeeRate,
-    metamaskFeeRate,
-    originalMetamaskFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: decodedSymbol ?? '',
-    orderType,
-  });
-
-  const originalEstimatedFees = useMemo(() => {
-    if (
-      orderCalculations?.estimatedFees === null ||
-      orderCalculations?.estimatedFees === undefined ||
-      currentFeeRate === undefined ||
-      currentFeeRate === 0 ||
-      currentUndiscountedFeeRate === undefined
-    ) {
-      return null;
-    }
-    return (
-      orderCalculations.estimatedFees *
-      (currentUndiscountedFeeRate / currentFeeRate)
-    );
-  }, [
-    orderCalculations?.estimatedFees,
-    currentFeeRate,
-    currentUndiscountedFeeRate,
-  ]);
-
   const protocolFeeLabel =
     activeProvider === 'hyperliquid'
       ? t('perpsFeesTooltipHyperliquidFee')
@@ -1097,6 +1059,52 @@ const PerpsOrderEntryPage = () => {
     () => derivePositionTpslPricesFromOrders(marketOrders, position),
     [marketOrders, position],
   );
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Order submission tracking — passed as hlFeeRate on all order types
+  //    (new / modify / close).
+  const {
+    feeRate: currentFeeRate,
+    undiscountedFeeRate: currentUndiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType,
+    amount:
+      orderMode === 'close' && position
+        ? String(
+            Math.abs(Number.parseFloat(position.size.replaceAll(',', ''))) *
+              currentPrice *
+              ((orderFormState?.closePercent ?? 100) / 100),
+          )
+        : (orderFormState?.amount.replaceAll(',', '') ?? '0'),
+  });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      currentFeeRate === undefined ||
+      currentFeeRate === 0 ||
+      currentUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (currentUndiscountedFeeRate / currentFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    currentFeeRate,
+    currentUndiscountedFeeRate,
+  ]);
+
   const effectiveTakeProfitPrice =
     position?.takeProfitPrice ?? derivedPositionTpsl.takeProfitPrice;
   const effectiveStopLossPrice =

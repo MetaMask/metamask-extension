@@ -128,10 +128,6 @@ export const UpdateTPSLModalContent = ({
   const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { privacyMode } = useSelector(getPreferences);
-  const { feeRate: closingFeeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
   const [editingTpPrice, setEditingTpPrice] = useState(
@@ -262,6 +258,19 @@ export const UpdateTPSLModalContent = ({
     () => Number.parseFloat(position.size.replaceAll(',', '')) || 0,
     [position.size],
   );
+
+  // TradingService applies one fee resolution to the entire TP/SL batch.
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: position.symbol,
+    orderType: 'market',
+    amount: String(
+      Math.abs(signedSize) *
+        Math.max(
+          Number.parseFloat(editingTpPrice.replaceAll(',', '')) || 0,
+          Number.parseFloat(editingSlPrice.replaceAll(',', '')) || 0,
+        ),
+    ),
+  });
 
   const estimatedPnlAtTp = useMemo(() => {
     if (closingFeeRate === undefined) {

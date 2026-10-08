@@ -149,6 +149,34 @@ const createMockUserHistory = (
 
 describe('Transaction Transform Utilities', () => {
   describe('aggregateFillsByTimestamp', () => {
+    it('preserves unknown PnL when any grouped close fill omits it', () => {
+      const timestamp = Date.now();
+      const result = aggregateFillsByTimestamp([
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '50' }),
+        createMockFill({ direction: 'Close Long', timestamp, pnl: undefined }),
+      ]);
+      expect(result).toHaveLength(1);
+      expect(result[0].pnl).toBeUndefined();
+    });
+
+    it('preserves a reported zero PnL', () => {
+      const timestamp = Date.now();
+      const result = aggregateFillsByTimestamp([
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '0' }),
+        createMockFill({ direction: 'Close Long', timestamp, pnl: '0' }),
+      ]);
+      expect(result[0].pnl).toBe('0');
+    });
+
+    it('displays unknown net PnL without subtracting fees from a fabricated zero', () => {
+      const [transaction] = transformFillsToTransactions([
+        createMockFill({ direction: 'Close Long', pnl: undefined, fee: '2' }),
+      ]);
+      expect(transaction.fill?.amount).toBe('Unknown');
+      expect(transaction.fill?.amountNumber).toBeUndefined();
+      expect(transaction.fill?.pnl).toBeUndefined();
+    });
+
     it('aggregates fills with same timestamp and close direction', () => {
       const timestamp = Date.now();
       const fills = [

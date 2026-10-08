@@ -137,6 +137,13 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       return undefined;
     }
 
+    // closeAll resolves one builder discount against the whole batch, while
+    // each symbol retains its own protocol rate and fee contribution.
+    const totalNotional = entries.reduce(
+      (sum, [, notional]) => sum + notional,
+      0,
+    );
+
     Promise.all(
       entries.map(([symbol, notional]) =>
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
@@ -144,7 +151,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
             orderType: 'market' as const,
             isMaker: false,
             symbol,
-            amount: String(notional),
+            amount: String(totalNotional),
           },
         ])
           .then((result) => ({

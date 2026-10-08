@@ -521,6 +521,7 @@ export const ClosePositionModal = ({
     symbol: position.symbol,
     orderType: effectiveOrderType,
     isMaker: effectiveOrderType === 'limit',
+    amount: String(closeNotionalUsd),
   });
 
   const liveUnrealizedPnl = useMemo(

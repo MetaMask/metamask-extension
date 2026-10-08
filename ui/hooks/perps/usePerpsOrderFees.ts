@@ -181,7 +181,7 @@ export function usePerpsOrderFees({
     ORIGINAL_METAMASK_FEE_BIPS,
   );
 
-  // v19 controller quotes already include rewards/subscription resolution.
+  // Controller quotes already include rewards/subscription resolution.
   // Only locally manufactured fallback quotes need the rewards factor.
   const discountedFeeResult = useMemo<FeeCalculationResult | undefined>(() => {
     if (!feeResult) {
@@ -219,17 +219,9 @@ export function usePerpsOrderFees({
     };
   }, [feeResult, feeQuote?.isFallback, metamaskFeeDiscountBips]);
 
-  // Core does not return the pre-discount builder rate. Use the configured
-  // base for chargeable quotes, but preserve structural zero-fee markets.
-  const originalMetamaskFeeRate =
-    feeResult?.metamaskFeeRate !== undefined &&
-    (feeResult.metamaskFeeRate > 0 ||
-      feeResult.chargesMetamaskBuilderFee === true)
-      ? Math.max(
-          feeResult.metamaskFeeRate,
-          PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
-        )
-      : feeResult?.metamaskFeeRate;
+  const originalMetamaskFeeRate = feeQuote?.isFallback
+    ? feeResult?.metamaskFeeRate
+    : (feeResult?.undiscountedMetamaskFeeRate ?? feeResult?.metamaskFeeRate);
   const undiscountedFeeRate =
     feeResult?.protocolFeeRate !== undefined &&
     originalMetamaskFeeRate !== undefined &&
@@ -237,12 +229,25 @@ export function usePerpsOrderFees({
       ? feeResult.protocolFeeRate + originalMetamaskFeeRate
       : feeResult?.feeRate;
 
-  // Convert bips to a whole-percentage value at the display boundary only —
-  // PerpsFeesDisplay and analogous consumers render `-X%` in the discount badge.
+  let discountBips: number | undefined;
+  if (feeQuote?.isFallback) {
+    discountBips = metamaskFeeDiscountBips;
+  } else if (
+    feeResult?.feeSource === 'rewards' ||
+    feeResult?.feeSource === 'subscription'
+  ) {
+    discountBips = feeResult.metamaskFeeDiscountBips;
+  }
+  // A winning source alone is not a reduction. Use the quote's metadata and
+  // rates together; a separate rewards lookup may disagree with this preview.
   const metamaskFeeRateDiscountPercentage =
-    metamaskFeeDiscountBips === undefined
-      ? undefined
-      : metamaskFeeDiscountBips / 100;
+    discountBips !== undefined &&
+    discountBips > 0 &&
+    originalMetamaskFeeRate !== undefined &&
+    discountedFeeResult?.metamaskFeeRate !== undefined &&
+    discountedFeeResult.metamaskFeeRate < originalMetamaskFeeRate
+      ? discountBips / 100
+      : undefined;
 
   return {
     feeRate: discountedFeeResult?.feeRate,

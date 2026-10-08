@@ -252,11 +252,11 @@ describe('CloseAllPositionsModal', () => {
     await waitFor(() => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'ETH', amount: '7125' })],
+        [expect.objectContaining({ symbol: 'ETH', amount: '29625' })],
       );
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'perpsCalculateFees',
-        [expect.objectContaining({ symbol: 'BTC', amount: '22500' })],
+        [expect.objectContaining({ symbol: 'BTC', amount: '29625' })],
       );
     });
 
@@ -268,6 +268,60 @@ describe('CloseAllPositionsModal', () => {
         screen.getByTestId('perps-close-all-fees-value'),
       ).toHaveTextContent('-$52.13');
     });
+  });
+
+  it('quotes a capped subscription against the whole batch and refetches its total', async () => {
+    mockSubmitRequestToBackground.mockImplementation(
+      (method: string, args: unknown[]) => {
+        if (method !== 'perpsCalculateFees') {
+          return Promise.resolve(null);
+        }
+        const { amount } = (args as [{ amount: string }])[0];
+        const notional = Number(amount);
+        const metamaskFeeRate =
+          (0.001 * Math.max(0, notional - 1000)) / notional;
+        return Promise.resolve({
+          feeRate: metamaskFeeRate,
+          protocolFeeRate: 0,
+          metamaskFeeRate,
+          feeSource: 'subscription',
+          metamaskFeeDiscountBips: 10000 * (1 - metamaskFeeRate / 0.001),
+          undiscountedMetamaskFeeRate: 0.001,
+        });
+      },
+    );
+    const positions = defaultProps.positions.map((position) => ({
+      ...position,
+      positionValue: '800',
+    }));
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal {...defaultProps} positions={positions} />,
+      mockStore,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$0.6'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '1600' })],
+    );
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[positions[0], { ...positions[1], positionValue: '1200' }]}
+      />,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$1'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '2000' })],
+    );
   });
 
   it('uses resolved v19 rates without applying rewards twice', async () => {
