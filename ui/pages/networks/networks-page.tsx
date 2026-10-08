@@ -58,6 +58,7 @@ import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transi
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
 import { AddRpcUrlPageForm, type RpcUrlSource } from './add-rpc-url-page-form';
+import { getRpcNickname } from './chainlist-rpc';
 import {
   ChainlistNetworkPicker,
   getHexChainId,
@@ -333,6 +334,7 @@ export const NetworksPage = () => {
         });
 
         if (source === 'chainlist') {
+          const rpcDomain = getRpcNickname(url);
           /* eslint-disable @typescript-eslint/naming-convention */
           trackEvent(
             createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
@@ -340,7 +342,7 @@ export const NetworksPage = () => {
               .addProperties({
                 chain_id: getHexChainId(networkFormState.chainId),
                 network_name: networkFormState.name,
-                rpc_domain: name,
+                ...(rpcDomain ? { rpc_domain: rpcDomain } : {}),
               })
               .build(),
           );

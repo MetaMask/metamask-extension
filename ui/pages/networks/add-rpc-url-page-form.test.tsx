@@ -9,6 +9,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { JsonRpcRequestError } from '../../../shared/lib/rpc.utils';
 import { useSafeChains } from '../../components/multichain/networks-form/use-safe-chains';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 
 const mockJsonRpcRequest = jest.fn();
@@ -336,6 +337,81 @@ describe('AddRpcUrlPageForm', () => {
       'https://custom.example.com',
     );
     expect(screen.getByTestId('rpc-name-input-test')).toHaveValue('My RPC');
+  });
+
+  it('waits for a full URL before showing Chainlist no matches', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        chainlistEnabled
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'rpc.example' },
+    });
+
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-no-matches'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the Chainlist safety article without closing the suggestions', () => {
+    const openTab = jest.fn();
+    // @ts-expect-error mocking the extension platform
+    global.platform = { openTab };
+    useI18nContextMock.mockReturnValue(
+      (key: string, substitutions?: React.ReactNode[]) =>
+        substitutions?.length ? [key, ...substitutions] : key,
+    );
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        chainlistEnabled
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+    const safetyLink = screen.getByText('chainlistLearnHowToStaySafe');
+    fireEvent.mouseDown(safetyLink);
+    fireEvent.blur(screen.getByTestId('rpc-url-input-test'), {
+      relatedTarget: safetyLink,
+    });
+    fireEvent.click(safetyLink);
+
+    expect(openTab).toHaveBeenCalledWith({
+      url: ZENDESK_URLS.UNKNOWN_NETWORK,
+    });
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
   });
 
   it('offers the typed URL when Chainlist has no RPC match', () => {

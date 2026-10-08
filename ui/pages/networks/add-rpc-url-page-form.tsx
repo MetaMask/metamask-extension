@@ -130,7 +130,7 @@ export const AddRpcUrlPageForm = ({
     chainlistEnabled &&
     isUrlFocused &&
     !suggestionsDismissed &&
-    trimmedQuery.length > 0 &&
+    isWebUrl(trimmedQuery) &&
     suggestions.length === 0;
   const networkImageUrl =
     hasChainId(chainId) && chainId
@@ -265,7 +265,21 @@ export const AddRpcUrlPageForm = ({
               </Text>
             </Box>
           ) : null}
-          <Box className="flex w-full flex-col">
+          <Box
+            className="flex w-full flex-col"
+            onBlur={(event) => {
+              if (
+                event.currentTarget.contains(event.relatedTarget as Node | null)
+              ) {
+                return;
+              }
+
+              setIsUrlFocused(false);
+              if (url.trim()) {
+                setUrlFeedback(true);
+              }
+            }}
+          >
             <Label htmlFor="rpcUrl" className="mb-1">
               {t('rpcUrl')}
             </Label>
@@ -279,12 +293,6 @@ export const AddRpcUrlPageForm = ({
                 setIsUrlFocused(true);
                 setSuggestionsDismissed(false);
               }}
-              onBlur={() => {
-                setIsUrlFocused(false);
-                if (url.trim()) {
-                  setUrlFeedback(true);
-                }
-              }}
               isError={Boolean(displayedError)}
               className="w-full"
               inputProps={
@@ -297,6 +305,7 @@ export const AddRpcUrlPageForm = ({
               <Box
                 className="mt-2 overflow-hidden rounded-xl border border-border-muted bg-background-default"
                 data-testid="add-rpc-chainlist-no-matches"
+                onMouseDown={(event) => event.preventDefault()}
               >
                 <Text
                   variant={TextVariant.BodyMd}
@@ -332,6 +341,7 @@ export const AddRpcUrlPageForm = ({
               <Box
                 className="mt-2 max-h-80 overflow-y-auto rounded-xl border border-border-muted bg-background-default p-3"
                 data-testid="add-rpc-chainlist-suggestions"
+                onMouseDown={(event) => event.preventDefault()}
               >
                 <BannerAlert
                   severity={BannerAlertSeverity.Info}
@@ -340,6 +350,7 @@ export const AddRpcUrlPageForm = ({
                     <TextButton
                       key="chainlist-rpc-learn-how-to-stay-safe"
                       onClick={handleLearnHowToStaySafe}
+                      onMouseDown={(event) => event.preventDefault()}
                     >
                       {t('chainlistLearnHowToStaySafe')}
                     </TextButton>,

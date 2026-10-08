@@ -760,6 +760,9 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByText('rpc-secondary.example.com'));
+    fireEvent.change(screen.getByTestId('rpc-name-input-test'), {
+      target: { value: 'custom nickname' },
+    });
     await waitFor(() =>
       expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
