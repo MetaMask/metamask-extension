@@ -25,7 +25,13 @@ module.exports = {
       white: brandColor.white,
     },
     fontSize: {}, // This removes all default Tailwind font sizes. We want to rely on the design system font sizes and enforce use of the Text component
-    extend: {},
+    extend: {
+      // Accent and hero utilities stay available, but they use Inter.
+      fontFamily: {
+        accent: 'var(--font-family-default)',
+        hero: 'var(--font-family-default)',
+      },
+    },
   },
   plugins: [
     plugin(({ addVariant, addUtilities, addBase }) => {
