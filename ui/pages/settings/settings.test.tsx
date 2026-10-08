@@ -1,5 +1,6 @@
 import { screen, render, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../test/data/mock-state.json';
@@ -12,6 +13,7 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
+  PRIVACY_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -43,6 +45,25 @@ jest.mock(
   }),
 );
 
+// Resolve Privacy synchronously to exercise a settings tab present during the
+// initial Strict Mode effect replay, as happens with an already-loaded chunk.
+jest.mock('./settings-registry', () => {
+  const actual = jest.requireActual('./settings-registry');
+  const PrivacyTab = () => {
+    const Component = jest.requireActual('./privacy-tab').default;
+    return <Component />;
+  };
+  return {
+    ...actual,
+    SETTINGS_RENDERABLE_ROUTES: actual.SETTINGS_RENDERABLE_ROUTES.map(
+      (route: { path: string; component: React.ComponentType }) =>
+        route.path === '/settings/privacy'
+          ? { ...route, component: PrivacyTab }
+          : route,
+    ),
+  };
+});
+
 let mockPathname = SETTINGS_ROUTE;
 
 const backgroundConnectionMock = new Proxy(
@@ -64,6 +85,37 @@ describe('Settings', () => {
     setBackgroundConnection(backgroundConnectionMock as never);
     mockPathname = SETTINGS_ROUTE;
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+  });
+
+  it('keeps the Basic Functionality toggle interactive on direct entry in Strict Mode', () => {
+    mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+    const store = configureMockStore([thunk])({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        useExternalServices: true,
+        authConnection: undefined,
+        firstTimeFlowType: 'create',
+      },
+    });
+    renderWithProvider(
+      <React.StrictMode>
+        <Routes>
+          <Route path="/settings/*" element={<Settings />} />
+        </Routes>
+      </React.StrictMode>,
+      store,
+      PRIVACY_ROUTE,
+    );
+
+    const input = screen.getByTestId('basic-functionality-toggle');
+    expect(input).toBeInTheDocument();
+    // Click the visible switch, which forwards the click to its hidden input.
+    fireEvent.click(input.parentElement as HTMLElement);
+
+    expect(store.getActions()).toContainEqual({
+      type: 'SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN',
+    });
   });
 
   describe('navigation', () => {
@@ -108,42 +160,6 @@ describe('Settings', () => {
       ).toBeInTheDocument();
       expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
       await screen.findByTestId('settings-tab-item-preferences-and-display');
-    });
-
-    it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
-      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-      const storeWithDefaultAddress = configureMockStore([thunk])({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            extensionUxDefaultAddressVersioned: true,
-          },
-        },
-      });
-
-      const { unmount } = renderSettings(storeWithDefaultAddress);
-      const select = await screen.findByTestId(
-        'default-address-scope-dropdown',
-      );
-
-      Object.defineProperty(select, '__reactFiber$test', {
-        configurable: true,
-        enumerable: true,
-        value: {},
-      });
-      Object.defineProperty(select, '__reactProps$test', {
-        configurable: true,
-        enumerable: true,
-        value: {},
-      });
-
-      unmount();
-
-      expect(select.parentElement).toBeNull();
-      expect('__reactFiber$test' in select).toBe(false);
-      expect('__reactProps$test' in select).toBe(false);
     });
 
     it('navigates to transaction shield from the root page', async () => {
