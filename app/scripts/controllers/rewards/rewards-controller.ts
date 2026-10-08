@@ -274,10 +274,6 @@ export class RewardsController extends BaseController<
 
   #isDisabled: () => boolean;
 
-  #isBitcoinDisabled: () => boolean;
-
-  #isTronDisabled: () => boolean;
-
   #isVipDisabled: () => boolean;
 
   #reauthPromises: Map<string, Promise<void>> = new Map();
@@ -529,15 +525,11 @@ export class RewardsController extends BaseController<
     messenger,
     state,
     isDisabled,
-    isBitcoinDisabled,
-    isTronDisabled,
     isVipDisabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
     isDisabled: () => boolean;
-    isBitcoinDisabled: () => boolean;
-    isTronDisabled: () => boolean;
     isVipDisabled: () => boolean;
   }) {
     super({
@@ -556,8 +548,6 @@ export class RewardsController extends BaseController<
     );
     this.#initializeEventSubscriptions();
     this.#isDisabled = isDisabled;
-    this.#isBitcoinDisabled = isBitcoinDisabled;
-    this.#isTronDisabled = isTronDisabled;
     this.#isVipDisabled = isVipDisabled;
   }
 
@@ -574,15 +564,6 @@ export class RewardsController extends BaseController<
     // Subscribe to KeyringController unlock events to retry silent auth
     this.messenger.subscribe('KeyringController:unlock', () =>
       this.handleAuthenticationTrigger('KeyringController unlocked'),
-    );
-
-    // On a fresh install the first keyring unlock happens during onboarding,
-    // before remote feature flags (and thus `rewardsEnabled`) are available, so
-    // the unlock-triggered silent auth returns early. Retry when remote flags
-    // hydrate after onboarding completes — `handleAuthenticationTrigger` is a
-    // no-op while rewards is still disabled.
-    this.messenger.subscribe('RemoteFeatureFlagController:stateChange', () =>
-      this.handleAuthenticationTrigger('RemoteFeatureFlag changed'),
     );
   }
 
@@ -870,9 +851,6 @@ export class RewardsController extends BaseController<
       isBtcMainnetAddress(account.address) ||
       isBtcTestnetAddress(account.address)
     ) {
-      if (this.#isBitcoinDisabled()) {
-        throw new Error('Unsupported account type for signing rewards message');
-      }
       const result = await signBitcoinRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -888,9 +866,6 @@ export class RewardsController extends BaseController<
           : `0x${result.signature}`,
       };
     } else if (isTronAddress(account.address)) {
-      if (this.#isTronDisabled()) {
-        throw new Error('Unsupported account type for signing rewards message');
-      }
       const result = await signTronRewardsMessage(
         this.messenger.call.bind(
           this.messenger,
@@ -1087,17 +1062,15 @@ export class RewardsController extends BaseController<
         return true;
       }
 
-      // Check if it's a Bitcoin address (gated by feature flag)
       if (
         isBtcMainnetAddress(account.address) ||
         isBtcTestnetAddress(account.address)
       ) {
-        return !this.#isBitcoinDisabled();
+        return true;
       }
 
-      // Check if it's a Tron address (gated by feature flag)
       if (isTronAddress(account.address)) {
-        return !this.#isTronDisabled();
+        return true;
       }
 
       // If it's none of the supported types, opt-in is not supported

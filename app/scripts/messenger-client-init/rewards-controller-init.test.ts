@@ -80,8 +80,6 @@ describe('RewardsControllerInit', () => {
         messenger: requestMock.controllerMessenger,
         state: expect.any(Object),
         isDisabled: expect.any(Function),
-        isBitcoinDisabled: expect.any(Function),
-        isTronDisabled: expect.any(Function),
         isVipDisabled: expect.any(Function),
       });
     });
@@ -104,8 +102,6 @@ describe('RewardsControllerInit', () => {
         messenger: requestMock.controllerMessenger,
         state: mockPersistedState,
         isDisabled: expect.any(Function),
-        isBitcoinDisabled: expect.any(Function),
-        isTronDisabled: expect.any(Function),
         isVipDisabled: expect.any(Function),
       });
     });
@@ -120,101 +116,23 @@ describe('RewardsControllerInit', () => {
     });
   });
 
-  describe('isBitcoinDisabled', () => {
-    it('returns false when rewardsBitcoinEnabledExtension is true', () => {
-      const requestMock = buildInitRequestMock({
-        rewardsBitcoinEnabledExtension: true,
-      });
+  describe('isDisabled', () => {
+    it('returns false when basic functionality is enabled', () => {
+      const requestMock = buildInitRequestMock({}, true);
 
       RewardsControllerInit(requestMock);
 
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isBitcoinDisabled()).toBe(false);
+      expect(constructorArgs.isDisabled()).toBe(false);
     });
 
-    it('returns true when rewardsBitcoinEnabledExtension is false', () => {
-      const requestMock = buildInitRequestMock({
-        rewardsBitcoinEnabledExtension: false,
-      });
+    it('returns true when basic functionality is disabled', () => {
+      const requestMock = buildInitRequestMock({}, false);
 
       RewardsControllerInit(requestMock);
 
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isBitcoinDisabled()).toBe(true);
-    });
-
-    it('returns true when rewardsBitcoinEnabledExtension is not set', () => {
-      const requestMock = buildInitRequestMock({});
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isBitcoinDisabled()).toBe(true);
-    });
-
-    it('uses manifest flag override when available', () => {
-      mockGetManifestFlags.mockReturnValue({
-        remoteFeatureFlags: {
-          rewardsBitcoinEnabledExtension: true,
-        },
-      } as never);
-      const requestMock = buildInitRequestMock({
-        rewardsBitcoinEnabledExtension: false,
-      });
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isBitcoinDisabled()).toBe(false);
-    });
-  });
-
-  describe('isTronDisabled', () => {
-    it('returns false when rewardsTronEnabledExtension is true', () => {
-      const requestMock = buildInitRequestMock({
-        rewardsTronEnabledExtension: true,
-      });
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isTronDisabled()).toBe(false);
-    });
-
-    it('returns true when rewardsTronEnabledExtension is false', () => {
-      const requestMock = buildInitRequestMock({
-        rewardsTronEnabledExtension: false,
-      });
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isTronDisabled()).toBe(true);
-    });
-
-    it('returns true when rewardsTronEnabledExtension is not set', () => {
-      const requestMock = buildInitRequestMock({});
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isTronDisabled()).toBe(true);
-    });
-
-    it('uses manifest flag override when available', () => {
-      mockGetManifestFlags.mockReturnValue({
-        remoteFeatureFlags: {
-          rewardsTronEnabledExtension: true,
-        },
-      } as never);
-      const requestMock = buildInitRequestMock({
-        rewardsTronEnabledExtension: false,
-      });
-
-      RewardsControllerInit(requestMock);
-
-      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
-      expect(constructorArgs.isTronDisabled()).toBe(false);
+      expect(constructorArgs.isDisabled()).toBe(true);
     });
   });
 
