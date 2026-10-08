@@ -16,6 +16,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useFreshTronAssets } from '../hooks/useFreshTronAssets';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
 type TronDailyResourcesProps = {
@@ -183,6 +184,7 @@ export const TronDailyResources = ({
   chainId,
   t,
 }: TronDailyResourcesProps) => {
+  useFreshTronAssets(account, chainId);
   const { energy, bandwidth } = useTronResources(account, chainId);
 
   // Constants for resource calculations
