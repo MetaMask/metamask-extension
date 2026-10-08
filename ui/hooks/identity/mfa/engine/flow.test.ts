@@ -222,11 +222,14 @@ describe('createMfaFlow', () => {
     await act(flow, { type: 'continue' });
     await act(flow, { type: 'submitEmail', email: 'new@b.co' });
     await act(flow, { type: 'submitCode', code: '111111' });
-    expect(flow.getState().step).toStrictEqual({
-      name: 'otp',
-      purpose: 'verify',
-      email: 'new@b.co',
-      codeSent: true,
+    expect(flow.getState()).toMatchObject({
+      step: {
+        name: 'otp',
+        purpose: 'verify',
+        email: 'new@b.co',
+        codeSent: true,
+      },
+      progress: { current: 1, total: 1 },
     });
 
     await act(flow, { type: 'submitCode', code: '222222' });
@@ -829,6 +832,37 @@ describe('createMfaFlow', () => {
 
       await act(flow, { type: 'retry' });
       expect(flow.getState().step).toStrictEqual({ name: 'success' });
+    });
+  });
+
+  it('retries only what failed after a code was accepted', async () => {
+    const fake = createFakeController([activeEmail]);
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller);
+    fake.controller.getVerificationToken.mockRejectedValueOnce(
+      new MfaError('kratos_unavailable', 'down'),
+    );
+
+    await act(flow, { type: 'submitCode', code: '123456' });
+    expect(flow.getState().error).toBe('kratos_unavailable');
+
+    await act(flow, { type: 'retry' });
+    expect(
+      fake.controller.completeCredentialVerification,
+    ).toHaveBeenCalledTimes(1);
+    expect(flow.getState().step).toStrictEqual({ name: 'success' });
+  });
+
+  it('does not offer a passkey to confirm with when the client has no passkey support', async () => {
+    const fake = createFakeController([passkey]);
+    const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+      passkey: undefined,
+    });
+
+    await act(flow, { type: 'continue' });
+    expect(flow.getState().step).toStrictEqual({
+      name: 'failure',
+      code: 'passkey_unsupported',
+      canRetry: false,
     });
   });
 });

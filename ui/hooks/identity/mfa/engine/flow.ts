@@ -179,6 +179,12 @@ export const createMfaFlow = ({
     }
   };
 
+  const markCompleted = (method: MfaMethod) => {
+    if (!completed.includes(method)) {
+      completed.push(method);
+    }
+  };
+
   const runPasskey = async () => {
     if (!current) {
       return;
@@ -201,7 +207,7 @@ export const createMfaFlow = ({
         proof: { type: 'passkey', attestation },
         reason: tokenReason,
       });
-      completed.push('passkey');
+      markCompleted('passkey');
     } else {
       const challenge = await controller.beginCredentialVerification({
         type: 'passkey',
@@ -235,6 +241,16 @@ export const createMfaFlow = ({
     await sendEmailCode();
   };
 
+  /**
+   * The methods this client can verify with now: a passkey needs the passkey
+   * adapter.
+   *
+   * @param options - The methods the plan accepts, cheapest first.
+   * @returns The usable ones, in the same order.
+   */
+  const getUsableOptions = (options: MfaMethod[]) =>
+    passkey ? options : options.filter((method) => method !== 'passkey');
+
   const advance = async () => {
     if (settled) {
       return;
@@ -252,9 +268,10 @@ export const createMfaFlow = ({
     const remainingSetups = plan.steps.filter(
       (step) => step.kind === 'setup',
     ).length;
+    const total = Math.max(completed.length + remainingSetups, 1);
     const progress = {
-      current: completed.length + 1,
-      total: Math.max(completed.length + remainingSetups, 1),
+      current: Math.min(completed.length + 1, total),
+      total,
     };
     const [step] = plan.steps;
     if (!step) {
@@ -267,17 +284,20 @@ export const createMfaFlow = ({
         show({ name: 'intro', missing: step.missing }, { progress });
         return;
       case 'confirm':
-      case 'verify':
-        if (step.options.length > 1) {
-          show(
-            { name: 'picker', purpose: step.kind, options: step.options },
-            { progress },
-          );
+      case 'verify': {
+        const options = getUsableOptions(step.options);
+        if (options.length === 0) {
+          fail('passkey_unsupported');
+          return;
+        }
+        if (options.length > 1) {
+          show({ name: 'picker', purpose: step.kind, options }, { progress });
           return;
         }
         setState({ progress });
-        await startVerification(step.options[0], step.kind);
+        await startVerification(options[0], step.kind);
         return;
+      }
       case 'setup':
         current = { method: step.method, purpose: 'setup' };
         show(
@@ -434,6 +454,8 @@ export const createMfaFlow = ({
     } else if (step.name === 'passkey') {
       await run(async () => {
         await runPasskey();
+        // The ceremony went through: retrying must not run it again.
+        lastOperation = advance;
         await advance();
       });
     }
@@ -461,7 +483,7 @@ export const createMfaFlow = ({
           proof,
           reason: tokenReason,
         });
-        completed.push('email_otp');
+        markCompleted('email_otp');
       } else {
         await controller.completeCredentialVerification({
           flowId,
@@ -469,6 +491,8 @@ export const createMfaFlow = ({
           reason: tokenReason,
         });
       }
+      // The code was accepted: retrying must not submit it again.
+      lastOperation = advance;
       await advance();
     });
   };
