@@ -11,7 +11,7 @@ import { RewardsMoneyControllerMessenger } from '../controllers/rewards-money/re
 import { RewardsMoneyControllerInitMessenger } from './messengers/rewards-money-controller-messenger';
 import { MessengerClientInitFunction } from './types';
 
-const REWARDS_MONEY_CONTROLLER_FLAG = 'rewardsMoneyControllerEnabled';
+export const REWARDS_MONEY_CONTROLLER_FLAG = 'rewardsMoneyControllerEnabled';
 
 /**
  * Whether `rewardsMoneyControllerEnabled` is on for this client version.

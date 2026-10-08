@@ -120,6 +120,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/money/chomp-config.ts',
     exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
   },
+  {
+    key: 'REWARDS_MONEY_CONTROLLER_FLAG',
+    file: 'app/scripts/messenger-client-init/rewards-money-controller-init.ts',
+    exportName: 'REWARDS_MONEY_CONTROLLER_FLAG',
+  },
 ];
 
 /**
