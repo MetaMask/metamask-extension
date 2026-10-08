@@ -1913,6 +1913,7 @@ describe('getTokenRatesControllerMarketData', () => {
     it('skips assets when native currency conversion rate is unavailable', () => {
       const state = {
         metamask: {
+          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1941,6 +1942,7 @@ describe('getTokenRatesControllerMarketData', () => {
       const nativeTokenAddress = '0x0000000000000000000000000000000000000000';
       const state = {
         metamask: {
+          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -1973,6 +1975,7 @@ describe('getTokenRatesControllerMarketData', () => {
       const ethPrice = 2500;
       const state = {
         metamask: {
+          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -2031,6 +2034,7 @@ describe('getTokenRatesControllerMarketData', () => {
         'eip155:1/erc20:0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const state = {
         metamask: {
+          ...enabledFlags,
           marketData: {},
           currentCurrency: 'usd',
           selectedCurrency: 'usd',
@@ -2072,6 +2076,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
+        ...enabledFlags,
         assetsPrice: {
           [nativeEthAssetId]: {
             assetPriceType: 'fungible' as const,
@@ -2155,6 +2160,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('returns empty result when only EVM assets exist in assetsPrice', () => {
       const state = {
         metamask: {
+          ...enabledFlags,
           assetsPrice: {
             [nativeEthAssetId]: makeMockPrice({ id: 'eth', price: 2000 }),
             [erc20AssetId]: makeMockPrice({ id: 'usdc', price: 1 }),
@@ -2170,6 +2176,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
       const lastUpdated = 1700000000000;
       const state = {
         metamask: {
+          ...enabledFlags,
           assetsPrice: {
             [solanaTokenAssetId]: makeMockPrice({
               id: 'sol-usdc',
@@ -2200,6 +2207,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('omits non-finite market data fields instead of stringifying them', () => {
       const state = {
         metamask: {
+          ...enabledFlags,
           assetsPrice: {
             [solanaTokenAssetId]: {
               ...makeMockPrice({
@@ -2228,6 +2236,7 @@ describe('getMultichainAssetsRatesControllerConversionRates', () => {
     it('handles empty assetsPrice', () => {
       const state = {
         metamask: {
+          ...enabledFlags,
           assetsPrice: {},
         },
       };
@@ -2246,6 +2255,7 @@ describe('getRatesControllerRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
+        ...enabledFlags,
         rates: {},
         assetsInfo: {
           [nativeEthAssetId]: {
@@ -2307,6 +2317,7 @@ describe('getRatesControllerRates', () => {
     const lastUpdated = 1700000000000;
     const state = {
       metamask: {
+        ...enabledFlags,
         rates: {},
         assetsInfo: {
           [solanaSplMissingSymbolAssetId]: {
@@ -2345,6 +2356,7 @@ describe('getRatesControllerFiatCurrency', () => {
   it('returns selectedCurrency from new state', () => {
     const state = {
       metamask: {
+        ...enabledFlags,
         fiatCurrency: 'eur',
         selectedCurrency: 'usd' as const,
       },
