@@ -13,14 +13,8 @@ import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import {
-  createExactExecutionBatchTerms,
-  createExactExecutionTerms,
-  createLimitedCallsTerms,
-  createRedeemerTerms,
-  ROOT_AUTHORITY,
-  ANY_BENEFICIARY,
-} from '@metamask/delegation-core';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { ROOT_AUTHORITY, ANY_BENEFICIARY } from '@metamask/delegation-core';
 import {
   ExecutionMode,
   getDeleGatorEnvironment,
@@ -32,36 +26,16 @@ import {
   type Delegation,
   type UnsignedDelegation,
 } from '../../../../shared/lib/delegation';
+import { getDelegationCaveats, normalizeCallData } from './caveats';
 
 const log = createProjectLogger('transaction-delegation');
 
 export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 
-/**
- * Must match the placeholder used by the Intents / Relay execute API so
- * subsidized quotes can inject the real order ID after signing.
- */
-export const SUBSIDIZED_ORDER_ID_PLACEHOLDER =
-  '0x07cece46d0aec658b12c9d194b3ac3cc74aadf102176005c76f96422b57328b2' as Hex;
-
-/** The number of bytes in a function selector. */
-const SELECTOR_BYTES = 4;
-
-/** A byte range within calldata: [start, end) in bytes, not hex characters. */
-type ByteRange = {
-  start: number;
-  end: number;
-};
-
-/** A run of calldata bytes to enforce, plus its byte start index. */
-type EnforcedSegment = {
-  startIndex: number;
-  value: Hex;
-};
-
 export type DelegationMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
+  | RemoteFeatureFlagControllerGetStateAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerIsAtomicBatchSupportedAction;
 
@@ -186,13 +160,6 @@ export async function convertTransactionToRedeemDelegations(
   const { chainId } = transaction;
   const environment = getDeleGatorEnvironment(parseInt(chainId, 16));
 
-  // Subsidized caveats are built first so a missing batch target/calldata
-  // throws with the same prefixed error as mobile.
-  const subsidizedCaveats =
-    isSubsidized && !request.caveats
-      ? buildSubsidizedCaveats(environment, transaction)
-      : undefined;
-
   const defaultExecutions = isSubsidized
     ? buildSubsidizedExecutions(transaction)
     : getDefaultTransactionExecutions(transaction, request.useParentExecution);
@@ -204,12 +171,16 @@ export async function convertTransactionToRedeemDelegations(
     [...defaultExecutions, ...additionalExecutions],
   ];
 
-  const caveats = [
-    ...(request.caveats ??
-      subsidizedCaveats ??
-      buildDefaultCaveats(environment, executions[0])),
-    ...buildRedeemerCaveats(environment, request.redeemers, request.delegatee),
-  ];
+  const caveats = getDelegationCaveats({
+    caveats: request.caveats,
+    delegatee: request.delegatee,
+    environment,
+    executions: executions[0],
+    isSubsidized,
+    messenger,
+    redeemers: request.redeemers,
+    transaction,
+  });
 
   const modes: ExecutionMode[] = [
     isSubsidized || executions[0].length <= 1
@@ -218,11 +189,11 @@ export async function convertTransactionToRedeemDelegations(
   ];
 
   const delegations = await signAndWrapDelegation({
-    transaction,
     caveats,
-    messenger,
     delegatee: request.delegatee,
     delegationSignature: request.delegationSignature,
+    messenger,
+    transaction,
   });
 
   log('Built delegations', { delegations, modes, executions });
@@ -272,27 +243,6 @@ export async function getDelegationTransaction(
   };
 }
 
-export function normalizeCallData(data: unknown): Hex {
-  if (typeof data !== 'string' || data.length === 0) {
-    return '0x';
-  }
-
-  const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
-  const lower = data.toLowerCase();
-  const prefixed = hasHexPrefix ? `0x${lower.slice(2)}` : `0x${lower}`;
-  const hexBody = prefixed.slice(2);
-
-  if (hexBody.length === 0) {
-    return '0x';
-  }
-
-  if (hexBody.length % 2 !== 0) {
-    return normalizeCallData(`0x0${hexBody}`);
-  }
-
-  return prefixed as Hex;
-}
-
 function hasExecutableNestedTransactions(
   transactionMeta: TransactionMeta,
 ): boolean {
@@ -327,78 +277,6 @@ function getDefaultTransactionExecutions(
   ];
 }
 
-function buildDefaultCaveats(
-  environment: ReturnType<typeof getDeleGatorEnvironment>,
-  executions: ExecutionStruct[],
-): Caveat[] {
-  const caveats: Caveat[] = [
-    {
-      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
-      terms: createLimitedCallsTerms({
-        limit: 1,
-      }),
-      args: '0x',
-    },
-  ];
-
-  if (executions.length > 1) {
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionBatchEnforcer,
-      terms: createExactExecutionBatchTerms({
-        executions,
-      }),
-      args: '0x',
-    });
-  } else {
-    const execution = executions[0];
-
-    caveats.push({
-      enforcer: environment.caveatEnforcers.ExactExecutionEnforcer,
-      terms: createExactExecutionTerms({
-        execution,
-      }),
-      args: '0x',
-    });
-  }
-
-  return caveats;
-}
-
-/**
- * Builds a RedeemerEnforcer caveat so only the given addresses (and the
- * delegatee, if set) can submit the `redeemDelegations` call.
- *
- * @param environment - DeleGator environment with caveat enforcer addresses.
- * @param redeemers - Addresses allowed to redeem the delegation.
- * @param delegatee - Optional delegate address, also allowed to redeem.
- * @returns A single RedeemerEnforcer caveat, or none if no redeemers are provided.
- */
-function buildRedeemerCaveats(
-  environment: ReturnType<typeof getDeleGatorEnvironment>,
-  redeemers: Hex[] | undefined,
-  delegatee: Hex | undefined,
-): Caveat[] {
-  if (!redeemers?.length) {
-    return [];
-  }
-
-  const allowedRedeemers = [
-    ...new Set(
-      [...redeemers, ...(delegatee ? [delegatee] : [])].map(
-        (address) => address.toLowerCase() as Hex,
-      ),
-    ),
-  ];
-
-  return [
-    {
-      enforcer: environment.caveatEnforcers.RedeemerEnforcer,
-      terms: createRedeemerTerms({ redeemers: allowedRedeemers }),
-      args: '0x',
-    },
-  ];
-}
-
 /**
  * Builds the single batch execution for a subsidized Relay redeem.
  *
@@ -412,262 +290,26 @@ function buildRedeemerCaveats(
 function buildSubsidizedExecutions(
   transactionMeta: TransactionMeta,
 ): ExecutionStruct[] {
-  const { txParams } = transactionMeta;
-  const target = txParams.to as Hex | undefined;
-  const callData = txParams.data as Hex | undefined;
-
-  if (!target || !callData) {
-    throw new Error('Missing batch target or calldata');
-  }
-
-  return [
-    {
-      target,
-      value: BigInt(txParams.value ?? '0x0'),
-      callData: normalizeCallData(callData),
-    },
-  ];
-}
-
-/**
- * Builds caveats for a subsidized Relay redeem: allow the batch target, limit
- * to one call, and enforce every calldata byte except the Relay order-ID
- * placeholder window(s). That window must stay mutable so Relay can inject the
- * real order ID after the user signs.
- *
- * @param environment - DeleGator environment with caveat enforcer addresses.
- * @param transaction - Transaction whose calldata and nested calls are enforced.
- * @returns Caveats for the subsidized delegation.
- */
-function buildSubsidizedCaveats(
-  environment: ReturnType<typeof getDeleGatorEnvironment>,
-  transaction: TransactionMeta,
-): Caveat[] {
   try {
-    return buildSubsidizedCaveatsInternal(environment, transaction);
+    const { txParams } = transactionMeta;
+    const target = txParams.to as Hex | undefined;
+    const callData = txParams.data as Hex | undefined;
+
+    if (!target || !callData) {
+      throw new Error('Missing batch target or calldata');
+    }
+
+    return [
+      {
+        target,
+        value: BigInt(txParams.value ?? '0x0'),
+        callData: normalizeCallData(callData),
+      },
+    ];
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Subsidized Caveats: ${message}`, { cause: error });
   }
-}
-
-/**
- * Implementation of {@link buildSubsidizedCaveats}. AllowedTargets +
- * LimitedCalls(1) wrap AllowedCalldata segments from
- * {@link getEnforcedSegments}.
- *
- * @param environment - DeleGator environment with caveat enforcer addresses.
- * @param transaction - Transaction whose calldata and nested calls are enforced.
- * @returns Caveats for the subsidized delegation.
- */
-function buildSubsidizedCaveatsInternal(
-  environment: ReturnType<typeof getDeleGatorEnvironment>,
-  transaction: TransactionMeta,
-): Caveat[] {
-  const { txParams } = transaction;
-  const target = txParams.to as Hex | undefined;
-  const calldata = txParams.data as Hex | undefined;
-
-  if (!target || !calldata) {
-    throw new Error('Missing batch target or calldata');
-  }
-
-  const caveats: Caveat[] = [
-    {
-      enforcer: environment.caveatEnforcers.AllowedTargetsEnforcer,
-      terms: concatHex([normalizeCallData(target)]),
-      args: '0x',
-    },
-    {
-      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
-      terms: createLimitedCallsTerms({
-        limit: 1,
-      }),
-      args: '0x',
-    },
-  ];
-
-  for (const { startIndex, value } of getEnforcedSegments(
-    normalizeCallData(calldata),
-    transaction.nestedTransactions ?? [],
-  )) {
-    caveats.push({
-      enforcer: environment.caveatEnforcers.AllowedCalldataEnforcer,
-      terms: concatHex([toUint256Hex(startIndex), value]),
-      args: '0x',
-    });
-  }
-
-  return caveats;
-}
-
-/**
- * Enforces every calldata byte except the order-ID placeholder window(s).
- *
- * @param calldata - The 0x-prefixed batch calldata (txParams.data).
- * @param nestedTransactions - The batch's nested calls, used to locate split points.
- * @returns The segments to enforce, ordered by byte start index.
- */
-function getEnforcedSegments(
-  calldata: Hex,
-  nestedTransactions: { data?: string }[],
-): EnforcedSegment[] {
-  const freeRanges = findByteRanges(calldata, [
-    SUBSIDIZED_ORDER_ID_PLACEHOLDER,
-  ]);
-
-  const splitPoints = getSplitPoints(calldata, nestedTransactions);
-
-  return getSegmentsBetweenFreeRanges(calldata, freeRanges, splitPoints);
-}
-
-/**
- * Byte offset after the selector of each order-ID-bearing nested call.
- *
- * @param calldata - The 0x-prefixed batch calldata.
- * @param nestedTransactions - The nested calls to locate.
- * @returns The post-selector byte offsets, sorted ascending, deduplicated.
- */
-function getSplitPoints(
-  calldata: Hex,
-  nestedTransactions: { data?: string }[],
-): number[] {
-  const placeholderBody =
-    SUBSIDIZED_ORDER_ID_PLACEHOLDER.slice(2).toLowerCase();
-
-  const nestedData = nestedTransactions
-    .map((tx) => tx.data)
-    // length >= 10 ensures at least a 0x-prefixed 4-byte selector.
-    .filter((data): data is string => data !== undefined && data.length >= 10)
-    .map((data) => data.toLowerCase() as Hex)
-    // Only order-ID-bearing calls need an isolated boundary.
-    .filter((data) => data.includes(placeholderBody));
-
-  const ranges = findByteRanges(calldata, nestedData);
-
-  const points = ranges.map((range) => range.start + SELECTOR_BYTES);
-
-  return [...new Set(points)].sort((a, b) => a - b);
-}
-
-/**
- * Every whole-byte-aligned occurrence of each needle in calldata.
- *
- * @param calldata - The 0x-prefixed calldata to search.
- * @param needles - The 0x-prefixed values to locate.
- * @returns The byte ranges [start, end) of every occurrence, unsorted.
- */
-function findByteRanges(calldata: Hex, needles: Hex[]): ByteRange[] {
-  const haystack = calldata.slice(2).toLowerCase();
-
-  return needles.flatMap((needle) => {
-    const body = needle.slice(2).toLowerCase();
-    const byteLength = body.length / 2;
-    const ranges: ByteRange[] = [];
-
-    let charIndex = haystack.indexOf(body);
-    while (charIndex !== -1) {
-      // Only whole-byte boundaries are meaningful (each byte is two hex chars).
-      if (charIndex % 2 === 0) {
-        const start = charIndex / 2;
-        ranges.push({ start, end: start + byteLength });
-      }
-      charIndex = haystack.indexOf(body, charIndex + 1);
-    }
-
-    return ranges;
-  });
-}
-
-/**
- * Enforces the bytes outside the free ranges, ending a segment at each split point.
- *
- * @param calldata - The 0x-prefixed calldata.
- * @param freeRanges - Ranges to leave free (order-ID placeholder windows).
- * @param splitPoints - Byte offsets at which to end a segment (post-selector).
- * @returns The enforced segments ordered by byte start index.
- */
-function getSegmentsBetweenFreeRanges(
-  calldata: Hex,
-  freeRanges: ByteRange[],
-  splitPoints: number[],
-): EnforcedSegment[] {
-  const totalBytes = (calldata.length - 2) / 2;
-  const sliceValue = (start: number, end: number): Hex =>
-    `0x${calldata.slice(2 + start * 2, 2 + end * 2)}` as Hex;
-
-  const sortedFree = [...freeRanges].sort((a, b) => a.start - b.start);
-  const sortedSplitPoints = [...splitPoints].sort((a, b) => a - b);
-
-  const segments: EnforcedSegment[] = [];
-
-  // Walk the ranges between free windows, ending a segment at each split point.
-  let cursor = 0;
-  for (const free of [...sortedFree, { start: totalBytes, end: totalBytes }]) {
-    addSegments(cursor, free.start, sortedSplitPoints, segments, sliceValue);
-    cursor = Math.max(cursor, free.end);
-  }
-
-  return segments;
-}
-
-/**
- * Enforces [start, end), ending a segment at each split point inside it; the preceding
- * selector folds into that segment.
- *
- * @param start - The first byte of the range (inclusive).
- * @param end - The end of the range (exclusive).
- * @param sortedSplitPoints - Split points sorted ascending, spanning the whole calldata.
- * @param segments - The accumulator to push enforced segments onto.
- * @param sliceValue - Extracts the 0x-prefixed value for a byte range.
- */
-function addSegments(
-  start: number,
-  end: number,
-  sortedSplitPoints: number[],
-  segments: EnforcedSegment[],
-  sliceValue: (from: number, to: number) => Hex,
-): void {
-  const pushSegment = (from: number, to: number) => {
-    if (to > from) {
-      segments.push({ startIndex: from, value: sliceValue(from, to) });
-    }
-  };
-
-  const pointsInRange = sortedSplitPoints.filter(
-    (point) => point > start && point < end,
-  );
-
-  let cursor = start;
-  for (const point of pointsInRange) {
-    pushSegment(cursor, point);
-    cursor = point;
-  }
-
-  pushSegment(cursor, end);
-}
-
-/**
- * Concatenates 0x-prefixed hex values into one lowercase 0x hex string.
- * Each input's `0x` prefix is stripped before joining so the result stays
- * byte-aligned for caveat terms.
- *
- * @param values - Hex values to concatenate.
- * @returns Single lowercase 0x-prefixed hex string.
- */
-function concatHex(values: Hex[]): Hex {
-  return `0x${values.map((value) => value.slice(2).toLowerCase()).join('')}` as Hex;
-}
-
-/**
- * Encodes a non-negative integer as a 32-byte (uint256) hex value for caveat
- * terms such as AllowedCalldata start offsets.
- *
- * @param value - Byte offset or other non-negative integer.
- * @returns 0x-prefixed 64-nibble hex encoding of `value`.
- */
-function toUint256Hex(value: number): Hex {
-  return `0x${value.toString(16).padStart(64, '0')}` as Hex;
 }
 
 async function signAndWrapDelegation({

@@ -4,6 +4,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import {
   TransactionControllerGetNonceLockAction,
@@ -15,25 +16,31 @@ import {
   createExactExecutionBatchTerms,
   createExactExecutionTerms,
   createLimitedCallsTerms,
+  createTimestampTerms,
   ANY_BENEFICIARY,
   ROOT_AUTHORITY,
   type Hex,
 } from '@metamask/delegation-core';
 import { bytesToHex } from '@metamask/utils';
+import type { FeatureFlags } from '@metamask/remote-feature-flag-controller';
 import {
   BATCH_DEFAULT_MODE,
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
   encodeRedeemDelegations,
   getDeleGatorEnvironment,
+  type Caveat,
 } from '../../../../shared/lib/delegation';
 
+import {
+  CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME,
+  normalizeCallData,
+  SUBSIDIZED_ORDER_ID_PLACEHOLDER,
+} from './caveats';
 import {
   convertTransactionToRedeemDelegations,
   DelegationMessenger,
   getDelegationTransaction,
-  normalizeCallData,
-  SUBSIDIZED_ORDER_ID_PLACEHOLDER,
 } from './delegation';
 
 jest.mock('../../../../shared/lib/delegation', () => ({
@@ -79,12 +86,15 @@ const REDEEMER_ENFORCER_MOCK =
 const REDEEMER_1_MOCK = '0xB01caEa8c6C47bbf4F4b4c5080Ca642043359C2E' as Hex;
 const REDEEMER_2_MOCK = '0xB42F812A44c22cc6b861478900401ee759EbEAD6' as Hex;
 const DELEGATEE_MOCK = '0x5555555555555555555555555555555555555555' as Hex;
+const TIMESTAMP_ENFORCER_MOCK =
+  '0xTimestampEnforcer000000000000000000000000' as Hex;
 
 const TERMS_LIMITED_MOCK = '0xterms-limited' as Hex;
 const TERMS_EXACT_MOCK = '0xterms-exact' as Hex;
 const TERMS_BATCH_MOCK = '0xterms-batch' as Hex;
 
 const AUTHORIZATION_SIGNATURE_MOCK = `0x${'1'.repeat(130)}` as Hex;
+const FIXED_NOW = 1_700_000_000_000;
 
 const UPGRADE_CONTRACT_ADDRESS_MOCK =
   '0x1234567890123456789012345678901234567899' as Hex;
@@ -142,9 +152,12 @@ describe('delegation', () => {
   > = jest.fn();
 
   let messenger: DelegationMessenger;
+  let remoteFeatureFlags: FeatureFlags;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    remoteFeatureFlags = {};
+    jest.spyOn(Date, 'now').mockReturnValue(FIXED_NOW);
 
     jest.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
       if (array) {
@@ -159,6 +172,7 @@ describe('delegation', () => {
       MockAnyNamespace,
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction,
       never
@@ -170,6 +184,7 @@ describe('delegation', () => {
       'TestDelegation',
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
+      | RemoteFeatureFlagControllerGetStateAction
       | TransactionControllerGetNonceLockAction
       | TransactionControllerIsAtomicBatchSupportedAction,
       never,
@@ -184,6 +199,7 @@ describe('delegation', () => {
       actions: [
         'DelegationController:signDelegation',
         'KeyringController:signEip7702Authorization',
+        'RemoteFeatureFlagController:getState',
         'TransactionController:getNonceLock',
         'TransactionController:isAtomicBatchSupported',
       ] as never,
@@ -205,6 +221,11 @@ describe('delegation', () => {
     );
 
     baseMessenger.registerActionHandler(
+      'RemoteFeatureFlagController:getState',
+      () => ({ cacheTimestamp: 0, remoteFeatureFlags }),
+    );
+
+    baseMessenger.registerActionHandler(
       'TransactionController:isAtomicBatchSupported',
       isAtomicBatchSupportedMock,
     );
@@ -214,12 +235,13 @@ describe('delegation', () => {
     getDeleGatorEnvironmentMock.mockReturnValue({
       DelegationManager: DELEGATION_MANAGER_ADDRESS_MOCK,
       caveatEnforcers: {
-        LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
-        ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
-        ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
-        AllowedTargetsEnforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
         AllowedCalldataEnforcer: ALLOWED_CALLDATA_ENFORCER_MOCK,
         RedeemerEnforcer: REDEEMER_ENFORCER_MOCK,
+        AllowedTargetsEnforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
+        ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
+        ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
+        LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
+        TimestampEnforcer: TIMESTAMP_ENFORCER_MOCK,
       },
     } as never);
 
@@ -246,6 +268,25 @@ describe('delegation', () => {
       s: `0x${'1'.repeat(64)}` as Hex,
       yParity: '0x1' as Hex,
     });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const getTimestampTerms = (minutes: number) =>
+    createTimestampTerms({
+      afterThreshold: 0,
+      beforeThreshold: Math.floor(FIXED_NOW / 1000) + minutes * 60,
+    });
+
+  const getTimestampCaveat = (caveats: Caveat[], terms: Hex) =>
+    caveats.find((caveat) => caveat.terms === terms);
+
+  const buildTimestampCaveat = (minutes: number) => ({
+    enforcer: TIMESTAMP_ENFORCER_MOCK,
+    terms: getTimestampTerms(minutes),
+    args: '0x',
   });
 
   describe('convertTransactionToRedeemDelegations', () => {
@@ -503,7 +544,7 @@ describe('delegation', () => {
       expect(signDelegationMock).toHaveBeenCalledWith(
         expect.objectContaining({
           delegation: expect.objectContaining({
-            caveats: CAVEATS_OVERRIDE_MOCK,
+            caveats: [...CAVEATS_OVERRIDE_MOCK, buildTimestampCaveat(30)],
           }),
         }),
       );
@@ -537,6 +578,7 @@ describe('delegation', () => {
               `0x${REDEEMER_1_MOCK.slice(2)}${REDEEMER_2_MOCK.slice(2)}`.toLowerCase(),
             args: '0x',
           },
+          buildTimestampCaveat(30),
         ]);
       });
 
@@ -555,6 +597,7 @@ describe('delegation', () => {
             terms: REDEEMER_1_MOCK.toLowerCase(),
             args: '0x',
           },
+          buildTimestampCaveat(30),
         ]);
       });
 
@@ -649,6 +692,7 @@ describe('delegation', () => {
             terms: TERMS_EXACT_MOCK,
             args: '0x',
           },
+          buildTimestampCaveat(30),
         ],
       };
 
@@ -677,6 +721,29 @@ describe('delegation', () => {
             [{ ...expectedUnsignedDelegation, signature: SIGNATURE_MOCK }],
           ],
         }),
+      );
+    });
+
+    it('uses the feature flag override for the delegation deadline', async () => {
+      remoteFeatureFlags = {
+        [CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME]: {
+          delegationDeadlineMinutes: 45,
+        },
+      };
+
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+      });
+
+      const expectedTerms = getTimestampTerms(45);
+      const timestampCaveat = getTimestampCaveat(
+        signDelegationMock.mock.calls[0][0].delegation.caveats,
+        expectedTerms,
+      );
+
+      expect(timestampCaveat).toEqual(
+        expect.objectContaining({ terms: expectedTerms }),
       );
     });
 
@@ -1123,7 +1190,7 @@ describe('delegation', () => {
       });
       expect(
         caveats
-          .slice(2)
+          .slice(2, -1)
           .every(
             (caveat) => caveat.enforcer === ALLOWED_CALLDATA_ENFORCER_MOCK,
           ),
@@ -1165,7 +1232,7 @@ describe('delegation', () => {
       });
 
       const { caveats } = signDelegationMock.mock.calls[0][0].delegation;
-      expect(caveats.length).toBeLessThanOrEqual(7);
+      expect(caveats.length).toBeLessThanOrEqual(8);
     });
 
     it('leaves the order-ID placeholder window free and enforces the remainder', async () => {
