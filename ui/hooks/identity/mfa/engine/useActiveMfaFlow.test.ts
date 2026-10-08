@@ -1,9 +1,7 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { startMfaFlow } from './activeFlow';
 import type { MfaControllerAdapter } from './types';
 import { useActiveMfaFlow } from './useActiveMfaFlow';
-
-const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 const controller: MfaControllerAdapter = {
   refreshEnrolledCredentials: jest.fn(async () => []),
@@ -25,30 +23,31 @@ describe('useActiveMfaFlow', () => {
   it('follows the running flow until it settles', async () => {
     const { result } = renderHook(() => useActiveMfaFlow());
 
-    await act(async () => {
+    act(() => {
       startMfaFlow({
         request: { kind: 'verifyOrEnroll', methods: ['email_otp'] },
         reason: { operation: 'vba.activate' },
         platform: 'mobile',
         controller,
       }).catch(() => undefined);
-      await flush();
     });
-    expect(result.current?.state.step).toStrictEqual({
-      name: 'intro',
-      missing: ['email_otp'],
-    });
+    await waitFor(() =>
+      expect(result.current?.state.step).toStrictEqual({
+        name: 'intro',
+        missing: ['email_otp'],
+      }),
+    );
 
-    await act(async () => {
+    act(() => {
       result.current?.flow.dispatch({ type: 'continue' });
-      await flush();
     });
-    expect(result.current?.state.step).toMatchObject({ name: 'emailEntry' });
+    await waitFor(() =>
+      expect(result.current?.state.step).toMatchObject({ name: 'emailEntry' }),
+    );
 
-    await act(async () => {
+    act(() => {
       result.current?.flow.dispatch({ type: 'cancel' });
-      await flush();
     });
-    expect(result.current).toBeUndefined();
+    await waitFor(() => expect(result.current).toBeUndefined());
   });
 });

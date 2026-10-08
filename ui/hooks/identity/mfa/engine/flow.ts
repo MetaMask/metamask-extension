@@ -290,6 +290,80 @@ export const createMfaFlow = ({
   };
 
   /**
+   * Refreshes the credentials and re-plans, once per step: the same step
+   * failing this way again ends the flow, so a server bug cannot loop.
+   *
+   * @param code - The error's code.
+   * @returns The recovery to run, or `undefined` when the flow failed.
+   */
+  const recoverStaleState = (
+    code: MfaFlowErrorCode,
+  ): (() => Promise<void>) | undefined => {
+    const stepKey = current ? `${current.purpose}:${current.method}` : 'start';
+    if (stepKey === recoveredStep) {
+      fail(code);
+      return undefined;
+    }
+    recoveredStep = stepKey;
+    return async () => {
+      if (code === 'aal2_required' || code === 'verification_token_invalid') {
+        await controller.clearVerificationSession();
+      }
+      credentials = await controller.refreshEnrolledCredentials();
+      await advance();
+    };
+  };
+
+  /**
+   * Sends a new email code when the one on screen expired, otherwise shows
+   * the error. Only a code that was sent can expire; a send failing with
+   * these codes would otherwise resend forever.
+   *
+   * @param code - The error's code.
+   * @param isRecovery - Whether the failed operation was itself a recovery.
+   * @returns The recovery to run, or `undefined` when the state shows the error.
+   */
+  const restartChallenge = (
+    code: MfaFlowErrorCode,
+    isRecovery: boolean,
+  ): (() => Promise<void>) | undefined => {
+    if (
+      !isRecovery &&
+      current?.flowId &&
+      current.method === 'email_otp' &&
+      state.step.name === 'otp'
+    ) {
+      return async () => {
+        await sendEmailCode();
+        setState({ codeResent: true });
+      };
+    }
+    setState({ busy: false, error: code });
+    return undefined;
+  };
+
+  /**
+   * Shows an error the user can fix on the same step. An email linked to
+   * another account goes back to email entry.
+   *
+   * @param code - The error's code.
+   */
+  const showInlineError = (code: MfaFlowErrorCode) => {
+    if (
+      code === 'credential_already_enrolled' &&
+      current?.method === 'email_otp' &&
+      current.purpose === 'setup'
+    ) {
+      show(
+        { name: 'emailEntry', prefillEmail: current.email },
+        { error: code },
+      );
+    } else {
+      setState({ busy: false, error: code });
+    }
+  };
+
+  /**
    * Applies the error to the state, or returns the operation that recovers
    * from it.
    *
@@ -307,42 +381,10 @@ export const createMfaFlow = ({
     }
     const code = getFlowErrorCode(error);
     switch (getErrorHandling(code)) {
-      case 'refresh': {
-        const stepKey = current
-          ? `${current.purpose}:${current.method}`
-          : 'start';
-        if (stepKey === recoveredStep) {
-          fail(code);
-          return undefined;
-        }
-        recoveredStep = stepKey;
-        return async () => {
-          if (
-            code === 'aal2_required' ||
-            code === 'verification_token_invalid'
-          ) {
-            await controller.clearVerificationSession();
-          }
-          credentials = await controller.refreshEnrolledCredentials();
-          await advance();
-        };
-      }
+      case 'refresh':
+        return recoverStaleState(code);
       case 'restart':
-        // Only a code that was sent can expire; a send failing with these
-        // codes would otherwise resend forever.
-        if (
-          !isRecovery &&
-          current?.flowId &&
-          current.method === 'email_otp' &&
-          state.step.name === 'otp'
-        ) {
-          return async () => {
-            await sendEmailCode();
-            setState({ codeResent: true });
-          };
-        }
-        setState({ busy: false, error: code });
-        return undefined;
+        return restartChallenge(code, isRecovery);
       case 'cooldown': {
         const retryAfterMs = getMfaRetryAfterMs(error);
         setState({
@@ -354,18 +396,7 @@ export const createMfaFlow = ({
         return undefined;
       }
       case 'inline':
-        if (
-          code === 'credential_already_enrolled' &&
-          current?.method === 'email_otp' &&
-          current.purpose === 'setup'
-        ) {
-          show(
-            { name: 'emailEntry', prefillEmail: current.email },
-            { error: code },
-          );
-        } else {
-          setState({ busy: false, error: code });
-        }
+        showInlineError(code);
         return undefined;
       case 'failure':
         fail(code);
@@ -396,20 +427,76 @@ export const createMfaFlow = ({
     }
   };
 
+  const continueStep = async (step: MfaFlowStep) => {
+    if (step.name === 'intro') {
+      introShown = true;
+      await run(advance);
+    } else if (step.name === 'passkey') {
+      await run(async () => {
+        await runPasskey();
+        await advance();
+      });
+    }
+  };
+
+  const submitEmailAddress = async (email: string) => {
+    current = { method: 'email_otp', purpose: 'setup', email };
+    show(
+      { name: 'otp', purpose: 'setup', email, codeSent: false },
+      { busy: true },
+    );
+    await run(sendEmailCode);
+  };
+
+  const submitEmailCode = async (code: string) => {
+    if (!current?.flowId) {
+      return;
+    }
+    const { flowId, purpose } = current;
+    await run(async () => {
+      const proof = { type: 'email_otp' as const, code };
+      if (purpose === 'setup') {
+        credentials = await controller.completeCredentialEnrollment({
+          flowId,
+          proof,
+          reason: tokenReason,
+        });
+        completed.push('email_otp');
+      } else {
+        await controller.completeCredentialVerification({
+          flowId,
+          proof,
+          reason: tokenReason,
+        });
+      }
+      await advance();
+    });
+  };
+
+  /**
+   * Ends the flow from the success or failure screen; anywhere else only a
+   * cancel ends it.
+   *
+   * @param step - The step on screen.
+   * @param isCancel - Whether the host is closing the flow.
+   */
+  const closeFlow = (step: MfaFlowStep, isCancel: boolean) => {
+    if (step.name === 'success' && outcome) {
+      const value = outcome;
+      settle(() => resolveResult(value));
+    } else if (step.name === 'failure') {
+      rejectWith(step.code);
+    } else if (isCancel) {
+      rejectWith('flow_cancelled');
+    }
+  };
+
   const handleAction = async (action: MfaFlowAction) => {
     const { step } = state;
     // eslint-disable-next-line default-case -- covers every action type; TypeScript checks it
     switch (action.type) {
       case 'continue':
-        if (step.name === 'intro') {
-          introShown = true;
-          await run(advance);
-        } else if (step.name === 'passkey') {
-          await run(async () => {
-            await runPasskey();
-            await advance();
-          });
-        }
+        await continueStep(step);
         return;
       case 'choose':
         if (step.name === 'picker' && step.options.includes(action.method)) {
@@ -419,44 +506,12 @@ export const createMfaFlow = ({
         return;
       case 'submitEmail':
         if (step.name === 'emailEntry') {
-          current = {
-            method: 'email_otp',
-            purpose: 'setup',
-            email: action.email,
-          };
-          show(
-            {
-              name: 'otp',
-              purpose: 'setup',
-              email: action.email,
-              codeSent: false,
-            },
-            { busy: true },
-          );
-          await run(sendEmailCode);
+          await submitEmailAddress(action.email);
         }
         return;
       case 'submitCode':
-        if (step.name === 'otp' && current?.flowId) {
-          const { flowId, purpose } = current;
-          await run(async () => {
-            const proof = { type: 'email_otp' as const, code: action.code };
-            if (purpose === 'setup') {
-              credentials = await controller.completeCredentialEnrollment({
-                flowId,
-                proof,
-                reason: tokenReason,
-              });
-              completed.push('email_otp');
-            } else {
-              await controller.completeCredentialVerification({
-                flowId,
-                proof,
-                reason: tokenReason,
-              });
-            }
-            await advance();
-          });
+        if (step.name === 'otp') {
+          await submitEmailCode(action.code);
         }
         return;
       case 'resend':
@@ -471,14 +526,7 @@ export const createMfaFlow = ({
         return;
       case 'dismiss':
       case 'cancel':
-        if (step.name === 'success' && outcome) {
-          const value = outcome;
-          settle(() => resolveResult(value));
-        } else if (step.name === 'failure') {
-          rejectWith(step.code);
-        } else if (action.type === 'cancel') {
-          rejectWith('flow_cancelled');
-        }
+        closeFlow(step, action.type === 'cancel');
     }
   };
 
