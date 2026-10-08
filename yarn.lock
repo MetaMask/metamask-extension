@@ -6672,7 +6672,7 @@ __metadata:
 
 "@lavamoat/webpack@patch:@lavamoat/webpack@npm%3A2.2.3#~/.yarn/patches/@lavamoat-webpack-npm-2.2.3-c054d50557.patch":
   version: 2.2.3
-  resolution: "@lavamoat/webpack@patch:@lavamoat/webpack@npm%3A2.2.3#~/.yarn/patches/@lavamoat-webpack-npm-2.2.3-c054d50557.patch::version=2.2.3&hash=022455"
+  resolution: "@lavamoat/webpack@patch:@lavamoat/webpack@npm%3A2.2.3#~/.yarn/patches/@lavamoat-webpack-npm-2.2.3-c054d50557.patch::version=2.2.3&hash=41319c"
   dependencies:
     "@babel/parser": "npm:7.29.3"
     "@lavamoat/aa": "npm:^5.0.1"
@@ -6683,7 +6683,7 @@ __metadata:
     ses: "npm:1.15.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/2b309aca1b9838f756fbea1587355e827764b57d128dd4a75aa6b8cc8016cb18fb3c98e7bf582837da1623894acc4a91ab5dff827e3cd29c0282632813fc4002
+  checksum: 10/47a94969843e5616a32470c407c6c59f16181fe7ac39258249caf880d9a65703e9b293c5e6784bff26cbc8e5fd25dab84da60d4bc1052da9924ad3d66c85e1ed
   languageName: node
   linkType: hard
 

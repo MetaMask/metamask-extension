@@ -2,7 +2,34 @@ diff --git a/src/runtime/runtime.js b/src/runtime/runtime.js
 index e28eb5aecfb1501a249f386f53a8b93aefc66a75..288030d42761222f956f22f700072e4fbabb3473 100644
 --- a/src/runtime/runtime.js
 +++ b/src/runtime/runtime.js
-@@ -348,7 +348,19 @@ const lavamoatRuntimeWrapper = (resourceId, runtimeKit) => {
+@@ -237,15 +237,17 @@ const installGlobalsForPolicy = (resourceId, packageCompartmentGlobal) => {
+ const compartmentMap = new Map()
++const resourceIdByModuleId = new Map()
++for (const [resourceId, moduleIds] of LAVAMOAT.idmap) {
++  for (const moduleId of moduleIds) {
++    // Preserve the original lookup's first-match behavior for duplicate IDs.
++    if (!resourceIdByModuleId.has(moduleId)) {
++      resourceIdByModuleId.set(moduleId, resourceId)
++    }
++  }
++}
+ /**
+  * Finds the resource ID for a given module ID.
+  *
+- * @param {string} moduleId
++ * @param {string | number} moduleId
+  * @returns {string | undefined}
+  */
+-const findResourceId = (moduleId) => {
+-  const found = LAVAMOAT.idmap.find(([, moduleIds]) =>
+-    moduleIds.includes(moduleId)
+-  )
+-  if (found) {
+-    return found[0]
+-  }
+-}
++const findResourceId = (moduleId) => resourceIdByModuleId.get(moduleId)
+@@ -348,7 +350,19 @@ const lavamoatRuntimeWrapper = (resourceId, runtimeKit) => {
      // To discover more, go to https://github.com/webpack/webpack/blob/main/lib/RuntimeGlobals.js and/or look at implementations here https://github.com/webpack/webpack/tree/main/lib/runtime/
      // Looking at the runtime chunk in the built bundle is probably the fastest way to learn what these do.
  
