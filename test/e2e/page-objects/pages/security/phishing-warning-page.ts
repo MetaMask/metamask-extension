@@ -76,7 +76,7 @@ class PhishingWarningPage {
           return false;
         }
       },
-      { timeout: 30000, interval: 500 },
+      { timeout: 10000, interval: 500 },
     );
     await this.driver.clickElement(this.openWarningInNewTabLink);
     try {
