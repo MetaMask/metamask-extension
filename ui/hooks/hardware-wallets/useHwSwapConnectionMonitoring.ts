@@ -4,9 +4,9 @@ import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   ConnectionStatus,
   getHardwareWalletErrorCode,
-  isInE2eTest,
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
