@@ -1,12 +1,13 @@
 import { Env as SubscriptionEnv } from '@metamask/subscription-controller';
 import { Env as ClaimsEnv } from '@metamask/claims-controller';
+import { Env as ShieldEnv } from '@metamask/shield-controller';
 import { ENVIRONMENT } from '../../constants/build';
 import { ShieldEnvConfig } from './type';
 
 const SHIELD_GATEWAY_URL = {
-  [SubscriptionEnv.DEV]: 'https://shield-gateway.dev-api.cx.metamask.io',
-  [SubscriptionEnv.UAT]: 'https://shield-gateway.uat-api.cx.metamask.io',
-  [SubscriptionEnv.PRD]: 'https://shield-gateway.api.cx.metamask.io',
+  [ShieldEnv.DEV]: 'https://shield-gateway.dev-api.cx.metamask.io',
+  [ShieldEnv.UAT]: 'https://shield-gateway.uat-api.cx.metamask.io',
+  [ShieldEnv.PRD]: 'https://shield-gateway.api.cx.metamask.io',
 } as const;
 
 const BUILD_TYPE = {
@@ -24,38 +25,38 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   [BUILD_TYPE.main]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: SubscriptionEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.PRD],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.flask]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: SubscriptionEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.PRD],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.beta]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
-    shieldEnv: SubscriptionEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.UAT],
+    shieldEnv: ShieldEnv.UAT,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
   },
   [BUILD_TYPE.experimental]: {
     subscriptionEnv: SubscriptionEnv.PRD,
     claimsEnv: ClaimsEnv.PRD,
-    shieldEnv: SubscriptionEnv.PRD,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.PRD],
+    shieldEnv: ShieldEnv.PRD,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.PRD],
   },
   [BUILD_TYPE.dev]: {
     subscriptionEnv: SubscriptionEnv.DEV,
     claimsEnv: ClaimsEnv.DEV,
-    shieldEnv: SubscriptionEnv.DEV,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.DEV],
+    shieldEnv: ShieldEnv.DEV,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.DEV],
   },
   [BUILD_TYPE.uat]: {
     subscriptionEnv: SubscriptionEnv.UAT,
     claimsEnv: ClaimsEnv.UAT,
-    shieldEnv: SubscriptionEnv.UAT,
-    gatewayUrl: SHIELD_GATEWAY_URL[SubscriptionEnv.UAT],
+    shieldEnv: ShieldEnv.UAT,
+    gatewayUrl: SHIELD_GATEWAY_URL[ShieldEnv.UAT],
   },
 };
 

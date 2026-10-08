@@ -251,6 +251,28 @@ describe('useGasSponsorshipWarningAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns no alerts for a zero-value delegated transaction already under 10 MON', () => {
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          delegationAddress: DELEGATION_ADDRESS,
+          isGasFeeSponsored: true,
+        },
+        buildMonadNetworkState({
+          accountsByChainId: {
+            [CHAIN_IDS.MONAD]: {
+              [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                balance: BALANCE_7_MON,
+              },
+            },
+          },
+        }),
+      ),
+    );
+    expect(alerts).toEqual([]);
+  });
+
   it('returns warning alert for an undelegated account when simulation reports a reserve violation', () => {
     const alerts = runHook(
       getMockConfirmStateForTransaction(

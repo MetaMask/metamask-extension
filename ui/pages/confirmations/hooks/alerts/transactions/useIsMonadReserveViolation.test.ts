@@ -20,6 +20,7 @@ const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
 const ACCOUNT_ADDRESS = CONFIRMATION_MOCK.txParams.from;
 const DELEGATION_ADDRESS: Hex = '0x63c0c19a282a1b52b07dd5a65b58948a07dae32b';
 const BALANCE_15_MON = toHex(15n * 10n ** 18n);
+const BALANCE_7_MON = toHex(7n * 10n ** 18n);
 const VALUE_6_MON = toHex(6n * 10n ** 18n);
 
 function runHook(state: Record<string, unknown>) {
@@ -90,6 +91,34 @@ describe('useIsMonadReserveViolation', () => {
         ),
       ),
     ).toBe(true);
+  });
+
+  it('returns false for a zero-value delegated transaction already under 10 MON', () => {
+    expect(
+      runHook(
+        getMockConfirmStateForTransaction(
+          {
+            ...CONFIRMATION_MOCK,
+            delegationAddress: DELEGATION_ADDRESS,
+            txParams: {
+              ...CONFIRMATION_MOCK.txParams,
+              value: '0x0',
+            },
+          },
+          {
+            metamask: {
+              accountsByChainId: {
+                [CHAIN_IDS.MONAD]: {
+                  [toChecksumHexAddress(ACCOUNT_ADDRESS)]: {
+                    balance: BALANCE_7_MON,
+                  },
+                },
+              },
+            },
+          },
+        ),
+      ),
+    ).toBe(false);
   });
 
   it('uses the transaction override from the confirmation context', () => {

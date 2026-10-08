@@ -1,6 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
 import { quoteXPathText } from '../../../../helpers/quoteXPathText';
-import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 
 /**
  * Multichain per-network address rows: copy, QR, and explorer links.
@@ -143,35 +142,16 @@ class AccountAddressListPage {
     console.log(
       `Check quick-copy popover shows "${networkAddress}" for "${networkName}"`,
     );
-    let rowText = '';
     await this.driver.waitUntil(
       async () => {
-        const row = await this.findQuickCopyRowByNetworkName({
-          networkName,
-          networkAddress,
-        });
-        if (!row) {
-          return false;
-        }
-        rowText = await row.getText();
+        const row = await this.driver.findElement(
+          this.quickCopyRowByNetworkName(networkName),
+        );
+        const rowText = await row.getText();
         return rowText.includes(networkAddress);
       },
-      { interval: 100, timeout: this.driver.timeout },
+      { interval: 500, timeout: this.driver.timeout },
     );
-    const row = await this.findQuickCopyRowByNetworkName({
-      networkName,
-      networkAddress,
-    });
-    if (!row) {
-      throw new Error(
-        `Could not find quick-copy row for "${networkName}" with "${networkAddress}"`,
-      );
-    }
-    if (!rowText.includes(networkAddress)) {
-      throw new Error(
-        `Expected quick-copy row for "${networkName}" to include "${networkAddress}" but got "${rowText}"`,
-      );
-    }
   }
 
   async checkQuickCopyPopoverIsLoaded(): Promise<void> {
@@ -257,38 +237,11 @@ class AccountAddressListPage {
     expectedAddress: string;
   }): Promise<void> {
     console.log(`Click quick-copy row for network "${networkName}"`);
-    const row = await this.findQuickCopyRowByNetworkName({
-      networkName,
-      networkAddress: shortenAddress(expectedAddress),
-    });
-    if (!row) {
-      throw new Error(
-        `Could not find quick-copy row for "${networkName}" with "${shortenAddress(expectedAddress)}"`,
-      );
-    }
-    await row.click();
-    await this.driver.waitForClipboardContent(expectedAddress);
-  }
-
-  private async findQuickCopyRowByNetworkName({
-    networkName,
-    networkAddress,
-  }: {
-    networkName: string;
-    networkAddress?: string;
-  }) {
-    const rows = await this.driver.findElements(
+    const row = await this.driver.findElement(
       this.quickCopyRowByNetworkName(networkName),
     );
-
-    for (const row of rows) {
-      const rowText = await row.getText();
-      if (!networkAddress || rowText.includes(networkAddress)) {
-        return row;
-      }
-    }
-
-    return null;
+    await row.click();
+    await this.driver.waitForClipboardContent(expectedAddress);
   }
 
   async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {
