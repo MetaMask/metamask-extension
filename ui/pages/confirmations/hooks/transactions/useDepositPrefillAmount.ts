@@ -28,6 +28,9 @@ import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const ZERO_PREFILL_AMOUNT = '0.0';
+const DEFAULT_PREFILL_PERCENTAGE = 50;
+const MAX_PREFILL_PERCENTAGE = 100;
+const TRANSACTION_TYPES_MAX_PREFILL = [TransactionType.moneyAccountDeposit];
 
 function formatFiatAmount(value: BigNumber): string {
   return value.isInteger() ? value.toString(10) : value.toFixed(2);
@@ -96,10 +99,10 @@ export type DepositPrefillResult = {
 };
 
 /**
- * Computes the fiat amount to pre-fill for money-account deposit confirmations.
+ * Computes the fiat amount to pre-fill for MetaMask Pay deposit confirmations.
  * Matches mobile `useDepositPrefillAmount`:
- * - Gated by `confirmations_pay_extended.prefilledAmount`
- * - 100% of balance for relay fixed-spread route tokens, otherwise 50%
+ * - Gated by `confirmations_pay_extended.prefilledAmount`, per transaction type
+ * - 100% for money-account deposits with route tokens, otherwise 50%
  * - Capped by `confirmations_pay_extended.depositLimit` when configured
  * - Re-commits when the confirmation, pay token, or funding account changes
  * - Settles as `DepositPrefillStatus.Skipped` when no funded token can produce
@@ -182,10 +185,14 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
         chainId: payToken.chainId,
         address: payToken.address,
       });
-      const isMoneyAccountDeposit = hasTransactionType(transactionMeta, [
-        TransactionType.moneyAccountDeposit,
-      ]);
-      const nextPercentage = isMoneyAccountDeposit && stable ? 100 : 50;
+      const supportsMaxPrefill = hasTransactionType(
+        transactionMeta,
+        TRANSACTION_TYPES_MAX_PREFILL,
+      );
+      const nextPercentage =
+        supportsMaxPrefill && stable
+          ? MAX_PREFILL_PERCENTAGE
+          : DEFAULT_PREFILL_PERCENTAGE;
 
       const raw = new BigNumber(nextPercentage)
         .div(100)
@@ -207,7 +214,9 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
         // committing it as Max would submit that account's balance and suppress
         // the insufficient-funds alert.
         isUncappedMaxPrefill:
-          nextPercentage === 100 && !isCapped && isLiveBalance,
+          nextPercentage === MAX_PREFILL_PERCENTAGE &&
+          !isCapped &&
+          isLiveBalance,
       };
     }, [
       balanceUsd,

@@ -154,14 +154,7 @@ export function useTransactionCustomAmount({
     depositPrefill.status === DepositPrefillStatus.Prefilled;
   const isDepositPrefillSkipped =
     depositPrefill.status === DepositPrefillStatus.Skipped;
-  const supportsDepositPrefill = hasTransactionType(transactionMeta, [
-    TransactionType.moneyAccountDeposit,
-    TransactionType.perpsDeposit,
-    TransactionType.predictDeposit,
-    TransactionType.predictDepositAndOrder,
-  ]);
-  const shouldUseDepositPrefill =
-    supportsDepositPrefill && isDepositPrefillEnabled;
+  const shouldUseDepositPrefill = isDepositPrefillEnabled;
   const prevDepositHasPrefilledRef = useRef(isDepositPrefilled);
   // The prefill amount is written by an effect, one commit after prefill
   // reports `hasPrefilled`. Without tracking that gap the field paints "$0"

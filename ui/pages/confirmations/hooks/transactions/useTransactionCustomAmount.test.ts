@@ -1372,13 +1372,41 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
-    it('does not apply deposit prefill for non-deposit transactions', () => {
+    it('applies a 50% deposit prefill for perps deposits enabled by the flag', () => {
+      const perpsDepositMeta = {
+        ...MOCK_TRANSACTION_META,
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      const { result } = runHook({
+        transactionMeta: perpsDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: createDepositPrefillMock({
+          percentage: 50,
+          prefillAmount: '500',
+          status: DepositPrefillStatus.Prefilled,
+        }),
+      });
+
+      expect(result.current.amountFiat).toBe('500');
+      expect(result.current.isDepositPrefilled).toBe(true);
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        perpsDepositMeta.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'prefilled_50',
+          }),
+        }),
+      );
+    });
+
+    it('does not apply deposit prefill when the flag disables it', () => {
       const { result } = runHook({
         payTokenBalanceUsd: 1000,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: '500',
-          status: DepositPrefillStatus.Prefilled,
+          status: DepositPrefillStatus.Disabled,
         }),
       });
 
@@ -1445,12 +1473,12 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('0');
     });
 
-    it('does not report a skipped prefill for non-deposit flows', () => {
+    it('does not report a skipped prefill when the flag disables it', () => {
       const { result } = runHook({
         payTokenBalanceUsd: 0,
         depositPrefill: createDepositPrefillMock({
           prefillAmount: undefined,
-          status: DepositPrefillStatus.Skipped,
+          status: DepositPrefillStatus.Disabled,
         }),
       });
 
