@@ -4,7 +4,7 @@ import MetaMaskController from '../../metamask-controller';
 import {
   RAMPS_BUY_DEEP_LINK_ENTRY_PATH,
   SIG_PARAM,
-} from '../../../../shared/lib/deep-links/constants';
+} from '../../../../shared/lib/deep-links/common';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -102,7 +102,7 @@ describe('DeepLinkRouter', () => {
         ).toHaveBeenCalledWith(
           expect.any(Function),
           {
-            urls: ['*://*.link.metamask.io/*', '*://*.link.metamask.com/*'],
+            urls: ['*://link.metamask.io/*', '*://link.metamask.com/*'],
             types: ['main_frame'],
           },
           mockIsManifestV3() ? [] : ['blocking'],

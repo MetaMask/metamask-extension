@@ -1,7 +1,7 @@
 import { BaseUrl } from '../../constants/urls';
 import type { Destination } from './routes/route';
 import type { ParsedDeepLink } from './parse';
-import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './constants';
+import { RAMPS_BUY_DEEP_LINK_ENTRY_PATH } from './common';
 
 /**
  * Builds the legacy `/buy` destination: an external redirect to the Portfolio

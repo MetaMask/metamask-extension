@@ -1,4 +1,4 @@
-import { isDeepLinkHost } from '../../../shared/lib/deep-links/constants';
+import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
 import { NavigationOrigin, parse } from '../../../shared/lib/deep-links/parse';
 import { resolveBuyDeepLinkDestination } from '../../../shared/lib/deep-links/buy-flow';
 

@@ -9,7 +9,7 @@ import {
 import {
   DEEP_LINK_HOSTS,
   DEEP_LINK_MAX_LENGTH,
-} from '../../../../shared/lib/deep-links/constants';
+} from '../../../../shared/lib/deep-links/common';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type { Destination } from '../../../../shared/lib/deep-links/routes/route';
@@ -147,7 +147,7 @@ export class DeepLinkRouter extends EventEmitter<{
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
-        urls: DEEP_LINK_HOSTS.map((host) => `*://*.${host}/*`),
+        urls: DEEP_LINK_HOSTS.map((host) => `*://${host}/*`),
         // redirect only top level frames, ignore all others.
         types: ['main_frame'],
       },
