@@ -167,6 +167,7 @@ describe('Bridge', () => {
       fireEvent.click(backButton);
     });
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
-    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 });

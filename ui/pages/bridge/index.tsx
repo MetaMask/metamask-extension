@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { isNonEvmChainId } from '@metamask/bridge-controller';
 import {
   ButtonIcon,
@@ -50,15 +50,12 @@ import { swapQuoteFetchTrace } from './utils/swap-quote-fetch-trace';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
+  const navigate = useNavigate();
 
   useBridging();
 
-  const {
-    navigateToDefaultRoute,
-    search,
-    swapViewTraceId,
-    swapViewPrefilledAmount,
-  } = useBridgeNavigation();
+  const { search, swapViewTraceId, swapViewPrefilledAmount } =
+    useBridgeNavigation();
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -139,7 +136,7 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
+    transitionBack(() => navigate(-1));
   };
 
   const prepareBody = (
