@@ -154,12 +154,7 @@
     "etag": null,
     "eventQueue": "object",
     "events": "object",
-    "eventsConfig": {
-      "events": "object",
-      "schemaVersion": "0",
-      "timestamp": 0,
-      "version": "0"
-    },
+    "eventsConfig": "object",
     "eventsConfigEtag": null,
     "fcmToken": "string",
     "featureFlagThresholdGroups": "object",
