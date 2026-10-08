@@ -1,6 +1,6 @@
-import { strict as assert } from 'assert';
-import { Driver } from '../../../webdriver/driver';
-import BridgeQuotePage from '../bridge/quote-page';
+import { strict as assert } from "assert";
+import { Driver } from "../../../webdriver/driver";
+import BridgeQuotePage from "../bridge/quote-page";
 
 export type SwapOptions = {
   amount: number;
@@ -66,36 +66,36 @@ class SwapPage {
     '[data-testid="bridge-destination-button"]';
 
   private readonly bridgeQuotePage = {
-    testId: 'parent-selector-bridge-quote',
+    testId: "parent-selector-bridge-quote",
   };
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
   private readonly closeButton = {
-    tag: 'button',
-    text: 'Close',
+    tag: "button",
+    text: "Close",
   };
 
-  private readonly closeQuotesButton = 'header button';
+  private readonly closeQuotesButton = "header button";
 
   private readonly driver: Driver;
 
   private readonly gasIncludedLabel = {
-    text: 'Included',
-    tag: 'p',
+    text: "Included",
+    tag: "p",
   };
 
   private readonly importTokensButton =
     '[data-testid="import-tokens-import-button"]';
 
   private readonly insufficientFundsButton = {
-    text: 'Insufficient funds',
+    text: "Insufficient funds",
     css: '[data-testid="bridge-cta-button"]',
   };
 
   private readonly maxButton = {
-    text: 'Max',
-    tag: 'button',
+    text: "Max",
+    tag: "button",
   };
 
   private readonly minimumReceived = '[data-testid="minimum-received"]';
@@ -106,7 +106,7 @@ class SwapPage {
 
   private readonly noQuotesAvailableMessage = {
     text: "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option",
-    tag: 'p',
+    tag: "p",
   };
 
   private readonly quotesModal = '[data-testid="quotes-modal"]';
@@ -116,7 +116,7 @@ class SwapPage {
 
   private readonly rateMessage = {
     text: `Includes 0.875% MetaMask fee`,
-    tag: 'p',
+    tag: "p",
   };
 
   private readonly reviewFromAmount = '[data-testid="from-amount"]';
@@ -129,14 +129,14 @@ class SwapPage {
 
   private readonly swapButton = {
     css: '[data-testid="bridge-cta-button"]',
-    text: 'Swap',
+    text: "Swap",
   };
 
   private readonly swapsBannerTitle = '[data-testid="swaps-banner-title"]';
 
   private readonly transactionCompleteHeader = {
-    tag: 'h4',
-    text: 'Your transaction is complete',
+    tag: "h4",
+    text: "Your transaction is complete",
   };
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
@@ -148,8 +148,8 @@ class SwapPage {
     '[data-testid="swap-smart-transaction-status-header"]';
 
   private readonly viewActivityButton = {
-    tag: 'button',
-    text: 'View activity',
+    tag: "button",
+    text: "View activity",
   };
 
   constructor(driver: Driver) {
@@ -166,7 +166,7 @@ class SwapPage {
   async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.insufficientFundsButton);
     await this.driver.waitForSelector(this.submitSwapButton, {
-      state: 'disabled',
+      state: "disabled",
     });
   }
 
@@ -193,28 +193,28 @@ class SwapPage {
         this.bridgeQuotePage,
       ]);
     } catch (e) {
-      console.log('Timeout while waiting for Swap page to be loaded', e);
+      console.log("Timeout while waiting for Swap page to be loaded", e);
       throw e;
     }
-    console.log('Swap page is loaded');
+    console.log("Swap page is loaded");
   }
 
   async checkQuote(quote: SwapQuote): Promise<void> {
     await this.driver.waitForSelector({
       text: `Total cost: ${quote.totalCost}`,
-      tag: 'p',
+      tag: "p",
     });
     await this.driver.waitForSelector({
       text: `${quote.receivedAmount}`,
-      tag: 'p',
+      tag: "p",
     });
     await this.driver.waitForSelector({
       text: quote.receivedAmountInCurrency,
-      tag: 'p',
+      tag: "p",
     });
     await this.driver.waitForSelector({
       text: quote.provider,
-      tag: 'p',
+      tag: "p",
     });
   }
 
@@ -253,13 +253,13 @@ class SwapPage {
     await this.driver.wait(async () => {
       const fromAmount = await this.getFromAmountValue();
       const toAmount = await this.getToAmountValue();
-      return fromAmount !== '' && toAmount !== '';
+      return fromAmount !== "" && toAmount !== "";
     }, this.driver.timeout);
   }
 
   async checkSwapButtonIsEnabled(): Promise<void> {
     await this.driver.waitForSelector(this.swapButton, {
-      state: 'enabled',
+      state: "enabled",
     });
   }
 
@@ -327,16 +327,16 @@ class SwapPage {
   }
 
   async dismissManualTokenWarning(): Promise<void> {
-    console.log('Dismiss manual token warning');
+    console.log("Dismiss manual token warning");
     // https://github.com/MetaMask/metamask-extension/issues/31426
     await this.driver.clickElementSafe({
-      text: 'Continue swapping',
-      tag: 'button',
+      text: "Continue swapping",
+      tag: "button",
     });
   }
 
   async enterSwapAmount(amount: string): Promise<void> {
-    console.log('Entering swap amount');
+    console.log("Entering swap amount");
     const stxToggle = await this.driver.findElement(this.reviewFromAmount);
     stxToggle.sendKeys(amount);
   }
@@ -348,27 +348,27 @@ class SwapPage {
 
   async getFromAmountValue(): Promise<string> {
     const element = await this.driver.waitForSelector(this.reviewFromAmount);
-    return element.getAttribute('value');
+    return element.getAttribute("value");
   }
 
   async getToAmountValue(): Promise<string> {
     const element = await this.driver.waitForSelector(this.reviewToAmount);
-    return element.getAttribute('value');
+    return element.getAttribute("value");
   }
 
   async reviewQuote(options: SwapReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
-    const fromAmountText = await fromAmount.getAttribute('value');
+    const fromAmountText = await fromAmount.getAttribute("value");
     assert.equal(fromAmountText, options.swapFromAmount);
     const toAmount = await this.driver.findElement(this.reviewToAmount);
-    const toAmountText = await toAmount.getAttribute('value');
+    const toAmountText = await toAmount.getAttribute("value");
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
       text: `1 ${options.swapFrom} = ${
         options.exchangeRate ?? options.swapToAmount
       } ${options.swapTo}`,
-      tag: 'p',
+      tag: "p",
     });
     await this.driver.waitForSelector(this.rateMessage);
     await this.driver.waitForSelector(this.moreQuotesButton);
@@ -379,7 +379,7 @@ class SwapPage {
   async selectAlternativeQuote(): Promise<void> {
     await this.driver.waitForSelector(this.moreQuotesButton);
     await this.driver.clickElement(this.moreQuotesButton);
-    await this.driver.waitForSelector({ text: 'Select a quote' });
+    await this.driver.waitForSelector({ text: "Select a quote" });
 
     await this.driver.executeScript(`
         const quoteRows = Array.from(
@@ -397,7 +397,7 @@ class SwapPage {
   }
 
   async selectDestinationToken(destinationToken: string): Promise<void> {
-    console.log('Click destination token button');
+    console.log("Click destination token button");
     await this.driver.clickElement(this.bridgeDestinationButton);
     await this.driver.waitForSelector(this.assetPickerSearchInput);
     await this.driver.fill(this.assetPickerSearchInput, destinationToken);
@@ -425,13 +425,13 @@ class SwapPage {
     const result = await Promise.any([
       this.driver
         .waitForSelector(this.importTokensButton)
-        .then(() => 'import' as const),
+        .then(() => "import" as const),
       this.driver
         .waitForSelector(this.bridgeAsset)
-        .then(() => 'asset' as const),
+        .then(() => "asset" as const),
     ]);
 
-    if (result === 'import') {
+    if (result === "import") {
       await this.driver.clickElement(this.importTokensButton);
       await this.driver.waitForSelector(this.bridgeAsset);
     }
@@ -439,7 +439,7 @@ class SwapPage {
   }
 
   async selectSourceToken(sourceToken: string): Promise<void> {
-    console.log('Click source token button');
+    console.log("Click source token button");
     await this.driver.clickElement(this.bridgeSourceButton);
     await this.driver.waitForSelector(this.assetPickerSearchInput);
     await this.driver.fill(this.assetPickerSearchInput, sourceToken);
@@ -454,7 +454,7 @@ class SwapPage {
   }
 
   async submitSwap(): Promise<void> {
-    console.log('Submit Swap');
+    console.log("Submit Swap");
     await this.driver.clickElementAndWaitToDisappear(this.swapButton);
   }
 
@@ -478,7 +478,7 @@ class SwapPage {
     assert.equal(swapFromAmount, options.amount.toString());
 
     const swapToAmount = await this.getToAmountValue();
-    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ''));
+    const normalizedSwapToAmount = Number(swapToAmount.replace(/,/gu, ""));
     assert.equal(
       normalizedSwapToAmount > 0,
       true,
@@ -491,7 +491,7 @@ class SwapPage {
   }
 
   async waitForQuote(): Promise<void> {
-    console.log('Wait for quote to be displayed');
+    console.log("Wait for quote to be displayed");
     await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
   }
 
@@ -504,16 +504,16 @@ class SwapPage {
     ) {
       return;
     }
-    console.log('Wait for Smart Transaction to complete');
+    console.log("Wait for Smart Transaction to complete");
     await this.driver.waitForSelector(this.transactionCompleteHeader, {
       timeout: 30000,
     });
   }
 
   async waitForTransactionCompleteWithToken(tokenName: string): Promise<void> {
-    await this.swapProcessingMessageCheck('Processing');
+    await this.swapProcessingMessageCheck("Processing");
     await this.driver.waitForSelector(
-      { css: this.transactionHeader, text: 'Transaction complete' },
+      { css: this.transactionHeader, text: "Transaction complete" },
       { timeout: 30000 },
     );
     await this.driver.waitForSelector({
@@ -524,8 +524,8 @@ class SwapPage {
   }
 
   async waitForTransactionToComplete(): Promise<void> {
-    console.log('Swap Transaction complete');
-    await this.swapProcessingMessageCheck('Transaction complete');
+    console.log("Swap Transaction complete");
+    await this.swapProcessingMessageCheck("Transaction complete");
     await this.driver.clickElement(this.closeButton);
   }
 }

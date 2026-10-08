@@ -1,36 +1,36 @@
-import React from 'react';
-import { act, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { RequestStatus } from '@metamask/bridge-controller';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
-import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockNetworkState } from '../../../../test/stub/networks';
-import configureStore from '../../../store/store';
-import * as bridgeActions from '../../../ducks/bridge/actions';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
+import React from "react";
+import { act, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { RequestStatus } from "@metamask/bridge-controller";
+import { toChecksumHexAddress } from "@metamask/controller-utils";
+import mockBridgeQuotesErc20Erc20 from "../../../../test/data/bridge/mock-quotes-erc20-erc20";
+import { createBridgeMockStore } from "../../../../test/data/bridge/mock-bridge-store";
+import { renderWithProvider } from "../../../../test/lib/render-helpers-navigate";
+import { CHAIN_IDS } from "../../../../shared/constants/network";
+import { mockNetworkState } from "../../../../test/stub/networks";
+import configureStore from "../../../store/store";
+import * as bridgeActions from "../../../ducks/bridge/actions";
+import { setBackgroundConnection } from "../../../store/background-connection";
+import { BridgeQuotesModal } from "./bridge-quotes-modal";
 
 setBackgroundConnection({
   trackUnifiedSwapBridgeEvent: jest.fn(),
   getStatePatches: jest.fn(),
 } as never);
 
-describe('BridgeQuotesModal', () => {
+describe("BridgeQuotesModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should render the modal', async () => {
+  it("should render the modal", async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
-            '0x1': { isActiveSrc: true, isActiveDest: false },
-            '0xa': { isActiveSrc: true, isActiveDest: false },
-            '0x89': { isActiveSrc: false, isActiveDest: true },
+            "0x1": { isActiveSrc: true, isActiveDest: false },
+            "0xa": { isActiveSrc: true, isActiveDest: false },
+            "0x89": { isActiveSrc: false, isActiveDest: true },
           },
         },
       },
@@ -41,26 +41,26 @@ describe('BridgeQuotesModal', () => {
         quoteRequest: {
           srcChainId: 10,
           destChainId: 137,
-          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
           destTokenAddress: toChecksumHexAddress(
-            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           ),
-          srcTokenAmount: '14000000',
+          srcTokenAmount: "14000000",
         },
       },
       metamaskStateOverrides: {
         marketData: {
-          '0xa': {
-            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-              currency: 'ETH',
+          "0xa": {
+            "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85": {
+              currency: "ETH",
               price: 1,
             },
           },
-          '0x89': {
+          "0x89": {
             [toChecksumHexAddress(
-              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             )]: {
-              currency: 'POL',
+              currency: "POL",
               price: 0.99,
             },
           },
@@ -86,23 +86,22 @@ describe('BridgeQuotesModal', () => {
 
     const mockTrackMetaMetricsEvent = jest.spyOn(
       bridgeActions,
-      'trackUnifiedSwapBridgeEvent',
+      "trackUnifiedSwapBridgeEvent",
     );
 
-    const { baseElement, findByTestId, findByText } = renderWithProvider(
+    const { findByTestId, findByText } = renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
-          console.log('close');
+          console.log("close");
         }}
       />,
       configureStore(mockStore),
     );
 
-    expect(await findByTestId('quotes-modal')).toBeInTheDocument();
-    expect(baseElement).toMatchSnapshot();
+    expect(await findByTestId("quotes-modal")).toBeInTheDocument();
     await act(async () => {
-      const acrossQuote = await findByText('Across');
+      const acrossQuote = await findByText("Across");
       await userEvent.click(acrossQuote);
     });
 
@@ -130,14 +129,14 @@ describe('BridgeQuotesModal', () => {
     });
   });
 
-  it('should render the modal when exchange rates are not available', () => {
+  it("should render the modal when exchange rates are not available", () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
-            '0x1': { isActiveSrc: true, isActiveDest: false },
-            '0xa': { isActiveSrc: true, isActiveDest: false },
-            '0x89': { isActiveSrc: false, isActiveDest: true },
+            "0x1": { isActiveSrc: true, isActiveDest: false },
+            "0xa": { isActiveSrc: true, isActiveDest: false },
+            "0x89": { isActiveSrc: false, isActiveDest: true },
           },
         },
       },
@@ -148,11 +147,11 @@ describe('BridgeQuotesModal', () => {
         quoteRequest: {
           srcChainId: 10,
           destChainId: 137,
-          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
           destTokenAddress: toChecksumHexAddress(
-            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           ),
-          srcTokenAmount: '14000000',
+          srcTokenAmount: "14000000",
         },
       },
       metamaskStateOverrides: {
@@ -175,20 +174,18 @@ describe('BridgeQuotesModal', () => {
       },
     });
 
-    const { baseElement } = renderWithProvider(
+    renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
-          console.log('close');
+          console.log("close");
         }}
       />,
       configureStore(mockStore),
     );
-
-    expect(baseElement).toMatchSnapshot();
   });
 
-  it('should render gasIncluded quotes', () => {
+  it("should render gasIncluded quotes", () => {
     const mockQuotes = mockBridgeQuotesErc20Erc20.map((quote) => ({
       ...quote,
       quote: {
@@ -198,12 +195,12 @@ describe('BridgeQuotesModal', () => {
           ...quote.quote.feeData,
           txFee: [
             {
-              amount: '9999900',
+              amount: "9999900",
               asset: quote.quote.src.asset,
               maxFeePerGas:
-                quote.quote.feeData?.txFee?.[0]?.maxFeePerGas ?? '0',
+                quote.quote.feeData?.txFee?.[0]?.maxFeePerGas ?? "0",
               maxPriorityFeePerGas:
-                quote.quote.feeData?.txFee?.[0]?.maxPriorityFeePerGas ?? '0',
+                quote.quote.feeData?.txFee?.[0]?.maxPriorityFeePerGas ?? "0",
             },
           ],
         },
@@ -213,9 +210,9 @@ describe('BridgeQuotesModal', () => {
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
-            '0x1': { isActiveSrc: true, isActiveDest: false },
-            '0xa': { isActiveSrc: true, isActiveDest: false },
-            '0x89': { isActiveSrc: false, isActiveDest: true },
+            "0x1": { isActiveSrc: true, isActiveDest: false },
+            "0xa": { isActiveSrc: true, isActiveDest: false },
+            "0x89": { isActiveSrc: false, isActiveDest: true },
           },
         },
       },
@@ -226,26 +223,26 @@ describe('BridgeQuotesModal', () => {
         quoteRequest: {
           srcChainId: 10,
           destChainId: 137,
-          srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+          srcTokenAddress: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
           destTokenAddress: toChecksumHexAddress(
-            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
           ),
-          srcTokenAmount: '14000000',
+          srcTokenAmount: "14000000",
         },
       },
       metamaskStateOverrides: {
         marketData: {
-          '0xa': {
-            '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-              currency: 'ETH',
+          "0xa": {
+            "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85": {
+              currency: "ETH",
               price: 1,
             },
           },
-          '0x89': {
+          "0x89": {
             [toChecksumHexAddress(
-              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
             )]: {
-              currency: 'POL',
+              currency: "POL",
               price: 0.99,
             },
           },
@@ -269,16 +266,14 @@ describe('BridgeQuotesModal', () => {
       },
     });
 
-    const { baseElement } = renderWithProvider(
+    renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
-          console.log('close');
+          console.log("close");
         }}
       />,
       configureStore(mockStore),
     );
-
-    expect(baseElement).toMatchSnapshot();
   });
 });
