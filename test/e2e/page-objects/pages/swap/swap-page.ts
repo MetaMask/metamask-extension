@@ -112,7 +112,7 @@ class SwapPage {
   private readonly quotesModal = '[data-testid="quotes-modal"]';
 
   private readonly quotesModalRow =
-    '[data-testid="quotes-modal"] [style*="position: relative"]';
+    '[data-testid="quotes-modal"] [data-testid="bridge-quote-option"]';
 
   private readonly rateMessage = {
     text: `Includes 0.875% MetaMask fee`,

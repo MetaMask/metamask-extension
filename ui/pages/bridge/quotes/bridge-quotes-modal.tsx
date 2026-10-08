@@ -157,6 +157,7 @@ export const BridgeQuotesModal = ({
                 return (
                   <Column
                     className={`bridge-quote-option${isQuoteActive ? ' bridge-quote-option--selected' : ''}`}
+                    data-testid="bridge-quote-option"
                     alignItems={AlignItems.flexStart}
                     key={index}
                     backgroundColor={
