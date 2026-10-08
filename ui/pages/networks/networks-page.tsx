@@ -48,7 +48,10 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
-import { getIsChainlistEnabled } from '../../selectors/multichain/feature-flags';
+import {
+  getIsChainlistEnabled,
+  getIsChainlistV2Enabled,
+} from '../../selectors/multichain/feature-flags';
 import { getEditedNetwork } from '../../selectors/selectors';
 import { PageHeaderWithSearch } from '../../components/app/page-header-with-search/page-header-with-search';
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
@@ -145,6 +148,7 @@ export const NetworksPage = () => {
     getSelectedMultichainNetworkChainId,
   );
   const isChainlistEnabled = useSelector(getIsChainlistEnabled);
+  const isChainlistV2Enabled = useSelector(getIsChainlistV2Enabled);
   const rawEditedNetwork = useSelector(getEditedNetwork);
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
@@ -297,7 +301,9 @@ export const NetworksPage = () => {
         blockExplorerUrls,
         defaultBlockExplorerUrlIndex: blockExplorerUrls.length ? 0 : undefined,
       });
-      setView('add');
+      if (view !== 'add') {
+        setView('add');
+      }
     },
     [
       createEventBuilder,
@@ -306,6 +312,7 @@ export const NetworksPage = () => {
       networkFormState,
       setView,
       trackEvent,
+      view,
     ],
   );
 
@@ -513,8 +520,19 @@ export const NetworksPage = () => {
           <AddNetwork
             networkFormState={networkFormState}
             network={editedNetwork as UpdateNetworkFields}
+            chainlist={
+              isChainlistV2Enabled
+                ? {
+                    existingNetworkChainIds,
+                    existingNetworkNamesByChainId,
+                    onSelect: handleChainlistNetworkSelect,
+                  }
+                : undefined
+            }
             onAddFromChainlist={
-              isChainlistEnabled ? handleAddFromChainlist : undefined
+              isChainlistEnabled && !isChainlistV2Enabled
+                ? handleAddFromChainlist
+                : undefined
             }
           />
         </>
@@ -545,6 +563,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
               chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
               networkName={networkFormState.name}
               existingRpcUrls={existingRpcUrls}
               onCancel={handleNewNetwork}
@@ -563,6 +582,7 @@ export const NetworksPage = () => {
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
               chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
               networkName={networkFormState.name}
               existingRpcUrls={existingRpcUrls}
               onCancel={handleEditOnComplete}

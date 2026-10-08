@@ -2679,6 +2679,10 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Enter network details manually",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
   "chainlistEnterRpcUrlManually": {
     "message": "Enter RPC details manually",
     "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
@@ -2702,6 +2706,10 @@
   "chainlistRpcDataSourceBanner": {
     "message": "RPC data comes from ChainList. Always verify before adding. $1",
     "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Use \"$1\" as network name",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
   },
   "chainlistUseTypedRpcUrl": {
     "message": "Use \"$1\" as RPC URL",

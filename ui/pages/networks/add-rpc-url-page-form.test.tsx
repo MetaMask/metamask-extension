@@ -219,6 +219,7 @@ describe('AddRpcUrlPageForm', () => {
     render(
       <AddRpcUrlPageForm
         chainId="100"
+        chainlistEnabled
         networkName="Gnosis"
         existingRpcUrls={['https://rpc.gnosischain.com']}
         onCancel={() => undefined}
@@ -247,6 +248,33 @@ describe('AddRpcUrlPageForm', () => {
     expect(screen.getByTestId('rpc-name-input-test')).toHaveValue(
       'gnosis-rpc.publicnode.com',
     );
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-suggestions'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not suggest Chainlist RPCs when the feature flag is off', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+
     expect(
       screen.queryByTestId('add-rpc-chainlist-suggestions'),
     ).not.toBeInTheDocument();
@@ -300,6 +328,7 @@ describe('AddRpcUrlPageForm', () => {
     render(
       <AddRpcUrlPageForm
         chainId="100"
+        chainlistEnabled
         onCancel={() => undefined}
         onAdded={() => undefined}
       />,

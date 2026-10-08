@@ -70,6 +70,11 @@ type AddRpcUrlPageFormProps = {
   chainId?: string;
   networkName?: string;
   existingRpcUrls?: string[];
+  /**
+   * Suggest Chainlist RPCs for the form's chain. Controlled by
+   * `extension-ux-chainlist-v-2`.
+   */
+  chainlistEnabled?: boolean;
 };
 
 const hasChainId = (chainId?: string) =>
@@ -81,9 +86,10 @@ export const AddRpcUrlPageForm = ({
   chainId,
   networkName,
   existingRpcUrls = EMPTY_RPC_URLS,
+  chainlistEnabled = false,
 }: AddRpcUrlPageFormProps) => {
   const t = useI18nContext();
-  const { safeChains } = useSafeChains({ enabled: true });
+  const { safeChains } = useSafeChains({ enabled: chainlistEnabled });
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
   const [rpcValidationError, setRpcValidationError] = useState<string>();
@@ -98,16 +104,18 @@ export const AddRpcUrlPageForm = ({
 
   const urlErrorKey = getUrlErrorKey(url);
   const urlError = urlErrorKey ? t(urlErrorKey) : undefined;
-  const suggestions = useMemo(
-    () =>
-      getChainlistRpcSuggestions({
-        chains: (safeChains ?? []) as ChainlistRpcChain[],
-        chainId,
-        existingRpcUrls,
-        query: url,
-      }),
-    [chainId, existingRpcUrls, safeChains, url],
-  );
+  const suggestions = useMemo(() => {
+    if (!chainlistEnabled) {
+      return [];
+    }
+
+    return getChainlistRpcSuggestions({
+      chains: (safeChains ?? []) as ChainlistRpcChain[],
+      chainId,
+      existingRpcUrls,
+      query: url,
+    });
+  }, [chainId, chainlistEnabled, existingRpcUrls, safeChains, url]);
   const trimmedQuery = url.trim();
   const showSuggestions =
     isUrlFocused && !suggestionsDismissed && suggestions.length > 0;
