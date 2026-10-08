@@ -57,7 +57,8 @@ import { PageHeaderWithSearch } from '../../components/app/page-header-with-sear
 import { useGlobalMenuRouteTransition } from '../routes/global-menu-route-transition';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import { useDispatch } from '../../store/hooks';
-import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
+import { AddRpcUrlPageForm, type RpcUrlSource } from './add-rpc-url-page-form';
+import { getRpcNickname } from './chainlist-rpc';
 import {
   ChainlistNetworkPicker,
   getHexChainId,
@@ -171,6 +172,10 @@ export const NetworksPage = () => {
   }, [editingChainId, editCompleted, evmNetworks, view]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+  const existingRpcUrls = useMemo(
+    () => networkFormState.rpcUrls.rpcEndpoints.map((endpoint) => endpoint.url),
+    [networkFormState.rpcUrls.rpcEndpoints],
+  );
   const existingNetworkChainIds = useMemo(
     () =>
       new Set(
@@ -287,6 +292,7 @@ export const NetworksPage = () => {
         network.name;
 
       networkFormState.setName(canonicalNetworkName);
+      networkFormState.setSource('chainlist');
       networkFormState.setChainId(String(network.chainId));
       networkFormState.setTicker(network.nativeCurrency.symbol);
       networkFormState.setRpcUrls({
@@ -313,7 +319,7 @@ export const NetworksPage = () => {
   );
 
   const handleAddRPC = useCallback(
-    (url: string, name?: string) => {
+    (url: string, name: string | undefined, source: RpcUrlSource) => {
       if (
         networkFormState.rpcUrls.rpcEndpoints?.every(
           (endpoint) => !URI.equal(endpoint.url, url),
@@ -327,10 +333,26 @@ export const NetworksPage = () => {
           defaultRpcEndpointIndex: networkFormState.rpcUrls.rpcEndpoints.length,
         });
 
+        if (source === 'chainlist') {
+          const rpcDomain = getRpcNickname(url);
+          /* eslint-disable @typescript-eslint/naming-convention */
+          trackEvent(
+            createEventBuilder(MetaMetricsEventName.ChainlistRpcSelected)
+              .addCategory(MetaMetricsEventCategory.Network)
+              .addProperties({
+                chain_id: getHexChainId(networkFormState.chainId),
+                network_name: networkFormState.name,
+                ...(rpcDomain ? { rpc_domain: rpcDomain } : {}),
+              })
+              .build(),
+          );
+          /* eslint-enable @typescript-eslint/naming-convention */
+        }
+
         setView(getViewAfterRpcAdd(view));
       }
     },
-    [networkFormState, setView, view],
+    [createEventBuilder, networkFormState, setView, trackEvent, view],
   );
 
   const handleAddExplorerUrl = useCallback(
@@ -558,6 +580,10 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
+              chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onCancel={handleNewNetwork}
               onAdded={handleAddRPC}
             />
@@ -573,6 +599,10 @@ export const NetworksPage = () => {
           />
           <NetworksPageFormBody>
             <AddRpcUrlPageForm
+              chainId={networkFormState.chainId}
+              chainlistEnabled={isChainlistV2Enabled}
+              networkName={networkFormState.name}
+              existingRpcUrls={existingRpcUrls}
               onCancel={handleEditOnComplete}
               onAdded={handleAddRPC}
             />
