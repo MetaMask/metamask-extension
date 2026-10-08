@@ -64,9 +64,9 @@ export const Tabs = <TKey extends string = string>({
   activeTab,
   onTabClick,
   children,
+  tabListWrapperProps = {},
   tabListProps = {},
   tabContentProps = {},
-  tabListWrapperProps = {},
   className = '',
   animated,
   ...props

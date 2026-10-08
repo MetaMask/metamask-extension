@@ -43,6 +43,8 @@ export type TabsProps<TKey extends string = string> = Omit<
   onTabClick?: (tabKey: TKey) => void;
   /** Tab components to render */
   children: React.ReactNode;
+  /** Props for the tab list wrapper */
+  tabListWrapperProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab list container */
   tabListProps?: Omit<BoxProps, 'children' | 'ref'>;
   /** Props to pass to the tab content container */
@@ -51,8 +53,6 @@ export type TabsProps<TKey extends string = string> = Omit<
   className?: string;
   /** Enable transition animation when switching tabs */
   animated?: boolean;
-  /** Props for the tab list wrapper */
-  tabListWrapperProps?: Omit<BoxProps, 'children' | 'ref'>;
 };
 
 export type TabsHandle<TKey extends string = string> = {
