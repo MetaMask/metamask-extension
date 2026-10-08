@@ -37,7 +37,7 @@ export type HardwareWalletStateContextType = {
 };
 
 export type HardwareWalletActionsContextType = {
-  connect: () => Promise<void>;
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;
@@ -73,7 +73,8 @@ export type HardwareWalletContextType = {
   isWebUsbAvailable: boolean;
 
   // Actions (stable, won't cause rerenders)
-  connect: () => Promise<void>;
+  /** Resolves `null` on success, otherwise the error explaining the failure. */
+  connect: () => Promise<HardwareWalletError | null>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   setConnectionReady: () => void;

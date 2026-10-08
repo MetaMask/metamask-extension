@@ -17,7 +17,9 @@ describe('useHardwareWalletConnection', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
     adapterRef: { current: HardwareWalletAdapter | null };
-    connectingPromiseRef: { current: Promise<void> | null };
+    connectingPromiseRef: {
+      current: Promise<HardwareWalletError | null> | null;
+    };
     ensureDeviceReadyPromiseRef: {
       current: Map<string, Promise<HardwareWalletError | null>>;
     };
@@ -26,7 +28,9 @@ describe('useHardwareWalletConnection', () => {
     lastConnectedAccountRef: { current: string | null };
     isEnsuringDeviceReadyRef: { current: boolean };
     currentConnectionIdRef: { current: number | null };
-    connectRef: { current: (() => Promise<void>) | null };
+    connectRef: {
+      current: (() => Promise<HardwareWalletError | null>) | null;
+    };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
     isSigningInProgressRef: { current: boolean };

@@ -57,7 +57,9 @@ export type HardwareWalletRefs = {
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
   isEnsuringDeviceReadyRef: React.MutableRefObject<boolean>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
-  connectRef: React.MutableRefObject<(() => Promise<void>) | null>;
+  connectRef: React.MutableRefObject<
+    (() => Promise<HardwareWalletError | null>) | null
+  >;
   walletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
   previousWalletTypeRef: React.MutableRefObject<HardwareWalletType | null>;
   /**
@@ -127,7 +129,9 @@ export const useHardwareWalletStateManager = () => {
   const lastConnectedAccountRef = useRef<string | null>(null);
   const isEnsuringDeviceReadyRef = useRef(false);
   const currentConnectionIdRef = useRef<number | null>(null);
-  const connectRef = useRef<(() => Promise<void>) | null>(null);
+  const connectRef = useRef<(() => Promise<HardwareWalletError | null>) | null>(
+    null,
+  );
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const previousWalletTypeRef = useRef<HardwareWalletType | null>(null);
   const isSigningInProgressRef = useRef(false);
