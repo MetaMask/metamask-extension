@@ -48,12 +48,27 @@ describe('readApiMemberNames', () => {
         'MetamaskController.getApi was not found',
       );
     });
+
+    it('fails when getApi has more than one return statement', () => {
+      mockReadFileSync.mockReturnValue(
+        `class MetamaskController {
+          getApi() {
+            return { a: this.a };
+            return { b: this.b };
+          }
+        }`,
+      );
+
+      expect(() => readApiMemberNames(legacyApi)).toThrow(
+        'MetamaskController.getApi has more than one return statement',
+      );
+    });
   });
 
   describe('LegacyBackgroundApiService', () => {
     const legacyApi = LEGACY_APIS.LegacyBackgroundApiService;
 
-    it('includes public and async methods but ignores fields and private methods', () => {
+    it('includes public and async methods but ignores data fields and private methods', () => {
       mockReadFileSync.mockReturnValue(
         `class LegacyBackgroundApiService {
           readonly field: unknown;
@@ -68,6 +83,35 @@ describe('readApiMemberNames', () => {
       const names = readApiMemberNames(legacyApi);
 
       expect(names).toStrictEqual(new Set(['publicMethod', 'asyncMethod']));
+    });
+
+    it('includes public getters', () => {
+      mockReadFileSync.mockReturnValue(
+        `class LegacyBackgroundApiService {
+          get publicGetter(): number { return 1; }
+          private get privateGetter(): number { return 2; }
+        }`,
+      );
+
+      const names = readApiMemberNames(legacyApi);
+
+      expect(names).toStrictEqual(new Set(['publicGetter']));
+    });
+
+    it('includes public properties initialized to a function', () => {
+      mockReadFileSync.mockReturnValue(
+        `class LegacyBackgroundApiService {
+          publicArrow = async (options: unknown): Promise<void> => {};
+          publicFunction = function () {};
+          dataField = 42;
+          #privateArrow = () => {};
+          private privateArrow = () => {};
+        }`,
+      );
+
+      const names = readApiMemberNames(legacyApi);
+
+      expect(names).toStrictEqual(new Set(['publicArrow', 'publicFunction']));
     });
 
     it('ignores methods in nested classes', () => {

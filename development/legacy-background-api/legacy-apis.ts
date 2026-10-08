@@ -22,14 +22,19 @@ export type LegacyApi = {
    */
   filePath: string;
   /**
-   * The plural name of the API's members used in messages.
-   */
-  membersName: string;
-  /**
    * Extracts the names of the API's members from the parsed file.
    */
   getMemberNames: (sourceFile: ts.SourceFile) => Set<string>;
 };
+
+/**
+ * A class member that exposes something callable under a name: a method, a
+ * getter, or a property whose value is a function.
+ */
+type CallableMember =
+  | ts.MethodDeclaration
+  | ts.GetAccessorDeclaration
+  | ts.PropertyDeclaration;
 
 /**
  * The APIs tracked by the legacy background API snapshot, keyed by name.
@@ -38,13 +43,11 @@ export const LEGACY_APIS = {
   'MetamaskController.getApi': {
     name: 'MetamaskController.getApi',
     filePath: 'app/scripts/metamask-controller.js',
-    membersName: 'properties',
     getMemberNames: getPropertyNamesOfGetApi,
   },
   LegacyBackgroundApiService: {
     name: 'LegacyBackgroundApiService',
     filePath: 'app/scripts/services/legacy-background-api-service.ts',
-    membersName: 'methods',
     getMemberNames: getPublicMethodNamesOfLegacyBackgroundApiService,
   },
 } as const satisfies Record<LegacyApiName, LegacyApi>;
@@ -108,21 +111,24 @@ function getPropertyNamesOfGetApi(sourceFile: ts.SourceFile): Set<string> {
   // EXAMPLE:
   // return { setTheme: ..., addToken: ... };
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  const returnStatement = method.body.statements.find(
-    (
-      statement,
-    ): statement is ts.ReturnStatement & {
-      expression: ts.ObjectLiteralExpression;
-    } =>
-      ts.isReturnStatement(statement) &&
-      statement.expression !== undefined &&
-      ts.isObjectLiteralExpression(statement.expression),
-  );
-  if (!returnStatement) {
+  const returnStatements = method.body.statements.filter(ts.isReturnStatement);
+  if (returnStatements.length > 1) {
+    throw new Error(
+      'MetamaskController.getApi has more than one return statement',
+    );
+  }
+
+  const returnStatement = returnStatements[0];
+  if (
+    !returnStatement?.expression ||
+    !ts.isObjectLiteralExpression(returnStatement.expression)
+  ) {
     throw new Error(
       'MetamaskController.getApi does not return an object literal',
     );
   }
+
+  const returnedObject = returnStatement.expression;
 
   const names = new Set<string>();
   // EXAMPLE (each property of the returned object):
@@ -134,7 +140,7 @@ function getPropertyNamesOfGetApi(sourceFile: ts.SourceFile): Set<string> {
   //   ...this.otherApi,
   //   ^^^^^^^^^^^^^^^^
   // };
-  for (const property of returnStatement.expression.properties) {
+  for (const property of returnedObject.properties) {
     // EXAMPLE:
     // ...this.otherApi,
     // ^^^^^^^^^^^^^^^^
@@ -183,23 +189,17 @@ function getPublicMethodNamesOfLegacyBackgroundApiService(
   //   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // }
   for (const member of service.members) {
-    // EXAMPLE:
+    // EXAMPLES:
     // isAssetsUnifyStateEnabled() { ... }
+    // get mode() { ... }
+    // addToken = async (options) => { ... }
     //
     // ANTI-EXAMPLES:
     // readonly messenger: LegacyBackgroundApiServiceMessenger;
     // #getGlobalProvider() { ... }
     // private helper() { ... }
     // protected helper() { ... }
-    if (
-      !ts.isMethodDeclaration(member) ||
-      ts.isPrivateIdentifier(member.name) ||
-      member.modifiers?.some(
-        (modifier) =>
-          modifier.kind === ts.SyntaxKind.PrivateKeyword ||
-          modifier.kind === ts.SyntaxKind.ProtectedKeyword,
-      )
-    ) {
+    if (!isPublicCallableMember(member)) {
       continue;
     }
 
@@ -210,4 +210,52 @@ function getPublicMethodNamesOfLegacyBackgroundApiService(
   }
 
   return names;
+}
+
+/**
+ * Determines whether a class member is callable through the public API.
+ *
+ * A member counts when it is a method, a getter, or a property initialized to a
+ * function (e.g. an arrow function), and it is not hidden behind a `#`, a
+ * `private`, or a `protected`.
+ *
+ * @param member - The class member to inspect.
+ * @returns True when the member is part of the public API.
+ */
+function isPublicCallableMember(
+  member: ts.ClassElement,
+): member is CallableMember {
+  // EXAMPLES:
+  // addToken(options) { ... }
+  // get mode() { ... }
+  const isMethodOrGetter =
+    ts.isMethodDeclaration(member) || ts.isGetAccessorDeclaration(member);
+
+  // EXAMPLE:
+  // addToken = async (options) => { ... }
+  //            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ (an arrow function or function
+  //                                        expression, as opposed to a plain
+  //                                        data field)
+  const isFunctionProperty =
+    ts.isPropertyDeclaration(member) &&
+    member.initializer !== undefined &&
+    (ts.isArrowFunction(member.initializer) ||
+      ts.isFunctionExpression(member.initializer));
+
+  if (!isMethodOrGetter && !isFunctionProperty) {
+    return false;
+  }
+
+  // ANTI-EXAMPLES:
+  // #getGlobalProvider() { ... }
+  // private helper() { ... }
+  // protected helper() { ... }
+  if (ts.isPrivateIdentifier(member.name)) {
+    return false;
+  }
+  return !member.modifiers?.some(
+    (modifier) =>
+      modifier.kind === ts.SyntaxKind.PrivateKeyword ||
+      modifier.kind === ts.SyntaxKind.ProtectedKeyword,
+  );
 }

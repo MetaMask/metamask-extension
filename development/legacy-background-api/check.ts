@@ -135,15 +135,15 @@ function reportNewApiMembersError(
     );
   }
 
-  stdout.write(`
+  stderr.write(`
 To call a controller or service action through the UI:
 
-1. Go to the controller and service expose the action through its messenger
+1. Go to the controller or service and expose the action through its messenger
 2. Back in the extension, assign a messenger to the enclosing route and specify the capabilities
 3. Use useMessenger() in a UI file to access the route messenger
 4. Call the action through this messenger
 
-For more information, see: https://github.com/MetaMask/core/tree/main/docs/legacy/ui-messengers-announcement.md
+For more information, see: https://github.com/MetaMask/core/blob/main/docs/legacy/ui-messengers-announcement.md
 
 If this is an emergency and you need to extend a legacy background API for any reason,
 please reach out to the Core Platform team.\n`);
