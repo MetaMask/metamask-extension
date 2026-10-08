@@ -318,7 +318,12 @@
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
       "networks": "object",
-      "eventsConfig": "null"
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "string",
+        "timestamp": "number",
+        "version": "string"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -443,6 +448,12 @@
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
     "eventsConfigEtag": "null",
+    "eventsConfig": {
+      "events": {},
+      "schemaVersion": "string",
+      "timestamp": "number",
+      "version": "string"
+    },
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -1280,7 +1291,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "version": "null",
+    "version": "string",
     "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
