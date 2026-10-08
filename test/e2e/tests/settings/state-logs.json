@@ -1359,6 +1359,10 @@
       "title": "string"
     }
   },
+  "rewardsMoney": {
+    "referralMe": "null",
+    "referralMeSettled": "boolean"
+  },
   "sendMaxValue": {
     "maxValueMode": {}
   },
