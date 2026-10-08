@@ -6,6 +6,12 @@
   --tabs-list-fade-size: 1.5rem;
 }
 
+.stuck-top-border {
+  @container scroll-state(stuck: top) {
+    border-bottom: 1px solid var(--bar-border-color);
+  }
+}
+
 .tablist-fade {
   container-type: scroll-state;
 
