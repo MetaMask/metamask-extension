@@ -178,7 +178,7 @@ describe('HardwareWalletRepair', () => {
 
   it('requests device permission then connects on success', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(null);
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(
@@ -196,7 +196,7 @@ describe('HardwareWalletRepair', () => {
 
   it('requests permission using the route wallet type when selected account wallet type is unavailable', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(null);
     const { getByTestId, findByText } = renderRepairPage(null, [
       `/hardware-wallet-repair?walletType=${HardwareWalletType.Trezor}`,
     ]);
@@ -218,7 +218,7 @@ describe('HardwareWalletRepair', () => {
 
   it('prefers the route wallet type when selected account wallet type differs', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(null);
     const { getByTestId, findByText } = renderRepairPage(
       HardwareWalletType.Ledger,
       [`/hardware-wallet-repair?walletType=${HardwareWalletType.Trezor}`],
@@ -264,7 +264,7 @@ describe('HardwareWalletRepair', () => {
 
   it('shows close button on success state', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockResolvedValue(true);
+    mockEnsureDeviceReady.mockResolvedValue(null);
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     await findByText('hardwareWalletRepairSuccessTitle');

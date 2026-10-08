@@ -229,18 +229,9 @@ export default function useSubmitBridgeTransaction(
         // on bridge/quote pages, where auto-shown modals are route-gated off.
         // Manual showErrorModal calls bypass that gate; the provider still
         // filters user rejections itself.
-        let isDeviceReady = false;
-        let deviceError: unknown;
-        try {
-          isDeviceReady = await ensureDeviceReady();
-        } catch (error) {
-          deviceError = error;
-        }
-
-        if (!isDeviceReady) {
-          showErrorModal(
-            deviceError ?? new Error('Hardware wallet device is not ready'),
-          );
+        const deviceError = await ensureDeviceReady();
+        if (deviceError) {
+          showErrorModal(deviceError);
           setIsSubmitting(false);
           return;
         }

@@ -74,7 +74,7 @@ jest.mock(
       connect: jest.fn().mockResolvedValue(undefined),
       disconnect: jest.fn().mockResolvedValue(undefined),
       clearError: jest.fn(),
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReady: jest.fn().mockResolvedValue(null),
     }),
   }),
 );

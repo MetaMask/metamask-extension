@@ -30,7 +30,7 @@ jest.mock('./generic-hardware-wallet-animation', () => ({
 }));
 
 const mockUseHardwareWalletState = jest.fn();
-const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),

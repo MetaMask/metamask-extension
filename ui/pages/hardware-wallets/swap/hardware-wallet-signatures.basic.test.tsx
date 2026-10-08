@@ -45,7 +45,7 @@ jest.mock('../../../components/app/qr-hardware-popover/base-qr-reader', () => {
 });
 
 const mockUseHardwareWalletState = jest.fn();
-const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
 
 jest.mock('../../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../../contexts/hardware-wallets'),

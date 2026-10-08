@@ -41,7 +41,7 @@ jest.mock('./HardwareWalletContext', () => ({
     connectionState: mockConnectionState.current,
   }),
   useHardwareWalletActions: () => ({
-    ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    ensureDeviceReady: jest.fn().mockResolvedValue(null),
     clearError: mockClearError,
   }),
 }));

@@ -6,6 +6,7 @@ import React, {
   useMemo,
   type ReactNode,
 } from 'react';
+import type { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { resetHardwareWalletRecoveryInlineCtaViewCount } from '../../../shared/lib/hardware-wallet-recovery-metrics';
 import { ConnectionState } from './connectionState';
 import { useHardwareWalletStateManager } from './HardwareWalletStateManager';
@@ -46,7 +47,10 @@ export type HardwareWalletActionsContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReady: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
   /**
    * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
    * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
@@ -79,7 +83,9 @@ export type HardwareWalletContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  ensureDeviceReady: (
+    options?: EnsureDeviceReadyOptions,
+  ) => Promise<HardwareWalletError | null>;
 };
 
 const HardwareWalletContext = createContext<HardwareWalletContextType | null>(

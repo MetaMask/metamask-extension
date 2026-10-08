@@ -65,7 +65,7 @@ const hardwareWalletActionsValue = {
   checkHardwareWalletPermission: async () =>
     HardwareConnectionPermissionState.Granted,
   requestHardwareWalletPermission: async () => false,
-  ensureDeviceReady: async () => true,
+  ensureDeviceReady: async () => null,
   setSigningInProgress: (_value: boolean) => undefined,
 };
 

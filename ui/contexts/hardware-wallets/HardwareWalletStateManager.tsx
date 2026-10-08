@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import type { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   type AccountsState,
   getMaybeSelectedInternalAccount,
@@ -37,7 +38,7 @@ export type HardwareWalletRefs = {
    * Stores the pending connection promise. When not null, a connection is in progress
    * and concurrent callers should await this promise instead of starting a new connection.
    */
-  connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
+  connectingPromiseRef: React.MutableRefObject<Promise<HardwareWalletError | null> | null>;
   /**
    * Stores pending ensureDeviceReady promises keyed by a dedup key derived
    * from requireBlindSigning and preflightMessageBytes. This prevents duplicate
@@ -45,7 +46,7 @@ export type HardwareWalletRefs = {
    * sets to run independently.
    */
   ensureDeviceReadyPromiseRef: React.MutableRefObject<
-    Map<string, Promise<boolean>>
+    Map<string, Promise<HardwareWalletError | null>>
   >;
   /**
    * Flag to prevent concurrent connection attempts.
@@ -116,10 +117,11 @@ export const useHardwareWalletStateManager = () => {
   // Ref declarations
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const connectingPromiseRef = useRef<Promise<void> | null>(null);
-  const ensureDeviceReadyPromiseRef = useRef<Map<string, Promise<boolean>>>(
-    new Map(),
-  );
+  const connectingPromiseRef =
+    useRef<Promise<HardwareWalletError | null> | null>(null);
+  const ensureDeviceReadyPromiseRef = useRef<
+    Map<string, Promise<HardwareWalletError | null>>
+  >(new Map());
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);

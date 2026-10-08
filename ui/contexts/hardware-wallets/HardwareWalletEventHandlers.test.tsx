@@ -26,7 +26,9 @@ describe('useDeviceEventHandlers', () => {
     connectRef: { current: (() => Promise<void>) | null };
     walletTypeRef: { current: HardwareWalletType | null };
     previousWalletTypeRef: { current: HardwareWalletType | null };
-    ensureDeviceReadyPromiseRef: { current: Map<string, Promise<boolean>> };
+    ensureDeviceReadyPromiseRef: {
+      current: Map<string, Promise<HardwareWalletError | null>>;
+    };
     isSigningInProgressRef: { current: boolean };
   };
   let mockSetters: {

@@ -143,7 +143,7 @@ describe('BridgeTransactionSettingsModal', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReady: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
