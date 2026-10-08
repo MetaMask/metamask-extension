@@ -31,6 +31,12 @@ import {
   getAssetsMetadata,
   getAssetsRates,
 } from '../../selectors/assets';
+import {
+  ARC_ERC20_USDC_ASSET_ID,
+  ARC_ERC20_USDC_BRIDGE_ASSET,
+  ARC_NATIVE_ASSET_ID,
+  getArcBridgeAssetIdAliases,
+} from '../../components/app/assets/enablement/arc';
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { EMPTY_ARRAY } from '../../selectors/shared';
 import { type BridgeAppState, getFromChains } from './selectors';
@@ -349,7 +355,7 @@ const getNonEvmAssetsWithBalance = createSelector(
 );
 
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
-const getBridgeAssetsForAccountGroupId = createSelector(
+const getBridgeAssetsForAccountGroupIdIncludingHidden = createSelector(
   [
     (_: BridgeAppState, id?: AccountGroupId) => id,
     getEvmAssetsWithBalance,
@@ -393,6 +399,47 @@ const getBridgeAssetsForAccountGroupId = createSelector(
 );
 
 /**
+ * Get visible bridge assets owned by the account group.
+ *
+ * Hidden assets are removed from the list shown in the asset picker while
+ * remaining available to balance lookups that need to alias hidden wallet
+ * representations to visible bridge tokens.
+ */
+const getBridgeAssetsForAccountGroupId = createSelector(
+  [getBridgeAssetsForAccountGroupIdIncludingHidden],
+  (assetsWithBalances) =>
+    assetsWithBalances.filter(
+      (item) => !BRIDGE_ASSET_PICKER_HIDDEN_ASSETS.has(item.assetId),
+    ),
+);
+
+/**
+ * Creates a bridge-token alias for assets whose wallet balance representation
+ * differs from the token representation required by Bridge/Swaps.
+ *
+ * @param asset - The owned wallet asset carrying the balance.
+ * @param assetId - The bridge asset ID that should resolve to the same balance.
+ * @returns The aliased bridge token.
+ */
+const getBridgeAssetAlias = (
+  asset: BridgeToken,
+  assetId: CaipAssetType,
+): BridgeToken => {
+  if (
+    asset.assetId === ARC_NATIVE_ASSET_ID &&
+    assetId === ARC_ERC20_USDC_ASSET_ID
+  ) {
+    return {
+      ...asset,
+      assetId,
+      decimals: ARC_ERC20_USDC_BRIDGE_ASSET.decimals,
+    };
+  }
+
+  return asset;
+};
+
+/**
  * Get all assets owned by the wallet's accounts sorted by fiat balance
  *
  * @param state - The state of the bridge app.
@@ -415,11 +462,17 @@ export const getBridgeSortedAssets = createSelector(
  * @returns The assets owned by the wallet's accounts by asset ID.
  */
 export const getBridgeAssetsByAssetId = createSelector(
-  [getBridgeAssetsForAccountGroupId],
+  [getBridgeAssetsForAccountGroupIdIncludingHidden],
   (assetsWithBalance) =>
     assetsWithBalance.reduce<Record<CaipAssetType, BridgeToken>>(
       (acc, asset) => {
         acc[asset.assetId.toLowerCase() as keyof typeof acc] = asset;
+        getArcBridgeAssetIdAliases(asset.assetId).forEach((assetId) => {
+          acc[assetId.toLowerCase() as keyof typeof acc] = getBridgeAssetAlias(
+            asset,
+            assetId,
+          );
+        });
         return acc;
       },
       {},
