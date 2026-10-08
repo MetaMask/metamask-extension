@@ -174,7 +174,7 @@ describe("BridgeQuotesModal", () => {
       },
     });
 
-    renderWithProvider(
+    const { getByTestId, getAllByText } = renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
@@ -183,6 +183,9 @@ describe("BridgeQuotesModal", () => {
       />,
       configureStore(mockStore),
     );
+
+    expect(getByTestId("quotes-modal")).toBeInTheDocument();
+    expect(getAllByText("Total cost: 0.001 ETH")).toHaveLength(2);
   });
 
   it("should render gasIncluded quotes", () => {
@@ -266,7 +269,7 @@ describe("BridgeQuotesModal", () => {
       },
     });
 
-    renderWithProvider(
+    const { getByTestId, getAllByText } = renderWithProvider(
       <BridgeQuotesModal
         isOpen={true}
         onClose={() => {
@@ -275,5 +278,9 @@ describe("BridgeQuotesModal", () => {
       />,
       configureStore(mockStore),
     );
+
+    expect(getByTestId("quotes-modal")).toBeInTheDocument();
+    expect(getAllByText("Total cost: $0.16")).toHaveLength(1);
+    expect(getAllByText("Total cost: $0.34")).toHaveLength(1);
   });
 });
