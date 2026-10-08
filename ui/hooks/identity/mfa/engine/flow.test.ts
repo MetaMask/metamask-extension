@@ -865,4 +865,29 @@ describe('createMfaFlow', () => {
       canRetry: false,
     });
   });
+
+  (
+    [
+      ['rate_limited', 'a cooldown'],
+      ['flow_expired', 'an expired challenge'],
+    ] as const
+  ).forEach(([code, label]) => {
+    it(`shows the failure screen for ${label} before any screen`, async () => {
+      const fake = createFakeController([]);
+      fake.controller.refreshEnrolledCredentials.mockRejectedValueOnce(
+        new MfaError(code, 'no'),
+      );
+      const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'failure',
+        code,
+        canRetry: true,
+      });
+
+      await act(flow, { type: 'dismiss' });
+      const result = await outcome;
+      expect(result.ok || getMfaErrorCode(result.error)).toBe(code);
+    });
+  });
 });

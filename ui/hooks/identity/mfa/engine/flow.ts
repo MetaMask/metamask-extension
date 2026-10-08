@@ -400,7 +400,14 @@ export const createMfaFlow = ({
       return undefined;
     }
     const code = getFlowErrorCode(error);
-    switch (getErrorHandling(code)) {
+    const handling = getErrorHandling(code);
+    if (!presented && handling !== 'refresh' && handling !== 'failure') {
+      // No screen yet to show the error on: the failure screen offers to try
+      // again, so the flow cannot hang on `idle`.
+      fail(code, true);
+      return undefined;
+    }
+    switch (handling) {
       case 'refresh':
         return recoverStaleState(code);
       case 'restart':
@@ -422,11 +429,7 @@ export const createMfaFlow = ({
         fail(code);
         return undefined;
       default:
-        if (presented) {
-          setState({ busy: false, error: code });
-        } else {
-          fail(code, true);
-        }
+        setState({ busy: false, error: code });
         return undefined;
     }
   };
