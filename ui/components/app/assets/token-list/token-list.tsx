@@ -36,6 +36,7 @@ import {
 } from '#shared/lib/asset-utils';
 import { buildEvmCaip19AssetId } from '#shared/lib/multichain/buildEvmCaip19AssetId';
 import { useLowValueTokenPartition } from '#ui/components/app/assets/hooks/useLowValueTokenPartition';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
@@ -44,7 +45,11 @@ import {
   getUseExternalServices,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { endTrace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  endTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -250,6 +255,17 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     deferredShouldHideZeroBalanceTokens,
     useExternalServices,
   ]);
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    ready: true,
+    sectionId: 'tokens',
+    data: {
+      success: true,
+      contentState: sortedFilteredTokens.length ? 'filled' : 'empty',
+    },
+  });
 
   // Low value collapse only applies to declining-balance sort.
   const shouldPartitionLowValueTokens =
