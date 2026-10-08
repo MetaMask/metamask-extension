@@ -33,6 +33,7 @@ export const startMfaFlow = (
   const clear = () => {
     if (activeFlow === flow) {
       activeFlow = undefined;
+      activeKey = undefined;
       notify();
     }
   };
