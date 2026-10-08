@@ -413,11 +413,8 @@ const config = {
     // Extensions added to the request when trying to find the file. The most
     // common extensions should be first to improve resolution performance.
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    // use `fallback` to redirect module requests when normal resolving fails,
-    // good for polyfill-ing built-in node modules that aren't available in
-    // the browser. The browser will first attempt to load these modules, if
-    // it fails it will load the fallback.
-    fallback: {
+    // These packages are installed, so fallback resolution cannot exclude them.
+    alias: {
       // #region conditionally remove developer tooling
       // remove react-devtools-core unless METAMASK_REACT_REDUX_DEVTOOLS is enabled
       'react-devtools-core': variables.get('METAMASK_REACT_REDUX_DEVTOOLS')
@@ -428,6 +425,12 @@ const config = {
         ? require.resolve('remote-redux-devtools')
         : false,
       // #endregion conditionally remove developer tooling
+    },
+    // use `fallback` to redirect module requests when normal resolving fails,
+    // good for polyfill-ing built-in node modules that aren't available in
+    // the browser. The browser will first attempt to load these modules, if
+    // it fails it will load the fallback.
+    fallback: {
       // #region node polyfills
       crypto: require.resolve('crypto-browserify'),
       fs: false,
