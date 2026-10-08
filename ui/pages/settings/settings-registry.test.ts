@@ -1,3 +1,5 @@
+import React, { Suspense } from 'react';
+import { render, screen } from '@testing-library/react';
 import {
   DEVELOPER_OPTIONS_ROUTE,
   ASSETS_ROUTE,
@@ -27,6 +29,18 @@ import {
   SETTINGS_TABS,
   SETTINGS_RENDERABLE_ROUTES,
 } from './settings-registry';
+
+jest.mock('./notifications-tab/notification-section-sub-page', () => ({
+  NotificationSectionSubPage: ({ sectionType }: { sectionType: string }) => {
+    const { createElement } =
+      jest.requireActual<typeof import('react')>('react');
+    return createElement(
+      'div',
+      { 'data-testid': 'notification-section-type' },
+      sectionType,
+    );
+  },
+}));
 
 describe('settings-registry', () => {
   describe('getSettingsRouteMeta', () => {
@@ -189,6 +203,29 @@ describe('settings-registry', () => {
           parentPath: NOTIFICATIONS_SETTINGS_ROUTE,
         }),
       );
+    });
+
+    it('loads the limit orders notifications sub-page', async () => {
+      const route = getSettingsRouteMeta(
+        NOTIFICATIONS_SETTINGS_LIMIT_ORDERS_ROUTE,
+      );
+      const RouteComponent = route?.component;
+
+      if (!RouteComponent) {
+        throw new Error('Limit orders notifications route has no component');
+      }
+
+      render(
+        React.createElement(
+          Suspense,
+          { fallback: 'Loading' },
+          React.createElement(RouteComponent),
+        ),
+      );
+
+      expect(
+        await screen.findByTestId('notification-section-type'),
+      ).toHaveTextContent('limitOrders');
     });
   });
 
