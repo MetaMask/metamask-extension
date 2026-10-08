@@ -1182,6 +1182,13 @@
           "perpsFeeDiscount": null,
           "subscriptionId": null
         },
+        "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K": {
+          "account": "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+          "lastFreshOptInStatusCheck": 1780567256841,
+          "lastPerpsDiscountRateFetched": null,
+          "perpsFeeDiscount": null,
+          "subscriptionId": null
+        },
         "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "account": "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastFreshOptInStatusCheck": 1780567256841,
