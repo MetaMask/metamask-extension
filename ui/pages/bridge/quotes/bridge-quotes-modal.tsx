@@ -132,7 +132,7 @@ export const BridgeQuotesModal = ({
           </Text>
         </ModalHeader>
 
-        <ModalBody>
+        <ModalBody className="p-0">
           {/* HEADER */}
           <Row padding={4} paddingTop={0}>
             <Text
