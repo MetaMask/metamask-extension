@@ -6720,14 +6720,14 @@
   "notificationsSettingsDeselectAll": {
     "message": "Deselect all"
   },
+  "notificationsSettingsInAppNotifications": {
+    "message": "In-app"
+  },
   "notificationsSettingsLimitOrdersDescription": {
     "message": "Manage limit order notifications"
   },
   "notificationsSettingsLimitOrdersTitle": {
     "message": "Limit orders"
-  },
-  "notificationsSettingsInAppNotifications": {
-    "message": "In-app"
   },
   "notificationsSettingsMarketingConsent": {
     "message": "By turning this on, you agree to receive product news and marketing updates from MetaMask."

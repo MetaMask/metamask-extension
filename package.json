@@ -23,6 +23,10 @@
     "@metamask/authenticated-user-storage": {
       "type": "breaking",
       "previewVersion": "4.1.0-preview-1a7a6d6d6"
+    },
+    "@metamask/notification-services-controller": {
+      "type": "breaking",
+      "previewVersion": "29.0.3-preview-1a7a6d6d6"
     }
   },
   "repository": {
