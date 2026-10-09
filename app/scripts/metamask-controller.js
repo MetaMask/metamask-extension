@@ -400,6 +400,8 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
+// wallet_mmPay
+import { addMmPayRpcTransaction } from './lib/mmpay-rpc';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5560,6 +5562,17 @@ export default class MetamaskController extends EventEmitter {
 
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.hasRequest({ origin }),
+
+        // wallet_mmPay
+        mmPayAddRpcTransaction: (req) =>
+          addMmPayRpcTransaction({
+            messenger: this.controllerMessenger,
+            getPermittedAccounts: () => this.getPermittedAccounts(origin),
+            securityAlertsEnabled:
+              this.preferencesController.state?.securityAlertsEnabled,
+            origin,
+            req,
+          }),
       }),
     );
 
