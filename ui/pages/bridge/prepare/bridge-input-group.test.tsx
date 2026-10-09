@@ -35,6 +35,21 @@ const mockUseLocation = jest.fn();
 
 const mockTrackUnifiedSwapBridgeEvent = jest.fn();
 
+/**
+ * Bridge fixtures seed AssetsController fields via createBridgeMockStore.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
   return {
@@ -570,7 +585,7 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
@@ -609,11 +624,13 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
               },
@@ -628,6 +645,8 @@ describe('BridgeInputGroup', () => {
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
                 name: 'USDC',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
               },
