@@ -46,7 +46,7 @@ export type MmPayRpcBuiltTransaction = {
   skipInitialGasEstimate?: boolean;
 };
 
-export type MmPayRpcTypeDefinition<PayParams = unknown> = {
+export type MmPayRpcTypeRegistry<PayParams = unknown> = {
   type: PayRpcType;
   validatePayParams: (payParams: unknown) => PayParams;
   assertPreconditions: (context: {
