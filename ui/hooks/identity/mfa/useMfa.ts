@@ -1,12 +1,28 @@
 import { useSelector } from 'react-redux';
+import { captureException } from '../../../../shared/lib/sentry';
 import { selectEnrolledCredentials } from '../../../selectors/identity/authentication';
 import { extensionMfaControllerAdapter } from './bindings';
 import { startMfaFlow } from './engine/activeFlow';
 import type {
   EnrollOptions,
+  MfaFlowOptions,
   MfaFlowResult,
   VerifyOrEnrollOptions,
 } from './engine/types';
+
+const clientOptions: Pick<
+  MfaFlowOptions,
+  'platform' | 'controller' | 'reportError'
+> = {
+  platform: 'extension',
+  controller: extensionMfaControllerAdapter,
+  reportError: (error, { code, operation, step }) => {
+    captureException(error, {
+      tags: { feature: 'mfa', mfaCode: code, operation },
+      extra: { step },
+    });
+  },
+};
 
 const verifyOrEnroll = ({
   reason,
@@ -15,16 +31,14 @@ const verifyOrEnroll = ({
   startMfaFlow({
     request: { kind: 'verifyOrEnroll', ...request },
     reason,
-    platform: 'extension',
-    controller: extensionMfaControllerAdapter,
+    ...clientOptions,
   });
 
 const enroll = ({ method, reason }: EnrollOptions): Promise<MfaFlowResult> =>
   startMfaFlow({
     request: { kind: 'enroll', method },
     reason,
-    platform: 'extension',
-    controller: extensionMfaControllerAdapter,
+    ...clientOptions,
   });
 
 /**
