@@ -2,11 +2,16 @@ import { createContext, useContext, useEffect, useLayoutEffect } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 import {
   observeUsefulScreenNavigation,
-  signalUsefulScreenReady,
-  type UsefulScreenSignal,
+  reportUsefulScreenReady,
+  type UsefulScreen,
 } from '../helpers/utils/useful-screen-ready';
 
-/** Track initial navigation and cancel readiness on subsequent user navigation. */
+// A missing provider disables instrumentation in isolated views and stories.
+export const UsefulScreenReadyContext = createContext<string | undefined>(
+  undefined,
+);
+
+/** Observe router commits before readiness effects run. */
 export function useUsefulScreenReadyNavigation(): void {
   const { key, pathname } = useLocation();
   const navigationType = useNavigationType();
@@ -15,60 +20,38 @@ export function useUsefulScreenReadyNavigation(): void {
   }, [key, pathname, navigationType]);
 }
 
-export type UsefulScreenReadyProps = UsefulScreenSignal & { ready: boolean };
-
-// A missing provider disables instrumentation in isolated views and stories.
-export const UsefulScreenReadyContext = createContext<string | undefined>(
-  undefined,
-);
-
 /**
- * Signal a committed section without adding state or triggering a render.
- *
- * @param options - Screen-specific readiness and local account/request identity.
- * @param options.screen
- * @param options.section
- * @param options.generation
- * @param options.ready
+ * Report committed useful content after two frames (a paint opportunity proxy).
+ * Becoming unready, unmounting, or changing route cancels a pending report.
+ * @param screen - The initial screen being measured.
+ * @param ready - Whether its useful content is available.
  */
-export function useUsefulScreenReady({
-  screen,
-  section,
-  generation,
-  ready,
-}: UsefulScreenReadyProps): void {
+export function useUsefulScreenReady(screen: UsefulScreen, ready = true): void {
   const key = useContext(UsefulScreenReadyContext);
   useEffect(() => {
     if (!ready || key === undefined) {
       return undefined;
     }
-    return signalUsefulScreenReady(key, {
-      screen,
-      section,
-      generation,
-    } as UsefulScreenSignal);
-  }, [key, screen, section, generation, ready]);
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => reportUsefulScreenReady(key, screen));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [key, screen, ready]);
 }
 
 /**
- * A readiness marker for screens that cannot call hooks in their render body.
- * @param props
- * @param props.screen
- * @param props.section
- * @param props.generation
- * @param props.ready
+ * JSX marker for the existing class-based Unlock screen.
+ * @param options0
+ * @param options0.screen
+ * @param options0.ready
  */
 export function UsefulScreenReady({
   screen,
-  section,
-  generation,
   ready,
-}: UsefulScreenReadyProps): null {
-  useUsefulScreenReady({
-    screen,
-    section,
-    generation,
-    ready,
-  } as UsefulScreenReadyProps);
+}: {
+  screen: UsefulScreen;
+  ready: boolean;
+}): null {
+  useUsefulScreenReady(screen, ready);
   return null;
 }

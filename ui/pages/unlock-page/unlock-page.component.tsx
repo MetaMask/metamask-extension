@@ -690,8 +690,6 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
         )}
         <UsefulScreenReady
           screen="unlock"
-          section="form"
-          generation="unlock"
           ready={
             isOnboardingCompleted &&
             !isLocked &&

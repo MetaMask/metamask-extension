@@ -49,7 +49,6 @@ import {
   useHardwareWalletError,
 } from '../../../../../contexts/hardware-wallets';
 import { useDispatch } from '../../../../../store/hooks';
-import { useUsefulScreenReady } from '../../../../../hooks/useUsefulScreenReady';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -328,12 +327,6 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted, goBackTo } =
     useConfirmContext<TransactionMeta>();
   const currentConfirmationId = currentConfirmation?.id;
-  useUsefulScreenReady({
-    screen: 'confirmation',
-    section: 'actions',
-    generation: currentConfirmationId ?? '',
-    ready: Boolean(currentConfirmation?.txParams),
-  });
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 

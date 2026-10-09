@@ -1,130 +1,150 @@
 import React, { StrictMode } from 'react';
-import { renderHook } from '@testing-library/react';
+import { it as jestIt } from '@jest/globals';
+import { act, renderHook } from '@testing-library/react';
+import type * as Sentry from '@sentry/browser';
 import {
-  observeUsefulScreenNavigation,
-  signalUsefulScreenReady,
-} from '../helpers/utils/useful-screen-ready';
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
+import { TraceName, TraceOperation } from '../../shared/lib/trace';
+import type * as Readiness from '../helpers/utils/useful-screen-ready';
+import type * as Timing from '../../shared/lib/ui-startup-timing';
 import {
   useUsefulScreenReady,
   useUsefulScreenReadyNavigation,
   UsefulScreenReadyContext,
 } from './useUsefulScreenReady';
 
-let mockKey = 'initial';
+let mockReadiness: typeof Readiness;
+let mockLocation = { key: 'initial', pathname: '/' };
+let mockNavigationType = 'POP';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: () => mockLocation,
+  useNavigationType: () => mockNavigationType,
+}));
+jest.mock('../helpers/utils/useful-screen-ready', () => ({
+  observeUsefulScreenNavigation: (
+    navigation: Parameters<typeof Readiness.observeUsefulScreenNavigation>[0],
+  ) => mockReadiness.observeUsefulScreenNavigation(navigation),
+  reportUsefulScreenReady: (key: string, screen: Readiness.UsefulScreen) =>
+    mockReadiness.reportUsefulScreenReady(key, screen),
+}));
 
 const Wrapper = ({ children }: React.PropsWithChildren) => {
+  useUsefulScreenReadyNavigation();
   return (
-    <UsefulScreenReadyContext.Provider value={mockKey}>
+    <UsefulScreenReadyContext.Provider value={mockLocation.key}>
       {children}
     </UsefulScreenReadyContext.Provider>
   );
 };
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ key: mockKey, pathname: '/' }),
-  useNavigationType: () => 'POP',
-}));
-jest.mock('../helpers/utils/useful-screen-ready', () => ({
-  observeUsefulScreenNavigation: jest.fn(),
-  signalUsefulScreenReady: jest.fn(),
-}));
 
 describe('useUsefulScreenReady', () => {
-  const cleanup = jest.fn();
+  const setTag = jest.fn();
+  const end = jest.fn();
+  const startSpanManual = jest.fn();
+  let timing: typeof Timing;
+
+  const initialize = (screen: Readiness.UsefulScreen = 'home') => {
+    mockLocation.pathname = {
+      home: '/',
+      unlock: '/unlock',
+      confirmation: '/confirmation/request',
+    }[screen];
+    mockReadiness.initializeUsefulScreenReadyTrace({
+      isUnlocked: screen !== 'unlock',
+      uiType:
+        screen === 'confirmation'
+          ? ENVIRONMENT_TYPE_NOTIFICATION
+          : ENVIRONMENT_TYPE_POPUP,
+    });
+  };
+  const renderScreen = (
+    screen: Readiness.UsefulScreen = 'home',
+    ready = true,
+  ) =>
+    renderHook(
+      ({ ready: available }) => useUsefulScreenReady(screen, available),
+      {
+        initialProps: { ready },
+        wrapper: Wrapper,
+      },
+    );
+  const advance = (milliseconds = 32) =>
+    act(() => jest.advanceTimersByTime(milliseconds));
+
   beforeEach(() => {
+    jest.useFakeTimers({ now: 0, doNotFake: ['performance'] });
+    jest.spyOn(performance, 'now').mockImplementation(() => Date.now());
     jest.clearAllMocks();
-    mockKey = 'initial';
-    jest.mocked(signalUsefulScreenReady).mockReturnValue(cleanup);
-  });
-
-  it('signals only after a ready commit and withdraws readiness when it becomes unavailable', () => {
-    const { rerender } = renderHook(
-      ({ ready }) =>
-        useUsefulScreenReady({
-          screen: 'unlock',
-          section: 'form',
-          generation: 'unlock',
-          ready,
-        }),
-      { initialProps: { ready: false }, wrapper: Wrapper },
+    jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+    startSpanManual.mockImplementation((_, callback) =>
+      callback({ end, setAttribute: jest.fn() } as unknown as Sentry.Span),
     );
-    expect(signalUsefulScreenReady).not.toHaveBeenCalled();
-    rerender({ ready: true });
-    expect(signalUsefulScreenReady).toHaveBeenCalledWith('initial', {
-      screen: 'unlock',
-      section: 'form',
-      generation: 'unlock',
+    jest.replaceProperty(global, 'sentry', {
+      startSpanManual,
+      withIsolationScope: (callback: (scope: Sentry.Scope) => unknown) =>
+        callback({ setTag } as unknown as Sentry.Scope),
     });
-    rerender({ ready: false });
-    expect(cleanup).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not register again for ordinary rerenders', () => {
-    const { rerender } = renderHook(
-      () =>
-        useUsefulScreenReady({
-          screen: 'home',
-          section: 'assets',
-          generation: 'account-a',
-          ready: true,
-        }),
-      { wrapper: Wrapper },
-    );
-    rerender();
-    expect(signalUsefulScreenReady).toHaveBeenCalledTimes(1);
-  });
-
-  it('withdraws the old request before registering a new request', () => {
-    const { rerender } = renderHook(
-      ({ generation }) =>
-        useUsefulScreenReady({
-          screen: 'confirmation',
-          section: 'details',
-          generation,
-          ready: true,
-        }),
-      { initialProps: { generation: 'request-a' }, wrapper: Wrapper },
-    );
-    rerender({ generation: 'request-b' });
-    expect(cleanup).toHaveBeenCalledTimes(1);
-    expect(signalUsefulScreenReady).toHaveBeenLastCalledWith('initial', {
-      screen: 'confirmation',
-      section: 'details',
-      generation: 'request-b',
+    jest.isolateModules(() => {
+      mockReadiness = jest.requireActual(
+        '../helpers/utils/useful-screen-ready',
+      );
+      timing = jest.requireActual('../../shared/lib/ui-startup-timing');
     });
+    mockLocation = { key: 'initial', pathname: '/' };
+    mockNavigationType = 'POP';
   });
 
-  it('withdraws readiness before a new route registers', () => {
+  afterEach(() => {
+    window.dispatchEvent(new Event('pagehide'));
+    jest.useRealTimers();
+  });
+
+  jestIt.each(['unlock', 'home', 'confirmation'] as const)(
+    'measures %s from document navigation after a ready commit and two frames',
+    (screen) => {
+      initialize(screen);
+      advance(400);
+      const { rerender } = renderScreen(screen, false);
+      advance(48);
+      expect(startSpanManual).not.toHaveBeenCalled();
+      rerender({ ready: true });
+      advance(16);
+      expect(startSpanManual).not.toHaveBeenCalled();
+      advance(16);
+      expect(startSpanManual).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.UsefulScreenReady,
+          op: TraceOperation.UiScreenPerformance,
+          startTime: performance.timeOrigin,
+          attributes: { success: true },
+        }),
+        expect.any(Function),
+      );
+      expect(end).toHaveBeenCalledWith(
+        performance.timeOrigin + performance.now(),
+      );
+      expect(setTag).toHaveBeenCalledWith('screen', screen);
+      expect(setTag).toHaveBeenCalledWith(
+        'wallet.unlocked',
+        screen !== 'unlock',
+      );
+      expect(setTag).toHaveBeenCalledWith(
+        'wallet.ui_type',
+        screen === 'confirmation'
+          ? ENVIRONMENT_TYPE_NOTIFICATION
+          : ENVIRONMENT_TYPE_POPUP,
+      );
+    },
+  );
+
+  it('ignores ordinary rerenders and later mounts, including StrictMode replay', () => {
+    initialize();
     const { rerender, unmount } = renderHook(
-      () =>
-        useUsefulScreenReady({
-          screen: 'home',
-          section: 'account',
-          generation: 'account-a',
-          ready: true,
-        }),
-      { wrapper: Wrapper },
-    );
-    mockKey = 'next';
-    rerender();
-    expect(cleanup).toHaveBeenCalledTimes(1);
-    expect(signalUsefulScreenReady).toHaveBeenLastCalledWith(
-      'next',
-      expect.any(Object),
-    );
-    unmount();
-    expect(cleanup).toHaveBeenCalledTimes(2);
-  });
-
-  it('cleans up StrictMode effect replay', () => {
-    const { unmount } = renderHook(
-      () =>
-        useUsefulScreenReady({
-          screen: 'unlock',
-          section: 'form',
-          generation: 'unlock',
-          ready: true,
-        }),
+      () => useUsefulScreenReady('home'),
       {
         wrapper: ({ children }) => (
           <StrictMode>
@@ -133,38 +153,132 @@ describe('useUsefulScreenReady', () => {
         ),
       },
     );
-    expect(signalUsefulScreenReady).toHaveBeenCalledTimes(2);
-    expect(cleanup).toHaveBeenCalledTimes(1);
+    advance();
+    rerender();
     unmount();
-    expect(cleanup).toHaveBeenCalledTimes(2);
+    renderScreen();
+    advance();
+    expect(startSpanManual).toHaveBeenCalledTimes(1);
+    expect(end).toHaveBeenCalledTimes(1);
   });
-});
 
-describe('useUsefulScreenReadyNavigation', () => {
-  it('observes router commits before the section effects run', () => {
-    jest.clearAllMocks();
-    mockKey = 'initial';
-    renderHook(
-      () => {
-        useUsefulScreenReadyNavigation();
-        useUsefulScreenReady({
-          screen: 'home',
-          section: 'account',
-          generation: 'account-a',
-          ready: true,
-        });
-      },
-      { wrapper: Wrapper },
-    );
-    expect(observeUsefulScreenNavigation).toHaveBeenCalledWith({
-      key: 'initial',
-      pathname: '/',
-      navigationType: 'POP',
+  jestIt.each(['unmount', 'unready'] as const)(
+    'cancels a pending report on %s',
+    (reason) => {
+      initialize();
+      const { rerender, unmount } = renderScreen();
+      advance(16);
+      if (reason === 'unmount') {
+        unmount();
+      } else {
+        rerender({ ready: false });
+      }
+      advance(48);
+      expect(startSpanManual).not.toHaveBeenCalled();
+    },
+  );
+
+  it('cancels transient Home readiness when startup redirects to confirmation', () => {
+    initialize();
+    const home = renderScreen();
+    advance(16);
+    mockLocation = { key: 'confirmation', pathname: '/confirmation/request' };
+    mockNavigationType = 'REPLACE';
+    home.rerender({ ready: true });
+    advance();
+    expect(startSpanManual).not.toHaveBeenCalled();
+    renderScreen('confirmation');
+    advance();
+    expect(setTag).toHaveBeenCalledWith('screen', 'confirmation');
+    expect(startSpanManual).toHaveBeenCalledTimes(1);
+  });
+
+  jestIt.each(['PUSH', 'POP'] as const)(
+    'excludes later %s navigation even if the first screen never became ready',
+    (navigationType) => {
+      initialize();
+      const { rerender } = renderScreen('home', false);
+      mockLocation = { key: 'next', pathname: '/' };
+      mockNavigationType = navigationType;
+      rerender({ ready: true });
+      advance();
+      expect(startSpanManual).not.toHaveBeenCalled();
+    },
+  );
+
+  it('excludes later Home after an unsupported initial route', () => {
+    initialize();
+    mockLocation.pathname = '/settings';
+    const { rerender } = renderScreen();
+    mockLocation = { key: 'next', pathname: '/' };
+    mockNavigationType = 'REPLACE';
+    rerender({ ready: true });
+    advance();
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
+  it('preserves initial locked state instead of including time spent unlocking', () => {
+    initialize('unlock');
+    mockLocation.pathname = '/';
+    mockReadiness.initializeUsefulScreenReadyTrace({
+      isUnlocked: true,
+      uiType: ENVIRONMENT_TYPE_POPUP,
     });
-    expect(
-      jest.mocked(observeUsefulScreenNavigation).mock.invocationCallOrder[0],
-    ).toBeLessThan(
-      jest.mocked(signalUsefulScreenReady).mock.invocationCallOrder[0],
-    );
+    renderScreen();
+    advance();
+    expect(startSpanManual).not.toHaveBeenCalled();
+  });
+
+  jestIt.each(['initially hidden', 'hidden during load', 'closed'] as const)(
+    'excludes a document that is %s',
+    (reason) => {
+      if (reason === 'initially hidden') {
+        jest
+          .spyOn(document, 'visibilityState', 'get')
+          .mockReturnValue('hidden');
+      }
+      initialize();
+      renderScreen();
+      advance(16);
+      if (reason === 'hidden during load') {
+        jest
+          .spyOn(document, 'visibilityState', 'get')
+          .mockReturnValue('hidden');
+        document.dispatchEvent(new Event('visibilitychange'));
+      } else if (reason === 'closed') {
+        window.dispatchEvent(new Event('pagehide'));
+      }
+      jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+      advance();
+      expect(startSpanManual).not.toHaveBeenCalled();
+    },
+  );
+
+  jestIt.each([
+    [undefined, 'unknown'],
+    [performance.timeOrigin - 100, true],
+    [performance.timeOrigin + 100, false],
+  ])(
+    'classifies background initialization time %s as %s',
+    (initializedAt, expected) => {
+      timing.recordBackgroundInitializationTiming({
+        data: { method: 'BACKGROUND_INITIALIZED', params: { initializedAt } },
+      });
+      initialize();
+      renderScreen();
+      advance();
+      expect(setTag).toHaveBeenCalledWith(
+        'ui.background_initialized_before_navigation',
+        expected,
+      );
+      expect(setTag).not.toHaveBeenCalledWith(expect.any(String), 'initial');
+    },
+  );
+
+  it('does nothing in isolated component views without a provider', () => {
+    initialize();
+    renderHook(() => useUsefulScreenReady('home'));
+    advance();
+    expect(startSpanManual).not.toHaveBeenCalled();
   });
 });

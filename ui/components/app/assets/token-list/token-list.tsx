@@ -172,15 +172,11 @@ const LowValueAssetsToggle = ({
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
-  const readinessGeneration = useSelector(
+  const accountGroupNetworkKey = useSelector(
     getSelectedAccountGroupNetworkGenerationKey,
   );
-  useUsefulScreenReady({
-    screen: 'home',
-    section: 'assets',
-    generation: readinessGeneration ?? '',
-    ready: Boolean(readinessGeneration),
-  });
+  // The account overview and Tokens tab commit together; no fresh data needed.
+  useUsefulScreenReady('home', Boolean(accountGroupNetworkKey));
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);

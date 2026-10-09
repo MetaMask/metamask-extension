@@ -14,40 +14,15 @@ import {
   UNLOCK_ROUTE,
 } from '../constants/routes';
 
-type Sections = {
-  unlock: 'form';
-  home: 'account' | 'assets';
-  confirmation: 'details' | 'actions';
-};
+export type UsefulScreen = 'unlock' | 'home' | 'confirmation';
+type StartupOptions = { isUnlocked: boolean; uiType: EnvironmentType };
+type Navigation = { key: string; pathname: string; navigationType: string };
 
-export type UsefulScreen = keyof Sections;
-
-export type UsefulScreenSignal = {
-  [Screen in UsefulScreen]: {
-    screen: Screen;
-    section: Sections[Screen];
-    /** Local identity only; never attached to telemetry. */
-    generation: string;
-  };
-}[UsefulScreen];
-
-const requiredSections: Record<UsefulScreen, readonly string[]> = {
-  unlock: ['form'],
-  home: ['account', 'assets'],
-  confirmation: ['details', 'actions'],
-};
-
-type StartupOptions = {
-  isUnlocked: boolean;
-  uiType: EnvironmentType;
-  backgroundInitializedAt?: number;
-};
-
-type Navigation = {
-  key: string;
-  pathname: string;
-  navigationType: string;
-};
+let startup:
+  | (StartupOptions & { backgroundInitializedAt?: number })
+  | undefined;
+let route: { key: string; screen: UsefulScreen } | undefined;
+let finished = false;
 
 function getScreenForPath(pathname: string): UsefulScreen | undefined {
   if (pathname === DEFAULT_ROUTE) {
@@ -66,183 +41,97 @@ function getScreenForPath(pathname: string): UsefulScreen | undefined {
   return undefined;
 }
 
-/**
- * Measure one initial useful screen from document navigation. Readiness means
- * the required sections committed, followed by two animation frames. This is
- * a paint opportunity proxy, not a browser-reported paint timestamp.
- *
- * Startup REPLACE redirects are allowed. User navigation, hidden documents,
- * unsupported routes, and unmounted sections cannot complete a measurement.
- * No span is created until readiness, avoiding incomplete startup transactions.
- *
- * @param options - Immutable initial wallet and UI context.
- * @param options.isUnlocked
- * @param options.uiType
- * @param options.backgroundInitializedAt
- * @returns The navigation and section lifecycle handlers for this document.
- */
-export function createUsefulScreenReadyTrace({
-  isUnlocked,
-  uiType,
-  backgroundInitializedAt,
-}: StartupOptions) {
-  const startTime = performance.timeOrigin;
-  let routeKey: string | undefined;
-  let routeScreen: UsefulScreen | undefined;
-  let finished = false;
-  let frame: number | undefined;
-  let current:
-    | {
-        screen: UsefulScreen;
-        generation: string;
-        sections: Map<string, symbol>;
-      }
-    | undefined;
-
-  const cancelFrame = () => {
-    if (frame !== undefined) {
-      cancelAnimationFrame(frame);
-      frame = undefined;
-    }
-  };
-
-  const discard = () => {
-    finished = true;
-    cancelFrame();
-    current = undefined;
-    document.removeEventListener('visibilitychange', onVisibilityChange);
-    window.removeEventListener('pagehide', discard);
-  };
-
-  function onVisibilityChange() {
-    if (document.visibilityState !== 'visible') {
-      discard();
-    }
-  }
-
-  document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('pagehide', discard);
-  onVisibilityChange();
-
-  return {
-    discard,
-    observeNavigation({ key, pathname, navigationType }: Navigation) {
-      if (finished || routeKey === key) {
-        return;
-      }
-      if (
-        !getScreenForPath(pathname) ||
-        (routeKey !== undefined && navigationType !== 'REPLACE')
-      ) {
-        discard();
-        return;
-      }
-      cancelFrame();
-      current = undefined;
-      routeKey = key;
-      routeScreen = getScreenForPath(pathname);
-    },
-    signalReady(
-      key: string,
-      { screen, section, generation }: UsefulScreenSignal,
-    ) {
-      if (
-        finished ||
-        key !== routeKey ||
-        screen !== routeScreen ||
-        (screen === 'unlock' ? isUnlocked : !isUnlocked)
-      ) {
-        return undefined;
-      }
-      if (current?.screen !== screen || current.generation !== generation) {
-        cancelFrame();
-        current = { screen, generation, sections: new Map() };
-      }
-      const measurement = current;
-      const token = Symbol(section);
-      measurement.sections.set(section, token);
-
-      if (
-        frame === undefined &&
-        requiredSections[screen].every((name) => measurement.sections.has(name))
-      ) {
-        frame = requestAnimationFrame(() => {
-          frame = requestAnimationFrame(() => {
-            if (document.visibilityState !== 'visible') {
-              discard();
-              return;
-            }
-            const timestamp = getPerformanceTimestamp();
-            discard();
-            trace({
-              name: TraceName.UsefulScreenReady,
-              op: TraceOperation.UiScreenPerformance,
-              startTime,
-              tags: {
-                screen,
-                'wallet.ui_type': uiType,
-                'wallet.unlocked': isUnlocked,
-                'ui.navigation': 'document',
-                'ui.readiness_version': '1',
-                'ui.background_initialized_before_navigation':
-                  backgroundInitializedAt === undefined
-                    ? 'unknown'
-                    : backgroundInitializedAt <= startTime,
-              },
-              data: { success: true },
-            });
-            endTrace({ name: TraceName.UsefulScreenReady, timestamp });
-          });
-        });
-      }
-
-      return () => {
-        if (measurement.sections.get(section) === token) {
-          measurement.sections.delete(section);
-          if (current === measurement) {
-            cancelFrame();
-          }
-        }
-      };
-    },
-  };
+function discard(): void {
+  finished = true;
+  document.removeEventListener('visibilitychange', onVisibilityChange);
+  window.removeEventListener('pagehide', discard);
 }
 
-let startupTrace: ReturnType<typeof createUsefulScreenReadyTrace> | undefined;
+function onVisibilityChange(): void {
+  if (document.visibilityState !== 'visible') {
+    discard();
+  }
+}
+
 /**
- * Capture initial state before rendering the app; subsequent initialization
- * calls cannot restart the document's initial-load measurement.
- *
+ * Capture the initial wallet state once, before React renders.
  * @param options - Initial state received from the background.
  */
 export function initializeUsefulScreenReadyTrace(
-  options: Omit<StartupOptions, 'backgroundInitializedAt'>,
+  options: StartupOptions,
 ): void {
-  startupTrace ??= createUsefulScreenReadyTrace({
+  if (startup) {
+    return;
+  }
+  startup = {
     ...options,
     backgroundInitializedAt: getBackgroundInitializedAt(),
-  });
+  };
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('pagehide', discard);
+  onVisibilityChange();
 }
 
 /**
- * Track committed router navigation before section effects run.
- *
+ * Allow startup redirects, but abandon timing after user navigation.
  * @param navigation - The committed router location and navigation type.
+ * @param navigation.key
+ * @param navigation.pathname
+ * @param navigation.navigationType
  */
-export function observeUsefulScreenNavigation(navigation: Navigation): void {
-  startupTrace?.observeNavigation(navigation);
+export function observeUsefulScreenNavigation({
+  key,
+  pathname,
+  navigationType,
+}: Navigation): void {
+  if (!startup || finished || route?.key === key) {
+    return;
+  }
+  const screen = getScreenForPath(pathname);
+  if (!screen || (route && navigationType !== 'REPLACE')) {
+    discard();
+    return;
+  }
+  route = { key, screen };
 }
 
 /**
- * Register a committed section, returning its unmount cleanup.
- *
+ * Report one initial useful screen after its commit and paint opportunity.
  * @param key - Router location identity, kept local.
- * @param signal - A section and its local account/request generation.
- * @returns Cleanup that withdraws readiness if the section unmounts.
+ * @param screen - The screen whose useful content committed.
  */
-export function signalUsefulScreenReady(
+export function reportUsefulScreenReady(
   key: string,
-  signal: UsefulScreenSignal,
-) {
-  return startupTrace?.signalReady(key, signal);
+  screen: UsefulScreen,
+): void {
+  if (
+    !startup ||
+    finished ||
+    route?.key !== key ||
+    route.screen !== screen ||
+    (screen === 'unlock' ? startup.isUnlocked : !startup.isUnlocked) ||
+    document.visibilityState !== 'visible'
+  ) {
+    return;
+  }
+  const timestamp = getPerformanceTimestamp();
+  discard();
+  trace({
+    name: TraceName.UsefulScreenReady,
+    op: TraceOperation.UiScreenPerformance,
+    startTime: performance.timeOrigin,
+    tags: {
+      screen,
+      'wallet.ui_type': startup.uiType,
+      'wallet.unlocked': startup.isUnlocked,
+      'ui.navigation': 'document',
+      'ui.readiness_version': '1',
+      'ui.background_initialized_before_navigation':
+        startup.backgroundInitializedAt === undefined
+          ? 'unknown'
+          : startup.backgroundInitializedAt <= performance.timeOrigin,
+    },
+    data: { success: true },
+  });
+  endTrace({ name: TraceName.UsefulScreenReady, timestamp });
 }

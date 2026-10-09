@@ -109,16 +109,15 @@ export const InfoSkeleton = ({
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
-  useUsefulScreenReady({
-    screen: 'confirmation',
-    section: 'details',
-    generation: currentConfirmation?.id ?? '',
-    ready: Boolean(
+  // Info and Footer share a commit; wait for a transaction, not enrichment.
+  useUsefulScreenReady(
+    'confirmation',
+    Boolean(
       currentConfirmation?.type &&
       'txParams' in currentConfirmation &&
       currentConfirmation.txParams,
     ),
-  });
+  );
   const { loader } = useConfirmationNavigationOptions();
   const enabledPermissions = useEnabledAdvancedPermissions();
 
