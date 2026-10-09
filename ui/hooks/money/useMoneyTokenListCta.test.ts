@@ -373,9 +373,8 @@ describe('useMoneyTokenListCta', () => {
       expect(cta?.label).toBe('Get 6% APY');
     });
 
-    it.each(['GB', 'GB-ENG', 'UNKNOWN'])(
-      'never shows the CTA to users in %s',
-      async (location) => {
+    ['GB', 'GB-ENG', 'UNKNOWN'].forEach((location: string) => {
+      it(`never shows the CTA to users in ${location}`, async () => {
         const { availability, cta } = await renderCtaInRegion(location);
 
         expect(availability).toStrictEqual({ isAvailable: false });
@@ -385,7 +384,7 @@ describe('useMoneyTokenListCta', () => {
             ([options]) => options?.enabled === false,
           ),
         ).toBe(true);
-      },
-    );
+      });
+    });
   });
 });
