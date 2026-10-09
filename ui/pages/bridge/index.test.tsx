@@ -5,7 +5,10 @@ import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+} from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
@@ -133,7 +136,13 @@ describe('Bridge', () => {
     expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
   });
 
-  it('resets the bridge store and state when the Back button is clicked', async () => {
+  it('resets bridge state and navigates to the previous route on Back', async () => {
+    const originalHistoryLength = window.history.length;
+    Object.defineProperty(window.history, 'length', {
+      value: 2,
+      configurable: true,
+    });
+
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
@@ -168,5 +177,62 @@ describe('Bridge', () => {
     });
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+
+    Object.defineProperty(window.history, 'length', {
+      value: originalHistoryLength,
+      configurable: true,
+    });
+  });
+
+  it('falls back to Home when the Back button has no history entry', async () => {
+    const originalHistoryLength = window.history.length;
+    Object.defineProperty(window.history, 'length', {
+      value: 1,
+      configurable: true,
+    });
+
+    const bridgeMockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
+    });
+    const store = configureMockStore(middleware)(bridgeMockStore);
+
+    const { getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
+      store,
+      PREPARE_SWAP_ROUTE,
+    );
+
+    const backButton = getByRole('button', { name: messages.back.message });
+    await act(async () => {
+      fireEvent.click(backButton);
+    });
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+      state: expect.objectContaining({ stayOnHomePage: true }),
+    });
+
+    Object.defineProperty(window.history, 'length', {
+      value: originalHistoryLength,
+      configurable: true,
+    });
   });
 });

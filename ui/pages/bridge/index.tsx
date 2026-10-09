@@ -53,12 +53,8 @@ const CrossChainSwap = () => {
 
   useBridging();
 
-  const {
-    navigateToDefaultRoute,
-    search,
-    swapViewTraceId,
-    swapViewPrefilledAmount,
-  } = useBridgeNavigation();
+  const { search, swapViewTraceId, swapViewPrefilledAmount, navigateBack } =
+    useBridgeNavigation();
   const [swapViewTrace] = useState(() => {
     if (swapViewTraceId) {
       return {
@@ -139,7 +135,7 @@ const CrossChainSwap = () => {
     };
   }, [fetchTokens]);
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
+    transitionBack(navigateBack);
   };
 
   const prepareBody = (
