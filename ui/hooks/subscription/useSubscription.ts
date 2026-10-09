@@ -217,8 +217,11 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       }
 
       const subscriptionId = subscription.id;
-      const cancelAtPeriodEnd =
-        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
+      // Missing cancelType defaults to period-end cancellation, matching the
+      // cancel modal's default copy. cancelType is optional since
+      // subscription-controller@10 (required again in the type here only
+      // because the UI compiles against v8).
+      const cancelAtPeriodEnd = cancelType !== CANCEL_TYPES.ALLOWED_IMMEDIATE;
 
       await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
