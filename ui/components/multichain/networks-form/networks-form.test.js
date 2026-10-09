@@ -876,8 +876,7 @@ describe('NetworkForm Component', () => {
       rpcEndpoints: [
         {
           networkClientId: 'bsc',
-          // An Infura endpoint renders through RpcListItem rather than the
-          // inline custom branch.
+          // An Infura endpoint still shows the failover tag from shared config.
           type: 'infura',
           url: 'https://bsc-mainnet.infura.io/v3/test',
           failoverUrls: [],
