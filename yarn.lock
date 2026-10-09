@@ -3612,13 +3612,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/immutable-arraybuffer@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@endo/immutable-arraybuffer@npm:2.0.0"
-  checksum: 10/c5d8be59a61d858f6cadd86e09486d8bf49c5b2699e5e03de1c7f9eba0880b774f39e09d0241b27ad45c9c5a45e77c8e66a3ee29a1c96796c53cbfbfd8e8d65f
-  languageName: node
-  linkType: hard
-
 "@ensdomains/content-hash@npm:^2.5.7":
   version: 2.5.7
   resolution: "@ensdomains/content-hash@npm:2.5.7"
@@ -43945,29 +43938,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.14.0":
-  version: 1.14.0
-  resolution: "ses@npm:1.14.0"
-  dependencies:
-    "@endo/cache-map": "npm:^1.1.0"
-    "@endo/env-options": "npm:^1.1.11"
-    "@endo/immutable-arraybuffer": "npm:^1.1.2"
-  checksum: 10/bee10b958938fb3d153ea8f1b4514f8ddb390dc7533fe9cfc382dcc046bebd5fca02d80836bfb8f98e94609ffbe3580a0bb65428eb7e39d523315eacdc052300
-  languageName: node
-  linkType: hard
-
-"ses@npm:2.3.0, ses@npm:^2.1.0":
-  version: 2.3.0
-  resolution: "ses@npm:2.3.0"
-  dependencies:
-    "@endo/cache-map": "npm:^1.1.0"
-    "@endo/env-options": "npm:^1.1.11"
-    "@endo/immutable-arraybuffer": "npm:^2.0.0"
-  checksum: 10/67fd3dcf5171ea64edd83e66b9f2eb4904ba56177f5f3c6beea32762cf46ea1db188a42691b1a6f747bef21b63ba30916b117feaa2f12e1e9d56636c04926297
-  languageName: node
-  linkType: hard
-
-"ses@npm:^1.1.0":
+"ses@npm:^1.15.0":
   version: 1.15.0
   resolution: "ses@npm:1.15.0"
   dependencies:
