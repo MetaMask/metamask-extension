@@ -25,8 +25,6 @@ import CancelMembershipModal from '../components/cancel-membership-modal';
 import ApiErrorHandler from '../../../../components/app/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../../asset/util';
 import { PaymentMethodRow } from '../payment-method-row';
 import { useSubscriptionPricing } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { useHandlePayment } from '../../../../hooks/subscription/useHandlePayment';
@@ -38,21 +36,7 @@ import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import CryptoAccountDisplay from '../components/crypto-account-display';
-
-/**
- * Formats an optional ISO date string for display. `currentPeriodStart` and
- * `currentPeriodEnd` are optional on subscriptions (subscription-controller
- * >= 10), and formatting an undefined date throws a RangeError. Used for
- * three call sites in this file that must stay in lockstep.
- *
- * @param dateString - The ISO date string, if present.
- * @returns The formatted date, or an em dash when absent.
- */
-function formatOptionalDate(dateString?: string): string {
-  return dateString
-    ? getShortDateFormatterV2().format(new Date(dateString))
-    : '—';
-}
+import { formatOptionalDate } from '../utils';
 
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
@@ -173,11 +157,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     }
     return t('shieldTxDetails2Description', [
       isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly'),
-      displayedShieldSubscription.currentPeriodEnd
-        ? getShortDateFormatterV2().format(
-            new Date(displayedShieldSubscription.currentPeriodEnd),
-          )
-        : '—',
+      formatOptionalDate(displayedShieldSubscription.currentPeriodEnd),
     ]);
   }, [displayedShieldSubscription, isPastPlan, t]);
 

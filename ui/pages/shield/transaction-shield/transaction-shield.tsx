@@ -39,8 +39,6 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
@@ -76,6 +74,7 @@ import { setRewardsModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import { formatOptionalDate } from './utils';
 import {
   ButtonRow,
   ButtonRowContainer,
@@ -465,9 +464,7 @@ const TransactionShield = () => {
           <Icon name={IconName.Info} size={IconSize.Lg} />
           <Text variant={TextVariant.BodySm}>
             {t('shieldTxMembershipCancelNotification', [
-              getShortDateFormatterV2().format(
-                new Date(currentShieldSubscription.currentPeriodEnd),
-              ),
+              formatOptionalDate(currentShieldSubscription.currentPeriodEnd),
             ])}
           </Text>
         </Box>
@@ -540,13 +537,9 @@ const TransactionShield = () => {
                     RECURRING_INTERVALS.year
                       ? t('shieldPlanYearly')
                       : t('shieldPlanMonthly'),
-                    displayedShieldSubscription?.currentPeriodEnd
-                      ? getShortDateFormatterV2().format(
-                          new Date(
-                            displayedShieldSubscription.currentPeriodEnd,
-                          ),
-                        )
-                      : '—',
+                    formatOptionalDate(
+                      displayedShieldSubscription?.currentPeriodEnd,
+                    ),
                   ])}
                   descriptionTestId="shield-detail-next-billing"
                   loading={showSkeletonLoader}
@@ -676,8 +669,10 @@ const TransactionShield = () => {
                       ? t('shieldTxPastPlansYearly')
                       : t('shieldTxPastPlansMonthly')
                   }
-                  description={`${getShortDateFormatterV2().format(new Date(lastShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                    new Date(lastShieldSubscription.currentPeriodEnd),
+                  description={`${formatOptionalDate(
+                    lastShieldSubscription.currentPeriodStart,
+                  )} - ${formatOptionalDate(
+                    lastShieldSubscription.currentPeriodEnd,
                   )}`}
                   loading={showSkeletonLoader}
                   onClick={() => {
