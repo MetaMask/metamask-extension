@@ -1,5 +1,8 @@
 import React from 'react';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Text,
   TextVariant,
   TextColor,
@@ -10,7 +13,6 @@ import {
   ModalOverlay,
   ModalContent,
 } from '@metamask/design-system-react';
-import { Button, ButtonSize, ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type DisconnectAllSitesModalProps = {
@@ -48,10 +50,10 @@ export const DisconnectAllSitesModal = ({
         <ModalFooter>
           <Button
             onClick={onClick}
-            block
+            isFullWidth
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
-            danger
+            isDanger
             data-testid="disconnect-all-sites-confirm"
           >
             {t('disconnectAllSites')}
