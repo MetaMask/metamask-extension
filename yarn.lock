@@ -10334,21 +10334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/sentinel-api-service@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/sentinel-api-service@npm:2.0.0"
-  dependencies:
-    "@metamask/base-data-service": "npm:^2.0.0"
-    "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.12.0"
-    "@tanstack/query-core": "npm:^5.62.16"
-  checksum: 10/9201fe2569a24723ecd04420690039bf213b4110142fa3b2e4ddf07e0a323bb32f45c1f33654e15f1a4f35e022530ce14a95b68cc08474c4e19aeed5458ed0c5
-  languageName: node
-  linkType: hard
-
-"@metamask/sentinel-api-service@npm:^2.1.0":
+"@metamask/sentinel-api-service@npm:^2.0.0, @metamask/sentinel-api-service@npm:^2.1.0":
   version: 2.1.0
   resolution: "@metamask/sentinel-api-service@npm:2.1.0"
   dependencies:
