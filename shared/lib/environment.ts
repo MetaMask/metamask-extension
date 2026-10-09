@@ -10,6 +10,16 @@ export function getBooleanFlag(value: string | boolean | undefined): boolean {
   return value === true || value === 'true';
 }
 
+/**
+ * Returns whether the code is running in an unpacked E2E test extension rather
+ * than inside a Jest worker.
+ */
+export function isInE2eTest(): boolean {
+  return Boolean(
+    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined',
+  );
+}
+
 export const isProduction = (): boolean => {
   return (
     process.env.METAMASK_ENVIRONMENT !== ENVIRONMENT.DEVELOPMENT &&

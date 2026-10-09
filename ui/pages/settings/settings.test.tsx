@@ -112,18 +112,8 @@ describe('Settings', () => {
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-      const storeWithDefaultAddress = configureMockStore([thunk])({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            extensionUxDefaultAddressVersioned: true,
-          },
-        },
-      });
 
-      const { unmount } = renderSettings(storeWithDefaultAddress);
+      const { unmount } = renderSettings(mockStore);
       const select = await screen.findByTestId(
         'default-address-scope-dropdown',
       );
