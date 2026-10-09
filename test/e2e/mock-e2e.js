@@ -795,6 +795,30 @@ async function setupMocking(
       };
     });
 
+  // Config registry: networks config (ConfigRegistryController polling) and
+  // events config (AnalyticsController event-purpose classification, added in
+  // config-registry-controller 5.0.0). Without these mocks the unmocked-host
+  // catch-all returns a bare 200 with an empty body, which fails JSON parsing
+  // and retries 4x per poll before surfacing as a Sentry capture.
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/networks')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: { data: { version: '0', timestamp: 0, chains: [] } },
+    }));
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/config/events-config')
+    .asPriority(RulePriority.FALLBACK)
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: {
+        data: { schemaVersion: '0', version: '0', timestamp: 0, events: {} },
+      },
+    }));
+
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')

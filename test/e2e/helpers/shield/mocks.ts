@@ -580,10 +580,7 @@ export class ShieldMockttpService {
           : BASE_SHIELD_SUBSCRIPTION_CRYPTO;
       return {
         statusCode: 200,
-        json: {
-          subscriptionId: subscription.id,
-          status: subscription.status,
-        },
+        json: subscription,
       };
     };
 
