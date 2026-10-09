@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import React from 'react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';

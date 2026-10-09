@@ -125,7 +125,7 @@ export function useAcceptMoneyReferralCode({
         onAccepted();
         return true;
       } catch (error) {
-        setErrorMessage(getRegisterRefereeErrorMessage(error, t));
+        setErrorMessage(getRegisterRefereeErrorMessage(error, t as Translate));
         return false;
       } finally {
         setIsAccepting(false);

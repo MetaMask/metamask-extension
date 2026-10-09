@@ -1,3 +1,7 @@
+import {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import { AuthenticationControllerGetSessionProfileAction } from '@metamask/profile-sync-controller/auth';
 import type {
@@ -23,8 +27,20 @@ export type RewardsMoneyControllerAllowedActions =
   | RewardsMoneyDataServiceGetRebateQuoteAction
   | AuthenticationControllerGetSessionProfileAction;
 
+export type RewardsMoneyControllerGetStateAction = ControllerGetStateAction<
+  typeof REWARDS_MONEY_CONTROLLER_NAME,
+  RewardsMoneyControllerState
+>;
+
+export type RewardsMoneyControllerStateChangeEvent = ControllerStateChangeEvent<
+  typeof REWARDS_MONEY_CONTROLLER_NAME,
+  RewardsMoneyControllerState
+>;
+
 export type RewardsMoneyControllerMessenger = Messenger<
   typeof REWARDS_MONEY_CONTROLLER_NAME,
-  RewardsMoneyControllerMethodActions | RewardsMoneyControllerAllowedActions,
-  never
+  | RewardsMoneyControllerGetStateAction
+  | RewardsMoneyControllerMethodActions
+  | RewardsMoneyControllerAllowedActions,
+  RewardsMoneyControllerStateChangeEvent
 >;
