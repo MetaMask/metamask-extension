@@ -1,0 +1,136 @@
+test/agents/visual-testing/scoring/pass-at-k.ts
+  s_585cfc44b4b40c::t_c8c46ca5759b25 1-31
+test/agents/visual-testing/cli.ts
+  s_a89786aaf92b03::t_3cb7e686ad34a7 1,4,11-13
+  s_7a5deea35b4c0d::t_d64a214ce9167c 2,6,9,15-20,22-26,29-46,48-51,70,76,78-82,85-92,101-110,136-141,143-154,156-163,168,173-178,188,192-198,60,63,68-69,74,99-100,120,130-131,133-134,182,187
+  s_7a5deea35b4c0d::t_00d5b3ae76715a 3,5,10,14
+  s_a89786aaf92b03::t_07acc1cef52ea5 47
+  s_bfd361c56aec76::t_e7540fd1df876f 52-54,93,7,21,55-59,61-62,64-67,71-73,77,94-98,113-114,117-118,121-129,132
+  s_a89786aaf92b03::t_fd30e4a158208e 75
+  s_a89786aaf92b03::t_0d4ece1e9fc64d 135
+  s_a89786aaf92b03::t_adf32b49f3c172 142
+  s_bfd361c56aec76::t_1c48a7302841ca 179,155,164-165,167,180-181,183-186,189
+  s_12cd51de488d84::t_682654e070dbde 27-28
+  s_12cd51de488d84::t_16a178a6d3bbf2 83-84
+  s_12cd51de488d84::t_4b231319b8eaa0 169-172
+  s_12cd51de488d84::t_9ff6e9dc87dddf 190-191
+  s_e8ba53132af842::t_3e681af234a393 8,115-116,119
+  s_585cfc44b4b40c::t_2cebb848d62a5e 166
+test/agents/visual-testing/scoring/statistics.ts
+  s_585cfc44b4b40c::t_a282e4e2b6b4cd 1-68
+test/agents/visual-testing/constants.ts
+  s_7a5deea35b4c0d::t_af8f029c8d1678 1-2,5,9-31,43-48
+  h_d6a04d82b61d5e 4,6-7
+  s_7372c3fee1910c::t_6b05404ab07779 32-42
+  s_12cd51de488d84::t_2e8f63f68158b5 8
+  s_585cfc44b4b40c::t_0e0761197f36ca 3
+test/agents/visual-testing/types.ts
+  s_7a5deea35b4c0d::t_8b3c883bc41e33 1,3-24,26-35,51-70,72-77,79-91,98,131-142,36,41,47-49,101,104,107-109,111,129-130
+  s_12cd51de488d84::t_0626f0be6257b6 50,25,37-40,42-46
+  s_12cd51de488d84::t_28596e6aaba8d5 71
+  s_12cd51de488d84::t_f6c10a4a70d1f9 92
+  s_bfd361c56aec76::t_756a36fd837735 78,102-103,105-106,110,112-118,120,122-123,128
+  s_585cfc44b4b40c::t_189b307ffd0c6f 2
+  s_585cfc44b4b40c::t_ff6ff9d9780089 93-97
+  s_585cfc44b4b40c::t_1c4dbc7f56cac6 119,121,124-127
+test/agents/visual-testing/artifacts/summary.ts
+  s_7a5deea35b4c0d::t_889321027d9784 1,14-42,49-52,54-87,298,300-305,308-323,326-327,371-384,94,97-98,105-106,346,352,369-370,154,160-161,168-169,188,192,195,197-198,203,205-207,212,214,217-218,232,234-236,242,247,249-251,271-272,292-297,113,116-117,124-125,132,135-136,143-144,202
+  s_12cd51de488d84::t_52a231bdbf39cd 342-344,345,347-349,353,368,224,270,291
+  s_12cd51de488d84::t_9fdedfe2a5a144 43
+  s_12cd51de488d84::t_51ebb2a79732b0 88,95,100-103
+  s_585cfc44b4b40c::t_d8741932884fb4 89-93,96,99,107-112,114-115,118-122,126-131,133-134,137-141
+  s_bfd361c56aec76::t_c1d13f5ae48c52 104,145-153,155-159,162,164-166,170-176,178,180-181,186-187,191,193-194,196,199,204,208,213,219-223,237-238,241,243-245,253,274,123,142
+  s_bfd361c56aec76::t_5d9683d8d8aba5 2-9,11
+  s_e8ba53132af842::t_3e681af234a393 189,53,190
+  s_585cfc44b4b40c::t_1318c6bb21a898 10,12-13
+  s_585cfc44b4b40c::t_8d09c5b3913d48 44-48
+  s_585cfc44b4b40c::t_00ec836f7dbaa7 163,167,177,179,182-185
+  s_585cfc44b4b40c::t_c025818f96f9c5 200-201,209-211,215-216,225-231,233,239-240,246,248
+  s_585cfc44b4b40c::t_a353ec37394552 252,254-256,273,275-277
+  s_585cfc44b4b40c::t_720f6427ab50f7 257-269,278-290,299,306-307,324-325,328-341,350-351,354-367
+test/agents/visual-testing/runner/batch-runner.ts
+  s_7a5deea35b4c0d::t_18dae8ed26ce34 3,11,16-18,198-210,212-220,222-226,196,36,38,108
+  s_bfd361c56aec76::t_6db8f95dba7b92 31,39,4-10,12-15,56,62,74-75,78,80-82,88,102,107,45,51,112,195
+  s_12cd51de488d84::t_ec2a686f472353 221
+  s_e3310dd455c2be::t_aae582c7813563 63,66,73,77,84-86,90-94,96,98,101,103,109,197,46,58-61,67,69,71-72,95,99-100,105-106,114-194
+  s_e8ba53132af842::t_7bbff73ec971c9 211
+  s_e3310dd455c2be::t_0c1e9c0b922417 1-2,19-30,32-35,37,40-44,47-50
+  s_e3310dd455c2be::t_ef6f9b5205d497 64-65,68,70,76,79,83,87,89,97,104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "aff995776039dd52896302f6514b54e2f8e2327f",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_12cd51de488d84": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1ce9b3f27ffehIUBFgPweKM7Uh",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_585cfc44b4b40c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1bfd99c01ffezlA5rDDrS24apz",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_7372c3fee1910c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e461dfe5ffeZUqBPHp4PI2FZ7",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_7a5deea35b4c0d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e6b59f09ffeIVyxqVsU0sBJEj",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_a89786aaf92b03": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1e674639cffeKURfB49luS03mV",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_bfd361c56aec76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c426b594ffe2uFnEg4e6Yeu1L",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_e3310dd455c2be": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1bf586cf2ffekhULKDg7ZLdWf2",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_e8ba53132af842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c008c493ffepvz8aytjKnFVM1",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

@@ -1,0 +1,303 @@
+test/e2e/playwright/llm-workflow/resolve-repo-root.test.ts
+  cb56e977cd314cef 1,5-9,15,22
+  09123d8bc619bd00 2-4,10-14,16-21,23-35
+test/e2e/playwright/llm-workflow/extension-launcher.ts
+  6c4e5c859297e3fd 132
+  e4bb7cec837318bf 113
+  f6ef1b6a0cb62024 26,30
+  7ffca2512ed0f827 105
+  4b43b3e84e5d2d0a 190
+test/e2e/playwright/llm-workflow/resolve-repo-root.ts
+  06be615e59bfe227 1-12,15-43
+  ecd5ee7eab837109 13-14
+test/e2e/playwright/llm-workflow/validate-extension.ts
+  ae42fe1133cb72d2 3,5
+test/e2e/playwright/llm-workflow/validate-extension.test.ts
+  8f67747c3da750aa 4
+  ec38bf9e19e4a7f5 7
+  fdd51a5259a22f05 36
+test/e2e/playwright/llm-workflow/mcp-server/server.ts
+  c2d6279fc0413c23 3,25-26,28-29
+  31d22fc02d33d236 27
+  4ea602e5e2eded6a 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.20",
+  "base_commit_sha": "24eb2880e7c78bb1d7338b9e72b24906f036298e",
+  "prompts": {
+    "06be615e59bfe227": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-69ce0aa6-8979-4cb4-9b56-40c321aac8d2",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 43,
+      "total_deletions": 0,
+      "accepted_lines": 41,
+      "overriden_lines": 0
+    },
+    "09123d8bc619bd00": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-9a896ff9-b1bd-4c80-83d2-92ed22d33706",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 34,
+      "total_deletions": 0,
+      "accepted_lines": 27,
+      "overriden_lines": 0
+    },
+    "201141da1daf85fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-7041413a-0d26-4205-91b8-d57d4e0c7cd1",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "31d22fc02d33d236": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-65ad9206-c3b2-430c-b08f-d70152a9e391",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "4b43b3e84e5d2d0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-873456aa-0546-4d03-bcb4-95ebd594e6bf",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "4ea602e5e2eded6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-92763126-4172-474c-a803-4bd1b7479070",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 4,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "51c1c76b86988c3d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-a1aed05f-4473-459f-a737-9c48f3b9dea4",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 8,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "5b6eb42c578f6d55": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-ecec2f42-1bee-4e6a-b148-589684f3e1b5",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 1,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "6b55ad5a2055daef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-1c17d44e-c7bc-4632-9c58-af119094bce2",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 1,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "6c4e5c859297e3fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-d76e6d55-6296-4a35-a7a1-0fbdee926248",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "7ffca2512ed0f827": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-3e5a3851-4f27-401a-9d90-0828472f9e39",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "8f67747c3da750aa": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-9a85c35a-37f9-4d20-b5d8-2aa545587daf",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "ae42fe1133cb72d2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-17a643f6-5b80-43b6-b3ee-f109883960a6",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 4,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "c2d6279fc0413c23": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-322964b8-8697-4d6c-aaaa-01c145208b73",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 10,
+      "total_deletions": 1,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    },
+    "cb56e977cd314cef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-abffc1e2-3547-436c-a15d-79b257afc181",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 7,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    },
+    "e4bb7cec837318bf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-73580ff8-bef3-4846-9586-cc5c1a829e74",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "ec38bf9e19e4a7f5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-a763e263-8b61-49a2-8000-c85c2e6ac201",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "ecd5ee7eab837109": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-aad2f37f-f92d-4f3f-99b2-60cefae359a6",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "f26e0a6eeb99104f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-20e175bf-6f00-458f-bc49-6fef4d19d2a4",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "f6ef1b6a0cb62024": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-8756bbbb-9671-40f1-bbd5-70b4684f124b",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 5,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "fdd51a5259a22f05": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_2d4ed6f70ffexL63lhRegxEdej-254fb594-1cf3-4feb-92f2-a9b033e1a75d",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 2,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,34 @@
+test/e2e/playwright/llm-workflow/daemon.ts
+  s_af798933b688e6::t_f4c7c1166a825a 31
+test/e2e/playwright/llm-workflow/metamask-provider.ts
+  s_af798933b688e6::t_d98f471c91b674 519
+test/e2e/playwright/llm-workflow/README.md
+  s_b2a21b7b618463::t_6e983c9726a3bb 165
+  s_b2a21b7b618463::t_0ff1b7ba35c092 163-164,166-168
+test/e2e/playwright/llm-workflow/capabilities/factory.test.ts
+  s_af798933b688e6::t_d833fb707974c5 282-283,290
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "25e6d618ae010256a47d942cb398af95e58ee79d",
+  "prompts": {},
+  "sessions": {
+    "s_af798933b688e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_18b81a718ffe3Vs1GHH4gw6UZB",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_b2a21b7b618463": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_18b6c8959ffehGvhgR7GH1KkWn",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
