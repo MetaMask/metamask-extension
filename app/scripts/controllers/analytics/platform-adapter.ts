@@ -33,6 +33,18 @@ const MARKETING_UTM_PARAMETERS = [...UTM_PARAMETERS];
 const APP_NAME = 'MetaMask Extension';
 
 /**
+ * Reads the current user agent for analytics enrichment. Returns an empty
+ * string when there is no window (e.g. the MV3 service worker).
+ *
+ * Segment's server-side enrichment parses to derive the browser name and version.
+ *
+ * @returns The current user agent, or an empty string if unavailable.
+ */
+export function getUserAgent(): string {
+  return typeof window === 'undefined' ? '' : window.navigator.userAgent;
+}
+
+/**
  * Dependencies for universal analytics event enrichment at delivery time.
  */
 export type PlatformAdapterEnrichmentContext = {
@@ -121,7 +133,7 @@ export function createEnrichmentContext(
         ?.featureFlagThresholdGroups as Record<string, string> | undefined) ??
       {},
     appVersion,
-    userAgent: typeof window === 'undefined' ? '' : window.navigator.userAgent,
+    userAgent: getUserAgent(),
   };
 }
 
