@@ -107,6 +107,7 @@ import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
+import { hasTransactionType } from '../../shared/lib/transactions.utils';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -234,6 +235,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -1918,6 +1920,7 @@ export function updateAndApproveTx(
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareWalletTransaction(
         dispatch,
+        getState,
         txMeta,
         loadingIndicatorMessage,
         keyringType,
@@ -1978,6 +1981,7 @@ async function approveTransaction(
  * with the recreated transaction ID in metadata.
  *
  * @param dispatch - Redux dispatch function
+ * @param getState - Returns current Redux state
  * @param txMeta - The transaction metadata
  * @param loadingIndicatorMessage - Message to show during signing
  * @param keyringType - The keyring type for the hardware wallet account
@@ -1985,11 +1989,32 @@ async function approveTransaction(
  */
 async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
+  getState: () => MetaMaskReduxState,
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<TransactionMeta | null> {
   dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+  let stopListeningForSigning = async () => undefined;
+  if (hasTransactionType(txMeta, [TransactionType.moneyAccountDeposit])) {
+    const expectedQuoteCount = Math.max(
+      getState().metamask.transactionData?.[txMeta.id]?.quotes?.length ?? 1,
+      1,
+    );
+    stopListeningForSigning = await listenForHardwareSigningCompletion({
+      transactionId: txMeta.id,
+      expectedQuoteCount,
+      getState: async () => {
+        const state = await forceUpdateMetamaskState(dispatch);
+        return {
+          batchTransactionCounts: state.batchTransactionCounts ?? {},
+          transactions: state.transactions ?? [],
+        };
+      },
+      onComplete: () => dispatch(hideLoadingIndication()),
+    }).catch(() => async () => undefined);
+  }
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
@@ -2017,6 +2042,7 @@ async function approveHardwareWalletTransaction(
     // Rethrow the properly typed error for hook to handle
     throw hwError;
   } finally {
+    await stopListeningForSigning().catch(() => undefined);
     dispatch(hideLoadingIndication());
   }
 }

@@ -4,7 +4,7 @@ import {
   type TransactionControllerState,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
 export type TransactionState = {
   metamask: TransactionControllerState;
@@ -13,6 +13,11 @@ export type TransactionState = {
 export const selectTransactions = (
   state: TransactionState,
 ): TransactionMeta[] => state.metamask?.transactions ?? EMPTY_ARRAY;
+
+export const selectBatchTransactionCounts = (
+  state: TransactionState,
+): TransactionControllerState['batchTransactionCounts'] =>
+  state.metamask?.batchTransactionCounts ?? EMPTY_OBJECT;
 
 export const selectOrderedTransactions = createSelector(
   selectTransactions,
