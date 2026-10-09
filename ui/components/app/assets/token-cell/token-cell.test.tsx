@@ -433,6 +433,41 @@ describe('Token Cell', () => {
     });
   });
 
+  describe('priceChangeOverride', () => {
+    it('replaces the percent change', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          priceChangeOverride={<div data-testid="price-change-override" />}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('price-change-override')).toBeInTheDocument();
+      expect(
+        queryByTestId(/^token-increase-decrease-percentage/u),
+      ).not.toBeInTheDocument();
+    });
+
+    it('yields to an eligible Money CTA', () => {
+      const { queryByTestId } = renderWithProvider(
+        <TokenCell
+          {...(props as TokenCellProps)}
+          moneyCta={{
+            label: 'Get 6% APY',
+            shouldShow: jest.fn().mockReturnValue(true),
+            onClick: jest.fn(),
+          }}
+          priceChangeOverride={<div data-testid="price-change-override" />}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('money-token-list-cta-mock')).toBeInTheDocument();
+      expect(queryByTestId('price-change-override')).not.toBeInTheDocument();
+    });
+  });
+
   it('should show a scam warning if the native ticker does not match the expected ticker', async () => {
     const token = { ...propToken };
     token.chainId = '0x1';

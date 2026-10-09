@@ -62,7 +62,7 @@ export type MoneyButtonClickedProperties =
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
-export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
+type MoneyTokenProperties = {
   tokenSymbol: string;
   tokenChainId: string;
   tokenPositionInList: number;
@@ -70,10 +70,16 @@ export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties & {
   tokenHasBalance: boolean;
 };
 
+export type MoneyTokenButtonClickedProperties = MoneyButtonClickedProperties &
+  MoneyTokenProperties;
+
 export type MoneySurfaceClickedProperties = {
   componentName?: MoneyComponentName;
   redirectTarget: MoneyRedirectTarget;
 };
+
+export type MoneyTokenSurfaceClickedProperties = MoneySurfaceClickedProperties &
+  MoneyTokenProperties;
 
 export type MoneyActivitySurfaceClickedProperties =
   MoneySurfaceClickedProperties & {
@@ -218,6 +224,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     [track],
   );
 
+  const trackTokenSurfaceClicked = useCallback(
+    (properties: MoneyTokenSurfaceClickedProperties) =>
+      trackSurfaceClicked(properties),
+    [trackSurfaceClicked],
+  );
+
   const trackActivitySurfaceClicked = useCallback(
     ({ transaction, ...properties }: MoneyActivitySurfaceClickedProperties) => {
       const { sourceChainId, destinationChainId } =
@@ -287,6 +299,7 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     trackButtonClicked,
     trackTokenButtonClicked,
     trackSurfaceClicked,
+    trackTokenSurfaceClicked,
     trackActivitySurfaceClicked,
     trackTooltipClicked,
     trackScreenViewed,

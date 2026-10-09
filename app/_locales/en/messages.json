@@ -5729,8 +5729,28 @@
   "moneyConvertYourCrypto": {
     "message": "Convert your crypto"
   },
+  "moneyEarnApy": {
+    "message": "Earn $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Add $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Earn with your Money account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Earn on your crypto"
@@ -5890,6 +5910,10 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyStartEarning": {
+    "message": "Start earning",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Unable to add funds. Try again."

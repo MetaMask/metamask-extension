@@ -2881,10 +2881,30 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  earnMoneyAssetOverviewBalanceCtaEnabled: {
+    inProd: false,
+    name: 'earnMoneyAssetOverviewBalanceCtaEnabled',
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   earnMoneyDepositCtaTokenAddresses: {
     inProd: false,
     name: 'earnMoneyDepositCtaTokenAddresses',
     productionDefault: {},
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  earnMoneyEarnBannerEnabled: {
+    inProd: false,
+    name: 'earnMoneyEarnBannerEnabled',
+    productionDefault: {
+      enabled: false,
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },

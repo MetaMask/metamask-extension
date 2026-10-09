@@ -1,29 +1,16 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { isEvmChainId } from '../../../shared/lib/asset-utils';
-import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
-import {
-  getCurrencyRates,
-  getCurrentCurrency,
-} from '../../ducks/metamask/metamask';
 import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
-import { selectBlockedPayTokens } from '../../pages/confirmations/selectors/feature-flags';
-import {
-  getMoneyTokenKey,
-  selectMoneyDepositCtaTokenKeys,
-  selectMoneyDepositMinBalance,
-  selectMoneyTokenListItemCtaEnabled,
-} from '../../selectors/money/money-account-feature-flags';
+import { selectMoneyTokenListItemCtaEnabled } from '../../selectors/money/money-account-feature-flags';
 import { useI18nContext } from '../useI18nContext';
-import { getMoneyDepositFiatAmountUsd } from './money-deposit-token-utils';
+import { useMoneyDepositCtaEligibility } from './use-money-deposit-cta-eligibility';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAnalytics } from './useMoneyAnalytics';
@@ -55,9 +42,9 @@ export function useMoneyTokenListCta(
 ): MoneyTokenListCta | undefined {
   const t = useI18nContext();
   const isCtaEnabled = useSelector(selectMoneyTokenListItemCtaEnabled);
-  const ctaTokenKeys = useSelector(selectMoneyDepositCtaTokenKeys);
+  const { hasCtaTokens, isEligible } = useMoneyDepositCtaEligibility();
   const { hasMoneyAccount } = useMoneyAccountInfo();
-  const isActive = isCtaEnabled && hasMoneyAccount && ctaTokenKeys.size > 0;
+  const isActive = isCtaEnabled && hasMoneyAccount && hasCtaTokens;
 
   const { apyPercentFormatted } = useMoneyVaultApy({ enabled: isActive });
   const { initiateDeposit } = useMoneyAccountDeposit();
@@ -65,52 +52,6 @@ export function useMoneyTokenListCta(
     screenName: MoneyScreenName.WalletHome,
     componentName: MoneyComponentName.TokenListItemCta,
   });
-
-  const blockedTokens = useSelector((state) =>
-    selectBlockedPayTokens(state, TransactionType.moneyAccountDeposit),
-  );
-  const minBalance = useSelector(selectMoneyDepositMinBalance);
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const currencyRates = useSelector(getCurrencyRates);
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-
-  const shouldShow = useCallback(
-    (token: TokenWithFiatAmount) => {
-      if (
-        token.isNative ||
-        !isEvmChainId(token.chainId) ||
-        !ctaTokenKeys.has(getMoneyTokenKey(token.chainId, token.address))
-      ) {
-        return false;
-      }
-
-      return (
-        getMoneyDepositFiatAmountUsd(
-          {
-            accountType: token.accountType,
-            address: token.address,
-            chainId: token.chainId,
-            fiat: { balance: token.tokenFiatAmount ?? undefined },
-          },
-          {
-            blockedTokens,
-            minBalance,
-            currentCurrency,
-            currencyRates,
-            networkConfigurations,
-          },
-        ) !== undefined
-      );
-    },
-    [
-      blockedTokens,
-      ctaTokenKeys,
-      currencyRates,
-      currentCurrency,
-      minBalance,
-      networkConfigurations,
-    ],
-  );
 
   const onClick = useCallback(
     (token: TokenWithFiatAmount) => {
@@ -147,10 +88,10 @@ export function useMoneyTokenListCta(
       isActive && apyPercentFormatted
         ? {
             label: t(LABEL_KEY, [apyPercentFormatted]),
-            shouldShow,
+            shouldShow: isEligible,
             onClick,
           }
         : undefined,
-    [apyPercentFormatted, isActive, onClick, shouldShow, t],
+    [apyPercentFormatted, isActive, isEligible, onClick, t],
   );
 }

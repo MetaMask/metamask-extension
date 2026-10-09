@@ -157,6 +157,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { ALLOWED_CAPABILITIES as HOME_ROUTE_ALLOWED_CAPABILITIES } from '../home/messenger';
 import { ALLOWED_CAPABILITIES as MONEY_HOME_ROUTE_ALLOWED_CAPABILITIES } from '../money/messenger';
+import { ALLOWED_CAPABILITIES as ASSET_ROUTE_ALLOWED_CAPABILITIES } from '../asset/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { UNLOCK_ROUTE_CAPABILITIES } from '../unlock-page/messenger';
 import { RESTORE_VAULT_ROUTE_CAPABILITIES } from '../keychains/restore-vault-messenger';
@@ -486,10 +487,11 @@ export const routeConfig = [
         path: ASSET_SECURITY_TRUST_ROUTE,
         element: <SecurityTrustPage />,
       },
-      {
+      createRouteWithMessenger({
         path: ASSET_DETAILS_ROUTE,
+        capabilities: ASSET_ROUTE_ALLOWED_CAPABILITIES,
         element: <Asset />,
-      },
+      }),
       {
         path: PERMISSIONS,
         element: (

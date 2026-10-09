@@ -51,6 +51,8 @@ export type TokenCellProps = {
   musd?: TokenCellMusdOptions;
   /** Money deposit CTA; takes priority over the mUSD convert link. */
   moneyCta?: MoneyTokenListCtaConfig;
+  /** Replaces the price change, after any CTA. */
+  priceChangeOverride?: React.ReactNode;
 };
 
 export default function TokenCell({
@@ -61,6 +63,7 @@ export default function TokenCell({
   safeChains,
   musd,
   moneyCta,
+  priceChangeOverride,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -127,7 +130,9 @@ export default function TokenCell({
         />
       );
     }
-    return <TokenCellPercentChange token={displayToken} />;
+    return (
+      priceChangeOverride ?? <TokenCellPercentChange token={displayToken} />
+    );
   };
 
   if (!token.chainId) {
