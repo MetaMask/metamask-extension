@@ -249,6 +249,7 @@ async function mockSentinelNetworks(mockServer: MockttpServer) {
             network: 'ethereum-mainnet',
             confirmations: true,
             relayTransactions: true,
+            cubistSigners: ['0x1111111111111111111111111111111111111111'],
             sendBundle: true,
           },
         },

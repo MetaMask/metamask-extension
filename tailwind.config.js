@@ -9,6 +9,7 @@ module.exports = {
   ],
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
+    './app/scripts/cashtag/**/*.{js,jsx,ts,tsx}',
     // Critical-error markup is an HTML string, not a React file under ui/.
     './shared/lib/error-utils.ts',
     // Ensures tailwind classnames are generated for design system components
