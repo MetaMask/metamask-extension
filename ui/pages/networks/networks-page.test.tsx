@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -8,6 +8,21 @@ import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { NETWORKS_ROUTE } from '../../helpers/constants/routes';
 import { NetworksPage } from './networks-page';
+
+const mockTrackEvent = jest.fn();
+
+jest.mock('../../hooks/useAnalytics', () => {
+  const { createEventBuilder } = jest.requireActual(
+    '../../../shared/lib/analytics/create-event-builder',
+  );
+
+  return {
+    useAnalytics: () => ({
+      trackEvent: mockTrackEvent,
+      createEventBuilder,
+    }),
+  };
+});
 
 const mockSafeChains = [
   {
@@ -152,6 +167,24 @@ const gnosisNetworkConfiguration = {
   },
 };
 
+const multiRpcNetworkConfiguration = {
+  '0x12c': {
+    chainId: '0x12c',
+    name: 'Multi RPC Network',
+    rpcEndpoints: [
+      {
+        url: 'https://rpc-primary.example.com',
+        type: RpcEndpointType.Custom,
+        networkClientId: 'multi-rpc',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: [],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'MULTI',
+  },
+};
+
 const testNetworkConfiguration = {
   '0xaa36a7': {
     chainId: '0xaa36a7',
@@ -171,6 +204,10 @@ const testNetworkConfiguration = {
 };
 
 describe('NetworksPage', () => {
+  beforeEach(() => {
+    mockTrackEvent.mockClear();
+  });
+
   const renderNetworksPage = ({
     pathname = NETWORKS_ROUTE,
     networkConfigurationsByChainId = mockNetworkConfigurations,
@@ -317,7 +354,7 @@ describe('NetworksPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the Chainlist entry point when the remote feature flag is enabled', () => {
+  it('keeps the add from Chainlist button when chainlist v2 is off', () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
       remoteFeatureFlags: { extensionUxChainlist: true },
@@ -326,6 +363,104 @@ describe('NetworksPage', () => {
     expect(
       screen.getByTestId('network-form-add-from-chainlist'),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the Chainlist dropdown from the network name field', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    expect(
+      screen.queryByRole('button', {
+        name: messages.addFromChainlist.message,
+      }),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+
+    expect(
+      screen.getByTestId('networks-page-chainlist-source-banner'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Gnosis')).toBeInTheDocument();
+  });
+
+  it('fills the add network form when a Chainlist network is chosen', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('network-form-network-name'));
+    });
+    await act(async () => {
+      fireEvent.click(
+        screen.getByText('Gnosis').closest('button') as HTMLButtonElement,
+      );
+    });
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Gnosis',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
+    expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps a typed network name when Chainlist has no match', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('network-form-network-name'), {
+        target: { value: 'sasdf' },
+      });
+    });
+
+    expect(
+      screen.getByText(messages.chainlistNoMatches.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Use "sasdf" as network name')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.chainlistEnterNetworkDetailsManually.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-source-banner'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Gnosis')).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByTestId('networks-page-chainlist-use-typed-name'),
+      );
+    });
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'sasdf',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-use-typed-name'),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects away from the Chainlist picker when the remote feature flag is disabled', async () => {
@@ -595,10 +730,56 @@ describe('NetworksPage', () => {
     await waitFor(() =>
       expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
-    await userEvent.click(screen.getByTestId('page-container-footer-next'));
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
 
     expect(
       await screen.findByText(messages.editNetwork.message),
     ).toBeInTheDocument();
+  });
+
+  it('tracks a Chainlist RPC added to the network being edited', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=edit-rpc`,
+      remoteFeatureFlags: { extensionUxChainlistV2: true },
+      editedNetwork: { chainId: '0x12c', nickname: 'Multi RPC Network' },
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...multiRpcNetworkConfiguration,
+      },
+    });
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+
+    expect(screen.getByText('rpc-secondary.example.com')).toBeInTheDocument();
+    expect(screen.getByText('rpc-tertiary.example.com')).toBeInTheDocument();
+    expect(
+      screen.queryByText('https://rpc-primary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('https://rpc.gnosischain.com'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('rpc-secondary.example.com'));
+    fireEvent.change(screen.getByTestId('rpc-name-input-test'), {
+      target: { value: 'custom nickname' },
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
+    );
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Chainlist RPC Selected',
+        /* eslint-disable @typescript-eslint/naming-convention */
+        properties: expect.objectContaining({
+          category: 'Network',
+          chain_id: '0x12c',
+          network_name: 'Multi RPC Network',
+          rpc_domain: 'rpc-secondary.example.com',
+        }),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      }),
+    );
   });
 });

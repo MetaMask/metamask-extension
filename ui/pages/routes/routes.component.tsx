@@ -407,14 +407,6 @@ export const routeConfig = [
         ),
       },
       {
-        path: DISCOVER_SEARCH_ROUTE,
-        element: (
-          <GlobalMenuRouteTransition>
-            <DiscoverSearchFeatureRoute />
-          </GlobalMenuRouteTransition>
-        ),
-      },
-      {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
         element: <CustomTokenImportFeatureRoute />,
       },
@@ -567,6 +559,14 @@ export const routeConfig = [
       {
         element: <RequireBasicFunctionality />,
         children: [
+          {
+            path: DISCOVER_SEARCH_ROUTE,
+            element: (
+              <GlobalMenuRouteTransition>
+                <DiscoverSearchFeatureRoute />
+              </GlobalMenuRouteTransition>
+            ),
+          },
           {
             path: '/notifications/settings',
             element: <Navigate to={NOTIFICATIONS_SETTINGS_ROUTE} replace />,
