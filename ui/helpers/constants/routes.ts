@@ -44,6 +44,9 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
+export const MFA_FLOW_ROUTE = '/mfa';
+export const MFA_SETTINGS_ROUTE =
+  '/settings/security-and-password/verification-methods';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -491,6 +494,16 @@ export const ROUTES = [
   {
     path: SYNC_ACCOUNTS_ROUTE,
     label: 'Sync Accounts Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_FLOW_ROUTE,
+    label: 'MFA Flow Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_ROUTE,
+    label: 'MFA Settings Page',
     trackInAnalytics: false,
   },
   {
