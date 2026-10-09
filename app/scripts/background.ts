@@ -251,6 +251,7 @@ if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
  * called if initialization fails in an unrecoverable way.
  */
 let isInitialized: Promise<void>;
+let backgroundInitializedAt: number | undefined;
 let resolveInitialization: () => void;
 let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 
@@ -261,7 +262,11 @@ let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
 function setGlobalInitializers() {
   const deferred = withResolvers<void>();
   isInitialized = deferred.promise;
-  resolveInitialization = deferred.resolve;
+  backgroundInitializedAt = undefined;
+  resolveInitialization = () => {
+    backgroundInitializedAt = Date.now();
+    deferred.resolve();
+  };
   rejectInitialization = deferred.reject;
 }
 setGlobalInitializers();
@@ -448,6 +453,7 @@ const handleOnConnect = async (port: Runtime.Port) => {
         !tryPostMessage(
           asChromeRuntimePort(port),
           BACKGROUND_INITIALIZED_METHOD,
+          { initializedAt: backgroundInitializedAt },
         )
       ) {
         return;
