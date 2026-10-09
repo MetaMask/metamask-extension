@@ -24,7 +24,8 @@ type Preset = {
 
 const reason = (operation: string) => ({
   operation: `qa.${operation}`,
-  description: `QA preset: ${operation}`,
+  enrollDescription: `QA preset: ${operation}`,
+  verifyDescription: `QA preset: ${operation}`,
 });
 
 const PRESETS: Preset[] = [
