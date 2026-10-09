@@ -33,6 +33,13 @@ export type MoneyChainConfigLock = {
 const sharedLock: MoneyChainConfigLock = {};
 
 /**
+ * Ensures a featured chain exists in the NetworkController.
+ *
+ * @param chainId - The chain to configure.
+ */
+export type EnsureFeaturedChainConfigured = (chainId: Hex) => Promise<void>;
+
+/**
  * Create a function that ensures the Money Account chain is configured in the
  * NetworkController, adding it from the featured networks when missing.
  *
@@ -46,23 +53,50 @@ export function createMoneyChainConfigurator(
   messenger: MoneyChainConfigMessenger,
   lock: MoneyChainConfigLock = sharedLock,
 ): EnsureMoneyChainConfigured {
-  const configureChain = async (
+  const ensureChainConfigured = createFeaturedChainConfigurator(
+    messenger,
+    lock,
+    (chainId) => `Money Account chain ${chainId} is not a featured network`,
+  );
+
+  return async function ensureMoneyChainConfigured(
     vaultConfig: MoneyAccountVaultConfig,
-  ): Promise<void> => {
+  ): Promise<void> {
+    await ensureChainConfigured(vaultConfig.chainId);
+  };
+}
+
+/**
+ * Create a function that ensures a featured chain is configured in the
+ * NetworkController, adding it from the featured networks when missing.
+ *
+ * @param messenger - The messenger used to reach the NetworkController and
+ * LegacyBackgroundApiService.
+ * @param lock - The in-flight state to coordinate through. Defaults to a
+ * process-wide lock shared by all configurators; tests may pass their own.
+ * @param getNotFeaturedMessage - Builds the error message for a chain that
+ * isn't a featured network.
+ * @returns The configuring function.
+ */
+export function createFeaturedChainConfigurator(
+  messenger: MoneyChainConfigMessenger,
+  lock: MoneyChainConfigLock = sharedLock,
+  getNotFeaturedMessage: (chainId: Hex) => string = (chainId) =>
+    `Chain ${chainId} is not a featured network`,
+): EnsureFeaturedChainConfigured {
+  const configureChain = async (chainId: Hex): Promise<void> => {
     const { networkConfigurationsByChainId } = messenger.call(
       'NetworkController:getState',
     );
-    if (networkConfigurationsByChainId[vaultConfig.chainId]) {
+    if (networkConfigurationsByChainId[chainId]) {
       return;
     }
 
     const networkConfiguration = FEATURED_RPCS.find(
-      ({ chainId }) => chainId === vaultConfig.chainId,
+      (featured) => featured.chainId === chainId,
     );
     if (!networkConfiguration) {
-      throw new Error(
-        `Money Account chain ${vaultConfig.chainId} is not a featured network`,
-      );
+      throw new Error(getNotFeaturedMessage(chainId));
     }
 
     await messenger.call(
@@ -72,10 +106,10 @@ export function createMoneyChainConfigurator(
     );
   };
 
-  return async function ensureMoneyChainConfigured(
-    vaultConfig: MoneyAccountVaultConfig,
+  return async function ensureFeaturedChainConfigured(
+    chainId: Hex,
   ): Promise<void> {
-    if (lock.inFlight && lock.inFlightChainId === vaultConfig.chainId) {
+    if (lock.inFlight && lock.inFlightChainId === chainId) {
       return await lock.inFlight;
     }
 
@@ -89,10 +123,10 @@ export function createMoneyChainConfigurator(
       if (previous) {
         await previous.catch(() => undefined);
       }
-      await configureChain(vaultConfig);
+      await configureChain(chainId);
     })();
     lock.inFlight = configuration;
-    lock.inFlightChainId = vaultConfig.chainId;
+    lock.inFlightChainId = chainId;
 
     try {
       await configuration;
