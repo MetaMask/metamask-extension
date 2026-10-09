@@ -592,7 +592,6 @@ export const NetworksPage = () => {
               chainlistEnabled={isChainlistV2Enabled}
               networkName={networkFormState.name}
               existingRpcUrls={existingRpcUrls}
-              onCancel={handleNewNetwork}
               onAdded={handleAddRPC}
             />
           </NetworksPageFormBody>
@@ -611,7 +610,6 @@ export const NetworksPage = () => {
               chainlistEnabled={isChainlistV2Enabled}
               networkName={networkFormState.name}
               existingRpcUrls={existingRpcUrls}
-              onCancel={handleEditOnComplete}
               onAdded={handleAddRPC}
             />
           </NetworksPageFormBody>

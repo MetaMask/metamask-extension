@@ -20,6 +20,7 @@ import {
   HelpTextSeverity,
   IconName,
   Label,
+  Tag,
   Text,
   TextButton,
   TextButtonSize,
@@ -71,7 +72,7 @@ import {
   toggleNetworkMenu,
   updateNetwork,
 } from '../../../store/actions';
-import RpcListItem, {
+import {
   stripKeyFromInfuraUrl,
   stripProtocol,
 } from '../network-list-menu/rpc-list-item';
@@ -838,26 +839,25 @@ export const NetworksForm = ({
             buttonDataTestId="test-add-rpc-drop-down"
             renderItem={(item, isList) => {
               const failoverUrls = failoverUrlsForEndpoint(item);
-              return isList ||
-                item?.name ||
-                item?.type === RpcEndpointType.Infura ||
-                failoverUrls.length > 0 ? (
-                <RpcListItem
-                  rpcEndpoint={{
-                    ...item,
-                    failoverUrls,
-                  }}
-                />
-              ) : (
-                // A custom (non Infura) endpoint never has a failover, so it just
-                // renders the URL with no failover tag.
+              const label =
+                item.type === RpcEndpointType.Infura
+                  ? 'Infura'
+                  : item.name || stripProtocol(stripKeyFromInfuraUrl(item.url));
+              return (
                 <Text
                   asChild
                   ellipsis
                   variant={TextVariant.BodyMd}
-                  className="flex items-center gap-1 py-3"
+                  className={
+                    isList ? 'flex items-center gap-1 py-4' : undefined
+                  }
                 >
-                  <span>{stripProtocol(stripKeyFromInfuraUrl(item.url))}</span>
+                  <span>
+                    {label}
+                    {isRpcFailoverEnabled && failoverUrls.length > 0 ? (
+                      <Tag className="ml-1 inline-flex">{t('failover')}</Tag>
+                    ) : null}
+                  </span>
                 </Text>
               );
             }}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Button,
   ButtonSize,
@@ -54,7 +55,11 @@ const AddBlockExplorerModal = ({
           <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
         ) : null}
       </Box>
-      <Box padding={4} paddingBottom={6} className="shrink-0">
+      <Box
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        padding={4}
+        className="networks-form__footer networks-form__footer--page w-full shrink-0"
+      >
         <Button
           isFullWidth
           isDisabled={Boolean(error)}

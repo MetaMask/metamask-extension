@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AvatarNetwork,
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   Button,
   ButtonSize,
@@ -66,7 +67,6 @@ const EMPTY_RPC_URLS: string[] = [];
 export type RpcUrlSource = 'chainlist' | 'manual';
 
 type AddRpcUrlPageFormProps = {
-  onCancel: () => void;
   onAdded: (
     url: string,
     name: string | undefined,
@@ -86,7 +86,6 @@ const hasChainId = (chainId?: string) =>
   Boolean(chainId && /^(\d+|0x[0-9a-f]+)$/iu.test(chainId.trim()));
 
 export const AddRpcUrlPageForm = ({
-  onCancel,
   onAdded,
   chainId,
   networkName,
@@ -420,27 +419,16 @@ export const AddRpcUrlPageForm = ({
       </Box>
 
       <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
         padding={4}
-        paddingBottom={6}
-        className="shrink-0 flex-row"
+        className="networks-form__footer networks-form__footer--page w-full shrink-0"
       >
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          onClick={onCancel}
-          className="flex-1"
-          data-testid="page-container-footer-cancel"
-        >
-          {t('cancel')}
-        </Button>
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           isDisabled={isSubmitDisabled}
           onClick={handleSubmit}
-          className="flex-1"
+          isFullWidth
           data-testid="page-container-footer-next"
         >
           {t('addUrl')}

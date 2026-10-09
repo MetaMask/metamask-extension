@@ -1092,9 +1092,6 @@ describe('NetworksPage', () => {
   it('renders the custom rpc page with footer actions and adds the rpc', async () => {
     renderNetworksPage({ pathname: `${NETWORKS_ROUTE}?view=edit-rpc` });
 
-    expect(
-      screen.getByTestId('page-container-footer-cancel'),
-    ).toHaveTextContent('Cancel');
     expect(screen.getByTestId('page-container-footer-next')).toHaveTextContent(
       'Add URL',
     );
