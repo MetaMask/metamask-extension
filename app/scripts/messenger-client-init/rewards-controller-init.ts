@@ -7,6 +7,7 @@ import {
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
+import type { OnboardingControllerState } from '../controllers/onboarding';
 import { RewardsControllerMessenger } from '../controllers/rewards/rewards-controller.types';
 import { RewardsControllerInitMessenger } from './messengers/rewards-controller-messenger';
 import { MessengerClientInitFunction } from './types';
@@ -76,6 +77,23 @@ export const RewardsControllerInit: MessengerClientInitFunction<
       return !featureFlagEnabled;
     },
   });
+
+  // Vault unlock during onboarding happens before basic functionality can be
+  // turned off, so silent auth is skipped then. Run it once onboarding
+  // finishes, when the preference is already final.
+  let authenticatedAfterOnboarding = false;
+  initMessenger.subscribe(
+    'OnboardingController:stateChange',
+    (state: OnboardingControllerState) => {
+      if (!state.completedOnboarding || authenticatedAfterOnboarding) {
+        return;
+      }
+      authenticatedAfterOnboarding = true;
+      messengerClient
+        .handleAuthenticationTrigger('Onboarding completed')
+        .catch(() => undefined);
+    },
+  );
 
   return { messengerClient };
 };

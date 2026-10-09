@@ -6,7 +6,10 @@ import {
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
-import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import type {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../controllers/onboarding';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 import { RootMessenger } from '../../lib/messenger';
@@ -58,17 +61,22 @@ type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
+type AllowedInitializationEvents = OnboardingControllerStateChangeEvent;
+
 export type RewardsControllerInitMessenger = ReturnType<
   typeof getRewardsControllerInitMessenger
 >;
 
 export function getRewardsControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   const controllerInitMessenger = new Messenger<
     'RewardsControllerInit',
     AllowedInitializationActions,
-    never,
+    AllowedInitializationEvents,
     typeof messenger
   >({
     namespace: 'RewardsControllerInit',
@@ -81,6 +89,7 @@ export function getRewardsControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
+    events: ['OnboardingController:stateChange'],
   });
   return controllerInitMessenger;
 }
