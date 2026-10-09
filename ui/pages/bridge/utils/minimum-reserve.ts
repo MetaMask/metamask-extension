@@ -15,26 +15,49 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
-
-const isNativeOrArcUsdc = (assetId: CaipAssetType) =>
-  isNativeAddress(assetId) || isArcTokenUSDC(assetId);
 
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
-    'eip155:5042': '0.05',
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
+
+const trimTrailingDecimalZeros = (value: string) =>
+  value.replace(/(\.\d*?)0+$/u, '$1').replace(/\.$/u, '');
 
 export const resolveMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
-  if (!caipAssetId || !isNativeOrArcUsdc(caipAssetId)) {
+  if (!caipAssetId || !isNativeAddress(caipAssetId)) {
     return '0';
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
   return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
+};
+
+export const calculateMaxAmountWithReserve = ({
+  balanceAmount,
+  caipAssetId,
+  decimals,
+}: {
+  balanceAmount: string;
+  caipAssetId?: CaipAssetType;
+  decimals: number;
+}): string => {
+  const reserveAmount = resolveMinimumReserveBalanceForCaipAssetId(caipAssetId);
+
+  if (reserveAmount === '0') {
+    return balanceAmount;
+  }
+
+  const maxAmount = new BigNumber(balanceAmount).minus(reserveAmount);
+
+  return trimTrailingDecimalZeros(
+    (maxAmount.isNegative() ? new BigNumber(0) : maxAmount).toFixed(
+      decimals,
+      BigNumber.ROUND_DOWN,
+    ),
+  );
 };
 
 /**
@@ -106,16 +129,16 @@ export const buildInsufficientNativeReserveError = ({
   minimumNativeBalanceToBeKeptInAccount: string;
   maxSwappableNativeBalance: BigNumber;
 }): InsufficientNativeReserveError | undefined => {
-  const normalizedMaxSwappableNativeBalance = BigNumber.max(
-    maxSwappableNativeBalance,
-    0,
-  );
+  const normalizedMaxSwappableNativeBalance =
+    maxSwappableNativeBalance.isNegative()
+      ? new BigNumber(0)
+      : maxSwappableNativeBalance;
 
   return minimumNativeBalanceToBeKeptInAccount !== '0' &&
     nativeBalance &&
     validatedSrcAmount &&
     fromToken &&
-    isNativeOrArcUsdc(fromToken.assetId) &&
+    isNativeAddress(fromToken.assetId) &&
     normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
     ? {
         minimumNativeBalanceToBeKeptInAccount,
