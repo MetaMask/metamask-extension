@@ -42,14 +42,16 @@ export type RewardsMoneyRebateQuoteFailure =
 /**
  * A rebate quote the server refused. `failure` is the status the confirmation
  * screen branches on; `detail` is the server's message when it sent one.
- * `401` is not this: that is {@link RewardsMoneyAuthorizationError}.
+ * A `401` is {@link RewardsMoneyAuthorizationError} and is not retried.
  *
- * A pod that sheds the quote answers `503` with
- * `{ reason: 'SERVER_BUSY', message: 'Server busy, retry shortly' }` and
- * `Retry-After: 2`. That is `failure: 'UNAVAILABLE'`, that message as
- * `detail`, and `retryAfterSeconds` from the header. Show no rebate row, do
- * not request another quote for this screen, and leave the button disabled
- * until `retryAfterSeconds` has elapsed.
+ * A `503` is `failure: 'UNAVAILABLE'`: the server is unavailable. That covers
+ * a busy pod (`reason: 'SERVER_BUSY'`, message `Server busy, retry shortly`,
+ * `Retry-After: 2`) and token verification down
+ * (`reason: 'JWKS_UNAVAILABLE'`). Both are handled the same way. A `429` is
+ * `failure: 'RATE_LIMITED'`: the profile spent the read budget it shares with
+ * the Earnings reads, 60 requests per 30 seconds. `retryAfterSeconds` is the
+ * `Retry-After` header when the refusal carried one, and `undefined` when the
+ * header is missing. There is no default.
  *
  * `failure` and `retryAfterSeconds` are copied onto `data` so they survive
  * the background RPC boundary, same as {@link RewardsMoneyHttpError}.
@@ -62,7 +64,10 @@ export class RewardsMoneyRebateQuoteError extends Error {
   /** Nest `message`, or `reason` when that is all the body carries. */
   readonly detail: string | undefined;
 
-  /** Seconds from a `Retry-After` header, when the refusal carried one. */
+  /**
+   * Seconds from a `Retry-After` header, when the refusal carried one.
+   * `undefined` when the header is missing. There is no default.
+   */
   readonly retryAfterSeconds: number | undefined;
 
   /**
@@ -98,19 +103,48 @@ export class RewardsMoneyRebateQuoteError extends Error {
   }
 }
 
+/**
+ * A non-OK Rewards Money response whose status and body the caller acts on.
+ * `retryAfterSeconds` is the `Retry-After` header when the refusal carried
+ * one, and `undefined` when the header is missing. There is no default.
+ * `status`, `bodyText`, and `retryAfterSeconds` are copied onto `data` so
+ * they survive the background RPC boundary. `undefined` fields are left off
+ * `data`, because one `undefined` value makes the bag fail the JSON check
+ * and the whole object is dropped.
+ */
 export class RewardsMoneyHttpError extends Error {
   readonly status: number;
 
   readonly bodyText: string | undefined;
 
-  readonly data: { status: number; bodyText?: string };
+  /**
+   * Seconds from a `Retry-After` header, when the refusal carried one.
+   * `undefined` when the header is missing. There is no default.
+   */
+  readonly retryAfterSeconds: number | undefined;
 
-  constructor(message: string, status: number, bodyText?: string) {
+  readonly data: {
+    status: number;
+    bodyText?: string;
+    retryAfterSeconds?: number;
+  };
+
+  constructor(
+    message: string,
+    status: number,
+    bodyText?: string,
+    retryAfterSeconds?: number,
+  ) {
     super(message);
     this.name = 'RewardsMoneyHttpError';
     this.status = status;
     this.bodyText = bodyText;
-    this.data = { status, bodyText };
+    this.retryAfterSeconds = retryAfterSeconds;
+    this.data = {
+      status,
+      ...(bodyText === undefined ? {} : { bodyText }),
+      ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }),
+    };
   }
 }
 
@@ -155,10 +189,25 @@ export class RewardsMoneyDataService {
   /**
    * Loads the signed-in profile's referral persona, copy, and excluded regions.
    *
+   * A busy pod answers `503` with `Retry-After` of 5 seconds or less. This
+   * waits that long and tries once more, so a shed does not close the invite
+   * sheet. A `429` is not retried: its window is 30 seconds.
+   *
    * @returns The referral-me payload.
    */
   async getReferralMe(): Promise<ReferralMeDto> {
-    const response = await this.#makeRequest('/referral/me', { method: 'GET' });
+    let response = await this.#makeRequest('/referral/me', { method: 'GET' });
+    if (response.status === 503) {
+      const retryAfterSeconds = parseRetryAfterSeconds(
+        response.headers.get('retry-after'),
+      );
+      if (retryAfterSeconds !== undefined && retryAfterSeconds <= 5) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, retryAfterSeconds * 1000);
+        });
+        response = await this.#makeRequest('/referral/me', { method: 'GET' });
+      }
+    }
     if (!response.ok) {
       throw new Error(`Get referral me failed: ${response.status}`);
     }
@@ -189,6 +238,10 @@ export class RewardsMoneyDataService {
   /**
    * Enrols the session profile under a referrer's code.
    *
+   * A `429` means this profile tried too many codes. The `Retry-After`
+   * header is copied onto {@link RewardsMoneyHttpError} so the sheet can
+   * hold Accept until that wait elapses.
+   *
    * @param params - The referral code. The referee is the bearer profile.
    */
   async registerReferee(params: RegisterRefereeDto): Promise<void> {
@@ -207,6 +260,7 @@ export class RewardsMoneyDataService {
         `Register referee failed: ${response.status}`,
         response.status,
         bodyText,
+        parseRetryAfterSeconds(response.headers.get('retry-after')),
       );
     }
   }
@@ -399,8 +453,8 @@ function parseRetryAfterSeconds(header: string | null): number | undefined {
 /**
  * The quote failures a confirmation screen branches on. Anything else,
  * including a 500, stays `FAILED` so a shed is not reported as a validation
- * error. HTTP 503 is `UNAVAILABLE`; the body reason for that shed is
- * `SERVER_BUSY`.
+ * error. HTTP 503 is `UNAVAILABLE` for both `SERVER_BUSY` and
+ * `JWKS_UNAVAILABLE`.
  *
  * @param status - The HTTP status of the refused quote.
  * @returns The failure a confirmation screen branches on.
