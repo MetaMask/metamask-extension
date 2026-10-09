@@ -155,8 +155,11 @@ describe('reactCompilerLoaderWrapper', () => {
       await import('../utils/loaders/reactCompilerLoaderWrapper');
     const rootContext = '/project/app';
     const resourcePath = '/project/ui/component.tsx';
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+    // browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const { promise, resolve } =
-      Promise.withResolvers<
+      Promise.withResolvers!<
         [Error | null | undefined, string | undefined, unknown]
       >();
     const context = {
