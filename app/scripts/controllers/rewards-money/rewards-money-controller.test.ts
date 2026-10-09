@@ -5,8 +5,14 @@ import {
   type MessengerEvents,
   type MockAnyNamespace,
 } from '@metamask/messenger';
-import { RewardsMoneyHttpError } from './rewards-money-data-service';
-import type { ReferralMeDto } from '../../../../shared/types/rewards-money';
+import type {
+  PerpsRebateTrade,
+  ReferralMeDto,
+} from '../../../../shared/types/rewards-money';
+import {
+  RewardsMoneyHttpError,
+  RewardsMoneyRebateQuoteError,
+} from './rewards-money-data-service';
 import { RewardsMoneyController } from './rewards-money-controller';
 import type { RewardsMoneyControllerMessenger } from './rewards-money-controller-types';
 
@@ -20,6 +26,7 @@ function buildReferralMe(
   return {
     role: 'NONE',
     variant: 'NONE',
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     localized_text: {
       inviteTitle: 'Invite',
       inviteMessageBody: 'Body',
@@ -33,8 +40,11 @@ function buildReferralMe(
       inviteAcceptedStartTrading: 'Start',
       inviteAcceptedViewRewards: 'View',
     },
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     invite_hero: null,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     referred_by: null,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
     excluded_regions: ['GB'],
     ...overrides,
   };
@@ -45,6 +55,7 @@ describe('RewardsMoneyController', () => {
   const getReferralMe = jest.fn();
   const validateReferralCode = jest.fn();
   const registerReferee = jest.fn();
+  const getRebateQuote = jest.fn();
   let controller: RewardsMoneyController;
   let isDisabled = false;
 
@@ -56,6 +67,7 @@ describe('RewardsMoneyController', () => {
     getReferralMe.mockReset();
     validateReferralCode.mockReset();
     registerReferee.mockReset();
+    getRebateQuote.mockReset();
 
     const baseMessenger: RootMessenger = new Messenger({
       namespace: MOCK_ANY_NAMESPACE,
@@ -76,6 +88,10 @@ describe('RewardsMoneyController', () => {
       'RewardsMoneyDataService:registerReferee',
       ((params: { code: string }) => registerReferee(params)) as never,
     );
+    baseMessenger.registerActionHandler(
+      'RewardsMoneyDataService:getRebateQuote',
+      ((body: unknown) => getRebateQuote(body)) as never,
+    );
 
     const messenger = new Messenger<
       'RewardsMoneyController',
@@ -93,6 +109,7 @@ describe('RewardsMoneyController', () => {
         'RewardsMoneyDataService:getReferralMe',
         'RewardsMoneyDataService:validateReferralCode',
         'RewardsMoneyDataService:registerReferee',
+        'RewardsMoneyDataService:getRebateQuote',
       ],
     });
 
@@ -128,8 +145,18 @@ describe('RewardsMoneyController', () => {
 
   it('bypasses the cache when forceFresh is set', async () => {
     getReferralMe
-      .mockResolvedValueOnce(buildReferralMe({ excluded_regions: ['GB'] }))
-      .mockResolvedValueOnce(buildReferralMe({ excluded_regions: ['CA'] }));
+      .mockResolvedValueOnce(
+        buildReferralMe({
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+          excluded_regions: ['GB'],
+        }),
+      )
+      .mockResolvedValueOnce(
+        buildReferralMe({
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+          excluded_regions: ['CA'],
+        }),
+      );
 
     await controller.getReferralMe();
     await controller.getReferralMe({ forceFresh: true });
@@ -161,5 +188,162 @@ describe('RewardsMoneyController', () => {
       data: { sessionChanged: true, profileId: 'profile-2' },
     });
     expect(controller.state.excludedRegions).toBeNull();
+  });
+
+  describe('rebate quotes', () => {
+    const metabridge = {
+      amount: '875000',
+      asset: {
+        chainId: 1,
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+      },
+    };
+    const swapsQuote = {
+      requestId: 'request-1',
+      feeData: { metabridge },
+    };
+    const swapsResponse = {
+      product: 'swaps' as const,
+      eligible: true,
+      rebateBips: 2000,
+      reason: null,
+    };
+    const perpsResponse = {
+      product: 'perps' as const,
+      eligible: false,
+      rebateBips: 0,
+      reason: 'NO_REBATE' as const,
+    };
+
+    beforeEach(() => {
+      getRebateQuote.mockImplementation((body: { product: string }) =>
+        Promise.resolve(
+          body.product === 'swaps' ? swapsResponse : perpsResponse,
+        ),
+      );
+    });
+
+    it('does not quote when Rewards Money is disabled', async () => {
+      isDisabled = true;
+
+      await expect(controller.getSwapsRebateQuote(swapsQuote)).rejects.toThrow(
+        'Rewards Money is disabled',
+      );
+      await expect(controller.getPerpsRebateQuote()).rejects.toThrow(
+        'Rewards Money is disabled',
+      );
+      expect(getRebateQuote).not.toHaveBeenCalled();
+    });
+
+    it('sends only the MetaMask fee leg of the bridge quote', async () => {
+      await expect(controller.getSwapsRebateQuote(swapsQuote)).resolves.toEqual(
+        swapsResponse,
+      );
+      expect(getRebateQuote).toHaveBeenCalledWith({
+        product: 'swaps',
+        quote: { feeData: { metabridge } },
+      });
+    });
+
+    it('sends a V2 bridge quote fee leg list as it is', async () => {
+      const metabridgeV2 = [{ amount: '875000', asset: { symbol: 'USDC' } }];
+
+      await controller.getSwapsRebateQuote({
+        feeData: { metabridge: metabridgeV2 },
+      });
+
+      expect(getRebateQuote).toHaveBeenCalledWith({
+        product: 'swaps',
+        quote: { feeData: { metabridge: metabridgeV2 } },
+      });
+    });
+
+    it('sends a perps rebate quote without a trade unless one is given', async () => {
+      const trade = { coin: 'BTC', side: 'BUY' as const, notionalUsd: '100' };
+
+      await expect(controller.getPerpsRebateQuote()).resolves.toEqual(
+        perpsResponse,
+      );
+      await expect(controller.getPerpsRebateQuote(trade)).resolves.toEqual(
+        perpsResponse,
+      );
+
+      expect(getRebateQuote).toHaveBeenNthCalledWith(1, { product: 'perps' });
+      expect(getRebateQuote).toHaveBeenNthCalledWith(2, {
+        product: 'perps',
+        trade,
+      });
+    });
+
+    it('sends a builder-deployed perp and a precise notional', async () => {
+      const trade = {
+        coin: 'xyz:TSLA',
+        side: 'SELL' as const,
+        notionalUsd: '123456789012345.123456789012345678',
+      };
+
+      await controller.getPerpsRebateQuote(trade);
+
+      expect(getRebateQuote).toHaveBeenCalledWith({
+        product: 'perps',
+        trade,
+      });
+    });
+
+    it('sends only the trade fields the server accepts', async () => {
+      await controller.getPerpsRebateQuote({
+        coin: 'ETH',
+        side: 'BUY',
+        notionalUsd: '50',
+        leverage: 5,
+      } as PerpsRebateTrade & { leverage: number });
+
+      expect(getRebateQuote).toHaveBeenCalledWith({
+        product: 'perps',
+        trade: { coin: 'ETH', side: 'BUY', notionalUsd: '50' },
+      });
+    });
+
+    it.each<[string, PerpsRebateTrade]>([
+      ['a spot coin', { coin: '@107', side: 'BUY', notionalUsd: '100' }],
+      [
+        'an upper-case dex prefix',
+        { coin: 'XYZ:TSLA', side: 'BUY', notionalUsd: '100' },
+      ],
+      ['an empty coin', { coin: '', side: 'BUY', notionalUsd: '100' }],
+      [
+        'an exponent notional',
+        { coin: 'BTC', side: 'BUY', notionalUsd: '1e21' },
+      ],
+      ['a negative notional', { coin: 'BTC', side: 'BUY', notionalUsd: '-1' }],
+      [
+        'a notional with 19 decimals',
+        { coin: 'BTC', side: 'BUY', notionalUsd: '1.1234567890123456789' },
+      ],
+      [
+        'a notional with 16 integer digits',
+        { coin: 'BTC', side: 'BUY', notionalUsd: '1234567890123456' },
+      ],
+    ])('leaves out a trade with %s', async (_label, trade) => {
+      await controller.getPerpsRebateQuote(trade);
+
+      expect(getRebateQuote).toHaveBeenCalledWith({ product: 'perps' });
+    });
+
+    it('surfaces a quote refusal without wrapping it', async () => {
+      const refusal = new RewardsMoneyRebateQuoteError(
+        429,
+        'RATE_LIMITED',
+        'Too many requests',
+        12,
+      );
+      getRebateQuote.mockRejectedValue(refusal);
+
+      await expect(controller.getSwapsRebateQuote(swapsQuote)).rejects.toBe(
+        refusal,
+      );
+      await expect(controller.getPerpsRebateQuote()).rejects.toBe(refusal);
+    });
   });
 });

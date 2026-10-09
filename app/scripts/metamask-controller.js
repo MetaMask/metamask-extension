@@ -2673,6 +2673,14 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsMoneyController.registerReferee.bind(
           this.rewardsMoneyController,
         ),
+      getRewardsMoneySwapsRebateQuote:
+        this.rewardsMoneyController.getSwapsRebateQuote.bind(
+          this.rewardsMoneyController,
+        ),
+      getRewardsMoneyPerpsRebateQuote:
+        this.rewardsMoneyController.getPerpsRebateQuote.bind(
+          this.rewardsMoneyController,
+        ),
       getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),

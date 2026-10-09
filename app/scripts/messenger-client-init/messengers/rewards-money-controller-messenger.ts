@@ -30,6 +30,7 @@ export function getRewardsMoneyControllerMessenger(
       'RewardsMoneyDataService:getReferralMe',
       'RewardsMoneyDataService:validateReferralCode',
       'RewardsMoneyDataService:registerReferee',
+      'RewardsMoneyDataService:getRebateQuote',
       'AuthenticationController:getSessionProfile',
     ],
   });
