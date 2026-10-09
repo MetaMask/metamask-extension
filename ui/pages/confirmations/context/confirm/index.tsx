@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
@@ -25,6 +26,7 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
   currentConfirmation: Confirmation;
+  transactionMetadataRequestOverride?: TransactionMeta;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
@@ -68,6 +70,10 @@ export const ConfirmContextProvider = ({
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
+  const transactionMetadataRequestOverride =
+    currentConfirmationOverride && 'txParams' in currentConfirmationOverride
+      ? currentConfirmationOverride
+      : undefined;
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -124,6 +130,7 @@ export const ConfirmContextProvider = ({
   const value = useMemo(
     () => ({
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
@@ -132,6 +139,7 @@ export const ConfirmContextProvider = ({
     }),
     [
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
@@ -157,6 +165,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
   return context as {
     /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
     currentConfirmation: CurrentConfirmation;
+    transactionMetadataRequestOverride?: TransactionMeta;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
