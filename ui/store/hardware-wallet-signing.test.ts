@@ -15,6 +15,7 @@ jest.mock('./background-connection', () => ({
 
 const PARENT_ID = 'parent-transaction';
 const FROM_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
+const BATCH_ID = '0xba7c';
 
 function buildTransaction(
   overrides: Partial<TransactionMeta> & { id: string },
@@ -73,12 +74,12 @@ describe('haveRequiredTransactionsBeenSigned', () => {
       ['approval-transaction'],
       [
         buildTransaction({
-          batchId: 'funding-batch',
+          batchId: BATCH_ID,
           id: 'approval-transaction',
           status: TransactionStatus.signed,
         }),
       ],
-      { 'funding-batch': 2 },
+      { [BATCH_ID]: 2 },
     );
 
     expect(haveRequiredTransactionsBeenSigned(PARENT_ID, state, 1)).toBe(false);
@@ -89,17 +90,17 @@ describe('haveRequiredTransactionsBeenSigned', () => {
       ['approval-transaction', 'funding-transaction'],
       [
         buildTransaction({
-          batchId: 'funding-batch',
+          batchId: BATCH_ID,
           id: 'approval-transaction',
           status: TransactionStatus.signed,
         }),
         buildTransaction({
-          batchId: 'funding-batch',
+          batchId: BATCH_ID,
           id: 'funding-transaction',
           status: TransactionStatus.submitted,
         }),
       ],
-      { 'funding-batch': 2 },
+      { [BATCH_ID]: 2 },
     );
 
     expect(haveRequiredTransactionsBeenSigned(PARENT_ID, state, 1)).toBe(true);

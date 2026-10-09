@@ -13,7 +13,10 @@ import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { useMessenger } from '../../../../hooks/useMessenger';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { defineAllowedRouteCapabilities } from '../../../../helpers/route-messenger-helpers';
-import { isMoneyAccountTx } from '../../../../helpers/money/money-transaction-guards';
+import {
+  isMoneyAccountTx,
+  isMoneyDepositTx,
+} from '../../../../helpers/money/money-transaction-guards';
 import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
@@ -25,7 +28,17 @@ import {
 } from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
-import { selectTransactions } from '../../../../selectors/transactionController';
+import { haveRequiredTransactionsBeenSigned } from '../../../../store/hardware-wallet-signing';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
+import {
+  selectBatchTransactionCounts,
+  selectTransactions,
+} from '../../../../selectors/transactionController';
+import {
+  selectTransactionDataByTransactionId,
+  type TransactionPayState,
+} from '../../../../selectors/transactionPayController';
+import { isHardwareAccount } from '../../rewards/utils/isHardwareAccount';
 import { toast, ToastContent } from '../../../ui/toast/toast';
 import type { ToastStatus } from '../../toast-listener/shared';
 import {
@@ -72,7 +85,74 @@ const failedStatuses = new Set<string>([
   'cancelled',
 ]);
 
+const signedStatuses = new Set<string>([
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+  TransactionStatus.confirmed,
+]);
+
 const generateToastId = (id: string) => `money-tx-${id}`;
+
+function withTransaction(
+  transactions: TransactionMeta[],
+  transactionMeta: TransactionMeta,
+) {
+  return [
+    ...transactions.filter(({ id }) => id !== transactionMeta.id),
+    transactionMeta,
+  ];
+}
+
+/**
+ * Whether an approved deposit still waits for its hardware wallet payer to
+ * sign the funding transactions.
+ *
+ * @param deposit - Money Account deposit transaction.
+ * @param state - Redux state.
+ * @param transactions - Transactions including the latest event payload.
+ */
+function isAwaitingHardwareSignatures(
+  deposit: TransactionMeta,
+  state: MetaMaskReduxState,
+  transactions: TransactionMeta[],
+) {
+  if (
+    deposit.status !== TransactionStatus.approved ||
+    !isMoneyDepositTx(deposit)
+  ) {
+    return false;
+  }
+
+  const transactionData = selectTransactionDataByTransactionId(
+    state as unknown as TransactionPayState,
+    deposit.id,
+  );
+
+  if (
+    deposit.metamaskPay?.fiat ||
+    transactionData?.fiatPayment?.selectedPaymentMethodId
+  ) {
+    return false;
+  }
+
+  const payer = getInternalAccountByAddress(
+    state,
+    transactionData?.accountOverride ?? deposit.txParams.from,
+  );
+
+  if (!payer || !isHardwareAccount(payer)) {
+    return false;
+  }
+
+  return !haveRequiredTransactionsBeenSigned(
+    deposit.id,
+    {
+      transactions,
+      batchTransactionCounts: selectBatchTransactionCounts(state),
+    },
+    Math.max(transactionData?.quotes?.length ?? 0, 1),
+  );
+}
 
 function isSpeedUpReplacement(
   replacedById: string,
@@ -168,6 +248,32 @@ export function useMoneyAccountToasts(): void {
   const store = useStore<MetaMaskReduxState>();
 
   useEffect(() => {
+    const handleFundingTransactionSigned = (
+      fundingTransaction: TransactionMeta,
+    ) => {
+      const state = store.getState();
+      const transactions = withTransaction(
+        selectTransactions(state),
+        fundingTransaction,
+      );
+      const deposit = transactions.find(
+        (tx) =>
+          tx.requiredTransactionIds?.includes(fundingTransaction.id) &&
+          isMoneyDepositTx(tx),
+      );
+
+      if (
+        !deposit ||
+        !pendingStatuses.has(deposit.status) ||
+        isAwaitingHardwareSignatures(deposit, state, transactions) ||
+        !shouldShowPendingToast(deposit.id)
+      ) {
+        return;
+      }
+
+      showMoneyAccountToast('pending', deposit);
+    };
+
     const handleStatusUpdated = (
       raw:
         | { transactionMeta: TransactionMeta }
@@ -177,15 +283,27 @@ export function useMoneyAccountToasts(): void {
       if (!transactionMeta?.id || !transactionMeta.status) {
         return;
       }
-      if (!isMoneyAccountTx(transactionMeta)) {
-        return;
-      }
 
       const { id, status, replacedById } = transactionMeta;
 
+      if (!isMoneyAccountTx(transactionMeta)) {
+        if (signedStatuses.has(status)) {
+          handleFundingTransactionSigned(transactionMeta);
+        }
+        return;
+      }
+
       if (pendingStatuses.has(status)) {
         registerMoneyBatchTransaction(transactionMeta);
-        if (shouldShowPendingToast(id)) {
+        const state = store.getState();
+        if (
+          !isAwaitingHardwareSignatures(
+            transactionMeta,
+            state,
+            withTransaction(selectTransactions(state), transactionMeta),
+          ) &&
+          shouldShowPendingToast(id)
+        ) {
           showMoneyAccountToast('pending', transactionMeta);
         }
       } else if (status === TransactionStatus.confirmed) {

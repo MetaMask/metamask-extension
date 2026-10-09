@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, renderHook, screen } from '@testing-library/react';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   TransactionStatus,
   TransactionType,
@@ -29,6 +30,9 @@ const mockToastError = jest.fn();
 const mockToastDismiss = jest.fn();
 const mockUseMoneyAccountToastLabel = jest.fn();
 let mockTransactions: TransactionMeta[] = [];
+let mockState: Record<string, unknown> = {};
+
+const LEDGER_ADDRESS = '0x1111111111111111111111111111111111111111';
 
 jest.mock('../../../../hooks/useMessenger', () => ({
   useMessenger: () => ({
@@ -38,11 +42,12 @@ jest.mock('../../../../hooks/useMessenger', () => ({
 }));
 
 jest.mock('react-redux', () => ({
-  useStore: () => ({ getState: () => ({}) }),
+  useStore: () => ({ getState: () => mockState }),
 }));
 
 jest.mock('../../../../selectors/transactionController', () => ({
   selectTransactions: () => mockTransactions,
+  selectBatchTransactionCounts: () => ({}),
 }));
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -105,6 +110,55 @@ function createMoneyDeposit(
   };
 }
 
+function createFundingTransaction(
+  id: string,
+  status: TransactionStatus,
+): TransactionMeta {
+  return {
+    id,
+    status,
+    chainId: '0x1',
+    networkClientId: 'network-1',
+    time: 1,
+    txParams: { from: LEDGER_ADDRESS },
+    type: TransactionType.simpleSend,
+  };
+}
+
+function createState({
+  transactionId,
+  quoteCount = 1,
+  fiatPaymentMethodId,
+}: {
+  transactionId: string;
+  quoteCount?: number;
+  fiatPaymentMethodId?: string;
+}) {
+  return {
+    metamask: {
+      accountIdByAddress: { [LEDGER_ADDRESS]: 'ledger-account' },
+      internalAccounts: {
+        accounts: {
+          'ledger-account': {
+            id: 'ledger-account',
+            address: LEDGER_ADDRESS,
+            metadata: { keyring: { type: KeyringTypes.ledger } },
+          },
+        },
+      },
+      transactionData: {
+        [transactionId]: {
+          accountOverride: LEDGER_ADDRESS,
+          fiatPayment: fiatPaymentMethodId
+            ? { selectedPaymentMethodId: fiatPaymentMethodId }
+            : undefined,
+          quotes: Array.from({ length: quoteCount }, () => ({})),
+        },
+      },
+    },
+  };
+}
+
 function mountHook() {
   let handler: ((raw: unknown) => void) | undefined;
   mockSubscribe.mockImplementation((event, subscribed) => {
@@ -124,8 +178,15 @@ describe('useMoneyAccountToasts', () => {
     jest.clearAllMocks();
     mockUseMoneyAccountToastLabel.mockReturnValue(undefined);
     mockTransactions = [];
+    mockState = {
+      metamask: { accountIdByAddress: {}, internalAccounts: { accounts: {} } },
+    };
     resetMoneyBatchRegistry();
     [
+      'hardware-1',
+      'hardware-2',
+      'hardware-rejected',
+      'hardware-card',
       'approved-1',
       'lifecycle-1',
       'no-hash',
@@ -175,6 +236,136 @@ describe('useMoneyAccountToasts', () => {
     expect(mockToastLoading).toHaveBeenCalledTimes(1);
     expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
       id: 'money-tx-approved-1',
+    });
+  });
+
+  it('waits for the hardware wallet to sign the funding transaction before the pending toast', () => {
+    mockState = createState({ transactionId: 'hardware-1' });
+    const deposit = createMoneyDeposit({
+      id: 'hardware-1',
+      status: TransactionStatus.approved,
+      requiredTransactionIds: ['funding-1'],
+    });
+    mockTransactions = [
+      deposit,
+      createFundingTransaction('funding-1', TransactionStatus.approved),
+    ];
+    const { emit } = mountHook();
+
+    emit({ transactionMeta: deposit });
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-1',
+        TransactionStatus.approved,
+      ),
+    });
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-1',
+        TransactionStatus.signed,
+      ),
+    });
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-1',
+        TransactionStatus.submitted,
+      ),
+    });
+
+    expect(mockToastLoading).toHaveBeenCalledTimes(1);
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
+      id: 'money-tx-hardware-1',
+    });
+  });
+
+  it('waits until every quote has a signed funding transaction', () => {
+    mockState = createState({ transactionId: 'hardware-2', quoteCount: 2 });
+    const deposit = createMoneyDeposit({
+      id: 'hardware-2',
+      status: TransactionStatus.approved,
+      requiredTransactionIds: ['funding-1'],
+    });
+    mockTransactions = [
+      deposit,
+      createFundingTransaction('funding-1', TransactionStatus.approved),
+    ];
+    const { emit } = mountHook();
+
+    emit({ transactionMeta: deposit });
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-1',
+        TransactionStatus.signed,
+      ),
+    });
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+
+    mockTransactions = [
+      { ...deposit, requiredTransactionIds: ['funding-1', 'funding-2'] },
+      createFundingTransaction('funding-1', TransactionStatus.confirmed),
+      createFundingTransaction('funding-2', TransactionStatus.approved),
+    ];
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-2',
+        TransactionStatus.signed,
+      ),
+    });
+
+    expect(mockToastLoading).toHaveBeenCalledTimes(1);
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
+      id: 'money-tx-hardware-2',
+    });
+  });
+
+  it('shows no toast when the hardware wallet rejects before signing', () => {
+    mockState = createState({ transactionId: 'hardware-rejected' });
+    const deposit = createMoneyDeposit({
+      id: 'hardware-rejected',
+      status: TransactionStatus.approved,
+      requiredTransactionIds: ['funding-1'],
+    });
+    mockTransactions = [
+      deposit,
+      createFundingTransaction('funding-1', TransactionStatus.approved),
+    ];
+    const { emit } = mountHook();
+
+    emit({ transactionMeta: deposit });
+    emit({
+      transactionMeta: createFundingTransaction(
+        'funding-1',
+        TransactionStatus.failed,
+      ),
+    });
+    emit({
+      transactionMeta: { ...deposit, status: TransactionStatus.failed },
+    });
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToastError).not.toHaveBeenCalled();
+  });
+
+  it('shows the pending toast on approval for card deposits from a hardware account', () => {
+    mockState = createState({
+      transactionId: 'hardware-card',
+      fiatPaymentMethodId: 'card',
+    });
+    const { emit } = mountHook();
+
+    emit({
+      transactionMeta: createMoneyDeposit({
+        id: 'hardware-card',
+        status: TransactionStatus.approved,
+      }),
+    });
+
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
+      id: 'money-tx-hardware-card',
     });
   });
 
