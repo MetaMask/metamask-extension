@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { TextButton } from '@metamask/design-system-react';
+import {
+  FontWeight,
+  Text,
+  TextButton,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../../shared/lib/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -9,14 +14,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, Label, Text } from '../../component-library';
+import { Box, Label } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import {
   BlockSize,
-  FontWeight,
   JustifyContent,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -109,10 +112,10 @@ export const ImportAccount = ({ onActionComplete }) => {
     if (strategy === 'json') {
       return (
         <>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading1')}
           </Text>
-          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+          <Text className="w-3/4" fontWeight={FontWeight.Bold}>
             {t('importAccountJsonLoading2')}
           </Text>
         </>
@@ -162,10 +165,10 @@ export const ImportAccount = ({ onActionComplete }) => {
     <>
       {isSocialLoginFlow ? (
         <>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsg')}
           </Text>
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('importAccountWithSocialMsgLearnMore', [
               <TextButton
                 size="body-sm"
@@ -185,7 +188,7 @@ export const ImportAccount = ({ onActionComplete }) => {
           </Text>
         </>
       ) : (
-        <Text variant={TextVariant.bodySm} marginTop={2}>
+        <Text variant={TextVariant.BodySm} className="mt-2">
           {t('importAccountMsg')}{' '}
           <TextButton size="body-sm" asChild className="inline">
             <a
