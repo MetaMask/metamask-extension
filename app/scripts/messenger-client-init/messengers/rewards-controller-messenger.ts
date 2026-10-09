@@ -6,6 +6,7 @@ import {
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
+import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 import { RootMessenger } from '../../lib/messenger';
@@ -53,6 +54,7 @@ export function getRewardsControllerMessenger(
 }
 
 type AllowedInitializationActions =
+  | OnboardingControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
@@ -75,6 +77,7 @@ export function getRewardsControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'OnboardingController:getState',
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
