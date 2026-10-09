@@ -57,6 +57,16 @@ export const getErrorHandling = (code: MfaFlowErrorCode): MfaErrorHandling =>
   HANDLING[code];
 
 /**
+ * Whether the code means a bug on our side (a malformed request or response)
+ * rather than something the user or the server's rules caused.
+ *
+ * @param code - The flow error code.
+ * @returns `true` for codes worth reporting.
+ */
+export const isReportable = (code: MfaFlowErrorCode): boolean =>
+  code === 'invalid_response' || code === 'invalid_request';
+
+/**
  * Rejection of `verifyOrEnroll` and `enroll`. `mfaCode` is what
  * `getMfaErrorCode()` reads, so consumers branch on it like any MFA error.
  */

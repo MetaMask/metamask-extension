@@ -96,8 +96,17 @@ export type MfaFlowErrorCode = MfaErrorCode | MfaKitErrorCode;
 export interface MfaReason {
   /** Sent to the controller (trace tags). */
   operation: string;
-  /** Already-translated line explaining why the feature asks. UI only. */
-  description?: string;
+  /**
+   * Already-translated line shown when the flow sets up missing methods,
+   * replacing the generic one. UI only.
+   */
+  enrollDescription?: string;
+  /**
+   * Already-translated line saying what the verification is for, shown when
+   * the user picks how to verify (for example "Verify it's you to send
+   * $20.00"). Not shown when confirming before a setup. UI only.
+   */
+  verifyDescription?: string;
 }
 
 /**
@@ -231,6 +240,17 @@ export interface MfaFlowOptions {
   controller: MfaControllerAdapter;
   passkey?: PasskeyAdapter;
   now?: () => number;
+  /**
+   * Called when the flow fails because of a bug on our side (see `isReportable`),
+   * for error reporting. The context never holds an email address.
+   */
+  reportError?: (error: unknown, context: MfaErrorContext) => void;
+}
+
+export interface MfaErrorContext {
+  code: MfaFlowErrorCode;
+  operation: string;
+  step: MfaFlowStep['name'];
 }
 
 export interface MfaFlow {
