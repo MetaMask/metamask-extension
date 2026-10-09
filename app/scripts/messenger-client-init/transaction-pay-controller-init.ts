@@ -315,10 +315,9 @@ function seedAccountOverride(
  * on the atomic path. `atomic: false` is Max-only (exact source spend /
  * EXACT_INPUT), matching mobile `setIsMax`.
  *
- * Amount commits still write `requiredAssets` before the vault encode
- * finishes, and Pay requotes on that write, so the first quote for each
- * amount goes out against the placeholder batch and is superseded by the
- * requote carrying the encoded calldata.
+ * Amount commits encode vault calldata before writing `requiredAssets` and
+ * parent `txParams.data` together, so Pay quotes once against the encoded
+ * batch.
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
