@@ -19,6 +19,10 @@ const CONVERSION_RATE_2_MOCK = 5;
 const USD_RATE_1_MOCK = 6;
 const USD_RATE_2_MOCK = 7;
 
+const NATIVE_ASSET_ID_1 = `eip155:${Number.parseInt(CHAIN_ID_1_MOCK, 16)}/slip44:60`;
+const NATIVE_ASSET_ID_2 = `eip155:${Number.parseInt(CHAIN_ID_2_MOCK, 16)}/slip44:60`;
+const TOKEN_ASSET_ID_1 = `eip155:${Number.parseInt(CHAIN_ID_1_MOCK, 16)}/erc20:${ADDRESS_1_MOCK}`;
+const TOKEN_ASSET_ID_2 = `eip155:${Number.parseInt(CHAIN_ID_2_MOCK, 16)}/erc20:${ADDRESS_2_MOCK}`;
 const MAINNET_CHAIN_ID_MOCK = '0x1' as Hex;
 const USDC_MAINNET_ADDRESS_MOCK =
   '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex;
@@ -26,19 +30,12 @@ const USDC_MAINNET_CHECKSUM_ADDRESS_MOCK =
   '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Hex;
 const MUSD_MAINNET_ADDRESS_MOCK =
   '0xaca92e438df0b2401ff60da7e4337b687a2435da' as Hex;
+const USDC_MAINNET_ASSET_ID = `eip155:${Number.parseInt(MAINNET_CHAIN_ID_MOCK, 16)}/erc20:${USDC_MAINNET_ADDRESS_MOCK}`;
 
 function createMockState({
-  currentCurrency = 'tst',
-  currencyRates = {
-    [TICKER_1_MOCK]: {
-      conversionRate: CONVERSION_RATE_1_MOCK,
-      usdConversionRate: USD_RATE_1_MOCK,
-    },
-    [TICKER_2_MOCK]: {
-      conversionRate: CONVERSION_RATE_2_MOCK,
-      usdConversionRate: USD_RATE_2_MOCK,
-    },
-  },
+  selectedCurrency = 'tst',
+  includeNativeRates = true,
+  includeTokenPrices = true,
   networkConfigurationsByChainId = {
     [CHAIN_ID_1_MOCK]: {
       chainId: CHAIN_ID_1_MOCK,
@@ -59,48 +56,92 @@ function createMockState({
       defaultRpcEndpointIndex: 0,
     },
   },
-  marketData = {
-    [CHAIN_ID_1_MOCK]: {
-      [ADDRESS_1_MOCK]: {
-        tokenAddress: ADDRESS_1_MOCK,
-        price: PRICE_1_MOCK,
-      },
-    },
-    [CHAIN_ID_2_MOCK]: {
-      [ADDRESS_2_MOCK]: {
-        tokenAddress: ADDRESS_2_MOCK,
-        price: PRICE_2_MOCK,
-      },
-    },
-    // Deliberately priced away from $1 so the peg is distinguishable from the
-    // market-data path.
-    [MAINNET_CHAIN_ID_MOCK]: {
-      [USDC_MAINNET_CHECKSUM_ADDRESS_MOCK]: {
-        tokenAddress: USDC_MAINNET_CHECKSUM_ADDRESS_MOCK,
-        price: PRICE_1_MOCK,
-      },
-    },
-  },
   remoteFeatureFlags = {},
 }: {
-  currentCurrency?: string;
-  currencyRates?: Record<
-    string,
-    { conversionRate: number; usdConversionRate: number }
-  >;
+  selectedCurrency?: string;
+  includeNativeRates?: boolean;
+  includeTokenPrices?: boolean;
   networkConfigurationsByChainId?: Record<string, object>;
-  marketData?: Record<
-    string,
-    Record<string, { tokenAddress: string; price: number }>
-  >;
   remoteFeatureFlags?: Record<string, unknown>;
 } = {}) {
+  const assetsInfo: Record<string, object> = {
+    [NATIVE_ASSET_ID_1]: {
+      type: 'native',
+      decimals: 18,
+      symbol: TICKER_1_MOCK,
+    },
+    [NATIVE_ASSET_ID_2]: {
+      type: 'native',
+      decimals: 18,
+      symbol: TICKER_2_MOCK,
+    },
+    [TOKEN_ASSET_ID_1]: {
+      type: 'erc20',
+      decimals: 18,
+      symbol: 'T1',
+    },
+    [TOKEN_ASSET_ID_2]: {
+      type: 'erc20',
+      decimals: 18,
+      symbol: 'T2',
+    },
+  };
+
+  const assetsPrice: Record<string, object> = {};
+
+  if (includeNativeRates) {
+    assetsPrice[NATIVE_ASSET_ID_1] = {
+      assetPriceType: 'fungible',
+      price: CONVERSION_RATE_1_MOCK,
+      usdPrice: USD_RATE_1_MOCK,
+      lastUpdated: 1,
+    };
+    assetsPrice[NATIVE_ASSET_ID_2] = {
+      assetPriceType: 'fungible',
+      price: CONVERSION_RATE_2_MOCK,
+      usdPrice: USD_RATE_2_MOCK,
+      lastUpdated: 1,
+    };
+  }
+
+  if (includeTokenPrices && includeNativeRates) {
+    // marketData price is denominated in native currency; multiply by native rate
+    assetsPrice[TOKEN_ASSET_ID_1] = {
+      assetPriceType: 'fungible',
+      price: PRICE_1_MOCK * CONVERSION_RATE_1_MOCK,
+      usdPrice: PRICE_1_MOCK * USD_RATE_1_MOCK,
+      lastUpdated: 1,
+    };
+    assetsPrice[TOKEN_ASSET_ID_2] = {
+      assetPriceType: 'fungible',
+      price: PRICE_2_MOCK * CONVERSION_RATE_2_MOCK,
+      usdPrice: PRICE_2_MOCK * USD_RATE_2_MOCK,
+      lastUpdated: 1,
+    };
+  }
+
+  assetsInfo[USDC_MAINNET_ASSET_ID] = {
+    type: 'erc20',
+    decimals: 6,
+    symbol: 'USDC',
+  };
+
+  if (includeTokenPrices && includeNativeRates) {
+    // Stored in selected currency; market data divides by the native rate.
+    assetsPrice[USDC_MAINNET_ASSET_ID] = {
+      assetPriceType: 'fungible',
+      price: PRICE_1_MOCK * CONVERSION_RATE_1_MOCK,
+      usdPrice: PRICE_1_MOCK * USD_RATE_1_MOCK,
+      lastUpdated: 1,
+    };
+  }
+
   return {
     metamask: {
-      currentCurrency,
-      currencyRates,
+      selectedCurrency,
+      assetsInfo,
+      assetsPrice,
       networkConfigurationsByChainId,
-      marketData,
       remoteFeatureFlags,
     },
   };
@@ -212,7 +253,8 @@ describe('useTokenFiatRates', () => {
         },
       ],
       state: createMockState({
-        currencyRates: {},
+        includeNativeRates: false,
+        includeTokenPrices: false,
       }),
     });
 
