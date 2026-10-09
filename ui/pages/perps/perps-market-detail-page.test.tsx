@@ -263,7 +263,7 @@ const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 const mockPerpsTrack = jest.fn();
 const mockAboutRef = jest.fn();
 const mockUsePerpsMarketAboutTracking = jest.fn(
-  ({ description }: { description?: string }) => ({
+  ({ description }: { description?: string; isPageRendered?: boolean }) => ({
     hasDescription: Boolean(description?.trim()),
     aboutRef: mockAboutRef,
   }),
@@ -286,8 +286,10 @@ jest.mock('../../hooks/perps', () => ({
     }
     return { track: mockPerpsTrack };
   },
-  usePerpsMarketAboutTracking: (options: { description?: string }) =>
-    mockUsePerpsMarketAboutTracking(options),
+  usePerpsMarketAboutTracking: (options: {
+    description?: string;
+    isPageRendered?: boolean;
+  }) => mockUsePerpsMarketAboutTracking(options),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -1496,6 +1498,13 @@ describe('PerpsMarketDetailPage', () => {
       expect(aboutSection.compareDocumentPosition(recentActivityHeader)).toBe(
         Node.DOCUMENT_POSITION_FOLLOWING,
       );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          symbol: 'ETH',
+          description: 'Ethereum market description.',
+          isPageRendered: true,
+        }),
+      );
     });
 
     it('reattaches the about view observer when navigating between markets with descriptions', async () => {
@@ -2288,6 +2297,35 @@ describe('PerpsMarketDetailPage', () => {
           replace: true,
         }),
       );
+    });
+
+    it('does not mark About as rendered when cached metadata exists but perps is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: mockCryptoMarkets.map((market) =>
+          market.symbol === 'ETH'
+            ? { ...market, description: 'Ethereum market description.' }
+            : market,
+        ),
+        isInitialLoading: false,
+      });
+
+      await renderPage(mockStore(createMockState(false)));
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: '/',
+          replace: true,
+        }),
+      );
+      expect(mockUsePerpsMarketAboutTracking).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'Ethereum market description.',
+          isPageRendered: false,
+        }),
+      );
+      expect(
+        screen.queryByTestId('perps-market-about-section'),
+      ).not.toBeInTheDocument();
     });
   });
 

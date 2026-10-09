@@ -414,11 +414,21 @@ const PerpsMarketDetailPage = () => {
     );
   }, [decodedSymbol, allMarkets]);
   const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+  // This hook runs before the feature-availability redirect below. Pass the
+  // same guards that mount the market body so a cached description cannot emit
+  // displayed while the page returns Navigate or another non-About state.
+  const isMarketDetailRendered =
+    isPerpsExperienceAvailable &&
+    Boolean(symbol) &&
+    Boolean(decodedSymbol) &&
+    marketCatalogReady &&
+    Boolean(market);
   const { hasDescription: hasAboutDescription, aboutRef } =
     usePerpsMarketAboutTracking({
       symbol: market?.symbol,
       marketType: market?.marketType,
       description: market?.description,
+      isPageRendered: isMarketDetailRendered,
     });
 
   const hasPerpBalance = Boolean(

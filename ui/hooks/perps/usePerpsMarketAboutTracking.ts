@@ -11,6 +11,14 @@ export type UsePerpsMarketAboutTrackingOptions = {
   symbol?: string;
   marketType?: string;
   description?: string;
+  /**
+   * True only when the market detail page will paint the body that mounts
+   * About. Callers pass false for the feature-unavailable redirect, the
+   * missing-symbol redirect, the loading skeleton, and the unknown-market
+   * state. The hook runs before those returns, so a cached description is
+   * not enough to emit displayed.
+   */
+  isPageRendered: boolean;
 };
 
 export type UsePerpsMarketAboutTrackingReturn = {
@@ -22,9 +30,11 @@ export function usePerpsMarketAboutTracking({
   symbol,
   marketType,
   description,
+  isPageRendered,
 }: UsePerpsMarketAboutTrackingOptions): UsePerpsMarketAboutTrackingReturn {
   const trimmedDescription = description?.trim() ?? '';
   const hasDescription = trimmedDescription.length > 0;
+  const isSectionDisplayed = hasDescription && isPageRendered;
   const baseProperties = {
     [PERPS_EVENT_PROPERTY.MARKET_SYMBOL]: symbol ?? '',
     [PERPS_EVENT_PROPERTY.MARKET_TYPE]: marketType ?? 'crypto',
@@ -33,7 +43,7 @@ export function usePerpsMarketAboutTracking({
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsUiInteraction,
-    conditions: hasDescription,
+    conditions: isSectionDisplayed,
     resetKey: symbol,
     properties: {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
@@ -58,7 +68,7 @@ export function usePerpsMarketAboutTracking({
   const [aboutRef] = useIntersectionObserver({
     threshold: 0.2,
     onChange: (isIntersecting) => {
-      if (!isIntersecting || !hasDescription || hasViewedRef.current) {
+      if (!isSectionDisplayed || !isIntersecting || hasViewedRef.current) {
         return;
       }
 

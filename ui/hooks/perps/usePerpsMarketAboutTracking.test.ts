@@ -44,7 +44,7 @@ describe('usePerpsMarketAboutTracking', () => {
   it('reports whether the description has non-whitespace content', () => {
     const { result, rerender } = renderHook(
       ({ description }: { description?: string }) =>
-        usePerpsMarketAboutTracking({ description }),
+        usePerpsMarketAboutTracking({ description, isPageRendered: true }),
       { initialProps: { description: '  Description  ' } },
     );
 
@@ -61,6 +61,7 @@ describe('usePerpsMarketAboutTracking', () => {
         symbol: 'SMSN',
         marketType: 'stock',
         description: '  Samsung description.  ',
+        isPageRendered: true,
       }),
     );
 
@@ -83,7 +84,11 @@ describe('usePerpsMarketAboutTracking', () => {
 
   it('configures the displayed event as disabled without a description', () => {
     renderHook(() =>
-      usePerpsMarketAboutTracking({ symbol: 'BTC', description: '  ' }),
+      usePerpsMarketAboutTracking({
+        symbol: 'BTC',
+        description: '  ',
+        isPageRendered: true,
+      }),
     );
 
     const [options] = mockUsePerpsEventTracking.mock.calls[0];
@@ -101,6 +106,7 @@ describe('usePerpsMarketAboutTracking', () => {
       usePerpsMarketAboutTracking({
         symbol: 'BTC',
         description: 'Bitcoin description.',
+        isPageRendered: true,
       }),
     );
 
@@ -119,6 +125,7 @@ describe('usePerpsMarketAboutTracking', () => {
         symbol: 'BTC',
         marketType: 'crypto',
         description: 'Bitcoin description.',
+        isPageRendered: true,
       }),
     );
 
@@ -146,15 +153,85 @@ describe('usePerpsMarketAboutTracking', () => {
       usePerpsMarketAboutTracking({
         symbol: 'BTC',
         description: 'Bitcoin description.',
+        isPageRendered: true,
       }),
     );
 
     expect(latestIntersectionThreshold).toBe(0.2);
   });
 
+  it('disables the displayed event when the page will not render About', () => {
+    renderHook(() =>
+      usePerpsMarketAboutTracking({
+        symbol: 'BTC',
+        description: 'Bitcoin description.',
+        isPageRendered: false,
+      }),
+    );
+
+    const [options] = mockUsePerpsEventTracking.mock.calls[0];
+
+    expect(options).toEqual(
+      expect.objectContaining({
+        conditions: false,
+        properties: expect.objectContaining({
+          [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+            PERPS_EVENT_VALUE.INTERACTION_TYPE.MARKET_ABOUT_SECTION_DISPLAYED,
+          [PERPS_EVENT_PROPERTY.DESCRIPTION_LENGTH]: 'Bitcoin description.'
+            .length,
+        }),
+      }),
+    );
+  });
+
+  it('enables the displayed event once the page becomes eligible to render', () => {
+    const { rerender } = renderHook(
+      ({ isPageRendered }: { isPageRendered: boolean }) =>
+        usePerpsMarketAboutTracking({
+          symbol: 'BTC',
+          description: 'Bitcoin description.',
+          isPageRendered,
+        }),
+      { initialProps: { isPageRendered: false } },
+    );
+
+    rerender({ isPageRendered: true });
+
+    const displayedCalls = mockUsePerpsEventTracking.mock.calls.filter(
+      ([options]) => options?.properties,
+    );
+
+    expect(displayedCalls[0]?.[0]).toEqual(
+      expect.objectContaining({ conditions: false }),
+    );
+    expect(displayedCalls.at(-1)?.[0]).toEqual(
+      expect.objectContaining({ conditions: true }),
+    );
+  });
+
   it('does not track the viewed event without a description', () => {
     renderHook(() =>
-      usePerpsMarketAboutTracking({ symbol: 'BTC', description: undefined }),
+      usePerpsMarketAboutTracking({
+        symbol: 'BTC',
+        description: undefined,
+        isPageRendered: true,
+      }),
+    );
+
+    act(() => {
+      latestIntersectionCallback?.(true);
+    });
+
+    expect(mockTrack).not.toHaveBeenCalled();
+  });
+
+  it('does not track the viewed event when the page will not render About', () => {
+    renderHook(() =>
+      usePerpsMarketAboutTracking({
+        symbol: 'BTC',
+        description: 'Bitcoin description.',
+        isPageRendered: false,
+      }),
     );
 
     act(() => {
@@ -170,6 +247,7 @@ describe('usePerpsMarketAboutTracking', () => {
         usePerpsMarketAboutTracking({
           symbol,
           description: 'Market description.',
+          isPageRendered: true,
         }),
       { initialProps: { symbol: 'BTC' } },
     );
