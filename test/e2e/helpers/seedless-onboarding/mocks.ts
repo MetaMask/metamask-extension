@@ -401,6 +401,7 @@ export class OAuthMockttpService {
    * @param options.forceTokenExpiration - Whether to force the token expiration. If not provided, false will be used.
    * @param options.failStoreKeyShareRequest - Whether to fail TOPRF Store Key Share requests. If not provided, false will be used.
    * @param options.simulatePasswordSync - Whether to simulate a remote password change for password-sync recovery. If not provided, false will be used.
+   * @param options.initialAuthPubKey - The initial auth public key returned by TOPRF. If not provided, MockAuthPubKey will be used.
    */
   async setup(
     server: Mockttp,
@@ -411,8 +412,11 @@ export class OAuthMockttpService {
       forceTokenExpiration?: boolean;
       failStoreKeyShareRequest?: boolean;
       simulatePasswordSync?: boolean;
+      initialAuthPubKey?: string;
     },
   ) {
+    this.#latestAuthPubKey = options?.initialAuthPubKey ?? MockAuthPubKey;
+
     const authServerMockResponses = [
       await server
         .forPost(AuthServer.RequestToken)

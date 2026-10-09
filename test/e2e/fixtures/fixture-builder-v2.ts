@@ -24,6 +24,7 @@ import type { PersistedSnapControllerState } from '@metamask/snaps-controllers';
 import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import type { SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type {
   PermissionConstraint,
@@ -395,6 +396,13 @@ class FixtureBuilderV2 {
 
   withOnboardingController(data: Partial<OnboardingControllerState>): this {
     merge(this.fixture.data.OnboardingController, data);
+    return this;
+  }
+
+  withSeedlessOnboardingController(
+    data: Partial<SeedlessOnboardingControllerState>,
+  ): this {
+    merge(this.fixture.data.SeedlessOnboardingController, data);
     return this;
   }
 

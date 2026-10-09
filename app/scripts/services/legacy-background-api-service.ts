@@ -2295,7 +2295,7 @@ export class LegacyBackgroundApiService {
 
     return this.#messenger.call(
       'SeedlessOnboardingController:resolvePasswordSyncState',
-      { skipCache: skipCache },
+      { skipCache },
     );
   }
 
@@ -2488,6 +2488,9 @@ export class LegacyBackgroundApiService {
           break;
         }
         case PasswordSyncInstruction.SyncKey:
+          // `reconcilePassword` unlocks the Seedless vault, but the Keyring
+          // remains locked until the submitted password is explicitly applied.
+          await this.submitPasswordOrEncryptionKey({ password });
           await this.#syncAndCompleteKeyringEncryptionKey();
           break;
         default:

@@ -12,9 +12,17 @@ export const MockAuthPubKey =
 export const MockAuthPubKey2 =
   '0447edd078db62ed5bf79652646ba30534375f05f1fbbb4b258924f65e251ac2302b718f64052b8b7a026d6cd0156e56c2522757aa07fa579384f97d097524b142';
 
-// Mock keys derived from SeedlessGlobalPassword(`newPassword`) for password-sync recovery.
+// Mock TOPRF keys derived from SeedlessGlobalPassword for password-sync recovery.
+export const PasswordSyncMockAuthPrivateKey =
+  '0x6627c48d1da864fb6fa0365ed5a7802c50a217a514422286685cd92168d36f95';
+
 export const PasswordSyncMockAuthPubKey =
   '04f937821f5674f09891caa19caf46389da01faf73111be1eedfe0f2dd344bf737ae5785b834efe7a11e02ae06ac6f698269af038072ecb2fa69531108beef930c';
+
+export const PasswordSyncMockEncryptionKey = new Uint8Array([
+  247, 12, 68, 244, 60, 227, 226, 170, 40, 53, 1, 119, 161, 174, 214, 249, 95,
+  214, 2, 198, 223, 167, 9, 183, 107, 184, 207, 11, 17, 28, 173, 217,
+]);
 
 export const PasswordSyncMockPwdEncryptionKey = new Uint8Array([
   31, 83, 94, 172, 104, 136, 249, 225, 173, 167, 246, 51, 75, 103, 186, 200,
