@@ -36,6 +36,10 @@ jest.mock('../../platforms/extension', () => {
   }));
 });
 
+const ExtensionPlatformMock = jest.requireMock(
+  '../../platforms/extension',
+) as jest.Mock;
+
 // Mock loglevel
 jest.mock('loglevel', () => ({
   error: jest.fn(),
@@ -812,6 +816,26 @@ describe('RewardsDataService', () => {
         }),
       } as unknown as Response;
       mockFetch.mockResolvedValue(mockResponse);
+    });
+
+    it('uses METAMASK_VERSION when the extension manifest is unavailable', async () => {
+      ExtensionPlatformMock.mockImplementationOnce(() => ({
+        getVersion: () => {
+          throw new Error('manifest unavailable');
+        },
+      }));
+
+      await service.getSeasonStatus(mockSeasonId, mockSubscriptionId);
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `${REWARDS_API_URL.UAT}/seasons/${mockSeasonId}/state`,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'rewards-client-id': `extension-${process.env.METAMASK_VERSION}`,
+          }),
+        }),
+      );
+      expect(mockConsoleWarn).not.toHaveBeenCalled();
     });
 
     it('should successfully get season state', async () => {
