@@ -754,6 +754,38 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('records one Chainlist open when the list is opened after returning', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('network-form-network-name'));
+    fireEvent.click(
+      (await screen.findByText('Gnosis')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+    fireEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
+    fireEvent.click(screen.getByText(messages.addRpcUrl.message));
+    fireEvent.click(
+      await screen.findByTestId('networks-page-form-back-button'),
+    );
+
+    mockTrackEvent.mockClear();
+    fireEvent.click(screen.getByTestId('network-form-network-name'));
+
+    expect(
+      mockTrackEvent.mock.calls.filter(
+        ([event]) => event?.name === 'Chainlist Add Clicked',
+      ),
+    ).toHaveLength(1);
+  });
+
   it('keeps Chainlist details when leaving and returning from add block explorer', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,

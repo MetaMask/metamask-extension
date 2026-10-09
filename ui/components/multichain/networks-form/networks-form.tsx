@@ -216,6 +216,9 @@ export const NetworksForm = ({
     if (isChainlistOpen) {
       return;
     }
+    // Mark this open before the list state updates, so the effect below does
+    // not record the same ChainlistAddClicked again.
+    didTrackChainlistOpen.current = true;
     trackChainlistOpened();
     setIsChainlistOpen(true);
   };
@@ -231,7 +234,8 @@ export const NetworksForm = ({
     }
     didTrackChainlistOpen.current = true;
     trackChainlistOpened();
-    // The open event is recorded once for the initial list.
+    // Records the list that is already open on arrival. A later manual open is
+    // recorded in openChainlist.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChainlistOpen]);
 
