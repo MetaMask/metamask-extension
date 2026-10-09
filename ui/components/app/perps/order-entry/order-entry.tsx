@@ -16,6 +16,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
@@ -310,12 +311,11 @@ export const OrderEntry = ({
       (existingSignedSize * signedSizeForSubmitRoute < 0 &&
         Math.abs(signedSizeForSubmitRoute) > Math.abs(existingSignedSize)));
   const tpslFeeNotionalUsd = submitsTpslSeparately
-    ? Math.abs(existingSignedSize + orderSignedSize) *
-      Math.max(
-        Number.parseFloat(formState.takeProfitPrice.replaceAll(',', '')) || 0,
-        Number.parseFloat(formState.stopLossPrice.replaceAll(',', '')) || 0,
-      )
-    : Number.parseFloat(formState.amount.replaceAll(',', '')) || 0;
+    ? getPerpsNotionalUsd({
+        size: existingSignedSize + orderSignedSize,
+        price: [formState.takeProfitPrice, formState.stopLossPrice],
+      })
+    : getPerpsNotionalUsd({ usdAmount: formState.amount });
 
   return (
     <Box

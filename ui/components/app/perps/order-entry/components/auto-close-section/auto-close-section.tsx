@@ -27,6 +27,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../../../hooks/perps/perps-fee-utils';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
@@ -340,11 +341,10 @@ export const AutoCloseSection = ({
     orderType: 'market',
     amount: String(
       feeNotionalUsd ??
-        Math.abs(estimatedSize ?? 0) *
-          Math.max(
-            Number.parseFloat(takeProfitPrice.replaceAll(',', '')) || 0,
-            Number.parseFloat(stopLossPrice.replaceAll(',', '')) || 0,
-          ),
+        getPerpsNotionalUsd({
+          size: estimatedSize ?? 0,
+          price: [takeProfitPrice, stopLossPrice],
+        }),
     ),
   });
 

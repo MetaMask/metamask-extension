@@ -34,10 +34,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from '../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips';
+import { ORIGINAL_METAMASK_FEE_BIPS } from '../../../../hooks/perps/usePerpsOrderFees';
 import {
-  BASIS_POINTS_DIVISOR,
-  ORIGINAL_METAMASK_FEE_BIPS,
-} from '../../../../hooks/perps/usePerpsOrderFees';
+  applyPerpsFallbackDiscount,
+  getPerpsNotionalUsd,
+} from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
 
 export type CloseAllPositionsModalProps = {
@@ -87,7 +88,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   const symbolNotionalPairs = useMemo(() => {
     const map = new Map<string, number>();
     for (const pos of positions) {
-      const notional = Math.abs(Number.parseFloat(pos.positionValue) || 0);
+      const notional = getPerpsNotionalUsd({ usdAmount: pos.positionValue });
       map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
@@ -199,13 +200,11 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   }, [isOpen, symbolNotionalKey]);
 
   const estimatedFees = useMemo(() => {
-    const discountFactor =
-      metamaskFeeDiscountBips !== undefined && metamaskFeeDiscountBips > 0
-        ? 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR
-        : 1;
     // Controller rates are resolved; discount only local fallback estimates.
     return (
-      rawProtocolFees + rawMetamaskFees + fallbackMetamaskFees * discountFactor
+      rawProtocolFees +
+      rawMetamaskFees +
+      applyPerpsFallbackDiscount(fallbackMetamaskFees, metamaskFeeDiscountBips)
     );
   }, [
     rawProtocolFees,

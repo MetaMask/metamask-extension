@@ -110,6 +110,7 @@ import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
 import { usePerpsAbandonOrderTracking } from '../../hooks/perps/usePerpsAbandonOrderTracking';
 import { usePerpsMarketInfo } from '../../hooks/perps/usePerpsMarketInfo';
 import { usePerpsOrderFees } from '../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../hooks/perps/perps-fee-utils';
 import {
   getTradeableBalance,
   getTradeableBalanceRaw,
@@ -1075,14 +1076,17 @@ const PerpsOrderEntryPage = () => {
   } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
     orderType,
-    amount:
-      orderMode === 'close' && position
-        ? String(
-            Math.abs(Number.parseFloat(position.size.replaceAll(',', ''))) *
-              currentPrice *
-              ((orderFormState?.closePercent ?? 100) / 100),
-          )
-        : (orderFormState?.amount.replaceAll(',', '') ?? '0'),
+    amount: String(
+      getPerpsNotionalUsd(
+        orderMode === 'close' && position
+          ? {
+              size: position.size,
+              price: currentPrice,
+              closePercent: orderFormState?.closePercent,
+            }
+          : { usdAmount: orderFormState?.amount ?? '0' },
+      ),
+    ),
   });
 
   const originalEstimatedFees = useMemo(() => {

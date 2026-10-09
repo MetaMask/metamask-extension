@@ -64,6 +64,7 @@ import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
@@ -475,7 +476,7 @@ export const ClosePositionModal = ({
       : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * effectivePrice,
+    () => getPerpsNotionalUsd({ size: closeSize, price: effectivePrice }),
     [closeSize, effectivePrice],
   );
 

@@ -45,6 +45,7 @@ import {
 } from '../../../../hooks/perps';
 import { usePerpsAttribution } from '../../../../hooks/perps/usePerpsAttribution';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
@@ -264,11 +265,10 @@ export const UpdateTPSLModalContent = ({
     symbol: position.symbol,
     orderType: 'market',
     amount: String(
-      Math.abs(signedSize) *
-        Math.max(
-          Number.parseFloat(editingTpPrice.replaceAll(',', '')) || 0,
-          Number.parseFloat(editingSlPrice.replaceAll(',', '')) || 0,
-        ),
+      getPerpsNotionalUsd({
+        size: signedSize,
+        price: [editingTpPrice, editingSlPrice],
+      }),
     ),
   });
 

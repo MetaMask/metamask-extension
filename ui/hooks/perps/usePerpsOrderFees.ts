@@ -7,9 +7,10 @@ import type {
 import { PERPS_FALLBACK_FEE_RATES } from '../../../shared/constants/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
-
-/** Basis-point denominator: 10000 bips = 100%. */
-export const BASIS_POINTS_DIVISOR = 10000;
+import {
+  applyPerpsFallbackDiscount,
+  BASIS_POINTS_DIVISOR,
+} from './perps-fee-utils';
 
 type UsePerpsOrderFeesOptions = {
   /** Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA') */
@@ -195,12 +196,17 @@ export function usePerpsOrderFees({
     ) {
       return feeResult;
     }
-    const factor = 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR;
-    const discountedMetamaskFeeRate = feeResult.metamaskFeeRate * factor;
+    const discountedMetamaskFeeRate = applyPerpsFallbackDiscount(
+      feeResult.metamaskFeeRate,
+      metamaskFeeDiscountBips,
+    );
     const discountedMetamaskFeeAmount =
       feeResult.metamaskFeeAmount === undefined
         ? undefined
-        : feeResult.metamaskFeeAmount * factor;
+        : applyPerpsFallbackDiscount(
+            feeResult.metamaskFeeAmount,
+            metamaskFeeDiscountBips,
+          );
     const discountedFeeRate =
       feeResult.protocolFeeRate === undefined
         ? discountedMetamaskFeeRate

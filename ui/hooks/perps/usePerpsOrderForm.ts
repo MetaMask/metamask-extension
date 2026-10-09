@@ -25,6 +25,7 @@ import type {
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { usePerpsLiquidationPrice } from './usePerpsLiquidationPrice';
 import { usePerpsOrderFees } from './usePerpsOrderFees';
+import { getPerpsNotionalUsd } from './perps-fee-utils';
 
 function calculateFallbackLiquidationPrice(
   entryPrice: number,
@@ -578,12 +579,15 @@ export function usePerpsOrderForm({
 
   const parsedAmount =
     Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
-  const feeNotional =
+  const feeNotional = getPerpsNotionalUsd(
     mode === 'close' && existingPosition
-      ? Math.abs(Number.parseFloat(existingPosition.size.replaceAll(',', ''))) *
-        currentPrice *
-        (formState.closePercent / 100)
-      : parsedAmount;
+      ? {
+          size: existingPosition.size,
+          price: currentPrice,
+          closePercent: formState.closePercent,
+        }
+      : { usdAmount: formState.amount },
+  );
   const orderFees = usePerpsOrderFees({
     symbol: asset,
     orderType: formState.type,

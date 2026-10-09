@@ -44,6 +44,7 @@ import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
 import { useSelectedAccountComplianceGate } from '../../compliance';
@@ -111,8 +112,10 @@ export const ReversePositionModal = ({
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
   // flipPosition resolves its fee against twice the controller position value.
-  const flipNotionalUsd =
-    2 * Math.abs(Number.parseFloat(position.positionValue));
+  const flipNotionalUsd = getPerpsNotionalUsd({
+    usdAmount: position.positionValue,
+    multiplier: 2,
+  });
   const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${getDisplaySymbol(position.symbol)}`;
 
   const {
