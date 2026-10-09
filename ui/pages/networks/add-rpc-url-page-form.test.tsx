@@ -165,7 +165,7 @@ describe('AddRpcUrlPageForm', () => {
     const onAdded = jest.fn();
     render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
 
-    expect(screen.getByTestId('rpc-url-input-test')).not.toHaveFocus();
+    expect(screen.getByTestId('rpc-url-input-test')).toHaveFocus();
 
     fireEvent.blur(screen.getByTestId('rpc-url-input-test'));
 
@@ -297,7 +297,7 @@ describe('AddRpcUrlPageForm', () => {
     expect(
       screen.getByTestId('add-rpc-chainlist-suggestions'),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('rpc-url-input-test')).not.toHaveFocus();
+    expect(screen.getByTestId('rpc-url-input-test')).toHaveFocus();
 
     fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
 

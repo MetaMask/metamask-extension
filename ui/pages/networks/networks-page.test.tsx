@@ -393,6 +393,11 @@ describe('NetworksPage', () => {
       screen.getByTestId('networks-page-chainlist-source-banner'),
     ).toBeInTheDocument();
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
+    const nameDropdown = screen.getByTestId('networks-page-chainlist-dropdown');
+    expect(nameDropdown).toHaveAttribute('data-anchor', 'name');
+    expect(nameDropdown.firstElementChild).toHaveStyle({
+      maxHeight: `${window.innerHeight - 16}px`,
+    });
   });
 
   it('fills the add network form when a Chainlist network is chosen', async () => {
@@ -628,6 +633,16 @@ describe('NetworksPage', () => {
     expect(
       await screen.findByTestId('networks-page-chainlist-source-banner'),
     ).toBeInTheDocument();
+    const chainIdDropdown = screen.getByTestId(
+      'networks-page-chainlist-dropdown',
+    );
+    expect(chainIdDropdown).toHaveAttribute('data-anchor', 'chainId');
+    expect(
+      screen.getByTestId('network-form-chain-id-input').parentElement,
+    ).toContainElement(chainIdDropdown);
+    expect(chainIdDropdown.firstElementChild).toHaveStyle({
+      maxHeight: `${window.innerHeight - 16}px`,
+    });
   });
 
   it('keeps Chainlist details when leaving and returning from add RPC', async () => {

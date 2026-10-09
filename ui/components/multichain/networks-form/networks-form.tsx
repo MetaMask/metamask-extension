@@ -1,5 +1,11 @@
 import log from 'loglevel';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -145,6 +151,39 @@ export const NetworksForm = ({
     'name',
   );
   const chainlistFillsForm = isChainlistOpen && chainlistAnchor === 'name';
+  const [chainlistMaxHeight, setChainlistMaxHeight] = useState<number>();
+
+  useLayoutEffect(() => {
+    if (!isChainlistOpen) {
+      return undefined;
+    }
+    const panel = chainlistPanelRef.current;
+    if (!panel) {
+      return undefined;
+    }
+
+    const updateMaxHeight = () => {
+      const { top } = panel.getBoundingClientRect();
+      const nextHeight = Math.max(
+        160,
+        Math.floor(window.innerHeight - top - 16),
+      );
+      setChainlistMaxHeight((currentHeight) =>
+        currentHeight === nextHeight ? currentHeight : nextHeight,
+      );
+    };
+
+    updateMaxHeight();
+    // The page enter animation scales the form. Measure again when it finishes
+    // so the cap matches the settled layout.
+    const handleTransitionEnd = () => updateMaxHeight();
+    window.addEventListener('resize', updateMaxHeight);
+    document.addEventListener('transitionend', handleTransitionEnd);
+    return () => {
+      window.removeEventListener('resize', updateMaxHeight);
+      document.removeEventListener('transitionend', handleTransitionEnd);
+    };
+  }, [chainlistAnchor, isChainlistOpen]);
 
   // Open on the first render that has Chainlist, including when the flag
   // arrives after mount. Later closes stay closed.
@@ -666,16 +705,7 @@ export const NetworksForm = ({
       ref={scrollableRef}
       className="networks-form__scrollable h-full min-h-0"
     >
-      <Box
-        paddingHorizontal={4}
-        paddingBottom={2}
-        flexDirection={chainlistFillsForm ? BoxFlexDirection.Column : undefined}
-        className={
-          chainlistFillsForm
-            ? 'min-h-0 w-full flex-1 overflow-hidden'
-            : 'w-full'
-        }
-      >
+      <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
         {onAddFromChainlist && !existingNetwork && !showChainlist ? (
           <Button
             variant={ButtonVariant.Secondary}
@@ -692,65 +722,68 @@ export const NetworksForm = ({
         <Label htmlFor="networkName" className="mb-1 shrink-0">
           {t('networkName')}
         </Label>
-        <TextField
-          ref={nameFieldRef}
-          id="networkName"
-          size={TextFieldSize.Lg}
-          placeholder={t('enterNetworkName')}
-          data-testid="network-form-name-input"
-          autoFocus
-          className="w-full shrink-0"
-          onClick={() => openChainlist('name')}
-          onFocus={(event) => {
-            // Mount auto-focus has no relatedTarget. Skip it once the form
-            // already has a network so returning from RPC or block explorer
-            // does not cover those fields.
-            if (formAlreadyStarted && !event.relatedTarget) {
-              return;
-            }
-            openChainlist('name');
-          }}
-          onChange={(event) => {
-            setName(event.target.value);
-            openChainlist('name');
-          }}
-          inputProps={
-            {
-              'data-testid': 'network-form-network-name',
-            } as React.ComponentPropsWithoutRef<'input'>
-          }
-          value={name}
-        />
-        {showChainlist && chainlist && chainlistFillsForm ? (
-          <Box
-            ref={chainlistPanelRef}
-            flexDirection={BoxFlexDirection.Column}
-            className="mt-1 min-h-0 flex-1 overflow-hidden rounded-xl border border-border-muted"
-            data-testid="networks-page-chainlist-dropdown"
-            data-anchor="name"
-          >
-            <ChainlistNetworkPicker
-              existingNetworkChainIds={chainlist.existingNetworkChainIds}
-              existingNetworkNamesByChainId={
-                chainlist.existingNetworkNamesByChainId
+        <div className="relative">
+          <TextField
+            ref={nameFieldRef}
+            id="networkName"
+            size={TextFieldSize.Lg}
+            placeholder={t('enterNetworkName')}
+            data-testid="network-form-name-input"
+            autoFocus
+            className="w-full shrink-0"
+            onClick={() => openChainlist('name')}
+            onFocus={(event) => {
+              // Mount auto-focus has no relatedTarget. Skip it once the form
+              // already has a network so returning from RPC or block explorer
+              // does not cover those fields.
+              if (formAlreadyStarted && !event.relatedTarget) {
+                return;
               }
-              layout="dropdown"
-              searchValue={name}
-              showSearchField={false}
-              onSelect={(network, searchQuery) => {
-                setSource('chainlist');
-                closeChainlist();
-                chainlist.onSelect(network, searchQuery);
-              }}
-              onUseTypedName={(typedName) => {
-                setSource('manual');
-                setName(typedName);
-                closeChainlist();
-              }}
-            />
-          </Box>
-        ) : null}
-        <Box className={chainlistFillsForm ? 'hidden' : undefined}>
+              openChainlist('name');
+            }}
+            onChange={(event) => {
+              setName(event.target.value);
+              openChainlist('name');
+            }}
+            inputProps={
+              {
+                'data-testid': 'network-form-network-name',
+              } as React.ComponentPropsWithoutRef<'input'>
+            }
+            value={name}
+          />
+          {showChainlist && chainlist && chainlistFillsForm ? (
+            <Box
+              ref={chainlistPanelRef}
+              flexDirection={BoxFlexDirection.Column}
+              className="absolute inset-x-0 top-full z-10 mt-1 flex min-h-0 flex-col overflow-hidden rounded-xl border border-border-muted bg-background-default"
+              data-testid="networks-page-chainlist-dropdown"
+              data-anchor="name"
+            >
+              <ChainlistNetworkPicker
+                existingNetworkChainIds={chainlist.existingNetworkChainIds}
+                existingNetworkNamesByChainId={
+                  chainlist.existingNetworkNamesByChainId
+                }
+                layout="dropdown"
+                maxHeight={chainlistMaxHeight}
+                searchValue={name}
+                showSearchField={false}
+                onSelect={(network, searchQuery) => {
+                  setSource('chainlist');
+                  closeChainlist();
+                  chainlist.onSelect(network, searchQuery);
+                }}
+                onUseTypedName={(typedName) => {
+                  setSource('manual');
+                  setName(typedName);
+                  closeChainlist();
+                }}
+              />
+            </Box>
+          ) : null}
+        </div>
+        <Box>
           {name && warnings?.name?.msg ? (
             <HelpText severity={HelpTextSeverity.Warning}>
               {warnings.name.msg}
@@ -893,7 +926,7 @@ export const NetworksForm = ({
               <Box
                 ref={chainlistPanelRef}
                 flexDirection={BoxFlexDirection.Column}
-                className="absolute inset-x-0 top-full z-10 mt-1 h-80 overflow-hidden rounded-xl border border-border-muted bg-background-default"
+                className="absolute inset-x-0 top-full z-10 mt-1 flex min-h-0 flex-col overflow-hidden rounded-xl border border-border-muted bg-background-default"
                 data-testid="networks-page-chainlist-dropdown"
                 data-anchor="chainId"
               >
@@ -903,6 +936,7 @@ export const NetworksForm = ({
                     chainlist.existingNetworkNamesByChainId
                   }
                   layout="dropdown"
+                  maxHeight={chainlistMaxHeight}
                   searchValue={chainId}
                   showSearchField={false}
                   onSelect={(network, searchQuery) => {

@@ -49,25 +49,25 @@ export const ChainlistSourceBanner = ({
 
   return (
     <BannerBase
-      backgroundColor={BoxBackgroundColor.PrimaryMuted}
-      className="!px-3 !py-2"
+      backgroundColor={BoxBackgroundColor.BackgroundSection}
       data-testid={testId}
-    >
-      <Text variant={TextVariant.BodySm}>
-        {description(
-          <TextButton
-            key="chainlist-learn-how-to-stay-safe"
-            onClick={() => {
-              global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
-            }}
-            onMouseDown={onLearnMoreMouseDown}
-            size={TextButtonSize.BodySm}
-          >
-            {t('chainlistLearnHowToStaySafe')}
-          </TextButton>,
-        )}
-      </Text>
-    </BannerBase>
+      description={
+        <Text variant={TextVariant.BodySm}>
+          {description(
+            <TextButton
+              key="chainlist-learn-how-to-stay-safe"
+              onClick={() => {
+                global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
+              }}
+              onMouseDown={onLearnMoreMouseDown}
+              size={TextButtonSize.BodySm}
+            >
+              {t('chainlistLearnHowToStaySafe')}
+            </TextButton>,
+          )}
+        </Text>
+      }
+    />
   );
 };
 
@@ -195,9 +195,10 @@ export const ChainlistNetworkPicker = ({
     <Box
       className={
         isDropdown
-          ? 'flex h-full min-h-0 flex-col overflow-hidden bg-background-default'
+          ? 'flex w-full flex-col overflow-y-auto bg-background-default'
           : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
       }
+      onScroll={isDropdown ? handleChainlistScroll : undefined}
       style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
     >
       {showSearchField ? (
@@ -213,9 +214,9 @@ export const ChainlistNetworkPicker = ({
         </Box>
       ) : null}
       <Box
-        className="min-h-0 flex-1 overflow-y-auto"
+        className={isDropdown ? undefined : 'min-h-0 flex-1 overflow-y-auto'}
         data-testid="networks-page-chainlist-network-list"
-        onScroll={handleChainlistScroll}
+        onScroll={isDropdown ? undefined : handleChainlistScroll}
       >
         {isDropdown && showNoSearchResults ? (
           <Box data-testid="networks-page-chainlist-no-matches">

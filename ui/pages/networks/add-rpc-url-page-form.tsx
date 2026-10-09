@@ -298,6 +298,7 @@ export const AddRpcUrlPageForm = ({
             </Label>
             <TextField
               id="rpcUrl"
+              autoFocus
               size={TextFieldSize.Lg}
               placeholder={t('enterRpcUrl')}
               value={url}
