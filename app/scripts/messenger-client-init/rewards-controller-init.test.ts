@@ -139,6 +139,40 @@ describe('RewardsControllerInit', () => {
       expect(constructorArgs.isDisabled()).toBe(true);
     });
 
+    it('starts silent auth once onboarding completes', () => {
+      const requestMock = buildInitRequestMock();
+      const listeners: ((state: { completedOnboarding: boolean }) => void)[] =
+        [];
+      jest
+        .spyOn(requestMock.initMessenger, 'subscribe')
+        .mockImplementation(((
+          event: string,
+          listener: (state: { completedOnboarding: boolean }) => void,
+        ) => {
+          if (event === 'OnboardingController:stateChange') {
+            listeners.push(listener);
+          }
+          return undefined;
+        }) as never);
+
+      const result = RewardsControllerInit(requestMock);
+      const handleAuthenticationTrigger = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      result.messengerClient.handleAuthenticationTrigger =
+        handleAuthenticationTrigger;
+
+      listeners[0]?.({ completedOnboarding: false });
+      expect(handleAuthenticationTrigger).not.toHaveBeenCalled();
+
+      listeners[0]?.({ completedOnboarding: true });
+      listeners[0]?.({ completedOnboarding: true });
+      expect(handleAuthenticationTrigger).toHaveBeenCalledTimes(1);
+      expect(handleAuthenticationTrigger).toHaveBeenCalledWith(
+        'Onboarding completed',
+      );
+    });
+
     it('returns true when basic functionality is disabled', () => {
       const requestMock = buildInitRequestMock({}, false);
 
