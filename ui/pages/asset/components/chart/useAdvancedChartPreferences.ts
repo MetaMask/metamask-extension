@@ -8,6 +8,9 @@ import {
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { CHART_TYPE_LINE } from './advanced-chart-interval-bar';
 
+/** Default time range for line chart mode (matches mobile). */
+const DEFAULT_LINE_TIME_RANGE = '1D';
+
 /**
  * React hook for managing Token Details Page Advanced Chart preferences.
  *
@@ -20,10 +23,12 @@ import { CHART_TYPE_LINE } from './advanced-chart-interval-bar';
  *
  * @returns Object containing chart preferences and setter functions:
  * - chartType: Current chart type (1 = Candle, 2 = Line)
- * - interval: Current interval ('15m', '1h', etc.)
+ * - interval: Current interval ('15m', '1h', etc.) for candle mode
+ * - lineTimeRange: Current time range ('1H', '1D', etc.) for line mode
  * - indicators: Set of active indicator names
  * - setChartType: Update chart type
- * - setInterval: Update interval
+ * - setInterval: Update interval (candle mode)
+ * - setLineTimeRange: Update time range (line mode)
  * - toggleIndicator: Toggle indicator on/off
  * - isLineChart: Convenience flag for line chart
  */
@@ -39,6 +44,10 @@ export function useAdvancedChartPreferences() {
   const [localInterval, setLocalInterval] = useState<string | null>(null);
   const [localIndicators, setLocalIndicators] = useState<Set<string> | null>(
     null,
+  );
+  // Line mode time range — local only, not persisted (matches mobile behavior).
+  const [lineTimeRange, setLineTimeRange] = useState<string>(
+    DEFAULT_LINE_TIME_RANGE,
   );
 
   // Resolved values: local override ?? persisted ?? default.
@@ -94,9 +103,11 @@ export function useAdvancedChartPreferences() {
   return {
     chartType,
     interval,
+    lineTimeRange,
     indicators,
     setChartType,
     setInterval: setChartInterval,
+    setLineTimeRange,
     toggleIndicator,
     /** Convenience: whether the current chart type is line (hides indicators). */
     isLineChart: chartType === CHART_TYPE_LINE,
