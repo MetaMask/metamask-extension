@@ -256,6 +256,56 @@ describe('Statistics Utils', () => {
       expect(stats.samples).toBeLessThan(durations.length);
       expect(stats.outliers).toBeGreaterThan(0);
     });
+
+    it('retains each duration against the iteration that produced it', () => {
+      const durations = [100, 110, 105];
+      const stats = calculateTimerStatistics('retained', durations, {
+        iterations: [0, 1, 2],
+      });
+
+      expect(stats.values).toStrictEqual([
+        { iteration: 0, value: 100 },
+        { iteration: 1, value: 110 },
+        { iteration: 2, value: 105 },
+      ]);
+    });
+
+    it('numbers by the supplied iteration, not by position', () => {
+      // Iterations 1 and 3 failed, so they contributed no duration. Numbering by
+      // position would report four consecutive iterations and hide the gap that
+      // a missingness model reads.
+      const stats = calculateTimerStatistics('sparse', [100, 105, 102], {
+        iterations: [0, 2, 4],
+      });
+
+      expect(stats.values?.map((sample) => sample.iteration)).toStrictEqual([
+        0, 2, 4,
+      ]);
+    });
+
+    it('retains the values a filter discarded', () => {
+      const durations = [100, 105, 102, 10000000];
+      const stats = calculateTimerStatistics('withOutlier', durations, {
+        iterations: [0, 1, 2, 3],
+      });
+
+      expect(stats.samples).toBeLessThan(durations.length);
+      expect(stats.values?.map((sample) => sample.value)).toStrictEqual(
+        durations,
+      );
+    });
+
+    it('omits values when no iteration numbering is supplied', () => {
+      const stats = calculateTimerStatistics('unnumbered', [100, 105]);
+      expect(stats.values).toBeUndefined();
+    });
+
+    it('omits values when the numbering does not cover every duration', () => {
+      const stats = calculateTimerStatistics('mismatched', [100, 105, 102], {
+        iterations: [0, 1],
+      });
+      expect(stats.values).toBeUndefined();
+    });
   });
 
   describe('checkExclusionRate', () => {
