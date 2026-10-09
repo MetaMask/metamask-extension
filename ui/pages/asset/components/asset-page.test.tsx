@@ -441,6 +441,7 @@ describe('AssetPage', () => {
     });
     mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
       display: undefined,
+      isLoading: false,
       onStartEarning: mockOnStartEarning,
       onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
     });
@@ -927,6 +928,33 @@ describe('AssetPage', () => {
       );
     });
 
+    it('renders placeholders while the APY loads', () => {
+      mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+        display: undefined,
+        isLoading: true,
+        onStartEarning: mockOnStartEarning,
+        onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+      });
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(
+        getByTestId('money-asset-overview-balance-cta-description-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        getByTestId('money-asset-overview-balance-cta-start-earning-skeleton'),
+      ).toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-start-earning'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-apy'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders the balance earn section when eligible', () => {
       mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
         display: {
@@ -934,6 +962,7 @@ describe('AssetPage', () => {
           apyPercentFormatted: '6.2%',
           projectedEarningsFormatted: '+$74.34',
         },
+        isLoading: false,
         onStartEarning: mockOnStartEarning,
         onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
       });

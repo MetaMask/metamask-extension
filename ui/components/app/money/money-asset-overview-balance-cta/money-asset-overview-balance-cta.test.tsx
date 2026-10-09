@@ -7,7 +7,9 @@ import {
   MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID,
   MoneyAssetOverviewBalanceApy,
   MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceCtaSkeleton,
   MoneyAssetOverviewBalanceDescription,
+  MoneyAssetOverviewBalanceDescriptionSkeleton,
 } from './money-asset-overview-balance-cta';
 
 const render = (component: React.ReactElement) =>
@@ -91,5 +93,27 @@ describe('MoneyAssetOverviewBalanceCta', () => {
 
     expect(button).toHaveTextContent('Start earning');
     expect(onStartEarning).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('loading skeletons', () => {
+  it('renders the description and button placeholders', () => {
+    const { getByTestId } = render(
+      <>
+        <MoneyAssetOverviewBalanceDescriptionSkeleton />
+        <MoneyAssetOverviewBalanceCtaSkeleton />
+      </>,
+    );
+
+    expect(
+      getByTestId(
+        `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-description-skeleton`,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      getByTestId(
+        `${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning-skeleton`,
+      ),
+    ).toBeInTheDocument();
   });
 });

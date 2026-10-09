@@ -149,11 +149,13 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
 
 /**
  * The Money earn CTA in the token details "Your balance" section: projected
- * earnings, the APY on the balance row, and a "Start earning" button. Hidden
- * until an APY is available, as the copy cannot be shown without it.
+ * earnings, the APY on the balance row, and a "Start earning" button. Shown
+ * as loading until an APY is available, as the copy cannot be shown without
+ * it.
  *
  * @param token - The token whose details page is shown.
- * @returns The values to display, or `undefined` when hidden, and handlers.
+ * @returns The values to display (`undefined` when hidden or loading),
+ * whether the APY is loading, and handlers.
  */
 export function useMoneyAssetOverviewBalanceCta(
   token: MoneyAssetOverviewToken,
@@ -173,7 +175,8 @@ export function useMoneyAssetOverviewBalanceCta(
   );
   const { trackComponentViewed, trackTokenButtonClicked, trackTooltipClicked } =
     analytics;
-  const { apyDecimal, apyPercent, apyPercentFormatted } = vaultApy;
+  const { apyDecimal, apyPercent, apyPercentFormatted, vaultApyQuery } =
+    vaultApy;
 
   const projectedEarningsFormatted = useMemo(
     () =>
@@ -221,5 +224,8 @@ export function useMoneyAssetOverviewBalanceCta(
 
   useTrackOnce(display !== undefined, trackComponentViewed);
 
-  return { display, onStartEarning, onProjectionTooltipOpen };
+  const isLoading =
+    isEligible && display === undefined && vaultApyQuery.isLoading;
+
+  return { display, isLoading, onStartEarning, onProjectionTooltipOpen };
 }

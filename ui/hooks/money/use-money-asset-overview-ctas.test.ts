@@ -92,8 +92,13 @@ const renderBalanceCta = (
     buildState(remoteFeatureFlags),
   ).result.current;
 
-const mockApy = (apyDecimal?: number, apyPercent?: number) =>
+const mockApy = (
+  apyDecimal?: number,
+  apyPercent?: number,
+  { isLoading = false } = {},
+) =>
   mockUseMoneyVaultApy.mockReturnValue({
+    vaultApyQuery: { isLoading },
     apyDecimal,
     apyPercent,
     apyPercentFormatted:
@@ -304,10 +309,47 @@ describe('use-money-asset-overview-ctas', () => {
       });
     });
 
-    it('hides while the APY is unavailable', () => {
+    it('hides without loading once the APY request has settled empty', () => {
       mockApy(undefined);
 
-      expect(renderBalanceCta().display).toBeUndefined();
+      const balanceCta = renderBalanceCta();
+
+      expect(balanceCta.display).toBeUndefined();
+      expect(balanceCta.isLoading).toBe(false);
+    });
+
+    it('is loading while the APY request is in flight', () => {
+      mockApy(undefined, undefined, { isLoading: true });
+
+      const balanceCta = renderBalanceCta();
+
+      expect(balanceCta.display).toBeUndefined();
+      expect(balanceCta.isLoading).toBe(true);
+    });
+
+    it('shows the fallback APY instead of loading while the request is in flight', () => {
+      mockApy(0.05, 5, { isLoading: true });
+
+      const balanceCta = renderBalanceCta();
+
+      expect(balanceCta.display).toBeDefined();
+      expect(balanceCta.isLoading).toBe(false);
+    });
+
+    it('is not loading for an ineligible token', () => {
+      mockApy(undefined, undefined, { isLoading: true });
+
+      expect(
+        renderBalanceCta(createToken({ tokenFiatAmount: 0 })).isLoading,
+      ).toBe(false);
+    });
+
+    it('does not track a view while loading', () => {
+      mockApy(undefined, undefined, { isLoading: true });
+
+      renderBalanceCta();
+
+      expect(moneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
     });
 
     it('tracks the component view when shown', () => {
