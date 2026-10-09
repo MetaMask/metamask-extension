@@ -64,7 +64,7 @@ export const Tabs = <TKey extends string = string>({
   activeTab,
   onTabClick,
   children,
-  subHeader = null,
+  tabListWrapperProps = {},
   tabListProps = {},
   tabContentProps = {},
   className = '',
@@ -301,18 +301,19 @@ export const Tabs = <TKey extends string = string>({
 
   return (
     <Box className={twMerge('tabs', 'transform-gpu', className)} {...props}>
-      <Box
-        ref={tabListRef}
-        role="tablist"
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Start}
-        gap={4}
-        {...tabListProps}
-        onKeyDown={handleTabListKeyDown}
-      >
-        {renderTabs()}
-      </Box>
-      {subHeader}
+      <div {...tabListWrapperProps}>
+        <Box
+          ref={tabListRef}
+          role="tablist"
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Start}
+          gap={4}
+          {...tabListProps}
+          onKeyDown={handleTabListKeyDown}
+        >
+          {renderTabs()}
+        </Box>
+      </div>
       <Box ref={tabContentRef} role="tabpanel" {...tabContentProps}>
         {renderActiveTabContent()}
       </Box>

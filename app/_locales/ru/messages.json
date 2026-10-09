@@ -484,23 +484,41 @@
   "activity_marketShort_success_title": {
     "message": "Короткая позиция закрыта — рынок"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Куда: Money Account"
+  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Ошибка депозита"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Куда: Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Внесение $1",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Куда: Money Account"
+  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Внесено $1",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Откуда: Money Account"
+  },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Ошибка получения"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Откуда: Money Account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Получение $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Откуда: Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Получено $1",
@@ -1929,33 +1947,36 @@
     "message": "Включить базовый функционал"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Ваши настройки изменились"
+    "message": "Мы обновили настройки"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "посте в блоге"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "Мы обновляем работу MetaMask для входа через социальные сети. Для обеспечения бесперебойной работы в MetaMask ваш идентификатор входа через социальные сети (адрес электронной почты или имя пользователя) теперь будет надежно привязан к вашему профилю пользователя и связанным адресам счетов. В рамках этого обновления базовый функционал и другие настройки по умолчанию всегда будут включены."
+    "message": "Поскольку вы входите через Google, Apple или Telegram, ваш адрес электронной почты (или имя пользователя в Telegram) теперь сохраняется в профиле MetaMask вместе с адресами вашего кошелька. Благодаря этому ваш счет стабильно работает во всех функциях MetaMask. Для счетов со входом через социальные сети настройка «Базовая функциональность» остается включенной. Ваши ключи по-прежнему принадлежат только вам."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Мы никогда не продаем ваши данные третьим сторонам. Узнайте больше о том, что мы собираем и почему, в нашем $1 и обновленном $2.",
+    "message": "Подробнее: $1 и $2.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Уведомлении о конфиденциальности"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Конфиденциальность и обновления продуктов"
+    "message": "Изменения для входа через социальные сети"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Сторонние API теперь являются частью базового функционала. В соответствии с вашими предыдущими предпочтениями эта настройка — $1. Изменить ее можно в любое время в разделе $2",
+    "message": "Ваши переключатели конфиденциальности теперь объединены в одну настройку — «Базовая функциональность». С учетом ваших прежних настроек для нее выбрано значение: $1. Изменить его можно в любое время в разделе $2. $3.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "отключена"
+    "message": "выкл."
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "включено"
+    "message": "вкл."
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Узнайте подробнее."
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Настройки > Конфиденциальность"
@@ -2218,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "Самая низкая стоимость"
-  },
-  "bridgeMalicious": {
-    "message": "Вредоносный"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Вредоносный токен"
@@ -2502,9 +2520,6 @@
     "message": "Сначала активируйте $1 в сети Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Подозрительный"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Подозрительный токен"
   },
@@ -2656,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
   },
+  "clearClipboard": {
+    "message": "Очистить буфер обмена"
+  },
   "clearFilters": {
     "message": "Очистить все фильтры"
   },
@@ -2665,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Нажмите здесь, чтобы подключить свой Ledger через WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Не удалось очистить буфер обмена. Повторите попытку."
+  },
+  "clipboardCleared": {
+    "message": "Буфер обмена очищен"
   },
   "close": {
     "message": "Закрыть"
@@ -3152,11 +3176,20 @@
     "message": "Если ничего из вышеперечисленного не помогло, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Восстановить счета"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Переустановите MetaMask"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "Сброс состояния MetaMask"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "При восстановлении счетов будут удалены ваши текущие настройки и предпочтения."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Сброс состояния MetaMask приведет к удалению ваших текущих счетов, настроек и предпочтений."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Проблема не устранена?"
@@ -4189,6 +4222,9 @@
   "from": {
     "message": "Из"
   },
+  "fullyDiluted": {
+    "message": "Полностью разводненная оценка"
+  },
   "function": {
     "message": "Функция: $1"
   },
@@ -4204,6 +4240,9 @@
   },
   "gasLimitBelowMinimum": {
     "message": "Лимит газа должен быть не менее 12 000"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "Изменение лимита газа недоступно, пока MetaMask не выполнит оценку."
   },
   "gasPrice": {
     "message": "Цена газа (Гвей)"
@@ -5568,13 +5607,16 @@
     "message": "$1 годовых"
   },
   "moneyBalanceInfoBody": {
-    "message": "Ваш обеспеченный долларом баланс в mUSD, который всегда доступен для траты, отправки или обмена в любое время. Мы не учитываем его в общем балансе вашего счета."
+    "message": "Ваш баланс mUSD, обеспеченный долларом США и постоянно приносящий доход. Он не учитывается в общем балансе вашего счета."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Вывод средств обрабатывается немедленно, в зависимости от стандартного времени подтверждения сети в соответствующем блокчейне. В случае нехватки ликвидности возможны временные задержки."
   },
   "moneyBalanceLastKnown": {
     "message": "Последний известный баланс"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "Повтор"
@@ -5651,10 +5693,10 @@
     "message": "Пополните свой счет Money Account и наблюдайте, как растет ваш баланс с доходностью до $1 годовых."
   },
   "moneyHomeApyTooltip": {
-    "message": "Указанная ставка — это ориентировочная годовая процентная доходность (APY), основанная на текущих рыночных условиях. APY является переменной и не гарантируется. Средства поступают в хранилище DeFi, управляемое Veda с контролем рисков от Steakhouse Financial, которое генерирует доходность на устоявшихся рынках кредитования."
+    "message": "Указанная ставка — это текущая годовая процентная доходность (APY). APY — переменная величина и не гарантируется."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Ваш Money Account автоматически зарабатывает до $1.",
+    "message": "Ваш Money Account автоматически приносит доход до $1 годовых.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5667,7 +5709,7 @@
     "message": "Внесите mUSD, и ваш баланс, обеспеченный долларами, будет готов к тратам, торговле или отправке в любое время."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Добавьте mUSD на свой счет Money Account и автоматически зарабатывайте до $1 годовых (переменная ставка). Средства поступают в DeFi-хранилище, управляемое Veda с мониторингом рисков от Steakhouse Financial. Ставка генерируется сторонними DeFi-платформами, которые размещают средства в блокчейн-протоколах. Никакого стейкинга, никаких требований к выводу, никаких блокировок.",
+    "message": "Конвертируйте любую криптовалюту на свой счет Money Account и автоматически получайте доход до $1 APY (ставка переменная). Средства поступают в DeFi-хранилище под управлением Veda, а мониторинг рисков осуществляет Steakhouse Financial. Доходность обеспечивают сторонние DeFi-платформы, размещающие средства в блокчейн-протоколах. Без стейкинга, ручного получения вознаграждений и блокировки средств.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
@@ -5685,29 +5727,48 @@
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "Меняется ли годовая процентная ставка?"
+    "message": "Сколько я могу заработать с MetaMask Money Account?"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Почти везде! В настоящее время мы недоступны в Великобритании и странах, находящихся в санкционном списке США."
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "В каких странах доступен MetaMask Money Account?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "За открытие Money Account и за внесение стейблкоинов комиссия не взимается. Комиссия будет взиматься при внесении токенов, не являющихся стейблкоинами. Также существуют комиссии, связанные с транзакциями по карте MetaMask Card, снятием наличных в банкоматах и расходами на вывод средств в местную валюту. "
+    "message": "Открытие счета Money Account и внесение стейблкоинов осуществляются без комиссии. При внесении токенов, не являющихся стейблкоинами, взимается комиссия."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Есть ли какие-либо комиссии?"
+    "message": "Какие комиссии по MetaMask Money Account?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Нет, открытие Money Account не требует верификации личности. Однако некоторые функции, включая карту (Card) и фиатные шлюзы (Ramps), требуют верификации. Проверки проводятся сторонними поставщиками, предоставляющими регулируемые услуги, а не MetaMask. При необходимости вы пройдете этот процесс внутри приложения во время регистрации."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Нужно ли мне проходить верификацию личности, чтобы использовать счет MetaMask Money Account?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Да. Вы можете торговать, отправлять, тратить или выводить весь свой баланс в любое время без периодов уведомления, штрафов и комиссий за вывод средств со стороны MetaMask. В случае нехватки ликвидности возможны временные задержки."
+    "message": "Да. Вы можете отправить или вывести весь баланс в любое время — без периода предварительного уведомления, без штрафов и без комиссии MetaMask за вывод. При нехватке ликвидности возможны временные задержки."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Заблокированы ли мои деньги? Могу ли я вывести их в любое время?"
+    "message": "Могу ли я вывести средства с MetaMask Money Account в любое время?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "Счет, который приносит до $1 по переменой годовой ставке. Вы вносите средства, которые хранятся на счете в виде mUSD, и зарабатываете до $1 годовых. mUSD — это обеспеченный долларами стейблкоин MetaMask. Вы можете использовать или вывести свои средства в любое время без штрафов. Вы можете тратить свои средства с помощью карты MetaMask Card в более чем 150 миллионах торговых точек Mastercard по всему миру.",
+    "message": "Счет с переменной доходностью до $1 APY. Вы вносите средства, которые хранятся на счете в виде mUSD, и получаете доход до $1 APY. mUSD — это стейблкоин MetaMask, обеспеченный долларом США. Вы можете использовать или вывести свои средства в любое время без штрафов.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Что такое Денежный счет?"
+    "message": "Что такое счет MetaMask Money Account?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Часто задаваемые вопросы"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "На счет Money Account можно без комиссии за конвертацию внести следующие стейблкоины и aTokens:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nВсе остальные EVM-токены также можно внести на счет Money Account, но в этом случае может взиматься стандартная комиссия. Пополнить Money Account можно также с помощью дебетовой или кредитной карты, банковского счета, PayPal, Apple Pay или Google Pay.\n\nПримечание: для обеспечения ликвидности на начальном этапе действует максимальный лимит депозита — $1 на каждый токен.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Какие токены я могу внести на Money Account?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "Когда вы вносите средства, они направляются в проверенные протоколы DeFi, такие как Aave и Morpho, где они приносят доход от реальной экономической деятельности. Этот доход затем предоставляется вам в виде годовой процентной ставки (APY).\n\nСторонний поставщик услуг Steakhouse Financial контролирует распределение средств в протоколах. Veda, сторонний поставщик инфраструктуры, развертывает и поддерживает смарт-контракты хранилища, в которых находятся ваши средства.\n\nДоход не является процентами, выплачиваемыми MetaMask или эмитентом mUSD. Это ончейн-доход, генерируемый позициями в сторонних протоколах DeFi."
@@ -5741,6 +5802,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Пополните ваш Money Account",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "Отправить"
@@ -6573,7 +6638,7 @@
     "message": "Агентский кошелек"
   },
   "notificationsSettingsBoxError": {
-    "message": "Возникла какая-то проблема. Повторите попытку позже."
+    "message": "Возникла проблема, повторите попытку позже."
   },
   "notificationsSettingsDeselectAll": {
     "message": "Отменить выбор всех"
@@ -6921,9 +6986,41 @@
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "Способ, которым был сохранен ваш ключ доступа, не обеспечивает полную защиту ключа кошелька. Замените его, чтобы продолжить пользоваться функцией «Биометрия».",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Когда браузер спросит, где его сохранить, выберите Менеджер паролей Google, а не это устройство. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Ваш текущий ключ доступа будет работать, пока вы его не замените.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Он был сохранен на этом устройстве, которое не может защитить ключ кошелька. Повторите попытку и, когда браузер спросит, где сохранить ключ, выберите Менеджер паролей Google. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Пока оставить текущий ключ доступа",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Этот ключ доступа не подойдет",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
   "passkeyMigrationReplacementTryAgain": {
     "message": "Повторить попытку",
     "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Список поддерживаемых поставщиков",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Ваш ключ доступа нужно обновить",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "Зарегистрировать $1",
@@ -7395,6 +7492,13 @@
   },
   "perpsAddFunds": {
     "message": "Внести средства"
+  },
+  "perpsAddFundsHint": {
+    "message": "Пополните счет для перпов как минимум на $1, чтобы разместить этот ордер.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Пополнить счет для торговли"
   },
   "perpsAddMargin": {
     "message": "Добавить маржу"
@@ -8858,7 +8962,7 @@
     "message": "Мгновенный"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Менее чем"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "мин."
@@ -8871,7 +8975,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "До $1",
+    "message": "Лимит: $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8917,7 +9021,7 @@
     "message": "Включает $1% комиссии MM."
   },
   "readdToken": {
-    "message": "Вы можете снова добавить этот токен в будущем, выбрав «Импорт токена» в меню параметров вашего счета."
+    "message": "Вы сможете снова добавить этот токен, перейдя в раздел «Управление токенами» в меню токенов"
   },
   "receive": {
     "message": "Получить"
@@ -9054,6 +9158,10 @@
   },
   "replace": {
     "message": "заменить"
+  },
+  "replacePasskey": {
+    "message": "Заменить ключ доступа",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Сообщить о проблеме"
@@ -9958,6 +10066,9 @@
   "sendingNativeAsset": {
     "message": "Идет отправка $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Эта конфиденциальная информация остается в буфере обмена."
   },
   "sent": {
     "message": "Отправлено"
@@ -11877,7 +11988,7 @@
     "message": "Всего получено"
   },
   "totalVolume": {
-    "message": "Общий объем"
+    "message": "Общий объем (24 часа)"
   },
   "transaction": {
     "message": "Транзакция"
@@ -12319,6 +12430,9 @@
   },
   "volume": {
     "message": "Объем"
+  },
+  "volumeToMarketCap": {
+    "message": "Объем/По рыночной капитализации"
   },
   "wallet": {
     "message": "Кошелек"
