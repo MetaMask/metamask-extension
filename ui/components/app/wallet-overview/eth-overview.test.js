@@ -158,26 +158,54 @@ describe('EthOverview', () => {
           },
         },
       },
-      tokenBalances: {
-        [CHAIN_IDS.MAINNET]: {},
-      },
       remoteFeatureFlags: {
         batchSell: { enabled: true },
         bridgeConfig: {
           support: true,
         },
       },
-      accountsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
-        },
-        [CHAIN_IDS.SEPOLIA]: {
-          '0x1': {
-            address: mockEvmAccount1.address,
-            balance: '0x24da51d247e8b8',
-          },
+      assetsBalance: {
+        [mockEvmAccount1.id]: {
+          'eip155:1/slip44:60': { amount: '0.0000000000000005' },
+          'eip155:11155111/slip44:60': { amount: '0.010373144116717752' },
         },
       },
+      assetsInfo: {
+        'eip155:1/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:5/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:11155111/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'ETH',
+        },
+        'eip155:43114/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'AVAX',
+        },
+        'eip155:137/slip44:60': {
+          type: 'native',
+          decimals: 18,
+          symbol: 'POL',
+        },
+      },
+      assetsPrice: {
+        'eip155:1/slip44:60': {
+          assetPriceType: 'fungible',
+          price: 2,
+          usdPrice: 2,
+          lastUpdated: 0,
+        },
+      },
+      selectedCurrency: 'usd',
       tokenList: [],
       cachedBalances: {
         '0x1': {
@@ -195,12 +223,6 @@ describe('EthOverview', () => {
       },
       useExternalServices: true,
       useCurrencyRateCheck: true,
-      currentCurrency: 'usd',
-      currencyRates: {
-        ETH: {
-          conversionRate: 2,
-        },
-      },
       accounts: {
         [mockEvmAccount1.address]: {
           address: mockEvmAccount1.address,
@@ -224,7 +246,6 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
-      balances: {},
       isEvmSelected: true,
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -297,9 +318,7 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          accountsByChainId: {},
-          tokenBalances: {},
-          balances: {},
+          assetsBalance: {},
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -327,7 +346,7 @@ describe('EthOverview', () => {
             ...mockStore.metamask.preferences,
             showNativeTokenAsMainBalance: false,
           },
-          currencyRates: {},
+          assetsPrice: {},
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -361,13 +380,11 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x1': { address: mockEvmAccount1.address, balance: '0x0' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0' },
             },
           },
-          tokenBalances: {},
-          balances: {},
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -397,9 +414,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          accountsByChainId: {
-            [CHAIN_IDS.MAINNET]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:1/slip44:60': { amount: '0.010373144116717752' },
             },
           },
         },
@@ -425,9 +442,17 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: '0xa86a' }),
-          accountsByChainId: {
-            [CHAIN_IDS.AVALANCHE]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:43114/slip44:60': { amount: '0.010373144116717752' },
+            },
+          },
+          assetsPrice: {
+            'eip155:43114/slip44:60': {
+              assetPriceType: 'fungible',
+              price: 2,
+              usdPrice: 2,
+              lastUpdated: 0,
             },
           },
         },
@@ -536,9 +561,9 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-          accountsByChainId: {
-            [CHAIN_IDS.GOERLI]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:5/slip44:60': { amount: '0.010373144116717752' },
             },
           },
         },
@@ -562,9 +587,17 @@ describe('EthOverview', () => {
         metamask: {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.POLYGON }),
-          accountsByChainId: {
-            [CHAIN_IDS.POLYGON]: {
-              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
+          assetsBalance: {
+            [mockEvmAccount1.id]: {
+              'eip155:137/slip44:60': { amount: '0.010373144116717752' },
+            },
+          },
+          assetsPrice: {
+            'eip155:137/slip44:60': {
+              assetPriceType: 'fungible',
+              price: 2,
+              usdPrice: 2,
+              lastUpdated: 0,
             },
           },
         },
