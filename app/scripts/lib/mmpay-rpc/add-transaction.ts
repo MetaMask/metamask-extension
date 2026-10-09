@@ -4,6 +4,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { Hex } from '@metamask/utils';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { isPayRpcTypeAllowed } from '../../../../shared/lib/transaction/pay-rpc';
+import { createFeaturedChainConfigurator } from '../money/money-chain-config';
 import { addDappTransaction } from '../transaction/util';
 import { mmPayRpcErrors } from './errors';
 import { watchMmPayRpcResult } from './result';
@@ -126,6 +127,8 @@ async function ensureNetwork(
   chainId: Hex,
 ): Promise<string> {
   try {
+    await createFeaturedChainConfigurator(messenger)(chainId);
+
     return messenger.call(
       'NetworkController:findNetworkClientIdByChainId',
       chainId,
