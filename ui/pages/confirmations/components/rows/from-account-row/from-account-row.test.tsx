@@ -32,6 +32,7 @@ jest.mock('../../account-select-modal', () => ({
     title,
     excludeHardwareAccounts,
     excludeQrAccounts,
+    restrictHardwareAccountsToSelected,
   }: {
     selectedAddress: string;
     onSelect: (address: string) => void;
@@ -39,6 +40,7 @@ jest.mock('../../account-select-modal', () => ({
     title?: string;
     excludeHardwareAccounts?: boolean;
     excludeQrAccounts?: boolean;
+    restrictHardwareAccountsToSelected?: boolean;
   }) => (
     <div data-testid="account-select-modal">
       <span data-testid="selected-address">{selectedAddress}</span>
@@ -47,6 +49,9 @@ jest.mock('../../account-select-modal', () => ({
         {String(excludeHardwareAccounts)}
       </span>
       <span data-testid="exclude-qr-accounts">{String(excludeQrAccounts)}</span>
+      <span data-testid="restrict-hardware-accounts-to-selected">
+        {String(restrictHardwareAccountsToSelected ?? false)}
+      </span>
       <button
         data-testid="select-other"
         onClick={() => onSelect('0x1234567890abcdef1234567890abcdef12345678')}
@@ -433,6 +438,9 @@ describe('FromAccountRow', () => {
     expect(screen.getByTestId('exclude-hardware-accounts')).toHaveTextContent(
       'false',
     );
+    expect(
+      screen.getByTestId('restrict-hardware-accounts-to-selected'),
+    ).toHaveTextContent('false');
   });
 
   it('renders nothing when there is no from address', () => {
