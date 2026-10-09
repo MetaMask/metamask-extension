@@ -1,8 +1,16 @@
 import { createSelector } from 'reselect';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import type { AuthenticationController } from '@metamask/profile-sync-controller';
 
+type KeyringMetadata = {
+  type: string;
+  metadata?: { id?: string };
+};
+
 type AppState = {
-  metamask: AuthenticationController.AuthenticationControllerState;
+  metamask: AuthenticationController.AuthenticationControllerState & {
+    keyrings?: KeyringMetadata[];
+  };
 };
 
 const getMetamask = (state: AppState) => state.metamask;
@@ -74,4 +82,35 @@ export const selectSessionData = createSelector([getMetamask], (metamask) =>
   metamask.srpSessionData
     ? Object.entries(metamask.srpSessionData)?.[0]?.[1]
     : undefined,
+);
+
+/**
+ * Canonical profile ID of the session belonging to the wallet's primary SRP.
+ *
+ * `srpSessionData` is persisted and keyed by keyring `metadata.id`. It is not
+ * pruned when a keyring goes away, so its first map entry can outlive the
+ * wallet it was created for. Keying by the first HD keyring — the same
+ * identity Mobile uses — avoids identifying a reset-away session.
+ *
+ * Returns `undefined` when the identity is not knowable yet: signed out, no
+ * session for the primary SRP, or the wallet is locked (keyrings emptied).
+ *
+ * @param state - The current state of the Redux store.
+ * @returns The canonical profile ID, or `undefined`.
+ */
+export const selectCanonicalProfileId = createSelector(
+  [getMetamask],
+  (metamask): string | undefined => {
+    const primaryHdKeyring = metamask.keyrings?.find(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    const primaryEntropySourceId = primaryHdKeyring?.metadata?.id;
+    if (!primaryEntropySourceId) {
+      return undefined;
+    }
+    return (
+      metamask.srpSessionData?.[primaryEntropySourceId]?.profile
+        ?.canonicalProfileId || undefined
+    );
+  },
 );
