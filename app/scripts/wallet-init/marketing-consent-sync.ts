@@ -48,9 +48,13 @@ type SyncEvents =
 
 type SyncMessenger = RootMessenger<SyncActions, SyncEvents>;
 
+type PendingConsentUpdate =
+  | { origin: 'user'; value: boolean }
+  // Seeds AUS from local state and is only valid for the profile that was read.
+  | { origin: 'seed'; value: boolean; profileId: string };
+
 type ConsentSyncSession = {
   lastSynced?: boolean;
-  pendingConsentUpdate?: { value: boolean };
   // AUS may have changed on another device since the last read.
   remoteStale?: boolean;
 };
@@ -85,12 +89,14 @@ function isConsentSyncReady(
  * @param expectedConsent - The consent value the caller asked to save.
  * @param expectedSession - The session captured when the caller started waiting.
  * @param session - The session that applies when the wait finishes.
+ * @param pendingConsentUpdate - The local change not yet written to AUS.
  * @param analyticsState - The local analytics state after the wait.
  */
 function assertMarketingConsentSynced(
   expectedConsent: boolean,
   expectedSession: ConsentSyncSession,
   session: ConsentSyncSession,
+  pendingConsentUpdate: PendingConsentUpdate | undefined,
   analyticsState: Pick<
     AnalyticsControllerState,
     'optedInToMarketing' | 'marketingConsentDecisionMade'
@@ -98,7 +104,7 @@ function assertMarketingConsentSynced(
 ): void {
   if (
     expectedSession !== session ||
-    session.pendingConsentUpdate !== undefined ||
+    pendingConsentUpdate !== undefined ||
     session.lastSynced !== expectedConsent ||
     analyticsState.marketingConsentDecisionMade !== true ||
     analyticsState.optedInToMarketing !== expectedConsent
@@ -160,6 +166,9 @@ export function setupMarketingConsentSync({
     'AuthenticationController:getState',
   );
   let keyringState = syncMessenger.call('KeyringController:getState');
+  // Outlives the signed-in session so a local change is never dropped, only
+  // written to whichever profile is signed in next.
+  let pendingConsentUpdate: PendingConsentUpdate | undefined;
   let session: ConsentSyncSession = {};
   let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
@@ -187,12 +196,16 @@ export function setupMarketingConsentSync({
     }
 
     // A local change during the read takes precedence over AUS.
-    if (currentSession.pendingConsentUpdate !== undefined) {
+    if (pendingConsentUpdate !== undefined) {
       return;
     }
 
     if (remote === null) {
-      currentSession.pendingConsentUpdate = { value: localValue };
+      pendingConsentUpdate = {
+        origin: 'seed',
+        value: localValue,
+        profileId: getCanonicalProfileId(authenticationState.srpSessionData),
+      };
       return;
     }
 
@@ -218,19 +231,16 @@ export function setupMarketingConsentSync({
     currentSession: typeof session,
   ): Promise<void> => {
     if (
-      currentSession.pendingConsentUpdate === undefined ||
+      pendingConsentUpdate === undefined ||
       currentSession !== session ||
       !isReady()
     ) {
       return;
     }
 
-    const { value } = currentSession.pendingConsentUpdate;
-    currentSession.pendingConsentUpdate = undefined;
-
-    if (value === currentSession.lastSynced) {
-      return flushPendingConsentUpdate(currentSession);
-    }
+    const update = pendingConsentUpdate;
+    const { value } = update;
+    pendingConsentUpdate = undefined;
 
     try {
       await syncMessenger.call(
@@ -239,9 +249,7 @@ export function setupMarketingConsentSync({
         'extension',
       );
     } catch (error) {
-      if (currentSession === session) {
-        currentSession.pendingConsentUpdate ??= { value };
-      }
+      pendingConsentUpdate ??= update;
       throw error;
     }
 
@@ -254,8 +262,21 @@ export function setupMarketingConsentSync({
 
   const run = async (currentSession: typeof session) => {
     if (
-      currentSession.lastSynced === undefined ||
-      currentSession.remoteStale === true
+      pendingConsentUpdate?.origin === 'seed' &&
+      pendingConsentUpdate.profileId !==
+        getCanonicalProfileId(authenticationState.srpSessionData)
+    ) {
+      pendingConsentUpdate = undefined;
+    }
+
+    if (pendingConsentUpdate !== undefined) {
+      currentSession.remoteStale = false;
+    }
+
+    if (
+      pendingConsentUpdate === undefined &&
+      (currentSession.lastSynced === undefined ||
+        currentSession.remoteStale === true)
     ) {
       currentSession.remoteStale = false;
       await reconcileWithAus(currentSession);
@@ -347,17 +368,24 @@ export function setupMarketingConsentSync({
         return;
       }
 
-      if (localConsentChanged) {
-        session.pendingConsentUpdate = {
-          value: state.optedInToMarketing === true,
-        };
-      }
+      pendingConsentUpdate = {
+        origin: 'user',
+        value: state.optedInToMarketing === true,
+      };
 
       startSync();
     },
   );
 
   startSync();
+
+  // A run for an older session hands off to a new run when it settles.
+  const settleSync = async (): Promise<void> => {
+    await sync();
+    if (inFlight) {
+      await settleSync();
+    }
+  };
 
   const waitForMarketingConsentSync = async (expectedConsent: boolean) => {
     // A skipped sync must not be reported as a successful save.
@@ -367,11 +395,12 @@ export function setupMarketingConsentSync({
       );
     }
     const currentSession = session;
-    await sync();
+    await settleSync();
     assertMarketingConsentSynced(
       expectedConsent,
       currentSession,
       session,
+      pendingConsentUpdate,
       analyticsState,
     );
   };

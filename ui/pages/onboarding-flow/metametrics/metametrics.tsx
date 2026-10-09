@@ -151,8 +151,19 @@ export default function OnboardingMetametrics() {
     }
 
     let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-    submitRequestToBackground<string>('getGeolocation')
+    const withTimeout = Promise.race([
+      submitRequestToBackground<string>('getGeolocation'),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error('Geolocation timed out')),
+          5000,
+        );
+      }),
+    ]);
+
+    withTimeout
       .then((location) => {
         if (!cancelled) {
           setIsUsByGeolocation(isUnitedStates(location));
@@ -162,6 +173,9 @@ export default function OnboardingMetametrics() {
         // Leave marketing unchecked when the lookup fails.
       })
       .finally(() => {
+        if (timeoutId !== undefined) {
+          clearTimeout(timeoutId);
+        }
         if (!cancelled) {
           setGeolocationSettled(true);
         }
@@ -169,6 +183,9 @@ export default function OnboardingMetametrics() {
 
     return () => {
       cancelled = true;
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [hasStoredMarketingPreference]);
 

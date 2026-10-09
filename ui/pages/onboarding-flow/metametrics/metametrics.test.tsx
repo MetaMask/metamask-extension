@@ -108,6 +108,8 @@ describe('Onboarding Metametrics Component', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   it('renders match snapshot', async () => {
@@ -575,6 +577,28 @@ describe('Onboarding Metametrics Component', () => {
 
       expect(getByTestId('metametrics-i-agree')).toBeEnabled();
       expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+    });
+
+    it('enables Continue and leaves marketing unchecked when geolocation never settles (5 s timeout)', async () => {
+      jest.useFakeTimers();
+      try {
+        const { getAllByRole, getByTestId } = renderWithProvider(
+          <OnboardingMetametrics />,
+          store,
+        );
+
+        expect(getByTestId('metametrics-i-agree')).toBeDisabled();
+        expect(getAllByRole('checkbox')[1]).toBeDisabled();
+
+        await act(async () => {
+          jest.advanceTimersByTime(5000);
+        });
+
+        expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+        expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+      } finally {
+        jest.useRealTimers();
+      }
     });
 
     it('dispatches setDataCollectionForMarketing with true on continue for a US region', async () => {
