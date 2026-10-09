@@ -91,6 +91,22 @@ describe('submitRequestToBackground', () => {
     );
   });
 
+  it('allows actions whose arguments are all optional to be called with those arguments', async () => {
+    const messengerCallMock = jest.fn().mockResolvedValue({});
+    // @ts-expect-error Partial mock.
+    await setBackgroundConnection({ messengerCall: messengerCallMock });
+
+    await submitRequestToBackground(
+      'SubscriptionService:getSubscriptionsEligibilities',
+      [{ balanceCategory: '0-99' }],
+    );
+
+    expect(messengerCallMock).toHaveBeenCalledWith(
+      'SubscriptionService:getSubscriptionsEligibilities',
+      [{ balanceCategory: '0-99' }],
+    );
+  });
+
   it('passes traceContext to messengerCall when routing requests through it', async () => {
     const serializedTraceContext = {
       // This is what this property is called.

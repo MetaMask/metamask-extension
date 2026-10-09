@@ -40,8 +40,11 @@ export function submitRequestToBackground<
   ActionType extends UIMessengerActions['type'],
 >(
   action: ActionType,
+  // The entire list of arguments to `submitRequestToBackground` is optional if
+  // all arguments to the action are optional (but those arguments may still be
+  // supplied).
   ...args: [] extends ExtractActionParameters<UIMessengerActions, ActionType>
-    ? []
+    ? [args?: ExtractActionParameters<UIMessengerActions, ActionType>]
     : [args: ExtractActionParameters<UIMessengerActions, ActionType>]
 ): ExtractActionResponse<UIMessengerActions, ActionType>;
 
