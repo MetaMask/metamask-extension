@@ -44,6 +44,12 @@ import { ReferralActivatedModal } from './ReferralActivatedModal';
 
 const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
 
+const referralCodeInputProps = {
+  className: 'px-4 font-medium',
+  autoCapitalize: 'characters',
+  'data-testid': 'money-referral-code-input',
+};
+
 /**
  * Keeps letters and digits, uppercases them, and caps the length at 24.
  *
@@ -248,11 +254,7 @@ const AcceptInviteSheetContent = ({
                 onChange={(event) => {
                   setCode(normalizeMoneyReferralCode(event.target.value));
                 }}
-                inputProps={{
-                  className: 'px-4 font-medium',
-                  'data-testid': 'money-referral-code-input',
-                  autoCapitalize: 'characters',
-                }}
+                inputProps={referralCodeInputProps}
               />
               {fieldError ? (
                 <HelpText severity={HelpTextSeverity.Danger}>

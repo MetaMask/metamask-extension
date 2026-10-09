@@ -150,12 +150,12 @@ export function ReferralActivatedModal({
               {copy?.inviteAcceptedEyebrow ?? ''}
             </Text>
             <Text
-              id={titleId}
+              asChild
               variant={TextVariant.HeadingLg}
               textAlign={TextAlign.Center}
               className="mt-3"
             >
-              {copy?.inviteAcceptedTitle ?? ''}
+              <h2 id={titleId}>{copy?.inviteAcceptedTitle ?? ''}</h2>
             </Text>
             <Text
               variant={TextVariant.BodyMd}

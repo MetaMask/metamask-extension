@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { serializeError } from '@metamask/rpc-errors';
 import {
   MOCK_ANY_NAMESPACE,
@@ -347,8 +348,13 @@ describe('RewardsMoneyDataService', () => {
           data: { failure: 'FAILED' },
         },
       });
-      expect(generic.data?.cause).not.toHaveProperty('retryAfterSeconds');
-      expect(generic.data?.cause?.data).not.toHaveProperty('retryAfterSeconds');
+      const genericCause = (
+        generic.data as unknown as {
+          cause?: { data?: { retryAfterSeconds?: number } };
+        }
+      )?.cause;
+      expect(genericCause).not.toHaveProperty('retryAfterSeconds');
+      expect(genericCause?.data).not.toHaveProperty('retryAfterSeconds');
     });
 
     it('leaves a 401 as an authorization error', async () => {

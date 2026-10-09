@@ -3086,10 +3086,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT],
-            'REF123',
-          );
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -3205,10 +3202,10 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT, account2],
-            'REF123',
-          );
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -5255,10 +5252,10 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT, account2],
-            'REF123',
-          );
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
