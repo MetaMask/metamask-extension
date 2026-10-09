@@ -3555,6 +3555,19 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  perpsPerpTradingServiceInterruptionBannerEnabled: {
+    // Dark until SRE enables it during a Perps outage. Not in the production
+    // client-config response until the LaunchDarkly flag is created.
+    inProd: false,
+    name: 'perpsPerpTradingServiceInterruptionBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.52.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   perpsShowFullAssetNames: {
     // Dark-launched: default OFF in production until rollout.
     inProd: true,

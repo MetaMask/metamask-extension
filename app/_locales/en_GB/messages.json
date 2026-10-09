@@ -8238,6 +8238,22 @@
     "message": "See all",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "contact support",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Some services are temporarily unavailable. $1, or $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "See your options in FAQs",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "We're experiencing an outage",
+    "description": "Title of the Perps outage banner."
+  },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."
   },
