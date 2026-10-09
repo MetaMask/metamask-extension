@@ -32,9 +32,13 @@ jest.mock('../../../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => ({ market: undefined, isLoading: false }),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return { feeRate: 0.00145, isLoading: false };
+  },
 }));
 
 jest.mock('../../../../store/background-connection', () => ({
@@ -85,6 +89,42 @@ describe('OrderEntry', () => {
       return immediate(undefined) as Promise<never>;
     });
   });
+
+  for (const [label, type, size, amount] of [
+    ['new market', 'market', undefined, '100000'],
+    ['attached limit', 'limit', undefined, '90000'],
+    ['market adding to a long', 'market', '1', '90000'],
+    ['market flipping a short', 'market', '-1', '50000'],
+    ['market route with leverage', 'market', '-3', '50000'],
+  ] as const) {
+    it(`matches the ${label} TP/SL fee-resolution notional`, () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          currentPrice={45000}
+          orderType={type}
+          existingPosition={
+            size ? { size, leverage: 3, entryPrice: '45000' } : undefined
+          }
+          initialDraft={{
+            type,
+            direction: 'long',
+            amount: '90000',
+            leverage: 3,
+            limitPrice: '45000',
+            takeProfitPrice: '50000',
+            stopLossPrice: '40000',
+          }}
+        />,
+        mockStore,
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount,
+      });
+    });
+  }
 
   describe('rendering', () => {
     it('renders the component with all sections', () => {
