@@ -159,7 +159,7 @@ export type BridgeAppState = {
     NetworkState &
     AccountsControllerState &
     AccountTreeControllerState &
-    AccountTrackerControllerState &
+    Pick<AccountTrackerControllerState, 'accountsByChainId'> &
     Pick<TokenBalancesControllerState, 'tokenBalances'> &
     NetworkEnablementControllerState &
     TokensControllerState &
