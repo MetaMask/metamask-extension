@@ -9369,24 +9369,6 @@
   "rewardsOnboardingOptInError": {
     "message": "ऑप्ट-इन नहीं हो पाया"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "रेफरल कोड (वैकल्पिक)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "कोड छिपाएँ"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "क्या आपके पास रेफ़रल कोड है?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "रिवॉर्ड में शामिल हों"
   },
@@ -9395,10 +9377,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "रिवॉर्ड कमाना शुरू करें"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 पॉइंट",
