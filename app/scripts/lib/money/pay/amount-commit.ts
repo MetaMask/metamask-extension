@@ -146,12 +146,13 @@ export function getTransactionMeta(
  * calldata (when provided), regenerated parent EIP-7702 batch
  * `txParams.data`, and optionally `requiredAssets[0].amount`.
  *
- * An empty `updates` array is intentional for the deposit path that writes
- * `requiredAssets` before vault encoding finishes — it still regenerates
- * nothing nested, but updates the required amount so Pay can requote.
+ * Deposit commits pass encoded calldata together with `requiredAssets`.
+ * Writing the amount first makes Pay quote the placeholder batch, which has
+ * no vault calldata.
  *
- * Pay requotes when `txParams.data` changes; nested-only writes would leave
- * Relay skip-embedding vault calls because parent data stayed empty.
+ * Pay requotes when `txParams.data` or `requiredAssets` changes. Nested-only
+ * writes would leave Relay skip-embedding vault calls because parent data
+ * stayed empty.
  * Re-reads state first so a concurrent commit cannot clobber unrelated
  * fields from a stale copy.
  *

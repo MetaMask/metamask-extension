@@ -109,19 +109,15 @@ describe('updateMoneyAccountDepositAmount', () => {
       }),
     );
 
-    expect(updateTransaction).toHaveBeenCalledTimes(2);
-    const [assetsOnly] = updateTransaction.mock.calls[0];
-    expect(assetsOnly.requiredAssets[0].amount).toBe('0xf4240');
-    expect(assetsOnly.nestedTransactions[0].data).toBeUndefined();
-
-    const [withCalldata] = updateTransaction.mock.calls[1];
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+    const [withCalldata] = updateTransaction.mock.calls[0];
     expect(withCalldata.nestedTransactions[0].data).toBe(APPROVE_DATA);
     expect(withCalldata.nestedTransactions[1].data).toBe(DEPOSIT_DATA);
     expect(withCalldata.txParams.data).not.toBe('0x');
     expect(withCalldata.requiredAssets[0].amount).toBe('0xf4240');
   });
 
-  it('writes requiredAssets before vault encoding so quotes do not wait on RPC', async () => {
+  it('does not update the transaction until vault calldata is encoded', async () => {
     const { messenger, updateTransaction } = setup();
     let resolveEncode: (value: unknown) => void = () => undefined;
     buildDepositBatchMock.mockImplementationOnce(
@@ -137,10 +133,7 @@ describe('updateMoneyAccountDepositAmount', () => {
       '1',
     );
 
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
+    expect(updateTransaction).not.toHaveBeenCalled();
 
     resolveEncode({
       approveTx: {
@@ -161,6 +154,11 @@ describe('updateMoneyAccountDepositAmount', () => {
       },
     });
     await expect(commit).resolves.toBe(true);
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+    const [committed] = updateTransaction.mock.calls[0];
+    expect(committed.requiredAssets[0].amount).toBe('0xf4240');
+    expect(committed.nestedTransactions[0].data).toBe(APPROVE_DATA);
+    expect(committed.nestedTransactions[1].data).toBe(DEPOSIT_DATA);
   });
 
   it('returns false for a zero amount without encoding', async () => {
@@ -205,10 +203,7 @@ describe('updateMoneyAccountDepositAmount', () => {
     await expect(
       updateMoneyAccountDepositAmount(messenger, TRANSACTION_ID, '1'),
     ).rejects.toThrow('Money account deposit is not available');
-    expect(updateTransaction).toHaveBeenCalledTimes(1);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
+    expect(updateTransaction).not.toHaveBeenCalled();
   });
 
   it('lets a later typed amount supersede an in-flight encode', async () => {
@@ -273,18 +268,11 @@ describe('updateMoneyAccountDepositAmount', () => {
     });
     await expect(first).resolves.toBe(false);
 
-    // Immediate requiredAssets writes for both intents, plus nested calldata
-    // for the later one only.
-    expect(updateTransaction).toHaveBeenCalledTimes(3);
-    expect(updateTransaction.mock.calls[0][0].requiredAssets[0].amount).toBe(
-      '0xf4240',
-    );
-    expect(updateTransaction.mock.calls[1][0].requiredAssets[0].amount).toBe(
-      '0x1e8480',
-    );
-    expect(updateTransaction.mock.calls[2][0].nestedTransactions[0].data).toBe(
-      APPROVE_DATA_2,
-    );
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+    const [committed] = updateTransaction.mock.calls[0];
+    expect(committed.requiredAssets[0].amount).toBe('0x1e8480');
+    expect(committed.nestedTransactions[0].data).toBe(APPROVE_DATA_2);
+    expect(committed.nestedTransactions[1].data).toBe(DEPOSIT_DATA_2);
   });
 });
 
