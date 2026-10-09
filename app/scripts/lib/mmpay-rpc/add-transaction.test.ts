@@ -5,12 +5,12 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { addDappTransaction } from '../transaction/util';
 import { addMmPayRpcTransaction } from './add-transaction';
-import { MMPAY_RPC_TYPES } from './types/registry';
+import { MMPAY_RPC_TYPE_REGISTRIES } from './registry';
 import type {
   MmPayRpcBuiltTransaction,
   MmPayRpcMessenger,
   MmPayRpcRequest,
-  MmPayRpcTypeDefinition,
+  MmPayRpcTypeRegistry,
 } from './types';
 
 jest.mock('../transaction/util', () => ({
@@ -35,7 +35,7 @@ const ALLOW_DEPOSIT_FLAGS = {
 
 const addDappTransactionMock = jest.mocked(addDappTransaction);
 
-function createDefinition() {
+function createTypeRegistry() {
   return {
     type: TransactionType.perpsDeposit,
     validatePayParams: jest.fn((payParams: unknown) => ({ parsed: payParams })),
@@ -51,7 +51,7 @@ function createDefinition() {
         skipInitialGasEstimate: true,
       }),
     ),
-  } satisfies MmPayRpcTypeDefinition;
+  } satisfies MmPayRpcTypeRegistry;
 }
 
 function createMessenger({
@@ -118,16 +118,16 @@ async function expectRpcError(promise: Promise<unknown>, code: number) {
 }
 
 describe('addMmPayRpcTransaction', () => {
-  let definition: ReturnType<typeof createDefinition>;
+  let typeRegistry: ReturnType<typeof createTypeRegistry>;
 
   beforeEach(() => {
-    definition = createDefinition();
-    MMPAY_RPC_TYPES.perpsDeposit = definition;
+    typeRegistry = createTypeRegistry();
+    MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit = typeRegistry;
     addDappTransactionMock.mockResolvedValue(HASH);
   });
 
   afterEach(() => {
-    delete MMPAY_RPC_TYPES.perpsDeposit;
+    delete MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit;
     jest.clearAllMocks();
   });
 
@@ -149,11 +149,11 @@ describe('addMmPayRpcTransaction', () => {
         run({ messenger: createMessenger({ remoteFeatureFlags: {} }) }),
         errorCodes.rpc.methodNotFound,
       );
-      expect(definition.validatePayParams).not.toHaveBeenCalled();
+      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
     });
 
-    it('rejects an allowed type with no registered definition', async () => {
-      delete MMPAY_RPC_TYPES.perpsDeposit;
+    it('rejects an allowed type with no type registry', async () => {
+      delete MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit;
 
       await expectRpcError(run(), errorCodes.rpc.methodNotFound);
     });
@@ -165,7 +165,7 @@ describe('addMmPayRpcTransaction', () => {
         }),
         errorCodes.rpc.methodNotFound,
       );
-      expect(definition.validatePayParams).not.toHaveBeenCalled();
+      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
     });
 
     it('does not treat inherited object keys as registered types', async () => {
@@ -182,7 +182,7 @@ describe('addMmPayRpcTransaction', () => {
         run({ permittedAccounts: [] }),
         errorCodes.provider.unauthorized,
       );
-      expect(definition.validatePayParams).not.toHaveBeenCalled();
+      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
     });
 
     it('rejects a from address that is not permitted', async () => {
@@ -210,28 +210,28 @@ describe('addMmPayRpcTransaction', () => {
     });
   });
 
-  describe('type definition', () => {
+  describe('type registry', () => {
     it('validates payParams, checks preconditions and builds the transaction', async () => {
       const messenger = createMessenger();
 
       await run({ messenger });
 
-      expect(definition.validatePayParams).toHaveBeenCalledWith({
+      expect(typeRegistry.validatePayParams).toHaveBeenCalledWith({
         amount: '1',
       });
-      expect(definition.assertPreconditions).toHaveBeenCalledWith({
+      expect(typeRegistry.assertPreconditions).toHaveBeenCalledWith({
         from: FROM,
         messenger,
       });
-      expect(definition.build).toHaveBeenCalledWith({
+      expect(typeRegistry.build).toHaveBeenCalledWith({
         from: FROM,
         payParams: { parsed: { amount: '1' } },
       });
     });
 
-    it('propagates payParams errors from the definition', async () => {
+    it('propagates payParams errors from the type registry', async () => {
       const error = new Error('bad payParams');
-      definition.validatePayParams.mockImplementation(() => {
+      typeRegistry.validatePayParams.mockImplementation(() => {
         throw error;
       });
 
@@ -239,9 +239,9 @@ describe('addMmPayRpcTransaction', () => {
       expect(addDappTransactionMock).not.toHaveBeenCalled();
     });
 
-    it('propagates precondition errors from the definition', async () => {
+    it('propagates precondition errors from the type registry', async () => {
       const error = new Error('not eligible');
-      definition.assertPreconditions.mockRejectedValue(error);
+      typeRegistry.assertPreconditions.mockRejectedValue(error);
 
       await expect(run()).rejects.toBe(error);
       expect(addDappTransactionMock).not.toHaveBeenCalled();

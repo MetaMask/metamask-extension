@@ -7,13 +7,13 @@ import { isPayRpcTypeAllowed } from '../../../../shared/lib/transaction/pay-rpc'
 import { addDappTransaction } from '../transaction/util';
 import { mmPayRpcErrors } from './errors';
 import { watchMmPayRpcResult } from './result';
-import { getMmPayRpcTypeDefinition } from './types/registry';
+import { getMmPayRpcTypeRegistry } from './registry';
 import type {
   MmPayRpcDeps,
   MmPayRpcMessenger,
   MmPayRpcRequest,
   MmPayRpcResult,
-  MmPayRpcTypeDefinition,
+  MmPayRpcTypeRegistry,
 } from './types';
 import { validateMmPayRpcRequest } from './validate-request';
 
@@ -33,14 +33,14 @@ export async function addMmPayRpcTransaction({
     payParams: rawPayParams,
   } = validateMmPayRpcRequest(req.params);
 
-  const definition = getAllowedTypeDefinition(messenger, origin, type);
+  const typeRegistry = getAllowedTypeRegistry(messenger, origin, type);
 
   assertPermittedAccount(getPermittedAccounts(), from);
 
-  const payParams = definition.validatePayParams(rawPayParams);
-  await definition.assertPreconditions({ from, messenger });
+  const payParams = typeRegistry.validatePayParams(rawPayParams);
+  await typeRegistry.assertPreconditions({ from, messenger });
 
-  const built = definition.build({ from, payParams });
+  const built = typeRegistry.build({ from, payParams });
   const networkClientId = await ensureNetwork(messenger, built.chainId);
   const selectedAccount = getAccount(messenger, from);
 
@@ -76,12 +76,12 @@ export async function addMmPayRpcTransaction({
   }
 }
 
-function getAllowedTypeDefinition(
+function getAllowedTypeRegistry(
   messenger: MmPayRpcMessenger,
   origin: string,
   type: string,
-): MmPayRpcTypeDefinition {
-  const definition = getMmPayRpcTypeDefinition(type);
+): MmPayRpcTypeRegistry {
+  const typeRegistry = getMmPayRpcTypeRegistry(type);
   // Manifest flags take precedence, matching the UI's getRemoteFeatureFlags.
   const remoteFeatureFlags = merge(
     {},
@@ -90,13 +90,13 @@ function getAllowedTypeDefinition(
   );
 
   if (
-    !definition ||
+    !typeRegistry ||
     !isPayRpcTypeAllowed({ remoteFeatureFlags }, origin, type)
   ) {
     throw mmPayRpcErrors.unsupportedType(type);
   }
 
-  return definition;
+  return typeRegistry;
 }
 
 function assertPermittedAccount(permittedAccounts: string[], from: Hex) {
