@@ -9,23 +9,33 @@ import React, {
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getIsHardwareWalletErrorModalVisible } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import { useConfirmationNavigationOptions } from '../../hooks/useConfirmationNavigation';
+import {
+  navigateConfirmationExit,
+  useConfirmationNavigationOptions,
+  type ConfirmationGoBackAction,
+} from '../../hooks/useConfirmationNavigation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {
   /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
   currentConfirmation: Confirmation;
+  transactionMetadataRequestOverride?: TransactionMeta;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   /** Route to use for cancel / reject / auto-exit; captured once from URL on mount. */
   goBackTo: string | undefined;
+  /**
+   * `pop` when this confirmation was pushed onto history. Captured once from
+   * the URL on mount, with `goBackTo`.
+   */
+  goBackAction?: ConfirmationGoBackAction;
   /**
    * Call before triggering a navigation elsewhere (e.g. navigating back to
    * the Send page) to prevent the auto-exit effect below from racing it with
@@ -49,14 +59,21 @@ export const ConfirmContextProvider = ({
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
 }>) => {
-  const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
+  const { goBackTo: goBackFromUrl, goBackAction: goBackActionFromUrl } =
+    useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
+  const [goBackAction] = useState(goBackActionFromUrl);
+  const { key: locationKey } = useLocation();
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
     currentConfirmationOverride ?? currentConfirmationFromHook;
+  const transactionMetadataRequestOverride =
+    currentConfirmationOverride && 'txParams' in currentConfirmationOverride
+      ? currentConfirmationOverride
+      : undefined;
 
   useSyncConfirmPath(
     currentConfirmationOverride === undefined ? currentConfirmation : undefined,
@@ -93,7 +110,11 @@ export const ConfirmContextProvider = ({
         autoExitSuppressedRef.current = false;
         return;
       }
-      navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+      navigateConfirmationExit(navigate, {
+        goBackTo,
+        goBackAction,
+        locationKey,
+      });
     }
   }, [
     currentConfirmationOverride,
@@ -101,22 +122,28 @@ export const ConfirmContextProvider = ({
     currentConfirmation,
     navigate,
     goBackTo,
+    goBackAction,
+    locationKey,
     isHardwareWalletErrorModalVisible,
   ]);
 
   const value = useMemo(
     () => ({
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      goBackAction,
       suppressAutoExit,
     }),
     [
       currentConfirmation,
+      transactionMetadataRequestOverride,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
       goBackTo,
+      goBackAction,
       suppressAutoExit,
     ],
   );
@@ -138,9 +165,11 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
   return context as {
     /** @deprecated Use useTransactionMetadataRequest or useSignatureRequest hooks instead. */
     currentConfirmation: CurrentConfirmation;
+    transactionMetadataRequestOverride?: TransactionMeta;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
+    goBackAction?: ConfirmationGoBackAction;
     suppressAutoExit: () => void;
   };
 };

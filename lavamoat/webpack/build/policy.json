@@ -220,7 +220,7 @@
         "nock>debug": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
@@ -228,9 +228,9 @@
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true
       }
     },
@@ -242,6 +242,26 @@
       "packages": {
         "@babel/types>@babel/helper-string-parser": true,
         "@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
@@ -402,7 +422,7 @@
         "tslib": true
       }
     },
-    "@lavamoat/webpack>@lavamoat/aa": {
+    "lavamoat>@lavamoat/aa": {
       "builtin": {
         "node:fs.lstatSync": true,
         "node:fs.readFileSync": true,
@@ -433,10 +453,10 @@
       },
       "packages": {
         "@lavamoat/webpack>@babel/parser": true,
-        "@lavamoat/webpack>@lavamoat/aa": true,
+        "lavamoat>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>json-stable-stringify": true,
-        "@lavamoat/webpack>lavamoat-core": true,
+        "lavamoat>lavamoat-core": true,
         "webpack": true
       }
     },
@@ -915,11 +935,9 @@
         "__DEV__": true,
         "atob": true,
         "btoa": true,
-        "compile": true,
         "console": true,
         "define": true,
         "document": true,
-        "findDirectiveEnablingMemoization": true,
         "localStorage": true,
         "navigator": true,
         "performance.mark": true,
@@ -1930,6 +1948,8 @@
         "AggregateError": true,
         "FinalizationRegistry": true,
         "Float16Array": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -2299,7 +2319,7 @@
         "browserify>shell-quote": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core": {
+    "lavamoat>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
@@ -2314,16 +2334,17 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": true
+        "lavamoat>lavamoat-tofu": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": {
+    "lavamoat>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse": true,
+        "lavamoat>lavamoat-tofu>@babel/types": true
       }
     },
     "tailwindcss>lilconfig": {
@@ -3420,6 +3441,8 @@
       },
       "globals": {
         "Buffer": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "console.error": true,
         "console.log": true,
         "process.arch": true,
@@ -3695,6 +3718,8 @@
     "terser-webpack-plugin>terser": {
       "globals": {
         "Buffer": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "atob": true,
         "btoa": true,
         "console.log": true,
@@ -3785,7 +3810,9 @@
     },
     "tailwindcss>sucrase>ts-interface-checker": {
       "globals": {
-        "Buffer": true
+        "Buffer": true,
+        "Float32Array": true,
+        "Float64Array": true
       }
     },
     "tslib": {
@@ -3835,42 +3862,17 @@
         "perf_hooks.performance": true
       },
       "globals": {
-        "BreakpointResolver": true,
         "Buffer.from": true,
-        "CallHierarchy": true,
-        "Completions": true,
-        "FindAllReferences": true,
-        "GoToDefinition": true,
-        "InlayHintKind": true,
-        "InlayHints": true,
         "Intl.Collator": true,
-        "JsDoc": true,
-        "JsTyping": true,
-        "MapCode": true,
-        "NavigateTo": true,
-        "NavigationBar": true,
-        "OrganizeImports": true,
-        "OutliningElementsCollector": true,
-        "Rename": true,
-        "SignatureHelp": true,
-        "SmartSelectionRange": true,
-        "SymbolDisplay": true,
         "__dirname": true,
         "__filename": true,
-        "classifier": true,
         "clearTimeout": true,
-        "codefix": true,
         "console": true,
-        "formatting": true,
         "gc": true,
-        "moduleSpecifiers": true,
         "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "refactor": true,
-        "server": true,
-        "setTimeout": true,
-        "textChanges": true
+        "setTimeout": true
       },
       "packages": {
         "addons-linter>source-map-support": true
@@ -4280,6 +4282,7 @@
         "util.inspect": true
       },
       "globals": {
+        "SuppressedError": true,
         "__dirname": true,
         "console.error": true,
         "console.log": true,

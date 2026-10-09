@@ -392,6 +392,7 @@ jobs:
     name: AI PR risk analysis
     needs:
       - get-requirements
+    # PRs to main require the auto-merge label; PRs to release/* always run.
     if: >-
       ${{
         !cancelled()
@@ -400,7 +401,15 @@ jobs:
         && github.event_name == 'pull_request'
         && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)
         && github.event.pull_request.draft == false
-        && (github.event.pull_request.base.ref == 'main' || startsWith(github.event.pull_request.base.ref, 'release/'))
+        && (
+          (
+            github.event.pull_request.base.ref == 'main'
+            && contains(github.event.pull_request.labels.*.name, 'auto-merge')
+          )
+          || (
+            startsWith(github.event.pull_request.base.ref, 'release/')
+          )
+        )
       }}
     permissions:
       contents: read
