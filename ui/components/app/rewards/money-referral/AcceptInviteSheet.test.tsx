@@ -31,6 +31,7 @@ function buildReferralMe(
   return {
     role: 'NONE',
     variant: 'NONE',
+    /* eslint-disable @typescript-eslint/naming-convention -- money API fields */
     localized_text: copy,
     invite_hero: {
       lightModeUrl: 'https://example.com/light.png',
@@ -38,6 +39,7 @@ function buildReferralMe(
     },
     referred_by: null,
     excluded_regions: [],
+    /* eslint-enable @typescript-eslint/naming-convention */
     ...overrides,
   };
 }
@@ -209,6 +211,17 @@ describe('AcceptInviteSheet', () => {
     ).toBeDisabled();
   });
 
+  it('closes when referral me settles without a payload', async () => {
+    mockReferralState.referralMe = null;
+    mockReferralState.isSettled = true;
+    const onClose = jest.fn();
+    renderSheet({ onClose });
+
+    await act(async () => undefined);
+    expect(onClose).toHaveBeenCalled();
+    expect(document.body).not.toHaveTextContent('Invite title');
+  });
+
   it('auto-dismisses a non-NONE variant without a viewed event', async () => {
     mockReferralState.referralMe = buildReferralMe({
       role: 'REFERRER',
@@ -217,7 +230,7 @@ describe('AcceptInviteSheet', () => {
     const onClose = jest.fn();
     renderSheet({ onClose });
 
-    await act(async () => {});
+    await act(async () => undefined);
     expect(onClose).toHaveBeenCalled();
     expect(trackedTypes()).not.toContain('viewed');
     expect(document.body).not.toHaveTextContent('Invite title');
@@ -231,7 +244,7 @@ describe('AcceptInviteSheet', () => {
       excludedRegions: ['US'],
     });
 
-    await act(async () => {});
+    await act(async () => undefined);
     expect(onClose).toHaveBeenCalled();
     expect(trackedTypes()).not.toContain('viewed');
   });
@@ -243,7 +256,7 @@ describe('AcceptInviteSheet', () => {
     });
 
     expect(document.body).toHaveTextContent('Invite title');
-    await act(async () => {});
+    await act(async () => undefined);
     expect(trackedTypes()).toContain('viewed');
   });
 
@@ -293,6 +306,7 @@ describe('AcceptInviteSheet', () => {
       mockReferralState.referralMe = buildReferralMe({
         role: 'REFEREE',
         variant: 'REFEREE',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
         referred_by: { cashback_earning_end: '2026-12-01T00:00:00.000Z' },
       });
       return { status: 'settled' };
@@ -307,17 +321,71 @@ describe('AcceptInviteSheet', () => {
     });
 
     expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+    expect(view.getByRole('dialog', { name: 'Activated' })).toBeInTheDocument();
+    expect(view.getByTestId('money-referral-activated-start')).toHaveFocus();
+    expect(
+      view.getByRole('button', { name: 'Close activated' }),
+    ).toBeInTheDocument();
     expect(mockRegister).toHaveBeenCalledWith({ code: 'AB12CD' });
     expect(trackedTypes()).toContain('accepted');
-    expect(document.body).toHaveTextContent(/through/);
+    expect(document.body).toHaveTextContent(/through/u);
     expect(document.body).not.toHaveTextContent('Invite title');
+    expect(document.body).not.toHaveTextContent('Invite body');
+  });
+
+  it('uses the invite message when the cashback end date is missing', async () => {
+    const user = userEvent.setup();
+    mockReferralState.fetch.mockImplementation(async () => {
+      mockReferralState.referralMe = buildReferralMe({
+        role: 'REFEREE',
+        variant: 'REFEREE',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+        referred_by: { cashback_earning_end: null },
+      });
+      return { status: 'settled' };
+    });
+    const view = renderSheet({ initialCode: 'AB12CD' });
+
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-accept'));
+      await Promise.resolve();
+    });
+
+    expect(view.getByTestId('money-referral-activated')).toBeInTheDocument();
+    expect(view.getByRole('dialog', { name: 'Activated' })).toBeInTheDocument();
+    expect(document.body).toHaveTextContent('Invite body');
+    expect(document.body).not.toHaveTextContent('Cash back');
+    expect(document.body).not.toHaveTextContent('for a limited time');
+  });
+
+  it('names the activated close button with the app close label when copy is missing', async () => {
+    const user = userEvent.setup();
+    mockReferralState.fetch.mockImplementation(async () => {
+      mockReferralState.referralMe = buildReferralMe({
+        role: 'REFEREE',
+        variant: 'REFEREE',
+        // eslint-disable-next-line @typescript-eslint/naming-convention -- money API field
+        localized_text: { ...copy, inviteAcceptedCloseA11y: '' },
+      });
+      return { status: 'settled' };
+    });
+    const view = renderSheet({ initialCode: 'AB12CD' });
+
+    await act(async () => {
+      await user.click(view.getByTestId('money-referral-accept'));
+      await Promise.resolve();
+    });
+
+    expect(
+      view.getByRole('button', { name: messages.close.message }),
+    ).toBeInTheDocument();
   });
 
   it('keeps the invite open after it has shown NONE when a later read is REFEREE', async () => {
     const onClose = jest.fn();
     const view = renderSheet({ onClose });
 
-    await act(async () => {});
+    await act(async () => undefined);
     expect(trackedTypes()).toContain('viewed');
 
     mockReferralState.referralMe = buildReferralMe({

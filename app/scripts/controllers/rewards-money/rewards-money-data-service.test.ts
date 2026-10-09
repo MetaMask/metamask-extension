@@ -1,3 +1,4 @@
+import { serializeError } from '@metamask/rpc-errors';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -288,6 +289,7 @@ describe('RewardsMoneyDataService', () => {
         status: 400,
         failure: 'INVALID_REQUEST',
         detail: 'trade is only accepted for perps and predict',
+        data: { failure: 'INVALID_REQUEST' },
       });
       await expect(
         service.getRebateQuote({ product: 'perps' }),
@@ -296,6 +298,7 @@ describe('RewardsMoneyDataService', () => {
         failure: 'RATE_LIMITED',
         detail: 'Too many requests',
         retryAfterSeconds: 12,
+        data: { failure: 'RATE_LIMITED', retryAfterSeconds: 12 },
       });
       await expect(
         service.getRebateQuote({ product: 'perps' }),
@@ -304,6 +307,7 @@ describe('RewardsMoneyDataService', () => {
         failure: 'UNAVAILABLE',
         detail: 'Server busy, retry shortly',
         retryAfterSeconds: 2,
+        data: { failure: 'UNAVAILABLE', retryAfterSeconds: 2 },
       });
       const failed = await service
         .getRebateQuote({ product: 'perps' })
@@ -313,7 +317,38 @@ describe('RewardsMoneyDataService', () => {
         status: 500,
         failure: 'FAILED',
         detail: undefined,
+        data: { failure: 'FAILED' },
       });
+    });
+
+    it('keeps failure and retryAfterSeconds on data after RPC serialization', () => {
+      const shed = serializeError(
+        new RewardsMoneyRebateQuoteError(
+          503,
+          'UNAVAILABLE',
+          'Server busy, retry shortly',
+          2,
+        ),
+      );
+      const generic = serializeError(
+        new RewardsMoneyRebateQuoteError(500, 'FAILED'),
+      );
+
+      expect(shed.data).toMatchObject({
+        cause: {
+          failure: 'UNAVAILABLE',
+          retryAfterSeconds: 2,
+          data: { failure: 'UNAVAILABLE', retryAfterSeconds: 2 },
+        },
+      });
+      expect(generic.data).toMatchObject({
+        cause: {
+          failure: 'FAILED',
+          data: { failure: 'FAILED' },
+        },
+      });
+      expect(generic.data?.cause).not.toHaveProperty('retryAfterSeconds');
+      expect(generic.data?.cause?.data).not.toHaveProperty('retryAfterSeconds');
     });
 
     it('leaves a 401 as an authorization error', async () => {
