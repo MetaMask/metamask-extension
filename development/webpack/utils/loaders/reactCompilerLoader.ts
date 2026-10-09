@@ -1,6 +1,5 @@
 import type { RuleSetUseItem } from 'webpack';
 import {
-  reactCompilerLoader,
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
@@ -110,18 +109,17 @@ export function getReactCompilerLoader(
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
-  const useWrapper = threadLoaderEnabled || verbose;
+  // The wrapper is always used: besides stats collection (only possible when
+  // thread-loader is off) and verbose logging, it names the input file
+  // relative to the build context inside Babel's source map, which every
+  // build needs for reproducible module hashes. See `toWebpackSourceName`.
+  void threadLoaderEnabled;
 
-  return useWrapper
-    ? {
-        loader: getWrapperPath(),
-        options: {
-          ...defineReactCompilerLoaderOption(reactCompilerOptions),
-          __verbose: verbose,
-        },
-      }
-    : {
-        loader: reactCompilerLoader,
-        options: defineReactCompilerLoaderOption(reactCompilerOptions),
-      };
+  return {
+    loader: getWrapperPath(),
+    options: {
+      ...defineReactCompilerLoaderOption(reactCompilerOptions),
+      __verbose: verbose,
+    },
+  };
 }
