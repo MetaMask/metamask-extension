@@ -8,7 +8,6 @@ import type { AnnouncementControllerState } from '@metamask/announcement-control
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
 import type {
   AccountTrackerControllerState,
-  CurrencyRateState,
   NftControllerState,
   RatesControllerState,
   TokensControllerState,
@@ -275,11 +274,6 @@ class FixtureBuilderV2 {
 
   withBridgeStatusController(data: Partial<BridgeStatusControllerState>): this {
     merge(this.fixture.data.BridgeStatusController, data);
-    return this;
-  }
-
-  withCurrencyController(data: Partial<CurrencyRateState>): this {
-    merge(this.fixture.data.CurrencyController, data);
     return this;
   }
 
@@ -691,14 +685,6 @@ class FixtureBuilderV2 {
   withConversionRateDisabled(): this {
     return this.withPreferencesController({
       useCurrencyRateCheck: false,
-    });
-  }
-
-  withCurrencyRates(
-    currencyRates: CurrencyRateState['currencyRates'] = {},
-  ): this {
-    return this.withCurrencyController({
-      currencyRates: { ...currencyRates },
     });
   }
 
