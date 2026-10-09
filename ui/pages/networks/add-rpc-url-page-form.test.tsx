@@ -273,6 +273,44 @@ describe('AddRpcUrlPageForm', () => {
     );
   });
 
+  it('shows Chainlist RPC suggestions when the add RPC form opens', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        chainlistEnabled
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('rpc-url-input-test')).not.toHaveFocus();
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('gnosis-rpc.publicnode.com')).toBeInTheDocument();
+    expect(screen.getByTestId('add-rpc-chainlist-suggestion')).toHaveClass(
+      'w-full',
+      'px-4',
+    );
+  });
+
   it('does not suggest Chainlist RPCs when the feature flag is off', () => {
     mockUseSafeChains.mockReturnValue({
       safeChains: [

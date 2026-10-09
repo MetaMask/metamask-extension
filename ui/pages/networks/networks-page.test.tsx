@@ -206,6 +206,8 @@ const testNetworkConfiguration = {
 describe('NetworksPage', () => {
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    mockJsonRpcRequest.mockReset();
+    mockJsonRpcRequest.mockResolvedValue('0x1');
   });
 
   const renderNetworksPage = ({
@@ -609,6 +611,210 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
     expect(
       screen.queryByText('rpc-tertiary.example.com'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('opens the Chainlist dropdown from the chain ID field', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.focus(screen.getByTestId('network-form-chain-id'));
+
+    expect(
+      await screen.findByTestId('networks-page-chainlist-source-banner'),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps Chainlist details when leaving and returning from add RPC', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('network-form-network-name'));
+    fireEvent.click(
+      (await screen.findByText('Gnosis')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    fireEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
+    fireEvent.click(screen.getByText(messages.addRpcUrl.message));
+
+    expect(await screen.findByTestId('rpc-url-input-test')).toBeInTheDocument();
+    expect(screen.getByTestId('add-rpc-network-name')).toHaveTextContent(
+      'Gnosis',
+    );
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Gnosis',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
+    expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps Chainlist details when leaving and returning from add block explorer', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('network-form-network-name'));
+    fireEvent.click(
+      (await screen.findByText('Gnosis')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    fireEvent.click(screen.getByTestId('test-explorer-drop-down'));
+    fireEvent.click(screen.getByText(messages.addBlockExplorerUrl.message));
+
+    expect(
+      await screen.findByText(messages.addBlockExplorerUrl.message),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Gnosis',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('100');
+    expect(screen.getByTestId('network-form-ticker-input')).toHaveValue('xDAI');
+    expect(
+      screen.queryByTestId('networks-page-chainlist-dropdown'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('returns to the edit network form from add block explorer', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=edit`,
+      editedNetwork: { chainId: '0x1', nickname: 'Ethereum' },
+    });
+
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Ethereum',
+    );
+
+    fireEvent.click(screen.getByTestId('test-explorer-drop-down'));
+    fireEvent.click(screen.getByText(messages.addBlockExplorerUrl.message));
+
+    expect(
+      await screen.findByText(messages.addBlockExplorerUrl.message),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('networks-page-form-back-button'));
+
+    expect(screen.getByText(messages.editNetwork.message)).toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue(
+      'Ethereum',
+    );
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('1');
+  });
+
+  it('lets a single custom RPC URL be deleted', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=edit`,
+      editedNetwork: { chainId: '0x12345', nickname: 'Custom network 1' },
+      networkConfigurationsByChainId: {
+        ...mockNetworkConfigurations,
+        ...customNetworkConfiguration,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
+    const rpcOption = screen.getByTestId('network-form-rpc-option-0');
+    const deleteRpc = rpcOption.parentElement?.querySelector(
+      '[data-testid="delete-item-0"]',
+    );
+    expect(deleteRpc).not.toBeNull();
+    fireEvent.click(deleteRpc as HTMLElement);
+
+    expect(
+      screen.queryByText('custom-rpc.example.com'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('tries the next Chainlist RPC when the first one cannot be fetched', async () => {
+    mockJsonRpcRequest
+      .mockRejectedValueOnce(new Error('down'))
+      .mockResolvedValueOnce('0x12c');
+
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    fireEvent.change(
+      await screen.findByPlaceholderText(
+        messages.searchNetworkNameOrChainId.message,
+      ),
+      { target: { value: 'Multi RPC' } },
+    );
+    fireEvent.click(
+      (await screen.findByText('Multi RPC Network')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText('rpc-secondary.example.com'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('rpc-primary.example.com'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.failedToFetchChainId.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('lets the only failing RPC be deleted', async () => {
+    mockJsonRpcRequest.mockRejectedValue(new Error('down'));
+
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add-from-chainlist`,
+      remoteFeatureFlags: { extensionUxChainlist: true },
+    });
+
+    fireEvent.click(
+      (await screen.findByText('Gnosis')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(
+      await screen.findByText(messages.failedToFetchChainId.message),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
+    const rpcOption = screen.getByTestId('network-form-rpc-option-0');
+    const deleteRpc = rpcOption.parentElement?.querySelector(
+      '[data-testid="delete-item-0"]',
+    );
+    expect(deleteRpc).not.toBeNull();
+    fireEvent.click(deleteRpc as HTMLElement);
+
+    expect(screen.queryByText('rpc.gnosischain.com')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.failedToFetchChainId.message),
     ).not.toBeInTheDocument();
   });
 

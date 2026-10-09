@@ -154,7 +154,14 @@ export const NetworksPage = () => {
   const { chainId: editingChainId, editCompleted } = rawEditedNetwork ?? {};
 
   const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
-    if (view === 'add' || view === 'add-from-chainlist') {
+    // Add RPC and add explorer stay on the in-progress network. A previously
+    // edited network (often Ethereum) must not reset those fields.
+    if (
+      view === 'add' ||
+      view === 'add-from-chainlist' ||
+      view === 'add-rpc' ||
+      view === 'add-explorer-url'
+    ) {
       return undefined;
     }
 
@@ -223,6 +230,7 @@ export const NetworksPage = () => {
   }, [setView]);
 
   const handleAddCustomNetworkClick = useCallback(() => {
+    dispatch(setEditedNetwork());
     trackEvent(
       createEventBuilder(MetaMetricsEventName.CustomNetworkFormViewed)
         .addCategory(MetaMetricsEventCategory.Network)
@@ -235,7 +243,7 @@ export const NetworksPage = () => {
         .build(),
     );
     handleNewNetwork();
-  }, [createEventBuilder, handleNewNetwork, trackEvent]);
+  }, [createEventBuilder, dispatch, handleNewNetwork, trackEvent]);
 
   const handleAddFromChainlist = useCallback(() => {
     trackEvent(
@@ -627,7 +635,7 @@ export const NetworksPage = () => {
         <>
           <NetworksPageFormHeader
             title={t('addBlockExplorerUrl')}
-            onBack={handleNewNetwork}
+            onBack={handleEditOnComplete}
             onClose={handleClose}
           />
           <NetworksPageFormBody>

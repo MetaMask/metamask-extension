@@ -2,13 +2,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
-  BannerAlert,
-  BannerAlertSeverity,
+  BannerBase,
   Box,
+  BoxBackgroundColor,
   FontWeight,
   Text,
   TextAlign,
   TextButton,
+  TextButtonSize,
   TextColor,
   TextFieldSearch,
   TextVariant,
@@ -34,6 +35,41 @@ export type ChainlistNetwork = SafeChain & {
 
 export const getHexChainId = (chainId: string | number) =>
   `0x${Number(chainId).toString(16)}`.toLowerCase();
+
+export const ChainlistSourceBanner = ({
+  description,
+  onLearnMoreMouseDown,
+  testId,
+}: {
+  description: (learnMore: React.ReactNode) => React.ReactNode;
+  onLearnMoreMouseDown?: (event: React.MouseEvent) => void;
+  testId: string;
+}) => {
+  const t = useI18nContext();
+
+  return (
+    <BannerBase
+      backgroundColor={BoxBackgroundColor.PrimaryMuted}
+      className="!px-3 !py-2"
+      data-testid={testId}
+    >
+      <Text variant={TextVariant.BodySm}>
+        {description(
+          <TextButton
+            key="chainlist-learn-how-to-stay-safe"
+            onClick={() => {
+              global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
+            }}
+            onMouseDown={onLearnMoreMouseDown}
+            size={TextButtonSize.BodySm}
+          >
+            {t('chainlistLearnHowToStaySafe')}
+          </TextButton>,
+        )}
+      </Text>
+    </BannerBase>
+  );
+};
 
 export const getUsableUrls = (urls: string[] = []) =>
   urls.filter((url) => {
@@ -71,6 +107,8 @@ type ChainlistNetworkPickerProps = {
   searchValue?: string;
   /** `dropdown` caps the list so it can sit under the network name field. */
   layout?: 'page' | 'dropdown';
+  /** Pixel height available below the field the dropdown is anchored to. */
+  maxHeight?: number;
 };
 
 export const ChainlistNetworkPicker = ({
@@ -81,6 +119,7 @@ export const ChainlistNetworkPicker = ({
   showSearchField = true,
   searchValue: searchValueProp = '',
   layout = 'page',
+  maxHeight,
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
   const [internalSearchValue, setInternalSearchValue] = useState('');
@@ -134,10 +173,6 @@ export const ChainlistNetworkPicker = ({
     setVisibleNetworkCount(CHAINLIST_PAGE_SIZE);
   }
 
-  const handleLearnHowToStaySafe = useCallback(() => {
-    global.platform.openTab({ url: ZENDESK_URLS.UNKNOWN_NETWORK });
-  }, []);
-
   const handleChainlistScroll = useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {
       const { scrollHeight, scrollTop, clientHeight } = event.currentTarget;
@@ -160,9 +195,10 @@ export const ChainlistNetworkPicker = ({
     <Box
       className={
         isDropdown
-          ? 'flex max-h-96 flex-col overflow-hidden bg-background-default'
+          ? 'flex h-full min-h-0 flex-col overflow-hidden bg-background-default'
           : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
       }
+      style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
     >
       {showSearchField ? (
         <Box className="px-4 pb-4">
@@ -213,18 +249,12 @@ export const ChainlistNetworkPicker = ({
           </Box>
         ) : (
           <>
-            <Box className={showSearchField ? 'px-4 pb-4' : 'px-4 py-4'}>
-              <BannerAlert
-                severity={BannerAlertSeverity.Info}
-                data-testid="networks-page-chainlist-source-banner"
-                description={t('chainlistNetworkDataSourceBanner', [
-                  <TextButton
-                    key="chainlist-learn-how-to-stay-safe"
-                    onClick={handleLearnHowToStaySafe}
-                  >
-                    {t('chainlistLearnHowToStaySafe')}
-                  </TextButton>,
-                ])}
+            <Box className={showSearchField ? 'px-4 pb-2' : 'px-4 py-2'}>
+              <ChainlistSourceBanner
+                description={(learnMore) =>
+                  t('chainlistNetworkDataSourceBanner', [learnMore])
+                }
+                testId="networks-page-chainlist-source-banner"
               />
             </Box>
             {showNoSearchResults ? (

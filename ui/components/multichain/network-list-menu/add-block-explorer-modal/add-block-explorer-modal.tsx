@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
 import {
+  Box,
+  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
   HelpText,
   HelpTextSeverity,
+  Label,
+  TextField,
+  TextFieldSize,
 } from '@metamask/design-system-react';
-import {
-  Box,
-  FormTextField,
-  FormTextFieldSize,
-} from '../../../component-library';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { isWebUrl } from '../../../../../shared/lib/url-utils';
 
@@ -29,52 +20,48 @@ const AddBlockExplorerModal = ({
   onAdded: (url: string) => void;
 }) => {
   const t = useI18nContext();
-  const [url, setUrl] = useState<string>();
-  const error =
-    url && url.length > 0 && !isWebUrl(url) ? t('urlErrorMsg') : undefined;
+  const [url, setUrl] = useState('');
+  const error = url.length > 0 && !isWebUrl(url) ? t('urlErrorMsg') : undefined;
 
   return (
     <Box
-      className="add-block-explorer-modal"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      className="flex h-full w-full min-h-0 flex-col"
     >
-      <Box paddingLeft={4} paddingRight={4}>
-        <FormTextField
-          size={FormTextFieldSize.Lg}
-          textFieldProps={{ borderRadius: BorderRadius.LG }}
-          error={Boolean(error)}
-          id="additional-rpc-url"
-          label={t('blockExplorerUrl')}
-          inputProps={{
-            'data-testid': 'explorer-url-input',
-          }}
-          labelProps={{
-            children: undefined,
-            variant: TextVariant.bodyMdMedium,
-          }}
-          onChange={(e) => setUrl(e.target.value)}
-          autoFocus
-        />
-        {error && (
-          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
-        )}
-      </Box>
       <Box
-        className="add-block-explorer-modal__footer"
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Column}
+        className="flex min-h-0 flex-1 flex-col overflow-auto px-4 pt-4"
       >
+        <Label htmlFor="blockExplorerUrl" className="mb-1">
+          {t('blockExplorerUrl')}
+        </Label>
+        <TextField
+          id="blockExplorerUrl"
+          size={TextFieldSize.Lg}
+          placeholder={t('addAUrl')}
+          value={url}
+          onChange={(event) => setUrl(event.target.value)}
+          isError={Boolean(error)}
+          autoFocus
+          className="w-full"
+          inputProps={
+            {
+              'data-testid': 'explorer-url-input',
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+        />
+        {error ? (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        ) : null}
+      </Box>
+      <Box padding={4} paddingBottom={6} className="shrink-0">
         <Button
           isFullWidth
           isDisabled={Boolean(error)}
           size={ButtonSize.Lg}
           variant={ButtonVariant.Primary}
           data-testid="add-block-explorer-url-button"
-          onClick={async () => {
+          onClick={() => {
             if (url) {
               onAdded(url);
             }

@@ -14,8 +14,6 @@ import {
   HelpTextSeverity,
   IconName,
   Label,
-  Popover,
-  PopoverPosition,
   Text,
   TextButton,
   TextButtonSize,
@@ -84,6 +82,7 @@ import { useDispatch } from '../../../store/hooks';
 import {
   ChainlistNetworkPicker,
   type ChainlistNetwork,
+  getUsableUrls,
 } from '../../../pages/networks/chainlist-network-picker';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
@@ -124,25 +123,106 @@ export const NetworksForm = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
   const nameFieldRef = useRef<HTMLDivElement>(null);
-  const [isChainlistOpen, setIsChainlistOpen] = useState(false);
-  const [chainlistReference, setChainlistReference] =
-    useState<HTMLElement | null>(null);
+  const chainIdFieldRef = useRef<HTMLDivElement>(null);
+  const chainlistPanelRef = useRef<HTMLDivElement>(null);
+  const didTrackChainlistOpen = useRef(false);
   const showChainlist = Boolean(chainlist) && !existingNetwork;
+  // Returning from add RPC or add block explorer remounts this form. Keep the
+  // list closed when the user already entered a network, so those fields stay
+  // visible.
+  const formAlreadyStarted = Boolean(
+    networkFormState.name ||
+    networkFormState.chainId ||
+    networkFormState.ticker ||
+    networkFormState.rpcUrls.rpcEndpoints.length ||
+    networkFormState.blockExplorers.blockExplorerUrls.length,
+  );
+  const [hasDismissedChainlist, setHasDismissedChainlist] = useState(false);
+  const [isChainlistOpen, setIsChainlistOpen] = useState(
+    showChainlist && !formAlreadyStarted,
+  );
+  const [chainlistAnchor, setChainlistAnchor] = useState<'name' | 'chainId'>(
+    'name',
+  );
+  const chainlistFillsForm = isChainlistOpen && chainlistAnchor === 'name';
 
-  const openChainlist = () => {
+  // Open on the first render that has Chainlist, including when the flag
+  // arrives after mount. Later closes stay closed.
+  if (
+    showChainlist &&
+    !formAlreadyStarted &&
+    !hasDismissedChainlist &&
+    !isChainlistOpen
+  ) {
+    setIsChainlistOpen(true);
+  }
+
+  const trackChainlistOpened = () => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
+        .addCategory(MetaMetricsEventCategory.Network)
+        .build(),
+    );
+  };
+
+  const openChainlist = (anchor: 'name' | 'chainId') => {
     if (!showChainlist) {
       return;
     }
-    setChainlistReference(nameFieldRef.current);
-    if (!isChainlistOpen) {
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ChainlistAddClicked)
-          .addCategory(MetaMetricsEventCategory.Network)
-          .build(),
-      );
+    setChainlistAnchor(anchor);
+    if (isChainlistOpen) {
+      return;
     }
+    trackChainlistOpened();
     setIsChainlistOpen(true);
   };
+
+  const closeChainlist = () => {
+    setHasDismissedChainlist(true);
+    setIsChainlistOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isChainlistOpen || didTrackChainlistOpen.current) {
+      return;
+    }
+    didTrackChainlistOpen.current = true;
+    trackChainlistOpened();
+    // The open event is recorded once for the initial list.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChainlistOpen]);
+
+  useEffect(() => {
+    if (!isChainlistOpen) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const { target } = event;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (
+        chainlistPanelRef.current?.contains(target) ||
+        nameFieldRef.current?.contains(target) ||
+        chainIdFieldRef.current?.contains(target)
+      ) {
+        return;
+      }
+      closeChainlist();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeChainlist();
+      }
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isChainlistOpen]);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
@@ -190,6 +270,7 @@ export const NetworksForm = ({
     { key: string; msg: string } | undefined
   >();
   const [fetchedChainId, setFetchedChainId] = useState<string>();
+  const failedChainlistRpcUrlsRef = useRef(new Set<string>());
   // Save writes this chain into network configurations before the form closes.
   // Skip the duplicate warning for that chain so the network just added is not
   // reported as already saved.
@@ -342,13 +423,42 @@ export const NetworksForm = ({
     setFetchedChainId(undefined);
   }
 
-  // Fetch the chain ID from the RPC endpoint when it changes
+  const rpcEndpointCount = rpcUrls.rpcEndpoints?.length ?? 0;
+
+  useEffect(() => {
+    failedChainlistRpcUrlsRef.current.clear();
+  }, [chainId]);
+
+  // Fetch the chain ID from the RPC endpoint when it changes. A Chainlist
+  // pick tries the next public URL before surfacing a fetch error.
   useEffect(() => {
     if (!selectedRpcUrl) {
       return undefined;
     }
 
     let cancelled = false;
+    const replaceWithNextChainlistRpc = () => {
+      if (source !== 'chainlist' || !chainIdHex || rpcEndpointCount !== 1) {
+        return false;
+      }
+
+      failedChainlistRpcUrlsRef.current.add(selectedRpcUrl);
+      const chain = safeChains?.find(
+        (candidate) => toHex(candidate.chainId) === chainIdHex,
+      );
+      const nextUrl = getUsableUrls(chain?.rpc).find(
+        (url) => !failedChainlistRpcUrlsRef.current.has(url),
+      );
+      if (!nextUrl) {
+        return false;
+      }
+
+      setRpcUrls({
+        rpcEndpoints: [{ url: nextUrl, type: RpcEndpointType.Custom }],
+        defaultRpcEndpointIndex: 0,
+      });
+      return true;
+    };
 
     jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
       .then((response) => {
@@ -357,23 +467,33 @@ export const NetworksForm = ({
         }
       })
       .catch((err) => {
-        if (!cancelled) {
-          setFetchedChainId(undefined);
-          log.warn('Failed to fetch the chainId from the endpoint.', err);
-          const errorKey = isRpcRateLimitError(err)
-            ? 'rpcUrlRateLimited'
-            : 'failedToFetchChainId';
-          setRpcFetchError({
-            key: errorKey,
-            msg: t(errorKey),
-          });
+        if (cancelled || replaceWithNextChainlistRpc()) {
+          return;
         }
+
+        setFetchedChainId(undefined);
+        log.warn('Failed to fetch the chainId from the endpoint.', err);
+        const errorKey = isRpcRateLimitError(err)
+          ? 'rpcUrlRateLimited'
+          : 'failedToFetchChainId';
+        setRpcFetchError({
+          key: errorKey,
+          msg: t(errorKey),
+        });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [selectedRpcUrl, t]);
+  }, [
+    chainIdHex,
+    rpcEndpointCount,
+    safeChains,
+    selectedRpcUrl,
+    setRpcUrls,
+    source,
+    t,
+  ]);
 
   const onSubmit = async () => {
     try {
@@ -544,9 +664,18 @@ export const NetworksForm = ({
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
       ref={scrollableRef}
-      className="networks-form__scrollable h-full"
+      className="networks-form__scrollable h-full min-h-0"
     >
-      <Box paddingHorizontal={4} paddingBottom={2} className="w-full">
+      <Box
+        paddingHorizontal={4}
+        paddingBottom={2}
+        flexDirection={chainlistFillsForm ? BoxFlexDirection.Column : undefined}
+        className={
+          chainlistFillsForm
+            ? 'min-h-0 w-full flex-1 overflow-hidden'
+            : 'w-full'
+        }
+      >
         {onAddFromChainlist && !existingNetwork && !showChainlist ? (
           <Button
             variant={ButtonVariant.Secondary}
@@ -560,46 +689,45 @@ export const NetworksForm = ({
             {t('addFromChainlist')}
           </Button>
         ) : null}
-        <Label htmlFor="networkName" className="mb-1">
+        <Label htmlFor="networkName" className="mb-1 shrink-0">
           {t('networkName')}
         </Label>
-        <Box ref={nameFieldRef}>
-          <TextField
-            id="networkName"
-            size={TextFieldSize.Lg}
-            placeholder={t('enterNetworkName')}
-            data-testid="network-form-name-input"
-            autoFocus
-            className="w-full"
-            onClick={openChainlist}
-            onFocus={(event) => {
-              // Skip the mount auto-focus so the list opens on a click or a later focus.
-              if (event.relatedTarget) {
-                openChainlist();
-              }
-            }}
-            onChange={(event) => {
-              setName(event.target.value);
-              openChainlist();
-            }}
-            inputProps={
-              {
-                'data-testid': 'network-form-network-name',
-              } as React.ComponentPropsWithoutRef<'input'>
+        <TextField
+          ref={nameFieldRef}
+          id="networkName"
+          size={TextFieldSize.Lg}
+          placeholder={t('enterNetworkName')}
+          data-testid="network-form-name-input"
+          autoFocus
+          className="w-full shrink-0"
+          onClick={() => openChainlist('name')}
+          onFocus={(event) => {
+            // Mount auto-focus has no relatedTarget. Skip it once the form
+            // already has a network so returning from RPC or block explorer
+            // does not cover those fields.
+            if (formAlreadyStarted && !event.relatedTarget) {
+              return;
             }
-            value={name}
-          />
-        </Box>
-        {showChainlist && chainlist ? (
-          <Popover
-            referenceElement={chainlistReference}
-            position={PopoverPosition.Bottom}
-            matchWidth
-            isOpen={isChainlistOpen}
-            isPortal
-            onClickOutside={() => setIsChainlistOpen(false)}
-            onPressEscKey={() => setIsChainlistOpen(false)}
-            className="z-10 overflow-hidden rounded-xl p-0"
+            openChainlist('name');
+          }}
+          onChange={(event) => {
+            setName(event.target.value);
+            openChainlist('name');
+          }}
+          inputProps={
+            {
+              'data-testid': 'network-form-network-name',
+            } as React.ComponentPropsWithoutRef<'input'>
+          }
+          value={name}
+        />
+        {showChainlist && chainlist && chainlistFillsForm ? (
+          <Box
+            ref={chainlistPanelRef}
+            flexDirection={BoxFlexDirection.Column}
+            className="mt-1 min-h-0 flex-1 overflow-hidden rounded-xl border border-border-muted"
+            data-testid="networks-page-chainlist-dropdown"
+            data-anchor="name"
           >
             <ChainlistNetworkPicker
               existingNetworkChainIds={chainlist.existingNetworkChainIds}
@@ -611,284 +739,319 @@ export const NetworksForm = ({
               showSearchField={false}
               onSelect={(network, searchQuery) => {
                 setSource('chainlist');
-                setIsChainlistOpen(false);
+                closeChainlist();
                 chainlist.onSelect(network, searchQuery);
               }}
               onUseTypedName={(typedName) => {
                 setSource('manual');
                 setName(typedName);
-                setIsChainlistOpen(false);
+                closeChainlist();
               }}
             />
-          </Popover>
+          </Box>
         ) : null}
-        {name && warnings?.name?.msg ? (
-          <HelpText severity={HelpTextSeverity.Warning}>
-            {warnings.name.msg}
-          </HelpText>
-        ) : null}
-        {suggestedName ? (
-          <Text
-            asChild
-            variant={TextVariant.BodySm}
-            color={TextColor.TextDefault}
-            data-testid="network-form-name-suggestion"
-          >
-            <span>
-              {t('suggestedTokenName')}
-              <TextButton
-                size={TextButtonSize.BodySm}
-                onClick={() => {
-                  setName(suggestedName);
-                }}
-                className="px-1 align-baseline"
-              >
-                {suggestedName}
-              </TextButton>
-            </span>
-          </Text>
-        ) : null}
-        <DropdownEditor
-          title={t('defaultRpcUrl')}
-          placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.PopoverStyle}
-          items={rpcUrls.rpcEndpoints}
-          itemKey={(endpoint) => endpoint.url}
-          itemDataTestId={(endpoint, index) =>
-            `network-form-rpc-option-${endpoint.name ?? String(index)}`
-          }
-          selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
-          error={Boolean(errors.rpcUrl)}
-          buttonDataTestId="test-add-rpc-drop-down"
-          renderItem={(item, isList) => {
-            const failoverUrls = failoverUrlsForEndpoint(item);
-            return isList ||
-              item?.name ||
-              item?.type === RpcEndpointType.Infura ||
-              failoverUrls.length > 0 ? (
-              <RpcListItem
-                rpcEndpoint={{
-                  ...item,
-                  failoverUrls,
-                }}
-              />
-            ) : (
-              // A custom (non Infura) endpoint never has a failover, so it just
-              // renders the URL with no failover tag.
-              <Text
-                asChild
-                ellipsis
-                variant={TextVariant.BodyMd}
-                className="flex items-center gap-1 py-3"
-              >
-                <span>{stripProtocol(stripKeyFromInfuraUrl(item.url))}</span>
-              </Text>
-            );
-          }}
-          renderTooltip={(item, isList) => {
-            const url = stripKeyFromInfuraUrl(item.url);
-            return url.length > (isList ? 37 : 35) ? url : undefined;
-          }}
-          addButtonText={t('addRpcUrl')}
-          itemIsDeletable={(item, items) =>
-            items.length > 1 && item.type !== RpcEndpointType.Infura
-          }
-          onItemAdd={onRpcAdd}
-          onItemSelected={(index) =>
-            setRpcUrls((state) => ({
-              ...state,
-              defaultRpcEndpointIndex: index,
-            }))
-          }
-          onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            setRpcUrls({
-              rpcEndpoints: rpcUrls.rpcEndpoints
-                ?.slice(0, deletedIndex)
-                .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
-              defaultRpcEndpointIndex: newSelectedIndex,
-            });
-          }}
-        />
-
-        {errors.rpcUrl?.msg && (
-          <HelpText
-            severity={HelpTextSeverity.Danger}
-            data-testid="network-form-chain-id-error"
-          >
-            {errors.rpcUrl?.msg}
-          </HelpText>
-        )}
-
-        {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
-          <div className="mt-4">
-            <Label htmlFor="failoverRpcUrl" className="mb-1">
-              {t('failoverRpcUrl')}
-            </Label>
-            <TextField
-              id="failoverRpcUrl"
-              size={TextFieldSize.Lg}
-              className="w-full"
-              value={onlyKeepHost(defaultFailoverUrls[0])}
-              isDisabled
-            />
-          </div>
-        ) : null}
-
-        <div className="mt-4">
-          <Label htmlFor="chainId" className="mb-1">
-            {t('chainId')}
-          </Label>
-          <TextField
-            id="chainId"
-            size={TextFieldSize.Lg}
-            placeholder={t('enterChainId')}
-            data-testid="network-form-chain-id-input"
-            className="w-full"
-            onChange={(event) => {
-              setChainId(event.target.value.trim());
-            }}
-            isError={Boolean(errors?.chainId)}
-            inputProps={
-              {
-                'data-testid': 'network-form-chain-id',
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
-            value={chainId}
-            isDisabled={Boolean(existingNetwork)}
-          />
-        </div>
-
-        {errors.chainId?.msg ? (
-          <HelpText
-            severity={HelpTextSeverity.Danger}
-            data-testid="network-form-chain-id-error"
-          >
-            {errors.chainId.msg}
-          </HelpText>
-        ) : null}
-        {errors.chainId?.key === 'existingChainId' ? (
-          <HelpText
-            asChild
-            severity={HelpTextSeverity.Danger}
-            data-testid="network-form-chain-id-error"
-          >
-            <div>
-              {t('updateOrEditNetworkInformations')}{' '}
-              <TextButton
-                size={TextButtonSize.BodySm}
-                onClick={() => {
-                  if (chainIdHex) {
-                    dispatch(
-                      setEditedNetwork({
-                        chainId: chainIdHex,
-                      }),
-                    );
-                    onEdit?.();
-                  }
-                }}
-              >
-                {t('editNetworkLink')}
-              </TextButton>
-            </div>
-          </HelpText>
-        ) : null}
-        <div className="mt-4">
-          <Label htmlFor="nativeCurrency" className="mb-1">
-            {t('currencySymbol')}
-          </Label>
-          <TextField
-            id="nativeCurrency"
-            size={TextFieldSize.Lg}
-            placeholder={t('enterSymbol')}
-            data-testid="network-form-ticker"
-            className="w-full"
-            onChange={(event) => {
-              setTicker(event.target.value);
-            }}
-            inputProps={
-              {
-                'data-testid': 'network-form-ticker-input',
-              } as React.ComponentPropsWithoutRef<'input'>
-            }
-            value={ticker}
-          />
-          {suggestedTicker ? (
+        <Box className={chainlistFillsForm ? 'hidden' : undefined}>
+          {name && warnings?.name?.msg ? (
+            <HelpText severity={HelpTextSeverity.Warning}>
+              {warnings.name.msg}
+            </HelpText>
+          ) : null}
+          {suggestedName ? (
             <Text
               asChild
               variant={TextVariant.BodySm}
               color={TextColor.TextDefault}
-              data-testid="network-form-ticker-suggestion"
+              data-testid="network-form-name-suggestion"
             >
               <span>
-                {t('suggestedCurrencySymbol')}
+                {t('suggestedTokenName')}
                 <TextButton
                   size={TextButtonSize.BodySm}
                   onClick={() => {
-                    setTicker(suggestedTicker);
+                    setName(suggestedName);
                   }}
                   className="px-1 align-baseline"
                 >
-                  {suggestedTicker}
+                  {suggestedName}
                 </TextButton>
               </span>
             </Text>
           ) : null}
-        </div>
-        {ticker && warnings.ticker?.msg ? (
-          <HelpText
-            severity={HelpTextSeverity.Warning}
-            data-testid="network-form-ticker-warning"
-          >
-            {warnings.ticker.msg}
-          </HelpText>
-        ) : null}
-
-        <DropdownEditor
-          title={t('blockExplorerUrl')}
-          placeholder={t('addAUrl')}
-          style={DropdownEditorStyle.BoxStyle}
-          items={blockExplorers.blockExplorerUrls}
-          itemKey={(item) => `${item}`}
-          selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
-          addButtonText={t('addBlockExplorerUrl')}
-          onItemAdd={onBlockExplorerAdd}
-          buttonDataTestId="test-explorer-drop-down"
-          onItemSelected={(index) =>
-            setBlockExplorers((state) => ({
-              ...state,
-              defaultBlockExplorerUrlIndex: index,
-            }))
-          }
-          onItemDeleted={(deletedIndex, newSelectedIndex) => {
-            setBlockExplorers({
-              blockExplorerUrls: blockExplorers.blockExplorerUrls
-                ?.slice(0, deletedIndex)
-                .concat(
-                  blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
-                ),
-              defaultBlockExplorerUrlIndex: newSelectedIndex,
-            });
-          }}
-          // Scroll to bottom so all URLs are visible
-          onDropdownOpened={() => {
-            if (scrollableRef.current) {
-              scrollableRef.current.scrollTop =
-                scrollableRef.current.scrollHeight;
+          <DropdownEditor
+            title={t('defaultRpcUrl')}
+            placeholder={t('addAUrl')}
+            style={DropdownEditorStyle.PopoverStyle}
+            items={rpcUrls.rpcEndpoints}
+            itemKey={(endpoint) => endpoint.url}
+            itemDataTestId={(endpoint, index) =>
+              `network-form-rpc-option-${endpoint.name ?? String(index)}`
             }
-          }}
-          renderItem={(item) => (
-            <Text
-              asChild
-              ellipsis
-              color={TextColor.TextDefault}
-              variant={TextVariant.BodyMd}
-              className="bg-transparent px-0 py-3"
+            selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
+            error={Boolean(errors.rpcUrl)}
+            buttonDataTestId="test-add-rpc-drop-down"
+            renderItem={(item) => {
+              const failoverUrls = failoverUrlsForEndpoint(item);
+              return item?.name ||
+                item?.type === RpcEndpointType.Infura ||
+                failoverUrls.length > 0 ? (
+                <RpcListItem
+                  rpcEndpoint={{
+                    ...item,
+                    failoverUrls,
+                  }}
+                />
+              ) : (
+                // A custom (non Infura) endpoint never has a failover, so it just
+                // renders the URL with no failover tag.
+                <Text
+                  asChild
+                  ellipsis
+                  variant={TextVariant.BodyMd}
+                  className="flex items-center gap-1 py-2"
+                >
+                  <span>{stripProtocol(stripKeyFromInfuraUrl(item.url))}</span>
+                </Text>
+              );
+            }}
+            renderTooltip={(item, isList) => {
+              const url = stripKeyFromInfuraUrl(item.url);
+              return url.length > (isList ? 37 : 35) ? url : undefined;
+            }}
+            addButtonText={t('addRpcUrl')}
+            itemIsDeletable={(item) => item.type !== RpcEndpointType.Infura}
+            onItemAdd={onRpcAdd}
+            onItemSelected={(index) =>
+              setRpcUrls((state) => ({
+                ...state,
+                defaultRpcEndpointIndex: index,
+              }))
+            }
+            onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              setRpcUrls({
+                rpcEndpoints: rpcUrls.rpcEndpoints
+                  ?.slice(0, deletedIndex)
+                  .concat(rpcUrls.rpcEndpoints.slice(deletedIndex + 1)),
+                defaultRpcEndpointIndex: newSelectedIndex,
+              });
+            }}
+          />
+
+          {errors.rpcUrl?.msg && (
+            <HelpText
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
             >
-              <span>{stripProtocol(item)}</span>
-            </Text>
+              {errors.rpcUrl?.msg}
+            </HelpText>
           )}
-          renderTooltip={(item) => (item.length > 36 ? item : undefined)}
-        />
+
+          {isRpcFailoverEnabled && defaultFailoverUrls.length > 0 ? (
+            <div className="mt-4">
+              <Label htmlFor="failoverRpcUrl" className="mb-1">
+                {t('failoverRpcUrl')}
+              </Label>
+              <TextField
+                id="failoverRpcUrl"
+                size={TextFieldSize.Lg}
+                className="w-full"
+                value={onlyKeepHost(defaultFailoverUrls[0])}
+                isDisabled
+              />
+            </div>
+          ) : null}
+
+          <div className="relative mt-4">
+            <Label htmlFor="chainId" className="mb-1">
+              {t('chainId')}
+            </Label>
+            <TextField
+              ref={chainIdFieldRef}
+              id="chainId"
+              size={TextFieldSize.Lg}
+              placeholder={t('enterChainId')}
+              data-testid="network-form-chain-id-input"
+              className="w-full"
+              onClick={() => openChainlist('chainId')}
+              onFocus={() => openChainlist('chainId')}
+              onChange={(event) => {
+                setChainId(event.target.value.trim());
+                openChainlist('chainId');
+              }}
+              isError={Boolean(errors?.chainId)}
+              inputProps={
+                {
+                  'data-testid': 'network-form-chain-id',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              value={chainId}
+              isDisabled={Boolean(existingNetwork)}
+            />
+            {showChainlist &&
+            chainlist &&
+            isChainlistOpen &&
+            chainlistAnchor === 'chainId' ? (
+              <Box
+                ref={chainlistPanelRef}
+                flexDirection={BoxFlexDirection.Column}
+                className="absolute inset-x-0 top-full z-10 mt-1 h-80 overflow-hidden rounded-xl border border-border-muted bg-background-default"
+                data-testid="networks-page-chainlist-dropdown"
+                data-anchor="chainId"
+              >
+                <ChainlistNetworkPicker
+                  existingNetworkChainIds={chainlist.existingNetworkChainIds}
+                  existingNetworkNamesByChainId={
+                    chainlist.existingNetworkNamesByChainId
+                  }
+                  layout="dropdown"
+                  searchValue={chainId}
+                  showSearchField={false}
+                  onSelect={(network, searchQuery) => {
+                    setSource('chainlist');
+                    closeChainlist();
+                    chainlist.onSelect(network, searchQuery);
+                  }}
+                  onUseTypedName={(typedName) => {
+                    setSource('manual');
+                    setName(typedName);
+                    closeChainlist();
+                  }}
+                />
+              </Box>
+            ) : null}
+          </div>
+
+          {errors.chainId?.msg ? (
+            <HelpText
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
+            >
+              {errors.chainId.msg}
+            </HelpText>
+          ) : null}
+          {errors.chainId?.key === 'existingChainId' ? (
+            <HelpText
+              asChild
+              severity={HelpTextSeverity.Danger}
+              data-testid="network-form-chain-id-error"
+            >
+              <div>
+                {t('updateOrEditNetworkInformations')}{' '}
+                <TextButton
+                  size={TextButtonSize.BodySm}
+                  onClick={() => {
+                    if (chainIdHex) {
+                      dispatch(
+                        setEditedNetwork({
+                          chainId: chainIdHex,
+                        }),
+                      );
+                      onEdit?.();
+                    }
+                  }}
+                >
+                  {t('editNetworkLink')}
+                </TextButton>
+              </div>
+            </HelpText>
+          ) : null}
+          <div className="mt-4">
+            <Label htmlFor="nativeCurrency" className="mb-1">
+              {t('currencySymbol')}
+            </Label>
+            <TextField
+              id="nativeCurrency"
+              size={TextFieldSize.Lg}
+              placeholder={t('enterSymbol')}
+              data-testid="network-form-ticker"
+              className="w-full"
+              onChange={(event) => {
+                setTicker(event.target.value);
+              }}
+              inputProps={
+                {
+                  'data-testid': 'network-form-ticker-input',
+                } as React.ComponentPropsWithoutRef<'input'>
+              }
+              value={ticker}
+            />
+            {suggestedTicker ? (
+              <Text
+                asChild
+                variant={TextVariant.BodySm}
+                color={TextColor.TextDefault}
+                data-testid="network-form-ticker-suggestion"
+              >
+                <span>
+                  {t('suggestedCurrencySymbol')}
+                  <TextButton
+                    size={TextButtonSize.BodySm}
+                    onClick={() => {
+                      setTicker(suggestedTicker);
+                    }}
+                    className="px-1 align-baseline"
+                  >
+                    {suggestedTicker}
+                  </TextButton>
+                </span>
+              </Text>
+            ) : null}
+          </div>
+          {ticker && warnings.ticker?.msg ? (
+            <HelpText
+              severity={HelpTextSeverity.Warning}
+              data-testid="network-form-ticker-warning"
+            >
+              {warnings.ticker.msg}
+            </HelpText>
+          ) : null}
+
+          <DropdownEditor
+            title={t('blockExplorerUrl')}
+            placeholder={t('addAUrl')}
+            style={DropdownEditorStyle.BoxStyle}
+            items={blockExplorers.blockExplorerUrls}
+            itemKey={(item) => `${item}`}
+            selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
+            addButtonText={t('addBlockExplorerUrl')}
+            onItemAdd={onBlockExplorerAdd}
+            buttonDataTestId="test-explorer-drop-down"
+            onItemSelected={(index) =>
+              setBlockExplorers((state) => ({
+                ...state,
+                defaultBlockExplorerUrlIndex: index,
+              }))
+            }
+            onItemDeleted={(deletedIndex, newSelectedIndex) => {
+              setBlockExplorers({
+                blockExplorerUrls: blockExplorers.blockExplorerUrls
+                  ?.slice(0, deletedIndex)
+                  .concat(
+                    blockExplorers.blockExplorerUrls.slice(deletedIndex + 1),
+                  ),
+                defaultBlockExplorerUrlIndex: newSelectedIndex,
+              });
+            }}
+            // Scroll to bottom so all URLs are visible
+            onDropdownOpened={() => {
+              if (scrollableRef.current) {
+                scrollableRef.current.scrollTop =
+                  scrollableRef.current.scrollHeight;
+              }
+            }}
+            renderItem={(item) => (
+              <Text
+                asChild
+                ellipsis
+                color={TextColor.TextDefault}
+                variant={TextVariant.BodyMd}
+                className="bg-transparent px-0 py-2"
+              >
+                <span>{stripProtocol(item)}</span>
+              </Text>
+            )}
+            renderTooltip={(item) => (item.length > 36 ? item : undefined)}
+          />
+        </Box>
       </Box>
       <Box
         className={`networks-form__footer w-full${
