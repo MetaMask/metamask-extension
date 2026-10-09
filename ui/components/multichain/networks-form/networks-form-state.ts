@@ -5,12 +5,15 @@ import {
 } from '@metamask/network-controller';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
 
+export type NetworkFormSource = 'chainlist' | 'manual';
+
 /**
  * State backing the add/edit network form
  *
  * @param existingNetwork
  */
 export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
+  const [source, setSource] = useState<NetworkFormSource>('manual');
   const [name, setName] = useState<string>(existingNetwork?.name ?? '');
   const [chainId, setChainId] = useState<string>(
     existingNetwork ? hexToDecimal(existingNetwork.chainId) : '',
@@ -47,6 +50,7 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
 
   if (existingNetworkChainId !== prevExistingNetworkChainId) {
     setPrevExistingNetworkChainId(existingNetworkChainId);
+    setSource('manual');
     setName(existingNetwork?.name ?? '');
     setChainId(existingNetwork ? hexToDecimal(existingNetwork.chainId) : '');
     setTicker(existingNetwork?.nativeCurrency ?? '');
@@ -63,6 +67,8 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
   }
 
   return {
+    source,
+    setSource,
     name,
     setName,
     chainId,
@@ -74,6 +80,7 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
     blockExplorers,
     setBlockExplorers,
     clear: () => {
+      setSource('manual');
       setName('');
       setChainId('');
       setTicker('');

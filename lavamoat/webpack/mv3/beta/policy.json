@@ -1589,7 +1589,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
+        "@metamask/perps-controller>@metamask/controller-utils>@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -1731,6 +1731,14 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "cockatiel": true,
         "@metamask/core-backend>uuid": true
+      }
+    },
+    "@metamask/profile-sync-controller>@metamask/cryptography": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.importKey": true
       }
     },
     "@metamask/delegation-controller": {
@@ -2844,7 +2852,7 @@
         "@metamask/base-controller": true,
         "@metamask/perps-controller>@metamask/controller-utils": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
+        "@metamask/perps-controller>@metamask/utils": true,
         "@metamask/perps-controller>@nktkas/hyperliquid": true,
         "@metamask/perps-controller>bignumber.js": true,
         "reselect": true,
@@ -3035,11 +3043,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/profile-sync-controller>@metamask/cryptography": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
         "@metamask/superstruct": true,
         "@metamask/profile-sync-controller>@metamask/utils": true,
-        "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/profile-sync-controller>@signinwithethereum/siwe": true,
@@ -3739,6 +3747,13 @@
         "lodash": true
       }
     },
+    "@metamask/perps-controller>@metamask/controller-utils>@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "lodash": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/controller-utils>@metamask/utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -3849,6 +3864,21 @@
         "lodash": true
       }
     },
+    "@metamask/perps-controller>@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/superstruct": true,
+        "@noble/hashes": true,
+        "@scure/base": true,
+        "buffer": true,
+        "lodash": true
+      }
+    },
     "@metamask/profile-sync-controller>@metamask/utils": {
       "globals": {
         "Buffer": true,
@@ -3860,7 +3890,8 @@
         "@noble/hashes": true,
         "@scure/base": true,
         "buffer": true,
-        "lodash": true
+        "lodash": true,
+        "@metamask/utils>pony-cause": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/utils": {
@@ -5759,6 +5790,11 @@
       },
       "packages": {
         "storybook>recast>tiny-invariant": true
+      }
+    },
+    "css-loader": {
+      "globals": {
+        "btoa": true
       }
     },
     "currency-formatter": {

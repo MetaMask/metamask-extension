@@ -7347,6 +7347,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/analytics-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/analytics-controller@npm:4.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/config-registry-controller": "npm:^5.0.0"
+    "@metamask/geolocation-controller": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^12.0.0"
+    lodash-es: "npm:^4.18.1"
+    uuid: "npm:^11.1.1"
+  checksum: 10/a1da23fb561f7aee7b4d5ea851195b7fc336f30d3e821f1abef357d27ce3e1854a75d6a72920cabab688e32cca1bceffa778a4fc4f322e236cb3d68a0771675c
+  languageName: node
+  linkType: hard
+
 "@metamask/announcement-controller@npm:^8.0.0":
   version: 8.0.0
   resolution: "@metamask/announcement-controller@npm:8.0.0"
@@ -7653,10 +7668,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:3.0.0"
-  checksum: 10/282185abb75e25cca8f20c0aa71eea5cfe91bff5885014f888a37b50e46fab1ce84fc402f71034d5ec811cfa7dc0c9f830b6a153d8a8b6394298e552705fa291
+"@metamask/bitcoin-wallet-snap@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:3.1.0"
+  checksum: 10/9c89eacd272bf09a715aa885b345923ff8a73e5243cecbfe3e11d70ac36debb955509a6e1e966fd4b4052fc1ab0dd3de237d308153bbe73b1ed005f0b08187bb
   languageName: node
   linkType: hard
 
@@ -7923,6 +7938,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/config-registry-controller@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/config-registry-controller@npm:5.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/keyring-controller": "npm:^28.1.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/polling-controller": "npm:^17.0.0"
+    "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/befedb11a5af8f66b5ed0b6db72ccc65ce2c6a3164ed1a4180c20bdbcf4ac8a82131ff40236247e105d8ee928c4b9984ed8a496e7cf554dc168816af716d6ff7
+  languageName: node
+  linkType: hard
+
 "@metamask/connectivity-controller@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/connectivity-controller@npm:0.3.0"
@@ -8110,6 +8142,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/cryptography@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/cryptography@npm:1.1.2"
+  checksum: 10/567ab4d7a27bbf1be129a120bd0d6d1dfc1677ddc36c2e81c259bebd7824b493fbb67127b585d57f94d98463daa7f7a43296db8ff2d9ed85f440ecc7e9c83dc9
+  languageName: node
+  linkType: hard
+
 "@metamask/delegation-controller@npm:^3.0.2":
   version: 3.0.2
   resolution: "@metamask/delegation-controller@npm:3.0.2"
@@ -8152,10 +8191,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-deployments@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/delegation-deployments@npm:2.0.0"
-  checksum: 10/7f2712ab5e48551880f2ce49d6bd6434b7587772b5053504b1186ae1a894313e9a30ef7ba94cceb7ee80a91c31764ca1a92aec9d8a30de925524a6314f163a7d
+"@metamask/delegation-deployments@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/delegation-deployments@npm:2.1.0"
+  checksum: 10/6dc1d0494ed4d97008e36877b0afcee2691f78c3b1803cd21b6607ad8af2f1612bb55fb3d39ffd1174485dcf4b57ebc8b156d3e5e2c2e3bdec8bba21ec6d5d43
   languageName: node
   linkType: hard
 
@@ -9865,21 +9904,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^17.1.0":
-  version: 17.1.0
-  resolution: "@metamask/perps-controller@npm:17.1.0"
+"@metamask/perps-controller@npm:^20.0.0":
+  version: 20.0.0
+  resolution: "@metamask/perps-controller@npm:20.0.0"
   dependencies:
     "@metamask/abi-utils": "npm:^2.0.3"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.12.0"
-    "@nktkas/hyperliquid": "npm:^0.33.1"
+    "@metamask/utils": "npm:^12.0.0"
+    "@nktkas/hyperliquid": "npm:^0.33.3"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
-    uuid: "npm:^9.0.1"
-  checksum: 10/5c44a15079b680c15b4071079ac7f0d1d915bbe68c5954b8efbf9b311bf83c334949a7b963088ef17a830efc49a648aaa65b7afebcef49cb11b238e1b7b29aec
+    uuid: "npm:^11.1.1"
+  checksum: 10/48984e855160d0573bfbe70d3c3b9723463ab7a271f037a5eb2942fbe9c9007fd43c460ffd8e1d1340dbd7ce3e1b7b9f9de447c21ff26ccc01cb66d84f13d161
   languageName: node
   linkType: hard
 
@@ -10074,29 +10113,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:^33.0.0":
-  version: 33.0.0
-  resolution: "@metamask/profile-sync-controller@npm:33.0.0"
+"@metamask/profile-sync-controller@npm:^34.0.3":
+  version: 34.0.3
+  resolution: "@metamask/profile-sync-controller@npm:34.0.3"
   dependencies:
     "@metamask/address-book-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/cryptography": "npm:^1.1.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/keyring-controller": "npm:^28.1.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/seedless-onboarding-controller": "npm:^11.0.1"
+    "@metamask/seedless-onboarding-controller": "npm:^12.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^12.0.0"
-    "@noble/ciphers": "npm:^1.3.0"
-    "@noble/curves": "npm:^1.9.2"
+    "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     "@signinwithethereum/siwe": "npm:^4.2.1"
-    immer: "npm:^9.0.21"
+    immer: "npm:^11.1.18"
     loglevel: "npm:^1.8.1"
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/2672dab497875e0cbcd21d788cadb9ac277f36f8da9e3eabfae0333e950abde1da8d585c3993103df6b1692d432c0188bb6ba91409d0e4b8297750f57467c9a0
+  checksum: 10/cfd1825f5c50e5fd11214dac17263a4fdf5706c1145b7c06d7ad6def11082c57c17dc911cec4af923ec83fc43c1c3a7fafc53c13f5e7dca1e0f8f3c438a9de6a
   languageName: node
   linkType: hard
 
@@ -10316,6 +10355,26 @@ __metadata:
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
   checksum: 10/e8d2f6b575be58e8cfc7ee93595f0990323de7928ff8136659a37a8249ba6350dc421991f2b4796728008e67879ebe7f845623875b68703ac87204f4df74abf0
+  languageName: node
+  linkType: hard
+
+"@metamask/seedless-onboarding-controller@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:12.0.0"
+  dependencies:
+    "@metamask/analytics-controller": "npm:^4.0.0"
+    "@metamask/auth-network-utils": "npm:^0.3.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/keyring-controller": "npm:^28.1.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/toprf-secure-backup": "npm:^1.1.0"
+    "@metamask/utils": "npm:^12.0.0"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/curves": "npm:^1.9.7"
+    "@noble/hashes": "npm:^1.8.0"
+    async-mutex: "npm:^0.5.0"
+  checksum: 10/290517239aa8ab2063335aa08337466dc7f01c7f6711980f4bc456f10cce8b8c24e6667811cecc536b3c1cb9e1eb9b350dace24b51ffb6e0ff42b5565852e880
   languageName: node
   linkType: hard
 
@@ -10705,10 +10764,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/solana-wallet-snap@npm:5.0.1"
-  checksum: 10/b1b02da2d0a3cf0059851d3098654a81e826590b08153f289e83184fbcf4ad621a987d1b16876d2f9b5dca735509db7ce477ca045a73d1e601fb6c314b206294
+"@metamask/solana-wallet-snap@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/solana-wallet-snap@npm:7.0.0"
+  checksum: 10/57b0534954dbaf8fe9046053d7939ce914484fc9164f025e139f08ed95926b536f8ce830a9126d19fea42bae51fa2ec0ab6ac9b876116d229f633ae0b509b014
   languageName: node
   linkType: hard
 
@@ -10726,10 +10785,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/stellar-wallet-snap@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/stellar-wallet-snap@npm:1.1.0"
-  checksum: 10/44c4af09d173aa90b69a8687be1c3f5ac849d41785ac84edaed2d1c298ad14cf974d48d3a98fe24ed7d243148f890b716397708273261613062c81c250e0bbed
+"@metamask/stellar-wallet-snap@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/stellar-wallet-snap@npm:1.1.1"
+  checksum: 10/82e6be99fb710b010849892b1ee771e7598c4ea47e83accd819546271fada7507b5128180213496e9cd1317603fd3de1d1db346d0ecb19e83fca02ac91714cd3
   languageName: node
   linkType: hard
 
@@ -11142,10 +11201,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/tron-wallet-snap@npm:3.2.0"
-  checksum: 10/8d65d9d037269b4a9f507bf80080bfe7817e6d58396f6b87400f73295e060237792a3b3ecfb719daa658a08bcb7d5825598cb69abb2c1ec724ccb096273ec6eb
+"@metamask/tron-wallet-snap@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/tron-wallet-snap@npm:4.0.0"
+  checksum: 10/4c28a6bc4742e2cf2d1b07d1b5795838321a957da860942d5d09ca76d4c85bc98eec199846d948835ea602255875c6f466c2e9a1206851583ad649c946f99319
   languageName: node
   linkType: hard
 
@@ -11613,15 +11672,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nktkas/hyperliquid@npm:^0.33.1":
-  version: 0.33.2
-  resolution: "@nktkas/hyperliquid@npm:0.33.2"
+"@nktkas/hyperliquid@npm:^0.33.3":
+  version: 0.33.3
+  resolution: "@nktkas/hyperliquid@npm:0.33.3"
   dependencies:
     "@nktkas/rews": "npm:^4.1.0"
     "@noble/hashes": "npm:^2.2.0"
     decimal.js: "npm:^10.6.0"
     valibot: "npm:^1.4.2"
-  checksum: 10/b9c0d17a5bb18f2656c215fc18b1ae1e0e12562e5a8042c7a2e0798fc6a2e9f9caa8e90f2ef7b9ba016102576fdce5c944fbbd640c4aa7fb47e60046dc904adc
+  checksum: 10/3797882abf9dc26093c37750f6927eba7b2f3cc6fdf1f95df611c8dbcd5579101099175226b6fd025e4f2f10c0d010da84b7f72f7322eb362fa4ae3e03cdafc3
   languageName: node
   linkType: hard
 
@@ -35825,7 +35884,7 @@ __metadata:
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/bitcoin-regtest-up": "npm:^1.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^3.0.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^3.1.0"
     "@metamask/bitcoin-wallet-standard": "npm:^1.1.0"
     "@metamask/bridge-controller": "npm:^81.3.0"
     "@metamask/bridge-status-controller": "npm:^76.3.0"
@@ -35845,7 +35904,7 @@ __metadata:
     "@metamask/core-backend": "npm:^11.0.0"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
-    "@metamask/delegation-deployments": "npm:^2.0.0"
+    "@metamask/delegation-deployments": "npm:^2.1.0"
     "@metamask/design-system-react": "npm:^0.45.3"
     "@metamask/design-system-shared": "npm:^0.39.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.14.0"
@@ -35920,7 +35979,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
-    "@metamask/perps-controller": "npm:^17.1.0"
+    "@metamask/perps-controller": "npm:^20.0.0"
     "@metamask/phishing-controller": "npm:^17.4.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"
@@ -35930,7 +35989,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.8.1"
     "@metamask/profile-metrics-controller": "npm:^5.1.0"
-    "@metamask/profile-sync-controller": "npm:^33.0.0"
+    "@metamask/profile-sync-controller": "npm:^34.0.3"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/ramps-controller": "npm:^26.0.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
@@ -35956,9 +36015,9 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^12.1.0"
     "@metamask/snaps-utils": "npm:^12.6.0"
     "@metamask/solana-test-validator-up": "npm:^1.0.0"
-    "@metamask/solana-wallet-snap": "npm:^5.0.1"
+    "@metamask/solana-wallet-snap": "npm:^7.0.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
-    "@metamask/stellar-wallet-snap": "npm:^1.1.0"
+    "@metamask/stellar-wallet-snap": "npm:^1.1.1"
     "@metamask/storage-service": "npm:^1.0.0"
     "@metamask/subscription-controller": "npm:^8.0.1"
     "@metamask/superstruct": "npm:^3.2.1"
@@ -35971,7 +36030,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.6.0"
     "@metamask/transaction-controller": "npm:^72.2.0"
     "@metamask/transaction-pay-controller": "npm:^30.0.0"
-    "@metamask/tron-wallet-snap": "npm:^3.2.0"
+    "@metamask/tron-wallet-snap": "npm:^4.0.0"
     "@metamask/user-operation-controller": "npm:^41.2.5"
     "@metamask/utils": "npm:^11.12.1"
     "@metamask/wallet": "npm:^14.0.1"
