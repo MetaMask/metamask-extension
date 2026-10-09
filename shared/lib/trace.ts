@@ -52,6 +52,8 @@ export enum TraceName {
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  // Initial document navigation to the first screen's useful content.
+  UsefulScreenReady = 'Useful Screen Ready',
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
@@ -163,6 +165,7 @@ export enum TraceOperation {
   AccountDiscover = 'account.discover',
   HomepagePerformance = 'homepage.performance',
   HomepageSectionPerformance = 'homepage.section.performance',
+  UiScreenPerformance = 'ui.screen.performance',
   // mUSD Conversion
   MusdConversionOperation = 'musd.conversion.operation',
   MusdConversionDataFetch = 'musd.conversion.data_fetch',
