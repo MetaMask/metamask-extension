@@ -345,7 +345,8 @@
     "@ledgerhq/context-module/ethers": "^6.15.0",
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^34.0.3",
-    "@metamask/account-tree-controller": "^11.0.0"
+    "@metamask/account-tree-controller": "^11.0.0",
+    "ses": "2.2.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -366,7 +367,7 @@
     "@keystonehq/bc-ur-registry-eth": "^0.22.1",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "patch:@lavamoat/snow@npm%3A2.0.4#~/.yarn/patches/@lavamoat-snow-npm-2.0.4-6af84c19b4.patch",
-    "@lavamoat/webpack": "patch:@lavamoat/webpack@npm%3A2.2.3#~/.yarn/patches/@lavamoat-webpack-npm-2.2.3-c054d50557.patch",
+    "@lavamoat/webpack": "^3.0.1",
     "@ledgerhq/device-management-kit": "^1.7.1",
     "@ledgerhq/device-transport-kit-web-hid": "^1.2.4",
     "@ledgerhq/errors": "^6.37.0",
@@ -781,7 +782,7 @@
     "json-schema-to-ts": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
     "koa": "^3.1.1",
-    "lavamoat": "10.0.5",
+    "lavamoat": "^11.1.7",
     "level": "^8.0.1",
     "lockfile-lint": "^5.0.0",
     "madge": "^8.0.0",
