@@ -12,10 +12,14 @@ import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { Box, Skeleton } from '@metamask/design-system-react';
+import {
+  Box,
+  IconName,
+  Skeleton,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
 import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
-import { ButtonLink, IconName } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -414,15 +418,14 @@ export const CoinOverview = ({
   const renderPercentageAndAmountChange = () => {
     const renderPercentageAndAmountChangeTrail = () => {
       return (
-        <ButtonLink
+        <TextButton
+          size={TextButtonSize.BodyMd}
           endIconName={IconName.Export}
           onClick={handlePortfolioOnClick}
-          as="a"
           data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
         >
           {t('discover')}
-        </ButtonLink>
+        </TextButton>
       );
     };
 
