@@ -49,6 +49,19 @@ function httpFailure(status: number, bodyText?: string) {
   return { data: { status, bodyText } };
 }
 
+function serializedHttpFailure(
+  status: number,
+  bodyText?: string,
+  retryAfterSeconds?: number,
+) {
+  const bag = {
+    status,
+    ...(bodyText === undefined ? {} : { bodyText }),
+    ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }),
+  };
+  return { data: { cause: { ...bag, data: bag } } };
+}
+
 describe('useAcceptMoneyReferralCode', () => {
   beforeEach(() => {
     mockRegister.mockReset();
@@ -90,6 +103,26 @@ describe('useAcceptMoneyReferralCode', () => {
     expect(view.getByTestId('error').textContent).toBe(message);
   });
 
+  it('maps a 403 that arrives on error.data.cause after RPC', async () => {
+    mockRegister.mockRejectedValueOnce(
+      serializedHttpFailure(403, 'own referral code'),
+    );
+    const store = configureStore({ reducer: (state = {}) => state });
+    const view = render(
+      <Provider store={store}>
+        <Harness />
+      </Provider>,
+    );
+
+    await act(async () => {
+      view.getByRole('button', { name: 'accept' }).click();
+    });
+
+    expect(view.getByTestId('error').textContent).toBe(
+      'rewardsMoneyReferralOwnCode',
+    );
+  });
+
   it('shows the generic failure when register throws without a status', async () => {
     mockRegister.mockRejectedValueOnce(new Error('network'));
     const store = configureStore({ reducer: (state = {}) => state });
@@ -111,9 +144,9 @@ describe('useAcceptMoneyReferralCode', () => {
   it('holds Accept after a 429 until Retry-After elapses', async () => {
     jest.useFakeTimers();
     try {
-      mockRegister.mockRejectedValueOnce({
-        data: { status: 429, bodyText: 'too many', retryAfterSeconds: 2 },
-      });
+      mockRegister.mockRejectedValueOnce(
+        serializedHttpFailure(429, 'too many', 2),
+      );
       const store = configureStore({ reducer: (state = {}) => state });
       const view = render(
         <Provider store={store}>
