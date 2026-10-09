@@ -76,7 +76,7 @@ const start = async (
 ) => {
   const outcome = startMfaFlow({
     request,
-    reason: { operation: 'test', description: 'Why we ask' },
+    reason: { operation: 'test', enrollDescription: 'Why we ask' },
     platform: 'extension',
     controller,
   }).then(
