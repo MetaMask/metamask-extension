@@ -61,8 +61,6 @@ import {
   hideAsset,
   ignoreTokens as ignoreTokensAction,
   importCustomAssetsBatch,
-  multichainAddAssets,
-  multichainIgnoreAssets,
 } from '../../store/actions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
@@ -1015,9 +1013,6 @@ export const TokenManagementPage = () => {
             }
             return;
           }
-          await dispatch(
-            multichainIgnoreAssets([entry.assetId], entry.accountId),
-          );
           await dispatch(hideAsset(entry.assetId));
         }),
       );
@@ -1263,10 +1258,9 @@ export const TokenManagementPage = () => {
           return;
         }
 
-        await Promise.all([
-          dispatch(multichainAddAssets([payload.assetId], account.id)),
-          dispatch(importEvmSearchResultToUnifiedAssets(account.id, payload)),
-        ]);
+        await dispatch(
+          importEvmSearchResultToUnifiedAssets(account.id, payload),
+        );
         trackEvent(tokenAddedEvent);
       } finally {
         removePendingKey(stagedKey);

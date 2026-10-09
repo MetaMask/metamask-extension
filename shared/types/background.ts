@@ -373,7 +373,10 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
   Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
-  MultichainAssetsControllerState &
+  Pick<
+    MultichainAssetsControllerState,
+    'accountsAssets' | 'assetsMetadata' | 'allIgnoredAssets'
+  > &
   MultichainNetworkControllerState &
   NameControllerState &
   NetworkState &
