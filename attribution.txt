@@ -29282,7 +29282,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/stellar-wallet-snap
-1.1.0 <https://github.com/MetaMask/internal-snaps>
+1.1.1 <https://github.com/MetaMask/internal-snaps>
 This project is licensed under either of
 
  * MIT license ([LICENSE.MIT](LICENSE.MIT))
