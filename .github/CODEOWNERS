@@ -38,6 +38,7 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # checks that it remains so (using the snapshot for comparison). It also allows
 # for regenerating the snapshot in case the API needs to be expanded, but that
 # step requires approval from the Core Platform team.
+development/legacy-background-api/        @MetaMask/core-platform
 development/legacy-background-api.ts      @MetaMask/core-platform
 development/legacy-background-api.test.ts @MetaMask/core-platform
 legacy-background-api-snapshot.json       @MetaMask/core-platform
