@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bumped stellar-wallet-snap from 1.1.0 to 1.1.1 (#46975)
 - Updated delegation deployment data for Ark (#46777)
 
 ### Fixed
