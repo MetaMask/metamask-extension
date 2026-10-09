@@ -36,6 +36,17 @@ type StepLayoutProps = {
   footer?: ReactNode;
 };
 
+/** The 2-step verification shield, above the title of the intro and picker. */
+export const MfaShield = () => (
+  <img
+    src="./images/mfa-shield.png"
+    alt=""
+    width={64}
+    height={67}
+    className="self-center"
+  />
+);
+
 export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
   const t = useI18nContext();
   return (

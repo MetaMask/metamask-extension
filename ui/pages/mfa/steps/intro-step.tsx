@@ -15,14 +15,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMethodLabelKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
-import StepLayout, { type StepProps } from './step-layout';
+import StepLayout, { MfaShield, type StepProps } from './step-layout';
 
 const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
   const t = useI18nContext();
   return (
     <StepLayout
+      top={<MfaShield />}
       title={t('mfaIntroTitle')}
-      description={reason.description ?? t('mfaIntroDescription')}
+      description={reason.enrollDescription ?? t('mfaIntroDescription')}
       error={state.error}
       footer={
         <Button
@@ -37,6 +38,7 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
         </Button>
       }
     >
+      <Text variant={TextVariant.BodyMd}>{t('mfaIntroListTitle')}</Text>
       {step.missing.map((method) => (
         <Box
           key={method}

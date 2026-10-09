@@ -12,7 +12,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { type StepProps } from './step-layout';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/u;
 
 const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
   const t = useI18nContext();

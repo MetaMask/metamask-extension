@@ -7,14 +7,17 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMethodLabelKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
-import StepLayout, { type StepProps } from './step-layout';
+import StepLayout, { MfaShield, type StepProps } from './step-layout';
 
 const PickerStep = ({ step, state, reason, onAction }: StepProps<'picker'>) => {
   const t = useI18nContext();
   return (
     <StepLayout
+      top={<MfaShield />}
       title={t('mfaPickerTitle')}
-      description={reason.description ?? t('mfaPickerDescription')}
+      description={
+        step.purpose === 'verify' ? reason.verifyDescription : undefined
+      }
       error={state.error}
     >
       {step.options.map((method) => (
