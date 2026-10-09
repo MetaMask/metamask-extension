@@ -4,10 +4,12 @@ import {
   type EnrolledCredential,
   type VerificationToken,
 } from '@metamask/profile-sync-controller/sdk';
+import { MfaFlowError } from './errors';
 import { createMfaFlow } from './flow';
 import type {
   MfaControllerAdapter,
   MfaFlow,
+  MfaFlowOptions,
   MfaFlowRequest,
   MfaMethod,
   PasskeyAdapter,
@@ -122,11 +124,13 @@ const startFlow = async (
   overrides: {
     platform?: 'mobile' | 'extension';
     passkey?: PasskeyAdapter;
+    reportError?: MfaFlowOptions['reportError'];
   } = {},
 ) => {
   const flow = createMfaFlow({
     request,
-    reason: { operation: 'vba.activate', description: 'Why we ask' },
+    reason: { operation: 'vba.activate', enrollDescription: 'Why we ask' },
+    reportError: overrides.reportError,
     platform: overrides.platform ?? 'mobile',
     controller,
     passkey: 'passkey' in overrides ? overrides.passkey : passkeyAdapter,
@@ -888,6 +892,60 @@ describe('createMfaFlow', () => {
       await act(flow, { type: 'dismiss' });
       const result = await outcome;
       expect(result.ok || getMfaErrorCode(result.error)).toBe(code);
+    });
+  });
+
+  describe('error reporting', () => {
+    it('reports a bug on our side with the step and operation', async () => {
+      const fake = createFakeController([activeEmail]);
+      const bug = new MfaError('invalid_response', 'bad shape');
+      fake.controller.beginCredentialVerification.mockRejectedValueOnce(bug);
+      const reportError = jest.fn();
+
+      await startFlow(EMAIL_ONLY, fake.controller, { reportError });
+
+      expect(reportError).toHaveBeenCalledWith(bug, {
+        code: 'invalid_response',
+        operation: 'vba.activate',
+        step: 'otp',
+      });
+    });
+
+    it('reports a request the planner rejects', async () => {
+      const reportError = jest.fn();
+
+      await startFlow(
+        {
+          kind: 'verifyOrEnroll',
+          methods: ['email_otp'],
+          verifyWith: 'passkey',
+        },
+        createFakeController([activeEmail]).controller,
+        { reportError },
+      );
+
+      expect(reportError).toHaveBeenCalledWith(expect.any(MfaFlowError), {
+        code: 'invalid_request',
+        operation: 'vba.activate',
+        step: 'idle',
+      });
+    });
+
+    it('does not report a failure the server rules caused', async () => {
+      const fake = createFakeController([activeEmail]);
+      fake.controller.beginCredentialVerification.mockRejectedValueOnce(
+        new MfaError('multi_primary_srp', 'unsupported wallet'),
+      );
+      const reportError = jest.fn();
+      const { flow } = await startFlow(EMAIL_ONLY, fake.controller, {
+        reportError,
+      });
+
+      expect(flow.getState().step).toMatchObject({
+        name: 'failure',
+        code: 'multi_primary_srp',
+      });
+      expect(reportError).not.toHaveBeenCalled();
     });
   });
 });
