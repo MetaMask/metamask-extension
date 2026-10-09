@@ -380,7 +380,14 @@ export function createPlatformAdapter(
 
       const enrichedContext = enrichEventContext(context, enrichmentContext);
       const payload = {
-        ...buildBasePayload({ userId }, enrichedContext, options),
+        ...buildBasePayload(
+          { userId },
+          {
+            ...enrichedContext,
+            ...enrichmentContext.getProfileIdentityProperties(),
+          },
+          options,
+        ),
         ...(traits ? { traits } : {}),
       };
       client.identify(payload, options?.callback);

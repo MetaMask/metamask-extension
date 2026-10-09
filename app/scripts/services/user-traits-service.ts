@@ -168,7 +168,12 @@ export class UserTraitsService {
    * @param newState - The full (flattened) MetaMask state.
    */
   handleMetaMaskStateUpdate(newState: MetaMaskState): void {
-    analytics.updateProfileSessionData(newState.srpSessionData);
+    analytics.updateProfileSessionData(
+      newState.srpSessionData,
+      newState.keyrings?.find(
+        (keyring) => keyring.type === KeyringType.hdKeyTree,
+      )?.metadata.id ?? null,
+    );
     const userTraits = this._buildUserTraitsObject(newState);
     if (userTraits) {
       analytics.identify(userTraits);
