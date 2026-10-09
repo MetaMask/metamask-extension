@@ -78,8 +78,8 @@ export type PerpsTransaction = {
     entryPrice: string;
     /** Points earned (if applicable) */
     points: string;
-    /** Realized PnL */
-    pnl: string;
+    /** Realized PnL, when reported by the provider */
+    pnl?: string;
     /** Trading fee */
     fee: string;
     /** Action type (e.g., "Opened", "Closed") */
@@ -89,7 +89,7 @@ export type PerpsTransaction = {
     /** Liquidation info if applicable */
     liquidation?: {
       /** Address of the liquidated user */
-      liquidatedUser: string;
+      liquidatedUser?: string;
       /** Mark price at liquidation */
       markPx: string;
       /** Liquidation method */
