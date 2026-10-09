@@ -328,6 +328,7 @@
       "MetaMask: Background connection not initialized": 2
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 3
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
@@ -465,9 +466,6 @@
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
     },
-    "ui/hooks/useCurrencyRatePolling.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
-    },
     "ui/hooks/useDecodedTransactionData.test.ts": {
       "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1
     },
@@ -521,6 +519,9 @@
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 7,
       "error: Warning: React does not recognize": 5
+    },
+    "ui/pages/confirmations/components/confirm/header/header.test.tsx": {
+      "MetaMask: Background connection not initialized": 8
     },
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
       "MetaMask: Background connection not initialized": 3,

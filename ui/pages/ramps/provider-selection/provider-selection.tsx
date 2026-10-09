@@ -31,6 +31,7 @@ import { ScrollContainer } from '../../../contexts/scroll-container';
 import RampsListSkeleton from '../components/ramps-list-skeleton';
 import { RampsSelectionCenteredMessage } from '../components/ramps-selection-page';
 import { providerSupportsAsset } from '../utils/providerSupportsAsset';
+import { getRampsTokenDisplaySymbol } from '../utils/token-display';
 import RampsProviderListItem from './components/ramps-provider-list-item';
 import {
   buildProviderListItems,
@@ -174,7 +175,7 @@ export function RampsProviderSelectionModal({
   const assetId = selectedToken?.assetId
     ? normalizeAssetIdForApi(selectedToken.assetId)
     : '';
-  const tokenSymbol = selectedToken?.symbol ?? '';
+  const tokenSymbol = getRampsTokenDisplaySymbol(selectedToken);
   const fiatCurrency = userRegion?.country?.currency ?? 'USD';
   const regionCode = userRegion?.regionCode ?? '';
 

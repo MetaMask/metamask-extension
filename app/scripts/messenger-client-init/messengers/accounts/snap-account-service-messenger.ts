@@ -43,6 +43,7 @@ export function getSnapAccountServiceMessenger(
       'SnapController:handleRequest',
       'AccountTreeController:getAccountGroupObject',
       'AccountTreeController:getSelectedAccountGroup',
+      'AccountsController:getState',
     ],
     events: [
       'KeyringController:stateChange',
@@ -58,6 +59,8 @@ export function getSnapAccountServiceMessenger(
       'AccountTreeController:accountGroupCreated',
       'AccountTreeController:accountGroupUpdated',
       'AccountTreeController:accountGroupRemoved',
+      'AccountsController:accountsAdded',
+      'AccountsController:accountsRemoved',
     ],
   });
   return serviceMessenger;
