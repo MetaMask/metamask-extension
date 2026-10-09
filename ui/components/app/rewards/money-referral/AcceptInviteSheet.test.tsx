@@ -310,7 +310,13 @@ describe('AcceptInviteSheet', () => {
     jest.useFakeTimers();
     try {
       mockRegister.mockRejectedValueOnce({
-        data: { status: 429, retryAfterSeconds: 2 },
+        data: {
+          cause: {
+            status: 429,
+            retryAfterSeconds: 2,
+            data: { status: 429, retryAfterSeconds: 2 },
+          },
+        },
       });
       const view = renderSheet({ initialCode: 'AB12CD' });
       const acceptButton = view.getByTestId('money-referral-accept');

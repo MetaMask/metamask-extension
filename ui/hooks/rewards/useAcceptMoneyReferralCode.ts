@@ -10,36 +10,58 @@ import {
 
 type Translate = (key: string) => string;
 
+type RewardsMoneyHttpFailure = {
+  status?: number;
+  bodyText?: string;
+  retryAfterSeconds?: number;
+};
+
 /**
- * Reads the status, body, and `Retry-After` that `RewardsMoneyHttpError`
- * copies onto `error.data` so they survive the background RPC boundary.
+ * `RewardsMoneyHttpError` copies status, body, and `Retry-After` onto
+ * `error.data`. After the background RPC boundary that bag is on
+ * `error.data.cause` and `error.data.cause.data`.
+ *
+ * @param value - One of those bags.
+ * @returns The bag when it carries an HTTP status.
+ */
+function httpFailureBag(value: unknown): RewardsMoneyHttpFailure | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  const bag = value as RewardsMoneyHttpFailure;
+  if (typeof bag.status !== 'number') {
+    return undefined;
+  }
+  return bag;
+}
+
+/**
+ * Reads a register-referee refusal from whichever bag survived the RPC.
  *
  * @param error - The thrown register error.
  * @returns The HTTP status, body text, and wait, when present.
  */
-function readRewardsMoneyHttpFailure(error: unknown): {
-  status?: number;
-  bodyText?: string;
-  retryAfterSeconds?: number;
-} {
+function readRewardsMoneyHttpFailure(error: unknown): RewardsMoneyHttpFailure {
   if (!error || typeof error !== 'object' || !('data' in error)) {
     return {};
   }
   const { data } = error as {
-    data?: {
-      status?: number;
-      bodyText?: string;
-      retryAfterSeconds?: number;
+    data?: RewardsMoneyHttpFailure & {
+      cause?: RewardsMoneyHttpFailure & { data?: RewardsMoneyHttpFailure };
     };
   };
-  if (!data || typeof data.status !== 'number') {
+  const bag =
+    httpFailureBag(data) ??
+    httpFailureBag(data?.cause) ??
+    httpFailureBag(data?.cause?.data);
+  if (!bag) {
     return {};
   }
   const retryAfterSeconds =
-    typeof data.retryAfterSeconds === 'number' && data.retryAfterSeconds > 0
-      ? data.retryAfterSeconds
+    typeof bag.retryAfterSeconds === 'number' && bag.retryAfterSeconds > 0
+      ? bag.retryAfterSeconds
       : undefined;
-  return { status: data.status, bodyText: data.bodyText, retryAfterSeconds };
+  return { status: bag.status, bodyText: bag.bodyText, retryAfterSeconds };
 }
 
 /**
