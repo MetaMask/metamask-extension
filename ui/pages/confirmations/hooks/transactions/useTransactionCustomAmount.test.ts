@@ -25,10 +25,7 @@ import {
   useTransactionCustomAmount,
   MAX_LENGTH,
 } from './useTransactionCustomAmount';
-import {
-  DepositPrefillStatus,
-  useDepositPrefillAmount,
-} from './useDepositPrefillAmount';
+import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
@@ -43,24 +40,24 @@ jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
     withdrawableFiatRaw: undefined,
   })),
 }));
-jest.mock('./useDepositPrefillAmount');
+jest.mock('./useDepositPrefill');
 jest.mock('./useUpdateTokenAmount');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
 
-const useDepositPrefillAmountMock = jest.mocked(useDepositPrefillAmount);
+const useDepositPrefillMock = jest.mocked(useDepositPrefill);
 
 /**
- * Builds a `useDepositPrefillAmount` return value. Keeping one default shape
+ * Builds a `useDepositPrefill` return value. Keeping one default shape
  * here means a new field on the hook only needs updating in one place.
  *
  * @param overrides - Fields to override on the default committed-prefill shape.
  * @returns The mocked deposit prefill result.
  */
 function createDepositPrefillMock(
-  overrides: Partial<ReturnType<typeof useDepositPrefillAmount>> = {},
-): ReturnType<typeof useDepositPrefillAmount> {
+  overrides: Partial<ReturnType<typeof useDepositPrefill>> = {},
+): ReturnType<typeof useDepositPrefill> {
   return {
     prefillAmount: undefined,
     percentage: undefined,
@@ -124,7 +121,7 @@ function runHook({
   updateTokenAmountMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
-  depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
+  depositPrefill?: ReturnType<typeof useDepositPrefill>;
   isAccountTokensLoading?: boolean;
   paymentOverride?: PaymentOverride;
   moneyAccountWithdrawableFiatRaw?: string;
@@ -199,7 +196,7 @@ function runHook({
     updateTokenAmount: updateTokenAmountMock,
     isUpdating: false,
   });
-  useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
+  useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
     withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
@@ -237,7 +234,7 @@ describe('useTransactionCustomAmount', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.useFakeTimers();
-    useDepositPrefillAmountMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
+    useDepositPrefillMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
     jest
       .mocked(upsertTransactionUIMetricsFragment)
       .mockResolvedValue(undefined);
@@ -1734,7 +1731,7 @@ describe('useTransactionCustomAmount', () => {
 
       // Transient hasPrefilled flicker on the same token must not swap the
       // typed amount for a skeleton.
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: undefined,
@@ -1782,7 +1779,7 @@ describe('useTransactionCustomAmount', () => {
 
       // Token switch releases the previous prefill, then commits the new
       // token's 50%/100% amount — overwriting any typed value.
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: undefined,
@@ -1796,7 +1793,7 @@ describe('useTransactionCustomAmount', () => {
 
       expect(result.current.isDepositPrefillLoading).toBe(true);
 
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: '1000',

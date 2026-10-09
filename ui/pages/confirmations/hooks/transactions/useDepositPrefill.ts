@@ -108,7 +108,7 @@ export type DepositPrefillResult = {
  * - Settles as `DepositPrefillStatus.Skipped` when no funded token can produce
  * an amount, so consumers show $0 rather than an indefinite skeleton
  */
-export function useDepositPrefillAmount(): DepositPrefillResult {
+export function useDepositPrefill(): DepositPrefillResult {
   const transactionMeta = useTransactionMetadataRequest();
   const { payToken } = useTransactionPayToken();
   const availableTokens = useTransactionPayAvailableTokens();

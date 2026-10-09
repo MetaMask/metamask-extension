@@ -19,10 +19,7 @@ import { useTransactionPayToken } from '../pay/useTransactionPayToken';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
-import {
-  DepositPrefillStatus,
-  useDepositPrefillAmount,
-} from './useDepositPrefillAmount';
+import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -173,10 +170,10 @@ function setupMocks(
 }
 
 function runHook() {
-  return renderHook(() => useDepositPrefillAmount());
+  return renderHook(() => useDepositPrefill());
 }
 
-describe('useDepositPrefillAmount', () => {
+describe('useDepositPrefill', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupMocks();
@@ -520,7 +517,7 @@ describe('useDepositPrefillAmount', () => {
 
       const statuses: DepositPrefillStatus[] = [];
       const { result, rerender } = renderHook(() => {
-        const value = useDepositPrefillAmount();
+        const value = useDepositPrefill();
         statuses.push(value.status);
         return value;
       });

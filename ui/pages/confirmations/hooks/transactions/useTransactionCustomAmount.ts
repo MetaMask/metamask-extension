@@ -42,10 +42,7 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
-import {
-  DepositPrefillStatus,
-  useDepositPrefillAmount,
-} from './useDepositPrefillAmount';
+import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionCustomAmountPercentageMetrics } from './useTransactionCustomAmountPercentageMetrics';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
@@ -156,14 +153,13 @@ export function useTransactionCustomAmount({
   >(undefined);
   const hasUserEditedAmount =
     editedTransactionId !== undefined && editedTransactionId === transactionId;
-  const depositPrefill = useDepositPrefillAmount();
+  const depositPrefill = useDepositPrefill();
   const isDepositPrefillEnabled =
     depositPrefill.status !== DepositPrefillStatus.Disabled;
   const isDepositPrefilled =
     depositPrefill.status === DepositPrefillStatus.Prefilled;
   const isDepositPrefillSkipped =
     depositPrefill.status === DepositPrefillStatus.Skipped;
-  const shouldUseDepositPrefill = isDepositPrefillEnabled;
   const prevDepositHasPrefilledRef = useRef(isDepositPrefilled);
   // The prefill amount is written by an effect, one commit after prefill
   // reports `hasPrefilled`. Without tracking that gap the field paints "$0"
@@ -673,7 +669,7 @@ export function useTransactionCustomAmount({
   // `hasPrefilled` is a dependency (matches mobile): balance updates on the
   // same token must not overwrite a committed prefill.
   useEffect(() => {
-    if (!shouldUseDepositPrefill) {
+    if (!isDepositPrefillEnabled) {
       prevDepositHasPrefilledRef.current = isDepositPrefilled;
       return;
     }
@@ -720,7 +716,7 @@ export function useTransactionCustomAmount({
 
     prevDepositHasPrefilledRef.current = isDepositPrefilled;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- see comment above
-  }, [isDepositPrefilled, shouldUseDepositPrefill]);
+  }, [isDepositPrefilled, isDepositPrefillEnabled]);
 
   // Pre-fill the max amount once the balance is known, unless the user has
   // already edited the field. `userEditedRef` is used instead of
@@ -729,7 +725,7 @@ export function useTransactionCustomAmount({
   // Skipped when deposit prefill handles money-account deposits.
   useEffect(() => {
     if (
-      shouldUseDepositPrefill ||
+      isDepositPrefillEnabled ||
       !prefillMaxOnLoad ||
       hasPrefilledMaxRef.current ||
       userEditedRef.current ||
@@ -742,7 +738,7 @@ export function useTransactionCustomAmount({
   }, [
     balanceUsd,
     prefillMaxOnLoad,
-    shouldUseDepositPrefill,
+    isDepositPrefillEnabled,
     updatePendingAmountPercentage,
   ]);
 
@@ -752,19 +748,19 @@ export function useTransactionCustomAmount({
     amountHumanDebounced,
     hasAmount,
     hasInput,
-    isDepositPrefillEnabled: shouldUseDepositPrefill,
+    isDepositPrefillEnabled,
     // Hide the skeleton after a manual edit on the *current* token. A pay
     // token / funding account change clears the edit guard so loading (and
     // the new prefill) can show again. A committed prefill that has not been
     // written to the field yet still counts as loading. A skipped prefill can
     // never commit, so it settles immediately to $0 instead of loading.
     isDepositPrefillLoading:
-      shouldUseDepositPrefill &&
+      isDepositPrefillEnabled &&
       !isDepositPrefillSkipped &&
       (!isDepositPrefilled || !hasAppliedDepositPrefill) &&
       !hasUserEditedAmount,
-    isDepositPrefilled: shouldUseDepositPrefill && isDepositPrefilled,
-    isDepositPrefillSkipped: shouldUseDepositPrefill && isDepositPrefillSkipped,
+    isDepositPrefilled: isDepositPrefillEnabled && isDepositPrefilled,
+    isDepositPrefillSkipped: isDepositPrefillEnabled && isDepositPrefillSkipped,
     isInputChanged,
     isQuoteDerivedAmountLoading: isQuoteDerivedAmount && isQuotesLoading,
     updatePendingAmount,
