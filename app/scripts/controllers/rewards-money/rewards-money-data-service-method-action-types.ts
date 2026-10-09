@@ -37,6 +37,27 @@ export type RewardsMoneyDataServiceRegisterRefereeAction = {
 };
 
 /**
+ * What rebate, if any, a confirmation screen shows. Writes nothing. The
+ * profile is the bearer token's; the body never names one.
+ *
+ * A refusal, or a `200` whose body is not a quote, rejects with
+ * {@link RewardsMoneyRebateQuoteError}; a `401` with
+ * {@link RewardsMoneyAuthorizationError}. A timeout or a network failure
+ * rejects with a plain `Error`.
+ *
+ * @param body - The product and, for swaps, the fee leg of the quote.
+ * @returns The rebate quote.
+ */
+export type RewardsMoneyDataServiceGetRebateQuoteAction = {
+  type: `RewardsMoneyDataService:getRebateQuote`;
+  handler: RewardsMoneyDataService['getRebateQuote'];
+};
+
+/**
  * Union of all RewardsMoneyDataService action types.
  */
-export type RewardsMoneyDataServiceMethodActions = RewardsMoneyDataServiceGetReferralMeAction | RewardsMoneyDataServiceValidateReferralCodeAction | RewardsMoneyDataServiceRegisterRefereeAction;
+export type RewardsMoneyDataServiceMethodActions =
+  | RewardsMoneyDataServiceGetReferralMeAction
+  | RewardsMoneyDataServiceValidateReferralCodeAction
+  | RewardsMoneyDataServiceRegisterRefereeAction
+  | RewardsMoneyDataServiceGetRebateQuoteAction;
