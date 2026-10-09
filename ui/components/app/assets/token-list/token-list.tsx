@@ -72,6 +72,7 @@ import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
 
 type TokenListProps = {
   onTokenClick: (
@@ -339,6 +340,16 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     visibleTokens,
   ]);
 
+  const displayedTokens = useMemo(
+    () =>
+      tokenListItems.flatMap((item) =>
+        item.type === 'token' ? [item.token] : [],
+      ),
+    [tokenListItems],
+  );
+
+  const moneyTokenListCta = useMoneyTokenListCta(displayedTokens);
+
   useEffect(() => {
     if (sortedFilteredTokens) {
       endTrace({ name: TraceName.AccountOverviewAssetListTab });
@@ -428,6 +439,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
           safeChains={safeChains}
           musd={TOKEN_LIST_CELL_MUSD_OPTIONS}
+          moneyCta={moneyTokenListCta}
         />
       );
     },
@@ -435,6 +447,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       handleLowValueAssetsToggle,
       handleTokenClick,
       isLowValueAssetsExpanded,
+      moneyTokenListCta,
       privacyMode,
       safeChains,
     ],

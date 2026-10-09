@@ -49,9 +49,11 @@ const mockState = {
     currentLocale: 'fr',
     current: {
       moneyAdd: { message: 'Ajouter' },
+      moneyGetApy: { message: 'Obtenez $1 APY' },
     },
     en: {
       moneyAdd: { message: 'Add' },
+      moneyGetApy: { message: 'Get $1 APY' },
       money: { message: 'Money' },
       moneyLearnMore: { message: 'Learn more' },
       moneyOnboardingFundTitle: { message: 'Fund your Money account' },
@@ -262,6 +264,31 @@ describe('useMoneyAnalytics', () => {
         redirect_target_type: MoneyRedirectTargetType.Screen,
         button_position: 1,
         button_row_button_count: 2,
+      });
+    });
+
+    it('substitutes label placeholders into both labels', () => {
+      renderAnalytics({
+        screenName: MoneyScreenName.WalletHome,
+      }).trackButtonClicked({
+        buttonType: MoneyButtonType.Text,
+        buttonIntent: MoneyButtonIntent.AddMoney,
+        labelKey: 'moneyGetApy',
+        labelSubstitutions: ['6%'],
+        componentName: MoneyComponentName.TokenListItemCta,
+        redirectTarget: MoneyScreenName.MoneyDeposit,
+      });
+
+      expectEvent(MetaMetricsEventName.MoneyButtonClicked, {
+        ...FUNDED_BASE,
+        screen_name: MoneyScreenName.WalletHome,
+        button_type: MoneyButtonType.Text,
+        button_intent: MoneyButtonIntent.AddMoney,
+        component_name: MoneyComponentName.TokenListItemCta,
+        label_en: 'Get 6% APY',
+        label_localized: 'Obtenez 6% APY',
+        redirect_target: MoneyScreenName.MoneyDeposit,
+        redirect_target_type: MoneyRedirectTargetType.Screen,
       });
     });
 

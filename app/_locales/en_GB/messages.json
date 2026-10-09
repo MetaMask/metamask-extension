@@ -5797,6 +5797,10 @@
   "moneyFundDescriptionWithApy": {
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
   },
+  "moneyGetApy": {
+    "message": "Get $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyHomeApyTooltip": {
     "message": "The rate shown is the current Annual Percentage Yield (APY). APY is variable and is not guaranteed."
   },
