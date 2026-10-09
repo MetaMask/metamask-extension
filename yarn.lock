@@ -37759,21 +37759,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.12.1":
+"nan@npm:^2.12.1, nan@npm:^2.13.2":
   version: 2.29.0
   resolution: "nan@npm:2.29.0"
   dependencies:
     node-gyp: "npm:latest"
   checksum: 10/feed70f1358b1c469745d27bfaa0e0d5d307471a8f929a2833822574fe944b3646fca09d36d90bb91eea0cc4a74e4a288e84847d945c8d77d5044378fed7f57e
-  languageName: node
-  linkType: hard
-
-"nan@npm:^2.13.2":
-  version: 2.15.0
-  resolution: "nan@npm:2.15.0"
-  dependencies:
-    node-gyp: "npm:latest"
-  checksum: 10/1a5a53bea35ce2844f85c7d276d358fa131c6e60ee88bcb104b61596254963892378a54b7b65365ad1fe048b4c1aeeabf6e3966a2b293f68fb53a4f91b4337fc
   languageName: node
   linkType: hard
 
