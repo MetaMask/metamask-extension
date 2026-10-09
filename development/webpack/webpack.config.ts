@@ -16,7 +16,6 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
-import postcss, { type AcceptedPlugin } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
@@ -46,6 +45,12 @@ import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
 import { BACKGROUND_CLIENT_ENTRY_NAME } from './utils/dev-server/protocol';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
 import { getDefaultZipMtime } from './utils/plugins/ManifestPlugin/zip-mtime';
+import {
+  htmlBundlerCssPathRegex,
+  cashtagHostPageCssPathRegex,
+  getCashtagPageStylesRule,
+  getCashtagWidgetCssCopyPattern,
+} from './utils/cashtag/cashtag-widget-css';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -69,39 +74,6 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-// Styles for the outer X document. They cannot be bundled into the widget
-// frame HTML because that HTML is the iframe, so they are imported as strings
-// and injected by the content script instead.
-const cashtagPageStylesRe =
-  /scripts[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$/u;
-// HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
-// which would break the string imports above, so they are excluded here.
-const bundledStylesRe =
-  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
-
-// Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
-// correctly there, which leaves design-token variables undefined in dist
-// builds. This transform preserves the previous working bundle behavior.
-async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
-  const tokens = readFileSync(
-    join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
-    'utf8',
-  );
-  const source = content
-    .toString()
-    .replace(
-      /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
-      '',
-    );
-  const cssPlugins: AcceptedPlugin[] = [
-    tailwindcss() as unknown as AcceptedPlugin,
-    autoprefixer({
-      overrideBrowserslist: browsersListQuery,
-    }) as unknown as AcceptedPlugin,
-  ];
-  const result = await postcss(cssPlugins).process(source, { from });
-  return `${tokens}\n${result.css}`;
-}
 
 // #region cache
 const cache = args.cache
@@ -188,7 +160,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    css: { test: bundledStylesRe },
+    css: { test: htmlBundlerCssPathRegex },
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
@@ -239,12 +211,7 @@ const plugins: WebpackPluginInstance[] = [
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
       // TODO: find alternative way to handle cashtag widget styles
-      {
-        from: join(context, 'scripts/cashtag/widget/widget.css'),
-        to: 'scripts/cashtag/widget/widget.css',
-        transform: async (content, absoluteFrom) =>
-          buildCashtagWidgetCss(content, absoluteFrom),
-      },
+      getCashtagWidgetCssCopyPattern(context, browsersListQuery),
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
@@ -547,32 +514,11 @@ const config = {
         ],
       },
       // TODO: remove feature-specific hack from config.
-      // Cashtag widget host-page styles, imported as text so the content script can inject
-      // and remove them without exposing a web-accessible stylesheet.
-      {
-        test: cashtagPageStylesRe,
-        use: [
-          { loader: 'css-loader', options: { exportType: 'string' } },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                config: false,
-                plugins: [
-                  tailwindcss(),
-                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
-                  rtlCss({ processEnv: false }),
-                  discardFontFace(['woff2']), // keep woff2 fonts
-                ],
-              },
-            },
-          },
-        ],
-      },
+      getCashtagPageStylesRule(browsersListQuery),
       // css, sass/scss
       {
         test: /\.(css|sass|scss)$/u,
-        exclude: cashtagPageStylesRe,
+        exclude: cashtagHostPageCssPathRegex,
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',
