@@ -102,11 +102,12 @@ const AcceptInviteSheetContent = ({
     setShowActivated(true);
   }, []);
 
-  const { isAccepting, errorMessage, accept } = useAcceptMoneyReferralCode({
-    validateCode,
-    fetchReferralMe,
-    onAccepted: handleAccepted,
-  });
+  const { isAccepting, isAcceptCoolingDown, errorMessage, accept } =
+    useAcceptMoneyReferralCode({
+      validateCode,
+      fetchReferralMe,
+      onAccepted: handleAccepted,
+    });
 
   const variant = referralMe?.variant;
   const shouldDismissForRole =
@@ -218,7 +219,8 @@ const AcceptInviteSheetContent = ({
     errorMessage ||
     (isRejectedCode ? t('rewardsMoneyReferralCodeError') : '') ||
     (isUnknownError ? t('rewardsMoneyReferralCodeUnknownError') : '');
-  const canAccept = isValid && acceptAllowedForGeo && !isAccepting;
+  const canAccept =
+    isValid && acceptAllowedForGeo && !isAccepting && !isAcceptCoolingDown;
 
   return (
     <Modal isOpen onClose={handleDismiss} data-testid="money-referral-invite">

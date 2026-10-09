@@ -9464,6 +9464,9 @@
   "rewardsMoneyReferralSomethingWentWrong": {
     "message": "Something went wrong. Try again shortly."
   },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Too many tries. Wait a moment."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Checking region..."
   },
