@@ -4,12 +4,12 @@ import {
   JsonRpcNotification,
 } from '@metamask/utils';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
+import { getSerializedTraceContext } from '../../shared/lib/trace';
 import {
   setBackgroundConnection,
   submitRequestToBackground,
   subscribeToMessengerEvent,
 } from './background-connection';
-import { getSerializedTraceContext } from '../../shared/lib/trace';
 
 jest.mock('../../shared/lib/trace', () => {
   return {
