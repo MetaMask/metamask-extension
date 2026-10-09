@@ -10334,20 +10334,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/sentinel-api-service@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/sentinel-api-service@npm:1.0.1"
-  dependencies:
-    "@metamask/base-data-service": "npm:^1.0.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/superstruct": "npm:^3.4.1"
-    "@metamask/utils": "npm:^11.11.0"
-    "@tanstack/query-core": "npm:^5.62.16"
-  checksum: 10/c4dc093a97cedc5b1fc61a0e6bd34695ffe3cc35132bf920698218de4a89fab79606d646529830df8a80ec9ab197d4a415d1bade91ba2122c52a254f6810535a
-  languageName: node
-  linkType: hard
-
 "@metamask/sentinel-api-service@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/sentinel-api-service@npm:2.0.0"
@@ -10359,6 +10345,20 @@ __metadata:
     "@metamask/utils": "npm:^11.12.0"
     "@tanstack/query-core": "npm:^5.62.16"
   checksum: 10/9201fe2569a24723ecd04420690039bf213b4110142fa3b2e4ddf07e0a323bb32f45c1f33654e15f1a4f35e022530ce14a95b68cc08474c4e19aeed5458ed0c5
+  languageName: node
+  linkType: hard
+
+"@metamask/sentinel-api-service@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/sentinel-api-service@npm:2.1.0"
+  dependencies:
+    "@metamask/base-data-service": "npm:^2.1.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.0"
+    "@tanstack/query-core": "npm:^5.103.2"
+  checksum: 10/6e36f8ec7b08a0fe4d7e6775a5381690870654141ba155132f6d7716c08d5344ae9cdae7cea10abc69c2e6e57a4fe50139bce394f6651cd3f722e4752fd3c106
   languageName: node
   linkType: hard
 
@@ -35787,7 +35787,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^11.0.1"
     "@metamask/selected-network-controller": "npm:^26.1.4"
-    "@metamask/sentinel-api-service": "npm:^1.0.1"
+    "@metamask/sentinel-api-service": "npm:^2.1.0"
     "@metamask/shield-controller": "npm:^6.0.1"
     "@metamask/signature-controller": "npm:^39.2.6"
     "@metamask/skills": "npm:^0.1.0"
