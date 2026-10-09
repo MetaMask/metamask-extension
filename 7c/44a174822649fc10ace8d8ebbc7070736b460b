@@ -1,0 +1,47 @@
+test/e2e/playwright/llm-workflow/capabilities/chain.ts
+  h_bf2df3051e8d1a 57,133
+test/e2e/playwright/llm-workflow/daemon.ts
+  h_bf2df3051e8d1a 42,45-46
+test/e2e/playwright/llm-workflow/metamask-provider.ts
+  h_bf2df3051e8d1a 486-488,490
+test/e2e/playwright/llm-workflow/capabilities/factory.test.ts
+  4514c03bf5a528fc 70,72-76,86-90,103-107,118-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "7c44a174822649fc10ace8d8ebbc7070736b460b",
+  "prompts": {
+    "4514c03bf5a528fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_240c12fe3ffeVeMApvC15hjeBI-14b71d42-29e6-439c-b4f1-64ce784f1807",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 13,
+      "accepted_lines": 21,
+      "overriden_lines": 0
+    },
+    "9db9c9ccebcb308a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_240c12fe3ffeVeMApvC15hjeBI-759f8231-f50e-49fb-8a38-1add757ff813",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}

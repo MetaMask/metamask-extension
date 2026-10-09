@@ -1,0 +1,27 @@
+lavamoat/browserify/beta/policy.json
+  s_f61794e7587500::t_6eb4398ce1c8da 716,1552,1564,1678,4839
+lavamoat/browserify/main/policy.json
+  s_f61794e7587500::t_6eb4398ce1c8da 716,1552,1564,1678,4839
+lavamoat/browserify/experimental/policy.json
+  s_f61794e7587500::t_6eb4398ce1c8da 716,1552,1564,1678,4839
+lavamoat/browserify/flask/policy.json
+  s_f61794e7587500::t_6eb4398ce1c8da 716,1552,1564,1678,4839
+lavamoat/build-system/policy.json
+  s_f61794e7587500::t_614d11d15878b0 2491,2534,2603,3157,3177,6908
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "848d3db636e7c723191ea00931d23d68c5e46088",
+  "prompts": {},
+  "sessions": {
+    "s_f61794e7587500": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_124832cdeffeBL8UTpDcDgds6n",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

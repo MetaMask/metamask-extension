@@ -1,0 +1,14 @@
+package.json
+  h_bf2df3051e8d1a 162-165,415-416
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "7bb3bb0a1a18d32216fbf7348e1c8c3e7a2aafea",
+  "prompts": {},
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}
