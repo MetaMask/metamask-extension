@@ -1,5 +1,13 @@
 import type { Hex } from '@metamask/utils';
 import { EthAccountType } from '@metamask/keyring-api';
+import { useQueryClient } from '@tanstack/react-query';
+import { waitFor } from '@testing-library/react';
+// eslint-disable-next-line import-x/no-restricted-paths
+import { MoneyAccountAvailabilityService } from '../../../app/scripts/lib/money/money-account-availability';
+// eslint-disable-next-line import-x/no-restricted-paths
+import type { MoneyAccountAvailabilityMessenger } from '../../../app/scripts/lib/money/money-account-availability';
+import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
+import { MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME } from '../../../shared/lib/money/vault-config';
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
@@ -10,17 +18,31 @@ import {
   MoneyScreenName,
 } from '../../pages/money/constants/money-events';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
-import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import {
+  MONEY_ACCOUNT_AVAILABILITY_QUERY_KEY,
+  useMoneyAccountInfo,
+} from './useMoneyAccountInfo';
 import { useMoneyAnalytics } from './useMoneyAnalytics';
 import { createMoneyAnalyticsMock } from './useMoneyAnalytics.mock';
 import { useMoneyVaultApy } from './useMoneyVaultApy';
-import { useMoneyTokenListCta } from './use-money-token-list-cta';
+import { useMoneyTokenListCta } from './useMoneyTokenListCta';
+
+jest.mock('../../../app/scripts/lib/money/get-money-account-address', () => ({
+  deriveMoneyAccountAddress: jest.fn().mockResolvedValue('0x1234'),
+}));
+
+const mockMessengerCall = jest.fn();
+
+jest.mock('../useMessenger', () => ({
+  useMessenger: () => ({ call: mockMessengerCall }),
+}));
 
 jest.mock('./useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: jest.fn(),
 }));
 
 jest.mock('./useMoneyAccountInfo', () => ({
+  ...jest.requireActual('./useMoneyAccountInfo'),
   useMoneyAccountInfo: jest.fn(),
 }));
 
@@ -39,6 +61,14 @@ const mockUseMoneyVaultApy = jest.mocked(useMoneyVaultApy);
 const mockInitiateDeposit = jest.fn();
 
 const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+const VAULT_CONFIG = {
+  chainId: CHAIN_IDS.MONAD,
+  boringVault: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
+  tellerAddress: '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117',
+  accountantAddress: '0x7382c5b8B51B8C4f127B3123C1039581BAA5A06B',
+  lensAddress: '0xA816ECd922de94c6879AD23B9A884dB257F20947',
+  underlyingToken: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+};
 const ENABLED_FLAG = { enabled: true, minimumVersion: '0.0.1' };
 
 const createToken = (
@@ -269,5 +299,93 @@ describe('useMoneyTokenListCta', () => {
         preferredPaymentToken: { address: USDC_ADDRESS, chainId: '0x1' },
       });
     });
+  });
+
+  describe('geo-blocking', () => {
+    const createAvailabilityService = (location: string) => {
+      const messenger = {
+        call: (action: string) => {
+          switch (action) {
+            case 'RemoteFeatureFlagController:getState':
+              return {
+                remoteFeatureFlags: {
+                  [MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME]: VAULT_CONFIG,
+                },
+              };
+            case 'GeolocationController:getGeolocation':
+              return location;
+            case 'NetworkController:getState':
+              return {
+                networkConfigurationsByChainId: { [CHAIN_IDS.MONAD]: {} },
+              };
+            default:
+              throw new Error(`Unexpected action: ${action}`);
+          }
+        },
+        subscribe: jest.fn(),
+        registerMethodActionHandlers: jest.fn(),
+      } as unknown as MoneyAccountAvailabilityMessenger;
+
+      return new MoneyAccountAvailabilityService({ messenger });
+    };
+
+    const renderCtaInRegion = async (location: string) => {
+      const service = createAvailabilityService(location);
+      mockMessengerCall.mockImplementation((action: string) => {
+        if (action !== 'MoneyAccountAvailabilityService:getAvailability') {
+          throw new Error(`Unexpected action: ${action}`);
+        }
+        return service.getAvailability();
+      });
+
+      const state = buildState();
+      const { result } = renderHookWithProvider(
+        () => ({
+          cta: useMoneyTokenListCta([createToken()]),
+          availability: useQueryClient().getQueryData(
+            MONEY_ACCOUNT_AVAILABILITY_QUERY_KEY,
+          ),
+        }),
+        {
+          ...state,
+          metamask: { ...state.metamask, useExternalServices: true },
+        },
+      );
+
+      await waitFor(() => expect(result.current.availability).toBeDefined());
+
+      return result.current;
+    };
+
+    beforeEach(() => {
+      mockUseMoneyAccountInfo.mockImplementation(
+        jest.requireActual('./useMoneyAccountInfo').useMoneyAccountInfo,
+      );
+    });
+
+    it('shows the CTA to users in an allowed region', async () => {
+      const { availability, cta } = await renderCtaInRegion('US');
+
+      expect(availability).toStrictEqual({
+        isAvailable: true,
+        address: '0x1234',
+      });
+      expect(cta?.label).toBe('Get 6% APY');
+    });
+
+    it.each(['GB', 'GB-ENG', 'UNKNOWN'])(
+      'never shows the CTA to users in %s',
+      async (location) => {
+        const { availability, cta } = await renderCtaInRegion(location);
+
+        expect(availability).toStrictEqual({ isAvailable: false });
+        expect(cta).toBeUndefined();
+        expect(
+          mockUseMoneyVaultApy.mock.calls.every(
+            ([options]) => options?.enabled === false,
+          ),
+        ).toBe(true);
+      },
+    );
   });
 });

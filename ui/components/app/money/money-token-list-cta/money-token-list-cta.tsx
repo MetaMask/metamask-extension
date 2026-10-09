@@ -6,7 +6,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import type { TokenWithFiatAmount } from '../../assets/types';
-import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/use-money-token-list-cta';
+import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/useMoneyTokenListCta';
 
 export type MoneyTokenListCtaProps = {
   cta: MoneyTokenListCtaConfig;

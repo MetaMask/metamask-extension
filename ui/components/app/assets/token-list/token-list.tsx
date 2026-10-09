@@ -72,7 +72,7 @@ import { TOKEN_LIST_CELL_MUSD_OPTIONS } from '../../musd/musd-events';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBoolean } from '../../../../hooks/useBoolean';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
-import { useMoneyTokenListCta } from '../../../../hooks/money/use-money-token-list-cta';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
 
 type TokenListProps = {
   onTokenClick: (

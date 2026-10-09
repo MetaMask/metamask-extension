@@ -34,10 +34,10 @@ import {
   selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
-import { useMoneyTokenListCta } from '../../../../hooks/money/use-money-token-list-cta';
+import { useMoneyTokenListCta } from '../../../../hooks/money/useMoneyTokenListCta';
 import TokenList from './token-list';
 
-jest.mock('../../../../hooks/money/use-money-token-list-cta', () => ({
+jest.mock('../../../../hooks/money/useMoneyTokenListCta', () => ({
   useMoneyTokenListCta: jest.fn(),
 }));
 

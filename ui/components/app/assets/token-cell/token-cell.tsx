@@ -21,7 +21,7 @@ import {
 } from '../../../component-library';
 import { MusdConvertLink } from '../../musd';
 import { MoneyTokenListCta } from '../../money/money-token-list-cta';
-import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/use-money-token-list-cta';
+import type { MoneyTokenListCta as MoneyTokenListCtaConfig } from '../../../../hooks/money/useMoneyTokenListCta';
 import type { MusdConvertLinkEntryPoint } from '../../musd/musd-events';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
