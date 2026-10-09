@@ -5,7 +5,7 @@
  * eg: "foo" and 123 => false
  *
  * @param value1 - first string to compare
- * @param value2 - first string to compare
+ * @param value2 - second string to compare
  * @returns true if 2 strings are identical when they are lowercase
  */
 export function isEqualCaseInsensitive(
