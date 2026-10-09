@@ -11,7 +11,7 @@
         "process": true
       },
       "packages": {
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "@babel/types>@babel/helper-validator-identifier": true,
         "@babel/code-frame>js-tokens": true,
         "postcss>picocolors": true
       }
@@ -47,6 +47,7 @@
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
+        "@babel/types": true,
         "@babel/core>@babel/types": true,
         "@babel/core>@jridgewell/remapping": true,
         "@babel/core>convert-source-map": true,
@@ -62,7 +63,7 @@
         "console.warn": true
       },
       "packages": {
-        "@babel/core>@babel/types": true,
+        "@babel/types": true,
         "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
@@ -70,7 +71,7 @@
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets": {
@@ -105,7 +106,7 @@
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -113,7 +114,7 @@
         "assert": true
       },
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helper-module-transforms": {
@@ -125,13 +126,13 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
+        "@babel/types>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
@@ -144,13 +145,13 @@
     },
     "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "@babel/core>@babel/helpers": {
       "packages": {
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "react-compiler-webpack>@babel/plugin-syntax-jsx": {
@@ -199,7 +200,7 @@
       "packages": {
         "@babel/code-frame": true,
         "depcheck>@babel/parser": true,
-        "@babel/core>@babel/types": true
+        "@babel/types": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -213,6 +214,7 @@
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
+        "@babel/types": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
         "nock>debug": true
@@ -232,14 +234,14 @@
         "nock>debug": true
       }
     },
-    "@babel/core>@babel/types": {
+    "@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
+        "@babel/types>@babel/helper-string-parser": true,
+        "@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
@@ -943,6 +945,7 @@
         "process": true
       },
       "packages": {
+        "@babel/types": true,
         "@babel/core>@babel/types": true
       }
     },
