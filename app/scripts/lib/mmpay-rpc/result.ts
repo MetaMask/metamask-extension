@@ -21,16 +21,14 @@ type ResultWatcher = {
 };
 
 /**
- * Tracks the transaction created for a `wallet_mmPay` request and the Pay
- * quote it uses. The quote is captured while the transaction is pending,
- * because TransactionPayController deletes its data once the transaction
- * finalizes, which is before the hash resolves.
+ * Watches the request's transaction and captures its Pay quote while pending,
+ * since TransactionPayController deletes it before the hash resolves.
  *
  * @param messenger - Root messenger.
  * @param request - Identifies the request's transaction.
  * @param request.origin - The requesting dApp's origin.
  * @param request.requestId - The JSON-RPC request ID.
- * @returns A watcher to stop listening and build the final result.
+ * @returns A watcher to stop listening and build the result.
  */
 export function watchMmPayRpcResult(
   messenger: MmPayRpcMessenger,
@@ -93,6 +91,12 @@ export function watchMmPayRpcResult(
   return { stop, buildResult };
 }
 
+/**
+ * Reads the provider and both chain IDs from a Pay quote.
+ *
+ * @param quote - The selected Pay quote.
+ * @returns The quote's provider and chains.
+ */
 export function getQuoteSides(quote: TransactionPayQuote<Json>): QuoteSides {
   return {
     provider: quote.strategy,
@@ -101,6 +105,15 @@ export function getQuoteSides(quote: TransactionPayQuote<Json>): QuoteSides {
   };
 }
 
+/**
+ * Builds the result returned to the dApp, omitting unknown fields.
+ *
+ * @param args - Inputs.
+ * @param args.hash - The hash the transaction resolved with.
+ * @param args.transactionMeta - The transaction, if found.
+ * @param args.sides - Quote sides captured while pending.
+ * @returns The `wallet_mmPay` result.
+ */
 export function buildMmPayRpcResult({
   hash,
   transactionMeta,

@@ -2,6 +2,13 @@ import { isValidHexAddress, type Hex } from '@metamask/utils';
 import { mmPayRpcErrors } from './errors';
 import type { MmPayRpcParams } from './types';
 
+/**
+ * Validates the top-level `wallet_mmPay` params. `payParams` is left to the
+ * type registry.
+ *
+ * @param params - The raw JSON-RPC params.
+ * @returns The validated `type`, `from` and raw `payParams`.
+ */
 export function validateMmPayRpcRequest(params: unknown): MmPayRpcParams {
   if (!Array.isArray(params) || params.length !== 1) {
     throw mmPayRpcErrors.invalidParams('params', 'an array with one object');

@@ -36,8 +36,7 @@ const walletMmPayHandlers = {
 export default walletMmPayHandlers;
 
 /**
- * `wallet_mmPay` implementation. Validation and transaction creation live in
- * `app/scripts/lib/mmpay-rpc`; this only adapts it to the JSON-RPC engine.
+ * `wallet_mmPay` handler; delegates to `app/scripts/lib/mmpay-rpc`.
  *
  * @param req - The JSON-RPC request.
  * @param res - The JSON-RPC response.
