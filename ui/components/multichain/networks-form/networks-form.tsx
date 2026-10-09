@@ -128,6 +128,7 @@ export const NetworksForm = ({
   const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const scrollableRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const nameFieldRef = useRef<HTMLDivElement>(null);
   const chainIdFieldRef = useRef<HTMLDivElement>(null);
   const chainlistPanelRef = useRef<HTMLDivElement>(null);
@@ -164,10 +165,10 @@ export const NetworksForm = ({
 
     const updateMaxHeight = () => {
       const { top } = panel.getBoundingClientRect();
-      const nextHeight = Math.max(
-        160,
-        Math.floor(window.innerHeight - top - 16),
-      );
+      const footerTop =
+        footerRef.current?.getBoundingClientRect().top ?? window.innerHeight;
+      // Stop above the sticky Save bar. A short list still hugs its rows.
+      const nextHeight = Math.max(0, Math.floor(footerTop - top - 8));
       setChainlistMaxHeight((currentHeight) =>
         currentHeight === nextHeight ? currentHeight : nextHeight,
       );
@@ -177,9 +178,12 @@ export const NetworksForm = ({
     // The page enter animation scales the form. Measure again when it finishes
     // so the cap matches the settled layout.
     const handleTransitionEnd = () => updateMaxHeight();
+    const scrollParent = scrollableRef.current;
+    scrollParent?.addEventListener('scroll', updateMaxHeight);
     window.addEventListener('resize', updateMaxHeight);
     document.addEventListener('transitionend', handleTransitionEnd);
     return () => {
+      scrollParent?.removeEventListener('scroll', updateMaxHeight);
       window.removeEventListener('resize', updateMaxHeight);
       document.removeEventListener('transitionend', handleTransitionEnd);
     };
@@ -1082,6 +1086,7 @@ export const NetworksForm = ({
         </Box>
       </Box>
       <Box
+        ref={footerRef}
         className={`networks-form__footer w-full${
           usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}

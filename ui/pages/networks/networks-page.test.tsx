@@ -395,9 +395,62 @@ describe('NetworksPage', () => {
     expect(screen.getByText('Gnosis')).toBeInTheDocument();
     const nameDropdown = screen.getByTestId('networks-page-chainlist-dropdown');
     expect(nameDropdown).toHaveAttribute('data-anchor', 'name');
-    expect(nameDropdown.firstElementChild).toHaveStyle({
-      maxHeight: `${window.innerHeight - 16}px`,
-    });
+  });
+
+  it('caps the Chainlist list above the Save button', () => {
+    const rectSpy = jest
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(function (this: HTMLElement) {
+        const rect = {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: 0,
+          height: 0,
+          x: 0,
+          y: 0,
+          toJSON() {
+            return {};
+          },
+        };
+        if (this.classList.contains('networks-form__footer')) {
+          rect.top = 500;
+          rect.y = 500;
+        }
+        if (
+          this.getAttribute('data-testid') ===
+          'networks-page-chainlist-dropdown'
+        ) {
+          rect.top = 120;
+          rect.y = 120;
+        }
+        return rect as DOMRect;
+      });
+
+    try {
+      renderNetworksPage({
+        pathname: `${NETWORKS_ROUTE}?view=add`,
+        remoteFeatureFlags: {
+          extensionUxChainlist: true,
+          extensionUxChainlistV2: true,
+        },
+      });
+
+      expect(
+        screen.getByTestId('networks-page-chainlist-dropdown')
+          .firstElementChild,
+      ).toHaveStyle({ maxHeight: '372px' });
+
+      fireEvent.focus(screen.getByTestId('network-form-chain-id'));
+
+      expect(
+        screen.getByTestId('networks-page-chainlist-dropdown')
+          .firstElementChild,
+      ).toHaveStyle({ maxHeight: '372px' });
+    } finally {
+      rectSpy.mockRestore();
+    }
   });
 
   it('fills the add network form when a Chainlist network is chosen', async () => {
@@ -640,9 +693,6 @@ describe('NetworksPage', () => {
     expect(
       screen.getByTestId('network-form-chain-id-input').parentElement,
     ).toContainElement(chainIdDropdown);
-    expect(chainIdDropdown.firstElementChild).toHaveStyle({
-      maxHeight: `${window.innerHeight - 16}px`,
-    });
   });
 
   it('does not write a chain ID search into the network name', async () => {
