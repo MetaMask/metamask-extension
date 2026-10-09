@@ -179,7 +179,9 @@ describe('PerpsMarketAbout', () => {
       tEn('perpsReadMoreAbout', ['Samsung']),
     );
 
-    await user.click(readMore);
+    await act(async () => {
+      await user.click(readMore);
+    });
 
     expect(
       screen.queryByTestId('perps-market-about-read-more'),
