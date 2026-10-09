@@ -7661,6 +7661,27 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
 }
 
 /**
+ * Sets whether the support data sharing consent modal is shown every time,
+ * or the saved `supportDataSharingPreference` is applied instead.
+ *
+ * @param value - Whether to show the consent modal every time.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setShouldShowSupportConsent(value: boolean) {
+  return setPreference('shouldShowSupportConsent', value, false);
+}
+
+/**
+ * Saves the user's support data sharing choice.
+ *
+ * @param value - Whether to share the user ID and app version with support.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSupportDataSharingPreference(value: boolean) {
+  return setPreference('supportDataSharingPreference', value, false);
+}
+
+/**
  * Asks the UI to reload the browser extension safely.
  *
  * Much better than `browser.runtime.reload()`, as safeReload will wait for all
