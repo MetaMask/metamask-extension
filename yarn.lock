@@ -9876,39 +9876,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^17.4.1":
-  version: 17.4.1
-  resolution: "@metamask/phishing-controller@npm:17.4.1"
-  dependencies:
-    "@metamask/address-book-controller": "npm:^7.1.2"
-    "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/messenger": "npm:^2.0.0"
-    "@metamask/transaction-controller": "npm:^69.8.0"
-    "@noble/hashes": "npm:^1.8.0"
-    "@types/punycode": "npm:^2.1.0"
-    ethereum-cryptography: "npm:^2.1.2"
-    fastest-levenshtein: "npm:^1.0.16"
-    punycode: "npm:^2.1.1"
-  checksum: 10/892bafdb1a64d6621820e18364e5668070229aea09db7f078f1d102ac985e1d14f5f4b4361b3c2450ecde6ddcd1c54cbf5a007231135a4744287e9cf2d0bb13a
-  languageName: node
-  linkType: hard
-
-"@metamask/phishing-controller@npm:^18.1.0, @metamask/phishing-controller@npm:^18.1.1":
-  version: 18.1.1
-  resolution: "@metamask/phishing-controller@npm:18.1.1"
+"@metamask/phishing-controller@npm:^18.1.0, @metamask/phishing-controller@npm:^18.1.1, @metamask/phishing-controller@npm:^18.2.0":
+  version: 18.2.0
+  resolution: "@metamask/phishing-controller@npm:18.2.0"
   dependencies:
     "@metamask/address-book-controller": "npm:^8.0.0"
     "@metamask/base-controller": "npm:^10.0.0"
     "@metamask/controller-utils": "npm:^13.0.0"
     "@metamask/messenger": "npm:^3.0.0"
-    "@metamask/transaction-controller": "npm:^72.0.0"
+    "@metamask/transaction-controller": "npm:^72.0.1"
     "@noble/hashes": "npm:^1.8.0"
-    "@types/punycode": "npm:^2.1.0"
-    ethereum-cryptography: "npm:^2.1.2"
+    "@types/punycode": "npm:^2.1.4"
+    ethereum-cryptography: "npm:^2.2.1"
     fastest-levenshtein: "npm:^1.0.16"
-    punycode: "npm:^2.1.1"
-  checksum: 10/4212d3db477739bf0a1646222ecaf8f9b8b331d03a2ff1dcafe1cb102bbbc2252988b9de6c2092a25e1b7cab9c4270fd7be22998cdcee76440ed21a33ae0fc1a
+    punycode: "npm:^2.3.1"
+  checksum: 10/980930053fa7ffb87e7ca93558d60672c3f20fe43f14c36e3a28a6b233527a8a3cd708f0336815fc1885346d3ff58178ec8029a0612f2feefc3b8341600897ca
   languageName: node
   linkType: hard
 
@@ -18540,10 +18522,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/punycode@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@types/punycode@npm:2.1.0"
-  checksum: 10/bec8e467ad817127239e7170135ec44df0c8d9632314ccd967cbed1a16a196e821dac080284047400ae1ba7ffbdfd6ee43ef66ca0ad4b5693723fa8aa3ea447a
+"@types/punycode@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@types/punycode@npm:2.1.4"
+  checksum: 10/16637bdd8e4f830243072668125f83b93b728085a05140ccc3e7801528d78c62cce5426b07d5cdc75e4f797e1644807c762777f651d1cd071ad0128835cdce5e
   languageName: node
   linkType: hard
 
@@ -35767,7 +35749,7 @@ __metadata:
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^1.3.0"
     "@metamask/perps-controller": "npm:^17.1.0"
-    "@metamask/phishing-controller": "npm:^17.4.1"
+    "@metamask/phishing-controller": "npm:^18.2.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/platform-api-docs": "npm:^0.2.1"
     "@metamask/polling-controller": "npm:^16.0.7"
