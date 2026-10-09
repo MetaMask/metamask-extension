@@ -66,6 +66,7 @@ import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
+import { UsefulScreenReady } from '../../hooks/useUsefulScreenReady';
 import { getCaretCoordinates } from './unlock-page.util';
 import {
   UnlockPasskeyIconButton,
@@ -687,6 +688,19 @@ class UnlockPageBase extends Component<UnlockPageProps, UnlockPageState> {
             onClose={() => this.setState({ showResetPasswordModal: false })}
           />
         )}
+        <UsefulScreenReady
+          screen="unlock"
+          section="form"
+          generation="unlock"
+          ready={
+            isOnboardingCompleted &&
+            !isLocked &&
+            !isSubmitting &&
+            !showResetPasswordModal &&
+            !showLoginErrorModal &&
+            !showConnectionsRemovedModal
+          }
+        />
         {showLoginErrorModal && (
           <LoginErrorModal
             loginError={LOGIN_ERROR.RESET_WALLET}

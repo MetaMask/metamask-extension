@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { TraceName, TraceOperation } from '#shared/lib/trace';
 import { TraceCoordinator } from '#ui/hooks/useTraceCoordinator';
 import { getSelectedAccountGroupNetworkGenerationKey } from '#ui/selectors/assets';
+import { useUsefulScreenReady } from '../../../hooks/useUsefulScreenReady';
 import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import { MoneyAccountBalance } from '../../app/money/money-account-balance';
 import {
@@ -26,6 +27,12 @@ export const AccountOverviewLayout = ({
   const homepageTraceId = useSelector(
     getSelectedAccountGroupNetworkGenerationKey,
   );
+  useUsefulScreenReady({
+    screen: 'home',
+    section: 'account',
+    generation: homepageTraceId ?? '',
+    ready: Boolean(homepageTraceId),
+  });
   const heroRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
       node.setAttribute('elementtiming', 'hero');
