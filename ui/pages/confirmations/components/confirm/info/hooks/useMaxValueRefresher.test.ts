@@ -191,7 +191,7 @@ describe('useMaxValueRefresher', () => {
     expect(updateEditableParamsMock).not.toHaveBeenCalled();
   });
 
-  it('does not update transaction value when gas estimation has failed', () => {
+  it('does not update transaction value when simulation fails with an execution revert', () => {
     // Simulates a tx that reverted on-chain during gas estimation (e.g. a
     // chain-enforced minimum balance being breached by a "send max" attempt).
     // The resulting gas is an unreliable fallback, not a real cost, so the
@@ -210,6 +210,33 @@ describe('useMaxValueRefresher', () => {
     renderHook(() => useMaxValueRefresher());
 
     expect(updateEditableParamsMock).not.toHaveBeenCalled();
+  });
+
+  it('still updates transaction value when simulation fails due to insufficient funds', () => {
+    // On OP-stack L2 chains (e.g. Ink), gas estimation fails with
+    // "insufficient funds" when the value doesn't account for the L1 data fee.
+    // This is NOT an execution revert — the gas limit (21 000) is reliable, so
+    // the hook should still correct the value once layer1GasFee is available.
+    const transactionMeta = merge({}, baseTransactionMeta, {
+      simulationFails: {
+        reason: 'insufficient funds for gas * price + value',
+        debug: {},
+      },
+    });
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: transactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    // Balance: 0.1 ETH (0x16345785d8a0000)
+    // Gas fee: 21000 * 1 gwei = 0x4c4b40 * 0x3b9aca00 = 0x1176592e000
+    // Remaining: 0x16345785d8a0000 - 0x1176592e000 = 0x163325eebffb000... approx
+    expect(updateEditableParamsMock).toHaveBeenCalledWith(
+      baseTransactionMeta.id,
+      expect.objectContaining({ value: expect.any(String) }),
+    );
   });
 
   it('does not update transaction value for token transfer transactions', () => {
