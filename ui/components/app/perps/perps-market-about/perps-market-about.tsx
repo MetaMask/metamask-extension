@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   FontWeight,
@@ -8,7 +8,46 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
+
+// About owns this measurement. The snaps helper measures once, and its other
+// callers treat that stale value as "still expandable". Remeasuring there
+// hides NFT Show less after expand.
+function useClampedDescriptionOverflow() {
+  const contentRef = useRef<HTMLParagraphElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  useEffect(() => {
+    const element = contentRef.current;
+
+    if (!element) {
+      return undefined;
+    }
+
+    const updateOverflow = () => {
+      setIsOverflowing(element.offsetHeight < element.scrollHeight);
+    };
+
+    updateOverflow();
+
+    const ResizeObserverImpl = globalThis.ResizeObserver;
+
+    if (typeof ResizeObserverImpl !== 'function') {
+      window.addEventListener('resize', updateOverflow);
+      return () => {
+        window.removeEventListener('resize', updateOverflow);
+      };
+    }
+
+    const observer = new ResizeObserverImpl(updateOverflow);
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  return { contentRef, isOverflowing };
+}
 
 export type PerpsMarketAboutProps = {
   description?: string;
@@ -21,7 +60,7 @@ const PerpsMarketAboutContent = ({
 }: Required<Pick<PerpsMarketAboutProps, 'description'>> &
   Omit<PerpsMarketAboutProps, 'description'>) => {
   const t = useI18nContext();
-  const { contentRef, isOverflowing } = useIsOverflowing();
+  const { contentRef, isOverflowing } = useClampedDescriptionOverflow();
   const [isExpanded, setIsExpanded] = useState(false);
   const trimmedAssetName = assetName?.trim();
 

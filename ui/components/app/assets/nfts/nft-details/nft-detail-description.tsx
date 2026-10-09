@@ -22,9 +22,7 @@ const NftDetailDescription = ({ value }: { value: string | null }) => {
     return null;
   }
 
-  // Expanding clears the clamp, so a later measurement reports no overflow.
-  // Keep the toggle mounted while open so Show less can collapse it again.
-  const shouldDisplayButton = isOverflowing || isOpen;
+  const shouldDisplayButton = isOverflowing;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
