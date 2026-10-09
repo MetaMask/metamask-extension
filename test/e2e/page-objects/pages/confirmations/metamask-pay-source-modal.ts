@@ -16,6 +16,10 @@ import { Driver } from '../../../webdriver/driver';
  * @see ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.tsx
  */
 export class MetaMaskPaySourceModal {
+  private readonly confirmationPage = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
   private readonly driver: Driver;
 
   private readonly otherAssetsRow = {
@@ -61,7 +65,9 @@ export class MetaMaskPaySourceModal {
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Select pay token ${symbol} on ${chainId}`);
     await this.driver.clickElement(this.tokenAsset(chainId, symbol));
-    await this.driver.assertElementNotPresent(this.title);
+    await this.driver.assertElementNotPresent(this.title, {
+      findElementGuard: this.confirmationPage,
+    });
   }
 }
 

@@ -55,9 +55,11 @@ class MoneyTransactionDetailsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Wait for Money transaction details page to load');
-    await this.driver.assertElementNotPresent(this.loadingSkeleton);
+    await this.driver.waitForSelector(this.page);
+    await this.driver.assertElementNotPresent(this.loadingSkeleton, {
+      findElementGuard: this.page,
+    });
     await this.driver.waitForMultipleSelectors([
-      this.page,
       this.backButton,
       this.heroAmount,
       this.statusValue,
@@ -74,6 +76,7 @@ class MoneyTransactionDetailsPage {
   }
 
   async goBack(): Promise<void> {
+    console.log('Click Money transaction details back button');
     await this.driver.clickElement(this.backButton);
   }
 }

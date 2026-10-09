@@ -19,6 +19,10 @@ export class MetaMaskPayAccountSelectModal {
     testId: `account-select-item-${address.toLowerCase()}`,
   });
 
+  private readonly confirmationPage = {
+    testId: 'parent-selector-confirmation-page',
+  };
+
   private readonly driver: Driver;
 
   private readonly title = {
@@ -38,7 +42,9 @@ export class MetaMaskPayAccountSelectModal {
   async selectAccount(address: string): Promise<void> {
     console.log(`Select funding account ${address}`);
     await this.driver.clickElement(this.accountItem(address));
-    await this.driver.assertElementNotPresent(this.title);
+    await this.driver.assertElementNotPresent(this.title, {
+      findElementGuard: this.confirmationPage,
+    });
   }
 }
 
