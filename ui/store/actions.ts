@@ -942,23 +942,22 @@ export function restoreSocialBackupAndGetSeedPhrase(
     options?: MetaMetricsEventOptions,
   ) => Promise<void>,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     // restore the vault using the seed phrase
     const mnemonic = await submitRequestToBackground(
       'restoreSocialBackupAndGetSeedPhrase',
       [password],
     );
 
-    // sync marketing consent with metametrics
-    const marketingConsent = await getMarketingConsent();
-    dispatch(setDataCollectionForMarketing(marketingConsent));
-
     await trackEvent?.({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.AnalyticsPreferenceSelected,
       properties: {
         [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-        [MetaMetricsUserTrait.HasMarketingConsent]: marketingConsent,
+        [MetaMetricsUserTrait.HasMarketingConsent]:
+          getState().metamask.marketingConsentDecisionMade === true
+            ? getState().metamask.optedInToMarketing === true
+            : null,
         location: 'onboarding_social_login_rehydration',
       },
     });
@@ -4347,6 +4346,7 @@ export function setParticipateInMetaMetrics(
 
 export function setDataCollectionForMarketing(
   dataCollectionPreference: boolean,
+  { waitForAus = false }: { waitForAus?: boolean } = {},
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4362,6 +4362,16 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+    if (waitForAus) {
+      try {
+        await submitRequestToBackground('messengerCall', [
+          'MarketingConsentSync:waitForMarketingConsentSync',
+          [dataCollectionPreference],
+        ]);
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
+      }
+    }
   };
 }
 
@@ -4376,40 +4386,6 @@ export function setPna25Acknowledged(
       disableDelay,
     ]);
   };
-}
-
-/**
- * Sets marketing consent with OAuth service for social login users.
- *
- * @param hasEmailMarketingConsent - Boolean value for marketing consent
- */
-export function setMarketingConsent(
-  hasEmailMarketingConsent: boolean,
-): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      const res = await submitRequestToBackground('setMarketingConsent', [
-        hasEmailMarketingConsent,
-      ]);
-      return Boolean(res);
-    } catch (error) {
-      logErrorWithMessage(getErrorMessage(error));
-      return false;
-    }
-  };
-}
-
-/**
- * Gets marketing consent with OAuth service for social login users.
- */
-export async function getMarketingConsent() {
-  try {
-    const res = await submitRequestToBackground('getMarketingConsent');
-    return Boolean(res);
-  } catch (error) {
-    logErrorWithMessage(getErrorMessage(error));
-    return false;
-  }
 }
 
 export function setAvatarType(value: string) {

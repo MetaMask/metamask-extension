@@ -8,16 +8,9 @@ import {
   useDisableMetametrics,
 } from '../../../hooks/useMetametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
-import {
-  getOptedIn,
-  getUseExternalServices,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getOptedIn, getUseExternalServices } from '../../../selectors';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import {
-  setDataCollectionForMarketing,
-  setMarketingConsent,
-} from '../../../store/actions';
+import { setDataCollectionForMarketing } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -26,6 +19,8 @@ import {
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useDispatch } from '../../../store/hooks';
+import { useMarketingOptOut } from '../../../hooks/metamask-notifications/useMarketingOptOut';
+import { MarketingConsentSheet } from '../../../components/app/marketing-consent-sheet/marketing-consent-sheet';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
@@ -42,12 +37,42 @@ export const MetametricsToggleItem = () => {
   const isOptedIn = useSelector(getOptedIn);
   const useExternalServices = useSelector(getUseExternalServices);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
+
+  const finishTurningOffMetametrics = async (clearMarketingConsent = true) => {
+    if (clearMarketingConsent && dataCollectionForMarketing) {
+      await dispatch(setDataCollectionForMarketing(false));
+    }
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
+          participateInMetaMetrics: isOptedIn,
+        })
+        .build(),
+    );
+
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+        .addCategory(MetaMetricsEventCategory.Settings)
+        .addProperties({
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
+          location: 'Settings',
+        })
+        .build(),
+    );
+
+    await disableMetametrics();
+  };
+
+  const { requestOptOut, sheetProps } = useMarketingOptOut({
+    onOptedOut: () => finishTurningOffMetametrics(false),
+  });
 
   const handleToggle = async (currentValue: boolean) => {
-    const newValue = !currentValue;
-
-    if (newValue) {
+    if (!currentValue) {
       await enableMetametrics();
       trackEvent(
         createEventBuilder(MetaMetricsEventName.TurnOnMetaMetrics)
@@ -59,37 +84,14 @@ export const MetametricsToggleItem = () => {
           })
           .build(),
       );
-    } else {
-      if (dataCollectionForMarketing) {
-        if (socialLoginEnabled) {
-          dispatch(setMarketingConsent(false));
-        }
-        dispatch(setDataCollectionForMarketing(false));
-      }
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            isProfileSyncingEnabled: isBackupAndSyncEnabled,
-            participateInMetaMetrics: isOptedIn,
-          })
-          .build(),
-      );
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
-            location: 'Settings',
-          })
-          .build(),
-      );
-
-      await disableMetametrics();
+      return;
     }
+
+    if (await requestOptOut()) {
+      return;
+    }
+
+    await finishTurningOffMetametrics();
   };
 
   return (
@@ -102,6 +104,13 @@ export const MetametricsToggleItem = () => {
         dataTestId="participate-in-meta-metrics-input"
         containerDataTestId="participate-in-meta-metrics-toggle"
         disabled={!useExternalServices}
+      />
+      <MarketingConsentSheet
+        {...sheetProps}
+        title={t('marketingConsentMetricsOptOutSheetTitle')}
+        description={t('marketingConsentMetricsOptOutSheetDescription')}
+        confirmLabel={t('marketingConsentOptOutSheetConfirm')}
+        testId="metametrics-marketing-consent-sheet"
       />
       {error && (
         <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>

@@ -192,6 +192,12 @@ jest.mock('../../hooks/useSidePanelEnabled', () => ({
   useSidePanelEnabled: jest.fn(() => false),
 }));
 
+// The metametrics screen looks up geolocation to default marketing consent.
+jest.mock('../../store/background-connection', () => ({
+  ...jest.requireActual('../../store/background-connection'),
+  submitRequestToBackground: jest.fn(() => Promise.resolve('UNKNOWN')),
+}));
+
 function createDeferred<ResolvedValue = void>() {
   let resolvePromise: (
     value: ResolvedValue | PromiseLike<ResolvedValue>,
@@ -634,8 +640,8 @@ describe('Onboarding Flow', () => {
     });
   });
 
-  it('should render onboarding metametrics screen', () => {
-    const { queryByTestId } = renderWithProvider(
+  it('should render onboarding metametrics screen', async () => {
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_METAMETRICS,
@@ -645,6 +651,10 @@ describe('Onboarding Flow', () => {
       'parent-selector-onboarding-metrics',
     );
     expect(onboardingMetametrics).toBeInTheDocument();
+    // Let the geolocation lookup settle so its state update is wrapped.
+    await waitFor(() => {
+      expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+    });
   });
 
   it('should render onboarding experimental screen', () => {
