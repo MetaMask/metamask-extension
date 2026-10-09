@@ -53,8 +53,8 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
             {showLiquidity ? <col /> : null}
             <col />
           </colgroup>
-          <thead>
-            <tr className="text-s-body-sm font-medium text-alternative sticky top-0 z-10 bg-default">
+          <thead className="sticky top-0 z-10 bg-default">
+            <tr className="text-s-body-sm font-medium text-alternative">
               <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
               <th className="pb-3 pr-3 text-end font-medium">Price</th>
               <th className="pb-3 pr-3 text-end font-medium">Market cap</th>
