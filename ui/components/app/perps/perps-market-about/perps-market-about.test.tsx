@@ -1,5 +1,5 @@
 import React, { type ComponentProps } from 'react';
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -24,17 +24,78 @@ function mockDescriptionDimensions({
   offsetHeight: number;
   scrollHeight: number;
 }) {
-  jest
+  const offsetHeightSpy = jest
     .spyOn(HTMLElement.prototype, 'offsetHeight', 'get')
     .mockReturnValue(offsetHeight);
-  jest
+  const scrollHeightSpy = jest
     .spyOn(HTMLElement.prototype, 'scrollHeight', 'get')
     .mockReturnValue(scrollHeight);
+
+  return {
+    setDimensions({
+      offsetHeight: nextOffsetHeight,
+      scrollHeight: nextScrollHeight,
+    }: {
+      offsetHeight: number;
+      scrollHeight: number;
+    }) {
+      offsetHeightSpy.mockReturnValue(nextOffsetHeight);
+      scrollHeightSpy.mockReturnValue(nextScrollHeight);
+    },
+  };
+}
+
+function installResizeObserver() {
+  const callbacks: ResizeObserverCallback[] = [];
+  const originalResizeObserver = globalThis.ResizeObserver;
+
+  globalThis.ResizeObserver = class {
+    constructor(callback: ResizeObserverCallback) {
+      callbacks.push(callback);
+    }
+
+    observe() {
+      return undefined;
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    disconnect() {
+      return undefined;
+    }
+  } as unknown as typeof ResizeObserver;
+
+  return {
+    async waitForInstall() {
+      await waitFor(() => {
+        expect(callbacks.length).toBeGreaterThan(0);
+      });
+    },
+    notify() {
+      const callback = callbacks.at(-1);
+
+      if (!callback) {
+        throw new Error('ResizeObserver was not installed');
+      }
+
+      act(() => {
+        callback([], {} as ResizeObserver);
+      });
+    },
+    restore() {
+      globalThis.ResizeObserver = originalResizeObserver;
+    },
+  };
 }
 
 describe('PerpsMarketAbout', () => {
+  const originalResizeObserver = globalThis.ResizeObserver;
+
   afterEach(() => {
     jest.restoreAllMocks();
+    globalThis.ResizeObserver = originalResizeObserver;
   });
 
   it('renders the About title with the asset name and description', () => {
@@ -139,5 +200,59 @@ describe('PerpsMarketAbout', () => {
         screen.queryByTestId('perps-market-about-read-more'),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('shows Read more when fitting text starts overflowing after a resize', async () => {
+    const resizeObserver = installResizeObserver();
+    const dimensions = mockDescriptionDimensions({
+      offsetHeight: 60,
+      scrollHeight: 60,
+    });
+
+    try {
+      renderAbout({ description: 'A market description.' });
+      await resizeObserver.waitForInstall();
+
+      expect(
+        screen.queryByTestId('perps-market-about-read-more'),
+      ).not.toBeInTheDocument();
+
+      dimensions.setDimensions({ offsetHeight: 60, scrollHeight: 120 });
+      resizeObserver.notify();
+
+      expect(
+        await screen.findByTestId('perps-market-about-read-more'),
+      ).toBeInTheDocument();
+    } finally {
+      resizeObserver.restore();
+    }
+  });
+
+  it('hides Read more when overflowing text starts fitting after a resize', async () => {
+    const resizeObserver = installResizeObserver();
+    const dimensions = mockDescriptionDimensions({
+      offsetHeight: 60,
+      scrollHeight: 120,
+    });
+
+    try {
+      renderAbout({ description: 'A market description.' });
+
+      expect(
+        await screen.findByTestId('perps-market-about-read-more'),
+      ).toBeInTheDocument();
+      await resizeObserver.waitForInstall();
+
+      dimensions.setDimensions({ offsetHeight: 60, scrollHeight: 60 });
+      resizeObserver.notify();
+
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId('perps-market-about-read-more'),
+        ).not.toBeInTheDocument();
+      });
+    } finally {
+      resizeObserver.restore();
+    }
   });
 });
