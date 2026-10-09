@@ -35,10 +35,7 @@ describe('Test Snap Notification', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
-          'Reconnect to Notifications Snap',
+          { expectedMessage: 'Reconnect to Notifications Snap' },
         );
         await testSnaps.clickButton('sendInAppNotificationButton');
 
@@ -80,10 +77,7 @@ describe('Test Snap Notification', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectNotificationButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectNotificationButton',
-          'Reconnect to Notifications Snap',
+          { expectedMessage: 'Reconnect to Notifications Snap' },
         );
         await testSnaps.clickButton('sendExpandedViewNotificationButton');
 

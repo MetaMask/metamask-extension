@@ -30,10 +30,12 @@ describe('Test Snap Get File', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
-        await testSnaps.checkInstallationComplete(
+        await openTestSnapClickButtonAndInstall(
+          driver,
           'connectGetFileButton',
-          'Reconnect to Get File Snap',
+          {
+            expectedMessage: 'Reconnect to Get File Snap',
+          },
         );
 
         // click on get file and check correct result

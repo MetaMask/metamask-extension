@@ -31,6 +31,7 @@ describe('Test Snap Homepage', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectHomePageButton',
+          { snapId: 'npm:@metamask/home-page-example-snap' },
         );
 
         // switch to metamask page and open the three dots menu

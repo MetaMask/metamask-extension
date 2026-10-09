@@ -25,11 +25,9 @@ describe('Test Snap JSX', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Open the test snaps page
-        await openTestSnapClickButtonAndInstall(driver, 'connectjsxButton');
-        await testSnaps.checkInstallationComplete(
-          'connectjsxButton',
-          'Reconnect to JSX Snap',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectjsxButton', {
+          expectedMessage: 'Reconnect to JSX Snap',
+        });
 
         await testSnaps.clickButton('displayJsxButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
