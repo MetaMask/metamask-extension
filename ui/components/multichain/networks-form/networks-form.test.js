@@ -1,4 +1,5 @@
 import React from 'react';
+import { configureStore } from '@reduxjs/toolkit';
 import configureMockStore from 'redux-mock-store';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -57,24 +58,52 @@ jest.mock('../../../store/background-connection', () => ({
   }),
 }));
 
+const buildMetamaskState = ({ isRpcFailoverEnabled } = {}) => ({
+  ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+  useSafeChainsListValidation: true,
+  orderedNetworkList: {
+    networkId: '0x1',
+    networkRpcUrl: 'https://mainnet.infura.io/v3/',
+  },
+  multichainNetworkConfigurationsByChainId:
+    AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  selectedMultichainNetworkChainId: 'eip155:1',
+  isEvmSelected: true,
+  remoteFeatureFlags: {
+    walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
+  },
+});
+
 const renderComponent = ({ isRpcFailoverEnabled, ...props } = {}) => {
   const store = configureMockStore([thunk])({
-    metamask: {
-      ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-      useSafeChainsListValidation: true,
-      orderedNetworkList: {
-        networkId: '0x1',
-        networkRpcUrl: 'https://mainnet.infura.io/v3/',
-      },
-      multichainNetworkConfigurationsByChainId:
-        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
-      selectedMultichainNetworkChainId: 'eip155:1',
-      isEvmSelected: true,
-      remoteFeatureFlags: {
-        walletFrameworkRpcFailoverEnabled: isRpcFailoverEnabled ?? false,
-      },
+    metamask: buildMetamaskState({ isRpcFailoverEnabled }),
+  });
+  return renderWithProvider(<NetworksForm {...props} />, store);
+};
+
+const chainIdExistsMessage = (networkName) =>
+  messages.chainIdExistsErrorMsg.message.replace('$1', networkName);
+
+const renderWithUpdatingNetworks = (metamaskState, props) => {
+  const store = configureStore({
+    reducer: (state = { metamask: metamaskState }, action) => {
+      if (action.type !== 'test/addNetwork') {
+        return state;
+      }
+
+      return {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          networkConfigurationsByChainId: {
+            ...state.metamask.networkConfigurationsByChainId,
+            [action.network.chainId]: action.network,
+          },
+        },
+      };
     },
   });
+
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
@@ -86,6 +115,7 @@ const propNetworkDisplay = {
     },
     clear: () => ({}),
     name: MAINNET_DISPLAY_NAME,
+    source: 'manual',
     rpcUrls: {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [
@@ -101,6 +131,7 @@ const propNetworkDisplay = {
     setChainId: () => ({}),
     setName: () => ({}),
     setRpcUrls: () => ({}),
+    setSource: () => ({}),
     setTicker: () => ({}),
     ticker: 'ETH',
   },
@@ -206,21 +237,25 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('starts the Chainlist flow from the add network form', () => {
-    const onAddFromChainlist = jest.fn();
+  it('does not render a separate Chainlist button on the add network form', () => {
+    renderComponent(propNetworkDisplay);
 
-    renderComponent({
-      ...propNetworkDisplay,
-      onAddFromChainlist,
-    });
-
-    fireEvent.click(
-      screen.getByRole('button', {
+    expect(
+      screen.queryByRole('button', {
         name: messages.addFromChainlist.message,
       }),
-    );
+    ).not.toBeInTheDocument();
+  });
 
-    expect(onAddFromChainlist).toHaveBeenCalledTimes(1);
+  it('renders the add from Chainlist button when chainlist v2 is off', () => {
+    renderComponent({
+      ...propNetworkDisplay,
+      onAddFromChainlist: () => undefined,
+    });
+
+    expect(
+      screen.getByTestId('network-form-add-from-chainlist'),
+    ).toBeInTheDocument();
   });
 
   it('should render network form correctly', () => {
@@ -457,6 +492,71 @@ describe('NetworkForm Component', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('warns when the chain id is already saved', () => {
+    const networkState = mockNetworkState({ chainId: CHAIN_IDS.MAINNET });
+    renderWithUpdatingNetworks(
+      {
+        ...buildMetamaskState(),
+        ...networkState,
+        networkConfigurationsByChainId: {
+          ...networkState.networkConfigurationsByChainId,
+          '0x64': {
+            chainId: '0x64',
+            name: 'Gnosis',
+            nativeCurrency: 'XDAI',
+            rpcEndpoints: [
+              {
+                url: 'https://rpc.gnosischain.com',
+                type: 'custom',
+                networkClientId: 'gnosis',
+              },
+            ],
+            defaultRpcEndpointIndex: 0,
+            blockExplorerUrls: [],
+          },
+        },
+      },
+      {
+        ...propNetworkDisplay,
+        toggleNetworkMenuAfterSubmit: false,
+      },
+    );
+
+    expect(
+      screen.getByText(chainIdExistsMessage('Gnosis')),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: messages.save.message }),
+    ).toBeDisabled();
+  });
+
+  it('does not warn about the chain id that this save just added', async () => {
+    addNetwork.mockImplementationOnce((network) => (dispatch) => {
+      dispatch({ type: 'test/addNetwork', network });
+      return Promise.resolve();
+    });
+
+    renderWithUpdatingNetworks(buildMetamaskState(), {
+      ...propNetworkDisplay,
+      toggleNetworkMenuAfterSubmit: false,
+    });
+
+    expect(
+      screen.queryByText(chainIdExistsMessage(MAINNET_DISPLAY_NAME)),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: messages.save.message }),
+    );
+
+    await waitFor(() => {
+      expect(addNetwork).toHaveBeenCalledTimes(1);
+    });
+    expect(
+      screen.queryByText(chainIdExistsMessage(MAINNET_DISPLAY_NAME)),
+    ).not.toBeInTheDocument();
+  });
+
   it('should call addNetwork when saving a new network', async () => {
     const { getByText } = renderComponent(propNetworkDisplay);
     const saveButton = getByText(messages.save.message);
@@ -478,6 +578,37 @@ describe('NetworkForm Component', () => {
           defaultBlockExplorerUrlIndex: undefined,
         },
         { setActive: true },
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'manual',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('tracks Chainlist as the source when saving a suggested network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        source: 'chainlist',
+      },
+    });
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'chainlist',
+          }),
+        }),
       );
     });
   });

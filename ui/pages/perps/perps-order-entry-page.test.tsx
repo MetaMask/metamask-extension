@@ -108,6 +108,12 @@ const enterAmount = (value: string) => {
   fireEvent.change(amountInput, { target: { value } });
 };
 
+const enterLimitPrice = (value: string) => {
+  const limitContainer = screen.getByTestId('limit-price-input');
+  const limitInput = limitContainer.querySelector('input') as HTMLInputElement;
+  fireEvent.change(limitInput, { target: { value } });
+};
+
 jest.mock('@metamask/perps-controller', () => ({
   ...jest.requireActual('@metamask/perps-controller'),
   PERPS_ERROR_CODES: {
@@ -1119,6 +1125,89 @@ describe('PerpsOrderEntryPage', () => {
       expect(submitButton).toBeDisabled();
       expect(submitButton).toHaveTextContent(
         tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when a limit order amount is below the $10 minimum', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when a limit order has no amount', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('enables submit when a limit order amount meets the $10 minimum', () => {
+      mockSearchParams.set('orderType', 'limit');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount(`${PERPS_MIN_MARKET_ORDER_USD}`);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(tEn('perpsOpenLong', ['ETH']));
+    });
+
+    it('disables submit when a modify limit order amount is below the $10 minimum', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockSearchParams.set('orderType', 'limit');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('keeps submit enabled for a modify limit order with no amount (TP/SL-only update)', () => {
+      mockSearchParams.set('mode', 'modify');
+      mockSearchParams.set('orderType', 'limit');
+      mockLivePositions.mockReturnValue({
+        positions: mockPositions,
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterLimitPrice('1000');
+      enterAmount('');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        messages.perpsModifyPosition.message,
       );
     });
   });
