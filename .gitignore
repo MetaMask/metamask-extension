@@ -117,6 +117,9 @@ development/lib/variables.d.ts
 shared/lib/manifestFlags.js
 shared/lib/manifestFlags.d.ts
 
+# page object inspector index, regenerated on every build
+development/page-object-inspector/.generated
+
 # llm workflow playwright temp files
 temp-llm-workflow-*
 .mm-server
