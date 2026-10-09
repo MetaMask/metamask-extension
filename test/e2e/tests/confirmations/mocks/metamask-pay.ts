@@ -565,6 +565,9 @@ async function mockDepositSettlement(
           network: 'monad-mainnet',
           explorer: 'https://monadscan.com/',
           confirmations: true,
+          // The 7702 publish hook refuses the sponsored vault batch unless
+          // Sentinel lists relay signers for this chain.
+          cubistSigners: ['0x1111111111111111111111111111111111111111'],
           smartTransactions: false,
           relayTransactions: true,
           hidden: false,
