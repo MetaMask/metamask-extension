@@ -28,6 +28,9 @@ import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 
 const ZERO_PREFILL_AMOUNT = '0.0';
+const DEFAULT_PREFILL_PERCENTAGE = 50;
+const MAX_PREFILL_PERCENTAGE = 100;
+const TRANSACTION_TYPES_MAX_PREFILL = [TransactionType.moneyAccountDeposit];
 
 function formatFiatAmount(value: BigNumber): string {
   return value.isInteger() ? value.toString(10) : value.toFixed(2);
@@ -82,6 +85,8 @@ export enum DepositPrefillStatus {
 
 export type DepositPrefillResult = {
   prefillAmount: string | undefined;
+  percentage: number | undefined;
+  isLimitCapped: boolean;
   /**
    * True when prefill is uncapped 100% of balance (stablecoin route token,
    * not limited by depositLimit). Consumers should apply this via
@@ -94,16 +99,16 @@ export type DepositPrefillResult = {
 };
 
 /**
- * Computes the fiat amount to pre-fill for money-account deposit confirmations.
+ * Computes the fiat amount to pre-fill for MetaMask Pay deposit confirmations.
  * Matches mobile `useDepositPrefillAmount`:
- * - Gated by `confirmations_pay_extended.prefilledAmount`
- * - 100% of balance for relay fixed-spread route tokens, otherwise 50%
+ * - Gated by `confirmations_pay_extended.prefilledAmount`, per transaction type
+ * - 100% for money-account deposits with route tokens, otherwise 50%
  * - Capped by `confirmations_pay_extended.depositLimit` when configured
  * - Re-commits when the confirmation, pay token, or funding account changes
  * - Settles as `DepositPrefillStatus.Skipped` when no funded token can produce
  * an amount, so consumers show $0 rather than an indefinite skeleton
  */
-export function useDepositPrefillAmount(): DepositPrefillResult {
+export function useDepositPrefill(): DepositPrefillResult {
   const transactionMeta = useTransactionMetadataRequest();
   const { payToken } = useTransactionPayToken();
   const availableTokens = useTransactionPayAvailableTokens();
@@ -154,52 +159,74 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
   const tokenKey = `${transactionMeta?.id ?? ''}:${payToken?.address}:${payToken?.chainId}:${accountOverride ?? ''}`;
   const [committedKey, setCommittedKey] = useState<string | null>(null);
 
-  const { prefillAmount, isUncappedMaxPrefill } = useMemo(() => {
-    const balanceUsdValue = new BigNumber(balanceUsd);
+  const { prefillAmount, percentage, isLimitCapped, isUncappedMaxPrefill } =
+    useMemo(() => {
+      const balanceUsdValue = new BigNumber(balanceUsd);
 
-    if (!enabled || !payToken) {
-      return { prefillAmount: undefined, isUncappedMaxPrefill: false };
-    }
+      if (!enabled || !payToken) {
+        return {
+          prefillAmount: undefined,
+          percentage: undefined,
+          isLimitCapped: false,
+          isUncappedMaxPrefill: false,
+        };
+      }
 
-    if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
+      if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
+        return {
+          prefillAmount: ZERO_PREFILL_AMOUNT,
+          percentage: undefined,
+          isLimitCapped: false,
+          isUncappedMaxPrefill: false,
+        };
+      }
+
+      const stable = isRouteToken(relayFixedSpread, {
+        chainId: payToken.chainId,
+        address: payToken.address,
+      });
+      const supportsMaxPrefill = hasTransactionType(
+        transactionMeta,
+        TRANSACTION_TYPES_MAX_PREFILL,
+      );
+      const nextPercentage =
+        supportsMaxPrefill && stable
+          ? MAX_PREFILL_PERCENTAGE
+          : DEFAULT_PREFILL_PERCENTAGE;
+
+      const raw = new BigNumber(nextPercentage)
+        .div(100)
+        .times(balanceUsdValue)
+        .round(2, BigNumber.ROUND_DOWN);
+
+      const isCapped =
+        depositLimit !== undefined && raw.gt(String(depositLimit));
+
       return {
-        prefillAmount: ZERO_PREFILL_AMOUNT,
-        isUncappedMaxPrefill: false,
+        prefillAmount: formatFiatAmount(
+          isCapped ? new BigNumber(String(depositLimit)) : raw,
+        ),
+        percentage: nextPercentage,
+        isLimitCapped: isCapped,
+        // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
+        // is only a Max deposit when the raw balance is the funding account's
+        // own. The snapshot fallback can belong to a previously selected account;
+        // committing it as Max would submit that account's balance and suppress
+        // the insufficient-funds alert.
+        isUncappedMaxPrefill:
+          nextPercentage === MAX_PREFILL_PERCENTAGE &&
+          !isCapped &&
+          isLiveBalance,
       };
-    }
-
-    const stable = isRouteToken(relayFixedSpread, {
-      chainId: payToken.chainId,
-      address: payToken.address,
-    });
-    const percentage = stable ? 100 : 50;
-
-    const raw = new BigNumber(percentage)
-      .div(100)
-      .times(balanceUsdValue)
-      .round(2, BigNumber.ROUND_DOWN);
-
-    const isCapped = depositLimit !== undefined && raw.gt(String(depositLimit));
-
-    return {
-      prefillAmount: formatFiatAmount(
-        isCapped ? new BigNumber(String(depositLimit)) : raw,
-      ),
-      // Uncapped 100% submits exact balanceRaw (not fiat→mUSD ROUND_UP), so it
-      // is only a Max deposit when the raw balance is the funding account's
-      // own. The snapshot fallback can belong to a previously selected account;
-      // committing it as Max would submit that account's balance and suppress
-      // the insufficient-funds alert.
-      isUncappedMaxPrefill: percentage === 100 && !isCapped && isLiveBalance,
-    };
-  }, [
-    balanceUsd,
-    depositLimit,
-    enabled,
-    isLiveBalance,
-    payToken,
-    relayFixedSpread,
-  ]);
+    }, [
+      balanceUsd,
+      depositLimit,
+      enabled,
+      isLiveBalance,
+      payToken,
+      relayFixedSpread,
+      transactionMeta,
+    ]);
 
   // Uncapped 100% prefill must wait for live balanceRaw — otherwise consumers
   // fall back to the fiat path and can request slightly more than available.
@@ -273,6 +300,8 @@ export function useDepositPrefillAmount(): DepositPrefillResult {
 
   return {
     prefillAmount,
+    percentage,
+    isLimitCapped,
     isUncappedMaxPrefill,
     status,
   };

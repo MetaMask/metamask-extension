@@ -528,7 +528,7 @@
       "count": 2
     }
   },
-  "ui/pages/confirmations/hooks/transactions/useDepositPrefillAmount.ts": {
+  "ui/pages/confirmations/hooks/transactions/useDepositPrefill.ts": {
     "react-hooks/set-state-in-effect": {
       "count": 1
     }
