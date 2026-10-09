@@ -26,6 +26,7 @@ import {
   MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID,
   MONEY_ACCOUNT_BALANCE_APY_SKELETON_TEST_ID,
   MONEY_ACCOUNT_BALANCE_APY_TEST_ID,
+  MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID,
   MONEY_ACCOUNT_BALANCE_INFO_TEST_ID,
   MONEY_ACCOUNT_BALANCE_LAST_KNOWN_TEST_ID,
   MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID,
@@ -410,12 +411,12 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
-  it('starts a deposit when the card outside the summary section is clicked', () => {
+  it('starts a deposit when the Add section around the button is clicked', () => {
     arrange({ totalFiatFormatted: '$309.90' });
 
     const { getByTestId } = render();
 
-    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID));
 
     expect(mockInitiateDeposit).toHaveBeenCalledTimes(1);
     expect(mockNavigate).not.toHaveBeenCalled();
@@ -427,12 +428,23 @@ describe('MoneyAccountBalance', () => {
     });
   });
 
-  it('does not start a second deposit from the card while one is in flight', () => {
-    arrange({ totalFiatFormatted: '$309.90', isDepositLoading: true });
+  it('does nothing when a click lands on the card itself rather than a section', () => {
+    arrange({ totalFiatFormatted: '$309.90' });
 
     const { getByTestId } = render();
 
     fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_TEST_ID));
+
+    expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('does not start a second deposit from the Add section while one is in flight', () => {
+    arrange({ totalFiatFormatted: '$309.90', isDepositLoading: true });
+
+    const { getByTestId } = render();
+
+    fireEvent.click(getByTestId(MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID));
 
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
   });

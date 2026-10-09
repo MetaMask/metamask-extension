@@ -54,6 +54,8 @@ export const MONEY_ACCOUNT_BALANCE_SKELETON_TEST_ID =
 export const MONEY_ACCOUNT_BALANCE_INFO_TEST_ID = 'money-account-balance-info';
 export const MONEY_ACCOUNT_BALANCE_ADD_BUTTON_TEST_ID =
   'money-account-balance-add-button';
+export const MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID =
+  'money-account-balance-add-section';
 
 const Balance = ({
   fiatBalance,
@@ -191,7 +193,9 @@ const Add = ({
  * ## Click targets
  *
  * The label, APY and balance section opens Money Home, by click or from the
- * keyboard. The rest of the card, including Add, starts a deposit.
+ * keyboard. The Add section, the button and the padding around it, starts a
+ * deposit. The deposit handler sits on that section rather than the whole card
+ * so a drag from the summary into the Add section cannot start a deposit.
  *
  * @returns The balance row, or `null`.
  */
@@ -294,8 +298,7 @@ export const MoneyAccountBalance = () => {
       backgroundColor={BoxBackgroundColor.BackgroundSection}
       // 458px matches .wallet-overview__buttons ($wallet-overview-sidepanel-max-width - 32px)
       // so this row lines up with the action buttons above it.
-      className="w-full max-w-[458px] self-center cursor-pointer rounded-2xl"
-      onClick={startDeposit}
+      className="w-full max-w-[458px] self-center rounded-2xl"
       data-testid={MONEY_ACCOUNT_BALANCE_TEST_ID}
     >
       <Box
@@ -303,7 +306,7 @@ export const MoneyAccountBalance = () => {
         justifyContent={BoxJustifyContent.Center}
         gap={1}
         padding={4}
-        className="min-w-0 flex-1 rounded-l-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+        className="min-w-0 flex-1 cursor-pointer rounded-l-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         role="link"
         tabIndex={0}
         onClick={handleSummaryClick}
@@ -372,6 +375,9 @@ export const MoneyAccountBalance = () => {
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         padding={4}
+        className="cursor-pointer rounded-r-2xl"
+        onClick={startDeposit}
+        data-testid={MONEY_ACCOUNT_BALANCE_ADD_SECTION_TEST_ID}
       >
         <Add
           moneyAccountEmpty={moneyAccountEmpty}
