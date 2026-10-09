@@ -522,7 +522,10 @@ describe('useShieldRewards', () => {
 
 describe('useCancelSubscription', () => {
   const buildSubscription = (
-    cancelType: Subscription['cancelType'],
+    // `cancelType` is required in the v8 types the UI compiles against, but
+    // optional at runtime since subscription-controller@10; accept undefined
+    // to test that case.
+    cancelType: Subscription['cancelType'] | undefined,
   ): Subscription =>
     ({
       id: 'shield-subscription-id',
