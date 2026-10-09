@@ -304,7 +304,7 @@
     },
     "RewardsController": {
       "rewardsAccounts": "object",
-      "rewardsActiveAccount": null,
+      "rewardsActiveAccount": "object",
       "rewardsPointsEstimateHistory": "object",
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
