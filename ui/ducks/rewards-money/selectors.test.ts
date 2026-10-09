@@ -11,7 +11,7 @@ function state({
   return {
     rewards: { geoLocation },
     metamask: { excludedRegions },
-  } as MetaMaskReduxState;
+  } as unknown as MetaMaskReduxState;
 }
 
 describe('selectMoneyReferralAllowedForGeo', () => {

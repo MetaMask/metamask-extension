@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
