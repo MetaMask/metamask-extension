@@ -105,6 +105,7 @@ export const AddRpcUrlPageForm = ({
   const [source, setSource] = useState<RpcUrlSource>('manual');
   const validationRequestIdRef = useRef(0);
   const latestUrlRef = useRef(url);
+  const rpcUrlSectionRef = useRef<HTMLDivElement>(null);
   const debouncedUrl = useDebouncedValue(url);
 
   const urlErrorKey = getUrlErrorKey(url);
@@ -164,6 +165,26 @@ export const AddRpcUrlPageForm = ({
       setUrlFeedback(true);
     }
   };
+
+  useEffect(() => {
+    if (suggestionsDismissed || !chainlistEnabled) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      const { target } = event;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (rpcUrlSectionRef.current?.contains(target)) {
+        return;
+      }
+      setSuggestionsDismissed(true);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, [chainlistEnabled, suggestionsDismissed]);
 
   useEffect(() => {
     const trimmedUrl = debouncedUrl.trim();
@@ -258,6 +279,7 @@ export const AddRpcUrlPageForm = ({
             </Box>
           ) : null}
           <Box
+            ref={rpcUrlSectionRef}
             className="flex w-full flex-col"
             onBlur={(event) => {
               if (

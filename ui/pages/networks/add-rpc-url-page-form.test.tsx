@@ -311,6 +311,38 @@ describe('AddRpcUrlPageForm', () => {
     );
   });
 
+  it('closes Chainlist RPC suggestions when clicking outside the URL field', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        chainlistEnabled
+        onCancel={() => undefined}
+        onAdded={() => undefined}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-suggestions'),
+    ).not.toBeInTheDocument();
+  });
+
   it('does not suggest Chainlist RPCs when the feature flag is off', () => {
     mockUseSafeChains.mockReturnValue({
       safeChains: [

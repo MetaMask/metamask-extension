@@ -1008,7 +1008,7 @@ export const NetworksForm = ({
           <DropdownEditor
             title={t('blockExplorerUrl')}
             placeholder={t('addAUrl')}
-            style={DropdownEditorStyle.BoxStyle}
+            style={DropdownEditorStyle.PopoverStyle}
             items={blockExplorers.blockExplorerUrls}
             itemKey={(item) => `${item}`}
             selectedItemIndex={blockExplorers.defaultBlockExplorerUrlIndex}
@@ -1031,20 +1031,12 @@ export const NetworksForm = ({
                 defaultBlockExplorerUrlIndex: newSelectedIndex,
               });
             }}
-            // Scroll to bottom so all URLs are visible
-            onDropdownOpened={() => {
-              if (scrollableRef.current) {
-                scrollableRef.current.scrollTop =
-                  scrollableRef.current.scrollHeight;
-              }
-            }}
-            renderItem={(item) => (
+            renderItem={(item, isList) => (
               <Text
                 asChild
                 ellipsis
-                color={TextColor.TextDefault}
                 variant={TextVariant.BodyMd}
-                className="bg-transparent px-0 py-2"
+                className={isList ? 'flex items-center py-4' : undefined}
               >
                 <span>{stripProtocol(item)}</span>
               </Text>
