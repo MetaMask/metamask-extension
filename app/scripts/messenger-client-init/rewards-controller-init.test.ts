@@ -143,17 +143,15 @@ describe('RewardsControllerInit', () => {
       const requestMock = buildInitRequestMock();
       const listeners: ((state: { completedOnboarding: boolean }) => void)[] =
         [];
-      jest
-        .spyOn(requestMock.initMessenger, 'subscribe')
-        .mockImplementation(((
-          event: string,
-          listener: (state: { completedOnboarding: boolean }) => void,
-        ) => {
-          if (event === 'OnboardingController:stateChange') {
-            listeners.push(listener);
-          }
-          return undefined;
-        }) as never);
+      jest.spyOn(requestMock.initMessenger, 'subscribe').mockImplementation(((
+        event: string,
+        listener: (state: { completedOnboarding: boolean }) => void,
+      ) => {
+        if (event === 'OnboardingController:stateChange') {
+          listeners.push(listener);
+        }
+        return undefined;
+      }) as never);
 
       const result = RewardsControllerInit(requestMock);
       const handleAuthenticationTrigger = jest
