@@ -5,17 +5,20 @@ import { act, render } from '@testing-library/react';
 import { useValidateMoneyReferralCode } from './useValidateMoneyReferralCode';
 
 const mockValidate = jest.fn();
+const validateMessenger = {
+  call: (_action: string, code: string) => mockValidate(code),
+};
 const mockT = (key: string) => key;
 
-jest.mock('../../store/actions', () => ({
-  validateRewardsMoneyReferralCode: (code: string) => () => mockValidate(code),
+jest.mock('../useMessenger', () => ({
+  useMessenger: () => validateMessenger,
 }));
 
 jest.mock('../useI18nContext', () => ({
   useI18nContext: () => mockT,
 }));
 
-function Harness({ initialCode }: { initialCode: string }) {
+const Harness = ({ initialCode }: { initialCode: string }) => {
   const [code, setCode] = useState(initialCode);
   const validation = useValidateMoneyReferralCode(code);
   return (
@@ -28,7 +31,7 @@ function Harness({ initialCode }: { initialCode: string }) {
       <span data-testid="valid">{String(validation.isValid)}</span>
     </div>
   );
-}
+};
 
 describe('useValidateMoneyReferralCode', () => {
   beforeEach(() => {

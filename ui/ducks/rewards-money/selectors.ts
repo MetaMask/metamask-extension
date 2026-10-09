@@ -44,7 +44,7 @@ export function selectMoneyReferralAllowedForGeo(
   state: MetaMaskReduxState,
 ): boolean {
   const country = countryCodeFromGeoLocation(state.rewards?.geoLocation);
-  const excludedRegions = state.metamask.excludedRegions;
+  const { excludedRegions } = state.metamask;
   if (!country || excludedRegions === null || excludedRegions === undefined) {
     return true;
   }
