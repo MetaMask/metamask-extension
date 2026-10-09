@@ -53,12 +53,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockMultiNetworkBalancePolling(mockServer);
-          mockSimulationResponse(mockServer);
-          mockSmartTransactionBatchRequests(mockServer, {
+          await mockSimulationResponse(mockServer);
+          await mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
-          mockSentinelNetworks(mockServer);
-          mockSpotPrices(mockServer, GAS_FEE_SPOT_PRICES);
+          await mockSentinelNetworks(mockServer);
+          await mockSpotPrices(mockServer, GAS_FEE_SPOT_PRICES);
         },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
