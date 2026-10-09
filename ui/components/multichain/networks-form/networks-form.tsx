@@ -481,11 +481,17 @@ export const NetworksForm = ({
         return false;
       }
 
-      failedChainlistRpcUrlsRef.current.add(selectedRpcUrl);
       const chain = safeChains?.find(
         (candidate) => toHex(candidate.chainId) === chainIdHex,
       );
-      const nextUrl = getUsableUrls(chain?.rpc).find(
+      const chainlistUrls = getUsableUrls(chain?.rpc);
+      // A URL the user added after the Chainlist pick is not swapped out.
+      if (!chainlistUrls.includes(selectedRpcUrl)) {
+        return false;
+      }
+
+      failedChainlistRpcUrlsRef.current.add(selectedRpcUrl);
+      const nextUrl = chainlistUrls.find(
         (url) => !failedChainlistRpcUrlsRef.current.has(url),
       );
       if (!nextUrl) {
@@ -822,9 +828,10 @@ export const NetworksForm = ({
             selectedItemIndex={rpcUrls.defaultRpcEndpointIndex}
             error={Boolean(errors.rpcUrl)}
             buttonDataTestId="test-add-rpc-drop-down"
-            renderItem={(item) => {
+            renderItem={(item, isList) => {
               const failoverUrls = failoverUrlsForEndpoint(item);
-              return item?.name ||
+              return isList ||
+                item?.name ||
                 item?.type === RpcEndpointType.Infura ||
                 failoverUrls.length > 0 ? (
                 <RpcListItem
@@ -840,7 +847,7 @@ export const NetworksForm = ({
                   asChild
                   ellipsis
                   variant={TextVariant.BodyMd}
-                  className="flex items-center gap-1 py-2"
+                  className="flex items-center gap-1 py-3"
                 >
                   <span>{stripProtocol(stripKeyFromInfuraUrl(item.url))}</span>
                 </Text>
@@ -943,11 +950,6 @@ export const NetworksForm = ({
                     setSource('chainlist');
                     closeChainlist();
                     chainlist.onSelect(network, searchQuery);
-                  }}
-                  onUseTypedName={(typedName) => {
-                    setSource('manual');
-                    setName(typedName);
-                    closeChainlist();
                   }}
                 />
               </Box>

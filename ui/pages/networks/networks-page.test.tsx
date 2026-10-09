@@ -645,6 +645,28 @@ describe('NetworksPage', () => {
     });
   });
 
+  it('does not write a chain ID search into the network name', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.change(screen.getByTestId('network-form-chain-id'), {
+      target: { value: '999999' },
+    });
+
+    expect(
+      await screen.findByText(messages.chainlistNoMatches.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('networks-page-chainlist-use-typed-name'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('network-form-network-name')).toHaveValue('');
+  });
+
   it('keeps Chainlist details when leaving and returning from add RPC', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
@@ -799,6 +821,56 @@ describe('NetworksPage', () => {
     expect(
       screen.queryByText(messages.failedToFetchChainId.message),
     ).not.toBeInTheDocument();
+  });
+
+  it('keeps a custom RPC when a Chainlist URL would have been replaced', async () => {
+    let rpcRequests = 0;
+    mockJsonRpcRequest.mockImplementation(() => {
+      rpcRequests += 1;
+      // The Chainlist prefill and the add-form check succeed. The fetch after
+      // the custom URL is saved fails, and must not restore a Chainlist URL.
+      if (rpcRequests <= 2) {
+        return Promise.resolve('0x64');
+      }
+      return Promise.reject(new Error('down'));
+    });
+
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    fireEvent.click(screen.getByTestId('network-form-network-name'));
+    fireEvent.click(
+      (await screen.findByText('Gnosis')).closest(
+        'button',
+      ) as HTMLButtonElement,
+    );
+
+    expect(await screen.findByText('rpc.gnosischain.com')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('test-add-rpc-drop-down'));
+    const rpcOption = screen.getByTestId('network-form-rpc-option-0');
+    fireEvent.click(
+      rpcOption.parentElement?.querySelector(
+        '[data-testid="delete-item-0"]',
+      ) as HTMLElement,
+    );
+    fireEvent.click(screen.getByText(messages.addRpcUrl.message));
+
+    fireEvent.change(await screen.findByTestId('rpc-url-input-test'), {
+      target: { value: 'https://custom.example.com' },
+    });
+    await waitFor(() =>
+      expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
+    );
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
+
+    expect(await screen.findByText('custom.example.com')).toBeInTheDocument();
+    expect(screen.queryByText('rpc.gnosischain.com')).not.toBeInTheDocument();
   });
 
   it('lets the only failing RPC be deleted', async () => {

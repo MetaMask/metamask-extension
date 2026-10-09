@@ -227,26 +227,28 @@ export const ChainlistNetworkPicker = ({
             >
               {t('chainlistNoMatches')}
             </Text>
-            <button
-              className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
-              data-testid="networks-page-chainlist-use-typed-name"
-              type="button"
-              onClick={() => onUseTypedName?.(searchValue.trim())}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.InfoDefault}
+            {onUseTypedName ? (
+              <button
+                className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
+                data-testid="networks-page-chainlist-use-typed-name"
+                type="button"
+                onClick={() => onUseTypedName(searchValue.trim())}
               >
-                {t('chainlistUseTypedNetworkName', [searchValue.trim()])}
-              </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                className="text-text-alternative"
-              >
-                {t('chainlistEnterNetworkDetailsManually')}
-              </Text>
-            </button>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.InfoDefault}
+                >
+                  {t('chainlistUseTypedNetworkName', [searchValue.trim()])}
+                </Text>
+                <Text
+                  variant={TextVariant.BodySm}
+                  className="text-text-alternative"
+                >
+                  {t('chainlistEnterNetworkDetailsManually')}
+                </Text>
+              </button>
+            ) : null}
           </Box>
         ) : (
           <>
