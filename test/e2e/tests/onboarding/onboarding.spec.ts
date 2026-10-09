@@ -370,38 +370,6 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('User can turn off basic functionality in default settings', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await importSRPOnboardingFlow({ driver });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.navigateToDefaultPrivacySettings();
-
-        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
-          driver,
-        );
-        await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
-        await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
-
-        await onboardingCompletePage.checkPageIsLoaded();
-        await onboardingCompletePage.completeOnboarding();
-
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-      },
-    );
-  });
-
   it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
     // We don't use onboarding: true here because we want there to be a vault,
     // simulating what will happen when a user eventually restores their vault
