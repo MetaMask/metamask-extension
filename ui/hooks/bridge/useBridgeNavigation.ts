@@ -33,6 +33,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
   SWAP_ASSETS_PATH,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -402,6 +403,15 @@ export const useBridgeNavigation = () => {
     [dispatch, search, resetLocationState],
   );
 
+  const navigateBack = useCallback(() => {
+    dispatch(resetBridgeController());
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      navigate(PREVIOUS_ROUTE);
+      return;
+    }
+    resetLocationState(DEFAULT_ROUTE, { replace: true }, true);
+  }, [dispatch, navigate, resetLocationState]);
+
   const memoizedToken = useMemo(() => state.token, [state.token]);
   const memoizedBridgeState = useMemo(
     () => state.bridgeState,
@@ -434,5 +444,6 @@ export const useBridgeNavigation = () => {
     ),
     navigateToActivityPage,
     navigateToDefaultRoute,
+    navigateBack,
   };
 };

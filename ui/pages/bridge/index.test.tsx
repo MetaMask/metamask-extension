@@ -227,7 +227,7 @@ describe('Bridge', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
       replace: true,
-      state: { stayOnHomePage: true },
+      state: expect.objectContaining({ stayOnHomePage: true }),
     });
 
     Object.defineProperty(window.history, 'length', {
