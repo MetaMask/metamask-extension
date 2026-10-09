@@ -164,7 +164,7 @@ export const useTokensWithFiltering = (
     }
     // For EVM chains, check the cache
     const hexChainId = formatChainIdToHex(chainId);
-    return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
+    return hexChainId ? cachedTokens?.[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
   const isTokenListCached = Boolean(cachedTokenList);
 
