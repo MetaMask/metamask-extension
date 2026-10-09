@@ -59,19 +59,21 @@ describe('getReactCompilerLoader', () => {
   });
 
   describe('when threadLoaderEnabled is false and verbose is false', () => {
-    it('returns direct react-compiler-loader (not wrapper)', () => {
+    it('still uses the wrapper loader (it names source-map files relative to the build context)', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
         threadLoaderEnabled: false,
         verbose: false,
       });
 
-      const path = (loader as { loader: string }).loader;
-      assert.ok(!path.includes('Wrapper'));
-      assert.ok(path.includes('react-compiler'));
+      assert.ok(
+        (loader as { loader: string }).loader.includes(
+          'reactCompilerLoaderWrapper',
+        ),
+      );
     });
 
-    it('does not include __verbose in options', () => {
+    it('passes __verbose: false', () => {
       const loader = getReactCompilerLoader({
         ...baseConfig,
         threadLoaderEnabled: false,
@@ -79,7 +81,7 @@ describe('getReactCompilerLoader', () => {
       });
 
       const opts = (loader as { options: Record<string, unknown> }).options;
-      assert.strictEqual('__verbose' in opts, false);
+      assert.strictEqual(opts.__verbose, false);
     });
   });
 
@@ -144,5 +146,36 @@ describe('getReactCompilerLoader', () => {
       const opts = (loader as { options: { panicThreshold?: string } }).options;
       assert.strictEqual(opts.panicThreshold, undefined);
     });
+  });
+});
+
+describe('reactCompilerLoaderWrapper', () => {
+  it('names the input file relative to the build context in the source map', async () => {
+    const { default: wrapper } =
+      await import('../utils/loaders/reactCompilerLoaderWrapper');
+    const rootContext = '/project/app';
+    const resourcePath = '/project/ui/component.tsx';
+    const { promise, resolve } =
+      Promise.withResolvers<
+        [Error | null | undefined, string | undefined, unknown]
+      >();
+    const context = {
+      rootContext,
+      resourcePath,
+      getOptions: () => ({ target: '18', __verbose: false }),
+      async:
+        () =>
+        (...args: [Error | null | undefined, string | undefined, unknown]) =>
+          resolve(args),
+    } as unknown as Parameters<typeof wrapper>[0] &
+      ThisParameterType<typeof wrapper>;
+
+    wrapper.call(context, 'export const a = 1;', undefined);
+    const [err, code, map] = await promise;
+
+    assert.strictEqual(err, null);
+    assert.ok(code);
+    const mapObj = map as { sources: string[] };
+    assert.deepStrictEqual(mapObj.sources, ['webpack://../ui/component.tsx']);
   });
 });
