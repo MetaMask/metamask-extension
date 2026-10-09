@@ -36,7 +36,7 @@ import {
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import {
-  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_REFERRAL_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -165,7 +165,7 @@ export default function OnboardingMetametrics() {
       currentKeyring &&
       firstTimeFlowType === FirstTimeFlowType.socialCreate
     ) {
-      nextRouteByBrowser = ONBOARDING_COMPLETION_ROUTE;
+      nextRouteByBrowser = ONBOARDING_REFERRAL_ROUTE;
     } else {
       nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
     }

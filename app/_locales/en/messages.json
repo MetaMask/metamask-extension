@@ -9192,6 +9192,33 @@
   "redeposit": {
     "message": "Redeposit"
   },
+  "referralRebateActivatedDescription": {
+    "message": "Earn up to 50% mUSD back on eligible Swaps and Perps trades through $1."
+  },
+  "referralRebateActivatedEyebrow": {
+    "message": "Referral activated"
+  },
+  "referralRebateActivatedStartTrading": {
+    "message": "Start trading"
+  },
+  "referralRebateActivatedTitle": {
+    "message": "Your rebate offer is active"
+  },
+  "referralRebateInviteAccept": {
+    "message": "Accept"
+  },
+  "referralRebateInviteCodeLabel": {
+    "message": "Referral code"
+  },
+  "referralRebateInviteDescription": {
+    "message": "Earn up to 50% mUSD back on fees when you trade Swaps and Perps, for a limited time."
+  },
+  "referralRebateInviteSkip": {
+    "message": "Continue without referral"
+  },
+  "referralRebateInviteTitle": {
+    "message": "You're invited"
+  },
   "refreshList": {
     "message": "Refresh list"
   },
