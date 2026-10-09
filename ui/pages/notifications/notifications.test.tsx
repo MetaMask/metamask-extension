@@ -1,4 +1,5 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -7,6 +8,7 @@ import { deleteExpiredNotifications } from '../../store/actions';
 import Notifications from './notifications';
 
 const mockDispatch = jest.fn();
+const mockUseNotificationListPerformance = jest.fn();
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -20,6 +22,7 @@ jest.mock(
       listNotifications: jest.fn(),
       isLoading: false,
       error: null,
+      isInitialFetchPending: false,
     }),
   }),
 );
@@ -31,6 +34,23 @@ jest.mock('../../store/actions', () => ({
     type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
   })),
   getNotificationPreferences: jest.fn(() => () => Promise.resolve(null)),
+}));
+
+jest.mock(
+  '../../hooks/metamask-notifications/useNotificationListPerformance',
+  () => ({
+    useNotificationListPerformance: (...args: unknown[]) =>
+      mockUseNotificationListPerformance(...args),
+  }),
+);
+
+jest.mock('./notifications-list', () => ({
+  TAB_KEYS: {
+    ALL: 'all',
+    WALLET: 'wallet',
+    WEB3: 'web3',
+  },
+  NotificationsList: () => <div data-testid="notifications-list" />,
 }));
 
 const initialState = {
@@ -68,18 +88,22 @@ describe('Notifications Component', () => {
     (deleteExpiredNotifications as jest.Mock).mockClear();
   });
 
-  it('renders correctly', () => {
+  it('renders and traces settled notification content', async () => {
     const { getByTestId } = renderWithProvider(<Notifications />, store);
 
     expect(getByTestId('notifications-page')).toBeInTheDocument();
-  });
-
-  it('dispatches deleteExpiredNotifications on mount', () => {
-    renderWithProvider(<Notifications />, store);
-
-    expect(deleteExpiredNotifications).toHaveBeenCalledTimes(1);
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
+    await waitFor(() => {
+      expect(deleteExpiredNotifications).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'MOCK_DELETE_EXPIRED_NOTIFICATIONS',
+      });
+      expect(mockUseNotificationListPerformance).toHaveBeenCalledWith(
+        expect.objectContaining({
+          enabled: expect.any(Boolean),
+          isPending: false,
+          notificationCount: expect.any(Number),
+        }),
+      );
     });
   });
 });
