@@ -98,7 +98,9 @@ import { MoneyEarnBanner } from '../../../components/app/money/money-earn-banner
 import {
   MoneyAssetOverviewBalanceApy,
   MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceCtaSkeleton,
   MoneyAssetOverviewBalanceDescription,
+  MoneyAssetOverviewBalanceDescriptionSkeleton,
 } from '../../../components/app/money/money-asset-overview-balance-cta';
 import { useMoneyAssetOverviewBalanceCta } from '../../../hooks/money/use-money-asset-overview-ctas';
 import { isMusdToken } from '../../../components/app/musd/constants';
@@ -590,6 +592,9 @@ const AssetPage = ({
                   onTooltipOpen={moneyBalanceCta.onProjectionTooltipOpen}
                 />
               ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceDescriptionSkeleton />
+              ) : null}
               {[AssetType.token, AssetType.native].includes(type) && (
                 <TokenCell
                   key={`${symbol}-${address}`}
@@ -608,6 +613,9 @@ const AssetPage = ({
                 <MoneyAssetOverviewBalanceCta
                   onStartEarning={moneyBalanceCta.onStartEarning}
                 />
+              ) : null}
+              {moneyBalanceCta.isLoading ? (
+                <MoneyAssetOverviewBalanceCtaSkeleton />
               ) : null}
             </>
           ) : null}

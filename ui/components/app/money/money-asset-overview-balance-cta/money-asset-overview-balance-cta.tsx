@@ -5,6 +5,7 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Skeleton,
   Text,
   TextColor,
   TextVariant,
@@ -96,3 +97,25 @@ export const MoneyAssetOverviewBalanceCta = ({
     </Box>
   );
 };
+
+export const MoneyAssetOverviewBalanceDescriptionSkeleton = () => (
+  <Box
+    paddingLeft={4}
+    paddingRight={4}
+    paddingBottom={2}
+    data-testid={`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-description-skeleton`}
+  >
+    <Skeleton className="h-[30px] w-full rounded-lg" />
+  </Box>
+);
+
+export const MoneyAssetOverviewBalanceCtaSkeleton = () => (
+  <Box
+    paddingLeft={4}
+    paddingRight={4}
+    paddingTop={2}
+    data-testid={`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-start-earning-skeleton`}
+  >
+    <Skeleton className="h-12 w-full rounded-lg" />
+  </Box>
+);
