@@ -1,4 +1,3 @@
-import log from 'loglevel';
 import {
   type ExtractActionParameters,
   type ExtractActionResponse,
@@ -69,16 +68,9 @@ export function submitRequestToBackground(
   args: unknown[] = [],
 ): Promise<unknown> {
   if (actionOrMethod.includes(':')) {
-    log.debug('Submitting request to root messenger:', actionOrMethod, args);
     // Assume that `actionOrMethod` is an action on the root messenger.
     return submitRequestToBackground('messengerCall', [actionOrMethod, args]);
   }
-
-  log.debug(
-    'Submitting request to legacy background API:',
-    actionOrMethod,
-    args,
-  );
 
   if (process.env.IN_TEST) {
     // tests don't always set the `background` property for convenience, as
