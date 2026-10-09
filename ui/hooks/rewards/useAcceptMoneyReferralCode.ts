@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useI18nContext } from '../useI18nContext';
-import { registerRewardsMoneyReferee } from '../../store/actions';
-import { useDispatch } from '../../store/hooks';
+import { useMessenger } from '../useMessenger';
 import { MONEY_REFERRAL_CODE_UNKNOWN_ERROR } from './useValidateMoneyReferralCode';
+import type { RewardsMoneyInviteMessenger } from './rewards-money-messenger';
 import {
   refreshReferralMeWithRetries,
   type FetchReferralMeResult,
@@ -24,8 +24,9 @@ function readRewardsMoneyHttpFailure(error: unknown): {
   if (!error || typeof error !== 'object' || !('data' in error)) {
     return {};
   }
-  const data = (error as { data?: { status?: number; bodyText?: string } })
-    .data;
+  const { data } = error as {
+    data?: { status?: number; bodyText?: string };
+  };
   if (!data || typeof data.status !== 'number') {
     return {};
   }
@@ -98,7 +99,7 @@ export function useAcceptMoneyReferralCode({
   fetchReferralMe,
   onAccepted,
 }: UseAcceptMoneyReferralCodeOptions): UseAcceptMoneyReferralCodeResult {
-  const dispatch = useDispatch();
+  const messenger = useMessenger<RewardsMoneyInviteMessenger>();
   const t = useI18nContext();
   const [isAccepting, setIsAccepting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -117,7 +118,9 @@ export function useAcceptMoneyReferralCode({
 
       setIsAccepting(true);
       try {
-        await dispatch(registerRewardsMoneyReferee({ code }));
+        await messenger.call('RewardsMoneyController:registerReferee', {
+          code,
+        });
         await refreshReferralMeWithRetries(fetchReferralMe);
         onAccepted();
         return true;
@@ -128,7 +131,7 @@ export function useAcceptMoneyReferralCode({
         setIsAccepting(false);
       }
     },
-    [dispatch, fetchReferralMe, onAccepted, t, validateCode],
+    [fetchReferralMe, messenger, onAccepted, t, validateCode],
   );
 
   return { isAccepting, errorMessage, accept };

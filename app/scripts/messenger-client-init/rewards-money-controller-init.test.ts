@@ -1,5 +1,6 @@
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { RewardsMoneyController } from '../controllers/rewards-money/rewards-money-controller';
+import type { RewardsMoneyControllerMessenger } from '../controllers/rewards-money/rewards-money-controller-types';
 import { getRootMessenger } from '../lib/messenger';
 import {
   getRewardsMoneyControllerInitMessenger,
@@ -7,7 +8,6 @@ import {
 } from './messengers/rewards-money-controller-messenger';
 import { RewardsMoneyControllerInit } from './rewards-money-controller-init';
 import { buildControllerInitRequestMock } from './test/utils';
-import type { RewardsMoneyControllerMessenger } from '../controllers/rewards-money/rewards-money-controller-types';
 import type { RewardsMoneyControllerInitMessenger } from './messengers/rewards-money-controller-messenger';
 import type { MessengerClientInitRequest } from './types';
 

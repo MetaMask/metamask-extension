@@ -6609,46 +6609,6 @@ export function estimateRewardsPoints(
   };
 }
 
-export function getRewardsMoneyReferralMe(params = {}) {
-  return async () => {
-    return await submitRequestToBackground('getRewardsMoneyReferralMe', [
-      params,
-    ]);
-  };
-}
-
-export function validateRewardsMoneyReferralCode(code) {
-  return async () => {
-    return await submitRequestToBackground('validateRewardsMoneyReferralCode', [
-      code,
-    ]);
-  };
-}
-
-export function registerRewardsMoneyReferee(params) {
-  return async () => {
-    return await submitRequestToBackground('registerRewardsMoneyReferee', [
-      params,
-    ]);
-  };
-}
-
-export function getRewardsMoneySwapsRebateQuote(quote) {
-  return async () => {
-    return await submitRequestToBackground('getRewardsMoneySwapsRebateQuote', [
-      quote,
-    ]);
-  };
-}
-
-export function getRewardsMoneyPerpsRebateQuote(trade) {
-  return async () => {
-    return await submitRequestToBackground('getRewardsMoneyPerpsRebateQuote', [
-      trade,
-    ]);
-  };
-}
-
 export function getRewardsGeoMetadata(): ThunkAction<
   Promise<RewardsGeoMetadata | null>,
   MetaMaskReduxState,

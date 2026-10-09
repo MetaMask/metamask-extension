@@ -816,7 +816,6 @@ export default class MetamaskController extends EventEmitter {
     this.announcementController = messengerClientsByName.AnnouncementController;
     this.accountOrderController = messengerClientsByName.AccountOrderController;
     this.rewardsController = messengerClientsByName.RewardsController;
-    this.rewardsMoneyController = messengerClientsByName.RewardsMoneyController;
     this.qrSyncController = messengerClientsByName.QrSyncController;
     this.claimsController = this.wallet.getInstance('ClaimsController');
     this.claimsService = this.wallet.getInstance('ClaimsService');
@@ -2662,25 +2661,6 @@ export default class MetamaskController extends EventEmitter {
       estimateRewardsPoints: this.rewardsController.estimatePoints.bind(
         this.rewardsController,
       ),
-      getRewardsMoneyReferralMe: this.rewardsMoneyController.getReferralMe.bind(
-        this.rewardsMoneyController,
-      ),
-      validateRewardsMoneyReferralCode:
-        this.rewardsMoneyController.validateReferralCode.bind(
-          this.rewardsMoneyController,
-        ),
-      registerRewardsMoneyReferee:
-        this.rewardsMoneyController.registerReferee.bind(
-          this.rewardsMoneyController,
-        ),
-      getRewardsMoneySwapsRebateQuote:
-        this.rewardsMoneyController.getSwapsRebateQuote.bind(
-          this.rewardsMoneyController,
-        ),
-      getRewardsMoneyPerpsRebateQuote:
-        this.rewardsMoneyController.getPerpsRebateQuote.bind(
-          this.rewardsMoneyController,
-        ),
       getRewardsGeoMetadata: this.rewardsController.getGeoRewardsMetadata.bind(
         this.rewardsController,
       ),
