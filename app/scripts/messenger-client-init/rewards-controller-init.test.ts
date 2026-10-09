@@ -23,6 +23,7 @@ const mockGetManifestFlags = jest.mocked(getManifestFlags);
 function buildInitRequestMock(
   remoteFeatureFlags?: Record<string, unknown>,
   useExternalServices = true,
+  completedOnboarding = true,
 ): jest.Mocked<
   MessengerClientInitRequest<
     RewardsControllerMessenger,
@@ -43,6 +44,9 @@ function buildInitRequestMock(
     }
     if (action === 'PreferencesController:getState') {
       return { useExternalServices } as never;
+    }
+    if (action === 'OnboardingController:getState') {
+      return { completedOnboarding } as never;
     }
     return undefined as never;
   });
@@ -117,13 +121,22 @@ describe('RewardsControllerInit', () => {
   });
 
   describe('isDisabled', () => {
-    it('returns false when basic functionality is enabled', () => {
-      const requestMock = buildInitRequestMock({}, true);
+    it('returns false when basic functionality is enabled and onboarding is complete', () => {
+      const requestMock = buildInitRequestMock({}, true, true);
 
       RewardsControllerInit(requestMock);
 
       const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
       expect(constructorArgs.isDisabled()).toBe(false);
+    });
+
+    it('returns true before onboarding is complete', () => {
+      const requestMock = buildInitRequestMock({}, true, false);
+
+      RewardsControllerInit(requestMock);
+
+      const [constructorArgs] = RewardsControllerClassMock.mock.calls[0];
+      expect(constructorArgs.isDisabled()).toBe(true);
     });
 
     it('returns true when basic functionality is disabled', () => {

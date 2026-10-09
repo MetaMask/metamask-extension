@@ -46,10 +46,16 @@ export const RewardsControllerInit: MessengerClientInitFunction<
     messenger: controllerMessenger,
     state: rewardsControllerState,
     isDisabled: () => {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
       const { useExternalServices } = initMessenger.call(
         'PreferencesController:getState',
       );
-      return !useExternalServices;
+      // Silent auth runs on vault unlock. During onboarding that unlock
+      // happens before the user can turn basic functionality off, so keep
+      // rewards off until onboarding is complete.
+      return !completedOnboarding || !useExternalServices;
     },
     isVipDisabled: () => {
       const { remoteFeatureFlags } = initMessenger.call(
