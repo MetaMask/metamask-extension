@@ -26,12 +26,15 @@ type IndicatorBarProps = {
   activeIndicators: Set<string>;
   onIndicatorToggle: (name: string) => void;
   onMAToggle: (ma: string) => void;
+  /** Called when the moving-average dropdown is opened, but not when closed. */
+  onMASelectorOpen?: () => void;
 };
 
 const IndicatorBar = ({
   activeIndicators,
   onIndicatorToggle,
   onMAToggle,
+  onMASelectorOpen,
 }: IndicatorBarProps) => {
   const theme = useTheme();
   const isDark = theme === 'dark';
@@ -91,7 +94,14 @@ const IndicatorBar = ({
     >
       {/* MA dropdown trigger */}
       <button
-        onClick={() => setShowMADropdown((v) => !v)}
+        onClick={() => {
+          // Read state outside the updater: updaters must stay pure, and React
+          // may invoke them twice in development.
+          if (!showMADropdown) {
+            onMASelectorOpen?.();
+          }
+          setShowMADropdown((v) => !v);
+        }}
         style={{
           ...pillStyle(selectedMAs.length > 0),
           display: 'flex',
