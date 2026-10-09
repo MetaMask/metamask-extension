@@ -29,10 +29,12 @@ export const MoneyTokenListCta = ({ cta, token }: MoneyTokenListCtaProps) => {
     <button
       type="button"
       onClick={handleClick}
+      disabled={cta.isLoading}
       className="m-0 cursor-pointer border-0 bg-transparent p-0"
       data-testid={`${MONEY_TOKEN_LIST_CTA_TEST_ID}-${token.chainId}-${token.address}`}
     >
       <Text
+        className={cta.isLoading ? 'opacity-50' : undefined}
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={TextColor.SuccessDefault}

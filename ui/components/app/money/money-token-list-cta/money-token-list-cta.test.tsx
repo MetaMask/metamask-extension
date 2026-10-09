@@ -17,7 +17,12 @@ describe('MoneyTokenListCta', () => {
   it('renders the CTA label', () => {
     const { getByText } = render(
       <MoneyTokenListCta
-        cta={{ label: 'Get 6% APY', shouldShow: jest.fn(), onClick: jest.fn() }}
+        cta={{
+          label: 'Get 6% APY',
+          isLoading: false,
+          shouldShow: jest.fn(),
+          onClick: jest.fn(),
+        }}
         token={token}
       />,
     );
@@ -31,7 +36,12 @@ describe('MoneyTokenListCta', () => {
     const { getByTestId } = render(
       <div onClick={onRowClick}>
         <MoneyTokenListCta
-          cta={{ label: 'Get 6% APY', shouldShow: jest.fn(), onClick }}
+          cta={{
+            label: 'Get 6% APY',
+            isLoading: false,
+            shouldShow: jest.fn(),
+            onClick,
+          }}
           token={token}
         />
       </div>,
@@ -45,5 +55,28 @@ describe('MoneyTokenListCta', () => {
 
     expect(onClick).toHaveBeenCalledWith(token);
     expect(onRowClick).not.toHaveBeenCalled();
+  });
+
+  it('disables the CTA while a deposit is being set up', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = render(
+      <MoneyTokenListCta
+        cta={{
+          label: 'Get 6% APY',
+          isLoading: true,
+          shouldShow: jest.fn(),
+          onClick,
+        }}
+        token={token}
+      />,
+    );
+    const button = getByTestId(
+      `${MONEY_TOKEN_LIST_CTA_TEST_ID}-${token.chainId}-${token.address}`,
+    );
+
+    fireEvent.click(button);
+
+    expect(button).toBeDisabled();
+    expect(onClick).not.toHaveBeenCalled();
   });
 });

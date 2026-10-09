@@ -383,6 +383,7 @@ describe('Token Cell', () => {
   describe('moneyCta', () => {
     const createMoneyCta = (shouldShow: boolean) => ({
       label: 'Get 6% APY',
+      isLoading: false,
       shouldShow: jest.fn().mockReturnValue(shouldShow),
       onClick: jest.fn(),
     });

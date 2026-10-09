@@ -33,6 +33,7 @@ const LABEL_KEY = 'moneyGetApy';
 
 export type MoneyTokenListCta = {
   label: string;
+  isLoading: boolean;
   shouldShow: (token: TokenWithFiatAmount) => boolean;
   onClick: (token: TokenWithFiatAmount) => void;
 };
@@ -59,8 +60,11 @@ export function useMoneyTokenListCta(
   const { hasMoneyAccount } = useMoneyAccountInfo();
   const isActive = isCtaEnabled && hasMoneyAccount && ctaTokenKeys.size > 0;
 
-  const { apyPercentFormatted } = useMoneyVaultApy({ enabled: isActive });
-  const { initiateDeposit } = useMoneyAccountDeposit();
+  const { apyPercent, apyPercentFormatted } = useMoneyVaultApy({
+    enabled: isActive,
+  });
+  const hasPositiveApy = apyPercent !== undefined && apyPercent > 0;
+  const { initiateDeposit, isLoading } = useMoneyAccountDeposit();
   const { trackTokenButtonClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.WalletHome,
     componentName: MoneyComponentName.TokenListItemCta,
@@ -114,7 +118,7 @@ export function useMoneyTokenListCta(
 
   const onClick = useCallback(
     (token: TokenWithFiatAmount) => {
-      if (!apyPercentFormatted) {
+      if (!apyPercentFormatted || isLoading) {
         return;
       }
 
@@ -139,18 +143,33 @@ export function useMoneyTokenListCta(
         },
       });
     },
-    [apyPercentFormatted, initiateDeposit, tokens, trackTokenButtonClicked],
+    [
+      apyPercentFormatted,
+      initiateDeposit,
+      isLoading,
+      tokens,
+      trackTokenButtonClicked,
+    ],
   );
 
   return useMemo(
     () =>
-      isActive && apyPercentFormatted
+      isActive && hasPositiveApy && apyPercentFormatted
         ? {
             label: t(LABEL_KEY, [apyPercentFormatted]),
+            isLoading,
             shouldShow,
             onClick,
           }
         : undefined,
-    [apyPercentFormatted, isActive, onClick, shouldShow, t],
+    [
+      apyPercentFormatted,
+      hasPositiveApy,
+      isActive,
+      isLoading,
+      onClick,
+      shouldShow,
+      t,
+    ],
   );
 }

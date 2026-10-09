@@ -97,6 +97,7 @@ describe('useMoneyTokenListCta', () => {
       primaryMoneyAccount: { address: '0x1234' },
     });
     mockUseMoneyVaultApy.mockReturnValue({
+      apyPercent: 6,
       apyPercentFormatted: '6%',
     } as ReturnType<typeof useMoneyVaultApy>);
   });
@@ -105,6 +106,7 @@ describe('useMoneyTokenListCta', () => {
     const cta = renderCta([createToken()]);
 
     expect(cta?.label).toBe('Get 6% APY');
+    expect(cta?.isLoading).toBe(false);
     expect(mockUseMoneyVaultApy).toHaveBeenCalledWith({ enabled: true });
   });
 
@@ -135,7 +137,17 @@ describe('useMoneyTokenListCta', () => {
 
   it('returns undefined while the APY is unavailable', () => {
     mockUseMoneyVaultApy.mockReturnValue({
+      apyPercent: undefined,
       apyPercentFormatted: undefined,
+    } as ReturnType<typeof useMoneyVaultApy>);
+
+    expect(renderCta([createToken()])).toBeUndefined();
+  });
+
+  it('returns undefined when the APY rounds to zero', () => {
+    mockUseMoneyVaultApy.mockReturnValue({
+      apyPercent: 0,
+      apyPercentFormatted: '0%',
     } as ReturnType<typeof useMoneyVaultApy>);
 
     expect(renderCta([createToken()])).toBeUndefined();
@@ -201,6 +213,21 @@ describe('useMoneyTokenListCta', () => {
   });
 
   describe('onClick', () => {
+    it('does nothing while a deposit is being set up', () => {
+      mockUseMoneyAccountDeposit.mockReturnValue({
+        initiateDeposit: mockInitiateDeposit,
+        isLoading: true,
+      } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
+      const token = createToken();
+      const cta = renderCta([token]);
+
+      cta?.onClick(token);
+
+      expect(cta?.isLoading).toBe(true);
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
     it('reports token_has_balance from the token balance, not its fiat value', () => {
       const token = createToken({ balance: '0', tokenFiatAmount: 100 });
       const cta = renderCta([token]);
