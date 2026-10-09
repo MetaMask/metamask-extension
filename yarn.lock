@@ -43938,14 +43938,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^1.15.0":
-  version: 1.15.0
-  resolution: "ses@npm:1.15.0"
+"ses@npm:2.2.0":
+  version: 2.2.0
+  resolution: "ses@npm:2.2.0"
   dependencies:
     "@endo/cache-map": "npm:^1.1.0"
     "@endo/env-options": "npm:^1.1.11"
     "@endo/immutable-arraybuffer": "npm:^1.1.2"
-  checksum: 10/494894d35de847103ca0e4357632d80436c0e3dbc0e0bf98448a962d2257cb9045db9c6e7737b4003846a690318fcf5c06ef5a9a51c8b47cd4ffeaf2fa330155
+  checksum: 10/c74889dded06a760f164aac9d69cf02b019256167fa0efd3d9c2ee1083fe1d230e41ab6aaf32266fcda9e3b8903a8ff0313cae1a63b095808fe9c15c7b33a8b9
   languageName: node
   linkType: hard
 
