@@ -179,15 +179,19 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => mockUsePerpsMarketInfo(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({
-    // combined = protocol + discounted builder; hl_fee_rate must report only
-    // the protocol part.
-    feeRate: 0.00145,
-    protocolFeeRate: 0.00045,
-    isLoading: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      // combined = protocol + discounted builder; hl_fee_rate must report only
+      // the protocol part.
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      isLoading: false,
+    };
+  },
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
@@ -535,6 +539,26 @@ describe('PerpsOrderEntryPage', () => {
       maxSlippageSource: 'default',
       setMaxSlippage: jest.fn(),
       isLoading: false,
+    });
+  });
+
+  it('passes the edited USD notional to the page fee quote', () => {
+    renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+    const input = screen
+      .getByTestId('amount-input-field')
+      .querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '100' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '100',
+    });
+    mockUsePerpsOrderFees.mockClear();
+    fireEvent.change(input, { target: { value: '1000' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '1000',
     });
   });
 
