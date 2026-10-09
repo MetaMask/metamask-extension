@@ -65,6 +65,7 @@ import {
   getAnalyticsId,
   getConsentDecisionMade,
   getOptedIn,
+  getPrivacyMode,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -93,6 +94,13 @@ import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import { useMusdCtaVisibility } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
+import { MoneyEarnBanner } from '../../../components/app/money/money-earn-banner';
+import {
+  MoneyAssetOverviewBalanceApy,
+  MoneyAssetOverviewBalanceCta,
+  MoneyAssetOverviewBalanceDescription,
+} from '../../../components/app/money/money-asset-overview-balance-cta';
+import { useMoneyAssetOverviewBalanceCta } from '../../../hooks/money/use-money-asset-overview-ctas';
 import { isMusdToken } from '../../../components/app/musd/constants';
 import { processAssetParams } from '../util';
 import { AssetInactiveBadge } from '../../../components/app/assets/asset-inactive-badge/asset-inactive-badge';
@@ -375,6 +383,9 @@ const AssetPage = ({
       rwaData,
     ],
   );
+  const privacyMode = useSelector(getPrivacyMode);
+  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount);
+  const moneyBalanceDisplay = moneyBalanceCta.display;
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -518,6 +529,10 @@ const AssetPage = ({
             />
           ) : null}
         </MaybePerpsViewStreamBoundary>
+        <MoneyEarnBanner
+          key={`${chainId}:${address}`}
+          token={tokenWithFiatAmount}
+        />
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>
@@ -564,13 +579,36 @@ const AssetPage = ({
               >
                 {t('yourBalance')}
               </Text>
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceDescription
+                  tokenSymbol={symbol}
+                  apyPercent={moneyBalanceDisplay.apyPercent}
+                  projectedEarnings={
+                    moneyBalanceDisplay.projectedEarningsFormatted
+                  }
+                  privacyMode={privacyMode}
+                  onTooltipOpen={moneyBalanceCta.onProjectionTooltipOpen}
+                />
+              ) : null}
               {[AssetType.token, AssetType.native].includes(type) && (
                 <TokenCell
                   key={`${symbol}-${address}`}
                   token={tokenWithFiatAmount as TokenWithFiatAmount}
                   safeChains={safeChains}
+                  priceChangeOverride={
+                    moneyBalanceDisplay ? (
+                      <MoneyAssetOverviewBalanceApy
+                        apy={moneyBalanceDisplay.apyPercentFormatted}
+                      />
+                    ) : undefined
+                  }
                 />
               )}
+              {moneyBalanceDisplay ? (
+                <MoneyAssetOverviewBalanceCta
+                  onStartEarning={moneyBalanceCta.onStartEarning}
+                />
+              ) : null}
             </>
           ) : null}
           {/* mUSD Conversion CTA - shows for eligible stablecoins */}

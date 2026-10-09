@@ -9,7 +9,8 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { renderWithProvider as renderWithBaseProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createMockRouteMessenger } from '../../../../test/lib/mock-route-messenger';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -24,7 +25,33 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { MOCK_ACCOUNT_STELLAR_PUBNET } from '../../../../test/data/mock-accounts';
 import type { Asset } from '../types/asset';
+import {
+  useMoneyAssetOverviewBalanceCta,
+  useMoneyEarnBanner,
+} from '../../../hooks/money/use-money-asset-overview-ctas';
 import AssetPage from './asset-page';
+
+const mockUseMoneyEarnBanner = jest.mocked(useMoneyEarnBanner);
+const mockUseMoneyAssetOverviewBalanceCta = jest.mocked(
+  useMoneyAssetOverviewBalanceCta,
+);
+const mockOnStartEarning = jest.fn();
+const mockOnProjectionTooltipOpen = jest.fn();
+
+const renderWithProvider = (
+  component: React.ReactElement,
+  store: unknown,
+  pathname = '/',
+) =>
+  renderWithBaseProvider(
+    component,
+    store,
+    pathname,
+    undefined,
+    undefined,
+    undefined,
+    createMockRouteMessenger(),
+  );
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -145,6 +172,12 @@ jest.mock('../../../hooks/musd', () => {
     }),
   };
 });
+jest.mock('../../../hooks/money/use-money-asset-overview-ctas', () => ({
+  ...jest.requireActual('../../../hooks/money/use-money-asset-overview-ctas'),
+  useMoneyEarnBanner: jest.fn(),
+  useMoneyAssetOverviewBalanceCta: jest.fn(),
+}));
+
 jest.mock('../../activity/activity-list', () => ({
   ActivityList: () => <div data-testid="mock-activity-list" />,
 }));
@@ -398,6 +431,19 @@ describe('AssetPage', () => {
     (useMultiPolling as jest.Mock).mockClear();
 
     mockUseParams.mockReturnValue({});
+
+    mockUseMoneyEarnBanner.mockReturnValue({
+      isVisible: false,
+      apyPercentFormatted: undefined,
+      onBannerClick: jest.fn(),
+      onCtaClick: jest.fn(),
+      onDismiss: jest.fn(),
+    });
+    mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+      display: undefined,
+      onStartEarning: mockOnStartEarning,
+      onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+    });
 
     mockUseAssetPerpsMarket.mockReturnValue({
       market: undefined,
@@ -826,6 +872,92 @@ describe('AssetPage', () => {
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
     expect(marketCapElement).toHaveTextContent('$56.09K');
+  });
+
+  describe('Money earn CTAs', () => {
+    it('does not render the Money earn CTAs when ineligible', () => {
+      const { queryByTestId, getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(queryByTestId('money-earn-banner')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-description'),
+      ).not.toBeInTheDocument();
+      expect(
+        queryByTestId('money-asset-overview-balance-cta-start-earning'),
+      ).not.toBeInTheDocument();
+      expect(getByTestId('asset-name')).toBeInTheDocument();
+    });
+
+    it('evaluates eligibility for the page token', () => {
+      renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      const expectedToken = expect.objectContaining({
+        address: toChecksumHexAddress(token.address),
+        chainId: token.chainId,
+        symbol: token.symbol,
+      });
+      expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(expectedToken);
+      expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenCalledWith(
+        expectedToken,
+      );
+    });
+
+    it('renders the earn banner when eligible', () => {
+      mockUseMoneyEarnBanner.mockReturnValue({
+        isVisible: true,
+        apyPercentFormatted: '6%',
+        onBannerClick: jest.fn(),
+        onCtaClick: jest.fn(),
+        onDismiss: jest.fn(),
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(getByTestId('money-earn-banner-title')).toHaveTextContent(
+        'Earn up to 6% APY',
+      );
+    });
+
+    it('renders the balance earn section when eligible', () => {
+      mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
+        display: {
+          apyPercent: 6.2,
+          apyPercentFormatted: '6.2%',
+          projectedEarningsFormatted: '+$74.34',
+        },
+        onStartEarning: mockOnStartEarning,
+        onProjectionTooltipOpen: mockOnProjectionTooltipOpen,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+
+      expect(
+        getByTestId('money-asset-overview-balance-cta-description'),
+      ).toHaveTextContent(
+        'Add your TEST to your Money account and earn up to +$74.34 in one year.',
+      );
+      expect(
+        getByTestId('money-asset-overview-balance-cta-apy'),
+      ).toHaveTextContent('Earn 6.2% APY');
+
+      fireEvent.click(
+        getByTestId('money-asset-overview-balance-cta-start-earning'),
+      );
+
+      expect(mockOnStartEarning).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('mUSD asset page feature flags', () => {
