@@ -3,6 +3,13 @@ import { hasTransactionType } from '../../../../../shared/lib/transactions.utils
 import { PAY_TYPES } from './metamask-pay';
 import type { TransactionMetricsBuilder } from './types';
 
+/**
+ * Adds `mm_pay_rpc` and `mm_pay_rpc_origin` to `wallet_mmPay` transactions.
+ *
+ * @param request - The metrics builder request.
+ * @param request.transactionMeta - The transaction.
+ * @returns The metrics properties.
+ */
 export const getMmPayRpcMetricsProperties: TransactionMetricsBuilder = ({
   transactionMeta,
 }) => {

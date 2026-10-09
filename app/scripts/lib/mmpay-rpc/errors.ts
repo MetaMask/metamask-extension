@@ -2,6 +2,7 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 
 export const MMPAY_RPC_METHOD = 'wallet_mmPay';
 
+/** Every error `wallet_mmPay` returns. */
 export const mmPayRpcErrors = {
   invalidParams: (field: string, expected: string) =>
     rpcErrors.invalidParams({

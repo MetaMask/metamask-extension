@@ -17,6 +17,18 @@ import type {
 } from './types';
 import { validateMmPayRpcRequest } from './validate-request';
 
+/**
+ * Handles a `wallet_mmPay` request: validates it, checks the flag and the
+ * account, then adds the transaction and waits for the result.
+ *
+ * @param options - Dependencies plus the requesting origin and request.
+ * @param options.messenger - Root messenger.
+ * @param options.getPermittedAccounts - Returns the origin's connected accounts.
+ * @param options.securityAlertsEnabled - Whether security alerts are enabled.
+ * @param options.origin - The requesting dApp's origin.
+ * @param options.req - The JSON-RPC request.
+ * @returns The `wallet_mmPay` result.
+ */
 export async function addMmPayRpcTransaction({
   messenger,
   getPermittedAccounts,
