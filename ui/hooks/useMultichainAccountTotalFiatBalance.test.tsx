@@ -10,6 +10,18 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { mockNetworkState } from '../../test/stub/networks';
 import { useMultichainAccountTotalFiatBalance } from './useMultichainAccountTotalFiatBalance';
 
+/**
+ * This suite seeds AssetsController fields (`assetsInfo`, `assetsBalance`,
+ * `assetsPrice`). Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy controller slices.
+ */
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 const mockAccount = createMockInternalAccount({
   name: 'Account 1',
   address: '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da',

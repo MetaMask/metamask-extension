@@ -81,7 +81,17 @@ import {
  * not yet on `FlattenedBackgroundStateProxy`, while `MultichainState` still
  * requires some legacy controller slices. Compose both explicitly for typed
  * fixtures.
+ *
+ * Override the global jest setup mock so migration selectors resolve those
+ * unified fields instead of legacy controller slices.
  */
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 type TestState = MultichainState &
   AccountsState & {
     metamask: MultichainState['metamask'] &
@@ -241,7 +251,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       networksWithTransactionActivity: {},
       remoteFeatureFlags: {},
     },
-  };
+  } as TestState;
 }
 
 function getNonEvmState(
@@ -257,7 +267,7 @@ function getNonEvmState(
       },
       selectedMultichainNetworkChainId: selectedChainId,
     },
-  };
+  } as TestState;
 }
 
 function getTronState(
@@ -278,7 +288,7 @@ function getTronState(
       },
       selectedMultichainNetworkChainId: selectedChainId,
     },
-  };
+  } as TestState;
 }
 
 function getStellarState(
@@ -297,7 +307,7 @@ function getStellarState(
       },
       selectedMultichainNetworkChainId: selectedChainId,
     },
-  };
+  } as TestState;
 }
 
 function getSolanaState(
@@ -313,7 +323,7 @@ function getSolanaState(
       },
       selectedMultichainNetworkChainId: selectedChainId,
     },
-  };
+  } as TestState;
 }
 
 describe('Multichain Selectors', () => {

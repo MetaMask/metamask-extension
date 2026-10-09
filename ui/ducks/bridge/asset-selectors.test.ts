@@ -16,6 +16,18 @@ import {
   getBridgeSortedAssets,
 } from './asset-selectors';
 
+/**
+ * This suite seeds AssetsController fields via UNIFIED_BRIDGE_ASSET_STATE.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 const ETH_RATE = 2524.25;
 const ETH_MAINNET = 'eip155:1/slip44:60';
 const ETH_LINEA = 'eip155:59144/slip44:60';

@@ -6,6 +6,21 @@ import {
   useTokenFiatRate,
 } from './useTokenFiatRates';
 
+/**
+ * This suite seeds AssetsController fields (`assetsInfo`, `assetsPrice`).
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 const CHAIN_ID_1_MOCK = '0x123' as Hex;
 const CHAIN_ID_2_MOCK = '0x456' as Hex;
 const ADDRESS_1_MOCK = '0x1111111111111111111111111111111111111111' as Hex;

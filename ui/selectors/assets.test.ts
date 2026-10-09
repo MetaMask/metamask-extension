@@ -53,6 +53,17 @@ import {
 } from './assets';
 
 /**
+ * Override the global jest setup mock so migration selectors resolve
+ * AssetsController fields (`assetsPrice`, etc.) instead of legacy slices.
+ */
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
+/**
  * State shape for asset selector tests. Cast to this when passing partial state
  * to selectors that accept a full Redux / controller state type.
  */

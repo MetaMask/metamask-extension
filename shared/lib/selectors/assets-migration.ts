@@ -690,7 +690,12 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+  // Dual-path during migration: legacy `currentCurrency` or unified `selectedCurrency`.
+) as unknown as (state: {
+  metamask: Partial<Pick<CurrencyRateState, 'currentCurrency'>> &
+    Partial<Pick<AssetsControllerState, 'selectedCurrency'>> &
+    Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
+}) => CurrencyRateState['currentCurrency'];
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -907,10 +912,14 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
-  >;
+    // Dual-path during migration: legacy `conversionRates` or unified `assetsPrice`.
+  ) as unknown as (state: {
+    metamask: Partial<
+      Pick<MultichainAssetsRatesControllerState, 'conversionRates'>
+    > &
+      Partial<Pick<AssetsControllerState, 'assetsPrice'>> &
+      Partial<Pick<RemoteFeatureFlagControllerState, 'remoteFeatureFlags'>>;
+  }) => MultichainAssetsRatesControllerState['conversionRates'];
 
 export const getRatesControllerRates = createDeepEqualSelector(
   [

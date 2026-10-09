@@ -91,6 +91,18 @@ import {
 } from './selectors';
 import { toBridgeToken } from './utils';
 
+/**
+ * This suite seeds AssetsController fields via createBridgeMockStore /
+ * unified fixture helpers. Override the global jest setup mock so migration
+ * selectors resolve those fields instead of legacy controller slices.
+ */
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 const SOL_NATIVE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const SOL_USDC =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';

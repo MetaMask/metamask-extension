@@ -7,6 +7,18 @@ import configureStore from '../store/store';
 
 import { useCurrencyDisplay } from './useCurrencyDisplay';
 
+/**
+ * This suite seeds AssetsController fields (`assetsInfo`, `assetsPrice`).
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+  isAssetsUnifyStateFeatureEnabled: () => true,
+}));
+
 const ETH_NATIVE_ASSET_ID = 'eip155:1/slip44:60';
 const POL_NATIVE_ASSET_ID = 'eip155:137/slip44:966';
 
