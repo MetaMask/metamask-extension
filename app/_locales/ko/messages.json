@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "마지막으로 확인된 잔액"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "다시 시도"
   },

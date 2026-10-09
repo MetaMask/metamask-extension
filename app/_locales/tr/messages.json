@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "Bilinen son bakiye"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Tekrar Dene"
   },

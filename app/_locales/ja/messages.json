@@ -5619,9 +5619,6 @@
   "moneyBalanceLastKnown": {
     "message": "直近の残高"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "再試行"
   },
