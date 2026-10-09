@@ -2,7 +2,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
-import { Checkbox } from '@metamask/design-system-react';
+import {
+  Box as DSBox,
+  Button as DSButton,
+  ButtonSize as DSButtonSize,
+  ButtonVariant as DSButtonVariant,
+  Checkbox,
+  FontWeight as DSFontWeight,
+  Text as DSText,
+  TextColor as DSTextColor,
+  TextVariant as DSTextVariant,
+} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
@@ -45,7 +55,69 @@ type Route = {
   signed: boolean;
 };
 
-const { getExtensionURL } = globalThis.platform;
+function getExtensionURL(route: string, queryString?: string | null): string {
+  return globalThis.platform.getExtensionURL(route, queryString ?? null);
+}
+
+type DeepLinkCardProps = {
+  children: React.ReactNode;
+};
+
+/**
+ * Centered deep-link card. Width follows the screen up to the fullscreen size.
+ *
+ * @param props - Card content
+ * @param props.children - Card content
+ */
+const DeepLinkCard = ({ children }: DeepLinkCardProps) => {
+  return (
+    <Container
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Column}
+      data-testid="parent-selector-deep-link-page"
+      style={{
+        marginTop: '111px',
+        width: '100%',
+        boxSizing: 'border-box',
+        paddingLeft: 16,
+        paddingRight: 16,
+      }}
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={BorderColor.borderMuted}
+        borderRadius={BorderRadius.MD}
+        data-testid="deep-link-card"
+        style={{
+          width: '100%',
+          maxWidth: '446px',
+          minHeight: '592px',
+          boxSizing: 'border-box',
+        }}
+        paddingLeft={6}
+        paddingRight={6}
+        paddingTop={12}
+        paddingBottom={8}
+        borderWidth={1}
+      >
+        {children}
+      </Box>
+    </Container>
+  );
+};
+
+type DeepLinkProps = {
+  /**
+   * Render the missing-page screen immediately, without parsing a deep link.
+   * Unknown wallet routes use this and leave the bad URL in place.
+   */
+  pageNotFound?: boolean;
+};
 
 /**
  * Sets the description and title state for a 404 error.
@@ -162,7 +234,7 @@ async function updateStateFromUrl(
   }
 }
 
-export const DeepLink = () => {
+export const DeepLink = ({ pageNotFound = false }: DeepLinkProps) => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -189,6 +261,10 @@ export const DeepLink = () => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    if (pageNotFound) {
+      return undefined;
+    }
+
     // Cancel any previous operation
     abortControllerRef.current?.abort();
 
@@ -271,7 +347,7 @@ export const DeepLink = () => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t, setPageNotFoundError]);
+  }, [location.search, pageNotFound, t, setPageNotFoundError]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
@@ -282,134 +358,157 @@ export const DeepLink = () => {
     dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
+  if (pageNotFound || (pageNotFoundError && !isLoading)) {
+    return (
+      <DeepLinkCard>
+        <img
+          className="error-404-image"
+          alt="Error 404: Page not found"
+          src="./images/deep-link-error-404.png"
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
+        <DSText
+          asChild
+          variant={DSTextVariant.HeadingLg}
+          fontWeight={DSFontWeight.Bold}
+          className="mt-4 mb-4"
+        >
+          <h1>{t('deepLink_Error404Title')}</h1>
+        </DSText>
+        <DSBox className="w-full pb-12" data-testid="deep-link-description">
+          <DSText
+            variant={DSTextVariant.BodyMd}
+            color={DSTextColor.TextAlternative}
+          >
+            {t('deepLink_Error404Description')}
+          </DSText>
+          {extraDescription ? <DSBox>{extraDescription}</DSBox> : null}
+        </DSBox>
+        <DSBox className="mt-12 w-full">
+          <DSButton
+            asChild
+            variant={DSButtonVariant.Primary}
+            size={DSButtonSize.Lg}
+            className="w-full"
+          >
+            <a
+              href={getExtensionURL('/')}
+              data-testid="deep-link-continue-button"
+            >
+              {t('deepLink_GoToTheHomePageButton')}
+            </a>
+          </DSButton>
+        </DSBox>
+      </DeepLinkCard>
+    );
+  }
+
   return (
-    <Container
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
-      data-testid="parent-selector-deep-link-page"
-      style={{ marginTop: '111px' }}
-    >
+    <DeepLinkCard>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        textAlign={TextAlign.Center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderColor={BorderColor.borderMuted}
-        borderRadius={BorderRadius.MD}
-        style={{ width: '446px', minHeight: '592px' }}
-        paddingLeft={6}
-        paddingRight={6}
-        paddingTop={12}
-        paddingBottom={8}
-        borderWidth={1}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-        >
-          {pageNotFoundError ? (
-            <img
-              className="error-404-image"
-              alt="Error 404: Page not found"
-              src="./images/deep-link-error-404.png"
-            />
-          ) : (
-            <img
-              className="metamask-deep-link-logo"
-              alt="MetaMask logo"
-              src="./images/logo/metamask-fox.svg"
-              style={{ width: '160px', height: '160px' }}
-            />
+        {pageNotFoundError ? (
+          <img
+            className="error-404-image"
+            alt="Error 404: Page not found"
+            src="./images/deep-link-error-404.png"
+          />
+        ) : (
+          <img
+            className="metamask-deep-link-logo"
+            alt="MetaMask logo"
+            src="./images/logo/metamask-fox.svg"
+            style={{ width: '160px', height: '160px' }}
+          />
+        )}
+        {isLoading && (
+          <img
+            data-testid="loading-indicator"
+            className="loading-spinner"
+            src="./images/spinner.gif"
+            alt=""
+          />
+        )}
+      </Box>
+      {!isLoading && (
+        <>
+          {title && (
+            <Text
+              as="h1"
+              variant={TextVariant.headingLg}
+              fontWeight={FontWeight.Bold}
+              marginTop={4}
+              marginBottom={4}
+            >
+              {title}
+            </Text>
           )}
-          {isLoading && (
-            <img
-              data-testid="loading-indicator"
-              className="loading-spinner"
-              src="./images/spinner.gif"
-              alt=""
-            />
-          )}
-        </Box>
-        {!isLoading && (
-          <>
-            {title && (
+          {description && (
+            <Box
+              as="div"
+              data-testid="deep-link-description"
+              paddingBottom={12}
+              height={BlockSize.Full}
+            >
               <Text
-                as="h1"
-                variant={TextVariant.headingLg}
-                fontWeight={FontWeight.Bold}
-                marginTop={4}
-                marginBottom={4}
+                key="description"
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
               >
-                {title}
+                {description}
               </Text>
-            )}
-            {description && (
-              <Box
-                as="div"
-                data-testid="deep-link-description"
-                paddingBottom={12}
-                height={BlockSize.Full}
-              >
-                <Text
-                  key="description"
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textAlternative}
-                >
-                  {description}
-                </Text>
-                {extraDescription ? (
-                  <Box key="extra-description">{extraDescription}</Box>
-                ) : (
-                  ''
-                )}
-              </Box>
-            )}
-
-            <Box width={BlockSize.Full} marginTop={12}>
-              {route?.signed ? (
-                <Box
-                  display={Display.Flex}
-                  width={BlockSize.Full}
-                  textAlign={TextAlign.Left}
-                  gap={2}
-                  padding={3}
-                  marginBottom={6}
-                  borderRadius={BorderRadius.XL}
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                >
-                  <Checkbox
-                    id="dont-remind-me-checkbox"
-                    data-testid="deep-link-checkbox"
-                    isSelected={skipDeepLinkInterstitialChecked}
-                    onChange={onRemindMeStateChanged}
-                  ></Checkbox>
-                  <Label
-                    htmlFor="dont-remind-me-checkbox"
-                    fontWeight={FontWeight.Normal}
-                    variant={TextVariant.bodySm}
-                  >
-                    {t('deepLink_DontRemindMeAgain')}
-                  </Label>
-                </Box>
+              {extraDescription ? (
+                <Box key="extra-description">{extraDescription}</Box>
               ) : (
                 ''
               )}
-              <Button
-                width={BlockSize.Full}
-                variant={ButtonVariant.Primary}
-                href={route?.href ?? getExtensionURL('/')}
-                size={ButtonSize.Lg}
-                data-testid="deep-link-continue-button"
-              >
-                {cta}
-              </Button>
             </Box>
-          </>
-        )}
-      </Box>
-    </Container>
+          )}
+
+          <Box width={BlockSize.Full} marginTop={12}>
+            {route?.signed ? (
+              <Box
+                display={Display.Flex}
+                width={BlockSize.Full}
+                textAlign={TextAlign.Left}
+                gap={2}
+                padding={3}
+                marginBottom={6}
+                borderRadius={BorderRadius.XL}
+                backgroundColor={BackgroundColor.backgroundMuted}
+              >
+                <Checkbox
+                  id="dont-remind-me-checkbox"
+                  data-testid="deep-link-checkbox"
+                  isSelected={skipDeepLinkInterstitialChecked}
+                  onChange={onRemindMeStateChanged}
+                ></Checkbox>
+                <Label
+                  htmlFor="dont-remind-me-checkbox"
+                  fontWeight={FontWeight.Normal}
+                  variant={TextVariant.bodySm}
+                >
+                  {t('deepLink_DontRemindMeAgain')}
+                </Label>
+              </Box>
+            ) : (
+              ''
+            )}
+            <Button
+              width={BlockSize.Full}
+              variant={ButtonVariant.Primary}
+              href={route?.href ?? getExtensionURL('/')}
+              size={ButtonSize.Lg}
+              data-testid="deep-link-continue-button"
+            >
+              {cta}
+            </Button>
+          </Box>
+        </>
+      )}
+    </DeepLinkCard>
   );
 };

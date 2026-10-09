@@ -722,6 +722,12 @@ export const routeConfig = [
       },
     ],
   },
+  // Unmatched hashes stay in the address bar so route metrics still see them,
+  // and render the deep-link missing-page screen instead of the crash page.
+  {
+    path: '*',
+    element: <DeepLink pageNotFound />,
+  },
 ];
 
 export default function Routes() {
