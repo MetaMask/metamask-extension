@@ -53,7 +53,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // allDetectedTokens: DONE (Not being used)
 //
 // TokenBalancesController
-// tokenBalances: DONE
+// tokenBalances: DONE (via AssetsController when unify enabled; controller removed)
 //
 // CurrencyRateController
 // currencyRates: DONE
@@ -88,6 +88,12 @@ type ControllerStateSelector<
 > = (state: {
   metamask: Pick<InputState, ResultField>;
 }) => InputState[ResultField];
+
+// Dual-path selectors that also read AssetsController fields. Input is intentionally
+// loose so migrated fixtures (which omit legacy controller slices) type-check.
+type MigratingControllerStateSelector<Result> = (state: {
+  metamask: Record<string, unknown>;
+}) => Result;
 
 export const getIsAssetsUnifyStateEnabled = createDeepEqualSelector(
   [
@@ -553,9 +559,8 @@ export const getMultiChainAssetsControllerAssetsMetadata =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsControllerState,
-    'assetsMetadata'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsControllerState['assetsMetadata']
   >;
 
 // AccountId -> Array of AssetIds
@@ -690,7 +695,9 @@ export const getCurrencyRateControllerCurrentCurrency = createDeepEqualSelector(
 
     return selectedCurrency;
   },
-) as unknown as ControllerStateSelector<CurrencyRateState, 'currentCurrency'>;
+) as unknown as MigratingControllerStateSelector<
+  CurrencyRateState['currentCurrency']
+>;
 
 // Native Symbol -> Rates (conversionRate, usdConversionRate, conversionDate)
 export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
@@ -907,9 +914,8 @@ export const getMultichainAssetsRatesControllerConversionRates =
 
       return result;
     },
-  ) as unknown as ControllerStateSelector<
-    MultichainAssetsRatesControllerState,
-    'conversionRates'
+  ) as unknown as MigratingControllerStateSelector<
+    MultichainAssetsRatesControllerState['conversionRates']
   >;
 
 export const getRatesControllerRates = createDeepEqualSelector(

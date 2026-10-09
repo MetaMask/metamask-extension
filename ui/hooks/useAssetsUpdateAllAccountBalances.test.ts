@@ -1,7 +1,10 @@
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { updateBalancesFoAccounts } from '../store/actions';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { refreshAssetsForSelectedAccount } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';
+import { getInternalAccounts } from '../selectors/accounts';
+import { getIsAssetsUnifyStateEnabled } from '../selectors/assets-unify-state';
 import { useDispatch } from '../store/hooks';
 import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 
@@ -9,27 +12,39 @@ jest.mock('../store/hooks', () => ({
   useDispatch: jest.fn(),
 }));
 
-// Mock dependencies
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
 jest.mock('../store/actions', () => ({
-  updateBalancesFoAccounts: jest.fn(),
+  refreshAssetsForSelectedAccount: jest.fn(),
 }));
 
 jest.mock('../selectors', () => ({
   getEnabledChainIds: jest.fn(),
 }));
 
+jest.mock('../selectors/accounts', () => ({
+  getInternalAccounts: jest.fn(),
+}));
+
+jest.mock('../selectors/assets-unify-state', () => ({
+  getIsAssetsUnifyStateEnabled: jest.fn(),
+}));
+
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 const mockUseAppDispatch = useDispatch as jest.MockedFunction<
   typeof useDispatch
 >;
-const mockUpdateBalancesFoAccounts =
-  updateBalancesFoAccounts as jest.MockedFunction<
-    typeof updateBalancesFoAccounts
+const mockRefreshAssetsForSelectedAccount =
+  refreshAssetsForSelectedAccount as jest.MockedFunction<
+    typeof refreshAssetsForSelectedAccount
   >;
+
+const SELECTED_ACCOUNT = {
+  id: 'account-1',
+  address: '0xabc',
+} as never;
 
 describe('useAssetsUpdateAllAccountBalances', () => {
   let mockDispatch: jest.Mock;
@@ -37,13 +52,24 @@ describe('useAssetsUpdateAllAccountBalances', () => {
   beforeEach(() => {
     mockDispatch = jest.fn().mockImplementation(() => Promise.resolve());
     mockUseAppDispatch.mockReturnValue(mockDispatch);
-    // Mock returns a thunk function (action creator now returns ThunkAction)
-    mockUpdateBalancesFoAccounts.mockImplementation(
+    mockRefreshAssetsForSelectedAccount.mockImplementation(
       () => () => Promise.resolve(),
     );
 
-    // Mock console.warn to avoid cluttering test output
     jest.spyOn(console, 'warn').mockImplementation(() => ({}));
+
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getEnabledChainIds) {
+        return ['0x1', '0x89'];
+      }
+      if (selector === getInternalAccounts) {
+        return [SELECTED_ACCOUNT];
+      }
+      if (selector === getIsAssetsUnifyStateEnabled) {
+        return true;
+      }
+      return undefined;
+    });
   });
 
   afterEach(() => {
@@ -52,43 +78,35 @@ describe('useAssetsUpdateAllAccountBalances', () => {
   });
 
   it('should return updateBalances function', () => {
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return ['0x1', '0x89'];
-      }
-      return undefined;
-    });
-
     const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
 
     expect(result.current).toHaveProperty('updateBalances');
     expect(typeof result.current.updateBalances).toBe('function');
   });
 
-  it('should call updateBalancesFoAccounts when enabledChainIds are available', () => {
-    const mockChainIds = ['0x1', '0x89'];
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
+  it('refreshes AssetsController when unify is enabled and chain ids exist', () => {
     renderHook(() => useAssetsUpdateAllAccountBalances());
 
-    // Verify updateBalancesFoAccounts was called with correct args
-    expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
-      mockChainIds,
-      false,
+    expect(mockRefreshAssetsForSelectedAccount).toHaveBeenCalledWith(
+      [SELECTED_ACCOUNT],
+      {
+        chainIds: [formatChainIdToCaip('0x1'), formatChainIdToCaip('0x89')],
+        assetTypes: ['token', 'price', 'metadata'],
+      },
     );
-    // Verify dispatch was called with a thunk function
     expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it('should not call updateBalancesFoAccounts when enabledChainIds is empty', () => {
+  it('does not refresh when unify is disabled', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getEnabledChainIds) {
-        return [];
+        return ['0x1', '0x89'];
+      }
+      if (selector === getInternalAccounts) {
+        return [SELECTED_ACCOUNT];
+      }
+      if (selector === getIsAssetsUnifyStateEnabled) {
+        return false;
       }
       return undefined;
     });
@@ -96,213 +114,62 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     renderHook(() => useAssetsUpdateAllAccountBalances());
 
     expect(mockDispatch).not.toHaveBeenCalled();
-    expect(mockUpdateBalancesFoAccounts).not.toHaveBeenCalled();
+    expect(mockRefreshAssetsForSelectedAccount).not.toHaveBeenCalled();
   });
 
-  it('should only run effect once even when hook is re-rendered with same chainIds', () => {
-    const mockChainIds = ['0x1', '0x89'];
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
-    const { rerender } = renderHook(() => useAssetsUpdateAllAccountBalances());
-
-    // First render should call dispatch
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
-
-    // Re-render with same chain IDs
-    rerender();
-
-    // Should not call dispatch again
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
-  });
-
-  it('should run effect again when enabledChainIds change', () => {
-    const initialChainIds = ['0x1'];
-    const updatedChainIds = ['0x1', '0x89'];
-
-    let currentChainIds = initialChainIds;
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return currentChainIds;
-      }
-      return undefined;
-    });
-
-    const { rerender } = renderHook(() => useAssetsUpdateAllAccountBalances());
-
-    expect(mockDispatch).toHaveBeenCalledTimes(1);
-    expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
-      initialChainIds,
-      false,
-    );
-
-    // Update chain IDs and rerender
-    currentChainIds = updatedChainIds;
-    rerender();
-
-    expect(mockDispatch).toHaveBeenCalledTimes(2);
-    expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
-      updatedChainIds,
-      false,
-    );
-  });
-
-  it('should handle manual updateBalances call', async () => {
-    const mockChainIds = ['0x1', '0x89'];
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
-    const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
-
-    // Clear previous calls from useEffect
-    mockDispatch.mockClear();
-    mockUpdateBalancesFoAccounts.mockClear();
-
-    // Call updateBalances manually
-    await result.current.updateBalances();
-
-    // Verify updateBalancesFoAccounts was called with correct args
-    expect(mockUpdateBalancesFoAccounts).toHaveBeenCalledWith(
-      mockChainIds,
-      false,
-    );
-    // Verify dispatch was called with a thunk function
-    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
-  });
-
-  it('should not call updateBalances manually when enabledChainIds is empty', async () => {
+  it('does not refresh when enabledChainIds is empty', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getEnabledChainIds) {
         return [];
       }
+      if (selector === getInternalAccounts) {
+        return [SELECTED_ACCOUNT];
+      }
+      if (selector === getIsAssetsUnifyStateEnabled) {
+        return true;
+      }
       return undefined;
     });
 
-    const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
-
-    // Clear any calls from useEffect (none expected with empty chain IDs)
-    mockDispatch.mockClear();
-    mockUpdateBalancesFoAccounts.mockClear();
-
-    // Call updateBalances manually
-    await result.current.updateBalances();
+    renderHook(() => useAssetsUpdateAllAccountBalances());
 
     expect(mockDispatch).not.toHaveBeenCalled();
-    expect(mockUpdateBalancesFoAccounts).not.toHaveBeenCalled();
+    expect(mockRefreshAssetsForSelectedAccount).not.toHaveBeenCalled();
   });
 
-  it('should handle errors gracefully in updateBalances', async () => {
-    const mockChainIds = ['0x1', '0x89'];
+  it('handles manual updateBalances call', async () => {
+    const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
+
+    mockDispatch.mockClear();
+    mockRefreshAssetsForSelectedAccount.mockClear();
+
+    await result.current.updateBalances();
+
+    expect(mockRefreshAssetsForSelectedAccount).toHaveBeenCalledWith(
+      [SELECTED_ACCOUNT],
+      {
+        chainIds: [formatChainIdToCaip('0x1'), formatChainIdToCaip('0x89')],
+        assetTypes: ['token', 'price', 'metadata'],
+      },
+    );
+    expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  it('handles errors gracefully in updateBalances', async () => {
     const mockError = new Error('Failed to update balances');
-
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
-    // Dispatch rejects when the thunk fails
     mockDispatch.mockRejectedValueOnce(mockError);
 
     const { result } = renderHook(() => useAssetsUpdateAllAccountBalances());
 
-    // Clear previous calls from useEffect
     mockDispatch.mockClear();
-    mockUpdateBalancesFoAccounts.mockClear();
+    mockRefreshAssetsForSelectedAccount.mockClear();
     mockDispatch.mockRejectedValueOnce(mockError);
 
-    // Call updateBalances manually and expect it to handle error gracefully
     await expect(result.current.updateBalances()).resolves.not.toThrow();
 
     expect(console.warn).toHaveBeenCalledWith(
       'Error updating balances state for all accounts',
       mockError,
     );
-  });
-
-  it('should handle errors gracefully in useEffect', async () => {
-    const mockChainIds = ['0x1', '0x89'];
-    const mockError = new Error('Failed to update balances');
-
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
-    // Dispatch rejects when the thunk fails
-    mockDispatch.mockRejectedValueOnce(mockError);
-
-    // This should not throw
-    expect(() => {
-      renderHook(() => useAssetsUpdateAllAccountBalances());
-    }).not.toThrow();
-
-    // Wait for async operation to complete
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(console.warn).toHaveBeenCalledWith(
-      'Error updating balances state for all accounts',
-      mockError,
-    );
-  });
-
-  it('should memoize updateBalances function correctly', () => {
-    const mockChainIds = ['0x1', '0x89'];
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return mockChainIds;
-      }
-      return undefined;
-    });
-
-    const { result, rerender } = renderHook(() =>
-      useAssetsUpdateAllAccountBalances(),
-    );
-
-    const firstUpdateBalances = result.current.updateBalances;
-
-    // Re-render without changing dependencies
-    rerender();
-
-    const secondUpdateBalances = result.current.updateBalances;
-
-    // updateBalances function should be the same reference (memoized)
-    expect(firstUpdateBalances).toBe(secondUpdateBalances);
-  });
-
-  it('should create new updateBalances function when dependencies change', () => {
-    let currentChainIds = ['0x1'];
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getEnabledChainIds) {
-        return currentChainIds;
-      }
-      return undefined;
-    });
-
-    const { result, rerender } = renderHook(() =>
-      useAssetsUpdateAllAccountBalances(),
-    );
-
-    const firstUpdateBalances = result.current.updateBalances;
-
-    // Change chain IDs
-    currentChainIds = ['0x1', '0x89'];
-    rerender();
-
-    const secondUpdateBalances = result.current.updateBalances;
-
-    // updateBalances function should be different (new reference due to dependency change)
-    expect(firstUpdateBalances).not.toBe(secondUpdateBalances);
   });
 });

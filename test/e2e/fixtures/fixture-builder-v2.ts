@@ -12,7 +12,6 @@ import type {
   NftControllerState,
   RatesControllerState,
   TokenRatesControllerState,
-  TokenBalancesControllerState,
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -430,13 +429,6 @@ class FixtureBuilderV2 {
   withSnapController(data: Partial<PersistedSnapControllerState>): this {
     (this.fixture.data as Record<string, unknown>).SnapController ??= {};
     merge(this.fixture.data.SnapController, data);
-    return this;
-  }
-
-  withTokenBalancesController(
-    data: Partial<TokenBalancesControllerState>,
-  ): this {
-    merge(this.fixture.data.TokenBalancesController, data);
     return this;
   }
 
@@ -1422,7 +1414,7 @@ class FixtureBuilderV2 {
       this
         // When `assetsUnifyState` is enabled the asset list is derived from the
         // AssetsController (`customAssets` + `assetsInfo` + `assetsBalance`),
-        // not from TokensController/TokenBalancesController.
+        // not from TokensController.
         .withAssetsController({
           customAssets: { [DEFAULT_FIXTURE_ACCOUNT_ID]: [assetId] },
           assetsBalance: {

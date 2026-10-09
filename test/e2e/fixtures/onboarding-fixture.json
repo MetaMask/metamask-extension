@@ -2209,9 +2209,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "TokenBalancesController": {
-      "tokenBalances": {}
-    },
     "TokenRatesController": {
       "marketData": {}
     },

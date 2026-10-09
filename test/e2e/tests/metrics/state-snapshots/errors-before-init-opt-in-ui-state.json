@@ -332,7 +332,6 @@
       "subjectMetadata": "object"
     },
     "SubscriptionController": "object",
-    "TokenBalancesController": {},
     "TokenRatesController": {},
     "TokensController": {},
     "TransactionController": {
