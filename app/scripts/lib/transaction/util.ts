@@ -103,6 +103,8 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
   dappRequest: JsonRpcRequest;
   requestContext: MiddlewareContext;
+  // wallet_mmPay
+  transactionOptions?: Partial<AddTransactionOptions>;
 };
 
 const TRANSFER_TYPES = [
@@ -131,6 +133,8 @@ export async function addDappTransaction(
   const traceContext = requestContext.get('traceContext');
 
   const transactionOptions: Partial<AddTransactionOptions> = {
+    // wallet_mmPay: spread first so the dApp request fields below win.
+    ...request.transactionOptions,
     actionId,
     requestId: String(id),
     method,

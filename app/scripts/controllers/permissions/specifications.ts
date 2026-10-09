@@ -182,6 +182,8 @@ export const unrestrictedMethods = Object.freeze([
   'wallet_requestSnaps',
   'wallet_invokeSnap',
   'wallet_invokeKeyring',
+  // wallet_mmPay
+  'wallet_mmPay',
   'snap_getClientStatus',
   'snap_clearState',
   'snap_getFile',
