@@ -19,7 +19,8 @@ export type NotificationsSettingsSectionType =
   | 'walletActivity'
   | 'perps'
   | 'marketing'
-  | 'agenticCli';
+  | 'agenticCli'
+  | 'limitOrders';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -82,6 +83,13 @@ export const getNotificationsSettingsSectionConfigs = (
     title: t('notificationsSettingsAgenticCliTitle'),
     description: t('notificationsSettingsAgenticCliDescription'),
     iconName: IconName.Code,
+  });
+
+  nextSections.push({
+    type: 'limitOrders',
+    title: t('notificationsSettingsLimitOrdersTitle'),
+    description: t('notificationsSettingsLimitOrdersDescription'),
+    iconName: IconName.Notification,
   });
 
   return nextSections;

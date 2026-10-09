@@ -169,17 +169,12 @@ export function useNotificationPreferences() {
       value: boolean,
     ) => {
       await updatePreferencesSection(type, (currentSectionPreferences) => {
-        // TODO: type casting until agentic cli preferences are not optional (next release)
-        const sectionPreferences = currentSectionPreferences as NonNullable<
-          NotificationPreferences[typeof type]
-        >;
-
-        if (sectionPreferences[key] === value) {
-          return sectionPreferences;
+        if (currentSectionPreferences[key] === value) {
+          return currentSectionPreferences;
         }
 
         return {
-          ...sectionPreferences,
+          ...currentSectionPreferences,
           [key]: value,
         };
       });

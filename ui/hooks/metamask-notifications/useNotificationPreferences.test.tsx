@@ -90,6 +90,38 @@ describe('useNotificationPreferences', () => {
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
 
+  it('does not persist a preference update when the value is unchanged', async () => {
+    const preferences = createMockNotificationPreferences();
+
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return Promise.resolve(preferences);
+      }
+
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+
+    await act(async () => {
+      await result.current.updatePreference(
+        'walletActivity',
+        'pushNotificationsEnabled',
+        true,
+      );
+    });
+
+    expect(mockPutNotificationPreferences).not.toHaveBeenCalled();
+    expect(result.current.preferences).toStrictEqual(preferences);
+  });
+
   it('chains rapid section updates using the optimistic cache', async () => {
     const preferences = createMockNotificationPreferences();
     const firstExpectedPreferences = {
