@@ -183,7 +183,7 @@ export class RewardsMoneyController extends BaseController<
     if (this.#isDisabled()) {
       throw new Error('Rewards Money is disabled');
     }
-    return this.messenger.call(
+    return await this.messenger.call(
       'RewardsMoneyDataService:validateReferralCode',
       code,
     );
@@ -267,7 +267,10 @@ export class RewardsMoneyController extends BaseController<
       throw new Error('Rewards Money is disabled');
     }
 
-    return this.messenger.call('RewardsMoneyDataService:getRebateQuote', body);
+    return await this.messenger.call(
+      'RewardsMoneyDataService:getRebateQuote',
+      body,
+    );
   }
 
   async #getProfileId(): Promise<string> {
