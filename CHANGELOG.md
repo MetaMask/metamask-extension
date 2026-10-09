@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.52.0]
+
+### Added
+
+- Added feature-flagged support for funding Money Account deposits with Ledger hardware wallets (#46364)
+- Added trust signal badges to assets in the Send picker (#46806)
+- Added Volume / Market cap and Fully diluted rows to asset market details, and renamed Total volume to Total volume (24h) (#46788)
+- Added trust signal badges to Manage Tokens and standardized warning badges across token lists (#46789)
+- Added support for opening MetaMask deep links from link.metamask.com (#46530)
+- Added trust signal badges to real-world assets (#46772)
+- Added warnings in Swap and Bridge when Stellar quotes require a minimum XLM balance that an account cannot cover (#46554)
+
+### Changed
+
+- Temporarily hid hardware wallet accounts from Money Account selectors (#46778)
+- Replaced the Buy token selection page’s “Show all tokens” button with scroll-to-load pagination (#46685)
+- Updated trust signal badge appearance and text for Swap assets (#46813)
+- Updated Add and Edit Network forms with the latest design (#46792)
+- Updated Perps loading placeholders with pill-shaped action buttons (#46826)
+- Updated Stellar wallet support to version 1.1.0 (#46681)
+- Updated Buy to use synced order history, select the provider from the latest completed order, and avoid notifications for imported historical orders (#46046)
+- Updated network editor controls with the latest design-system styling (#46591)
+- Updated Robinhood Chain explorer links to use Etherscan (#46742)
+- Updated the hide-token confirmation to use the standard modal design (#46797)
+- Updated Buy payment-method limits and wait-time labels to match the latest designs (#46718)
+- Updated Money Account analytics tracking (#46724)
+- Updated the OP Mainnet network icon with the current Optimism brand asset (#46520)
+
+### Removed
+
+- Removed the redundant back button from the account rename dialog (#46820)
+
+### Fixed
+
+- Fixed Arc USDC balance display and token details in the Swap asset picker (#46933)
+- Fixed no-fee payment labels and maximum amounts for hardware wallet payment tokens (#46366)
+- Fixed Stellar send confirmations that remained on the loading screen (#46885)
+- Fixed native gas balance checks for hardware-funded Money Account deposits (#46365)
+- Fixed incorrect memo display when sending Stellar contract-based tokens (#46974)
+- Improved Ledger connection feedback by showing an error immediately when no permitted device is found (#46340)
+- Fixed install attribution and deferred deep links for users arriving from metamask.com (#46801)
+- Fixed vertical alignment of arrow icons on the account details page (#46822)
+- Fixed Money Account balances remaining stale after a confirmed transaction when retrieved from the Money API (#46785)
+- Fixed Perps close and take-profit/stop-loss updates failing when the trade screen used a differently cased market symbol (#46606)
+- Fixed button styling in the marketing data consent modal (#46758)
+- Fixed selection check icons appearing alongside quote information on Buy payment-method and provider rows (#46717)
+- Fixed test network visibility and the “Show test networks” toggle when a connected dapp uses a testnet (#46716)
+- Fixed Stellar asset details failing to resolve an asset ID when opened from another account flow (#46700)
+- Fixed advanced gas dialogs displaying an incorrect default gas limit when estimation was unavailable (#46464)
+- Fixed an issue that could prevent social-login users from restoring their wallet on a new device (#46630)
+- Fixed mUSD appearing as “MUSD” in Buy flow headers and labels (#46657)
+- Fixed the in-app back arrow leaving MetaMask when pages were opened directly from a URL (#46547)
+- Fixed a wallet crash when unified asset state included a non-EVM asset on an EVM account (#46632)
+
 ## [13.51.0]
 
 ### Added
@@ -3388,7 +3442,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...HEAD
+[13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...v13.52.0
 [13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.51.0
 [13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0
 [13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0

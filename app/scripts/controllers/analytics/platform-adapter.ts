@@ -104,8 +104,8 @@ export function createEnrichmentContext(
     },
     getProfileIdentityProperties,
     getMarketingCampaignCookieId: () =>
-      messenger.call('MetaMetricsController:getState')
-        .marketingCampaignCookieId,
+      messenger.call('AnalyticsController:getState')
+        .marketingCampaignCookieId ?? null,
     hasMarketingConsent: () =>
       messenger.call('AnalyticsController:getState').optedInToMarketing ===
       true,

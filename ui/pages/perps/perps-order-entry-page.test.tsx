@@ -179,15 +179,19 @@ jest.mock('../../hooks/perps/usePerpsMarketInfo', () => ({
   usePerpsMarketInfo: () => mockUsePerpsMarketInfo(),
 }));
 
+const mockUsePerpsOrderFees = jest.fn();
 jest.mock('../../hooks/perps/usePerpsOrderFees', () => ({
   ...jest.requireActual('../../hooks/perps/usePerpsOrderFees'),
-  usePerpsOrderFees: () => ({
-    // combined = protocol + discounted builder; hl_fee_rate must report only
-    // the protocol part.
-    feeRate: 0.00145,
-    protocolFeeRate: 0.00045,
-    isLoading: false,
-  }),
+  usePerpsOrderFees: (options: Record<string, unknown>) => {
+    mockUsePerpsOrderFees(options);
+    return {
+      // combined = protocol + discounted builder; hl_fee_rate must report only
+      // the protocol part.
+      feeRate: 0.00145,
+      protocolFeeRate: 0.00045,
+      isLoading: false,
+    };
+  },
 }));
 
 const mockUsePerpsEstimatedSlippage = jest.fn(() => ({
@@ -535,6 +539,26 @@ describe('PerpsOrderEntryPage', () => {
       maxSlippageSource: 'default',
       setMaxSlippage: jest.fn(),
       isLoading: false,
+    });
+  });
+
+  it('passes the edited USD notional to the page fee quote', () => {
+    renderWithProvider(<PerpsOrderEntryPage />, mockStore(createMockState()));
+    const input = screen
+      .getByTestId('amount-input-field')
+      .querySelector('input') as HTMLInputElement;
+    fireEvent.change(input, { target: { value: '100' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '100',
+    });
+    mockUsePerpsOrderFees.mockClear();
+    fireEvent.change(input, { target: { value: '1000' } });
+    expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+      symbol: 'ETH',
+      orderType: 'market',
+      amount: '1000',
     });
   });
 
@@ -1890,6 +1914,46 @@ describe('PerpsOrderEntryPage', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('replaces a mis-cased symbol with the market symbol so submits use it', () => {
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+      mockSearchParams.set('mode', 'close');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: { pathname: '/perps/trade/ETH', search: 'mode=close' },
+          replace: true,
+        }),
+      );
+      expect(
+        screen.queryByTestId('submit-order-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('replaces a mis-cased HIP-3 symbol with the encoded market symbol', () => {
+      mockUseParams.mockReturnValue({ symbol: 'XYZ%3Atsla' });
+      mockSearchParams.set('mode', 'modify');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: { pathname: '/perps/trade/xyz%3ATSLA', search: 'mode=modify' },
+          replace: true,
+        }),
+      );
+    });
+
+    it('does not redirect when the symbol already matches the market', () => {
+      mockSearchParams.set('mode', 'close');
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      expect(mockNavigateComponent).not.toHaveBeenCalled();
+      expect(screen.getByTestId('submit-order-button')).toBeInTheDocument();
+    });
+
     it('shows market not found when symbol does not match any market', () => {
       mockUseParams.mockReturnValue({ symbol: 'NONEXISTENT' });
       const store = mockStore(createMockState());
@@ -2030,7 +2094,7 @@ describe('PerpsOrderEntryPage', () => {
             category: MetaMetricsEventCategory.Perps,
             [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
               PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
-            [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+            [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]:
               PERPS_EVENT_VALUE.BUTTON_CLICKED.DEPOSIT,
             [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
               PERPS_EVENT_VALUE.BUTTON_LOCATION.ORDER_FORM_FOOTER,
@@ -2040,6 +2104,10 @@ describe('PerpsOrderEntryPage', () => {
           }),
         }),
       );
+      const depositClick = mockAnalyticsTrackEvent.mock.calls.find(
+        ([event]) => event.name === MetaMetricsEventName.PerpsUiInteraction,
+      );
+      expect(depositClick?.[0].properties).not.toHaveProperty('button_type');
     });
 
     it('enables add funds to trade when tradeable balance is dust below the unfunded threshold', async () => {
@@ -2783,6 +2851,26 @@ describe('PerpsOrderEntryPage', () => {
       ];
     };
 
+    it('tracks the trading screen view once across a mis-cased symbol redirect', () => {
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+      const store = mockStore(createMockState());
+      const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      mockUseParams.mockReturnValue({ symbol: 'ETH' });
+      rerender(<PerpsOrderEntryPage />);
+
+      const tradingScreenViews = mockAnalyticsTrackEvent.mock.calls.filter(
+        ([arg]) =>
+          arg?.name === MetaMetricsEventName.PerpsScreenViewed &&
+          arg?.properties?.[PERPS_EVENT_PROPERTY.SCREEN_TYPE] ===
+            PERPS_EVENT_VALUE.SCREEN_TYPE.TRADING,
+      );
+      expect(tradingScreenViews).toHaveLength(1);
+      expect(
+        tradingScreenViews[0][0].properties[PERPS_EVENT_PROPERTY.ASSET],
+      ).toBe('ETH');
+    });
+
     it('includes saved-order defaults on the trading screen view', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
@@ -3291,6 +3379,27 @@ describe('PerpsOrderEntryPage', () => {
         <PerpsOrderEntryPage />,
         mockStore(createMockState()),
       );
+      unmount();
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(
+        mockAnalyticsTrackEvent.mock.calls.some(
+          ([arg]) => arg?.properties?.action === 'abandon_order',
+        ),
+      ).toBe(false);
+    });
+
+    it('does not report abandonment when a mis-cased symbol redirects', async () => {
+      // The redirect render never shows the order form.
+      mockUseParams.mockReturnValue({ symbol: 'eth' });
+
+      const { unmount } = renderWithProvider(
+        <PerpsOrderEntryPage />,
+        mockStore(createMockState()),
+      );
+      expect(mockNavigateComponent).toHaveBeenCalled();
       unmount();
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0));

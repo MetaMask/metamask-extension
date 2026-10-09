@@ -41,7 +41,7 @@ import {
 import {
   getIsMainnet,
   getOpenSeaEnabled,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
 } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
@@ -75,7 +75,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
-  const showTestNetworks = useSelector(getShowTestNetworks);
+  const showTestNetworks = useSelector(getShouldShowTestNetworks);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);

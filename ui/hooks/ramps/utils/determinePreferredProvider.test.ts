@@ -42,7 +42,10 @@ describe('determinePreferredProvider', () => {
 
   it('prefers the most recent completed order provider without auto-selecting', () => {
     const result = determinePreferredProvider(
-      [{ providerId: 'moonpay', completedAt: 1000 }],
+      [
+        { providerId: 'transak', completedAt: 500 },
+        { providerId: 'moonpay', completedAt: 1000 },
+      ],
       [moonpayProvider, transakProvider],
     );
 
@@ -50,6 +53,19 @@ describe('determinePreferredProvider', () => {
       provider: moonpayProvider,
       autoSelected: false,
     });
+  });
+
+  it('matches Portfolio-style /providers/ ids to bare catalog ids', () => {
+    const result = determinePreferredProvider(
+      [{ providerId: '/providers/moonpay-staging', completedAt: 1000 }],
+      [
+        { id: 'moonpay-staging', name: 'MoonPay Staging' } as Provider,
+        transakProvider,
+      ],
+    );
+
+    expect(result?.provider.id).toBe('moonpay-staging');
+    expect(result?.autoSelected).toBe(false);
   });
 
   it('returns null when providers are empty', () => {
