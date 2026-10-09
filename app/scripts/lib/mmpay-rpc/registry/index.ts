@@ -1,11 +1,13 @@
 import type { PayRpcType } from '../../../../../shared/lib/transaction/pay-rpc';
 import type { MmPayRpcTypeRegistry } from '../types';
 import { perpsDepositTypeRegistry } from './perps-deposit';
+import { perpsWithdrawTypeRegistry } from './perps-withdraw';
 
 export const MMPAY_RPC_TYPE_REGISTRIES: Partial<
   Record<PayRpcType, MmPayRpcTypeRegistry>
 > = {
   perpsDeposit: perpsDepositTypeRegistry,
+  perpsWithdraw: perpsWithdrawTypeRegistry,
 };
 
 /**
