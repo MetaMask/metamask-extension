@@ -54,14 +54,16 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
             <col />
           </colgroup>
           <thead>
-            <tr className="text-s-body-sm font-medium text-alternative">
+            <tr className="text-s-body-sm font-medium text-alternative sticky top-0 z-10 bg-default">
               <th className="pb-3 pl-6 pr-3 font-medium">Name</th>
               <th className="pb-3 pr-3 text-end font-medium">Price</th>
               <th className="pb-3 pr-3 text-end font-medium">Market cap</th>
               {showLiquidity ? (
                 <th className="pb-3 pr-3 text-end font-medium">Liquidity</th>
               ) : null}
-              <th className="pb-3 pr-6 text-end font-medium">24h volume</th>
+              <th className="pb-3 pr-6 text-end font-medium whitespace-nowrap">
+                24h volume
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -83,6 +85,7 @@ export function TokenResults({ ticker, results, onBack, onSelect }: Props) {
                         </span>
                         {securityBadge ? (
                           <Icon
+                            className="flex-shrink-0"
                             aria-label={securityBadge.accessibleLabel}
                             name={securityBadge.icon}
                             size={IconSize.Sm}
