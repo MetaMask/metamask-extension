@@ -9,9 +9,9 @@ import {
 } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 import {
-  PREPARE_SWAP_ROUTE,
-  PREPARE_SWAP_ASSETS_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  PREPARE_SWAP_ASSETS_ROUTE,
+  PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import { getSelectedNetworkClientId } from '../../../shared/lib/selectors/networks';
@@ -29,6 +29,7 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
+import { resetBridgeController } from '../../ducks/bridge/actions';
 import { getFromChain } from '../../ducks/bridge/selectors';
 import {
   startSwapViewLoadTrace,
@@ -38,7 +39,9 @@ import { usePrefillFromSearchQuery } from '../../hooks/bridge/usePrefillFromSear
 import { usePrefillFromBridgeState } from '../../hooks/bridge/usePrefillFromBridgeState';
 import { useSmartSlippage } from '../../hooks/bridge/useSmartSlippage';
 import { transitionBack } from '../../components/ui/transition';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeTokens';
+import { useDispatch } from '../../store/hooks';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import BridgeAssetPickerPage from './asset-picker';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
@@ -53,6 +56,7 @@ const CrossChainSwap = () => {
 
   useBridging();
 
+  const dispatch = useDispatch();
   const {
     navigateToDefaultRoute,
     search,
@@ -138,9 +142,19 @@ const CrossChainSwap = () => {
       clearAllBridgeCacheItems();
     };
   }, [fetchTokens]);
-  const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
-  };
+  const handleBack = useInAppBack(
+    () => {
+      // Direct open or deep link: leave Swap for Home, or Transaction Shield.
+      transitionBack(() => navigateToDefaultRoute());
+    },
+    (navigateBack) => {
+      transitionBack(() => {
+        // Opened from another page: reset Swap and return to that page.
+        dispatch(resetBridgeController()).catch(() => undefined);
+        navigateBack();
+      });
+    },
+  );
 
   const prepareBody = (
     <>

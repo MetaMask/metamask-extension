@@ -9,6 +9,24 @@ import { PREVIOUS_ROUTE } from '../helpers/constants/routes';
 
 type BackTransition = (navigateBack: () => void) => void;
 
+type InAppBackFallback = To | (() => void);
+
+function isFallbackNavigate(
+  fallback: InAppBackFallback,
+): fallback is () => void {
+  return typeof fallback === 'function';
+}
+
+export const getHasNoInAppHistory = ({
+  key,
+  state,
+}: {
+  key: string;
+  state: unknown;
+}) =>
+  key === 'default' ||
+  (state as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+
 /**
  * In-app Back button handler. Does not affect the browser Back button.
  *
@@ -18,25 +36,30 @@ type BackTransition = (navigateBack: () => void) => void;
  * As it replaces during navigation,`fromFreshTab` is passed in location
  * state to ensure subsequent in-app Back clicks also have a fallback.
  *
- * @param fallbackRoute - Route used when there is no in-app history.
+ * Pass a function instead of a route when the no-history navigation
+ * chooses its own destination.
+ *
+ * @param fallback - Route, or navigate function, used when there is no in-app history.
  * @param transition - Optional transition around history navigation.
  * @returns The in-app back-button handler.
  */
 export function useInAppBack(
-  fallbackRoute: To,
+  fallback: InAppBackFallback,
   transition?: BackTransition,
 ): () => void {
   const navigate: NavigateFunction = useNavigate();
   const { key, state } = useLocation();
-
-  const hasNoInAppHistory =
-    key === 'default' ||
-    (state as { fromFreshTab?: boolean } | null)?.fromFreshTab === true;
+  const hasNoInAppHistory = getHasNoInAppHistory({ key, state });
 
   return useCallback(() => {
     // Navigate to fallback route if there is no in-app history
     if (hasNoInAppHistory) {
-      navigate(fallbackRoute, {
+      if (isFallbackNavigate(fallback)) {
+        fallback();
+        return;
+      }
+
+      navigate(fallback, {
         replace: true,
         state: { fromFreshTab: true },
       });
@@ -50,5 +73,5 @@ export function useInAppBack(
     } else {
       navigateBack();
     }
-  }, [fallbackRoute, hasNoInAppHistory, navigate, transition]);
+  }, [fallback, hasNoInAppHistory, navigate, transition]);
 }

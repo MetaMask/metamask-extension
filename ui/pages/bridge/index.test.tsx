@@ -5,7 +5,11 @@ import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
   ConnectionStatus,
@@ -66,22 +70,29 @@ setBackgroundConnection({
 } as never);
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 const mockBridgePreparePath = '/cross-chain/swaps/prepare-bridge-page';
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
-    useLocation: () => ({
-      pathname: mockBridgePreparePath,
-      search: '',
-      hash: '',
-      state: null,
-    }),
+    useLocation: () => mockUseLocation(),
   };
 });
 
+const directOpenLocation = {
+  pathname: mockBridgePreparePath,
+  search: '',
+  hash: '',
+  state: null,
+  key: 'default',
+};
+
 describe('Bridge', () => {
   beforeEach(() => {
+    mockUseNavigate.mockReset();
+    mockResetBridgeState.mockClear();
+    mockUseLocation.mockReturnValue(directOpenLocation);
     mockUseHardwareWalletConfig.mockReturnValue({
       isHardwareWalletAccount: false,
       walletType: null,
@@ -167,6 +178,56 @@ describe('Bridge', () => {
       fireEvent.click(backButton);
     });
     expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      state: {
+        bridgeState: null,
+        token: null,
+        stayOnHomePage: true,
+      },
+    });
+  });
+
+  it('returns to the previous page when Swap was opened in-app', async () => {
+    mockUseLocation.mockReturnValue({
+      ...directOpenLocation,
+      key: 'token-details',
+    });
+
+    const bridgeMockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
+    });
+    const store = configureMockStore(middleware)(bridgeMockStore);
+
+    const { getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
+      store,
+      PREPARE_SWAP_ROUTE,
+    );
+
+    const backButton = getByRole('button', { name: messages.back.message });
+    await act(async () => {
+      fireEvent.click(backButton);
+    });
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });

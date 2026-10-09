@@ -21,6 +21,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   PREPARE_SWAP_ROUTE,
+  SWAP_ASSETS_PATH,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import type { BridgeToken } from '../../ducks/bridge/types';
@@ -329,6 +330,34 @@ describe('useBridgeNavigation', () => {
         },
       );
     });
+
+    it('keeps a direct open marked after clearing search params', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: `?${BridgeQueryParams.From}=from-token`,
+        key: 'default',
+        state: null,
+      });
+
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.resetSearchParams([BridgeQueryParams.From]);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        {
+          pathname: '/cross-chain/swaps/prepare-bridge-page',
+          search: '',
+        },
+        {
+          replace: true,
+          state: {
+            fromFreshTab: true,
+          },
+        },
+      );
+    });
   });
 
   describe('resetLocationState', () => {
@@ -348,6 +377,81 @@ describe('useBridgeNavigation', () => {
             stayOnHomePage: false,
           },
         },
+      );
+    });
+
+    it('keeps a direct open marked when replacing the current route', () => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: '',
+        key: 'default',
+        state: {
+          token: locationToken,
+          bridgeState: locationBridgeState,
+        },
+      });
+
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.resetLocationState(undefined, { replace: true });
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        { pathname: '/cross-chain/swaps/prepare-bridge-page' },
+        {
+          replace: true,
+          state: {
+            bridgeState: null,
+            token: null,
+            stayOnHomePage: false,
+            fromFreshTab: true,
+          },
+        },
+      );
+    });
+  });
+
+  describe('fromFreshTab', () => {
+    beforeEach(() => {
+      mockUseLocation.mockReturnValue({
+        pathname: '/cross-chain/swaps/prepare-bridge-page',
+        search: '',
+        key: 'default',
+        state: {
+          token: locationToken,
+          bridgeState: locationBridgeState,
+          fromFreshTab: true,
+        },
+      });
+    });
+
+    it('is not copied onto the token picker or token details', () => {
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.navigateToBridgeAssetPickerPage('src');
+        result.current.navigateToAssetPage(daiBridgeToken);
+      });
+
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        1,
+        `${SWAP_ASSETS_PATH}?field=src`,
+        {
+          state: {
+            token: locationToken,
+            bridgeState: locationBridgeState,
+          },
+        },
+      );
+      expect(mockUseNavigate).toHaveBeenNthCalledWith(
+        2,
+        buildAssetRoutePath(daiBridgeToken.assetId),
+        expect.objectContaining({
+          state: expect.not.objectContaining({
+            fromFreshTab: true,
+          }),
+        }),
       );
     });
   });
