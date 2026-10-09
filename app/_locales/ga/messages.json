@@ -629,7 +629,7 @@
   },
   "basicConfigurationDescription": {
     "message": "Cuireann MetaMask gnéithe bunúsacha ar fáil ar nós sonraí comharthaí agus socruithe gáis trí sheirbhísí idirlín. Nuair a úsáideann tú seirbhísí idirlín, roinntear do sheoladh IP, sa chás seo le MetaMask. Tá sé seo díreach mar a tharlaíonn nuair a thugann tú cuairt ar aon suíomh Gréasáin. Úsáideann MetaMask na sonraí seo go sealadach agus ní dhíolann sé do shonraí riamh. Is féidir leat VPN a úsáid nó na seirbhísí seo a mhúchadh, ach d'fhéadfadh sé difear a dhéanamh do do thaithí MetaMask. Chun tuilleadh eolais a fháil léigh ár $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://metamask.com/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Feidhmiúlacht bhunúsach"

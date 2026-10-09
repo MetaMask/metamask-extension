@@ -450,7 +450,7 @@ export default function PrivacySettings() {
                     title={t('basicConfigurationLabel')}
                     description={t('basicConfigurationDescription', [
                       <a
-                        href="https://consensys.io/privacy-policy"
+                        href="https://metamask.com/privacy-policy"
                         key="link"
                         target="_blank"
                         rel="noreferrer noopener"
@@ -470,7 +470,7 @@ export default function PrivacySettings() {
                       <>
                         {t('onboardingAdvancedPrivacyNetworkDescription', [
                           <a
-                            href="https://consensys.io/privacy-policy/"
+                            href="https://metamask.com/privacy-policy/"
                             key="privacy-policy-link"
                             target="_blank"
                             rel="noopener noreferrer"

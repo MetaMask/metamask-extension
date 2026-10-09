@@ -132,7 +132,7 @@ describe('LoginOptions', () => {
     });
   });
 
-  it('renders Terms of Use and Privacy Notice footer links pointing to consensys.io', () => {
+  it('renders Terms of Use and Privacy Notice footer links pointing to metamask.com', () => {
     const { getByRole } = renderComponent();
 
     const termsLink = getByRole('link', {
@@ -147,14 +147,14 @@ describe('LoginOptions', () => {
 
     expect(termsLink).toHaveAttribute(
       'href',
-      'https://consensys.io/terms-of-use',
+      'https://metamask.com/terms-of-use',
     );
     expect(termsLink).toHaveAttribute('target', '_blank');
     expect(termsLink).toHaveAttribute('rel', 'noopener noreferrer');
 
     expect(privacyLink).toHaveAttribute(
       'href',
-      'https://consensys.io/privacy-notice',
+      'https://metamask.com/privacy-notice',
     );
     expect(privacyLink).toHaveAttribute('target', '_blank');
     expect(privacyLink).toHaveAttribute('rel', 'noopener noreferrer');

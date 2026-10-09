@@ -4,16 +4,16 @@ export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 
 export const COINGECKO_LINK = 'https://www.coingecko.com/';
 export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
-export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
+export const PRIVACY_POLICY_LINK = 'https://metamask.com/privacy-policy/';
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/?utm_source=extension';
 
 // TODO make sure these links are correct
 export const ETHERSCAN_PRIVACY_LINK = 'https://etherscan.io/privacyPolicy';
-export const CONSENSYS_PRIVACY_LINK = 'https://consensys.io/privacy-policy/';
+export const CONSENSYS_PRIVACY_LINK = 'https://metamask.com/privacy-policy/';
 export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
-  'https://consensys.io/privacy-policy/';
-export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
+  'https://metamask.com/privacy-policy/';
+export const CONSENSYS_TERMS_OF_USE = 'https://metamask.com/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-turn-on-security-alerts/?utm_source=extension';
@@ -33,7 +33,7 @@ export const REINSTALL_METAMASK_RECOVERY_LINK =
   'https://support.metamask.io/configure/wallet/how-to-restore-your-metamask-wallet-from-secret-recovery-phrase/?utm_source=extension';
 
 export const SHIELD_TERMS_OF_USE_URL =
-  'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';
+  'https://metamask.com/transaction-shield-supplemental-terms-and-privacy-notice';
 
 export const TESTNET_ETH_SCAMS_LEARN_MORE_LINK =
   'https://support.metamask.io/stay-safe/protect-yourself/tokens-and-transactions/testnet-eth-scams/?utm_source=extension';
