@@ -389,26 +389,31 @@ describe('delegation', () => {
       );
     });
 
-    for (const [name, data, expected] of [
+    async function expectNormalizedCallData(data: string, expected: Hex) {
+      const transaction = {
+        ...TRANSACTION_META_MOCK,
+        txParams: { ...TRANSACTION_META_MOCK.txParams, data },
+      } as unknown as TransactionMeta;
+
+      await convertTransactionToRedeemDelegations({ transaction, messenger });
+
+      expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          executions: [[expect.objectContaining({ callData: expected })]],
+        }),
+      );
+    }
+
+    const callDataCases: [string, string, Hex][] = [
       ['uppercase hex', '0xDEADBEEF', '0xdeadbeef'],
       ['missing 0x prefix', 'deadbeef', '0xdeadbeef'],
       ['odd-length hex', '0xabc', '0x0abc'],
       ['empty string', '', '0x'],
-    ]) {
-      it(`normalizes txParams callData with ${name}`, async () => {
-        const transaction = {
-          ...TRANSACTION_META_MOCK,
-          txParams: { ...TRANSACTION_META_MOCK.txParams, data },
-        } as unknown as TransactionMeta;
+    ];
 
-        await convertTransactionToRedeemDelegations({ transaction, messenger });
-
-        expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
-          expect.objectContaining({
-            executions: [[expect.objectContaining({ callData: expected })]],
-          }),
-        );
-      });
+    for (const [name, data, expected] of callDataCases) {
+      it(`normalizes txParams callData with ${name}`, () =>
+        expectNormalizedCallData(data, expected));
     }
 
     it('normalizes nestedTransactions callData', async () => {

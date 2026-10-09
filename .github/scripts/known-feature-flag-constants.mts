@@ -120,6 +120,11 @@ const FILE_SOURCES: Array<{
     file: 'shared/lib/money/chomp-config.ts',
     exportName: 'MONEY_ACCOUNT_CHOMP_CONFIG_FLAG_NAME',
   },
+  {
+    key: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+    file: 'app/scripts/lib/transaction/caveats.ts',
+    exportName: 'CONFIRMATIONS_DELEGATIONS_FEATURE_FLAG_NAME',
+  },
 ];
 
 /**
