@@ -6,7 +6,6 @@ import {
   BorderColor,
   FontWeight,
   FontStyle,
-  FontFamily,
   TextColor,
   TextAlign,
   OverflowWrap,
