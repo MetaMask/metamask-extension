@@ -47,7 +47,7 @@ const NON_HARDWARE_ACCOUNT_ADDRESS =
 
 describe('useHardwareFooter', () => {
   let mockConnectionState: { status: ConnectionStatus };
-  let mockEnsureDeviceReady: jest.Mock<Promise<boolean>, [unknown?]>;
+  let mockEnsureDeviceReady: jest.Mock<Promise<Error | null>, [unknown?]>;
   let mockShowErrorModal: jest.Mock;
   let mockTrackConnectCtaClicked: jest.Mock;
   let mockOnUserRejectedHardwareWalletError: jest.Mock<
@@ -271,7 +271,7 @@ describe('useHardwareFooter', () => {
   describe('onSubmitPreflightCheck', () => {
     it('passes blind-signing disabled for simple sends', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result } = renderUseHardwareFooter({
         currentConfirmation: createConfirmation(TransactionType.simpleSend),
@@ -288,7 +288,7 @@ describe('useHardwareFooter', () => {
     });
 
     it('passes blind-signing required for non-simple requests', async () => {
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result } = renderUseHardwareFooter({
         currentConfirmation: createConfirmation(TransactionType.signTypedData),
@@ -305,7 +305,9 @@ describe('useHardwareFooter', () => {
 
     it('returns false when the device is not ready', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(false);
+      mockEnsureDeviceReady.mockResolvedValue(
+        new Error('Hardware wallet device is not ready'),
+      );
 
       const { result } = renderUseHardwareFooter();
 
@@ -336,7 +338,7 @@ describe('useHardwareFooter', () => {
 
     it('invokes trackConnectCtaClicked when trackConnectCta is true', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result } = renderHook(() =>
         useHardwareFooter({
@@ -358,7 +360,7 @@ describe('useHardwareFooter', () => {
 
     it('does not invoke trackConnectCtaClicked when trackConnectCta is omitted', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result } = renderHook(() =>
         useHardwareFooter({
@@ -381,7 +383,7 @@ describe('useHardwareFooter', () => {
   describe('readiness reset behavior', () => {
     it('resets a successful preflight when the confirmation changes', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result, rerender } = renderUseHardwareFooter({
         currentConfirmationId: 'confirmation-1',
@@ -407,7 +409,7 @@ describe('useHardwareFooter', () => {
 
     it('resets a successful preflight when the device disconnects', async () => {
       mockConnectionState.status = ConnectionStatus.Connected;
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
 
       const { result, rerender } = renderUseHardwareFooter();
 

@@ -11,7 +11,10 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
-import { HardwareWalletProvider } from '../../../contexts/hardware-wallets';
+import {
+  HardwareWalletErrorProvider,
+  HardwareWalletProvider,
+} from '../../../contexts/hardware-wallets';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import configureStore from '../../../store/store';
 import CrossChainSwap from '../index';
@@ -24,9 +27,11 @@ const storybook = {
   },
 };
 
-const Wrapper = ({ children }) => (
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
   <HardwareWalletProvider>
-    <div style={{ width: '400px', height: '600px' }}>{children}</div>
+    <HardwareWalletErrorProvider>
+      <div style={{ width: '400px', height: '600px' }}>{children}</div>
+    </HardwareWalletErrorProvider>
   </HardwareWalletProvider>
 );
 
@@ -74,7 +79,7 @@ export const DefaultStory = () => {
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
-  (story) => (
+  (story: () => React.ReactNode) => (
     <Provider
       store={configureStore(
         createBridgeMockStore({
@@ -112,7 +117,7 @@ export const LoadingStory = () => {
 };
 LoadingStory.storyName = 'Loading Quotes';
 LoadingStory.decorators = [
-  (story) => (
+  (story: () => React.ReactNode) => (
     <Provider
       store={configureStore(
         createBridgeMockStore({
@@ -151,7 +156,7 @@ export const NoQuotesStory = () => {
 };
 NoQuotesStory.storyName = 'No Quotes';
 NoQuotesStory.decorators = [
-  (Story) => (
+  (Story: () => React.ReactNode) => (
     <Provider
       store={configureStore(
         createBridgeMockStore({
@@ -204,7 +209,7 @@ export const QuotesFetchedStory = () => {
 };
 QuotesFetchedStory.storyName = 'Quotes Available';
 QuotesFetchedStory.decorators = [
-  (Story) => (
+  (Story: () => React.ReactNode) => (
     <Wrapper>
       <Provider
         store={configureStore(
@@ -249,7 +254,7 @@ export const AlertsPresentStory = () => {
 };
 AlertsPresentStory.storyName = 'Alerts present';
 AlertsPresentStory.decorators = [
-  (Story) => (
+  (Story: () => React.ReactNode) => (
     <Wrapper>
       <Provider
         store={configureStore(

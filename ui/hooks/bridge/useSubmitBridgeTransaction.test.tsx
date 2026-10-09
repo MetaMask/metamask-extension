@@ -7,6 +7,7 @@ import {
   type QuoteResponse,
   mergeQuoteMetadata,
 } from '@metamask/bridge-controller';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';
 import {
   createBridgeMockStore,
@@ -28,7 +29,11 @@ import * as sentry from '../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../ducks/bridge/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { HardwareWalletProvider } from '../../contexts/hardware-wallets';
+import {
+  HardwareWalletProvider,
+  HardwareWalletType,
+} from '../../contexts/hardware-wallets';
+import { createHardwareWalletError } from '../../contexts/hardware-wallets/errors';
 import { createActiveABTestAssignment } from '../../../shared/lib/ab-testing/active-ab-test-assignment';
 import { CHAIN_VALUE_ORDER_AB_KEY } from '../../../shared/lib/ab-testing/configs/chain-value-order';
 import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
@@ -56,7 +61,7 @@ jest.mock('../../ducks/bridge/utils', () => ({
   })),
 }));
 
-const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
 jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
   return {
     ...jest.requireActual(
@@ -67,6 +72,22 @@ jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
     }),
   };
 });
+
+const mockShowErrorModal = jest.fn();
+jest.mock(
+  '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../store/actions', () => {
   const original = jest.requireActual('../../store/actions');
@@ -217,7 +238,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       submitTxSpy.mockImplementation(originalSubmitBridgeTx);
       submitIntentSpy.mockImplementation(originalSubmitBridgeIntent);
       isHardwareWalletSpy.mockImplementation(() => false);
-      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockEnsureDeviceReady.mockResolvedValue(null);
       captureExceptionSpy.mockReturnValue(undefined);
       setBackgroundConnection({
         submitTx: submitTxSpy,
@@ -572,7 +593,9 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
           },
         },
       });
-      mockEnsureDeviceReady.mockResolvedValue(false);
+      mockEnsureDeviceReady.mockResolvedValue(
+        new Error('Hardware wallet device is not ready'),
+      );
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -588,6 +611,101 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
       expect(mockUseNavigate).not.toHaveBeenCalled();
       expect(resetBridgeStoreSpy).not.toHaveBeenCalled();
       expect(mockResetState).not.toHaveBeenCalled();
+    });
+
+    it('shows the hardware wallet error modal when the device preflight fails', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      mockEnsureDeviceReady.mockResolvedValue(
+        new Error('Hardware wallet device is not ready'),
+      );
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockShowErrorModal).toHaveBeenCalledWith(
+        new Error('Hardware wallet device is not ready'),
+      );
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('shows the hardware wallet error modal with the error returned by the device preflight', async () => {
+      const store = makeMockStore({
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_LEDGER_ACCOUNT.id,
+          },
+          accountTree: {
+            selectedAccountGroup:
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+          },
+        },
+      });
+      const deviceError = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Ledger device is locked',
+      );
+      mockEnsureDeviceReady.mockResolvedValue(deviceError);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(
+          DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        );
+      });
+
+      expect(mockShowErrorModal).toHaveBeenCalledWith(deviceError);
+      expect(result.current.isSubmitting).toBe(false);
+      expect(submitTxSpy).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
+    });
+
+    it('does not show the hardware wallet error modal for non-device submit failures', async () => {
+      const store = makeMockStore();
+      const submitError = new Error('quote submit failed');
+      submitIntentSpy.mockImplementationOnce((async () => {
+        throw submitError;
+      }) as never);
+      const { result } = renderHook(() => useSubmitBridgeTransaction(), {
+        wrapper: makeWrapper(store),
+      });
+
+      const quoteWithIntent = {
+        ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0],
+        quote: {
+          ...DummyQuotesWithApproval.ETH_11_USDC_TO_ARB[0].quote,
+          intent: {
+            order: {},
+          } as never,
+        },
+      };
+
+      await act(async () => {
+        await result.current.submitBridgeTransaction(quoteWithIntent);
+      });
+
+      expect(mockShowErrorModal).not.toHaveBeenCalled();
+      expect(captureExceptionSpy).toHaveBeenCalledWith(submitError);
     });
 
     it('submits intent quotes via submitBridgeIntent', async () => {

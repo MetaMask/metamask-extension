@@ -35,6 +35,8 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
+import { isInE2eTest } from './is-in-e2e-test';
+import { isHardwareWalletErrorModalRoute } from './utils';
 import { isHardwareWalletRoute } from './utils';
 
 /**
@@ -102,10 +104,10 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
 
   /**
    * Check if the current route is one where auto-shown error modals are allowed.
-   * Only transaction, signing, and bridge pages should auto-show errors.
+   * Only transaction and signing pages should auto-show errors.
    */
   const isOnErrorModalRoute = useMemo(
-    () => isHardwareWalletRoute(location.pathname),
+    () => isHardwareWalletErrorModalRoute(location.pathname),
     [location.pathname],
   );
 

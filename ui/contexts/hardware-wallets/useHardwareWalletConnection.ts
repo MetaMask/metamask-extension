@@ -150,12 +150,14 @@ export const useHardwareWalletConnection = ({
       error: unknown;
       abortSignal: AbortSignal;
       walletType: HardwareWalletType;
-    }) => {
-      if (!abortSignal.aborted) {
-        if (isHardwareWalletError(error)) {
-          updateConnectionState(ConnectionState.error(error));
-        } else {
-          const fallbackError = createHardwareWalletError(
+    }): HardwareWalletError | null => {
+      if (abortSignal.aborted) {
+        return null;
+      }
+
+      const hwError = isHardwareWalletError(error)
+        ? error
+        : createHardwareWalletError(
             ErrorCode.ConnectionClosed,
             walletType,
             error instanceof Error
@@ -163,22 +165,25 @@ export const useHardwareWalletConnection = ({
               : 'Failed to connect to hardware wallet',
             { cause: error instanceof Error ? error : undefined },
           );
-          updateConnectionState(ConnectionState.error(fallbackError));
-        }
+      updateConnectionState(ConnectionState.error(hwError));
 
-        const failedAdapter = refs.adapterRef.current;
-        failedAdapter?.destroy();
-        if (refs.adapterRef.current === failedAdapter) {
-          refs.adapterRef.current = null;
-        }
+      const failedAdapter = refs.adapterRef.current;
+      failedAdapter?.destroy();
+      if (refs.adapterRef.current === failedAdapter) {
+        refs.adapterRef.current = null;
       }
+      return hwError;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [updateConnectionState],
   );
 
+  /**
+   * Resolves `null` on success (or when superseded), otherwise the error that
+   * was also stored on connection state.
+   */
   const connect = useCallback(
-    (): Promise<void> => {
+    (): Promise<HardwareWalletError | null> => {
       // If there's already a connection in progress, return the pending promise
       // so all callers wait for the same connection to complete
       if (refs.connectingPromiseRef.current) {
@@ -189,37 +194,36 @@ export const useHardwareWalletConnection = ({
       // This must happen synchronously before any async work
       refs.isConnectingRef.current = true;
 
-      const connectionPromise = (async (): Promise<void> => {
-        const effectiveType = refs.walletTypeRef.current;
-        if (!effectiveType) {
-          updateConnectionState(
-            ConnectionState.error(
-              createHardwareWalletError(
-                ErrorCode.Unknown,
-                HardwareWalletType.Unknown,
-                'Hardware wallet type is unknown',
-              ),
-            ),
-          );
-          return;
-        }
+      const connectionPromise =
+        (async (): Promise<HardwareWalletError | null> => {
+          const effectiveType = refs.walletTypeRef.current;
+          if (!effectiveType) {
+            const unknownTypeError = createHardwareWalletError(
+              ErrorCode.Unknown,
+              HardwareWalletType.Unknown,
+              'Hardware wallet type is unknown',
+            );
+            updateConnectionState(ConnectionState.error(unknownTypeError));
+            return unknownTypeError;
+          }
 
-        resetAdapterForFreshConnection();
-        const abortSignal = beginConnectionAttempt();
+          resetAdapterForFreshConnection();
+          const abortSignal = beginConnectionAttempt();
 
-        try {
-          await connectWithAdapter({
-            walletType: effectiveType,
-            abortSignal,
-          });
-        } catch (error) {
-          handleConnectError({
-            error,
-            abortSignal,
-            walletType: effectiveType,
-          });
-        }
-      })();
+          try {
+            await connectWithAdapter({
+              walletType: effectiveType,
+              abortSignal,
+            });
+            return null;
+          } catch (error) {
+            return handleConnectError({
+              error,
+              abortSignal,
+              walletType: effectiveType,
+            });
+          }
+        })();
 
       // Store the promise so concurrent callers can await it
       refs.connectingPromiseRef.current = connectionPromise;
@@ -311,8 +315,14 @@ export const useHardwareWalletConnection = ({
     [updateConnectionState],
   );
 
+  /**
+   * Resolves `null` when the device is ready, otherwise the error explaining
+   * why it is not (a generic one when no specific cause is known).
+   */
   const ensureDeviceReady = useCallback(
-    async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
+    async (
+      options?: EnsureDeviceReadyOptions,
+    ): Promise<HardwareWalletError | null> => {
       const requireBlindSigning = options?.requireBlindSigning ?? true;
       const dedupKey = `${requireBlindSigning}:${options?.preflightMessageBytes ?? ''}`;
       const inFlightPromise =
@@ -321,12 +331,19 @@ export const useHardwareWalletConnection = ({
         return inFlightPromise;
       }
 
-      const ensurePromise = (async (): Promise<boolean> => {
+      const notReady = () =>
+        createHardwareWalletError(
+          ErrorCode.Unknown,
+          refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
+          'Hardware wallet device is not ready',
+        );
+
+      const ensurePromise = (async (): Promise<HardwareWalletError | null> => {
         refs.isEnsuringDeviceReadyRef.current = true;
 
         const abortSignalAtStart = refs.abortControllerRef.current?.signal;
         if (abortSignalAtStart?.aborted) {
-          return false;
+          return notReady();
         }
 
         let expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
@@ -335,33 +352,36 @@ export const useHardwareWalletConnection = ({
           const currentWalletType = refs.walletTypeRef.current;
 
           if (!currentWalletType) {
-            return false;
+            return notReady();
           }
 
           const abortSignalBeforeConnect =
             refs.abortControllerRef.current?.signal;
           if (abortSignalBeforeConnect?.aborted) {
-            return false;
+            return notReady();
           }
 
           if (!refs.adapterRef.current?.isConnected()) {
             const connectPromise = connect();
             expectedConnectionId = refs.currentConnectionIdRef.current ?? 0;
-            await connectPromise;
+            const connectError = await connectPromise;
+            if (connectError) {
+              return connectError;
+            }
           }
         }
 
         // Check if this is still the latest connection attempt
         const currentId = refs.currentConnectionIdRef.current ?? 0;
         if (currentId !== expectedConnectionId) {
-          return false;
+          return notReady();
         }
 
         // Get abort signal after connect() - it may have created a new one
         const abortSignal = refs.abortControllerRef.current?.signal;
 
         if (abortSignal?.aborted) {
-          return false;
+          return notReady();
         }
 
         const adapter = refs.adapterRef.current;
@@ -372,7 +392,7 @@ export const useHardwareWalletConnection = ({
               connectionIdBeforeEnsure || refs.adapterRef.current !== adapter;
 
           if (abortSignal?.aborted || isEnsureStale()) {
-            return false;
+            return notReady();
           }
 
           try {
@@ -380,30 +400,29 @@ export const useHardwareWalletConnection = ({
               requireBlindSigning,
             });
             if (abortSignal?.aborted || isEnsureStale()) {
-              return false;
+              return notReady();
             }
-            if (result) {
-              updateConnectionState(ConnectionState.ready());
+            if (!result) {
+              return notReady();
             }
-            return result;
+            updateConnectionState(ConnectionState.ready());
+            return null;
           } catch (error) {
             if (abortSignal?.aborted || isEnsureStale()) {
-              return false;
+              return notReady();
             }
-            if (isHardwareWalletError(error)) {
-              updateConnectionState(ConnectionState.error(error));
-            } else {
-              const fallbackError = toHardwareWalletError(
-                error,
-                refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
-              );
-              updateConnectionState(ConnectionState.error(fallbackError));
-            }
-            return false;
+            const hwError = isHardwareWalletError(error)
+              ? error
+              : toHardwareWalletError(
+                  error,
+                  refs.walletTypeRef.current ?? HardwareWalletType.Unknown,
+                );
+            updateConnectionState(ConnectionState.error(hwError));
+            return hwError;
           }
         }
 
-        return false;
+        return notReady();
       })();
 
       refs.ensureDeviceReadyPromiseRef.current.set(dedupKey, ensurePromise);
