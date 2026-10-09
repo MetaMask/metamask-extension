@@ -2,7 +2,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/chain-ids';
 import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import {
-  createFeaturedChainConfigurator,
   createMoneyChainConfigurator,
   type MoneyChainConfigLock,
   type MoneyChainConfigMessenger,
@@ -210,39 +209,5 @@ describe('createMoneyChainConfigurator', () => {
     await ensureMoneyChainConfigured(VAULT_CONFIG);
 
     expect(addNetwork).toHaveBeenCalledTimes(2);
-  });
-});
-
-describe('createFeaturedChainConfigurator', () => {
-  function createMessenger(addNetwork = jest.fn()) {
-    return {
-      messenger: {
-        call: jest.fn((action: string, ...args: unknown[]) =>
-          action === 'NetworkController:getState'
-            ? { networkConfigurationsByChainId: {} }
-            : addNetwork(...args),
-        ),
-      } as unknown as MoneyChainConfigMessenger,
-      addNetwork,
-    };
-  }
-
-  it('adds a featured chain by chain ID without making it active', async () => {
-    const { messenger, addNetwork } = createMessenger();
-
-    await createFeaturedChainConfigurator(messenger, {})(CHAIN_IDS.ARBITRUM);
-
-    expect(addNetwork).toHaveBeenCalledWith(
-      FEATURED_RPCS.find(({ chainId }) => chainId === CHAIN_IDS.ARBITRUM),
-      { setActive: false },
-    );
-  });
-
-  it('throws a generic message for a chain that is not featured', async () => {
-    const { messenger } = createMessenger();
-
-    await expect(
-      createFeaturedChainConfigurator(messenger, {})('0x539'),
-    ).rejects.toThrow('Chain 0x539 is not a featured network');
   });
 });
