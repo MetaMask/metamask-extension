@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "आखिरी ज्ञात बैलेंस"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "फिर से प्रयास करें"
   },
