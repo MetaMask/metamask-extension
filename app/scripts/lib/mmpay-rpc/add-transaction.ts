@@ -1,6 +1,8 @@
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
+import { merge } from 'lodash';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { Hex } from '@metamask/utils';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { isPayRpcTypeAllowed } from '../../../../shared/lib/transaction/pay-rpc';
 import { addDappTransaction } from '../transaction/util';
 import { mmPayRpcErrors } from './errors';
@@ -80,8 +82,11 @@ function getAllowedTypeDefinition(
   type: string,
 ): MmPayRpcTypeDefinition {
   const definition = getMmPayRpcTypeDefinition(type);
-  const { remoteFeatureFlags } = messenger.call(
-    'RemoteFeatureFlagController:getState',
+  // Manifest flags take precedence, matching the UI's getRemoteFeatureFlags.
+  const remoteFeatureFlags = merge(
+    {},
+    messenger.call('RemoteFeatureFlagController:getState').remoteFeatureFlags,
+    getManifestFlags().remoteFeatureFlags,
   );
 
   if (

@@ -25,7 +25,6 @@ import requestPermissions, {
 import revokePermissions, {
   type RevokePermissionsHooks,
 } from './wallet-revokePermissions';
-// wallet_mmPay
 import walletMmPay, { type WalletMmPayHooks } from './wallet-mm-pay';
 
 export type HandlerHooks = AddEthereumChainHooks &
@@ -47,7 +46,6 @@ export type Eip1193OnlyHooks = SwitchEthereumChainHooks &
   GetPermissionsHooks &
   RequestPermissionsHooks &
   RevokePermissionsHooks &
-  // wallet_mmPay
   WalletMmPayHooks;
 
 export const eip1193OnlyHandlers = {
@@ -57,7 +55,6 @@ export const eip1193OnlyHandlers = {
   ...getPermissions,
   ...requestPermissions,
   ...revokePermissions,
-  // wallet_mmPay
   ...walletMmPay,
 };
 
