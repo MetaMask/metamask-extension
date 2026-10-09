@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18nContext } from '../useI18nContext';
 import { useMessenger } from '../useMessenger';
 import { MONEY_REFERRAL_CODE_UNKNOWN_ERROR } from './useValidateMoneyReferralCode';
@@ -11,26 +11,35 @@ import {
 type Translate = (key: string) => string;
 
 /**
- * Reads the status and body that `RewardsMoneyHttpError` copies onto
- * `error.data` so they survive the background RPC boundary.
+ * Reads the status, body, and `Retry-After` that `RewardsMoneyHttpError`
+ * copies onto `error.data` so they survive the background RPC boundary.
  *
  * @param error - The thrown register error.
- * @returns The HTTP status and body text, when present.
+ * @returns The HTTP status, body text, and wait, when present.
  */
 function readRewardsMoneyHttpFailure(error: unknown): {
   status?: number;
   bodyText?: string;
+  retryAfterSeconds?: number;
 } {
   if (!error || typeof error !== 'object' || !('data' in error)) {
     return {};
   }
   const { data } = error as {
-    data?: { status?: number; bodyText?: string };
+    data?: {
+      status?: number;
+      bodyText?: string;
+      retryAfterSeconds?: number;
+    };
   };
   if (!data || typeof data.status !== 'number') {
     return {};
   }
-  return { status: data.status, bodyText: data.bodyText };
+  const retryAfterSeconds =
+    typeof data.retryAfterSeconds === 'number' && data.retryAfterSeconds > 0
+      ? data.retryAfterSeconds
+      : undefined;
+  return { status: data.status, bodyText: data.bodyText, retryAfterSeconds };
 }
 
 /**
@@ -49,6 +58,9 @@ function getRegisterRefereeErrorMessage(error: unknown, t: Translate): string {
   }
   if (status === 409) {
     return t('rewardsMoneyReferralAlreadyReferred');
+  }
+  if (status === 429) {
+    return t('rewardsMoneyReferralTooManyTries');
   }
   if (status === 403) {
     if (body.includes('own referral code')) {
@@ -80,6 +92,8 @@ type UseAcceptMoneyReferralCodeOptions = {
 
 type UseAcceptMoneyReferralCodeResult = {
   isAccepting: boolean;
+  /** True while a 429 `Retry-After` is still running. Accept stays disabled. */
+  isAcceptCoolingDown: boolean;
   errorMessage: string;
   accept: (code: string) => Promise<boolean>;
 };
@@ -102,10 +116,38 @@ export function useAcceptMoneyReferralCode({
   const messenger = useMessenger<RewardsMoneyInviteMessenger>();
   const t = useI18nContext();
   const [isAccepting, setIsAccepting] = useState(false);
+  const [isAcceptCoolingDown, setIsAcceptCoolingDown] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const isAcceptCoolingDownRef = useRef(false);
+  const acceptCooldownRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (acceptCooldownRef.current !== null) {
+        clearTimeout(acceptCooldownRef.current);
+      }
+    },
+    [],
+  );
+
+  const startAcceptCooldown = useCallback((seconds: number) => {
+    if (acceptCooldownRef.current !== null) {
+      clearTimeout(acceptCooldownRef.current);
+    }
+    isAcceptCoolingDownRef.current = true;
+    setIsAcceptCoolingDown(true);
+    acceptCooldownRef.current = setTimeout(() => {
+      acceptCooldownRef.current = null;
+      isAcceptCoolingDownRef.current = false;
+      setIsAcceptCoolingDown(false);
+    }, seconds * 1000);
+  }, []);
 
   const accept = useCallback(
     async (code: string): Promise<boolean> => {
+      if (isAcceptCoolingDownRef.current) {
+        return false;
+      }
       setErrorMessage('');
       const validationError = await validateCode(code);
       if (
@@ -125,14 +167,25 @@ export function useAcceptMoneyReferralCode({
         onAccepted();
         return true;
       } catch (error) {
+        const failure = readRewardsMoneyHttpFailure(error);
         setErrorMessage(getRegisterRefereeErrorMessage(error, t as Translate));
+        if (failure.status === 429 && failure.retryAfterSeconds !== undefined) {
+          startAcceptCooldown(failure.retryAfterSeconds);
+        }
         return false;
       } finally {
         setIsAccepting(false);
       }
     },
-    [fetchReferralMe, messenger, onAccepted, t, validateCode],
+    [
+      fetchReferralMe,
+      messenger,
+      onAccepted,
+      startAcceptCooldown,
+      t,
+      validateCode,
+    ],
   );
 
-  return { isAccepting, errorMessage, accept };
+  return { isAccepting, isAcceptCoolingDown, errorMessage, accept };
 }

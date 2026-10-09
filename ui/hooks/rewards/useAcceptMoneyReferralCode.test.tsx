@@ -23,11 +23,12 @@ jest.mock('./useReferralMe', () => ({
 }));
 
 const Harness = () => {
-  const { errorMessage, accept } = useAcceptMoneyReferralCode({
-    validateCode: async () => '',
-    fetchReferralMe: async () => ({ status: 'settled' }),
-    onAccepted: () => undefined,
-  });
+  const { errorMessage, isAcceptCoolingDown, accept } =
+    useAcceptMoneyReferralCode({
+      validateCode: async () => '',
+      fetchReferralMe: async () => ({ status: 'settled' }),
+      onAccepted: () => undefined,
+    });
   return (
     <div>
       <button
@@ -39,6 +40,7 @@ const Harness = () => {
         accept
       </button>
       <span data-testid="error">{errorMessage}</span>
+      <span data-testid="cooling">{isAcceptCoolingDown ? 'yes' : 'no'}</span>
     </div>
   );
 };
@@ -104,5 +106,47 @@ describe('useAcceptMoneyReferralCode', () => {
     expect(view.getByTestId('error').textContent).toBe(
       'rewardsMoneyReferralSomethingWentWrong',
     );
+  });
+
+  it('holds Accept after a 429 until Retry-After elapses', async () => {
+    jest.useFakeTimers();
+    try {
+      mockRegister.mockRejectedValueOnce({
+        data: { status: 429, bodyText: 'too many', retryAfterSeconds: 2 },
+      });
+      const store = configureStore({ reducer: (state = {}) => state });
+      const view = render(
+        <Provider store={store}>
+          <Harness />
+        </Provider>,
+      );
+
+      await act(async () => {
+        view.getByRole('button', { name: 'accept' }).click();
+      });
+
+      expect(view.getByTestId('error').textContent).toBe(
+        'rewardsMoneyReferralTooManyTries',
+      );
+      expect(view.getByTestId('cooling').textContent).toBe('yes');
+
+      mockRegister.mockResolvedValue(undefined);
+      await act(async () => {
+        view.getByRole('button', { name: 'accept' }).click();
+      });
+      expect(mockRegister).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        jest.advanceTimersByTime(2000);
+      });
+      expect(view.getByTestId('cooling').textContent).toBe('no');
+
+      await act(async () => {
+        view.getByRole('button', { name: 'accept' }).click();
+      });
+      expect(mockRegister).toHaveBeenCalledTimes(2);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

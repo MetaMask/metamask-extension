@@ -63,6 +63,8 @@ const mockT = (key: string) =>
       rewardsMoneyReferralCodeError: 'Invalid referral code',
       rewardsMoneyReferralCodeUnknownError:
         'Referral code couldn’t be validated.',
+      rewardsMoneyReferralTooManyTries:
+        messages.rewardsMoneyReferralTooManyTries.message,
     }) as Record<string, string>
   )[key] ?? key;
 
@@ -302,6 +304,34 @@ describe('AcceptInviteSheet', () => {
     });
     expect(trackedTypes()).toEqual(['viewed', 'dismissed']);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('disables Accept until Retry-After elapses after a 429', async () => {
+    jest.useFakeTimers();
+    try {
+      mockRegister.mockRejectedValueOnce({
+        data: { status: 429, retryAfterSeconds: 2 },
+      });
+      const view = renderSheet({ initialCode: 'AB12CD' });
+      const acceptButton = view.getByTestId('money-referral-accept');
+
+      await act(async () => {
+        fireEvent.click(acceptButton);
+      });
+
+      expect(acceptButton).toBeDisabled();
+      expect(
+        view.getByText(messages.rewardsMoneyReferralTooManyTries.message),
+      ).toBeInTheDocument();
+
+      await act(async () => {
+        jest.advanceTimersByTime(2000);
+      });
+
+      expect(acceptButton).toBeEnabled();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('tracks accepted only after register succeeds and opens the activated modal', async () => {

@@ -48,10 +48,23 @@ export type RewardsMoneyControllerRegisterRefereeAction = {
  *
  * A refusal rejects with `RewardsMoneyRebateQuoteError`, a `401` with
  * `RewardsMoneyAuthorizationError`. A timeout or a network failure rejects
- * with a plain `Error`. A `503` (`failure: 'UNAVAILABLE'`) is a busy pod:
- * show no rebate row, do not request another quote for this screen, and
- * leave the button disabled until `retryAfterSeconds` has elapsed. The
- * body reason for that shed is `SERVER_BUSY`.
+ * with a plain `Error`. A `401` is not retried.
+ *
+ * The confirm button may wait for this first request, for at most 2 to 3
+ * seconds. If the quote has not arrived by then, or the request fails,
+ * unblock the confirm button and let the user continue with no rebate tag.
+ * One quiet retry may run while the screen stays open. Wait
+ * `retryAfterSeconds` when the error has one, then add a small random
+ * delay: a `503` sends a fixed `Retry-After: 2`, and without that jitter
+ * every client retries in the same second. When the header is missing,
+ * `retryAfterSeconds` is `undefined` and the caller chooses the wait. Stop
+ * after that second attempt, or when the user leaves the screen. A success
+ * on the retry shows the rebate tag. The retry does not hold the confirm
+ * button. A `429` (`RATE_LIMITED`) shares the profile read budget, 60
+ * requests per 30 seconds, with the Earnings reads, so this screen sends
+ * the first quote plus that one retry. A `503` (`UNAVAILABLE`) means the
+ * server is unavailable, whether the body reason is `SERVER_BUSY` or
+ * `JWKS_UNAVAILABLE`.
  *
  * @param quote - The bridge quote the confirmation screen holds.
  * @returns The rebate to show; `eligible: false` means no rebate row.
@@ -69,10 +82,23 @@ export type RewardsMoneyControllerGetSwapsRebateQuoteAction = {
  *
  * A refusal rejects with `RewardsMoneyRebateQuoteError`, a `401` with
  * `RewardsMoneyAuthorizationError`. A timeout or a network failure rejects
- * with a plain `Error`. A `503` (`failure: 'UNAVAILABLE'`) is a busy pod:
- * show no rebate row, do not request another quote for this screen, and
- * leave the button disabled until `retryAfterSeconds` has elapsed. The
- * body reason for that shed is `SERVER_BUSY`.
+ * with a plain `Error`. A `401` is not retried.
+ *
+ * The confirm button may wait for this first request, for at most 2 to 3
+ * seconds. If the quote has not arrived by then, or the request fails,
+ * unblock the confirm button and let the user continue with no rebate tag.
+ * One quiet retry may run while the screen stays open. Wait
+ * `retryAfterSeconds` when the error has one, then add a small random
+ * delay: a `503` sends a fixed `Retry-After: 2`, and without that jitter
+ * every client retries in the same second. When the header is missing,
+ * `retryAfterSeconds` is `undefined` and the caller chooses the wait. Stop
+ * after that second attempt, or when the user leaves the screen. A success
+ * on the retry shows the rebate tag. The retry does not hold the confirm
+ * button. A `429` (`RATE_LIMITED`) shares the profile read budget, 60
+ * requests per 30 seconds, with the Earnings reads, so this screen sends
+ * the first quote plus that one retry. A `503` (`UNAVAILABLE`) means the
+ * server is unavailable, whether the body reason is `SERVER_BUSY` or
+ * `JWKS_UNAVAILABLE`.
  *
  * @param trade - What the user is about to trade, when known.
  * @returns The rebate to show; `eligible: false` means no rebate row.
