@@ -9377,24 +9377,6 @@
   "rewardsOnboardingOptInError": {
     "message": "참여 실패"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "잘못된 추천 코드"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "추천 코드(선택 사항)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "추천 코드를 확인할 수 없습니다."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "연결 상태를 확인하고 다시 시도하세요."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "코드 숨기기"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "추천 코드가 있으세요?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "보상 프로그램 가입"
   },
@@ -9403,10 +9385,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "보상 적립 시작하기"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "추천인 코드 확인 중...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1포인트",

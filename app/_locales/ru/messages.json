@@ -9369,24 +9369,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Не удалось согласиться"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Недействительный реферальный код"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Реферальный код (необязательно)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Не удалось проверить реферальный код."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Проверьте соединение и повторите попытку."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Скрыть код"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Есть реферальный код?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Присоединиться к Rewards"
   },
@@ -9395,10 +9377,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Начните получать награды"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Проверка реферального кода...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 балл",

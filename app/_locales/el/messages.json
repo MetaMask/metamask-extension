@@ -9369,24 +9369,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Αποτυχία συμμετοχής"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Μη έγκυρος κωδικός παραπομπής"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Κωδικός παραπομπής (προαιρετικά)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Απόκρυψη κωδικού"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Έχετε κωδικό παραπομπής;"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Εγγραφείτε για Ανταμοιβές"
   },
@@ -9395,10 +9377,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Ξεκινήστε να κερδίζετε ανταμοιβές"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Επαλήθευση κωδικού παραπομπής...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 πόντοι",

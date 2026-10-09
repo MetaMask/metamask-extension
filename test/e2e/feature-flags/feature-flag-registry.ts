@@ -3753,6 +3753,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  rewardsMoneyControllerEnabled: {
+    inProd: true,
+    name: 'rewardsMoneyControllerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   rewardsOnboardingEnabled: {
     inProd: true,
     name: 'rewardsOnboardingEnabled',

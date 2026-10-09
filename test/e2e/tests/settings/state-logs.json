@@ -1310,7 +1310,6 @@
   },
   "rewards": {
     "rewardsModalOpen": "boolean",
-    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
@@ -1329,6 +1328,10 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "rewardsMoney": {
+    "referralMe": "null",
+    "referralMeSettled": "boolean"
   },
   "sendMaxValue": {
     "maxValueMode": {}

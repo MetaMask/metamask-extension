@@ -4302,68 +4302,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#validateRewardsReferralCode', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls background with provided code and returns true', async () => {
-      const store = mockStore();
-
-      background = {
-        validateRewardsReferralCode: sinon.stub().resolves(true),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'ABCDEF';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(background.validateRewardsReferralCode.calledWith(code)).toBe(
-        true,
-      );
-      expect(result).toBe(true);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('returns false when background reports invalid code', async () => {
-      const store = mockStore();
-
-      background = {
-        validateRewardsReferralCode: sinon.stub().resolves(false),
-      };
-      setBackgroundConnection(background);
-
-      const code = 'INVALID';
-      const result = await store.dispatch(
-        actions.validateRewardsReferralCode(code),
-      );
-
-      expect(background.validateRewardsReferralCode.calledWith(code)).toBe(
-        true,
-      );
-      expect(result).toBe(false);
-      expect(store.getActions()).toStrictEqual([]);
-    });
-
-    it('propagates errors from background without dispatching actions', async () => {
-      const store = mockStore();
-
-      background = {
-        validateRewardsReferralCode: sinon
-          .stub()
-          .rejects(new Error('network error')),
-      };
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(actions.validateRewardsReferralCode('ABCDEF')),
-      ).rejects.toThrow('network error');
-      expect(store.getActions()).toStrictEqual([]);
-    });
-  });
-
   describe('#getRewardsGeoMetadata', () => {
     afterEach(() => {
       sinon.restore();
@@ -4511,7 +4449,7 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls background with referral code and returns subscription id', async () => {
+    it('calls background and returns subscription id', async () => {
       const store = mockStore();
 
       background = {
@@ -4522,13 +4460,10 @@ describe('Actions', () => {
       const result = await store.dispatch(
         actions.rewardsOptIn({
           accounts: mockAccounts,
-          referralCode: 'ABCDEF',
         }),
       );
 
-      expect(background.rewardsOptIn.calledWith(mockAccounts, 'ABCDEF')).toBe(
-        true,
-      );
+      expect(background.rewardsOptIn.calledWith(mockAccounts)).toBe(true);
       expect(result).toStrictEqual('sub_123');
       expect(store.getActions()).toStrictEqual([]);
     });
@@ -4545,9 +4480,7 @@ describe('Actions', () => {
         actions.rewardsOptIn({ accounts: mockAccounts }),
       );
 
-      expect(background.rewardsOptIn.calledWith(mockAccounts, undefined)).toBe(
-        true,
-      );
+      expect(background.rewardsOptIn.calledWith(mockAccounts)).toBe(true);
       expect(result).toBeNull();
       expect(store.getActions()).toStrictEqual([]);
     });

@@ -9369,24 +9369,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Échec de l’inscription"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Code de parrainage non valide"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Code de parrainage (facultatif)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Impossible de valider le code de parrainage."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Vérifiez votre connexion et réessayez."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Masquer le code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Vous avez un code de parrainage ?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Inscrivez-vous au programme de récompenses"
   },
@@ -9395,10 +9377,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Commencez à gagner des récompenses"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Vérification du code de parrainage…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",

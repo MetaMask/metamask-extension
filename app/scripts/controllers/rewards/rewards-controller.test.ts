@@ -75,7 +75,6 @@ import {
   RewardsDataServiceLoginAction,
   RewardsDataServiceMobileJoinAction,
   RewardsDataServiceMobileOptinAction,
-  RewardsDataServiceValidateReferralCodeAction,
   RewardsDataServiceGenerateChallengeAction,
   RewardsDataServiceSiweLoginAction,
   RewardsDataServiceSiweJoinAction,
@@ -229,7 +228,6 @@ async function withController<ReturnValue>(
     | RewardsDataServiceGetSeasonStatusAction
     | RewardsDataServiceFetchGeoLocationAction
     | RewardsDataServiceMobileOptinAction
-    | RewardsDataServiceValidateReferralCodeAction
     | RewardsDataServiceMobileJoinAction
     | RewardsDataServiceGetOptInStatusAction
     | RewardsDataServiceGetSeasonMetadataAction
@@ -273,7 +271,6 @@ async function withController<ReturnValue>(
       'RewardsDataService:generateChallenge',
       'RewardsDataService:getSeasonStatus',
       'RewardsDataService:fetchGeoLocation',
-      'RewardsDataService:validateReferralCode',
       'RewardsDataService:getDiscoverSeasons',
       'RewardsDataService:getSeasonMetadata',
       'RewardsDataService:getVipFees',
@@ -3089,10 +3086,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT],
-            'REF123',
-          );
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -3208,10 +3202,10 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT, account2],
-            'REF123',
-          );
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -3461,105 +3455,6 @@ describe('RewardsController', () => {
             geoLocation: 'GI',
             optinAllowedForGeo: false,
           });
-        },
-      );
-    });
-  });
-
-  describe('validateReferralCode', () => {
-    it('should return invalid when rewards are disabled', async () => {
-      await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('TEST123');
-
-        expect(result).toStrictEqual({ valid: false, isVipCode: false });
-      });
-    });
-
-    it('should return invalid for empty / whitespace-only input', async () => {
-      await withController({ isDisabled: false }, async ({ controller }) => {
-        expect(await controller.validateReferralCode('')).toStrictEqual({
-          valid: false,
-          isVipCode: false,
-        });
-        expect(await controller.validateReferralCode('   ')).toStrictEqual({
-          valid: false,
-          isVipCode: false,
-        });
-      });
-    });
-
-    it('should validate referral code', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:validateReferralCode') {
-              return Promise.resolve({ valid: true });
-            }
-            return undefined;
-          });
-
-          const result = await controller.validateReferralCode('TEST12');
-
-          expect(result).toStrictEqual({ valid: true, isVipCode: false });
-        },
-      );
-    });
-
-    it('should forward non-empty vanity codes to the data service', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:validateReferralCode') {
-              return Promise.resolve({ valid: true });
-            }
-            return undefined;
-          });
-
-          const result = await controller.validateReferralCode('BANKLESS');
-
-          expect(result).toStrictEqual({ valid: true, isVipCode: false });
-          expect(mockMessengerCall).toHaveBeenCalledWith(
-            'RewardsDataService:validateReferralCode',
-            'BANKLESS',
-          );
-        },
-      );
-    });
-
-    it('should mark a backend VIP code as VIP when the VIP feature is enabled', async () => {
-      await withController(
-        { isDisabled: false, isVipDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:validateReferralCode') {
-              return Promise.resolve({ valid: true, isVipCode: true });
-            }
-            return undefined;
-          });
-
-          const result = await controller.validateReferralCode('VIPCODE');
-
-          expect(result).toStrictEqual({ valid: true, isVipCode: true });
-        },
-      );
-    });
-
-    it('should not mark a backend VIP code as VIP when the VIP feature is disabled', async () => {
-      await withController(
-        { isDisabled: false, isVipDisabled: true },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:validateReferralCode') {
-              return Promise.resolve({ valid: true, isVipCode: true });
-            }
-            return undefined;
-          });
-
-          const result = await controller.validateReferralCode('VIPCODE');
-
-          expect(result).toStrictEqual({ valid: true, isVipCode: false });
         },
       );
     });
@@ -5357,10 +5252,10 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.optIn(
-            [MOCK_INTERNAL_ACCOUNT, account2],
-            'REF123',
-          );
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
@@ -6173,46 +6068,6 @@ describe('Hardware Wallet Support for Rewards', () => {
             expect.objectContaining({
               challengeId: MOCK_CHALLENGE.id,
               signature: '0xmockqrsignature',
-            }),
-          );
-        },
-      );
-    });
-
-    it('should pass referral code to siweLogin for hardware wallet opt-in', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          const referralCode = 'REF456';
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:generateChallenge') {
-              return Promise.resolve(MOCK_CHALLENGE);
-            }
-            if (actionType === 'KeyringController:signPersonalMessage') {
-              return Promise.resolve('0xmocksignature');
-            }
-            if (actionType === 'RewardsDataService:siweLogin') {
-              return Promise.resolve({
-                ...MOCK_LOGIN_RESPONSE,
-                subscription: { ...MOCK_SUBSCRIPTION },
-              });
-            }
-            if (actionType === 'RewardsDataService:getOptInStatus') {
-              return Promise.resolve({ ois: [false], sids: [null] });
-            }
-            if (actionType === 'AccountsController:listMultichainAccounts') {
-              return [MOCK_LEDGER_ACCOUNT];
-            }
-            return undefined;
-          });
-
-          await controller.optIn([MOCK_LEDGER_ACCOUNT], referralCode);
-
-          expect(mockMessengerCall).toHaveBeenCalledWith(
-            'RewardsDataService:siweLogin',
-            expect.objectContaining({
-              challengeId: MOCK_CHALLENGE.id,
-              referralCode,
             }),
           );
         },

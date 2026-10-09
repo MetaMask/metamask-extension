@@ -9369,24 +9369,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Nabigong mag-opt-in"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Hindi valid na referral code"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Referral code (opsyonal)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Hindi ma-validate ang referral code."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Suriin ang iyong koneksyon at subukang muli."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Itago ang code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "May referral code ka ba?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Sumali sa Mga Reward"
   },
@@ -9395,10 +9377,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Simulang makaipon ng mga reward"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Vine-verify ang referral code...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 (na) point",

@@ -32,7 +32,6 @@ import {
   RewardsDataServiceMobileJoinAction,
   RewardsDataServiceSiweJoinAction,
   RewardsDataServiceMobileOptinAction,
-  RewardsDataServiceValidateReferralCodeAction,
   RewardsDataServiceFetchGeoLocationAction,
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
@@ -901,7 +900,6 @@ type AllowedActions =
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
   | RewardsDataServiceMobileOptinAction
-  | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
   | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction

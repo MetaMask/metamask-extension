@@ -9447,6 +9447,30 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
+  "rewardsMoneyReferralActiveTrader": {
+    "message": "You cannot be referred because of recent trading activity."
+  },
+  "rewardsMoneyReferralAlreadyReferred": {
+    "message": "You have already been referred by another user."
+  },
+  "rewardsMoneyReferralCodeError": {
+    "message": "Invalid referral code"
+  },
+  "rewardsMoneyReferralCodeUnknownError": {
+    "message": "Referral code couldn’t be validated."
+  },
+  "rewardsMoneyReferralOwnCode": {
+    "message": "You cannot use your own referral code."
+  },
+  "rewardsMoneyReferralReferrerCannotBeReferred": {
+    "message": "You cannot be referred by someone else."
+  },
+  "rewardsMoneyReferralSomethingWentWrong": {
+    "message": "Something went wrong. Try again shortly."
+  },
+  "rewardsMoneyReferralTooManyTries": {
+    "message": "Too many tries. Wait a moment."
+  },
   "rewardsOnboardingCheckingRegion": {
     "message": "Checking region..."
   },
@@ -9484,24 +9508,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Opt-in failed"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Invalid referral code"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Referral code (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Referral code couldn’t be validated."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Check your connection and try again."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Hide code"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Have a referral code?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Join Rewards"
   },
@@ -9510,10 +9516,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Start earning rewards"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verifying referral code...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
