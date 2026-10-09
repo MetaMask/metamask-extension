@@ -1,14 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
-/** Disables rewards flags that add background work during snap account E2E setup. */
-export const SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS = {
-  remoteFeatureFlags: {
-    rewardsEnabled: { enabled: false, minimumVersion: '13.32.0' },
-    rewardsOnboardingEnabled: { enabled: false, minimumVersion: '13.32.0' },
-  },
-};
-
 export async function serveSnapKeyRingFromLocalhost(
   mockServer: Mockttp,
   port: number = 8080,

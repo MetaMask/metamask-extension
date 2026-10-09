@@ -14,10 +14,7 @@ import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import {
-  mockSnapSimpleKeyringAndSite,
-  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
-} from './snap-keyring-site-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
@@ -29,8 +26,10 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         },
         fixtures: new FixtureBuilderV2()
           .withSnapsPrivacyWarningAlreadyShown()
+          // Rewards follows basic functionality. Keep it off so silent auth
+          // does not run during snap account setup.
+          .withUseBasicFunctionalityDisabled()
           .build(),
-        manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
         testSpecificMock: (mockServer: Mockttp) =>
           mockSnapSimpleKeyringAndSite(mockServer, 8081),
         title: this.test?.fullTitle(),
