@@ -1733,6 +1733,14 @@
         "@metamask/core-backend>uuid": true
       }
     },
+    "@metamask/profile-sync-controller>@metamask/cryptography": {
+      "globals": {
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.importKey": true
+      }
+    },
     "@metamask/delegation-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -3035,11 +3043,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/profile-sync-controller>@metamask/cryptography": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-controller": true,
         "@metamask/superstruct": true,
         "@metamask/profile-sync-controller>@metamask/utils": true,
-        "@noble/ciphers": true,
         "@noble/curves": true,
         "@noble/hashes": true,
         "@metamask/profile-sync-controller>@signinwithethereum/siwe": true,
@@ -3860,7 +3868,8 @@
         "@noble/hashes": true,
         "@scure/base": true,
         "buffer": true,
-        "lodash": true
+        "lodash": true,
+        "@metamask/utils>pony-cause": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/utils": {
@@ -5751,6 +5760,11 @@
       },
       "packages": {
         "storybook>recast>tiny-invariant": true
+      }
+    },
+    "css-loader": {
+      "globals": {
+        "btoa": true
       }
     },
     "currency-formatter": {
