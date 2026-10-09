@@ -30,6 +30,10 @@ jest.mock('../../../../hooks/useTheme', () => ({
   useTheme: jest.fn(() => 'light'),
 }));
 
+jest.mock('../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
 jest.mock('./OnboardingMainStep', () => () => (
   <div data-testid="onboarding-main-step">Main Step</div>
 ));
