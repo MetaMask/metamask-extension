@@ -211,7 +211,6 @@ export type ControllerStatePropertiesEnumerated = {
   balances: MultichainBalancesControllerState['balances'];
   nonEvmTransactions: MultichainTransactionsControllerState['nonEvmTransactions'];
   conversionRates: MultichainAssetsRatesControllerState['conversionRates'];
-  historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
   allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
@@ -373,7 +372,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
   MultichainTransactionsControllerState &
-  MultichainAssetsRatesControllerState &
+  Pick<MultichainAssetsRatesControllerState, 'conversionRates'> &
   MultichainAssetsControllerState &
   MultichainNetworkControllerState &
   NameControllerState &

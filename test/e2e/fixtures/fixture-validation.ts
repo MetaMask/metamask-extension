@@ -76,7 +76,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // because controllers are constructed from the fixture state at boot, but there is
   // nothing to validate against.
   'data.CurrencyController',
-  'data.MultichainAssetsRatesController',
   'data.MultichainAssetsController',
   'data.TokenRatesController',
   'data.TokensController',
