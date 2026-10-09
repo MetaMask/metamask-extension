@@ -1,0 +1,28 @@
+test/e2e/playwright/llm-workflow/capabilities/integration.test.ts
+  h_bf2df3051e8d1a 4,126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "f0d1f166e02498785da708b5161b6c80407fe9f5",
+  "prompts": {
+    "08795b46d6e27b31": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "opencode-transcript-ses_24e20ab3dffeycdKxb85FfWBGX-7a1f1fb2-d103-46eb-9aef-abe2047896dd",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}

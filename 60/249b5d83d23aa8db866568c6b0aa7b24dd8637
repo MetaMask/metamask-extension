@@ -1,0 +1,14 @@
+test/e2e/playwright/llm-workflow/launcher/state-inspector.test.ts
+  h_bf2df3051e8d1a 273
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "60249b5d83d23aa8db866568c6b0aa7b24dd8637",
+  "prompts": {},
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}

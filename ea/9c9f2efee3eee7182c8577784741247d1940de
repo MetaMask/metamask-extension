@@ -1,0 +1,79 @@
+test/agents/visual-testing/runner/assertions.ts
+  s_e8ba53132af842::t_03aa0a8e3cab55 77
+  s_bfd361c56aec76::t_5b8d4b3f2adb22 15-18,23-48,50,53-54,56-76,78-117,119-148,150-163,173,213-235
+  s_e8ba53132af842::t_f24eace42fdbb4 118
+  s_e8ba53132af842::t_221221903ddc50 149
+  s_e8ba53132af842::t_b03415ede24ef5 49
+  s_e8ba53132af842::t_05ca9d48a230d5 179
+  s_e8ba53132af842::t_467434464195a8 210
+test/agents/visual-testing/scenarios/rename-happy-path.ts
+  s_bfd361c56aec76::t_8943bba7a3cb14 17
+test/agents/visual-testing/scenarios/types.ts
+  s_bfd361c56aec76::t_eb4eea1b9b7685 3-8,13,17,28-30
+  s_bfd361c56aec76::t_25529839a9e128 20-25
+test/agents/visual-testing/scenarios/index.ts
+  s_bfd361c56aec76::t_8c532492acddaa 1-25
+test/agents/visual-testing/cli.ts
+  s_bfd361c56aec76::t_1c48a7302841ca 155,164-167,180-187,189
+  s_bfd361c56aec76::t_e7540fd1df876f 7,21,55-69,71-74,77,94-100,113-114,117-118,120-132
+  s_e8ba53132af842::t_3e681af234a393 8,115-116,119
+test/agents/visual-testing/config/schema.ts
+  s_bfd361c56aec76::t_a79b7a0c0fc919 3,32-33
+test/agents/visual-testing/artifacts/summary.ts
+  s_bfd361c56aec76::t_c1d13f5ae48c52 99-134,136-234
+  s_bfd361c56aec76::t_5d9683d8d8aba5 2-10
+  s_e8ba53132af842::t_3e681af234a393 135
+test/agents/visual-testing/scenarios/switch-network.ts
+  s_bfd361c56aec76::t_d08a5c73c51f67 1-2,4-15,17-28
+  h_d6a04d82b61d5e 3,16
+test/agents/visual-testing/runner/trial-runner.ts
+  s_bfd361c56aec76::t_4cb624f64fbf23 85-105,108,112
+test/agents/visual-testing/scenarios/error-recovery-insufficient-funds.ts
+  s_bfd361c56aec76::t_bff612c59c491a 1-34
+test/agents/visual-testing/scenarios/connect-dapp-submit-transaction.ts
+  s_bfd361c56aec76::t_641544a2826193 1-34
+test/agents/visual-testing/scenarios/send-eth-happy-path.ts
+  s_bfd361c56aec76::t_35d9bc4b1a2118 1-28,30-33
+  h_d6a04d82b61d5e 29
+test/agents/visual-testing/scenarios/add-custom-token.ts
+  s_bfd361c56aec76::t_97e3a29c4df84f 1-2,4-6,8-30,47,49-54,56-60,67-68
+  s_bfd361c56aec76::t_f55418eb68c809 3,7,31-46,48,55,61-66
+test/agents/visual-testing/types.ts
+  s_bfd361c56aec76::t_756a36fd837735 77,95-116
+test/agents/visual-testing/runner/batch-runner.ts
+  s_e8ba53132af842::t_7bbff73ec971c9 162
+  s_bfd361c56aec76::t_6db8f95dba7b92 2-8,10-13,18,24-26,28,36,43,49,56-58,67,69-146
+  s_e8ba53132af842::t_3e681af234a393 68
+test/agents/visual-testing/config/load-config.ts
+  s_bfd361c56aec76::t_921f54595f6ea7 103-113
+  s_bfd361c56aec76::t_5add1acae91f05 19,35-37,39-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.9",
+  "base_commit_sha": "ea9c9f2efee3eee7182c8577784741247d1940de",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_bfd361c56aec76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c426b594ffe2uFnEg4e6Yeu1L",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_e8ba53132af842": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c008c493ffepvz8aytjKnFVM1",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}

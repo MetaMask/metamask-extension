@@ -1,0 +1,80 @@
+test/agents/visual-testing/constants.ts
+  s_12cd51de488d84::t_2e8f63f68158b5 8
+test/agents/visual-testing/runner/trial-runner.ts
+  s_12cd51de488d84::t_57564563e22702 21
+  s_1f60a6143b5367::t_7e09aac760cd19 34-42,49
+  s_12cd51de488d84::t_fb637a994b9f4c 32,50-53
+  s_12cd51de488d84::t_72c627865d72a5 99-103,113
+  s_1f60a6143b5367::t_16b442b8100e94 196-205,210-211,214-230,232,248,251,253,256-262,267-286,315,317-321,323-326
+  s_12cd51de488d84::t_79bae52b087fe2 298-305,316,322,327-333,359,364-366
+  s_bfb05c49312bde::t_0a872c8b5b0eaa 334-358,360-363
+  s_12cd51de488d84::t_7fbe29fca776a6 17
+  s_bfb05c49312bde::t_24e632a976afde 306-314
+test/agents/visual-testing/runner/batch-runner.ts
+  s_12cd51de488d84::t_ec2a686f472353 77
+test/agents/visual-testing/config/load-config.ts
+  s_12cd51de488d84::t_55a6d2a9f267a3 11
+  s_12cd51de488d84::t_43a09dfa0bde4f 24-25
+  s_12cd51de488d84::t_4ea69d788493e4 46-49
+test/agents/visual-testing/types.ts
+  s_12cd51de488d84::t_28596e6aaba8d5 70
+  s_12cd51de488d84::t_0626f0be6257b6 24,35-45
+  s_12cd51de488d84::t_f6c10a4a70d1f9 91
+test/agents/visual-testing/artifacts/summary.ts
+  s_12cd51de488d84::t_53dd63642aabde 2
+  s_12cd51de488d84::t_51ebb2a79732b0 72-90
+  s_12cd51de488d84::t_52a231bdbf39cd 133-155
+  s_12cd51de488d84::t_9fdedfe2a5a144 32
+test/agents/visual-testing/scoring/tool-judge-prompt.md
+  s_12cd51de488d84::t_44189831aaf768 1-6,8,13,15-21,23,27-51,55-77
+  s_12cd51de488d84::t_4547de7525e805 7,9-12,14
+  s_1f60a6143b5367::t_885acb5a218c86 22,24-26
+  s_1f60a6143b5367::t_f55452404b3fac 52-54
+test/agents/visual-testing/config/schema.ts
+  s_12cd51de488d84::t_93fe2e29f9f9bc 7
+test/agents/visual-testing/artifacts/writer.ts
+  s_1f60a6143b5367::t_284230bb2e6093 36,38
+  s_12cd51de488d84::t_ebe7e6e4a6cc06 37
+test/agents/visual-testing/cli.ts
+  s_12cd51de488d84::t_682654e070dbde 32-33
+  s_12cd51de488d84::t_4b231319b8eaa0 123-126
+  s_12cd51de488d84::t_9ff6e9dc87dddf 136-137
+  s_12cd51de488d84::t_16a178a6d3bbf2 68-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "5c2d64532e4d4e14a02a8d7db09bd4010a8f9aff",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_12cd51de488d84": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1ce9b3f27ffehIUBFgPweKM7Uh",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_1f60a6143b5367": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c575b31fffeaoKz3DKI6KI0OV",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_bfb05c49312bde": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1c52df658ffe6rAtQHPcNS9Vjw",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
