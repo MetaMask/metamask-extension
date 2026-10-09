@@ -70,7 +70,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
       >
         +1
       </p>
