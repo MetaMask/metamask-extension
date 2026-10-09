@@ -1,3 +1,4 @@
+import type { ReferralMeDto } from '../../../shared/types/rewards-money';
 import reducer, {
   initialState,
   resetRewardsMoneyReferralMe,
@@ -5,11 +6,11 @@ import reducer, {
   setRewardsMoneyReferralMeSettled,
   type RewardsMoneyState,
 } from '.';
-import type { ReferralMeDto } from '../../../shared/types/rewards-money';
 
 const referralMe = {
   role: 'NONE',
   variant: 'NONE',
+  /* eslint-disable @typescript-eslint/naming-convention -- money API fields */
   localized_text: {
     inviteTitle: 'Invite',
     inviteMessageBody: 'Body',
@@ -26,6 +27,7 @@ const referralMe = {
   invite_hero: null,
   referred_by: null,
   excluded_regions: ['US'],
+  /* eslint-enable @typescript-eslint/naming-convention */
 } as ReferralMeDto;
 
 describe('rewardsMoney slice', () => {

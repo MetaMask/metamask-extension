@@ -5,10 +5,12 @@ import { act, render } from '@testing-library/react';
 import { useAcceptMoneyReferralCode } from './useAcceptMoneyReferralCode';
 
 const mockRegister = jest.fn();
+const acceptMessenger = {
+  call: (_action: string, params: { code: string }) => mockRegister(params),
+};
 
-jest.mock('../../store/actions', () => ({
-  registerRewardsMoneyReferee: (body: { code: string }) => () =>
-    mockRegister(body),
+jest.mock('../useMessenger', () => ({
+  useMessenger: () => acceptMessenger,
 }));
 
 jest.mock('../useI18nContext', () => ({
@@ -19,7 +21,7 @@ jest.mock('./useReferralMe', () => ({
   refreshReferralMeWithRetries: jest.fn(async () => undefined),
 }));
 
-function Harness() {
+const Harness = () => {
   const { errorMessage, accept } = useAcceptMoneyReferralCode({
     validateCode: async () => '',
     fetchReferralMe: async () => ({ status: 'settled' }),
@@ -27,13 +29,18 @@ function Harness() {
   });
   return (
     <div>
-      <button type="button" onClick={() => void accept('CODE')}>
+      <button
+        type="button"
+        onClick={() => {
+          accept('CODE').catch(() => undefined);
+        }}
+      >
         accept
       </button>
       <span data-testid="error">{errorMessage}</span>
     </div>
   );
-}
+};
 
 function httpFailure(status: number, bodyText?: string) {
   return { data: { status, bodyText } };

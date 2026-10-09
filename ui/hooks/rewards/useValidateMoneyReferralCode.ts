@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useI18nContext } from '../useI18nContext';
-import { validateRewardsMoneyReferralCode } from '../../store/actions';
-import { useDispatch } from '../../store/hooks';
+import { useMessenger } from '../useMessenger';
+import type { RewardsMoneyInviteMessenger } from './rewards-money-messenger';
 
 const MONEY_REFERRAL_CODE_MIN_LENGTH = 3;
 
@@ -28,11 +28,14 @@ type UseValidateMoneyReferralCodeResult = {
 export function useValidateMoneyReferralCode(
   code: string,
 ): UseValidateMoneyReferralCodeResult {
-  const dispatch = useDispatch();
+  const messenger = useMessenger<RewardsMoneyInviteMessenger>();
   const t = useI18nContext();
   const [error, setError] = useState('');
-  const [isValidating, setIsValidating] = useState(false);
+  const [resolvedCode, setResolvedCode] = useState('');
   const requestIdRef = useRef(0);
+  const codeIsShort = code.length < MONEY_REFERRAL_CODE_MIN_LENGTH;
+  const displayedError = codeIsShort ? '' : error;
+  const isValidating = !codeIsShort && resolvedCode !== code;
 
   const runValidation = useCallback(
     async (nextCode: string): Promise<string> => {
@@ -40,9 +43,10 @@ export function useValidateMoneyReferralCode(
         return '';
       }
       try {
-        const result = (await dispatch(
-          validateRewardsMoneyReferralCode(nextCode),
-        )) as { success?: boolean };
+        const result = await messenger.call(
+          'RewardsMoneyController:validateReferralCode',
+          nextCode,
+        );
         if (result?.success) {
           return '';
         }
@@ -51,33 +55,30 @@ export function useValidateMoneyReferralCode(
         return MONEY_REFERRAL_CODE_UNKNOWN_ERROR;
       }
     },
-    [dispatch, t],
+    [messenger, t],
   );
 
   useEffect(() => {
     if (code.length < MONEY_REFERRAL_CODE_MIN_LENGTH) {
-      setError('');
-      setIsValidating(false);
       return undefined;
     }
 
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
-    setIsValidating(true);
-    let active = true;
 
     const timer = setTimeout(() => {
-      void runValidation(code).then((nextError) => {
-        if (!active || requestId !== requestIdRef.current) {
-          return;
-        }
-        setError(nextError);
-        setIsValidating(false);
-      });
+      runValidation(code)
+        .then((nextError) => {
+          if (requestId !== requestIdRef.current) {
+            return;
+          }
+          setError(nextError);
+          setResolvedCode(code);
+        })
+        .catch(() => undefined);
     }, MONEY_REFERRAL_VALIDATE_DEBOUNCE_MS);
 
     return () => {
-      active = false;
       clearTimeout(timer);
     };
   }, [code, runValidation]);
@@ -86,19 +87,19 @@ export function useValidateMoneyReferralCode(
     async (nextCode: string): Promise<string> => {
       const requestId = requestIdRef.current + 1;
       requestIdRef.current = requestId;
-      setIsValidating(true);
+      setResolvedCode('');
       const nextError = await runValidation(nextCode);
       if (requestId === requestIdRef.current) {
         setError(nextError);
-        setIsValidating(false);
+        setResolvedCode(nextCode);
       }
       return nextError;
     },
     [runValidation],
   );
 
-  const isUnknownError = error === MONEY_REFERRAL_CODE_UNKNOWN_ERROR;
-  const isRejectedCode = Boolean(error) && !isUnknownError;
+  const isUnknownError = displayedError === MONEY_REFERRAL_CODE_UNKNOWN_ERROR;
+  const isRejectedCode = Boolean(displayedError) && !isUnknownError;
   const isValid =
     code.length >= MONEY_REFERRAL_CODE_MIN_LENGTH &&
     !isValidating &&
