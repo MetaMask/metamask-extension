@@ -39,7 +39,7 @@ export const Tab = <TKey extends string = string>({
       fontWeight={FontWeight.Medium}
       variant={TextVariant.BodyMd}
       className={twMerge(
-        'flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default',
+        'flex align-middle justify-center border-b-2 border-transparent px-0 pt-2 pb-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default',
         isActive && 'text-default border-b-text-default',
         disabled && 'text-muted',
         className,

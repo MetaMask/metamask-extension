@@ -38,7 +38,7 @@ import {
   useHardwareWalletState,
 } from '../../contexts/hardware-wallets/HardwareWalletContext';
 import { useHardwareWalletError } from '../../contexts/hardware-wallets/HardwareWalletErrorProvider';
-import { isInE2eTest } from '../../contexts/hardware-wallets/is-in-e2e-test';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import { ConnectionStatus } from '../../contexts/hardware-wallets/types';
 import { useDispatch } from '../../store/store';
 import { isHardwareWalletUserRejection } from '../../pages/bridge/utils/hardware-wallet-errors';

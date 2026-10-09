@@ -17,6 +17,7 @@ import {
   createExactExecutionBatchTerms,
   createExactExecutionTerms,
   createLimitedCallsTerms,
+  createRedeemerTerms,
   ROOT_AUTHORITY,
   ANY_BENEFICIARY,
 } from '@metamask/delegation-core';
@@ -120,6 +121,13 @@ type ConvertTransactionToRedeemDelegationsRequest = {
   authorization?: AuthorizationRequest;
 
   /**
+   * Addresses allowed to submit the `redeemDelegations` call.
+   * When non-empty, a RedeemerEnforcer caveat is added restricting redemption
+   * to these addresses, plus the `delegatee` if provided.
+   */
+  redeemers?: Hex[];
+
+  /**
    * When true, build the Relay-execute subsidized shape: a single execution
    * of the 7702 batch and caveats that leave the order-id placeholder free.
    */
@@ -196,10 +204,12 @@ export async function convertTransactionToRedeemDelegations(
     [...defaultExecutions, ...additionalExecutions],
   ];
 
-  const caveats =
-    request.caveats ??
-    subsidizedCaveats ??
-    buildDefaultCaveats(environment, executions[0]);
+  const caveats = [
+    ...(request.caveats ??
+      subsidizedCaveats ??
+      buildDefaultCaveats(environment, executions[0])),
+    ...buildRedeemerCaveats(environment, request.redeemers, request.delegatee),
+  ];
 
   const modes: ExecutionMode[] = [
     isSubsidized || executions[0].length <= 1
@@ -352,6 +362,41 @@ function buildDefaultCaveats(
   }
 
   return caveats;
+}
+
+/**
+ * Builds a RedeemerEnforcer caveat so only the given addresses (and the
+ * delegatee, if set) can submit the `redeemDelegations` call.
+ *
+ * @param environment - DeleGator environment with caveat enforcer addresses.
+ * @param redeemers - Addresses allowed to redeem the delegation.
+ * @param delegatee - Optional delegate address, also allowed to redeem.
+ * @returns A single RedeemerEnforcer caveat, or none if no redeemers are provided.
+ */
+function buildRedeemerCaveats(
+  environment: ReturnType<typeof getDeleGatorEnvironment>,
+  redeemers: Hex[] | undefined,
+  delegatee: Hex | undefined,
+): Caveat[] {
+  if (!redeemers?.length) {
+    return [];
+  }
+
+  const allowedRedeemers = [
+    ...new Set(
+      [...redeemers, ...(delegatee ? [delegatee] : [])].map(
+        (address) => address.toLowerCase() as Hex,
+      ),
+    ),
+  ];
+
+  return [
+    {
+      enforcer: environment.caveatEnforcers.RedeemerEnforcer,
+      terms: createRedeemerTerms({ redeemers: allowedRedeemers }),
+      args: '0x',
+    },
+  ];
 }
 
 /**
