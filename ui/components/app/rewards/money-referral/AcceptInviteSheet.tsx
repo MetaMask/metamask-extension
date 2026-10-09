@@ -36,9 +36,9 @@ import {
 import { selectMoneyReferralAllowedForGeo } from '../../../../ducks/rewards-money/selectors';
 import type { MetaMaskReduxState } from '../../../../store/store';
 import { useValidateMoneyReferralCode } from '../../../../hooks/rewards/useValidateMoneyReferralCode';
-import { ReferralActivatedModal } from './ReferralActivatedModal';
 import { useAcceptMoneyReferralCode } from '../../../../hooks/rewards/useAcceptMoneyReferralCode';
 import { useReferralMe } from '../../../../hooks/rewards/useReferralMe';
+import { ReferralActivatedModal } from './ReferralActivatedModal';
 
 const MONEY_REFERRAL_CODE_MAX_LENGTH = 24;
 
@@ -96,13 +96,8 @@ export function AcceptInviteSheet({
     (state: MetaMaskReduxState) => state.rewards.geoLocation,
   );
 
-  const {
-    isValidating,
-    isValid,
-    isUnknownError,
-    isRejectedCode,
-    validateCode,
-  } = useValidateMoneyReferralCode(code);
+  const { isValid, isUnknownError, isRejectedCode, validateCode } =
+    useValidateMoneyReferralCode(code);
 
   const handleAccepted = useCallback(() => {
     setShowActivated(true);
@@ -154,7 +149,7 @@ export function AcceptInviteSheet({
           .addCategory(MetaMetricsEventCategory.Rewards)
           .addProperties(properties)
           .build(),
-      );
+      ).catch(() => undefined);
     },
     [code, createEventBuilder, trackEvent],
   );
@@ -208,11 +203,13 @@ export function AcceptInviteSheet({
 
   const handleAccept = useCallback(() => {
     acceptStartedRef.current = true;
-    void accept(code).then((didAccept) => {
-      if (didAccept) {
-        trackResponded('accepted');
-      }
-    });
+    accept(code)
+      .then((didAccept) => {
+        if (didAccept) {
+          trackResponded('accepted');
+        }
+      })
+      .catch(() => undefined);
   }, [accept, code, trackResponded]);
 
   if (showActivated) {
