@@ -28241,7 +28241,7 @@ authors: undefined
 ******************************
 
 @metamask/perps-controller
-17.1.0 <https://github.com/MetaMask/core>
+20.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2026 MetaMask
@@ -30593,7 +30593,7 @@ SOFTWARE.
 ******************************
 
 @nktkas/hyperliquid
-0.33.2 <https://github.com/nktkas/hyperliquid>
+0.33.3 <https://github.com/nktkas/hyperliquid>
 MIT License
 
 Copyright (c) 2024 nktkas
