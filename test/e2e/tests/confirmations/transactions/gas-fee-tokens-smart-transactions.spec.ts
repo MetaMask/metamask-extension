@@ -53,12 +53,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         },
         testSpecificMock: async (mockServer: MockttpServer) => {
           await mockMultiNetworkBalancePolling(mockServer);
-          mockSimulationResponse(mockServer);
-          mockSmartTransactionBatchRequests(mockServer, {
+          await mockSimulationResponse(mockServer);
+          await mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
-          mockSentinelNetworks(mockServer);
-          mockSpotPrices(mockServer, GAS_FEE_SPOT_PRICES);
+          await mockSentinelNetworks(mockServer);
+          await mockSpotPrices(mockServer, GAS_FEE_SPOT_PRICES);
         },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
@@ -237,6 +237,14 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
 }
 
 async function mockSentinelNetworks(mockServer: MockttpServer) {
+  const network = {
+    network: 'ethereum-mainnet',
+    confirmations: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    sendBundle: true,
+  };
+
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
@@ -244,15 +252,18 @@ async function mockSentinelNetworks(mockServer: MockttpServer) {
       return {
         ok: true,
         statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            cubistSigners: ['0x1111111111111111111111111111111111111111'],
-            sendBundle: true,
-          },
-        },
+        json: { '1': network },
+      };
+    });
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/network`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
       };
     });
 }
