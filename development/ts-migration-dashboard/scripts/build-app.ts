@@ -28,28 +28,6 @@ import {
 
 const promisifiedPipeline = pify(pipeline);
 
-/** Extensions rebuilt by the ts-migration dashboard watch script. */
-const DASHBOARD_WATCH_EXTENSIONS = new Set(['.html', '.scss', '.ts', '.tsx']);
-
-/**
- * Chokidar 4 watches directory roots only (no glob paths). Ignore files outside
- * {@link DASHBOARD_WATCH_EXTENSIONS} while still recursing into subdirectories.
- * @param watchPath
- * @param stats
- */
-function isIgnoredDashboardWatchPath(
-  watchPath: string,
-  stats?: fs.Stats,
-): boolean {
-  if (stats?.isDirectory()) {
-    return false;
-  }
-  if (!stats?.isFile()) {
-    return false;
-  }
-  return !DASHBOARD_WATCH_EXTENSIONS.has(path.extname(watchPath));
-}
-
 main().catch((error) => {
   console.error(error);
   process.exit(1);
@@ -223,10 +201,15 @@ async function main() {
       });
     };
     chokidar
-      .watch([COMMON_DIRECTORY_PATH, APP_DIRECTORY_PATH], {
-        ignoreInitial: true,
-        ignored: isIgnoredDashboardWatchPath,
-      })
+      .watch(
+        [
+          path.join(COMMON_DIRECTORY_PATH, '**/*.{html,ts,tsx,scss}'),
+          path.join(APP_DIRECTORY_PATH, '**/*.{html,ts,tsx,scss}'),
+        ],
+        {
+          ignoreInitial: true,
+        },
+      )
       .on('add', rebuildIgnoringErrors)
       .on('change', rebuildIgnoringErrors)
       .on('unlink', rebuildIgnoringErrors)
