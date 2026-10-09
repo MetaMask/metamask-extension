@@ -74,7 +74,7 @@ const FILTERS: {
     id: MoneyActivityFilter.Card,
     labelKey: 'moneyActivityFilterCard',
     testId: 'money-activity-filter-card',
-    componentName: MoneyComponentName.ActivityFilterCard,
+    componentName: MoneyComponentName.ActivityFilterPurchases,
   },
 ];
 

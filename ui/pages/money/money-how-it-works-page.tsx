@@ -6,8 +6,6 @@ import {
   IconName,
   Skeleton,
   Text,
-  TextButton,
-  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -15,23 +13,22 @@ import { DEFAULT_ROUTE, PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
-import { MONEY_CARD_FEES_URL } from './constants/urls';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
 
 const APY_FALLBACK = '—';
+const MAX_DEPOSIT_PER_TOKEN = '$100,000';
 
 type FaqDefinition = {
   id: string;
   questionKey: string;
   answerKey: string;
   usesApy?: boolean;
-  link?: {
-    labelKey: string;
-    url: string;
-    testId: string;
-  };
+  substitutions?: string[];
 };
 
 const FAQ_ITEMS: FaqDefinition[] = [
@@ -42,29 +39,9 @@ const FAQ_ITEMS: FaqDefinition[] = [
     usesApy: true,
   },
   {
-    id: 'musd',
-    questionKey: 'moneyHowItWorksFaqMusdQuestion',
-    answerKey: 'moneyHowItWorksFaqMusdAnswer',
-  },
-  {
-    id: 'yield',
-    questionKey: 'moneyHowItWorksFaqYieldQuestion',
-    answerKey: 'moneyHowItWorksFaqYieldAnswer',
-  },
-  {
-    id: 'locked',
-    questionKey: 'moneyHowItWorksFaqLockedQuestion',
-    answerKey: 'moneyHowItWorksFaqLockedAnswer',
-  },
-  {
     id: 'fees',
     questionKey: 'moneyHowItWorksFaqFeesQuestion',
     answerKey: 'moneyHowItWorksFaqFeesAnswer',
-    link: {
-      labelKey: 'moneyHowItWorksFaqFeesLink',
-      url: MONEY_CARD_FEES_URL,
-      testId: 'money-how-it-works-faq-fees-link',
-    },
   },
   {
     id: 'apy',
@@ -73,14 +50,30 @@ const FAQ_ITEMS: FaqDefinition[] = [
     usesApy: true,
   },
   {
-    id: 'spending',
-    questionKey: 'moneyHowItWorksFaqSpendingQuestion',
-    answerKey: 'moneyHowItWorksFaqSpendingAnswer',
+    id: 'yield',
+    questionKey: 'moneyHowItWorksFaqYieldQuestion',
+    answerKey: 'moneyHowItWorksFaqYieldAnswer',
   },
   {
-    id: 'control',
-    questionKey: 'moneyHowItWorksFaqControlQuestion',
-    answerKey: 'moneyHowItWorksFaqControlAnswer',
+    id: 'tokens',
+    questionKey: 'moneyHowItWorksFaqTokensQuestion',
+    answerKey: 'moneyHowItWorksFaqTokensAnswer',
+    substitutions: [MAX_DEPOSIT_PER_TOKEN],
+  },
+  {
+    id: 'locked',
+    questionKey: 'moneyHowItWorksFaqLockedQuestion',
+    answerKey: 'moneyHowItWorksFaqLockedAnswer',
+  },
+  {
+    id: 'identity',
+    questionKey: 'moneyHowItWorksFaqIdentityQuestion',
+    answerKey: 'moneyHowItWorksFaqIdentityAnswer',
+  },
+  {
+    id: 'countries',
+    questionKey: 'moneyHowItWorksFaqCountriesQuestion',
+    answerKey: 'moneyHowItWorksFaqCountriesAnswer',
   },
 ];
 
@@ -138,20 +131,6 @@ const MoneyHowItWorksContent = ({
         >
           {t('moneyHowItWorksDescription1', [apyDisplay])}
         </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="money-how-it-works-description-2"
-        >
-          {t('moneyHowItWorksDescription2')}
-        </Text>
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="money-how-it-works-description-3"
-        >
-          {t('moneyHowItWorksDescription3')}
-        </Text>
       </div>
 
       <MoneySectionDivider />
@@ -167,30 +146,9 @@ const MoneyHowItWorksContent = ({
       </div>
 
       {FAQ_ITEMS.map((item, index) => {
-        const answerText = item.usesApy
-          ? t(item.answerKey, [apyDisplay])
-          : t(item.answerKey);
-        const { link } = item;
-        const answer = link ? (
-          <>
-            {answerText}
-            <TextButton size={TextButtonSize.BodyMd} asChild>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(event) => {
-                  event.preventDefault();
-                  global.platform.openTab({ url: link.url });
-                }}
-                data-testid={link.testId}
-              >
-                {t(link.labelKey)}
-              </a>
-            </TextButton>
-          </>
-        ) : (
-          answerText
+        const answer = t(
+          item.answerKey,
+          item.usesApy ? [apyDisplay] : item.substitutions,
         );
 
         return (
@@ -241,6 +199,14 @@ export function MoneyHowItWorksPage() {
     enabled: availability.isAvailable,
   });
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
+  const { trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHowItWorks,
+  });
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);

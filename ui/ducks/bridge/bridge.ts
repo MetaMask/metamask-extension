@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 import {
   SortOrder,
   calcLatestSrcBalance,
@@ -12,7 +13,12 @@ import {
 import { zeroAddress } from 'ethereumjs-util';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { fetchTxAlerts } from '../../../shared/lib/bridge-utils/security-alerts-api.util';
-import { trace, TraceName } from '../../../shared/lib/trace';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, TokenPayload } from './types';
 
@@ -71,26 +77,40 @@ const getBalanceAmount = async ({
     return null;
   }
   const isNative = isNativeAddress(tokenAddress);
+  const traceId = uuidv4();
+  let traceResult: 'success' | 'error' = 'success';
 
-  return await trace(
-    {
-      name: TraceName.BridgeBalancesUpdated,
-      data: {
-        srcChainId: chainId,
-        isNative,
-      },
-      startTime: Date.now(),
+  trace({
+    name: TraceName.BridgeBalancesUpdated,
+    op: TraceOperation.BridgeDataFetch,
+    id: traceId,
+    data: {
+      srcChainId: chainId,
+      isNative,
     },
-    async () =>
-      (
-        await calcLatestSrcBalance(
-          global.ethereumProvider,
-          selectedAddress,
-          isNative ? zeroAddress() : tokenAddress,
-          formatChainIdToHex(chainId),
-        )
-      )?.toString(),
-  );
+    startTime: Date.now(),
+  });
+
+  try {
+    return (
+      await calcLatestSrcBalance(
+        global.ethereumProvider,
+        selectedAddress,
+        isNative ? zeroAddress() : tokenAddress,
+        formatChainIdToHex(chainId),
+      )
+    )?.toString();
+  } catch (error) {
+    traceResult = 'error';
+    throw error;
+  } finally {
+    endTrace({
+      name: TraceName.BridgeBalancesUpdated,
+      id: traceId,
+      timestamp: Date.now(),
+      data: { result: traceResult },
+    });
+  }
 };
 
 export const setEVMSrcNativeBalance = createAsyncThunk(

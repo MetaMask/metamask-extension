@@ -380,7 +380,6 @@
       "verifiedSnaps": {}
     },
     "databaseUnavailable": "boolean",
-    "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
@@ -723,6 +722,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
+    "marketingConsentDecisionMade": "boolean",
     "marketData": {
       "*": {}
     },
@@ -879,6 +879,7 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "optedInToMarketing": "boolean",
     "orderBookPreferences": {
       "currency": "string",
       "metric": "string"
@@ -893,6 +894,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "lastShownPrfMigrationReminderAt": "null",
     "paymentMethods": {
       "data": [],
       "error": "null",
@@ -1327,6 +1329,9 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "sendMaxValue": {
+    "maxValueMode": {}
   },
   "smartAccounts": {
     "toggleStates": {}

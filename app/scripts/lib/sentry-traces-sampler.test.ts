@@ -2,6 +2,7 @@ import {
   applySentryRemoteRates,
   resetSentryRemoteRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 import {
   DEFAULT_TRANSACTION_SAMPLE_RATES,
   createTracesSampler,
@@ -131,6 +132,21 @@ describe('createTracesSampler', () => {
     expect(sampler({ name: 'State Persist' })).toBeGreaterThan(
       defaultSampleRate,
     );
+  });
+
+  it('samples Perps preload transactions at 0.1% even with a sampled parent', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    for (const name of [
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsGetMarketDataWithPrices,
+    ]) {
+      expect(sampler({ name })).toBe(0.001);
+      // A pinned rate must not be bypassed by a sampled parent transaction.
+      expect(sampler({ name, parentSampled: true })).toBe(0.001);
+    }
   });
 
   it('throttles a transaction supplied purely via the env override', () => {

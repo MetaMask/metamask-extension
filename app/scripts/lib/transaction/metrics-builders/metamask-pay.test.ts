@@ -141,6 +141,41 @@ describe('getMetaMaskPayProperties', () => {
       expect(result.properties.mm_pay_use_case).toBe('perps_withdraw');
     });
 
+    (
+      [
+        [TransactionType.predictDeposit, 'predict_deposit'],
+        [TransactionType.predictDepositAndOrder, 'predict_deposit_and_order'],
+        [TransactionType.predictWithdraw, 'predict_withdraw'],
+        [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+        [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+      ] as const
+    ).forEach(([type, useCase]) => {
+      it(`sets ${useCase} for ${type} transactions`, async () => {
+        const request = createPayRequest({
+          transactionMeta: {
+            ...createPayRequest().transactionMeta,
+            type,
+          },
+        });
+        const result = await getMetaMaskPayProperties(request);
+
+        expect(result.properties.mm_pay_use_case).toBe(useCase);
+      });
+    });
+
+    it('sets money_account_deposit for batch transactions with a nested money account deposit', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          type: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_use_case).toBe('money_account_deposit');
+    });
+
     it('sets musd_conversion for musdConversion transactions', async () => {
       const request = createPayRequest({
         transactionMeta: {
@@ -420,6 +455,26 @@ describe('getMetaMaskPayProperties', () => {
       });
       const result = await getMetaMaskPayProperties(request);
 
+      expect(result.properties.mm_pay_receiving_value_usd).toBe(99);
+    });
+
+    it('falls back to persisted USD values when transaction pay data is unavailable', async () => {
+      const request = createPayRequest({
+        transactionMeta: {
+          ...createPayRequest().transactionMeta,
+          assetsFiatValues: {
+            sending: '100',
+            receiving: '98',
+          },
+          metamaskPay: {
+            ...createPayRequest().transactionMeta.metamaskPay,
+            targetFiat: '99',
+          },
+        },
+      });
+      const result = await getMetaMaskPayProperties(request);
+
+      expect(result.properties.mm_pay_sending_value_usd).toBe(100);
       expect(result.properties.mm_pay_receiving_value_usd).toBe(99);
     });
 
