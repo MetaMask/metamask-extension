@@ -1,5 +1,5 @@
 import { canonicalize } from './canonicalize';
-import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './common';
 
 describe('canonicalize', () => {
   it('removes the sig parameter and sorts the rest', () => {
@@ -10,6 +10,40 @@ describe('canonicalize', () => {
   it('returns the same URL if there are no query parameters', () => {
     const url = new URL('https://example.com/path');
     expect(canonicalize(url)).toBe('https://example.com/path');
+  });
+
+  it('uses the canonical signing origin for alternate deep-link hosts', () => {
+    const url = new URL(
+      `https://link.metamask.com/path?a=2&${SIG_PARAM}=abc&b=1`,
+    );
+
+    expect(canonicalize(url)).toBe('https://link.metamask.io/path?a=2&b=1');
+  });
+
+  it('keeps the canonical deep-link signing origin unchanged', () => {
+    const url = new URL(
+      `https://link.metamask.io/path?a=2&${SIG_PARAM}=abc&b=1`,
+    );
+
+    expect(canonicalize(url)).toBe('https://link.metamask.io/path?a=2&b=1');
+  });
+
+  it('does not normalize a non-HTTPS canonical deep-link origin', () => {
+    const url = new URL(
+      `http://link.metamask.io:8080/path?a=2&${SIG_PARAM}=abc&b=1`,
+    );
+
+    expect(canonicalize(url)).toBe('http://link.metamask.io:8080/path?a=2&b=1');
+  });
+
+  it('does not normalize lookalike alternate deep-link hosts', () => {
+    const url = new URL(
+      `https://link.metamask.com.evil.tld/path?a=2&${SIG_PARAM}=abc&b=1`,
+    );
+
+    expect(canonicalize(url)).toBe(
+      'https://link.metamask.com.evil.tld/path?a=2&b=1',
+    );
   });
 
   it('returns the same URL if there is no sig parameter', () => {

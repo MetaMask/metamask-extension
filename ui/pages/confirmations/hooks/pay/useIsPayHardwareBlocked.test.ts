@@ -77,6 +77,13 @@ describe('useIsPayHardwareBlocked', () => {
         expect(result.current).toBe(false);
       });
     });
+
+    it('returns true for moneyAccountDeposit under the legacy flat enabled flag', async () => {
+      const { result } = runHook(TransactionType.moneyAccountDeposit, true);
+      await waitFor(() => {
+        expect(result.current).toBe(true);
+      });
+    });
   });
 
   it('returns false for an unrelated transaction type', async () => {

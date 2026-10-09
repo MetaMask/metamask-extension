@@ -4,11 +4,12 @@
     "incremental": true,
     "isolatedModules": true,
     "outDir": "../.webpack",
+    "rootDir": ".",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true
   },
-  "exclude": ["test"],
+  "exclude": ["test", "../lib/**/*.ts"],
   // this should match our node version in .nvmrc
   "extends": "@tsconfig/node22/tsconfig.json"
 }

@@ -7,7 +7,9 @@ import {
   Box,
   FontWeight,
   Text,
+  TextAlign,
   TextButton,
+  TextColor,
   TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -21,7 +23,7 @@ import {
   useSafeChains,
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getShowTestNetworks } from '../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../selectors';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -57,19 +59,36 @@ type ChainlistNetworkPickerProps = {
   existingNetworkChainIds: Set<string>;
   existingNetworkNamesByChainId: Record<string, string>;
   onSelect: (network: ChainlistNetwork, searchQuery?: string) => void;
+  /**
+   * Keeps the typed name and closes the dropdown when Chainlist has no match.
+   */
+  onUseTypedName?: (name: string) => void;
+  /**
+   * When false, the picker filters on `searchValue` from the parent field
+   * instead of rendering its own search input.
+   */
+  showSearchField?: boolean;
+  searchValue?: string;
+  /** `dropdown` caps the list so it can sit under the network name field. */
+  layout?: 'page' | 'dropdown';
 };
 
 export const ChainlistNetworkPicker = ({
   existingNetworkChainIds,
   existingNetworkNamesByChainId,
   onSelect,
+  onUseTypedName,
+  showSearchField = true,
+  searchValue: searchValueProp = '',
+  layout = 'page',
 }: ChainlistNetworkPickerProps) => {
   const t = useI18nContext();
-  const [searchValue, setSearchValue] = useState('');
+  const [internalSearchValue, setInternalSearchValue] = useState('');
+  const searchValue = showSearchField ? internalSearchValue : searchValueProp;
   const [visibleNetworkCount, setVisibleNetworkCount] =
     useState(CHAINLIST_PAGE_SIZE);
   const { safeChains } = useSafeChains();
-  const showTestNetworks = useSelector(getShowTestNetworks);
+  const showTestNetworks = useSelector(getShouldShowTestNetworks);
 
   const chainlistNetworks = useMemo(() => {
     const normalizedSearchValue = searchValue.trim().toLowerCase();
@@ -135,109 +154,155 @@ export const ChainlistNetworkPicker = ({
     [chainlistNetworks.length],
   );
 
+  const isDropdown = layout === 'dropdown';
+
   return (
-    <Box className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default">
-      <Box className="px-4 pb-4">
-        <TextFieldSearch
-          className="w-full"
-          clearButtonOnClick={() => setSearchValue('')}
-          data-testid="networks-page-chainlist-search"
-          onChange={(event) => setSearchValue(event.target.value)}
-          placeholder={t('searchNetworkNameOrChainId')}
-          value={searchValue}
-        />
-      </Box>
+    <Box
+      className={
+        isDropdown
+          ? 'flex max-h-96 flex-col overflow-hidden bg-background-default'
+          : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
+      }
+    >
+      {showSearchField ? (
+        <Box className="px-4 pb-4">
+          <TextFieldSearch
+            className="w-full"
+            clearButtonOnClick={() => setInternalSearchValue('')}
+            data-testid="networks-page-chainlist-search"
+            onChange={(event) => setInternalSearchValue(event.target.value)}
+            placeholder={t('searchNetworkNameOrChainId')}
+            value={searchValue}
+          />
+        </Box>
+      ) : null}
       <Box
         className="min-h-0 flex-1 overflow-y-auto"
         data-testid="networks-page-chainlist-network-list"
         onScroll={handleChainlistScroll}
       >
-        <Box className="px-4 pb-4">
-          <BannerAlert
-            severity={BannerAlertSeverity.Info}
-            data-testid="networks-page-chainlist-source-banner"
-            description={t('chainlistNetworkDataSourceBanner', [
-              <TextButton
-                key="chainlist-learn-how-to-stay-safe"
-                onClick={handleLearnHowToStaySafe}
-              >
-                {t('chainlistLearnHowToStaySafe')}
-              </TextButton>,
-            ])}
-          />
-        </Box>
-        {showNoSearchResults ? (
-          <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
-        ) : null}
-        {visibleChainlistNetworks.map((network) => {
-          const isExistingNetwork = existingNetworkChainIds.has(
-            getHexChainId(network.chainId),
-          );
-          const displayName =
-            existingNetworkNamesByChainId[getHexChainId(network.chainId)] ??
-            network.name;
-          const networkImageUrl =
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              getHexChainId(
-                network.chainId,
-              ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ];
-
-          return (
-            <button
-              className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
-              data-testid="networks-page-chainlist-network"
-              key={`${network.chainId}-${network.name}`}
-              onClick={() => onSelect(network, searchValue.trim() || undefined)}
+        {isDropdown && showNoSearchResults ? (
+          <Box data-testid="networks-page-chainlist-no-matches">
+            <Text
+              variant={TextVariant.BodyMd}
+              textAlign={TextAlign.Left}
+              className="block w-full px-4 py-4 text-text-alternative"
             >
-              {networkImageUrl ? (
-                <AvatarNetwork
-                  className="shrink-0 rounded-lg"
-                  name={displayName}
-                  size="md"
-                  src={networkImageUrl}
-                />
-              ) : (
-                <Box className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium text-text-default">
-                  {displayName.charAt(0).toUpperCase()}
-                </Box>
-              )}
-              <Box className="min-w-0 flex-1">
-                <Box className="flex min-w-0 items-center gap-2">
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                    className="truncate"
-                  >
-                    {displayName}
-                  </Text>
-                  {isExistingNetwork ? (
-                    <Box
-                      className="shrink-0 rounded bg-muted px-2 py-0.5"
-                      data-testid="networks-page-chainlist-added-pill"
-                    >
-                      <Text
-                        variant={TextVariant.BodySm}
-                        className="text-text-alternative"
-                      >
-                        {t('added')}
-                      </Text>
-                    </Box>
-                  ) : null}
-                </Box>
-                <Text
-                  variant={TextVariant.BodyMd}
-                  className="truncate text-text-alternative"
-                >
-                  {t('chainlistNetworkDetails', [
-                    network.nativeCurrency.symbol,
-                    String(network.chainId),
-                  ])}
-                </Text>
-              </Box>
+              {t('chainlistNoMatches')}
+            </Text>
+            <button
+              className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
+              data-testid="networks-page-chainlist-use-typed-name"
+              type="button"
+              onClick={() => onUseTypedName?.(searchValue.trim())}
+            >
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.InfoDefault}
+              >
+                {t('chainlistUseTypedNetworkName', [searchValue.trim()])}
+              </Text>
+              <Text
+                variant={TextVariant.BodySm}
+                className="text-text-alternative"
+              >
+                {t('chainlistEnterNetworkDetailsManually')}
+              </Text>
             </button>
-          );
-        })}
+          </Box>
+        ) : (
+          <>
+            <Box className={showSearchField ? 'px-4 pb-4' : 'px-4 py-4'}>
+              <BannerAlert
+                severity={BannerAlertSeverity.Info}
+                data-testid="networks-page-chainlist-source-banner"
+                description={t('chainlistNetworkDataSourceBanner', [
+                  <TextButton
+                    key="chainlist-learn-how-to-stay-safe"
+                    onClick={handleLearnHowToStaySafe}
+                  >
+                    {t('chainlistLearnHowToStaySafe')}
+                  </TextButton>,
+                ])}
+              />
+            </Box>
+            {showNoSearchResults ? (
+              <NoSearchResult dataTestId="networks-page-chainlist-no-results" />
+            ) : null}
+            {visibleChainlistNetworks.map((network) => {
+              const isExistingNetwork = existingNetworkChainIds.has(
+                getHexChainId(network.chainId),
+              );
+              const displayName =
+                existingNetworkNamesByChainId[getHexChainId(network.chainId)] ??
+                network.name;
+              const networkImageUrl =
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                  getHexChainId(
+                    network.chainId,
+                  ) as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                ];
+
+              return (
+                <button
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
+                  data-testid="networks-page-chainlist-network"
+                  key={`${network.chainId}-${network.name}`}
+                  onClick={() =>
+                    onSelect(network, searchValue.trim() || undefined)
+                  }
+                >
+                  {networkImageUrl ? (
+                    <AvatarNetwork
+                      className="shrink-0 rounded-lg"
+                      name={displayName}
+                      size="md"
+                      src={networkImageUrl}
+                    />
+                  ) : (
+                    <Box className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-medium text-text-default">
+                      {displayName.charAt(0).toUpperCase()}
+                    </Box>
+                  )}
+                  <Box className="min-w-0 flex-1">
+                    <Box className="flex min-w-0 items-center gap-2">
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        className="truncate"
+                      >
+                        {displayName}
+                      </Text>
+                      {isExistingNetwork ? (
+                        <Box
+                          className="shrink-0 rounded bg-muted px-2 py-0.5"
+                          data-testid="networks-page-chainlist-added-pill"
+                        >
+                          <Text
+                            variant={TextVariant.BodySm}
+                            className="text-text-alternative"
+                          >
+                            {t('added')}
+                          </Text>
+                        </Box>
+                      ) : null}
+                    </Box>
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      className="truncate text-text-alternative"
+                    >
+                      {t('chainlistNetworkDetails', [
+                        network.nativeCurrency.symbol,
+                        String(network.chainId),
+                      ])}
+                    </Text>
+                  </Box>
+                </button>
+              );
+            })}
+          </>
+        )}
       </Box>
     </Box>
   );
