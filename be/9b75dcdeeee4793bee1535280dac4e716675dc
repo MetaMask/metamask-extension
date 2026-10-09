@@ -1,0 +1,14 @@
+README.md
+  h_3ff50faccb956b 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "be9b75dcdeeee4793bee1535280dac4e716675dc",
+  "prompts": {},
+  "humans": {
+    "h_3ff50faccb956b": {
+      "author": "Test <test@test.com>"
+    }
+  }
+}
