@@ -8,6 +8,13 @@ import {
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalContentSize,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
   TextAlign,
   TextColor,
@@ -16,31 +23,44 @@ import {
 } from '@metamask/design-system-react';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
-import {
-  AlignItems,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalContentSize,
-  ModalHeader,
-  ModalOverlay,
-} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../hooks/useTheme';
 
 /**
- * `{date}` is the full trailing time phrase so both forms stay grammatical:
- * `through <formatted cashback_earning_end>` or `for a limited time`.
+ * Formats `referred_by.cashback_earning_end` for the current locale.
  *
- * @param template - Server copy that may contain `{date}`.
+ * @param earningEnd - ISO end timestamp, or missing.
+ * @param formatDate - Formats a valid end date for the current locale.
+ * @returns The locale date, or null when the timestamp is missing or invalid.
+ */
+function formatCashbackEarningEnd(
+  earningEnd: string | null | undefined,
+  formatDate: (date: Date) => string,
+): string | null {
+  if (!earningEnd) {
+    return null;
+  }
+  const parsed = new Date(earningEnd);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  return formatDate(parsed);
+}
+
+/**
+ * Activated body copy. A usable end date fills `{date}` in the localized
+ * `inviteAcceptedBody` as `through <locale date>`. Without a date, the whole
+ * body is `fallback` so we do not inject English.
+ *
+ * @param acceptedBody - `localized_text.inviteAcceptedBody`.
+ * @param fallback - Copy used when the end date is missing or invalid.
  * @param earningEnd - `referred_by.cashback_earning_end`.
  * @param formatDate - Formats a valid end date for the current locale.
- * @returns The body with `{date}` replaced.
+ * @returns The body to show.
  */
-function fillInviteAcceptedBodyDate(
-  template: string,
+function resolveActivatedBody(
+  acceptedBody: string | undefined,
+  fallback: string | undefined,
   earningEnd: string | null | undefined,
   formatDate: (date: Date) => string = (date) =>
     date.toLocaleDateString(undefined, {
@@ -49,17 +69,15 @@ function fillInviteAcceptedBodyDate(
       year: 'numeric',
     }),
 ): string {
+  const formattedEnd = formatCashbackEarningEnd(earningEnd, formatDate);
+  if (!formattedEnd) {
+    return fallback ?? '';
+  }
+  const template = acceptedBody ?? '';
   if (!template.includes('{date}')) {
     return template;
   }
-  let datePhrase = 'for a limited time';
-  if (earningEnd) {
-    const parsed = new Date(earningEnd);
-    if (!Number.isNaN(parsed.getTime())) {
-      datePhrase = `through ${formatDate(parsed)}`;
-    }
-  }
-  return template.replaceAll('{date}', datePhrase);
+  return template.replaceAll('{date}', `through ${formattedEnd}`);
 }
 
 type ReferralActivatedModalProps = {
@@ -68,8 +86,7 @@ type ReferralActivatedModalProps = {
 };
 
 /**
- * Shown after a referee registers. Uses the perps tour modal chrome from the
- * referral rebate confirmation, with copy and the hero from referral me.
+ * Shown after a referee registers.
  *
  * @param props - The settled payload, which may be missing after a failed read-back.
  * @param props.referralMe - Referral me after register, or null.
@@ -80,49 +97,48 @@ export function ReferralActivatedModal({
   onClose,
 }: ReferralActivatedModalProps) {
   const theme = useTheme();
+  const t = useI18nContext();
+  const titleId = React.useId();
+  const startButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useLayoutEffect(() => {
+    // The invite dialog unmounts in the same commit, which drops focus to the
+    // page. Move it onto the primary action once this dialog is in the DOM.
+    startButtonRef.current?.focus();
+  }, []);
   const copy = referralMe?.localized_text;
   const hero = referralMe?.invite_hero;
   const imageUrl =
     theme === ThemeType.dark ? hero?.darkModeUrl : hero?.lightModeUrl;
-  const body = fillInviteAcceptedBodyDate(
-    copy?.inviteAcceptedBody ?? '',
+  const body = resolveActivatedBody(
+    copy?.inviteAcceptedBody,
+    copy?.inviteMessageBody,
     referralMe?.referred_by?.cashback_earning_end,
   );
 
   return (
-    <Modal isOpen onClose={onClose} data-testid="money-referral-activated">
+    <Modal
+      isOpen
+      onClose={onClose}
+      initialFocusRef={startButtonRef}
+      data-testid="money-referral-activated"
+    >
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        className="items-center"
         size={ModalContentSize.Md}
-        modalDialogProps={{
-          paddingTop: 0,
-          paddingBottom: 0,
-          style: {
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-        }}
+        modalDialogProps={{ 'aria-labelledby': titleId }}
       >
         <ModalHeader
-          data-theme={theme === 'light' ? ThemeType.light : ThemeType.dark}
-          closeButtonProps={{
-            ariaLabel: copy?.inviteAcceptedCloseA11y ?? '',
-            className: 'absolute z-10',
-            style: {
-              top: '24px',
-              right: '12px',
-            },
-          }}
-          paddingBottom={0}
           onClose={onClose}
+          closeButtonProps={{
+            ariaLabel: copy?.inviteAcceptedCloseA11y || t('close'),
+          }}
         />
-        <ModalBody className="w-full h-full pt-6 pb-4 flex flex-col">
+        <ModalBody>
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}
-            className="px-6 pt-4"
           >
             <Text
               variant={TextVariant.BodySm}
@@ -134,6 +150,7 @@ export function ReferralActivatedModal({
               {copy?.inviteAcceptedEyebrow ?? ''}
             </Text>
             <Text
+              id={titleId}
               variant={TextVariant.HeadingLg}
               textAlign={TextAlign.Center}
               className="mt-3"
@@ -164,22 +181,19 @@ export function ReferralActivatedModal({
               ) : null}
             </Box>
           </Box>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-            className="w-full px-4"
-          >
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              isFullWidth
-              onClick={onClose}
-              data-testid="money-referral-activated-start"
-            >
-              {copy?.inviteAcceptedStartTrading ?? ''}
-            </Button>
-          </Box>
         </ModalBody>
+        <ModalFooter>
+          <Button
+            ref={startButtonRef}
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            isFullWidth
+            onClick={onClose}
+            data-testid="money-referral-activated-start"
+          >
+            {copy?.inviteAcceptedStartTrading ?? ''}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );

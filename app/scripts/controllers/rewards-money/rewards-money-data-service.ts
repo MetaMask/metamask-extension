@@ -50,6 +50,9 @@ export type RewardsMoneyRebateQuoteFailure =
  * `detail`, and `retryAfterSeconds` from the header. Show no rebate row, do
  * not request another quote for this screen, and leave the button disabled
  * until `retryAfterSeconds` has elapsed.
+ *
+ * `failure` and `retryAfterSeconds` are copied onto `data` so they survive
+ * the background RPC boundary, same as {@link RewardsMoneyHttpError}.
  */
 export class RewardsMoneyRebateQuoteError extends Error {
   readonly status: number;
@@ -61,6 +64,16 @@ export class RewardsMoneyRebateQuoteError extends Error {
 
   /** Seconds from a `Retry-After` header, when the refusal carried one. */
   readonly retryAfterSeconds: number | undefined;
+
+  /**
+   * Fields the UI can read after `serializeError`. `retryAfterSeconds` is
+   * omitted when the refusal had no usable `Retry-After`, because `undefined`
+   * makes the bag fail the JSON check and the whole object is dropped.
+   */
+  readonly data: {
+    failure: RewardsMoneyRebateQuoteFailure;
+    retryAfterSeconds?: number;
+  };
 
   constructor(
     status: number,
@@ -78,6 +91,10 @@ export class RewardsMoneyRebateQuoteError extends Error {
     this.failure = failure;
     this.detail = detail;
     this.retryAfterSeconds = retryAfterSeconds;
+    this.data =
+      retryAfterSeconds === undefined
+        ? { failure }
+        : { failure, retryAfterSeconds };
   }
 }
 
