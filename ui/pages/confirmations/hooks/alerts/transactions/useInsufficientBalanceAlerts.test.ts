@@ -6,10 +6,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
-  MOCK_CONFIRMATIONS_ACCOUNT_ID,
-  nativeEvmAssetId,
-  weiToAssetAmount,
 } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -104,18 +102,16 @@ function buildState({
   }
 
   const resolvedChainId = chainId ?? '0x5';
-  const assetId = nativeEvmAssetId(resolvedChainId);
 
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       ...(remoteFeatureFlags ? { remoteFeatureFlags } : {}),
-      assetsBalance: {
-        [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
-          [assetId]: { amount: weiToAssetAmount(balance ?? 0) },
-        },
-      },
+      ...buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      }),
       transactions: transaction ? [transaction] : [],
     },
   });

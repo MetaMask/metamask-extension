@@ -6,10 +6,8 @@ import {
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import {
+  buildNativeEvmBalancePatch,
   getMockConfirmState,
-  MOCK_CONFIRMATIONS_ACCOUNT_ID,
-  nativeEvmAssetId,
-  weiToAssetAmount,
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { useHasInsufficientBalance } from './useHasInsufficientBalance';
@@ -57,19 +55,18 @@ function buildState({
   }
 
   const resolvedChainId = chainId ?? '0x5';
-  const assetId = nativeEvmAssetId(resolvedChainId);
+  const nativeBalancePatch = omitNativeBalance
+    ? { assetsBalance: {}, assetsInfo: {} }
+    : buildNativeEvmBalancePatch({
+        hexChainId: resolvedChainId,
+        amountWei: balance ?? 0,
+      });
 
   return getMockConfirmState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
-      assetsBalance: omitNativeBalance
-        ? {}
-        : {
-            [MOCK_CONFIRMATIONS_ACCOUNT_ID]: {
-              [assetId]: { amount: weiToAssetAmount(balance ?? 0) },
-            },
-          },
+      ...nativeBalancePatch,
       transactions: transaction
         ? [
             {
