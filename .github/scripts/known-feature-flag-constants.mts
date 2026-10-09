@@ -66,6 +66,11 @@ const FILE_SOURCES: Array<{
     exportName: 'PAY_EXTENDED_FEATURE_FLAG',
   },
   {
+    key: 'PAY_RPC_FEATURE_FLAG',
+    file: 'shared/lib/transaction/pay-rpc.ts',
+    exportName: 'PAY_RPC_FEATURE_FLAG',
+  },
+  {
     key: 'DEFI_CONTROLLER_V2_FLAG',
     file: 'shared/lib/defi-controller-v2/remote-feature-flag.ts',
     exportName: 'DEFI_CONTROLLER_V2_FLAG',

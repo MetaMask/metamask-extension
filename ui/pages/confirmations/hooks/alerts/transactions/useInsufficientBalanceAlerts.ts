@@ -20,6 +20,7 @@ import { useTransactionPayHasSourceAmount } from '../../pay/useTransactionPayHas
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
 import { useTransactionPayWithdraw } from '../../pay/useTransactionPayWithdraw';
+import { useIsMonadReserveViolation } from './useIsMonadReserveViolation';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -62,6 +63,10 @@ export function useInsufficientBalanceAlerts({
     TransactionType.moneyAccountWithdraw,
   ]);
 
+  // Prefer the Monad reserve-balance alert over the generic "pay for network
+  // fees" message when the protocol reserve (not max-fee solvency) is the cause.
+  const hasMonadReserveViolation = useIsMonadReserveViolation();
+
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
   // Check if gasless check has completed (regardless of result)
@@ -103,7 +108,8 @@ export function useInsufficientBalanceAlerts({
     shouldCheckGaslessConditions &&
     !isSponsoredTransaction &&
     !isPostQuoteWithdraw &&
-    !isMoneyAccountTransaction;
+    !isMoneyAccountTransaction &&
+    !hasMonadReserveViolation;
 
   return useMemo(() => {
     if (!showAlert) {
