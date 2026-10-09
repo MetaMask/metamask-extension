@@ -4616,6 +4616,10 @@
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
   },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Unlock it and try again to continue",
+    "description": "Description shown when a hardware wallet is locked during an operation"
+  },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported",
     "description": "$1 is the hardware wallet type"
