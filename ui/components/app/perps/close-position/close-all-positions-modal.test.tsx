@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -216,6 +216,115 @@ describe('CloseAllPositionsModal', () => {
     expect(
       screen.queryByTestId('perps-close-all-positions-modal'),
     ).not.toBeInTheDocument();
+  });
+
+  it.each(['', '   ', 'invalid', '7125 USD', 'Infinity'])(
+    'withholds estimates and submission for malformed position value %p',
+    (positionValue) => {
+      renderWithProvider(
+        <CloseAllPositionsModal
+          {...defaultProps}
+          positions={[{ ...twoPositions[0], positionValue }]}
+        />,
+        mockStore,
+      );
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('--');
+      expect(
+        screen.getByTestId('perps-close-all-receive-value'),
+      ).toHaveTextContent('--');
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+      const submitButton = screen.getByTestId(
+        'perps-close-all-positions-modal-submit',
+      );
+      expect(submitButton).toBeDisabled();
+      fireEvent.click(submitButton);
+      expect(defaultProps.onConfirm).not.toHaveBeenCalled();
+    },
+  );
+
+  it('clears invalid estimates when the position collection becomes empty', () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+      mockStore,
+    );
+    rerender(<CloseAllPositionsModal {...defaultProps} positions={[]} />);
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '-$0',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('$0');
+    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
+  });
+
+  it('recovers fee estimates when the live position value becomes valid', async () => {
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+      mockStore,
+    );
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '1000' }]}
+      />,
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$1.45'),
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'perpsCalculateFees',
+      [expect.objectContaining({ amount: '1000' })],
+    );
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).not.toBeDisabled();
+  });
+
+  it('ignores an in-flight quote after a live position value becomes invalid', async () => {
+    let resolveFees: (value: typeof defaultFeeResult) => void = () => undefined;
+    mockSubmitRequestToBackground.mockReturnValue(
+      new Promise<typeof defaultFeeResult>((resolve) => {
+        resolveFees = resolve;
+      }),
+    );
+    const { rerender } = renderWithProvider(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[twoPositions[0]]}
+      />,
+      mockStore,
+    );
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    rerender(
+      <CloseAllPositionsModal
+        {...defaultProps}
+        positions={[{ ...twoPositions[0], positionValue: '' }]}
+      />,
+    );
+    await act(async () => resolveFees(defaultFeeResult));
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('perps-close-all-fees-value')).toHaveTextContent(
+      '--',
+    );
+    expect(
+      screen.getByTestId('perps-close-all-receive-value'),
+    ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-close-all-positions-modal-submit'),
+    ).toBeDisabled();
   });
 
   it('fetches fees per unique symbol rather than using a single rate', async () => {

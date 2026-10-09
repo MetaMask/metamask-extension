@@ -123,6 +123,7 @@ export const ReversePositionModal = ({
     protocolFeeRate,
     metamaskFeeRate,
     undiscountedFeeRate,
+    isLoading: isFeeLoading,
     hasError: hasFeeError,
     metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
@@ -152,7 +153,8 @@ export const ReversePositionModal = ({
     [flipNotionalUsd, metamaskFeeRate],
   );
 
-  const shouldShowFeePlaceholder = hasFeeError || estimatedFees === undefined;
+  const shouldShowFeePlaceholder =
+    isFeeLoading || hasFeeError || estimatedFees === undefined;
 
   const positionForFlip = useMemo(
     () => toFlipPositionPayload(position),

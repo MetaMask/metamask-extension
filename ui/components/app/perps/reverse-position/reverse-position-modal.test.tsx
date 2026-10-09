@@ -280,26 +280,54 @@ describe('ReversePositionModal', () => {
       );
     });
 
-    it('keeps the resolved fee visible while a price change refetches it', () => {
+    it('hides the previous quote when position size changes while its replacement is pending', () => {
       const { rerender } = renderWithProvider(
         <ReversePositionModal {...defaultProps} />,
         mockStore,
       );
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$1.43',
+      );
+      const updatedPosition = {
+        ...longPosition,
+        size: '5',
+        positionValue: '15000',
+      };
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
-        undiscountedFeeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        metamaskFeeRateDiscountPercentage: 50,
         isLoading: true,
         hasError: false,
       });
       rerender(
-        <ReversePositionModal
-          {...defaultProps}
-          position={{ ...longPosition, positionValue: '7500' }}
-          currentPrice={3000}
-        />,
+        <ReversePositionModal {...defaultProps} position={updatedPosition} />,
+      );
+      expect(
+        screen.getByTestId('perps-reverse-est-size-value'),
+      ).toHaveTextContent('5 ETH');
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '30000',
+      });
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
+      expect(
+        screen.queryByTestId('perps-reverse-fee-value-original'),
+      ).not.toBeInTheDocument();
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0003,
+        undiscountedFeeRate: 0.0003,
+        isLoading: false,
+        hasError: false,
+      });
+      rerender(
+        <ReversePositionModal {...defaultProps} position={updatedPosition} />,
       );
       expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
-        '$1.50',
+        '$9.00',
       );
     });
 
