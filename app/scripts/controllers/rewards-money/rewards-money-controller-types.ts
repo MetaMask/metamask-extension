@@ -1,8 +1,11 @@
 import { Messenger } from '@metamask/messenger';
 import { AuthenticationControllerGetSessionProfileAction } from '@metamask/profile-sync-controller/auth';
-import type { RewardsMoneyDataServiceGetReferralMeAction } from './rewards-money-data-service-method-action-types';
-import type { RewardsMoneyDataServiceRegisterRefereeAction } from './rewards-money-data-service-method-action-types';
-import type { RewardsMoneyDataServiceValidateReferralCodeAction } from './rewards-money-data-service-method-action-types';
+import type {
+  RewardsMoneyDataServiceGetRebateQuoteAction,
+  RewardsMoneyDataServiceGetReferralMeAction,
+  RewardsMoneyDataServiceRegisterRefereeAction,
+  RewardsMoneyDataServiceValidateReferralCodeAction,
+} from './rewards-money-data-service-method-action-types';
 import { RewardsMoneyControllerMethodActions } from './rewards-money-controller-method-action-types';
 
 export const REWARDS_MONEY_CONTROLLER_NAME = 'RewardsMoneyController' as const;
@@ -17,6 +20,7 @@ export type RewardsMoneyControllerAllowedActions =
   | RewardsMoneyDataServiceGetReferralMeAction
   | RewardsMoneyDataServiceValidateReferralCodeAction
   | RewardsMoneyDataServiceRegisterRefereeAction
+  | RewardsMoneyDataServiceGetRebateQuoteAction
   | AuthenticationControllerGetSessionProfileAction;
 
 export type RewardsMoneyControllerMessenger = Messenger<

@@ -6899,6 +6899,22 @@ export function registerRewardsMoneyReferee(params) {
   };
 }
 
+export function getRewardsMoneySwapsRebateQuote(quote) {
+  return async () => {
+    return await submitRequestToBackground('getRewardsMoneySwapsRebateQuote', [
+      quote,
+    ]);
+  };
+}
+
+export function getRewardsMoneyPerpsRebateQuote(trade) {
+  return async () => {
+    return await submitRequestToBackground('getRewardsMoneyPerpsRebateQuote', [
+      trade,
+    ]);
+  };
+}
+
 export function getRewardsGeoMetadata(): ThunkAction<
   Promise<RewardsGeoMetadata | null>,
   MetaMaskReduxState,

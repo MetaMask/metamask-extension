@@ -1,8 +1,12 @@
 import { BaseController } from '@metamask/base-controller';
 import type {
   GetReferralMeDto,
+  PerpsRebateTrade,
+  RebateQuoteBody,
+  RebateQuoteResponse,
   ReferralMeDto,
   RegisterRefereeDto,
+  SwapsRebateBridgeQuote,
 } from '../../../../shared/types/rewards-money';
 import { wrapWithCache } from '../rewards/rewards-controller';
 import {
@@ -16,7 +20,31 @@ const MESSENGER_EXPOSED_METHODS = [
   'getReferralMe',
   'validateReferralCode',
   'registerReferee',
+  'getSwapsRebateQuote',
+  'getPerpsRebateQuote',
 ] as const;
+
+/**
+ * A Hyperliquid perp: `BTC`, or a builder-deployed `xyz:TSLA`. Spot (`@107`)
+ * never matches. `side` is already `BUY` | `SELL` by its type.
+ */
+const PERPS_REBATE_TRADE_COIN = /^(?:[a-z0-9]{1,16}:)?[A-Za-z0-9]{1,32}$/u;
+const PERPS_REBATE_TRADE_NOTIONAL_USD = /^\d{1,15}(\.\d{1,18})?$/u;
+
+/**
+ * Whether the money service would accept this perps quote `trade`. The
+ * server refuses the whole quote with a `400` otherwise, even though it drops
+ * the trade.
+ *
+ * @param trade - The trade a caller passed.
+ * @returns True when every field passes the server's checks.
+ */
+function isSendablePerpsRebateTrade(trade: PerpsRebateTrade): boolean {
+  return (
+    PERPS_REBATE_TRADE_COIN.test(trade.coin) &&
+    PERPS_REBATE_TRADE_NOTIONAL_USD.test(trade.notionalUsd)
+  );
+}
 
 /**
  * The Hydra profile changed while a referral-me read was in flight.
@@ -174,6 +202,72 @@ export class RewardsMoneyController extends BaseController<
       'RewardsMoneyDataService:registerReferee',
       params,
     );
+  }
+
+  /**
+   * Rebate a swaps confirmation screen should show. The bridge quote decides
+   * fee-token eligibility. Not cached: the rate has to disappear the moment
+   * an operator ends the window, and a different quote can name a different
+   * fee token.
+   *
+   * Pass the `quote` of the bridge `QuoteResponse`, not the response. Only
+   * its `feeData.metabridge` is sent.
+   *
+   * A refusal rejects with `RewardsMoneyRebateQuoteError`, a `401` with
+   * `RewardsMoneyAuthorizationError`. A timeout or a network failure rejects
+   * with a plain `Error`. A `503` (`failure: 'UNAVAILABLE'`) is a busy pod:
+   * show no rebate row, do not request another quote for this screen, and
+   * leave the button disabled until `retryAfterSeconds` has elapsed. The
+   * body reason for that shed is `SERVER_BUSY`.
+   *
+   * @param quote - The bridge quote the confirmation screen holds.
+   * @returns The rebate to show; `eligible: false` means no rebate row.
+   */
+  getSwapsRebateQuote(
+    quote: SwapsRebateBridgeQuote,
+  ): Promise<RebateQuoteResponse> {
+    return this.#getRebateQuote({
+      product: 'swaps',
+      quote: { feeData: { metabridge: quote.feeData.metabridge } },
+    });
+  }
+
+  /**
+   * Rebate a perps confirmation screen should show. `trade` is optional and
+   * the server drops it today; the answer does not depend on it. A trade the
+   * server would refuse (see {@link PerpsRebateTrade}) is left out rather
+   * than sent, so it cannot turn the quote into a `400`.
+   *
+   * A refusal rejects with `RewardsMoneyRebateQuoteError`, a `401` with
+   * `RewardsMoneyAuthorizationError`. A timeout or a network failure rejects
+   * with a plain `Error`. A `503` (`failure: 'UNAVAILABLE'`) is a busy pod:
+   * show no rebate row, do not request another quote for this screen, and
+   * leave the button disabled until `retryAfterSeconds` has elapsed. The
+   * body reason for that shed is `SERVER_BUSY`.
+   *
+   * @param trade - What the user is about to trade, when known.
+   * @returns The rebate to show; `eligible: false` means no rebate row.
+   */
+  getPerpsRebateQuote(trade?: PerpsRebateTrade): Promise<RebateQuoteResponse> {
+    if (trade === undefined || !isSendablePerpsRebateTrade(trade)) {
+      return this.#getRebateQuote({ product: 'perps' });
+    }
+    return this.#getRebateQuote({
+      product: 'perps',
+      trade: {
+        coin: trade.coin,
+        side: trade.side,
+        notionalUsd: trade.notionalUsd,
+      },
+    });
+  }
+
+  async #getRebateQuote(body: RebateQuoteBody): Promise<RebateQuoteResponse> {
+    if (this.#isDisabled()) {
+      throw new Error('Rewards Money is disabled');
+    }
+
+    return this.messenger.call('RewardsMoneyDataService:getRebateQuote', body);
   }
 
   async #getProfileId(): Promise<string> {

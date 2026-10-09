@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import type { ReferralMeDto } from '../../../../../shared/types/rewards-money';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { AcceptInviteSheet } from './AcceptInviteSheet';
 
 const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
@@ -278,7 +279,9 @@ describe('AcceptInviteSheet', () => {
     expect(trackedTypes()).toEqual(['viewed']);
 
     await act(async () => {
-      await user.click(view.getByRole('button', { name: 'Close' }));
+      await user.click(
+        view.getByRole('button', { name: messages.close.message }),
+      );
     });
     expect(trackedTypes()).toEqual(['viewed', 'dismissed']);
     expect(onClose).toHaveBeenCalledTimes(1);
