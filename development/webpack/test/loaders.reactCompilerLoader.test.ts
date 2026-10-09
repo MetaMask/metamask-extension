@@ -155,28 +155,29 @@ describe('reactCompilerLoaderWrapper', () => {
       await import('../utils/loaders/reactCompilerLoaderWrapper');
     const rootContext = '/project/app';
     const resourcePath = '/project/ui/component.tsx';
+
     type WrapperCallbackArgs = [
       Error | null | undefined,
       string | undefined,
       unknown,
     ];
-    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
-    // browser support.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const { promise, resolve } = Promise.withResolvers!<WrapperCallbackArgs>();
-    const context = {
-      rootContext,
-      resourcePath,
-      getOptions: () => ({ target: '18', __verbose: false }),
-      async:
-        () =>
-        (...args: WrapperCallbackArgs) =>
-          resolve(args),
-    } as unknown as Parameters<typeof wrapper>[0] &
-      ThisParameterType<typeof wrapper>;
-
-    wrapper.call(context, 'export const a = 1;', undefined);
-    const [err, code, map] = await promise;
+    // the loader reports its result through the callback returned by
+    // `this.async()`, so resolve a promise with the callback's arguments
+    const [err, code, map] = await new Promise<WrapperCallbackArgs>(
+      (resolve) => {
+        const context = {
+          rootContext,
+          resourcePath,
+          getOptions: () => ({ target: '18', __verbose: false }),
+          async:
+            () =>
+            (...args: WrapperCallbackArgs) =>
+              resolve(args),
+        } as unknown as Parameters<typeof wrapper>[0] &
+          ThisParameterType<typeof wrapper>;
+        wrapper.call(context, 'export const a = 1;', undefined);
+      },
+    );
 
     assert.strictEqual(err, null);
     assert.ok(code);
