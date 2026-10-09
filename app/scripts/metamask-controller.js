@@ -400,6 +400,9 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
+// MMPay dApp PoC
+import { addMmPayInternalTransaction } from './lib/mmpay-dapp/create-mmpay-transaction';
+import { ensureNetworkClient } from './lib/mmpay-dapp/ensure-network';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3802,6 +3805,17 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:resetWallet',
       ),
+      // MMPay dApp PoC
+      mmPayCreateTransaction: async (params) => {
+        const selectedAccount = this.accountsController.getSelectedAccount();
+        return addMmPayInternalTransaction(
+          {
+            ...this.getMmPayDeps(),
+            from: selectedAccount.address,
+          },
+          params,
+        );
+      },
     };
   }
 
@@ -5205,6 +5219,17 @@ export default class MetamaskController extends EventEmitter {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
+    };
+  }
+
+  // MMPay dApp PoC
+  getMmPayDeps() {
+    return {
+      messenger: this.controllerMessenger,
+      securityAlertsEnabled:
+        this.preferencesController.state?.securityAlertsEnabled ?? false,
+      ensureNetwork: (chainId) =>
+        ensureNetworkClient(this.controllerMessenger, chainId),
     };
   }
 
