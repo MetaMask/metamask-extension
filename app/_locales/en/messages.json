@@ -5609,10 +5609,13 @@
     "message": "Get started"
   },
   "mfaIntroDescription": {
-    "message": "Set up the following to continue."
+    "message": "We’ll set up a few ways to confirm it’s you. You’ll use them to approve important actions, and if you lose access to one, you can use another."
+  },
+  "mfaIntroListTitle": {
+    "message": "You’ll set up"
   },
   "mfaIntroTitle": {
-    "message": "Secure your account"
+    "message": "Set up 2-step verification"
   },
   "mfaMethodEmail": {
     "message": "Email"
@@ -5662,11 +5665,8 @@
   "mfaPasskeyTitleVerify": {
     "message": "Use your passkey"
   },
-  "mfaPickerDescription": {
-    "message": "Choose how you want to verify."
-  },
   "mfaPickerTitle": {
-    "message": "Confirm it's you"
+    "message": "Confirm with 2-step verification"
   },
   "mfaSuccessDone": {
     "message": "Done"
