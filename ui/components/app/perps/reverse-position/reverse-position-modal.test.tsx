@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -239,6 +240,69 @@ describe('ReversePositionModal', () => {
   });
 
   describe('rendering', () => {
+    it.each(['', '   ', '.', '7125 USD', 'Infinity'])(
+      'keeps malformed live value %p unavailable and recovers on a valid update',
+      (positionValue) => {
+        const { rerender } = renderWithProvider(
+          <ReversePositionModal
+            {...defaultProps}
+            position={{ ...longPosition, positionValue }}
+          />,
+          mockStore,
+        );
+
+        expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+          '--',
+        );
+        expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        expect(
+          screen.queryByTestId('perps-reverse-fee-value-original'),
+        ).not.toBeInTheDocument();
+        const submit = screen.getByTestId('perps-reverse-position-modal-save');
+        expect(submit).toBeDisabled();
+        expect(
+          screen.getByTestId('perps-reverse-position-modal-cancel'),
+        ).toBeEnabled();
+        fireEvent.click(submit);
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+        rerender(<ReversePositionModal {...defaultProps} />);
+
+        expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+          '$1.43',
+        );
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: '14250',
+        });
+      },
+    );
+
+    it('preserves a genuine zero live position value', () => {
+      renderWithProvider(
+        <ReversePositionModal
+          {...defaultProps}
+          position={{ ...longPosition, positionValue: '0' }}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$0.00',
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '0',
+      });
+    });
+
     it('renders the modal with header', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
@@ -280,26 +344,54 @@ describe('ReversePositionModal', () => {
       );
     });
 
-    it('keeps the resolved fee visible while a price change refetches it', () => {
+    it('hides the previous quote when position size changes while its replacement is pending', () => {
       const { rerender } = renderWithProvider(
         <ReversePositionModal {...defaultProps} />,
         mockStore,
       );
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$1.43',
+      );
+      const updatedPosition = {
+        ...longPosition,
+        size: '5',
+        positionValue: '15000',
+      };
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
-        undiscountedFeeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
+        metamaskFeeRateDiscountPercentage: 50,
         isLoading: true,
         hasError: false,
       });
       rerender(
-        <ReversePositionModal
-          {...defaultProps}
-          position={{ ...longPosition, positionValue: '7500' }}
-          currentPrice={3000}
-        />,
+        <ReversePositionModal {...defaultProps} position={updatedPosition} />,
+      );
+      expect(
+        screen.getByTestId('perps-reverse-est-size-value'),
+      ).toHaveTextContent('5 ETH');
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '30000',
+      });
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '--',
+      );
+      expect(
+        screen.queryByTestId('perps-reverse-fee-value-original'),
+      ).not.toBeInTheDocument();
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0003,
+        undiscountedFeeRate: 0.0003,
+        isLoading: false,
+        hasError: false,
+      });
+      rerender(
+        <ReversePositionModal {...defaultProps} position={updatedPosition} />,
       );
       expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
-        '$1.50',
+        '$9.00',
       );
     });
 

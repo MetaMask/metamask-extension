@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { act, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -125,6 +126,42 @@ describe('OrderEntry', () => {
       });
     });
   }
+
+  it.each([NaN, Infinity])(
+    'keeps order entry mounted until price %s becomes available',
+    (currentPrice) => {
+      const props = {
+        ...defaultProps,
+        initialDraft: {
+          type: 'market' as const,
+          direction: 'long' as const,
+          amount: '90000',
+          takeProfitPrice: '50000',
+          stopLossPrice: '40000',
+        },
+      };
+      const { rerender } = renderWithProvider(
+        <OrderEntry {...props} currentPrice={currentPrice} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('auto-close-estimated-tp-pnl-row'),
+      ).not.toHaveTextContent(messages.perpsEstimatedPnlAtTakeProfit.message);
+
+      rerender(<OrderEntry {...props} currentPrice={45000} />);
+
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: '100000',
+      });
+      expect(
+        screen.getByTestId('auto-close-estimated-tp-pnl-row'),
+      ).toHaveTextContent(messages.perpsEstimatedPnlAtTakeProfit.message);
+    },
+  );
 
   describe('rendering', () => {
     it('renders the component with all sections', () => {
