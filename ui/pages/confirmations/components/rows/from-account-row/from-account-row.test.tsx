@@ -263,6 +263,16 @@ describe('FromAccountRow', () => {
     expect(screen.getByTestId('modal-title')).toBeEmptyDOMElement();
   });
 
+  it('exposes the from account pill as an accessible button', () => {
+    const store = createStore();
+    renderWithProvider(<FromAccountRow />, store);
+
+    const accountSelector = screen.getByTestId('from-account-pill');
+
+    expect(accountSelector.tagName).toBe('BUTTON');
+    expect(accountSelector).toHaveAccessibleName('From Wallet 1 Account 1');
+  });
+
   it('does not render a divider by default', () => {
     const store = createStore();
     renderWithProvider(<FromAccountRow />, store);
