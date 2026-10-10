@@ -6,6 +6,7 @@ import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { isPayRpcTypeAllowed } from '../../../../shared/lib/transaction/pay-rpc';
 import { addDappTransaction } from '../transaction/util';
 import { mmPayRpcErrors } from './errors';
+import { ensureMmPayRpcNetwork } from './network';
 import { watchMmPayRpcResult } from './result';
 import { getMmPayRpcTypeRegistry } from './registry';
 import type {
@@ -53,7 +54,7 @@ export async function addMmPayRpcTransaction({
   await typeRegistry.assertPreconditions({ from, messenger });
 
   const built = typeRegistry.build({ from, payParams });
-  const networkClientId = await ensureNetwork(messenger, built.chainId);
+  const networkClientId = await ensureMmPayRpcNetwork(messenger, built.chainId);
   const selectedAccount = getAccount(messenger, from);
 
   const watcher = watchMmPayRpcResult(messenger, {
@@ -118,20 +119,6 @@ function assertPermittedAccount(permittedAccounts: string[], from: Hex) {
 
   if (!isPermitted) {
     throw mmPayRpcErrors.unauthorizedAccount();
-  }
-}
-
-async function ensureNetwork(
-  messenger: MmPayRpcMessenger,
-  chainId: Hex,
-): Promise<string> {
-  try {
-    return messenger.call(
-      'NetworkController:findNetworkClientIdByChainId',
-      chainId,
-    );
-  } catch {
-    throw mmPayRpcErrors.networkUnavailable(chainId);
   }
 }
 

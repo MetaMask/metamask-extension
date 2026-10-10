@@ -58,9 +58,19 @@ function createMessenger({
   remoteFeatureFlags = ALLOW_DEPOSIT_FLAGS as Record<string, unknown>,
   findNetworkClientId = jest.fn(() => NETWORK_CLIENT_ID),
   account = ACCOUNT as typeof ACCOUNT | null,
+  configuredChainIds = [CHAIN_ID] as Hex[],
+  addNetwork = jest.fn(),
 } = {}) {
-  const call = jest.fn((action: string) => {
+  const call = jest.fn((action: string, ...args: unknown[]) => {
     switch (action) {
+      case 'NetworkController:getState':
+        return {
+          networkConfigurationsByChainId: Object.fromEntries(
+            configuredChainIds.map((chainId) => [chainId, {}]),
+          ),
+        };
+      case 'LegacyBackgroundApiService:addNetwork':
+        return addNetwork(...args);
       case 'RemoteFeatureFlagController:getState':
         return { remoteFeatureFlags };
       case 'NetworkController:findNetworkClientIdByChainId':
@@ -278,7 +288,38 @@ describe('addMmPayRpcTransaction', () => {
       expect(dappRequest.id).toBe(42);
     });
 
-    it('rejects when the network is not configured', async () => {
+    it('adds the chain from the featured networks when missing', async () => {
+      const addNetwork = jest.fn();
+      const messenger = createMessenger({ configuredChainIds: [], addNetwork });
+
+      await run({ messenger });
+
+      expect(addNetwork).toHaveBeenCalledWith(
+        expect.objectContaining({ chainId: CHAIN_ID }),
+        { setActive: false },
+      );
+      expect(addDappTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not add the chain when it is configured', async () => {
+      const addNetwork = jest.fn();
+
+      await run({ messenger: createMessenger({ addNetwork }) });
+
+      expect(addNetwork).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the chain cannot be added', async () => {
+      const messenger = createMessenger({
+        configuredChainIds: [],
+        addNetwork: jest.fn().mockRejectedValue(new Error('failed')),
+      });
+
+      await expectRpcError(run({ messenger }), errorCodes.rpc.internal);
+      expect(addDappTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it('rejects when no network client exists for the chain', async () => {
       const messenger = createMessenger({
         findNetworkClientId: jest.fn(() => {
           throw new Error('Invalid chain ID');
