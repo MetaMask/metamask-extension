@@ -11,6 +11,7 @@ import {
   removeUrlsFromBreadCrumb,
   rewriteReport,
   rewriteTransactionReport,
+  sentryDataCollection,
   shouldCreateSpanForRequest,
 } from './setupSentry';
 
@@ -63,6 +64,29 @@ type TestReport = Parameters<typeof rewriteReport>[0] & {
 };
 
 describe('Setup Sentry', () => {
+  describe('sentryDataCollection', () => {
+    it('preserves the restrictive v10 data collection defaults', () => {
+      expect(sentryDataCollection).toStrictEqual({
+        cookies: false,
+        databaseQueryData: false,
+        frameContextLines: 7,
+        genAI: { inputs: false, outputs: false },
+        graphQL: { document: false, variables: false },
+        httpBodies: [],
+        httpHeaders: {
+          request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+          response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+        },
+        queues: false,
+        stackFrameVariables: true,
+        urlQueryParams: {
+          deny: ['forwarded', '-ip', 'remote-', 'via', '-user'],
+        },
+        userInfo: false,
+      });
+    });
+  });
+
   describe('rewriteReport', () => {
     it('should remove urls from error messages', () => {
       const testReport: TestReport = {
