@@ -1714,6 +1714,7 @@
     },
     "@metamask/core-backend": {
       "globals": {
+        "AbortController": true,
         "URL": true,
         "WebSocket": true,
         "clearTimeout": true,
@@ -1729,6 +1730,7 @@
         "@metamask/core-backend>@metamask/controller-utils": true,
         "@metamask/core-backend>@metamask/utils": true,
         "@tanstack/react-query>@tanstack/query-core": true,
+        "async-mutex": true,
         "cockatiel": true,
         "@metamask/core-backend>uuid": true
       }
