@@ -69,7 +69,6 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AccountOrderController: {
     pinnedAccountList: [],
-    hiddenAccountList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,

@@ -45,22 +45,6 @@ export const AccountTreeControllerInit: MessengerClientInitFunction<
         },
       },
       accountOrderCallbacks: {
-        isHiddenAccount: (accountId: AccountId) => {
-          const internalAccount = initMessenger.call(
-            'AccountsController:getAccount',
-            accountId,
-          );
-          if (!internalAccount) {
-            return false;
-          }
-
-          const accountOrderState = initMessenger.call(
-            'AccountOrderController:getState',
-          );
-          return accountOrderState.hiddenAccountList.includes(
-            internalAccount.address,
-          );
-        },
         isPinnedAccount: (accountId: AccountId) => {
           const internalAccount = initMessenger.call(
             'AccountsController:getAccount',
