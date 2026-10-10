@@ -1,11 +1,6 @@
-import { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector, useStore } from 'react-redux';
-import {
-  useLocation,
-  matchPath,
-  UNSAFE_DataRouterContext as DataRouterContext,
-  UNSAFE_NavigationContext as NavigationContext,
-} from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 import {
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
@@ -88,6 +83,18 @@ export function useSegmentContext(): SegmentContext {
 }
 
 /**
+ * Returns the current route pathname without subscribing to the router.
+ * The app uses a hash router, so the route lives in `window.location.hash`
+ * (e.g. `#/settings?foo=bar`).
+ *
+ * @returns The current pathname, or `/` when there is no hash route
+ */
+function getCurrentPathname(): string {
+  const [pathname] = window.location.hash.replace(/^#/u, '').split(/[?#]/u);
+  return pathname || '/';
+}
+
+/**
  * Returns a stable function that reads the same context as `useSegmentContext`
  * at call time, instead of subscribing the calling component to the router
  * location and the transaction data.
@@ -99,18 +106,9 @@ export function useSegmentContext(): SegmentContext {
  */
 export function useGetSegmentContext(): () => SegmentContext {
   const store = useStore();
-  const dataRouter = useContext(DataRouterContext);
-  const { navigator } = useContext(NavigationContext);
 
   return useCallback(() => {
-    // The data router (used by the app) holds the current location in its
-    // state; memory, hash and browser routers expose it on their history.
-    const location =
-      dataRouter?.router.state.location ??
-      (navigator as { location?: { pathname: string } }).location;
-    const matchedPath = location
-      ? findMatchingPath(location.pathname)
-      : undefined;
+    const matchedPath = findMatchingPath(getCurrentPathname());
     const origin = txDataSelector(store.getState())?.origin as
       | string
       | undefined;
@@ -125,5 +123,5 @@ export function useGetSegmentContext(): () => SegmentContext {
         : undefined,
       referrer: origin ? { url: origin } : undefined,
     };
-  }, [store, dataRouter, navigator]);
+  }, [store]);
 }
