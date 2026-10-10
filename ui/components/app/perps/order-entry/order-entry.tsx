@@ -1,4 +1,10 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
@@ -10,8 +16,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
-import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
 import { getDisplaySymbol } from '../utils';
 import type { OrderType } from '../types';
@@ -56,6 +62,8 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.initialDraft
+ * @param props.onLeverageChange
  * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
@@ -63,6 +71,8 @@ import { OrderTypeToggle } from './components/order-type-toggle';
  * @param props.usdPlaceholder
  * @param props.limitPricePrefill
  * @param props.onInputMethodChange
+ * @param props.isLoadingAccount
+ * @param props.hasNoAvailableBalance
  */
 export const OrderEntry = ({
   asset,
@@ -82,7 +92,11 @@ export const OrderEntry = ({
   midPrice,
   onOrderTypeChange,
   onAddFunds,
+  isLoadingAccount = false,
+  hasNoAvailableBalance = false,
   initialLeverage,
+  initialDraft,
+  onLeverageChange,
   sizeDecimals,
   markPrice,
   autoFocusUsd = false,
@@ -96,22 +110,10 @@ export const OrderEntry = ({
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
   const { market: marketInfo } = usePerpsMarketInfo(asset);
 
-  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const {
-    feeRate,
-    undiscountedFeeRate,
-    protocolFeeRate,
-    metamaskFeeRate,
-    originalMetamaskFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
-
   // Use custom hook for form state management
   const {
     formState,
+    orderFees,
     closePercent,
     calculations,
     handleAmountChange,
@@ -135,13 +137,30 @@ export const OrderEntry = ({
     onSubmit,
     orderType,
     initialLeverage,
+    initialDraft,
     sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
     markPrice,
-    feeRate,
     limitPricePrefill,
   });
+
+  const {
+    feeRate,
+    undiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = orderFees;
+
+  const handlePersistedLeverageChange = useCallback(
+    (leverage: number) => {
+      handleLeverageChange(leverage);
+      onLeverageChange?.(leverage);
+    },
+    [handleLeverageChange, onLeverageChange],
+  );
 
   const isLong = formState.direction === 'long';
 
@@ -163,7 +182,10 @@ export const OrderEntry = ({
       : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
+
+  useLayoutEffect(() => {
+    onCalculationsChangeRef.current = onCalculationsChange;
+  }, [onCalculationsChange]);
 
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 
@@ -172,13 +194,16 @@ export const OrderEntry = ({
       if (a === null) {
         return true;
       }
+      // `Object.is` rather than `!==`: a market price of 0 makes the fee and
+      // liquidation figures NaN, and `NaN !== NaN` reports a change on every
+      // render, so the effect below would re-notify the page without end.
       return (
-        a.positionSize !== b.positionSize ||
-        a.marginRequired !== b.marginRequired ||
-        a.liquidationPrice !== b.liquidationPrice ||
-        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
-        a.orderValue !== b.orderValue ||
-        a.estimatedFees !== b.estimatedFees
+        !Object.is(a.positionSize, b.positionSize) ||
+        !Object.is(a.marginRequired, b.marginRequired) ||
+        !Object.is(a.liquidationPrice, b.liquidationPrice) ||
+        !Object.is(a.liquidationPriceRaw, b.liquidationPriceRaw) ||
+        !Object.is(a.orderValue, b.orderValue) ||
+        !Object.is(a.estimatedFees, b.estimatedFees)
       );
     },
     [],
@@ -266,6 +291,32 @@ export const OrderEntry = ({
     currentPrice,
   ]);
 
+  const existingSignedSize =
+    Number.parseFloat(existingPosition?.size.replaceAll(',', '') ?? '0') || 0;
+  const orderSignedSize = estimatedSize ?? 0;
+  // The page classifies flips using its legacy leverage-based sizing before
+  // the provider recalculates the actual size from usdAmount.
+  const sizeForSubmitRoute =
+    currentPrice > 0
+      ? ((Number.parseFloat(formState.amount) || 0) * formState.leverage) /
+        currentPrice
+      : 0;
+  const signedSizeForSubmitRoute =
+    formState.direction === 'long' ? sizeForSubmitRoute : -sizeForSubmitRoute;
+  // Match the page's new/flip market flow: attach after placement using the
+  // resulting position size. Other orders share their order's fee resolution.
+  const submitsTpslSeparately =
+    formState.type === 'market' &&
+    (existingSignedSize === 0 ||
+      (existingSignedSize * signedSizeForSubmitRoute < 0 &&
+        Math.abs(signedSizeForSubmitRoute) > Math.abs(existingSignedSize)));
+  const tpslFeeNotionalUsd = submitsTpslSeparately
+    ? getPerpsNotionalUsd({
+        size: existingSignedSize + orderSignedSize,
+        price: [formState.takeProfitPrice, formState.stopLossPrice],
+      })
+    : getPerpsNotionalUsd({ usdAmount: formState.amount });
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -329,6 +380,8 @@ export const OrderEntry = ({
               mode === 'modify' ? existingPosition?.size : undefined
             }
             onAddFunds={onAddFunds}
+            isLoadingAccount={isLoadingAccount}
+            hasNoAvailableBalance={hasNoAvailableBalance}
             autoFocus={autoFocusUsd && formState.type === 'market'}
             usdPlaceholder={usdPlaceholder}
             usdInputRef={usdInputRef}
@@ -339,7 +392,7 @@ export const OrderEntry = ({
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
-            onLeverageChange={handleLeverageChange}
+            onLeverageChange={handlePersistedLeverageChange}
             maxLeverage={maxLeverage}
             minLeverage={
               mode === 'modify' && existingPosition
@@ -363,6 +416,7 @@ export const OrderEntry = ({
             leverage={formState.leverage}
             entryPrice={undefined}
             estimatedSize={estimatedSize}
+            feeNotionalUsd={tpslFeeNotionalUsd}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
             liquidationPrice={calculations.liquidationPriceRaw}

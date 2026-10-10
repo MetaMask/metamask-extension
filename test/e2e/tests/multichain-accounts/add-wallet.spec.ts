@@ -14,7 +14,11 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
-import { mockPriceApi } from '../tokens/utils/mocks';
+import {
+  getMockAssetsPrice,
+  MOCK_ETH_CONVERSION_RATE,
+  mockPriceApi,
+} from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
@@ -39,6 +43,18 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withCurrencyController({
+            currencyRates: {
+              ETH: {
+                conversionDate: Date.now(),
+                conversionRate: MOCK_ETH_CONVERSION_RATE,
+                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
+              },
+            },
+          })
+          .withAssetsController({
+            assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
+          })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           userStorageMockttpController.setupPath(

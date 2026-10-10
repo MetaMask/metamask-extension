@@ -39,7 +39,7 @@ import { NetworkListItem } from '../network-list-item';
 import {
   removeNetwork,
   setActiveNetwork,
-  setShowTestNetworks,
+  setShowTestNetworksPreference,
   showModal,
   toggleNetworkMenu,
   updateNetworksList,
@@ -59,11 +59,10 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
-  CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -74,6 +73,7 @@ import {
   getPermittedEVMChainsForSelectedTab,
   getMultichainNetworkConfigurationsByChainId,
   getSelectedMultichainNetworkChainId,
+  getIsTestnetInUse,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
 } from '../../../selectors';
@@ -170,7 +170,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountNetworkAvailability();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
@@ -226,10 +226,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     endTrace({ name: TraceName.NetworkList });
   }, []);
 
-  const currentlyOnTestnet = useMemo(
-    () => CAIP_FORMATTED_TEST_CHAINS.includes(currentChainId),
-    [currentChainId],
-  );
+  const currentlyOnTestnet = useSelector(getIsTestnetInUse);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -820,11 +817,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   </Text>
                   <ToggleButton
                     dataTestId="network-menu-show-test-networks"
-                    value={showTestnets || currentlyOnTestnet}
+                    value={showTestnets}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
                       const newVal = !value;
-                      dispatch(setShowTestNetworks(newVal));
+                      dispatch(setShowTestNetworksPreference(newVal));
                       trackEvent(
                         createEventBuilder(
                           MetaMetricsEventName.TestNetworksDisplayed,
@@ -840,7 +837,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 </Box>
               ) : null}
 
-              {showTestnets || currentlyOnTestnet ? (
+              {showTestnets ? (
                 <Box className="multichain-network-list-menu">
                   {sortedTestNetworks.map((network) =>
                     generateMultichainNetworkListItem(network),

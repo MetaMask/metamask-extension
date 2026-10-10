@@ -10,8 +10,13 @@ import { buildAssetRoutePath } from '../../../shared/lib/asset-route';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { DEFAULT_ROUTE } from '../../../shared/lib/deep-links/routes/route';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as environmentTypeUtils from '../../../shared/lib/environment-type';
 import * as bridgeActions from '../../ducks/bridge/actions';
+import {
+  ARC_ERC20_USDC_ASSET_ID,
+  ARC_NATIVE_ASSET_ID,
+} from '../../components/app/assets/enablement/arc';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
@@ -68,6 +73,16 @@ const solBridgeToken: BridgeToken = {
   decimals: 9,
   iconUrl: 'https://example.com/sol.png',
   balance: '5',
+};
+
+const arcUsdcBridgeToken: BridgeToken = {
+  assetId: ARC_ERC20_USDC_ASSET_ID,
+  chainId: 'eip155:5042',
+  symbol: 'USDC',
+  name: 'USDC',
+  decimals: 6,
+  iconUrl: undefined,
+  balance: '123',
 };
 
 jest.mock('react-router-dom', () => ({
@@ -188,6 +203,30 @@ describe('useBridgeNavigation', () => {
         }),
       );
     });
+
+    it('navigates Arc ERC-20 USDC to the native Arc asset route', () => {
+      const { result } = renderUseBridgeNavigation();
+
+      act(() => {
+        result.current.navigateToAssetPage(arcUsdcBridgeToken);
+      });
+
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        buildAssetRoutePath(ARC_NATIVE_ASSET_ID),
+        expect.objectContaining({
+          state: expect.objectContaining({
+            token: expect.objectContaining({
+              type: AssetType.native,
+              assetId: ARC_NATIVE_ASSET_ID,
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'USDC',
+              chainId: CHAIN_IDS.ARC,
+              isNative: true,
+            }),
+          }),
+        }),
+      );
+    });
   });
 
   describe('navigateToBridgePage', () => {
@@ -225,10 +264,12 @@ describe('useBridgeNavigation', () => {
           search: 'from=test-from',
         },
         {
-          state: {
+          state: expect.objectContaining({
             bridgeState: locationBridgeState,
+            swapViewPrefilledAmount: false,
+            swapViewTraceId: expect.any(String),
             token: locationToken,
-          },
+          }),
           replace: false,
         },
       );

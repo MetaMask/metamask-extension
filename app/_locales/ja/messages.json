@@ -172,6 +172,9 @@
   "activity": {
     "message": "アクティビティ"
   },
+  "activityAndNonceDataDeleted": {
+    "message": "アクティビティとナンスデータが削除されました"
+  },
   "activityEmptyDescription": {
     "message": "今すぐ最初のトークンをスワップしましょう。"
   },
@@ -482,40 +485,44 @@
     "message": "ショートをクローズしました - マーケット"
   },
   "activity_moneyAccountDeposit_failed_description": {
-    "message": "Money Account"
+    "message": "送金先: Money Account"
   },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "デポジット失敗"
   },
   "activity_moneyAccountDeposit_pending_description": {
-    "message": "Money Account"
+    "message": "送金先: Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
-    "message": "入金中"
+    "message": "$1をデポジットしています",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountDeposit_success_description": {
-    "message": "Money Account"
+    "message": "送金先: Money Account"
   },
   "activity_moneyAccountDeposit_success_title": {
-    "message": "デポジット"
+    "message": "$1をデポジットしました",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_failed_description": {
-    "message": "Money Account"
+    "message": "送金元: Money Account"
   },
   "activity_moneyAccountWithdraw_failed_title": {
-    "message": "送金に失敗しました"
+    "message": "受取に失敗しました"
   },
   "activity_moneyAccountWithdraw_pending_description": {
-    "message": "Money Account"
+    "message": "送金元: Money Account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
-    "message": "送信中"
+    "message": "$1を受け取っています",
+    "description": "$1 is the token symbol"
   },
   "activity_moneyAccountWithdraw_success_description": {
-    "message": "Money Account"
+    "message": "送金元: Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
-    "message": "送信完了"
+    "message": "$1を受け取りました",
+    "description": "$1 is the token symbol"
   },
   "activity_nftBuy_failed_title": {
     "message": "購入に失敗しました"
@@ -1478,6 +1485,9 @@
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },
+  "alertInsufficientPayMethodBalance": {
+    "message": "追加する額を減らすか、別の支払方法を使用してください。"
+  },
   "alertInsufficientPayTokenBalance": {
     "message": "資金不足"
   },
@@ -1509,8 +1519,8 @@
   "alertMessageGasFeeLow": {
     "message": "低い手数料を選択すると、トランザクションに時間がかかり、待機時間が長くなります。より素早くトランザクションを行うには、市場に合った、または積極的な手数料のオプションを選択してください。"
   },
-  "alertMessageGasTooLow": {
-    "message": "このトランザクションを続行するには、ガスリミットを21000以上に上げる必要があります。"
+  "alertMessageGasLimitBelowMinimum": {
+    "message": "このトランザクションを続行するには、ガスリミットを12000以上に上げる必要があります。"
   },
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "アカウントにネットワーク手数料を支払うのに十分な$1がありません。"
@@ -1874,6 +1884,9 @@
   "backupAndSyncFeatureContacts": {
     "message": "連絡先"
   },
+  "backupAndSyncFeatureRamps": {
+    "message": "売買注文"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "同期する項目の管理"
   },
@@ -1933,14 +1946,40 @@
   "basicConfigurationModalHeadingOn": {
     "message": "基本機能をオンにする"
   },
+  "basicFunctionalityMigrationModalTitle": {
+    "message": "設定を更新しました"
+  },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ブログ投稿"
   },
+  "basicFunctionalityMigrationSocialModalBody1": {
+    "message": "Google、Apple、Telegramのいずれかでサインインしているため、メールアドレス（またはTelegramのユーザー名）がウォレットアドレスとともにMetaMaskのプロファイルに保存されました。これにより、MetaMaskの機能全体においてアカウントが常に一貫して動作するようになります。ソーシャルログイン用のアカウントでは、基本機能がオンのままなります。秘密鍵は、引き続きユーザーのみが保管・管理することになります。"
+  },
+  "basicFunctionalityMigrationSocialModalBody2": {
+    "message": "詳細は$1および$2をご覧ください。",
+    "description": "$1 is the blog post link, $2 is the Privacy Notice link"
+  },
+  "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
+    "message": "プライバシー通知"
+  },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "プライバシーと製品アップデート"
+    "message": "ソーシャルログインに関する更新情報"
+  },
+  "basicFunctionalityMigrationToastDescription": {
+    "message": "プライバシーに関する各種設定の切り替えは、基本機能という1つの設定になりました。この設定は、以前の設定に基づいて$1になっています。これは、いつでも$2で調整できます。$3。",
+    "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
+  },
+  "basicFunctionalityMigrationToastDisabled": {
+    "message": "オフ"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "有効にしました"
+    "message": "に"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "詳細。"
+  },
+  "basicFunctionalityMigrationToastSettingsLink": {
+    "message": "設定 > プライバシー"
   },
   "basicFunctionalityRequired_description": {
     "message": "この機能は、基本機能をオフにしている間は利用できません。オンにするには、下のトグルボタンをご利用ください。"
@@ -2200,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "最低コスト"
-  },
-  "bridgeMalicious": {
-    "message": "悪意のある"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "悪質なトークン"
@@ -2484,9 +2520,6 @@
     "message": "まずStellarで$1を有効化",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "不審"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "不審なトークン"
   },
@@ -2507,6 +2540,9 @@
   },
   "bridgeUseMaxAmountAllowedWithReserve": {
     "message": "最大許容額を使用"
+  },
+  "bridgeValidationInsufficientGasMessage": {
+    "message": "このブリッジのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "ガス代により多くの$1が必要です"
@@ -2635,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "アカウントのナンスがリセットされ、ウォレットのアクティビティタブからデータが消去されます。現在のアカウントとネットワークだけが影響を受けます。残高と受信トランザクションへの変更はありません。"
   },
+  "clearClipboard": {
+    "message": "クリップボードのデータを消去"
+  },
   "clearFilters": {
     "message": "フィルターを消去"
   },
@@ -2644,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "ここをクリックして、WebHIDでLedgerを接続します",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "クリップボードのデータを消去できませんでした。もう一度お試しください。"
+  },
+  "clipboardCleared": {
+    "message": "クリップボードのデータが消去されました"
   },
   "close": {
     "message": "閉じる"
@@ -3067,14 +3112,14 @@
   "copiedToClipboard": {
     "message": "クリップボードにコピーしました"
   },
+  "copy": {
+    "message": "コピー"
+  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
   "copyAddressShort": {
     "message": "アドレスをコピー"
-  },
-  "copyPrivateKey": {
-    "message": "秘密鍵をコピー"
   },
   "copyToClipboard": {
     "message": "クリップボードにコピー"
@@ -3131,8 +3176,20 @@
     "message": "上記のいずれでもうまくいかない場合は、$1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "アカウントの復元"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "MetaMaskを再インストール"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMaskのステートのリセット"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "アカウントを復元すると、現在の設定が削除されます。"
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "MetaMaskのステートをリセットすると、現在のアカウントおよび設定が削除されます。"
   },
   "criticalErrorStillHavingIssues": {
     "message": "問題が解決されませんか？"
@@ -3155,9 +3212,6 @@
   },
   "current": {
     "message": "現在"
-  },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
   },
   "currentEstimatedBaseFee": {
     "message": "現在: $1 gwei"
@@ -3550,6 +3604,10 @@
   },
   "disable": {
     "message": "無効にする"
+  },
+  "disabledGasOptionToolTipMessage": {
+    "message": "元のネットワーク手数料の10%以上という増額の条件を満たしていないため、「$1」は無効になっています。",
+    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "接続解除"
@@ -4164,6 +4222,9 @@
   "from": {
     "message": "送り元"
   },
+  "fullyDiluted": {
+    "message": "完全希釈化後"
+  },
   "function": {
     "message": "機能: $1"
   },
@@ -4177,11 +4238,17 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitTooLow": {
-    "message": "ガスリミットは21000以上にする必要があります"
+  "gasLimitBelowMinimum": {
+    "message": "ガスリミットは12000以上にする必要があります"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "MetaMaskが見積もりを提示するまでは、ガスリミットの編集はご利用いただけません。"
   },
   "gasPrice": {
     "message": "ガス価格 (gwei)"
+  },
+  "gasPriceExcessive": {
+    "message": "ネットワーク手数料が不要に高く設定されています。金額を下げることを検討してください。"
   },
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
@@ -4686,9 +4753,21 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
+  "hyperliquidDepositPromptDescription": {
+    "message": "任意のトークンを入金してください。当社側でトークンを交換して、Hyperliquidアカウントに自動で送金します。MetaMask側では手数料は発生しません。",
+    "description": "The description of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositPromptNoThanks": {
+    "message": "手動で入金するので結構です",
+    "description": "The label of the dismiss button in the Hyperliquid deposit prompt screen"
+  },
   "hyperliquidDepositPromptTitle": {
     "message": "MetaMaskでHyperliquidに入金",
     "description": "The title of the Hyperliquid deposit prompt screen shown after enabling trading on Hyperliquid"
+  },
+  "hyperliquidDepositToastSuccessDescription": {
+    "message": "資金の準備が整い、HyperliquidとMetaMaskパーペチュアルで取引可能となりました。",
+    "description": "Description shown in the success toast after a perps deposit initiated from the Hyperliquid deposit prompt"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Hyperliquidの$1に従い、今後すべての取引にMetaMaskの紹介コードを適用できます。MetaMaskは手数料をいただきます。",
@@ -4979,9 +5058,6 @@
     "message": "Lattice",
     "description": "Hardware device name"
   },
-  "lavaDomeCopyWarning": {
-    "message": "安全上の理由により、現在このテキストは選択できません。"
-  },
   "learnHow": {
     "message": "方法"
   },
@@ -5188,6 +5264,9 @@
   "loginErrorSessionExpiredButton": {
     "message": "ログイン"
   },
+  "loginErrorSessionExpiredDescription": {
+    "message": "続行するには再度ログインしてください。"
+  },
   "loginErrorSessionExpiredTitle": {
     "message": "セッションの期限が切れました"
   },
@@ -5215,8 +5294,8 @@
     "message": "低"
   },
   "lowValueAssets": {
-    "message": "低価値のトークン ($1)",
-    "description": "$1 is the number of low value assets in the collapsed home token list section."
+    "message": "低残高のトークン ($1)",
+    "description": "$1 is the number of low balance assets in the collapsed home token list section."
   },
   "mainnet": {
     "message": "イーサリアムメインネット"
@@ -5403,12 +5482,13 @@
   "money": {
     "message": "マネー"
   },
-  "moneyAccountApyPitch": {
-    "message": "年換算利率 (APY) $1%を獲得",
+  "moneyAccountApyPitchApy": {
+    "message": "$1%のAPY",
     "description": "$1 is the Money Account vault APY percentage shown on the deposit amount screen"
   },
-  "moneyAccountApyPitchInfo": {
-    "message": "APY情報"
+  "moneyAccountApyPitchEarn": {
+    "message": "$1を獲得",
+    "description": "$1 is the APY pitch, e.g. \"4% APY\", rendered as hoverable text with a tooltip"
   },
   "moneyAccountApyTooltip": {
     "message": "表示されている利率は、現在の市況に基づく予想年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
@@ -5420,15 +5500,15 @@
   "moneyAccountProjectedBalance": {
     "message": "1年後の予想残高:"
   },
-  "moneyAccountProjectedBalanceInfo": {
-    "message": "1年後の予想残高"
-  },
   "moneyAccountProjectedBalanceTooltip": {
     "message": "予測では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されるものではありません。",
     "description": "$1 is the APY percentage used in the one-year projection"
   },
   "moneyActivity": {
     "message": "アクティビティ"
+  },
+  "moneyActivityCard": {
+    "message": "カード"
   },
   "moneyActivityConversionFailed": {
     "message": "換金に失敗しました"
@@ -5448,8 +5528,23 @@
   "moneyActivityDepositing": {
     "message": "入金中"
   },
+  "moneyActivityDetailsPaidTo": {
+    "message": "支払先"
+  },
+  "moneyActivityDetailsReceivedFrom": {
+    "message": "送金元"
+  },
   "moneyActivityDetailsTransactionId": {
     "message": "トランザクションID"
+  },
+  "moneyActivityDetailsYouEarned": {
+    "message": "獲得額"
+  },
+  "moneyActivityDetailsYouSpent": {
+    "message": "支払額"
+  },
+  "moneyActivityDetailsYouWereRefunded": {
+    "message": "返金が行われました"
   },
   "moneyActivityEmpty": {
     "message": "まだアクティビティがありません"
@@ -5457,17 +5552,26 @@
   "moneyActivityFilterAll": {
     "message": "すべて"
   },
+  "moneyActivityFilterCard": {
+    "message": "カード"
+  },
   "moneyActivityFilterDeposits": {
     "message": "デポジット"
   },
   "moneyActivityFilterSends": {
     "message": "送金"
   },
+  "moneyActivityLoadError": {
+    "message": "アクティビティを読み込めませんでした"
+  },
+  "moneyActivityMusdBack": {
+    "message": "mUSDの還元"
+  },
   "moneyActivityPending": {
     "message": "保留中"
   },
-  "moneyActivityPlaceholderDescription": {
-    "message": "Moneyのアクティビティがここに表示されます。"
+  "moneyActivityPurchase": {
+    "message": "購入"
   },
   "moneyActivityReceived": {
     "message": "受け取りました"
@@ -5478,6 +5582,12 @@
   "moneyActivityReceiving": {
     "message": "受信中"
   },
+  "moneyActivityRefund": {
+    "message": "返金"
+  },
+  "moneyActivityRetry": {
+    "message": "再試行"
+  },
   "moneyActivitySendFailed": {
     "message": "送金に失敗しました"
   },
@@ -5486,6 +5596,10 @@
   },
   "moneyActivitySent": {
     "message": "送信完了"
+  },
+  "moneyActivityTransactionFeeTooltip": {
+    "message": "換算手数料にはネットワーク費用が含まれ、プロバイダー手数料も含まれる場合があります。",
+    "description": "Tooltip explaining what the Money account transaction fee covers"
   },
   "moneyActivityViewAll": {
     "message": "すべて表示"
@@ -5497,7 +5611,7 @@
     "message": "$1のAPY"
   },
   "moneyBalanceInfoBody": {
-    "message": "ドルの裏付けのあるmUSD残高は、いつでもショッピング、送金、取引などにご利用いただけます。この残高は、アカウントの合計残高には算入されません。"
+    "message": "ドルの裏付けのあるmUSD残高は、常に収益化が行われます。この残高は、アカウントの合計残高には算入されません。"
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "出金は、該当するブロックチェーンの標準的なネットワーク確認時間に従って、即座に処理されます。流動性が低い場合は、一時的に遅延が生じる可能性があります。"
@@ -5505,17 +5619,24 @@
   "moneyBalanceLastKnown": {
     "message": "直近の残高"
   },
-  "moneyBalanceTitle": {
-    "message": "マネー残高"
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
+  },
+  "moneyBalanceRetry": {
+    "message": "再試行"
   },
   "moneyBalanceUnavailable": {
     "message": "残高が利用できません"
+  },
+  "moneyBalanceUnavailableBannerDescription": {
+    "message": "現在、一時的に残高を表示できません。資金は安全に保管されています。しばらくしてからもう一度お試しください。"
   },
   "moneyBenefitAutoEarn": {
     "message": "Money残高に対する利息を自動で獲得"
   },
   "moneyBenefitAutoEarnWithApy": {
-    "message": "最大約$1のAPYを自動で獲得"
+    "message": "最大$1を自動で獲得",
+    "description": "$1 is the current mUSD APY (e.g. ~4.2% APY)."
   },
   "moneyBenefitLiquidity": {
     "message": "ロックアップなしで完全な流動性が確保され、いつでも取引や引き出しが可能です"
@@ -5528,6 +5649,12 @@
   },
   "moneyBenefits": {
     "message": "特典"
+  },
+  "moneyContactSupport": {
+    "message": "サポートへのお問い合わせ"
+  },
+  "moneyConvertYourCrypto": {
+    "message": "仮想通貨を変換"
   },
   "moneyEarnApyTitle": {
     "message": "最大$1のAPYを獲得"
@@ -5550,6 +5677,10 @@
   "moneyEarnOnCryptoNoFee": {
     "message": "手数料なし"
   },
+  "moneyEarnSectionAccountProjectedBalanceTooltip": {
+    "message": "予想収益では、$1%の年換算利率 (APY) が1年間変わらないと仮定されています。APYは変動制で、保証されたものではありません。利益は保証されていません。",
+    "description": "$1 is the APY percentage used in the one-year projection"
+  },
   "moneyEarnTitle": {
     "message": "残高を収益化"
   },
@@ -5565,15 +5696,89 @@
   "moneyFundDescriptionWithApy": {
     "message": "Money Accountに入金して、残高が最大$1のAPYで増えていく様子を眺めましょう。"
   },
+  "moneyHomeApyTooltip": {
+    "message": "表示されている利率は、現在の年換算利率 (APY) です。APYは変動制で、保証されるものではありません。"
+  },
+  "moneyHomeApyTooltipEarning": {
+    "message": "Money Accountで最大$1のAPYを自動で獲得できます。",
+    "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
+  },
+  "moneyHomeApyTooltipPoweredBy": {
+    "message": "Money AccountはMonadにより運用されています。"
+  },
   "moneyHowItWorks": {
     "message": "報酬獲得の仕組み"
   },
   "moneyHowItWorksDescription": {
     "message": "mUSDを追加しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。"
   },
+  "moneyHowItWorksDescription1": {
+    "message": "任意の仮想通貨を交換してMoney Accountに預け入れると、最大$1のAPY (変動制) を自動的に獲得できます。資金はDeFiヴォールトに入金され、Vedaによって管理され、Steakhouse Financialによってリスクモニタリングが行われます。利回りは、ブロックチェーンプロトコルで資金を運用するサードパーティDeFiプラットフォームによって生み出されます。ステーキングや請求は不要で、ロックアップもありません。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
   "moneyHowItWorksDescriptionWithApy": {
     "message": "mUSDを追加して、最大$1を獲得しましょう。残高はドルの裏付けがあり、いつでも支払い、取引、送金に利用できます。",
     "description": "$1 is the current mUSD APY."
+  },
+  "moneyHowItWorksDisclosuresBody": {
+    "message": "Money Accountは、銀行口座、普通預金口座、または保険対象の預金商品ではありません。APYは変動制であり、保証されるものではありません。Money Accountには、スマートコントラクト、プロトコル、流動性その他に関するリスクが伴い、資金の一部または全部が失われる可能性があります。地域ごとの制限の対象となります。規約が適用されます。"
+  },
+  "moneyHowItWorksDisclosuresTitle": {
+    "message": "リスクおよび開示事項"
+  },
+  "moneyHowItWorksFaqApyAnswer": {
+    "message": "最大$1のAPYが得られます。この利率は変動制であり、市場の状況に応じて変動します。現在のレートはMoney Account内に常に表示されます。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqApyQuestion": {
+    "message": "MetaMask Money Accountでどの程度の収益を得られますか？"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "ほとんどの国でご利用いただけます。英国内、および米国の制裁対象国内では現在ご利用いただけません。"
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "MetaMask Money Accountはどの国で利用できますか？"
+  },
+  "moneyHowItWorksFaqFeesAnswer": {
+    "message": "Money Accountの開設やステーブルコインの預け入れに手数料はかかりません。ステーブルコイン以外のトークンを預け入れる場合は手数料が必要となります。"
+  },
+  "moneyHowItWorksFaqFeesQuestion": {
+    "message": "MetaMask Money Accountの手数料について教えてください"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "いいえ、Money Accountでは本人確認は不要です。ただし、CardやRampsなど、一部の機能については本人確認が必要となります。確認は、MetaMaskではなく、これらの規制対象サービスを運営するサードパーティプロバイダーによって行われます。必要に応じて、サインアップ時にアプリ内で手続きの手順が表示されます。"
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "MetaMask Money Accountを使用するには本人確認が必要ですか？"
+  },
+  "moneyHowItWorksFaqLockedAnswer": {
+    "message": "はい。MetaMaskに対する通知期間、違約金、出金手数料は設けられておらず、いつでも残高全額を送金または出金できます。流動性が逼迫している場合は、一時的に遅延が発生することがあります。"
+  },
+  "moneyHowItWorksFaqLockedQuestion": {
+    "message": "MetaMask Money Accountからいつでも引き出すことができますか？"
+  },
+  "moneyHowItWorksFaqMoneyAccountAnswer": {
+    "message": "最大$1の変動APY（年換算利回り）が得られるアカウントです。アカウントに入金すると、資金がmUSDで保持され、最大$1のAPYが得られます。mUSDは、MetaMaskのドル連動型ステーブルコインです。資金はいつでも利用または出金でき、ペナルティは一切ありません。",
+    "description": "$1 is the current mUSD APY, including the percent sign."
+  },
+  "moneyHowItWorksFaqMoneyAccountQuestion": {
+    "message": "MetaMask Money Accountとは何ですか？"
+  },
+  "moneyHowItWorksFaqTitle": {
+    "message": "FAQ"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "以下のステーブルコインおよびaTokenは、交換手数料なしでMoney Accountに入金できます。\nEthereum：USDC、USDT、DAI、aUSDC、aUSDT、aDAI\nArbitrum：USDC\nBase：USDC\nBNB Chain：USDC、USDT\n\nその他のすべてのEVMトークンもMoney Accountに入金できますが、標準の手数料がかかる場合があります。また、デビットカード、クレジットカード、銀行口座、PayPal、Apple Pay、Google Payを利用してMoney Accountに入金することも可能です。\n\n注：流動性を確保するため、トークンごとの初回入金の上限額は$1となっています。",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "どのトークンをMoney Accountに入金できますか？"
+  },
+  "moneyHowItWorksFaqYieldAnswer": {
+    "message": "ユーザーが入金すると、その資金はAaveやMorphoなどの確立されたDeFiプロトコルに預け入れられます。これらのプロトコルは実際の経済活動から収益を上げ、これらの収益がAPY（年換算利回り）の形でユーザーに届けられます。\n\nプロトコル内での資金の配分状況は、Steakhouse Financialという第三者サービスプロバイダーによって監視されます。ユーザーの資金を保管するボールトスマートコントラクトのデプロイと維持・管理は、第三者インフラプロバイダーのVedaが担当します。\n\nここで得られる収益は、MetaMaskまたはmUSDの発行者が利息として支払うものではありません。第三者であるDeFiプロトコル内のポジションから生まれるオンチェーン上の収益が配分される仕組みとなっています。"
+  },
+  "moneyHowItWorksFaqYieldQuestion": {
+    "message": "利益はどこから生まれるのですか？"
   },
   "moneyHowYourMoneyGrows": {
     "message": "お金が増えていく仕組み"
@@ -5584,8 +5789,14 @@
   "moneyLifetime": {
     "message": "全期間"
   },
+  "moneyLifetimeTooltip": {
+    "message": "これまでMoney Accountで発生した総収益額。"
+  },
   "moneyMeetMusd": {
     "message": "mUSDのご紹介"
+  },
+  "moneyMonthlyTooltip": {
+    "message": "過去30日間にMoney Accountで発生した総収益額。"
   },
   "moneyMoreInformation": {
     "message": "他の情報"
@@ -5596,8 +5807,99 @@
   "moneyMusd": {
     "message": "mUSD"
   },
+  "moneyOnboardingFundTitle": {
+    "message": "Money Accountへの入金",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
+  },
   "moneySend": {
     "message": "送金"
+  },
+  "moneyToastDepositFailedBody": {
+    "message": "資金を追加できません。もう一度お試しください。"
+  },
+  "moneyToastDepositFailedBodyConvert": {
+    "message": "換金できません。もう一度お試しください。"
+  },
+  "moneyToastDepositFailedTitle": {
+    "message": "デポジット失敗"
+  },
+  "moneyToastDepositFailedTitleAddMusd": {
+    "message": "資金の追加に失敗しました"
+  },
+  "moneyToastDepositFailedTitleConvert": {
+    "message": "換金に失敗しました"
+  },
+  "moneyToastDepositInProgressDescriptionCard": {
+    "message": "カードのご注文には少し時間がかかるかもしれません。"
+  },
+  "moneyToastDepositInProgressTitleAddMusd": {
+    "message": "資金を追加中"
+  },
+  "moneyToastDepositInProgressTitleCard": {
+    "message": "入金中"
+  },
+  "moneyToastDepositInProgressTitleConvert": {
+    "message": "仮想通貨の換金"
+  },
+  "moneyToastDepositSuccessDescription": {
+    "message": "$1がMoney Accountに追加されました。",
+    "description": "$1 is the formatted fiat amount deposited (e.g. $20.00)"
+  },
+  "moneyToastDepositSuccessDescriptionNoAmount": {
+    "message": "Money Accountに追加されました。"
+  },
+  "moneyToastDepositSuccessTitleAddMusd": {
+    "message": "入金されました"
+  },
+  "moneyToastDepositSuccessTitleCard": {
+    "message": "デポジット完了"
+  },
+  "moneyToastDepositSuccessTitleConvert": {
+    "message": "換金完了"
+  },
+  "moneyToastInProgressDescription": {
+    "message": "これには少し時間がかかるかもしれません。"
+  },
+  "moneyToastWithdrawFailedBody": {
+    "message": "送金できません。もう一度お試しください。"
+  },
+  "moneyToastWithdrawFailedTitle": {
+    "message": "送金に失敗しました"
+  },
+  "moneyToastWithdrawFallbackDestination": {
+    "message": "お客様のアカウント"
+  },
+  "moneyToastWithdrawInProgressTitle": {
+    "message": "送金中"
+  },
+  "moneyToastWithdrawSuccessDescription": {
+    "message": "$1が$2に追加されました。",
+    "description": "$1 is the formatted fiat amount withdrawn (e.g. $20.00), $2 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessDescriptionNoAmount": {
+    "message": "$1に追加されました。",
+    "description": "$1 is the destination account name"
+  },
+  "moneyToastWithdrawSuccessTitle": {
+    "message": "送金完了"
+  },
+  "moneyTransferBetweenAccounts": {
+    "message": "別のアカウント"
+  },
+  "moneyTransferComingSoon": {
+    "message": "近日追加予定"
+  },
+  "moneyTransferPerpsAccount": {
+    "message": "パーペチュアルアカウント"
+  },
+  "moneyTransferSendExternal": {
+    "message": "外部アドレス"
+  },
+  "moneyTransferTitle": {
+    "message": "送金先"
+  },
+  "moneyTransferWithdrawToBank": {
+    "message": "銀行口座"
   },
   "month": {
     "message": "月"
@@ -5937,9 +6239,6 @@
   "networkFeeExplanationTitle": {
     "message": "ネットワーク手数料"
   },
-  "networkMenu": {
-    "message": "ネットワークメニュー"
-  },
   "networkMenuHeading": {
     "message": "ネットワークを選択"
   },
@@ -5985,6 +6284,10 @@
   },
   "networkStatusPriorityFeeTooltip": {
     "message": "優先手数料 (別名「マイナーチップ」) の範囲。これはマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "ネットワーク手数料は過去72時間と比較して$1です。",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkSuggested": {
     "message": "おすすめのネットワーク"
@@ -6239,18 +6542,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "出金準備ができました"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "これでステーキングが解除された$1を引き出すことができます"
-  },
-  "notificationItemLidoWithdrawalRequestedMessage": {
-    "message": "$1のステーキングを解除するリクエストが送信されました"
-  },
-  "notificationItemNFTReceivedFrom": {
-    "message": "NFTを次の相手から受け取りました:"
-  },
-  "notificationItemNFTSentTo": {
-    "message": "NFTを次の相手に送りました:"
-  },
   "notificationItemNetwork": {
     "message": "ネットワーク:"
   },
@@ -6259,18 +6550,6 @@
   },
   "notificationItemReceived": {
     "message": "受け取りました"
-  },
-  "notificationItemReceivedFrom": {
-    "message": "次の相手から受け取りました:"
-  },
-  "notificationItemSent": {
-    "message": "送信完了"
-  },
-  "notificationItemSentTo": {
-    "message": "次の相手に送りました:"
-  },
-  "notificationItemStakeCompleted": {
-    "message": "ステーキングが完了しました"
   },
   "notificationItemStaked": {
     "message": "ステーキング中"
@@ -6284,17 +6563,11 @@
   "notificationItemSwapped": {
     "message": "スワップ完了"
   },
-  "notificationItemSwappedFor": {
-    "message": "-"
-  },
   "notificationItemTo": {
     "message": "送り先"
   },
   "notificationItemTransactionId": {
     "message": "トランザクションID"
-  },
-  "notificationItemUnStakeCompleted": {
-    "message": "ステーキングの解除が完了しました"
   },
   "notificationItemUnStaked": {
     "message": "ステーキングが解除されました"
@@ -6716,6 +6989,42 @@
   "passkeyErrorVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyMigrationDescription1": {
+    "message": "現在のパスキーの保存方法では、ウォレットの秘密鍵を完全に保護することができません。パスキーを再作成して、引き続き生体認証機能を使うようにしてください。",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "ブラウザでパスキーの保存先を指定する際には、このデバイスではなく、Googleパスワードマネージャーを選択してください。$1。",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "現在のパスキーは再作成されるまで使用できます。",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "パスキーはこのデバイスに保存されており、ウォレットの秘密鍵を保護できません。もう一度やり直して、ブラウザで保存先を指定する際にGoogleパスワードマネージャーを選択してください。$1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "当面は現在のパスキーを使用する",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "そのパスキーは機能しません",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTryAgain": {
+    "message": "もう一度お試しください",
+    "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "対応しているプロバイダーを見る",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "パスキーの更新が必要です",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
@@ -7188,6 +7497,13 @@
   "perpsAddFunds": {
     "message": "資金を追加"
   },
+  "perpsAddFundsHint": {
+    "message": "この注文を出すには、少なくとも$1をパーペチュアルアカウントに追加してください。",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "取引用の資金を追加"
+  },
   "perpsAddMargin": {
     "message": "証拠金を追加"
   },
@@ -7437,6 +7753,10 @@
   "perpsFilterAll": {
     "message": "すべて"
   },
+  "perpsFilterClear": {
+    "message": "$1、フィルターを消去",
+    "description": "Accessible name of the active market category pill, which clears the filter when pressed. $1 is the category name"
+  },
   "perpsFilterCommodities": {
     "message": "商品"
   },
@@ -7451,6 +7771,17 @@
   },
   "perpsFilterIndex": {
     "message": "インデックス"
+  },
+  "perpsFilterMemecoins": {
+    "message": "ミームコイン"
+  },
+  "perpsFilterMore": {
+    "message": "さらに表示",
+    "description": "Trigger of the menu holding the market categories that do not fit the filter rail"
+  },
+  "perpsFilterMoreSelected": {
+    "message": "その他、$1が選択されました",
+    "description": "Accessible name of the category overflow menu when the active filter is inside it. $1 is the selected category"
   },
   "perpsFilterNew": {
     "message": "新登場"
@@ -7547,6 +7878,18 @@
   },
   "perpsMarket": {
     "message": "マーケット"
+  },
+  "perpsMarketCategories": {
+    "message": "市場カテゴリー",
+    "description": "Accessible name of the market list group of category pills"
+  },
+  "perpsMarketCount": {
+    "message": "$1件の市場",
+    "description": "Count of markets currently listed. $1 is the number of markets"
+  },
+  "perpsMarketCountSingular": {
+    "message": "1件の市場",
+    "description": "Count of markets currently listed, when exactly one is listed"
   },
   "perpsMarketNotFound": {
     "message": "市場が見つかりません"
@@ -7734,6 +8077,10 @@
   "perpsPositions": {
     "message": "ポジション"
   },
+  "perpsProducts": {
+    "message": "商品",
+    "description": "Heading of the Perps tab section listing market categories as chips"
+  },
   "perpsRateLimitExceeded": {
     "message": "リクエストが多すぎます。時間をおいて、もう一度お試しください。"
   },
@@ -7848,14 +8195,8 @@
   "perpsSortByPriceChange": {
     "message": "価格変動"
   },
-  "perpsSortByRank": {
-    "message": "ランキング"
-  },
-  "perpsSortBySection": {
-    "message": "並べ替え基準"
-  },
   "perpsSortByTitle": {
-    "message": "フィルター"
+    "message": "並べ替え基準"
   },
   "perpsSortByVolume": {
     "message": "取引量"
@@ -8035,6 +8376,10 @@
   "perpsToastSubmitInProgress": {
     "message": "取引を送信中",
     "description": "In-progress toast text shown while a perps trade is being submitted"
+  },
+  "perpsToastTradeEntryFailed": {
+    "message": "取引を開けませんでした",
+    "description": "Error toast text shown when opening the perps order form from an asset page fails"
   },
   "perpsToastTradeSuccess": {
     "message": "ポジションがクローズされました",
@@ -8305,10 +8650,6 @@
     "message": "秘密鍵",
     "description": "select this type of file to use to import an account"
   },
-  "privateKeyCopyWarning": {
-    "message": "$1の秘密鍵",
-    "description": "$1 represents the account name"
-  },
   "privateKeyHidden": {
     "message": "秘密鍵は非表示になっています",
     "description": "Explains that the private key input is hidden"
@@ -8320,9 +8661,6 @@
   "privateKeyShown": {
     "message": "秘密鍵は表示されています",
     "description": "Explains that the private key input is being shown"
-  },
-  "privateKeyWarning": {
-    "message": "警告: この鍵は絶対に公開しないでください。秘密鍵を持つ人は誰でも、アカウントに保持されているアセットを盗むことができます。"
   },
   "privateKeys": {
     "message": "秘密鍵",
@@ -8475,6 +8813,10 @@
   },
   "rampsChangeProvider": {
     "message": "プロバイダーを変更します。"
+  },
+  "rampsChangeProviders": {
+    "message": "プロバイダーを変更してください",
+    "description": "Inline link completing the sentence in rampsQuoteFetchError"
   },
   "rampsChooseProvider": {
     "message": "プロバイダーの選択"
@@ -8637,7 +8979,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "最大$1",
+    "message": "$1リミット",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8648,7 +8990,7 @@
     "message": "前回の利用"
   },
   "rampsQuoteFetchError": {
-    "message": "クォートを取得できませんでした。"
+    "message": "クォートの取得中にエラーが発生しました。金額を下げるか、"
   },
   "rampsQuoteUnavailable": {
     "message": "クォートが利用できません。"
@@ -8662,8 +9004,13 @@
   "rampsServiceDisruptionTitle": {
     "message": "購入は一時的にご利用いただけません"
   },
-  "rampsShowAllTokens": {
-    "message": "すべてのトークンを表示"
+  "rampsTokenUnavailableDescription": {
+    "message": "このトークンはお客様の地域ではご利用いただけません。",
+    "description": "Body copy of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961)"
+  },
+  "rampsTokenUnavailableTitle": {
+    "message": "トークンを利用できません",
+    "description": "Title of the modal opened from the info button next to a token that cannot be bought in the user's region or via an available provider (TRAM-3710/TRAM-3961). Also used as the info button's accessible label"
   },
   "rampsUnsupportedDescription": {
     "message": "お住まいの地域では、まだ仮想通貨の購入はサポートされていません。"
@@ -8678,7 +9025,7 @@
     "message": "$1%のMM手数料込み。"
   },
   "readdToken": {
-    "message": "アカウントオプションメニューで「トークンのインポート」を選択することによって、今後このトークンを戻すことができます。"
+    "message": "このトークンは、トークンメニューの「トークンを管理」から再び追加できます。"
   },
   "receive": {
     "message": "受取"
@@ -8746,6 +9093,13 @@
   "rejected": {
     "message": "拒否済"
   },
+  "relayerFee": {
+    "message": "リレイヤー手数料"
+  },
+  "remindMeLater": {
+    "message": "了解",
+    "description": "Secondary action to postpone replacing a legacy passkey."
+  },
   "remove": {
     "message": "削除"
   },
@@ -8808,6 +9162,10 @@
   },
   "replace": {
     "message": "代わって適用"
+  },
+  "replacePasskey": {
+    "message": "パスキーを再作成する",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "問題を報告する"
@@ -9088,6 +9446,9 @@
   },
   "rpcUrl": {
     "message": "RPC URL"
+  },
+  "rpcUrlRateLimited": {
+    "message": "このRPCプロバイダーはリクエストを制限しています。後でもう一度試すか、別のRPC URLをご利用ください。"
   },
   "safeTransferFrom": {
     "message": "安全な送金元:"
@@ -9687,9 +10048,6 @@
   "sendAlertNewAddressTitle": {
     "message": "新しいアドレス"
   },
-  "sendBugReport": {
-    "message": "バグの報告をお送りください."
-  },
   "sendBundleHwGasPayment": {
     "message": "ネットワーク手数料を$1で支払い中",
     "description": "$1 is the symbol of the token being used to pay the network fee"
@@ -9712,6 +10070,9 @@
   "sendingNativeAsset": {
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "この機微情報はクリップボード上に残ります。"
   },
   "sent": {
     "message": "送信完了"
@@ -10411,12 +10772,6 @@
   "showPermissions": {
     "message": "表示許可"
   },
-  "showPrivateKey": {
-    "message": "秘密鍵を表示"
-  },
-  "showSRP": {
-    "message": "シークレットリカバリーフレーズを表示"
-  },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
@@ -11023,38 +11378,19 @@
   "stateCorruptionAreYouSure": {
     "message": "続行してよろしいですか？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1に従ってヴォールトを復元することを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
   "stateCorruptionCopyAndRestoreBeforeReset": {
     "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "ヴォールトを自動的に復元することができません。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "ヴォールトは自動バックアップから復元することができます。自動リカバリーでは現在の設定が削除され、ヴォールトのみが復元されます。"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部エラー: データベースにアクセスできません"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMaskのステートのリセット"
-  },
   "stateCorruptionResettingDatabase": {
     "message": "データベースをリセットしています…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "アカウントの復元"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "データベースを復元しています…"
   },
   "stateCorruptionTheseInstructions": {
     "message": "これらの手順",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeReset` localization key."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "シークレットリカバリーフレーズの復元方法"
@@ -11099,6 +11435,9 @@
   "stxCancelled": {
     "message": "スワップは失敗していたと思われます"
   },
+  "stxCancelledDescription": {
+    "message": "トランザクションが失敗しそうになり、不要なネットワーク手数料の支払いを避けるためにキャンセルされました。"
+  },
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回も同様のリスクを防ぐために監視を行います。"
   },
@@ -11106,7 +11445,7 @@
     "message": "スワップに失敗しました"
   },
   "stxFailureDescription": {
-    "message": "急激な市場の変化により、障害が発生することがあります。問題が解決しない場合は$1にご連絡ください。",
+    "message": "突然の市場変動が失敗の原因になります。問題が解決されないようでしたら、$1にお問い合わせください。",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11140,6 +11479,9 @@
   },
   "stxUserCancelled": {
     "message": "スワップがキャンセルされました"
+  },
+  "stxUserCancelledDescription": {
+    "message": "不要なネットワーク手数料を支払うことなくトランザクションがキャンセルされました。"
   },
   "submit": {
     "message": "送信"
@@ -11270,12 +11612,19 @@
     "message": "$1から$2へのスワップ",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesExplanation": {
+    "message": "MetaMaskはネットワーク手数料から収益を得ません。これらの手数料は見積もりであり、ネットワークの混雑状況やトランザクションの複雑さによって変わる可能性があります。詳細は$1をご覧ください。",
+    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
+  },
   "swapGasFeesExplanationLinkText": {
     "message": "こちら",
     "description": "Text for link in swapGasFeesExplanation"
   },
   "swapGasFeesIncluded": {
     "message": " 込み"
+  },
+  "swapGasFeesSplit": {
+    "message": "前の画面のネットワーク手数料は、この2つのトランザクションに分けられています。"
   },
   "swapGasFeesSponsored": {
     "message": "MetaMaskが負担"
@@ -11368,6 +11717,9 @@
   "swapSlippageAutoDescription": {
     "message": "自動"
   },
+  "swapSlippageCappedDescription": {
+    "message": "スリッページ許容範囲は100%に制限されました。"
+  },
   "swapSlippageHighDescription": {
     "message": "入力されたスリッページ ($1%) は非常に高いもののため、不利なレートに繋がる可能性があります",
     "description": "$1 is the amount of % for slippage"
@@ -11410,6 +11762,9 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "スワップは複雑で急を要するトランザクションです。コストとスワップの確実な成功のバランスが取れたこのネットワーク手数料をお勧めします。"
+  },
   "swapToConfirmWithHwWallet": {
     "message": "ハードウェアウォレットで確定"
   },
@@ -11431,6 +11786,9 @@
   },
   "swapUnknown": {
     "message": "不明"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "このスワップのネットワーク手数料を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "swapZeroSlippage": {
     "message": "0%スリッページ"
@@ -11634,7 +11992,7 @@
     "message": "受取額合計"
   },
   "totalVolume": {
-    "message": "トークン数"
+    "message": "出来高 (24時間)"
   },
   "transaction": {
     "message": "トランザクション"
@@ -11665,6 +12023,9 @@
   },
   "transactionHistoryBaseFee": {
     "message": "基本料金 (Gwei)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "L1ネットワーク手数料合計"
   },
   "transactionHistoryL2GasLimitLabel": {
     "message": "L2ガスリミット"
@@ -11838,9 +12199,6 @@
     "message": "$1との接続が利用できません。続行する前にネットワーク接続情報を更新するか、後でもう一度お試しください。",
     "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
   },
-  "unexpectedBehavior": {
-    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
-  },
   "unexpectedError": {
     "message": "予期せぬエラーが発生しました。",
     "description": "This is a fallback error message used for unexpected errors."
@@ -11880,6 +12238,9 @@
   },
   "unlock": {
     "message": "ロックを解除"
+  },
+  "unlockPageIncorrectPassword": {
+    "message": "パスワードが正しくありません。もう一度お試しください。"
   },
   "unlockPageTooManyFailedAttempts": {
     "message": "試行回数の上限に達しました。再試行できるまであと"
@@ -12074,6 +12435,9 @@
   "volume": {
     "message": "取引量"
   },
+  "volumeToMarketCap": {
+    "message": "出来高 / 時価総額"
+  },
   "wallet": {
     "message": "ウォレット"
   },
@@ -12150,6 +12514,10 @@
   },
   "wrongNetworkName": {
     "message": "当社の記録によると、ネットワーク名がこのチェーンIDと正しく一致していない可能性があります。"
+  },
+  "wrongPassword": {
+    "message": "パスワードが正しくありません。もう一度お試しください。",
+    "description": "Displayed when the user enters an incorrect password"
   },
   "year": {
     "message": "年"

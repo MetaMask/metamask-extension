@@ -93,7 +93,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await transactionConfirmation.checkGasFeeFiat('$1.23');
         await transactionConfirmation.checkGasFee('1.23');
         await transactionConfirmation.checkGasFeeTokenFee('$0.43');
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -154,7 +154,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await gasFeeTokenModal.clickToken('USDC');
 
         await transactionConfirmation.checkGasFeeSymbol('USDC');
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterButton({ button: 'confirm' });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -249,6 +249,7 @@ async function mockSentinelNetworks(mockServer: MockttpServer) {
             network: 'ethereum-mainnet',
             confirmations: true,
             relayTransactions: true,
+            cubistSigners: ['0x1111111111111111111111111111111111111111'],
             sendBundle: true,
           },
         },

@@ -102,12 +102,19 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.ORDER_SCALE_COUNT_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SCALE_SIZE_TOO_SMALL]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_SCALE_NOTIONAL_TOO_SMALL]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_SCALE_PREVIEW_STALE]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_INTERVAL_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_DURATION_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_MAX_DISTANCE_INVALID]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_LIMIT_REACHED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_ABANDONED]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.ORDER_CHASE_TOUCH_UNAVAILABLE]: 'perpsOrderFailed',
+  // Isolated/cross margin-mode selection. The extension order form does not
+  // send `marginMode`, so these codes are unreachable from its UI today.
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_INVALID]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_UNSUPPORTED]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_POSITION_OPEN]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.ORDER_MARGIN_MODE_ORDER_OPEN]: 'perpsOrderFailed',
 
   // HyperLiquid client errors
   [PERPS_ERROR_CODES.EXCHANGE_CLIENT_NOT_AVAILABLE]: 'somethingWentWrong',
@@ -151,6 +158,7 @@ export const ERROR_CODE_TO_I18N_KEY = {
   [PERPS_ERROR_CODES.INSUFFICIENT_BALANCE]: 'perpsWithdrawInsufficient',
   [PERPS_ERROR_CODES.REDUCE_ONLY_VIOLATION]: 'perpsOrderFailed',
   [PERPS_ERROR_CODES.POSITION_WOULD_FLIP]: 'perpsOrderFailed',
+  [PERPS_ERROR_CODES.POSITION_NOT_FOUND]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.MARGIN_ADJUSTMENT_FAILED]: 'somethingWentWrong',
   [PERPS_ERROR_CODES.TPSL_UPDATE_FAILED]: 'somethingWentWrong',
   // The controller could not keep the position's TP/SL triggers in place. The

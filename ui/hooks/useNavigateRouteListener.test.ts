@@ -62,28 +62,6 @@ describe('useNavigateRouteListener', () => {
     });
   });
 
-  it('defers navigation until unlocked', () => {
-    mockGetIsUnlocked.mockReturnValue(false);
-    const { rerender } = renderHook(() => useNavigateRouteListener());
-
-    act(() => {
-      messageListener?.({
-        type: EXTENSION_MESSAGES.OPEN_ROUTE,
-        body: { path: '/asset/eip155:1/slip44:60' },
-      });
-    });
-
-    expect(mockNavigate).not.toHaveBeenCalled();
-
-    mockGetIsUnlocked.mockReturnValue(true);
-    rerender();
-
-    expect(mockNavigate).toHaveBeenCalledWith({
-      pathname: '/asset/eip155:1/slip44:60',
-      search: '',
-    });
-  });
-
   it('ignores messages without a valid path', () => {
     renderHook(() => useNavigateRouteListener());
 

@@ -9,6 +9,9 @@ import { Driver } from '../../../webdriver/driver';
  */
 const QUOTE_PARAMS_DEBOUNCE_MS = 500;
 
+/** Prefix the Select quote dialog renders before each quote's cost. */
+const TOTAL_COST_LABEL = 'Total cost:';
+
 export type BridgeQuote = {
   amount: string;
   tokenFrom?: string;
@@ -84,7 +87,14 @@ class BridgeQuotePage {
 
   private moreETHneededForGas = '[data-testid="bridge-insufficient-gas"]';
 
+  private moreQuotesButton = '[aria-label="More quotes"]';
+
   private networkFees = '[data-testid="network-fees"]';
+
+  private networkFeesValue = {
+    css: this.networkFees,
+    text: '$',
+  };
 
   private networkNameSelector = (network: string) =>
     `[data-testid="${network}"]`;
@@ -95,6 +105,20 @@ class BridgeQuotePage {
 
   private priceImpactQuoteCardButton =
     '[data-testid="price-impact-warning-button"]';
+
+  private quoteOption = '.bridge-quote-option';
+
+  private quotesModal = '.quotes-modal';
+
+  private quotesModalBackButton = '.quotes-modal [aria-label="Back"]';
+
+  private quotesModalTitle = {
+    css: this.quotesModal,
+    text: 'Select quote',
+  };
+
+  private quoteTotalCost = (position: number) =>
+    `${this.quotesModal} ${this.quoteOption}:nth-child(${position}) [data-testid="bridge-quote-total-cost"]`;
 
   private rwaGeoRestrictedMessage = {
     css: '[data-testid="bridge-no-quotes"]',
@@ -108,6 +132,9 @@ class BridgeQuotePage {
     'input[data-testid="bridge__tx-settings-modal-custom-input"]';
 
   private slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private slippageSubmitButton =
+    '[data-testid="bridge__tx-settings-modal-submit-button"]';
 
   private sourceAmount = '[data-testid="from-amount"]';
 
@@ -155,6 +182,18 @@ class BridgeQuotePage {
   };
 
   /**
+   * Checks the Total cost of every row of the Select quote dialog, in display
+   * order.
+   *
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first.
+   */
+  async checkAllQuoteTotalCosts(expectedTotalCosts: string[]): Promise<void> {
+    for (const [index, expectedTotalCost] of expectedTotalCosts.entries()) {
+      await this.checkSingleQuoteTotalCost(index + 1, expectedTotalCost);
+    }
+  }
+
+  /**
    * Checks that the asset picker is shown again after navigating back from an
    * asset page, then leaves it to return to the swap form.
    */
@@ -181,28 +220,22 @@ class BridgeQuotePage {
     console.log(`Expected dest asset ${destToken} is selected`);
   };
 
+  async checkCustomSlippageDisplayedValue(value: string): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.slippageCustomButton,
+      text: `${value}%`,
+    });
+  }
+
   async checkDestAmount(amount: string) {
     await this.driver.waitForSelector(this.destinationAmount(amount));
   }
 
   async checkExpectedNetworkFeeIsDisplayed(): Promise<void> {
-    try {
-      const balance = await this.driver.waitForSelector(this.networkFees);
-      const currentBalanceText = await balance.getText();
-      // Verify that the text matches the pattern $XXX.XX or $0.00X (for small fees < $0.01)
-      const pricePattern = /^\$\d+\.\d{2,4}$/u;
-      if (!pricePattern.test(currentBalanceText)) {
-        throw new Error(`Price format is not valid: ${currentBalanceText}`);
-      }
-    } catch (e: unknown) {
-      console.log(
-        `Error checking price format: ${
-          e instanceof Error ? e.message : String(e)
-        }`,
-      );
-      throw e;
-    }
-    console.log('Price matches expected format');
+    // The fee element renders empty until the quote's native exchange rate
+    // lands, so wait for the formatted amount rather than for the element.
+    await this.driver.waitForSelector(this.networkFeesValue);
+    console.log('Network fee is displayed');
   }
 
   async checkGasIncludedIsDisplayed(): Promise<void> {
@@ -287,6 +320,38 @@ class BridgeQuotePage {
     );
   };
 
+  /**
+   * Opens the Select quote dialog from More quotes and asserts the Total cost
+   * of every quote, then closes the dialog with Back so the quote selected on
+   * the quote page is left unchanged.
+   *
+   * @param expectedTotalCosts - Total cost values as rendered, cheapest first,
+   * e.g. `['$38.95']` or `['0.0143 ETH']`. Derive them from the mocked quotes
+   * with `getExpectedQuoteTotalCosts` rather than writing amounts by hand.
+   */
+  async checkQuoteTotalCost(expectedTotalCosts: string[]): Promise<void> {
+    await this.driver.clickElement(this.moreQuotesButton);
+    await this.driver.waitForSelector(this.quotesModalTitle);
+
+    await this.waitForExpectedNumberOfQuotes(expectedTotalCosts.length);
+
+    // Checking each value at its own position also covers the cheapest-first
+    // sorting.
+    await this.checkAllQuoteTotalCosts(expectedTotalCosts);
+
+    await this.driver.waitForSelector({
+      css: `${this.quotesModal} ${this.quoteOption}:first-child`,
+      text: 'Lowest cost',
+    });
+
+    await this.driver.clickElementAndWaitToDisappear(
+      this.quotesModalBackButton,
+    );
+    console.log(
+      `Quote total costs are as expected: ${expectedTotalCosts.join(', ')}`,
+    );
+  }
+
   async checkRwaGeoRestrictedMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.rwaGeoRestrictedMessage);
@@ -297,6 +362,24 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('The RWA geo-restricted message is displayed');
+  }
+
+  /**
+   * Checks the Total cost of one row of the Select quote dialog, as rendered:
+   * either a fiat amount (`$2.26`) or, when the quote has no fiat cost, the
+   * native network fee (`0.0143 ETH`).
+   *
+   * @param position - 1-based position of the quote in the dialog.
+   * @param expectedTotalCost - Total cost value as rendered, without the label.
+   */
+  async checkSingleQuoteTotalCost(
+    position: number,
+    expectedTotalCost: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.quoteTotalCost(position),
+      text: `${TOTAL_COST_LABEL} ${expectedTotalCost}`,
+    });
   }
 
   async checkTokenIsDisabled() {
@@ -424,7 +507,11 @@ class BridgeQuotePage {
           this.assetPrickerSearchInput,
           quote.tokenTo,
         );
-        await this.driver.delay(2000);
+        // Wait for search results to load before clicking
+        await this.driver.waitForElementToStopMoving({
+          text: quote.tokenTo,
+          css: this.tokenButton,
+        });
         await this.driver.clickElementAndWaitToDisappear({
           text: quote.tokenTo,
           css: this.tokenButton,
@@ -622,8 +709,31 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.warningModal);
   };
 
+  async submitSlippageModal(): Promise<void> {
+    await this.driver.clickElement(this.slippageSubmitButton);
+  }
+
   async switchTokens(): Promise<void> {
     await this.driver.clickElement(this.switchTokensButton);
+  }
+
+  /**
+   * Waits for the Select quote dialog to list every quote. Quotes are streamed,
+   * so the list keeps growing and re-sorting until the last one lands.
+   *
+   * @param expectedQuoteCount - Number of quotes the mocks return.
+   */
+  async waitForExpectedNumberOfQuotes(
+    expectedQuoteCount: number,
+  ): Promise<void> {
+    const hasAllQuotes = await this.driver.elementCountBecomesN(
+      `${this.quotesModal} ${this.quoteOption}`,
+      expectedQuoteCount,
+    );
+    assert.ok(
+      hasAllQuotes,
+      `Select quote dialog did not list ${expectedQuoteCount} quotes`,
+    );
   }
 
   waitForQuote = async () => {

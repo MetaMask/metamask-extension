@@ -32,6 +32,16 @@ app/offscreen/offscreen.ts       @MetaMask/core-platform
 # make all such communication opt IN versus opt OUT.
 privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
+# The legacy-background-api-snapshot.json file lists the members that the legacy
+# background APIs (MetamaskController.getApi and LegacyBackgroundApiService) are
+# allowed to have. This API is frozen, and the legacy-background-api.ts script
+# checks that it remains so (using the snapshot for comparison). It also allows
+# for regenerating the snapshot in case the API needs to be expanded, but that
+# step requires approval from the Core Platform team.
+development/legacy-background-api/        @MetaMask/core-platform
+development/legacy-background-api.ts      @MetaMask/core-platform
+development/legacy-background-api.test.ts @MetaMask/core-platform
+legacy-background-api-snapshot.json       @MetaMask/core-platform
 
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
@@ -158,7 +168,6 @@ ui/components/multichain/notifications*/**                     @MetaMask/core-ex
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/core-extension-ux
-ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/core-extension-ux
 ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/core-extension-ux

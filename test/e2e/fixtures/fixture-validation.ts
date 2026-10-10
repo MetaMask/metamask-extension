@@ -58,16 +58,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.AppStateController.termsOfUseLastAgreed',
-  'data.CurrencyController.currencyRates.BNB.conversionDate',
-  'data.CurrencyController.currencyRates.BNB.conversionRate',
-  'data.CurrencyController.currencyRates.BNB.usdConversionRate',
-  'data.CurrencyController.currencyRates.ETH.conversionDate',
-  'data.CurrencyController.currencyRates.ETH.conversionRate',
-  'data.CurrencyController.currencyRates.POL.conversionDate',
-  'data.CurrencyController.currencyRates.POL.conversionRate',
-  'data.CurrencyController.currencyRates.POL.usdConversionRate',
-  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.conversionTime',
-  'data.MultichainAssetsRatesController.conversionRates.bip122:000000000019d6689c085ae165831e93/slip44:0.expirationTime',
   'data.NetworkController.networkConfigurationsByChainId.0x539.lastUpdatedAt',
   'data.NotificationServicesController.metamaskNotificationsList',
   'data.PhishingController.c2DomainBlocklistLastFetched',
@@ -81,14 +71,22 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Threshold group selection is derived from the (random) analyticsId, so it
   // is non-deterministic per run, like the other flags above.
   'data.RemoteFeatureFlagController.featureFlagThresholdGroups',
+  // Legacy assets controllers set `persist: false` in `@metamask/assets-controllers`
+  // v111.2.0, so they are absent from persisted state. The fixtures still seed them
+  // because controllers are constructed from the fixture state at boot, but there is
+  // nothing to validate against.
+  'data.CurrencyController',
+  'data.MultichainAssetsRatesController',
+  'data.MultichainAssetsController',
+  'data.MultichainBalancesController',
+  'data.TokenRatesController',
+  'data.TokensController',
   // Entire objects/controllers ignored (dynamic or impractical to validate)
   'data.AccountTreeController.selectedAccountGroup', // Entropy source is random and non-deterministic, and the selected group can change on each run.
   'data.AccountsController.internalAccounts.accounts',
   'data.AccountTracker',
   'data.AssetsController',
   'data.AuthenticationController',
-  'data.MetaMetricsController',
-  'data.MultichainAssetsController',
   'data.TokenBalancesController',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
@@ -102,8 +100,6 @@ const getFixtureIgnoredKeys = (): string[] => [
   // Random ids
   'data.AnalyticsController.analyticsId',
   'data.AnalyticsController.preConsentEventQueue',
-  'data.MultichainBalancesController',
-  'data.MultichainBalancesController.balances',
   'data.MultichainTransactionsController.nonEvmTransactions',
   'data.NetworkController.networkConfigurationsByChainId.0x539.rpcEndpoints[0].networkClientId',
   'data.NetworkController.networkConfigurationsByChainId.0x1.rpcEndpoints[0].failoverUrls',
@@ -123,6 +119,7 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.RewardsController.rewardsAccounts.eip155:0:0x5cfe73b6021e818b776b421b1c4db2474086a7e1.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsActiveAccount.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer.lastFreshOptInStatusCheck',
+  'data.RewardsController.rewardsAccounts.stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K.lastFreshOptInStatusCheck',
   'data.RewardsController.rewardsAccounts.tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3.lastFreshOptInStatusCheck',
 ];
 

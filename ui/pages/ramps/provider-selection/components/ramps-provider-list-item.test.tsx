@@ -62,6 +62,50 @@ describe('RampsProviderListItem', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('hides the check icon when quote info is displayed', () => {
+    const { queryByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        showQuote
+        quote={mockQuote}
+        currency="USD"
+        tokenSymbol="ETH"
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(queryByTestId('ramps-provider-item-selected')).toBeNull();
+  });
+
+  it('shows the check icon when selected without quote info', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(getByTestId('ramps-provider-item-selected')).toBeInTheDocument();
+  });
+
+  it('shows the check icon when selected and no quote info is displayed', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        isSelected
+        showQuote
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    expect(getByTestId('ramps-provider-item-selected')).toBeInTheDocument();
+  });
+
   it('matches snapshot when unavailable', () => {
     const { container } = renderWithProvider(
       <RampsProviderListItem
@@ -89,5 +133,44 @@ describe('RampsProviderListItem', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('vertically centers every tag with the provider label', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        tags={[
+          { label: 'Most reliable', severity: 'info' },
+          { label: 'Best rate', severity: 'success' },
+        ]}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    for (const index of [0, 1]) {
+      const tag = getByTestId(
+        `ramps-provider-item-tag-/providers/transak-${index}`,
+      ) as HTMLElement;
+      expect(tag.className).toContain('self-center');
+      expect(tag.className).not.toContain('self-start');
+    }
+  });
+
+  it('keeps tags beside the provider name rather than at the row edge', () => {
+    const { getByTestId } = renderWithProvider(
+      <RampsProviderListItem
+        provider={provider}
+        tags={[{ label: 'Best rate', severity: 'success' }]}
+        onClick={jest.fn()}
+      />,
+      createStore(),
+    );
+
+    const name = getByTestId(
+      'ramps-provider-item-name-/providers/transak',
+    ) as HTMLElement;
+    expect(name.className).toContain('min-w-0');
+    expect(name.className).not.toContain('flex-1');
   });
 });

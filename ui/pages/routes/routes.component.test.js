@@ -12,6 +12,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
@@ -23,6 +24,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
@@ -234,6 +236,18 @@ describe('Routes Component', () => {
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
   });
 
+  it('guards discover search with basic functionality', () => {
+    const matches = matchRoutes(routeConfig, DISCOVER_SEARCH_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
+  });
+
   describe('render during send flow', () => {
     it('should render when send transaction is not active', () => {
       const state = {
@@ -373,10 +387,14 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 
-  it('does not render toastContainer on confirmation route', () => {
+  // The container is always mounted outside the home/perps/settings screens so
+  // the Basic Functionality migration toast can surface on confirmation routes,
+  // but it stays empty while no toast is scheduled.
+  it('renders an bft toastContainer on confirmation route', () => {
     render(CONFIRMATION_V_NEXT_ROUTE, getToastDisplayTestState(new Date(0)));
     const toastContainer = document.querySelector('.toasts-container');
 
-    expect(toastContainer).not.toBeInTheDocument();
+    expect(toastContainer).toBeInTheDocument();
+    expect(toastContainer).toBeEmptyDOMElement();
   });
 });

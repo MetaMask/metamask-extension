@@ -88,14 +88,13 @@ export const MultichainSrpBackup = ({
               ? t('accountDetailsSrpBackUpMessage')
               : t('srpListStateBackedUp')}
           </Text>
-          <Box className="ml-2">
-            <ButtonIcon
-              iconName={IconName.ArrowRight}
-              iconProps={{ color: IconColor.IconAlternative }}
-              size={ButtonIconSize.Sm}
-              ariaLabel={t('secretRecoveryPhrase')}
-            />
-          </Box>
+          <ButtonIcon
+            className="ml-2"
+            iconName={IconName.ArrowRight}
+            iconProps={{ color: IconColor.IconAlternative }}
+            size={ButtonIconSize.Sm}
+            ariaLabel={t('secretRecoveryPhrase')}
+          />
         </Box>
       </Box>
     </>

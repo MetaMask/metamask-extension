@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { type Provider } from '@metamask/ramps-controller';
 import {
   selectProviders,
+  selectProviderAutoSelected,
   selectRampsOrdersForSelectedAccount,
   selectUserRegion,
 } from '../../selectors/rampsController';
@@ -82,6 +83,7 @@ export function useRampsProviders(options?: {
   );
 
   const controllerOrders = useSelector(selectRampsOrdersForSelectedAccount);
+  const providerAutoSelected = useSelector(selectProviderAutoSelected);
   const completedOrders = useMemo(
     () => completedOrdersFromRampsOrders(controllerOrders),
     [controllerOrders],
@@ -101,7 +103,14 @@ export function useRampsProviders(options?: {
       return;
     }
 
-    if (!selectedProvider) {
+    // Re-evaluate when an auto-selected default (e.g. Transak) was chosen before
+    // completed order history arrived from Portfolio/User Storage sync.
+    const shouldReevaluateAutoSelection =
+      Boolean(selectedProvider) &&
+      providerAutoSelected &&
+      completedOrders.length > 0;
+
+    if (!selectedProvider || shouldReevaluateAutoSelection) {
       const result = determinePreferredProvider(completedOrders, providers);
       if (result) {
         setSelectedProvider(result.provider, {
@@ -113,6 +122,7 @@ export function useRampsProviders(options?: {
     enableSideEffects,
     providers,
     selectedProvider,
+    providerAutoSelected,
     completedOrders,
     setSelectedProvider,
   ]);

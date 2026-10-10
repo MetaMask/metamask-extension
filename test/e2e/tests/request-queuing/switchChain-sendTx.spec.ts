@@ -72,7 +72,10 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         // });
 
         // Confirm Switch Network
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
       },
     );
   });

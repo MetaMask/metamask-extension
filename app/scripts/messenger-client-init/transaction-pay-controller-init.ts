@@ -27,6 +27,7 @@ import {
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -77,6 +78,8 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
     state: persistedState.TransactionPayController,
   });
 
+  subscribePersistPayMetadata(controllerMessenger);
+
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
   return { messengerClient, api };
@@ -116,6 +119,7 @@ function getApi(
       transactionId: string,
       isMaxAmount: boolean,
       options: {
+        isAtomicMaxAllowed?: boolean;
         isMoneyAccountDeposit?: boolean;
         sourceAccountAddress?: string;
         sourceBalanceRaw?: string;
@@ -147,7 +151,18 @@ function getApi(
         config.isMaxAmount = isMaxAmount;
 
         if (options.isMoneyAccountDeposit) {
-          config.atomic = isMaxAmount ? false : undefined;
+          // Leave `atomic` unset when Core may quote Max atomically: the route
+          // match only predicts the subsidy, and Core verifies it and re-quotes
+          // non-atomically when the response is unsubsidized.
+          config.atomic =
+            isMaxAmount && !options.isAtomicMaxAllowed ? false : undefined;
+        }
+      });
+    },
+    setTransactionPayAtomic: (transactionId: string, isAllowed: boolean) => {
+      messengerClient.setTransactionConfig(transactionId, (config) => {
+        if (config.isMaxAmount) {
+          config.atomic = isAllowed ? undefined : false;
         }
       });
     },
@@ -194,12 +209,13 @@ function getApi(
         }
       }
 
-      // Re-assert non-atomic + quote-required on every amount update so
-      // confirmations created before seedDepositPayConfig gained `atomic:
-      // false` still quote without waiting on vault calldata. Leave
-      // isMaxAmount alone — Max / uncapped 100% prefill set it separately.
+      // Re-assert quote-required on every amount update so confirmations
+      // created before seedDepositPayConfig still quote. Leave atomic and
+      // isMaxAmount alone — Max / uncapped 100% prefill set those separately.
+      // Forcing `atomic: false` here made Relay quote EXACT_INPUT for every
+      // typed amount (no embedded vault txs). Non-max deposits must stay
+      // atomic so Relay uses EXACT_OUTPUT, matching mobile.
       messengerClient.setTransactionConfig(transactionId, (config) => {
-        config.atomic = false;
         config.isQuoteRequired = true;
       });
       return updateMoneyAccountDepositAmount(
@@ -242,10 +258,15 @@ function getApi(
           const transaction = moneyPayMessenger
             .call('TransactionController:getState')
             .transactions.find(({ id }) => id === transactionId);
-          const keepNonAtomic =
+          // An armed Max deposit already holds the correct hint (`false`, or
+          // `undefined` when Core may quote it atomically). Clearing the
+          // override must not re-derive it.
+          const keepAtomicHint =
             config.isMaxAmount &&
             getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit;
-          config.atomic = keepNonAtomic ? false : undefined;
+          if (!keepAtomicHint) {
+            config.atomic = undefined;
+          }
           config.refundTo = undefined;
           return;
         }
@@ -283,20 +304,21 @@ function seedAccountOverride(
 }
 
 /**
- * Seeds deposit Pay config: funding account, `isQuoteRequired`, and
- * non-atomic Relay.
+ * Seeds deposit Pay config: funding account and `isQuoteRequired`.
  *
  * Paying with same-chain mUSD is otherwise a Pay no-op (Strategy.None). The
  * publish hook then skips, so Add funds never moves mUSD from the selected
  * EOA onto the money account or embeds the vault calls. Forcing a quote
  * makes Relay own submit.
  *
- * Deposits always run non-atomic (`atomic: false`): Relay bridges funds to
- * the money account first, then the vault deposit runs after settlement.
- * Atomic embeds need parent EIP-7702 calldata at quote time, but amount
- * commits write `requiredAssets` before vault encode finishes — Relay then
- * skips embedding and often returns no quotes. Max deposits already used
- * this path; percentage / typed amounts need it too.
+ * Leave `atomic` unset. Relay embeds the vault calls for EXACT_OUTPUT only
+ * on the atomic path. `atomic: false` is Max-only (exact source spend /
+ * EXACT_INPUT), matching mobile `setIsMax`.
+ *
+ * Amount commits still write `requiredAssets` before the vault encode
+ * finishes, and Pay requotes on that write, so the first quote for each
+ * amount goes out against the placeholder batch and is superseded by the
+ * requote carrying the encoded calldata.
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
@@ -310,7 +332,6 @@ function seedDepositPayConfig(
   messengerClient.setTransactionConfig(transactionId, (config) => {
     config.accountOverride = accountOverride;
     config.isQuoteRequired = true;
-    config.atomic = false;
   });
 }
 

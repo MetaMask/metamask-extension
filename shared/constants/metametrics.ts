@@ -804,6 +804,7 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountPinned = 'Account Pinned',
   AccountHidden = 'Account Hidden',
+  ManageAccountsViewed = 'Manage Accounts Viewed',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
@@ -865,6 +866,11 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
+  MoneyButtonClicked = 'Money Button Clicked',
+  MoneyOnboardingEvent = 'Money Onboarding Event',
+  MoneySurfaceClicked = 'Money Surface Clicked',
+  MoneySurfaceViewed = 'Money Surface Viewed',
+  MoneyTooltipClicked = 'Money Tooltip Clicked',
   MusdClaimBonusButtonClicked = 'MUSD Claim Bonus Button Clicked',
   MusdClaimBonusCtaDisplayed = 'mUSD Claim Bonus CTA Displayed',
   MusdClaimBonusStatusUpdated = 'MUSD Claim Bonus Status Updated',
@@ -960,6 +966,7 @@ export enum MetaMetricsEventName {
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
   SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
+  BasicFunctionalityMigrated = 'Basic Functionality Migrated',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
@@ -1047,9 +1054,11 @@ export enum MetaMetricsEventName {
   AddNetworkButtonClick = 'Add Network Button Clicked',
   ChainlistAddClicked = 'Chainlist Add Clicked',
   ChainlistNetworkSelected = 'Chainlist Network Selected',
+  ChainlistRpcSelected = 'Chainlist RPC Selected',
   CustomNetworkFormViewed = 'Custom Network Form Viewed',
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
+  WebWidgetViewed = 'Web Widget Viewed',
   TokenDetailsCtaClicked = 'Token Details CTA Clicked',
   ExploreSearchInteracted = 'Explore Search Interacted',
   TokenDetailsSecuritySectionClicked = 'token_details_security_section_clicked',
@@ -1124,7 +1133,7 @@ export enum MetaMetricsEventName {
   TurnOffMetaMetrics = 'MetaMetrics Turned Off',
   // Notifications
   NotificationClicked = 'InApp Notification Clicked',
-  NotificationDetailClicked = 'InApp Notification Detail Clicked',
+  NotificationDetailItemClicked = 'InApp Notification Detail Item Clicked',
   NotificationsMenuOpened = 'InApp Notifications Menu Opened',
   NotificationsSettingsUpdated = 'Notifications Settings Updated',
   PushNotificationClicked = 'Push Notification Clicked',
@@ -1148,6 +1157,7 @@ export enum MetaMetricsEventName {
   SendAmountSelected = 'Send Amount Selected',
   SendAssetSelected = 'Send Asset Selected',
   SendRecipientSelected = 'Send Recipient Selected',
+  SendFailed = 'Send Failed',
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
@@ -1180,9 +1190,9 @@ export enum MetaMetricsEventName {
   // Shield
   ShieldEntryModal = 'Shield Entry Modal',
   ShieldSubscriptionRequest = 'Shield Subscription Request',
-  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
-  ShieldMembershipCancelled = 'Shield Membership Cancelled',
-  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart',
+  ShieldMembershipCancelled = 'Shield Membership Canceled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Changed',
   ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
   ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
   ShieldBillingHistoryOpened = 'Shield Billing History Opened',
@@ -1251,6 +1261,16 @@ export enum MetaMetricsEventAccountType {
   Snap = 'snap',
 }
 
+/**
+ * Segment `source` for the `Manage Accounts Viewed` event — the entry point
+ * that opened the account management view.
+ * String values must match `segment-schema/libraries/events/metamask-account-mgmt/manage-accounts-viewed.yaml` (`source` enum).
+ */
+export enum MetaMetricsManageAccountsSource {
+  AccountList = 'account_list',
+  AccountMenu = 'account_menu',
+}
+
 export enum QueueType {
   NavigationHeader = 'navigation_header',
 }
@@ -1281,6 +1301,7 @@ export enum MetaMetricsEventCategory {
   MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
+  Money = 'Money',
   MusdConversion = 'MUSD Conversion',
   Navigation = 'Navigation',
   Network = 'Network',

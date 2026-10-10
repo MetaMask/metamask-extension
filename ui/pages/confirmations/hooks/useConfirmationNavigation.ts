@@ -1,9 +1,14 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  type NavigateFunction,
+} from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { ApprovalRequest } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { isStrictHexString, Json } from '@metamask/utils';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
@@ -13,7 +18,9 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
+  DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PREVIOUS_ROUTE,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
@@ -22,6 +29,7 @@ import {
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
+import type { SetPayTokenRequest } from './pay/types';
 
 export enum ConfirmationLoader {
   Default = 'default',
@@ -39,10 +47,27 @@ export enum PayWithOption {
 }
 
 /**
+ * How to leave a confirmation.
+ *
+ * `pop` is for confirmations opened with a history push (`navigateToTransaction`).
+ * Back must pop that entry. Replacing it with `goBackTo` leaves two copies of
+ * the page underneath, so the next in-app back press appears to do nothing.
+ * Flows that open the confirmation with `replace` (Perps deposit, mUSD
+ * conversion) omit this and put `goBackTo` back with replace.
+ */
+export enum ConfirmationGoBackAction {
+  Pop = 'pop',
+}
+
+/**
  * Query params scoped to a single confirmation entry point. They must not
  * survive navigation to another pending confirmation via `getConfirmationRoute`.
  */
-const FLOW_SCOPED_SEARCH_PARAMS = ['payWithOption'] as const;
+const FLOW_SCOPED_SEARCH_PARAMS = [
+  'payWithOption',
+  'preferredPaymentTokenAddress',
+  'preferredPaymentTokenChainId',
+] as const;
 
 export function sanitizeConfirmationSearchParams(
   queryString: string = '',
@@ -76,8 +101,59 @@ const CONNECT_APPROVAL_TYPES = [
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
   goBackTo?: string;
+  /**
+   * Set when the confirmation was pushed onto history. Back then pops that
+   * entry instead of replacing it with `goBackTo`.
+   */
+  goBackAction?: ConfirmationGoBackAction;
   payWithOption?: PayWithOption;
+  /**
+   * Token the confirmation should select as the source of funds.
+   */
+  preferredPaymentToken?: SetPayTokenRequest;
 };
+
+/**
+ * Leave a confirmation without duplicating the page it was opened from.
+ *
+ * A pushed confirmation (Money deposit / withdraw) sits on top of `goBackTo`.
+ * Replacing the confirmation entry with that same URL leaves two identical
+ * history entries, so the next `navigate(-1)` stays on the same screen.
+ * Popping removes the confirmation and reveals the original entry.
+ *
+ * A confirmation opened with `replace` (Perps deposit, mUSD conversion) has
+ * no copy of `goBackTo` underneath, so back puts that route back with replace.
+ * The first history entry (`location.key === 'default'`) also replaces, so a
+ * notification window does not call `history.back()` out of the extension.
+ *
+ * @param navigate - React Router navigate.
+ * @param options - Captured return route, how the confirmation was opened, and the current history key.
+ * @param options.goBackTo - In-app route to show when there is nothing to pop.
+ * @param options.goBackAction - `pop` when the confirmation was pushed.
+ * @param options.locationKey - React Router location key. `'default'` is the first entry.
+ */
+export function navigateConfirmationExit(
+  navigate: NavigateFunction,
+  {
+    goBackTo,
+    goBackAction,
+    locationKey,
+  }: {
+    goBackTo?: string;
+    goBackAction?: ConfirmationGoBackAction;
+    locationKey: string;
+  },
+): void {
+  if (
+    goBackAction === ConfirmationGoBackAction.Pop &&
+    locationKey !== 'default'
+  ) {
+    navigate(PREVIOUS_ROUTE);
+    return;
+  }
+
+  navigate(goBackTo ?? DEFAULT_ROUTE, { replace: true });
+}
 
 export function useConfirmationNavigation() {
   const confirmations = useSelector(selectPendingApprovalsForNavigation);
@@ -149,6 +225,21 @@ export function useConfirmationNavigation() {
       if (options.payWithOption) {
         params.set('payWithOption', options.payWithOption);
       }
+
+      if (options.preferredPaymentToken) {
+        params.set(
+          'preferredPaymentTokenAddress',
+          options.preferredPaymentToken.address,
+        );
+        params.set(
+          'preferredPaymentTokenChainId',
+          options.preferredPaymentToken.chainId,
+        );
+      }
+
+      // This helper always pushes. Back must pop, or `goBackTo` is written
+      // on top of the page that is already the previous entry.
+      params.set('goBackAction', ConfirmationGoBackAction.Pop);
 
       navigate({
         pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
@@ -255,15 +346,37 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
 
   const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
 
+  const goBackAction =
+    searchParams.get('goBackAction') === ConfirmationGoBackAction.Pop
+      ? ConfirmationGoBackAction.Pop
+      : undefined;
+
   const payWithOptionParam = searchParams.get('payWithOption');
   const payWithOption =
     payWithOptionParam === PayWithOption.MoneyAccount
       ? PayWithOption.MoneyAccount
       : undefined;
 
+  const preferredPaymentTokenAddress = searchParams.get(
+    'preferredPaymentTokenAddress',
+  );
+  const preferredPaymentTokenChainId = searchParams.get(
+    'preferredPaymentTokenChainId',
+  );
+  const preferredPaymentToken =
+    isStrictHexString(preferredPaymentTokenAddress) &&
+    isStrictHexString(preferredPaymentTokenChainId)
+      ? {
+          address: preferredPaymentTokenAddress,
+          chainId: preferredPaymentTokenChainId,
+        }
+      : undefined;
+
   return {
     loader,
     goBackTo,
+    goBackAction,
     payWithOption,
+    preferredPaymentToken,
   };
 }

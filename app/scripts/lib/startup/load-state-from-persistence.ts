@@ -310,6 +310,7 @@ export async function loadStateFromPersistence(
     versionedData.data.UserStorageController.isBackupAndSyncEnabled = false;
     versionedData.data.UserStorageController.isAccountSyncingEnabled = false;
     versionedData.data.UserStorageController.isContactSyncingEnabled = false;
+    versionedData.data.UserStorageController.isRampsSyncingEnabled = false;
     if (!changedKeys.has('UserStorageController')) {
       changedKeys.add('UserStorageController');
     }

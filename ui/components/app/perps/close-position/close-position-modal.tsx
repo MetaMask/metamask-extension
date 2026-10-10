@@ -64,6 +64,7 @@ import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
@@ -384,7 +385,10 @@ export const ClosePositionModal = ({
   // Abandon-order tracking state: latest form snapshot, a stable reader for it,
   // and the commit flag that suppresses the event once a close is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasConfirmedCloseRef = useRef(false);
 
   // Which control the trader last used to set the close amount. Mirrors mobile:
@@ -472,7 +476,7 @@ export const ClosePositionModal = ({
       : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * effectivePrice,
+    () => getPerpsNotionalUsd({ size: closeSize, price: effectivePrice }),
     [closeSize, effectivePrice],
   );
 
@@ -504,7 +508,7 @@ export const ClosePositionModal = ({
     closeNotionalUsd,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasConfirmedCloseRef,
     active: isOpen,
   });
@@ -518,6 +522,7 @@ export const ClosePositionModal = ({
     symbol: position.symbol,
     orderType: effectiveOrderType,
     isMaker: effectiveOrderType === 'limit',
+    amount: String(closeNotionalUsd),
   });
 
   const liveUnrealizedPnl = useMemo(

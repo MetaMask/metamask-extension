@@ -328,6 +328,25 @@ describe('PerpsTransactionDetailsPage', () => {
   });
 
   describe('trade transaction PnL uses the net-of-fees amount', () => {
+    it('renders unknown PnL when the venue omits it', () => {
+      const transaction = findTransaction('tx-002');
+      if (!transaction.fill) {
+        throw new Error('Missing test fill');
+      }
+      renderWithTransaction({
+        ...transaction,
+        fill: {
+          ...transaction.fill,
+          pnl: undefined,
+          amountNumber: undefined,
+          amount: 'Unknown',
+        },
+      });
+      expect(getRowValueByLabel(messages.perpsPnl.message)).toBe(
+        messages.unknown.message,
+      );
+    });
+
     it('renders fill.amountNumber (pnl - fee) rather than the raw gross fill.pnl', () => {
       const baseTransaction = findTransaction('tx-002');
       const baseFill = baseTransaction.fill;
