@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, matchPath } from 'react-router-dom';
+import { useCallback, useContext, useMemo } from 'react';
+import { useSelector, useStore } from 'react-redux';
+import {
+  useLocation,
+  matchPath,
+  UNSAFE_DataRouterContext as DataRouterContext,
+  UNSAFE_NavigationContext as NavigationContext,
+} from 'react-router-dom';
 import {
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
@@ -80,4 +85,45 @@ export function useSegmentContext(): SegmentContext {
   );
 
   return useMemo(() => ({ page, referrer }), [page, referrer]);
+}
+
+/**
+ * Returns a stable function that reads the same context as `useSegmentContext`
+ * at call time, instead of subscribing the calling component to the router
+ * location and the transaction data.
+ *
+ * Prefer this in hooks that only need the context when an event is sent, so
+ * that navigating does not re-render every component that can track events.
+ *
+ * @returns A function returning the current page and referrer context
+ */
+export function useGetSegmentContext(): () => SegmentContext {
+  const store = useStore();
+  const dataRouter = useContext(DataRouterContext);
+  const { navigator } = useContext(NavigationContext);
+
+  return useCallback(() => {
+    // The data router (used by the app) holds the current location in its
+    // state; memory, hash and browser routers expose it on their history.
+    const location =
+      dataRouter?.router.state.location ??
+      (navigator as { location?: { pathname: string } }).location;
+    const matchedPath = location
+      ? findMatchingPath(location.pathname)
+      : undefined;
+    const origin = txDataSelector(store.getState())?.origin as
+      | string
+      | undefined;
+
+    return {
+      page: matchedPath
+        ? {
+            path: matchedPath,
+            title: PATH_NAME_MAP.get(matchedPath),
+            url: matchedPath,
+          }
+        : undefined,
+      referrer: origin ? { url: origin } : undefined,
+    };
+  }, [store, dataRouter, navigator]);
 }
