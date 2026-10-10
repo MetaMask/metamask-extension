@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import { act } from '@testing-library/react';
 
 import mockState from '../../../test/data/mock-state.json';
