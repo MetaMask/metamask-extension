@@ -1066,6 +1066,23 @@ const PerpsOrderEntryPage = () => {
   //    same orderType).
   // 2. Order submission tracking — passed as hlFeeRate on all order types
   //    (new / modify / close).
+  let feeNotional: number | undefined;
+  try {
+    feeNotional = getPerpsNotionalUsd(
+      orderMode === 'close' && position
+        ? {
+            size: position.size,
+            price: currentPrice,
+            closePercent: orderFormState?.closePercent,
+          }
+        : { usdAmount: orderFormState?.amount ?? '0' },
+    );
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values cannot provide a fee estimate or a submit amount.
+  }
   const {
     feeRate: currentFeeRate,
     undiscountedFeeRate: currentUndiscountedFeeRate,
@@ -1076,17 +1093,7 @@ const PerpsOrderEntryPage = () => {
   } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
     orderType,
-    amount: String(
-      getPerpsNotionalUsd(
-        orderMode === 'close' && position
-          ? {
-              size: position.size,
-              price: currentPrice,
-              closePercent: orderFormState?.closePercent,
-            }
-          : { usdAmount: orderFormState?.amount ?? '0' },
-      ),
-    ),
+    amount: feeNotional?.toString(),
   });
 
   const originalEstimatedFees = useMemo(() => {
@@ -1389,6 +1396,7 @@ const PerpsOrderEntryPage = () => {
 
   const isSubmitDisabled =
     !selectedAddress ||
+    feeNotional === undefined ||
     (orderMode === 'new' && isLoadingAccount) ||
     isDepositLoading ||
     isOrderPending ||

@@ -121,6 +121,52 @@ describe('usePerpsOrderForm', () => {
     });
   });
 
+  it.each(['', '   ', '.', '2 ETH', 'Infinity'])(
+    'leaves close calculations unavailable for live size %p and recovers',
+    (size) => {
+      const props = {
+        ...defaultOptions,
+        mode: 'close' as const,
+        existingPosition: { size, entryPrice: '45000', leverage: 3 },
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () => usePerpsOrderForm(props),
+        mockStateWithLocale,
+      );
+
+      expect(result.current.calculations).toMatchObject({
+        positionSize: null,
+        orderValue: null,
+        estimatedFees: null,
+      });
+      expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: undefined,
+      });
+
+      props.existingPosition = { ...props.existingPosition, size: '-2' };
+      rerender();
+
+      expect(result.current.calculations.estimatedFees).toBe(0);
+      expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: '90000',
+      });
+
+      props.existingPosition = { ...props.existingPosition, size: '0' };
+      rerender();
+
+      expect(result.current.calculations.estimatedFees).toBe(0);
+      expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'BTC',
+        orderType: 'market',
+        amount: '0',
+      });
+    },
+  );
+
   describe('initialization', () => {
     it('initializes with default form state', () => {
       const { result } = renderHookWithProvider(

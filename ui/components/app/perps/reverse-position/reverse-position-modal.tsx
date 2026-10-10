@@ -112,10 +112,19 @@ export const ReversePositionModal = ({
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
   // flipPosition resolves its fee against twice the controller position value.
-  const flipNotionalUsd = getPerpsNotionalUsd({
-    usdAmount: position.positionValue,
-    multiplier: 2,
-  });
+  let flipNotionalUsd: number | undefined;
+  try {
+    flipNotionalUsd = getPerpsNotionalUsd({
+      usdAmount: position.positionValue,
+      multiplier: 2,
+      allowEmpty: false,
+    });
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values leave the preview unavailable until the next update.
+  }
   const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${getDisplaySymbol(position.symbol)}`;
 
   const {
@@ -129,17 +138,20 @@ export const ReversePositionModal = ({
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
-    amount: String(flipNotionalUsd),
+    amount: flipNotionalUsd?.toString(),
   });
 
   const estimatedFees = useMemo(
-    () => (feeRate === undefined ? undefined : flipNotionalUsd * feeRate),
+    () =>
+      feeRate === undefined || flipNotionalUsd === undefined
+        ? undefined
+        : flipNotionalUsd * feeRate,
     [flipNotionalUsd, feeRate],
   );
 
   const originalEstimatedFees = useMemo(
     () =>
-      undiscountedFeeRate === undefined
+      undiscountedFeeRate === undefined || flipNotionalUsd === undefined
         ? undefined
         : flipNotionalUsd * undiscountedFeeRate,
     [flipNotionalUsd, undiscountedFeeRate],
@@ -147,7 +159,7 @@ export const ReversePositionModal = ({
 
   const estimatedMetamaskFee = useMemo(
     () =>
-      metamaskFeeRate === undefined
+      metamaskFeeRate === undefined || flipNotionalUsd === undefined
         ? undefined
         : flipNotionalUsd * metamaskFeeRate,
     [flipNotionalUsd, metamaskFeeRate],
@@ -375,7 +387,7 @@ export const ReversePositionModal = ({
             submitButtonProps={{
               'data-testid': 'perps-reverse-position-modal-save',
               children: isSubmitting ? t('perpsSubmitting') : t('confirm'),
-              disabled: isSubmitting,
+              disabled: isSubmitting || flipNotionalUsd === undefined,
             }}
           />
         </ModalContent>

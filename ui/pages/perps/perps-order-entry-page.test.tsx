@@ -3852,6 +3852,46 @@ describe('PerpsOrderEntryPage', () => {
       });
     });
 
+    it.each(['', '   ', '.', '2 ETH', 'Infinity'])(
+      'renders close mode with malformed live size %p and restores submission after recovery',
+      async (size) => {
+        mockSearchParams.set('mode', 'close');
+        mockLivePositions.mockReturnValue({
+          positions: [{ ...mockPositions[0], size }],
+          isInitialLoading: false,
+        });
+        const store = mockStore(createMockState());
+        const { rerender } = renderWithProvider(<PerpsOrderEntryPage />, store);
+
+        const submit = screen.getByTestId('submit-order-button');
+        expect(submit).toBeDisabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        await act(async () => fireEvent.click(submit));
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+          'perpsClosePosition',
+          expect.anything(),
+        );
+
+        mockUsePerpsOrderFees.mockClear();
+        mockLivePositions.mockReturnValue({
+          positions: mockPositions,
+          isInitialLoading: false,
+        });
+        rerender(<PerpsOrderEntryPage />);
+
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: String(Math.abs(Number(mockPositions[0].size)) * 3025.5),
+        });
+      },
+    );
+
     it('calls closePosition when in close mode', async () => {
       mockSearchParams.set('mode', 'close');
       mockLivePositions.mockReturnValue({

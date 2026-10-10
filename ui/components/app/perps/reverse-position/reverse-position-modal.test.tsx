@@ -239,6 +239,69 @@ describe('ReversePositionModal', () => {
   });
 
   describe('rendering', () => {
+    it.each(['', '   ', '.', '7125 USD', 'Infinity'])(
+      'keeps malformed live value %p unavailable and recovers on a valid update',
+      (positionValue) => {
+        const { rerender } = renderWithProvider(
+          <ReversePositionModal
+            {...defaultProps}
+            position={{ ...longPosition, positionValue }}
+          />,
+          mockStore,
+        );
+
+        expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+          '--',
+        );
+        expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: undefined,
+        });
+        expect(
+          screen.queryByTestId('perps-reverse-fee-value-original'),
+        ).not.toBeInTheDocument();
+        const submit = screen.getByTestId('perps-reverse-position-modal-save');
+        expect(submit).toBeDisabled();
+        expect(
+          screen.getByTestId('perps-reverse-position-modal-cancel'),
+        ).toBeEnabled();
+        fireEvent.click(submit);
+        expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+
+        rerender(<ReversePositionModal {...defaultProps} />);
+
+        expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+          '$1.43',
+        );
+        expect(submit).toBeEnabled();
+        expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+          symbol: 'ETH',
+          orderType: 'market',
+          amount: '14250',
+        });
+      },
+    );
+
+    it('preserves a genuine zero live position value', () => {
+      renderWithProvider(
+        <ReversePositionModal
+          {...defaultProps}
+          position={{ ...longPosition, positionValue: '0' }}
+        />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-reverse-fee-value')).toHaveTextContent(
+        '$0.00',
+      );
+      expect(mockUsePerpsOrderFees).toHaveBeenLastCalledWith({
+        symbol: 'ETH',
+        orderType: 'market',
+        amount: '0',
+      });
+    });
+
     it('renders the modal with header', () => {
       renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
 
