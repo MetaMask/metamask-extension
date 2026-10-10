@@ -1,12 +1,15 @@
+import type { BaseController } from '@metamask/base-controller';
 import type {
   Messenger,
   ActionConstraint,
   EventConstraint,
 } from '@metamask/messenger';
+import type { Struct } from '@metamask/superstruct';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
+
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
@@ -310,9 +313,12 @@ export type MessengerClientInitFunction<
   MessengerClientType extends MessengerClient,
   ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
-> = (
-  request: MessengerClientInitRequest<
-    ControllerMessengerType,
-    InitMessengerType
-  >,
-) => MessengerClientInitResult<MessengerClientType>;
+> = {
+  (
+    request: MessengerClientInitRequest<
+      ControllerMessengerType,
+      InitMessengerType
+    >,
+  ): MessengerClientInitResult<MessengerClientType>;
+  reference?: MessengerClientType;
+};
