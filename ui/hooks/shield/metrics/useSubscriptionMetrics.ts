@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import type { Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
@@ -9,7 +9,8 @@ import {
   getMetaMaskHdKeyrings,
   getPendingShieldCohortTxType,
 } from '../../../selectors';
-import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
+import { getSelectedEvmAccountUsdBalance } from '../../../selectors/subscription/user-usd-balance';
+import type { MetaMaskReduxState } from '../../../store/types';
 import {
   formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
@@ -54,10 +55,12 @@ export const useSubscriptionMetrics = () => {
   );
   const selectedAccount = evmInternalAccount;
   const hdKeyingsMetadata = useSelector(getMetaMaskHdKeyrings);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    true, // hide zero balance tokens
-    true, // use USD conversion rate instead of the current currency
+  const store = useStore<MetaMaskReduxState>();
+  // Read at call time instead of subscribing, so balance and exchange rate
+  // updates do not re-render every component using this hook.
+  const getTotalFiatBalance = useCallback(
+    () => Number(getSelectedEvmAccountUsdBalance(store.getState())),
+    [store],
   );
   const pendingShieldCohortTxType = useSelector(getPendingShieldCohortTxType);
 
@@ -69,7 +72,7 @@ export const useSubscriptionMetrics = () => {
       const commonTrackingProps = getShieldCommonTrackingProps(
         selectedAccount,
         hdKeyingsMetadata,
-        Number(totalFiatBalance),
+        getTotalFiatBalance(),
       );
 
       trackEvent(
@@ -87,7 +90,7 @@ export const useSubscriptionMetrics = () => {
       createEventBuilder,
       selectedAccount,
       hdKeyingsMetadata,
-      totalFiatBalance,
+      getTotalFiatBalance,
     ],
   );
 
@@ -109,12 +112,12 @@ export const useSubscriptionMetrics = () => {
         setShieldSubscriptionMetricsProps({
           marketingUtmParams: props.marketingUtmParams,
           source: props.source,
-          userBalanceInUSD: Number(totalFiatBalance),
+          userBalanceInUSD: getTotalFiatBalance(),
           rewardPoints: props.rewardPoints,
         }),
       );
     },
-    [dispatch, totalFiatBalance],
+    [dispatch, getTotalFiatBalance],
   );
 
   const captureShieldEligibilityCohortEvent = useCallback(
@@ -126,11 +129,11 @@ export const useSubscriptionMetrics = () => {
     ) => {
       const formattedParams = formatCaptureShieldEligibilityCohortEventsProps(
         params,
-        Number(totalFiatBalance),
+        getTotalFiatBalance(),
       );
       trackShieldEvent(event, formattedParams);
     },
-    [trackShieldEvent, totalFiatBalance],
+    [trackShieldEvent, getTotalFiatBalance],
   );
 
   /**

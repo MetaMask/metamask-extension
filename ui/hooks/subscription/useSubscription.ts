@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 import {
   useCallback,
   useEffect,
@@ -32,6 +32,8 @@ import {
   getShieldSubscriptionError,
   getUserSubscriptions,
 } from '../../selectors/subscription';
+import { getSelectedEvmAccountUsdBalance } from '../../selectors/subscription/user-usd-balance';
+import type { MetaMaskReduxState } from '../../store/types';
 import {
   addTransaction,
   cancelSubscription,
@@ -90,7 +92,6 @@ import { openWindow } from '../../helpers/utils/window';
 import { buildSupportLinkWithUserData } from '../../../shared/lib/build-support-link';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
-import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
@@ -507,17 +508,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch();
+  const store = useStore<MetaMaskReduxState>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
-  const evmInternalAccount = useSelector((state) =>
-    // Account address will be the same for all EVM accounts
-    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
-  );
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    evmInternalAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
-  );
 
   const getSubscriptionEligibility = useCallback(async (): Promise<
     SubscriptionEligibility | undefined
@@ -528,6 +521,11 @@ export const useSubscriptionEligibility = (product: ProductType) => {
         return undefined;
       }
 
+      // Read at call time instead of subscribing, so balance and exchange
+      // rate updates do not re-render the component using this hook.
+      const totalFiatBalance = getSelectedEvmAccountUsdBalance(
+        store.getState(),
+      );
       const balanceCategory = getUserBalanceCategory(Number(totalFiatBalance));
 
       // get the subscriptions before making the eligibility request
@@ -551,7 +549,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
       log.warn('[useSubscriptionEligibility] error', error);
       return undefined;
     }
-  }, [isSignedIn, isUnlocked, dispatch, product, totalFiatBalance]);
+  }, [isSignedIn, isUnlocked, dispatch, product, store]);
 
   return {
     getSubscriptionEligibility,

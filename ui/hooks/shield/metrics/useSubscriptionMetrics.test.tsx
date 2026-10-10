@@ -11,6 +11,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  ShieldCtaActionClickedEnum,
   ShieldMetricsSourceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldErrorStateActionClickedEnum,
@@ -35,8 +36,10 @@ jest.mock('../../useAnalytics', () => {
   };
 });
 
-jest.mock('../../useAccountTotalFiatBalance', () => ({
-  useAccountTotalFiatBalance: () => ({ totalFiatBalance: '250' }),
+const mockGetSelectedEvmAccountUsdBalance = jest.fn().mockReturnValue('250');
+jest.mock('../../../selectors/subscription/user-usd-balance', () => ({
+  getSelectedEvmAccountUsdBalance: (state: unknown) =>
+    mockGetSelectedEvmAccountUsdBalance(state),
 }));
 
 const existingSubscription = {
@@ -48,6 +51,28 @@ const existingSubscription = {
 describe('useSubscriptionMetrics', () => {
   beforeEach(() => {
     mockTrackEvent.mockClear();
+    mockGetSelectedEvmAccountUsdBalance.mockReturnValue('250');
+  });
+
+  it('reads the USD balance when the event is captured', () => {
+    const { result } = renderHookWithProvider(
+      () => useSubscriptionMetrics(),
+      mockState,
+    );
+
+    mockGetSelectedEvmAccountUsdBalance.mockReturnValue('5');
+    result.current.captureShieldCtaClickedEvent({
+      source: ShieldMetricsSourceEnum.Settings,
+      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+    });
+
+    const [event] = mockTrackEvent.mock.calls[0];
+    expect(event.properties).toEqual(
+      expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        multi_chain_balance_category: '0-99',
+      }),
+    );
   });
 
   it('tracks a membership restart with status and error', () => {
