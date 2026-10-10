@@ -2,7 +2,6 @@ import React, {
   Suspense,
   useEffect,
   useState,
-  useContext,
   useMemo,
   useCallback,
 } from 'react';
@@ -63,7 +62,6 @@ import {
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
 } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../contexts/metametrics';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import type { MetaMetricsEventOptions } from '../../../shared/constants/metametrics';
@@ -75,7 +73,6 @@ import {
 } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
-import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -108,6 +105,7 @@ import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
 import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
 import PasskeyPrfMigration from './passkey-prf-migration/passkey-prf-migration';
 import { PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES } from './passkey-prf-migration/messenger';
+import { useOnboardingTrace } from './hooks/useOnboardingTrace';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -145,8 +143,7 @@ export default function OnboardingFlow() {
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { bufferedTrace, onboardingParentContext } =
-    useContext(MetaMetricsContext);
+  const { startJourney } = useOnboardingTrace();
 
   const trackLegacyEventForAction = useCallback(
     async (
@@ -265,18 +262,8 @@ export default function OnboardingFlow() {
   ]);
 
   useEffect(() => {
-    bufferedTrace?.({
-      name: TraceName.OnboardingJourneyOverall,
-      op: TraceOperation.OnboardingUserJourney,
-    });
-    if (onboardingParentContext) {
-      // Intentionally mutating ref object
-      onboardingParentContext.current = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _name: TraceName.OnboardingJourneyOverall,
-      };
-    }
-  }, [onboardingParentContext, bufferedTrace]);
+    startJourney();
+  }, [startJourney]);
 
   const handleCreateNewAccount = async (password: string) => {
     try {

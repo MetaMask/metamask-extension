@@ -37,6 +37,14 @@ import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlow from './onboarding-flow';
 
 const mockTrackEvent = jest.fn();
+const mockStartJourney = jest.fn();
+
+jest.mock('./hooks/useOnboardingTrace', () => ({
+  useOnboardingTrace: () => ({
+    startJourney: mockStartJourney,
+    endJourney: jest.fn(),
+  }),
+}));
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -279,6 +287,16 @@ describe('Onboarding Flow', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it('starts the onboarding journey through the lifecycle hook', () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_WELCOME_ROUTE,
+    );
+
+    expect(mockStartJourney).toHaveBeenCalledTimes(1);
   });
 
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', async () => {
