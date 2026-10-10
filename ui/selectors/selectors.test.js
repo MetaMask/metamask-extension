@@ -1742,10 +1742,6 @@ describe('Selectors', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        pinnedAccountList: [
-          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-          '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-        ],
         accounts: {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -1837,62 +1833,6 @@ describe('Selectors', () => {
     };
     const expectedResult = [
       {
-        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-        balance: '0x0',
-        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-        metadata: {
-          importTime: 0,
-          name: 'Test Account 2',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {
-          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
-        },
-        methods: [
-          'personal_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
-        scopes: ['eip155:0'],
-        pinned: true,
-        hidden: false,
-        active: false,
-      },
-
-      {
-        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-        balance: '0x0',
-        id: '784225f4-d30b-4e77-a900-c8bbce735b88',
-        metadata: {
-          importTime: 0,
-          name: 'Test Account 3',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {
-          entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
-        },
-        methods: [
-          'personal_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
-        scopes: ['eip155:0'],
-        pinned: true,
-        hidden: false,
-        active: false,
-      },
-
-      {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         metadata: {
@@ -1922,6 +1862,33 @@ describe('Selectors', () => {
         lastSelected: undefined,
       },
       {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        balance: '0x0',
+        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account 2',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        scopes: ['eip155:0'],
+        pinned: false,
+        hidden: false,
+        active: false,
+      },
+      {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
         id: '15e69915-2a1a-4019-93b3-916e11fd432f',
         metadata: {
@@ -1942,6 +1909,33 @@ describe('Selectors', () => {
         type: 'eip155:eoa',
         scopes: ['eip155:0'],
         balance: '0x0',
+        pinned: false,
+        hidden: false,
+        active: false,
+      },
+      {
+        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        balance: '0x0',
+        id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+        metadata: {
+          importTime: 0,
+          name: 'Test Account 3',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {
+          entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+        },
+        methods: [
+          'personal_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        scopes: ['eip155:0'],
         pinned: false,
         hidden: false,
         active: false,
