@@ -73,6 +73,12 @@ const ALLOWED_TARGETS_ENFORCER_MOCK =
   '0xAllowedTargetsEnforcer0000000000000000000' as Hex;
 const ALLOWED_CALLDATA_ENFORCER_MOCK =
   '0xAllowedCalldataEnforcer000000000000000000' as Hex;
+const REDEEMER_ENFORCER_MOCK =
+  '0xRedeemerEnforcer0000000000000000000000000' as Hex;
+
+const REDEEMER_1_MOCK = '0xB01caEa8c6C47bbf4F4b4c5080Ca642043359C2E' as Hex;
+const REDEEMER_2_MOCK = '0xB42F812A44c22cc6b861478900401ee759EbEAD6' as Hex;
+const DELEGATEE_MOCK = '0x5555555555555555555555555555555555555555' as Hex;
 
 const TERMS_LIMITED_MOCK = '0xterms-limited' as Hex;
 const TERMS_EXACT_MOCK = '0xterms-exact' as Hex;
@@ -213,6 +219,7 @@ describe('delegation', () => {
         ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
         AllowedTargetsEnforcer: ALLOWED_TARGETS_ENFORCER_MOCK,
         AllowedCalldataEnforcer: ALLOWED_CALLDATA_ENFORCER_MOCK,
+        RedeemerEnforcer: REDEEMER_ENFORCER_MOCK,
       },
     } as never);
 
@@ -500,6 +507,100 @@ describe('delegation', () => {
           }),
         }),
       );
+    });
+
+    describe('with redeemers', () => {
+      const getSignedCaveats = () =>
+        signDelegationMock.mock.calls[0][0].delegation.caveats;
+
+      it('appends a RedeemerEnforcer caveat to the default caveats', async () => {
+        await convertTransactionToRedeemDelegations({
+          transaction: TRANSACTION_META_MOCK,
+          messenger,
+          redeemers: [REDEEMER_1_MOCK, REDEEMER_2_MOCK],
+        });
+
+        expect(getSignedCaveats()).toStrictEqual([
+          {
+            enforcer: LIMITED_CALLS_ENFORCER_MOCK,
+            terms: TERMS_LIMITED_MOCK,
+            args: '0x',
+          },
+          {
+            enforcer: EXACT_EXECUTION_ENFORCER_MOCK,
+            terms: TERMS_EXACT_MOCK,
+            args: '0x',
+          },
+          {
+            enforcer: REDEEMER_ENFORCER_MOCK,
+            terms:
+              `0x${REDEEMER_1_MOCK.slice(2)}${REDEEMER_2_MOCK.slice(2)}`.toLowerCase(),
+            args: '0x',
+          },
+        ]);
+      });
+
+      it('appends a RedeemerEnforcer caveat to provided caveats', async () => {
+        await convertTransactionToRedeemDelegations({
+          transaction: TRANSACTION_META_MOCK,
+          messenger,
+          caveats: CAVEATS_OVERRIDE_MOCK as never,
+          redeemers: [REDEEMER_1_MOCK],
+        });
+
+        expect(getSignedCaveats()).toStrictEqual([
+          ...CAVEATS_OVERRIDE_MOCK,
+          {
+            enforcer: REDEEMER_ENFORCER_MOCK,
+            terms: REDEEMER_1_MOCK.toLowerCase(),
+            args: '0x',
+          },
+        ]);
+      });
+
+      it('includes the delegatee as an allowed redeemer', async () => {
+        await convertTransactionToRedeemDelegations({
+          transaction: TRANSACTION_META_MOCK,
+          messenger,
+          delegatee: DELEGATEE_MOCK,
+          redeemers: [REDEEMER_1_MOCK],
+        });
+
+        expect(getSignedCaveats()).toContainEqual({
+          enforcer: REDEEMER_ENFORCER_MOCK,
+          terms:
+            `0x${REDEEMER_1_MOCK.slice(2)}${DELEGATEE_MOCK.slice(2)}`.toLowerCase(),
+          args: '0x',
+        });
+      });
+
+      it('removes duplicate redeemers', async () => {
+        await convertTransactionToRedeemDelegations({
+          transaction: TRANSACTION_META_MOCK,
+          messenger,
+          delegatee: REDEEMER_1_MOCK.toLowerCase() as Hex,
+          redeemers: [REDEEMER_1_MOCK, REDEEMER_1_MOCK],
+        });
+
+        expect(getSignedCaveats()).toContainEqual({
+          enforcer: REDEEMER_ENFORCER_MOCK,
+          terms: REDEEMER_1_MOCK.toLowerCase(),
+          args: '0x',
+        });
+      });
+
+      it('does not add a RedeemerEnforcer caveat if redeemers is empty', async () => {
+        await convertTransactionToRedeemDelegations({
+          transaction: TRANSACTION_META_MOCK,
+          messenger,
+          delegatee: DELEGATEE_MOCK,
+          redeemers: [],
+        });
+
+        expect(getSignedCaveats()).not.toContainEqual(
+          expect.objectContaining({ enforcer: REDEEMER_ENFORCER_MOCK }),
+        );
+      });
     });
 
     it('uses SINGLE_DEFAULT_MODE for single execution', async () => {

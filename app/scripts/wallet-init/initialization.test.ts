@@ -28,9 +28,15 @@ import { getSubscriptionServiceInstanceOptions } from './instance-options/subscr
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
+const mockNetworkController = {
+  addNetwork: jest.fn(),
+};
 
 jest.mock('@metamask/wallet', () => ({
-  Wallet: jest.fn(() => ({ init: mockWalletInit })),
+  Wallet: jest.fn(() => ({
+    getInstance: jest.fn(() => mockNetworkController),
+    init: mockWalletInit,
+  })),
 }));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
@@ -184,6 +190,47 @@ describe('initializeWallet', () => {
       messenger,
       state,
     });
+  });
+
+  it('adds Localhost for a fixture-less extension test build', () => {
+    const originalInTest = process.env.IN_TEST;
+    const originalJestWorkerId = process.env.JEST_WORKER_ID;
+    process.env.IN_TEST = 'true';
+    process.env.JEST_WORKER_ID = 'undefined';
+
+    try {
+      initializeWallet({
+        connectivityAdapter,
+        getFlatState,
+        getPermittedAccounts,
+        getTransactionMetricsRequest,
+        infuraProjectId: 'fake-infura-project-id',
+        messenger: createMockMessenger(),
+        platform,
+        state: {},
+      });
+
+      expect(mockNetworkController.addNetwork).toHaveBeenCalledWith({
+        blockExplorerUrls: [],
+        chainId: '0x539',
+        defaultRpcEndpointIndex: 0,
+        name: 'Localhost 8545',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'http://localhost:8545',
+          },
+        ],
+      });
+    } finally {
+      if (originalInTest === undefined) {
+        delete process.env.IN_TEST;
+      } else {
+        process.env.IN_TEST = originalInTest;
+      }
+      process.env.JEST_WORKER_ID = originalJestWorkerId;
+    }
   });
 
   it('threads the messenger, state, and injected values through to the builders', () => {
