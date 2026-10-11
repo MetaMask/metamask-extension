@@ -286,6 +286,7 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
     relayTransactions: true,
     cubistSigners: ['0x1111111111111111111111111111111111111111'],
     sendBundle: true,
+    smartTransactions: true,
   };
 
   await mockServer
