@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask cubre la tarifa de red de esta transacción. Esto incluye la activación única de la cuenta inteligente."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Esta red en concreto requiere mantener una reserva de $1 $2 en tu cuenta.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 horas",
     "description": "$1 represents a number of hours"

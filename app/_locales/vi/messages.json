@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask sẽ thanh toán phí mạng cho giao dịch này. Phí này bao gồm một lần kích hoạt tài khoản thông minh."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Mạng cụ thể này yêu cầu duy trì số dư dự trữ $1 $2 trong tài khoản của bạn.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"

@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "이 특정 네트워크는 계정에 최소 $1 $2의 잔액을 유지해야 합니다.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 시간",
     "description": "$1 represents a number of hours"

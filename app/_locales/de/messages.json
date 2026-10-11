@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask übernimmt die Netzwerkgebühr für diese Transaktion. Dies beinhaltet die einmalige Aktivierung des Smart-Kontos."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $2 auf Ihrem Konto aufrechterhalten.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 Stunden",
     "description": "$1 represents a number of hours"

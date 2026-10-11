@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Эта конкретная сеть требует поддержания резерва в размере $1 $2 на вашем счете.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 ч",
     "description": "$1 represents a number of hours"

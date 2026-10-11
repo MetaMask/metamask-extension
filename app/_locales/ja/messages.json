@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1時間",
     "description": "$1 represents a number of hours"

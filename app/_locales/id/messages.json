@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $2 di akun Anda.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 jam",
     "description": "$1 represents a number of hours"

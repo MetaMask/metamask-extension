@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask bu işlem için ağ ücretini karşılamaktadır. Buna tek seferlik akıllı hesap aktivasyonu da dahildir."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Bu ağ için hesabınızda $1 $2 rezerv bulunmalıdır.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"

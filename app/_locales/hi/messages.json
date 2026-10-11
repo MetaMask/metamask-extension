@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask इस ट्रांसेक्शन के लिए नेटवर्क फ़ीस कवर करता है। इसमें एक बार का स्मार्ट अकाउंट एक्टिवेशन शामिल है।"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "इस खास नेटवर्क को आपके अकाउंट में $1 $2 का रिज़र्व बनाए रखना ज़रूरी है।",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"

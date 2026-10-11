@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "Saklaw ang MetaMask ang bayad sa network para sa transaksyong ito. Kabilang dito ang isang beses na pag-activate sa smart account."
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Kailangan ng partikular na network na ito ang pagpapanatili ng reserba na $1 $2 sa iyong account.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 oras",
     "description": "$1 represents a number of hours"

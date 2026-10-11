@@ -4259,10 +4259,6 @@
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask 将承担本次交易的网络费用，其中包括一次性智能账户激活。"
   },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "此特定网络要求您的账户中保留 $1 $2 的储备金。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
-  },
   "gasTimingHoursShort": {
     "message": "$1 小时",
     "description": "$1 represents a number of hours"
