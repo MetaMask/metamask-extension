@@ -53,15 +53,16 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * - Enable notifications and verify initial default state
      * - Modify settings:
      * → Disable second account notifications
-     * → Disable product notifications
+     * → Enable product notifications (opts in to marketing consent)
      *
      * Part 2: Persistence Check
-     * - Start new session and complete onboarding
+     * - Start new session and complete onboarding with marketing consent on
+     * (opting out there would turn product notifications off)
      * - Re-enable general notifications (required for each new session)
      * - Add accounts again
      * - Verify settings:
      * → General notifications: requires manual re-enable
-     * → Product notifications: disabled (persisted in AUS)
+     * → Product notifications: enabled (persisted in AUS)
      * → First account: enabled
      * → Second account: disabled (persisted via the Trigger API from Part 1)
      */
@@ -111,7 +112,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           },
         },
         async ({ driver }) => {
-          await onboardAndAddAccount(driver);
+          await onboardAndAddAccount(driver, true);
           await enableNotificationsThroughSettingsPage(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
@@ -137,8 +138,15 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
         },
       );
     });
-    async function onboardAndAddAccount(driver: Driver) {
-      await completeOnboardFlowIdentity(driver);
+    async function onboardAndAddAccount(
+      driver: Driver,
+      dataCollectionForMarketing = false,
+    ) {
+      await completeOnboardFlowIdentity(
+        driver,
+        undefined,
+        dataCollectionForMarketing,
+      );
       await waitUntilAccountTreeSyncIdle(driver);
 
       const headerNavbar = new HeaderNavbar(driver);

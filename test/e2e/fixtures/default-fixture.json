@@ -176,7 +176,7 @@
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
-      "optedInToMarketing": true
+      "optedInToMarketing": false
     },
     "AnnouncementController": {
       "announcements": {}
