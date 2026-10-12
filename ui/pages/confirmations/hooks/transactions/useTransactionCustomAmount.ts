@@ -281,27 +281,23 @@ export function useTransactionCustomAmount({
     : primaryRequiredToken?.amountUsd;
 
   useLayoutEffect(() => {
+    // Compare the typed value, not `amountFiat`. Quote-derived Max keeps
+    // showing the previous quote until `isMaxAmount` updates, and that
+    // display still matches the committed amount.
     const amountMatches =
       committedAmountUsd !== undefined &&
-      sameFiatCents(amountFiat, committedAmountUsd);
+      sameFiatCents(amountFiatState, committedAmountUsd);
 
     if (hasPendingEditRef.current && amountMatches) {
       hasPendingEditRef.current = false;
     }
 
-    const isAmountPending =
+    setIsAmountPending(
       hasPendingEditRef.current &&
-      !isQuoteDerivedAmount &&
-      committedAmountUsd !== undefined &&
-      !amountMatches;
-
-    setIsAmountPending(isAmountPending);
-  }, [
-    amountFiat,
-    committedAmountUsd,
-    isQuoteDerivedAmount,
-    setIsAmountPending,
-  ]);
+        committedAmountUsd !== undefined &&
+        !amountMatches,
+    );
+  }, [amountFiatState, committedAmountUsd, setIsAmountPending]);
 
   useLayoutEffect(() => {
     return () => {
@@ -399,6 +395,9 @@ export function useTransactionCustomAmount({
     userEditedRef.current = false;
     setEditedTransactionId(undefined);
     hasPendingEditRef.current = false;
+    // The flag is not derived during render. Clearing the ref alone leaves
+    // the previous pending value in context.
+    setIsAmountPending(false);
 
     // Max belongs to the token it was armed on. Left on, the controller quotes
     // the whole balance of the newly selected token while the field still
@@ -407,7 +406,7 @@ export function useTransactionCustomAmount({
     if (isMaxAmount) {
       setIsMax(false);
     }
-  }, [isMaxAmount, payTokenKey, setIsMax, transactionId]);
+  }, [isMaxAmount, payTokenKey, setIsAmountPending, setIsMax]);
 
   useEffect(() => {
     // Withdraw confirm reads this before the debounced calldata write.

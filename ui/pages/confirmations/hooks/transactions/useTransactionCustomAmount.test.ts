@@ -741,6 +741,28 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
+    it('clears a pending amount when the pay token changes', () => {
+      const { result, rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        requiredTokens: [{ amountUsd: '50' }],
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      expect(result.current.isAmountPending).toBe(true);
+
+      selectPayToken('0xtokenb');
+
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.isAmountPending).toBe(false);
+    });
+
     it('keeps isMaxAmount armed while the pay token is unchanged', () => {
       const { rerender } = runHook({
         transactionMeta: moneyAccountDepositMeta,
@@ -1845,6 +1867,34 @@ describe('useTransactionCustomAmount', () => {
       rerender();
 
       expect(result.current.isAmountPending).toBe(false);
+    });
+
+    it('keeps a typed amount pending while Max still displays the previous quote', () => {
+      const { result, rerender } = runHook({
+        isMaxAmount: true,
+        requiredTokens: [{ amountUsd: '50' }],
+        totals: {
+          isInputBased: false,
+          targetAmount: { usd: '50' },
+        } as TransactionPayTotals,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      // The field still shows the quote target until isMaxAmount clears.
+      expect(result.current.amountFiat).toBe('50');
+      expect(result.current.isAmountPending).toBe(true);
+
+      jest
+        .mocked(useTransactionPayDataModule.useTransactionPayIsMaxAmount)
+        .mockReturnValue(false);
+
+      rerender();
+
+      expect(result.current.amountFiat).toBe('1');
+      expect(result.current.isAmountPending).toBe(true);
     });
 
     it('prefers live funding-account balanceRaw over a stale payToken snapshot', () => {
