@@ -13,7 +13,6 @@ import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -64,6 +63,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
+  IMPORT_NFTS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_DETAILS_ROUTE,
@@ -103,7 +103,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
-  hideImportNftsModal,
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
@@ -189,6 +188,7 @@ const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
+const ImportNftsPage = mmLazy(() => import('../import-nfts/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -337,6 +337,10 @@ export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
 
+export const ImportNftsFeatureRoute = () => {
+  return <ImportNftsPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -409,6 +413,10 @@ export const routeConfig = [
       {
         path: CUSTOM_TOKEN_IMPORT_ROUTE,
         element: <CustomTokenImportFeatureRoute />,
+      },
+      {
+        path: IMPORT_NFTS_ROUTE,
+        element: <ImportNftsFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
@@ -762,9 +770,6 @@ export default function Routes() {
   const isDeprecatedNetworkModalOpen = useAppSelector(
     (state) => state.appState.deprecatedNetworkModalOpen,
   );
-  const isImportNftsModalOpen = useAppSelector(
-    (state) => state.appState.importNftsModal.open,
-  );
   const isIpfsModalOpen = useAppSelector(
     (state) => state.appState.showIpfsModalOpen,
   );
@@ -912,10 +917,6 @@ export default function Routes() {
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
-      {isImportNftsModalOpen ? (
-        <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
-      ) : null}
-
       {isIpfsModalOpen ? (
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}

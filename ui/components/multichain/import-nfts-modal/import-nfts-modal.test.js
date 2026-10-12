@@ -13,7 +13,7 @@ import {
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { ImportNftsModal } from '.';
+import { ImportNftsPage } from '../../../pages/import-nfts';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
@@ -65,7 +65,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-describe('ImportNftsModal', () => {
+describe('ImportNftsPage', () => {
   let store = configureMockStore([thunk])(mockStateWithTestNetworks);
 
   beforeEach(() => {
@@ -77,7 +77,7 @@ describe('ImportNftsModal', () => {
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
     const { getByPlaceholderText, getByTestId } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
+      <ImportNftsPage />,
       store,
     );
     expect(getImportButton()).not.toBeEnabled();
@@ -103,14 +103,14 @@ describe('ImportNftsModal', () => {
     expect(getImportButton()).toBeEnabled();
   });
 
-  it('should not enable the "Import" button when no network is selected', () => {
-    const { getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
+  it('shows the current network name and enables import without picking a network again', () => {
+    const { getByPlaceholderText, getByText } = renderWithProvider(
+      <ImportNftsPage />,
       store,
     );
+    expect(getByText('Goerli')).toBeInTheDocument();
     expect(getImportButton()).not.toBeEnabled();
 
-    // Fill in valid address and tokenId but don't select a network
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText(
       messages.nftTokenIdPlaceholder.message,
@@ -122,13 +122,12 @@ describe('ImportNftsModal', () => {
       target: { value: VALID_TOKENID },
     });
 
-    // Button should still be disabled without network selection
-    expect(getImportButton()).not.toBeEnabled();
+    expect(getImportButton()).toBeEnabled();
   });
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
     const { getByPlaceholderText, getByTestId } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
+      <ImportNftsPage />,
       store,
     );
     expect(getImportButton()).not.toBeEnabled();
@@ -173,9 +172,8 @@ describe('ImportNftsModal', () => {
       appState: { importNftsModal: { ignoreErc20Token: true } },
     });
 
-    const onClose = jest.fn();
     const { getByPlaceholderText, getByTestId } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
+      <ImportNftsPage />,
       store,
     );
 
@@ -208,6 +206,7 @@ describe('ImportNftsModal', () => {
         '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9',
         '9007199254740992',
         'goerli',
+        false,
       );
 
       expect(updateNftDropDownState).toHaveBeenCalledWith({
@@ -223,7 +222,7 @@ describe('ImportNftsModal', () => {
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
-        tokensToIgnore: VALID_ADDRESS,
+        tokensToIgnore: [VALID_ADDRESS],
         networkClientId: 'goerli',
       });
     });
@@ -235,7 +234,7 @@ describe('ImportNftsModal', () => {
     );
 
     const { getByTestId, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
+      <ImportNftsPage />,
       store,
     );
 
@@ -267,9 +266,8 @@ describe('ImportNftsModal', () => {
   });
 
   it('should set error message when address invalid', () => {
-    const onClose = jest.fn();
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
+      <ImportNftsPage />,
       store,
     );
 
@@ -304,9 +302,8 @@ describe('ImportNftsModal', () => {
       },
     });
 
-    const onClose = jest.fn();
     const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
+      <ImportNftsPage />,
       store,
     );
 
@@ -344,6 +341,7 @@ describe('ImportNftsModal', () => {
       VALID_ADDRESS,
       VALID_TOKENID,
       'custom-network-client-id',
+      false,
     );
 
     // Verify that the selectedNetworkClientId used for the NFT import is different from the globally selected network
@@ -352,18 +350,12 @@ describe('ImportNftsModal', () => {
     );
   });
 
-  it('should route to default route when cancel button is clicked', () => {
-    const onClose = jest.fn();
-    const { getByText } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
-      store,
-    );
+  it('should go back when the back button is clicked', () => {
+    const { getByTestId } = renderWithProvider(<ImportNftsPage />, store);
 
-    const cancelButton = getByText(messages.cancel.message);
-    fireEvent.click(cancelButton);
+    fireEvent.click(getByTestId('import-nfts-back-button'));
 
-    expect(onClose).toHaveBeenCalled();
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('does not show test networks when test networks are disabled', () => {
@@ -379,7 +371,7 @@ describe('ImportNftsModal', () => {
     });
 
     const { getByTestId, queryByText } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
+      <ImportNftsPage />,
       store,
     );
 
@@ -401,10 +393,7 @@ describe('ImportNftsModal', () => {
       },
     });
 
-    const { getByTestId } = renderWithProvider(
-      <ImportNftsModal onClose={jest.fn()} />,
-      store,
-    );
+    const { getByTestId } = renderWithProvider(<ImportNftsPage />, store);
 
     fireEvent.click(getByTestId('test-import-tokens-drop-down-custom-import'));
 
@@ -414,13 +403,10 @@ describe('ImportNftsModal', () => {
   });
 
   it('should route to default route when close button is clicked', () => {
-    const onClose = jest.fn();
-    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
+    const { getByTestId } = renderWithProvider(<ImportNftsPage />, store);
 
-    fireEvent.click(document.querySelector('button[aria-label="Close"]'));
+    fireEvent.click(getByTestId('import-nfts-close-button'));
 
-    // Verify both onClose and history.push are called
-    expect(onClose).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });
