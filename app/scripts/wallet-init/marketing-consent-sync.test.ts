@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
+import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
 import { setupMarketingConsentSync } from './marketing-consent-sync';
@@ -14,10 +15,39 @@ const GET_CONSENT_ACTION =
   'AuthenticatedUserStorageService:getMarketingConsent';
 const PUT_CONSENT_ACTION =
   'AuthenticatedUserStorageService:putMarketingConsent';
-const INVALIDATE_CONSENT_ACTION =
-  'AuthenticatedUserStorageService:invalidateQueries';
+const INVALIDATE_ACTION = 'AuthenticatedUserStorageService:invalidateQueries';
+const GET_PREFERENCES_ACTION =
+  'AuthenticatedUserStorageService:getNotificationPreferences';
+const PUT_PREFERENCES_ACTION =
+  'AuthenticatedUserStorageService:putNotificationPreferences';
 const OPT_IN_ACTION = 'AnalyticsController:optInToMarketing';
 const OPT_OUT_ACTION = 'AnalyticsController:optOutOfMarketing';
+
+const NOTIFICATION_PREFERENCES: NotificationPreferences = {
+  walletActivity: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    accounts: [],
+  },
+  marketing: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+  },
+  perps: { pushNotificationsEnabled: true, inAppNotificationsEnabled: true },
+  socialAI: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    mutedTraderProfileIds: [],
+  },
+  agenticCli: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+  },
+  priceAlerts: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+  },
+};
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
@@ -52,6 +82,8 @@ function setupSync({
   remoteConsent = null,
   getConsent = () => Promise.resolve(remoteConsent),
   putConsent = () => Promise.resolve(),
+  getPreferences = () => Promise.resolve(null),
+  putPreferences = () => Promise.resolve(),
 }: {
   analyticsState?: Partial<AnalyticsControllerState>;
   authenticationState?: Partial<AuthenticationControllerState>;
@@ -59,6 +91,8 @@ function setupSync({
   remoteConsent?: { marketingConsentEnabled: boolean } | null;
   getConsent?: () => Promise<{ marketingConsentEnabled: boolean } | null>;
   putConsent?: () => Promise<void>;
+  getPreferences?: () => Promise<NotificationPreferences | null>;
+  putPreferences?: () => Promise<void>;
 } = {}) {
   const handlers: Record<string, (state?: unknown) => void> = {};
   let currentAnalyticsState = analyticsState;
@@ -79,6 +113,12 @@ function setupSync({
     }
     if (action === PUT_CONSENT_ACTION) {
       return putConsent();
+    }
+    if (action === GET_PREFERENCES_ACTION) {
+      return getPreferences();
+    }
+    if (action === PUT_PREFERENCES_ACTION) {
+      return putPreferences();
     }
     if (action === OPT_IN_ACTION || action === OPT_OUT_ACTION) {
       currentAnalyticsState = {
@@ -733,6 +773,275 @@ describe('setupMarketingConsentSync', () => {
     );
   });
 
+  describe('Updates and rewards notifications', () => {
+    const signedInOptedIn = {
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+    };
+
+    it('turns off both marketing channels before saving a local opt-out', async () => {
+      const { handlers, call } = setupSync({
+        ...signedInOptedIn,
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+      });
+      await flushPromises();
+      call.mockClear();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      const writes = call.mock.calls
+        .map(([action]) => action)
+        .filter((action) =>
+          [
+            INVALIDATE_ACTION,
+            GET_PREFERENCES_ACTION,
+            PUT_PREFERENCES_ACTION,
+            PUT_CONSENT_ACTION,
+          ].includes(action),
+        );
+      expect(writes).toStrictEqual([
+        INVALIDATE_ACTION,
+        GET_PREFERENCES_ACTION,
+        PUT_PREFERENCES_ACTION,
+        PUT_CONSENT_ACTION,
+      ]);
+      expect(call).toHaveBeenCalledWith(INVALIDATE_ACTION, {
+        queryKey: [GET_PREFERENCES_ACTION],
+      });
+      expect(call).toHaveBeenCalledWith(
+        PUT_PREFERENCES_ACTION,
+        {
+          ...NOTIFICATION_PREFERENCES,
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        },
+        'extension',
+      );
+    });
+
+    it('does not write preferences when both marketing channels are already off', async () => {
+      const { handlers, call } = setupSync({
+        ...signedInOptedIn,
+        getPreferences: () =>
+          Promise.resolve({
+            ...NOTIFICATION_PREFERENCES,
+            marketing: {
+              pushNotificationsEnabled: false,
+              inAppNotificationsEnabled: false,
+            },
+          }),
+      });
+      await flushPromises();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      expect(call).not.toHaveBeenCalledWith(
+        PUT_PREFERENCES_ACTION,
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(call).toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+    });
+
+    it('does not write preferences when the profile has none', async () => {
+      const { handlers, call } = setupSync(signedInOptedIn);
+      await flushPromises();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      expect(call).toHaveBeenCalledWith(GET_PREFERENCES_ACTION);
+      expect(call).not.toHaveBeenCalledWith(
+        PUT_PREFERENCES_ACTION,
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(call).toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+    });
+
+    it('does not read preferences when saving an opt-in', async () => {
+      const { handlers, call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: { isSignedIn: true },
+        remoteConsent: { marketingConsentEnabled: false },
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+      });
+      await flushPromises();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      expect(call).not.toHaveBeenCalledWith(GET_PREFERENCES_ACTION);
+    });
+
+    it('does not touch channels when applying an opt-out from AUS', async () => {
+      const { call } = setupSync({
+        ...signedInOptedIn,
+        remoteConsent: { marketingConsentEnabled: false },
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+      });
+      await flushPromises();
+
+      expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
+      expect(call).not.toHaveBeenCalledWith(GET_PREFERENCES_ACTION);
+    });
+
+    it('turns off channels at the next sign-in for an opt-out made while signed out', async () => {
+      const { handlers, call } = setupSync({
+        ...signedInOptedIn,
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+      });
+      await flushPromises();
+
+      handlers['AuthenticationController:stateChange']({ isSignedIn: false });
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+      expect(call).not.toHaveBeenCalledWith(GET_PREFERENCES_ACTION);
+
+      handlers['AuthenticationController:stateChange']({ isSignedIn: true });
+      await flushPromises();
+
+      expect(call).toHaveBeenCalledWith(
+        PUT_PREFERENCES_ACTION,
+        expect.objectContaining({
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+        'extension',
+      );
+      expect(call).toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+    });
+
+    it('turns off channels before seeding an opted-out profile', async () => {
+      const { call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: { isSignedIn: true },
+        remoteConsent: null,
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+      });
+      await flushPromises();
+
+      const writes = call.mock.calls
+        .map(([action]) => action)
+        .filter((action) =>
+          [PUT_PREFERENCES_ACTION, PUT_CONSENT_ACTION].includes(action),
+        );
+      expect(writes).toStrictEqual([
+        PUT_PREFERENCES_ACTION,
+        PUT_CONSENT_ACTION,
+      ]);
+    });
+
+    it('keeps the opt-out pending and skips the consent write when the preferences read fails', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const { handlers, call, waitForSync } = setupSync({
+        ...signedInOptedIn,
+        getPreferences: () => Promise.reject(new Error('AUS unavailable')),
+      });
+      await flushPromises();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+
+      await expect(waitForSync(false)).rejects.toThrow('AUS unavailable');
+      expect(call).not.toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+      consoleError.mockRestore();
+    });
+
+    it('keeps the opt-out pending and skips the consent write when the channel write fails', async () => {
+      let failPreferences = true;
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const { handlers, call, waitForSync } = setupSync({
+        ...signedInOptedIn,
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+        putPreferences: () => {
+          if (failPreferences) {
+            failPreferences = false;
+            return Promise.reject(new Error('AUS unavailable'));
+          }
+          return Promise.resolve();
+        },
+      });
+      await flushPromises();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await expect(waitForSync(false)).rejects.toThrow('AUS unavailable');
+      expect(call).not.toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+
+      await waitForSync(false);
+
+      expect(
+        call.mock.calls.filter(([action]) => action === PUT_PREFERENCES_ACTION),
+      ).toHaveLength(2);
+      expect(call).toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+      consoleError.mockRestore();
+    });
+  });
+
   it('invalidates cached AUS consent when the signed-in profile changes', async () => {
     const { handlers, call } = setupSync({
       analyticsState: {
@@ -748,7 +1057,7 @@ describe('setupMarketingConsentSync', () => {
     handlers['AuthenticationController:stateChange'](profileAuthState(2));
     await flushPromises();
 
-    expect(call).toHaveBeenCalledWith(INVALIDATE_CONSENT_ACTION, {
+    expect(call).toHaveBeenCalledWith(INVALIDATE_ACTION, {
       queryKey: [GET_CONSENT_ACTION],
     });
     expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);

@@ -260,15 +260,12 @@ export default function OnboardingMetametrics() {
             })
             .build(),
         );
-
-        dispatch(
-          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
-        );
-        dispatch(setParticipateInMetaMetrics(true));
-      } else {
-        dispatch(setParticipateInMetaMetrics(false));
-        dispatch(setDataCollectionForMarketing(false));
       }
+
+      dispatch(
+        setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+      );
+      dispatch(setParticipateInMetaMetrics(isParticipateInMetaMetricsChecked));
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
@@ -277,12 +274,10 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    const next = !isParticipateInMetaMetricsChecked;
     setCheckboxDraft((prev) => ({
       ...prev,
       participateTouched: true,
-      participateLocal: next,
-      ...(next ? {} : { marketingTouched: true, marketingLocal: false }),
+      participateLocal: !isParticipateInMetaMetricsChecked,
     }));
   };
 
@@ -345,22 +340,15 @@ export default function OnboardingMetametrics() {
       <MetametricsCheckboxOption
         id="metametrics-datacollection-opt-in"
         testId="metametrics-data-collection-checkbox"
-        isSelected={
-          isParticipateInMetaMetricsChecked &&
-          isDataCollectionForMarketingChecked
-        }
-        isDisabled={
-          !isParticipateInMetaMetricsChecked || !marketingPreferenceReady
-        }
+        isSelected={isDataCollectionForMarketingChecked}
+        isDisabled={!marketingPreferenceReady}
         onChange={handleMarketingChange}
         containerClassName={
-          isParticipateInMetaMetricsChecked && marketingPreferenceReady
+          marketingPreferenceReady
             ? 'onboarding-metametrics__checkbox'
             : 'onboarding-metametrics__checkbox-disabled'
         }
-        isInteractive={
-          isParticipateInMetaMetricsChecked && marketingPreferenceReady
-        }
+        isInteractive={marketingPreferenceReady}
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleTwo')}

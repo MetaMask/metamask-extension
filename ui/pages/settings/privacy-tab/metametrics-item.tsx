@@ -10,7 +10,6 @@ import {
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { getOptedIn, getUseExternalServices } from '../../../selectors';
 import { getDataCollectionForMarketing } from '../../../selectors/metametrics';
-import { setDataCollectionForMarketing } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -18,11 +17,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
-import { useDispatch } from '../../../store/hooks';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const { enableMetametrics, error: enableMetametricsError } =
     useEnableMetametrics();
@@ -52,10 +49,6 @@ export const MetametricsToggleItem = () => {
           .build(),
       );
     } else {
-      if (dataCollectionForMarketing) {
-        dispatch(setDataCollectionForMarketing(false));
-      }
-
       trackEvent(
         createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
           .addCategory(MetaMetricsEventCategory.Settings)
@@ -71,7 +64,8 @@ export const MetametricsToggleItem = () => {
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
             [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            [MetaMetricsUserTrait.HasMarketingConsent]:
+              dataCollectionForMarketing === true,
             location: 'Settings',
           })
           .build(),

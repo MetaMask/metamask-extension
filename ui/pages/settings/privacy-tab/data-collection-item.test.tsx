@@ -209,7 +209,7 @@ describe('DataCollectionToggleItem', () => {
     expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('shows the opt-out warning when the preference read failed', async () => {
+  it('opts out without the warning when the preference read failed', async () => {
     mockEnsurePreferences.mockRejectedValueOnce(new Error('AUS unavailable'));
     renderWithProvider(
       <DataCollectionToggleItem />,
@@ -218,10 +218,12 @@ describe('DataCollectionToggleItem', () => {
 
     fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
 
+    await waitFor(() => {
+      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+    });
     expect(
-      await screen.findByTestId('marketing-consent-opt-out-sheet'),
-    ).toBeInTheDocument();
-    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
+      screen.queryByTestId('marketing-consent-opt-out-sheet'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows the opt-out warning without changing either preference when marketing notifications are enabled', async () => {
@@ -479,11 +481,18 @@ describe('DataCollectionToggleItem', () => {
     expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
   });
 
-  it('is disabled when metrics participation is false', () => {
-    const mockStore = createMockStore({ optedIn: false });
+  it('is enabled when metrics participation is off', () => {
+    const mockStore = createMockStore({
+      optedIn: false,
+      optedInToMarketing: false,
+    });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
     const toggle = screen.getByRole('checkbox');
-    expect(toggle.closest('.toggle-button--disabled')).toBeInTheDocument();
+    expect(toggle.closest('.toggle-button--disabled')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+
+    expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(true);
   });
 });

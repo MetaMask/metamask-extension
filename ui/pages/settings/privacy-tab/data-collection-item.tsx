@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -29,12 +28,8 @@ export const DataCollectionToggleItem = () => {
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
-  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-
-  const isDisabled =
-    !useExternalServices || !(consentDecisionMade && isOptedIn);
 
   const trackPreference = useCallback(
     (enabled: boolean) => {
@@ -42,14 +37,14 @@ export const DataCollectionToggleItem = () => {
         createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
           .addCategory(MetaMetricsEventCategory.Settings)
           .addProperties({
-            [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: isOptedIn,
             [MetaMetricsUserTrait.HasMarketingConsent]: enabled,
             location: 'Settings',
           })
           .build(),
       );
     },
-    [createEventBuilder, trackEvent],
+    [createEventBuilder, isOptedIn, trackEvent],
   );
 
   const { requestOptOut, sheetProps } = useMarketingOptOut({
@@ -80,7 +75,7 @@ export const DataCollectionToggleItem = () => {
         onToggle={handleToggle}
         dataTestId="data-collection-for-marketing-input"
         containerDataTestId="data-collection-for-marketing-toggle"
-        disabled={isDisabled}
+        disabled={!useExternalServices}
       />
       <MarketingConsentSheet
         {...sheetProps}

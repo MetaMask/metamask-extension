@@ -212,7 +212,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
+  it('when both checkboxes are unchecked, setDataCollectionForMarketing should be called with false', async () => {
     const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -232,7 +232,6 @@ describe('Onboarding Metametrics Component', () => {
       'metametrics-checkbox',
     ) as HTMLElement;
 
-    // Opt out of MetaMetrics; this should clear marketing consent
     await clickElement(participateContainer);
 
     await settleGeolocation();
@@ -259,7 +258,7 @@ describe('Onboarding Metametrics Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
+  it('keeps the marketing checkbox checked and enabled when metametrics is unchecked', async () => {
     const { getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -286,8 +285,10 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(participateContainer);
 
     await waitFor(() => {
-      expect(marketingCheckbox).not.toBeChecked();
+      expect(getAllByRole('checkbox')[0]).not.toBeChecked();
     });
+    expect(marketingCheckbox).toBeChecked();
+    expect(marketingCheckbox).toBeEnabled();
   });
 
   it('clicking the participate checkbox container toggles the participate checkbox', async () => {
@@ -613,6 +614,24 @@ describe('Onboarding Metametrics Component', () => {
       await clickElement(getByTestId('metametrics-i-agree'));
 
       await waitFor(() => {
+        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('saves marketing consent independently when MetaMetrics is unchecked', async () => {
+      const { getByTestId, getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('US');
+      await clickElement(getByTestId('metametrics-checkbox'));
+      expect(getAllByRole('checkbox')[1]).toBeChecked();
+
+      await clickElement(getByTestId('metametrics-i-agree'));
+
+      await waitFor(() => {
+        expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
         expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
       });
     });

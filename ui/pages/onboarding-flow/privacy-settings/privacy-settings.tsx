@@ -44,7 +44,6 @@ import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
   getIsSocialLoginFlow,
-  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
@@ -58,7 +57,6 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
-  setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -110,8 +108,6 @@ export default function PrivacySettings() {
     getIsBasicFunctionalityConsolidationEnabledInBuild();
   const isSocialLoginBasicFunctionalityLocked =
     isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -242,10 +238,6 @@ export default function PrivacySettings() {
         ]
       : []),
   ];
-
-  const handleDataCollectionForMarketing = async (value: boolean) => {
-    dispatch(setDataCollectionForMarketing(value));
-  };
 
   return (
     <>
@@ -746,15 +738,7 @@ export default function PrivacySettings() {
                   )}
                   {isSocialLoginFlow && (
                     <>
-                      <MetametricsToggle
-                        dataCollectionForMarketing={
-                          dataCollectionForMarketing === true
-                        }
-                        setDataCollectionForMarketing={
-                          handleDataCollectionForMarketing
-                        }
-                        fromDefaultSettings
-                      />
+                      <MetametricsToggle fromDefaultSettings />
                       <DeleteMetaMetricsDataButton defaultPrivacySettings />
                     </>
                   )}

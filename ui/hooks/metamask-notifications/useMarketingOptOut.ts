@@ -44,7 +44,7 @@ export function useMarketingOptOut({
     if (!isSignedIn) {
       return false;
     }
-    let needsWarning = true;
+    let needsWarning = false;
     try {
       const marketing = (await ensurePreferences())?.marketing;
       needsWarning = Boolean(
@@ -52,7 +52,7 @@ export function useMarketingOptOut({
         marketing?.inAppNotificationsEnabled,
       );
     } catch {
-      // Unknown channel state; keep the warning.
+      // Unknown channel state; the consent sync turns the channels off anyway.
     }
     if (needsWarning) {
       setError(null);

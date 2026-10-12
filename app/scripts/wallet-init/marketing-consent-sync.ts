@@ -1,7 +1,9 @@
 import type {
   AuthenticatedUserStorageInvalidateQueriesAction,
   AuthenticatedUserStorageServiceGetMarketingConsentAction,
+  AuthenticatedUserStorageServiceGetNotificationPreferencesAction,
   AuthenticatedUserStorageServicePutMarketingConsentAction,
+  AuthenticatedUserStorageServicePutNotificationPreferencesAction,
 } from '@metamask/authenticated-user-storage';
 import type {
   AnalyticsControllerGetStateAction,
@@ -33,6 +35,8 @@ type SyncActions =
   | AuthenticatedUserStorageInvalidateQueriesAction
   | AuthenticatedUserStorageServiceGetMarketingConsentAction
   | AuthenticatedUserStorageServicePutMarketingConsentAction
+  | AuthenticatedUserStorageServiceGetNotificationPreferencesAction
+  | AuthenticatedUserStorageServicePutNotificationPreferencesAction
   | AnalyticsControllerGetStateAction
   | AnalyticsControllerOptInToMarketingAction
   | AnalyticsControllerOptOutOfMarketingAction
@@ -147,6 +151,8 @@ export function setupMarketingConsentSync({
       'AuthenticatedUserStorageService:invalidateQueries',
       'AuthenticatedUserStorageService:getMarketingConsent',
       'AuthenticatedUserStorageService:putMarketingConsent',
+      'AuthenticatedUserStorageService:getNotificationPreferences',
+      'AuthenticatedUserStorageService:putNotificationPreferences',
       'AnalyticsController:getState',
       'AnalyticsController:optInToMarketing',
       'AnalyticsController:optOutOfMarketing',
@@ -227,6 +233,42 @@ export function setupMarketingConsentSync({
     }
   };
 
+  // Updates and rewards notifications rely on marketing consent.
+  const turnOffMarketingNotifications = async (): Promise<void> => {
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:invalidateQueries',
+      {
+        queryKey: [
+          'AuthenticatedUserStorageService:getNotificationPreferences',
+        ],
+      },
+    );
+    const preferences = await syncMessenger.call(
+      'AuthenticatedUserStorageService:getNotificationPreferences',
+    );
+    const marketing = preferences?.marketing;
+    if (
+      !preferences ||
+      (!marketing?.pushNotificationsEnabled &&
+        !marketing?.inAppNotificationsEnabled)
+    ) {
+      return;
+    }
+
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:putNotificationPreferences',
+      {
+        ...preferences,
+        marketing: {
+          ...marketing,
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: false,
+        },
+      },
+      'extension',
+    );
+  };
+
   const flushPendingConsentUpdate = async (
     currentSession: typeof session,
   ): Promise<void> => {
@@ -243,6 +285,11 @@ export function setupMarketingConsentSync({
     pendingConsentUpdate = undefined;
 
     try {
+      // Channels go off before consent so AUS never has consent off with a
+      // channel on; a failure retries both with the pending update.
+      if (!value) {
+        await turnOffMarketingNotifications();
+      }
       await syncMessenger.call(
         'AuthenticatedUserStorageService:putMarketingConsent',
         { marketingConsentEnabled: value },
