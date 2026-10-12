@@ -389,10 +389,7 @@ describe('MoneyAccountBalance', () => {
       state: { stayOnHomePage: true },
     });
     expect(mockInitiateDeposit).not.toHaveBeenCalled();
-    expect(mockMoneyAnalytics.trackButtonClicked).toHaveBeenCalledWith({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
-      labelKey: 'money',
+    expect(mockMoneyAnalytics.trackSurfaceClicked).toHaveBeenCalledWith({
       redirectTarget: MoneyScreenName.MoneyHome,
     });
   });

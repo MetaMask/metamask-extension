@@ -215,11 +215,15 @@ export const MoneyAccountBalance = () => {
   } = useMoneyAccountBalance();
   const { initiateDeposit, isLoading: isDepositLoading } =
     useMoneyAccountDeposit();
-  const { trackButtonClicked, trackComponentViewed, trackTooltipClicked } =
-    useMoneyAnalytics({
-      screenName: MoneyScreenName.WalletHome,
-      componentName: MoneyComponentName.BalanceCard,
-    });
+  const {
+    trackButtonClicked,
+    trackSurfaceClicked,
+    trackComponentViewed,
+    trackTooltipClicked,
+  } = useMoneyAnalytics({
+    screenName: MoneyScreenName.WalletHome,
+    componentName: MoneyComponentName.BalanceCard,
+  });
 
   const fiatBalance = totalFiatFormatted ?? lastKnownTotalFiatFormatted;
   const isLoading = isBalanceLoading && fiatBalance === undefined;
@@ -239,10 +243,7 @@ export const MoneyAccountBalance = () => {
   }
 
   const openMoneyHome = () => {
-    trackButtonClicked({
-      buttonType: MoneyButtonType.Text,
-      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
-      labelKey: 'money',
+    trackSurfaceClicked({
       redirectTarget: MoneyScreenName.MoneyHome,
     });
     transitionForward(() =>
