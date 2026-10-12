@@ -10,9 +10,10 @@
  * uses this.async() for its async operations. Making this wrapper async would
  * cause "callback already called" errors due to double completion signaling.
  *
- * NOTE: REACT_COMPILER_STATUS_KEY is duplicated here (also in reactCompilerLoader.ts)
- * because cross-file imports fail in thread-loader worker context due to ESM
- * resolution issues. Both values MUST stay in sync.
+ * NOTE: The REACT_COMPILER_STATUS_KEY string below must stay identical to the
+ * one exported from reactCompilerLoader.ts. This loader writes stats onto
+ * `module.buildInfo` under that name, and ReactCompilerPlugin reads them back
+ * with the export from reactCompilerLoader.ts. Rename both if you change it.
  */
 import { createRequire } from 'node:module';
 import { join, relative } from 'node:path';
