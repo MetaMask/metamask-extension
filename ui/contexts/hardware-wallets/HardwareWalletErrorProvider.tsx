@@ -19,6 +19,7 @@ import {
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
 import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import { useDispatch } from '../../store/hooks';
+import { isInE2eTest } from '../../../shared/lib/environment';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -34,7 +35,6 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { isInE2eTest } from './is-in-e2e-test';
 import { isHardwareWalletRoute } from './utils';
 
 /**
