@@ -9,7 +9,6 @@ import { CandidateSubscriptionId } from './types';
 export type RewardsState = {
   // Modal + onboarding state
   rewardsModalOpen: boolean;
-  onboardingReferralCode: string | null;
 
   // Geolocation state
   geoLocation: string | null;
@@ -37,7 +36,6 @@ export type RewardsState = {
 
 export const initialState: RewardsState = {
   rewardsModalOpen: false,
-  onboardingReferralCode: '',
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -80,13 +78,6 @@ const rewardsSlice = createSlice({
 
     setRewardsModalOpen: (state, action: PayloadAction<boolean>) => {
       state.rewardsModalOpen = action.payload;
-    },
-
-    setOnboardingReferralCode: (
-      state,
-      action: PayloadAction<string | null>,
-    ) => {
-      state.onboardingReferralCode = action.payload;
     },
 
     setRewardsGeoMetadata: (
@@ -180,7 +171,6 @@ const rewardsSlice = createSlice({
 export const {
   resetRewardsState,
   setRewardsModalOpen,
-  setOnboardingReferralCode,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
   setSeasonStatus,

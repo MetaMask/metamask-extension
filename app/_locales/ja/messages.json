@@ -9373,24 +9373,6 @@
   "rewardsOnboardingOptInError": {
     "message": "オプトインに失敗しました"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "無効な紹介コード"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "紹介コード（オプション）"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "紹介コードを検証できませんでした."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "接続を確認して、もう一度お試しください。"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "コードを非表示"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "紹介コードをお持ちですか？"
-  },
   "rewardsOnboardingSignUp": {
     "message": "リワードに参加"
   },
@@ -9399,10 +9381,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "リワードの獲得を開始"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "紹介コードを検証中...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1ポイント",

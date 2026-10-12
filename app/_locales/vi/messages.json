@@ -9383,24 +9383,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Đăng ký tham gia thất bại"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Mã giới thiệu không hợp lệ"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Mã giới thiệu (không bắt buộc)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Không thể xác minh mã giới thiệu."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Kiểm tra kết nối của bạn và thử lại."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Ẩn mã"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Có mã giới thiệu?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Tham gia chương trình Phần thưởng"
   },
@@ -9409,10 +9391,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Bắt đầu kiếm phần thưởng"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Đang xác minh mã giới thiệu...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 điểm",

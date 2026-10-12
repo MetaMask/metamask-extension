@@ -9377,24 +9377,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Gagal berpartisipasi"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Kode referensi tidak valid"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Kode referensi (opsional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Kode referensi tidak dapat divalidasi."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Periksa koneksi Anda dan coba lagi."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Sembunyikan kode"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Punya kode referensi?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Gabung dengan Reward"
   },
@@ -9403,10 +9385,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Mulai dapatkan reward"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Memverifikasi kode referensi...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 poin",

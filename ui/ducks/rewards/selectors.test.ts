@@ -1,6 +1,5 @@
 import {
   selectRewardsModalOpen,
-  selectOnboardingReferralCode,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoLoading,
   selectOptinAllowedForGeoError,
@@ -45,13 +44,6 @@ describe('rewards selectors', () => {
         rewards: { rewardsModalOpen: true },
       });
       expect(selectRewardsModalOpen(state)).toBe(true);
-    });
-
-    it('selectOnboardingReferralCode returns referral code', () => {
-      const state = buildState({
-        rewards: { onboardingReferralCode: ' ABC123 ' },
-      });
-      expect(selectOnboardingReferralCode(state)).toBe(' ABC123 ');
     });
 
     it('selectOptinAllowedForGeo returns geo eligibility', () => {

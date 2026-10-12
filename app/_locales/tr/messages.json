@@ -9383,24 +9383,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Katılım başarısız oldu"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Geçersiz referans kodu"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Referans kodu (isteğe bağlı)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Referans kodu doğrulanamadı."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Bağlantınızı kontrol edin ve tekrar deneyin."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Kodu gizle"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "Referans kodunuz var mı?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Ödüllere Katılın"
   },
@@ -9409,10 +9391,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Ödül kazanmaya başlayın"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Referans kodu doğrulanıyor...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 puan",

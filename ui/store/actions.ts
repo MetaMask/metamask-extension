@@ -6609,22 +6609,6 @@ export function estimateRewardsPoints(
   };
 }
 
-export function validateRewardsReferralCode(
-  code: string,
-): ThunkAction<
-  Promise<{ valid: boolean; isVipCode: boolean }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    return await submitRequestToBackground<{
-      valid: boolean;
-      isVipCode: boolean;
-    }>('validateRewardsReferralCode', [code]);
-  };
-}
-
 export function getRewardsGeoMetadata(): ThunkAction<
   Promise<RewardsGeoMetadata | null>,
   MetaMaskReduxState,
@@ -6640,10 +6624,8 @@ export function getRewardsGeoMetadata(): ThunkAction<
 
 export function rewardsOptIn({
   accounts,
-  referralCode,
 }: {
   accounts: InternalAccount[];
-  referralCode?: string;
 }): ThunkAction<
   Promise<string | null>,
   MetaMaskReduxState,
@@ -6653,7 +6635,6 @@ export function rewardsOptIn({
   return async () => {
     return await submitRequestToBackground<string | null>('rewardsOptIn', [
       accounts,
-      referralCode,
     ]);
   };
 }

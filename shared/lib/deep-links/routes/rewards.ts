@@ -5,6 +5,7 @@ export const rewards = new Route({
   getTitle: (_: URLSearchParams) => 'deepLink_theRewardsPage',
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams(params);
+    query.delete('referral');
     return {
       path: '/rewards',
       query,

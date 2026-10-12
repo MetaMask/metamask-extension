@@ -467,6 +467,7 @@
   "moneyBalance": "object",
   "perpsTutorial": "object",
   "rewards": "object",
+  "rewardsMoney": "object",
   "sendMaxValue": "object",
   "smartAccounts": "object",
   "swaps": "object",

@@ -9383,24 +9383,6 @@
   "rewardsOnboardingOptInError": {
     "message": "Error al registrarte"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Código de recomendación no válido"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Código de recomendación (opcional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "El código de recomendación no se pudo validar."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Comprueba tu conexión y vuelve a intentarlo."
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "Ocultar código"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "¿Tienes un código de recomendación?"
-  },
   "rewardsOnboardingSignUp": {
     "message": "Unirse a Recompensas"
   },
@@ -9409,10 +9391,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "Empieza a ganar recompensas"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "Verificando código de recomendación...",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 puntos",

@@ -9375,24 +9375,6 @@
   "rewardsOnboardingOptInError": {
     "message": "参与失败"
   },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "推荐码无效"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "推荐码（可选）"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "推荐码验证失败."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "请检查连接后重试。"
-  },
-  "rewardsOnboardingReferralHide": {
-    "message": "隐藏代码"
-  },
-  "rewardsOnboardingReferralPrompt": {
-    "message": "有推荐码吗？"
-  },
   "rewardsOnboardingSignUp": {
     "message": "加入奖励计划"
   },
@@ -9401,10 +9383,6 @@
   },
   "rewardsOnboardingTitle": {
     "message": "开始赚取奖励"
-  },
-  "rewardsOptInVerifyingReferralCode": {
-    "message": "正在验证推荐码…",
-    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 积分",
