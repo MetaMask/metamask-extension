@@ -492,7 +492,7 @@ export function MoneyHomePage() {
             </div>
           </div>
 
-          <div className="mt-2 flex w-full max-w-[389px] gap-2 pt-2">
+          <div className="mt-2 flex w-full max-w-[389px] gap-2 self-start pt-2 sm:self-center">
             <MoneyActionCard
               icon={IconName.Add}
               label={t('moneyAdd')}
