@@ -1,38 +1,34 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
-import type { MmPayRpcRequest, MmPayRpcResult } from '../../mmpay-rpc';
-import { walletMmPayHandler } from './wallet-mm-pay';
+import type { WalletPayRequest, WalletPayResult } from '../../wallet-pay';
+import { walletPayHandler } from './wallet-pay';
 
-const REQUEST: MmPayRpcRequest = {
+const REQUEST: WalletPayRequest = {
   jsonrpc: '2.0',
   id: 1,
-  method: 'wallet_mmPay',
+  method: 'wallet_pay',
   origin: 'https://perps-terminal.metamask.com',
   params: [{ type: 'perpsDeposit', from: '0x123' }],
 };
 
-const RESULT: MmPayRpcResult = {
-  transactionId: 'tx-1',
-  source: {},
-  destination: { hash: '0xabc' },
-};
+const RESULT: WalletPayResult = { transactionHash: '0xabc' };
 
-function setup(mmPayAddRpcTransaction: jest.Mock) {
-  const response: PendingJsonRpcResponse<MmPayRpcResult> = {
+function setup(addWalletPayTransaction: jest.Mock) {
+  const response: PendingJsonRpcResponse<WalletPayResult> = {
     jsonrpc: '2.0',
     id: 1,
   };
   const end = jest.fn();
 
   const run = () =>
-    walletMmPayHandler.implementation(REQUEST, response, jest.fn(), end, {
-      mmPayAddRpcTransaction,
+    walletPayHandler.implementation(REQUEST, response, jest.fn(), end, {
+      addWalletPayTransaction,
     });
 
   return { response, end, run };
 }
 
-describe('walletMmPayHandler', () => {
+describe('walletPayHandler', () => {
   it('passes the request to the hook and returns its result', async () => {
     const hook = jest.fn().mockResolvedValue(RESULT);
     const { response, end, run } = setup(hook);

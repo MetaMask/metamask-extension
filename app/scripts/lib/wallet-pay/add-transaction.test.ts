@@ -4,14 +4,15 @@ import { errorCodes } from '@metamask/rpc-errors';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { addDappTransaction } from '../transaction/util';
-import { addMmPayRpcTransaction } from './add-transaction';
-import { MMPAY_RPC_TYPE_REGISTRIES } from './registry';
+import { addWalletPayTransaction } from './add-transaction';
+import { WALLET_PAY_TYPE_REGISTRIES } from './registry';
 import type {
-  MmPayRpcBuiltTransaction,
-  MmPayRpcMessenger,
-  MmPayRpcRequest,
-  MmPayRpcTypeRegistry,
+  WalletPayBuiltTransaction,
+  WalletPayMessenger,
+  WalletPayRequest,
+  WalletPayTypeRegistry,
 } from './types';
+import type { WalletPayParams } from './validate-request';
 
 jest.mock('../transaction/util', () => ({
   addDappTransaction: jest.fn(),
@@ -38,20 +39,16 @@ const addDappTransactionMock = jest.mocked(addDappTransaction);
 function createTypeRegistry() {
   return {
     type: TransactionType.perpsDeposit,
-    validatePayParams: jest.fn((payParams: unknown) => ({ parsed: payParams })),
     assertPreconditions: jest.fn(),
     build: jest.fn(
-      (_context: {
-        from: Hex;
-        payParams: unknown;
-      }): MmPayRpcBuiltTransaction => ({
+      (_params: WalletPayParams): WalletPayBuiltTransaction => ({
         chainId: CHAIN_ID,
         transactionParams: TRANSACTION_PARAMS,
         type: TransactionType.perpsDeposit,
         skipInitialGasEstimate: true,
       }),
     ),
-  } satisfies MmPayRpcTypeRegistry;
+  } satisfies WalletPayTypeRegistry;
 }
 
 function createMessenger({
@@ -69,42 +66,38 @@ function createMessenger({
         return account ?? undefined;
       case 'AccountsController:listAccounts':
         return ACCOUNTS;
-      case 'TransactionController:getState':
-        return { transactions: [] };
       default:
         throw new Error(`Unexpected action ${action}`);
     }
   });
 
-  return {
-    call,
-    subscribe: jest.fn(),
-    unsubscribe: jest.fn(),
-  } as unknown as jest.Mocked<MmPayRpcMessenger> & { call: typeof call };
+  return { call } as unknown as jest.Mocked<WalletPayMessenger> & {
+    call: typeof call;
+  };
 }
 
-function createRequest(params: unknown): MmPayRpcRequest {
+function createRequest(params: unknown): WalletPayRequest {
   return {
     jsonrpc: '2.0',
     id: 42,
-    method: 'wallet_mmPay',
+    method: 'wallet_pay',
     origin: ORIGIN,
-    params: params as MmPayRpcRequest['params'],
+    params: params as WalletPayRequest['params'],
     securityAlertResponse: undefined,
     traceContext: { trace: true },
   };
 }
 
 async function run({
-  params = [{ type: 'perpsDeposit', from: FROM, payParams: { amount: '1' } }],
+  params = [{ type: 'perpsDeposit', from: FROM, amount: '1' }],
   messenger = createMessenger(),
   permittedAccounts = [FROM],
 }: {
   params?: unknown;
-  messenger?: MmPayRpcMessenger;
+  messenger?: WalletPayMessenger;
   permittedAccounts?: string[];
 } = {}) {
-  return addMmPayRpcTransaction({
+  return addWalletPayTransaction({
     messenger,
     getPermittedAccounts: () => permittedAccounts,
     securityAlertsEnabled: true,
@@ -117,22 +110,22 @@ async function expectRpcError(promise: Promise<unknown>, code: number) {
   await expect(promise).rejects.toMatchObject({ code });
 }
 
-describe('addMmPayRpcTransaction', () => {
+describe('addWalletPayTransaction', () => {
   let typeRegistry: ReturnType<typeof createTypeRegistry>;
 
   beforeEach(() => {
     typeRegistry = createTypeRegistry();
-    MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit = typeRegistry;
+    WALLET_PAY_TYPE_REGISTRIES.perpsDeposit = typeRegistry;
     addDappTransactionMock.mockResolvedValue(HASH);
   });
 
   afterEach(() => {
-    delete MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit;
+    delete WALLET_PAY_TYPE_REGISTRIES.perpsDeposit;
     jest.clearAllMocks();
   });
 
   describe('request validation', () => {
-    it('rejects invalid top-level params before any other check', async () => {
+    it('rejects invalid params before any other check', async () => {
       const messenger = createMessenger();
 
       await expectRpcError(
@@ -149,23 +142,20 @@ describe('addMmPayRpcTransaction', () => {
         run({ messenger: createMessenger({ remoteFeatureFlags: {} }) }),
         errorCodes.rpc.methodNotFound,
       );
-      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
+      expect(typeRegistry.build).not.toHaveBeenCalled();
     });
 
     it('rejects an allowed type with no type registry', async () => {
-      delete MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit;
+      delete WALLET_PAY_TYPE_REGISTRIES.perpsDeposit;
 
       await expectRpcError(run(), errorCodes.rpc.methodNotFound);
     });
 
-    it('rejects an unknown type before validating payParams', async () => {
+    it('rejects an unknown type', async () => {
       await expectRpcError(
-        run({
-          params: [{ type: 'somethingElse', from: FROM, payParams: 'bad' }],
-        }),
+        run({ params: [{ type: 'somethingElse', from: FROM }] }),
         errorCodes.rpc.methodNotFound,
       );
-      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
     });
 
     it('does not treat inherited object keys as registered types', async () => {
@@ -182,7 +172,7 @@ describe('addMmPayRpcTransaction', () => {
         run({ permittedAccounts: [] }),
         errorCodes.provider.unauthorized,
       );
-      expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
+      expect(typeRegistry.assertPreconditions).not.toHaveBeenCalled();
     });
 
     it('rejects a from address that is not permitted', async () => {
@@ -211,32 +201,20 @@ describe('addMmPayRpcTransaction', () => {
   });
 
   describe('type registry', () => {
-    it('validates payParams, checks preconditions and builds the transaction', async () => {
+    it('checks preconditions and builds the transaction from the params', async () => {
       const messenger = createMessenger();
 
       await run({ messenger });
 
-      expect(typeRegistry.validatePayParams).toHaveBeenCalledWith({
-        amount: '1',
-      });
       expect(typeRegistry.assertPreconditions).toHaveBeenCalledWith({
         from: FROM,
         messenger,
       });
       expect(typeRegistry.build).toHaveBeenCalledWith({
+        type: 'perpsDeposit',
         from: FROM,
-        payParams: { parsed: { amount: '1' } },
+        amount: '1',
       });
-    });
-
-    it('propagates payParams errors from the type registry', async () => {
-      const error = new Error('bad payParams');
-      typeRegistry.validatePayParams.mockImplementation(() => {
-        throw error;
-      });
-
-      await expect(run()).rejects.toBe(error);
-      expect(addDappTransactionMock).not.toHaveBeenCalled();
     });
 
     it('propagates precondition errors from the type registry', async () => {
@@ -300,27 +278,20 @@ describe('addMmPayRpcTransaction', () => {
   });
 
   describe('result', () => {
-    it('returns the result with the destination hash', async () => {
-      expect(await run()).toStrictEqual({
-        source: {},
-        destination: { hash: HASH },
-      });
+    it('returns only the transaction hash', async () => {
+      expect(await run()).toStrictEqual({ transactionHash: HASH });
     });
 
-    it('stops watching on success', async () => {
-      const messenger = createMessenger();
+    it('omits the Relay 0x0 placeholder hash', async () => {
+      addDappTransactionMock.mockResolvedValue('0x0');
 
-      await run({ messenger });
-
-      expect(messenger.unsubscribe).toHaveBeenCalledTimes(2);
+      expect(await run()).toStrictEqual({});
     });
 
-    it('stops watching on error', async () => {
-      const messenger = createMessenger();
-      addDappTransactionMock.mockRejectedValue(new Error('failed'));
+    it('omits a missing hash', async () => {
+      addDappTransactionMock.mockResolvedValue(undefined as unknown as string);
 
-      await expect(run({ messenger })).rejects.toThrow('failed');
-      expect(messenger.unsubscribe).toHaveBeenCalledTimes(2);
+      expect(await run()).toStrictEqual({});
     });
   });
 });

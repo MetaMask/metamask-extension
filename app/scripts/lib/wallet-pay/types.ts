@@ -6,79 +6,53 @@ import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
 import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
-  TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import type { TransactionPayControllerStateChangeEvent } from '@metamask/transaction-pay-controller';
 import type { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import type { PayRpcType } from '../../../../shared/lib/transaction/pay-rpc';
 import type { RootMessenger } from '../messenger';
 import type { AddTransactionMessenger } from '../transaction/util';
+import type { WalletPayParams } from './validate-request';
 
-export type MmPayRpcMessenger = RootMessenger<
+export type WalletPayMessenger = RootMessenger<
   | MessengerActions<AddTransactionMessenger>
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerListAccountsAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | RemoteFeatureFlagControllerGetStateAction,
-  | MessengerEvents<AddTransactionMessenger>
-  | TransactionControllerUnapprovedTransactionAddedEvent
-  | TransactionPayControllerStateChangeEvent
+  MessengerEvents<AddTransactionMessenger>
 >;
 
-export type MmPayRpcRequest = JsonRpcRequest<Json[]> & {
+export type WalletPayRequest = JsonRpcRequest<Json[]> & {
   origin?: string;
   securityAlertResponse?: unknown;
   traceContext?: unknown;
 };
 
-export type MmPayRpcParams = {
-  type: string;
-  from: Hex;
-  payParams?: unknown;
-};
-
-export type MmPayRpcBuiltTransaction = {
+export type WalletPayBuiltTransaction = {
   chainId: Hex;
   transactionParams: TransactionParams;
   type: TransactionType;
   skipInitialGasEstimate?: boolean;
 };
 
-export type MmPayRpcTypeRegistry<PayParams = unknown> = {
+export type WalletPayTypeRegistry = {
   type: PayRpcType;
-  validatePayParams: (payParams: unknown) => PayParams;
   assertPreconditions: (context: {
     from: Hex;
-    messenger: MmPayRpcMessenger;
+    messenger: WalletPayMessenger;
   }) => void | Promise<void>;
-  build: (context: {
-    from: Hex;
-    payParams: PayParams;
-  }) => MmPayRpcBuiltTransaction;
+  build: (params: WalletPayParams) => WalletPayBuiltTransaction;
 };
 
-export type MmPayRpcDeps = {
-  messenger: MmPayRpcMessenger;
+export type WalletPayDeps = {
+  messenger: WalletPayMessenger;
   getPermittedAccounts: () => string[];
   securityAlertsEnabled: boolean;
 };
 
-export type MmPayRpcResultSide = {
-  chainId?: Hex;
-  hash?: Hex;
-};
-
-/**
- * Result of a `wallet_mmPay` request, returned once the transfer completes.
- * Fields are omitted when unknown.
- */
-export type MmPayRpcResult = {
-  transactionId?: string;
-  /** Pay strategy that executed the transfer, e.g. `relay`. */
-  provider?: string;
-  /** Where the funds left from. HyperCore is `0x539`. */
-  source: MmPayRpcResultSide;
-  destination: MmPayRpcResultSide;
+/** Result of a `wallet_pay` request, returned once the transfer completes. */
+export type WalletPayResult = {
+  transactionHash?: Hex;
 };

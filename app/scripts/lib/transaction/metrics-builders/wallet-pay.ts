@@ -4,22 +4,22 @@ import { PAY_TYPES } from './metamask-pay';
 import type { TransactionMetricsBuilder } from './types';
 
 /**
- * Adds `mm_pay_rpc` and `mm_pay_rpc_origin` to `wallet_mmPay` transactions.
+ * Adds `mm_pay_rpc` and `mm_pay_rpc_origin` to `wallet_pay` transactions.
  *
  * @param request - The metrics builder request.
  * @param request.transactionMeta - The transaction.
  * @returns The metrics properties.
  */
-export const getMmPayRpcMetricsProperties: TransactionMetricsBuilder = ({
+export const getWalletPayMetricsProperties: TransactionMetricsBuilder = ({
   transactionMeta,
 }) => {
   // In-wallet Pay flows are always added with `isInternal: true`, so a
-  // non-internal Pay transaction can only come from wallet_mmPay.
-  const isMmPayRpc =
+  // non-internal Pay transaction can only come from wallet_pay.
+  const isWalletPay =
     !transactionMeta.isInternal &&
     hasTransactionType(transactionMeta, PAY_TYPES);
 
-  if (!isMmPayRpc) {
+  if (!isWalletPay) {
     return { properties: {}, sensitiveProperties: {} };
   }
 
