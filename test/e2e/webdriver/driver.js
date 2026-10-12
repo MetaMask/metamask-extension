@@ -554,7 +554,9 @@ class Driver {
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
    * @param {number} [options.waitAtLeastGuard] - minimum milliseconds to wait before passing
-   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
+   * @returns {Promise<WebElement | undefined>} promise resolving to the
+   * wrapped element for `visible` / `enabled` / `disabled`, or `undefined`
+   * when waiting for `detached` (no element remains to wrap).
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
@@ -583,11 +585,13 @@ class Driver {
       // If the element is already gone (common when Save closes a modal
       // faster than the next wait), treat that as success. findElement()
       // would otherwise hang looking for an element that is already detached.
-      const locator = this.buildLocator(rawLocator);
-      element = await this.driver.wait(async () => {
-        const elements = await this.driver.findElements(locator);
-        return elements.length === 0;
-      }, timeout);
+      // driver.wait() resolves to a boolean here, so do not wrap it as a
+      // WebElement.
+      await this.driver.wait(
+        until.elementIsNotPresent(this.buildLocator(rawLocator)),
+        timeout,
+      );
+      return undefined;
     } else if (state === 'enabled') {
       element = await this.driver.wait(
         until.elementIsEnabled(await this.findElement(rawLocator)),
