@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -27,9 +26,7 @@ export const DefaultStory = () => <ImportNftsPage />;
 DefaultStory.decorators = [
   (Story) => (
     <Provider store={createStore()}>
-      <MemoryRouter>
-        <Story />
-      </MemoryRouter>
+      <Story />
     </Provider>
   ),
 ];

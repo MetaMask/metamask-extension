@@ -108,7 +108,7 @@ describe('ImportNftsPage', () => {
       <ImportNftsPage />,
       store,
     );
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
     expect(getImportButton()).not.toBeEnabled();
 
     const addressInput = getByPlaceholderText('0x...');
