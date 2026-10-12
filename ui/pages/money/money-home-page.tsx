@@ -407,7 +407,7 @@ export function MoneyHomePage() {
   return (
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
-        <header className="flex h-14 items-center justify-between px-4">
+        <header className="flex h-14 items-center justify-between pl-4">
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
             {t('money')}
           </Text>
