@@ -261,6 +261,7 @@ describe('Transaction Utils', () => {
 
     dappRequest = {
       ...request,
+      transactionOptions: undefined,
       dappRequest: makeDappRequest(),
       requestContext: makeRequestContext(),
     };
@@ -770,6 +771,30 @@ describe('Transaction Utils', () => {
       it('returns transaction hash', async () => {
         const transactionHash = await addDappTransaction(dappRequest);
         expect(transactionHash).toStrictEqual(TRANSACTION_META_MOCK.hash);
+      });
+
+      it('applies transactionOptions without overriding the dApp request fields', async () => {
+        await addDappTransaction({
+          ...dappRequest,
+          transactionOptions: {
+            type: TransactionType.perpsDeposit,
+            skipInitialGasEstimate: true,
+            origin: 'https://attacker.example',
+            requireApproval: false,
+            method: 'other_method',
+          },
+        });
+
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          expect.objectContaining({
+            type: TransactionType.perpsDeposit,
+            skipInitialGasEstimate: true,
+            origin: TRANSACTION_OPTIONS_MOCK.origin,
+            requireApproval: true,
+            method: makeDappRequest().method,
+          }),
+        );
       });
 
       it('throws if result promise fails', async () => {

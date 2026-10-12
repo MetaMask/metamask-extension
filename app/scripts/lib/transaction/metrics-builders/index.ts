@@ -18,6 +18,7 @@ import { getRPCMetricsProperties } from './rpc';
 import { getSecurityMetricsProperties } from './security';
 import { getSmartTransactionProperties } from './smart-transactions';
 import { getMetaMaskPayProperties } from './metamask-pay';
+import { getMmPayRpcMetricsProperties } from './mmpay-rpc';
 import { getSwapBridgeMetricsProperties } from './swap-bridge';
 import { getTransactionDetailsMetricsProperties } from './transaction-details';
 import { getUICustomizationsMetricsProperties } from './ui-customizations';
@@ -44,6 +45,7 @@ const METRICS_BUILDERS: TransactionMetricsBuilder[] = [
   getGaslessMetricsProperties,
   getTransactionDetailsMetricsProperties,
   getMetaMaskPayProperties,
+  getMmPayRpcMetricsProperties,
   getUICustomizationsMetricsProperties,
 ];
 
