@@ -360,11 +360,12 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-// npm packages keep runtime `process.env.*` unless SWC inlines them. First-party
-// code gets the full `safeVariables` map, but `@metamask/network-controller`
-// (and similar) only see `process/browser`'s empty `env`, so `IN_TEST` was
-// always falsy there and custom networks kept the 20s block-tracker interval
-// instead of the 1s test interval. Inline only `IN_TEST` for npm/CJS loaders.
+// First-party loaders substitute the full `safeVariables` map at compile time.
+// Vendor (`node_modules`) loaders intentionally do not, so secrets never land
+// in third-party code. Packages like `@metamask/network-controller` still need
+// `IN_TEST` though: without it they treat the flag as false and use the slow
+// production block-tracker interval (20s) in E2E instead of the 1s test one.
+// Substitute only that one non-secret flag for npm/CJS loaders.
 const npmEnvs: Record<string, string> =
   safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
 const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
