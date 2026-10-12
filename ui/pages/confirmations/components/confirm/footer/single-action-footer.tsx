@@ -3,7 +3,10 @@ import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo, useState } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Button, ButtonSize } from '@metamask/design-system-react';
-import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
+import {
+  hasTransactionType,
+  isPerpsWithdrawTransaction,
+} from '../../../../../../shared/lib/transactions.utils';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -35,17 +38,19 @@ const BUTTON_TEXT_BY_TYPE: Partial<Record<TransactionType, string>> = {
 
 function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isAmountPending } =
+    useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
   const transactionType = getConfirmationTransactionType(currentConfirmation);
+  const isMoneyAccountDeposit = hasTransactionType(currentConfirmation, [
+    TransactionType.moneyAccountDeposit,
+  ]);
   const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const isMoneyAccountDeposit =
-    transactionType === TransactionType.moneyAccountDeposit;
   const isMoneyAccountWithdraw =
     transactionType === TransactionType.moneyAccountWithdraw;
   // Same-token mUSD deposits produce a Pay no-op unless `isQuoteRequired` is
@@ -81,9 +86,12 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
     // Withdrawals have no `requiredAssets` and often no quote totals (same-
     // token mUSD). Enable from the last typed amount; $0 stays disabled.
-    const hasAmount = isMoneyAccountWithdraw
-      ? isPositiveAmount(lastWithdrawAmount)
-      : hasPositivePayAmount(primaryRequiredToken, totals);
+    // A typed Pay amount that has not been committed yet keeps the button
+    // loading via `isAmountPending`, so confirm cannot submit the previous quote.
+    let hasAmount = hasPositivePayAmount(primaryRequiredToken, totals);
+    if (isMoneyAccountWithdraw) {
+      hasAmount = isPositiveAmount(lastWithdrawAmount);
+    }
 
     const buttonText =
       !isAwaitingRequiredToken && hasBlockingAlerts && alertText
@@ -97,6 +105,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     // Stuck pay/gasless loading flags would keep Send spinning after the
     // amount is already typed.
     const isLoading =
+      isAmountPending ||
       isAwaitingRequiredToken ||
       (isGaslessLoading && !isMoneyAccountWithdraw) ||
       (isPayLoading && !(isMoneyAccountWithdraw && !primaryRequiredToken));
@@ -104,6 +113,7 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
+    isAmountPending,
     isGaslessLoading,
     isMoneyAccountWithdraw,
     isPayReady,
