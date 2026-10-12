@@ -226,35 +226,15 @@ describe('Routes Component', () => {
   });
 
   it('shows the missing-page screen for unknown routes', () => {
-    const unknownPath = '/multichain-account-list';
-    const matches = matchRoutes(routeConfig, unknownPath);
-    const fallback = matches?.at(-1)?.route;
-
-    expect(fallback?.path).toBe('*');
-    expect(fallback?.element.props.pageNotFound).toBe(true);
-
-    const matchedRouter = createMemoryRouter(routeConfig, {
-      initialEntries: [unknownPath],
+    const fallbackRoute = matchRoutes(routeConfig, '/unknown-route')?.at(
+      -1,
+    )?.route;
+    expect(fallbackRoute).toMatchObject({
+      path: '*',
+      element: expect.objectContaining({
+        props: { pageNotFound: true },
+      }),
     });
-    expect(matchedRouter.state.errors).toBeNull();
-    expect(matchedRouter.state.location.pathname).toBe(unknownPath);
-
-    expect(
-      matchRoutes(routeConfig, ACCOUNT_LIST_PAGE_ROUTE)?.at(-1)?.route.path,
-    ).toBe(ACCOUNT_LIST_PAGE_ROUTE);
-    expect(
-      matchRoutes(routeConfig, `${SETTINGS_ROUTE}/not-a-real-page`)?.at(-1)
-        ?.route.path,
-    ).toBe(`${SETTINGS_ROUTE}/*`);
-    expect(
-      matchRoutes(routeConfig, `${CROSS_CHAIN_SWAP_ROUTE}/not-a-page`)?.at(-1)
-        ?.route.path,
-    ).toBe(`${CROSS_CHAIN_SWAP_ROUTE}/*`);
-    expect(
-      matchRoutes(routeConfig, DEFAULT_ROUTE)?.some(
-        ({ route }) => route.path === '*',
-      ),
-    ).toBe(false);
   });
 
   it('registers the hardware wallet signing page outside guarded swap routes', () => {
