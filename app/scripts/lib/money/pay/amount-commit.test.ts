@@ -268,7 +268,7 @@ describe('commitTransactionPayUpdates', () => {
     transaction.revert = {
       gas: { message: 'old gas' },
       simulation: { message: 'old simulation' },
-      receipt: { status: '0x0' },
+      receipt: { message: 'old receipt' },
     };
 
     const updateTransaction = jest.fn();
@@ -300,7 +300,7 @@ describe('commitTransactionPayUpdates', () => {
     expect(nextTransaction.simulationData).toBeUndefined();
     expect(nextTransaction.simulationFails).toBeUndefined();
     expect(nextTransaction.revert).toStrictEqual({
-      receipt: { status: '0x0' },
+      receipt: { message: 'old receipt' },
     });
   });
 });
