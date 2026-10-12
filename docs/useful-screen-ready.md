@@ -10,10 +10,10 @@ Call `useUsefulScreenReady(screen, ready)` in a component whose commit includes
 the useful screen content. The JSX equivalent, `<UsefulScreenReady screen="unlock"
 ready={ready} />`, supports the existing class-based Unlock screen.
 
-| Screen | Readiness |
-| --- | --- |
-| `unlock` | Onboarded password/passkey form, without lockout, submission, or a blocking Unlock modal. |
-| `home` | Tokens list or legitimate empty state, committing with the account overview. |
+| Screen         | Readiness                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------- |
+| `unlock`       | Onboarded password/passkey form, without lockout, submission, or a blocking Unlock modal.      |
+| `home`         | Tokens list or legitimate empty state, committing with the account overview.                   |
 | `confirmation` | Transaction details with a type and transaction parameters, committing with the action footer. |
 
 No network refresh, password input, animation, simulation, security check, or
