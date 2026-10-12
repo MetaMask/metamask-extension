@@ -724,6 +724,16 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  confirmations_delegations: {
+    inProd: false,
+    name: 'confirmations_delegations',
+    productionDefault: {
+      deadlineSeconds: 1800,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   confirmations_eip_7702: {
     inProd: true,
     name: 'confirmations_eip_7702',
@@ -1453,6 +1463,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           },
         },
       },
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  confirmations_pay_rpc: {
+    inProd: false,
+    name: 'confirmations_pay_rpc',
+    productionDefault: {
+      allowedTypes: [],
+      dapps: {},
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -2881,9 +2902,27 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  earnMoneyDepositCtaTokenAddresses: {
+    inProd: false,
+    name: 'earnMoneyDepositCtaTokenAddresses',
+    productionDefault: {},
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   earnMoneyEarningSectionEnabled: {
     inProd: true,
     name: 'earnMoneyEarningSectionEnabled',
+    productionDefault: {
+      enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  earnMoneyTokenListItemCtaEnabled: {
+    inProd: false,
+    name: 'earnMoneyTokenListItemCtaEnabled',
     productionDefault: {
       enabled: false,
     },
