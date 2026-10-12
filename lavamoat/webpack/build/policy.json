@@ -250,8 +250,8 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
+        "@babel/types>@babel/helper-string-parser": true,
+        "@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/types": {
@@ -260,8 +260,8 @@
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
+        "@babel/types>@babel/helper-string-parser": true,
+        "@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
