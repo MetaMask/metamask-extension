@@ -1,8 +1,18 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { getMockPersonalSignConfirmState } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import {
+  getMockConfirmStateForTransaction,
+  getMockPersonalSignConfirmState,
+} from '../../../../../../test/data/confirmations/helper';
+import {
+  clearLastMoneyAccountDepositAmount,
+  setLastMoneyAccountDepositAmount,
+} from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
@@ -100,6 +110,41 @@ describe('TotalRow', () => {
     const totalValue = getByTestId('total-value');
     expect(totalValue).toBeInTheDocument();
     expect(totalValue).toHaveTextContent('$123.46');
+  });
+
+  it('shows a skeleton while a money deposit quote is still the previous amount', () => {
+    const confirmation = {
+      ...genUnapprovedContractInteractionConfirmation({ chainId: '0x1' }),
+      type: TransactionType.moneyAccountDeposit,
+      origin: 'metamask',
+    };
+    act(() => {
+      setLastMoneyAccountDepositAmount(confirmation.id, '1');
+    });
+    const state = getMockConfirmStateForTransaction(confirmation, {
+      metamask: {
+        transactionData: {
+          [confirmation.id]: {
+            quotes: [
+              {
+                strategy: 'relay',
+                request: { targetAmountMinimum: '2208000' },
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow />,
+      mockStore(state),
+    );
+
+    expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
+    act(() => {
+      clearLastMoneyAccountDepositAmount(confirmation.id);
+    });
   });
 
   it('excludes sponsored network gas from the total when paid by MetaMask', () => {

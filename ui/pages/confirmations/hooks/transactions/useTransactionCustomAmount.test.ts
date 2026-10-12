@@ -1800,6 +1800,38 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
+    it('records a typed deposit amount while Max is still armed', () => {
+      const setLastDepositAmountMock = jest.mocked(
+        TransactionPayControllerActions.setLastMoneyAccountDepositAmount,
+      );
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        ...depositMaxPayToken,
+        isMaxAmount: true,
+        updateTokenAmountMock,
+      });
+
+      setLastDepositAmountMock.mockClear();
+      updateTokenAmountMock.mockClear();
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      // Recorded on the keystroke. The quote refresh waits on Max clearing
+      // and the 500ms debounce, so confirm must not use the Max quote.
+      expect(setLastDepositAmountMock).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        '0.5',
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+    });
+
     it('prefers live funding-account balanceRaw over a stale payToken snapshot', () => {
       const updateTokenAmountMock = jest.fn();
       const { result } = runHook({

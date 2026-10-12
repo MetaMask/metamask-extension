@@ -15,6 +15,7 @@ import {
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
+import { useMoneyAccountDepositQuote } from '../../../hooks/transactions/useMoneyAccountDepositQuote';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
@@ -44,8 +45,12 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   const isPayLoading = useIsTransactionPayQuotePending();
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const isMoneyAccountDeposit =
-    transactionType === TransactionType.moneyAccountDeposit;
+  const {
+    isMoneyAccountDeposit,
+    isQuoteStale: isDepositQuoteStale,
+    lastDepositAmount,
+    quoteMatches: depositQuoteMatches,
+  } = useMoneyAccountDepositQuote();
   const isMoneyAccountWithdraw =
     transactionType === TransactionType.moneyAccountWithdraw;
   // Same-token mUSD deposits produce a Pay no-op unless `isQuoteRequired` is
@@ -81,9 +86,14 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
     // Withdrawals have no `requiredAssets` and often no quote totals (same-
     // token mUSD). Enable from the last typed amount; $0 stays disabled.
-    const hasAmount = isMoneyAccountWithdraw
-      ? isPositiveAmount(lastWithdrawAmount)
-      : hasPositivePayAmount(primaryRequiredToken, totals);
+    // Deposits enable only once the executable quote matches the amount
+    // recorded on the keystroke, not the previous Max quote.
+    let hasAmount = hasPositivePayAmount(primaryRequiredToken, totals);
+    if (isMoneyAccountWithdraw) {
+      hasAmount = isPositiveAmount(lastWithdrawAmount);
+    } else if (isMoneyAccountDeposit) {
+      hasAmount = isPositiveAmount(lastDepositAmount) && depositQuoteMatches;
+    }
 
     const buttonText =
       !isAwaitingRequiredToken && hasBlockingAlerts && alertText
@@ -98,17 +108,22 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     // amount is already typed.
     const isLoading =
       isAwaitingRequiredToken ||
+      isDepositQuoteStale ||
       (isGaslessLoading && !isMoneyAccountWithdraw) ||
       (isPayLoading && !(isMoneyAccountWithdraw && !primaryRequiredToken));
 
     return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
+    depositQuoteMatches,
+    isDepositQuoteStale,
     isGaslessLoading,
+    isMoneyAccountDeposit,
     isMoneyAccountWithdraw,
     isPayReady,
     isPayLoading,
     isMoneyAccountPerpsDeposit,
+    lastDepositAmount,
     lastWithdrawAmount,
     primaryRequiredToken,
     totals,

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
@@ -12,6 +12,10 @@ import {
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
+import {
+  clearLastMoneyAccountDepositAmount,
+  setLastMoneyAccountDepositAmount,
+} from '../../../../store/controller-actions/transaction-pay-controller';
 import {
   useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
@@ -346,6 +350,58 @@ describe('useTransactionPayData', () => {
       });
 
       expect(result.current).toBe(true);
+    });
+
+    it('returns true for a money-account deposit while the quote is still the previous amount', () => {
+      act(() => {
+        setLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK, '1');
+      });
+
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: false,
+            quotes: [
+              {
+                strategy: TransactionPayStrategy.Relay,
+                request: { targetAmountMinimum: '2208000' },
+              } as TransactionPayQuote<Json>,
+            ],
+          },
+          TransactionType.moneyAccountDeposit,
+        ),
+      });
+
+      expect(result.current).toBe(true);
+      act(() => {
+        clearLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK);
+      });
+    });
+
+    it('returns false for a money-account deposit once the quote matches the typed amount', () => {
+      act(() => {
+        setLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK, '1');
+      });
+
+      const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
+        wrapper: createWrapper(
+          {
+            isLoading: false,
+            quotes: [
+              {
+                strategy: TransactionPayStrategy.Relay,
+                request: { targetAmountMinimum: '1000000' },
+              } as TransactionPayQuote<Json>,
+            ],
+          },
+          TransactionType.moneyAccountDeposit,
+        ),
+      });
+
+      expect(result.current).toBe(false);
+      act(() => {
+        clearLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK);
+      });
     });
 
     it('does not wait on post-quote setup for money-account withdraw', () => {

@@ -195,6 +195,67 @@ export function subscribeLastMoneyAccountWithdrawAmount(
   };
 }
 
+const lastDepositAmountByTransactionId = new Map<string, string>();
+const lastDepositAmountListeners = new Set<() => void>();
+
+/**
+ * Last human-readable deposit amount recorded for this transaction.
+ * The footer compares it to the executable quote so Add funds cannot submit
+ * a stale Max quote while the field already shows a typed amount.
+ *
+ * @param transactionId - Id of the Money Account deposit transaction.
+ * @returns The last amount, if any update has been recorded.
+ */
+export function getLastMoneyAccountDepositAmount(
+  transactionId: string,
+): string | undefined {
+  return lastDepositAmountByTransactionId.get(transactionId);
+}
+
+/**
+ * Record the deposit amount immediately, before the debounced quote refresh.
+ *
+ * @param transactionId - Id of the Money Account deposit transaction.
+ * @param amountHuman - Exact human-readable mUSD amount.
+ */
+export function setLastMoneyAccountDepositAmount(
+  transactionId: string,
+  amountHuman: string,
+): void {
+  lastDepositAmountByTransactionId.set(transactionId, amountHuman);
+  lastDepositAmountListeners.forEach((listener) => listener());
+}
+
+/**
+ * Clears the recorded deposit amount for a transaction.
+ *
+ * @param transactionId - Id of the Money Account deposit transaction.
+ */
+export function clearLastMoneyAccountDepositAmount(
+  transactionId: string,
+): void {
+  if (!lastDepositAmountByTransactionId.delete(transactionId)) {
+    return;
+  }
+  lastDepositAmountListeners.forEach((listener) => listener());
+}
+
+/**
+ * Subscribe to last-deposit-amount writes. Used by
+ * `useLastMoneyAccountDepositAmount`.
+ *
+ * @param onStoreChange - Listener invoked after any amount is recorded.
+ * @returns Unsubscribe function.
+ */
+export function subscribeLastMoneyAccountDepositAmount(
+  onStoreChange: () => void,
+): () => void {
+  lastDepositAmountListeners.add(onStoreChange);
+  return () => {
+    lastDepositAmountListeners.delete(onStoreChange);
+  };
+}
+
 /**
  * Encodes and commits a Money Account withdrawal amount in the background.
  * Confirm approves the returned transaction so Send does not use the empty
@@ -233,6 +294,7 @@ export async function updateMoneyAccountDepositAmount(
   transactionId: string,
   amountHuman: string,
 ): Promise<boolean> {
+  setLastMoneyAccountDepositAmount(transactionId, amountHuman);
   return await submitRequestToBackground('updateMoneyAccountDepositAmount', [
     transactionId,
     amountHuman,
