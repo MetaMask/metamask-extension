@@ -28,7 +28,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
 import { useDispatch } from '../../../../../store/hooks';
-import { isInE2eTest } from '../../../../../contexts/hardware-wallets/is-in-e2e-test';
+import { isInE2eTest } from '../../../../../../shared/lib/environment';
 import { requestWebHidDevices } from '../../../../../contexts/hardware-wallets/webConnectionUtils';
 import { HardwareWalletType } from '../../../../../contexts/hardware-wallets/types';
 

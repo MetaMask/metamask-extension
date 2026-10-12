@@ -1,0 +1,16 @@
+@import '@metamask/design-tokens/styles.css';
+
+/* Bundled with the widget frame page through Webpack's CSS pipeline. */
+@tailwind base;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+  font-family: var(--font-family-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  background-color: var(--color-background-default);
+}
