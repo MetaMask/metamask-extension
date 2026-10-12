@@ -5456,12 +5456,6 @@
   "marketRate": {
     "message": "Market rate"
   },
-  "marketingConsentMetricsOptOutSheetDescription": {
-    "message": "Turning off MetaMetrics also turns off Marketing updates and Updates and rewards notifications, since they rely on this data."
-  },
-  "marketingConsentMetricsOptOutSheetTitle": {
-    "message": "Turn off MetaMetrics?"
-  },
   "marketingConsentOptOutSheetConfirm": {
     "message": "Turn off"
   },

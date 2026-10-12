@@ -19,8 +19,6 @@ import {
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useDispatch } from '../../../store/hooks';
-import { useMarketingOptOut } from '../../../hooks/metamask-notifications/useMarketingOptOut';
-import { MarketingConsentSheet } from '../../../components/app/marketing-consent-sheet/marketing-consent-sheet';
 
 export const MetametricsToggleItem = () => {
   const t = useI18nContext();
@@ -38,41 +36,10 @@ export const MetametricsToggleItem = () => {
   const useExternalServices = useSelector(getUseExternalServices);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
-  const finishTurningOffMetametrics = async (clearMarketingConsent = true) => {
-    if (clearMarketingConsent && dataCollectionForMarketing) {
-      await dispatch(setDataCollectionForMarketing(false));
-    }
-
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics: isOptedIn,
-        })
-        .build(),
-    );
-
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
-          [MetaMetricsUserTrait.HasMarketingConsent]: false,
-          location: 'Settings',
-        })
-        .build(),
-    );
-
-    await disableMetametrics();
-  };
-
-  const { requestOptOut, sheetProps } = useMarketingOptOut({
-    onOptedOut: () => finishTurningOffMetametrics(false),
-  });
-
   const handleToggle = async (currentValue: boolean) => {
-    if (!currentValue) {
+    const newValue = !currentValue;
+
+    if (newValue) {
       await enableMetametrics();
       trackEvent(
         createEventBuilder(MetaMetricsEventName.TurnOnMetaMetrics)
@@ -84,14 +51,34 @@ export const MetametricsToggleItem = () => {
           })
           .build(),
       );
-      return;
-    }
+    } else {
+      if (dataCollectionForMarketing) {
+        dispatch(setDataCollectionForMarketing(false));
+      }
 
-    if (await requestOptOut()) {
-      return;
-    }
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.TurnOffMetaMetrics)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            isProfileSyncingEnabled: isBackupAndSyncEnabled,
+            participateInMetaMetrics: isOptedIn,
+          })
+          .build(),
+      );
 
-    await finishTurningOffMetametrics();
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
+          .addCategory(MetaMetricsEventCategory.Settings)
+          .addProperties({
+            [MetaMetricsUserTrait.IsMetricsOptedIn]: false,
+            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            location: 'Settings',
+          })
+          .build(),
+      );
+
+      await disableMetametrics();
+    }
   };
 
   return (
@@ -104,13 +91,6 @@ export const MetametricsToggleItem = () => {
         dataTestId="participate-in-meta-metrics-input"
         containerDataTestId="participate-in-meta-metrics-toggle"
         disabled={!useExternalServices}
-      />
-      <MarketingConsentSheet
-        {...sheetProps}
-        title={t('marketingConsentMetricsOptOutSheetTitle')}
-        description={t('marketingConsentMetricsOptOutSheetDescription')}
-        confirmLabel={t('marketingConsentOptOutSheetConfirm')}
-        testId="metametrics-marketing-consent-sheet"
       />
       {error && (
         <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
