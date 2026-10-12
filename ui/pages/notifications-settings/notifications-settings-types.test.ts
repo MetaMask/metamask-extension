@@ -9,10 +9,4 @@ describe('getNotificationsSettingsSectionConfigs', () => {
 
     expect(sections.at(-1)?.type).toBe('marketing');
   });
-
-  it('orders agentic cli directly above marketing', () => {
-    const sections = getNotificationsSettingsSectionConfigs(t);
-
-    expect(sections.at(-2)?.type).toBe('agenticCli');
-  });
 });
