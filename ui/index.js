@@ -62,7 +62,6 @@ import {
   markPerpsLifecycleWarm,
 } from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
-import { initializeBraze } from './helpers/braze';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
@@ -238,8 +237,6 @@ async function startApp(metamaskState, opts) {
 
   // Initialize Core Web Vitals (INP, LCP, CLS) measurement
   initWebVitals();
-  // Braze Web SDK is UI-only. Never import it from the MV3 service worker.
-  initializeBraze();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
 
