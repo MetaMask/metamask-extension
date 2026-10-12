@@ -56,6 +56,7 @@ import {
   TraceName,
   type TraceContext,
 } from '../../shared/lib/trace';
+import { recordBackgroundInitializationTiming } from '../../shared/lib/ui-startup-timing';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -135,6 +136,7 @@ async function start(): Promise<void> {
 
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
+  extensionPort.onMessage.addListener(recordBackgroundInitializationTiming);
 
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
@@ -152,6 +154,9 @@ async function start(): Promise<void> {
   connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync(initialState: unknown): Promise<void> {
+    extensionPort.onMessage.removeListener(
+      recordBackgroundInitializationTiming,
+    );
     endTrace({ name: TraceName.BackgroundConnect });
     criticalErrorHandler.startUiSyncReceived();
 
