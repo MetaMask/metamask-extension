@@ -10,7 +10,6 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import { DataCollectionToggleItem } from './data-collection-item';
 
 const mockSetDataCollectionForMarketing = jest.fn();
-const mockUpdatePreferencesSection = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockListNotifications = jest.fn();
 const mockEnsurePreferences = jest.fn();
@@ -45,7 +44,6 @@ jest.mock(
       preferences: { marketing: mockMarketingPreferences },
       ensurePreferences: mockEnsurePreferences,
       refetchPreferences: mockRefetchPreferences,
-      updatePreferencesSection: mockUpdatePreferencesSection,
     }),
   }),
 );
@@ -88,7 +86,6 @@ describe('DataCollectionToggleItem', () => {
       pushNotificationsEnabled: false,
       inAppNotificationsEnabled: false,
     };
-    mockUpdatePreferencesSection.mockResolvedValue(undefined);
     mockConsentWrite = () => Promise.resolve();
     mockEnsurePreferences.mockImplementation(() =>
       Promise.resolve({ marketing: mockMarketingPreferences }),
@@ -179,7 +176,6 @@ describe('DataCollectionToggleItem', () => {
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
     });
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
   it('waits for an in-flight preference read instead of showing the warning', async () => {
@@ -206,7 +202,6 @@ describe('DataCollectionToggleItem', () => {
       screen.queryByTestId('marketing-consent-opt-out-sheet'),
     ).not.toBeInTheDocument();
     expect(mockRefetchPreferences).not.toHaveBeenCalled();
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
   it('opts out without the warning when the preference read failed', async () => {
@@ -240,7 +235,6 @@ describe('DataCollectionToggleItem', () => {
       await screen.findByTestId('marketing-consent-opt-out-sheet'),
     ).toBeInTheDocument();
     expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
   it('leaves preferences unchanged when the opt-out sheet is dismissed', async () => {
@@ -260,10 +254,9 @@ describe('DataCollectionToggleItem', () => {
       screen.queryByTestId('marketing-consent-opt-out-sheet'),
     ).not.toBeInTheDocument();
     expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('turns off consent and both marketing notification channels after confirmation', async () => {
+  it('turns off consent and refreshes the preferences after confirmation', async () => {
     mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: true,
@@ -277,121 +270,26 @@ describe('DataCollectionToggleItem', () => {
     );
 
     await waitFor(() => {
-      expect(mockUpdatePreferencesSection).toHaveBeenCalledWith(
-        'marketing',
-        expect.objectContaining({
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: false,
-        }),
-      );
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(mockRefetchPreferences).toHaveBeenCalled();
       expect(mockListNotifications).toHaveBeenCalled();
-    });
-  });
-
-  it('keeps the opt-out sheet open and consent unchanged when preference update fails', async () => {
-    mockMarketingPreferences = {
-      pushNotificationsEnabled: true,
-      inAppNotificationsEnabled: false,
-    };
-    mockUpdatePreferencesSection.mockRejectedValueOnce(
-      new Error('Could not update notification preferences'),
-    );
-    const mockStore = createMockStore({ optedInToMarketing: true });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-    fireEvent.click(
-      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('marketing-consent-opt-out-sheet'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(messages.notificationsSettingsBoxError.message),
-      ).toBeInTheDocument();
-      expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
-    });
-    expect(
-      screen.queryByText('Could not update notification preferences'),
-    ).not.toBeInTheDocument();
-    expect(console.error).toHaveBeenCalledWith(
-      'Failed to turn off marketing consent:',
-      expect.objectContaining({
-        message: 'Could not update notification preferences',
-      }),
-    );
-  });
-
-  it('keeps the opt-out sheet open without writing when the fresh read fails', async () => {
-    mockMarketingPreferences = {
-      pushNotificationsEnabled: true,
-      inAppNotificationsEnabled: false,
-    };
-    const mockStore = createMockStore({ optedInToMarketing: true });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-    mockRefetchPreferences.mockRejectedValueOnce(new Error('AUS unavailable'));
-    fireEvent.click(
-      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
-    );
-
-    expect(
-      await screen.findByText(messages.notificationsSettingsBoxError.message),
-    ).toBeInTheDocument();
-    expect(mockRefetchPreferences).toHaveBeenCalledWith({ throwOnError: true });
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
-    expect(mockSetDataCollectionForMarketing).not.toHaveBeenCalled();
-  });
-
-  it('opts out without writing preferences when the fresh read finds none', async () => {
-    mockMarketingPreferences = {
-      pushNotificationsEnabled: true,
-      inAppNotificationsEnabled: false,
-    };
-    const mockStore = createMockStore({ optedInToMarketing: true });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-    mockRefetchPreferences.mockResolvedValueOnce({ data: null });
-    fireEvent.click(
-      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
-    );
-
-    await waitFor(() => {
-      expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
       expect(
         screen.queryByTestId('marketing-consent-opt-out-sheet'),
       ).not.toBeInTheDocument();
     });
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
-  it('rolls back consent and then channels if the consent update fails', async () => {
-    const previousMarketing = {
+  it('keeps the opt-out sheet open and restores consent if the consent update fails', async () => {
+    mockMarketingPreferences = {
       pushNotificationsEnabled: true,
       inAppNotificationsEnabled: false,
     };
-    mockMarketingPreferences = previousMarketing;
-    const writeOrder: string[] = [];
     mockConsentWrite = jest
       .fn()
       .mockRejectedValueOnce(
         new Error('Marketing consent was not saved to AUS'),
       )
       .mockResolvedValue(undefined);
-    mockSetDataCollectionForMarketing.mockImplementation((value: boolean) =>
-      writeOrder.push(`consent:${value}`),
-    );
-    mockUpdatePreferencesSection.mockImplementation(
-      (_section: string, value: typeof previousMarketing) => {
-        writeOrder.push(`channels:${value.pushNotificationsEnabled}`);
-        return Promise.resolve();
-      },
-    );
     const mockStore = createMockStore({ optedInToMarketing: true });
     renderWithProvider(<DataCollectionToggleItem />, mockStore);
 
@@ -403,49 +301,11 @@ describe('DataCollectionToggleItem', () => {
     expect(
       await screen.findByText(messages.notificationsSettingsBoxError.message),
     ).toBeInTheDocument();
-    expect(writeOrder).toStrictEqual([
-      'channels:false',
-      'consent:false',
-      'consent:true',
-      'channels:true',
-    ]);
-    expect(mockUpdatePreferencesSection).toHaveBeenLastCalledWith(
-      'marketing',
-      previousMarketing,
-    );
+    expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(1, false);
+    expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(2, true);
     expect(
       screen.getByTestId('marketing-consent-opt-out-sheet'),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText('Marketing consent was not saved to AUS'),
-    ).not.toBeInTheDocument();
-  });
-
-  it('does not restore channels when restoring consent fails', async () => {
-    mockMarketingPreferences = {
-      pushNotificationsEnabled: true,
-      inAppNotificationsEnabled: false,
-    };
-    mockConsentWrite = jest
-      .fn()
-      .mockRejectedValue(new Error('Marketing consent was not saved to AUS'));
-    const mockStore = createMockStore({ optedInToMarketing: true });
-    renderWithProvider(<DataCollectionToggleItem />, mockStore);
-
-    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
-    fireEvent.click(
-      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
-    );
-
-    expect(
-      await screen.findByText(messages.notificationsSettingsBoxError.message),
-    ).toBeInTheDocument();
-    expect(mockSetDataCollectionForMarketing).toHaveBeenLastCalledWith(true);
-    expect(mockUpdatePreferencesSection).toHaveBeenCalledTimes(1);
-    expect(console.error).toHaveBeenCalledWith(
-      'Failed to roll back marketing opt-out:',
-      expect.any(Error),
-    );
   });
 
   it('opts out directly for signed-out users even when marketing channels are enabled', async () => {
@@ -470,7 +330,6 @@ describe('DataCollectionToggleItem', () => {
     expect(
       screen.queryByTestId('marketing-consent-opt-out-sheet'),
     ).not.toBeInTheDocument();
-    expect(mockUpdatePreferencesSection).not.toHaveBeenCalled();
   });
 
   it('is disabled when useExternalServices is false', () => {

@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { MarketingPreference } from '@metamask/authenticated-user-storage';
 import { getDataCollectionForMarketing } from '../../selectors/metametrics';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { setDataCollectionForMarketing } from '../../store/actions';
@@ -12,8 +11,8 @@ import { useNotificationPreferences } from './useNotificationPreferences';
 /**
  * Shared flow for turning marketing consent off while the Updates and rewards
  * channels (stored in AUS) may still be on. When channels are on, the caller
- * renders a confirmation sheet; confirming disables the channels, saves
- * consent to AUS, then runs `onOptedOut`.
+ * renders a confirmation sheet; confirming saves consent to AUS (which
+ * turns the channels off), then runs `onOptedOut`.
  *
  * @param options - Hook options.
  * @param options.onOptedOut - Runs once consent is off and the sheet flow succeeded.
@@ -29,7 +28,7 @@ export function useMarketingOptOut({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { ensurePreferences, refetchPreferences, updatePreferencesSection } =
+  const { ensurePreferences, refetchPreferences } =
     useNotificationPreferences();
   const isSignedIn = useSelector(selectIsSignedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
@@ -61,58 +60,26 @@ export function useMarketingOptOut({
     return needsWarning;
   }, [ensurePreferences, isSignedIn]);
 
-  const rollBack = useCallback(
-    async (previousMarketing?: MarketingPreference) => {
-      try {
-        // Only restore consent the user actually had, so a rollback never
-        // opts them in. Restore it before channels so channels are never on
-        // without it.
-        if (dataCollectionForMarketing === true) {
-          await dispatch(setDataCollectionForMarketing(true));
-        }
-        if (previousMarketing) {
-          await updatePreferencesSection('marketing', previousMarketing);
-          listNotifications();
-        }
-      } catch (rollbackError) {
-        console.error('Failed to roll back marketing opt-out:', rollbackError);
-      }
-    },
-    [
-      dataCollectionForMarketing,
-      dispatch,
-      listNotifications,
-      updatePreferencesSection,
-    ],
-  );
-
   const onConfirm = useCallback(async () => {
     setIsSubmitting(true);
     setError(null);
     try {
-      // Decide from a fresh read only; the cache may be stale.
-      const { data } = await refetchPreferences({ throwOnError: true });
-      const marketing = data?.marketing;
-      const channelsEnabled = Boolean(
-        marketing?.pushNotificationsEnabled ||
-        marketing?.inAppNotificationsEnabled,
-      );
-      if (marketing && channelsEnabled) {
-        await updatePreferencesSection('marketing', {
-          ...marketing,
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: false,
-        });
-        listNotifications();
-      }
       try {
         await dispatch(
           setDataCollectionForMarketing(false, { waitForAus: true }),
         );
       } catch (consentError) {
-        await rollBack(channelsEnabled ? marketing : undefined);
+        // Only restore consent the user actually had, so a rollback never
+        // opts them in.
+        if (dataCollectionForMarketing === true) {
+          await dispatch(setDataCollectionForMarketing(true));
+        }
         throw consentError;
       }
+      // The consent sync turned the channels off in AUS; refresh the cache so
+      // a later preferences write does not turn them back on.
+      await refetchPreferences({ throwOnError: true });
+      listNotifications();
       await onOptedOut();
       setIsOpen(false);
     } catch (turnOffError) {
@@ -122,13 +89,12 @@ export function useMarketingOptOut({
       setIsSubmitting(false);
     }
   }, [
+    dataCollectionForMarketing,
     dispatch,
     listNotifications,
     onOptedOut,
     refetchPreferences,
-    rollBack,
     t,
-    updatePreferencesSection,
   ]);
 
   const onClose = useCallback(() => setIsOpen(false), []);

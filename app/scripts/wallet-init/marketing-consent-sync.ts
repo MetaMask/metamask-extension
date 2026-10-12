@@ -14,6 +14,11 @@ import type {
 } from '@metamask/analytics-controller';
 import { Messenger } from '@metamask/messenger';
 import type {
+  StorageServiceGetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceSetItemAction,
+} from '@metamask/storage-service';
+import type {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
   KeyringControllerState,
@@ -42,6 +47,9 @@ type SyncActions =
   | AnalyticsControllerOptOutOfMarketingAction
   | AuthenticationControllerGetStateAction
   | KeyringControllerGetStateAction
+  | StorageServiceGetItemAction
+  | StorageServiceRemoveItemAction
+  | StorageServiceSetItemAction
   | MarketingConsentSyncWaitForMarketingConsentSyncAction;
 
 type SyncEvents =
@@ -52,10 +60,8 @@ type SyncEvents =
 
 type SyncMessenger = RootMessenger<SyncActions, SyncEvents>;
 
-type PendingConsentUpdate =
-  | { origin: 'user'; value: boolean }
-  // Seeds AUS from local state and is only valid for the profile that was read.
-  | { origin: 'seed'; value: boolean; profileId: string };
+const STORAGE_NAMESPACE = 'MarketingConsentSync';
+const PENDING_CONSENT_KEY = 'pendingConsent';
 
 type ConsentSyncSession = {
   lastSynced?: boolean;
@@ -100,7 +106,7 @@ function assertMarketingConsentSynced(
   expectedConsent: boolean,
   expectedSession: ConsentSyncSession,
   session: ConsentSyncSession,
-  pendingConsentUpdate: PendingConsentUpdate | undefined,
+  pendingConsentUpdate: boolean | undefined,
   analyticsState: Pick<
     AnalyticsControllerState,
     'optedInToMarketing' | 'marketingConsentDecisionMade'
@@ -115,15 +121,6 @@ function assertMarketingConsentSynced(
   ) {
     throw new Error('Marketing consent was not saved to AUS');
   }
-}
-
-function getCanonicalProfileId(
-  srpSessionData: AuthenticationControllerState['srpSessionData'],
-): string {
-  return (
-    Object.entries(srpSessionData ?? {})[0]?.[1]?.profile?.canonicalProfileId ??
-    ''
-  );
 }
 
 /**
@@ -158,6 +155,9 @@ export function setupMarketingConsentSync({
       'AnalyticsController:optOutOfMarketing',
       'AuthenticationController:getState',
       'KeyringController:getState',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:setItem',
     ],
     events: [
       'AnalyticsController:stateChange',
@@ -172,15 +172,102 @@ export function setupMarketingConsentSync({
     'AuthenticationController:getState',
   );
   let keyringState = syncMessenger.call('KeyringController:getState');
-  // Outlives the signed-in session so a local change is never dropped, only
-  // written to whichever profile is signed in next.
-  let pendingConsentUpdate: PendingConsentUpdate | undefined;
+  // Outlives the signed-in session and is persisted, so a local change is
+  // never dropped, only written to whichever profile is signed in next.
+  let pendingConsentUpdate: boolean | undefined;
   let session: ConsentSyncSession = {};
   let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
 
   const isReady = () =>
     isConsentSyncReady(authenticationState, analyticsState, keyringState);
+
+  const persistPendingConsentUpdate = (value: boolean | undefined) => {
+    const write =
+      value === undefined
+        ? syncMessenger.call(
+            'StorageService:removeItem',
+            STORAGE_NAMESPACE,
+            PENDING_CONSENT_KEY,
+          )
+        : syncMessenger.call(
+            'StorageService:setItem',
+            STORAGE_NAMESPACE,
+            PENDING_CONSENT_KEY,
+            value,
+          );
+    write.catch((error) => {
+      console.error('Failed to persist pending marketing consent:', error);
+    });
+  };
+
+  const restorePendingConsentUpdate = async () => {
+    try {
+      const { result, error } = await syncMessenger.call(
+        'StorageService:getItem',
+        STORAGE_NAMESPACE,
+        PENDING_CONSENT_KEY,
+      );
+      if (error) {
+        throw error;
+      }
+      if (typeof result === 'boolean') {
+        pendingConsentUpdate ??= result;
+      }
+    } catch (error) {
+      console.error('Failed to restore pending marketing consent:', error);
+    }
+  };
+  const pendingConsentRestored = restorePendingConsentUpdate();
+
+  // Updates and rewards notifications rely on marketing consent.
+  const turnOffMarketingNotifications = async (): Promise<void> => {
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:invalidateQueries',
+      {
+        queryKey: [
+          'AuthenticatedUserStorageService:getNotificationPreferences',
+        ],
+      },
+    );
+    const preferences = await syncMessenger.call(
+      'AuthenticatedUserStorageService:getNotificationPreferences',
+    );
+    const marketing = preferences?.marketing;
+    if (
+      !preferences ||
+      (!marketing?.pushNotificationsEnabled &&
+        !marketing?.inAppNotificationsEnabled)
+    ) {
+      return;
+    }
+
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:putNotificationPreferences',
+      {
+        ...preferences,
+        marketing: {
+          ...marketing,
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: false,
+        },
+      },
+      'extension',
+    );
+  };
+
+  // Channels go off before consent so AUS never has consent off with a
+  // channel on; a failure leaves both to retry.
+  const writeConsent = async (value: boolean): Promise<void> => {
+    if (!value) {
+      await turnOffMarketingNotifications();
+    }
+    await syncMessenger.call(
+      'AuthenticatedUserStorageService:putMarketingConsent',
+      { marketingConsentEnabled: value },
+      'extension',
+    );
+  };
 
   const reconcileWithAus = async (
     currentSession: typeof session,
@@ -207,11 +294,8 @@ export function setupMarketingConsentSync({
     }
 
     if (remote === null) {
-      pendingConsentUpdate = {
-        origin: 'seed',
-        value: localValue,
-        profileId: getCanonicalProfileId(authenticationState.srpSessionData),
-      };
+      await writeConsent(localValue);
+      currentSession.lastSynced = localValue;
       return;
     }
 
@@ -228,108 +312,36 @@ export function setupMarketingConsentSync({
       }
     }
 
-    if (currentSession === session && isReady()) {
-      currentSession.lastSynced = remote.marketingConsentEnabled;
-    }
-  };
-
-  // Updates and rewards notifications rely on marketing consent.
-  const turnOffMarketingNotifications = async (
-    currentSession: typeof session,
-  ): Promise<void> => {
-    await syncMessenger.call(
-      'AuthenticatedUserStorageService:invalidateQueries',
-      {
-        queryKey: [
-          'AuthenticatedUserStorageService:getNotificationPreferences',
-        ],
-      },
-    );
-    const preferences = await syncMessenger.call(
-      'AuthenticatedUserStorageService:getNotificationPreferences',
-    );
-    // Writing preferences read for another profile would copy that profile's
-    // notification settings onto the newly signed-in profile.
-    if (currentSession !== session) {
-      throw new Error('Marketing consent sync restarted for a new profile');
-    }
-    const marketing = preferences?.marketing;
-    if (
-      !preferences ||
-      (!marketing?.pushNotificationsEnabled &&
-        !marketing?.inAppNotificationsEnabled)
-    ) {
-      return;
-    }
-
-    await syncMessenger.call(
-      'AuthenticatedUserStorageService:putNotificationPreferences',
-      {
-        ...preferences,
-        marketing: {
-          ...marketing,
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: false,
-        },
-      },
-      'extension',
-    );
+    currentSession.lastSynced = remote.marketingConsentEnabled;
   };
 
   const flushPendingConsentUpdate = async (
     currentSession: typeof session,
   ): Promise<void> => {
-    if (
-      pendingConsentUpdate === undefined ||
-      currentSession !== session ||
-      !isReady()
-    ) {
+    if (pendingConsentUpdate === undefined || !isReady()) {
       return;
     }
 
-    const update = pendingConsentUpdate;
-    const { value } = update;
+    const value = pendingConsentUpdate;
     pendingConsentUpdate = undefined;
 
     try {
-      // Channels go off before consent so AUS never has consent off with a
-      // channel on; a failure retries both with the pending update.
-      if (!value) {
-        await turnOffMarketingNotifications(currentSession);
-      }
-      if (currentSession !== session) {
-        throw new Error('Marketing consent sync restarted for a new profile');
-      }
-      await syncMessenger.call(
-        'AuthenticatedUserStorageService:putMarketingConsent',
-        { marketingConsentEnabled: value },
-        'extension',
-      );
+      await writeConsent(value);
     } catch (error) {
-      pendingConsentUpdate ??= update;
-      if (currentSession !== session) {
-        // The session changed mid-write; its own run retries the pending
-        // update against the newly signed-in profile.
-        return;
-      }
+      pendingConsentUpdate ??= value;
       throw error;
     }
 
-    if (currentSession === session) {
-      currentSession.lastSynced = value;
+    currentSession.lastSynced = value;
+    if (pendingConsentUpdate === undefined) {
+      persistPendingConsentUpdate(undefined);
     }
 
     return flushPendingConsentUpdate(currentSession);
   };
 
   const run = async (currentSession: typeof session) => {
-    if (
-      pendingConsentUpdate?.origin === 'seed' &&
-      pendingConsentUpdate.profileId !==
-        getCanonicalProfileId(authenticationState.srpSessionData)
-    ) {
-      pendingConsentUpdate = undefined;
-    }
+    await pendingConsentRestored;
 
     if (pendingConsentUpdate !== undefined) {
       currentSession.remoteStale = false;
@@ -383,8 +395,7 @@ export function setupMarketingConsentSync({
 
   syncMessenger.subscribe('KeyringController:unlock', () => {
     keyringState = { ...keyringState, isUnlocked: true };
-    // Sign-in persists across restarts and AUS may have changed on another
-    // device while locked, so re-read AUS on every unlock.
+    // AUS may have changed on another device while locked.
     refreshMarketingConsent();
   });
 
@@ -395,10 +406,7 @@ export function setupMarketingConsentSync({
   syncMessenger.subscribe(
     'AuthenticationController:stateChange',
     (state: AuthenticationControllerState) => {
-      const changed =
-        authenticationState.isSignedIn !== state.isSignedIn ||
-        getCanonicalProfileId(authenticationState.srpSessionData) !==
-          getCanonicalProfileId(state.srpSessionData);
+      const changed = authenticationState.isSignedIn !== state.isSignedIn;
 
       authenticationState = state;
 
@@ -430,10 +438,8 @@ export function setupMarketingConsentSync({
         return;
       }
 
-      pendingConsentUpdate = {
-        origin: 'user',
-        value: state.optedInToMarketing === true,
-      };
+      pendingConsentUpdate = state.optedInToMarketing === true;
+      persistPendingConsentUpdate(pendingConsentUpdate);
 
       startSync();
     },

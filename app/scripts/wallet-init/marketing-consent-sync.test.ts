@@ -22,6 +22,9 @@ const PUT_PREFERENCES_ACTION =
   'AuthenticatedUserStorageService:putNotificationPreferences';
 const OPT_IN_ACTION = 'AnalyticsController:optInToMarketing';
 const OPT_OUT_ACTION = 'AnalyticsController:optOutOfMarketing';
+const GET_ITEM_ACTION = 'StorageService:getItem';
+const SET_ITEM_ACTION = 'StorageService:setItem';
+const REMOVE_ITEM_ACTION = 'StorageService:removeItem';
 
 const NOTIFICATION_PREFERENCES: NotificationPreferences = {
   walletActivity: {
@@ -51,27 +54,6 @@ const NOTIFICATION_PREFERENCES: NotificationPreferences = {
 
 const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-function profileAuthState(profileNumber: number) {
-  return {
-    isSignedIn: true,
-    srpSessionData: {
-      'srp-1': {
-        profile: {
-          canonicalProfileId: `profile-${profileNumber}`,
-          identifierId: `identifier-${profileNumber}`,
-          profileId: `profile-${profileNumber}`,
-          metaMetricsId: `metrics-${profileNumber}`,
-        },
-        token: {
-          accessToken: `token-${profileNumber}`,
-          expiresIn: 3600,
-          obtainedAt: 0,
-        },
-      },
-    },
-  };
-}
-
 function setupSync({
   analyticsState = {
     optedInToMarketing: false,
@@ -84,6 +66,7 @@ function setupSync({
   putConsent = () => Promise.resolve(),
   getPreferences = () => Promise.resolve(null),
   putPreferences = () => Promise.resolve(),
+  storedPendingConsent,
 }: {
   analyticsState?: Partial<AnalyticsControllerState>;
   authenticationState?: Partial<AuthenticationControllerState>;
@@ -93,6 +76,7 @@ function setupSync({
   putConsent?: () => Promise<void>;
   getPreferences?: () => Promise<NotificationPreferences | null>;
   putPreferences?: () => Promise<void>;
+  storedPendingConsent?: boolean;
 } = {}) {
   const handlers: Record<string, (state?: unknown) => void> = {};
   let currentAnalyticsState = analyticsState;
@@ -119,6 +103,13 @@ function setupSync({
     }
     if (action === PUT_PREFERENCES_ACTION) {
       return putPreferences();
+    }
+    if (action === GET_ITEM_ACTION) {
+      return Promise.resolve(
+        storedPendingConsent === undefined
+          ? {}
+          : { result: storedPendingConsent },
+      );
     }
     if (action === OPT_IN_ACTION || action === OPT_OUT_ACTION) {
       currentAnalyticsState = {
@@ -182,6 +173,97 @@ describe('setupMarketingConsentSync', () => {
         marketingConsentEnabled: false,
       },
       'extension',
+    );
+  });
+
+  it('persists a local change until AUS confirms it', async () => {
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+    });
+    await flushPromises();
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+
+    const storageCalls = call.mock.calls
+      .map(([action, ...args]) => [action, ...args])
+      .filter(([action]) =>
+        [SET_ITEM_ACTION, REMOVE_ITEM_ACTION, PUT_CONSENT_ACTION].includes(
+          action,
+        ),
+      );
+    expect(storageCalls).toStrictEqual([
+      [SET_ITEM_ACTION, 'MarketingConsentSync', 'pendingConsent', false],
+      [PUT_CONSENT_ACTION, { marketingConsentEnabled: false }, 'extension'],
+      [REMOVE_ITEM_ACTION, 'MarketingConsentSync', 'pendingConsent'],
+    ]);
+  });
+
+  it('keeps the persisted change when the AUS write fails', async () => {
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    const { handlers, call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: true,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+      putConsent: () => Promise.reject(new Error('AUS unavailable')),
+    });
+    await flushPromises();
+
+    handlers['AnalyticsController:stateChange']({
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
+    });
+    await flushPromises();
+
+    expect(call).toHaveBeenCalledWith(
+      SET_ITEM_ACTION,
+      'MarketingConsentSync',
+      'pendingConsent',
+      false,
+    );
+    expect(call).not.toHaveBeenCalledWith(
+      REMOVE_ITEM_ACTION,
+      'MarketingConsentSync',
+      'pendingConsent',
+    );
+    consoleError.mockRestore();
+  });
+
+  it('writes a persisted local change instead of applying stale AUS consent after a restart', async () => {
+    const { call } = setupSync({
+      analyticsState: {
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      },
+      authenticationState: { isSignedIn: true },
+      remoteConsent: { marketingConsentEnabled: true },
+      storedPendingConsent: false,
+    });
+    await flushPromises();
+
+    expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
+    expect(call).toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      { marketingConsentEnabled: false },
+      'extension',
+    );
+    expect(call).toHaveBeenCalledWith(
+      REMOVE_ITEM_ACTION,
+      'MarketingConsentSync',
+      'pendingConsent',
     );
   });
 
@@ -499,6 +581,7 @@ describe('setupMarketingConsentSync', () => {
       optedInToMarketing: true,
       marketingConsentDecisionMade: true,
     });
+    await flushPromises();
     handlers['AuthenticationController:stateChange']({ isSignedIn: false });
     handlers['AnalyticsController:stateChange']({
       optedInToMarketing: false,
@@ -552,75 +635,6 @@ describe('setupMarketingConsentSync', () => {
     expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
   });
 
-  it('uploads a local choice made before signing in to a different profile', async () => {
-    const { handlers, call } = setupSync({
-      analyticsState: {
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
-      },
-      authenticationState: profileAuthState(1),
-      remoteConsent: { marketingConsentEnabled: true },
-    });
-    await flushPromises();
-    call.mockClear();
-
-    handlers['AuthenticationController:stateChange']({ isSignedIn: false });
-    handlers['AnalyticsController:stateChange']({
-      optedInToMarketing: false,
-      marketingConsentDecisionMade: true,
-    });
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
-    await flushPromises();
-
-    expect(call).toHaveBeenCalledWith(
-      PUT_CONSENT_ACTION,
-      { marketingConsentEnabled: false },
-      'extension',
-    );
-    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
-    expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
-  });
-
-  it('uploads a failed write to the next signed-in profile', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    let failPut = true;
-    const { handlers, call } = setupSync({
-      analyticsState: {
-        optedInToMarketing: false,
-        marketingConsentDecisionMade: true,
-      },
-      authenticationState: profileAuthState(1),
-      remoteConsent: { marketingConsentEnabled: false },
-      putConsent: () => {
-        if (failPut) {
-          failPut = false;
-          return Promise.reject(new Error('profile one unavailable'));
-        }
-        return Promise.resolve();
-      },
-    });
-    await flushPromises();
-    handlers['AnalyticsController:stateChange']({
-      optedInToMarketing: true,
-      marketingConsentDecisionMade: true,
-    });
-    await flushPromises();
-    call.mockClear();
-
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
-    await flushPromises();
-
-    expect(call).toHaveBeenCalledWith(
-      PUT_CONSENT_ACTION,
-      { marketingConsentEnabled: true },
-      'extension',
-    );
-    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
-    consoleError.mockRestore();
-  });
-
   it('uploads a choice toggled off and back on while signed out', async () => {
     let remoteConsent = { marketingConsentEnabled: true };
     const { handlers, call } = setupSync({
@@ -659,44 +673,6 @@ describe('setupMarketingConsentSync', () => {
     expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
   });
 
-  it('drops a failed seed instead of writing it to a different profile', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    let failPut = true;
-    let remoteConsent: { marketingConsentEnabled: boolean } | null = null;
-    const { handlers, call } = setupSync({
-      analyticsState: {
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
-      },
-      authenticationState: profileAuthState(1),
-      getConsent: () => Promise.resolve(remoteConsent),
-      putConsent: () => {
-        if (failPut) {
-          failPut = false;
-          return Promise.reject(new Error('profile one unavailable'));
-        }
-        return Promise.resolve();
-      },
-    });
-    await flushPromises();
-    call.mockClear();
-
-    remoteConsent = { marketingConsentEnabled: false };
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
-    await flushPromises();
-
-    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
-    expect(call).toHaveBeenCalledWith(OPT_OUT_ACTION);
-    expect(call).not.toHaveBeenCalledWith(
-      PUT_CONSENT_ACTION,
-      { marketingConsentEnabled: true },
-      'extension',
-    );
-    consoleError.mockRestore();
-  });
-
   it('keeps waiting when an older session run hands off to a new run', async () => {
     let resolveFirstRead: ((consent: null) => void) | undefined;
     let readNumber = 0;
@@ -705,7 +681,7 @@ describe('setupMarketingConsentSync', () => {
         optedInToMarketing: true,
         marketingConsentDecisionMade: true,
       },
-      authenticationState: profileAuthState(1),
+      authenticationState: { isSignedIn: true },
       getConsent: () => {
         readNumber += 1;
         if (readNumber === 1) {
@@ -718,21 +694,22 @@ describe('setupMarketingConsentSync', () => {
     });
     await flushPromises();
 
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
+    handlers['AuthenticationController:stateChange']({ isSignedIn: false });
+    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
     const waiting = waitForSync(true);
     resolveFirstRead?.(null);
 
     await expect(waiting).resolves.toBeUndefined();
   });
 
-  it('applies AUS consent after signing in to a different profile', async () => {
+  it('applies AUS consent after signing in again', async () => {
     let remoteConsent = { marketingConsentEnabled: false };
     const { handlers, call } = setupSync({
       analyticsState: {
         optedInToMarketing: false,
         marketingConsentDecisionMade: true,
       },
-      authenticationState: profileAuthState(1),
+      authenticationState: { isSignedIn: true },
       getConsent: () => Promise.resolve(remoteConsent),
     });
     await flushPromises();
@@ -740,7 +717,8 @@ describe('setupMarketingConsentSync', () => {
 
     remoteConsent = { marketingConsentEnabled: true };
     handlers['AuthenticationController:stateChange']({ isSignedIn: false });
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
+    handlers['AuthenticationController:stateChange']({ isSignedIn: false });
+    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
     await flushPromises();
 
     expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
@@ -975,190 +953,6 @@ describe('setupMarketingConsentSync', () => {
       ]);
     });
 
-    it('does not write the previous profile notification preferences after a profile switch mid-read', async () => {
-      const consoleError = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      const profile1Preferences: NotificationPreferences = {
-        ...NOTIFICATION_PREFERENCES,
-        perps: {
-          pushNotificationsEnabled: true,
-          inAppNotificationsEnabled: false,
-        },
-      };
-      const profile2Preferences: NotificationPreferences = {
-        ...NOTIFICATION_PREFERENCES,
-        perps: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: true,
-        },
-      };
-      let resolveProfile1Read: (value: NotificationPreferences) => void = () =>
-        undefined;
-      let reads = 0;
-      const getPreferences = () => {
-        reads += 1;
-        return reads === 1
-          ? new Promise<NotificationPreferences>((resolve) => {
-              resolveProfile1Read = resolve;
-            })
-          : Promise.resolve(profile2Preferences);
-      };
-      const { handlers, call } = setupSync({
-        analyticsState: {
-          optedInToMarketing: true,
-          marketingConsentDecisionMade: true,
-        },
-        authenticationState: profileAuthState(1),
-        remoteConsent: { marketingConsentEnabled: true },
-        getPreferences,
-      });
-      await flushPromises();
-      call.mockClear();
-
-      handlers['AnalyticsController:stateChange']({
-        optedInToMarketing: false,
-        marketingConsentDecisionMade: true,
-      });
-      await flushPromises();
-
-      // Switch profiles while profile 1's preferences read is pending.
-      handlers['AuthenticationController:stateChange'](profileAuthState(2));
-      resolveProfile1Read(profile1Preferences);
-      await flushPromises();
-      await flushPromises();
-
-      expect(
-        call.mock.calls.filter(([action]) => action === PUT_PREFERENCES_ACTION),
-      ).toHaveLength(1);
-      expect(call).toHaveBeenCalledWith(
-        PUT_PREFERENCES_ACTION,
-        expect.objectContaining({
-          perps: profile2Preferences.perps,
-          marketing: {
-            pushNotificationsEnabled: false,
-            inAppNotificationsEnabled: false,
-          },
-        }),
-        'extension',
-      );
-      expect(call).toHaveBeenCalledWith(
-        PUT_CONSENT_ACTION,
-        { marketingConsentEnabled: false },
-        'extension',
-      );
-      expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
-      expect(consoleError).not.toHaveBeenCalled();
-      consoleError.mockRestore();
-    });
-
-    it('writes the opt-out to the new profile after a profile switch during the preferences write', async () => {
-      const consoleError = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      let resolveFirstWrite: () => void = () => undefined;
-      let writes = 0;
-      const { handlers, call } = setupSync({
-        analyticsState: {
-          optedInToMarketing: true,
-          marketingConsentDecisionMade: true,
-        },
-        authenticationState: profileAuthState(1),
-        remoteConsent: { marketingConsentEnabled: true },
-        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
-        putPreferences: () => {
-          writes += 1;
-          return writes === 1
-            ? new Promise<void>((resolve) => {
-                resolveFirstWrite = resolve;
-              })
-            : Promise.resolve();
-        },
-      });
-      await flushPromises();
-      call.mockClear();
-
-      handlers['AnalyticsController:stateChange']({
-        optedInToMarketing: false,
-        marketingConsentDecisionMade: true,
-      });
-      await flushPromises();
-
-      // Switch profiles while profile 1's preferences write is pending.
-      handlers['AuthenticationController:stateChange'](profileAuthState(2));
-      resolveFirstWrite();
-      await flushPromises();
-      await flushPromises();
-
-      // The old run stops before its consent write, leaving profile 1 with its
-      // channels off and consent on. The new profile's run turns its channels
-      // off and then saves consent once.
-      expect(
-        call.mock.calls.filter(([action]) => action === PUT_PREFERENCES_ACTION),
-      ).toHaveLength(2);
-      expect(
-        call.mock.calls.filter(([action]) => action === PUT_CONSENT_ACTION),
-      ).toEqual([
-        [PUT_CONSENT_ACTION, { marketingConsentEnabled: false }, 'extension'],
-      ]);
-      expect(consoleError).not.toHaveBeenCalled();
-      consoleError.mockRestore();
-    });
-
-    it('drops a seed when the profile switches before its consent write', async () => {
-      const consoleError = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      let resolveConsentRead: (value: null) => void = () => undefined;
-      let consentReads = 0;
-      let resolveSeedPreferencesWrite: () => void = () => undefined;
-      let preferencesWrites = 0;
-      const { handlers, call } = setupSync({
-        analyticsState: {
-          optedInToMarketing: false,
-          marketingConsentDecisionMade: true,
-        },
-        authenticationState: profileAuthState(1),
-        getConsent: () => {
-          consentReads += 1;
-          return consentReads === 1
-            ? new Promise<null>((resolve) => {
-                resolveConsentRead = resolve;
-              })
-            : Promise.resolve({ marketingConsentEnabled: true });
-        },
-        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
-        putPreferences: () => {
-          preferencesWrites += 1;
-          return preferencesWrites === 1
-            ? new Promise<void>((resolve) => {
-                resolveSeedPreferencesWrite = resolve;
-              })
-            : Promise.resolve();
-        },
-      });
-      await flushPromises();
-      // Profile 1 has no AUS record, so its local opt-out becomes a seed.
-      resolveConsentRead(null);
-      await flushPromises();
-
-      handlers['AuthenticationController:stateChange'](profileAuthState(2));
-      resolveSeedPreferencesWrite();
-      await flushPromises();
-      await flushPromises();
-
-      // Profile 2 already has consent in AUS, so it is applied locally
-      // instead of being overwritten by profile 1's seed.
-      expect(call).not.toHaveBeenCalledWith(
-        PUT_CONSENT_ACTION,
-        expect.anything(),
-        expect.anything(),
-      );
-      expect(call).toHaveBeenCalledWith(OPT_IN_ACTION);
-      expect(consoleError).not.toHaveBeenCalled();
-      consoleError.mockRestore();
-    });
-
     it('keeps the opt-out pending and skips the consent write when the preferences read fails', async () => {
       const consoleError = jest
         .spyOn(console, 'error')
@@ -1226,19 +1020,20 @@ describe('setupMarketingConsentSync', () => {
     });
   });
 
-  it('invalidates cached AUS consent when the signed-in profile changes', async () => {
+  it('invalidates cached AUS consent when signing in again', async () => {
     const { handlers, call } = setupSync({
       analyticsState: {
         optedInToMarketing: true,
         marketingConsentDecisionMade: true,
       },
-      authenticationState: profileAuthState(1),
+      authenticationState: { isSignedIn: true },
       remoteConsent: { marketingConsentEnabled: true },
     });
     await flushPromises();
     call.mockClear();
 
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
+    handlers['AuthenticationController:stateChange']({ isSignedIn: false });
+    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
     await flushPromises();
 
     expect(call).toHaveBeenCalledWith(INVALIDATE_ACTION, {
@@ -1284,6 +1079,7 @@ describe('setupMarketingConsentSync', () => {
       optedInToMarketing: true,
       marketingConsentDecisionMade: true,
     });
+    await flushPromises();
     handlers['AnalyticsController:stateChange']({
       optedInToMarketing: false,
       marketingConsentDecisionMade: true,
@@ -1336,43 +1132,7 @@ describe('setupMarketingConsentSync', () => {
     );
   });
 
-  it('retries a failed AUS seed without re-reading AUS', async () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    let failPut = true;
-    const { call, handlers } = setupSync({
-      analyticsState: {
-        optedInToMarketing: true,
-        marketingConsentDecisionMade: true,
-      },
-      authenticationState: { isSignedIn: true },
-      remoteConsent: null,
-      putConsent: () => {
-        if (failPut) {
-          failPut = false;
-          return Promise.reject(new Error('AUS unavailable'));
-        }
-        return Promise.resolve();
-      },
-    });
-    await flushPromises();
-    handlers['AuthenticationController:stateChange']({
-      isSignedIn: false,
-    });
-    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
-    await flushPromises();
-
-    expect(
-      call.mock.calls.filter(([action]) => action === GET_CONSENT_ACTION),
-    ).toHaveLength(1);
-    expect(
-      call.mock.calls.filter(([action]) => action === PUT_CONSENT_ACTION),
-    ).toHaveLength(2);
-    consoleErrorSpy.mockRestore();
-  });
-
-  it('does not apply AUS consent from a GET started for a previous profile', async () => {
+  it('does not apply AUS consent from a GET started before a sign-out', async () => {
     let resolveFirstRead:
       | ((consent: { marketingConsentEnabled: boolean }) => void)
       | undefined;
@@ -1382,7 +1142,7 @@ describe('setupMarketingConsentSync', () => {
         optedInToMarketing: true,
         marketingConsentDecisionMade: true,
       },
-      authenticationState: profileAuthState(1),
+      authenticationState: { isSignedIn: true },
       getConsent: () => {
         readNumber += 1;
         if (readNumber === 1) {
@@ -1396,7 +1156,8 @@ describe('setupMarketingConsentSync', () => {
 
     await flushPromises();
     expect(readNumber).toBe(1);
-    handlers['AuthenticationController:stateChange'](profileAuthState(2));
+    handlers['AuthenticationController:stateChange']({ isSignedIn: false });
+    handlers['AuthenticationController:stateChange']({ isSignedIn: true });
     resolveFirstRead?.({ marketingConsentEnabled: false });
     await flushPromises();
     await flushPromises();
