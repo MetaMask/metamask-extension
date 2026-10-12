@@ -1270,6 +1270,7 @@ describe('UserTraitsService', function () {
         expect(updateProfileSessionDataSpy).toHaveBeenCalledTimes(1);
         expect(updateProfileSessionDataSpy).toHaveBeenCalledWith(
           srpSessionData,
+          null,
         );
       });
     });

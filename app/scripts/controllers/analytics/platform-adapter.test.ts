@@ -349,6 +349,33 @@ describe('createPlatformAdapter', () => {
         callback,
       );
     });
+
+    it('attaches canonical identity to every identify delta without changing the Segment user ID', () => {
+      const { adapter, segment } = buildAdapter(
+        createMockEnrichmentContext({
+          getProfileIdentityProperties: () => ({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
+          }),
+        }),
+      );
+
+      adapter.identify('user-1', {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_marketing_consent: true,
+      });
+
+      expect(segment.identify).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: 'user-1',
+          context: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            canonical_profile_id: 'canonicalProfileId',
+          }),
+        }),
+        undefined,
+      );
+    });
   });
 
   describe('view', () => {
