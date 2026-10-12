@@ -3,7 +3,10 @@ import { act } from '@testing-library/react';
 import mockState from '../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { usePerpsOrderFees } from './usePerpsOrderFees';
 import { usePerpsOrderForm } from './usePerpsOrderForm';
+
+jest.mock('./usePerpsOrderFees');
 
 jest.mock('../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
@@ -24,6 +27,13 @@ describe('usePerpsOrderForm', () => {
   };
 
   beforeEach(() => {
+    jest.mocked(usePerpsOrderFees).mockReturnValue({
+      feeRate: undefined,
+      undiscountedFeeRate: undefined,
+      metamaskFeeRateDiscountPercentage: undefined,
+      isLoading: false,
+      hasError: false,
+    });
     jest.mocked(submitRequestToBackground).mockImplementation((method) => {
       const immediate = <ResolvedValue>(
         value: ResolvedValue,
@@ -46,6 +56,68 @@ describe('usePerpsOrderForm', () => {
         return immediate('40000');
       }
       return immediate(undefined);
+    });
+  });
+
+  it('quotes the latest USD amount without multiplying it by leverage', () => {
+    const { result } = renderHookWithProvider(
+      () => usePerpsOrderForm(defaultOptions),
+      mockStateWithLocale,
+    );
+    act(() => result.current.handleAmountChange('1,000'));
+    expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '1000',
+    });
+    act(() => result.current.handleAmountChange('200'));
+    expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '200',
+    });
+  });
+
+  it('quotes the current partial close notional', () => {
+    const props = {
+      ...defaultOptions,
+      mode: 'close' as const,
+      existingPosition: { size: '-2', entryPrice: '45000', leverage: 3 },
+    };
+    const { result, rerender } = renderHookWithProvider(
+      () => usePerpsOrderForm(props),
+      mockStateWithLocale,
+    );
+    act(() => result.current.handleClosePercentChange(25));
+    expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '22500',
+    });
+    props.currentPrice = 46000;
+    rerender();
+    expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '23000',
+    });
+  });
+
+  it('quotes the full USD notional for a formatted close position size', () => {
+    renderHookWithProvider(
+      () =>
+        usePerpsOrderForm({
+          ...defaultOptions,
+          currentPrice: 20,
+          mode: 'close',
+          existingPosition: { size: '-1,000', entryPrice: '20', leverage: 3 },
+        }),
+      mockStateWithLocale,
+    );
+    expect(usePerpsOrderFees).toHaveBeenLastCalledWith({
+      symbol: 'BTC',
+      orderType: 'market',
+      amount: '20000',
     });
   });
 
