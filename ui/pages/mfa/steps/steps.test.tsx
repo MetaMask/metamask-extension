@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -7,6 +8,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import type {
   MfaFlowState,
   MfaFlowStep,
+  MfaReason,
 } from '../../../hooks/identity/mfa/engine/types';
 import { MfaFlowTestIds } from '../test-ids';
 import CodeStep from './code-step';
@@ -93,7 +95,7 @@ describe('PickerStep', () => {
     });
   });
 
-  it.each([
+  it.each<['verify' | 'confirm', MfaReason, boolean]>([
     [
       'verify',
       { operation: 'test', verifyDescription: 'To send $20.00' },
@@ -105,7 +107,7 @@ describe('PickerStep', () => {
       { operation: 'test', verifyDescription: 'To send $20.00' },
       false,
     ],
-  ] as const)(
+  ])(
     'shows the feature line only to verify (%s)',
     (purpose, pickerReason, isShown) => {
       render(
