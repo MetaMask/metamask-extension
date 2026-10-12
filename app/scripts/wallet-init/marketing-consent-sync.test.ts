@@ -975,6 +975,190 @@ describe('setupMarketingConsentSync', () => {
       ]);
     });
 
+    it('does not write the previous profile notification preferences after a profile switch mid-read', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      const profile1Preferences: NotificationPreferences = {
+        ...NOTIFICATION_PREFERENCES,
+        perps: {
+          pushNotificationsEnabled: true,
+          inAppNotificationsEnabled: false,
+        },
+      };
+      const profile2Preferences: NotificationPreferences = {
+        ...NOTIFICATION_PREFERENCES,
+        perps: {
+          pushNotificationsEnabled: false,
+          inAppNotificationsEnabled: true,
+        },
+      };
+      let resolveProfile1Read: (value: NotificationPreferences) => void = () =>
+        undefined;
+      let reads = 0;
+      const getPreferences = () => {
+        reads += 1;
+        return reads === 1
+          ? new Promise<NotificationPreferences>((resolve) => {
+              resolveProfile1Read = resolve;
+            })
+          : Promise.resolve(profile2Preferences);
+      };
+      const { handlers, call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: true,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: profileAuthState(1),
+        remoteConsent: { marketingConsentEnabled: true },
+        getPreferences,
+      });
+      await flushPromises();
+      call.mockClear();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      // Switch profiles while profile 1's preferences read is pending.
+      handlers['AuthenticationController:stateChange'](profileAuthState(2));
+      resolveProfile1Read(profile1Preferences);
+      await flushPromises();
+      await flushPromises();
+
+      expect(
+        call.mock.calls.filter(([action]) => action === PUT_PREFERENCES_ACTION),
+      ).toHaveLength(1);
+      expect(call).toHaveBeenCalledWith(
+        PUT_PREFERENCES_ACTION,
+        expect.objectContaining({
+          perps: profile2Preferences.perps,
+          marketing: {
+            pushNotificationsEnabled: false,
+            inAppNotificationsEnabled: false,
+          },
+        }),
+        'extension',
+      );
+      expect(call).toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        { marketingConsentEnabled: false },
+        'extension',
+      );
+      expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
+      expect(consoleError).not.toHaveBeenCalled();
+      consoleError.mockRestore();
+    });
+
+    it('writes the opt-out to the new profile after a profile switch during the preferences write', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      let resolveFirstWrite: () => void = () => undefined;
+      let writes = 0;
+      const { handlers, call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: true,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: profileAuthState(1),
+        remoteConsent: { marketingConsentEnabled: true },
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+        putPreferences: () => {
+          writes += 1;
+          return writes === 1
+            ? new Promise<void>((resolve) => {
+                resolveFirstWrite = resolve;
+              })
+            : Promise.resolve();
+        },
+      });
+      await flushPromises();
+      call.mockClear();
+
+      handlers['AnalyticsController:stateChange']({
+        optedInToMarketing: false,
+        marketingConsentDecisionMade: true,
+      });
+      await flushPromises();
+
+      // Switch profiles while profile 1's preferences write is pending.
+      handlers['AuthenticationController:stateChange'](profileAuthState(2));
+      resolveFirstWrite();
+      await flushPromises();
+      await flushPromises();
+
+      // The old run stops before its consent write, leaving profile 1 with its
+      // channels off and consent on. The new profile's run turns its channels
+      // off and then saves consent once.
+      expect(
+        call.mock.calls.filter(([action]) => action === PUT_PREFERENCES_ACTION),
+      ).toHaveLength(2);
+      expect(
+        call.mock.calls.filter(([action]) => action === PUT_CONSENT_ACTION),
+      ).toEqual([
+        [PUT_CONSENT_ACTION, { marketingConsentEnabled: false }, 'extension'],
+      ]);
+      expect(consoleError).not.toHaveBeenCalled();
+      consoleError.mockRestore();
+    });
+
+    it('drops a seed when the profile switches before its consent write', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      let resolveConsentRead: (value: null) => void = () => undefined;
+      let consentReads = 0;
+      let resolveSeedPreferencesWrite: () => void = () => undefined;
+      let preferencesWrites = 0;
+      const { handlers, call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
+        },
+        authenticationState: profileAuthState(1),
+        getConsent: () => {
+          consentReads += 1;
+          return consentReads === 1
+            ? new Promise<null>((resolve) => {
+                resolveConsentRead = resolve;
+              })
+            : Promise.resolve({ marketingConsentEnabled: true });
+        },
+        getPreferences: () => Promise.resolve(NOTIFICATION_PREFERENCES),
+        putPreferences: () => {
+          preferencesWrites += 1;
+          return preferencesWrites === 1
+            ? new Promise<void>((resolve) => {
+                resolveSeedPreferencesWrite = resolve;
+              })
+            : Promise.resolve();
+        },
+      });
+      await flushPromises();
+      // Profile 1 has no AUS record, so its local opt-out becomes a seed.
+      resolveConsentRead(null);
+      await flushPromises();
+
+      handlers['AuthenticationController:stateChange'](profileAuthState(2));
+      resolveSeedPreferencesWrite();
+      await flushPromises();
+      await flushPromises();
+
+      // Profile 2 already has consent in AUS, so it is applied locally
+      // instead of being overwritten by profile 1's seed.
+      expect(call).not.toHaveBeenCalledWith(
+        PUT_CONSENT_ACTION,
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(call).toHaveBeenCalledWith(OPT_IN_ACTION);
+      expect(consoleError).not.toHaveBeenCalled();
+      consoleError.mockRestore();
+    });
+
     it('keeps the opt-out pending and skips the consent write when the preferences read fails', async () => {
       const consoleError = jest
         .spyOn(console, 'error')

@@ -234,7 +234,9 @@ export function setupMarketingConsentSync({
   };
 
   // Updates and rewards notifications rely on marketing consent.
-  const turnOffMarketingNotifications = async (): Promise<void> => {
+  const turnOffMarketingNotifications = async (
+    currentSession: typeof session,
+  ): Promise<void> => {
     await syncMessenger.call(
       'AuthenticatedUserStorageService:invalidateQueries',
       {
@@ -246,6 +248,11 @@ export function setupMarketingConsentSync({
     const preferences = await syncMessenger.call(
       'AuthenticatedUserStorageService:getNotificationPreferences',
     );
+    // Writing preferences read for another profile would copy that profile's
+    // notification settings onto the newly signed-in profile.
+    if (currentSession !== session) {
+      throw new Error('Marketing consent sync restarted for a new profile');
+    }
     const marketing = preferences?.marketing;
     if (
       !preferences ||
@@ -288,7 +295,10 @@ export function setupMarketingConsentSync({
       // Channels go off before consent so AUS never has consent off with a
       // channel on; a failure retries both with the pending update.
       if (!value) {
-        await turnOffMarketingNotifications();
+        await turnOffMarketingNotifications(currentSession);
+      }
+      if (currentSession !== session) {
+        throw new Error('Marketing consent sync restarted for a new profile');
       }
       await syncMessenger.call(
         'AuthenticatedUserStorageService:putMarketingConsent',
@@ -297,6 +307,11 @@ export function setupMarketingConsentSync({
       );
     } catch (error) {
       pendingConsentUpdate ??= update;
+      if (currentSession !== session) {
+        // The session changed mid-write; its own run retries the pending
+        // update against the newly signed-in profile.
+        return;
+      }
       throw error;
     }
 
