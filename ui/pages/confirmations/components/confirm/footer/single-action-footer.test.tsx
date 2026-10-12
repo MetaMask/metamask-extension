@@ -13,6 +13,10 @@ import {
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
+import {
+  beginPayAmountEncode,
+  resetPayAmountEncodes,
+} from '../../../hooks/transactions/pay-amount-encode';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { SingleActionFooter } from './single-action-footer';
 
@@ -158,6 +162,7 @@ function render({
 
 describe('<SingleActionFooter />', () => {
   beforeEach(() => {
+    resetPayAmountEncodes();
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayQuotePending).mockReturnValue(false);
     jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
@@ -413,6 +418,17 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
     );
+  });
+
+  it('keeps Add funds loading while a new amount is encoding', () => {
+    const confirmation = genMoneyAccountDeposit();
+    beginPayAmountEncode(confirmation.id);
+
+    const { getByTestId } = render({ confirmation });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
   it('shows Add funds label for moneyAccountDeposit nested in a batch', () => {

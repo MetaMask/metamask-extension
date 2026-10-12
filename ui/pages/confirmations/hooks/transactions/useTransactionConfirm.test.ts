@@ -33,6 +33,10 @@ import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
 import * as DappSwapActions from './dapp-swap-comparison/useDappSwapActions';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
+import {
+  beginPayAmountEncode,
+  resetPayAmountEncodes,
+} from './pay-amount-encode';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 const mockGetEnvironmentType = jest.fn();
@@ -181,6 +185,7 @@ describe('useTransactionConfirm', () => {
     useMoneyAccountWithdrawConfirm,
   );
   beforeEach(() => {
+    resetPayAmountEncodes();
     jest.resetAllMocks();
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -1078,6 +1083,23 @@ describe('useTransactionConfirm', () => {
       });
 
       const approved = await result.current.onTransactionConfirm();
+
+      expect(approved).toBe(false);
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+    });
+
+    it('does not approve while a Pay amount is still encoding', async () => {
+      const { confirmation, onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountDeposit,
+      });
+      act(() => {
+        beginPayAmountEncode(confirmation.id);
+      });
+
+      let approved = false;
+      await act(async () => {
+        approved = await onTransactionConfirm();
+      });
 
       expect(approved).toBe(false);
       expect(updateAndApproveTxMock).not.toHaveBeenCalled();

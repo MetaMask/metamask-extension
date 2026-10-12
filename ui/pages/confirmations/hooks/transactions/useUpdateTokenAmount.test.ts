@@ -11,6 +11,10 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
 import * as transactionPayUtils from '../../utils/transaction-pay';
+import {
+  isPayAmountEncodePending,
+  resetPayAmountEncodes,
+} from './pay-amount-encode';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
@@ -117,6 +121,7 @@ describe('useUpdateTokenAmount', () => {
   );
 
   beforeEach(() => {
+    resetPayAmountEncodes();
     jest.resetAllMocks();
     updateAtomicBatchDataMock.mockResolvedValue(undefined);
     updateEditableParamsMock.mockReturnValue((() =>
@@ -157,6 +162,43 @@ describe('useUpdateTokenAmount', () => {
       );
       expect(updateAtomicBatchDataMock).not.toHaveBeenCalled();
       expect(updateEditableParamsMock).not.toHaveBeenCalled();
+    });
+
+    it('blocks confirm while the deposit amount is still encoding', async () => {
+      let resolveUpdate: (didWrite: boolean) => void = () => undefined;
+      jest.mocked(updateMoneyAccountDepositAmount).mockReturnValue(
+        new Promise((resolve) => {
+          resolveUpdate = resolve;
+        }),
+      );
+
+      const transactionMeta = createMockTransactionMeta({
+        nestedTransactions: [
+          { to: MOCK_TOKEN_ADDRESS, type: 'tokenMethodApprove' },
+          { to: MOCK_RECIPIENT, type: 'moneyAccountDeposit' },
+        ],
+      } as unknown as Partial<TransactionMeta>);
+
+      const { result } = runHook({
+        transactionMeta,
+        tokenTransferData: {
+          data: undefined,
+          to: undefined,
+          index: undefined,
+        },
+      });
+
+      act(() => {
+        result.current.updateTokenAmount('1.5');
+      });
+
+      expect(isPayAmountEncodePending(transactionMeta.id)).toBe(true);
+
+      await act(async () => {
+        resolveUpdate(true);
+      });
+
+      expect(isPayAmountEncodePending(transactionMeta.id)).toBe(false);
     });
 
     it('dispatches the withdrawal commit path for a money account withdrawal batch', async () => {
