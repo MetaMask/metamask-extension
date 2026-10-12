@@ -28,11 +28,11 @@ describe('RiveWasmProvider', () => {
 
     render(
       <RiveWasmProvider>
-        <div>Home</div>
+        <div>Non-animated content</div>
       </RiveWasmProvider>,
     );
 
-    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('Non-animated content')).toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(RuntimeLoader.awaitInstance).not.toHaveBeenCalled();
   });
@@ -61,7 +61,7 @@ describe('RiveWasmProvider', () => {
               <TestAnimation name="second" />
             </>
           ) : (
-            <div>Home</div>
+            <div>Non-animated content</div>
           )}
         </RiveWasmProvider>
       </StrictMode>
