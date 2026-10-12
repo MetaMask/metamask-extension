@@ -3,14 +3,15 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Text,
-  TextColor,
   TextField,
-  TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MfaFlowTestIds } from '../test-ids';
-import StepLayout, { type StepProps } from './step-layout';
+import StepLayout, {
+  StepMessage,
+  INPUT_A11Y_PROPS,
+  type StepProps,
+} from './step-layout';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/u;
 
@@ -32,7 +33,8 @@ const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
     <StepLayout
       title={t('mfaEmailEntryTitle')}
       description={t('mfaEmailEntryDescription')}
-      error={state.error}
+      // One message at a time: the address check replaces the server's error.
+      error={showInvalid ? undefined : state.error}
       footer={
         <Button
           variant={ButtonVariant.Primary}
@@ -57,6 +59,7 @@ const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
         isError={showInvalid || state.error !== undefined}
         autoFocus
         inputProps={{
+          ...INPUT_A11Y_PROPS,
           autoComplete: 'email',
           inputMode: 'email',
           onKeyDown: (event) => {
@@ -68,9 +71,7 @@ const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
         data-testid={MfaFlowTestIds.EMAIL_INPUT}
       />
       {showInvalid ? (
-        <Text variant={TextVariant.BodySm} color={TextColor.ErrorDefault}>
-          {t('mfaEmailEntryInvalid')}
-        </Text>
+        <StepMessage isError>{t('mfaEmailEntryInvalid')}</StepMessage>
       ) : null}
     </StepLayout>
   );

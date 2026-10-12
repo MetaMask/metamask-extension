@@ -36,6 +36,50 @@ type StepLayoutProps = {
   footer?: ReactNode;
 };
 
+const STEP_TITLE_ID = 'mfa-step-title';
+const STEP_DESCRIPTION_ID = 'mfa-step-description';
+const STEP_MESSAGE_ID = 'mfa-step-message';
+
+/**
+ * Names a step's input after the step title, and describes it with the step
+ * description and the message under it, for screen readers. `TextField` sets
+ * `aria-invalid` from `isError`.
+ */
+export const INPUT_A11Y_PROPS = {
+  'aria-labelledby': STEP_TITLE_ID,
+  'aria-describedby': `${STEP_DESCRIPTION_ID} ${STEP_MESSAGE_ID}`,
+};
+
+/**
+ * A message under a step's input, announced by screen readers when it
+ * appears. Only one shows at a time.
+ *
+ * @param props - The message's props.
+ * @param props.isError - Whether it is an error, rather than a status.
+ * @param props.children - The message.
+ */
+export const StepMessage = ({
+  isError = false,
+  children,
+}: {
+  isError?: boolean;
+  children: ReactNode;
+}) => (
+  <Text
+    asChild
+    variant={TextVariant.BodyMd}
+    color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
+  >
+    <p
+      id={STEP_MESSAGE_ID}
+      role={isError ? 'alert' : 'status'}
+      data-testid={isError ? MfaFlowTestIds.ERROR : undefined}
+    >
+      {children}
+    </p>
+  </Text>
+);
+
 /** The 2-step verification shield, above the title of the intro and picker. */
 export const MfaShield = () => (
   <img
@@ -49,15 +93,7 @@ export const MfaShield = () => (
 
 export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
   const t = useI18nContext();
-  return (
-    <Text
-      variant={TextVariant.BodyMd}
-      color={TextColor.ErrorDefault}
-      data-testid={MfaFlowTestIds.ERROR}
-    >
-      {t(getErrorMessageKey(code))}
-    </Text>
-  );
+  return <StepMessage isError>{t(getErrorMessageKey(code))}</StepMessage>;
 };
 
 const StepLayout = ({
@@ -78,10 +114,16 @@ const StepLayout = ({
       className="flex-1 overflow-y-auto"
     >
       {top}
-      <Text variant={TextVariant.HeadingLg}>{title}</Text>
+      <Text asChild variant={TextVariant.HeadingLg}>
+        <h2 id={STEP_TITLE_ID}>{title}</h2>
+      </Text>
       {description ? (
-        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {description}
+        <Text
+          asChild
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+        >
+          <p id={STEP_DESCRIPTION_ID}>{description}</p>
         </Text>
       ) : null}
       {children}
