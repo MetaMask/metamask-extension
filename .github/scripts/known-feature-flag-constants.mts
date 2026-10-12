@@ -116,6 +116,16 @@ const FILE_SOURCES: Array<{
     exportName: 'MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME',
   },
   {
+    key: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME',
+  },
+  {
+    key: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+    file: 'shared/lib/money/feature-flags.ts',
+    exportName: 'MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME',
+  },
+  {
     key: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
     file: 'shared/lib/money/vault-config.ts',
     exportName: 'MONEY_ACCOUNT_VAULT_CONFIG_FLAG_NAME',
