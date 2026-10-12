@@ -842,6 +842,13 @@ export const NetworksForm = ({
               const urlLabel = stripProtocol(stripKeyFromInfuraUrl(item.url));
               const rpcName =
                 item.type === RpcEndpointType.Infura ? 'Infura' : item.name;
+              const urlHost = urlLabel.split('/')[0];
+              // Chainlist stores the hostname as the RPC name. Skip it when it
+              // matches the host so the label does not repeat it.
+              const label =
+                rpcName && rpcName.toLowerCase() !== urlHost.toLowerCase()
+                  ? `${rpcName} ${urlLabel}`
+                  : urlLabel;
               const showFailover =
                 isRpcFailoverEnabled && failoverUrls.length > 0;
               const urlText = (
@@ -850,7 +857,7 @@ export const NetworksForm = ({
                   variant={TextVariant.BodyMd}
                   className={isList && !showFailover ? 'py-4' : undefined}
                 >
-                  {rpcName ? `${rpcName} ${urlLabel}` : urlLabel}
+                  {label}
                 </Text>
               );
 
