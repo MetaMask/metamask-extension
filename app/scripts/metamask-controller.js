@@ -85,6 +85,8 @@ import {
   walletGetAccountUpgradeStatus,
 } from '@metamask/eip-7702-internal-rpc-middleware';
 
+import { walletPay } from '@metamask/transaction-pay-middleware';
+
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -400,7 +402,7 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
-import { addWalletPayTransaction } from './lib/wallet-pay';
+import { createWalletPayHooks } from './lib/wallet-pay/hooks';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1153,6 +1155,35 @@ export default class MetamaskController extends EventEmitter {
           });
         },
       ),
+    });
+
+    const walletPayMessenger = new Messenger({
+      namespace: 'TransactionPayMiddleware',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: walletPayMessenger,
+      actions: [
+        'AccountsController:getSelectedAccount',
+        'PerpsController:getState',
+        'PerpsController:refreshEligibility',
+      ],
+    });
+
+    this.walletPayMiddleware = createScaffoldMiddleware({
+      wallet_pay: createAsyncMiddleware(async (req, res) => {
+        await walletPay(
+          req,
+          res,
+          createWalletPayHooks({
+            messenger: this.controllerMessenger,
+            getPermittedAccounts: () => this.getPermittedAccounts(req.origin),
+            getSecurityAlertsEnabled: () =>
+              Boolean(this.preferencesController.state?.securityAlertsEnabled),
+          }),
+          walletPayMessenger,
+        );
+      }),
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -5561,16 +5592,6 @@ export default class MetamaskController extends EventEmitter {
 
         hasApprovalRequestsForOrigin: () =>
           this.approvalController.hasRequest({ origin }),
-
-        addWalletPayTransaction: (req) =>
-          addWalletPayTransaction({
-            messenger: this.controllerMessenger,
-            getPermittedAccounts: () => this.getPermittedAccounts(origin),
-            securityAlertsEnabled:
-              this.preferencesController.state?.securityAlertsEnabled,
-            origin,
-            req,
-          }),
       }),
     );
 
@@ -5660,6 +5681,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
+
+    engine.push(this.walletPayMiddleware);
 
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(this.eip7702Middleware);
