@@ -9,12 +9,10 @@ import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
-  ACCOUNT_LIST_PAGE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
-  SETTINGS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -25,7 +23,11 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import { RequireAuthenticated } from '../../layouts/require-authenticated';
-import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
+import Routes, {
+  routeConfig,
+  TokenManagementFeatureRoute,
+  PageNotFound,
+} from '.';
 
 const middlewares = [thunk];
 
@@ -232,7 +234,7 @@ describe('Routes Component', () => {
     expect(fallbackRoute).toMatchObject({
       path: '*',
       element: expect.objectContaining({
-        props: { pageNotFound: true },
+        type: PageNotFound,
       }),
     });
   });
