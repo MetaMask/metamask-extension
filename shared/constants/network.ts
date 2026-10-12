@@ -1694,6 +1694,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.BIGHIVE,
+    name: BIGHIVE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.BIGHIVE,
+    rpcEndpoints: [
+      {
+        url: 'https://rpc.bighive-beets.io/osc',
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://bdbs.bighive-beets.io'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.ROBINHOOD_CHAIN,
     name: ROBINHOOD_CHAIN_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
