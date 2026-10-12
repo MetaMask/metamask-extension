@@ -125,7 +125,6 @@
     "LoggingController": {
       "logs": "object"
     },
-    "MetaMetricsController": "object",
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
@@ -359,6 +358,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 230
   }
 }

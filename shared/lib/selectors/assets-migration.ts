@@ -7,6 +7,8 @@ import {
 } from '@metamask/utils';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
+  AssetBalance,
+  AssetMetadata,
   AssetsControllerState,
   FungibleAssetPrice,
 } from '@metamask/assets-controller';
@@ -148,15 +150,15 @@ export const getAccountTrackerControllerAccountsByChainId =
           internalAccount.address,
         );
 
-        for (const [assetId, balanceData] of Object.entries(accountBalances)) {
+        for (const [assetId, balanceData] of Object.entries(
+          accountBalances,
+        ) as [CaipAssetType, AssetBalance][]) {
           const metadata = assetsInfo[assetId];
           if (metadata?.type !== 'native') {
             continue;
           }
 
-          const { chain: parsedChain } = parseCaipAssetType(
-            assetId as CaipAssetType,
-          );
+          const { chain: parsedChain } = parseCaipAssetType(assetId);
 
           if (parsedChain.namespace !== KnownCaipNamespace.Eip155) {
             continue;
@@ -359,13 +361,16 @@ export const getTokenBalancesControllerTokenBalances = createDeepEqualSelector(
       const accountAddress = internalAccount.address as Hex;
       result[accountAddress] ??= {};
 
-      for (const [assetId, assetBalance] of Object.entries(chainIdBalances)) {
+      for (const [assetId, assetBalance] of Object.entries(chainIdBalances) as [
+        CaipAssetType,
+        AssetBalance,
+      ][]) {
         const metadata = assetsInfo[assetId];
         if (!metadata) {
           continue;
         }
 
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+        const assetType = parseCaipAssetType(assetId);
 
         if (assetType.chain.namespace !== KnownCaipNamespace.Eip155) {
           continue;
@@ -643,8 +648,11 @@ export const getMultiChainBalancesControllerBalances = createDeepEqualSelector(
 
       result[accountId] = {};
 
-      for (const [assetId, balance] of Object.entries(chainIdBalances)) {
-        const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      for (const [assetId, balance] of Object.entries(chainIdBalances) as [
+        CaipAssetType,
+        AssetBalance,
+      ][]) {
+        const assetType = parseCaipAssetType(assetId);
         const metadata = assetsInfo[assetId];
 
         if (
@@ -703,15 +711,15 @@ export const getCurrencyRateControllerCurrencyRates = createDeepEqualSelector(
     const result: CurrencyRateState['currencyRates'] = {};
 
     // Sorting just to ensure that we process mainnet (eip155:1) first
-    for (const [assetId, metadata] of Object.entries(assetsInfo).toSorted(
-      (a, b) => a[0].localeCompare(b[0]),
-    )) {
+    for (const [assetId, metadata] of (
+      Object.entries(assetsInfo) as [CaipAssetType, AssetMetadata][]
+    ).toSorted((a, b) => a[0].localeCompare(b[0]))) {
       // Skip if we already have an entry for this symbol
       if (result[metadata.symbol]) {
         continue;
       }
 
-      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const assetType = parseCaipAssetType(assetId);
 
       // Skip if not a native asset or not evm
       if (
@@ -920,7 +928,10 @@ export const getRatesControllerRates = createDeepEqualSelector(
 
     const result: RatesControllerState['rates'] = {};
 
-    for (const [assetId, metadata] of Object.entries(assetsInfo)) {
+    for (const [assetId, metadata] of Object.entries(assetsInfo) as [
+      CaipAssetType,
+      AssetMetadata,
+    ][]) {
       const symbol = metadata.symbol?.toLowerCase();
 
       // Skip if we already have an entry for this symbol
@@ -928,7 +939,7 @@ export const getRatesControllerRates = createDeepEqualSelector(
         continue;
       }
 
-      const assetType = parseCaipAssetType(assetId as CaipAssetType);
+      const assetType = parseCaipAssetType(assetId);
       const price = assetsPrice[assetId];
 
       // Skip if not a native asset, if evm or if not fungible

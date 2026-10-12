@@ -10,6 +10,7 @@ import {
   ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateClickedTypeEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
@@ -80,27 +81,29 @@ export type CaptureShieldMembershipCancelledEventParams =
 
 export type CaptureShieldSubscriptionRestartRequestEventParams =
   ExistingSubscriptionEventParams & {
-    requestStatus: 'completed' | 'failed';
-    errorMessage?: string;
+    status: 'succeeded' | 'failed';
+    error?: string;
   };
 
 /**
  * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
  */
-export type CaptureShieldCryptoConfirmationEventParams =
-  CaptureShieldSubscriptionRequestParams & {
-    /**
-     * The status of the crypto confirmation screen.
-     */
-    confirmationScreenStatus: 'opened' | 'rejected';
+export type CaptureShieldCryptoConfirmationEventParams = Omit<
+  CaptureShieldSubscriptionRequestParams,
+  'requestStatus'
+> & {
+  /**
+   * The status of the crypto confirmation screen.
+   */
+  confirmationScreenStatus: 'opened' | 'rejected';
 
-    /**
-     * Whether the user has insufficient gas to confirm the transaction.
-     */
-    hasInsufficientGas: boolean;
+  /**
+   * Whether the user has insufficient gas to confirm the transaction.
+   */
+  hasInsufficientGas: boolean;
 
-    gasSponsored: boolean;
-  };
+  gasSponsored: boolean;
+};
 
 export type CaptureShieldCtaClickedEventParams = {
   source: ShieldMetricsSourceEnum;
@@ -128,7 +131,7 @@ export type CaptureShieldClaimSubmissionEventParams = {
    */
   attachmentsCount: number;
 
-  submissionStatus: 'started' | 'completed' | 'failed';
+  status: 'started' | 'completed' | 'failed';
 
   errorMessage?: string;
 };
@@ -159,6 +162,7 @@ export type CaptureShieldErrorStateClickedEventParams =
     actionClicked: ShieldErrorStateActionClickedEnum;
     location: ShieldErrorStateLocationEnum;
     view: ShieldErrorStateViewEnum;
+    type: ShieldErrorStateClickedTypeEnum;
   };
 
 export type CaptureShieldUnexpectedErrorEventParams = {

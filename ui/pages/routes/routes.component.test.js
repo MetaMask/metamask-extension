@@ -12,6 +12,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
   HARDWARE_WALLET_SIGNATURES_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
@@ -28,6 +29,7 @@ import Routes, {
   TokenManagementFeatureRoute,
   PageNotFound,
 } from '.';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 
 const middlewares = [thunk];
 
@@ -248,6 +250,18 @@ describe('Routes Component', () => {
       path,
     ]);
     expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('guards discover search with basic functionality', () => {
+    const matches = matchRoutes(routeConfig, DISCOVER_SEARCH_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
   });
 
   describe('render during send flow', () => {

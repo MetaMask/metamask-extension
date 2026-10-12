@@ -336,7 +336,7 @@ describe('MoneyTransactionDetailsPage', () => {
     ).not.toHaveTextContent('$0.00');
   });
 
-  it('keeps the fee amount and states network sponsorship in the tooltip when source gas is zero', async () => {
+  it('keeps the fee amount and shows a zero network fee in the tooltip when source gas is zero', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.14,
       totalUsd: 1000.14,
@@ -370,14 +370,12 @@ describe('MoneyTransactionDetailsPage', () => {
       );
     });
 
-    expect(
-      screen.getByTestId('money-transaction-details-fee-info'),
-    ).toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    const tooltip = screen.getByTestId('money-transaction-details-fee-info');
+    expect(tooltip).toHaveTextContent(`${messages.networkFee.message}: $0.00`);
+    expect(tooltip).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
-  it('does not claim Paid by MetaMask for user-paid cross-chain source gas', async () => {
+  it('does not show a network fee tooltip line for user-paid cross-chain source gas', async () => {
     mockUseMoneyTransactionFee.mockReturnValue({
       feeUsd: 0.34,
       totalUsd: 1000.34,
@@ -398,9 +396,7 @@ describe('MoneyTransactionDetailsPage', () => {
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(`${messages.networkFee.message}:`);
   });
 
   it('does not mention Paid by MetaMask when the fee is not sponsored', async () => {
@@ -418,9 +414,7 @@ describe('MoneyTransactionDetailsPage', () => {
 
     expect(
       screen.getByTestId('money-transaction-details-fee-info'),
-    ).not.toHaveTextContent(
-      `${messages.networkFee.message}: ${messages.paidByMetaMask.message}`,
-    );
+    ).not.toHaveTextContent(messages.paidByMetaMask.message);
   });
 
   it('renders the origin address when it does not belong to an internal account', () => {

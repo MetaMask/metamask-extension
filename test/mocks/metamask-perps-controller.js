@@ -43,7 +43,6 @@ const mockPerpsEventPropertyKeys = {
   SOURCE: 'source',
   HAS_PERP_BALANCE: 'has_perp_balance',
   BUTTON_LOCATION: 'button_location',
-  BUTTON_TYPE: 'button_type',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',

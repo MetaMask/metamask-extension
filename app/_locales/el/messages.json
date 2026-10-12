@@ -484,23 +484,41 @@
   "activity_marketShort_success_title": {
     "message": "Η θέση πώλησης έκλεισε – αγορά"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Προς: Money account"
+  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Η κατάθεση απέτυχε"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Προς: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Κατάθεση $1",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Προς: Money account"
+  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "Κατατέθηκαν $1",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Από: Money account"
+  },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Η λήψη απέτυχε"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Από: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Λήψη $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Από: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "Ελήφθη $1",
@@ -1929,33 +1947,36 @@
     "message": "Ενεργοποίηση βασικών λειτουργιών"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Οι ρυθμίσεις σας άλλαξαν"
+    "message": "Ενημερώσαμε τις ρυθμίσεις μας"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ανάρτηση στο blog"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "Ενημερώνουμε τον τρόπο λειτουργίας του MetaMask για τη σύνδεση μέσω κοινωνικών δικτύων. Για μια απρόσκοπτη εμπειρία σε όλο το MetaMask, το αναγνωριστικό σύνδεσής σας μέσω κοινωνικών δικτύων (email ή όνομα χρήστη) θα συνδέεται πλέον με ασφάλεια με το προφίλ χρήστη σας και τις συνδεδεμένες διευθύνσεις λογαριασμών. Στο πλαίσιο αυτής της ενημέρωσης, η Βασική Λειτουργικότητα και οι υπόλοιπες προεπιλεγμένες ρυθμίσεις θα είναι πάντα ενεργοποιημένες."
+    "message": "Επειδή συνδέεστε μέσω Google, Apple ή Telegram, το email σας (ή το όνομα χρήστη σας στο Telegram) αποθηκεύεται πλέον στο προφίλ σας στο MetaMask μαζί με τις διευθύνσεις των πορτοφολιών σας. Έτσι, ο λογαριασμός σας λειτουργεί απρόσκοπτα σε όλες τις λειτουργίες του MetaMask. Οι λογαριασμοί που χρησιμοποιούν σύνδεση μέσω κοινωνικών δικτύων διατηρούν τις βασικές λειτουργίες τους. Τα κλειδιά σας παραμένουν αποκλειστικά δικά σας."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Δεν πουλάμε ποτέ τα δεδομένα σας σε τρίτους. Μάθετε περισσότερα σχετικά με τα δεδομένα που συλλέγουμε και τον λόγο για τον οποίο τα συλλέγουμε στην $1 και την ενημερωμένη $2.",
+    "message": "Μάθετε περισσότερα στο $1 και στην $2.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Ενημέρωση Απορρήτου"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Ενημερώσεις απορρήτου και προϊόντος"
+    "message": "Ενημερώσεις για τη σύνδεση μέσω κοινωνικών δικτύων"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Τα API τρίτων μερών αποτελούν πλέον μέρος της Βασικής Λειτουργικότητας. Με βάση τις προηγούμενες προτιμήσεις σας, αυτή η ρύθμιση είναι $1. Μπορείτε να την αλλάξετε ανά πάσα στιγμή στις $2",
+    "message": "Οι ρυθμίσεις απορρήτου σας έχουν πλέον ενοποιηθεί σε μία ρύθμιση: \"Βασικές Λειτουργίες\". Έχει οριστεί σε $1 με βάση τις προηγούμενες ρυθμίσεις σας. Μπορείτε να το αλλάξετε οποιαδήποτε στιγμή από τις $2. $3.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "απενεργοποιημένη"
+    "message": "απεν."
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "ενεργοποιημένο"
+    "message": "για"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Μάθε περισσότερα"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Ρυθμίσεις > Απόρρητο"
@@ -2218,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "Χαμηλότερο κόστος"
-  },
-  "bridgeMalicious": {
-    "message": "Κακόβουλο"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Κακόβουλο token"
@@ -2502,9 +2520,6 @@
     "message": "Ενεργοποιήστε πρώτα τα $1 στο δίκτυο Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Ύποπτο"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Ύποπτο token"
   },
@@ -2656,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "Επαναφέρει το nonce του λογαριασμού και διαγράφει τα δεδομένα από την καρτέλα δραστηριότητας στο πορτοφόλι σας. Μόνο ο τρέχων λογαριασμός και το δίκτυο θα επηρεαστούν. Δεν θα υπάρξει καμία αλλαγή στα υπόλοιπα ή στις εισερχόμενες συναλλαγές σας."
   },
+  "clearClipboard": {
+    "message": "Εκκαθάριση προχείρου"
+  },
   "clearFilters": {
     "message": "Διαγραφή φίλτρων"
   },
@@ -2665,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Κάντε κλικ εδώ για να συνδέσετε το Ledger σας μέσω WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Δεν ήταν δυνατή η εκκαθάριση του προχείρου. Προσπαθήστε ξανά."
+  },
+  "clipboardCleared": {
+    "message": "Το πρόχειρο εκκαθαρίστηκε"
   },
   "close": {
     "message": "Κλείσιμο"
@@ -3152,11 +3176,20 @@
     "message": "Αν τίποτα από τα παραπάνω δεν λειτουργήσει, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Ανάκτηση λογαριασμών"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Εγκαταστήστε ξανά το MetaMask"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "Επαναφορά κατάστασης του MetaMask"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Με την ανάκτηση λογαριασμών θα διαγραφούν οι τρέχουσες ρυθμίσεις και προτιμήσεις σας."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Με την επαναφορά της κατάστασης του MetaMask θα διαγραφούν οι τρέχοντες λογαριασμοί, οι ρυθμίσεις και οι προτιμήσεις σας."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
@@ -4189,6 +4222,9 @@
   "from": {
     "message": "Από"
   },
+  "fullyDiluted": {
+    "message": "Πλήρως κατανεμημένα"
+  },
   "function": {
     "message": "Λειτουργία: $1"
   },
@@ -4204,6 +4240,9 @@
   },
   "gasLimitBelowMinimum": {
     "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 12000"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "Η επεξεργασία του ορίου συναλλαγών δεν είναι διαθέσιμη μέχρι να παρέχει το MetaMask μια εκτίμηση."
   },
   "gasPrice": {
     "message": "Τέλη συναλλαγών"
@@ -5568,13 +5607,16 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "Το υπόλοιπό σας σε mUSD, που υποστηρίζεται από δολάρια και είναι πάντα διαθέσιμο για αγορές, μεταφορές ή συναλλαγές, οποιαδήποτε στιγμή. Δεν υπολογίζουμε αυτό το ποσό στο συνολικό υπόλοιπο του λογαριασμού σας."
+    "message": "Το υπόλοιπό σας σε mUSD, με υποστήριξη από το δολάριο, και αποφέρει πάντα κέρδη. Το ποσό αυτό δεν περιλαμβάνεται στο συνολικό υπόλοιπο του λογαριασμού σας."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Οι αναλήψεις διεκπεραιώνονται άμεσα, με την επιφύλαξη των τυπικών χρόνων επιβεβαίωσης του δικτύου στο αντίστοιχο blockchain. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρξουν προσωρινές καθυστερήσεις."
   },
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "Επανάληψη"
@@ -5651,10 +5693,10 @@
     "message": "Προσθέστε χρήματα στον Money account σας και δείτε το υπόλοιπό σας να αυξάνεται με απόδοση έως και $1 APY."
   },
   "moneyHomeApyTooltip": {
-    "message": "Η απόδοση που εμφανίζεται είναι μια εκτιμώμενη Ετήσια Απόδοση (APY), βάσει των τρεχουσών συνθηκών της αγοράς. Το APY είναι κυμαινόμενο και δεν εγγυάται απόδοση. Τα κεφάλαια τοποθετούνται σε ένα DeFi vault, με διαχείριση από τη Veda και εποπτεία κινδύνου από τη Steakhouse Financial, το οποίο αποφέρει αποδόσεις σε καθιερωμένες αγορές δανεισμού."
+    "message": "Η εμφανιζόμενη τιμή είναι η τρέχουσα Ετήσια Ποσοστιαία Απόδοση (APY). Το APY είναι μεταβλητό και δεν είναι εγγυημένο."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Ο Money account σας αποδίδει αυτόματα έως $1.",
+    "message": "Ο Money account σας αποφέρει αυτόματα έως και $1 APY.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5667,7 +5709,7 @@
     "message": "Προσθέστε mUSD και το υπόλοιπό σας σε δολάρια είναι έτοιμο για αγορές, συναλλαγές ή μεταφορές ανά πάσα στιγμή."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Προσθέστε mUSD στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαιά σας τοποθετούνται σε ένα DeFi vault, το οποίο διαχειρίζεται η Veda, με παρακολούθηση κινδύνου από τη Steakhouse Financial. Το επιτόκιο προκύπτει από πλατφόρμες DeFi τρίτων, οι οποίες επενδύουν κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κεφαλαίων, χωρίς διεκδίκηση ανταμοιβών και χωρίς περιορισμοί ανάληψης.",
+    "message": "Μετατρέψτε οποιοδήποτε κρυπτονόμισμα στον Money account σας και κερδίστε αυτόματα έως και $1 APY (μεταβλητό). Τα κεφάλαια τοποθετούνται σε ένα DeFi vault που διαχειρίζεται η Veda, με παρακολούθηση κινδύνων από τη Steakhouse Financial. Η απόδοση προκύπτει από πλατφόρμες DeFi τρίτων που χρησιμοποιούν τα κεφάλαια σε πρωτόκολλα blockchain. Χωρίς δέσμευση κρυπτονομισμάτων, χωρίς διεκδίκηση αποδόσεων, χωρίς κλείδωμα κεφαλαίων.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
@@ -5678,36 +5720,55 @@
     "message": "Ο Money Account δεν αποτελεί τραπεζικό λογαριασμό, λογαριασμό αποταμίευσης ή ασφαλισμένο καταθετικό προϊόν. Η ετήσια απόδοση (APY) είναι μεταβλητή και δεν είναι εγγυημένη. Ο Money Account περιλαμβάνει κινδύνους από έξυπνα συμβόλαια, πρωτόκολλα, ρευστότητα και άλλους παράγοντες, και ενδέχεται να χάσετε μέρος ή το σύνολο των κεφαλαίων σας. Υπόκειται σε τοπικούς περιορισμούς. Ισχύουν όροι."
   },
   "moneyHowItWorksDisclosuresTitle": {
-    "message": "Κίνδυνοι και γνωστοποιήσεις"
+    "message": "Κίνδυνοι και Γνωστοποιήσεις"
   },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "Έως και $1 APY. Το επιτόκιο είναι μεταβλητό και μεταβάλλεται ανάλογα με τις συνθήκες της αγοράς. Το τρέχον επιτόκιο εμφανίζεται πάντα στον Money account σας.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "Μπορεί να αλλάξει το ποσοστό APY;"
+    "message": "Πόσα μπορώ να κερδίσω με έναν Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Στις περισσότερες χώρες! Προς το παρόν δεν υποστηρίζεται στο Ηνωμένο Βασίλειο και σε χώρες της λίστας κυρώσεων των ΗΠΑ."
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "Σε ποιες χώρες είναι διαθέσιμος ο Money Account στο MetaMask;"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Δεν υπάρχει χρέωση για την δημιουργία ενός Money Account ούτε για την κατάθεση stablecoins. Θα επιβαρυνθείτε με χρεώσεις όταν καταθέτετε tokens που δεν είναι stablecoins. Υπάρχουν επίσης χρεώσεις που σχετίζονται με συναλλαγές της MetaMask Card, αναλήψεις από ATM και τέλη μετατροπής σε τοπικό νόμισμα. "
+    "message": "Δεν υπάρχει χρέωση για την δημιουργία του Money account ούτε για την κατάθεση stablecoins. Θα χρεωθείτε τέλη κατά την κατάθεση tokens που δεν είναι stablecoins."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Υπάρχουν χρεώσεις;"
+    "message": "Ποιες είναι οι χρεώσεις για έναν Money Account στο MetaMask;"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Όχι, η δημιουργία ενός Money Account δεν απαιτεί επαλήθευση ταυτότητας. Ωστόσο, ορισμένες λειτουργίες, όπως η Κάρτα και οι υπηρεσίες μετατροπής νομισμάτων, απαιτούν ταυτοποίηση. Οι έλεγχοι πραγματοποιούνται από τρίτους παρόχους που λειτουργούν ρυθμιζόμενες υπηρεσίες, και όχι από το MetaMask. Εάν χρειαστεί, θα σας καθοδηγήσουμε για την διαδικασία μέσα από την εφαρμογή κατά την εγγραφή."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Πρέπει να ολοκληρώσω την επαλήθευση ταυτότητας για να χρησιμοποιήσω τον Money Account στο MetaMask;"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Ναι. Μπορείτε να κάνετε συναλλαγές, αποστολή, χρήση ή ανάληψη ολόκληρου του υπολοίπου σας οποιαδήποτε στιγμή, χωρίς περιόδους ειδοποίησης, χωρίς ποινές και χωρίς τέλη ανάληψης από το MetaMask. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρχουν προσωρινές καθυστερήσεις."
+    "message": "Ναι. Μπορείτε να στείλετε ή να κάνετε ανάληψη ολόκληρου του υπολοίπου σας οποιαδήποτε στιγμή, χωρίς περιόδους προειδοποίησης, ποινές ή χρεώσεις ανάληψης από το MetaMask. Αν η ρευστότητα είναι περιορισμένη, ενδέχεται να υπάρξουν προσωρινές καθυστερήσεις."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Είναι τα χρήματά μου δεσμευμένα; Μπορώ να κάνω ανάληψη οποιαδήποτε στιγμή;"
+    "message": "Μπορώ να κάνω ανάληψη από τον Money Account στο MetaMask οποιαδήποτε στιγμή;"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "Ένας λογαριασμός που αποφέρει έως και $1 μεταβλητό APY. Καταθέτετε κεφάλαια, τα οποία διατηρούνται στον λογαριασμό σας ως mUSD, και κερδίζετε έως και $1 APY. Το mUSD είναι το stablecoin της MetaMask, το οποίο υποστηρίζεται από δολάρια ΗΠΑ. Μπορείτε να χρησιμοποιείτε ή να κάνετε ανάληψη των κεφαλαίων σας οποιαδήποτε στιγμή, χωρίς επιβαρύνσεις. Μπορείτε να χρησιμοποιείτε τα κεφάλαιά σας μέσω της MetaMask Card σε περισσότερες από 150 εκατομμύρια επιχειρήσεις που δέχονται την Mastercard παγκοσμίως.",
+    "message": "Λογαριασμός με μεταβλητό APY έως και $1. Καταθέτετε κεφάλαια, τα οποία διατηρούνται στον λογαριασμό ως mUSD και αποφέρουν έως και $1 APY. Το mUSD είναι το stablecoin του MetaMask με υποστήριξη σε δολάρια. Μπορείτε να χρησιμοποιήσετε ή να κάνετε ανάληψη των κεφαλαίων σας οποιαδήποτε στιγμή, χωρίς ποινές.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Τι είναι ο λογαριασμός Money;"
+    "message": "Τι είναι ένας Money Account στο MetaMask;"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "Συχνές Ερωτήσεις"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "Μπορείτε να καταθέσετε τα παρακάτω stablecoins και aTokens στον Money account σας χωρίς τέλη μετατροπής:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nΌλα τα άλλα EVM tokens μπορούν να κατατεθούν στον Money account σας, αλλά ενδέχεται να ισχύουν οι συνήθεις χρεώσεις. Μπορείτε επίσης να προσθέσετε χρήματα στον Money account σας μέσω χρεωστικής ή πιστωτικής κάρτας, τραπεζικού λογαριασμού, PayPal, Apple Pay ή Google Pay.\n\nΣημείωση: Αρχικά, ισχύει μέγιστο όριο κατάθεσης $1 ανά token, ώστε να διασφαλίζεται η ρευστότητα.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Ποια tokens μπορώ να καταθέσω στον Money Account;"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "Όταν καταθέτετε κεφάλαια, αυτά τοποθετούνται σε καθιερωμένα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi), όπως το Aave και το Morpho, όπου αποφέρουν αποδόσεις από πραγματική οικονομική δραστηριότητα. Οι αποδόσεις αυτές καταβάλλονται σε εσάς με τη μορφή της ετήσιας απόδοσης (APY).\n\nΈνας τρίτος πάροχος υπηρεσιών, η Steakhouse Financial, παρακολουθεί τον τρόπο με τον οποίο κατανέμονται τα κεφάλαια στα πρωτόκολλα. Η Veda, ένας τρίτος πάροχος υποδομών, αναπτύσσει και διατηρεί τα έξυπνα συμβόλαια στο θησαυροφυλάκιο (vault) όπου φυλάσσονται τα κεφάλαιά σας.\n\nΟι αποδόσεις δεν αποτελούν τόκο που καταβάλλεται από τo MetaMask ή από τον εκδότη των mUSD. Πρόκειται για αποδόσεις στο blockchain που παράγονται από θέσεις σε τρίτα πρωτόκολλα με αποκεντρωμένη χρηματοδότηση (DeFi)."
@@ -5741,6 +5802,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Χρηματοδοτήστε τον Money Account σας",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "Αποστολή"
@@ -6921,9 +6986,41 @@
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "Ο τρόπος αποθήκευσης του passkey σας δεν παρέχει πλήρη προστασία για το κλειδί του πορτοφολιού σας. Αντικαταστήστε το για να συνεχίσετε να χρησιμοποιείτε την επαλήθευση με βιομετρικά στοιχεία.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Όταν το πρόγραμμα περιήγησής σας σάς ρωτήσει πού θέλετε να το αποθηκεύσετε, επιλέξτε \"Διαχειριστής κωδικών πρόσβασης Google\" και όχι \"Αυτή η συσκευή\". $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Το τρέχον passkey σας θα συνεχίσει να λειτουργεί μέχρι να το αντικαταστήσετε.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Αποθηκεύτηκε σε αυτήν τη συσκευή, η οποία δεν μπορεί να προστατεύσει το κλειδί του πορτοφολιού σας. Προσπαθήστε ξανά και επιλέξτε \"Διαχειριστής κωδικών πρόσβασης Google\" όταν το πρόγραμμα περιήγησής σας σάς ρωτήσει πού θέλετε να το αποθηκεύσετε. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Διατήρηση του τρέχοντος passkey προς το παρόν",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Αυτό το passkey δεν θα λειτουργεί",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
   "passkeyMigrationReplacementTryAgain": {
     "message": "Προσπαθήστε ξανά",
     "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Δείτε τους υποστηριζόμενους παρόχους",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Το passkey σας χρειάζεται ενημέρωση",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
@@ -7395,6 +7492,13 @@
   },
   "perpsAddFunds": {
     "message": "Προσθήκη κεφαλαίων"
+  },
+  "perpsAddFundsHint": {
+    "message": "Προσθέστε τουλάχιστον $1 στον λογαριασμό Perps σας για να υποβάλετε την εντολή.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Προσθέστε κεφάλαια για να κάνετε συναλλαγές"
   },
   "perpsAddMargin": {
     "message": "Προσθήκη περιθωρίου"
@@ -8858,7 +8962,7 @@
     "message": "Άμεσα"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Λιγότερο από"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "λεπτό"
@@ -8871,7 +8975,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Έως και $1",
+    "message": "Μέγιστο ποσό: $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8917,7 +9021,7 @@
     "message": "Περιλαμβάνει προμήθεια $1% στο MM."
   },
   "readdToken": {
-    "message": "Μπορείτε να προσθέσετε ξανά αυτό το token στο μέλλον επιλέγοντας \"Εισαγωγή token\" στο μενού επιλογών των λογαριασμών σας."
+    "message": "Μπορείτε να προσθέσετε ξανά αυτό το token στο μέλλον, μεταβαίνοντας στην επιλογή \"Διαχείριση tokens\" από το μενού σχετικά με tokens"
   },
   "receive": {
     "message": "Λήψη"
@@ -9054,6 +9158,10 @@
   },
   "replace": {
     "message": "αντικατάσταση"
+  },
+  "replacePasskey": {
+    "message": "Αντικατάσταση passkey",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Αναφέρετε ένα πρόβλημα"
@@ -9958,6 +10066,9 @@
   "sendingNativeAsset": {
     "message": "Αποστολή $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Αυτές οι ευαίσθητες πληροφορίες παραμένουν στο πρόχειρό σας."
   },
   "sent": {
     "message": "Εστάλη"
@@ -11330,7 +11441,7 @@
     "message": "Η ανταλλαγή απέτυχε"
   },
   "stxFailureDescription": {
-    "message": "Οι ξαφνικές αλλαγές της αγοράς ενδέχεται να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με $1.",
+    "message": "Οι ξαφνικές αλλαγές στην αγορά μπορεί να προκαλέσουν αποτυχίες. Εάν το πρόβλημα επιμένει, παρακαλούμε επικοινωνήστε με το $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11877,7 +11988,7 @@
     "message": "Συνολικό ποσό που λάβατε"
   },
   "totalVolume": {
-    "message": "Συνολικός όγκος"
+    "message": "Συνολικός όγκος συναλλαγών (24ωρο)"
   },
   "transaction": {
     "message": "Συναλλαγή"
@@ -12319,6 +12430,9 @@
   },
   "volume": {
     "message": "Όγκος"
+  },
+  "volumeToMarketCap": {
+    "message": "Όγκος συναλλαγών / Κεφαλαιοποίηση αγοράς"
   },
   "wallet": {
     "message": "Πορτοφόλι"

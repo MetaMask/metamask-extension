@@ -2173,6 +2173,8 @@ async function setupMocking(
             musd_balance: '0',
             vmusd_value_in_musd: '0',
             total_balance: '0',
+            by_asset: [],
+            total_balance_usd: '0',
           },
           positions: [],
         },

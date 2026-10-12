@@ -283,7 +283,7 @@ describe('MoneyActivityPage', () => {
       buttonType: MoneyButtonType.Text,
       buttonIntent: MoneyButtonIntent.Filter,
       labelKey: 'moneyActivityFilterCard',
-      componentName: MoneyComponentName.ActivityFilterCard,
+      componentName: MoneyComponentName.ActivityFilterPurchases,
     });
   });
 

@@ -13,7 +13,10 @@ import { type Asset } from '../../types/send';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { MUSD_TOKEN_ADDRESS } from '../../constants/musd';
+import { getInternalAccountByAddress } from '../../../../selectors/accounts';
+import { isHardwareAccount } from '../../../../components/app/rewards/utils/isHardwareAccount';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
+import { useTransactionPayingAccount } from '../transactions/useTransactionPayingAccount';
 
 /** The Money Account vault token; withdrawals always convert FROM this. */
 const MONAD_MUSD_SOURCE = {
@@ -73,6 +76,8 @@ export function isNoFeePayToken(
  * withdrawal the picker token is the destination and the source is always
  * Monad mUSD, so the match is directional: a subsidised route FROM Monad
  * mUSD INTO the token, or Monad mUSD itself.
+ *
+ * Hardware payers cannot use sponsored routes, so nothing is no-fee for them.
  */
 export function usePayWithNoFeeToken(): {
   isNoFeeToken: (address: string, chainId: string) => boolean;
@@ -84,8 +89,22 @@ export function usePayWithNoFeeToken(): {
     TransactionType.moneyAccountWithdraw,
   ]);
 
+  const payingAccount = useTransactionPayingAccount();
+  const payingInternalAccount = useSelector((state) =>
+    payingAccount
+      ? getInternalAccountByAddress(state, payingAccount)
+      : undefined,
+  );
+  const isHardwarePayer = payingInternalAccount
+    ? isHardwareAccount(payingInternalAccount)
+    : false;
+
   const isNoFeeToken = useCallback(
     (address: string, chainId: string): boolean => {
+      if (isHardwarePayer) {
+        return false;
+      }
+
       if (isMoneyWithdraw) {
         if (!address || !chainId) {
           return false;
@@ -102,7 +121,7 @@ export function usePayWithNoFeeToken(): {
 
       return isNoFeePayToken(relayFixedSpread, address, chainId);
     },
-    [isMoneyWithdraw, relayFixedSpread],
+    [isHardwarePayer, isMoneyWithdraw, relayFixedSpread],
   );
 
   const renderNoFeeTag: TokenTagRenderer = useCallback(

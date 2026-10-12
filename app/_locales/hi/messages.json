@@ -484,23 +484,41 @@
   "activity_marketShort_success_title": {
     "message": "शॉर्ट क्लोज़ किया जा रहा है - मार्केट क्लोज़"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "प्रति: Money account"
+  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "डिपॉज़िट नहीं हो पाया"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "प्रति: Money account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "$1 डिपॉज़िट कर रहे हैं",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "प्रति: Money account"
+  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "$1 डिपॉज़िट किया गया",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "प्रेषक: Money account"
+  },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "प्राप्त नहीं हो पाया"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "प्रेषक: Money account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "$1 प्राप्त कर रहे हैं",
     "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "प्रेषक: Money account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "$1 प्राप्त किया गया",
@@ -1929,33 +1947,36 @@
     "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "आपकी सेटिंग्स बदल गई हैं"
+    "message": "हमने अपनी सेटिंग्स अपडेट कर दी हैं"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "ब्लॉग पोस्ट"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "हम सोशल लॉगिन के लिए MetaMask के काम करने के तरीके को अपडेट कर रहे हैं। MetaMask पर एक आसान एक्सपीरियंस देने के लिए, आपका सोशल लॉगिन आइडेंटिफायर (ईमेल या हैंडल) अब आपकी यूज़र प्रोफ़ाइल और उससे जुड़े अकाउंट एड्रेस से सुरक्षित तरीके से लिंक हो जाएगा। इस अपडेट के हिस्से के तौर पर, बेसिक फंक्शनैलिटी और दूसरी डिफॉल्ट सेटिंग्स हमेशा चालू रहेंगी।"
+    "message": "क्योंकि आप Google, Apple या Telegram से साइन इन करते हैं, इसलिए आपका ईमेल (या Telegram हैंडल) अब आपके वॉलेट एड्रेस के साथ आपके MetaMask प्रोफ़ाइल में सेव हो जाता है। इससे MetaMask के सभी फीचर्स में आपका अकाउंट लगातार काम करता रहता है। सोशल लॉगिन अकाउंट्स के लिए बेसिक फ़ंक्शनैलिटी चालू रहती है। आपकी कीज़ (keys) अभी भी सिर्फ़ आपकी ही रहती हैं।"
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "हम आपका डेटा कभी भी थर्ड पार्टी को नहीं बेचते हैं। हम क्या इकट्ठा करते हैं और क्यों, इसके बारे में हमारे $1 और अपडेट किए गए $2 में और पढ़ें।",
+    "message": "हमारे $1 और $2 में और अधिक पढ़ें।",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "गोपनीयता नोटिस"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "गोपनीयता और प्रोडक्ट अपडेट्स"
+    "message": "सोशल लॉगिन के लिए अपडेट्स"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "थर्ड-पार्टी API अब बेसिक फंक्शनैलिटी का हिस्सा हैं। आपकी पिछली पसंद के आधार पर, यह सेटिंग $1 है। इसे कभी भी $2 में बदलें",
+    "message": "आपकी गोपनीयता सेटिंग अब एक ही सेटिंग में बदल गई है, बेसिक फ़ंक्शनैलिटी। आपकी पिछली सेटिंग्स के आधार पर इसे $1 पर सेट किया गया है। इसे कभी भी $2 में बदलें। $3।",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "बंद किया गया"
+    "message": "बंद"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "चालू किया गया"
+    "message": "को"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "ज्यादा जानें"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "सेटिंग्स > गोपनीयता"
@@ -2218,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "सबसे कम लागत"
-  },
-  "bridgeMalicious": {
-    "message": "बुरी नीयत वाला"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "बुरी नीयत वाला टोकन"
@@ -2502,9 +2520,6 @@
     "message": "पहले स्टेलर पर $1 एक्टिवेट करें",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "संदिग्ध"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "संदिग्ध टोकन"
   },
@@ -2656,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "अकाउंट के nonce को रीसेट करता है और आपके वॉलेट में एक्टिविटी टैब से डेटा मिटा देता है। केवल मौजूदा अकाउंट और नेटवर्क प्रभावित होंगे। आपका बैलेंस और आने वाले ट्रांसेक्शन नहीं बदलेंगे।"
   },
+  "clearClipboard": {
+    "message": "क्लिपबोर्ड हटाएं"
+  },
   "clearFilters": {
     "message": "फिल्टर हटाएं"
   },
@@ -2665,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "अपने Ledger को WebHID के ज़रिए कनेक्ट करने के लिए यहां क्लिक करें",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "क्लिपबोर्ड हटाया नहीं जा सका। फिर से प्रयास करें।"
+  },
+  "clipboardCleared": {
+    "message": "क्लिपबोर्ड हटाया गया"
   },
   "close": {
     "message": "बंद करें"
@@ -3152,11 +3176,20 @@
     "message": "यदि ऊपर दिए गए विकल्पों में से कोई भी काम नहीं करता है, तो $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "अकाउंट्स रिकवर करें"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask को दोबारा इंस्टॉल करें"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "MetaMask स्टेट रीसेट करें"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "अकाउंट्स रिकवर करने से आपकी मौजूदा सेटिंग्स और प्राथमिकताएं मिट जाएंगी।"
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "MetaMask की स्टेट रीसेट करने से आपके मौजूदा अकाउंट्स, सेटिंग्स और प्राथमिकताएं मिट जाएंगी।"
   },
   "criticalErrorStillHavingIssues": {
     "message": "अभी भी समस्या आ रही है?"
@@ -4189,6 +4222,9 @@
   "from": {
     "message": "भेजने वाले"
   },
+  "fullyDiluted": {
+    "message": "पूरी तरह से डाइल्यूट किया हुआ"
+  },
   "function": {
     "message": "फंक्शन: $1"
   },
@@ -4204,6 +4240,9 @@
   },
   "gasLimitBelowMinimum": {
     "message": "गैस लिमिट कम से कम 12000 होनी चाहिए"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "जब तक MetaMask कोई अनुमान प्रदान नहीं कराता, तब तक गैस लिमिट को बदलना उपलब्ध नहीं है।"
   },
   "gasPrice": {
     "message": "गैस प्राइस"
@@ -5568,13 +5607,16 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "आपका डॉलर-बैक्ड mUSD बैलेंस जो हमेशा खर्च करने, भेजने या कभी भी ट्रेड करने\n के लिए उपलब्ध है। हम इसे आपके कुल अकाउंट बैलेंस में कैलकुलेट नहीं करते हैं।"
+    "message": "आपका डॉलर-समर्थित mUSD बैलेंस, जिस पर हमेशा कमाई होती रहती है। हम इसे आपके कुल अकाउंट बैलेंस में कैलकुलेट नहीं करते हैं।"
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "विदड्रॉल तुरंत प्रोसेस होते हैं, जो रिलेवेंट ब्लॉकचेन पर स्टैंडर्ड नेटवर्क कन्फर्मेशन टाइम के अधीन होते हैं। अगर लिक्विडिटी टाइट है, तो टेम्पररी डिले हो सकता है।"
   },
   "moneyBalanceLastKnown": {
     "message": "आखिरी ज्ञात बैलेंस"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "फिर से प्रयास करें"
@@ -5651,10 +5693,10 @@
     "message": "अपने Money Account में पैसे डालें और अपने बैलेंस को $1 APY तक बढ़ते हुए देखें।"
   },
   "moneyHomeApyTooltip": {
-    "message": "दिखाया गया रेट एक अनुमानित वार्षिक प्रतिशत यील्ड (APY) है जो मौजूदा बाज़ार परिस्थितियों पर आधारित है। APY बदल सकता है और इसकी कोई गारंटी नहीं है। फंड DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा मैनेज किया जाता है और Steakhouse Financial जोखिम की निगरानी करता है, जो स्थापित लेंडिंग मार्केट्स से रिटर्न जनरेट करता है।"
+    "message": "दिखाई गई दर वर्तमान सालाना प्रतिशत यील्ड (APY) है। APY परिवर्तनीय है और इसकी गारंटी नहीं है।"
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "आपका Money Account अपने आप $1 तक कमाता है।",
+    "message": "आपका Money Account अपने आप $1 APY तक कमाता है।",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5667,7 +5709,7 @@
     "message": "mUSD जोड़ें और आपका डॉलर-बैक्ड बैलेंस कभी भी खर्च करने, ट्रेड करने या भेजने के लिए तैयार है।"
   },
   "moneyHowItWorksDescription1": {
-    "message": "अपने Money Account में mUSD जोड़ें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
+    "message": "किसी भी क्रिप्टो को अपने Money Account में कन्वर्ट करें और स्वचालित रूप से $1 तक APY (वेरिएबल) कमाएं। फंड्स एक DeFi वॉल्ट में जाते हैं, जिसे Veda द्वारा प्रबंधित किया जाता है और Steakhouse Financial द्वारा जोखिम की निगरानी की जाती है। यह दर थर्ड पार्टी के DeFi प्लेटफॉर्म्स द्वारा उत्पन्न होती है जो फंड्स को ब्लॉकचेन प्रोटोकॉल्स में लगाते हैं। कोई स्टेकिंग नहीं, कोई क्लेम नहीं, कोई लॉक-अप्स नहीं।",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
@@ -5685,29 +5727,48 @@
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "क्या APY रेट बदलता है?"
+    "message": "मैं MetaMask Money Account से कितना कमा सकता हूँ?"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "ज़्यादातर जगहों पर! हम अभी यूके और यूएसए की सैंक्शन लिस्ट वाले देशों में उपलब्ध नहीं हैं।"
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "MetaMask Money Account किन देशों में उपलब्ध है?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money Account खोलने की कोई फीस नहीं है और स्टेबलकॉइन्स डिपॉज़िट करने की भी कोई फीस नहीं है। नॉन-स्टेबलकॉइन टोकन डिपॉजिट करने पर आपसे फीस ली जाएगी। MetaMask कार्ड ट्रांसेक्शन, ATM विड्रॉल और लोकल करेंसी ऑफरैंप कॉस्ट से जुड़ी फीस भी हैं। "
+    "message": "Money Account खोलने का कोई शुल्क नहीं है और स्टेबलकॉइन डिपॉज़िट करने पर भी कोई शुल्क नहीं है। गैर-स्टेबलकॉइन टोकन डिपॉज़िट करने पर आपसे शुल्क लिया जाएगा।"
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "क्या कोई फीस है?"
+    "message": "MetaMask Money Account की फीस क्या है?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "नहीं, Money Account खोलने के लिए आइडेंटिटी वेरिफिकेशन की ज़रूरत नहीं है। हालाँकि, Card और Ramps जैसे कुछ फीचर्स के लिए वेरिफिकेशन की ज़रूरत होती है। चेकिंग थर्ड-पार्टी प्रोवाइडर्स करते हैं जो रेगुलेटेड सर्विसेज़ चलाते हैं, MetaMask नहीं। अगर ज़रूरत हो, तो साइन-अप के दौरान ऐप के अंदर आपको प्रोसेस के बारे में गाइड किया जाएगा।"
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "क्या मुझे MetaMask Money Account इस्तेमाल करने के लिए आइडेंटिटी वेरिफिकेशन पूरा करना होगा?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "हाँ। आप MetaMask से बिना किसी नोटिस पीरियड, बिना किसी पेनल्टी और बिना किसी विदड्रॉवल फ़ीस के किसी भी समय अपना पूरा बैलेंस ट्रेड करना, भेजना, खर्च करना या निकालना जैसी चीज़ें कर सकते हैं। अगर लिक्विडिटी कम है, तो कुछ समय के लिए देरी हो सकती है।"
+    "message": "हां। आप MetaMask से बिना किसी नोटिस पीरियड, बिना किसी पेनल्टी और बिना किसी विदड्रॉवल फ़ीस के किसी भी समय अपना पूरा बैलेंस भेज या निकाल सकते हैं। अगर लिक्विडिटी कम है, तो कुछ समय के लिए देरी हो सकती है।"
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "क्या मेरा पैसा लॉक हो गया है? क्या मैं कभी भी निकाल सकता हूँ?"
+    "message": "क्या मैं MetaMask Money Account से कभी भी पैसे निकाल सकता हूँ?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "एक अकाउंट जो $1 बदलने वाला APY तक कमाता है। आप पैसे जमा करते हैं, जो अकाउंट में mUSD के रूप में रखे जाते हैं, और $1 APY तक कमाते हैं। mUSD MetaMask का डॉलर-बैक्ड स्टेबलकॉइन है। आप बिना किसी पेनल्टी के कभी भी अपने पैसे इस्तेमाल या निकाल सकते हैं। आप दुनिया भर में 150+ मिलियन Mastercard मर्चेंट पर MetaMask कार्ड के ज़रिए अपने पैसे खर्च कर सकते हैं।",
+    "message": "एक ऐसा अकाउंट जो $1 तक का परिवर्तनीय APY कमाता है। आप पैसे डिपॉज़िट करते हैं, जो अकाउंट में mUSD के रूप में रखे जाते हैं, और $1 APY तक कमाते हैं। mUSD MetaMask का डॉलर-बैक्ड स्टेबलकॉइन है। आप बिना किसी पेनल्टी के कभी भी अपने पैसे इस्तेमाल कर सकते हैं या निकाल सकते हैं।",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Money अकाउंट क्या है?"
+    "message": "MetaMask Money Account क्या है?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "सामान्य प्रश्न"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "आप बिना किसी कन्वर्शन फ़ीस के अपने Money account में ये स्टेबलकॉइन और aToken डिपॉज़िट कर सकते हैं:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nबेस: USDC\nBNB Chain: USDC, USDT\n\nबाकी सभी EVM टोकन भी Money account में डिपॉज़िट किए जा सकते हैं, लेकिन स्टैंडर्ड फ़ीस लग सकती है। आप डेबिट कार्ड, क्रेडिट कार्ड, बैंक अकाउंट, PayPal, Apple Pay, या Google Pay का इस्तेमाल करके भी अपने Money account में पैसे डाल सकते हैं।\n\nध्यान दें: लिक्विडिटी पक्का करने के लिए हर टोकन के लिए शुरुआती ज़्यादा से ज़्यादा $1 डिपॉज़िट करने की सीमा है।",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "मैं Money Account में कौन से टोकन जमा कर सकता हूँ?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "जब आप फंड जमा करते हैं, तो उन्हें Aave और Morpho जैसे जाने-माने DeFi प्रोटोकॉल में डाल दिया जाता है, जहाँ वे असली आर्थिक गतिविधि से रिटर्न कमाते हैं। ये रिटर्न फिर आपको APY के रूप में दिए जाते हैं।\n\nSteakhouse Financial नाम का एक थर्ड-पार्टी सर्विस प्रोवाइडर मॉनिटर करता है कि प्रोटोकॉल में फंड कैसे बांटे जाते हैं। Veda, एक थर्ड-पार्टी इंफ्रास्ट्रक्चर प्रोवाइडर, आपके फंड रखने वाले वॉल्ट स्मार्ट कॉन्ट्रैक्ट को डिप्लॉय और मेंटेन करता है।\n\nकमाई MetaMask या mUSD जारी करने वाले द्वारा दिया गया ब्याज नहीं है। वे थर्ड-पार्टी DeFi प्रोटोकॉल में पोज़िशन से मिलने वाले ऑनचेन रिटर्न हैं।"
@@ -5741,6 +5802,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "अपना Money Account फंड करें",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "भेजें"
@@ -6573,7 +6638,7 @@
     "message": "एजेंट वॉलेट"
   },
   "notificationsSettingsBoxError": {
-    "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें।"
+    "message": "कुछ गलत हो गया। कृपया फिर से कोशिश करें"
   },
   "notificationsSettingsDeselectAll": {
     "message": "सभी को अचयनित करें"
@@ -6921,9 +6986,41 @@
     "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें या अपने पासवर्ड का उपयोग करें।",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "आपके पासकी को सेव करने का तरीका आपके वॉलेट की (Key) को पूरी तरह सुरक्षित नहीं रख सकता। बायोमेट्रिक्स फीचर का उपयोग जारी रखने के लिए इसे बदलें।",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "जब आपका ब्राउज़र पूछे कि इसे कहां सेव करना है, तो इस डिवाइस के बजाय Google Password Manager चुनें। $1।",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "आपकी वर्तमान पासकी तब तक काम करती रहेगी, जब तक आप उसे बदल नहीं देते।",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "इसे इस डिवाइस पर सेव किया गया था, जो आपके वॉलेट की (Key) को सुरक्षित नहीं रख सकता। फिर से प्रयास करें और जब आपका ब्राउज़र पूछे कि इसे कहां सेव करना है, तो Google Password Manager चुनें। $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "अभी मेरी वर्तमान पासकी रखें",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "वह पासकी काम नहीं करेगी",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
   "passkeyMigrationReplacementTryAgain": {
     "message": "फिर से प्रयास करें",
     "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "सपोर्टेड प्रदाता देखें",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "आपकी पासकी को अपडेट करने की आवश्यकता है",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "$1 रजिस्टर करें",
@@ -7395,6 +7492,13 @@
   },
   "perpsAddFunds": {
     "message": "फंड जोड़ें"
+  },
+  "perpsAddFundsHint": {
+    "message": "यह ऑर्डर देने के लिए अपने पर्प्स अकाउंट में कम से कम $1 जोड़ें।",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "ट्रेड करने के लिए फंड जोड़ें"
   },
   "perpsAddMargin": {
     "message": "Add margin"
@@ -8858,7 +8962,7 @@
     "message": "तुरंत"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "से कम"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "मिनट"
@@ -8871,7 +8975,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "$1 तक",
+    "message": "$1 की सीमा",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8917,7 +9021,7 @@
     "message": "$1% MM शुल्क शामिल है।"
   },
   "readdToken": {
-    "message": "आप अपने एकाउंट्स के विकल्प मेन्यू में “टोकन जोड़ें” पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
+    "message": "आप भविष्य में टोकन मेनू में “टोकन मैनेज करें” पर जाकर इस टोकन को फिर से जोड़ सकते हैं"
   },
   "receive": {
     "message": "प्राप्त करें"
@@ -9054,6 +9158,10 @@
   },
   "replace": {
     "message": "बदलें"
+  },
+  "replacePasskey": {
+    "message": "पासकी बदलें",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "समस्या रिपोर्ट करें"
@@ -9958,6 +10066,9 @@
   "sendingNativeAsset": {
     "message": "$1 भेजा जा रहा है",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "यह संवेदनशील जानकारी आपके क्लिपबोर्ड पर मौजूद रहती है।"
   },
   "sent": {
     "message": "भेजा गया"
@@ -11330,7 +11441,7 @@
     "message": "स्वैप नहीं हो पाया"
   },
   "stxFailureDescription": {
-    "message": "बाजार में अचानक परिवर्तन विफलताओं का कारण बन सकता है। यदि समस्या बनी रहती है, तो कृपया $1 से संपर्क करें।",
+    "message": "मार्केट के आकस्मिक बदलावों के कारण विफलताएं हो सकती हैं। अगर समस्या जारी रहती है, तो कृपया $1 से कॉन्टेक्ट करें।",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11752,7 +11863,7 @@
     "message": "मैं उपयोग की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे उपयोग पर लागू होती हैं।"
   },
   "termsOfUseFooterText": {
-    "message": "सभी अनुच्छेदों को पढ़ने के लिए कृपया स्क्रॉल करें"
+    "message": "सभी वर्गों को पढ़ने के लिए कृपया स्क्रॉल करें"
   },
   "termsOfUseTitle": {
     "message": "हमारी उपयोग की शर्तों की समीक्षा करें"
@@ -11877,7 +11988,7 @@
     "message": "टोटल प्राप्त हुआ"
   },
   "totalVolume": {
-    "message": "टोटल वॉल्यूम"
+    "message": "कुल वॉल्यूम (24h)"
   },
   "transaction": {
     "message": "ट्रांसेक्शन"
@@ -12319,6 +12430,9 @@
   },
   "volume": {
     "message": "वॉल्यूम"
+  },
+  "volumeToMarketCap": {
+    "message": "वॉल्यूम / मार्केट कैप"
   },
   "wallet": {
     "message": "वॉलेट"

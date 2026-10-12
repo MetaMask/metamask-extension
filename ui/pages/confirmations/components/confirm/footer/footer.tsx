@@ -31,6 +31,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
+import { useTransactionPayingAccount } from '../../../hooks/transactions/useTransactionPayingAccount';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
@@ -329,7 +330,13 @@ const Footer = () => {
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 
-  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
+  // Hardware preflight and signing follow the paying account: Money Account
+  // deposits are signed by the money account but funded on-device by the
+  // selected payer.
+  const payingAccount = useTransactionPayingAccount();
+  const { from: confirmationSender } =
+    getConfirmationSender(currentConfirmation);
+  const fromAddress = payingAccount ?? confirmationSender;
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();

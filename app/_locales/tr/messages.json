@@ -484,23 +484,41 @@
   "activity_marketShort_success_title": {
     "message": "Short kapatıldı - piyasa"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Alıcı: Money account hesabı"
+  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Para yatırma işlemi başarısız oldu"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Alıcı: Money account hesabı"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "$1 yatırılıyor",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Alıcı: Money account hesabı"
+  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "$1 yatırıldı",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Gönderen: Money account hesabı"
+  },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Alınamadı"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Gönderen: Money account hesabı"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "$1 alınıyor",
     "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Gönderen: Money account hesabı"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "$1 alındı",
@@ -1929,33 +1947,36 @@
     "message": "Temel işlevselliği aç"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Ayarlarınız değiştirildi"
+    "message": "Ayarlarımızı güncelledik"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "blog yayınımızda okuyabilirsiniz"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "MetaMask'in sosyal medya hesabı ile giriş işlemlerinde çalışma şeklini güncelliyoruz. MetaMask genelinde kesintisiz bir deneyim sunabilmek amacıyla; sosyal medya hesabı kimliğiniz (e-posta veya kullanıcı adı) artık kullanıcı profilinize ve ilişkili hesap adreslerinize güvenli bir şekilde bağlanacaktır. Bu güncellemenin bir parçası olarak, Temel İşlevsellik ve diğer varsayılan ayarlar her zaman etkin olacaktır."
+    "message": "Google, Apple veya Telegram ile giriş yaptığınız için e-posta adresiniz (veya Telegram kullanıcı adınız) artık cüzdan adreslerinizle birlikte MetaMask profilinize kaydedilir. Bu, hesabınızın MetaMask özellikleri genelinde tutarlı bir şekilde çalışmasını sağlar. Sosyal medya hesabı ile yapılan girişler için Temel İşlevsellik açık kalmaya devam eder. Anahtarlarınız ise hâlä sadece size aittir."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Verilerinizi asla üçüncü taraflara satmayız. Hangi verileri neden topladığımız hakkında daha fazla bilgiyi şurada okuyabilirsiniz: $1 ve güncellenmiş $2.",
+    "message": "Daha fazla bilgi için $1 ve $2 bölümlerimizi okuyabilirsiniz.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Gizlilik Bildirisi"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Gizlilik ve ürün güncellemeleri"
+    "message": "Sosyal medya hesapları ile giriş konusunda yapılan güncellemeler"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Üçüncü taraf API'ler artık Temel İşlevselliğin bir parçasıdır. Önceki tercihlerinize göre bu ayar $1. Dilediğiniz zaman şurada değiştirebilirsiniz:$2",
+    "message": "Gizlilik seçenekleriniz artık \"Temel İşlevsellik\" adı altında tek bir ayarda toplandı. Önceki ayarlarınıza göre $1 olarak ayarlandı. $2 bölümünde dilediğiniz zaman değiştirebilirsiniz. $3.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "devre dışı"
+    "message": "kapalı"
   },
   "basicFunctionalityMigrationToastEnabled": {
-    "message": "etkinleştirildi"
+    "message": "açık"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "Daha fazla bilgi edin"
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Ayarlar > Gizlilik"
@@ -2218,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "En düşük maliyet"
-  },
-  "bridgeMalicious": {
-    "message": "Kötü amaçlı"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Kötü amaçlı tokenlar"
@@ -2502,9 +2520,6 @@
     "message": "Önce Stellar ağında $1 varlığını etkinleştirin",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Şüpheli"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Şüpheli tokenlar"
   },
@@ -2656,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "Bu işlem hesabın nonce verilerini sıfırlar ve cüzdanınızdaki aktivite sekmesinden verileri siler. Sadece geçerli hesap ve ağ etkilenecektir. Bakiyeleriniz ve gelen işlemleriniz değişmeyecektir."
   },
+  "clearClipboard": {
+    "message": "Panoyu temizle"
+  },
   "clearFilters": {
     "message": "Filtreleri temizle"
   },
@@ -2665,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "WebHID üzerinden Ledger'ınızı bağlamak için tıklayın",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Pano temizlenemedi. Tekrar deneyin."
+  },
+  "clipboardCleared": {
+    "message": "Pano temizlendi"
   },
   "close": {
     "message": "Kapat"
@@ -3152,11 +3176,20 @@
     "message": "Yukarıdakilerin hiçbiri işe yaramazsa $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Hesapları kurtar"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "MetaMask'i geri yükleyin"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "MetaMask Durumunu Sıfırla"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Hesap kurtarma işlemi mevcut ayarlarınızı ve tercihlerinizi siler."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "MetaMask durumu sıfırlandığında mevcut hesaplarınız, ayarlarınız ve tercihleriniz silinir."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Hala sorun mu yaşıyorsunuz?"
@@ -4189,6 +4222,9 @@
   "from": {
     "message": "Kimden"
   },
+  "fullyDiluted": {
+    "message": "Tamamen seyreltilmiş"
+  },
   "function": {
     "message": "İşlev: $1"
   },
@@ -4204,6 +4240,9 @@
   },
   "gasLimitBelowMinimum": {
     "message": "Gaz limiti en az 12000 olmalıdır"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "MetaMask bir tahmin sunana kadar gaz limiti düzenleme özelliği kullanılamaz."
   },
   "gasPrice": {
     "message": "Gaz fiyatı"
@@ -5572,13 +5611,16 @@
     "message": "$1 APY"
   },
   "moneyBalanceInfoBody": {
-    "message": "Her zaman harcamaya, gönderime veya işlem yapmaya hazır olan dolara endeksli bakiyeniz. Bunu toplam hesap bakiyenize yansıtmayız."
+    "message": "Her zaman kazandıran, dolara endeksli mUSD bakiyeniz. Bunu toplam hesap bakiyenize dahil etmeyiz."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Para çekme işlemleri, ilgili blokzinciri üzerindeki standart ağ onay sürelerine tabi olmak kaydıyla anında gerçekleşir. Likiditenin sıkışık olduğu durumlarda geçici gecikmeler yaşanabilir."
   },
   "moneyBalanceLastKnown": {
     "message": "Bilinen son bakiye"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "Tekrar Dene"
@@ -5655,10 +5697,10 @@
     "message": "Money account hesabınıza fon ekleyin ve $1 APY ile bakiyenizin yükselişini izleyin."
   },
   "moneyHomeApyTooltip": {
-    "message": "Gösterilen oran, mevcut piyasa koşullarına dayalı tahmini Yıllık Yüzde Getiri (APY) oranıdır. APY değişkendir ve garanti edilmez. Fonlar, Veda tarafından yönetilen ve Steakhouse Financial tarafından risk denetimi yapılan, yerleşik kredi piyasalarında getiri sağlayan bir DeFi kasasına yatırılır."
+    "message": "Gösterilen oran, güncel Yıllık Yüzde Getiridir (APY). APY değişkendir ve garanti edilmez."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Money account hesabınız otomatik olarak $1 orana kadar kazanır.",
+    "message": "Money account hesabınız otomatik olarak $1 APY'ye kadar kazanç elde eder.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5671,7 +5713,7 @@
     "message": "mUSD ekleyin; dolara endeksli bakiyeniz her zaman harcamaya, işlem yapmaya veya gönderime hazırdır."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Money account hesabınıza mUSD ekleyin ve otomatik olarak $1 APY (değişkendir) kazanın. Fonlar, Steakhouse Financial risk izlemesi ile Veda tarafından yönetilen bir DeFi kasasına gider. Oran, blokzinciri protokollerinde fon dağıtan üçüncü taraf DeFi platformları tarafından oluşturulur. Stake yok, hak talebinde bulunma yok, kilitleme yok.",
+    "message": "Herhangi bir kripto varlığı Money account hesabınıza dönüştürün ve otomatik olarak $1 orana varan APY (değişken) kazanın. Fonlar; Veda tarafından yönetilen, risk izlemesi ise Steakhouse Financial tarafından yapılan bir DeFi kasasına aktarılır. Bu oran, fonları blokzinciri protokollerinde kullanan üçüncü taraf DeFi platformları tarafından üretilir. Stake yok, talep yok, kilitleme yok.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
@@ -5689,29 +5731,48 @@
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "APY oranı değişir mi?"
+    "message": "MetaMask Money account ile ne kadar kazanabilirsiniz?"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Çoğu yerde! Şu anda Birleşik Krallık'ta ve ABD'nin yaptırım listesinde yer alan ülkelerde hizmet sunamıyoruz."
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "MetaMask Money account hangi ülkelerde kullanılabilir?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "Money account açmak ve stabil kripto para yatırmak ücretsizdir. Stabil kripto para dışındaki tokenları yatırırken sizden işlem ücreti alınır. MetaMask Card işlemleri, ATM'den para çekme işlemleri ve yerel para birimi offramp maliyetleri ile ilişkili ücretler de bulunmaktadır. "
+    "message": "Money account hesabı açmak ücretsizdir ve stabil kripto para yatırırken ücret alınmaz. Stabil kripto para haricindeki tokenları yatırırken sizden işlem ücreti alınır."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Ücretler var mı?"
+    "message": "MetaMask Money account ücretleri nelerdir?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Hayır, Money account açmak için kimlik doğrulama gerekmez. Ancak Kart ve Ramps dahil olmak üzere bazı özellikler doğrulama gerektirir. Bu kontroller MetaMask tarafından değil, denetlenen hizmetler sunan üçüncü taraf sağlayıcılar tarafından gerçekleştirilir. Gerekmesi durumunda, kaydolma işlemi sırasında uygulama içinden süreç boyunca yönlendirilirsiniz."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "MetaMask Money account kullanmak için kimlik doğrulama işlemini tamamlamam gerekiyor mu?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Evet. Uyarı süresi, para cezası ve MetaMask'ten para çekme ücretleri olmadan tüm bakiyenizle dilediğiniz zaman işlem yapabilir, tüm bakiyenizi gönderebilir, harcayabilir veya çekebilirsiniz. Likidite sıkışık olduğunda geçici gecikmeler yaşanabilir."
+    "message": "Evet. Bakiyenizin tamamını dilediğiniz zaman ihbar süresi olmadan, MetaMask'e herhangi bir ceza ve para çekme ücreti ödemeden gönderebilir veya çekebilirsiniz. Likiditenin sıkışık olması durumunda geçici gecikmeler yaşanabilir."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Param kilitli mi? Dilediğim zaman çekebilir miyim?"
+    "message": "MetaMask Money account hesabından istediğim zaman para çekebilir miyim?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "$1 değişken APY'ye varan kazanç sağlayan bir hesap. Yatırdığınız fonlar mUSD olarak hesapta tutulur ve $1 APY'ye varan kazanç sağlarsınız. mUSD, MetaMask'in dolara endeksli stabil kripto parasıdır. Fonlarınızı dilediğiniz zaman para cezası ödemeden kullanabilir veya çekebilirsiniz. MetaMask Card ile fonlarınızı dünya çapında +150 milyon Mastercard satıcısında harcayabilirsiniz.",
+    "message": "$1 orana kadar değişken APY kazandıran bir hesap. Yatırdığınız fonlar hesapta mUSD olarak tutulur ve $1 orana kadar APY kazandırır. mUSD, MetaMask'in dolara endeksli stabil kripto parasıdır. Fonlarınızı dilediğiniz zaman, hiçbir ceza ödemeden kullanabilir veya çekebilirsiniz.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Para hesabı nedir?"
+    "message": "MetaMask Money account nedir?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "SSS"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "Money account hesabınıza aşağıdaki stabil kripto paraları ve aToken'ları hiçbir dönüştürme ücreti ödemeden yatırabilirsiniz:\nEthereum: USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum: USDC\nBase: USDC\nBNB Chain: USDC, USDT\n\nTüm diğer EVM tokenları Money account hesabına yatırılabilir ancak standart ücretler uygulanabilir. Money account hesabınıza ayrıca banka kartı, kredi kartı, banka hesabı, PayPal, Apple Pay veya Google Pay kullanarak da fon yatırabilirsiniz.\n\nNot: Likiditeyi güvenceye almak adına, token başına başlangıçta maksimum $1 yatırma limiti uygulanmaktadır.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Money account hesabına hangi tokenları yatırabilirim?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "Fon yatırdığınızda varlıklarınız, gerçek ekonomik faaliyetlerden getiri elde eden Aave ve Morpho gibi köklü DeFi protokollerine aktarılır. Bu getiriler daha sonra size APY olarak yansıtılır. \n\nSteakhouse Financial adlı üçüncü taraf bir hizmet sağlayıcı, fonların protokollerde nasıl dağıtıldığını izler. Üçüncü taraf bir altyapı sağlayıcısı olan Veda ise fonlarınızı tutan kasa akıllı sözleşmelerini devreye alır ve bunların işletimini üstlenir.\n\nKazançlar, MetaMask veya mUSD ihraççısı tarafından ödenen bir faiz değildir. Üçüncü taraf DeFi protokollerindeki pozisyonlardan elde edilen zincir üstü getirilerdir."
@@ -5745,6 +5806,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Money account hesabınıza fon ekleyin",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "Gönder"
@@ -6301,7 +6366,7 @@
     "message": "Gizlilik politikamızı güncelledik"
   },
   "newTokensImportedMessage": {
-    "message": "$1 tokeni başarılı bir şekilde içe aktardın.",
+    "message": "$1 tokenlar başarılı bir şekilde içe aktardın.",
     "description": "$1 is the string of symbols of all the tokens imported"
   },
   "newTokensImportedTitle": {
@@ -6925,9 +6990,41 @@
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "Geçiş anahtarınızın kaydedilme şekli, cüzdan anahtarınızı tam olarak koruyamıyor. Biyometri özelliğini kullanmaya devam etmek için değiştirin.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Tarayıcınız nereye kaydedileceğini sorduğunda bu cihaz seçeneğini değil, Google Şifre Yöneticisi seçeneğini seçin. $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Mevcut geçiş anahtarınız, siz onu değiştirene kadar çalışmaya devam eder.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Bu cihaza kaydedilmiş olan geçiş anahtarı, cüzdan anahtarınızı koruyamaz. Tekrar deneyin ve tarayıcınız nereye kaydedileceğini sorduğunda Google Şifre Yöneticisi seçeneğini seçin. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Şimdilik mevcut geçiş anahtarımı kullanmaya devam etmek istiyorum",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Bu geçiş anahtarı çalışmayacaktır",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
   "passkeyMigrationReplacementTryAgain": {
     "message": "Tekrar deneyin",
     "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Desteklenen sağlayıcıları gör",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Geçiş anahtarınızın güncellenmesi gerekiyor",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -7399,6 +7496,13 @@
   },
   "perpsAddFunds": {
     "message": "Fon ekle"
+  },
+  "perpsAddFundsHint": {
+    "message": "Bu emri vermek için Perps hesabınıza en az $1 ekleyin.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "İşlem yapmak için fon ekleyin"
   },
   "perpsAddMargin": {
     "message": "Marj ekle"
@@ -8872,7 +8976,7 @@
     "message": "Anında"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "En fazla"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "dk."
@@ -8885,7 +8989,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "En fazla $1",
+    "message": "$1 limit",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8931,7 +9035,7 @@
     "message": "%$1 MM ücreti dahildir."
   },
   "readdToken": {
-    "message": "Gelecekte bu tokeni hesap seçenekleri menüsünde “Tokeni İçe Aktar”' kısmına giderek tekrar ekleyebilirsiniz."
+    "message": "Bu tokenı gelecekte token menüsünde \"Tokenları yönet\" seçeneğine giderek tekrar ekleyebilirsiniz"
   },
   "receive": {
     "message": "Al"
@@ -9068,6 +9172,10 @@
   },
   "replace": {
     "message": "değiştir"
+  },
+  "replacePasskey": {
+    "message": "Geçiş anahtarını değiştir",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Bir sorun bildir"
@@ -9972,6 +10080,9 @@
   "sendingNativeAsset": {
     "message": "$1 gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Bu hassas bilgiler panonuzda kalmaya devam ediyor."
   },
   "sent": {
     "message": "Gönderildi"
@@ -11891,7 +12002,7 @@
     "message": "Toplam alınan"
   },
   "totalVolume": {
-    "message": "Toplam hacim"
+    "message": "Toplam hacim (24sa)"
   },
   "transaction": {
     "message": "İşlem"
@@ -12333,6 +12444,9 @@
   },
   "volume": {
     "message": "Hacim"
+  },
+  "volumeToMarketCap": {
+    "message": "Hacim / Piyasa değeri"
   },
   "wallet": {
     "message": "Cüzdan"

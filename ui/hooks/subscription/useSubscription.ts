@@ -237,7 +237,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
     useSubscriptionMetrics();
 
   const trackSubscriptionUncancelRequestEvent = useCallback(
-    (status: 'completed' | 'failed', errorMessage?: string) => {
+    (status: 'succeeded' | 'failed', error?: string) => {
       if (!subscription) {
         return;
       }
@@ -251,8 +251,8 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         billingInterval: subscription.interval,
         cryptoPaymentChain,
         cryptoPaymentCurrency,
-        requestStatus: status,
-        errorMessage,
+        status,
+        error,
       });
     },
     [captureShieldSubscriptionRestartRequestEvent, subscription],
@@ -265,7 +265,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         return;
       }
       await dispatch(unCancelSubscription({ subscriptionId }));
-      trackSubscriptionUncancelRequestEvent('completed');
+      trackSubscriptionUncancelRequestEvent('succeeded');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

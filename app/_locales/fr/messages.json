@@ -484,23 +484,41 @@
   "activity_marketShort_success_title": {
     "message": "Position courte fermée - marché"
   },
+  "activity_moneyAccountDeposit_failed_description": {
+    "message": "Vers : Money Account"
+  },
   "activity_moneyAccountDeposit_failed_title": {
     "message": "Le dépôt a échoué"
+  },
+  "activity_moneyAccountDeposit_pending_description": {
+    "message": "Vers : Money Account"
   },
   "activity_moneyAccountDeposit_pending_title": {
     "message": "Déposer en $1",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountDeposit_success_description": {
+    "message": "Vers : Money Account"
+  },
   "activity_moneyAccountDeposit_success_title": {
     "message": "$1 déposé",
     "description": "$1 is the token symbol"
   },
+  "activity_moneyAccountWithdraw_failed_description": {
+    "message": "Depuis :: Money Account"
+  },
   "activity_moneyAccountWithdraw_failed_title": {
     "message": "Échec de réception"
+  },
+  "activity_moneyAccountWithdraw_pending_description": {
+    "message": "Depuis :: Money Account"
   },
   "activity_moneyAccountWithdraw_pending_title": {
     "message": "Recevoir en $1",
     "description": "$1 is the token symbol"
+  },
+  "activity_moneyAccountWithdraw_success_description": {
+    "message": "Depuis :: Money Account"
   },
   "activity_moneyAccountWithdraw_success_title": {
     "message": "A reçu en $1",
@@ -1929,33 +1947,36 @@
     "message": "Activer la fonctionnalité de base"
   },
   "basicFunctionalityMigrationModalTitle": {
-    "message": "Vos paramètres ont été modifiés"
+    "message": "Nous avons mis à jour nos paramètres"
   },
   "basicFunctionalityMigrationSocialModalBlogPostLink": {
     "message": "article de blog"
   },
   "basicFunctionalityMigrationSocialModalBody1": {
-    "message": "Nous mettons à jour le mode de fonctionnement de MetaMask pour la connexion via les réseaux sociaux. Afin de garantir une expérience utilisateur plus fluide sur l'ensemble des services MetaMask, votre identifiant de connexion via les réseaux sociaux (e-mail ou pseudo) sera désormais associé de manière sécurisée à votre profil utilisateur et aux adresses de compte qui y sont associées. Dans le cadre de cette mise à jour, les fonctionnalités de base et les autres paramètres par défaut seront toujours activés."
+    "message": "Comme vous vous connectez via Google, Apple ou Telegram, votre adresse e-mail (ou votre identifiant Telegram) est désormais enregistrée dans votre profil MetaMask avec les adresses de votre portefeuille. Cela permet à votre compte de fonctionner de manière cohérente avec toutes les fonctionnalités de MetaMask. Les fonctionnalités de base restent actives pour les comptes utilisant la connexion via les réseaux sociaux. Vos clés restent exclusivement les vôtres."
   },
   "basicFunctionalityMigrationSocialModalBody2": {
-    "message": "Nous ne vendons jamais vos données à des tiers. Pour en savoir plus sur les données que nous collectons et les raisons pour lesquelles nous le faisons, consultez notre $1 et la version mise à jour de notre $2.",
+    "message": "Pour en savoir plus, consultez notre $1 et notre $2.",
     "description": "$1 is the blog post link, $2 is the Privacy Notice link"
   },
   "basicFunctionalityMigrationSocialModalPrivacyNoticeLink": {
     "message": "Politique de confidentialité"
   },
   "basicFunctionalityMigrationSocialModalTitle": {
-    "message": "Confidentialité et mises à jour des produits"
+    "message": "Mises à jour concernant la connexion via les réseaux sociaux"
   },
   "basicFunctionalityMigrationToastDescription": {
-    "message": "Les API tierces font désormais partie des fonctionnalités de base. Conformément à vos préférences précédentes, ce paramètre défini sur « $1 ». Vous pouvez le modifier à tout moment dans $2",
+    "message": "Vos paramètres de confidentialité sont désormais regroupés en un seul paramètre : « Fonctionnalités de base ». Ce paramètre est $1 conformément à vos paramètres précédents. Vous pouvez le modifier à tout moment dans $2. $3.",
     "description": "$1 is the Basic Functionality state. $2 is the Settings > Privacy link. $3 is the blog post link."
   },
   "basicFunctionalityMigrationToastDisabled": {
-    "message": "désactivé"
+    "message": "off"
   },
   "basicFunctionalityMigrationToastEnabled": {
     "message": "activé"
+  },
+  "basicFunctionalityMigrationToastLearnMore": {
+    "message": "En savoir plus."
   },
   "basicFunctionalityMigrationToastSettingsLink": {
     "message": "Paramètres > Confidentialité"
@@ -2218,9 +2239,6 @@
   },
   "bridgeLowestCost": {
     "message": "Coût le moins élevé"
-  },
-  "bridgeMalicious": {
-    "message": "Malveillant"
   },
   "bridgeMaliciousTokenTitle": {
     "message": "Jeton malveillant"
@@ -2502,9 +2520,6 @@
     "message": "Activez d'abord $1 sur Stellar",
     "description": "Title of the Stellar trustline warning on cross-chain swaps. $1 is the destination token symbol."
   },
-  "bridgeSuspicious": {
-    "message": "Suspect"
-  },
   "bridgeSuspiciousTokenTitle": {
     "message": "Jeton suspect"
   },
@@ -2656,6 +2671,9 @@
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
   },
+  "clearClipboard": {
+    "message": "Vider le presse-papiers"
+  },
   "clearFilters": {
     "message": "Effacer les filtres"
   },
@@ -2665,6 +2683,12 @@
   "clickToConnectLedgerViaWebHID": {
     "message": "Cliquez ici pour connecter votre Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clipboardClearFailed": {
+    "message": "Impossible de vider le presse-papiers. Veuillez réessayer."
+  },
+  "clipboardCleared": {
+    "message": "Presse-papiers vidé"
   },
   "close": {
     "message": "Fermer"
@@ -3152,11 +3176,20 @@
     "message": "Si aucune des solutions ci-dessus ne fonctionne, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Récupérer des comptes"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Réinstallez MetaMask"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "Réinitialiser l’état de MetaMask"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "La récupération de comptes entraînera la suppression de vos paramètres et préférences actuels."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "La réinitialisation de l’état de MetaMask supprimera vos comptes, paramètres et préférences actuels."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Vous rencontrez toujours des problèmes ?"
@@ -4189,6 +4222,9 @@
   "from": {
     "message": "De la part de"
   },
+  "fullyDiluted": {
+    "message": "Entièrement diluée"
+  },
   "function": {
     "message": "Fonction : $1"
   },
@@ -4204,6 +4240,9 @@
   },
   "gasLimitBelowMinimum": {
     "message": "La limite de carburant doit être d’au moins 12000"
+  },
+  "gasLimitEditingUnavailable": {
+    "message": "La modification de la limite de gaz n’est pas disponible tant que MetaMask n’a pas fourni d’estimation."
   },
   "gasPrice": {
     "message": "Prix du gaz (GWEI)"
@@ -5568,13 +5607,16 @@
     "message": "Rendement annuel de $1"
   },
   "moneyBalanceInfoBody": {
-    "message": "Vous aurez toujours accès à votre solde en mUSD adossé au dollar. Utilisez-le, transférez-le ou tradez-le à tout moment. Ce solde est comptabilisé séparément du solde total de votre compte."
+    "message": "Votre solde en mUSD adossé au dollar qui génère continuellement des revenus. Ce solde n'est pas pris en compte lors du calcul du solde total de votre compte."
   },
   "moneyBalanceInfoWithdrawals": {
     "message": "Les retraits sont traités immédiatement, sous réserve des délais de confirmation standard du réseau sur la blockchain concernée. En cas de manque de liquidité, des retards peuvent survenir."
   },
   "moneyBalanceLastKnown": {
     "message": "Dernier solde connu"
+  },
+  "moneyBalanceMusdLabel": {
+    "message": "mUSD"
   },
   "moneyBalanceRetry": {
     "message": "Réessayer"
@@ -5651,10 +5693,10 @@
     "message": "Approvisionnez votre compte Money et profitez d’un taux de rendement annuel pouvant atteindre les $1."
   },
   "moneyHomeApyTooltip": {
-    "message": "Le taux affiché est un taux de rendement annuel estimé en fonction des conditions actuelles du marché. Ce taux est variable et n’est pas garanti. Les fonds sont placés dans un coffre-fort DeFi, géré par Veda sous la supervision de Steakhouse Financial, qui génère des rendements sur des marchés de prêt bien établis."
+    "message": "Le taux affiché correspond au taux de rendement annuel (RMP) actuel. L’RMP est variable et n’est pas garanti."
   },
   "moneyHomeApyTooltipEarning": {
-    "message": "Votre Money Account génère automatiquement un rendement allant jusqu’à $1.",
+    "message": "Votre Money Account génère automatiquement un RMP allant jusqu’à $1.",
     "description": "$1 is the current Money Account vault APY, e.g. \"6%\"."
   },
   "moneyHomeApyTooltipPoweredBy": {
@@ -5667,7 +5709,7 @@
     "message": "Ajoutez des mUSD et vous pourrez utiliser à tout moment votre solde adossé au dollar pour effectuer des achats, des transferts ou des opérations de bourse."
   },
   "moneyHowItWorksDescription1": {
-    "message": "Ajoutez des mUSD sur votre compte Money et gagnez automatiquement jusqu’à $1 de RMP (variable). Les fonds sont placés dans un coffre-fort DeFi, géré par Veda et dont le suivi des risques est assuré par Steakhouse Financial. Le taux est généré par des plateformes DeFi tierces qui déploient les fonds dans des protocoles blockchain. Pas de staking, pas de réclamation, pas de blocage de fonds.",
+    "message": "Convertissez n’importe quelle cryptomonnaie sur votre Money Account et gagnez automatiquement jusqu’à $1 de RMP (variable). Les fonds sont placés dans un coffre-fort DeFi, géré par Veda et dont le suivi des risques est assuré par Steakhouse Financial. Le taux est généré par des plateformes DeFi tierces qui déploient les fonds dans des protocoles blockchain. Pas de staking, pas de réclamation, pas de blocage de fonds.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksDescriptionWithApy": {
@@ -5678,36 +5720,55 @@
     "message": "Le Money Account n’est ni un compte bancaire, ni un compte d’épargne, ni un produit de dépôt assuré. Le taux de rendement annuel est variable et n’est pas garanti. Le Money Account comporte des risques liés aux contrats intelligents, au protocole, à la liquidité et à d’autres facteurs, et vous pouvez perdre une partie ou la totalité de vos fonds. Sous réserve de restrictions régionales. Des conditions s’appliquent."
   },
   "moneyHowItWorksDisclosuresTitle": {
-    "message": "Risques et mentions légales"
+    "message": "Informations sur les risques"
   },
   "moneyHowItWorksFaqApyAnswer": {
     "message": "Jusqu’à $1 % de RMP. Ce taux est variable et évolue en fonction des conditions du marché. Le taux actuel est affiché sur votre compte Money.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqApyQuestion": {
-    "message": "Le taux de rendement annuel varie-t-il ?"
+    "message": "Combien puis-je gagner avec un MetaMask Money Account ?"
+  },
+  "moneyHowItWorksFaqCountriesAnswer": {
+    "message": "Dans la plupart des pays ! Les comptes MetaMask Money ne sont pas disponibles au Royaume-Uni ni dans les pays figurant sur la liste des sanctions américaines."
+  },
+  "moneyHowItWorksFaqCountriesQuestion": {
+    "message": "Dans quels pays le MetaMask Money Account est-il disponible ?"
   },
   "moneyHowItWorksFaqFeesAnswer": {
-    "message": "L’ouverture d’un Money Account est gratuite, tout comme le dépôt de stablecoins. Des frais vous seront facturés lors du dépôt de jetons non-stablecoins. Des frais s’appliquent également aux transactions effectuées avec la MetaMask Card, aux retraits aux distributeurs automatiques et aux opérations de conversion en monnaie locale. "
+    "message": "L'ouverture d'un Money Account est gratuite, tout comme le dépôt de stablecoins. Des frais vous seront facturés lors du dépôt de jetons autres que des stablecoins."
   },
   "moneyHowItWorksFaqFeesQuestion": {
-    "message": "Y a-t-il des frais à payer ?"
+    "message": "Quels sont les frais liés au MetaMask Money Account ?"
+  },
+  "moneyHowItWorksFaqIdentityAnswer": {
+    "message": "Non, l’ouverture d’un Money Account ne nécessite pas de vérification d’identité. Cependant, certaines fonctionnalités, notamment Card et Ramps, nécessitent une vérification d’identité. Les vérifications sont effectuées par des prestataires tiers qui exploitent des services réglementés, et non par MetaMask. Si nécessaire, vous serez guidé tout au long du processus au sein de l’application lors de votre inscription."
+  },
+  "moneyHowItWorksFaqIdentityQuestion": {
+    "message": "Dois-je effectuer une vérification d’identité pour utiliser le MetaMask Money Account ?"
   },
   "moneyHowItWorksFaqLockedAnswer": {
-    "message": "Oui. Vous pouvez échanger, envoyer, dépenser ou retirer l’intégralité de votre solde à tout moment, sans délai de préavis, sans pénalité et sans frais de retrait de la part de MetaMask. En cas de manque de liquidité, des retards temporaires peuvent survenir."
+    "message": "Oui. Vous pouvez transférer ou retirer l’intégralité de votre solde à tout moment, sans délai de préavis, sans pénalité et sans frais de retrait de la part de MetaMask. En cas de manque de liquidité, des retards peuvent survenir."
   },
   "moneyHowItWorksFaqLockedQuestion": {
-    "message": "Mon argent est-il bloqué ? Puis-je effectuer un retrait à tout moment ?"
+    "message": "Puis-je effectuer un retrait depuis mon MetaMask Money Account à tout moment ?"
   },
   "moneyHowItWorksFaqMoneyAccountAnswer": {
-    "message": "Un compte offrant un RMP variable pouvant atteindre les $1. Vous déposez des fonds, qui sont conservés sur le compte sous forme de mUSD, et bénéficiez d’un RMP pouvant atteindre les $1. Le mUSD est le stablecoin adossé au dollar de MetaMask. Vous pouvez utiliser ou retirer vos fonds à tout moment sans pénalité. Vous pouvez dépenser vos fonds en utilisant la carte MetaMask Card chez les plus de 150 millions de commerçants qui acceptent les cartes Mastercard dans le monde entier.",
+    "message": "Un compte offrant un RMP variable pouvant atteindre les $1. Vous déposez des fonds, qui sont conservés sur le compte sous forme de mUSD, et bénéficiez d’un RMP pouvant atteindre les $1. Le mUSD est le stablecoin adossé au dollar de MetaMask. Vous pouvez utiliser ou retirer vos fonds à tout moment sans pénalité.",
     "description": "$1 is the current mUSD APY, including the percent sign."
   },
   "moneyHowItWorksFaqMoneyAccountQuestion": {
-    "message": "Qu’est-ce qu’un compte Money ?"
+    "message": "Qu’est-ce qu’un MetaMask Money Account ?"
   },
   "moneyHowItWorksFaqTitle": {
     "message": "FAQ"
+  },
+  "moneyHowItWorksFaqTokensAnswer": {
+    "message": "Vous pouvez déposer les stablecoins et aTokens suivants sur votre Money Account sans frais de conversion :\nEthereum : USDC, USDT, DAI, aUSDC, aUSDT, aDAI\nArbitrum : USDC\nBase : USDC\nBNB Chain : USDC, USDT\n\nTous les autres jetons EVM peuvent également être déposés sur le Money Account, mais des frais standard peuvent s’appliquer. Vous pouvez également approvisionner votre Money Account à l’aide d’une carte de débit, d’une carte de crédit ou d’un compte bancaire, PayPal, Apple Pay ou Google Pay.\n\nRemarque : un dépôt initial maximal de $1 par jeton est appliqué afin de garantir la liquidité.",
+    "description": "$1 is the maximum initial deposit per token in USD, e.g. \"$100,000\"."
+  },
+  "moneyHowItWorksFaqTokensQuestion": {
+    "message": "Quels jetons puis-je déposer sur mon Money Account ?"
   },
   "moneyHowItWorksFaqYieldAnswer": {
     "message": "Lorsque vous déposez des fonds, ceux-ci sont placés dans des protocoles DeFi reconnus, tels qu’Aave et Morpho, où ils génèrent des rendements issus d’une activité économique réelle. Ces rendements vous sont ensuite versés sous forme de taux de rendement annuel.\n\nUn prestataire de services tiers, Steakhouse Financial, supervise la manière dont les fonds sont alloués au sein des protocoles. Veda, un fournisseur d’infrastructure tiers, déploie et gère les contrats intelligents du coffre-fort qui détiennent vos fonds.\n\nLes gains ne constituent pas des intérêts versés par MetaMask ou par l’émetteur de mUSD. Il s’agit des rendements générés par la chaîne de blocs grâce à des placements dans des protocoles DeFi tiers."
@@ -5741,6 +5802,10 @@
   },
   "moneyMusd": {
     "message": "mUSD"
+  },
+  "moneyOnboardingFundTitle": {
+    "message": "Approvisionnez votre Money Account",
+    "description": "English-only analytics step title for the Money onboarding card, matching mobile's step_title. Not shown in the UI."
   },
   "moneySend": {
     "message": "Envoyer"
@@ -6921,9 +6986,41 @@
     "message": "Nous n’avons pas pu vérifier votre $1. Réessayez ou saisissez votre mot de passe.",
     "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
+  "passkeyMigrationDescription1": {
+    "message": "La manière dont votre clé d'accès a été enregistrée ne permet pas de protéger entièrement la clé de votre portefeuille. Remplacez-la pour continuer à utiliser la fonctionnalité d’authentification biométrique.",
+    "description": "First description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationDescription2": {
+    "message": "Lorsque votre navigateur vous demande où l'enregistrer, choisissez « Gestionnaire de mots de passe Google », et non « Cet appareil ». $1.",
+    "description": "Second description shown to users whose passkey uses legacy userHandle derivation. $1 is the supported-providers link."
+  },
+  "passkeyMigrationDescription3": {
+    "message": "Votre clé d'accès actuelle reste valable jusqu'à ce que vous la remplaciez.",
+    "description": "Third description shown to users whose passkey uses legacy userHandle derivation."
+  },
+  "passkeyMigrationReplacementDescription": {
+    "message": "Elle a été enregistrée sur cet appareil, ce qui ne permet pas de protéger la clé de votre portefeuille. Réessayez et choisissez le Gestionnaire de mots de passe Google lorsque votre navigateur vous demande où l'enregistrer. $1",
+    "description": "Description shown after passkey replacement fails because the new passkey does not support PRF. $1 is the supported-providers link."
+  },
+  "passkeyMigrationReplacementKeepCurrent": {
+    "message": "Conserver ma clé d'accès actuelle pour l'instant",
+    "description": "Action label for keeping the current passkey after replacement fails because the new passkey does not support PRF."
+  },
+  "passkeyMigrationReplacementTitle": {
+    "message": "Cette clé d'accès ne fonctionnera pas",
+    "description": "Title shown after passkey replacement fails because the new passkey does not support PRF."
+  },
   "passkeyMigrationReplacementTryAgain": {
     "message": "Réessayer",
     "description": "Action label for retrying passkey replacement after the new passkey does not support PRF."
+  },
+  "passkeyMigrationSupportedProviders": {
+    "message": "Consulter la liste des fournisseurs pris en charge",
+    "description": "Link text to the supported passkey providers page."
+  },
+  "passkeyMigrationTitle": {
+    "message": "Votre clé d'accès doit être mise à jour",
+    "description": "Title shown to users whose passkey uses legacy userHandle derivation."
   },
   "passkeySetupStepRegister": {
     "message": "Enregistrer $1",
@@ -7395,6 +7492,13 @@
   },
   "perpsAddFunds": {
     "message": "Ajouter des fonds"
+  },
+  "perpsAddFundsHint": {
+    "message": "Ajoutez au moins $1 à votre compte Perps pour passer cet ordre.",
+    "description": "$1 is the minimum order value with currency symbol (e.g., '$10'). Hint shown under the order summary when the Perps account is unfunded."
+  },
+  "perpsAddFundsToTrade": {
+    "message": "Ajouter des fonds pour trader"
   },
   "perpsAddMargin": {
     "message": "Ajouter une marge"
@@ -8858,7 +8962,7 @@
     "message": "Instantané"
   },
   "rampsPaymentDelayLessThan": {
-    "message": "Moins de"
+    "message": "<"
   },
   "rampsPaymentDelayMinute": {
     "message": "min"
@@ -8871,7 +8975,7 @@
     "description": "Label for the provider shown as the payment method on the ramps complete-buy interstitial"
   },
   "rampsPaymentMethodLimits": {
-    "message": "Jusqu’à $1",
+    "message": "Limite de $1",
     "description": "$1 is the maximum fiat buy amount"
   },
   "rampsPaymentMethodMinLimit": {
@@ -8917,7 +9021,7 @@
     "message": "Comprend des frais MM de $1 %."
   },
   "readdToken": {
-    "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur « Ajouter un jeton » dans le menu des options de votre compte."
+    "message": "Vous pourrez ajouter à nouveau ce jeton en vous rendant dans « Gérer les jetons » dans le menu des jetons"
   },
   "receive": {
     "message": "Recevoir"
@@ -9054,6 +9158,10 @@
   },
   "replace": {
     "message": "remplacer"
+  },
+  "replacePasskey": {
+    "message": "Remplacer la clé d'accès",
+    "description": "Primary action to replace a legacy passkey."
   },
   "reportIssue": {
     "message": "Signaler un problème"
@@ -9958,6 +10066,9 @@
   "sendingNativeAsset": {
     "message": "Envoi de $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+  },
+  "sensitiveClipboardWarning": {
+    "message": "Ces informations sensibles restent dans votre presse-papiers."
   },
   "sent": {
     "message": "Envoyé"
@@ -11330,7 +11441,7 @@
     "message": "Échec du swap"
   },
   "stxFailureDescription": {
-    "message": "Les fluctuations soudaines du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
+    "message": "Les changements soudains du marché peuvent provoquer des échecs. Si le problème persiste, veuillez contacter $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescriptionV2": {
@@ -11752,7 +11863,7 @@
     "message": " J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
   },
   "termsOfUseFooterText": {
-    "message": "Veuillez faire défiler pour lire toutes les sections"
+    "message": "Faites défiler pour lire toutes les sections"
   },
   "termsOfUseTitle": {
     "message": "Nos conditions d’utilisation ont été mises à jour"
@@ -11877,7 +11988,7 @@
     "message": "Total reçu"
   },
   "totalVolume": {
-    "message": "Volume total"
+    "message": "Volume total (24 h)"
   },
   "transaction": {
     "message": "Transaction"
@@ -12319,6 +12430,9 @@
   },
   "volume": {
     "message": "Volume"
+  },
+  "volumeToMarketCap": {
+    "message": "Volume/Capitalisation boursière"
   },
   "wallet": {
     "message": "Portefeuille"

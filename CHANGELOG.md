@@ -7,6 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.51.0]
+
+### Added
+
+- Added deep linking to the Money home page (#46589)
+- Added an “Add funds to trade” option on the Perps order screen for accounts with no balance (#45986)
+- Added XDC Network to the Additional networks list when enabled (#46543)
+
+### Changed
+
+- Increased spacing between the balance and earnings sections on the Money home page (#46619)
+- Redesigned the Money balance widget on the home screen (#46598)
+- Improved Perps loading by preloading market data when the wallet unlocks (#46123)
+- Updated the Hyperliquid deposit prompt to open in the popup for users who prefer it when no other approvals are pending (#46222)
+- Redesigned the vault recovery screen (#42740)
+- Updated delegation deployment data for Robinhood Chain (#46194)
+- Moved the token name, avatar, and contract address into the Token Details page header (#46433)
+- Removed unnecessary forced asset refreshes for Arc assets (#46416)
+- Updated Money account event tracking to align with mobile (#46752)
+- Updated Money account tooltips and “How it works” content (#46617)
+- Improved the private key screen by grouping EVM networks and masking the key until tapped (#46331)
+- Updated the buy provider selection screen to read “Choose providers” and display the “Most reliable” tag in blue (#46507)
+
+### Fixed
+
+- Corrected “No fee” labels for tokens without a no-fee route (#46552)
+- Fixed activity labels and transaction details for Money account deposits and withdrawals from the primary account (#46514)
+- Fixed swap and bridge balance checks to account for all fee tokens when a quote charges fees in multiple assets (#46406)
+- Improved the reliability of the buy flow when a provider checkout URL is malformed (#46504)
+- Removed the nonfunctional “Sort by” button from the NFTs tab and hid it on empty DeFi tabs (#46559)
+- Fixed Stellar asset details for inactive trustline assets opened from the Bridge flow (#46764)
+- Fixed Money account transaction fee tooltips showing “Paid by MetaMask” instead of the network fee amount (#46746)
+- Explained why Buy flow quotes were unavailable when hovering over the warning icon (#46505)
+- Fixed the scam questionnaire not appearing for configured malicious websites (#46568)
+- Fixed Sent rows in the Money account activity list showing a swap icon instead of an up-right arrow (#46457)
+- Fixed push notifications stopping for all sources when wallet activity was disabled and not registering again when notifications were re-enabled with wallet activity disabled for every account (#46616)
+- Fixed checkmark alignment in hardware wallet account selection rows (#46588)
+- Fixed misaligned icons on the Backup & Sync settings page (#46599)
+- Fixed the Activity tab’s empty-state Swap button not enabling on supported swap and bridge networks (#46587)
+- Fixed the Perps tab’s Top movers section so markets wrapped onto multiple rows instead of overflowing behind a horizontal scroll (#46555)
+- Fixed missing fiat prices for Tempo tokens (#46129)
+- Fixed the failed-transaction toast not appearing when a transaction failed before submission (#46556)
+- Fixed a layout issue in Snap confirmation popups (#46533)
+- Fixed the unread notifications count appearing beside, rather than on, the menu icon in the wallet header (#46442)
+- Fixed the account carousel overlapping the dapp control bar network menu (#46551)
+- Fixed deposits and withdrawals from Money accounts when a non-EVM network was selected (#46553)
+- Fixed duplicate success toasts after importing a custom token (#46516)
+- Fixed duplicate notifications during Money account deposits (#46486)
+- Fixed "View on explorer" opening the wrong network's block explorer for an asset (#46508)
+- Fixed misleading errors when adding a custom network whose RPC provider was rate limiting requests or used RouteMesh (`lb.routeme.sh`) (#46095)
+- Fixed the `Best rate` label appearing on a provider whose displayed quote was not the best rate (#46414)
+- Fixed Activity showing inflated token and fiat amounts when transfer decimals were missing (#46420)
+
+### Security
+
+- Added an unlock prompt for users with older passkeys to replace them with a supported provider (#46560)
+- Removed the clipboardWrite permission and improved handling of copied sensitive information (#46603)
+
 ## [13.50.0]
 
 ### Added
@@ -3330,7 +3388,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...HEAD
+[13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.51.0
 [13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0
 [13.49.0]: https://github.com/MetaMask/metamask-extension/compare/v13.48.0...v13.49.0
 [13.48.0]: https://github.com/MetaMask/metamask-extension/compare/v13.47.1...v13.48.0

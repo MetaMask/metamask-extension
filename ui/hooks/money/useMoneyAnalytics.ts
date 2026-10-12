@@ -26,6 +26,7 @@ import {
   MoneyButtonIntent,
   MoneyButtonType,
   MoneyComponentName,
+  MoneyOnboardingStepAction,
   MoneyScreenName,
   MoneySurfaceType,
   MoneyTooltipName,
@@ -82,6 +83,14 @@ export type MoneyTooltipClickedProperties = {
   tooltipName: MoneyTooltipName;
   tooltipType: MoneyTooltipType;
   componentName?: MoneyComponentName;
+};
+
+export type MoneyOnboardingEventProperties = {
+  step: number;
+  stepTitleKey: string;
+  totalSteps: number;
+  stepAction: MoneyOnboardingStepAction;
+  redirectTarget?: MoneyRedirectTarget;
 };
 
 type WireValue = string | number | boolean | null | undefined;
@@ -254,6 +263,17 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     [trackSurfaceViewed],
   );
 
+  const trackOnboardingEvent = useCallback(
+    ({ stepTitleKey, ...properties }: MoneyOnboardingEventProperties) => {
+      track(MetaMetricsEventName.MoneyOnboardingEvent, {
+        ...properties,
+        stepTitle: resolveLabel(stepTitleKey).labelEn,
+        redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
+      });
+    },
+    [resolveLabel, track],
+  );
+
   return {
     trackButtonClicked,
     trackTokenButtonClicked,
@@ -263,6 +283,7 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
     trackScreenViewed,
     trackBottomSheetViewed,
     trackComponentViewed,
+    trackOnboardingEvent,
   };
 };
 
