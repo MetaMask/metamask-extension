@@ -1,4 +1,6 @@
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
+  selectCanonicalProfileId,
   selectIsSignedIn,
   selectNeedsProfilePairing,
   selectNeedsSocialPairing,
@@ -72,5 +74,41 @@ describe('Authentication Selectors', () => {
 
   it('selectNeedsSocialPairing defaults to true when the field is absent', () => {
     expect(selectNeedsSocialPairing(mockState)).toBe(true);
+  });
+
+  it('selectCanonicalProfileId returns the canonical id for the primary HD keyring', () => {
+    expect(
+      selectCanonicalProfileId({
+        metamask: {
+          ...mockState.metamask,
+          keyrings: [
+            {
+              type: KeyringTypes.hd,
+              metadata: { id: 'entropySourceId1' },
+            },
+          ],
+        },
+      }),
+    ).toBe('profileId');
+  });
+
+  it('selectCanonicalProfileId returns the primary SRP session when a stale first entry remains', () => {
+    expect(
+      selectCanonicalProfileId({
+        metamask: {
+          ...mockState.metamask,
+          keyrings: [
+            {
+              type: KeyringTypes.hd,
+              metadata: { id: 'entropySourceId2' },
+            },
+          ],
+        },
+      }),
+    ).toBe('profileId2');
+  });
+
+  it('selectCanonicalProfileId returns undefined when there is no session for the primary SRP', () => {
+    expect(selectCanonicalProfileId(mockState)).toBeUndefined();
   });
 });
