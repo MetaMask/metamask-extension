@@ -191,7 +191,7 @@ describe('useMaxValueRefresher', () => {
     expect(updateEditableParamsMock).not.toHaveBeenCalled();
   });
 
-  it('does not update transaction value when simulation fails with an execution revert', () => {
+  it('does not update transaction value when gas estimation has failed', () => {
     // Simulates a tx that reverted on-chain during gas estimation (e.g. a
     // chain-enforced minimum balance being breached by a "send max" attempt).
     // The resulting gas is an unreliable fallback, not a real cost, so the
