@@ -3,7 +3,14 @@ import type {
   AccountsControllerListAccountsAction,
 } from '@metamask/accounts-controller';
 import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
-import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
+import type {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
+import type {
+  PerpsControllerGetStateAction,
+  PerpsControllerRefreshEligibilityAction,
+} from '@metamask/perps-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
@@ -13,6 +20,7 @@ import type {
 import type { TransactionPayControllerStateChangeEvent } from '@metamask/transaction-pay-controller';
 import type { Hex, Json, JsonRpcRequest } from '@metamask/utils';
 import type { PayRpcType } from '../../../../shared/lib/transaction/pay-rpc';
+import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import type { RootMessenger } from '../messenger';
 import type { AddTransactionMessenger } from '../transaction/util';
 
@@ -20,7 +28,11 @@ export type MmPayRpcMessenger = RootMessenger<
   | MessengerActions<AddTransactionMessenger>
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerListAccountsAction
+  | LegacyBackgroundApiServiceAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetStateAction
+  | PerpsControllerGetStateAction
+  | PerpsControllerRefreshEligibilityAction
   | RemoteFeatureFlagControllerGetStateAction,
   | MessengerEvents<AddTransactionMessenger>
   | TransactionControllerUnapprovedTransactionAddedEvent

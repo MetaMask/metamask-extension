@@ -19,6 +19,13 @@ export const mmPayRpcErrors = {
       message: `${MMPAY_RPC_METHOD}: "from" is not an account connected to this site.`,
     }),
 
+  // Provisional code; to be confirmed with the Perps team before release.
+  perpsNotEligible: () =>
+    rpcErrors.methodNotSupported({
+      message: `${MMPAY_RPC_METHOD}: perps is not available in your region.`,
+      data: { reason: 'perpsNotEligible' },
+    }),
+
   networkUnavailable: (chainId: string) =>
     rpcErrors.internal({
       message: `${MMPAY_RPC_METHOD}: network ${chainId} is not available.`,
