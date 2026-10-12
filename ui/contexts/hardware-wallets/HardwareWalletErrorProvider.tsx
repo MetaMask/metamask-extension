@@ -36,7 +36,6 @@ import {
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
 import { isHardwareWalletErrorModalRoute } from './utils';
-import { isHardwareWalletRoute } from './utils';
 
 /**
  * Route prefixes where hardware wallet error modals should auto-show.
