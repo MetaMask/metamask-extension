@@ -542,6 +542,18 @@ class Driver {
   }
 
   /**
+   * @overload
+   * @param {string | object} rawLocator - Element locator
+   * @param {{ timeout?: number, state?: 'visible' | 'enabled' | 'disabled', waitAtLeastGuard?: number }} [options]
+   * @returns {Promise<WebElement>} promise resolving to the wrapped element
+   */
+  /**
+   * @overload
+   * @param {string | object} rawLocator - Element locator
+   * @param {{ timeout?: number, state: 'detached', waitAtLeastGuard?: number }} [options]
+   * @returns {Promise<undefined>} promise resolving once the element is removed from the DOM
+   */
+  /**
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
    *
    * @param {string | object} rawLocator - Element locator
