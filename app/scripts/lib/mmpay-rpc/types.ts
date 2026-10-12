@@ -1,5 +1,6 @@
 import type {
   AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
 } from '@metamask/accounts-controller';
 import type { MessengerActions, MessengerEvents } from '@metamask/messenger';
@@ -27,6 +28,7 @@ import type { AddTransactionMessenger } from '../transaction/util';
 export type MmPayRpcMessenger = RootMessenger<
   | MessengerActions<AddTransactionMessenger>
   | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | LegacyBackgroundApiServiceAddNetworkAction
   | NetworkControllerFindNetworkClientIdByChainIdAction

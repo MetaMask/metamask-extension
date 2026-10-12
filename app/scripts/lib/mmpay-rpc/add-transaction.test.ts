@@ -128,6 +128,7 @@ async function expectRpcError(promise: Promise<unknown>, code: number) {
 }
 
 describe('addMmPayRpcTransaction', () => {
+  const registeredTypes = { ...MMPAY_RPC_TYPE_REGISTRIES };
   let typeRegistry: ReturnType<typeof createTypeRegistry>;
 
   beforeEach(() => {
@@ -137,7 +138,7 @@ describe('addMmPayRpcTransaction', () => {
   });
 
   afterEach(() => {
-    delete MMPAY_RPC_TYPE_REGISTRIES.perpsDeposit;
+    Object.assign(MMPAY_RPC_TYPE_REGISTRIES, registeredTypes);
     jest.clearAllMocks();
   });
 
@@ -160,6 +161,23 @@ describe('addMmPayRpcTransaction', () => {
         errorCodes.rpc.methodNotFound,
       );
       expect(typeRegistry.validatePayParams).not.toHaveBeenCalled();
+    });
+
+    it('rejects perpsWithdraw when the in-wallet withdraw flag is off', async () => {
+      const messenger = createMessenger({
+        remoteFeatureFlags: {
+          confirmations_pay_rpc: {
+            allowedTypes: ['perpsWithdraw'],
+            dapps: { [ORIGIN]: { allowedTypes: ['perpsWithdraw'] } },
+          },
+          confirmations_pay_post_quote: { default: { enabled: false } },
+        },
+      });
+
+      await expectRpcError(
+        run({ params: [{ type: 'perpsWithdraw', from: FROM }], messenger }),
+        errorCodes.rpc.methodNotFound,
+      );
     });
 
     it('rejects an allowed type with no type registry', async () => {

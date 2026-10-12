@@ -19,6 +19,11 @@ export const mmPayRpcErrors = {
       message: `${MMPAY_RPC_METHOD}: "from" is not an account connected to this site.`,
     }),
 
+  notSelectedAccount: (type: string) =>
+    providerErrors.unauthorized({
+      message: `${MMPAY_RPC_METHOD}: ${type} is only available for the account selected in MetaMask.`,
+    }),
+
   // Provisional code; to be confirmed with the Perps team before release.
   perpsNotEligible: () =>
     rpcErrors.methodNotSupported({
