@@ -11,10 +11,6 @@ import {
   updateMoneyAccountDepositAmount,
   updateMoneyAccountWithdrawAmount,
   getLastMoneyAccountWithdrawAmount,
-  getLastMoneyAccountDepositAmount,
-  setLastMoneyAccountDepositAmount,
-  clearLastMoneyAccountDepositAmount,
-  subscribeLastMoneyAccountDepositAmount,
 } from './transaction-pay-controller';
 
 jest.mock('../background-connection');
@@ -182,39 +178,6 @@ describe('transaction-pay-controller actions', () => {
         'updateMoneyAccountDepositAmount',
         ['tx-deposit', '10'],
       );
-      expect(getLastMoneyAccountDepositAmount('tx-deposit')).toBe('10');
-      clearLastMoneyAccountDepositAmount('tx-deposit');
-    });
-  });
-
-  describe('last money account deposit amount', () => {
-    const transactionId = 'tx-last-deposit';
-
-    afterEach(() => {
-      clearLastMoneyAccountDepositAmount(transactionId);
-    });
-
-    it('notifies subscribers and clears the recorded amount', () => {
-      const listener = jest.fn();
-      const unsubscribe = subscribeLastMoneyAccountDepositAmount(listener);
-
-      setLastMoneyAccountDepositAmount(transactionId, '1.5');
-
-      expect(getLastMoneyAccountDepositAmount(transactionId)).toBe('1.5');
-      expect(listener).toHaveBeenCalledTimes(1);
-
-      clearLastMoneyAccountDepositAmount(transactionId);
-
-      expect(getLastMoneyAccountDepositAmount(transactionId)).toBeUndefined();
-      expect(listener).toHaveBeenCalledTimes(2);
-
-      clearLastMoneyAccountDepositAmount(transactionId);
-      expect(listener).toHaveBeenCalledTimes(2);
-
-      unsubscribe();
-      setLastMoneyAccountDepositAmount(transactionId, '2');
-      expect(listener).toHaveBeenCalledTimes(2);
-      clearLastMoneyAccountDepositAmount(transactionId);
     });
   });
 

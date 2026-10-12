@@ -17,7 +17,6 @@ import {
   isPerpsWithdrawTransaction,
   isPostQuoteWithdrawTransaction,
 } from '../../../../../shared/lib/transactions.utils';
-import { useMoneyAccountDepositQuote } from '../transactions/useMoneyAccountDepositQuote';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useTransactionPayQuotes() {
@@ -75,18 +74,17 @@ export function useTransactionPayIsPostQuote() {
 }
 
 export function useIsTransactionPayQuotePending() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { currentConfirmation, isAmountPending } =
+    useConfirmContext<TransactionMeta>();
   const isLoading = useIsTransactionPayLoading();
   const isPostQuote = useTransactionPayIsPostQuote();
   const hasPositiveRequiredAmount =
     useTransactionPayHasPositiveRequiredAmount();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const { isQuoteStale } = useMoneyAccountDepositQuote();
 
-  // The previous Max quote stays executable until the debounced refresh
-  // lands. Keep the quote rows loading so they do not show that amount and
-  // then correct it.
-  if (isQuoteStale) {
+  // The previous quote stays executable until the typed amount is committed.
+  // Keep quote rows loading so they do not show that amount and then correct it.
+  if (isAmountPending) {
     return true;
   }
 

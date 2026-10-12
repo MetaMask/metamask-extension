@@ -2,7 +2,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { BigNumber } from 'bignumber.js';
 import { cloneDeep } from 'lodash';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -12,7 +11,6 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { updateMoneyAccountDepositAmount } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
@@ -25,7 +23,6 @@ import { useSendBundleHwNavigation } from '../../../../hooks/hardware-wallets/us
 import { useDispatch } from '../../../../store/hooks';
 import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalletAccount';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useMoneyAccountDepositQuote } from './useMoneyAccountDepositQuote';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
@@ -37,13 +34,11 @@ export function useTransactionConfirm() {
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, isAmountPending } =
     useConfirmContext<TransactionMeta>();
   const isMoneyAccountWithdraw = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
   ]);
-  const { isMoneyAccountDeposit, lastDepositAmount, quoteMatches } =
-    useMoneyAccountDepositQuote();
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
   const payingAccount = useTransactionPayingAccount();
   const isPayingWithHardwareWallet = useIsHardwareWalletAccount(payingAccount);
@@ -91,22 +86,10 @@ export function useTransactionConfirm() {
   } = useShieldConfirm();
 
   const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
-    if (isMoneyAccountDeposit && transactionMeta && !quoteMatches) {
-      if (lastDepositAmount && new BigNumber(lastDepositAmount).gt(0)) {
-        updateMoneyAccountDepositAmount(
-          transactionMeta.id,
-          lastDepositAmount,
-        ).catch((error) => {
-          console.error(
-            'Money Account deposit: failed to commit typed amount',
-            error,
-          );
-        });
-      }
-      console.error(
-        'Money Account deposit: executable quote does not match the typed amount, refusing to approve',
-        { transactionId: transactionMeta.id, amountHuman: lastDepositAmount },
-      );
+    // The field can already show the new amount while publish would still
+    // execute the previous quote. The footer blocks the click; this covers
+    // any other confirm path.
+    if (isAmountPending) {
       return false;
     }
 
@@ -220,12 +203,10 @@ export function useTransactionConfirm() {
     dispatch,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    isAmountPending,
     isGaslessSupported,
     isGaslessSupportedSTX,
-    isMoneyAccountDeposit,
     isMoneyAccountWithdraw,
-    lastDepositAmount,
-    quoteMatches,
     isPayingWithHardwareWallet,
     isSponsorshipOptedOut,
     onDappSwapCompleted,

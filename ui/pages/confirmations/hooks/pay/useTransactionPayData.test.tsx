@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
@@ -12,10 +12,6 @@ import {
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
-import {
-  clearLastMoneyAccountDepositAmount,
-  setLastMoneyAccountDepositAmount,
-} from '../../../../store/controller-actions/transaction-pay-controller';
 import {
   useIsTransactionPayQuotePending,
   useIsTransactionPayLoading,
@@ -77,6 +73,7 @@ function createWrapper(
     (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
   >,
   transactionType?: TransactionType,
+  isAmountPending = false,
 ) {
   const state = stateOverrides
     ? {
@@ -97,6 +94,8 @@ function createWrapper(
     currentConfirmation: { id: TRANSACTION_ID_MOCK, type: transactionType },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
+    isAmountPending,
+    setIsAmountPending: jest.fn(),
   };
 
   return ({ children }: { children: React.ReactNode }) => (
@@ -352,56 +351,24 @@ describe('useTransactionPayData', () => {
       expect(result.current).toBe(true);
     });
 
-    it('returns true for a money-account deposit while the quote is still the previous amount', () => {
-      act(() => {
-        setLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK, '1');
-      });
-
+    it('returns true while a typed amount has not been committed', () => {
       const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
-        wrapper: createWrapper(
-          {
-            isLoading: false,
-            quotes: [
-              {
-                strategy: TransactionPayStrategy.Relay,
-                request: { targetAmountMinimum: '2208000' },
-              } as TransactionPayQuote<Json>,
-            ],
-          },
-          TransactionType.moneyAccountDeposit,
-        ),
+        wrapper: createWrapper({ isLoading: false }, undefined, true),
       });
 
       expect(result.current).toBe(true);
-      act(() => {
-        clearLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK);
-      });
     });
 
-    it('returns false for a money-account deposit once the quote matches the typed amount', () => {
-      act(() => {
-        setLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK, '1');
-      });
-
+    it('returns false when the typed amount is committed and quotes are idle', () => {
       const { result } = renderHook(() => useIsTransactionPayQuotePending(), {
         wrapper: createWrapper(
-          {
-            isLoading: false,
-            quotes: [
-              {
-                strategy: TransactionPayStrategy.Relay,
-                request: { targetAmountMinimum: '1000000' },
-              } as TransactionPayQuote<Json>,
-            ],
-          },
-          TransactionType.moneyAccountDeposit,
+          { isLoading: false },
+          TransactionType.perpsDeposit,
+          false,
         ),
       });
 
       expect(result.current).toBe(false);
-      act(() => {
-        clearLastMoneyAccountDepositAmount(TRANSACTION_ID_MOCK);
-      });
     });
 
     it('does not wait on post-quote setup for money-account withdraw', () => {

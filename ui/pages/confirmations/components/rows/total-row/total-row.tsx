@@ -16,7 +16,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useMoneyAccountDepositQuote } from '../../../hooks/transactions/useMoneyAccountDepositQuote';
+import { useConfirmContext } from '../../../context/confirm';
 import {
   getUserPaidNetworkFeeUsd,
   type SponsoredNetworkFeeFlags,
@@ -38,10 +38,10 @@ export function TotalRow({
   const t = useI18nContext();
   const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isPayLoading = useIsTransactionPayLoading();
-  const { isQuoteStale } = useMoneyAccountDepositQuote();
-  // Deposit totals come from the executable quote. While that quote is still
-  // the previous Max amount, show the skeleton instead of those numbers.
-  const isLoading = isPayLoading || isQuoteStale;
+  const { isAmountPending } = useConfirmContext();
+  // Totals come from the executable quote. While a typed amount is still
+  // pending, that quote is the previous amount, so show the skeleton.
+  const isLoading = isPayLoading || isAmountPending;
   const totals = useTransactionPayTotals();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();

@@ -13,13 +13,11 @@ import {
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useLastMoneyAccountDepositAmount } from '../../../hooks/transactions/useLastMoneyAccountDepositAmount';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
 jest.mock('../../../hooks/transactions/useLastMoneyAccountWithdrawAmount');
-jest.mock('../../../hooks/transactions/useLastMoneyAccountDepositAmount');
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -87,6 +85,7 @@ function render({
   pathname,
   isMoneyAccountPayEnabled = false,
   quotes,
+  isAmountPending = false,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -105,6 +104,7 @@ function render({
   }[];
   pathname?: string;
   isMoneyAccountPayEnabled?: boolean;
+  isAmountPending?: boolean;
   quotes?: {
     strategy: string;
     request?: {
@@ -150,6 +150,9 @@ function render({
     />,
     configureStore(state),
     pathname,
+    undefined,
+    undefined,
+    isAmountPending,
   );
 }
 
@@ -160,7 +163,6 @@ describe('<SingleActionFooter />', () => {
     jest.mocked(useTransactionPayHasExecutableQuote).mockReturnValue(true);
     jest.mocked(useTransactionPayTotals).mockReturnValue(undefined);
     jest.mocked(useLastMoneyAccountWithdrawAmount).mockReturnValue(undefined);
-    jest.mocked(useLastMoneyAccountDepositAmount).mockReturnValue(undefined);
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '10.00',
       skipIfBalance: false,
@@ -433,21 +435,10 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('keeps Add funds pending while the executable quote is still the Max amount', () => {
-    jest.mocked(useLastMoneyAccountDepositAmount).mockReturnValue('1');
-
+  it('keeps confirm pending while the typed amount has not been committed', () => {
     const { getByTestId } = render({
-      confirmation: genMoneyAccountDeposit(),
-      quotes: [
-        {
-          strategy: 'relay',
-          request: {
-            isMaxAmount: true,
-            sourceTokenAmount: '2208000',
-            targetAmountMinimum: '2208000',
-          },
-        },
-      ],
+      confirmation: genPerpsDeposit(),
+      isAmountPending: true,
     });
 
     const button = getByTestId('confirm-footer-button');
@@ -455,17 +446,10 @@ describe('<SingleActionFooter />', () => {
     expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
-  it('enables Add funds when the executable quote matches the typed amount', () => {
-    jest.mocked(useLastMoneyAccountDepositAmount).mockReturnValue('1');
-
+  it('enables confirm once the typed amount is no longer pending', () => {
     const { getByTestId } = render({
-      confirmation: genMoneyAccountDeposit(),
-      quotes: [
-        {
-          strategy: 'relay',
-          request: { targetAmountMinimum: '1000000' },
-        },
-      ],
+      confirmation: genPerpsDeposit(),
+      isAmountPending: false,
     });
 
     const button = getByTestId('confirm-footer-button');

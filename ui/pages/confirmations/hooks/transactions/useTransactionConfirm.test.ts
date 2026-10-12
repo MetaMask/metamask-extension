@@ -4,7 +4,6 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 
@@ -15,6 +14,7 @@ import {
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { useConfirmContext } from '../../context/confirm';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -24,11 +24,6 @@ import {
   attemptCloseNotificationPopup,
   updateAndApproveTx,
 } from '../../../../store/actions';
-import {
-  updateMoneyAccountDepositAmount,
-  clearLastMoneyAccountDepositAmount,
-  setLastMoneyAccountDepositAmount,
-} from '../../../../store/controller-actions/transaction-pay-controller';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { useHardwareWalletError } from '../../../../contexts/hardware-wallets';
 import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
@@ -82,15 +77,6 @@ jest.mock('../../../../store/actions', () => ({
   attemptCloseNotificationPopup: jest.fn(),
   updateAndApproveTx: jest.fn(),
 }));
-jest.mock(
-  '../../../../store/controller-actions/transaction-pay-controller',
-  () => ({
-    ...jest.requireActual(
-      '../../../../store/controller-actions/transaction-pay-controller',
-    ),
-    updateMoneyAccountDepositAmount: jest.fn(() => Promise.resolve(true)),
-  }),
-);
 
 jest.mock('./useMoneyAccountWithdrawConfirm');
 jest.mock('./useTransactionPayingAccount', () => ({
@@ -145,8 +131,6 @@ function runHook({
   isExternalSign,
   selectedGasFeeToken,
   type,
-  quotes,
-  depositAmount,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
@@ -154,15 +138,6 @@ function runHook({
   isExternalSign?: boolean;
   selectedGasFeeToken?: Hex;
   type?: TransactionType;
-  quotes?: {
-    strategy: string;
-    request?: {
-      isMaxAmount?: boolean;
-      sourceTokenAmount?: string;
-      targetAmountMinimum?: string;
-    };
-  }[];
-  depositAmount?: string;
 } = {}) {
   const confirmation = genUnapprovedContractInteractionConfirmation({
     gasFeeTokens,
@@ -173,11 +148,6 @@ function runHook({
   if (type) {
     confirmation.type = type;
   }
-  if (depositAmount) {
-    act(() => {
-      setLastMoneyAccountDepositAmount(confirmation.id, depositAmount);
-    });
-  }
 
   const { result } = renderHookWithConfirmContextProvider(
     useTransactionConfirm,
@@ -185,13 +155,6 @@ function runHook({
       appState: {
         customNonceValue,
       },
-      metamask: quotes
-        ? {
-            transactionData: {
-              [confirmation.id]: { quotes },
-            },
-          }
-        : {},
     }),
   );
 
@@ -1099,123 +1062,24 @@ describe('useTransactionConfirm', () => {
     });
   });
 
-  describe('money account deposit', () => {
-    const originalConsoleError = console.error;
-    let consoleErrorSpy: jest.SpyInstance;
+  describe('pending amount', () => {
+    it('does not approve while the typed amount has not been committed', async () => {
+      const confirmation =
+        genUnapprovedContractInteractionConfirmation() as TransactionMeta;
+      const { result } = renderHookWithConfirmContextProvider(() => {
+        const confirm = useTransactionConfirm();
+        const { setIsAmountPending } = useConfirmContext();
+        return { ...confirm, setIsAmountPending };
+      }, getMockConfirmStateForTransaction(confirmation));
 
-    beforeEach(() => {
-      jest.mocked(updateMoneyAccountDepositAmount).mockResolvedValue(true);
-      consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation((...args: unknown[]) => {
-          const message = args.map(String).join(' ');
-          if (
-            message.includes('executable quote does not match') ||
-            message.includes('failed to commit typed amount')
-          ) {
-            return;
-          }
-          originalConsoleError(...args);
-        });
-    });
-
-    afterEach(() => {
-      consoleErrorSpy.mockRestore();
-    });
-
-    it('does not approve when the executable quote is still the Max amount', async () => {
-      const { confirmation, onTransactionConfirm } = runHook({
-        type: TransactionType.moneyAccountDeposit,
-        depositAmount: '1',
-        quotes: [
-          {
-            strategy: TransactionPayStrategy.Relay,
-            request: {
-              isMaxAmount: true,
-              sourceTokenAmount: '2208000',
-              targetAmountMinimum: '2208000',
-            },
-          },
-        ],
-      });
-
-      const result = await onTransactionConfirm();
-
-      expect(result).toBe(false);
-      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
       act(() => {
-        clearLastMoneyAccountDepositAmount(confirmation.id);
-      });
-    });
-
-    it('approves when the executable quote matches the typed amount', async () => {
-      const { confirmation, onTransactionConfirm } = runHook({
-        type: TransactionType.moneyAccountDeposit,
-        depositAmount: '1',
-        quotes: [
-          {
-            strategy: TransactionPayStrategy.Relay,
-            request: { targetAmountMinimum: '1000000' },
-          },
-        ],
+        result.current.setIsAmountPending(true);
       });
 
-      const result = await onTransactionConfirm();
+      const approved = await result.current.onTransactionConfirm();
 
-      expect(result).toBe(true);
-      expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
-      act(() => {
-        clearLastMoneyAccountDepositAmount(confirmation.id);
-      });
-    });
-
-    it('refuses a deposit that has no recorded amount without committing one', async () => {
-      const { onTransactionConfirm } = runHook({
-        type: TransactionType.moneyAccountDeposit,
-        quotes: [
-          {
-            strategy: TransactionPayStrategy.Relay,
-            request: { targetAmountMinimum: '2208000' },
-          },
-        ],
-      });
-
-      const result = await onTransactionConfirm();
-
-      expect(result).toBe(false);
+      expect(approved).toBe(false);
       expect(updateAndApproveTxMock).not.toHaveBeenCalled();
-      expect(updateMoneyAccountDepositAmount).not.toHaveBeenCalled();
-    });
-
-    it('logs and still refuses when committing the typed amount fails', async () => {
-      jest
-        .mocked(updateMoneyAccountDepositAmount)
-        .mockRejectedValueOnce(new Error('commit failed'));
-      const { confirmation, onTransactionConfirm } = runHook({
-        type: TransactionType.moneyAccountDeposit,
-        depositAmount: '1',
-        quotes: [
-          {
-            strategy: TransactionPayStrategy.Relay,
-            request: { targetAmountMinimum: '2208000' },
-          },
-        ],
-      });
-
-      const result = await onTransactionConfirm();
-      await act(async () => {
-        await Promise.resolve();
-      });
-
-      expect(result).toBe(false);
-      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Money Account deposit: failed to commit typed amount',
-        expect.any(Error),
-      );
-      act(() => {
-        clearLastMoneyAccountDepositAmount(confirmation.id);
-      });
     });
   });
 });

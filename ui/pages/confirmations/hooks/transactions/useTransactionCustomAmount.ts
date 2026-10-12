@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
@@ -11,8 +18,6 @@ import type { Hex } from '@metamask/utils';
 import {
   setTransactionPayAtomic,
   setIsMaxAmount,
-  clearLastMoneyAccountDepositAmount,
-  setLastMoneyAccountDepositAmount,
   setLastMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
@@ -79,7 +84,7 @@ export function useTransactionCustomAmount({
   const [isInputChanged, setInputChanged] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
 
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, setIsAmountPending } =
     useConfirmContext<TransactionMeta>();
   const { chainId, id: transactionId } = transactionMeta ?? {};
 
@@ -141,6 +146,9 @@ export function useTransactionCustomAmount({
   // wallet holds. The controller's isMaxAmount path uses the same raw
   // payment-token balance for 100%.
   const depositMaxHumanRef = useRef<string | null>(null);
+  // Set on the keystroke, including while Max is still armed. Cleared once
+  // the committed Pay amount matches the field.
+  const hasPendingEditRef = useRef(false);
   // Max held until override assets finish loading — `balanceRaw` can still be
   // the previous account's snapshot while TPC's isMaxAmount path uses live raw.
   // Records whether the hold came from prefill so applying it later keeps the
@@ -265,6 +273,42 @@ export function useTransactionCustomAmount({
     !isMoneyAccountDeposit &&
     !isMoneyAccountWithdraw;
 
+  // Input-based quotes store the post-fee target on the required token. The
+  // source total is the amount the field is editing. Other Pay flows commit
+  // that amount onto the required token before the new quote lands.
+  const committedAmountUsd = isInputBased
+    ? totals?.sourceAmount?.usd
+    : primaryRequiredToken?.amountUsd;
+
+  useLayoutEffect(() => {
+    const amountMatches =
+      committedAmountUsd !== undefined &&
+      sameFiatCents(amountFiat, committedAmountUsd);
+
+    if (hasPendingEditRef.current && amountMatches) {
+      hasPendingEditRef.current = false;
+    }
+
+    const isAmountPending =
+      hasPendingEditRef.current &&
+      !isQuoteDerivedAmount &&
+      committedAmountUsd !== undefined &&
+      !amountMatches;
+
+    setIsAmountPending(isAmountPending);
+  }, [
+    amountFiat,
+    committedAmountUsd,
+    isQuoteDerivedAmount,
+    setIsAmountPending,
+  ]);
+
+  useLayoutEffect(() => {
+    return () => {
+      setIsAmountPending(false);
+    };
+  }, [setIsAmountPending]);
+
   const amountHuman = useMemo(
     () =>
       getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
@@ -354,9 +398,7 @@ export function useTransactionCustomAmount({
     pendingDepositMaxRef.current = null;
     userEditedRef.current = false;
     setEditedTransactionId(undefined);
-    if (isMoneyAccountDeposit && transactionId) {
-      clearLastMoneyAccountDepositAmount(transactionId);
-    }
+    hasPendingEditRef.current = false;
 
     // Max belongs to the token it was armed on. Left on, the controller quotes
     // the whole balance of the newly selected token while the field still
@@ -365,25 +407,12 @@ export function useTransactionCustomAmount({
     if (isMaxAmount) {
       setIsMax(false);
     }
-  }, [
-    isMaxAmount,
-    isMoneyAccountDeposit,
-    payTokenKey,
-    setIsMax,
-    transactionId,
-  ]);
+  }, [isMaxAmount, payTokenKey, setIsMax, transactionId]);
 
   useEffect(() => {
-    // Record immediately so confirm can refuse a stale Max quote without
-    // waiting for the 500ms debounce that writes calldata and re-quotes.
+    // Withdraw confirm reads this before the debounced calldata write.
     if (isMoneyAccountWithdraw && transactionId) {
       setLastMoneyAccountWithdrawAmount(transactionId, amountHuman);
-    }
-    if (isMoneyAccountDeposit && transactionId) {
-      setLastMoneyAccountDepositAmount(
-        transactionId,
-        depositMaxHumanRef.current ?? amountHuman,
-      );
     }
 
     // When isMaxAmount is true, amountHuman is driven by quote-controller updates
@@ -403,7 +432,6 @@ export function useTransactionCustomAmount({
   }, [
     amountHuman,
     isMaxAmount,
-    isMoneyAccountDeposit,
     isMoneyAccountWithdraw,
     payToken?.address,
     payToken?.chainId,
@@ -442,17 +470,7 @@ export function useTransactionCustomAmount({
 
       depositMaxHumanRef.current = null;
       pendingDepositMaxRef.current = null;
-
-      if (isMoneyAccountDeposit && transactionId) {
-        setLastMoneyAccountDepositAmount(
-          transactionId,
-          getAmountHumanFromFiat(
-            newAmount,
-            tokenFiatRate,
-            hasBalanceUsdOverride,
-          ),
-        );
-      }
+      hasPendingEditRef.current = true;
 
       if (transactionId) {
         upsertTransactionUIMetricsFragment(transactionId, {
@@ -465,14 +483,7 @@ export function useTransactionCustomAmount({
 
       setAmountFiat(newAmount);
     },
-    [
-      hasBalanceUsdOverride,
-      isMaxAmount,
-      isMoneyAccountDeposit,
-      setIsMax,
-      tokenFiatRate,
-      transactionId,
-    ],
+    [isMaxAmount, setIsMax, transactionId],
   );
 
   const updatePendingAmountPercentage = useCallback(
@@ -539,13 +550,19 @@ export function useTransactionCustomAmount({
       );
 
       if (shouldSetMaxAmountMode) {
+        // Max submits the balance quote on purpose, so a previous typed edit
+        // must not keep confirm pending.
+        hasPendingEditRef.current = false;
         // Hand the resolved balance over as the Max source amount: the
         // background snapshot is `0` on a money-account deposit whose funding
         // balance has not landed yet, and a late arrival never rebuilds the
         // source amount.
         setIsMax(true, maxSourceBalanceRaw);
       } else if (isMaxAmount) {
+        hasPendingEditRef.current = true;
         setIsMax(false);
+      } else {
+        hasPendingEditRef.current = true;
       }
 
       // `updateTokenAmount` treats the human amount as the destination token
@@ -606,9 +623,6 @@ export function useTransactionCustomAmount({
       // Percentage / prefill updates apply immediately, so drop any pending
       // debounced typing update that would otherwise overwrite them.
       debounceRef.current?.cancel();
-      if (isMoneyAccountDeposit && transactionId) {
-        setLastMoneyAccountDepositAmount(transactionId, newAmountHuman);
-      }
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate && !isZeroHumanAmount(newAmountHuman)) {
         updateTokenAmountCallback(newAmountHuman);
@@ -675,9 +689,7 @@ export function useTransactionCustomAmount({
           setIsMax(false);
         }
         depositMaxHumanRef.current = null;
-        if (transactionId) {
-          setLastMoneyAccountDepositAmount(transactionId, '0');
-        }
+        hasPendingEditRef.current = true;
         setAmountFiat(fiatAmount);
         debounceRef.current?.cancel();
         setAmountHumanDebounced('0');
@@ -691,6 +703,7 @@ export function useTransactionCustomAmount({
       }
 
       depositMaxHumanRef.current = null;
+      hasPendingEditRef.current = true;
 
       setAmountFiat(fiatAmount);
 
@@ -701,9 +714,6 @@ export function useTransactionCustomAmount({
       );
 
       debounceRef.current?.cancel();
-      if (isMoneyAccountDeposit && transactionId) {
-        setLastMoneyAccountDepositAmount(transactionId, newAmountHuman);
-      }
       setAmountHumanDebounced(newAmountHuman);
       if (disableUpdate || isZeroHumanAmount(newAmountHuman)) {
         return;
@@ -729,7 +739,6 @@ export function useTransactionCustomAmount({
       disableUpdate,
       hasBalanceUsdOverride,
       isMaxAmount,
-      isMoneyAccountDeposit,
       setIsMax,
       tokenFiatRate,
       transactionId,
@@ -944,6 +953,18 @@ function getHumanAmountFromBalanceRawPercentage(
   return rawPortion
     .dividedBy(new BigNumber(10).pow(tokenDecimals))
     .toString(10);
+}
+
+function sameFiatCents(left: string, right: string): boolean {
+  const leftAmount = new BigNumber(left || '0');
+  const rightAmount = new BigNumber(right || '0');
+  if (!leftAmount.isFinite() || !rightAmount.isFinite()) {
+    return false;
+  }
+
+  return leftAmount
+    .round(2, BigNumber.ROUND_HALF_UP)
+    .eq(rightAmount.round(2, BigNumber.ROUND_HALF_UP));
 }
 
 function isZeroHumanAmount(value: string): boolean {
