@@ -9,17 +9,23 @@ describe('Lazy Snap date picker', () => {
         name: 'schedule',
         children: [
           DateTimePicker({ name: 'date', type: 'date' }),
-          Button({ name: 'submit', type: 'submit', children: 'Submit' }),
+          Button({
+            name: 'submit',
+            type: 'submit',
+            children: 'Schedule reminder',
+          }),
         ],
       }),
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Submit' }),
+      screen.queryByRole('button', { name: 'Schedule reminder' }),
     ).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 
     expect(await screen.findByRole('textbox')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
+    expect(
+      screen.getByRole('button', { name: 'Schedule reminder' }),
+    ).toBeEnabled();
   });
 });

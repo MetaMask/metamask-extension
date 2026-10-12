@@ -9,6 +9,12 @@ import { AdvancedDetails } from './advanced-details';
 describe('<AdvancedDetails />', () => {
   const middleware = [thunk];
 
+  beforeAll(async () => {
+    // Cold Jest transforms can exceed the query deadline. These tests check
+    // visibility and layout, so load the real content before the assertions.
+    await import('./advanced-details-content');
+  });
+
   it('does not render component when the state property is false', () => {
     const state = {
       ...mockState,
