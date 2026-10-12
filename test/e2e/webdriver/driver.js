@@ -541,8 +541,19 @@ class Driver {
     }
   }
 
+  /* eslint-disable jsdoc/check-param-names -- @overload repeats @param by design; eslint-plugin-jsdoc 50.x does not model overloads */
   /**
    * Waits for an element that matches the given locator to reach the specified state within the timeout period.
+   *
+   * @overload
+   * @param {string | object} rawLocator
+   * @param {{ timeout?: number, state?: 'visible' | 'enabled' | 'disabled', waitAtLeastGuard?: number }} [options]
+   * @returns {Promise<WebElement>}
+   *
+   * @overload
+   * @param {string | object} rawLocator
+   * @param {{ timeout?: number, state: 'detached', waitAtLeastGuard?: number }} options
+   * @returns {Promise<undefined>}
    *
    * @param {string | object} rawLocator - Element locator
    * @param {object} [options] - parameter object
@@ -606,6 +617,7 @@ class Driver {
 
     return wrapElementWithAPI(element, this);
   }
+  /* eslint-enable jsdoc/check-param-names */
 
   /**
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
