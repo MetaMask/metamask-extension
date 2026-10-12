@@ -49,25 +49,6 @@ type Route = {
 const { getExtensionURL } = globalThis.platform;
 
 /**
- * Sets the description and title state for a 404 error.
- *
- * @param setDescription - The function to call to set the description state.
- * @param setTitle - The function to call to set the title state.
- * @param t - The translation function.
- * @param setPageNotFoundError - The function to call to set the error 404 state.
- */
-function set404(
-  setDescription: React.Dispatch<React.SetStateAction<string | null>>,
-  setTitle: React.Dispatch<React.SetStateAction<string | null>>,
-  t: TranslateFunction,
-  setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-) {
-  setDescription(t('deepLink_Error404Description'));
-  setTitle(t('deepLink_Error404Title'));
-  setPageNotFoundError(true);
-}
-
-/**
  * Updates the state based on the URL path and query. This function parses the
  * URL, retrieves the route, and sets the route and error state accordingly.
  *
@@ -80,7 +61,7 @@ function set404(
  * @param setCta - The function to call to set the call-to-action state.
  * @param t - The translation function.
  * @param abortController
- * @param setPageNotFoundError - The function to call to set the error 404 state.
+ * @param setPageNotFoundError - The function to call when the destination is missing.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -129,8 +110,7 @@ async function updateStateFromUrl(
       setPageNotFoundError(false);
     } else {
       setRoute(null);
-      set404(setDescription, setTitle, t, setPageNotFoundError);
-      setCta(t('deepLink_GoToTheHomePageButton'));
+      setPageNotFoundError(true);
 
       const signature = await verify(url);
       if (abortController.signal.aborted) {
@@ -206,7 +186,7 @@ export const DeepLink = () => {
         setRoute(null);
         setIsLoading(false);
         if (errorCode === '404') {
-          set404(setDescription, setTitle, t, setPageNotFoundError);
+          setPageNotFoundError(true);
 
           if (urlStr) {
             try {
@@ -315,20 +295,12 @@ export const DeepLink = () => {
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
         >
-          {pageNotFoundError ? (
-            <img
-              className="error-404-image"
-              alt="Error 404: Page not found"
-              src="./images/deep-link-error-404.png"
-            />
-          ) : (
-            <img
-              className="metamask-deep-link-logo"
-              alt="MetaMask logo"
-              src="./images/logo/metamask-fox.svg"
-              style={{ width: '160px', height: '160px' }}
-            />
-          )}
+          <img
+            className="metamask-deep-link-logo"
+            alt="MetaMask logo"
+            src="./images/logo/metamask-fox.svg"
+            style={{ width: '160px', height: '160px' }}
+          />
           {isLoading && (
             <img
               data-testid="loading-indicator"
