@@ -438,7 +438,7 @@ export function MoneyHomePage() {
         <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
             <Text
-              variant={TextVariant.DisplayLg}
+              variant={TextVariant.DisplayMd}
               fontWeight={FontWeight.Medium}
               data-testid="money-balance"
             >
