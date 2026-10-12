@@ -3,14 +3,17 @@ import {
   NetworkEnablementControllerState,
   NetworkEnablementControllerMessenger,
 } from '@metamask/network-enablement-controller';
+import { selectEvmAutoEnabledNetworksChainIds } from '@metamask/config-registry-controller';
 import { NetworkState } from '@metamask/network-controller';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import {
+  MultichainNetworkControllerState,
+  toEvmCaipChainId,
+} from '@metamask/multichain-network-controller';
 import {
   BtcScope,
   SolAccountType,
   SolScope,
   TrxScope,
-  XlmScope,
 } from '@metamask/keyring-api';
 import {
   CaipChainId,
@@ -21,10 +24,7 @@ import {
 } from '@metamask/utils';
 import { NetworkEnablementControllerInitMessenger } from '../messengers/assets';
 import { MessengerClientInitFunction } from '../types';
-import {
-  CHAIN_IDS,
-  FEATURED_NETWORK_CHAIN_IDS,
-} from '../../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
@@ -95,43 +95,32 @@ const generateDefaultNetworkEnablementControllerState = (
       },
       nativeAssetIdentifiers: {},
     };
-  } else if (
-    process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENVIRONMENT === 'testing'
-  ) {
-    return {
-      enabledNetworkMap: {
-        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
-          CHAIN_IDS.SEPOLIA,
-        ]),
-        ...generateMultichainNetworkMaps(
-          multichainNetworkConfigurationsByChainId,
-          [],
-        ),
-      },
-      nativeAssetIdentifiers: {},
-    };
   }
-
-  const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
-  enabledMultichainNetworks.push(BtcScope.Mainnet);
-  enabledMultichainNetworks.push(TrxScope.Mainnet);
-  enabledMultichainNetworks.push(XlmScope.Pubnet);
 
   return {
     enabledNetworkMap: {
-      ...generateEVMNetworkMap(
-        networkConfigurationsByChainId,
-        FEATURED_NETWORK_CHAIN_IDS,
-      ),
+      ...generateEVMNetworkMap(networkConfigurationsByChainId, []),
       ...generateMultichainNetworkMaps(
         multichainNetworkConfigurationsByChainId,
-        enabledMultichainNetworks,
+        [],
       ),
     },
     nativeAssetIdentifiers: {},
   };
 };
+
+const AUTO_ENABLE_TIMEOUT_MS = 30_000;
+
+function cloneEnabledNetworkMap(
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+): NetworkEnablementControllerState['enabledNetworkMap'] {
+  return Object.fromEntries(
+    Object.entries(enabledNetworkMap).map(([namespace, networks]) => [
+      namespace,
+      { ...networks },
+    ]),
+  ) as NetworkEnablementControllerState['enabledNetworkMap'];
+}
 
 export const NetworkEnablementControllerInit: MessengerClientInitFunction<
   NetworkEnablementController,
@@ -159,6 +148,59 @@ export const NetworkEnablementControllerInit: MessengerClientInitFunction<
       ...persistedState.NetworkEnablementController,
     },
   });
+
+  if (
+    !process.env.IN_TEST &&
+    !persistedState.NetworkEnablementController?.enabledNetworkMap
+  ) {
+    messengerClient.enableAllPopularNetworks();
+  }
+
+  controllerMessenger.subscribe(
+    'NetworkController:networkAdded',
+    async ({ chainId }) => {
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+      try {
+        const autoEnabledNetworkChainIds = selectEvmAutoEnabledNetworksChainIds(
+          controllerMessenger.call('ConfigRegistryController:getState'),
+        );
+
+        if (!autoEnabledNetworkChainIds.includes(toEvmCaipChainId(chainId))) {
+          return;
+        }
+
+        const previousEnabledNetworkMap = cloneEnabledNetworkMap(
+          messengerClient.state.enabledNetworkMap,
+        );
+
+        await Promise.race([
+          controllerMessenger.waitUntil(
+            'NetworkEnablementController:stateChange',
+            {
+              condition: (state) =>
+                state.enabledNetworkMap.eip155?.[chainId] === true,
+            },
+          ),
+          new Promise<never>((_resolve, reject) => {
+            timeoutId = setTimeout(
+              () =>
+                reject(
+                  new Error(`Timed out waiting for ${chainId} to be enabled`),
+                ),
+              AUTO_ENABLE_TIMEOUT_MS,
+            );
+          }),
+        ]);
+        messengerClient.restoreEnabledNetworkMap(previousEnabledNetworkMap);
+      } catch (error) {
+        controllerMessenger.captureException?.(
+          error instanceof Error ? error : new Error(String(error)),
+        );
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    },
+  );
 
   // Initialize native asset identifiers from network configurations.
   // This reads from NetworkController and MultichainNetworkController to populate

@@ -5,9 +5,60 @@ import {
   getIsNewHardwareWalletOnboardingEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   getIsBasicFunctionalityConsolidationEnabledInBuild,
+  isInE2eTest,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
+
+describe('isInE2eTest', () => {
+  let originalInTest: string | undefined;
+  let originalJestWorkerId: string | undefined;
+
+  beforeAll(() => {
+    originalInTest = process.env.IN_TEST;
+    originalJestWorkerId = process.env.JEST_WORKER_ID;
+  });
+
+  afterAll(() => {
+    if (originalInTest === undefined) {
+      delete process.env.IN_TEST;
+    } else {
+      process.env.IN_TEST = originalInTest;
+    }
+
+    if (originalJestWorkerId === undefined) {
+      delete process.env.JEST_WORKER_ID;
+    } else {
+      process.env.JEST_WORKER_ID = originalJestWorkerId;
+    }
+  });
+
+  (
+    [
+      ['test extension build', 'undefined', true],
+      ['test build without a worker ID', undefined, false],
+      ['Jest worker', '1', false],
+    ] as const
+  ).forEach(([_description, jestWorkerId, expected]) => {
+    it(`returns ${expected} for ${_description}`, () => {
+      process.env.IN_TEST = 'true';
+      if (jestWorkerId === undefined) {
+        delete process.env.JEST_WORKER_ID;
+      } else {
+        process.env.JEST_WORKER_ID = jestWorkerId;
+      }
+
+      expect(isInE2eTest()).toBe(expected);
+    });
+  });
+
+  it('returns false outside a test build', () => {
+    delete process.env.IN_TEST;
+    process.env.JEST_WORKER_ID = 'undefined';
+
+    expect(isInE2eTest()).toBe(false);
+  });
+});
 
 describe('isProduction', () => {
   let originalMetaMaskEnvironment: string | undefined;

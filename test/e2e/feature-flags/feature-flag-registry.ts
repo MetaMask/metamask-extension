@@ -1458,6 +1458,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  confirmations_pay_rpc: {
+    inProd: false,
+    name: 'confirmations_pay_rpc',
+    productionDefault: {
+      allowedTypes: [],
+      dapps: {},
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   confirmations_pay_tokens: {
     inProd: true,
     name: 'confirmations_pay_tokens',
