@@ -1,4 +1,5 @@
-import { isObject } from '@metamask/utils';
+import { isHexAddress, isObject, isStrictHexString } from '@metamask/utils';
+import type { Hex } from '@metamask/utils';
 import { validatedVersionGatedFeatureFlag } from '../remote-feature-flag-utils';
 
 /**
@@ -54,6 +55,23 @@ export const MONEY_ACTIVITY_MOCK_DATA_ENABLED_FLAG_NAME =
  */
 export const MONEY_ENABLE_ACTIVITY_DETAILS_FLAG_NAME =
   'moneyEnableActivityDetails';
+
+/**
+ * The LaunchDarkly flag that gates the "Get X% APY" Money deposit CTA on
+ * token list rows. Same name and version-gated shape as mobile.
+ */
+export const MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME =
+  'earnMoneyTokenListItemCtaEnabled';
+
+/**
+ * The LaunchDarkly flag listing, per hex chain ID, the ERC-20 addresses that
+ * get Money deposit CTAs. Same name and `{ [chainId]: address[] }` shape as
+ * mobile.
+ */
+export const MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME =
+  'earnMoneyDepositCtaTokenAddresses';
+
+export type MoneyTokenAddressList = Record<Hex, Hex[]>;
 
 /**
  * Whether the Money Account feature is enabled.
@@ -221,4 +239,84 @@ export function isMoneyActivityDetailsEnabled(
   }
 
   return process.env.MM_MONEY_ENABLE_ACTIVITY_DETAILS?.toString() === 'true';
+}
+
+/**
+ * Whether the token list row Money deposit CTA is enabled.
+ *
+ * Both this flag and {@link MONEY_ENABLE_MONEY_ACCOUNT_FLAG_NAME} are
+ * version-gated and fail closed.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns Whether the token list row CTA is enabled.
+ */
+export function isMoneyTokenListItemCtaEnabled(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): boolean {
+  return (
+    isMoneyAccountEnabled(remoteFeatureFlags) &&
+    (validatedVersionGatedFeatureFlag(
+      remoteFeatureFlags?.[MONEY_TOKEN_LIST_ITEM_CTA_ENABLED_FLAG_NAME],
+    ) ??
+      false)
+  );
+}
+
+const parseTokenAddressList = (
+  raw: unknown,
+): MoneyTokenAddressList | undefined => {
+  let value = raw;
+  if (typeof raw === 'string') {
+    try {
+      value = JSON.parse(raw);
+    } catch {
+      return undefined;
+    }
+  }
+
+  if (!isObject(value) || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const result: MoneyTokenAddressList = {};
+  for (const [chainId, addresses] of Object.entries(value)) {
+    if (
+      !isStrictHexString(chainId) ||
+      !Array.isArray(addresses) ||
+      !addresses.every(
+        (address) =>
+          typeof address === 'string' && isHexAddress(address.toLowerCase()),
+      )
+    ) {
+      return undefined;
+    }
+
+    const normalizedChainId = `0x${BigInt(chainId).toString(16)}` as Hex;
+    result[normalizedChainId] = [
+      ...(result[normalizedChainId] ?? []),
+      ...addresses.map((address) => address.toLowerCase() as Hex),
+    ];
+  }
+
+  return result;
+};
+
+/**
+ * The ERC-20 tokens, per chain, that get Money deposit CTAs.
+ *
+ * Accepts an object or a JSON string. Chain IDs are normalized (`0x01` →
+ * `0x1`) and addresses lowercased. Any malformed entry invalidates the whole
+ * flag, which then resolves to an empty list so no CTA is shown.
+ *
+ * @param remoteFeatureFlags - The remote feature flags.
+ * @returns The normalized token address list.
+ */
+export function getMoneyDepositCtaTokenAddresses(
+  remoteFeatureFlags: Record<string, unknown> | undefined,
+): MoneyTokenAddressList {
+  return (
+    parseTokenAddressList(
+      remoteFeatureFlags?.[MONEY_DEPOSIT_CTA_TOKEN_ADDRESSES_FLAG_NAME],
+    ) ?? {}
+  );
 }
