@@ -74,10 +74,6 @@ export const useCurrencyConversions = () => {
     getCrossChainTokenExchangeRates,
   ) as Record<Hex, Record<Hex, number>>;
 
-  // When Basic Functionality is off the price API isn't called, so any fiat
-  // conversion rate on the asset is stale/cached. Mirror the home token list
-  // and asset picker: suppress all fiat UI (conversion subline, fiat-mode
-  // toggle, Max/available in fiat) so users don't act on stale data.
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const exchangeRate = useMemo(() => {

@@ -168,10 +168,6 @@ const TokenAsset = ({
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
-  // When Basic Functionality is off the price API isn't called, so any fiat
-  // value on the asset is stale/cached. Mirror the home token list and hide the
-  // fiat line in that case (see TokenCellSecondaryDisplay), keeping the token
-  // amount visible.
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
