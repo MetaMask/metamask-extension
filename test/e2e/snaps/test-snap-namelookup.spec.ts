@@ -13,7 +13,7 @@ import { mockSpotPrices } from '../tests/tokens/utils/mocks';
 
 async function mockTokensApiSupportedNetworks(mockServer: Mockttp) {
   return mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .forGet(/https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: ['eip155:1', 'eip155:1337'],

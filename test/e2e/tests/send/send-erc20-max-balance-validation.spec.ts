@@ -54,7 +54,9 @@ function mockCommonApis(mockServer: Mockttp) {
         partialSupport: [],
       }),
     mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+      .forGet(
+        /https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
+      )
       .always()
       .thenJson(200, {
         fullSupport: ['eip155:1', 'eip155:1337'],

@@ -2047,9 +2047,10 @@ async function setupMocking(
       };
     });
 
-  // Tokens API: v2 supported networks — mocked globally so all tests work.
+  // Token API and Tokens API: v2 supported networks — mocked globally so all tests work.
+  // Rpc token detection calls token.api; TokenDataSource calls tokens.api.
   await server
-    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .forGet(/https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: [

@@ -118,7 +118,9 @@ describe('Add existing token using search', function () {
   ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
-        .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+        .forGet(
+          /https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
+        )
         .thenCallback(() => ({
           statusCode: 200,
           json: {

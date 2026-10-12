@@ -12,19 +12,19 @@ const TRON_NATIVE_CAIP_ASSET_ID = 'tron:728126428/slip44:195';
 const TRON_CHAIN_CAIP_ID = 'tron:728126428';
 
 /**
- * Mock GET /v2/supportedNetworks for the Tokens API.
+ * Mock GET /v2/supportedNetworks for the Token API and Tokens API.
  *
- * The TokenDataSource calls this endpoint to determine which chain IDs are
- * supported before fetching asset metadata. Without non-EVM chains in the
- * response, the BTC/SOL assets are filtered out and no metadata is fetched,
- * leaving AssetsController.assetsInfo empty — which causes the balance
- * migration selector to skip those balances entirely.
+ * TokenDataSource and Rpc token detection both call this endpoint to decide
+ * which chain IDs are supported. Without non-EVM chains in the response, the
+ * BTC/SOL assets are filtered out and no metadata is fetched, leaving
+ * AssetsController.assetsInfo empty — which causes the balance migration
+ * selector to skip those balances entirely.
  *
  * @param mockServer - The mock server instance.
  */
 export const mockTokensV2SupportedNetworks = (mockServer: Mockttp) =>
   mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .forGet(/https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: [
