@@ -35,7 +35,6 @@ import {
   getHardwareWalletErrorCode,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { isInE2eTest } from './is-in-e2e-test';
 import { isHardwareWalletErrorModalRoute } from './utils';
 import { isHardwareWalletRoute } from './utils';
 
