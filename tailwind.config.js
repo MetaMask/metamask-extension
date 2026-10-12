@@ -10,6 +10,8 @@ module.exports = {
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
     './app/scripts/cashtag/**/*.{js,jsx,ts,tsx}',
+    // Critical-error markup is an HTML string, not a React file under ui/.
+    './shared/lib/error-utils.ts',
     // Ensures tailwind classnames are generated for design system components
     './node_modules/@metamask/design-system-react/**/*.{mjs,cjs}',
     // Required from @metamask/design-system-react@0.17.0+ (shared typography types)
@@ -30,6 +32,7 @@ module.exports = {
   plugins: [
     plugin(({ addVariant, addUtilities, addBase }) => {
       addVariant('@compact', '@container list-item (max-width: 399px)');
+      addVariant('light', 'html[data-theme="light"] &');
       // TODO: Remove these polyfills once we update to Tailwind v4
       addVariant('starting', '@starting-style');
       addUtilities({

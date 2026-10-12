@@ -1999,7 +1999,7 @@ describe('ClosePositionModal', () => {
       expect(receiveValue).toBeCloseTo(marginValue - feesValue, 2);
     });
 
-    it('uses stable maker fee-rate inputs while price and amount change', () => {
+    it('quotes the selected close notional while limit price and fraction change', () => {
       renderWithProvider(
         <ClosePositionModal
           isOpen
@@ -2020,10 +2020,11 @@ describe('ClosePositionModal', () => {
         symbol: basePosition.symbol,
         orderType: 'limit',
         isMaker: true,
+        amount: '4000',
       });
       expect(
-        mockUsePerpsOrderFees.mock.calls.every(
-          ([options]) => !Object.hasOwn(options, 'amount'),
+        mockUsePerpsOrderFees.mock.calls.every(([options]) =>
+          Object.hasOwn(options, 'amount'),
         ),
       ).toBe(true);
     });
