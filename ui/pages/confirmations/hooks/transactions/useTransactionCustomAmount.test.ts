@@ -25,10 +25,7 @@ import {
   useTransactionCustomAmount,
   MAX_LENGTH,
 } from './useTransactionCustomAmount';
-import {
-  DepositPrefillStatus,
-  useDepositPrefillAmount,
-} from './useDepositPrefillAmount';
+import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
@@ -43,26 +40,28 @@ jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
     withdrawableFiatRaw: undefined,
   })),
 }));
-jest.mock('./useDepositPrefillAmount');
+jest.mock('./useDepositPrefill');
 jest.mock('./useUpdateTokenAmount');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
 
-const useDepositPrefillAmountMock = jest.mocked(useDepositPrefillAmount);
+const useDepositPrefillMock = jest.mocked(useDepositPrefill);
 
 /**
- * Builds a `useDepositPrefillAmount` return value. Keeping one default shape
+ * Builds a `useDepositPrefill` return value. Keeping one default shape
  * here means a new field on the hook only needs updating in one place.
  *
  * @param overrides - Fields to override on the default committed-prefill shape.
  * @returns The mocked deposit prefill result.
  */
 function createDepositPrefillMock(
-  overrides: Partial<ReturnType<typeof useDepositPrefillAmount>> = {},
-): ReturnType<typeof useDepositPrefillAmount> {
+  overrides: Partial<ReturnType<typeof useDepositPrefill>> = {},
+): ReturnType<typeof useDepositPrefill> {
   return {
     prefillAmount: undefined,
+    percentage: undefined,
+    isLimitCapped: false,
     isUncappedMaxPrefill: false,
     status: DepositPrefillStatus.Prefilled,
     ...overrides,
@@ -122,7 +121,7 @@ function runHook({
   updateTokenAmountMock?: jest.Mock;
   prefillMaxOnLoad?: boolean;
   transactionMeta?: TransactionMeta;
-  depositPrefill?: ReturnType<typeof useDepositPrefillAmount>;
+  depositPrefill?: ReturnType<typeof useDepositPrefill>;
   isAccountTokensLoading?: boolean;
   paymentOverride?: PaymentOverride;
   moneyAccountWithdrawableFiatRaw?: string;
@@ -197,7 +196,7 @@ function runHook({
     updateTokenAmount: updateTokenAmountMock,
     isUpdating: false,
   });
-  useDepositPrefillAmountMock.mockReturnValue(depositPrefill);
+  useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
     withdrawableFiatRaw: moneyAccountWithdrawableFiatRaw,
@@ -235,7 +234,10 @@ describe('useTransactionCustomAmount', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.useFakeTimers();
-    useDepositPrefillAmountMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
+    useDepositPrefillMock.mockReturnValue(DISABLED_DEPOSIT_PREFILL);
+    jest
+      .mocked(upsertTransactionUIMetricsFragment)
+      .mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -1369,6 +1371,8 @@ describe('useTransactionCustomAmount', () => {
         payTokenBalanceUsd: 1000,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: false,
+          percentage: 100,
+          isLimitCapped: true,
           prefillAmount: '500',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1390,6 +1394,7 @@ describe('useTransactionCustomAmount', () => {
         updateTokenAmountMock,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1420,6 +1425,7 @@ describe('useTransactionCustomAmount', () => {
         isAccountTokensLoading: true,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1456,6 +1462,14 @@ describe('useTransactionCustomAmount', () => {
         moneyAccountDepositMeta.id,
         true,
       );
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_prefilled_amount: 500,
+          }),
+        }),
+      );
     });
 
     it('uses exact balanceRaw for uncapped 100% deposit prefill and sets isMaxAmount', () => {
@@ -1470,6 +1484,7 @@ describe('useTransactionCustomAmount', () => {
         isMaxAmount: false,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: true,
+          percentage: 100,
           prefillAmount: '55.70',
           status: DepositPrefillStatus.Prefilled,
         }),
@@ -1493,6 +1508,33 @@ describe('useTransactionCustomAmount', () => {
           sourceChainId: '0x1',
           sourceTokenAddress: '0xpaytoken',
         },
+      );
+    });
+
+    it('applies a snapshot 100% deposit prefill as a fiat amount without arming isMaxAmount', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenBalanceUsd: 55.709,
+        payTokenBalanceRaw: '55709000',
+        payTokenDecimals: 6,
+        tokenFiatRate: 1,
+        updateTokenAmountMock,
+        isMaxAmount: false,
+        depositPrefill: createDepositPrefillMock({
+          isUncappedMaxPrefill: false,
+          percentage: 100,
+          prefillAmount: '55.70',
+          status: DepositPrefillStatus.Prefilled,
+        }),
+      });
+
+      expect(result.current.amountFiat).toBe('55.70');
+      expect(updateTokenAmountMock).toHaveBeenCalledWith('55.7');
+      expect(setIsMaxAmountMock).not.toHaveBeenCalledWith(
+        moneyAccountDepositMeta.id,
+        true,
+        expect.anything(),
       );
     });
 
@@ -1559,13 +1601,41 @@ describe('useTransactionCustomAmount', () => {
       );
     });
 
-    it('does not apply deposit prefill for non-deposit transactions', () => {
+    it('applies a 50% deposit prefill for perps deposits enabled by the flag', () => {
+      const perpsDepositMeta = {
+        ...MOCK_TRANSACTION_META,
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      const { result } = runHook({
+        transactionMeta: perpsDepositMeta,
+        payTokenBalanceUsd: 1000,
+        depositPrefill: createDepositPrefillMock({
+          percentage: 50,
+          prefillAmount: '500',
+          status: DepositPrefillStatus.Prefilled,
+        }),
+      });
+
+      expect(result.current.amountFiat).toBe('500');
+      expect(result.current.isDepositPrefilled).toBe(true);
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        perpsDepositMeta.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: 'prefilled_50',
+          }),
+        }),
+      );
+    });
+
+    it('does not apply deposit prefill when the flag disables it', () => {
       const { result } = runHook({
         payTokenBalanceUsd: 1000,
         depositPrefill: createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: '500',
-          status: DepositPrefillStatus.Prefilled,
+          status: DepositPrefillStatus.Disabled,
         }),
       });
 
@@ -1632,12 +1702,12 @@ describe('useTransactionCustomAmount', () => {
       expect(result.current.amountFiat).toBe('0');
     });
 
-    it('does not report a skipped prefill for non-deposit flows', () => {
+    it('does not report a skipped prefill when the flag disables it', () => {
       const { result } = runHook({
         payTokenBalanceUsd: 0,
         depositPrefill: createDepositPrefillMock({
           prefillAmount: undefined,
-          status: DepositPrefillStatus.Skipped,
+          status: DepositPrefillStatus.Disabled,
         }),
       });
 
@@ -1661,7 +1731,7 @@ describe('useTransactionCustomAmount', () => {
 
       // Transient hasPrefilled flicker on the same token must not swap the
       // typed amount for a skeleton.
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: undefined,
@@ -1709,7 +1779,7 @@ describe('useTransactionCustomAmount', () => {
 
       // Token switch releases the previous prefill, then commits the new
       // token's 50%/100% amount — overwriting any typed value.
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: undefined,
@@ -1723,7 +1793,7 @@ describe('useTransactionCustomAmount', () => {
 
       expect(result.current.isDepositPrefillLoading).toBe(true);
 
-      useDepositPrefillAmountMock.mockReturnValue(
+      useDepositPrefillMock.mockReturnValue(
         createDepositPrefillMock({
           isUncappedMaxPrefill: false,
           prefillAmount: '1000',

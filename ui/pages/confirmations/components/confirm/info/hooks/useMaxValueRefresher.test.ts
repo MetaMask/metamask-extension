@@ -352,6 +352,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -380,6 +381,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance,
           },
         );
@@ -409,6 +411,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -433,6 +436,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance, // Full balance since gas fee is 0
           },
         );
@@ -462,6 +466,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x1631f457a756000',
           },
         );
@@ -486,6 +491,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: defaultBalance,
           },
         );
@@ -513,6 +519,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x163325c97f3cc00',
           },
         );
@@ -537,6 +544,7 @@ describe('useMaxValueRefresher', () => {
         expect(updateEditableParamsMock).toHaveBeenCalledWith(
           transactionMeta.id,
           {
+            updateType: false,
             value: '0x163325eebffb000',
           },
         );
@@ -561,6 +569,7 @@ describe('useMaxValueRefresher', () => {
       expect(updateEditableParamsMock).toHaveBeenCalledWith(
         transactionMeta.id,
         {
+          updateType: false,
           value: defaultBalance,
         },
       );
@@ -584,6 +593,7 @@ describe('useMaxValueRefresher', () => {
     expect(updateEditableParamsMock).toHaveBeenLastCalledWith(
       baseTransactionMeta.id,
       {
+        updateType: false,
         value: '0x2373d8fe36b000',
       },
     );
