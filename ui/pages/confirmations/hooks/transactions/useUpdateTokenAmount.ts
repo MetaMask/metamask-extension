@@ -18,10 +18,7 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
-import {
-  beginPayAmountEncode,
-  endPayAmountEncode,
-} from './pay-amount-encode';
+import { beginPayAmountEncode, endPayAmountEncode } from './pay-amount-encode';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
@@ -49,9 +46,13 @@ function holdConfirmWhileEncoding(
   pending: Promise<unknown>,
 ): void {
   const generation = beginPayAmountEncode(transactionId);
-  pending.finally(() => {
-    endPayAmountEncode(transactionId, generation);
-  });
+  // `.finally()` rethrows, so the chain has to end in `.catch`. The caller
+  // logs the original rejection.
+  pending
+    .finally(() => {
+      endPayAmountEncode(transactionId, generation);
+    })
+    .catch(() => undefined);
 }
 
 export function useUpdateTokenAmount() {
