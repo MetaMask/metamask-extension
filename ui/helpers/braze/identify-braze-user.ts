@@ -1,8 +1,8 @@
-import * as braze from '@braze/web-sdk';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   initializeBraze,
   isBrazeInitialized,
+  loadBrazeSdk,
   resetBrazeInitialization,
 } from './initialize-braze';
 
@@ -33,13 +33,18 @@ function isTestBuild(): boolean {
 /**
  * Identify the Braze user as the given canonical profile ID.
  *
+ * Lazily initializes the SDK on the first identify — documents that never
+ * identify never load the SDK chunk.
+ *
  * No-ops when this document already identified that ID, when the SDK cannot
  * initialize, or in test builds. Does not call `openSession`.
  *
  * @param canonicalProfileId - Profile Sync canonical profile ID (`external_id`).
  * @returns Whether Braze is identified as this ID after the call.
  */
-export function identifyBrazeUser(canonicalProfileId: string): boolean {
+export async function identifyBrazeUser(
+  canonicalProfileId: string,
+): Promise<boolean> {
   if (!canonicalProfileId) {
     return false;
   }
@@ -52,11 +57,12 @@ export function identifyBrazeUser(canonicalProfileId: string): boolean {
     return false;
   }
 
-  if (!isBrazeInitialized() && !initializeBraze()) {
+  if (!isBrazeInitialized() && !(await initializeBraze())) {
     return false;
   }
 
   try {
+    const braze = await loadBrazeSdk();
     braze.changeUser(canonicalProfileId);
     identifiedProfileId = canonicalProfileId;
     console.warn(`${LOG_PREFIX} Identified user`);
@@ -76,7 +82,7 @@ export function identifyBrazeUser(canonicalProfileId: string): boolean {
  * `changeUser`; this resets the init latch and does not re-initialize, so a
  * signed-out document does not keep an anonymous Braze profile.
  */
-export function clearBrazeUser(): void {
+export async function clearBrazeUser(): Promise<void> {
   identifiedProfileId = undefined;
 
   if (isTestBuild() || !isBrazeInitialized()) {
@@ -85,6 +91,7 @@ export function clearBrazeUser(): void {
   }
 
   try {
+    const braze = await loadBrazeSdk();
     braze.wipeData();
     console.warn(`${LOG_PREFIX} Cleared user identity`);
   } catch (error) {

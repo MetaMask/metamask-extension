@@ -1,9 +1,26 @@
-import * as braze from '@braze/web-sdk';
 import { captureException } from '../../../shared/lib/sentry';
 
 const LOG_PREFIX = '[Braze]';
 
+type BrazeModule = typeof import('@braze/web-sdk');
+
 let hasInitialized = false;
+let loadPromise: Promise<BrazeModule> | undefined;
+let initializationPromise: Promise<boolean> | undefined;
+
+/**
+ * Dynamically import the Braze Web SDK.
+ *
+ * The SDK is code-split behind this dynamic import so its chunk is only
+ * fetched by documents that reach the identify path (unlocked, signed in,
+ * basic functionality on). Signed-out and locked documents never load it.
+ *
+ * @returns The Braze SDK module.
+ */
+export function loadBrazeSdk(): Promise<BrazeModule> {
+  loadPromise ??= import('@braze/web-sdk');
+  return loadPromise;
+}
 
 /**
  * Whether the Web SDK successfully initialized in this UI document.
@@ -20,6 +37,7 @@ export function isBrazeInitialized(): boolean {
  */
 export function resetBrazeInitialization(): void {
   hasInitialized = false;
+  initializationPromise = undefined;
 }
 
 /**
@@ -48,20 +66,24 @@ function isTestBuild(): boolean {
  * extensions. In-app HTML and Font Awesome are off to stay inside MV3 CSP.
  * Push token sync is off so Braze cannot touch our existing service worker.
  *
+ * The SDK module is loaded dynamically after the environment checks, so
+ * documents that never identify never fetch it. Concurrent calls share one
+ * initialization; a failed attempt can be retried.
+ *
  * Does not call `openSession` or `automaticallyShowInAppMessages`. Session
  * policy and native message rendering are follow-up work.
  *
  * @returns Whether the SDK reported a successful initialize.
  */
-export function initializeBraze(): boolean {
+export function initializeBraze(): Promise<boolean> {
   if (hasInitialized) {
     console.warn(`${LOG_PREFIX} Already initialized`);
-    return true;
+    return Promise.resolve(true);
   }
 
   if (isTestBuild()) {
     console.warn(`${LOG_PREFIX} Skipping initialize: test build`);
-    return false;
+    return Promise.resolve(false);
   }
 
   const apiKey = readNonEmptyEnv(process.env.BRAZE_WEB_API_KEY);
@@ -70,37 +92,41 @@ export function initializeBraze(): boolean {
     console.warn(
       `${LOG_PREFIX} Skipping initialize: missing API key or endpoint (set BRAZE_WEB_API_KEY and BRAZE_SDK_ENDPOINT in .metamaskrc and restart yarn start)`,
     );
-    return false;
+    return Promise.resolve(false);
   }
 
-  try {
-    const appVersion =
-      typeof process.env.METAMASK_VERSION === 'string'
-        ? process.env.METAMASK_VERSION
-        : undefined;
+  initializationPromise ??= loadBrazeSdk()
+    .then((braze) => {
+      const appVersion =
+        typeof process.env.METAMASK_VERSION === 'string'
+          ? process.env.METAMASK_VERSION
+          : undefined;
 
-    const didInitialize = braze.initialize(apiKey, {
-      baseUrl,
-      enableLogging: Boolean(process.env.METAMASK_DEBUG),
-      noCookies: true,
-      doNotLoadFontAwesome: true,
-      allowUserSuppliedJavascript: false,
-      manageServiceWorkerExternally: true,
-      disablePushTokenMaintenance: true,
-      ...(appVersion ? { appVersion } : {}),
+      const didInitialize = braze.initialize(apiKey, {
+        baseUrl,
+        enableLogging: Boolean(process.env.METAMASK_DEBUG),
+        noCookies: true,
+        doNotLoadFontAwesome: true,
+        allowUserSuppliedJavascript: false,
+        manageServiceWorkerExternally: true,
+        disablePushTokenMaintenance: true,
+        ...(appVersion ? { appVersion } : {}),
+      });
+
+      if (didInitialize) {
+        hasInitialized = true;
+        console.warn(`${LOG_PREFIX} SDK initialized`, { baseUrl, appVersion });
+      } else {
+        console.warn(`${LOG_PREFIX} initialize returned false`);
+      }
+
+      return didInitialize;
+    })
+    .catch((error) => {
+      captureException(error);
+      console.warn(`${LOG_PREFIX} initialize threw`, error);
+      return false;
     });
 
-    if (didInitialize) {
-      hasInitialized = true;
-      console.warn(`${LOG_PREFIX} SDK initialized`, { baseUrl, appVersion });
-    } else {
-      console.warn(`${LOG_PREFIX} initialize returned false`);
-    }
-
-    return didInitialize;
-  } catch (error) {
-    captureException(error);
-    console.warn(`${LOG_PREFIX} initialize threw`, error);
-    return false;
-  }
+  return initializationPromise;
 }

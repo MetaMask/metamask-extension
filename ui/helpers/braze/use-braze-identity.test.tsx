@@ -1,5 +1,6 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { act } from '@testing-library/react';
+import { waitFor } from '@testing-library/dom';
 import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import { UPDATE_METAMASK_STATE } from '../../store/actionConstants';
 import { clearBrazeUser, identifyBrazeUser } from './identify-braze-user';
@@ -59,12 +60,16 @@ const arrangeState = (overrides: ArrangeState = {}) => {
 describe('useBrazeIdentity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIdentifyBrazeUser.mockResolvedValue(true);
+    mockClearBrazeUser.mockResolvedValue(undefined);
   });
 
-  it('identifies when unlocked, signed in, and a canonical profile ID is present', () => {
+  it('identifies when unlocked, signed in, and a canonical profile ID is present', async () => {
     renderHookWithProviderTyped(() => useBrazeIdentity(), arrangeState());
 
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
     expect(mockIdentifyBrazeUser).toHaveBeenCalledWith('canonical-123');
     expect(mockClearBrazeUser).not.toHaveBeenCalled();
   });
@@ -109,13 +114,17 @@ describe('useBrazeIdentity', () => {
     expect(mockClearBrazeUser).not.toHaveBeenCalled();
   });
 
-  it('does not call identify twice for the same ID', () => {
+  it('does not call identify twice for the same ID', async () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    act(() => {
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: { isUnlocked: true },
@@ -125,13 +134,17 @@ describe('useBrazeIdentity', () => {
     expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
   });
 
-  it('re-identifies when the canonical profile ID changes', () => {
+  it('re-identifies when the canonical profile ID changes', async () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    act(() => {
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: {
@@ -145,20 +158,44 @@ describe('useBrazeIdentity', () => {
       });
     });
 
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(2);
+    });
     expect(mockIdentifyBrazeUser).toHaveBeenLastCalledWith('canonical-456');
     expect(mockClearBrazeUser).not.toHaveBeenCalled();
   });
 
-  it('wipes after transitioning from signed in to signed out', () => {
+  it('does not wipe when the wallet locks after identifying', async () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
 
-    act(() => {
+    await act(async () => {
+      store.dispatch({
+        type: UPDATE_METAMASK_STATE,
+        value: { isUnlocked: false },
+      });
+    });
+
+    expect(mockClearBrazeUser).not.toHaveBeenCalled();
+  });
+
+  it('wipes after transitioning from signed in to signed out', async () => {
+    const { store } = renderHookWithProviderTyped(
+      () => useBrazeIdentity(),
+      arrangeState(),
+    );
+
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: {
@@ -169,42 +206,30 @@ describe('useBrazeIdentity', () => {
       });
     });
 
-    expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('does not wipe when the wallet locks after identifying', () => {
+  it('wipes when basic functionality is turned off after identifying', async () => {
     const { store } = renderHookWithProviderTyped(
       () => useBrazeIdentity(),
       arrangeState(),
     );
 
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-
-    act(() => {
-      store.dispatch({
-        type: UPDATE_METAMASK_STATE,
-        value: { isUnlocked: false },
-      });
+    await waitFor(() => {
+      expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
     });
 
-    expect(mockClearBrazeUser).not.toHaveBeenCalled();
-  });
-
-  it('wipes when basic functionality is turned off after identifying', () => {
-    const { store } = renderHookWithProviderTyped(
-      () => useBrazeIdentity(),
-      arrangeState(),
-    );
-
-    expect(mockIdentifyBrazeUser).toHaveBeenCalledTimes(1);
-
-    act(() => {
+    await act(async () => {
       store.dispatch({
         type: UPDATE_METAMASK_STATE,
         value: { useExternalServices: false },
       });
     });
 
-    expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockClearBrazeUser).toHaveBeenCalledTimes(1);
+    });
   });
 });
