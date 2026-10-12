@@ -54,14 +54,16 @@ export async function getMoneyAccountAmountData(
 }
 
 /**
- * Commits a new deposit amount: writes `requiredAssets` immediately so Pay
- * can requote, then re-encodes nested approve + deposit calldata. Superseded
- * intents resolve `false`.
+ * Encodes the approve and deposit calls, then commits them with the required
+ * amount through the shared Pay update. Superseded intents, and amounts whose
+ * encoded calls are already stored, resolve `false`.
  *
  * @param messenger - Messenger used to encode and commit.
  * @param transactionId - Id of the Money Account deposit transaction.
  * @param amountHuman - Exact human-readable mUSD amount.
- * @returns Whether this intent committed transaction metadata.
+ * @returns Whether this intent wrote metadata. Pay quotes that write.
+ * `false` when a newer amount superseded this one, or the encoded calls are
+ * already on the transaction.
  */
 export async function updateMoneyAccountDepositAmount(
   messenger: MoneyPayMessenger,
@@ -83,44 +85,22 @@ export async function updateMoneyAccountDepositAmount(
   const isCurrent = beginAmountCommit(transactionId);
 
   try {
-    // Pay watches `requiredAssets`, not nested calldata. Write the new amount
-    // before the vault encode so a slow or failing
-    // `buildMoneyAccountDepositBatch` cannot leave the quote stuck on the
-    // previous value.
-    if (!isCurrent()) {
-      return false;
-    }
-
-    const requiredAssetAmount = toMusdAmountHex(amountRaw);
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      [],
-      'Money Account deposit: update amount',
-      requiredAssetAmount,
-    );
-
     const { updates } = await getMoneyAccountAmountData(messenger, {
       amount: amountRaw.toString(10),
       transaction,
     });
 
-    if (!isCurrent()) {
+    if (!isCurrent() || !updates.length) {
       return false;
     }
 
-    if (!updates.length) {
-      return true;
-    }
-
-    commitTransactionPayUpdates(
+    return commitTransactionPayUpdates(
       messenger,
       transactionId,
       updates,
       'Money Account deposit: update amount',
-      requiredAssetAmount,
+      toMusdAmountHex(amountRaw),
     );
-    return true;
   } catch (error) {
     if (!isCurrent()) {
       return false;

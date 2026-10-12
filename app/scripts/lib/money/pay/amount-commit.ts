@@ -142,16 +142,15 @@ export function getTransactionMeta(
 }
 
 /**
- * Commits Money Account pay updates onto the live transaction: nested
- * calldata (when provided), regenerated parent EIP-7702 batch
- * `txParams.data`, and optionally `requiredAssets[0].amount`.
+ * Commits Pay updates onto the live transaction: nested calldata (when
+ * provided), regenerated parent EIP-7702 batch `txParams.data`, and
+ * optionally `requiredAssets[0].amount`.
  *
- * An empty `updates` array is intentional for the deposit path that writes
- * `requiredAssets` before vault encoding finishes — it still regenerates
- * nothing nested, but updates the required amount so Pay can requote.
- *
- * Pay requotes when `txParams.data` changes; nested-only writes would leave
- * Relay skip-embedding vault calls because parent data stayed empty.
+ * Pay requotes when `txParams.data` or `requiredAssets` changes. A required
+ * amount written before any nested calldata exists quotes the empty batch.
+ * Callers pass the encoded calls and the amount in one commit. Nested-only
+ * writes would leave Relay skip-embedding those calls because parent data
+ * stayed empty.
  * Re-reads state first so a concurrent commit cannot clobber unrelated
  * fields from a stale copy.
  *
@@ -160,6 +159,8 @@ export function getTransactionMeta(
  * @param updates - Nested calldata updates keyed by index.
  * @param note - TransactionController history note.
  * @param requiredAssetAmount - Optional new `requiredAssets[0].amount`.
+ * @returns Whether transaction metadata was written. Unchanged calldata and
+ * required amount are left alone so Pay does not quote the same batch again.
  */
 export function commitTransactionPayUpdates(
   messenger: MoneyPayMessenger,
@@ -167,11 +168,18 @@ export function commitTransactionPayUpdates(
   updates: GetAmountDataResponse['updates'],
   note: string,
   requiredAssetAmount?: Hex,
-): void {
+): boolean {
   const transaction = getTransactionMeta(messenger, transactionId);
   if (!transaction) {
     clearAmountCommit(transactionId);
-    return;
+    return false;
+  }
+
+  if (
+    isPayCommitUnchanged(transaction, updates, requiredAssetAmount) ||
+    isEmptyBatchAmountWrite(transaction, updates)
+  ) {
+    return false;
   }
 
   const nextTransaction = cloneDeep(transaction);
@@ -184,17 +192,111 @@ export function commitTransactionPayUpdates(
     nextTransaction.requiredAssets[0].amount = requiredAssetAmount;
   }
 
+  // Gas, simulation, and security results describe the previous calldata.
+  // Drop them in this same write so they are not shown against the new amount.
+  clearAmountDerivedMetadata(nextTransaction);
+
   messenger.call(
     'TransactionController:updateTransaction',
     nextTransaction,
     note,
   );
+  return true;
+}
+
+/**
+ * Whether the live transaction already has this calldata and required amount.
+ * An empty parent batch still needs a write so Pay embeds the nested calls.
+ *
+ * @param transaction - Transaction currently stored.
+ * @param updates - Nested calldata updates keyed by index.
+ * @param requiredAssetAmount - Optional new `requiredAssets[0].amount`.
+ * @returns Whether committing would not change quote inputs.
+ */
+function isPayCommitUnchanged(
+  transaction: TransactionMeta,
+  updates: GetAmountDataResponse['updates'],
+  requiredAssetAmount?: Hex,
+): boolean {
+  const hasRequiredAmount = requiredAssetAmount !== undefined;
+  if (!hasRequiredAmount && updates.length === 0) {
+    return false;
+  }
+
+  if (
+    hasRequiredAmount &&
+    transaction.requiredAssets?.[0]?.amount !== requiredAssetAmount
+  ) {
+    return false;
+  }
+
+  if (updates.length === 0) {
+    return true;
+  }
+
+  const parentData = transaction.txParams?.data;
+  if (typeof parentData !== 'string' || parentData === '0x') {
+    return false;
+  }
+
+  return updates.every(
+    ({ nestedTransactionIndex, data }) =>
+      transaction.nestedTransactions?.[nestedTransactionIndex]?.data === data,
+  );
+}
+
+/**
+ * A required-amount write with no nested calls, while parent batch data is
+ * still empty, would make Pay quote a placeholder. Any Pay transaction skips
+ * that write and commits the amount together with the encoded calls.
+ *
+ * @param transaction - Transaction currently stored.
+ * @param updates - Nested calldata updates keyed by index.
+ * @returns Whether this commit would only set an amount on an empty batch.
+ */
+function isEmptyBatchAmountWrite(
+  transaction: TransactionMeta,
+  updates: GetAmountDataResponse['updates'],
+): boolean {
+  if (updates.length > 0) {
+    return false;
+  }
+
+  const parentData = transaction.txParams?.data;
+  return typeof parentData !== 'string' || parentData === '0x';
+}
+
+/**
+ * Removes confirmation metadata that was produced for the previous amount.
+ * A receipt revert is an on-chain result and stays.
+ *
+ * @param transaction - Transaction draft to clear.
+ */
+function clearAmountDerivedMetadata(transaction: TransactionMeta): void {
+  if (transaction.txParams) {
+    transaction.txParams.gas = undefined;
+  }
+  transaction.gasLimitNoBuffer = undefined;
+  transaction.gasUsed = undefined;
+  transaction.securityAlertResponse = undefined;
+  transaction.simulationData = undefined;
+  transaction.simulationFails = undefined;
+
+  if (!transaction.revert) {
+    return;
+  }
+
+  delete transaction.revert.gas;
+  delete transaction.revert.simulation;
+  if (!transaction.revert.receipt) {
+    transaction.revert = undefined;
+  }
 }
 
 /**
  * Applies nested calldata updates and, when the batch has a `from`,
  * regenerates parent EIP-7702 execute() data so Pay sees a non-empty
- * `txParams.data` and embeds the vault calls in the Relay quote.
+ * `txParams.data` and embeds the nested calls in the Relay quote.
  *
  * @param transaction - Transaction to mutate.
  * @param updates - Nested calldata updates keyed by index.
