@@ -104,11 +104,15 @@ describe('ImportNftsPage', () => {
   });
 
   it('shows the current network name and enables import without picking a network again', () => {
-    const { getByPlaceholderText, getByText } = renderWithProvider(
+    const { getByPlaceholderText } = renderWithProvider(
       <ImportNftsPage />,
       store,
     );
-    expect(getByText(messages.networkNameGoerli.message)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: `${messages.network.message}: ${messages.networkNameGoerli.message}`,
+      }),
+    ).toBeInTheDocument();
     expect(getImportButton()).not.toBeEnabled();
 
     const addressInput = getByPlaceholderText('0x...');
@@ -278,6 +282,12 @@ describe('ImportNftsPage', () => {
 
     const errorMessage = getByText(messages.invalidAddress.message);
     expect(errorMessage).toBeInTheDocument();
+    expect(addressInput).toHaveAttribute('aria-invalid', 'true');
+    expect(addressInput).toHaveAttribute(
+      'aria-describedby',
+      'import-nfts-address-error',
+    );
+    expect(errorMessage).toHaveAttribute('id', 'import-nfts-address-error');
   });
 
   it('selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet', async () => {

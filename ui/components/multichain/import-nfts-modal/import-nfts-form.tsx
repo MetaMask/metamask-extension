@@ -256,6 +256,10 @@ export const ImportNftsForm = ({
     setIsNetworkSelectorOpen(true);
   }, []);
 
+  const networkTitle = selectedNetworkForCustomImport
+    ? networkConfigurations[selectedNetworkForCustomImport]?.name
+    : t('networkMenuHeading');
+
   return (
     <>
       <Content padding={0}>
@@ -268,12 +272,8 @@ export const ImportNftsForm = ({
               <Box>
                 <Label className="mb-1">{t('network')}</Label>
                 <NetworkSelectorCustomImport
-                  title={
-                    selectedNetworkForCustomImport
-                      ? networkConfigurations[selectedNetworkForCustomImport]
-                          ?.name
-                      : t('networkMenuHeading')
-                  }
+                  title={networkTitle}
+                  ariaLabel={`${t('network')}: ${networkTitle}`}
                   buttonDataTestId="test-import-tokens-drop-down-custom-import"
                   chainId={selectedNetworkForCustomImport ?? ''}
                   onSelectNetwork={handleNetworkSelect}
@@ -308,11 +308,17 @@ export const ImportNftsForm = ({
                   inputProps={
                     {
                       'data-testid': 'address',
+                      'aria-describedby': nftAddressValidationError
+                        ? 'import-nfts-address-error'
+                        : undefined,
                     } as React.ComponentPropsWithoutRef<'input'>
                   }
                 />
                 {nftAddressValidationError ? (
-                  <HelpText severity={HelpTextSeverity.Danger}>
+                  <HelpText
+                    id="import-nfts-address-error"
+                    severity={HelpTextSeverity.Danger}
+                  >
                     {nftAddressValidationError}
                   </HelpText>
                 ) : null}
@@ -345,11 +351,17 @@ export const ImportNftsForm = ({
                   inputProps={
                     {
                       'data-testid': 'token-id',
+                      'aria-describedby': duplicateTokenIdError
+                        ? 'import-nfts-token-id-error'
+                        : undefined,
                     } as React.ComponentPropsWithoutRef<'input'>
                   }
                 />
                 {duplicateTokenIdError ? (
-                  <HelpText severity={HelpTextSeverity.Danger}>
+                  <HelpText
+                    id="import-nfts-token-id-error"
+                    severity={HelpTextSeverity.Danger}
+                  >
                     {duplicateTokenIdError}
                   </HelpText>
                 ) : null}
