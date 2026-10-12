@@ -3734,44 +3734,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  rewardsBitcoinEnabledExtension: {
-    inProd: true,
-    name: 'rewardsBitcoinEnabledExtension',
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsEnabled: {
-    inProd: true,
-    name: 'rewardsEnabled',
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.32.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsOnboardingEnabled: {
-    inProd: true,
-    name: 'rewardsOnboardingEnabled',
-    productionDefault: {
-      enabled: true,
-      minimumVersion: '13.32.0',
-    },
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  rewardsTronEnabledExtension: {
-    inProd: true,
-    name: 'rewardsTronEnabledExtension',
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   rwaTokensEnabled: {
     inProd: true,
     name: 'rwaTokensEnabled',

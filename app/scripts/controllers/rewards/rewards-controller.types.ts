@@ -13,7 +13,6 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
 import { Messenger } from '@metamask/messenger';
 import {
   EstimatePerpsContextDto,
@@ -914,8 +913,7 @@ type AllowedActions =
 
 type AllowedEvents =
   | KeyringControllerUnlockEvent
-  | AccountTreeControllerSelectedAccountGroupChangeEvent
-  | RemoteFeatureFlagControllerStateChangeEvent;
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
 export type RewardsControllerMessenger = Messenger<
   'RewardsController',

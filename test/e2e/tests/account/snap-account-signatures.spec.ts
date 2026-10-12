@@ -17,10 +17,7 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import {
-  mockSnapSimpleKeyringAndSite,
-  SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
-} from './snap-keyring-site-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
@@ -40,8 +37,10 @@ describe('Snap Account Signatures', function (this: Suite) {
           },
           fixtures: new FixtureBuilderV2()
             .withSnapsPrivacyWarningAlreadyShown()
+            // Rewards follows basic functionality. Keep it off so silent auth
+            // does not run during snap account setup.
+            .withUseBasicFunctionalityDisabled()
             .build(),
-          manifestFlags: SNAP_SIMPLE_KEYRING_E2E_MANIFEST_FLAGS,
           testSpecificMock: (mockServer: Mockttp) =>
             mockSnapSimpleKeyringAndSite(mockServer, 8081),
           title,
