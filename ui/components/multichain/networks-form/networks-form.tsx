@@ -839,26 +839,36 @@ export const NetworksForm = ({
             buttonDataTestId="test-add-rpc-drop-down"
             renderItem={(item, isList) => {
               const failoverUrls = failoverUrlsForEndpoint(item);
-              const label =
-                item.type === RpcEndpointType.Infura
-                  ? 'Infura'
-                  : item.name || stripProtocol(stripKeyFromInfuraUrl(item.url));
-              return (
+              const urlLabel = stripProtocol(stripKeyFromInfuraUrl(item.url));
+              const rpcName =
+                item.type === RpcEndpointType.Infura ? 'Infura' : item.name;
+              const showFailover =
+                isRpcFailoverEnabled && failoverUrls.length > 0;
+              const urlText = (
                 <Text
-                  asChild
                   ellipsis
                   variant={TextVariant.BodyMd}
+                  className={isList && !showFailover ? 'py-4' : undefined}
+                >
+                  {rpcName ? `${rpcName} ${urlLabel}` : urlLabel}
+                </Text>
+              );
+
+              if (!showFailover) {
+                return urlText;
+              }
+
+              return (
+                <Box
                   className={
-                    isList ? 'flex items-center gap-1 py-4' : undefined
+                    isList
+                      ? 'flex min-w-0 items-center gap-1 py-4'
+                      : 'flex min-w-0 items-center gap-1'
                   }
                 >
-                  <span>
-                    {label}
-                    {isRpcFailoverEnabled && failoverUrls.length > 0 ? (
-                      <Tag className="ml-1 inline-flex">{t('failover')}</Tag>
-                    ) : null}
-                  </span>
-                </Text>
+                  {urlText}
+                  <Tag className="shrink-0">{t('failover')}</Tag>
+                </Box>
               );
             }}
             renderTooltip={(item, isList) => {
@@ -1077,12 +1087,11 @@ export const NetworksForm = ({
             }}
             renderItem={(item, isList) => (
               <Text
-                asChild
                 ellipsis
                 variant={TextVariant.BodyMd}
                 className={isList ? 'flex items-center py-4' : undefined}
               >
-                <span>{stripProtocol(item)}</span>
+                {stripProtocol(item)}
               </Text>
             )}
             renderTooltip={(item) => (item.length > 36 ? item : undefined)}
