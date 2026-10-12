@@ -71,17 +71,19 @@ export const getNotificationsSettingsSectionConfigs = (
   }
 
   nextSections.push({
-    type: 'marketing',
-    title: t('notificationsSettingsMarketingTitle'),
-    description: t('notificationsSettingsMarketingDescription'),
-    iconName: IconName.Campaign,
-  });
-
-  nextSections.push({
     type: 'agenticCli',
     title: t('notificationsSettingsAgenticCliTitle'),
     description: t('notificationsSettingsAgenticCliDescription'),
     iconName: IconName.Code,
+  });
+
+  // WARNING: This marketing section must ALWAYS remain the very last item in the array.
+  // New sections must be added ABOVE this entry (never below).
+  nextSections.push({
+    type: 'marketing',
+    title: t('notificationsSettingsMarketingTitle'),
+    description: t('notificationsSettingsMarketingDescription'),
+    iconName: IconName.Campaign,
   });
 
   return nextSections;
