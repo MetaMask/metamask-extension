@@ -176,7 +176,7 @@
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
-      "optedInToMarketing": false
+      "optedInToMarketing": true
     },
     "AnnouncementController": {
       "announcements": {}
@@ -198,6 +198,7 @@
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
       "isWalletResetInProgress": false,
+      "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
@@ -206,7 +207,6 @@
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
       "outdatedBrowserWarningLastShown": null,
-      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": "wallet_home",
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
