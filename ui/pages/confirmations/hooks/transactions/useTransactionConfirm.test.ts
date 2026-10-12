@@ -155,6 +155,7 @@ function runHook({
       appState: {
         customNonceValue,
       },
+      metamask: {},
     }),
   );
 
