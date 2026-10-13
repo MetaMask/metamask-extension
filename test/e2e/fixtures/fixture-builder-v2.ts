@@ -1708,10 +1708,23 @@ type FixtureAssetMetadata = {
 };
 
 type FixtureFungiblePrice = {
+  allTimeHigh?: number;
+  allTimeLow?: number;
   assetPriceType?: string;
+  circulatingSupply?: number;
+  dilutedMarketCap?: number;
   id?: string;
   lastUpdated?: number;
+  marketCap?: number;
   price?: number;
+  pricePercentChange14d?: number;
+  pricePercentChange1d?: number;
+  pricePercentChange1h?: number;
+  pricePercentChange1y?: number;
+  pricePercentChange200d?: number;
+  pricePercentChange30d?: number;
+  pricePercentChange7d?: number;
+  totalVolume?: number;
   usdPrice?: number;
 };
 
@@ -1722,7 +1735,11 @@ type FixtureCurrencyRates = Record<
 
 type FixtureConversionRates = Record<
   string,
-  { conversionTime?: number; rate?: string }
+  {
+    conversionTime?: number;
+    marketData?: Record<string, unknown>;
+    rate?: string;
+  }
 >;
 
 type FixtureAssetsController = {
@@ -1734,7 +1751,9 @@ type FixtureAssetsController = {
  * Assets-unify reads fiat from `AssetsController.assetsPrice` and ignores
  * `CurrencyController` and `MultichainAssetsRatesController`. Copy those
  * legacy rates into `assetsPrice` so fixtures keep asserting the rates they
- * already configure. Entries a test set with `withAssetsController` are left
+ * already configure. Market data on those rates is copied too, because the
+ * asset page hides Market details when the unified price has none. Entries a
+ * test set with `withAssetsController` are left
  * alone, and native prices are only updated where the fixture already has one
  * so chains without a price do not suddenly join fiat totals.
  *
@@ -1838,8 +1857,76 @@ function projectConversionRates(
       lastUpdated: (conversion.conversionTime ?? 0) * 1000,
       price,
       usdPrice: price,
+      ...marketFieldsFromLegacyRate(conversion.marketData),
     };
   }
+}
+
+const LEGACY_MARKET_FIELDS = [
+  ['allTimeHigh', 'allTimeHigh'],
+  ['allTimeLow', 'allTimeLow'],
+  ['circulatingSupply', 'circulatingSupply'],
+  ['dilutedMarketCap', 'dilutedMarketCap'],
+  ['marketCap', 'marketCap'],
+  ['totalVolume', 'totalVolume'],
+] as const;
+
+const LEGACY_PRICE_CHANGE_FIELDS = [
+  ['PT1H', 'pricePercentChange1h'],
+  ['P1D', 'pricePercentChange1d'],
+  ['P7D', 'pricePercentChange7d'],
+  ['P14D', 'pricePercentChange14d'],
+  ['P30D', 'pricePercentChange30d'],
+  ['P200D', 'pricePercentChange200d'],
+  ['P1Y', 'pricePercentChange1y'],
+] as const;
+
+function marketFieldsFromLegacyRate(
+  marketData: Record<string, unknown> | undefined,
+): Partial<FixtureFungiblePrice> {
+  if (!marketData) {
+    return {};
+  }
+
+  const fields: Partial<FixtureFungiblePrice> = {};
+
+  for (const [source, target] of LEGACY_MARKET_FIELDS) {
+    assignFiniteNumber(fields, target, marketData[source]);
+  }
+
+  const { pricePercentChange } = marketData;
+
+  if (pricePercentChange && typeof pricePercentChange === 'object') {
+    const changes = pricePercentChange as Record<string, unknown>;
+
+    for (const [source, target] of LEGACY_PRICE_CHANGE_FIELDS) {
+      assignFiniteNumber(fields, target, changes[source]);
+    }
+  }
+
+  return fields;
+}
+
+type FixtureNumericPriceKey = {
+  [Key in keyof FixtureFungiblePrice]: NonNullable<
+    FixtureFungiblePrice[Key]
+  > extends number
+    ? Key
+    : never;
+}[keyof FixtureFungiblePrice];
+
+function assignFiniteNumber(
+  fields: Partial<FixtureFungiblePrice>,
+  key: FixtureNumericPriceKey,
+  value: unknown,
+): void {
+  const parsed = typeof value === 'number' ? value : Number(value);
+
+  if (value === undefined || value === null || !Number.isFinite(parsed)) {
+    return;
+  }
+
+  fields[key] = parsed;
 }
 
 export default FixtureBuilderV2;
