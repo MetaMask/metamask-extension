@@ -5,7 +5,6 @@ export {
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-export { isInE2eTest } from './is-in-e2e-test';
 
 export {
   HardwareWalletErrorProvider,

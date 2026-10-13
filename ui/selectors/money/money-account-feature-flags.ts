@@ -3,11 +3,13 @@ import { isObject } from '@metamask/utils';
 import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
 import {
+  getMoneyDepositCtaTokenAddresses,
   isMoneyAccountEnabled,
   isMoneyActivityDetailsEnabled,
   isMoneyActivityMockDataEnabled,
   isMoneyEarningSectionEnabled,
   isMoneyHomeScreenCardEnabled,
+  isMoneyTokenListItemCtaEnabled,
 } from '../../../shared/lib/money/feature-flags';
 import { getMoneyAccountVaultConfig } from '../../../shared/lib/money/vault-config';
 
@@ -175,13 +177,38 @@ export const selectMoneyActivityDetailsEnabled = createSelector(
 );
 
 /**
- * Selects whether the Money balance card should show the "mUSD" text label
- * next to the fiat balance.
+ * Selects whether the token list row Money deposit CTA is enabled.
  *
  * @param state - The MetaMask state object.
- * @returns Whether the mUSD label is enabled.
+ * @returns Whether the token list row CTA is enabled.
  */
-export const selectMoneyBalanceShowMusdLabelEnabled = createSelector(
+export const selectMoneyTokenListItemCtaEnabled = createSelector(
   getRemoteFeatureFlags,
-  (flags) => getBooleanFeatureFlag(flags?.moneyBalanceShowMusdLabel, false),
+  isMoneyTokenListItemCtaEnabled,
+);
+
+/**
+ * @param chainId - Hex chain ID.
+ * @param address - ERC-20 address.
+ * @returns The lookup key used by {@link selectMoneyDepositCtaTokenKeys}.
+ */
+export const getMoneyTokenKey = (chainId: string, address: string) =>
+  `${chainId.toLowerCase()}:${address.toLowerCase()}`;
+
+/**
+ * Selects the tokens that get Money deposit CTAs as `chainId:address` keys,
+ * both lowercased, for constant-time row lookups.
+ *
+ * @param state - The MetaMask state object.
+ * @returns The set of eligible token keys.
+ */
+export const selectMoneyDepositCtaTokenKeys = createSelector(
+  getRemoteFeatureFlags,
+  (flags): Set<string> =>
+    new Set(
+      Object.entries(getMoneyDepositCtaTokenAddresses(flags)).flatMap(
+        ([chainId, addresses]) =>
+          addresses.map((address) => getMoneyTokenKey(chainId, address)),
+      ),
+    ),
 );

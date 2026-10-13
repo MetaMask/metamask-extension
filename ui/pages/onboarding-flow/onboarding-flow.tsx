@@ -268,6 +268,10 @@ export default function OnboardingFlow() {
     bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        perf_fix: 'trace-registry-v1',
+      },
     });
     if (onboardingParentContext) {
       // Intentionally mutating ref object

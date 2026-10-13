@@ -14,8 +14,10 @@ import type {
   Backup,
   StorageKind,
 } from '../shared/lib/stores/persistence-manager';
+import type { SentryRemoteRates } from '../shared/lib/sentry-remote-rates';
 
 type StateHooks = {
+  getSentryRemoteRates?: () => SentryRemoteRates;
   getCustomTraces?: () => { [name: string]: number };
   getIsIdle?: () => boolean;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -66,7 +68,7 @@ type StateHooks = {
   hasConsoleAccess?: () => boolean;
 
   /**
-   * This is initialized by the service worker in MV3. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.ts`.
    */
   lazyListener?: ExtensionLazyListener<typeof chrome>;
   /**
@@ -123,6 +125,11 @@ type StateHooks = {
 };
 
 declare global {
+  /**
+   * Debug helper to log encrypted vault state
+   */
+  var logEncryptedVault: () => void;
+
   var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: Sentry | undefined;
