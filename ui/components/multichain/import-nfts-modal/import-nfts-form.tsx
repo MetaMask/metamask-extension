@@ -316,6 +316,7 @@ export const ImportNftsForm = ({
                   </Tooltip>
                 </Box>
                 <TextField
+                  autoFocus
                   id="address"
                   placeholder="0x..."
                   size={TextFieldSize.Lg}
