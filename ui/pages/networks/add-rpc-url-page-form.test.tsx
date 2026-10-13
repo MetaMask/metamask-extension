@@ -46,12 +46,7 @@ describe('AddRpcUrlPageForm', () => {
 
   it('keeps Add URL disabled while RPC validation is pending', () => {
     mockJsonRpcRequest.mockReturnValue(new Promise(() => undefined));
-    render(
-      <AddRpcUrlPageForm
-        onCancel={() => undefined}
-        onAdded={() => undefined}
-      />,
-    );
+    render(<AddRpcUrlPageForm onAdded={() => undefined} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://rpc.example.com' },
@@ -63,7 +58,7 @@ describe('AddRpcUrlPageForm', () => {
   it('disables Add URL when RPC validation fails', async () => {
     const onAdded = jest.fn();
     mockJsonRpcRequest.mockRejectedValue(new Error('invalid rpc'));
-    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
+    render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://invalid-rpc.example.com' },
@@ -92,7 +87,7 @@ describe('AddRpcUrlPageForm', () => {
         httpStatus: 429,
       }),
     );
-    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
+    render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://lb.routeme.sh/rpc/evm/30' },
@@ -114,7 +109,7 @@ describe('AddRpcUrlPageForm', () => {
 
   it('enables Add URL when RPC validation succeeds', async () => {
     const onAdded = jest.fn();
-    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
+    render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://rpc.example.com' },
@@ -142,12 +137,7 @@ describe('AddRpcUrlPageForm', () => {
   });
 
   it('does not validate RPC when the URL format is invalid', () => {
-    render(
-      <AddRpcUrlPageForm
-        onCancel={() => undefined}
-        onAdded={() => undefined}
-      />,
-    );
+    render(<AddRpcUrlPageForm onAdded={() => undefined} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'rpc.example.com' },
@@ -163,9 +153,9 @@ describe('AddRpcUrlPageForm', () => {
 
   it('shows a required error on submit when the URL is empty, and not on blur', () => {
     const onAdded = jest.fn();
-    render(<AddRpcUrlPageForm onCancel={() => undefined} onAdded={onAdded} />);
+    render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
-    expect(screen.getByTestId('rpc-url-input-test')).not.toHaveFocus();
+    expect(screen.getByTestId('rpc-url-input-test')).toHaveFocus();
 
     fireEvent.blur(screen.getByTestId('rpc-url-input-test'));
 
@@ -178,12 +168,7 @@ describe('AddRpcUrlPageForm', () => {
   });
 
   it('updates a visible URL error as the value changes', () => {
-    render(
-      <AddRpcUrlPageForm
-        onCancel={() => undefined}
-        onAdded={() => undefined}
-      />,
-    );
+    render(<AddRpcUrlPageForm onAdded={() => undefined} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'not a url' },
@@ -228,7 +213,6 @@ describe('AddRpcUrlPageForm', () => {
         chainlistEnabled
         networkName="Gnosis"
         existingRpcUrls={['https://rpc.gnosischain.com']}
-        onCancel={() => undefined}
         onAdded={onAdded}
       />,
     );
@@ -273,7 +257,7 @@ describe('AddRpcUrlPageForm', () => {
     );
   });
 
-  it('does not suggest Chainlist RPCs when the feature flag is off', () => {
+  it('shows Chainlist RPC suggestions when the add RPC form opens', () => {
     mockUseSafeChains.mockReturnValue({
       safeChains: [
         {
@@ -288,10 +272,72 @@ describe('AddRpcUrlPageForm', () => {
     render(
       <AddRpcUrlPageForm
         chainId="100"
-        onCancel={() => undefined}
+        chainlistEnabled
         onAdded={() => undefined}
       />,
     );
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('rpc-url-input-test')).toHaveFocus();
+
+    fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('gnosis-rpc.publicnode.com')).toBeInTheDocument();
+    expect(screen.getByTestId('add-rpc-chainlist-suggestion')).toHaveClass(
+      'w-full',
+      'px-4',
+    );
+  });
+
+  it('closes Chainlist RPC suggestions when clicking outside the URL field', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(
+      <AddRpcUrlPageForm
+        chainId="100"
+        chainlistEnabled
+        onAdded={() => undefined}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('add-rpc-chainlist-suggestions'),
+    ).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+
+    expect(
+      screen.queryByTestId('add-rpc-chainlist-suggestions'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not suggest Chainlist RPCs when the feature flag is off', () => {
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [
+        {
+          chainId: '100',
+          name: 'Gnosis',
+          nativeCurrency: { symbol: 'xDAI' },
+          rpc: ['https://gnosis-rpc.publicnode.com'],
+        },
+      ],
+    });
+
+    render(<AddRpcUrlPageForm chainId="100" onAdded={() => undefined} />);
 
     fireEvent.focus(screen.getByTestId('rpc-url-input-test'));
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
@@ -318,13 +364,7 @@ describe('AddRpcUrlPageForm', () => {
       ],
     });
 
-    render(
-      <AddRpcUrlPageForm
-        chainId="100"
-        onCancel={() => undefined}
-        onAdded={() => undefined}
-      />,
-    );
+    render(<AddRpcUrlPageForm chainId="100" onAdded={() => undefined} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
       target: { value: 'https://custom.example.com' },
@@ -355,7 +395,6 @@ describe('AddRpcUrlPageForm', () => {
       <AddRpcUrlPageForm
         chainId="100"
         chainlistEnabled
-        onCancel={() => undefined}
         onAdded={() => undefined}
       />,
     );
@@ -393,7 +432,6 @@ describe('AddRpcUrlPageForm', () => {
       <AddRpcUrlPageForm
         chainId="100"
         chainlistEnabled
-        onCancel={() => undefined}
         onAdded={() => undefined}
       />,
     );
@@ -430,7 +468,6 @@ describe('AddRpcUrlPageForm', () => {
       <AddRpcUrlPageForm
         chainId="100"
         chainlistEnabled
-        onCancel={() => undefined}
         onAdded={() => undefined}
       />,
     );
