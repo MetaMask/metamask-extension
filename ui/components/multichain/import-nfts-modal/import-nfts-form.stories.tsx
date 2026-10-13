@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
@@ -17,18 +18,19 @@ const createStore = (chainId = CHAIN_IDS.MAINNET, useTokenDetection = true) => {
   });
 };
 
-export default {
+const meta: Meta<typeof ImportNftsPage> = {
   title: 'Components/Multichain/ImportNftsPage',
   component: ImportNftsPage,
+  decorators: [
+    (Story) => (
+      <Provider store={createStore()}>
+        <Story />
+      </Provider>
+    ),
+  ],
 };
 
-export const DefaultStory = () => <ImportNftsPage />;
-DefaultStory.decorators = [
-  (Story) => (
-    <Provider store={createStore()}>
-      <Story />
-    </Provider>
-  ),
-];
+export default meta;
+type Story = StoryObj<typeof ImportNftsPage>;
 
-DefaultStory.storyName = 'Default';
+export const Default: Story = {};

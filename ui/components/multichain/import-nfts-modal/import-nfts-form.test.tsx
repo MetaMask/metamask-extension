@@ -23,8 +23,8 @@ const EXISTING_NFT_ADDRESS = '0x495f947276749Ce646f68AC8c248420045cb7b5e';
 const EXISTING_TOKEN_ID =
   '58076532811975507823669075598676816378162417803895263482849101575514658701313';
 
-const mockToastSuccess = jest.fn();
-const mockToastError = jest.fn();
+const mockToastSuccess = jest.fn<void, unknown[]>();
+const mockToastError = jest.fn<void, unknown[]>();
 
 const getImportButton = () =>
   screen.getByRole('button', { name: messages.save.message });
@@ -43,22 +43,28 @@ const mockStateWithTestNetworks = {
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
-  getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
-  ignoreTokens: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+    .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
+  getTokenStandardAndDetails: jest.fn().mockResolvedValue(undefined),
+  ignoreTokens: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
   updateNftDropDownState: jest
     .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
-  hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
+    .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
+  hideImportNftsModal: jest
+    .fn()
+    .mockReturnValue(jest.fn().mockResolvedValue(undefined)),
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
   toast: {
-    success: (...args) => mockToastSuccess(...args),
-    error: (...args) => mockToastError(...args),
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
   },
-  ToastContent: ({ title }) => title,
+  ToastContent: ({ title }: { title: React.ReactNode }) => title,
 }));
+
+const mockAddNftVerifyOwnership = jest.mocked(addNftVerifyOwnership);
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -236,7 +242,7 @@ describe('ImportNftsPage', () => {
   });
 
   it('should show error toast on import failure', async () => {
-    addNftVerifyOwnership.mockImplementation(() =>
+    mockAddNftVerifyOwnership.mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
@@ -310,7 +316,7 @@ describe('ImportNftsPage', () => {
         },
       },
     });
-    addNftVerifyOwnership.mockClear();
+    mockAddNftVerifyOwnership.mockClear();
 
     const { getByPlaceholderText } = renderWithProvider(
       <ImportNftsPage />,
@@ -327,7 +333,7 @@ describe('ImportNftsPage', () => {
     fireEvent.change(tokenIdInput, {
       target: { value: EXISTING_TOKEN_ID },
     });
-    fireEvent.submit(addressInput.closest('form'));
+    fireEvent.submit(addressInput.closest('form') as HTMLFormElement);
 
     expect(
       screen.getByText(messages.nftAlreadyAdded.message),
@@ -348,14 +354,14 @@ describe('ImportNftsPage', () => {
     expect(
       screen.getByText(messages.nftAlreadyAdded.message),
     ).toBeInTheDocument();
-    fireEvent.submit(addressInput.closest('form'));
+    fireEvent.submit(addressInput.closest('form') as HTMLFormElement);
     expect(addNftVerifyOwnership).not.toHaveBeenCalled();
   });
 
   it('selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet', async () => {
     const customNetwork = {
       rpcUrl: 'https://alt-rpc.rpc.com',
-      chainId: '0x123',
+      chainId: '0x123' as const,
       ticker: 'ETH',
       nickname: 'Custom Network',
       id: 'custom-network-client-id',
@@ -405,7 +411,7 @@ describe('ImportNftsPage', () => {
     fireEvent.click(getImportButton());
 
     // Get the actual networkClientId that was used in the addNftVerifyOwnership call (use last call to be robust against previous test calls)
-    const addNftCalls = addNftVerifyOwnership.mock.calls;
+    const addNftCalls = mockAddNftVerifyOwnership.mock.calls;
     const lastCall = addNftCalls[addNftCalls.length - 1];
     const usedNetworkClientId = lastCall[2]; // Third argument is the networkClientId
 
