@@ -9,6 +9,7 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
@@ -35,6 +36,11 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
+  submitRequestToBackground: jest.fn(),
+}));
+
 jest.mock('../../../store/actions.ts', () => {
   const actionConstants = jest.requireActual('../../../store/actionConstants');
   return {
@@ -55,6 +61,9 @@ jest.mock('../../../store/actions.ts', () => {
 
 describe('Onboarding Metametrics Component', () => {
   let store: Store;
+  let resolveGeolocation: (location: string | undefined) => void = () =>
+    undefined;
+  let rejectGeolocation: (error: Error) => void = () => undefined;
 
   const mockState = {
     metamask: {
@@ -80,23 +89,40 @@ describe('Onboarding Metametrics Component', () => {
     });
   }
 
+  async function settleGeolocation(location?: string) {
+    await act(async () => {
+      resolveGeolocation(location);
+    });
+  }
+
   beforeEach(() => {
+    jest.mocked(submitRequestToBackground).mockImplementation(
+      () =>
+        new Promise((resolve, reject) => {
+          resolveGeolocation = resolve;
+          rejectGeolocation = reject;
+        }),
+    );
     store = configureStore(mockState);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
-  it('renders match snapshot', () => {
+  it('renders match snapshot', async () => {
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
+    await settleGeolocation();
     expect(container).toMatchSnapshot();
   });
 
-  it('renders match snapshot after new policy date', () => {
+  it('renders match snapshot after new policy date', async () => {
     // TODO: merge this with the previous test once this date is reached
     jest.useFakeTimers().setSystemTime(new Date('2024-06-05'));
     const { container } = renderWithProvider(<OnboardingMetametrics />, store);
+    await settleGeolocation();
     expect(container).toMatchSnapshot();
     jest.useRealTimers();
   });
@@ -125,6 +151,7 @@ describe('Onboarding Metametrics Component', () => {
     });
 
     const continueButton = getByTestId('metametrics-i-agree');
+    await settleGeolocation();
 
     await clickElement(continueButton);
 
@@ -172,6 +199,7 @@ describe('Onboarding Metametrics Component', () => {
     });
 
     const continueButton = getByTestId('metametrics-i-agree');
+    await settleGeolocation();
 
     await clickElement(continueButton);
 
@@ -184,7 +212,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  it('when the participate in MetaMetrics checkbox is unchecked, setDataCollectionForMarketing should be called with false', async () => {
+  it('when both checkboxes are unchecked, setDataCollectionForMarketing should be called with false', async () => {
     const { queryByText, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -204,9 +232,9 @@ describe('Onboarding Metametrics Component', () => {
       'metametrics-checkbox',
     ) as HTMLElement;
 
-    // Opt out of MetaMetrics; this should clear marketing consent
     await clickElement(participateContainer);
 
+    await settleGeolocation();
     const continueButton = getByTestId('metametrics-i-agree');
     await clickElement(continueButton);
 
@@ -230,7 +258,7 @@ describe('Onboarding Metametrics Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('on uncheking the participate meatametric, checked datacollection marketing checkbox should be unchecked', async () => {
+  it('keeps the marketing checkbox checked and enabled when metametrics is unchecked', async () => {
     const { getAllByRole, getByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       store,
@@ -247,6 +275,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
+    await settleGeolocation();
     await clickElement(marketingContainer);
 
     await waitFor(() => {
@@ -256,8 +285,10 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(participateContainer);
 
     await waitFor(() => {
-      expect(marketingCheckbox).not.toBeChecked();
+      expect(getAllByRole('checkbox')[0]).not.toBeChecked();
     });
+    expect(marketingCheckbox).toBeChecked();
+    expect(marketingCheckbox).toBeEnabled();
   });
 
   it('clicking the participate checkbox container toggles the participate checkbox', async () => {
@@ -402,6 +433,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
+    await settleGeolocation();
     await clickElement(marketingCheckboxContainer);
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
@@ -426,6 +458,7 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
+    await settleGeolocation();
     await keyDownElement(marketingCheckboxContainer, ' ');
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
@@ -445,9 +478,162 @@ describe('Onboarding Metametrics Component', () => {
 
     expect(marketingCheckbox).not.toBeChecked();
 
+    await settleGeolocation();
     await keyDownElement(marketingCheckboxContainer, 'Enter');
     await waitFor(() => {
       expect(marketingCheckbox).toBeChecked();
+    });
+  });
+
+  describe('marketing toggle default by region', () => {
+    it('disables marketing consent and continue while geolocation is pending', () => {
+      const { getAllByRole, getByTestId } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      expect(getAllByRole('checkbox')[1]).toBeDisabled();
+      expect(getByTestId('metametrics-i-agree')).toBeDisabled();
+    });
+
+    it('uses a stored opted-in preference without requesting geolocation', () => {
+      store = configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: true,
+        },
+      });
+
+      const { getAllByRole, getByTestId } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      expect(getAllByRole('checkbox')[1]).toBeChecked();
+      expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+      expect(submitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('uses a stored opted-out preference without requesting geolocation', () => {
+      store = configureStore({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          marketingConsentDecisionMade: true,
+          optedInToMarketing: false,
+        },
+      });
+
+      const { getAllByRole, getByTestId } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+      expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+      expect(submitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('defaults marketing checkbox to checked for a US region', async () => {
+      const { getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('US-CA');
+      expect(getAllByRole('checkbox')[1]).toBeChecked();
+    });
+
+    it('defaults marketing checkbox to unchecked outside the US', async () => {
+      const { getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('GB');
+      expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+    });
+
+    it('defaults marketing checkbox to unchecked when geolocation is unknown', async () => {
+      const { getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('UNKNOWN');
+      expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+    });
+
+    it('defaults marketing checkbox to unchecked when geolocation fails', async () => {
+      const { getAllByRole, getByTestId } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await act(async () => {
+        rejectGeolocation(new Error('geolocation failed'));
+      });
+
+      expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+      expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+    });
+
+    it('enables Continue and leaves marketing unchecked when geolocation never settles (5 s timeout)', async () => {
+      jest.useFakeTimers();
+      try {
+        const { getAllByRole, getByTestId } = renderWithProvider(
+          <OnboardingMetametrics />,
+          store,
+        );
+
+        expect(getByTestId('metametrics-i-agree')).toBeDisabled();
+        expect(getAllByRole('checkbox')[1]).toBeDisabled();
+
+        await act(async () => {
+          jest.advanceTimersByTime(5000);
+        });
+
+        expect(getByTestId('metametrics-i-agree')).toBeEnabled();
+        expect(getAllByRole('checkbox')[1]).not.toBeChecked();
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('dispatches setDataCollectionForMarketing with true on continue for a US region', async () => {
+      const { getByTestId, getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('US');
+      expect(getAllByRole('checkbox')[1]).toBeChecked();
+
+      await clickElement(getByTestId('metametrics-i-agree'));
+
+      await waitFor(() => {
+        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
+      });
+    });
+
+    it('saves marketing consent independently when MetaMetrics is unchecked', async () => {
+      const { getByTestId, getAllByRole } = renderWithProvider(
+        <OnboardingMetametrics />,
+        store,
+      );
+
+      await settleGeolocation('US');
+      await clickElement(getByTestId('metametrics-checkbox'));
+      expect(getAllByRole('checkbox')[1]).toBeChecked();
+
+      await clickElement(getByTestId('metametrics-i-agree'));
+
+      await waitFor(() => {
+        expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+        expect(setDataCollectionForMarketing).toHaveBeenCalledWith(true);
+      });
     });
   });
 });

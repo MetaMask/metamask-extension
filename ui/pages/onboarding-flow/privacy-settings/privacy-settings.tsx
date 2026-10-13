@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
-import log from 'loglevel';
 import {
   Box,
   Text,
@@ -45,7 +44,6 @@ import {
   getUseExternalNameSources,
   getExternalServicesOnboardingToggleState,
   getIsSocialLoginFlow,
-  getDataCollectionForMarketing,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
@@ -59,8 +57,6 @@ import {
   setUseTransactionSimulations,
   setUseExternalNameSources,
   setEditedNetwork,
-  setDataCollectionForMarketing,
-  setMarketingConsent,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -112,8 +108,6 @@ export default function PrivacySettings() {
     getIsBasicFunctionalityConsolidationEnabledInBuild();
   const isSocialLoginBasicFunctionalityLocked =
     isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
-  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -244,15 +238,6 @@ export default function PrivacySettings() {
         ]
       : []),
   ];
-
-  const handleDataCollectionForMarketing = async (value: boolean) => {
-    try {
-      dispatch(setMarketingConsent(value));
-    } catch (error) {
-      log.error('Error setting marketing consent in default settings', error);
-    }
-    dispatch(setDataCollectionForMarketing(value));
-  };
 
   return (
     <>
@@ -753,15 +738,7 @@ export default function PrivacySettings() {
                   )}
                   {isSocialLoginFlow && (
                     <>
-                      <MetametricsToggle
-                        dataCollectionForMarketing={
-                          dataCollectionForMarketing === true
-                        }
-                        setDataCollectionForMarketing={
-                          handleDataCollectionForMarketing
-                        }
-                        fromDefaultSettings
-                      />
+                      <MetametricsToggle fromDefaultSettings />
                       <DeleteMetaMetricsDataButton defaultPrivacySettings />
                     </>
                   )}

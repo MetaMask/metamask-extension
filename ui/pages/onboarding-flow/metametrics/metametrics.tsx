@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -44,6 +44,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { useIsFirefox } from '../../../hooks/useIsFirefox';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDispatch } from '../../../store/hooks';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 type MetametricsCheckboxOptionProps = Readonly<{
   id: string;
@@ -118,6 +119,14 @@ function MetametricsCheckboxOption({
   );
 }
 
+function isUnitedStates(location: string | null | undefined): boolean {
+  if (!location || location === 'UNKNOWN') {
+    return false;
+  }
+
+  return location.toUpperCase().split('-')[0] === 'US';
+}
+
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -129,6 +138,56 @@ export default function OnboardingMetametrics() {
   const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
+
+  const [isUsByGeolocation, setIsUsByGeolocation] = useState(false);
+  const [geolocationSettled, setGeolocationSettled] = useState(false);
+  const hasStoredMarketingPreference = dataCollectionForMarketing !== null;
+  const marketingPreferenceReady =
+    hasStoredMarketingPreference || geolocationSettled;
+
+  useEffect(() => {
+    if (hasStoredMarketingPreference) {
+      return;
+    }
+
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    const withTimeout = Promise.race([
+      submitRequestToBackground<string>('getGeolocation'),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(
+          () => reject(new Error('Geolocation timed out')),
+          5000,
+        );
+      }),
+    ]);
+
+    withTimeout
+      .then((location) => {
+        if (!cancelled) {
+          setIsUsByGeolocation(isUnitedStates(location));
+        }
+      })
+      .catch(() => {
+        // Leave marketing unchecked when the lookup fails.
+      })
+      .finally(() => {
+        if (timeoutId !== undefined) {
+          clearTimeout(timeoutId);
+        }
+        if (!cancelled) {
+          setGeolocationSettled(true);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [hasStoredMarketingPreference]);
 
   const [checkboxDraft, setCheckboxDraft] = useState({
     participateTouched: false,
@@ -151,7 +210,7 @@ export default function OnboardingMetametrics() {
   }
   const isDataCollectionForMarketingChecked = marketingTouched
     ? marketingLocal
-    : Boolean(dataCollectionForMarketing);
+    : (dataCollectionForMarketing ?? isUsByGeolocation);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -201,15 +260,12 @@ export default function OnboardingMetametrics() {
             })
             .build(),
         );
-
-        dispatch(
-          setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
-        );
-        dispatch(setParticipateInMetaMetrics(true));
-      } else {
-        dispatch(setParticipateInMetaMetrics(false));
-        dispatch(setDataCollectionForMarketing(false));
       }
+
+      dispatch(
+        setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
+      );
+      dispatch(setParticipateInMetaMetrics(isParticipateInMetaMetricsChecked));
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
@@ -218,12 +274,10 @@ export default function OnboardingMetametrics() {
   };
 
   const handleParticipateInMetaMetricsChange = () => {
-    const next = !isParticipateInMetaMetricsChecked;
     setCheckboxDraft((prev) => ({
       ...prev,
       participateTouched: true,
-      participateLocal: next,
-      ...(next ? {} : { marketingTouched: true, marketingLocal: false }),
+      participateLocal: !isParticipateInMetaMetricsChecked,
     }));
   };
 
@@ -286,18 +340,15 @@ export default function OnboardingMetametrics() {
       <MetametricsCheckboxOption
         id="metametrics-datacollection-opt-in"
         testId="metametrics-data-collection-checkbox"
-        isSelected={
-          isParticipateInMetaMetricsChecked &&
-          isDataCollectionForMarketingChecked
-        }
-        isDisabled={!isParticipateInMetaMetricsChecked}
+        isSelected={isDataCollectionForMarketingChecked}
+        isDisabled={!marketingPreferenceReady}
         onChange={handleMarketingChange}
         containerClassName={
-          isParticipateInMetaMetricsChecked
+          marketingPreferenceReady
             ? 'onboarding-metametrics__checkbox'
             : 'onboarding-metametrics__checkbox-disabled'
         }
-        isInteractive={isParticipateInMetaMetricsChecked}
+        isInteractive={marketingPreferenceReady}
         label={
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricCheckboxTitleTwo')}
@@ -311,6 +362,7 @@ export default function OnboardingMetametrics() {
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
           className="w-full"
+          isDisabled={!marketingPreferenceReady}
           onClick={handleContinue}
         >
           {t('onboardingMetametricsContinue')}
