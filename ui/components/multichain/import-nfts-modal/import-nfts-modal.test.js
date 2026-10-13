@@ -19,6 +19,9 @@ const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
+const EXISTING_NFT_ADDRESS = '0x495f947276749Ce646f68AC8c248420045cb7b5e';
+const EXISTING_TOKEN_ID =
+  '58076532811975507823669075598676816378162417803895263482849101575514658701313';
 
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
@@ -293,6 +296,60 @@ describe('ImportNftsPage', () => {
       'import-nfts-address-error',
     );
     expect(errorMessage).toHaveAttribute('id', 'import-nfts-address-error');
+  });
+
+  it('blocks import of an already added NFT on submit and when the address changes', () => {
+    store = configureMockStore([thunk])({
+      ...mockStateWithTestNetworks,
+      metamask: {
+        ...mockStateWithTestNetworks.metamask,
+        enabledNetworkMap: {
+          eip155: {
+            '0x5': true,
+          },
+        },
+      },
+    });
+    addNftVerifyOwnership.mockClear();
+
+    const { getByPlaceholderText } = renderWithProvider(
+      <ImportNftsPage />,
+      store,
+    );
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText(
+      messages.nftTokenIdPlaceholder.message,
+    );
+
+    fireEvent.change(addressInput, {
+      target: { value: EXISTING_NFT_ADDRESS },
+    });
+    fireEvent.change(tokenIdInput, {
+      target: { value: EXISTING_TOKEN_ID },
+    });
+    fireEvent.submit(addressInput.closest('form'));
+
+    expect(
+      screen.getByText(messages.nftAlreadyAdded.message),
+    ).toBeInTheDocument();
+    expect(addNftVerifyOwnership).not.toHaveBeenCalled();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
+
+    fireEvent.change(addressInput, {
+      target: { value: VALID_ADDRESS },
+    });
+    expect(
+      screen.queryByText(messages.nftAlreadyAdded.message),
+    ).not.toBeInTheDocument();
+
+    fireEvent.change(addressInput, {
+      target: { value: EXISTING_NFT_ADDRESS },
+    });
+    expect(
+      screen.getByText(messages.nftAlreadyAdded.message),
+    ).toBeInTheDocument();
+    fireEvent.submit(addressInput.closest('form'));
+    expect(addNftVerifyOwnership).not.toHaveBeenCalled();
   });
 
   it('selectedNetworkClientId is for the network the NFT is on, not the globally selected network of the wallet', async () => {

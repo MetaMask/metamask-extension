@@ -231,10 +231,22 @@ export const ImportNftsForm = ({
     onSuccess();
   };
 
+  const getDuplicateTokenIdError = (address: string, tokenIdValue: string) => {
+    if (!tokenIdValue || !isValidHexAddress(address)) {
+      return null;
+    }
+    const tokenIdExists = checkTokenIdExists(
+      address,
+      tokenIdValue,
+      existingNfts.collections,
+    );
+    return tokenIdExists ? t('nftAlreadyAdded') : null;
+  };
+
   const handleAddressChange = (value: string) => {
     setNftAddress(value);
     setNftAddressValidationError(null);
-    setDuplicateTokenIdError(null);
+    setDuplicateTokenIdError(getDuplicateTokenIdError(value, tokenId));
   };
 
   const handleAddressBlur = (value: string) => {
@@ -249,21 +261,16 @@ export const ImportNftsForm = ({
   };
 
   const handleTokenIdBlur = (value: string) => {
-    if (!value || !isValidHexAddress(nftAddress)) {
-      return;
-    }
-    const tokenIdExists = checkTokenIdExists(
-      nftAddress,
-      value,
-      existingNfts.collections,
-    );
-    if (tokenIdExists) {
-      setDuplicateTokenIdError(t('nftAlreadyAdded'));
-    }
+    setDuplicateTokenIdError(getDuplicateTokenIdError(nftAddress, value));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const duplicateError = getDuplicateTokenIdError(nftAddress, tokenId);
+    if (duplicateError) {
+      setDuplicateTokenIdError(duplicateError);
+      return;
+    }
     if (isFormDisabled) {
       return;
     }
