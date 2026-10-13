@@ -49,4 +49,9 @@ export const createMockNotificationPreferences = (
     inAppNotificationsEnabled: true,
     ...overrides.priceAlerts,
   },
+  limitOrders: {
+    pushNotificationsEnabled: true,
+    inAppNotificationsEnabled: true,
+    ...overrides.limitOrders,
+  },
 });

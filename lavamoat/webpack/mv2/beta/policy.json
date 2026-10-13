@@ -496,16 +496,17 @@
     "@metamask/notification-services-controller>firebase>@firebase/app": {
       "globals": {
         "FinalizationRegistry": true,
+        "console.error": true,
         "console.warn": true
       },
       "packages": {
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/logger": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": {
+    "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": {
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/util": true
       }
@@ -524,12 +525,12 @@
       },
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
       }
     },
-    "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/logger": {
+    "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/logger": {
       "globals": {
         "console": true
       }
@@ -562,7 +563,7 @@
       },
       "packages": {
         "@metamask/notification-services-controller>firebase>@firebase/app": true,
-        "@metamask/notification-services-controller>firebase>@firebase/app>@firebase/component": true,
+        "@metamask/notification-services-controller>firebase>@firebase/ai>@firebase/component": true,
         "@metamask/notification-services-controller>firebase>@firebase/installations": true,
         "@metamask/notification-services-controller>firebase>@firebase/util": true,
         "@metamask/notification-services-controller>firebase>@firebase/app>idb": true
@@ -570,14 +571,18 @@
     },
     "@metamask/notification-services-controller>firebase>@firebase/util": {
       "globals": {
+        "URL": true,
         "WorkerGlobalScope": true,
+        "addEventListener": true,
         "atob": true,
         "browser": true,
         "btoa": true,
         "chrome": true,
         "console": true,
         "document": true,
+        "fetch": true,
         "indexedDB": true,
+        "location.host": true,
         "navigator": true,
         "process": true,
         "setTimeout": true

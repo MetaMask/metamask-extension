@@ -40,7 +40,9 @@ describe('NotificationsSettingsContent', () => {
       update: jest.fn(),
     });
     jest.mocked(useNotificationPreferences).mockReturnValue({
-      preferences: createMockNotificationPreferences(),
+      preferences: {
+        ...createMockNotificationPreferences(),
+      },
       hasNotificationPreferences: true,
       isLoading: false,
       isUpdatingPreferences: false,
@@ -77,12 +79,20 @@ describe('NotificationsSettingsContent', () => {
       screen.getByText(messages.notificationsSettingsAgenticCliTitle.message),
     ).toBeInTheDocument();
     expect(
+      screen.getByText(messages.notificationsSettingsLimitOrdersTitle.message),
+    ).toBeInTheDocument();
+    expect(
       screen.getByTestId('notifications-settings-section-walletActivity'),
     ).not.toHaveTextContent(
       `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
     );
     expect(
       screen.getByTestId('notifications-settings-section-marketing'),
+    ).toHaveTextContent(
+      `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
+    );
+    expect(
+      screen.getByTestId('notifications-settings-section-limitOrders'),
     ).toHaveTextContent(
       `${messages.notificationsSettingsStatusPush.message}, ${messages.notificationsSettingsStatusInApp.message}`,
     );

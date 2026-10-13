@@ -950,6 +950,10 @@ describe('NotificationSectionSubPage', () => {
         preferences: createMockNotificationPreferences(),
       },
       {
+        section: 'limitOrders',
+        preferences: createMockNotificationPreferences(),
+      },
+      {
         section: 'agenticCli',
         preferences: {
           ...createMockNotificationPreferences(),
