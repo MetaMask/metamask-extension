@@ -1214,9 +1214,9 @@ describe('NotificationSectionSubPage', () => {
       );
       fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
       await waitFor(() => {
-        expect(
-          screen.getByText('Could not enable channel'),
-        ).toBeInTheDocument();
+        expect(screen.getByRole('alert')).toHaveTextContent(
+          'Could not enable channel',
+        );
       });
 
       fireEvent.click(screen.getByTestId('marketing-consent-sheet-confirm'));
