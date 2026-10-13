@@ -315,11 +315,10 @@ export const ImportNftsForm = ({
                   }
                 />
                 {nftAddressValidationError ? (
-                  <HelpText
-                    id="import-nfts-address-error"
-                    severity={HelpTextSeverity.Danger}
-                  >
-                    {nftAddressValidationError}
+                  <HelpText severity={HelpTextSeverity.Danger} asChild>
+                    <span id="import-nfts-address-error">
+                      {nftAddressValidationError}
+                    </span>
                   </HelpText>
                 ) : null}
               </Box>
@@ -358,11 +357,10 @@ export const ImportNftsForm = ({
                   }
                 />
                 {duplicateTokenIdError ? (
-                  <HelpText
-                    id="import-nfts-token-id-error"
-                    severity={HelpTextSeverity.Danger}
-                  >
-                    {duplicateTokenIdError}
+                  <HelpText severity={HelpTextSeverity.Danger} asChild>
+                    <span id="import-nfts-token-id-error">
+                      {duplicateTokenIdError}
+                    </span>
                   </HelpText>
                 ) : null}
               </Box>
