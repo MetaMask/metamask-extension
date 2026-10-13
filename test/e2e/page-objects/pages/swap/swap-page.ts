@@ -337,8 +337,8 @@ class SwapPage {
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
-    const stxToggle = await this.driver.findElement(this.reviewFromAmount);
-    stxToggle.sendKeys(amount);
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, amount);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {
@@ -492,7 +492,10 @@ class SwapPage {
 
   async waitForQuote(): Promise<void> {
     console.log('Wait for quote to be displayed');
-    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
+    await this.driver.waitUntil(
+      async () => this.driver.isElementPresentAndVisible(this.swapButton, 500),
+      { timeout: 10000, interval: 200, stableFor: 500 },
+    );
   }
 
   async waitForSmartTransactionToComplete(): Promise<void> {

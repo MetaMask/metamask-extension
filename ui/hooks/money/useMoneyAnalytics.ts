@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
-import { mapKeys, omit, snakeCase } from 'lodash';
+import { mapKeys, snakeCase } from 'lodash';
 import {
   TransactionType,
   type TransactionMeta,
@@ -58,6 +58,7 @@ export type MoneyButtonClickedProperties =
   | ({
       buttonType: MoneyButtonType.Text;
       labelKey: string;
+      labelSubstitutions?: string[];
     } & MoneyButtonClickedBase)
   | ({ buttonType: MoneyButtonType.Icon } & MoneyButtonClickedBase);
 
@@ -153,9 +154,12 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
   }, [bottomSheetName, componentName, moneyAccountAddress, screenName]);
 
   const resolveLabel = useCallback(
-    (labelKey: string) => ({
-      labelEn: asLabel(getMessage('en', enMessages ?? {}, labelKey), labelKey),
-      labelLocalized: asLabel(t(labelKey), labelKey),
+    (labelKey: string, substitutions?: string[]) => ({
+      labelEn: asLabel(
+        getMessage('en', enMessages ?? {}, labelKey, substitutions),
+        labelKey,
+      ),
+      labelLocalized: asLabel(t(labelKey, substitutions), labelKey),
     }),
     [enMessages, t],
   );
@@ -179,13 +183,18 @@ export const useMoneyAnalytics = (location: MoneyAnalyticsLocation = {}) => {
 
   const trackButtonClicked = useCallback(
     (properties: MoneyButtonClickedProperties) => {
+      const { labelKey, labelSubstitutions, ...wireProperties } = {
+        labelKey: undefined,
+        labelSubstitutions: undefined,
+        ...properties,
+      };
       const label =
-        properties.buttonType === MoneyButtonType.Text
-          ? resolveLabel(properties.labelKey)
-          : {};
+        labelKey === undefined
+          ? {}
+          : resolveLabel(labelKey, labelSubstitutions);
 
       track(MetaMetricsEventName.MoneyButtonClicked, {
-        ...omit(properties, 'labelKey'),
+        ...wireProperties,
         ...label,
         redirectTargetType: redirectTargetTypeOf(properties.redirectTarget),
       });
