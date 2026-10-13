@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Последний известный баланс"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Повтор"
   },
