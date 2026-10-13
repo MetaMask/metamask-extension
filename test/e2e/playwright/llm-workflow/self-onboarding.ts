@@ -1,14 +1,7 @@
 import { randomBytes } from 'node:crypto';
 
-import type { Page } from '@playwright/test';
-
 const CANARY_SRP_PREFIX = 'CANARY-NOT-A-REAL-SRP-';
 const PASSWORD_RANDOM_BYTES = 18;
-
-type BackgroundCall = {
-  method: string;
-  params: unknown[];
-};
 
 type OnboardingPayload = {
   password: string;
@@ -17,13 +10,20 @@ type OnboardingPayload = {
 
 type BackgroundPort = {
   postMessage: (message: unknown) => void;
+  disconnect: () => void;
   onMessage: {
     addListener: (listener: (message: unknown) => void) => void;
-    removeListener: (listener: (message: unknown) => void) => void;
   };
   onDisconnect: {
     addListener: (listener: () => void) => void;
   };
+};
+
+export type SelfOnboardingPage = {
+  evaluate: (
+    pageFunction: (payload: OnboardingPayload) => Promise<void>,
+    payload: OnboardingPayload,
+  ) => Promise<void>;
 };
 
 /**
@@ -40,7 +40,7 @@ export function normalizeSecretRecoveryPhrase(phrase: string): string {
   if (words.length !== 12 && words.length !== 24) {
     throw new Error('secret recovery phrase must be 12 or 24 words');
   }
-  if (phrase.startsWith(CANARY_SRP_PREFIX)) {
+  if (phrase.trim().startsWith(CANARY_SRP_PREFIX)) {
     throw new Error('marker strings cannot onboard MetaMask');
   }
   return words.join(' ');
@@ -58,15 +58,24 @@ export function encodeSecretRecoveryPhrase(phrase: string): number[] {
 }
 
 /**
- * Runs inside the extension page. Opens a trusted UI port and restores the
- * vault, then marks onboarding complete. Errors name the background method
- * only, so a thrown message cannot carry the phrase or password.
+ * Runs inside the extension page. Opens a trusted UI port, waits until the
+ * background controller stream is live, restores the vault, then marks
+ * onboarding complete. Errors name the background step only, so a thrown
+ * message cannot carry the phrase or password.
+ *
+ * `page.evaluate` serializes only this function's source, so it must not
+ * reference anything defined outside its body. It must also not declare named
+ * functions: the `mm` daemon runs under tsx, which wraps them in an `__name`
+ * helper that does not exist in the page.
  *
  * @param payload - The vault password and the encoded phrase.
  */
 export async function completeOnboardingInPage(
   payload: OnboardingPayload,
 ): Promise<void> {
+  const STEP_TIMEOUT_MS = 60_000;
+  const UI_SYNC_KEY = 'START_UI_SYNC';
+
   const runtime = (
     globalThis as unknown as {
       chrome?: {
@@ -75,68 +84,54 @@ export async function completeOnboardingInPage(
     }
   ).chrome?.runtime;
   if (!runtime?.connect) {
-    throw new Error('self-onboarding failed');
+    throw new Error(
+      'chrome.runtime is unavailable; use a test or development build',
+    );
   }
 
   const port = runtime.connect({ name: 'fullscreen' });
-  const call = (method: string, params: unknown[]) =>
-    new Promise<void>((resolve, reject) => {
-      let settled = false;
-      const id = Math.floor(Math.random() * 1_000_000_000);
-      const handles: {
-        timer?: ReturnType<typeof setTimeout>;
-        onMessage?: (message: unknown) => void;
-      } = {};
-      const finish = (error?: Error) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        clearTimeout(handles.timer);
-        if (handles.onMessage) {
-          port.onMessage.removeListener(handles.onMessage);
-        }
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      };
-      const onMessage = (message: unknown) => {
-        if (
-          typeof message !== 'object' ||
-          message === null ||
-          !('name' in message) ||
-          message.name !== 'controller' ||
-          !('data' in message) ||
-          typeof message.data !== 'object' ||
-          message.data === null ||
-          !('id' in message.data) ||
-          message.data.id !== id
-        ) {
-          return;
-        }
-        if ('error' in message.data && message.data.error) {
-          finish(new Error(method));
-          return;
-        }
-        finish();
-      };
-      handles.onMessage = onMessage;
-      handles.timer = setTimeout(() => {
-        finish(new Error(method));
-      }, 60_000);
-      port.onMessage.addListener(onMessage);
-      port.onDisconnect.addListener(() => {
-        finish(new Error(method));
-      });
-      port.postMessage({
-        name: 'controller',
-        data: { id, jsonrpc: '2.0', method, params },
-      });
-    });
+  const waiters = new Map<string | number, (failed: boolean) => void>();
+  const connection = { open: true };
 
-  const calls: BackgroundCall[] = [
+  port.onMessage.addListener((message: unknown) => {
+    if (
+      typeof message !== 'object' ||
+      message === null ||
+      !('name' in message) ||
+      message.name !== 'controller' ||
+      !('data' in message) ||
+      typeof message.data !== 'object' ||
+      message.data === null
+    ) {
+      return;
+    }
+    const data = message.data as {
+      id?: unknown;
+      method?: unknown;
+      error?: unknown;
+    };
+    let key: string | number | undefined;
+    if (data.method === UI_SYNC_KEY) {
+      key = UI_SYNC_KEY;
+    } else if (typeof data.id === 'number') {
+      key = data.id;
+    }
+    const waiter = key === undefined ? undefined : waiters.get(key);
+    if (key === undefined || !waiter) {
+      return;
+    }
+    waiters.delete(key);
+    waiter(Boolean(data.error));
+  });
+  port.onDisconnect.addListener(() => {
+    connection.open = false;
+    for (const waiter of waiters.values()) {
+      waiter(true);
+    }
+    waiters.clear();
+  });
+
+  const calls: { method: string; params: unknown[] }[] = [
     {
       method: 'createNewVaultAndRestore',
       params: [payload.password, payload.encodedSeedPhrase],
@@ -147,9 +142,48 @@ export async function completeOnboardingInPage(
     { method: 'completeOnboarding', params: [] },
     { method: 'setHasSeenOnboardingCompletionPage', params: [true] },
   ];
+  // The background attaches its RPC handler before it pushes START_UI_SYNC;
+  // requests sent earlier can be dropped while it is still initializing.
+  const steps: { key: string | number; step: string; request?: unknown }[] = [
+    { key: UI_SYNC_KEY, step: 'background connection' },
+    ...calls.map(({ method, params }, index) => ({
+      key: index + 1,
+      step: method,
+      request: {
+        name: 'controller',
+        data: { id: index + 1, jsonrpc: '2.0', method, params },
+      },
+    })),
+  ];
 
-  for (const backgroundCall of calls) {
-    await call(backgroundCall.method, backgroundCall.params);
+  try {
+    for (const { key, step, request } of steps) {
+      await new Promise<void>((resolve, reject) => {
+        if (!connection.open) {
+          reject(new Error(step));
+          return;
+        }
+        const timer = setTimeout(() => {
+          waiters.delete(key);
+          reject(new Error(step));
+        }, STEP_TIMEOUT_MS);
+        waiters.set(key, (failed) => {
+          clearTimeout(timer);
+          if (failed) {
+            reject(new Error(step));
+          } else {
+            resolve();
+          }
+        });
+        if (request !== undefined) {
+          port.postMessage(request);
+        }
+      });
+    }
+  } finally {
+    if (connection.open) {
+      port.disconnect();
+    }
   }
 }
 
@@ -162,7 +196,7 @@ export async function completeOnboardingInPage(
  * @param phrase - The secret recovery phrase to restore.
  */
 export async function runSelfOnboarding(
-  page: Pick<Page, 'evaluate'>,
+  page: SelfOnboardingPage,
   phrase: string,
 ): Promise<void> {
   const normalized = normalizeSecretRecoveryPhrase(phrase);
