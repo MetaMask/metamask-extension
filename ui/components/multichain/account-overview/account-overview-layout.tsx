@@ -44,7 +44,7 @@ export const AccountOverviewLayout = ({
     >
       <div
         ref={heroRef}
-        className="account-overview__balance-wrapper flex flex-col p-4 gap-4"
+        className="account-overview__balance-wrapper flex flex-col p-4 pb-2 gap-4"
         data-testid={dataTestId}
       >
         <NetworkConnectionBanner />
