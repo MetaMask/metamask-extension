@@ -396,11 +396,17 @@ async function mockTokenAssets(mockServer: MockttpServer) {
 }
 
 async function mockTokensSupportedNetworks(mockServer: MockttpServer) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
   await mockServer
-    .forGet(/https:\/\/tokens?\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+    .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
     .always()
-    .thenJson(200, {
-      fullSupport: ['eip155:1', 'eip155:1337'],
-      partialSupport: [],
-    });
+    .thenJson(200, supportedNetworks);
+  await mockServer
+    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, supportedNetworks);
 }

@@ -1675,7 +1675,7 @@ export async function mockTronApis(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
     await mockAccountsApiV2WithTron(mockServer),
     await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),

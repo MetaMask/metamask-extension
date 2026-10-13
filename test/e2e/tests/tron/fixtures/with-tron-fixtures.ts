@@ -252,7 +252,7 @@ async function mockTronFixtureApis(
 
   return [
     await mockTronPriceSupportedNetworks(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockAccountsApiV2WithTron(mockServer),
     await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),

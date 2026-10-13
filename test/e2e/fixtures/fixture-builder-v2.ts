@@ -179,12 +179,6 @@ class FixtureBuilderV2 {
   storageServiceData: Record<string, unknown> = {};
 
   /**
-   * Asset ids whose `assetsPrice` entry a test set explicitly.
-   * Legacy rate projection must not overwrite those.
-   */
-  explicitAssetsPriceIds = new Set<string>();
-
-  /**
    * Constructs a new instance of the FixtureBuilder class.
    *
    * @param options - The options for the constructor.
@@ -274,11 +268,6 @@ class FixtureBuilderV2 {
 
     applyOverwriteOrMerge('assetsBalance', assetsBalance);
     applyOverwriteOrMerge('assetsPrice', assetsPrice);
-    if (assetsPrice) {
-      for (const assetId of Object.keys(assetsPrice)) {
-        this.explicitAssetsPriceIds.add(assetId);
-      }
-    }
     applyOverwriteOrMerge('assetsInfo', assetsInfo);
     applyOverwriteOrMerge('customAssets', customAssets);
     applyOverwriteOrMerge('assetPreferences', assetPreferences);
@@ -311,6 +300,12 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * @deprecated Assets-unify reads fiat from `AssetsController`. Set a displayed
+   * rate with {@link FixtureBuilderV2.withAssetsController} `assetsPrice`, and
+   * the selected currency with `selectedCurrency`.
+   * @param data - Legacy CurrencyController state to merge.
+   */
   withCurrencyController(data: Partial<CurrencyRateState>): this {
     merge(this.fixture.data.CurrencyController, data);
     return this;
@@ -363,6 +358,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  /**
+   * @deprecated Assets-unify reads non-EVM fiat from `AssetsController.assetsPrice`.
+   * Set that price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param data - Legacy MultichainAssetsRatesController state to merge.
+   */
   withMultichainAssetsRatesController(
     data: MultichainAssetsRatesControllerFixturePatch,
   ): this {
@@ -755,6 +755,10 @@ class FixtureBuilderV2 {
     });
   }
 
+  /**
+   * @deprecated Set the non-EVM price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param conversionRates - Legacy conversion rates to merge.
+   */
   withConversionRates(
     conversionRates: Partial<
       MultichainAssetsRatesControllerState['conversionRates']
@@ -763,6 +767,10 @@ class FixtureBuilderV2 {
     return this.withMultichainAssetsRatesController({ conversionRates });
   }
 
+  /**
+   * @deprecated Set the displayed native price with {@link FixtureBuilderV2.withAssetsController}.
+   * @param currencyRates - Legacy currency rates to merge.
+   */
   withCurrencyRates(
     currencyRates: CurrencyRateState['currencyRates'] = {},
   ): this {
@@ -1690,243 +1698,11 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    projectLegacyRatesIntoAssetsPrice(
-      this.fixture,
-      this.explicitAssetsPriceIds,
-    );
-
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,
     };
   }
-}
-
-type FixtureAssetMetadata = {
-  symbol?: string;
-  type?: string;
-};
-
-type FixtureFungiblePrice = {
-  allTimeHigh?: number;
-  allTimeLow?: number;
-  assetPriceType?: string;
-  circulatingSupply?: number;
-  dilutedMarketCap?: number;
-  id?: string;
-  lastUpdated?: number;
-  marketCap?: number;
-  price?: number;
-  pricePercentChange14d?: number;
-  pricePercentChange1d?: number;
-  pricePercentChange1h?: number;
-  pricePercentChange1y?: number;
-  pricePercentChange200d?: number;
-  pricePercentChange30d?: number;
-  pricePercentChange7d?: number;
-  totalVolume?: number;
-  usdPrice?: number;
-};
-
-type FixtureCurrencyRates = Record<
-  string,
-  { conversionRate?: number | null; usdConversionRate?: number | null }
->;
-
-type FixtureConversionRates = Record<
-  string,
-  {
-    conversionTime?: number;
-    marketData?: Record<string, unknown>;
-    rate?: string;
-  }
->;
-
-type FixtureAssetsController = {
-  assetsInfo?: Record<string, FixtureAssetMetadata>;
-  assetsPrice?: Record<string, FixtureFungiblePrice>;
-};
-
-/**
- * Assets-unify reads fiat from `AssetsController.assetsPrice` and ignores
- * `CurrencyController` and `MultichainAssetsRatesController`. Copy those
- * legacy rates into `assetsPrice` so fixtures keep asserting the rates they
- * already configure. Market data on those rates is copied too, because the
- * asset page hides Market details when the unified price has none. Entries a
- * test set with `withAssetsController` are left
- * alone, and native prices are only updated where the fixture already has one
- * so chains without a price do not suddenly join fiat totals.
- *
- * @param fixture - Fixture whose controller state is updated in place.
- * @param explicitAssetsPriceIds - Asset ids priced by the test.
- */
-function projectLegacyRatesIntoAssetsPrice(
-  fixture: FixtureType,
-  explicitAssetsPriceIds: ReadonlySet<string>,
-): void {
-  const data = fixture.data as Record<string, unknown>;
-  const assetsController = data.AssetsController as
-    | FixtureAssetsController
-    | undefined;
-
-  if (!assetsController) {
-    return;
-  }
-
-  const currencyController = data.CurrencyController as
-    | { currencyRates?: FixtureCurrencyRates }
-    | undefined;
-  const ratesController = data.MultichainAssetsRatesController as
-    | { conversionRates?: FixtureConversionRates }
-    | undefined;
-
-  assetsController.assetsPrice ??= {};
-  projectCurrencyRates(
-    assetsController,
-    currencyController?.currencyRates,
-    explicitAssetsPriceIds,
-  );
-  projectConversionRates(
-    assetsController,
-    ratesController?.conversionRates,
-    explicitAssetsPriceIds,
-  );
-}
-
-function projectCurrencyRates(
-  assetsController: FixtureAssetsController,
-  currencyRates: FixtureCurrencyRates | undefined,
-  explicitAssetsPriceIds: ReadonlySet<string>,
-): void {
-  const assetsInfo = assetsController.assetsInfo ?? {};
-  const assetsPrice = assetsController.assetsPrice ?? {};
-
-  for (const [assetId, assetPrice] of Object.entries(assetsPrice)) {
-    if (explicitAssetsPriceIds.has(assetId)) {
-      continue;
-    }
-
-    const metadata = assetsInfo[assetId];
-    const symbol = metadata?.symbol;
-    const conversionRate =
-      symbol === undefined
-        ? undefined
-        : currencyRates?.[symbol]?.conversionRate;
-
-    if (
-      metadata?.type !== 'native' ||
-      symbol === undefined ||
-      typeof conversionRate !== 'number'
-    ) {
-      continue;
-    }
-
-    const usdConversionRate = currencyRates?.[symbol]?.usdConversionRate;
-
-    assetPrice.assetPriceType = 'fungible';
-    assetPrice.price = conversionRate;
-    assetPrice.usdPrice =
-      typeof usdConversionRate === 'number'
-        ? usdConversionRate
-        : conversionRate;
-  }
-}
-
-function projectConversionRates(
-  assetsController: FixtureAssetsController,
-  conversionRates: FixtureConversionRates | undefined,
-  explicitAssetsPriceIds: ReadonlySet<string>,
-): void {
-  const assetsInfo = assetsController.assetsInfo ?? {};
-  const assetsPrice = assetsController.assetsPrice ?? {};
-
-  for (const [assetId, conversion] of Object.entries(conversionRates ?? {})) {
-    if (explicitAssetsPriceIds.has(assetId) || assetsPrice[assetId]) {
-      continue;
-    }
-
-    const price = Number(conversion.rate);
-
-    if (!Number.isFinite(price)) {
-      continue;
-    }
-
-    assetsPrice[assetId] = {
-      assetPriceType: 'fungible',
-      id: assetsInfo[assetId]?.symbol?.toLowerCase() ?? assetId,
-      lastUpdated: (conversion.conversionTime ?? 0) * 1000,
-      price,
-      usdPrice: price,
-      ...marketFieldsFromLegacyRate(conversion.marketData),
-    };
-  }
-}
-
-const LEGACY_MARKET_FIELDS = [
-  ['allTimeHigh', 'allTimeHigh'],
-  ['allTimeLow', 'allTimeLow'],
-  ['circulatingSupply', 'circulatingSupply'],
-  ['dilutedMarketCap', 'dilutedMarketCap'],
-  ['marketCap', 'marketCap'],
-  ['totalVolume', 'totalVolume'],
-] as const;
-
-const LEGACY_PRICE_CHANGE_FIELDS = [
-  ['PT1H', 'pricePercentChange1h'],
-  ['P1D', 'pricePercentChange1d'],
-  ['P7D', 'pricePercentChange7d'],
-  ['P14D', 'pricePercentChange14d'],
-  ['P30D', 'pricePercentChange30d'],
-  ['P200D', 'pricePercentChange200d'],
-  ['P1Y', 'pricePercentChange1y'],
-] as const;
-
-function marketFieldsFromLegacyRate(
-  marketData: Record<string, unknown> | undefined,
-): Partial<FixtureFungiblePrice> {
-  if (!marketData) {
-    return {};
-  }
-
-  const fields: Partial<FixtureFungiblePrice> = {};
-
-  for (const [source, target] of LEGACY_MARKET_FIELDS) {
-    assignFiniteNumber(fields, target, marketData[source]);
-  }
-
-  const { pricePercentChange } = marketData;
-
-  if (pricePercentChange && typeof pricePercentChange === 'object') {
-    const changes = pricePercentChange as Record<string, unknown>;
-
-    for (const [source, target] of LEGACY_PRICE_CHANGE_FIELDS) {
-      assignFiniteNumber(fields, target, changes[source]);
-    }
-  }
-
-  return fields;
-}
-
-type FixtureNumericPriceKey = {
-  [Key in keyof FixtureFungiblePrice]: NonNullable<
-    FixtureFungiblePrice[Key]
-  > extends number
-    ? Key
-    : never;
-}[keyof FixtureFungiblePrice];
-
-function assignFiniteNumber(
-  fields: Partial<FixtureFungiblePrice>,
-  key: FixtureNumericPriceKey,
-  value: unknown,
-): void {
-  const parsed = typeof value === 'number' ? value : Number(value);
-
-  if (value === undefined || value === null || !Number.isFinite(parsed)) {
-    return;
-  }
-
-  fields[key] = parsed;
 }
 
 export default FixtureBuilderV2;
