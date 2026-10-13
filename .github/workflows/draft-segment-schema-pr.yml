@@ -106,13 +106,14 @@ jobs:
           mode: create
           segment-schema-token: ${{ steps.app-token.outputs.token }}
           segment-schema-repository: Consensys/segment-schema
-  # Unmerged close ends opt-in and closes the schema draft. The bot does not delete
+  # An unmerged close ends opt-in and closes the schema draft. The bot does not delete
   # metamaskbot/extension-pr-<N>, so a person can reopen that schema PR. A merged
-  # client PR leaves the schema draft open.
+  # client PR leaves the schema draft open, so this job stays idle on merge.
   close-segment-schema-pr:
     if: >
       github.event_name == 'pull_request' &&
       github.event.action == 'closed' &&
+      github.event.pull_request.merged == false &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 5
