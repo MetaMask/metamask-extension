@@ -407,7 +407,7 @@
     "@metamask/authenticated-user-storage": "^4.0.0",
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.1.0",
-    "@metamask/bitcoin-wallet-snap": "^3.1.0",
+    "@metamask/bitcoin-wallet-snap": "^3.2.0",
     "@metamask/bitcoin-wallet-standard": "^1.1.0",
     "@metamask/bridge-controller": "^81.3.0",
     "@metamask/bridge-status-controller": "^76.3.0",
