@@ -22,9 +22,6 @@ const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
     [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
-const trimTrailingDecimalZeros = (value: string) =>
-  value.replace(/(\.\d*?)0+$/u, '$1').replace(/\.$/u, '');
-
 export const resolveMinimumReserveBalanceForCaipAssetId = (
   caipAssetId?: CaipAssetType,
 ): string => {
@@ -52,12 +49,9 @@ export const calculateMaxAmountWithReserve = ({
 
   const maxAmount = new BigNumber(balanceAmount).minus(reserveAmount);
 
-  return trimTrailingDecimalZeros(
-    (maxAmount.isNegative() ? new BigNumber(0) : maxAmount).toFixed(
-      decimals,
-      BigNumber.ROUND_DOWN,
-    ),
-  );
+  return (maxAmount.isNegative() ? new BigNumber(0) : maxAmount)
+    .round(decimals, BigNumber.ROUND_DOWN)
+    .toFixed();
 };
 
 /**
