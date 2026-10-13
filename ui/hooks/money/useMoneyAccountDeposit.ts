@@ -1,9 +1,13 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import { bytesToHex, type Hex } from '@metamask/utils';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { parse as uuidParse, v4 as uuidv4 } from 'uuid';
-import { selectMoneyFundingAccount } from '../../selectors/money/money-funding-account';
+import {
+  selectMoneyFundingAccount,
+  type MoneyFundingAccountState,
+} from '../../selectors/money/money-funding-account';
 import {
   clearMoneyAccountDepositIntent,
   setMoneyAccountDepositIntent,
@@ -14,6 +18,7 @@ import {
   useConfirmationNavigation,
 } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import type { SetPayTokenRequest } from '../../pages/confirmations/hooks/pay/types';
+import { selectIsPayHardwareEnabled } from '../../pages/confirmations/selectors/feature-flags';
 import { createMoneyAccountDepositTransaction } from '../../store/controller-actions/transaction-pay-controller';
 import { useMoneyErrorReporter } from './useMoneyErrorReporter';
 
@@ -74,9 +79,10 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
  * selected account group (a non-EVM network filter switches the selected
  * account to e.g. a Solana account, but the group still holds the EVM
  * account the user expects), otherwise the user's first eligible EVM
- * account. A hardware account cannot sign the batch, so a user on a
- * hardware wallet funds from their first eligible account rather than
- * being blocked at the confirmation. Fails fast only when no eligible
+ * account. Hardware accounts are eligible only when
+ * `confirmations_pay_hardware` enables Money Account deposits; otherwise a
+ * user on a hardware wallet funds from their first eligible account rather
+ * than being blocked at the confirmation. Fails fast only when no eligible
  * account exists. That address is passed as Pay's `accountOverride` so
  * the confirmation defaults the From row — and quotes — to that account instead of
  * the money account that executes the batch.
@@ -96,7 +102,12 @@ const getDepositFailedToastCopy = (intent?: MoneyAccountDepositIntent) =>
 export function useMoneyAccountDeposit() {
   const { navigateToTransaction } = useConfirmationNavigation();
   const location = useLocation();
-  const fundingAccount = useSelector(selectMoneyFundingAccount);
+  const isHardwareFundingEnabled = useSelector((state) =>
+    selectIsPayHardwareEnabled(state, TransactionType.moneyAccountDeposit),
+  );
+  const fundingAccount = useSelector((state: MoneyFundingAccountState) =>
+    selectMoneyFundingAccount(state, isHardwareFundingEnabled),
+  );
   const reportError = useMoneyErrorReporter();
   const [isLoading, setIsLoading] = useState(false);
 

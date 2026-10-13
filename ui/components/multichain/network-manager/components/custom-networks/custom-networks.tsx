@@ -35,7 +35,7 @@ import {
   getEnabledNetworksByNamespace,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
 } from '../../../../../selectors';
 import { hideModal } from '../../../../../store/actions';
 import { useDispatch } from '../../../../../store/hooks';
@@ -48,7 +48,7 @@ export const CustomNetworks = React.memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
