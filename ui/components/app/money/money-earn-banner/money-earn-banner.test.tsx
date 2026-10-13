@@ -104,32 +104,6 @@ describe('MoneyEarnBanner', () => {
     expect(handlers.onCtaClick).not.toHaveBeenCalled();
   });
 
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(['Enter', ' '])(
-    'starts a deposit from the banner surface with the %j key',
-    (key: string) => {
-      const { getByTestId } = renderBanner();
-
-      const isNotPrevented = fireEvent.keyDown(
-        getByTestId(MONEY_EARN_BANNER_TEST_ID),
-        { key },
-      );
-
-      expect(handlers.onBannerClick).toHaveBeenCalledTimes(1);
-      expect(isNotPrevented).toBe(false);
-    },
-  );
-
-  it('ignores keys pressed on the buttons inside the banner', () => {
-    const { getByTestId } = renderBanner();
-
-    fireEvent.keyDown(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-cta`), {
-      key: ' ',
-    });
-
-    expect(handlers.onBannerClick).not.toHaveBeenCalled();
-  });
-
   it('starts a deposit from the CTA without a surface click', () => {
     const { getByTestId } = renderBanner();
 

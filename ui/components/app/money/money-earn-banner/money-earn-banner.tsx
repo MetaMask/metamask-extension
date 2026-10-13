@@ -92,19 +92,6 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
     [onDismiss],
   );
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      if (
-        event.target === event.currentTarget &&
-        (event.key === 'Enter' || event.key === ' ')
-      ) {
-        event.preventDefault();
-        onBannerClick();
-      }
-    },
-    [onBannerClick],
-  );
-
   if (!isVisible || isDismissed) {
     return null;
   }
@@ -125,10 +112,7 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
       marginHorizontal={4}
       marginTop={4}
       className="cursor-pointer rounded-xl"
-      role="button"
-      tabIndex={0}
       onClick={onBannerClick}
-      onKeyDown={handleKeyDown}
     >
       <Box className="relative h-[72px] w-[72px] shrink-0 overflow-hidden">
         {sourceTokenImage ? (
