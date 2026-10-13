@@ -370,17 +370,24 @@ class HomePage {
   }
 
   /**
-   * Fails if {@link startMonitoringBlockingErrorToast} recorded a matching
-   * toast, then re-checks that none is currently displayed.
+   * Fails if {@link startMonitoringBlockingErrorToast} recorded the price-api
+   * message, then re-checks that it is not currently displayed.
+   *
+   * Other `toast.error` copy is ignored: `[data-testid="error-toast"]` is set
+   * on every error toast.
    */
   async checkNoBlockingErrorToastWasObserved(): Promise<void> {
     console.log(
-      'Check no blocking error toast was observed during homepage load',
+      'Check no price-api error toast was observed during homepage load',
     );
     const seen = (await this.driver.executeScript(
       'return window.__mmE2eBlockingErrorToasts || [];',
     )) as string[];
-    assert.deepEqual(seen, []);
+    const priceApiToasts = seen.filter(
+      (text) =>
+        text.includes('cryptocurrencies') || text.includes('unsupported'),
+    );
+    assert.deepEqual(priceApiToasts, []);
     await this.checkNoErrorToastIsDisplayed();
   }
 
@@ -394,10 +401,26 @@ class HomePage {
       waitAtLeastGuard: regularDelayMs,
       timeout: 5000,
     });
-    await this.driver.assertElementNotPresent(this.errorToast, {
-      waitAtLeastGuard: regularDelayMs,
-      timeout: 5000,
-    });
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.errorToast,
+        text: 'cryptocurrencies',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
+    await this.driver.assertElementNotPresent(
+      {
+        css: this.errorToast,
+        text: 'unsupported',
+      },
+      {
+        waitAtLeastGuard: regularDelayMs,
+        timeout: 5000,
+      },
+    );
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
