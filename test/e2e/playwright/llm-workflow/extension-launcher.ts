@@ -27,9 +27,8 @@ import { resolveRepoRoot } from './resolve-repo-root';
 import { getE2EDriver, withTimeout } from './e2e-driver';
 import {
   LAUNCH_SCREEN_CHECKS,
-  describeScreens,
   waitForAnyScreen,
-} from './screen-checks';
+} from './launcher/state-inspector';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
@@ -330,7 +329,7 @@ export class MetaMaskExtensionLauncher {
       throw new Error(
         `Extension UI did not reach expected state within ${UI_READY_TIMEOUT_MS}ms. ` +
           `Current URL: ${page.url()}. ` +
-          `Expected one of: ${describeScreens(LAUNCH_SCREEN_CHECKS)}. ` +
+          `Expected one of: ${LAUNCH_SCREEN_CHECKS.map(({ description }) => description).join(', ')}. ` +
           `Debug screenshot saved to: ${screenshotPath}`,
       );
     }
