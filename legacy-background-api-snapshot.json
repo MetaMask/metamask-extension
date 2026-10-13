@@ -101,7 +101,6 @@
     "addDetectedTokens",
     "addImportedTokens",
     "addKnownMethodData",
-    "addMoneyEarnBannerDismissedTokenKey",
     "addMusdConversionDismissedCtaKey",
     "addNetwork",
     "addNft",

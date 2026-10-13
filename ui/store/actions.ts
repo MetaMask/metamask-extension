@@ -7536,20 +7536,6 @@ export function addMusdConversionDismissedCtaKey(key: string) {
   };
 }
 
-/**
- * Persist a token whose Money earn banner was dismissed (`chainId:address`).
- * Stored in AppStateController until uninstall.
- *
- * @param key - The token's Money token key.
- */
-export function addMoneyEarnBannerDismissedTokenKey(key: string) {
-  return async () => {
-    await submitRequestToBackground('addMoneyEarnBannerDismissedTokenKey', [
-      key,
-    ]);
-  };
-}
-
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {

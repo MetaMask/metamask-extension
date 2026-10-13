@@ -3065,10 +3065,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.addMusdConversionDismissedCtaKey.bind(
           appStateController,
         ),
-      addMoneyEarnBannerDismissedTokenKey:
-        appStateController.addMoneyEarnBannerDismissedTokenKey.bind(
-          appStateController,
-        ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
       setPendingShieldCohort:

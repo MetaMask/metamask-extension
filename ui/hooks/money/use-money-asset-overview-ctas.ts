@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
+import { captureException } from '../../../shared/lib/sentry';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
 import { moneyFormatUsd } from '../../helpers/money/format';
 import {
@@ -18,7 +19,8 @@ import {
   selectMoneyEarnBannerEnabled,
 } from '../../selectors/money/money-account-feature-flags';
 import { selectMoneyEarnBannerDismissedTokenKeys } from '../../selectors/money/persisted-state';
-import { addMoneyEarnBannerDismissedTokenKey } from '../../store/actions';
+import type { RouteMessenger } from '../../messengers/route-messenger';
+import { useMessenger } from '../useMessenger';
 import { useTrackOnce } from '../useTrackOnce';
 import { calculateMoneyProjectedEarnings } from './money-deposit-token-utils';
 import {
@@ -32,6 +34,11 @@ import { useMoneyVaultApy } from './useMoneyVaultApy';
 
 export const MONEY_EARN_BANNER_CTA_LABEL_KEY = 'moneyEarnBannerCta';
 export const MONEY_START_EARNING_LABEL_KEY = 'moneyStartEarning';
+
+type MoneyEarnBannerMessenger = RouteMessenger<
+  'AppStateController:addMoneyEarnBannerDismissedTokenKey',
+  never
+>;
 
 export type MoneyAssetOverviewToken = MoneyDepositCtaToken &
   Pick<TokenWithFiatAmount, 'balance' | 'symbol'>;
@@ -102,7 +109,7 @@ function useMoneyAssetOverviewCta(
  * @returns Visibility, the APY to show (if known), and click handlers.
  */
 export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
-  const dispatch = useDispatch();
+  const messenger = useMessenger<MoneyEarnBannerMessenger>();
   const isFlagEnabled = useSelector(selectMoneyEarnBannerEnabled);
   const dismissedTokenKeys = useSelector(
     selectMoneyEarnBannerDismissedTokenKeys,
@@ -161,8 +168,10 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
       buttonType: MoneyButtonType.Icon,
       buttonIntent: MoneyButtonIntent.Dismiss,
     });
-    dispatch(addMoneyEarnBannerDismissedTokenKey(tokenKey));
-  }, [dispatch, tokenKey, tokenProperties, trackTokenButtonClicked]);
+    messenger
+      .call('AppStateController:addMoneyEarnBannerDismissedTokenKey', tokenKey)
+      .catch(captureException);
+  }, [messenger, tokenKey, tokenProperties, trackTokenButtonClicked]);
 
   const { apyPercent, apyPercentFormatted } = vaultApy;
 

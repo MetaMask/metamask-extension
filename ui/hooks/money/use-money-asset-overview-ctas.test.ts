@@ -10,7 +10,6 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../pages/money/constants/money-events';
-import { addMoneyEarnBannerDismissedTokenKey } from '../../store/actions';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAnalytics } from './useMoneyAnalytics';
@@ -22,12 +21,10 @@ import {
   type MoneyAssetOverviewToken,
 } from './use-money-asset-overview-ctas';
 
-jest.mock('../../store/actions', () => ({
-  ...jest.requireActual('../../store/actions'),
-  addMoneyEarnBannerDismissedTokenKey: jest.fn((key: string) => ({
-    type: 'ADD_MONEY_EARN_BANNER_DISMISSED_TOKEN_KEY',
-    key,
-  })),
+const mockMessengerCall = jest.fn();
+
+jest.mock('../useMessenger', () => ({
+  useMessenger: () => ({ call: mockMessengerCall }),
 }));
 
 jest.mock('./useMoneyAccountDeposit', () => ({
@@ -145,6 +142,7 @@ describe('use-money-asset-overview-ctas', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockMessengerCall.mockResolvedValue(undefined);
     mockUseMoneyAnalytics.mockReturnValue(moneyAnalytics);
     mockUseMoneyAccountDeposit.mockReturnValue({
       initiateDeposit: mockInitiateDeposit,
@@ -329,7 +327,8 @@ describe('use-money-asset-overview-ctas', () => {
         buttonType: MoneyButtonType.Icon,
         buttonIntent: MoneyButtonIntent.Dismiss,
       });
-      expect(addMoneyEarnBannerDismissedTokenKey).toHaveBeenCalledWith(
+      expect(mockMessengerCall).toHaveBeenCalledWith(
+        'AppStateController:addMoneyEarnBannerDismissedTokenKey',
         USDC_TOKEN_KEY,
       );
       expect(mockInitiateDeposit).not.toHaveBeenCalled();
