@@ -187,6 +187,7 @@ describe('useMoneyAccountToasts', () => {
       'hardware-2',
       'hardware-rejected',
       'hardware-card',
+      'hardware-withdraw',
       'approved-1',
       'lifecycle-1',
       'no-hash',
@@ -366,6 +367,23 @@ describe('useMoneyAccountToasts', () => {
 
     expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
       id: 'money-tx-hardware-card',
+    });
+  });
+
+  it('shows the pending toast on approval for withdraws to a hardware account', () => {
+    mockState = createState({ transactionId: 'hardware-withdraw' });
+    const { emit } = mountHook();
+
+    emit({
+      transactionMeta: createMoneyDeposit({
+        id: 'hardware-withdraw',
+        status: TransactionStatus.approved,
+        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+      }),
+    });
+
+    expect(mockToastLoading).toHaveBeenCalledWith(expect.anything(), {
+      id: 'money-tx-hardware-withdraw',
     });
   });
 

@@ -13,10 +13,7 @@ import { RouteMessengerProvider } from '../../../../contexts/route-messenger';
 import { useMessenger } from '../../../../hooks/useMessenger';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { defineAllowedRouteCapabilities } from '../../../../helpers/route-messenger-helpers';
-import {
-  isMoneyAccountTx,
-  isMoneyDepositTx,
-} from '../../../../helpers/money/money-transaction-guards';
+import { isMoneyAccountTx } from '../../../../helpers/money/money-transaction-guards';
 import {
   clearMoneyAccountDepositIntent,
   getMoneyAccountDepositIntent,
@@ -28,6 +25,7 @@ import {
 } from '../../../../helpers/money/money-batch-registry';
 import type { RouteMessengerFromCapabilities } from '../../../../messengers/route-messenger';
 import type { MetaMaskReduxState } from '../../../../store/store';
+import { getTransactionPayingAccount } from '../../../../../shared/lib/transactions.utils';
 import { haveRequiredTransactionsBeenSigned } from '../../../../store/hardware-wallet-signing';
 import { getInternalAccountByAddress } from '../../../../selectors/accounts';
 import {
@@ -93,7 +91,8 @@ const signedStatuses = new Set<string>([
 
 const generateToastId = (id: string) => `money-tx-${id}`;
 
-function withTransaction(
+// Redux state trails messenger events by up to a second.
+function withLatestTransaction(
   transactions: TransactionMeta[],
   transactionMeta: TransactionMeta,
 ) {
@@ -104,50 +103,53 @@ function withTransaction(
 }
 
 /**
- * Whether an approved deposit still waits for its hardware wallet payer to
- * sign the funding transactions.
+ * Whether an approved transaction still waits for its hardware wallet payer
+ * to sign the funding transactions.
  *
- * @param deposit - Money Account deposit transaction.
+ * @param transactionMeta - Money Account transaction.
  * @param state - Redux state.
- * @param transactions - Transactions including the latest event payload.
+ * @param latestTransaction - Transaction from the current event.
  */
 function isAwaitingHardwareSignatures(
-  deposit: TransactionMeta,
+  transactionMeta: TransactionMeta,
   state: MetaMaskReduxState,
-  transactions: TransactionMeta[],
+  latestTransaction: TransactionMeta,
 ) {
-  if (
-    deposit.status !== TransactionStatus.approved ||
-    !isMoneyDepositTx(deposit)
-  ) {
+  if (transactionMeta.status !== TransactionStatus.approved) {
     return false;
   }
 
   const transactionData = selectTransactionDataByTransactionId(
     state as unknown as TransactionPayState,
-    deposit.id,
+    transactionMeta.id,
   );
 
   if (
-    deposit.metamaskPay?.fiat ||
+    transactionMeta.metamaskPay?.fiat ||
     transactionData?.fiatPayment?.selectedPaymentMethodId
   ) {
     return false;
   }
 
-  const payer = getInternalAccountByAddress(
-    state,
-    transactionData?.accountOverride ?? deposit.txParams.from,
+  const payingAccount = getTransactionPayingAccount(
+    transactionMeta,
+    transactionData?.accountOverride,
   );
+  const payer = payingAccount
+    ? getInternalAccountByAddress(state, payingAccount)
+    : undefined;
 
   if (!payer || !isHardwareAccount(payer)) {
     return false;
   }
 
   return !haveRequiredTransactionsBeenSigned(
-    deposit.id,
+    transactionMeta.id,
     {
-      transactions,
+      transactions: withLatestTransaction(
+        selectTransactions(state),
+        latestTransaction,
+      ),
       batchTransactionCounts: selectBatchTransactionCounts(state),
     },
     Math.max(transactionData?.quotes?.length ?? 0, 1),
@@ -252,26 +254,26 @@ export function useMoneyAccountToasts(): void {
       fundingTransaction: TransactionMeta,
     ) => {
       const state = store.getState();
-      const transactions = withTransaction(
-        selectTransactions(state),
-        fundingTransaction,
-      );
-      const deposit = transactions.find(
+      const parentTransaction = selectTransactions(state).find(
         (tx) =>
           tx.requiredTransactionIds?.includes(fundingTransaction.id) &&
-          isMoneyDepositTx(tx),
+          isMoneyAccountTx(tx),
       );
 
       if (
-        !deposit ||
-        !pendingStatuses.has(deposit.status) ||
-        isAwaitingHardwareSignatures(deposit, state, transactions) ||
-        !shouldShowPendingToast(deposit.id)
+        !parentTransaction ||
+        !pendingStatuses.has(parentTransaction.status) ||
+        isAwaitingHardwareSignatures(
+          parentTransaction,
+          state,
+          fundingTransaction,
+        ) ||
+        !shouldShowPendingToast(parentTransaction.id)
       ) {
         return;
       }
 
-      showMoneyAccountToast('pending', deposit);
+      showMoneyAccountToast('pending', parentTransaction);
     };
 
     const handleStatusUpdated = (
@@ -300,7 +302,7 @@ export function useMoneyAccountToasts(): void {
           !isAwaitingHardwareSignatures(
             transactionMeta,
             state,
-            withTransaction(selectTransactions(state), transactionMeta),
+            transactionMeta,
           ) &&
           shouldShowPendingToast(id)
         ) {

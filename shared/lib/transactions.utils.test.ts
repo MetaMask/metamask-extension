@@ -7,6 +7,7 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionPayingAccount,
   getTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
@@ -301,6 +302,49 @@ describe('Transactions utils', () => {
 
     it('returns false when transactionMeta is undefined', () => {
       expect(isPostQuoteWithdrawTransaction(undefined)).toBe(false);
+    });
+  });
+
+  describe('getTransactionPayingAccount', () => {
+    const FROM_ADDRESS = '0x1234567890123456789012345678901234567890';
+    const OVERRIDE_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+
+    it('returns the account override when present', () => {
+      const transactionMeta = {
+        type: TransactionType.contractInteraction,
+        txParams: { from: FROM_ADDRESS },
+      } as TransactionMeta;
+
+      expect(
+        getTransactionPayingAccount(transactionMeta, OVERRIDE_ADDRESS),
+      ).toBe(OVERRIDE_ADDRESS);
+    });
+
+    it('returns txParams.from without an account override', () => {
+      const transactionMeta = {
+        type: TransactionType.contractInteraction,
+        txParams: { from: FROM_ADDRESS },
+      } as TransactionMeta;
+
+      expect(getTransactionPayingAccount(transactionMeta, undefined)).toBe(
+        FROM_ADDRESS,
+      );
+    });
+
+    it('returns txParams.from for post-quote withdraws, whose override is the recipient', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        txParams: { from: FROM_ADDRESS },
+        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+      } as TransactionMeta;
+
+      expect(
+        getTransactionPayingAccount(transactionMeta, OVERRIDE_ADDRESS),
+      ).toBe(FROM_ADDRESS);
+    });
+
+    it('returns undefined when transactionMeta and override are missing', () => {
+      expect(getTransactionPayingAccount(undefined, undefined)).toBeUndefined();
     });
   });
 });

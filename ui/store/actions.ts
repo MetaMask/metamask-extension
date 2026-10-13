@@ -107,7 +107,6 @@ import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
-import { hasTransactionType } from '../../shared/lib/transactions.utils';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -1997,14 +1996,12 @@ async function approveHardwareWalletTransaction(
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   let stopListeningForSigning = async () => undefined;
-  if (hasTransactionType(txMeta, [TransactionType.moneyAccountDeposit])) {
-    const expectedQuoteCount = Math.max(
-      getState().metamask.transactionData?.[txMeta.id]?.quotes?.length ?? 1,
-      1,
-    );
+  const payQuoteCount =
+    getState().metamask.transactionData?.[txMeta.id]?.quotes?.length ?? 0;
+  if (payQuoteCount > 0) {
     stopListeningForSigning = await listenForHardwareSigningCompletion({
       transactionId: txMeta.id,
-      expectedQuoteCount,
+      expectedQuoteCount: payQuoteCount,
       getState: async () => {
         const state = await forceUpdateMetamaskState(dispatch);
         return {
