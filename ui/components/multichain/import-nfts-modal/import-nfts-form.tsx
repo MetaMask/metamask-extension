@@ -231,25 +231,43 @@ export const ImportNftsForm = ({
     onSuccess();
   };
 
-  const validateAndSetAddress = (val: string) => {
+  const handleAddressChange = (value: string) => {
+    setNftAddress(value);
     setNftAddressValidationError(null);
-    if (val && !isValidHexAddress(val)) {
-      setNftAddressValidationError(t('invalidAddress'));
-    }
-    setNftAddress(val);
+    setDuplicateTokenIdError(null);
   };
 
-  const validateAndSetTokenId = (val: string) => {
+  const handleAddressBlur = (value: string) => {
+    if (value && !isValidHexAddress(value)) {
+      setNftAddressValidationError(t('invalidAddress'));
+    }
+  };
+
+  const handleTokenIdChange = (value: string) => {
+    setTokenId(value);
     setDuplicateTokenIdError(null);
+  };
+
+  const handleTokenIdBlur = (value: string) => {
+    if (!value || !isValidHexAddress(nftAddress)) {
+      return;
+    }
     const tokenIdExists = checkTokenIdExists(
       nftAddress,
-      val,
+      value,
       existingNfts.collections,
     );
     if (tokenIdExists) {
       setDuplicateTokenIdError(t('nftAlreadyAdded'));
     }
-    setTokenId(val);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isFormDisabled) {
+      return;
+    }
+    handleAddNft().catch(() => undefined);
   };
 
   const handleNetworkSelect = useCallback(() => {
@@ -263,7 +281,10 @@ export const ImportNftsForm = ({
   return (
     <>
       <Content padding={0}>
-        <Box className="flex min-h-0 w-full flex-1 flex-col justify-between">
+        <form
+          className="flex min-h-0 w-full flex-1 flex-col justify-between"
+          onSubmit={handleSubmit}
+        >
           <Box className="min-h-0 flex-1 overflow-y-auto">
             <Box className="flex flex-col gap-6 p-4">
               {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
@@ -295,13 +316,15 @@ export const ImportNftsForm = ({
                   </Tooltip>
                 </Box>
                 <TextField
-                  autoFocus
                   id="address"
                   placeholder="0x..."
                   size={TextFieldSize.Lg}
                   value={nftAddress}
                   onChange={(event) => {
-                    validateAndSetAddress(event.target.value);
+                    handleAddressChange(event.target.value);
+                  }}
+                  onBlur={(event) => {
+                    handleAddressBlur(event.target.value);
                   }}
                   isError={Boolean(nftAddressValidationError)}
                   className="w-full"
@@ -343,7 +366,10 @@ export const ImportNftsForm = ({
                   size={TextFieldSize.Lg}
                   value={tokenId}
                   onChange={(event) => {
-                    validateAndSetTokenId(event.target.value);
+                    handleTokenIdChange(event.target.value);
+                  }}
+                  onBlur={(event) => {
+                    handleTokenIdBlur(event.target.value);
                   }}
                   isError={Boolean(duplicateTokenIdError)}
                   className="w-full"
@@ -369,9 +395,7 @@ export const ImportNftsForm = ({
           <Box padding={4} paddingBottom={6} className="bg-background-default">
             <Button
               size={ButtonSize.Lg}
-              onClick={() => {
-                handleAddNft().catch(() => undefined);
-              }}
+              type="submit"
               isDisabled={isFormDisabled}
               isFullWidth
               data-testid="import-nfts-modal-import-button"
@@ -379,7 +403,7 @@ export const ImportNftsForm = ({
               {t('import')}
             </Button>
           </Box>
-        </Box>
+        </form>
       </Content>
       <CustomTokenImportNetworkSelector
         isOpen={isNetworkSelectorOpen}
@@ -397,6 +421,8 @@ export const ImportNftsForm = ({
           setSelectedNetworkClientIdForCustomImport(nftNetworkClientId);
           setNftAddress('');
           setTokenId('');
+          setNftAddressValidationError(null);
+          setDuplicateTokenIdError(null);
           setIsNetworkSelectorOpen(false);
         }}
       />

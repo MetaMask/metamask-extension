@@ -279,6 +279,11 @@ describe('ImportNftsPage', () => {
     fireEvent.change(addressInput, {
       target: { value: INVALID_ADDRESS },
     });
+    expect(
+      screen.queryByText(messages.invalidAddress.message),
+    ).not.toBeInTheDocument();
+
+    fireEvent.blur(addressInput);
 
     const errorMessage = getByText(messages.invalidAddress.message);
     expect(errorMessage).toBeInTheDocument();
