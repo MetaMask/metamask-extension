@@ -1676,7 +1676,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": true,
+        "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-ens-namehash": true,
@@ -3314,7 +3314,7 @@
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/utils": true,
+        "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "@metamask/assets-controller>lodash-es": true,
         "reselect": true
