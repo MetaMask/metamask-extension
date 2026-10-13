@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Υπόλοιπο κατά την τελευταία ενημέρωση"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Επανάληψη"
   },

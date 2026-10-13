@@ -173,6 +173,12 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
+      "eventsConfig": {
+        "schemaVersion": "0",
+        "version": "0",
+        "timestamp": 0,
+        "events": {}
+      },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
@@ -371,11 +377,18 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {}
+        "networks": {},
+        "eventsConfig": {
+          "schemaVersion": "0",
+          "version": "0",
+          "timestamp": 0,
+          "events": {}
+        }
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {
       "currencyRates": {
