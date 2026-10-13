@@ -6433,6 +6433,13 @@
   "newCustomTokenAdded": {
     "message": "“$1” was successfully added!"
   },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "To use Opensea to see your NFTs, turn on 'Basic Functionality' in $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsBasicFunctionalityStrongText"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityStrongText": {
+    "message": "Settings > Privacy"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
   },
@@ -12274,6 +12281,9 @@
   },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "Turn on Basic Functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."

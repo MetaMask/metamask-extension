@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { BannerAlert } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { ASSETS_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ASSETS_ROUTE,
+  PRIVACY_ROUTE,
+} from '../../../../../helpers/constants/routes';
+import { getIsBasicFunctionalityConsolidationEnabled } from '../../../../../selectors/multichain/feature-flags';
 
 type NftsDetectionNoticeImportNFTsProps = {
   onActionButtonClick: () => void;
@@ -14,22 +19,39 @@ export default function NftsDetectionNoticeImportNFTs({
 }: NftsDetectionNoticeImportNFTsProps) {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const isBasicFunctionalityConsolidationEnabled = useSelector(
+    getIsBasicFunctionalityConsolidationEnabled,
+  );
 
   return (
     <BannerAlert
       className="nfts-detection-notice"
-      actionButtonLabel={t('selectEnableDisplayMediaPrivacyPreference')}
+      actionButtonLabel={
+        isBasicFunctionalityConsolidationEnabled
+          ? t('turnOnBasicFunctionality')
+          : t('selectEnableDisplayMediaPrivacyPreference')
+      }
       actionButtonOnClick={(e) => {
         e.preventDefault();
-        navigate(`${ASSETS_ROUTE}#display-nft-media`);
+        navigate(
+          isBasicFunctionalityConsolidationEnabled
+            ? `${PRIVACY_ROUTE}#basic-functionality`
+            : `${ASSETS_ROUTE}#display-nft-media`,
+        );
         onActionButtonClick?.();
       }}
     >
-      {t('newNFTDetectedInImportNFTsMsg', [
-        <b key="new-nft-detected-in-import-nfts-message-strong-text">
-          {t('newNFTDetectedInImportNFTsMessageStrongText')}
-        </b>,
-      ])}
+      {isBasicFunctionalityConsolidationEnabled
+        ? t('newNFTDetectedInImportNFTsBasicFunctionalityMsg', [
+            <b key="new-nft-detected-in-import-nfts-message-strong-text">
+              {t('newNFTDetectedInImportNFTsBasicFunctionalityStrongText')}
+            </b>,
+          ])
+        : t('newNFTDetectedInImportNFTsMsg', [
+            <b key="new-nft-detected-in-import-nfts-message-strong-text">
+              {t('newNFTDetectedInImportNFTsMessageStrongText')}
+            </b>,
+          ])}
     </BannerAlert>
   );
 }
