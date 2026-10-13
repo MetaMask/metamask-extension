@@ -367,7 +367,7 @@ export function AddContactForm({ onCancel, onSuccess }: AddContactFormProps) {
             size={SelectButtonSize.Lg}
             isBlock
             backgroundColor={BackgroundColor.backgroundMuted}
-            borderColor={BorderColor.borderDefault}
+            borderColor={BorderColor.borderMuted}
             borderRadius={BorderRadius.XL}
             startAccessory={
               <AvatarNetwork
