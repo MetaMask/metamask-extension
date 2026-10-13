@@ -3,6 +3,7 @@ import { act, fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import {
   MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID,
   MoneyAssetOverviewBalanceApy,
@@ -32,7 +33,9 @@ describe('MoneyAssetOverviewBalanceDescription', () => {
     expect(
       getByTestId(`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-description`),
     ).toHaveTextContent(
-      'Add your USDC to your Money account and earn up to +$74.34 in one year.',
+      messages.moneyEarnBalanceDescription.message
+        .replace('$1', 'USDC')
+        .replace('$2', '+$74.34'),
     );
   });
 
@@ -75,7 +78,7 @@ describe('MoneyAssetOverviewBalanceApy', () => {
 
     expect(
       getByTestId(`${MONEY_ASSET_OVERVIEW_BALANCE_CTA_TEST_ID}-apy`),
-    ).toHaveTextContent('Earn 6.2% APY');
+    ).toHaveTextContent(messages.moneyEarnApy.message.replace('$1', '6.2%'));
   });
 });
 
@@ -91,7 +94,7 @@ describe('MoneyAssetOverviewBalanceCta', () => {
     );
     fireEvent.click(button);
 
-    expect(button).toHaveTextContent('Start earning');
+    expect(button).toHaveTextContent(messages.moneyStartEarning.message);
     expect(onStartEarning).toHaveBeenCalledTimes(1);
   });
 });

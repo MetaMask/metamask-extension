@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useMoneyEarnBanner } from '../../../../hooks/money/use-money-asset-overview-ctas';
 import { MUSD_TOKEN_ADDRESS } from '../../musd/constants';
 import {
@@ -56,13 +57,15 @@ describe('MoneyEarnBanner', () => {
     const { getByTestId, getByText } = renderBanner();
 
     expect(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-title`)).toHaveTextContent(
-      'Earn up to 6% APY',
+      messages.moneyEarnApyTitle.message.replace('$1', '6%'),
     );
     expect(
-      getByText('Add USDC to your Money account—no lockups or minimums.'),
+      getByText(
+        messages.moneyEarnBannerDescription.message.replace('$1', 'USDC'),
+      ),
     ).toBeInTheDocument();
     expect(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-cta`)).toHaveTextContent(
-      'Add USDC',
+      messages.moneyEarnBannerCta.message.replace('$1', 'USDC'),
     );
   });
 
@@ -76,7 +79,7 @@ describe('MoneyEarnBanner', () => {
     const { getByTestId } = renderBanner();
 
     expect(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-title`)).toHaveTextContent(
-      'Earn with your Money account',
+      messages.moneyEarnBannerTitleNoApy.message,
     );
   });
 

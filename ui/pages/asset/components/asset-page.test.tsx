@@ -925,7 +925,7 @@ describe('AssetPage', () => {
       );
 
       expect(getByTestId('money-earn-banner-title')).toHaveTextContent(
-        'Earn up to 6% APY',
+        messages.moneyEarnApyTitle.message.replace('$1', '6%'),
       );
     });
 
@@ -976,11 +976,13 @@ describe('AssetPage', () => {
       expect(
         getByTestId('money-asset-overview-balance-cta-description'),
       ).toHaveTextContent(
-        'Add your TEST to your Money account and earn up to +$74.34 in one year.',
+        messages.moneyEarnBalanceDescription.message
+          .replace('$1', 'TEST')
+          .replace('$2', '+$74.34'),
       );
       expect(
         getByTestId('money-asset-overview-balance-cta-apy'),
-      ).toHaveTextContent('Earn 6.2% APY');
+      ).toHaveTextContent(messages.moneyEarnApy.message.replace('$1', '6.2%'));
 
       fireEvent.click(
         getByTestId('money-asset-overview-balance-cta-start-earning'),
