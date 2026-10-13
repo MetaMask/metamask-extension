@@ -8,7 +8,10 @@ import {
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import Preloader from '../../../components/ui/icon/preloader/preloader-icon.component';
-import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../../helpers/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+} from '../../../helpers/constants/routes';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
@@ -66,7 +69,19 @@ export const NotificationSectionSubPage = ({
       (!isLoadingPreferences &&
         (!hasNotificationPreferences || !preferences?.[sectionType]))
     ) {
-      navigate(NOTIFICATIONS_SETTINGS_ROUTE, { replace: true });
+      // Preserve a supported section while the user enables notifications.
+      const search = new URLSearchParams();
+      if (section && !isMetamaskNotificationsEnabled) {
+        const sectionRoute = NOTIFICATIONS_SETTINGS_SECTION_ROUTES[sectionType];
+        search.set(
+          'section',
+          sectionRoute.slice(NOTIFICATIONS_SETTINGS_ROUTE.length + 1),
+        );
+      }
+      navigate(
+        { pathname: NOTIFICATIONS_SETTINGS_ROUTE, search: search.toString() },
+        { replace: true },
+      );
     }
   }, [
     hasNotificationPreferences,
