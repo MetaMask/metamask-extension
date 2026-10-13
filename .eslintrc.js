@@ -25,7 +25,8 @@ const typescriptCompatConfig = require('./.eslintrc.typescript-compat');
 const reactVersion = reactPackageJson.version;
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
-const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
+const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, __dirname);
+const tsconfigLookupSet = new Set(tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)))
 
 module.exports = defineConfig([
   {
@@ -33,7 +34,7 @@ module.exports = defineConfig([
     ignores: readFileSync('.prettierignore', 'utf8')
       .trim()
       .split('\n')
-      .map((path) => (path.startsWith('/') ? path.slice(1) : `**/${path}`)),
+      .map((p) => (p.startsWith('/') ? p.slice(1) : `**/${p}`)),
   },
   {
     languageOptions: {
@@ -125,6 +126,7 @@ module.exports = defineConfig([
     },
     settings: {
       'import-x/resolver': {
+
         // When determining the location of an `import`, use Node's resolution
         // algorithm, then fall back to TypeScript's. This allows TypeScript
         // files (which Node's algorithm doesn't recognize) to be imported
@@ -145,11 +147,29 @@ module.exports = defineConfig([
    * TypeScript files
    */
   {
-    files: tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
+    // apply the ignores to the typescript settings but also to the overlap
+    // with webpack rules below. Otherwise webpack rules will try to parse
+    // files that are omitted in tsconfig
+    ignores: [
+      ".yarn/",
+      "node_modules/",
+      ".git/",
+      ".agents/",
+      ".claude/",
+      (filePath) => /\.tsx?$/u.test(filePath) && !tsconfigLookupSet.has(filePath)
+    ],
+  },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    // files: ["app/**/*.{ts,tsx}", "development/**/*.{ts,tsx}", "shared/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "types/**/*.{ts,tsx}", "ui/**/*.{ts,tsx}", "*.ts"],
+    // a flat list of paths passed as files is being heavily processed
+    // globbing everything and manually filtering against a set is more efficient.
+    // tsconfig.fileNames.filter((f) => /\.tsx?$/u.test(f)),
     languageOptions: {
       parserOptions: {
         // https://github.com/typescript-eslint/typescript-eslint/issues/251#issuecomment-463943250
         tsconfigRootDir: __dirname,
+        projectService: true
       },
     },
     extends: [
@@ -378,6 +398,8 @@ module.exports = defineConfig([
     ],
     languageOptions: {
       parserOptions: {
+        tsconfigRootDir: __dirname,
+        projectService: true,
         ecmaFeatures: {
           jsx: true,
         },
@@ -445,6 +467,8 @@ module.exports = defineConfig([
     ],
     languageOptions: {
       parserOptions: {
+        tsconfigRootDir: __dirname,
+        projectService: true,
         ecmaFeatures: {
           jsx: true,
         },
@@ -869,14 +893,15 @@ module.exports = defineConfig([
   /**
    * Generated messenger action types.
    */
-  {
-    files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-    rules: {
-      // Keep generated messenger action type formatting stable while the
-      // repository transitions from eslint-plugin-prettier to oxfmt.
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
-    },
-  },
+  // This seems to be very heavy
+  // {
+  //   files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
+  //   rules: {
+  //     // Keep generated messenger action type formatting stable while the
+  //     // repository transitions from eslint-plugin-prettier to oxfmt.
+  //     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+  //   },
+  // },
   /**
    * Webpack
    */

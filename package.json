@@ -116,7 +116,7 @@
     "lint:changelog": "auto-changelog validate --prettier",
     "lint:changelog:rc": "auto-changelog validate --prettier --rc",
     "lint:debug": "DEBUG=eslint:cli-engine yarn lint",
-    "lint:eslint": "NODE_OPTIONS='--max-old-space-size=8192' eslint . -c  ./.eslintrc.js --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
+    "lint:eslint": "eslint . -c  ./.eslintrc.js --ext js,ts,tsx,snap --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
     "lint:eslint:fix": "yarn lint:eslint --fix --prune-suppressions",
     "lint:lockfile:dedupe": "yarn dedupe --check",
     "lint:lockfile:dedupe:fix": "yarn dedupe",
@@ -124,7 +124,7 @@
     "lint:shellcheck": "./development/shellcheck.sh",
     "lint:styles": "stylelint '*/**/*.scss'",
     "lint:styles:fix": "yarn lint:styles --fix",
-    "lint:tsc": "NODE_OPTIONS='--max-old-space-size=6144' tsc",
+    "lint:tsc": "tsc",
     "lint:images": "tsx development/optimize-media.mts",
     "lint:images:fix": "tsx development/optimize-media.mts --fix",
     "lint:baseline": "node development/lint-baseline.mts",
@@ -172,7 +172,29 @@
     "feature-flags:sync:check": "tsx test/e2e/feature-flags/sync-production-flags.ts --check",
     "feature-flags:sync:update": "tsx test/e2e/feature-flags/sync-production-flags.ts --update",
     "yarn-binary:download": "corepack pack -o .yarn/yarn-corepack.tgz",
-    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
+    "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate",
+    "print:env": "env"
+  },
+  "scriptsConfig": {
+    "lint": "lavamoat/scripts.yarn.json",
+    "lint:*": "lavamoat/scripts.native.json",
+    "lint:images*": "lavamoat/scripts.tsx-net.json",
+    "lint:styles": "lavamoat/scripts.spawns.json",
+    "lint:fix": "lavamoat/scripts.yarn.json",
+    "lint:debug": "lavamoat/scripts.yarn.json",
+    "lint:eslint:fix": "lavamoat/scripts.yarn.json",
+    "lint:eslint": "lavamoat/scripts.eslint.json",
+    "lint:tsc": "lavamoat/scripts.eslint.json",
+    "lint:lockfile:dedupe": "lavamoat/scripts.yarn.json",
+    "lint:lockfile:dedupe:fix": "lavamoat/scripts.yarn.json",
+    "lint:styles:fix": "lavamoat/scripts.yarn.json",
+    "messenger-action-types:check": "lavamoat/scripts.spawns.json",
+    "legacy-background-api:check": "lavamoat/scripts.tsx-net.json",
+    "legacy-background-api:check// ^ problem with yargs in node26": "",
+    "start*": "lavamoat/scripts.yarn.json",
+    "postinstall": "lavamoat/scripts.yarn.json",
+    "skills*": "lavamoat/scripts.spawns.json",
+    "storybook*": "lavamoat/scripts.yarn.json"
   },
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
@@ -368,7 +390,8 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.0"
+    "@metamask/utils": "^12.0.0",
+    "@eslint/config-array": "0.23.5"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -636,7 +659,8 @@
     "@babel/types": "7.29.8",
     "@google/genai": "^1.0.0",
     "@jest/globals": "^29.7.0",
-    "@lavamoat/allow-scripts": "^5.0.1",
+    "@lavamoat/allow-scripts": "^5.0.2",
+    "@lavamoat/lavadome-core": "0.0.20",
     "@lavamoat/lavapack": "^7.0.22",
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
@@ -887,7 +911,6 @@
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
-      "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail#2.0.0": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
@@ -911,7 +934,8 @@
       "sass-loader>sass>@parcel/watcher#2.5.6": false,
       "eslint-plugin-import-x>unrs-resolver#1.12.2": false,
       "@storybook/test-runner>@swc/core#1.16.1": true,
-      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false
+      "@metamask/platform-api-docs>@docusaurus/core>core-js#3.50.0": false,
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail#2.0.0": false
     }
   },
   "packageManager": "yarn@4.14.1+sha256.5c7a0c5ea1c5b690df603c8e16b3742f87169b814d56bb5e63881145e8a84033",

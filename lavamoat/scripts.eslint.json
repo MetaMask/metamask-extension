@@ -1,0 +1,12 @@
+{
+  "extends": "scripts.native.json",
+  "//inactive options": {
+    "--inspect-brk": true,
+    "--allow-inspector": true
+  },
+  "nodeOptions": {
+    "--max-old-space-size": "9216",
+    "--max-semi-space-size": "320"
+  },
+  "notes": "configures eslint-specific tweaks. Increasing max-semi saves 30sec on garbage collection, max old space is necessary because parsed mm source won't fit in 4GB. 8GB is 50% shorter runtime than 6GB. "
+}

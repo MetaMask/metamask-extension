@@ -1,0 +1,15 @@
+{
+  "nodeOptions": {
+    "--require": "./lavamoat/debug.js",
+    "--permission": true,
+    "--allow-fs-read": ["./"],
+    "--allow-fs-write": ["./"],
+    "--allow-child-process": false,
+    "--allow-net": false,
+    "--allow-worker": false,
+    "--allow-addons": false,
+    "--allow-wasi": false,
+    "--allow-inspector": false
+  },
+  "notes": "Denies all powerful IO capabilities. If a script needs more permissions, extend this config and make additive changes."
+}
