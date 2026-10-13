@@ -157,14 +157,9 @@ class AddEditNetworkPage {
 
   async checkSaveButtonIsEnabled(): Promise<boolean> {
     console.log('Check if save button is enabled on the add/edit network page');
-    try {
-      await this.driver.findClickableElement(this.saveButton);
-    } catch (e) {
-      console.log('Save button not enabled', e);
-      return false;
-    }
-    console.log('Save button is enabled');
-    return true;
+    const enabled = await this.driver.isElementEnabled(this.saveButton);
+    console.log(`Save button is ${enabled ? 'enabled' : 'not enabled'}`);
+    return enabled;
   }
 
   async clickBackButton(): Promise<void> {
