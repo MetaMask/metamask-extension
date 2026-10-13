@@ -72,6 +72,7 @@ import {
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
+  usePerpsMarketAboutTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
 import { usePerpsAttribution } from '../../hooks/perps/usePerpsAttribution';
@@ -80,6 +81,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
 import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { PerpsMarketAbout } from '../../components/app/perps/perps-market-about';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
@@ -412,6 +414,22 @@ const PerpsMarketDetailPage = () => {
     );
   }, [decodedSymbol, allMarkets]);
   const marketCatalogReady = !marketsLoading && allMarkets.length > 0;
+  // This hook runs before the feature-availability redirect below. Pass the
+  // same guards that mount the market body so a cached description cannot emit
+  // displayed while the page returns Navigate or another non-About state.
+  const isMarketDetailRendered =
+    isPerpsExperienceAvailable &&
+    Boolean(symbol) &&
+    Boolean(decodedSymbol) &&
+    marketCatalogReady &&
+    Boolean(market);
+  const { hasDescription: hasAboutDescription, aboutRef } =
+    usePerpsMarketAboutTracking({
+      symbol: market?.symbol,
+      marketType: market?.marketType,
+      description: market?.description,
+      isPageRendered: isMarketDetailRendered,
+    });
 
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
@@ -1973,6 +1991,18 @@ const PerpsMarketDetailPage = () => {
             </Box>
           </Box>
         </Box>
+
+        {hasAboutDescription && (
+          // Key the observed wrapper, not only the section. A market change
+          // must detach the intersection observer so `viewed` fires again
+          // when this section stays on screen.
+          <div key={market.symbol} ref={aboutRef}>
+            <PerpsMarketAbout
+              description={market.description}
+              assetName={market.name}
+            />
+          </div>
+        )}
 
         {/* Recent Activity Section - always visible */}
         <Box paddingTop={4} paddingBottom={4}>
