@@ -34,4 +34,21 @@ describe('pay amount encode', () => {
 
     expect(isPayAmountEncodePending(TRANSACTION_ID)).toBe(false);
   });
+
+  it('keeps a later encode pending when a superseded encode settles after the map was cleared', () => {
+    const first = beginPayAmountEncode(TRANSACTION_ID);
+    const second = beginPayAmountEncode(TRANSACTION_ID);
+
+    endPayAmountEncode(TRANSACTION_ID, second);
+
+    const third = beginPayAmountEncode(TRANSACTION_ID);
+
+    endPayAmountEncode(TRANSACTION_ID, first);
+
+    expect(isPayAmountEncodePending(TRANSACTION_ID)).toBe(true);
+
+    endPayAmountEncode(TRANSACTION_ID, third);
+
+    expect(isPayAmountEncodePending(TRANSACTION_ID)).toBe(false);
+  });
 });
