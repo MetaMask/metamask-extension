@@ -1788,16 +1788,21 @@ function projectCurrencyRates(
     }
 
     const metadata = assetsInfo[assetId];
-    const conversionRate = metadata?.symbol
-      ? currencyRates?.[metadata.symbol]?.conversionRate
-      : undefined;
+    const symbol = metadata?.symbol;
+    const conversionRate =
+      symbol === undefined
+        ? undefined
+        : currencyRates?.[symbol]?.conversionRate;
 
-    if (metadata?.type !== 'native' || typeof conversionRate !== 'number') {
+    if (
+      metadata?.type !== 'native' ||
+      symbol === undefined ||
+      typeof conversionRate !== 'number'
+    ) {
       continue;
     }
 
-    const usdConversionRate =
-      currencyRates?.[metadata.symbol]?.usdConversionRate;
+    const usdConversionRate = currencyRates?.[symbol]?.usdConversionRate;
 
     assetPrice.assetPriceType = 'fungible';
     assetPrice.price = conversionRate;

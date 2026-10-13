@@ -46,6 +46,7 @@ describe('projectLegacyRatesIntoAssetsPrice', () => {
             [MAINNET_ETH_ASSET_ID]: {
               assetPriceType: 'fungible',
               id: 'ethereum',
+              lastUpdated: 0,
               price: 3401,
               usdPrice: 3401,
             },
