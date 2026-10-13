@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { act, fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -10,6 +11,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaSettings from './mfa-settings';
 
@@ -25,7 +27,7 @@ jest.mock('../../../hooks/identity/mfa/bindings', () => ({
 }));
 
 jest.mock('../../../hooks/identity/mfa/isMfaKitEnabled', () => ({
-  isMfaKitEnabled: () => true,
+  isMfaKitEnabled: jest.fn(),
 }));
 
 const mockStartMfaFlow = jest.mocked(startMfaFlow);
@@ -46,6 +48,7 @@ describe('MfaSettings', () => {
     mockAdapter.refreshEnrolledCredentials.mockResolvedValue([]);
     mockAdapter.clearVerificationSession.mockResolvedValue(undefined);
     mockStartMfaFlow.mockResolvedValue({ credentials: [] });
+    jest.mocked(isMfaKitEnabled).mockReturnValue(true);
   });
 
   it('refreshes the methods and offers to set up email', async () => {
@@ -117,6 +120,76 @@ describe('MfaSettings', () => {
     expect(mockAdapter.clearVerificationSession).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
       'Verification session cleared',
+    );
+  });
+
+  it('shows an email linked to the sign-in without its address', () => {
+    renderSettings([{ type: 'email_otp', status: 'active', verified: true }]);
+
+    expect(
+      screen.getByText(messages.mfaSettingsEmailLinked.message),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the QA presets in production', () => {
+    jest.mocked(isMfaKitEnabled).mockReturnValue(false);
+    renderSettings();
+
+    expect(
+      screen.queryByTestId(MfaSettingsTestIds.QA_PRESETS),
+    ).not.toBeInTheDocument();
+  });
+
+  it.each([
+    'Verify with email',
+    'Verify with email, max 30s old',
+    'Require email, no verification',
+    'Enroll email',
+    'Email and passkey (no passkey adapter)',
+  ])('runs the "%s" preset and shows what it resolved with', async (label) => {
+    renderSettings();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText(label));
+    });
+
+    expect(mockStartMfaFlow).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
+      `${label}: Resolved. 0 credential(s) no token`,
+    );
+  });
+
+  it('shows the token a QA preset resolved with', async () => {
+    mockStartMfaFlow.mockResolvedValue({
+      credentials: [],
+      token: {
+        accessToken: 'token',
+        expiresIn: 900,
+        obtainedAt: 0,
+        claims: { sub: 'profile', amr: ['email_otp'], exp: 0 },
+      },
+    });
+    renderSettings();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Verify with email'));
+    });
+
+    expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
+      'token amr=email_otp',
+    );
+  });
+
+  it('shows an error without an MFA code as unknown', async () => {
+    mockStartMfaFlow.mockRejectedValue(new Error('boom'));
+    renderSettings();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Enroll email'));
+    });
+
+    expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
+      'Enroll email: Rejected with unknown',
     );
   });
 });
