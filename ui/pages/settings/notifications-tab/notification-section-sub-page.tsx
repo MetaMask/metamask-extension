@@ -24,7 +24,6 @@ import { useNotificationAccountGroups } from '../../notifications-settings/notif
 import { getNotificationsSettingsSectionConfigs } from '../../notifications-settings/notifications-settings-types';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
- 
 import { NotificationsSettingsQueryParams } from '../../../../shared/lib/deep-links/routes/notifications-settings';
 
 type NotificationSectionSubPageProps = {

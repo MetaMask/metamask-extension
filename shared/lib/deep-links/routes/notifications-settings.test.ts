@@ -1,10 +1,47 @@
 import { getIsPerpsIncludedInBuild } from '../../environment';
-import { notificationsSettings } from './notifications-settings';
+import {
+  getNotificationsSettingsSectionTypeFromSlug,
+  notificationsSettings,
+} from './notifications-settings';
 import { NOTIFICATIONS_SETTINGS_ROUTE } from './route';
 
 jest.mock('../../environment', () => ({
   getIsPerpsIncludedInBuild: jest.fn(),
 }));
+
+describe('getNotificationsSettingsSectionTypeFromSlug', () => {
+  it('returns the section type for registered slugs', () => {
+    expect(getNotificationsSettingsSectionTypeFromSlug('wallet-activity')).toBe(
+      'walletActivity',
+    );
+    expect(getNotificationsSettingsSectionTypeFromSlug('perps')).toBe('perps');
+    expect(getNotificationsSettingsSectionTypeFromSlug('marketing')).toBe(
+      'marketing',
+    );
+    expect(getNotificationsSettingsSectionTypeFromSlug('agentic-cli')).toBe(
+      'agenticCli',
+    );
+  });
+
+  it('normalizes surrounding whitespace and casing', () => {
+    expect(
+      getNotificationsSettingsSectionTypeFromSlug('  Wallet-Activity  '),
+    ).toBe('walletActivity');
+    expect(getNotificationsSettingsSectionTypeFromSlug('PERPS')).toBe('perps');
+  });
+
+  it('returns null for unsupported, empty, or missing slugs', () => {
+    expect(
+      getNotificationsSettingsSectionTypeFromSlug('price-alerts'),
+    ).toBeNull();
+    expect(
+      getNotificationsSettingsSectionTypeFromSlug('walletactivity'),
+    ).toBeNull();
+    expect(getNotificationsSettingsSectionTypeFromSlug('')).toBeNull();
+    expect(getNotificationsSettingsSectionTypeFromSlug(null)).toBeNull();
+    expect(getNotificationsSettingsSectionTypeFromSlug(undefined)).toBeNull();
+  });
+});
 
 describe('notificationsSettings', () => {
   beforeEach(() => {

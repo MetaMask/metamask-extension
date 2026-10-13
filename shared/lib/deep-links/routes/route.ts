@@ -24,8 +24,6 @@ export {
 
 export { default as ZENDESK_URLS } from '../../../../ui/helpers/constants/zendesk-url';
 
-export { getNotificationsSettingsSectionTypeFromSlug } from '../../../../ui/pages/notifications-settings/notifications-settings-routes';
-
 /**
  * Represents the final destination.
  */

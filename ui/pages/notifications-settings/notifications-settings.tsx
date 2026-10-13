@@ -15,12 +15,14 @@ import { useSafeState } from '../../hooks/metamask-notifications/useNotification
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
- 
-import { NotificationsSettingsQueryParams } from '../../../shared/lib/deep-links/routes/notifications-settings';
+
+import {
+  getNotificationsSettingsSectionTypeFromSlug,
+  NotificationsSettingsQueryParams,
+} from '../../../shared/lib/deep-links/routes/notifications-settings';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { useNotificationAccountGroups } from './notifications-settings-helpers';
-import { getNotificationsSettingsSectionTypeFromSlug } from './notifications-settings-routes';
 
 export function NotificationsSettingsContent() {
   const navigate = useNavigate();
