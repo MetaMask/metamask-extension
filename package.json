@@ -363,9 +363,7 @@
     "@opentelemetry/instrumentation-tedious@npm:0.30.0": "0.40.0",
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
-    "@metamask/utils": "^12.0.0",
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@19.0.0-preview-aa49ca5",
-    "@metamask/core-backend": "npm:@metamask-previews/core-backend@12.1.0-preview-aa49ca5"
+    "@metamask/utils": "^12.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -403,7 +401,7 @@
     "@metamask/analytics-controller": "^3.2.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
-    "@metamask/assets-controller": "^17.0.0",
+    "@metamask/assets-controller": "^19.0.0",
     "@metamask/assets-controllers": "^112.0.2",
     "@metamask/authenticated-user-storage": "^4.0.0",
     "@metamask/base-controller": "^10.0.0",
@@ -423,7 +421,7 @@
     "@metamask/connectivity-controller": "^0.3.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^12.3.0",
-    "@metamask/core-backend": "^11.0.0",
+    "@metamask/core-backend": "^12.1.0",
     "@metamask/delegation-controller": "^3.0.2",
     "@metamask/delegation-core": "^2.0.0",
     "@metamask/delegation-deployments": "^2.1.0",
