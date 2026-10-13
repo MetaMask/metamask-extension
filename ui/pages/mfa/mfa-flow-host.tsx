@@ -7,14 +7,11 @@ import {
   BoxJustifyContent,
   ButtonIcon,
   IconName,
-  Text,
-  TextVariant,
 } from '@metamask/design-system-react';
 import Spinner from '../../components/ui/spinner';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useActiveMfaFlow } from '../../hooks/identity/mfa/engine/useActiveMfaFlow';
-import type { MfaFlowState } from '../../hooks/identity/mfa/engine/types';
 import { MfaFlowTestIds } from './test-ids';
 import IntroStep from './steps/intro-step';
 import PickerStep from './steps/picker-step';
@@ -71,11 +68,6 @@ const MfaFlowHost = () => {
     onAction: active.flow.dispatch,
   };
 
-  const getProgressTitle = ({ progress }: MfaFlowState) =>
-    progress.total > 1 && step.name !== 'success' && step.name !== 'failure'
-      ? t('mfaProgress', [String(progress.current), String(progress.total)])
-      : undefined;
-
   const renderStep = () => {
     switch (step.name) {
       case 'intro':
@@ -98,6 +90,8 @@ const MfaFlowHost = () => {
             alignItems={BoxAlignItems.Center}
             justifyContent={BoxJustifyContent.Center}
             className="flex-1"
+            aria-busy="true"
+            aria-label={t('loading')}
           >
             <Spinner />
           </Box>
@@ -114,10 +108,9 @@ const MfaFlowHost = () => {
       <Box
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Between}
+        justifyContent={BoxJustifyContent.End}
         padding={4}
       >
-        <Text variant={TextVariant.HeadingSm}>{getProgressTitle(state)}</Text>
         <ButtonIcon
           iconName={IconName.Close}
           ariaLabel={t('close')}
