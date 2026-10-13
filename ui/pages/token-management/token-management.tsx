@@ -89,6 +89,7 @@ import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { HomeNetworkFilterModal } from '../../components/app/assets/asset-list/asset-list-control-bar/home-network-filter-modal';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
+import { useFormatters } from '../../hooks/useFormatters';
 import { useTokenAssetSecurityResults } from '../../hooks/token-asset/useTokenAssetSecurityResults';
 import { useEnableFeaturedEvmNetwork } from '../../hooks/useEnableFeaturedEvmNetwork';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
@@ -521,6 +522,7 @@ export const TokenManagementPage = () => {
   const accountGroupIdAssets = useSelector(
     getAssetsBySelectedAccountGroup,
   ) as Record<string, ManagedAsset[]>;
+  const { formatTokenQuantity } = useFormatters();
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -1338,7 +1340,10 @@ export const TokenManagementPage = () => {
           isNative={token.isNative}
           assetId={token.assetId as CaipAssetType | Hex}
           primaryLabel={token.name ?? token.symbol}
-          secondaryLabel={`${token.balance} ${token.symbol}`}
+          secondaryLabel={formatTokenQuantity(
+            Number(token.balance ?? 0),
+            token.symbol,
+          )}
           safetyResult={token.safetyResult}
           isOn={!isHidden}
           disabled={isNativeToken || pendingKeys.has(key)}
@@ -1350,6 +1355,7 @@ export const TokenManagementPage = () => {
     },
     [
       committedHideKeys,
+      formatTokenQuantity,
       getStagedHideKey,
       getTokenImage,
       getTokenKey,
@@ -1431,7 +1437,10 @@ export const TokenManagementPage = () => {
           safetyResult={result.safetyResult}
           secondaryLabel={
             ownedAsset
-              ? `${ownedAsset.balance} ${ownedAsset.symbol}`
+              ? formatTokenQuantity(
+                  Number(ownedAsset.balance ?? 0),
+                  ownedAsset.symbol,
+                )
               : (networkConfigurations?.[payload.hexChainId as Hex]?.name ??
                 allMultichainNetworkConfigurations?.[payload.caipChainId]
                   ?.name ??
@@ -1459,6 +1468,7 @@ export const TokenManagementPage = () => {
       allMultichainNetworkConfigurations,
       allIgnoredAssetsByAccount,
       committedHideKeys,
+      formatTokenQuantity,
       getAccountForChain,
       handleSearchResultToggle,
       ignoredEvmAssetIds,
