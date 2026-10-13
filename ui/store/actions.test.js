@@ -39,7 +39,6 @@ import {
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
 import * as actions from './actions';
-import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
 import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 
@@ -250,15 +249,12 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('returns the seed phrase and syncs marketing consent', async () => {
+    it('returns the seed phrase without overwriting local marketing consent', async () => {
       const store = mockStore();
       const mnemonic = 'seed phrase';
 
       const restoreSocialBackupAndGetSeedPhraseStub =
         background.restoreSocialBackupAndGetSeedPhrase.resolves(mnemonic);
-      background.getMarketingConsent = sinon.stub().resolves(true);
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
       setBackgroundConnection(background);
 
       const result = await store.dispatch(
@@ -269,17 +265,8 @@ describe('Actions', () => {
       expect(
         restoreSocialBackupAndGetSeedPhraseStub.calledOnceWith('password'),
       ).toStrictEqual(true);
-      expect(background.getMarketingConsent.calledOnce).toStrictEqual(true);
-      expect(
-        background.setDataCollectionForMarketing.calledOnceWith(true),
-      ).toStrictEqual(true);
       expect(background.getStatePatches.calledOnce).toStrictEqual(true);
-      expect(store.getActions()).toStrictEqual([
-        {
-          type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
-          value: true,
-        },
-      ]);
+      expect(store.getActions()).toStrictEqual([]);
     });
 
     it('tracks the onboarding analytics preference event when a tracking function is provided', async () => {
@@ -287,9 +274,6 @@ describe('Actions', () => {
       const trackEventStub = sinon.stub().resolves();
 
       background.restoreSocialBackupAndGetSeedPhrase.resolves('seed phrase');
-      background.getMarketingConsent = sinon.stub().resolves(false);
-      background.setDataCollectionForMarketing = sinon.stub().resolves();
-
       setBackgroundConnection(background);
 
       await store.dispatch(
@@ -302,7 +286,7 @@ describe('Actions', () => {
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           properties: {
             [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
-            [MetaMetricsUserTrait.HasMarketingConsent]: false,
+            [MetaMetricsUserTrait.HasMarketingConsent]: null,
             location: 'onboarding_social_login_rehydration',
           },
         }),
