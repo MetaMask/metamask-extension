@@ -134,22 +134,8 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
         return false;
       }
     },
-    // Remove these expect-errors once @metamask/core-backend publishes isBasicFunctionality (ASSETS-3690).
-    // @ts-expect-error Installed core-backend types do not include isBasicFunctionality yet.
     isBasicFunctionality,
-    // @ts-expect-error Installed core-backend types do not include subscribeToBasicFunctionalityChange yet.
     subscribeToBasicFunctionalityChange,
-  });
-
-  // The installed core-backend build ignores the new options. Apply the same
-  // toggle here so an open socket closes before that version is published.
-  subscribeToBasicFunctionalityChange((isBasic) => {
-    if (!isBasic) {
-      messengerClient.disconnect();
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    messengerClient.connect();
   });
 
   // Authentication and lock/unlock handling is now managed by the core WebSocket service
