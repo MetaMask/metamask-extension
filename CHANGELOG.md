@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Money account details screens displaying a 0x0 placeholder hash (#47054)
 - Fixed Money deposits that confirmed the previous Max amount when Add funds was pressed before the typed amount finished updating (#47028)
 - Fixed Arc USDC balance display and token details in the Swap asset picker (#46933)
 - Fixed no-fee payment labels and maximum amounts for hardware wallet payment tokens (#46366)
