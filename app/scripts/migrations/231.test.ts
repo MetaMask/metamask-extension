@@ -1,116 +1,114 @@
-import { cloneDeep } from 'lodash';
-import { migrate, version } from './231';
+import migrate, { version } from './231';
 
-const VERSION = version;
-const OLD_VERSION = VERSION - 1;
+const ROBINHOOD_CHAIN_ID = '0x1237';
+const OLD_URL = 'https://robinhoodchain.blockscout.com';
+const NEW_URL = 'https://robin.etherscan.io/';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-describe(`migration #${VERSION}`, () => {
-  it('bumps the version', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
+function buildState(blockExplorerUrls: string[]): VersionedData {
+  return {
+    meta: { version: version - 1 },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'robinhood-mainnet',
+        networkConfigurationsByChainId: {
+          [ROBINHOOD_CHAIN_ID]: {
+            chainId: ROBINHOOD_CHAIN_ID,
+            name: 'Robinhood Chain',
+            nativeCurrency: 'ETH',
+            blockExplorerUrls,
+            defaultBlockExplorerUrlIndex: 1,
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'robinhood-mainnet',
+                url: 'https://robinhood-mainnet.infura.io/v3/test',
+                type: 'custom',
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+}
+
+function getRobinhoodConfiguration(state: VersionedData) {
+  const networkController = state.data.NetworkController as {
+    networkConfigurationsByChainId: Record<
+      string,
+      { blockExplorerUrls: string[]; defaultBlockExplorerUrlIndex: number }
+    >;
+  };
+  return networkController.networkConfigurationsByChainId[ROBINHOOD_CHAIN_ID];
+}
+
+describe(`migration #${version}`, () => {
+  it('bumps the state version', async () => {
+    const state: VersionedData = {
+      meta: { version: version - 1 },
       data: {},
     };
 
-    const versionedData = cloneDeep(oldStorage);
-    await migrate(versionedData, new Set<string>());
+    await migrate(state, new Set());
 
-    expect(versionedData.meta.version).toBe(VERSION);
+    expect(state.meta.version).toBe(version);
   });
 
-  it('sets needsSocialPairing to true when it was false and keeps other fields', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
+  it('replaces deprecated Robinhood explorer URLs and preserves their indexes', async () => {
+    const customUrl = 'https://custom-explorer.example';
+    const state = buildState([`${OLD_URL}/`, OLD_URL, customUrl]);
+    const changedControllers = new Set<string>();
+
+    await migrate(state, changedControllers);
+
+    expect(getRobinhoodConfiguration(state)).toMatchObject({
+      blockExplorerUrls: [NEW_URL, NEW_URL, customUrl],
+      defaultBlockExplorerUrlIndex: 1,
+    });
+    expect(changedControllers).toStrictEqual(new Set(['NetworkController']));
+  });
+
+  it('leaves custom and lookalike explorer URLs unchanged', async () => {
+    const urls = [
+      'https://custom-explorer.example',
+      'https://robinhoodchain.blockscout.com.attacker.example',
+    ];
+    const state = buildState(urls);
+    const changedControllers = new Set<string>();
+
+    await migrate(state, changedControllers);
+
+    expect(getRobinhoodConfiguration(state).blockExplorerUrls).toStrictEqual(
+      urls,
+    );
+    expect(changedControllers).toStrictEqual(new Set());
+  });
+
+  it('is a no-op when Robinhood Chain is not configured', async () => {
+    const state: VersionedData = {
+      meta: { version: version - 1 },
       data: {
-        AuthenticationController: {
-          isSignedIn: true,
-          needsProfilePairing: false,
-          needsSocialPairing: false,
-          srpSessionData: { id: { accessToken: 'token' } },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {},
         },
-        OtherController: { preserved: true },
       },
     };
-
-    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
 
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: {
-        isSignedIn: true,
-        needsProfilePairing: false,
-        needsSocialPairing: true,
-        srpSessionData: { id: { accessToken: 'token' } },
+    await migrate(state, changedControllers);
+
+    expect(state.data).toStrictEqual({
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {},
       },
-      OtherController: { preserved: true },
     });
-    expect(changedControllers).toStrictEqual(
-      new Set(['AuthenticationController']),
-    );
-  });
-
-  it('sets needsSocialPairing to true when the field is absent', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: { isSignedIn: false } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: { isSignedIn: false, needsSocialPairing: true },
-    });
-    expect(changedControllers).toStrictEqual(
-      new Set(['AuthenticationController']),
-    );
-  });
-
-  it('keeps needsSocialPairing true when it is already true', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: { needsSocialPairing: true } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    await migrate(versionedData, new Set<string>());
-
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: { needsSocialPairing: true },
-    });
-  });
-
-  it('does not change state when AuthenticationController is absent', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { OtherController: { preserved: true } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedControllers.size).toBe(0);
-  });
-
-  it('does not change state when AuthenticationController is not an object', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: 'invalid' },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
-    expect(changedControllers.size).toBe(0);
+    expect(changedControllers).toStrictEqual(new Set());
   });
 });
