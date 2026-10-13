@@ -4,6 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import {
   BannerAlert,
   BannerAlertSeverity,
+  Box,
+  Text,
+  TextButton,
+  TextButtonSize,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -36,26 +41,29 @@ export default function NftsDetectionNoticeImportNFTs({
           {t('newNFTDetectedInImportNFTsMessageStrongText')}
         </b>,
       ]);
+  const actionLabel = isBasicFunctionalityConsolidationEnabled
+    ? t('turnOnBasicFunctionality')
+    : t('selectEnableDisplayMediaPrivacyPreference');
 
   return (
-    <BannerAlert
-      severity={BannerAlertSeverity.Info}
-      description={description}
-      actionButtonLabel={
-        isBasicFunctionalityConsolidationEnabled
-          ? t('turnOnBasicFunctionality')
-          : t('selectEnableDisplayMediaPrivacyPreference')
-      }
-      actionButtonProps={{ type: 'button' }}
-      actionButtonOnClick={(event) => {
-        event.preventDefault();
-        navigate(
-          isBasicFunctionalityConsolidationEnabled
-            ? `${PRIVACY_ROUTE}#basic-functionality`
-            : `${ASSETS_ROUTE}#display-nft-media`,
-        );
-        onActionButtonClick?.();
-      }}
-    />
+    <BannerAlert severity={BannerAlertSeverity.Info}>
+      <Box className="flex flex-col items-start gap-2">
+        <Text variant={TextVariant.BodySm}>{description}</Text>
+        <TextButton
+          type="button"
+          size={TextButtonSize.BodySm}
+          onClick={() => {
+            navigate(
+              isBasicFunctionalityConsolidationEnabled
+                ? `${PRIVACY_ROUTE}#basic-functionality`
+                : `${ASSETS_ROUTE}#display-nft-media`,
+            );
+            onActionButtonClick?.();
+          }}
+        >
+          {actionLabel}
+        </TextButton>
+      </Box>
+    </BannerAlert>
   );
 }
