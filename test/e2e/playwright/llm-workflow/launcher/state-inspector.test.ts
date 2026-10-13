@@ -8,7 +8,12 @@ import {
   SIGNATURE_REQUEST_PATH,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
-import { HomePage } from '../page-objects/home-page';
+import { getE2EDriver } from '../e2e-driver';
+import {
+  detectScreenFromPageObjects,
+  isWalletHeaderVisible,
+  readHomeBalance,
+} from '../screen-checks';
 import {
   detectCurrentScreen,
   detectScreenFromUrl,
@@ -16,17 +21,21 @@ import {
   getBaseExtensionState,
 } from './state-inspector';
 
-const mockGetBalance = jest.fn();
+const mockDriver = { kind: 'e2e-driver' };
 
-jest.mock('../page-objects/home-page', () => {
-  return {
-    HomePage: jest.fn().mockImplementation(() => {
-      return {
-        getBalance: mockGetBalance,
-      };
-    }),
-  };
-});
+jest.mock('../e2e-driver', () => ({
+  getE2EDriver: jest.fn(),
+}));
+
+jest.mock('../screen-checks', () => ({
+  detectScreenFromPageObjects: jest.fn(),
+  isWalletHeaderVisible: jest.fn(),
+  readHomeBalance: jest.fn(),
+}));
+
+const mockDetectScreen = jest.mocked(detectScreenFromPageObjects);
+const mockIsHeaderVisible = jest.mocked(isWalletHeaderVisible);
+const mockReadBalance = jest.mocked(readHomeBalance);
 
 const DEFAULT_METAMASK_STATE = {
   internalAccounts: {
@@ -47,11 +56,8 @@ const DEFAULT_METAMASK_STATE = {
 
 function buildPage(
   currentUrl = 'chrome-extension://id/home.html',
-  visibleBySelector: Record<string, boolean> = {},
-  rejectSelectors: string[] = [],
   cdpMetamaskState: unknown = null,
 ): Page {
-  const rejectSet = new Set(rejectSelectors);
   const mockCdpSend = jest.fn().mockImplementation(() => {
     if (cdpMetamaskState === null) {
       return Promise.resolve({ result: {} });
@@ -68,23 +74,16 @@ function buildPage(
         detach: jest.fn().mockResolvedValue(undefined),
       }),
     }),
-    locator: jest.fn().mockImplementation((selector: string) => {
-      return {
-        isVisible: jest.fn().mockImplementation(() => {
-          if (rejectSet.has(selector)) {
-            return Promise.reject(new Error('Locator failed'));
-          }
-          return Promise.resolve(Boolean(visibleBySelector[selector]));
-        }),
-      };
-    }),
   } as unknown as Page;
 }
 
 describe('state-inspector', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetBalance.mockResolvedValue('25 ETH');
+    jest.mocked(getE2EDriver).mockReturnValue(mockDriver as never);
+    mockDetectScreen.mockResolvedValue('unknown');
+    mockIsHeaderVisible.mockResolvedValue(false);
+    mockReadBalance.mockResolvedValue('25 ETH');
   });
 
   describe('detectScreenFromUrl', () => {
@@ -229,22 +228,25 @@ describe('state-inspector', () => {
     it('prefers URL detection when route is known', async () => {
       const page = buildPage('chrome-extension://id/home.html#/send');
       await expect(detectCurrentScreen(page)).resolves.toBe('send');
+      expect(mockDetectScreen).not.toHaveBeenCalled();
     });
 
-    it('falls back to selector detection when route is unknown', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/random', {
-        '[data-testid="onboarding-create-wallet"]': true,
-      });
+    it('falls back to the e2e page objects when route is unknown', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/random');
+      mockDetectScreen.mockResolvedValue('onboarding-welcome');
 
       await expect(detectCurrentScreen(page)).resolves.toBe(
-        'onboarding-create',
+        'onboarding-welcome',
+      );
+      expect(getE2EDriver).toHaveBeenCalledWith(page);
+      expect(mockDetectScreen).toHaveBeenCalledWith(
+        mockDriver,
+        expect.any(Number),
       );
     });
 
-    it('handles selector lookup failures and returns unknown', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/random', {}, [
-        '[data-testid="unlock-password"]',
-      ]);
+    it('returns unknown when no page object matches', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/random');
 
       await expect(detectCurrentScreen(page)).resolves.toBe('unknown');
     });
@@ -261,7 +263,7 @@ describe('state-inspector', () => {
       await expect(
         detectUnlockState(page, 'confirm-transaction'),
       ).resolves.toBe(true);
-      expect(page.locator).not.toHaveBeenCalled();
+      expect(mockIsHeaderVisible).not.toHaveBeenCalled();
     });
 
     it('returns false for locked/onboarding screens without DOM check', async () => {
@@ -277,24 +279,22 @@ describe('state-inspector', () => {
       await expect(detectUnlockState(page, 'onboarding-privacy')).resolves.toBe(
         false,
       );
-      expect(page.locator).not.toHaveBeenCalled();
+      expect(mockIsHeaderVisible).not.toHaveBeenCalled();
     });
 
-    it('falls back to DOM check for unknown screen', async () => {
-      const page = buildPage('chrome-extension://id/home.html', {
-        '[data-testid="account-menu-icon"]': true,
-      });
+    it('falls back to the e2e header navbar for unknown screen', async () => {
+      const page = buildPage('chrome-extension://id/home.html');
+      mockIsHeaderVisible.mockResolvedValue(true);
 
       await expect(detectUnlockState(page, 'unknown')).resolves.toBe(true);
-      expect(page.locator).toHaveBeenCalledWith(
-        '[data-testid="account-menu-icon"]',
+      expect(mockIsHeaderVisible).toHaveBeenCalledWith(
+        mockDriver,
+        expect.any(Number),
       );
     });
 
-    it('returns false when DOM check fails', async () => {
-      const page = buildPage('chrome-extension://id/home.html', {}, [
-        '[data-testid="account-menu-icon"]',
-      ]);
+    it('returns false when the header navbar is not shown', async () => {
+      const page = buildPage('chrome-extension://id/home.html');
 
       await expect(detectUnlockState(page, 'unknown')).resolves.toBe(false);
     });
@@ -313,8 +313,6 @@ describe('state-inspector', () => {
     it('returns identity fields on unlocked non-home screens via stateHooks', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/send',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -331,14 +329,12 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBeNull();
-      expect(HomePage).not.toHaveBeenCalled();
+      expect(mockReadBalance).not.toHaveBeenCalled();
     });
 
     it('returns identity and balance when unlocked on home', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -353,7 +349,10 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBe('25 ETH');
-      expect(HomePage).toHaveBeenCalledWith(page);
+      expect(mockReadBalance).toHaveBeenCalledWith(
+        mockDriver,
+        expect.any(Number),
+      );
     });
 
     it('returns null identity when CDP session fails', async () => {
@@ -374,7 +373,7 @@ describe('state-inspector', () => {
     });
 
     it('returns null identity when evaluate returns null', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], null);
+      const page = buildPage('chrome-extension://id/home.html#/', null);
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'f'.repeat(32),
@@ -387,7 +386,7 @@ describe('state-inspector', () => {
     });
 
     it('parses hex chainId from Redux state to number', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+      const page = buildPage('chrome-extension://id/home.html#/', {
         ...DEFAULT_METAMASK_STATE,
         networkConfigurationsByChainId: {
           '0x1': {
@@ -407,7 +406,7 @@ describe('state-inspector', () => {
     });
 
     it('falls back to options.chainId when Redux chainId is null', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+      const page = buildPage('chrome-extension://id/home.html#/', {
         ...DEFAULT_METAMASK_STATE,
         networkConfigurationsByChainId: {
           '0x539': {
@@ -426,10 +425,8 @@ describe('state-inspector', () => {
       expect(state.chainId).toBe(42);
     });
 
-    it('returns isUnlocked: true when URL is home even if account-menu-icon not visible', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/', {
-        '[data-testid="account-menu-icon"]': false,
-      });
+    it('returns isUnlocked: true when URL is home even if the header navbar is not visible', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/');
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'c'.repeat(32),
@@ -440,12 +437,10 @@ describe('state-inspector', () => {
       expect(state.isUnlocked).toBe(true);
     });
 
-    it('returns isUnlocked: false during onboarding even if account-menu-icon visible', async () => {
+    it('returns isUnlocked: false during onboarding even if the header navbar is visible', async () => {
+      mockIsHeaderVisible.mockResolvedValue(true);
       const page = buildPage(
         'chrome-extension://id/home.html#/onboarding/welcome',
-        {
-          '[data-testid="account-menu-icon"]': true,
-        },
       );
 
       const state = await getBaseExtensionState(page, {
@@ -460,8 +455,6 @@ describe('state-inspector', () => {
     it('extracts identity even when locked but skips balance', async () => {
       const page = buildPage(
         'chrome-extension://id/home.html#/unlock',
-        {},
-        [],
         DEFAULT_METAMASK_STATE,
       );
 
@@ -475,7 +468,7 @@ describe('state-inspector', () => {
       expect(state.networkName).toBe('Localhost 8545');
       expect(state.chainId).toBe(1337);
       expect(state.balance).toBeNull();
-      expect(HomePage).not.toHaveBeenCalled();
+      expect(mockReadBalance).not.toHaveBeenCalled();
     });
   });
 });

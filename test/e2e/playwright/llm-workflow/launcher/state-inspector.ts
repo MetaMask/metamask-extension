@@ -32,8 +32,16 @@ import {
   getProviderConfig,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/lib/selectors/networks';
+import { getE2EDriver } from '../e2e-driver';
 import type { ExtensionState } from '../launcher-types';
-import { HomePage } from '../page-objects/home-page';
+import {
+  detectScreenFromPageObjects,
+  isWalletHeaderVisible,
+  readHomeBalance,
+} from '../screen-checks';
+
+const SCREEN_PROBE_TIMEOUT_MS = 2_000;
+const BALANCE_TIMEOUT_MS = 2_000;
 
 const UNLOCKED_SCREENS: Set<ExtensionState['currentScreen']> = new Set([
   'home',
@@ -73,51 +81,10 @@ export async function detectCurrentScreen(
     return urlScreenMatch;
   }
 
-  const screenSelectors: {
-    screen: ExtensionState['currentScreen'];
-    selector: string;
-  }[] = [
-    { screen: 'unlock', selector: '[data-testid="unlock-password"]' },
-    { screen: 'home', selector: '[data-testid="account-menu-icon"]' },
-    { screen: 'onboarding-welcome', selector: '[data-testid="get-started"]' },
-    {
-      screen: 'onboarding-import',
-      selector: '[data-testid="onboarding-import-wallet"]',
-    },
-    {
-      screen: 'onboarding-create',
-      selector: '[data-testid="onboarding-create-wallet"]',
-    },
-    {
-      screen: 'onboarding-srp',
-      selector: '[data-testid="srp-input-import__srp-note"]',
-    },
-    {
-      screen: 'onboarding-password',
-      selector: '[data-testid="create-password-new-input"]',
-    },
-    {
-      screen: 'onboarding-complete',
-      selector: '[data-testid="onboarding-complete-done"]',
-    },
-    {
-      screen: 'onboarding-metametrics',
-      selector: '[data-testid="metametrics-i-agree"]',
-    },
-    { screen: 'settings', selector: '[data-testid="settings-page"]' },
-  ];
-
-  for (const { screen, selector } of screenSelectors) {
-    const isVisible = await page
-      .locator(selector)
-      .isVisible({ timeout: 200 })
-      .catch(() => false);
-    if (isVisible) {
-      return screen;
-    }
-  }
-
-  return 'unknown';
+  return await detectScreenFromPageObjects(
+    getE2EDriver(page),
+    SCREEN_PROBE_TIMEOUT_MS,
+  );
 }
 
 export function detectScreenFromUrl(
@@ -237,10 +204,10 @@ export async function detectUnlockState(
     return false;
   }
 
-  return page
-    .locator('[data-testid="account-menu-icon"]')
-    .isVisible()
-    .catch(() => false);
+  return await isWalletHeaderVisible(
+    getE2EDriver(page),
+    SCREEN_PROBE_TIMEOUT_MS,
+  );
 }
 
 // Fetches the raw metamask Redux state via stateHooks. Uses CDP
@@ -360,8 +327,7 @@ export async function getBaseExtensionState(
   // Balance remains DOM-based (home screen only) pending a separate
   // investigation into extracting it from Redux state.
   if (isUnlocked && currentScreen === 'home') {
-    const homePage = new HomePage(page);
-    balance = (await homePage.getBalance()) || null;
+    balance = await readHomeBalance(getE2EDriver(page), BALANCE_TIMEOUT_MS);
   }
 
   return {
