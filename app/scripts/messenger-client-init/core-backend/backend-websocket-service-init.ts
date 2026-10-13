@@ -1,12 +1,43 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
+import type { PreferencesState } from '@metamask/preferences-controller';
 import { Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
+import type { OnboardingControllerState } from '../../controllers/onboarding';
 import { trace } from '../../../../shared/lib/trace';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+
+/**
+ * Returns a getter for basic functionality (use external services).
+ * When true, the backend WebSocket may connect. Also returns false during
+ * onboarding, matching AssetsController.
+ *
+ * @param initMessenger - The initialization messenger.
+ * @returns Getter that returns whether basic functionality is enabled.
+ */
+function getIsBasicFunctionality(
+  initMessenger: BackendWebSocketServiceInitMessenger,
+): () => boolean {
+  return (): boolean => {
+    try {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      if (!completedOnboarding) {
+        return false;
+      }
+      const preferencesState = initMessenger.call(
+        'PreferencesController:getState',
+      ) as { useExternalServices?: boolean } | undefined;
+      return preferencesState?.useExternalServices ?? true;
+    } catch {
+      return true;
+    }
+  };
+}
 
 /**
  * Resolve a raw feature flag value to a boolean. The value is a boolean when
@@ -46,6 +77,29 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
+  const subscribeToBasicFunctionalityChange = (
+    onChange: (isBasic: boolean) => void,
+  ) => {
+    initMessenger.subscribe(
+      'PreferencesController:stateChange',
+      () => {
+        onChange(isBasicFunctionality());
+      },
+      (state: PreferencesState) =>
+        (state as PreferencesState & { useExternalServices?: boolean })
+          .useExternalServices ?? true,
+    );
+    initMessenger.subscribe(
+      'OnboardingController:stateChange',
+      (completedOnboarding: boolean) => {
+        if (completedOnboarding) {
+          onChange(isBasicFunctionality());
+        }
+      },
+      (state: OnboardingControllerState) => state.completedOnboarding,
+    );
+  };
   const messengerClient = new BackendWebSocketService({
     messenger: controllerMessenger,
     url:
@@ -57,6 +111,9 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
+      if (!isBasicFunctionality()) {
+        return false;
+      }
       try {
         // Client manifest flag
         const manifestFlag =
@@ -77,6 +134,22 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
         return false;
       }
     },
+    // Remove these expect-errors once @metamask/core-backend publishes isBasicFunctionality (ASSETS-3690).
+    // @ts-expect-error Installed core-backend types do not include isBasicFunctionality yet.
+    isBasicFunctionality,
+    // @ts-expect-error Installed core-backend types do not include subscribeToBasicFunctionalityChange yet.
+    subscribeToBasicFunctionalityChange,
+  });
+
+  // The installed core-backend build ignores the new options. Apply the same
+  // toggle here so an open socket closes before that version is published.
+  subscribeToBasicFunctionalityChange((isBasic) => {
+    if (!isBasic) {
+      messengerClient.disconnect();
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    messengerClient.connect();
   });
 
   // Authentication and lock/unlock handling is now managed by the core WebSocket service
