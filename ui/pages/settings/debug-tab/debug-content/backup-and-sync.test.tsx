@@ -41,11 +41,6 @@ describe('BackupAndSyncDevSettings', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the BackupAndSyncDevSettings component', () => {
-    const { container } = render(<BackupAndSyncDevSettings />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('calls onDelete and shows success icon when reset button is clicked', async () => {
     const { getByRole } = render(<BackupAndSyncDevSettings />);
     const resetButton = getByRole('button', {

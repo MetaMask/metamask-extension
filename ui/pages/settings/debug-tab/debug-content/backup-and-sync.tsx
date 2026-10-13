@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   Box,
   Button,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
 import {
-  IconColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -76,9 +78,9 @@ const DeleteSyncedData = ({
             <Icon
               className="settings-page-developer-options__icon-check"
               name={IconName.Check}
-              color={IconColor.successDefault}
+              color={IconColor.SuccessDefault}
               size={IconSize.Lg}
-              hidden={!deleteSuccessful}
+              style={{ visibility: deleteSuccessful ? 'visible' : 'hidden' }}
             />
           </Box>
         </div>

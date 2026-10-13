@@ -4,20 +4,20 @@ import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  Icon,
+  IconColor,
+  IconName,
 } from '@metamask/design-system-react';
 import NftDefaultImage from '../../app/assets/nfts/nft-default-image/nft-default-image';
 import {
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
-  Icon,
-  IconName,
   Text,
 } from '../../component-library';
 import {
   AlignItems,
   Display,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -104,7 +104,7 @@ export const NftItem = ({
           <Icon
             style={{ position: 'absolute' }}
             name={IconName.EyeSlash}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         )}
       </Box>

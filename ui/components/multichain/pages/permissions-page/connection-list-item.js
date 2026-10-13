@@ -2,27 +2,26 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import { shallowEqual, useSelector } from 'react-redux';
-import { AvatarFavicon } from '@metamask/design-system-react';
+import {
+  AvatarFavicon,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
 import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
@@ -142,11 +141,10 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         gap={2}
       >
         <Icon
-          display={Display.Flex}
           name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
+          className="bg-default"
         />
       </Box>
     </Box>

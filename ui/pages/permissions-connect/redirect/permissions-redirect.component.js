@@ -7,11 +7,14 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   BlockSize,
   TextVariant,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -20,9 +23,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../components/component-library';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
@@ -82,7 +82,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
             <Icon
               name={IconName.Confirmation}
               size={IconSize.Xl}
-              color={IconColor.infoDefault}
+              color={IconColor.InfoDefault}
             />
           </Box>
           <AvatarToken

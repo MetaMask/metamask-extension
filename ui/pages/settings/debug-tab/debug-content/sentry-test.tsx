@@ -1,19 +1,21 @@
 import React, { useState, useCallback, ReactElement } from 'react';
 import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '../../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -266,7 +268,7 @@ function TestButton({
           <Icon
             className="settings-page-developer-options__icon-check"
             name={IconName.Check}
-            color={IconColor.successDefault}
+            color={IconColor.SuccessDefault}
             size={IconSize.Lg}
             hidden={!isComplete}
           />
