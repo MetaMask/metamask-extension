@@ -18,6 +18,7 @@ const mockTrackAnalyticsEvent = jest.fn();
 const mockRefetchPreferences = jest.fn();
 const mockListNotifications = jest.fn();
 const mockEnsurePreferences = jest.fn();
+const mockMarkMarketingChannelsOff = jest.fn();
 let mockConsentWrite: () => Promise<void> = () => Promise.resolve();
 let mockMarketingPreferences = {
   pushNotificationsEnabled: false,
@@ -61,6 +62,7 @@ jest.mock(
     useNotificationPreferences: () => ({
       preferences: { marketing: mockMarketingPreferences },
       ensurePreferences: mockEnsurePreferences,
+      markMarketingChannelsOff: mockMarkMarketingChannelsOff,
       refetchPreferences: mockRefetchPreferences,
     }),
   }),
@@ -289,12 +291,42 @@ describe('DataCollectionToggleItem', () => {
 
     await waitFor(() => {
       expect(mockSetDataCollectionForMarketing).toHaveBeenCalledWith(false);
+      expect(mockMarkMarketingChannelsOff).toHaveBeenCalled();
       expect(mockRefetchPreferences).toHaveBeenCalled();
       expect(mockListNotifications).toHaveBeenCalled();
       expect(
         screen.queryByTestId('marketing-consent-opt-out-sheet'),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it('clears the cached marketing channels and completes the opt-out when the refresh fails', async () => {
+    mockMarketingPreferences = {
+      pushNotificationsEnabled: true,
+      inAppNotificationsEnabled: true,
+    };
+    mockRefetchPreferences.mockResolvedValueOnce({
+      isError: true,
+      error: new Error('Failed to read preferences'),
+    });
+    const mockStore = createMockStore({ optedInToMarketing: true });
+    renderWithProvider(<DataCollectionToggleItem />, mockStore);
+
+    fireEvent.click(screen.getByTestId('data-collection-for-marketing-input'));
+    fireEvent.click(
+      await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('marketing-consent-opt-out-sheet'),
+      ).not.toBeInTheDocument();
+    });
+    expect(mockMarkMarketingChannelsOff).toHaveBeenCalled();
+    expect(
+      mockMarkMarketingChannelsOff.mock.invocationCallOrder[0],
+    ).toBeLessThan(mockRefetchPreferences.mock.invocationCallOrder[0]);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('keeps the opt-out sheet open and restores consent if the consent update fails', async () => {

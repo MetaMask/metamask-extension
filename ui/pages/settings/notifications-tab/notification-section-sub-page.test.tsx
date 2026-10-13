@@ -147,6 +147,7 @@ describe('NotificationSectionSubPage', () => {
       error: null,
       refetchPreferences: mockRefetchPreferences,
       ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -166,6 +167,7 @@ describe('NotificationSectionSubPage', () => {
       error: null,
       refetchPreferences: jest.fn(),
       ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -512,6 +514,7 @@ describe('NotificationSectionSubPage', () => {
       error: null,
       refetchPreferences: jest.fn(),
       ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });
@@ -632,6 +635,7 @@ describe('NotificationSectionSubPage', () => {
         error: null,
         refetchPreferences: mockRefetchPreferences,
         ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -844,6 +848,7 @@ describe('NotificationSectionSubPage', () => {
         error: null,
         refetchPreferences: mockRefetchPreferences,
         ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference: jest.fn(),
         updatePreferencesSection: jest.fn(),
       });
@@ -946,6 +951,7 @@ describe('NotificationSectionSubPage', () => {
         error: null,
         refetchPreferences: jest.fn(),
         ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference,
         updatePreferencesSection: jest.fn(),
       });
@@ -1044,6 +1050,7 @@ describe('NotificationSectionSubPage', () => {
         error: null,
         refetchPreferences: jest.fn(),
         ensurePreferences: jest.fn(),
+        markMarketingChannelsOff: jest.fn(),
         updatePreference,
         updatePreferencesSection: jest.fn(),
       });

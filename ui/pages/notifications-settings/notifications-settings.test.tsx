@@ -105,6 +105,7 @@ const createPreferencesResult = (): ReturnType<
   error: null,
   refetchPreferences: mockRefetchPreferences,
   ensurePreferences: jest.fn(),
+  markMarketingChannelsOff: jest.fn(),
   updatePreference: jest.fn(),
   updatePreferencesSection: jest.fn(),
 });

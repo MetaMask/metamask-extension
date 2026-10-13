@@ -77,6 +77,25 @@ export function useNotificationPreferences() {
     [fetchPreferences, queryClient],
   );
 
+  // Mirrors the marketing channels the consent sync already turned off in
+  // AUS, so a later write never sends the stale channel-on snapshot back.
+  const markMarketingChannelsOff = useCallback(() => {
+    queryClient.setQueryData<NotificationPreferencesQueryData>(
+      NOTIFICATION_PREFERENCES_QUERY_KEY_ARRAY,
+      (current) =>
+        current
+          ? {
+              ...current,
+              marketing: {
+                ...current.marketing,
+                pushNotificationsEnabled: false,
+                inAppNotificationsEnabled: false,
+              },
+            }
+          : current,
+    );
+  }, [queryClient]);
+
   useEffect(() => {
     if (pendingWritesRef.current === 0 && data) {
       lastConfirmedPreferencesRef.current = data;
@@ -205,6 +224,7 @@ export function useNotificationPreferences() {
     error,
     refetchPreferences: refetch,
     ensurePreferences,
+    markMarketingChannelsOff,
     updatePreference,
     updatePreferencesSection,
   };

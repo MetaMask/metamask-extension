@@ -90,6 +90,56 @@ describe('useNotificationPreferences', () => {
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
 
+  it('keeps marketing channels off in later writes after markMarketingChannelsOff', async () => {
+    const preferences = createMockNotificationPreferences({
+      marketing: {
+        pushNotificationsEnabled: true,
+        inAppNotificationsEnabled: true,
+      },
+    });
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return Promise.resolve(preferences);
+      }
+      if (action.type === 'putNotificationPreferences') {
+        return Promise.resolve();
+      }
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+    await waitFor(() => {
+      expect(result.current.preferences).toStrictEqual(preferences);
+    });
+
+    act(() => {
+      result.current.markMarketingChannelsOff();
+    });
+    await act(async () => {
+      await result.current.updatePreference(
+        'walletActivity',
+        'pushNotificationsEnabled',
+        false,
+      );
+    });
+
+    expect(mockPutNotificationPreferences).toHaveBeenCalledWith({
+      ...preferences,
+      walletActivity: {
+        ...preferences.walletActivity,
+        pushNotificationsEnabled: false,
+      },
+      marketing: {
+        ...preferences.marketing,
+        pushNotificationsEnabled: false,
+        inAppNotificationsEnabled: false,
+      },
+    });
+  });
+
   it('resolves ensurePreferences from the in-flight read without refetching', async () => {
     const preferences = createMockNotificationPreferences();
     let resolveRead: (value: NotificationPreferences) => void = () => undefined;
