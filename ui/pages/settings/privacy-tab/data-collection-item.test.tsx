@@ -316,9 +316,9 @@ describe('DataCollectionToggleItem', () => {
       await screen.findByTestId('marketing-consent-opt-out-sheet-confirm'),
     );
 
-    expect(
-      await screen.findByText(messages.notificationsSettingsBoxError.message),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      messages.notificationsSettingsBoxError.message,
+    );
     expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(1, false);
     expect(mockSetDataCollectionForMarketing).toHaveBeenNthCalledWith(2, true);
     expect(

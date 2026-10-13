@@ -85,7 +85,11 @@ export function MarketingConsentSheet({
         <ModalBody className="px-4 pb-4">
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Text color={TextColor.TextAlternative}>{description}</Text>
-            {error ? <Text color={TextColor.ErrorDefault}>{error}</Text> : null}
+            {error ? (
+              <Box role="alert">
+                <Text color={TextColor.ErrorDefault}>{error}</Text>
+              </Box>
+            ) : null}
             <Box flexDirection={BoxFlexDirection.Column} gap={2}>
               <Button
                 variant={ButtonVariant.Secondary}
