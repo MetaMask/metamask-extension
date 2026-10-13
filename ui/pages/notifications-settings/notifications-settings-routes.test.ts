@@ -7,6 +7,7 @@ import {
 import {
   getNotificationsSettingsSectionRoute,
   getNotificationsSettingsSectionTypeFromPath,
+  getNotificationsSettingsSectionTypeFromSlug,
 } from './notifications-settings-routes';
 
 describe('notifications-settings-routes', () => {
@@ -45,6 +46,41 @@ describe('notifications-settings-routes', () => {
       expect(
         getNotificationsSettingsSectionTypeFromPath('/settings/notifications'),
       ).toBeNull();
+    });
+  });
+
+  describe('getNotificationsSettingsSectionTypeFromSlug', () => {
+    it('returns the section type for registered slugs', () => {
+      expect(
+        getNotificationsSettingsSectionTypeFromSlug('wallet-activity'),
+      ).toBe('walletActivity');
+      expect(getNotificationsSettingsSectionTypeFromSlug('marketing')).toBe(
+        'marketing',
+      );
+      expect(getNotificationsSettingsSectionTypeFromSlug('agentic-cli')).toBe(
+        'agenticCli',
+      );
+    });
+
+    it('normalizes surrounding whitespace and casing', () => {
+      expect(
+        getNotificationsSettingsSectionTypeFromSlug('  Wallet-Activity  '),
+      ).toBe('walletActivity');
+      expect(getNotificationsSettingsSectionTypeFromSlug('PERPS')).toBe(
+        'perps',
+      );
+    });
+
+    it('returns null for unsupported, empty, or missing slugs', () => {
+      expect(
+        getNotificationsSettingsSectionTypeFromSlug('price-alerts'),
+      ).toBeNull();
+      expect(
+        getNotificationsSettingsSectionTypeFromSlug('walletactivity'),
+      ).toBeNull();
+      expect(getNotificationsSettingsSectionTypeFromSlug('')).toBeNull();
+      expect(getNotificationsSettingsSectionTypeFromSlug(null)).toBeNull();
+      expect(getNotificationsSettingsSectionTypeFromSlug(undefined)).toBeNull();
     });
   });
 });

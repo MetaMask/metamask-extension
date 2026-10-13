@@ -13,19 +13,24 @@ import {
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useSafeState } from '../../hooks/metamask-notifications/useNotifications';
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
-import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../helpers/constants/routes';
+import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+ 
+import { NotificationsSettingsQueryParams } from '../../../shared/lib/deep-links/routes/notifications-settings';
 import { NotificationsSettingsAllowNotifications } from './notifications-settings-allow-notifications';
 import { NotificationsSettingsTypes } from './notifications-settings-types';
 import { useNotificationAccountGroups } from './notifications-settings-helpers';
-import { getNotificationsSettingsSectionTypeFromPath } from './notifications-settings-routes';
+import { getNotificationsSettingsSectionTypeFromSlug } from './notifications-settings-routes';
 
 export function NotificationsSettingsContent() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const pendingSectionRoute = `${NOTIFICATIONS_SETTINGS_ROUTE}/${searchParams.get('section') ?? ''}`;
-  const pendingSectionType =
-    getNotificationsSettingsSectionTypeFromPath(pendingSectionRoute);
+  const pendingSectionType = getNotificationsSettingsSectionTypeFromSlug(
+    searchParams.get(NotificationsSettingsQueryParams.Section),
+  );
+  const pendingSectionRoute = pendingSectionType
+    ? NOTIFICATIONS_SETTINGS_SECTION_ROUTES[pendingSectionType]
+    : null;
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -44,6 +49,7 @@ export function NotificationsSettingsContent() {
   useEffect(() => {
     if (
       pendingSectionType &&
+      pendingSectionRoute &&
       (pendingSectionType !== 'perps' || getIsPerpsIncludedInBuild()) &&
       isMetamaskNotificationsEnabled &&
       !isUpdatingMetamaskNotifications &&

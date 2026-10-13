@@ -1,9 +1,14 @@
 import { getIsPerpsIncludedInBuild } from '../../environment';
 import {
+  getNotificationsSettingsSectionTypeFromSlug,
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
   Route,
 } from './route';
+
+export enum NotificationsSettingsQueryParams {
+  Section = 'section',
+}
 
 /**
  * Opens notification settings, or an available preference section.
@@ -13,13 +18,13 @@ export const notificationsSettings = new Route({
   pathname: '/notifications-settings',
   getTitle: (_: URLSearchParams) => 'deepLink_theNotificationsSettingsPage',
   handler: function handler(params: URLSearchParams) {
-    const section = params.get('section')?.trim().toLowerCase();
+    const sectionType = getNotificationsSettingsSectionTypeFromSlug(
+      params.get(NotificationsSettingsQueryParams.Section),
+    );
     const path =
-      Object.values(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).find(
-        (route) =>
-          route === `${NOTIFICATIONS_SETTINGS_ROUTE}/${section}` &&
-          (section !== 'perps' || getIsPerpsIncludedInBuild()),
-      ) ?? NOTIFICATIONS_SETTINGS_ROUTE;
+      sectionType && (sectionType !== 'perps' || getIsPerpsIncludedInBuild())
+        ? NOTIFICATIONS_SETTINGS_SECTION_ROUTES[sectionType]
+        : NOTIFICATIONS_SETTINGS_ROUTE;
 
     return { path, query: new URLSearchParams() };
   },
