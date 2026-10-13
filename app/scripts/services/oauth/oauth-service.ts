@@ -31,16 +31,11 @@ import {
 } from './types';
 import { loadOAuthConfig } from './config';
 
-const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
-  '/api/v1/oauth/marketing_opt_in_status';
-
 const MESSENGER_EXPOSED_METHODS = [
   'startOAuthLogin',
   'getNewRefreshToken',
   'revokeRefreshToken',
   'renewRefreshToken',
-  'getMarketingConsent',
-  'setMarketingConsent',
 ] as const;
 
 export class OAuthService {
@@ -568,92 +563,6 @@ export class OAuthService {
         error,
       );
       throw error;
-    }
-  }
-
-  async setMarketingConsent(
-    hasEmailMarketingConsent: boolean,
-  ): Promise<boolean> {
-    try {
-      const accessToken = await this.#messenger.call(
-        'SeedlessOnboardingController:getAccessToken',
-      );
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      const requestData = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        opt_in_status: hasEmailMarketingConsent,
-      };
-
-      const res = await fetch(
-        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(requestData),
-        },
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to post marketing opt in status');
-      }
-
-      return res.ok;
-    } catch (error) {
-      this.#messenger.captureException?.(
-        createSentryError(
-          'Failed to post marketing opt in status',
-          error as Error,
-        ),
-      );
-
-      // rethrow the original error
-      throw error;
-    }
-  }
-
-  async getMarketingConsent(): Promise<boolean> {
-    try {
-      const accessToken = await this.#messenger.call(
-        'SeedlessOnboardingController:getAccessToken',
-      );
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      const res = await fetch(
-        `${this.#config.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to get marketing opt in status');
-      }
-
-      const data = await res.json();
-
-      return Boolean(data?.is_opt_in ?? false);
-    } catch (error) {
-      this.#messenger.captureException?.(
-        createSentryError(
-          'Failed to get marketing opt in status',
-          error as Error,
-        ),
-      );
-
-      return false;
     }
   }
 }

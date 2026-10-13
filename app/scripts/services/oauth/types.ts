@@ -1,7 +1,6 @@
 import {
   Web3AuthNetwork,
   SeedlessOnboardingControllerGetStateAction,
-  SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
@@ -28,8 +27,6 @@ export type {
   OAuthServiceGetNewRefreshTokenAction,
   OAuthServiceRenewRefreshTokenAction,
   OAuthServiceRevokeRefreshTokenAction,
-  OAuthServiceGetMarketingConsentAction,
-  OAuthServiceSetMarketingConsentAction,
 } from './oauth-service-method-action-types';
 
 /**
@@ -38,7 +35,6 @@ export type {
 export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
-  | SeedlessOnboardingControllerGetAccessTokenAction
   | OnboardingControllerGetStateAction
   | GeolocationControllerGetGeolocationAction
   | SentryTracingServiceBufferedTraceAction
