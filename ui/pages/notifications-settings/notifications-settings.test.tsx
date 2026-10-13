@@ -104,6 +104,7 @@ const createPreferencesResult = (): ReturnType<
   isUpdatingPreferences: false,
   error: null,
   refetchPreferences: mockRefetchPreferences,
+  ensurePreferences: jest.fn(),
   updatePreference: jest.fn(),
   updatePreferencesSection: jest.fn(),
 });

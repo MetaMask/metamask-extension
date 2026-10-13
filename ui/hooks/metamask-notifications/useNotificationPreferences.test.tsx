@@ -90,6 +90,33 @@ describe('useNotificationPreferences', () => {
     expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
   });
 
+  it('resolves ensurePreferences from the in-flight read without refetching', async () => {
+    const preferences = createMockNotificationPreferences();
+    let resolveRead: (value: NotificationPreferences) => void = () => undefined;
+    mockDispatch.mockImplementation((action) => {
+      if (action.type === 'getNotificationPreferences') {
+        return new Promise((resolve) => {
+          resolveRead = resolve;
+        });
+      }
+      return undefined;
+    });
+
+    const { Wrapper } = createWrapper();
+    const { result } = renderHook(() => useNotificationPreferences(), {
+      wrapper: Wrapper,
+    });
+
+    const ensured = result.current.ensurePreferences();
+    resolveRead(preferences);
+
+    await expect(ensured).resolves.toStrictEqual(preferences);
+    await expect(result.current.ensurePreferences()).resolves.toStrictEqual(
+      preferences,
+    );
+    expect(mockGetNotificationPreferences).toHaveBeenCalledTimes(1);
+  });
+
   it('chains rapid section updates using the optimistic cache', async () => {
     const preferences = createMockNotificationPreferences();
     const firstExpectedPreferences = {
