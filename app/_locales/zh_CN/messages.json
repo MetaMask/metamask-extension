@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "最后已知余额"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "重试"
   },

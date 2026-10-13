@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-10-06
+ * Production defaults last synced: 2026-10-13
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -2902,11 +2902,52 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
+  earnMoneyAssetOverviewBalanceCtaEnabled: {
+    inProd: true,
+    name: 'earnMoneyAssetOverviewBalanceCtaEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  earnMoneyDepositCtaTokenAddresses: {
+    inProd: true,
+    name: 'earnMoneyDepositCtaTokenAddresses',
+    productionDefault: {},
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  earnMoneyEarnBannerEnabled: {
+    inProd: true,
+    name: 'earnMoneyEarnBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
   earnMoneyEarningSectionEnabled: {
     inProd: true,
     name: 'earnMoneyEarningSectionEnabled',
     productionDefault: {
       enabled: false,
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  earnMoneyTokenListItemCtaEnabled: {
+    inProd: true,
+    name: 'earnMoneyTokenListItemCtaEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3162,9 +3203,12 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   },
 
   extensionUxChainlistV2: {
-    inProd: false,
+    inProd: true,
     name: 'extensionUxChainlistV2',
-    productionDefault: false,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.50.0',
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3342,14 +3386,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   moneyActivityMockDataEnabled: {
     inProd: false,
     name: 'moneyActivityMockDataEnabled',
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
-  moneyBalanceShowMusdLabel: {
-    inProd: true,
-    name: 'moneyBalanceShowMusdLabel',
     productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
@@ -3758,6 +3794,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       enabled: true,
       minimumVersion: '13.32.0',
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  rewardsMoneyControllerEnabled: {
+    inProd: true,
+    name: 'rewardsMoneyControllerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.0.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
