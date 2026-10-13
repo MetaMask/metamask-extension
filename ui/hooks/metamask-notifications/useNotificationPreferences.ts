@@ -67,6 +67,16 @@ export function useNotificationPreferences() {
     [queryClient],
   );
 
+  // Resolves from the cache, or joins the in-flight read instead of starting another.
+  const ensurePreferences = useCallback(
+    () =>
+      queryClient.ensureQueryData<NotificationPreferences | null>({
+        queryKey: NOTIFICATION_PREFERENCES_QUERY_KEY_ARRAY,
+        queryFn: fetchPreferences,
+      }),
+    [fetchPreferences, queryClient],
+  );
+
   useEffect(() => {
     if (pendingWritesRef.current === 0 && data) {
       lastConfirmedPreferencesRef.current = data;
@@ -194,6 +204,7 @@ export function useNotificationPreferences() {
     isUpdatingPreferences: pendingWrites > 0,
     error,
     refetchPreferences: refetch,
+    ensurePreferences,
     updatePreference,
     updatePreferencesSection,
   };

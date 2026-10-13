@@ -15,9 +15,20 @@ import PrivacyTab, {
   PRIVACY_SETTING_ITEMS,
 } from './privacy-tab';
 
+jest.mock(
+  '../../../contexts/metamask-notifications/metamask-notifications',
+  () => ({
+    useMetamaskNotificationsContext: () => ({
+      listNotifications: jest.fn(),
+    }),
+  }),
+);
+
+// Resolves `null` rather than `undefined` so the notification-preferences
+// query receives valid (empty) data — react-query rejects `undefined`.
 const backgroundConnectionMock = new Proxy(
   {},
-  { get: () => jest.fn().mockResolvedValue(undefined) },
+  { get: () => jest.fn().mockResolvedValue(null) },
 );
 
 describe('PrivacyTab', () => {
