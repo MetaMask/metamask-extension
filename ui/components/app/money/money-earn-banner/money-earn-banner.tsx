@@ -1,4 +1,4 @@
-import React, { useCallback, useState, type CSSProperties } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -11,6 +11,8 @@ import {
   FontWeight,
   IconName,
   Text,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -24,28 +26,28 @@ import { isMusdToken } from '../../musd/constants';
 
 export const MONEY_EARN_BANNER_TEST_ID = 'money-earn-banner';
 
-type BannerImage = { src: string; style: CSSProperties };
+type BannerImage = { src: string; className: string };
 
-const image = (name: string, style: CSSProperties): BannerImage => ({
+const image = (name: string, className: string): BannerImage => ({
   src: `./images/money-earn-banner-${name}.png`,
-  style: { position: 'absolute', ...style },
+  className: `absolute ${className}`,
 });
 
-const MUSD_IMAGE = image('musd', { top: 2, left: -5, width: 43, height: 43 });
-const AUSDC_IMAGE = image('ausdc', { top: 8, left: 3, width: 34, height: 34 });
+const MUSD_IMAGE = image('musd', 'top-[2px] -left-[5px] h-[43px] w-[43px]');
+const AUSDC_IMAGE = image('ausdc', 'top-[8px] left-[3px] h-[34px] w-[34px]');
 
 const SOURCE_TOKEN_IMAGES: Record<string, BannerImage> = {
-  USDC: image('usdc', { top: 6, left: 0, width: 37, height: 39 }),
-  USDT: image('usdt', { top: 7, left: 1, width: 34, height: 37 }),
-  DAI: image('dai', { top: 7, left: 0, width: 36, height: 37 }),
+  USDC: image('usdc', 'top-[6px] left-0 h-[39px] w-[37px]'),
+  USDT: image('usdt', 'top-[7px] left-[1px] h-[37px] w-[34px]'),
+  DAI: image('dai', 'top-[7px] left-0 h-[37px] w-[36px]'),
   AUSDC: AUSDC_IMAGE,
   AUSDCN: AUSDC_IMAGE,
-  AUSDT: image('ausdt', { top: 8, left: 1, width: 33, height: 33 }),
-  ADAI: image('adai', { top: 8, left: 1, width: 34, height: 34 }),
+  AUSDT: image('ausdt', 'top-[8px] left-[1px] h-[33px] w-[33px]'),
+  ADAI: image('adai', 'top-[8px] left-[1px] h-[34px] w-[34px]'),
 };
 
-const ARROW_IMAGE = image('arrow', { top: 4, left: 30, width: 32, height: 30 });
-const COIN_IMAGE = image('coin', { top: 35, left: 40, width: 28, height: 33 });
+const ARROW_IMAGE = image('arrow', 'top-[4px] left-[30px] h-[30px] w-[32px]');
+const COIN_IMAGE = image('coin', 'top-[35px] left-[40px] h-[33px] w-[28px]');
 
 const getSourceTokenImage = (address: string, symbol: string) =>
   isMusdToken(address) ? MUSD_IMAGE : SOURCE_TOKEN_IMAGES[symbol.toUpperCase()];
@@ -120,7 +122,9 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
       paddingRight={4}
       paddingTop={3}
       paddingBottom={3}
-      className="mx-4 mt-4 cursor-pointer rounded-xl"
+      marginHorizontal={4}
+      marginTop={4}
+      className="cursor-pointer rounded-xl"
       role="button"
       tabIndex={0}
       onClick={onBannerClick}
@@ -130,7 +134,7 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
         {sourceTokenImage ? (
           <img
             src={sourceTokenImage.src}
-            style={sourceTokenImage.style}
+            className={sourceTokenImage.className}
             alt=""
             data-testid={`${MONEY_EARN_BANNER_TEST_ID}-source-image`}
           />
@@ -142,8 +146,8 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
             className="absolute left-0.5 top-2"
           />
         )}
-        <img src={ARROW_IMAGE.src} style={ARROW_IMAGE.style} alt="" />
-        <img src={COIN_IMAGE.src} style={COIN_IMAGE.style} alt="" />
+        <img src={ARROW_IMAGE.src} className={ARROW_IMAGE.className} alt="" />
+        <img src={COIN_IMAGE.src} className={COIN_IMAGE.className} alt="" />
       </Box>
       <Box flexDirection={BoxFlexDirection.Column} className="min-w-0 flex-1">
         <Box
@@ -171,20 +175,14 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('moneyEarnBannerDescription', [token.symbol])}
         </Text>
-        <button
-          type="button"
+        <TextButton
+          size={TextButtonSize.BodySm}
           onClick={handleCtaClick}
-          className="m-0 cursor-pointer self-start border-0 bg-transparent p-0"
+          className="self-start"
           data-testid={`${MONEY_EARN_BANNER_TEST_ID}-cta`}
         >
-          <Text
-            variant={TextVariant.BodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.PrimaryDefault}
-          >
-            {t(MONEY_EARN_BANNER_CTA_LABEL_KEY, [token.symbol])}
-          </Text>
-        </button>
+          {t(MONEY_EARN_BANNER_CTA_LABEL_KEY, [token.symbol])}
+        </TextButton>
       </Box>
     </Box>
   );
