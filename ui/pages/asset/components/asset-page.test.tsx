@@ -906,6 +906,7 @@ describe('AssetPage', () => {
       expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(expectedToken);
       expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenCalledWith(
         expectedToken,
+        { enabled: true },
       );
     });
 
@@ -1047,6 +1048,24 @@ describe('AssetPage', () => {
 
       expect(queryByTestId('musd-position-section')).toBeInTheDocument();
       expect(queryByTestId('musd-convert-section')).not.toBeInTheDocument();
+    });
+
+    it('disables the Money balance CTA when the position replaces the balance section', () => {
+      renderWithProvider(
+        <AssetPage asset={musdToken} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            remoteFeatureFlags: musdRemoteFlags({}),
+          },
+        }),
+      );
+
+      expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenLastCalledWith(
+        expect.anything(),
+        { enabled: false },
+      );
     });
   });
 

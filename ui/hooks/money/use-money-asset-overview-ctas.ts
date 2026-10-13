@@ -53,7 +53,8 @@ function useMoneyAssetOverviewCta(
     isFlagEnabled && hasMoneyAccount && fiatAmountUsd !== undefined;
 
   const vaultApy = useMoneyVaultApy({ enabled: isEligible });
-  const { initiateDeposit } = useMoneyAccountDeposit();
+  const { initiateDeposit, isLoading: isDepositLoading } =
+    useMoneyAccountDeposit();
   const analytics = useMoneyAnalytics({
     screenName: MoneyScreenName.AssetDetail,
     componentName,
@@ -86,6 +87,7 @@ function useMoneyAssetOverviewCta(
     analytics,
     tokenProperties,
     deposit,
+    isDepositLoading,
   };
 }
 
@@ -97,23 +99,35 @@ function useMoneyAssetOverviewCta(
  */
 export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
   const isFlagEnabled = useSelector(selectMoneyEarnBannerEnabled);
-  const { isEligible, vaultApy, analytics, tokenProperties, deposit } =
-    useMoneyAssetOverviewCta(
-      token,
-      isFlagEnabled,
-      MoneyComponentName.EarnBanner,
-    );
+  const {
+    isEligible,
+    vaultApy,
+    analytics,
+    tokenProperties,
+    deposit,
+    isDepositLoading,
+  } = useMoneyAssetOverviewCta(
+    token,
+    isFlagEnabled,
+    MoneyComponentName.EarnBanner,
+  );
   const { trackTokenButtonClicked, trackTokenSurfaceClicked } = analytics;
 
   const onBannerClick = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
     trackTokenSurfaceClicked({
       ...tokenProperties,
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     deposit();
-  }, [deposit, tokenProperties, trackTokenSurfaceClicked]);
+  }, [deposit, isDepositLoading, tokenProperties, trackTokenSurfaceClicked]);
 
   const onCtaClick = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
     trackTokenButtonClicked({
       ...tokenProperties,
       buttonType: MoneyButtonType.Text,
@@ -123,7 +137,13 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     deposit();
-  }, [deposit, token.symbol, tokenProperties, trackTokenButtonClicked]);
+  }, [
+    deposit,
+    isDepositLoading,
+    token.symbol,
+    tokenProperties,
+    trackTokenButtonClicked,
+  ]);
 
   const onDismiss = useCallback(() => {
     trackTokenButtonClicked({
@@ -154,11 +174,15 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
  * it.
  *
  * @param token - The token whose details page is shown.
+ * @param options - Hook options.
+ * @param options.enabled - Whether the page is showing the "Your balance"
+ * section the CTA renders in.
  * @returns The values to display (`undefined` when hidden or loading),
  * whether the APY is loading, and handlers.
  */
 export function useMoneyAssetOverviewBalanceCta(
   token: MoneyAssetOverviewToken,
+  { enabled }: { enabled: boolean },
 ) {
   const isFlagEnabled = useSelector(selectMoneyAssetOverviewBalanceCtaEnabled);
   const {
@@ -168,9 +192,10 @@ export function useMoneyAssetOverviewBalanceCta(
     analytics,
     tokenProperties,
     deposit,
+    isDepositLoading,
   } = useMoneyAssetOverviewCta(
     token,
-    isFlagEnabled,
+    enabled && isFlagEnabled,
     MoneyComponentName.AssetOverviewBalanceCta,
   );
   const { trackComponentViewed, trackTokenButtonClicked, trackTooltipClicked } =
@@ -194,6 +219,9 @@ export function useMoneyAssetOverviewBalanceCta(
   );
 
   const onStartEarning = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
     trackTokenButtonClicked({
       ...tokenProperties,
       buttonType: MoneyButtonType.Text,
@@ -202,7 +230,7 @@ export function useMoneyAssetOverviewBalanceCta(
       redirectTarget: MoneyScreenName.MoneyDeposit,
     });
     deposit();
-  }, [deposit, tokenProperties, trackTokenButtonClicked]);
+  }, [deposit, isDepositLoading, tokenProperties, trackTokenButtonClicked]);
 
   const onProjectionTooltipOpen = useCallback(() => {
     trackTooltipClicked({
@@ -215,6 +243,7 @@ export function useMoneyAssetOverviewBalanceCta(
     () =>
       isEligible &&
       apyPercent !== undefined &&
+      apyPercent > 0 &&
       apyPercentFormatted !== undefined &&
       projectedEarningsFormatted !== undefined
         ? { apyPercent, apyPercentFormatted, projectedEarningsFormatted }

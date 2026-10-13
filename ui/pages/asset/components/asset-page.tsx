@@ -386,8 +386,6 @@ const AssetPage = ({
     ],
   );
   const privacyMode = useSelector(getPrivacyMode);
-  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount);
-  const moneyBalanceDisplay = moneyBalanceCta.display;
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -430,6 +428,11 @@ const AssetPage = ({
       isMusdFlowEnabled,
     [type, isEvm, asset, isMusdFlowEnabled],
   );
+  const isYourBalanceSectionShown = !isMusdAssetPage && !showSpendableBalance;
+  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount, {
+    enabled: isYourBalanceSectionShown,
+  });
+  const moneyBalanceDisplay = moneyBalanceCta.display;
 
   const [isMarketClosedModalOpen, setIsMarketClosedModalOpen] = useState(false);
   const handleOpenMarketClosedModal = useCallback(() => {
@@ -573,7 +576,7 @@ const AssetPage = ({
               fiatValue={showFiat ? tokenFiatAmount : null}
             />
           ) : null}
-          {!isMusdAssetPage && !showSpendableBalance ? (
+          {isYourBalanceSectionShown ? (
             <>
               <Text
                 variant={TextVariant.HeadingSm}

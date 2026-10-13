@@ -86,9 +86,10 @@ const renderBanner = (
 const renderBalanceCta = (
   token = createToken(),
   remoteFeatureFlags?: Record<string, unknown>,
+  { enabled = true } = {},
 ) =>
   renderHookWithProvider(
-    () => useMoneyAssetOverviewBalanceCta(token),
+    () => useMoneyAssetOverviewBalanceCta(token, { enabled }),
     buildState(remoteFeatureFlags),
   ).result.current;
 
@@ -112,6 +113,12 @@ const EXPECTED_TOKEN_PROPERTIES = {
   tokensInList: 1,
   tokenHasBalance: true,
 };
+
+const mockDepositLoading = () =>
+  mockUseMoneyAccountDeposit.mockReturnValue({
+    initiateDeposit: mockInitiateDeposit,
+    isLoading: true,
+  } as unknown as ReturnType<typeof useMoneyAccountDeposit>);
 
 const EXPECTED_DEPOSIT = {
   preferredPaymentToken: { address: USDC_ADDRESS as Hex, chainId: '0x1' },
@@ -286,6 +293,18 @@ describe('use-money-asset-overview-ctas', () => {
       expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
     });
 
+    it('ignores banner and CTA clicks while a deposit is starting', () => {
+      mockDepositLoading();
+
+      const banner = renderBanner();
+      banner.onBannerClick();
+      banner.onCtaClick();
+
+      expect(moneyAnalytics.trackTokenSurfaceClicked).not.toHaveBeenCalled();
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
     it('tracks a dismissal without depositing', () => {
       renderBanner().onDismiss();
 
@@ -307,6 +326,34 @@ describe('use-money-asset-overview-ctas', () => {
         apyPercentFormatted: '6.2%',
         projectedEarningsFormatted: '+$62.00',
       });
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      ['zero', 0, 0],
+      ['negative', -0.003, -0.3],
+    ])(
+      'hides without tracking a view for a %s APY',
+      (_name: string, apyDecimal: number, apyPercent: number) => {
+        mockApy(apyDecimal, apyPercent);
+
+        const balanceCta = renderBalanceCta();
+
+        expect(balanceCta.display).toBeUndefined();
+        expect(balanceCta.isLoading).toBe(false);
+        expect(moneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
+      },
+    );
+
+    it('hides without fetching the APY or tracking a view when not enabled', () => {
+      const balanceCta = renderBalanceCta(createToken(), undefined, {
+        enabled: false,
+      });
+
+      expect(balanceCta.display).toBeUndefined();
+      expect(balanceCta.isLoading).toBe(false);
+      expect(mockUseMoneyVaultApy).toHaveBeenCalledWith({ enabled: false });
+      expect(moneyAnalytics.trackComponentViewed).not.toHaveBeenCalled();
     });
 
     it('hides without loading once the APY request has settled empty', () => {
@@ -379,6 +426,15 @@ describe('use-money-asset-overview-ctas', () => {
         redirectTarget: MoneyScreenName.MoneyDeposit,
       });
       expect(mockInitiateDeposit).toHaveBeenCalledWith(EXPECTED_DEPOSIT);
+    });
+
+    it('ignores Start earning while a deposit is starting', () => {
+      mockDepositLoading();
+
+      renderBalanceCta().onStartEarning();
+
+      expect(moneyAnalytics.trackTokenButtonClicked).not.toHaveBeenCalled();
+      expect(mockInitiateDeposit).not.toHaveBeenCalled();
     });
 
     it('tracks the projected earnings tooltip', () => {
