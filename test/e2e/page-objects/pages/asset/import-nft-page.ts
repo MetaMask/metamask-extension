@@ -32,7 +32,7 @@ class ImportNftPage {
   private readonly importNftNetworkName =
     '[data-testid="network-list-item-0x539"]';
 
-  private readonly importNftTitle = { text: 'Import NFT', tag: 'h4' };
+  private readonly importNftTitle = { text: 'Import NFT', tag: 'p' };
 
   private readonly importNftTokenIdInput = '#token-id';
 
