@@ -19,7 +19,7 @@ export const cashtagHostPageCssPathRegex =
 // HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
 // which would break the string imports above, so they are excluded here.
 export const htmlBundlerCssPathRegex =
-  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass)$/u;
+  /^(?!.*[\\/]cashtag[\\/](?:pill[\\/]page|widget[\\/](?:page|widget))\.css$).*\.(?:css|scss|sass)$/u;
 
 // Host-page styles, imported as text so the content script can inject and
 // remove them without exposing a web-accessible stylesheet.
