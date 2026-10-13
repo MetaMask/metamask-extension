@@ -1,5 +1,9 @@
 import type { Mockttp } from 'mockttp';
-import { MONEY_ACCOUNT_ADDRESS } from '../confirmations/metamask-pay/constants';
+import {
+  MONEY_ACCOUNT_ADDRESS,
+  MONAD_CHAIN_ID_DECIMAL,
+  MUSD_MONAD_ADDRESS,
+} from '../confirmations/metamask-pay/constants';
 import { getMoneyAccountDepositConfig } from '../confirmations/metamask-pay/helpers';
 
 /**
@@ -16,6 +20,9 @@ const POSITIONS_URL =
  * Serves the Money API positions response the withdrawable balance is read
  * from. The whole balance sits in the vault (`vmusd_value_in_musd`); the
  * loose mUSD balance is zero, and the two must sum to `total_balance`.
+ * `by_asset`, `total_balance_usd`, and the position identity fields are
+ * required by the Money API schema; a response missing them fails validation
+ * and leaves the percentage buttons disabled.
  *
  * @param server - Mockttp server.
  */
@@ -33,9 +40,26 @@ async function mockMoneyAccountPositions(server: Mockttp): Promise<void> {
       musd_balance: '0',
       vmusd_value_in_musd: funded,
       total_balance: funded,
+      by_asset: [
+        {
+          asset_contract_address: MUSD_MONAD_ADDRESS,
+          asset_symbol: 'mUSD',
+          asset_decimals: 6,
+          wallet_balance: '0',
+          vault_value: funded,
+          total: funded,
+          total_usd: String(WITHDRAWABLE_USD),
+        },
+      ],
+      total_balance_usd: String(WITHDRAWABLE_USD),
     },
     positions: [
       {
+        chain_id: MONAD_CHAIN_ID_DECIMAL,
+        vault_key: 'musd',
+        name: 'MetaMask USD',
+        asset_symbol: 'mUSD',
+        asset_decimals: 6,
         vault_address: '0xb4563bcD3B7764CCBf497f515585f70B6C3EA5Ae',
         shares_held: funded,
         current_rate: '1000000000000000000',
