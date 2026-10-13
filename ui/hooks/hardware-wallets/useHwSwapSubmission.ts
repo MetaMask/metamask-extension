@@ -1,6 +1,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 
 import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { getHardwareWalletSignatureErrorEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 import type { UseHwSwapSubmissionOptions } from './useHwSwapSubmission.types';
 
 const RETRY_RPC_TIMEOUT_MS = 120_000;
@@ -93,11 +94,19 @@ export function useHwSwapSubmission({
     }
 
     hasStartedSubmission.current = true;
-    // Do NOT reset `hasStartedSubmission` on failure. `submitActiveQuote`
-    // changes identity across renders, so resetting here re-triggers this
-    // effect and re-prompts the device after every rejection (infinite loop).
-    // Retries go through `retrySubmission`; a new quote resets the flag above.
-    submitActiveQuote().catch(() => undefined);
+    submitActiveQuote().catch((error) => {
+      // Do NOT reset `hasStartedSubmission` for errors that reach a terminal
+      // signature state (rejected/failed/disconnected): `submitActiveQuote`
+      // changes identity across renders, so resetting would re-prompt the
+      // device after every rejection (infinite loop). Those retry via
+      // `retrySubmission`; a new quote resets the flag above.
+      // Errors with no signature event (e.g. DeviceStateEthAppClosed) keep the
+      // UI on the awaiting path with no retry control, so re-arm the effect to
+      // resubmit once the device recovers.
+      if (getHardwareWalletSignatureErrorEvent(error) === null) {
+        hasStartedSubmission.current = false;
+      }
+    });
   }, [lockedQuote, submitActiveQuote]);
 
   const retrySubmission = useCallback(async () => {

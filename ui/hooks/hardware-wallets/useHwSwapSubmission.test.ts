@@ -1,5 +1,11 @@
 import { act } from '@testing-library/react';
 import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -206,6 +212,43 @@ describe('useHwSwapSubmission', () => {
     rerender();
 
     expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-arms auto-submit after an error that maps to no signature event', async () => {
+    const lockedQuote = createMockLockedQuote('request-1');
+    mockSubmitBridgeTransaction.mockRejectedValue(
+      new HardwareWalletError('Ethereum app is not open', {
+        code: ErrorCode.DeviceStateEthAppClosed,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Ethereum app is not open',
+      }),
+    );
+
+    const { result, rerender } = renderHookWithProvider(
+      () =>
+        useHwSwapSubmission({
+          lockedQuote,
+          needsTwoConfirmations: false,
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          dispatchSignatureEvent: mockDispatchSignatureEvent,
+          submitBridgeTransaction: (...args: unknown[]) =>
+            mockSubmitBridgeTransaction(...args),
+        }),
+      {},
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(result.current.hasStartedSubmission.current).toBe(false);
+
+    rerender();
+
+    expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(2);
   });
 
   it('submitActiveQuote does nothing when lockedQuote is undefined', async () => {
