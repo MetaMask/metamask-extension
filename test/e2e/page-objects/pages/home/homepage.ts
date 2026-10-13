@@ -9,7 +9,11 @@ import {
   BASE_ACCOUNT_SYNC_TIMEOUT,
   POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
-import { installBlockingErrorToastMonitor } from './blocking-error-toast-monitor';
+import {
+  getBlockingErrorToastHeartbeat,
+  getRecordedBlockingErrorToasts,
+  installBlockingErrorToastMonitor,
+} from './blocking-error-toast-monitor';
 import HeaderNavbar from './header-navbar';
 
 export type CheckExpectedBalanceOptions = {
@@ -370,8 +374,9 @@ class HomePage {
   }
 
   /**
-   * Fails if {@link startMonitoringBlockingErrorToast} recorded the price-api
-   * message, then re-checks that it is not currently displayed.
+   * Fails if the toast poll never ran, or if
+   * {@link startMonitoringBlockingErrorToast} recorded the price-api message,
+   * then re-checks that it is not currently displayed.
    *
    * Other `toast.error` copy is ignored: `[data-testid="error-toast"]` is set
    * on every error toast.
@@ -380,8 +385,16 @@ class HomePage {
     console.log(
       'Check no price-api error toast was observed during homepage load',
     );
+    const heartbeat = (await this.driver.executeScript(
+      getBlockingErrorToastHeartbeat,
+    )) as number;
+    assert.notStrictEqual(
+      heartbeat,
+      0,
+      'Blocking error toast monitor poll did not run',
+    );
     const seen = (await this.driver.executeScript(
-      'return window.__mmE2eBlockingErrorToasts || [];',
+      getRecordedBlockingErrorToasts,
     )) as string[];
     const priceApiToasts = seen.filter(
       (text) =>

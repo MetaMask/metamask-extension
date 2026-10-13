@@ -1,5 +1,6 @@
 import {
   BLOCKING_ERROR_TOAST_POLL_INTERVAL_MS,
+  getBlockingErrorToastHeartbeat,
   getRecordedBlockingErrorToasts,
   installBlockingErrorToastMonitor,
 } from './blocking-error-toast-monitor';
@@ -78,10 +79,20 @@ describe('installBlockingErrorToastMonitor', () => {
   it('does not reset recordings when installed a second time', () => {
     mountErrorToast('unsupported');
     flushPoll();
+    const heartbeat = getBlockingErrorToastHeartbeat();
 
     installBlockingErrorToastMonitor();
 
     expect(getRecordedBlockingErrorToasts()).toEqual(['unsupported']);
+    expect(getBlockingErrorToastHeartbeat()).toBe(heartbeat);
+  });
+
+  it('bumps a heartbeat each time the poll runs', () => {
+    const before = getBlockingErrorToastHeartbeat();
+
+    flushPoll();
+
+    expect(getBlockingErrorToastHeartbeat()).toBe(before + 1);
   });
 
   it('does not record the same matching toast text twice while it stays mounted', () => {

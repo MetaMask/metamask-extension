@@ -15,6 +15,8 @@
 type BlockingErrorToastWindow = Window & {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __mmE2eBlockingErrorToasts?: string[];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __mmE2eBlockingErrorToastHeartbeat?: number;
 };
 
 /**
@@ -35,6 +37,19 @@ export function getRecordedBlockingErrorToasts(): string[] {
 }
 
 /**
+ * Poll count for {@link installBlockingErrorToastMonitor}. Starts at 0 and
+ * increments on each poll. E2E fails the empty-toast check when this stays 0,
+ * because Jest does not run the monitor in the LavaMoat realm.
+ *
+ * @returns How many times the poll callback has run, or 0 if it never has.
+ */
+export function getBlockingErrorToastHeartbeat(): number {
+  return (
+    (window as BlockingErrorToastWindow).__mmE2eBlockingErrorToastHeartbeat ?? 0
+  );
+}
+
+/**
  * Installs a monitor that records blocking error toasts as they appear.
  * Idempotent on the current document.
  */
@@ -44,6 +59,7 @@ export function installBlockingErrorToastMonitor(): void {
     return;
   }
   win.__mmE2eBlockingErrorToasts = [];
+  win.__mmE2eBlockingErrorToastHeartbeat = 0;
   // Literal (not the exported const) so executeScript serialization stays self-contained.
   const pollIntervalMs = 50;
   // Keep in sync with HomePage.errorToast / ERROR_TOAST_TEST_ID.
@@ -63,6 +79,10 @@ export function installBlockingErrorToastMonitor(): void {
   }
 
   function poll() {
+    // Count poll callbacks only. The initial scan does not bump this, so a
+    // skipped setTimeout leaves the heartbeat at 0.
+    win.__mmE2eBlockingErrorToastHeartbeat =
+      (win.__mmE2eBlockingErrorToastHeartbeat ?? 0) + 1;
     scanDocument();
     // setTimeout is a LavaMoat scuttling exception; MutationObserver is not.
     setTimeout(poll, pollIntervalMs);
