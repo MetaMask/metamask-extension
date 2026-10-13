@@ -47,6 +47,7 @@ describe('NotificationsSettingsContent', () => {
       error: null,
       refetchPreferences: jest.fn(),
       ensurePreferences: jest.fn(),
+      markMarketingChannelsOff: jest.fn(),
       updatePreference: jest.fn(),
       updatePreferencesSection: jest.fn(),
     });

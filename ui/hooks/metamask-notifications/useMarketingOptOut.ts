@@ -28,7 +28,7 @@ export function useMarketingOptOut({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { listNotifications } = useMetamaskNotificationsContext();
-  const { ensurePreferences, refetchPreferences } =
+  const { ensurePreferences, markMarketingChannelsOff, refetchPreferences } =
     useNotificationPreferences();
   const isSignedIn = useSelector(selectIsSignedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
@@ -76,9 +76,11 @@ export function useMarketingOptOut({
         }
         throw consentError;
       }
-      // The consent sync turned the channels off in AUS; refresh the cache so
-      // a later preferences write does not turn them back on.
-      await refetchPreferences({ throwOnError: true });
+      // The consent sync turned the channels off in AUS. Mirror that in the
+      // cache first, so a failed refresh cannot leave a channel-on snapshot
+      // that a later preferences write would send back to AUS.
+      markMarketingChannelsOff();
+      await refetchPreferences();
       listNotifications();
       await onOptedOut();
       setIsOpen(false);
@@ -92,6 +94,7 @@ export function useMarketingOptOut({
     dataCollectionForMarketing,
     dispatch,
     listNotifications,
+    markMarketingChannelsOff,
     onOptedOut,
     refetchPreferences,
     t,
