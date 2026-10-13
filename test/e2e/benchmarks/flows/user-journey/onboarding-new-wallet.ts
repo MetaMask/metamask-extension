@@ -164,15 +164,25 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             },
           ),
         );
-        // BUG #42792 This test is failing with the ASSETS_UNIFIED_STATE_ENABLED='true'
-        // commenting out temporarily to unblock the release
-        /*
+        // Restored 2026-10-07. This was commented out on 2026-06-02 as
+        // "temporarily to unblock the release" for
+        // `MetaMask/metamask-extension#42792` (onboarding benchmarks show a
+        // degradation with Assets Unified State on), and that issue is CLOSED, so the
+        // stated reason is discharged.
+        //
+        // The cost of leaving it was not a missing nice-to-have: `onboardingNewWallet.cls`
+        // and `onboardingImportWallet.cls` are both in `GATED_METRIC_VALUES`, so for four
+        // months two gated metrics produced no value and the gate reported PASS beside
+        // them. That is I2 of the admission gate, and these two legs are what it fires on.
+        //
+        // If the degradation `extension#42792` named -- the Assets Unified State
+        // regression on these two onboarding benchmarks -- still exists, restoring
+        // collection is how it becomes visible rather than a reason to keep it hidden.
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
           console.error('Error collecting web vitals:', error);
         }
-        */
       },
     );
 
