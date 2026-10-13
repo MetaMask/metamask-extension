@@ -15,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { validateExtensionBuilt } from './validate-extension';
 import type {
   LauncherLaunchOptions,
@@ -28,10 +29,8 @@ import { runSelfOnboarding } from './self-onboarding';
 import { getE2EDriver, withTimeout } from './e2e-driver';
 import {
   LAUNCH_SCREEN_CHECKS,
-  describeScreens,
   waitForAnyScreen,
-  waitForHomePage,
-} from './screen-checks';
+} from './launcher/state-inspector';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_CHAIN_ID = 1337;
@@ -47,7 +46,6 @@ const SIDEPANEL_CONFIRMATION_ROUTE_PREFIXES: string[] = [
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 ];
-
 type ResolvedOptions = {
   extensionPath: string;
   headless: boolean;
@@ -286,12 +284,12 @@ export class MetaMaskExtensionLauncher {
           phrase = '';
         }
         await this.navigateToHome();
-        await waitForHomePage(
+        await new HomePage(
           withTimeout(
             getE2EDriver(this.extensionPage as Page),
             UI_READY_TIMEOUT_MS,
           ),
-        );
+        ).checkPageIsLoaded();
       }
 
       return {
@@ -371,7 +369,7 @@ export class MetaMaskExtensionLauncher {
       throw new Error(
         `Extension UI did not reach expected state within ${UI_READY_TIMEOUT_MS}ms. ` +
           `Current URL: ${page.url()}. ` +
-          `Expected one of: ${describeScreens(LAUNCH_SCREEN_CHECKS)}. ` +
+          `Expected one of: ${LAUNCH_SCREEN_CHECKS.map(({ description }) => description).join(', ')}. ` +
           `Debug screenshot saved to: ${screenshotPath}`,
       );
     }
