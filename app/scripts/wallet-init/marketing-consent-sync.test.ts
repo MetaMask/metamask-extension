@@ -158,7 +158,13 @@ describe('setupMarketingConsentSync', () => {
 
     handlers['AuthenticationController:stateChange']({ isSignedIn: true });
     await flushPromises();
-    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    // Undecided: AUS is read for a saved decision, but nothing is written.
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      expect.anything(),
+      expect.anything(),
+    );
 
     handlers['AnalyticsController:stateChange']({
       optedInToMarketing: false,
@@ -166,7 +172,9 @@ describe('setupMarketingConsentSync', () => {
     });
     await flushPromises();
 
-    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(
+      call.mock.calls.filter(([action]) => action === GET_CONSENT_ACTION),
+    ).toHaveLength(1);
     expect(call).toHaveBeenCalledWith(
       PUT_CONSENT_ACTION,
       {
@@ -406,8 +414,8 @@ describe('setupMarketingConsentSync', () => {
     });
   });
 
-  it('does not reconcile an undecided local value', async () => {
-    const { call, handlers } = setupSync({
+  it('leaves an undecided client undecided when AUS has no consent', async () => {
+    const { call } = setupSync({
       analyticsState: {
         optedInToMarketing: true,
         marketingConsentDecisionMade: false,
@@ -417,8 +425,38 @@ describe('setupMarketingConsentSync', () => {
     });
     await flushPromises();
 
-    expect(call).not.toHaveBeenCalledWith(GET_CONSENT_ACTION);
-    expect(call).not.toHaveBeenCalledWith(PUT_CONSENT_ACTION);
+    expect(call).toHaveBeenCalledWith(GET_CONSENT_ACTION);
+    expect(call).not.toHaveBeenCalledWith(
+      PUT_CONSENT_ACTION,
+      expect.anything(),
+      expect.anything(),
+    );
+    expect(call).not.toHaveBeenCalledWith(OPT_IN_ACTION);
+    expect(call).not.toHaveBeenCalledWith(OPT_OUT_ACTION);
+  });
+
+  [true, false].forEach((marketingConsentEnabled) => {
+    it(`adopts the saved AUS decision ${marketingConsentEnabled} on an undecided client without writing it back`, async () => {
+      const { call } = setupSync({
+        analyticsState: {
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: false,
+        },
+        authenticationState: { isSignedIn: true },
+        remoteConsent: { marketingConsentEnabled },
+      });
+      await flushPromises();
+
+      expect(call).toHaveBeenCalledWith(
+        marketingConsentEnabled ? OPT_IN_ACTION : OPT_OUT_ACTION,
+      );
+      const writes = call.mock.calls.filter(([action]) =>
+        [PUT_CONSENT_ACTION, PUT_PREFERENCES_ACTION, SET_ITEM_ACTION].includes(
+          action,
+        ),
+      );
+      expect(writes).toStrictEqual([]);
+    });
   });
 
   [true, false].forEach((localConsent) => {

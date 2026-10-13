@@ -76,20 +76,14 @@ export type MarketingConsentSync = {
   refreshMarketingConsent: () => void;
 };
 
-function isConsentSyncReady(
+function canReachAus(
   authenticationState: Pick<AuthenticationControllerState, 'isSignedIn'>,
-  analyticsState: Pick<
-    AnalyticsControllerState,
-    'marketingConsentDecisionMade'
-  >,
   keyringState: Pick<KeyringControllerState, 'isUnlocked'>,
 ): boolean {
   // AUS consent reads require a bearer token, which is only obtainable while
   // the vault is unlocked, so a sync attempted while locked always fails.
   return (
-    keyringState.isUnlocked === true &&
-    authenticationState.isSignedIn === true &&
-    analyticsState.marketingConsentDecisionMade === true
+    keyringState.isUnlocked === true && authenticationState.isSignedIn === true
   );
 }
 
@@ -124,7 +118,8 @@ function assertMarketingConsentSynced(
 }
 
 /**
- * Keep decided marketing consent in sync with the signed-in user's AUS profile.
+ * Keep marketing consent in sync with the signed-in user's AUS profile. A
+ * client with no local decision adopts the profile's saved one, if any.
  *
  * @param options - Setup options.
  * @param options.messenger - The root controller messenger.
@@ -179,8 +174,9 @@ export function setupMarketingConsentSync({
   let applyingRemote: { value: boolean } | undefined;
   let inFlight: Promise<void> | undefined;
 
-  const isReady = () =>
-    isConsentSyncReady(authenticationState, analyticsState, keyringState);
+  const isAusReachable = () => canReachAus(authenticationState, keyringState);
+  const isDecided = () => analyticsState.marketingConsentDecisionMade === true;
+  const isReady = () => isAusReachable() && isDecided();
 
   const persistPendingConsentUpdate = (value: boolean | undefined) => {
     const write =
@@ -284,7 +280,7 @@ export function setupMarketingConsentSync({
       'AuthenticatedUserStorageService:getMarketingConsent',
     );
 
-    if (currentSession !== session || !isReady()) {
+    if (currentSession !== session || !isAusReachable()) {
       return;
     }
 
@@ -293,13 +289,21 @@ export function setupMarketingConsentSync({
       return;
     }
 
+    const decided = isDecided();
+
     if (remote === null) {
-      await writeConsent(localValue);
-      currentSession.lastSynced = localValue;
+      // Without a local decision there is nothing to seed AUS with; the user
+      // is asked, and that decision is written as a local change.
+      if (decided) {
+        await writeConsent(localValue);
+        currentSession.lastSynced = localValue;
+      }
       return;
     }
 
-    if (remote.marketingConsentEnabled !== localValue) {
+    // An undecided client (e.g. a social-login restore on a new device)
+    // adopts the profile's saved decision.
+    if (!decided || remote.marketingConsentEnabled !== localValue) {
       applyingRemote = { value: remote.marketingConsentEnabled };
       try {
         if (remote.marketingConsentEnabled) {
@@ -364,7 +368,7 @@ export function setupMarketingConsentSync({
       return inFlight;
     }
 
-    if (!isReady()) {
+    if (!isAusReachable()) {
       return Promise.resolve();
     }
 
@@ -374,7 +378,10 @@ export function setupMarketingConsentSync({
       inFlight = undefined;
       // Re-run for a new session, or for a refresh requested mid-run; a
       // refresh must not read AUS before an in-flight write has landed.
-      if (isReady() && (session !== startedFor || session.remoteStale)) {
+      if (
+        isAusReachable() &&
+        (session !== startedFor || session.remoteStale)
+      ) {
         startSync();
       }
     });
@@ -432,7 +439,10 @@ export function setupMarketingConsentSync({
         priorDecided &&
         nowDecided &&
         applyingRemote?.value !== state.optedInToMarketing;
-      const decisionJustMade = !priorDecided && nowDecided;
+      const decisionJustMade =
+        !priorDecided &&
+        nowDecided &&
+        applyingRemote?.value !== state.optedInToMarketing;
 
       if (!localConsentChanged && !decisionJustMade) {
         return;
