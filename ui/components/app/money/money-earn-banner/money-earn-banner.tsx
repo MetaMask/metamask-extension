@@ -56,7 +56,8 @@ export type MoneyEarnBannerProps = {
 
 /**
  * Dismissible "Earn up to X% APY" Money deposit banner for token details.
- * Dismissal lasts only while mounted, so the banner returns on the next visit.
+ * Dismissal is persisted per token by the hook, and hides the banner here
+ * straight away rather than after the background state update arrives.
  *
  * @param props - Component props.
  * @param props.token - The token whose details page is shown.
@@ -91,7 +92,11 @@ export const MoneyEarnBanner = ({ token }: MoneyEarnBannerProps) => {
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (event.target === event.currentTarget && event.key === 'Enter') {
+      if (
+        event.target === event.currentTarget &&
+        (event.key === 'Enter' || event.key === ' ')
+      ) {
+        event.preventDefault();
         onBannerClick();
       }
     },

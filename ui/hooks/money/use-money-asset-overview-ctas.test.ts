@@ -10,6 +10,7 @@ import {
   MoneyTooltipName,
   MoneyTooltipType,
 } from '../../pages/money/constants/money-events';
+import { addMoneyEarnBannerDismissedTokenKey } from '../../store/actions';
 import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAnalytics } from './useMoneyAnalytics';
@@ -20,6 +21,14 @@ import {
   useMoneyEarnBanner,
   type MoneyAssetOverviewToken,
 } from './use-money-asset-overview-ctas';
+
+jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
+  addMoneyEarnBannerDismissedTokenKey: jest.fn((key: string) => ({
+    type: 'ADD_MONEY_EARN_BANNER_DISMISSED_TOKEN_KEY',
+    key,
+  })),
+}));
 
 jest.mock('./useMoneyAccountDeposit', () => ({
   useMoneyAccountDeposit: jest.fn(),
@@ -59,11 +68,17 @@ const createToken = (
   ...overrides,
 });
 
-const buildState = (remoteFeatureFlags: Record<string, unknown> = {}) => ({
+const USDC_TOKEN_KEY = `0x1:${USDC_ADDRESS.toLowerCase()}`;
+
+const buildState = (
+  remoteFeatureFlags: Record<string, unknown> = {},
+  moneyEarnBannerDismissedTokenKeys: string[] = [],
+) => ({
   ...mockState,
   metamask: {
     ...mockState.metamask,
     currentCurrency: 'usd',
+    moneyEarnBannerDismissedTokenKeys,
     remoteFeatureFlags: {
       moneyEnableMoneyAccount: ENABLED_FLAG,
       earnMoneyEarnBannerEnabled: ENABLED_FLAG,
@@ -77,10 +92,11 @@ const buildState = (remoteFeatureFlags: Record<string, unknown> = {}) => ({
 const renderBanner = (
   token = createToken(),
   remoteFeatureFlags?: Record<string, unknown>,
+  dismissedTokenKeys?: string[],
 ) =>
   renderHookWithProvider(
     () => useMoneyEarnBanner(token),
-    buildState(remoteFeatureFlags),
+    buildState(remoteFeatureFlags, dismissedTokenKeys),
   ).result.current;
 
 const renderBalanceCta = (
@@ -305,7 +321,7 @@ describe('use-money-asset-overview-ctas', () => {
       expect(mockInitiateDeposit).not.toHaveBeenCalled();
     });
 
-    it('tracks a dismissal without depositing', () => {
+    it('tracks and persists a dismissal without depositing', () => {
       renderBanner().onDismiss();
 
       expect(moneyAnalytics.trackTokenButtonClicked).toHaveBeenCalledWith({
@@ -313,7 +329,25 @@ describe('use-money-asset-overview-ctas', () => {
         buttonType: MoneyButtonType.Icon,
         buttonIntent: MoneyButtonIntent.Dismiss,
       });
+      expect(addMoneyEarnBannerDismissedTokenKey).toHaveBeenCalledWith(
+        USDC_TOKEN_KEY,
+      );
       expect(mockInitiateDeposit).not.toHaveBeenCalled();
+    });
+
+    it('hides without fetching the APY once dismissed for the token', () => {
+      const banner = renderBanner(createToken(), undefined, [USDC_TOKEN_KEY]);
+
+      expect(banner.isVisible).toBe(false);
+      expect(mockUseMoneyVaultApy).toHaveBeenCalledWith({ enabled: false });
+    });
+
+    it('stays visible when another token was dismissed', () => {
+      expect(
+        renderBanner(createToken(), undefined, [
+          `0xe708:${USDC_ADDRESS.toLowerCase()}`,
+        ]).isVisible,
+      ).toBe(true);
     });
   });
 

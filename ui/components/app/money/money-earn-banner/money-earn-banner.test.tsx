@@ -101,6 +101,32 @@ describe('MoneyEarnBanner', () => {
     expect(handlers.onCtaClick).not.toHaveBeenCalled();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(['Enter', ' '])(
+    'starts a deposit from the banner surface with the %j key',
+    (key: string) => {
+      const { getByTestId } = renderBanner();
+
+      const isNotPrevented = fireEvent.keyDown(
+        getByTestId(MONEY_EARN_BANNER_TEST_ID),
+        { key },
+      );
+
+      expect(handlers.onBannerClick).toHaveBeenCalledTimes(1);
+      expect(isNotPrevented).toBe(false);
+    },
+  );
+
+  it('ignores keys pressed on the buttons inside the banner', () => {
+    const { getByTestId } = renderBanner();
+
+    fireEvent.keyDown(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-cta`), {
+      key: ' ',
+    });
+
+    expect(handlers.onBannerClick).not.toHaveBeenCalled();
+  });
+
   it('starts a deposit from the CTA without a surface click', () => {
     const { getByTestId } = renderBanner();
 
@@ -118,18 +144,6 @@ describe('MoneyEarnBanner', () => {
     expect(handlers.onDismiss).toHaveBeenCalledTimes(1);
     expect(handlers.onBannerClick).not.toHaveBeenCalled();
     expect(queryByTestId(MONEY_EARN_BANNER_TEST_ID)).not.toBeInTheDocument();
-  });
-
-  it('shows again after remounting, as dismissal is not persisted', () => {
-    const { getByTestId, unmount } = renderBanner();
-    fireEvent.click(getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-dismiss`));
-    unmount();
-
-    const { getByTestId: getByTestIdAfterRemount } = renderBanner();
-
-    expect(
-      getByTestIdAfterRemount(MONEY_EARN_BANNER_TEST_ID),
-    ).toBeInTheDocument();
   });
 
   it('uses the stablecoin artwork for a known symbol', () => {

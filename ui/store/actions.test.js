@@ -3111,6 +3111,29 @@ describe('Actions', () => {
     });
   });
 
+  describe('#addMoneyEarnBannerDismissedTokenKey', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls addMoneyEarnBannerDismissedTokenKey in background with key', async () => {
+      const store = mockStore();
+      const addMoneyEarnBannerDismissedTokenKeyStub = sinon.stub().resolves();
+
+      setBackgroundConnection({
+        addMoneyEarnBannerDismissedTokenKey:
+          addMoneyEarnBannerDismissedTokenKeyStub,
+      });
+
+      await store.dispatch(
+        actions.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc123'),
+      );
+      expect(
+        addMoneyEarnBannerDismissedTokenKeyStub.calledOnceWith('0x1:0xabc123'),
+      ).toBe(true);
+    });
+  });
+
   describe('#setUsePhishDetect', () => {
     afterEach(() => {
       sinon.restore();

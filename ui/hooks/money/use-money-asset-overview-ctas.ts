@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
@@ -13,9 +13,12 @@ import {
   MoneyTooltipType,
 } from '../../pages/money/constants/money-events';
 import {
+  getMoneyTokenKey,
   selectMoneyAssetOverviewBalanceCtaEnabled,
   selectMoneyEarnBannerEnabled,
 } from '../../selectors/money/money-account-feature-flags';
+import { selectMoneyEarnBannerDismissedTokenKeys } from '../../selectors/money/persisted-state';
+import { addMoneyEarnBannerDismissedTokenKey } from '../../store/actions';
 import { useTrackOnce } from '../useTrackOnce';
 import { calculateMoneyProjectedEarnings } from './money-deposit-token-utils';
 import {
@@ -92,13 +95,20 @@ function useMoneyAssetOverviewCta(
 }
 
 /**
- * The dismissible "Earn up to X% APY" banner on token details.
+ * The dismissible "Earn up to X% APY" banner on token details. Dismissal is
+ * persisted per token.
  *
  * @param token - The token whose details page is shown.
  * @returns Visibility, the APY to show (if known), and click handlers.
  */
 export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
+  const dispatch = useDispatch();
   const isFlagEnabled = useSelector(selectMoneyEarnBannerEnabled);
+  const dismissedTokenKeys = useSelector(
+    selectMoneyEarnBannerDismissedTokenKeys,
+  );
+  const tokenKey = getMoneyTokenKey(token.chainId, token.address);
+  const isDismissed = dismissedTokenKeys.includes(tokenKey);
   const {
     isEligible,
     vaultApy,
@@ -108,7 +118,7 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
     isDepositLoading,
   } = useMoneyAssetOverviewCta(
     token,
-    isFlagEnabled,
+    isFlagEnabled && !isDismissed,
     MoneyComponentName.EarnBanner,
   );
   const { trackTokenButtonClicked, trackTokenSurfaceClicked } = analytics;
@@ -151,7 +161,8 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
       buttonType: MoneyButtonType.Icon,
       buttonIntent: MoneyButtonIntent.Dismiss,
     });
-  }, [tokenProperties, trackTokenButtonClicked]);
+    dispatch(addMoneyEarnBannerDismissedTokenKey(tokenKey));
+  }, [dispatch, tokenKey, tokenProperties, trackTokenButtonClicked]);
 
   const { apyPercent, apyPercentFormatted } = vaultApy;
 
