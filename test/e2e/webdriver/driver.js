@@ -146,6 +146,14 @@ const errorMessages = {
  */
 class Driver {
   /**
+   * CDP session for the extension service worker, held so `Runtime.enable`
+   * stays active for the rest of the test.
+   *
+   * @type {import('selenium-webdriver/devtools/CDPConnection').CdpConnection | null}
+   */
+  #serviceWorkerLogConnection = null;
+
+  /**
    * @param {object} args - Constructor arguments.
    * @param {!ThenableWebDriver} args.driver - A {@code WebDriver} instance
    * @param {string} args.browser - The type of browser this driver is controlling
@@ -167,6 +175,14 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    /**
+     * Console error and exception text seen during the test, including
+     * messages `ignoredConsoleErrors` allows. Specs that must prove an
+     * expected error was logged read this; it does not fail the test.
+     *
+     * @type {string[]}
+     */
+    this.observedConsoleErrors = [];
     this.eventProcessingStack = [];
     this.windowHandles = disableServerMochaToBackground
       ? null
@@ -1977,11 +1993,44 @@ class Driver {
     return browserLogs;
   }
 
+  /**
+   * Records extension service-worker `console.error` text on
+   * `observedConsoleErrors` without failing the test for those messages.
+   *
+   * `createCDPConnection` replaces the DevTools socket, so this listener is
+   * registered after the service-worker session exists. CurrencyRateController
+   * logs from that target; the page console listener does not see it.
+   *
+   * @returns {Promise<void>}
+   */
+  async startObservingServiceWorkerConsoleErrors() {
+    if (this.#serviceWorkerLogConnection) {
+      return;
+    }
+
+    const cdpConnection = await this.#createServiceWorkerConnection();
+    this.#serviceWorkerLogConnection = cdpConnection;
+
+    await this.driver.onLogEvent(cdpConnection, (event) => {
+      if (event.type !== 'error' || !event.args?.length) {
+        return;
+      }
+      const text = this.#consoleEventText(event);
+      if (text) {
+        this.observedConsoleErrors.push(text);
+      }
+    });
+  }
+
   async checkBrowserForExceptions(ignoredConsoleErrors) {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
+
+      if (typeof description === 'string' && description) {
+        this.observedConsoleErrors.push(description);
+      }
 
       const ignored = logBrowserError(ignoredConsoleErrors, description);
       if (!ignored) {
@@ -2041,6 +2090,14 @@ class Driver {
     });
     completeErrorText = completeErrorText.trim();
 
+    const observedText = this.eventProcessingStack
+      .map((event) => this.#consoleEventText(event))
+      .filter(Boolean)
+      .join('\n');
+    if (observedText) {
+      this.observedConsoleErrors.push(observedText);
+    }
+
     const { ignoredConsoleErrors } = this.eventProcessingStack[0];
 
     const ignored = logBrowserError(ignoredConsoleErrors, completeErrorText);
@@ -2052,6 +2109,30 @@ class Driver {
     }
 
     this.eventProcessingStack = [];
+  }
+
+  /**
+   * Text used to prove an expected console error was logged.
+   * Includes remote-object descriptions that `#getErrorFromEvent` skips when
+   * an argument also has a preview.
+   *
+   * @param {object} event - CDP console event.
+   * @returns {string}
+   */
+  #consoleEventText(event) {
+    const parts = [this.#getErrorFromEvent(event)];
+    for (const arg of event.args ?? []) {
+      if (typeof arg?.description === 'string') {
+        parts.push(arg.description);
+      }
+      if (typeof arg?.preview?.description === 'string') {
+        parts.push(arg.preview.description);
+      }
+      if (typeof arg?.value === 'string') {
+        parts.push(arg.value);
+      }
+    }
+    return parts.filter(Boolean).join('\n');
   }
 
   #getErrorFromEvent(event) {
