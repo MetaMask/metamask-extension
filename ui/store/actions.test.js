@@ -3879,6 +3879,33 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setDataCollectionForMarketing with waitForAus', () => {
+    it('waits for AUS and refreshes local state after reconciliation', async () => {
+      const store = mockStore();
+      const setConsent = sinon.stub().resolves('analytics-id');
+      const messengerCall = sinon.stub().resolves();
+      const getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection({
+        setDataCollectionForMarketing: setConsent,
+        messengerCall,
+        getStatePatches,
+      });
+
+      await store.dispatch(
+        actions.setDataCollectionForMarketing(true, { waitForAus: true }),
+      );
+
+      expect(setConsent.calledOnceWith(true)).toBe(true);
+      expect(
+        messengerCall.calledOnceWith(
+          'MarketingConsentSync:waitForMarketingConsentSync',
+          [true],
+        ),
+      ).toBe(true);
+      expect(getStatePatches.calledOnce).toBe(true);
+    });
+  });
+
   describe('#enableMetamaskNotifications', () => {
     it('calls enableMetamaskNotifications in the background with options', async () => {
       const store = mockStore();

@@ -4347,6 +4347,7 @@ export function setParticipateInMetaMetrics(
 
 export function setDataCollectionForMarketing(
   dataCollectionPreference: boolean,
+  { waitForAus = false }: { waitForAus?: boolean } = {},
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4362,6 +4363,16 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+    if (waitForAus) {
+      try {
+        await submitRequestToBackground('messengerCall', [
+          'MarketingConsentSync:waitForMarketingConsentSync',
+          [dataCollectionPreference],
+        ]);
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
+      }
+    }
   };
 }
 
