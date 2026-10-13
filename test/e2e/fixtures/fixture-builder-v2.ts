@@ -179,6 +179,12 @@ class FixtureBuilderV2 {
   storageServiceData: Record<string, unknown> = {};
 
   /**
+   * Asset ids whose `assetsPrice` entry a test set explicitly.
+   * Legacy rate projection must not overwrite those.
+   */
+  explicitAssetsPriceIds = new Set<string>();
+
+  /**
    * Constructs a new instance of the FixtureBuilder class.
    *
    * @param options - The options for the constructor.
@@ -268,6 +274,11 @@ class FixtureBuilderV2 {
 
     applyOverwriteOrMerge('assetsBalance', assetsBalance);
     applyOverwriteOrMerge('assetsPrice', assetsPrice);
+    if (assetsPrice) {
+      for (const assetId of Object.keys(assetsPrice)) {
+        this.explicitAssetsPriceIds.add(assetId);
+      }
+    }
     applyOverwriteOrMerge('assetsInfo', assetsInfo);
     applyOverwriteOrMerge('customAssets', customAssets);
     applyOverwriteOrMerge('assetPreferences', assetPreferences);
@@ -1679,9 +1690,149 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
+    projectLegacyRatesIntoAssetsPrice(
+      this.fixture,
+      this.explicitAssetsPriceIds,
+    );
+
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,
+    };
+  }
+}
+
+type FixtureAssetMetadata = {
+  symbol?: string;
+  type?: string;
+};
+
+type FixtureFungiblePrice = {
+  assetPriceType?: string;
+  id?: string;
+  lastUpdated?: number;
+  price?: number;
+  usdPrice?: number;
+};
+
+type FixtureCurrencyRates = Record<
+  string,
+  { conversionRate?: number | null; usdConversionRate?: number | null }
+>;
+
+type FixtureConversionRates = Record<
+  string,
+  { conversionTime?: number; rate?: string }
+>;
+
+type FixtureAssetsController = {
+  assetsInfo?: Record<string, FixtureAssetMetadata>;
+  assetsPrice?: Record<string, FixtureFungiblePrice>;
+};
+
+/**
+ * Assets-unify reads fiat from `AssetsController.assetsPrice` and ignores
+ * `CurrencyController` and `MultichainAssetsRatesController`. Copy those
+ * legacy rates into `assetsPrice` so fixtures keep asserting the rates they
+ * already configure. Entries a test set with `withAssetsController` are left
+ * alone, and native prices are only updated where the fixture already has one
+ * so chains without a price do not suddenly join fiat totals.
+ *
+ * @param fixture - Fixture whose controller state is updated in place.
+ * @param explicitAssetsPriceIds - Asset ids priced by the test.
+ */
+function projectLegacyRatesIntoAssetsPrice(
+  fixture: FixtureType,
+  explicitAssetsPriceIds: ReadonlySet<string>,
+): void {
+  const data = fixture.data as Record<string, unknown>;
+  const assetsController = data.AssetsController as
+    | FixtureAssetsController
+    | undefined;
+
+  if (!assetsController) {
+    return;
+  }
+
+  const currencyController = data.CurrencyController as
+    | { currencyRates?: FixtureCurrencyRates }
+    | undefined;
+  const ratesController = data.MultichainAssetsRatesController as
+    | { conversionRates?: FixtureConversionRates }
+    | undefined;
+
+  assetsController.assetsPrice ??= {};
+  projectCurrencyRates(
+    assetsController,
+    currencyController?.currencyRates,
+    explicitAssetsPriceIds,
+  );
+  projectConversionRates(
+    assetsController,
+    ratesController?.conversionRates,
+    explicitAssetsPriceIds,
+  );
+}
+
+function projectCurrencyRates(
+  assetsController: FixtureAssetsController,
+  currencyRates: FixtureCurrencyRates | undefined,
+  explicitAssetsPriceIds: ReadonlySet<string>,
+): void {
+  const assetsInfo = assetsController.assetsInfo ?? {};
+  const assetsPrice = assetsController.assetsPrice ?? {};
+
+  for (const [assetId, assetPrice] of Object.entries(assetsPrice)) {
+    if (explicitAssetsPriceIds.has(assetId)) {
+      continue;
+    }
+
+    const metadata = assetsInfo[assetId];
+    const conversionRate = metadata?.symbol
+      ? currencyRates?.[metadata.symbol]?.conversionRate
+      : undefined;
+
+    if (metadata?.type !== 'native' || typeof conversionRate !== 'number') {
+      continue;
+    }
+
+    const usdConversionRate =
+      currencyRates?.[metadata.symbol]?.usdConversionRate;
+
+    assetPrice.assetPriceType = 'fungible';
+    assetPrice.price = conversionRate;
+    assetPrice.usdPrice =
+      typeof usdConversionRate === 'number'
+        ? usdConversionRate
+        : conversionRate;
+  }
+}
+
+function projectConversionRates(
+  assetsController: FixtureAssetsController,
+  conversionRates: FixtureConversionRates | undefined,
+  explicitAssetsPriceIds: ReadonlySet<string>,
+): void {
+  const assetsInfo = assetsController.assetsInfo ?? {};
+  const assetsPrice = assetsController.assetsPrice ?? {};
+
+  for (const [assetId, conversion] of Object.entries(conversionRates ?? {})) {
+    if (explicitAssetsPriceIds.has(assetId) || assetsPrice[assetId]) {
+      continue;
+    }
+
+    const price = Number(conversion.rate);
+
+    if (!Number.isFinite(price)) {
+      continue;
+    }
+
+    assetsPrice[assetId] = {
+      assetPriceType: 'fungible',
+      id: assetsInfo[assetId]?.symbol?.toLowerCase() ?? assetId,
+      lastUpdated: (conversion.conversionTime ?? 0) * 1000,
+      price,
+      usdPrice: price,
     };
   }
 }

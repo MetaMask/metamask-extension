@@ -7,7 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { mockTronApis, TRON_E2E_ASSETS_PRICE } from './mocks/common-tron';
+import { mockTronApis } from './mocks/common-tron';
 
 describe('Check balance', function (this: Suite) {
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
@@ -38,7 +38,6 @@ describe('Check balance', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2()
           .withShowNativeTokenAsMainBalanceDisabled()
-          .withAssetsController({ assetsPrice: TRON_E2E_ASSETS_PRICE })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronApis,

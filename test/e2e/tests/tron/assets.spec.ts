@@ -16,7 +16,6 @@ import {
   TRON_PORTFOLIO_MAIN_LIST_ASSET_NAMES,
 } from './fixtures/environments';
 import { withTronFixtures } from './fixtures/with-tron-fixtures';
-import { TRON_E2E_ASSETS_PRICE } from './mocks/common-tron';
 
 /** Max wait for Tron Snap balances to appear in the token list after refresh. */
 const TRON_ASSET_LIST_TIMEOUT_MS = 30_000;
@@ -41,8 +40,7 @@ const TRON_ASSETS_MANIFEST_FLAGS = {
 function buildTronAssetsFixture(): FixtureBuilderV2 {
   return new FixtureBuilderV2()
     .withShowNativeTokenAsMainBalanceDisabled()
-    .withRemoteFeatureFlagController(TRON_ASSETS_REMOTE_FEATURE_FLAGS)
-    .withAssetsController({ assetsPrice: TRON_E2E_ASSETS_PRICE });
+    .withRemoteFeatureFlagController(TRON_ASSETS_REMOTE_FEATURE_FLAGS);
 }
 
 function tronAssetsTestConfig(

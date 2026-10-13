@@ -27,19 +27,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const ETH_USD_PRICE = 1700;
 
-/**
- * Assets-unify derives the confirmation ETH rate from the first native ETH
- * entry in assetsInfo (`eip155:1/slip44:60`). The default fixture prices that
- * at 2047.51, so seed 1700 here to match `mockEthPrices` and the fiat asserts.
- */
-const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
-  assetPriceType: 'fungible' as const,
-  id: 'ethereum',
-  lastUpdated: 0,
-  price: ETH_USD_PRICE,
-  usdPrice: ETH_USD_PRICE,
-};
-
 const PREFERENCES_STATE_MOCK = {
   preferences: {
     showConfirmationAdvancedDetails: true,
@@ -105,12 +92,6 @@ describe('Send ETH - Advanced', function () {
           fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
-            .withAssetsController({
-              assetsPrice: {
-                'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-                'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-              },
-            })
             .build(),
           title: this.test?.fullTitle(),
           localNodeOptions: {
@@ -171,12 +152,6 @@ describe('Send ETH - Advanced', function () {
           fixtures: new FixtureBuilderV2()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController(PREFERENCES_STATE_MOCK)
-            .withAssetsController({
-              assetsPrice: {
-                'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-                'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
-              },
-            })
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
