@@ -725,6 +725,11 @@ function buildRelativeDeltaSection(
   }
 
   const lines: string[] = [];
+  // Entries the baseline does not cover. Collected rather than merely skipped:
+  // an entry with no baseline contributes no delta rows, which renders exactly
+  // like an entry whose deltas were all under RELATIVE_DELTA_MIN_PCT. A missing
+  // ARTIFACT already warns via `missingPresets`; a missing baseline did not.
+  const unresolved: string[] = [];
 
   for (const entry of entries) {
     const baselineMetrics =
@@ -745,6 +750,9 @@ function buildRelativeDeltaSection(
           )
         : undefined);
     if (!baselineMetrics) {
+      unresolved.push(
+        `${entry.benchmarkName} [${entry.platform}/${entry.buildType}]`,
+      );
       continue;
     }
 
@@ -771,11 +779,18 @@ function buildRelativeDeltaSection(
     }
   }
 
+  const noBaselineHtml =
+    unresolved.length > 0
+      ? `<p>⚠️ <b>No baseline:</b> ${[...new Set(unresolved)].join(
+          ', ',
+        )} — not compared against main</p>\n`
+      : '';
+
   if (lines.length === 0) {
-    return '';
+    return noBaselineHtml;
   }
 
-  return `<p><b>📈 Results compared to the previous 5 runs on main</b></p><ul>${lines.join('')}</ul>\n`;
+  return `${noBaselineHtml}<p><b>📈 Results compared to the previous 5 runs on main</b></p><ul>${lines.join('')}</ul>\n`;
 }
 
 /**
