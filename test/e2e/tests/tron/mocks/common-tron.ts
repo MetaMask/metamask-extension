@@ -79,6 +79,35 @@ const DEFAULT_TRC20_ASSETS = {
   },
 };
 
+function fungibleUsdPrice(id: string, price: number) {
+  return {
+    assetPriceType: 'fungible' as const,
+    id,
+    lastUpdated: 0,
+    price,
+    usdPrice: price,
+  };
+}
+
+/**
+ * Assets-unify reads non-EVM fiat from AssetsController.assetsPrice and ignores
+ * the spot-price mocks until a fetch merges. These match `mockTronSpotPrices`
+ * and the portfolio `priceUsd` values.
+ */
+export const TRON_E2E_ASSETS_PRICE = {
+  [`${TRON_CHAIN_ID}/slip44:195`]: fungibleUsdPrice('tron', TRX_TO_USD_RATE),
+  [`${TRON_CHAIN_ID}/trc10:${DEFAULT_TRC10_ASSETS.GAS_FREE.tokenId}`]:
+    fungibleUsdPrice('gas-free-transfer-solution', 0.000_000_001),
+  [`${TRON_CHAIN_ID}/trc20:${DEFAULT_TRC20_ASSETS.HTX.address}`]:
+    fungibleUsdPrice('htx-dao', 0.00000168),
+  [`${TRON_CHAIN_ID}/trc20:${DEFAULT_TRC20_ASSETS.SEED.address}`]:
+    fungibleUsdPrice('seed', 0.000_000_001),
+  [`${TRON_CHAIN_ID}/trc20:${DEFAULT_TRC20_ASSETS.USDD.address}`]:
+    fungibleUsdPrice('usdd', 0.999959),
+  [`${TRON_CHAIN_ID}/trc20:${DEFAULT_TRC20_ASSETS.USDT.address}`]:
+    fungibleUsdPrice('tether', 0.999176),
+};
+
 // Feature flags URL
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';

@@ -20,6 +20,26 @@ const PREFERENCES_STATE_MOCK = {
   useNonceField: true,
 };
 
+/**
+ * Assets-unify reads the confirmation ETH rate from the first native ETH
+ * entry in assetsInfo (`eip155:1/slip44:60`). The default fixture prices that
+ * at 2047.51, so seed 1700 to match `mockPriceApi` and the fiat asserts.
+ */
+const E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700 = {
+  assetPriceType: 'fungible' as const,
+  id: 'ethereum',
+  lastUpdated: 0,
+  price: 1700,
+  usdPrice: 1700,
+};
+
+const ASSETS_PRICE_USD_1700 = {
+  assetsPrice: {
+    'eip155:1/slip44:60': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+    'eip155:1337/slip44:1': E2E_ETH_NATIVE_ASSETS_PRICE_USD_1700,
+  },
+};
+
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
     await withFixtures(
@@ -82,6 +102,7 @@ describe('Editing Confirm Transaction', function () {
       {
         fixtures: new FixtureBuilderV2()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController(ASSETS_PRICE_USD_1700)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
@@ -130,6 +151,7 @@ describe('Editing Confirm Transaction', function () {
         fixtures: new FixtureBuilderV2()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
+          .withAssetsController(ASSETS_PRICE_USD_1700)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),

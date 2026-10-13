@@ -1,6 +1,9 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { DEFAULT_BTC_BALANCE } from '../../constants';
+import {
+  DEFAULT_BTC_BALANCE,
+  DEFAULT_BTC_CONVERSION_RATE,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
@@ -21,6 +24,25 @@ import {
   mockTokensV3Assets,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
+
+const BTC_ASSET_ID = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
+
+/**
+ * Assets-unify ignores MultichainAssetsRatesController.conversionRates and
+ * reads this asset from assetsPrice. The default fixture has the BTC rate
+ * only on conversionRates, so the list and details render with no price.
+ */
+const BTC_ASSETS_PRICE = {
+  assetsPrice: {
+    [BTC_ASSET_ID]: {
+      assetPriceType: 'fungible' as const,
+      id: 'bitcoin',
+      lastUpdated: 0,
+      price: DEFAULT_BTC_CONVERSION_RATE,
+      usdPrice: DEFAULT_BTC_CONVERSION_RATE,
+    },
+  },
+};
 
 async function buildBtcAssetsBaseMocks(mockServer: Mockttp) {
   return [
@@ -57,7 +79,9 @@ describe('BTC Account - Assets', function (this: Suite) {
   it('BTC is the only asset and shows a 0 balance for an empty account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAssetsController(BTC_ASSETS_PRICE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcAssetsEmpty,
       },
@@ -80,7 +104,9 @@ describe('BTC Account - Assets', function (this: Suite) {
   it('BTC asset list and details for a funded account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAssetsController(BTC_ASSETS_PRICE)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBtcAssetsFunded,
       },
