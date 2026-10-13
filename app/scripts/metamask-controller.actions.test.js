@@ -14,19 +14,7 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
-
-// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so unify-state tests can exercise real feature-flag gating via controller state.
-jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
-);
-
-jest.mock('../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../shared/lib/environment'),
-  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(),
-}));
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
   PerpsControllerInit: jest.fn().mockReturnValue({
@@ -203,7 +191,6 @@ describe('MetaMaskController', function () {
       }),
     });
     initializeMockMiddlewareLog();
-    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
 
     // Re-create the ULID generator to start over again the `mockULIDs` list.
     mockUlidGenerator = ulidGenerator();

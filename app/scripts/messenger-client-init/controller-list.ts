@@ -121,7 +121,6 @@ import { OnboardingController } from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import { InstitutionalSnapController } from '../controllers/institutional-snap/InstitutionalSnapController';
 import { NetworkOrderController } from '../controllers/network-order';
-import { MetaMetricsController } from '../controllers/metametrics-controller';
 import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
@@ -182,7 +181,6 @@ export type MessengerClient =
   | KeyringController
   | LegacyBackgroundApiService
   | LoggingController
-  | MetaMetricsController
   | MetaMetricsDataDeletionController
   | MoneyAccountApiDataService
   | MoneyAccountAvailabilityService
@@ -300,7 +298,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   GeolocationController['state'] &
   KeyringController['state'] &
   LoggingController['state'] &
-  MetaMetricsController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &

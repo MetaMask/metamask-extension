@@ -24,6 +24,7 @@ type MoneyPotentialEarningsProps = {
     tokenCount: number,
   ) => void;
   onViewAll: () => void;
+  onProjectionTooltipOpen?: () => void;
   isAddDisabled?: boolean;
 };
 
@@ -35,6 +36,7 @@ export function MoneyPotentialEarnings({
   privacyMode,
   onAddToken,
   onViewAll,
+  onProjectionTooltipOpen,
   isAddDisabled = false,
 }: MoneyPotentialEarningsProps) {
   const t = useI18nContext();
@@ -58,6 +60,7 @@ export function MoneyPotentialEarnings({
         apyDecimal={apyDecimal}
         apyPercent={apyPercent}
         privacyMode={privacyMode}
+        onProjectionTooltipOpen={onProjectionTooltipOpen}
       />
 
       {visibleTokens.map((token, index) => (

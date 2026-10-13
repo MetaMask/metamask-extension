@@ -1,7 +1,9 @@
 import type { Browser } from 'webextension-polyfill';
 
 export type PopupOpenerDeps = {
-  extension: Pick<Browser, 'tabs' | 'windows'>;
+  extension: Pick<Browser, 'tabs' | 'windows'> & {
+    action?: Browser['action'];
+  };
 };
 
 /**
@@ -21,7 +23,8 @@ export function createPopupOpener(deps: PopupOpenerDeps) {
    * @returns True if popup opened successfully, false otherwise.
    */
   return async function requestOpenPopup(tabId?: number): Promise<boolean> {
-    if (!globalThis.chrome?.action?.openPopup) {
+    const openPopup = deps.extension.action?.openPopup;
+    if (!openPopup) {
       return false;
     }
 
@@ -38,9 +41,7 @@ export function createPopupOpener(deps: PopupOpenerDeps) {
         await deps.extension.windows.update(windowId, { focused: true });
       }
 
-      await globalThis.chrome.action.openPopup(
-        windowId ? { windowId } : undefined,
-      );
+      await openPopup(windowId ? { windowId } : undefined);
       return true;
     } catch {
       return false;

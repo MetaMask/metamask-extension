@@ -12,7 +12,7 @@ import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
 import { canonicalize } from './canonicalize';
-import { SIG_PARAMS_PARAM } from './constants';
+import { SIG_PARAMS_PARAM } from './common';
 
 /**
  * Represents the origin of the deep link, either external or internal.

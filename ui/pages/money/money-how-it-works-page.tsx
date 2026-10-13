@@ -17,6 +17,9 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useMoneyAccountBalance } from '../../hooks/money/useMoneyAccountBalance';
 import { useInAppBack } from '../../hooks/useInAppBack';
+import { useMoneyAnalytics } from '../../hooks/money/useMoneyAnalytics';
+import { useTrackOnce } from '../../hooks/useTrackOnce';
+import { MoneyScreenName } from './constants/money-events';
 import { MoneyFaqItem } from './components/money-faq-item';
 import { MoneySectionDivider } from './components/money-section-divider';
 import { resetOverflowAncestorScroll } from './utils/reset-overflow-ancestor-scroll';
@@ -199,6 +202,14 @@ export function MoneyHowItWorksPage() {
     enabled: availability.isAvailable,
   });
   const apyDisplay = apyPercentFormatted ?? APY_FALLBACK;
+  const { trackScreenViewed } = useMoneyAnalytics({
+    screenName: MoneyScreenName.MoneyHowItWorks,
+  });
+
+  useTrackOnce(
+    !isAvailabilityLoading && availability.isAvailable,
+    trackScreenViewed,
+  );
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);

@@ -244,7 +244,7 @@ const AssetPage = ({
     return '';
   }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
-  const { currentPrice } = useCurrentPrice(asset);
+  const { currentPrice, marketData } = useCurrentPrice(asset);
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
@@ -322,7 +322,11 @@ const AssetPage = ({
     },
   };
 
-  const resolvedAssetId = (bip44Asset?.assetId ?? assetId) as CaipAssetType;
+  // Prefer the route/computed CAIP id so Stellar activation and spendable-balance
+  // lookups still work when the asset is not yet in the account group (empty assetId).
+  const resolvedAssetId = (caipAssetId ||
+    bip44Asset?.assetId ||
+    assetId) as CaipAssetType;
 
   const isAssetInactive = useSelector((state) =>
     getIsAssetRequireActivate(state, {
@@ -698,7 +702,11 @@ const AssetPage = ({
                 </Box>
               </Box>
             )}
-            <AssetMarketDetails asset={updatedAsset} address={address} />
+            <AssetMarketDetails
+              asset={updatedAsset}
+              address={address}
+              fallbackMarketData={marketData}
+            />
             <Box className="asset-page__divider" />
             <Box marginBottom={4}>
               <Text

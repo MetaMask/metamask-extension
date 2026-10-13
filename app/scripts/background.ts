@@ -1,0 +1,1265 @@
+/**
+ * @file The entry point for the web extension singleton process.
+ */
+
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+// eslint-disable-next-line import-x/order -- intentional first import for Sentry
+import { persistenceManager } from './lib/setup-initial-state-hooks';
+
+// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
+import '../../shared/constants/infura-project-id';
+
+import log from 'loglevel';
+import browser from 'webextension-polyfill';
+import type { Runtime, Tabs } from 'webextension-polyfill';
+import { isObject } from '@metamask/utils';
+import { ExtensionPortStream } from 'extension-port-stream';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import {
+  type EnvironmentType,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+  MESSAGE_TYPE,
+} from '../../shared/constants/app';
+import { AccountOverviewTabKey } from '../../shared/constants/app-state';
+import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
+import {
+  BACKGROUND_LIVENESS_METHOD,
+  BACKGROUND_INITIALIZED_METHOD,
+} from '../../shared/constants/ui-initialization';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../shared/constants/metametrics';
+import {
+  asChromeRuntimePort,
+  checkForLastErrorAndLog,
+} from '../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/lib/mv3.utils';
+import { maskObject } from '../../shared/lib/object.utils';
+import {
+  OffscreenCommunicationTarget,
+  OffscreenCommunicationEvents,
+} from '../../shared/constants/offscreen-communication';
+import { getCurrentChainId } from '../../shared/lib/selectors/networks';
+import { createCaipStream } from '../../shared/lib/caip-stream';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getErrorBackup, getErrorLike } from '../../shared/lib/error-like';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import {
+  CriticalErrorRepairAction,
+  getStateCorruptionErrorType,
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  isStateCorruptionErrorType,
+} from '../../shared/constants/critical-error';
+import { hasAnalyticsConsent } from '../../shared/lib/analytics';
+import {
+  createEvent,
+  shouldTrackDeepLinkNavigation,
+} from '../../shared/lib/deep-links/metrics';
+import { hasVault } from '../../shared/lib/stores/persistence-manager';
+import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { setupLedgerModeOffscreenBridge } from './lib/offscreen-bridge/ledger-mode-offscreen-bridge';
+import {
+  isPhishingWarningPageUrl,
+  loadPhishingWarningPage,
+  maybeDetectPhishing,
+} from './lib/phishing';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
+import ExtensionPlatform from './platforms/extension';
+import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
+import { registerCashtagBackgroundBridge } from './cashtag/background';
+
+import NotificationManager from './lib/notification-manager';
+import MetamaskController from './metamask-controller';
+import { createEventBuilder, trackEvent } from './controllers/analytics';
+import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
+import { getPlatform, initInstallType } from './lib/util';
+import { createUiPresenceTracker } from './lib/metrics/ui-presence-tracker';
+import { createDappMetrics } from './lib/metrics/dapp-metrics';
+import { installActiveTabTracker } from './lib/active-tab/active-tab-tracker';
+import { createBadgeManager } from './lib/badge/badge-manager';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
+import { onStreamFinished, setupMultiplex } from './lib/stream-utils';
+import rawFirstTimeState from './first-time-state';
+import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
+import { wireStatePersistence } from './lib/startup/wire-state-persistence';
+import { parsePortInfo } from './lib/parse-port-info';
+import { loadPreinstalledSnaps } from './lib/load-preinstalled-snaps';
+import {
+  handleOnInstalled,
+  onUpdateAvailable,
+} from './lib/lifecycle/install-lifecycle';
+
+import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from './constants/marketing-site-whitelist';
+import {
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
+} from './constants/stream';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { getRequestSafeReload } from './lib/safe-reload';
+import {
+  readCriticalErrorRepairSession,
+  clearCriticalErrorRepairSession,
+  handoffRestoringTabToExtension,
+  openRestoringTabAndReload,
+} from './lib/critical-error/critical-error-tab-handoff';
+import { repairStateCorruptionInPlace } from './lib/critical-error/repair-state-corruption-in-place';
+import { requestRepair } from './lib/repair';
+import {
+  createSidepanelOpener,
+  setupSidePanelToolbarBehavior,
+  shouldUseSidepanel,
+} from './sidepanel/background';
+import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
+import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
+import { BLOCKED_HOSTNAMES, BLOCKED_PORTS } from './constants/background';
+import type { EthProvider } from './lib/ens-ipfs/resolver';
+import type {
+  Backup,
+  BackgroundInitializationState,
+  ConnectExternallyConnectableHandler,
+  ConnectRemotePortHandler,
+  ConnectUntrustedStreamHandler,
+  MetaMaskControllerInstance,
+  MetaMaskControllerStore,
+  PreinstalledSnapsList,
+  SetupTrustedCommunicationSender,
+  StateMetadata,
+  UntrustedCommunicationRequest,
+} from './background.types';
+import type { InstallLifecycleDependencies } from './lib/lifecycle/install-lifecycle';
+import type { ActiveTabTrackerController } from './lib/active-tab/active-tab-tracker';
+import type { BadgeManagerController } from './lib/badge/badge-manager';
+
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
+// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
+// as it doesn't need them).
+const lazyListener = (globalThis.stateHooks.lazyListener ??
+  new ExtensionLazyListener(browser)) as ExtensionLazyListener<typeof browser>;
+
+const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
+
+/**
+ * Whether backup fetch saw a vault at startup less than {@link VAULT_AT_STARTUP_TEST_WINDOW_MS} ago.
+ *
+ * @param hasVaultAtStartup - Timestamp when backup fetch saw a vault, or nullish.
+ */
+function hadVaultAtStartupRecently(
+  hasVaultAtStartup: number | null | undefined,
+) {
+  if (typeof hasVaultAtStartup !== 'number') {
+    return false;
+  }
+  return Date.now() - hasVaultAtStartup < VAULT_AT_STARTUP_TEST_WINDOW_MS;
+}
+
+/**
+ * Test-only state shared across startup and later port handling (hang simulations).
+ * `null` in production builds so we do not keep loose mutable test globals.
+ */
+const inTestState: BackgroundInitializationState | null = process.env.IN_TEST
+  ? { recoverInProgress: false, hasVaultAtStartup: null }
+  : null;
+
+const { safePersist, requestSafeReload, evacuate } =
+  getRequestSafeReload(persistenceManager);
+
+// Setup global hook for improved Sentry state snapshots during initialization
+global.stateHooks.getMostRecentPersistedState = () =>
+  persistenceManager.mostRecentRetrievedState;
+
+// Expose storageKind for Sentry tagging (used to distinguish 'data' vs 'split' storage)
+global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
+
+/**
+ * A helper function to log the current state of the vault. Useful for debugging
+ * purposes, to, in the case of storage errors, a possible way for an end
+ * user to recover their vault. Hopefully this is never needed.
+ */
+globalThis.logEncryptedVault = () => {
+  persistenceManager.logEncryptedVault();
+};
+
+const { sentry } = global;
+
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
+
+const platform = new ExtensionPlatform();
+const notificationManager = new NotificationManager();
+const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
+let openPopupCount = 0;
+let notificationIsOpen = false;
+let uiIsTriggering = false;
+let openSidePanelCount = 0;
+const openMetamaskTabsIDs: Record<number, true> = {};
+const requestAccountTabIds: Record<string, number> = {};
+let controller: MetaMaskControllerInstance | undefined;
+
+function requireController(): MetaMaskControllerInstance {
+  if (!controller) {
+    throw new Error('MetaMask controller is not initialized');
+  }
+  return controller;
+}
+
+const uiPresence = createUiPresenceTracker({
+  getOpenMetamaskTabsIDs: () => openMetamaskTabsIDs,
+  getOpenPopupCount: () => openPopupCount,
+  getOpenSidePanelCount: () => openSidePanelCount,
+  getNotificationIsOpen: () => notificationIsOpen,
+});
+
+// DappViewed / AppOpened metrics, tab→origin registries, and onNavigateToTab
+// (see app/scripts/lib/metrics/dapp-metrics.ts).
+const {
+  trackDappView,
+  emitAppOpenedMetricEvent,
+  shouldEmitAppOpened,
+  trackAppOpened,
+  installOnNavigateToTabListener,
+} = createDappMetrics({
+  getController: () => controller,
+  isAnyUiOpen: uiPresence.isAnyUiOpen,
+});
+
+const requestOpenSidepanel = createSidepanelOpener();
+
+if (process.env.IN_TEST || process.env.METAMASK_DEBUG) {
+  global.stateHooks.metamaskGetState = persistenceManager.get.bind(
+    persistenceManager,
+    { validateVault: false },
+  );
+}
+
+/**
+ * This deferred Promise is used to track whether initialization has finished.
+ *
+ * It is very important to ensure that `resolveInitialization` is *always*
+ * called once initialization has completed, and that `rejectInitialization` is
+ * called if initialization fails in an unrecoverable way.
+ */
+let isInitialized: Promise<void>;
+let resolveInitialization: () => void;
+let rejectInitialization: ReturnType<typeof withResolvers<void>>['reject'];
+
+/**
+ * Creates a deferred Promise and sets the global variables to track the
+ * state of application initialization (or re-initialization).
+ */
+function setGlobalInitializers() {
+  const deferred = withResolvers<void>();
+  isInitialized = deferred.promise;
+  resolveInitialization = deferred.resolve;
+  rejectInitialization = deferred.reject;
+}
+setGlobalInitializers();
+
+/**
+ * Helper function to refresh appActiveTab by querying the current active tab.
+ * This is used when the sidepanel opens to ensure it has the current tab info,
+ * and when the focused window changes to keep appActiveTab in sync.
+ */
+// Initialize appActiveTab by querying the current active tab on startup
+// Tab listeners to populate appActiveTab
+const { refreshAppActiveTab } = installActiveTabTracker({
+  getController: () => controller as ActiveTabTrackerController | undefined,
+  getIsInitialized: () => isInitialized,
+});
+
+/**
+ * Install/update lifecycle dependencies. `controller` is accessed via a getter
+ * because `onInstalled` can fire (and be buffered) before `controller` is assigned.
+ */
+function getInstallLifecycleDeps(): InstallLifecycleDependencies {
+  return {
+    get controller() {
+      return controller as InstallLifecycleDependencies['controller'];
+    },
+    platform,
+    isInitialized,
+    requestSafeReload,
+  };
+}
+
+lazyListener
+  .once('runtime', 'onInstalled')
+  .then((detailsTuple: [Runtime.OnInstalledDetailsType]) => {
+    handleOnInstalled(detailsTuple, getInstallLifecycleDeps());
+  });
+
+/**
+ * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
+ * the backend is not active. It is required to re-connect dapps after service worker re-activates.
+ * For non-dapp pages, the message will be sent and ignored.
+ */
+const sendReadyMessageToTabs = async () => {
+  const tabs = await browser.tabs
+    .query({
+      /**
+       * Only query tabs that our extension can run in. To do this, we query for all URLs that our
+       * extension can inject scripts in, which is by using the "<all_urls>" value and __without__
+       * the "tabs" manifest permission. If we included the "tabs" permission, this would also fetch
+       * URLs that we'd not be able to inject in, e.g. chrome://pages, chrome://extension, which
+       * is not what we'd want.
+       *
+       * You might be wondering, how does the "url" param work without the "tabs" permission?
+       *
+       * See https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1 — if the extension
+       * can inject scripts into a tab, the tab URL may be returned without the "tabs" permission.
+       */
+      url: '<all_urls>',
+      windowType: 'normal',
+    })
+    .then((result) => {
+      checkForLastErrorAndLog();
+      return result;
+    })
+    .catch(() => {
+      checkForLastErrorAndLog();
+      return [];
+    });
+
+  /** @todo we should only sendMessage to dapp tabs, not all tabs. */
+  for (const tab of tabs ?? []) {
+    if (tab.id === undefined) {
+      continue;
+    }
+    browser.tabs
+      .sendMessage(tab.id, {
+        name: EXTENSION_MESSAGES.READY,
+      })
+      .then(() => {
+        checkForLastErrorAndLog();
+      })
+      .catch(() => {
+        // An error may happen if:
+        //  * a contentscript is blocked from loading, and thus there is no
+        // `runtime.onMessage` handlers to listen to the message, or
+        //  * if MetaMask reloads/installs while tabs are already open, as these
+        // tabs won't have a valid Port to send the message to.
+        checkForLastErrorAndLog();
+      });
+  }
+};
+
+// Assigned in setupController after the MetaMask controller exists.
+let connectWindowPostMessage: ConnectRemotePortHandler;
+let connectExternallyConnectable: ConnectExternallyConnectableHandler;
+let connectEip1193: ConnectUntrustedStreamHandler;
+let connectCaipMultichain: ConnectUntrustedStreamHandler;
+
+const criticalErrorHandler = new CriticalErrorHandler();
+
+const handleOnConnect = async (port: Runtime.Port) => {
+  const { isMetaMaskUIPort } = parsePortInfo(port);
+  if (process.env.IN_TEST) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    } else if (simulatedDelay !== undefined) {
+      log.error(
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${String(simulatedDelay)}'`,
+      );
+    }
+  }
+
+  try {
+    // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
+    // might not be able to send this message if the window has already closed.
+    port.postMessage({
+      data: {
+        method: BACKGROUND_LIVENESS_METHOD,
+      },
+      name: 'background-liveness',
+    });
+  } catch (e) {
+    log.error(
+      'MetaMask - background-liveness check: Failed to message to port',
+      e,
+    );
+    // window already closed, no need to continue.
+    return;
+  }
+
+  let removeCriticalErrorListeners;
+  if (isMetaMaskUIPort) {
+    criticalErrorHandler.registerPortForCriticalError({
+      getBackup: async () =>
+        (await persistenceManager.getBackup().catch(() => null)) ?? null,
+      port: asChromeRuntimePort(port),
+      repairCallback: async ({
+        repairAction,
+        criticalErrorType,
+        backup,
+        connectedPorts,
+      }) =>
+        requestRepair(async () => {
+          if (isStateCorruptionErrorType(criticalErrorType)) {
+            await repairStateCorruptionInPlace({
+              repairAction,
+              backup,
+              connectedPorts,
+              initBackground,
+              backgroundIsInitialized: () => isInitialized,
+              persistenceManager,
+              setGlobalInitializers,
+              setRestoreFlowType: () => {
+                requireController().onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              },
+              tryPostMessage,
+            });
+          } else {
+            await openRestoringTabAndReload(requestSafeReload, repairAction);
+          }
+        }),
+    });
+    removeCriticalErrorListeners = () =>
+      criticalErrorHandler.removeListenersForPort(asChromeRuntimePort(port));
+  }
+
+  // Queue up connection attempts here, waiting until after initialization
+  try {
+    await isInitialized;
+
+    // Notify UI that background initialization is complete, before sending state.
+    // This is sent on the raw port (like ALIVE) so the UI can distinguish between
+    // "background still initializing" vs "background initialized but state sync failed".
+    // Only MetaMask UI ports listen for this message (contentscripts do not).
+    if (isMetaMaskUIPort) {
+      if (
+        !tryPostMessage(
+          asChromeRuntimePort(port),
+          BACKGROUND_INITIALIZED_METHOD,
+        )
+      ) {
+        return;
+      }
+    }
+
+    // For testing: skip connectWindowPostMessage to simulate state sync hang.
+    // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
+    // not during the initial onboarding session) and we're not in the recover
+    // flow (so recovery can complete).
+    if (
+      process.env.IN_TEST &&
+      getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
+      !inTestState?.recoverInProgress &&
+      hadVaultAtStartupRecently(inTestState?.hasVaultAtStartup)
+    ) {
+      return;
+    }
+
+    // This is set in `setupController`, which is called as part of initialization
+    connectWindowPostMessage(port, removeCriticalErrorListeners);
+  } catch (error) {
+    let criticalErrorMessageSent = false;
+    try {
+      sentry?.captureException(error);
+
+      // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
+      // not for contentscripts injected into regular web pages.
+      // Contentscripts can't display error screens and would create hanging promises.
+      if (isMetaMaskUIPort) {
+        const errorLike = getErrorLike(error);
+        const stateCorruptionErrorType = getStateCorruptionErrorType(errorLike);
+        const isStateCorruption = stateCorruptionErrorType !== undefined;
+        const backup = isStateCorruption ? getErrorBackup(error) : undefined;
+        if (isObject(backup)) {
+          criticalErrorHandler.cacheBackup(backup);
+        }
+        const backupState = isObject(backup) ? backup : undefined;
+        const repairAction = hasVault(backupState)
+          ? CriticalErrorRepairAction.Recover
+          : CriticalErrorRepairAction.Reset;
+        criticalErrorMessageSent = tryPostMessage(
+          asChromeRuntimePort(port),
+          isStateCorruption
+            ? METHOD_DISPLAY_STATE_CORRUPTION_ERROR
+            : DISPLAY_GENERAL_STARTUP_ERROR,
+          {
+            error: errorLike,
+            ...(isStateCorruption
+              ? {
+                  analyticsConsent: hasAnalyticsConsent(backupState),
+                  criticalErrorType: stateCorruptionErrorType,
+                  repairAction,
+                }
+              : {}),
+            currentLocale:
+              controller?.preferencesController?.state?.currentLocale,
+            theme: controller?.preferencesController?.state?.theme,
+          },
+        );
+      }
+    } finally {
+      if (!criticalErrorMessageSent) {
+        removeCriticalErrorListeners?.();
+      }
+    }
+  }
+};
+const installOnConnectListener = () => {
+  lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
+};
+const testingManifestFlags = getManifestFlags().testing;
+if (
+  process.env.IN_TEST &&
+  testingManifestFlags?.simulatedSlowBackgroundLoadingTimeout
+) {
+  setTimeout(
+    installOnConnectListener,
+    testingManifestFlags.simulatedSlowBackgroundLoadingTimeout,
+  );
+} else {
+  installOnConnectListener();
+}
+
+browser.runtime.onConnectExternal.addListener(async (port: Runtime.Port) => {
+  await isInitialized;
+  connectExternallyConnectable(port);
+});
+
+/**
+ * Loads persisted state, constructs the controller, and wires platform listeners.
+ * @param backup
+ */
+async function initialize(backup: Backup | null) {
+  // Initialize install type early so it's cached for MetaMetrics user traits
+  // This is fire-and-forget - we don't await it to avoid blocking initialization
+  initInstallType();
+
+  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+
+  // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
+  // This ensures we capture the initial connectivity status from the offscreen document
+  // which is sent right after isBooted. We queue the status until the controller is ready.
+  let pendingConnectivityStatus: boolean | null = null;
+  let connectivityReady = false;
+
+  if (isManifestV3) {
+    addOffscreenConnectivityListener((isOnline: boolean) => {
+      if (connectivityReady && controller?.connectivityAdapter) {
+        const status = isOnline ? 'online' : 'offline';
+        controller.connectivityAdapter.setStatus(status);
+      } else {
+        // Queue until controller is ready
+        pendingConnectivityStatus = isOnline;
+      }
+    });
+  }
+
+  const { versionedData: initData } = await loadStateFromPersistence(backup, {
+    ...rawFirstTimeState,
+  });
+
+  const initState = initData.data;
+  const initLangCode = await getFirstPreferredLangCode();
+
+  let isFirstMetaMaskControllerSetup: boolean | undefined;
+
+  // We only want to start this if we are running a test build, not for the release build.
+  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+  if (process.env.IN_TEST && window.navigator?.webdriver) {
+    const { getSocketBackgroundToMocha } =
+      // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports -- load conditionally
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
+    getSocketBackgroundToMocha();
+  }
+
+  if (isManifestV3) {
+    const sessionData = await browser.storage.session.get([
+      'isFirstMetaMaskControllerSetup',
+    ]);
+
+    isFirstMetaMaskControllerSetup =
+      sessionData?.isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+  }
+
+  const preinstalledSnaps = await loadPreinstalledSnaps();
+  const cronjobControllerStorageManager = new CronjobControllerStorageManager();
+  await cronjobControllerStorageManager.init();
+
+  setupController(
+    initState,
+    initLangCode,
+    isFirstMetaMaskControllerSetup,
+    initData.meta,
+    offscreenPromise,
+    preinstalledSnaps,
+    cronjobControllerStorageManager,
+  );
+
+  const initializedController = requireController();
+
+  setupLedgerModeOffscreenBridge(initializedController, offscreenPromise);
+
+  // `setupController` sets up the `controller` object, so we can use it now:
+  maybeDetectPhishing(initializedController);
+
+  // Registers the bridge between the X ticker content script and background service
+  registerCashtagBackgroundBridge({
+    getController: () => controller,
+  });
+
+  // Set up connectivity detection
+  if (isManifestV3) {
+    // MV3: Listener was set up earlier, now apply any pending status and mark ready
+    connectivityReady = true;
+    if (pendingConnectivityStatus !== null) {
+      const status = pendingConnectivityStatus ? 'online' : 'offline';
+      initializedController.connectivityAdapter.setStatus(status);
+    }
+  } else {
+    // MV2: Background page has access to window events
+    const updateConnectivity = (isOnline: boolean) => {
+      const status = isOnline ? 'online' : 'offline';
+      initializedController.connectivityAdapter.setStatus(status);
+    };
+    updateConnectivity(globalThis.navigator.onLine);
+    globalThis.addEventListener('online', () => updateConnectivity(true));
+    globalThis.addEventListener('offline', () => updateConnectivity(false));
+  }
+
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
+  await sendReadyMessageToTabs();
+
+  new DeepLinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    getState: initializedController.getState.bind(initializedController),
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (shouldTrackDeepLinkNavigation(parsed)) {
+        trackEvent(createEvent({ signature: parsed.signature, url }));
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
+}
+
+/**
+ * Constructs `MetamaskController` and registers port/stream connection handlers.
+ * @param initState
+ * @param initLangCode
+ * @param isFirstMetaMaskControllerSetup
+ * @param stateMetadata
+ * @param offscreenPromise
+ * @param preinstalledSnaps
+ * @param cronjobControllerStorageManager
+ */
+export function setupController(
+  initState: MetaMaskStateType,
+  initLangCode: string,
+  isFirstMetaMaskControllerSetup: boolean | undefined,
+  stateMetadata: StateMetadata,
+  offscreenPromise: Promise<void> | null,
+  preinstalledSnaps: PreinstalledSnapsList,
+  cronjobControllerStorageManager: CronjobControllerStorageManager,
+) {
+  //
+  // MetaMask Controller
+  //
+  controller = new MetamaskController({
+    infuraProjectId: globalThis.INFURA_PROJECT_ID,
+    // User confirmation callbacks:
+    showUserConfirmation: triggerUi,
+    // initial state
+    initState,
+    // initial locale code
+    initLangCode,
+    // platform specific api
+    platform,
+    notificationManager,
+    browser,
+    getRequestAccountTabIds: () => {
+      return requestAccountTabIds;
+    },
+    getOpenMetamaskTabsIds: () => {
+      return openMetamaskTabsIDs;
+    },
+    isFirstMetaMaskControllerSetup,
+    currentMigrationVersion: stateMetadata.version,
+    featureFlags: {},
+    offscreenPromise,
+    preinstalledSnaps,
+    requestSafeReload,
+    cronjobControllerStorageManager,
+  });
+
+  const metamaskController = controller;
+
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed((errorType) => {
+    metamaskController.appStateController.setStorageWriteErrorType(errorType);
+  });
+
+  wireStatePersistence({
+    controller: metamaskController,
+    persistenceManager,
+    initState,
+    safePersist,
+    sentry,
+  });
+
+  setupEnsIpfsResolver({
+    getCurrentChainId: () =>
+      getCurrentChainId({
+        metamask: metamaskController.networkController.state,
+      }),
+    getIpfsGateway:
+      metamaskController.preferencesController.getIpfsGateway.bind(
+        metamaskController.preferencesController,
+      ),
+    getUseAddressBarEnsResolution: () =>
+      metamaskController.preferencesController.state.useAddressBarEnsResolution,
+    provider: metamaskController.provider as EthProvider,
+  });
+
+  setupSentryGetStateGlobal(metamaskController);
+
+  const isClientOpenStatus = uiPresence.isClientOpen;
+
+  const hasPersistentUiOpen = () => {
+    return openPopupCount > 0 || openSidePanelCount > 0;
+  };
+
+  const isOnlyNotificationOpen = () => {
+    return notificationIsOpen && !hasPersistentUiOpen();
+  };
+
+  const onCloseEnvironmentInstances = (
+    isClientOpen: boolean,
+    environmentType: EnvironmentType,
+  ) => {
+    // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
+    if (isClientOpen === false) {
+      metamaskController.onClientClosed();
+      // otherwise we want to only remove the polling tokens for the environment type that has closed
+    } else {
+      // In fullscreen and sidepanel environments, users can have multiple instances
+      // open at once, so we only disconnect tokens when the last instance closes.
+      if (
+        (environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+          Boolean(Object.keys(openMetamaskTabsIDs).length)) ||
+        (environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
+          openSidePanelCount > 0)
+      ) {
+        return;
+      }
+      metamaskController.onEnvironmentTypeClosed(environmentType);
+    }
+  };
+
+  //
+  // User Interface setup
+  //
+  const {
+    updateBadge,
+    clearFailedTxBadge,
+    getFailedTxCount,
+    setClientLandingTab,
+  } = createBadgeManager({
+    getController: () =>
+      // @ts-expect-error MetamaskController is JS until metamask-controller is TS (#41735)
+      metamaskController as BadgeManagerController,
+    browser,
+    notificationManager,
+    triggerUi,
+    hasPersistentUiOpen,
+    isOnlyNotificationOpen,
+  });
+
+  connectWindowPostMessage = (
+    remotePort: Runtime.Port,
+    removeCriticalErrorListeners?: () => void,
+  ) => {
+    if (BLOCKED_PORTS.includes(remotePort.name)) {
+      return;
+    }
+
+    const { processName, senderUrl, isMetaMaskUIPort } =
+      parsePortInfo(remotePort);
+
+    if (isMetaMaskUIPort) {
+      const portStream = new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       *
+       * @param details
+       * @param details.chunkSize
+       */
+      const handleMessageTooLarge = function ({
+        chunkSize,
+      }: {
+        chunkSize: number;
+      }) {
+        trackEvent(
+          createEventBuilder(MetaMetricsEventName.PortStreamChunked)
+            .addCategory(MetaMetricsEventCategory.PortStream)
+            .addProperties({ chunkSize })
+            .build(),
+        );
+      };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
+      portStream.on('message-too-large', handleMessageTooLarge);
+
+      // communication with popup
+      metamaskController.isClientOpen = true;
+      metamaskController
+        .setupTrustedCommunication(
+          portStream,
+          remotePort.sender as SetupTrustedCommunicationSender,
+        )
+        .finally(() => {
+          removeCriticalErrorListeners?.();
+        });
+      // Snapshot the "track App Opened" decision synchronously here, before any
+      // open-count is incremented below. The sidepanel path defers the actual
+      // emission until refreshAppActiveTab() resolves.
+      const sidepanelShouldTrackAppOpened =
+        processName === ENVIRONMENT_TYPE_SIDEPANEL &&
+        shouldEmitAppOpened(ENVIRONMENT_TYPE_SIDEPANEL);
+
+      if (processName !== ENVIRONMENT_TYPE_SIDEPANEL) {
+        trackAppOpened(processName as EnvironmentType);
+      }
+
+      // lazily update the remote feature flags every time the UI is opened.
+      updateRemoteFeatureFlags(metamaskController);
+
+      if (processName === ENVIRONMENT_TYPE_POPUP) {
+        clearFailedTxBadge();
+        openPopupCount += 1;
+        onStreamFinished(portStream, () => {
+          openPopupCount -= 1;
+          const isClientOpen = isClientOpenStatus();
+          metamaskController.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        clearFailedTxBadge();
+        openSidePanelCount += 1;
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current
+        // tab info. This handles the case where the user connected to a dapp while
+        // the sidepanel was closed. The App Opened event is emitted only after the
+        // refresh so that active_tab_domain reflects the current tab, not stale state.
+        refreshAppActiveTab().then(() => {
+          if (sidepanelShouldTrackAppOpened) {
+            emitAppOpenedMetricEvent(ENVIRONMENT_TYPE_SIDEPANEL);
+          }
+        });
+        onStreamFinished(portStream, () => {
+          openSidePanelCount = Math.max(openSidePanelCount - 1, 0);
+          const isClientOpen = isClientOpenStatus();
+          metamaskController.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
+        notificationIsOpen = true;
+
+        onStreamFinished(portStream, () => {
+          notificationIsOpen = false;
+          // Render any failure badge that was suppressed while the notification was open
+          if (getFailedTxCount() > 0) {
+            setClientLandingTab(AccountOverviewTabKey.Activity);
+          }
+          updateBadge();
+          const isClientOpen = isClientOpenStatus();
+          metamaskController.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_NOTIFICATION,
+          );
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_FULLSCREEN) {
+        clearFailedTxBadge();
+        const tabId = remotePort.sender?.tab?.id;
+        if (tabId !== undefined) {
+          openMetamaskTabsIDs[tabId] = true;
+        }
+
+        onStreamFinished(portStream, () => {
+          if (tabId !== undefined) {
+            delete openMetamaskTabsIDs[tabId];
+          }
+          const isClientOpen = isClientOpenStatus();
+          metamaskController.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_FULLSCREEN,
+          );
+        });
+      }
+    } else if (senderUrl && isPhishingWarningPageUrl(senderUrl)) {
+      const portStreamForPhishingPage = new ExtensionPortStream(remotePort, {
+        chunkSize: 0,
+      });
+      metamaskController.setupPhishingCommunication({
+        connectionStream: portStreamForPhishingPage,
+      });
+    } else {
+      // this is triggered when a new tab is opened, or origin(url) is changed
+      if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        const tabId = remotePort.sender.tab.id;
+        const url = new URL(remotePort.sender.url);
+        const { origin } = url;
+
+        trackDappView(remotePort);
+
+        remotePort.onMessage.addListener((msg) => {
+          if (
+            isObject(msg) &&
+            isObject(msg.data) &&
+            msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS &&
+            tabId !== undefined
+          ) {
+            requestAccountTabIds[origin] = tabId;
+          }
+        });
+      }
+      if (
+        senderUrl &&
+        COOKIE_ID_MARKETING_WHITELIST_ORIGINS.some(
+          (origin) => origin === senderUrl.origin,
+        )
+      ) {
+        const portStreamForCookieHandlerPage = new ExtensionPortStream(
+          remotePort,
+          { chunkSize: 0 },
+        );
+        metamaskController.setUpCookieHandlerCommunication({
+          connectionStream: portStreamForCookieHandlerPage,
+        });
+      }
+
+      const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
+
+      connectEip1193(portStream, remotePort.sender);
+
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
+        const mux = setupMultiplex(portStream);
+        mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+
+        connectCaipMultichain(
+          mux.createStream(METAMASK_CAIP_MULTICHAIN_PROVIDER),
+          remotePort.sender,
+        );
+      }
+    }
+  };
+
+  connectExternallyConnectable = (remotePort: Runtime.Port) => {
+    const senderUrl = remotePort.sender?.url;
+    if (senderUrl) {
+      const { hostname } = new URL(senderUrl);
+      if (BLOCKED_HOSTNAMES.includes(hostname)) {
+        remotePort.disconnect();
+        return;
+      }
+    }
+
+    const portStream = new ExtensionPortStream(remotePort, { chunkSize: 0 });
+
+    // if the sender.id value is present it means the caller is an extension rather
+    // than a site. When the caller is an extension we want to fallback to connecting
+    // it with the 1193 provider
+    const isDappConnecting = !remotePort.sender?.id;
+    if (isDappConnecting) {
+      if (BLOCKED_PORTS.includes(remotePort.name)) {
+        return;
+      }
+
+      // this is triggered when a new tab is opened, or origin(url) is changed
+      trackDappView(remotePort);
+
+      connectCaipMultichain(createCaipStream(portStream), remotePort.sender);
+    } else {
+      connectEip1193(portStream, remotePort.sender);
+    }
+  };
+
+  connectEip1193 = (connectionStream, sender) => {
+    const request: UntrustedCommunicationRequest = {
+      connectionStream,
+      sender,
+    };
+    metamaskController.setupUntrustedCommunicationEip1193(
+      request as Parameters<
+        MetaMaskControllerInstance['setupUntrustedCommunicationEip1193']
+      >[0],
+    );
+  };
+
+  connectCaipMultichain = (connectionStream, sender) => {
+    const request: UntrustedCommunicationRequest = {
+      connectionStream,
+      sender,
+    };
+    metamaskController.setupUntrustedCommunicationCaip(
+      request as Parameters<
+        MetaMaskControllerInstance['setupUntrustedCommunicationCaip']
+      >[0],
+    );
+  };
+}
+
+async function getCurrentTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true };
+  const [tab] = await browser.tabs.query(queryOptions);
+  return tab;
+}
+
+/**
+ * Opens the browser popup for user confirmation
+ */
+async function triggerUi() {
+  const tabs = await platform.getActiveTabs();
+  const currentlyActiveMetamaskTab = Boolean(
+    tabs.find(
+      (tab) => tab.id !== undefined && openMetamaskTabsIDs[tab.id] === true,
+    ),
+  );
+  // Vivaldi is not closing port connection on popup close, so openPopupCount does not work correctly
+  // To be reviewed in the future if this behaviour is fixed - also the way we determine isVivaldi variable might change at some point
+  type TabWithExtData = Tabs.Tab & { extData?: string };
+  const firstTab = tabs[0] as TabWithExtData | undefined;
+  const isVivaldi =
+    tabs.length > 0 &&
+    firstTab?.extData &&
+    firstTab.extData.indexOf('vivaldi_tab') > -1;
+
+  if (openSidePanelCount > 0) {
+    return;
+  }
+
+  // Attempt to open the sidepanel with a roundtrip request
+  if (shouldUseSidepanel(requireController())) {
+    const tab = await getCurrentTab();
+    if (tab?.id) {
+      const opened = await requestOpenSidepanel(tab.id);
+      if (opened) {
+        return;
+      }
+      // If the sidepanel failed to open, fall back to opening the popup
+    }
+  }
+
+  if (
+    !uiIsTriggering &&
+    (isVivaldi || openPopupCount === 0) &&
+    !currentlyActiveMetamaskTab &&
+    openSidePanelCount === 0
+  ) {
+    uiIsTriggering = true;
+    try {
+      const activeController = requireController();
+      const currentPopupId =
+        activeController.appStateController.getCurrentPopupId();
+      await notificationManager.showPopup(
+        (newPopupId) =>
+          activeController.appStateController.setCurrentPopupId(newPopupId),
+        currentPopupId,
+      );
+    } finally {
+      uiIsTriggering = false;
+    }
+  }
+}
+
+browser.runtime.onUpdateAvailable.addListener((details) => {
+  onUpdateAvailable(details, getInstallLifecycleDeps());
+});
+
+setupSidePanelToolbarBehavior({
+  getController: () => controller,
+  waitUntilInitialized: async () => await isInitialized,
+});
+
+function setupSentryGetStateGlobal(store: MetaMaskControllerStore) {
+  global.stateHooks.getSentryAppState = function () {
+    const backgroundState = store.memStore.getState();
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
+  };
+}
+
+/**
+ *
+ * @param backup
+ */
+async function initBackground(backup: Backup | null) {
+  installOnNavigateToTabListener();
+  try {
+    await initialize(backup);
+    if (process.env.IN_TEST) {
+      // Send message to offscreen document
+      if ('offscreen' in browser && browser.offscreen) {
+        browser.runtime.sendMessage({
+          target: OffscreenCommunicationTarget.extension,
+          event: OffscreenCommunicationEvents.metamaskBackgroundReady,
+        });
+      } else {
+        window.document?.documentElement?.classList.add('controller-loaded');
+      }
+    }
+    persistenceManager.cleanUpMostRecentRetrievedState();
+
+    // For testing: simulate initialization hang. Only when backup exists in
+    // IndexedDB and we're not already in the recover flow (backup param is
+    // null). Skip when backup param is non-null so vault recovery can complete.
+    if (
+      process.env.IN_TEST &&
+      !backup &&
+      getManifestFlags().testing?.simulateBackgroundInitializationHang &&
+      hadVaultAtStartupRecently(inTestState?.hasVaultAtStartup)
+    ) {
+      log.info(
+        'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
+      );
+      await new Promise(() => {
+        // Intentionally never resolves to simulate a hang
+      });
+    }
+
+    log.info('MetaMask initialization complete.');
+    resolveInitialization();
+  } catch (error) {
+    log.error(error);
+    rejectInitialization(error);
+  }
+}
+/**
+ * Service worker entry for background startup: normal init, or critical-error
+ * repair when a session exists.
+ */
+async function initOrRestoreBackground() {
+  if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
+    return;
+  }
+
+  const repairSession = await readCriticalErrorRepairSession(browser);
+  const repairAction = repairSession?.repairAction;
+
+  // Fetch the backup once, shared by the recover path below and by
+  // the simulateBackground*Hang test flags (which need to know whether a
+  // backup already existed at startup, before onboarding can create one).
+  const testingFlags = process.env.IN_TEST
+    ? getManifestFlags().testing
+    : undefined;
+  let backup = null;
+  if (
+    repairSession ||
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    backup = await persistenceManager.getBackup().catch(() => null);
+  }
+
+  const backupHasVault = hasVault(backup);
+
+  if (
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    if (inTestState) {
+      inTestState.hasVaultAtStartup = backupHasVault ? Date.now() : null;
+    }
+  }
+
+  if (repairSession) {
+    await clearCriticalErrorRepairSession(browser);
+
+    if (repairAction === CriticalErrorRepairAction.Reset && !backupHasVault) {
+      await persistenceManager.reset();
+      initBackground(null);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-reset: initialization failed', error);
+        return;
+      }
+
+      await handoffRestoringTabToExtension(platform, repairSession);
+      return;
+    }
+
+    if (repairAction === CriticalErrorRepairAction.Recover && backupHasVault) {
+      if (inTestState) {
+        inTestState.recoverInProgress = true;
+      }
+      initBackground(backup ?? null);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-restore: initialization failed', error);
+        return;
+      }
+
+      requireController().onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.restore,
+      );
+
+      await handoffRestoringTabToExtension(platform, repairSession);
+      return;
+    }
+  }
+
+  initBackground(null);
+}
+
+initOrRestoreBackground().catch((error) => {
+  log.error('initOrRestoreBackground failed', error);
+});
+
+if (process.env.IN_TEST) {
+  // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  browser.runtime.onMessage.addListener(((
+    message: { type?: string },
+    _sender: Runtime.MessageSender,
+  ) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      return evacuate().then(() => ({ status: 'PERSISTENCE_STOPPED' }));
+    }
+    return undefined;
+  }) as Runtime.OnMessageListener);
+  // Load conditionally so this test-only package is excluded from production builds and policies.
+  global.stateHooks.hasConsoleAccess = () =>
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- test build only
+    require('@metamask/dummy-package').hasConsoleAccess();
+}

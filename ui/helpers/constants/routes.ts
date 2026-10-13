@@ -94,6 +94,7 @@ export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
+export const IMPORT_NFTS_ROUTE = '/import-nfts';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -616,6 +617,11 @@ export const ROUTES = [
   {
     path: CUSTOM_TOKEN_IMPORT_ROUTE,
     label: 'Custom Token Import Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: IMPORT_NFTS_ROUTE,
+    label: 'Import NFTs Page',
     trackInAnalytics: true,
   },
   {
