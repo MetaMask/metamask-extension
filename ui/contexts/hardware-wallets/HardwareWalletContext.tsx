@@ -47,8 +47,9 @@ export type HardwareWalletActionsContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
+  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
   /** Resolves `null` when ready, otherwise the error explaining why not. */
-  ensureDeviceReady: (
+  ensureDeviceReadyOrError: (
     options?: EnsureDeviceReadyOptions,
   ) => Promise<HardwareWalletError | null>;
   /**
@@ -84,7 +85,9 @@ export type HardwareWalletContextType = {
   requestHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
-  ensureDeviceReady: (
+  ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /** Resolves `null` when ready, otherwise the error explaining why not. */
+  ensureDeviceReadyOrError: (
     options?: EnsureDeviceReadyOptions,
   ) => Promise<HardwareWalletError | null>;
 };
@@ -205,16 +208,21 @@ export const HardwareWalletProvider = ({
     setHardwareConnectionPermissionState,
   });
 
-  const { connect, disconnect, clearError, ensureDeviceReady } =
-    useHardwareWalletConnection({
-      refs,
-      setters: {
-        setConnectionState,
-      },
-      updateConnectionState,
-      handleDeviceEvent,
-      handleDisconnect,
-    });
+  const {
+    connect,
+    disconnect,
+    clearError,
+    ensureDeviceReady,
+    ensureDeviceReadyOrError,
+  } = useHardwareWalletConnection({
+    refs,
+    setters: {
+      setConnectionState,
+    },
+    updateConnectionState,
+    handleDeviceEvent,
+    handleDisconnect,
+  });
 
   const setConnectionReady = useCallback(() => {
     resetHardwareWalletRecoveryInlineCtaViewCount();
@@ -315,6 +323,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
       requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
     }),
     [
       isHardwareWalletAccount,
@@ -331,6 +340,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermissionAction,
       requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
     ],
   );
 
@@ -370,6 +380,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
       requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
       setSigningInProgress,
     }),
     [
@@ -380,6 +391,7 @@ export const HardwareWalletProvider = ({
       checkHardwareWalletPermissionAction,
       requestHardwareWalletPermissionAction,
       ensureDeviceReady,
+      ensureDeviceReadyOrError,
       setSigningInProgress,
     ],
   );

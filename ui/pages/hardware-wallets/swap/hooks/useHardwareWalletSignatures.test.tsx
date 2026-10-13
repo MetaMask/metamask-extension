@@ -57,7 +57,7 @@ jest.mock('../../../../store/actions', () => ({
 
 const mockUseHardwareWalletState = jest.fn();
 const mockSetSigningInProgress = jest.fn();
-const mockEnsureDeviceReady = jest.fn().mockResolvedValue(null);
+const mockEnsureDeviceReady = jest.fn().mockResolvedValue(true);
 const mockNavigate = jest.fn();
 
 jest.mock('../../../../contexts/hardware-wallets', () => ({
@@ -306,7 +306,7 @@ describe('useHardwareWalletSignatures', () => {
     mockNavigateToBridgePage.mockReset();
     mockNavigate.mockReset();
     mockSetSigningInProgress.mockReset();
-    mockEnsureDeviceReady.mockReset().mockResolvedValue(null);
+    mockEnsureDeviceReady.mockReset().mockResolvedValue(true);
     mockCleanupPendingApproval.mockReset();
     mockUpdateAndApproveTx
       .mockReset()
@@ -575,9 +575,7 @@ describe('useHardwareWalletSignatures', () => {
           code: ErrorCode.DeviceStateEthAppClosed,
           message: 'Ethereum app is not open',
         })) as never);
-      mockEnsureDeviceReady.mockResolvedValue(
-        new Error('Hardware wallet device is not ready'),
-      );
+      mockEnsureDeviceReady.mockResolvedValue(false);
 
       const { result, rerender } = renderUseHardwareWalletSignatures({
         locationState: createSendBundleLocationState(),
@@ -599,7 +597,7 @@ describe('useHardwareWalletSignatures', () => {
       // The user opens the Ethereum app: the probe succeeds and the send is
       // restarted through the retry path (cancel dead batch, recreate tx,
       // re-approve).
-      mockEnsureDeviceReady.mockResolvedValue(null);
+      mockEnsureDeviceReady.mockResolvedValue(true);
       mockUpdateAndApproveTx.mockReturnValue((() =>
         Promise.resolve(undefined)) as never);
       // Model the connection-state change that accompanies recovery (e.g.
@@ -634,12 +632,12 @@ describe('useHardwareWalletSignatures', () => {
             message: 'Ethereum app is not open',
           })) as never)
         .mockReturnValue((() => Promise.resolve(undefined)) as never);
-      // Race: ensureDeviceReady() reports ready, but connectionState.status
+      // Race: ensureDeviceReady() resolves true, but connectionState.status
       // (read by handleRetry's closure) still lags at a non-retryable value.
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.AwaitingApp },
       });
-      mockEnsureDeviceReady.mockResolvedValue(null);
+      mockEnsureDeviceReady.mockResolvedValue(true);
 
       const { result } = renderUseHardwareWalletSignatures({
         locationState: createSendBundleLocationState(),

@@ -319,7 +319,7 @@ export const useHardwareWalletConnection = ({
    * Resolves `null` when the device is ready, otherwise the error explaining
    * why it is not (a generic one when no specific cause is known).
    */
-  const ensureDeviceReady = useCallback(
+  const ensureDeviceReadyOrError = useCallback(
     async (
       options?: EnsureDeviceReadyOptions,
     ): Promise<HardwareWalletError | null> => {
@@ -443,11 +443,22 @@ export const useHardwareWalletConnection = ({
     [connect, updateConnectionState],
   );
 
+  /**
+   * Resolves `true` when the device is ready, `false` otherwise.
+   * Use `ensureDeviceReadyOrError` when the failure reason is needed.
+   */
+  const ensureDeviceReady = useCallback(
+    async (options?: EnsureDeviceReadyOptions): Promise<boolean> =>
+      (await ensureDeviceReadyOrError(options)) === null,
+    [ensureDeviceReadyOrError],
+  );
+
   return {
     connect,
     disconnect,
     clearError,
     ensureDeviceReady,
+    ensureDeviceReadyOrError,
   };
 };
 

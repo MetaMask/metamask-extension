@@ -68,7 +68,7 @@ jest.mock('../../contexts/hardware-wallets/HardwareWalletContext', () => {
       '../../contexts/hardware-wallets/HardwareWalletContext',
     ),
     useHardwareWalletActions: () => ({
-      ensureDeviceReady: () => mockEnsureDeviceReady(),
+      ensureDeviceReadyOrError: () => mockEnsureDeviceReady(),
     }),
   };
 });

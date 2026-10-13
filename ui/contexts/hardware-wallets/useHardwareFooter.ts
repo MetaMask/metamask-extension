@@ -178,8 +178,7 @@ export const useHardwareFooter = ({
         trackConnectCtaClicked();
       }
 
-      const isDeviceReady =
-        (await ensureDeviceReady(ensureDeviceReadyOptions)) === null;
+      const isDeviceReady = await ensureDeviceReady(ensureDeviceReadyOptions);
       setHasPreflightSucceeded(isDeviceReady);
 
       return isDeviceReady;

@@ -86,7 +86,7 @@ export default function useSubmitBridgeTransaction(
   const getHasSufficientGasForQuote = useHasSufficientGasForQuoteForMetrics();
   const enableMissingNetwork = useEnableMissingNetwork();
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
-  const { ensureDeviceReady } = useHardwareWalletActions();
+  const { ensureDeviceReadyOrError } = useHardwareWalletActions();
   const { connectionState } = useHardwareWalletState();
   const { showErrorModal } = useHardwareWalletError();
   const inE2e = isInE2eTest();
@@ -229,7 +229,7 @@ export default function useSubmitBridgeTransaction(
         // on bridge/quote pages, where auto-shown modals are route-gated off.
         // Manual showErrorModal calls bypass that gate; the provider still
         // filters user rejections itself.
-        const deviceError = await ensureDeviceReady();
+        const deviceError = await ensureDeviceReadyOrError();
         if (deviceError) {
           showErrorModal(deviceError);
           setIsSubmitting(false);

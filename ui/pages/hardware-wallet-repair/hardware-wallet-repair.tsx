@@ -125,7 +125,7 @@ export const HardwareWalletRepair: React.FC = () => {
       // by the shared context ensureDeviceReady helper.
       const ready = repairWalletType
         ? await ensureRepairDeviceReady(repairWalletType)
-        : (await ensureDeviceReady()) === null;
+        : await ensureDeviceReady();
       if (ready) {
         setConnectionReady();
         setIsSuccess(true);

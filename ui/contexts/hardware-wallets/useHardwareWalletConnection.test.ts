@@ -582,7 +582,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(true);
@@ -611,7 +611,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(true);
@@ -638,7 +638,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(true);
@@ -690,7 +690,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(false);
@@ -711,7 +711,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(false);
@@ -736,7 +736,7 @@ describe('useHardwareWalletConnection', () => {
 
       const { result } = setupHook();
 
-      const ready = (await result.current.ensureDeviceReady()) === null;
+      const ready = await result.current.ensureDeviceReady();
 
       expect(ready).toBe(false);
       expect(mockAdapter.ensureDeviceReadyMock).not.toHaveBeenCalled();
@@ -761,7 +761,7 @@ describe('useHardwareWalletConnection', () => {
 
       let ready: boolean | undefined;
       await act(async () => {
-        ready = (await result.current.ensureDeviceReady()) === null;
+        ready = await result.current.ensureDeviceReady();
       });
 
       expect(ready).toBe(false);
@@ -791,7 +791,7 @@ describe('useHardwareWalletConnection', () => {
 
       let deviceError: HardwareWalletError | null | undefined;
       await act(async () => {
-        deviceError = await result.current.ensureDeviceReady();
+        deviceError = await result.current.ensureDeviceReadyOrError();
       });
 
       expect(deviceError).toBe(lockedError);
@@ -819,7 +819,7 @@ describe('useHardwareWalletConnection', () => {
 
       let deviceError: HardwareWalletError | null | undefined;
       await act(async () => {
-        deviceError = await result.current.ensureDeviceReady();
+        deviceError = await result.current.ensureDeviceReadyOrError();
       });
 
       expect(deviceError).toBe(lockedError);
@@ -846,7 +846,7 @@ describe('useHardwareWalletConnection', () => {
 
       let deviceError: HardwareWalletError | null | undefined;
       await act(async () => {
-        deviceError = await result.current.ensureDeviceReady();
+        deviceError = await result.current.ensureDeviceReadyOrError();
       });
 
       expect(deviceError).toBeInstanceOf(HardwareWalletError);
@@ -888,10 +888,10 @@ describe('useHardwareWalletConnection', () => {
         mockRefs.currentConnectionIdRef.current = 3;
         resolveConnect?.();
 
-        ready = (await ensurePromise) === null;
+        ready = await ensurePromise;
       });
 
-      // ensureDeviceReady should report not-ready because the connection ID changed
+      // ensureDeviceReady should return false because the connection ID changed
       expect(ready).toBe(false);
       // ensureDeviceReady should NOT call the adapter's ensureDeviceReady
       expect(mockAdapter.ensureDeviceReadyMock).not.toHaveBeenCalled();
@@ -916,8 +916,8 @@ describe('useHardwareWalletConnection', () => {
 
       const { result } = setupHook();
 
-      const firstPromise = result.current.ensureDeviceReady();
-      const secondPromise = result.current.ensureDeviceReady();
+      const firstPromise = result.current.ensureDeviceReadyOrError();
+      const secondPromise = result.current.ensureDeviceReadyOrError();
 
       expect(firstPromise).toBeDefined();
       expect(secondPromise).toBeDefined();
@@ -996,10 +996,10 @@ describe('useHardwareWalletConnection', () => {
 
       const { result } = setupHook();
 
-      const strictCheckPromise = result.current.ensureDeviceReady({
+      const strictCheckPromise = result.current.ensureDeviceReadyOrError({
         requireBlindSigning: true,
       });
-      const simpleSendCheckPromise = result.current.ensureDeviceReady({
+      const simpleSendCheckPromise = result.current.ensureDeviceReadyOrError({
         requireBlindSigning: false,
       });
 
@@ -1055,13 +1055,13 @@ describe('useHardwareWalletConnection', () => {
 
       const { result } = setupHook();
 
-      const strictCheckPromiseA = result.current.ensureDeviceReady({
+      const strictCheckPromiseA = result.current.ensureDeviceReadyOrError({
         requireBlindSigning: true,
       });
-      const simpleSendCheckPromise = result.current.ensureDeviceReady({
+      const simpleSendCheckPromise = result.current.ensureDeviceReadyOrError({
         requireBlindSigning: false,
       });
-      const strictCheckPromiseB = result.current.ensureDeviceReady({
+      const strictCheckPromiseB = result.current.ensureDeviceReadyOrError({
         requireBlindSigning: true,
       });
 

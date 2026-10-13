@@ -151,7 +151,7 @@ function renderWithMetrics(ui: React.ReactElement) {
 describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockEnsureDeviceReady.mockResolvedValue(null);
+    mockEnsureDeviceReady.mockResolvedValue(true);
     mockHandleContinueWithPermissionCheck.mockImplementation(
       async (onRetry: () => Promise<void>) => {
         await onRetry();
@@ -879,9 +879,7 @@ describe('HardwareWalletErrorModal', () => {
     });
 
     it('tracks incremented modal view count when reconnect fails', async () => {
-      mockEnsureDeviceReady.mockResolvedValue(
-        new Error('Hardware wallet device is not ready'),
-      );
+      mockEnsureDeviceReady.mockResolvedValue(false);
       const error = createTestError(
         ErrorCode.DeviceDisconnected,
         'Device disconnected',
@@ -992,7 +990,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      mockEnsureDeviceReady.mockResolvedValueOnce(null);
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
       const { getByText, rerender, store } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
@@ -1020,7 +1018,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      mockEnsureDeviceReady.mockResolvedValueOnce(null);
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
       const { getByText, getByLabelText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,
@@ -1048,7 +1046,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      mockEnsureDeviceReady.mockResolvedValueOnce(null);
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
       const { getByText } = renderWithMetrics(
         <HardwareWalletErrorModal error={error} />,

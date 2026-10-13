@@ -299,7 +299,7 @@ describe('ConfirmFooter', () => {
     mockTrackHardwareWalletRecoveryConnectCtaClicked.mockReset();
 
     mockOnTransactionConfirm.mockResolvedValue(undefined);
-    ensureDeviceReadyMock.mockResolvedValue(null);
+    ensureDeviceReadyMock.mockResolvedValue(true);
 
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Connected },
@@ -931,9 +931,7 @@ describe('ConfirmFooter', () => {
     });
 
     it('does not confirm when hardware wallet preflight fails', async () => {
-      ensureDeviceReadyMock.mockResolvedValue(
-        new Error('Hardware wallet device is not ready'),
-      );
+      ensureDeviceReadyMock.mockResolvedValue(false);
       mockUseHardwareWalletConfig.mockReturnValue({
         isHardwareWalletAccount: true,
         walletType: HardwareWalletType.Ledger,

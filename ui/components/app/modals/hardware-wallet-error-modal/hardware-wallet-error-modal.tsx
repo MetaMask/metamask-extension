@@ -370,7 +370,7 @@ export const HardwareWalletErrorModal = React.memo(
 
       setIsLoading(true);
       try {
-        const result = (await ensureDeviceReady()) === null;
+        const result = await ensureDeviceReady();
         if (result) {
           setConnectionReady();
           setRecovered(true);
