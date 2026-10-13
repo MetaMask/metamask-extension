@@ -93,9 +93,11 @@ export function useHwSwapSubmission({
     }
 
     hasStartedSubmission.current = true;
-    submitActiveQuote().catch(() => {
-      hasStartedSubmission.current = false;
-    });
+    // Do NOT reset `hasStartedSubmission` on failure. `submitActiveQuote`
+    // changes identity across renders, so resetting here re-triggers this
+    // effect and re-prompts the device after every rejection (infinite loop).
+    // Retries go through `retrySubmission`; a new quote resets the flag above.
+    submitActiveQuote().catch(() => undefined);
   }, [lockedQuote, submitActiveQuote]);
 
   const retrySubmission = useCallback(async () => {

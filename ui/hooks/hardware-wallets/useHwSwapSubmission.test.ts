@@ -146,7 +146,7 @@ describe('useHwSwapSubmission', () => {
     expect(mockSubmitBridgeTransaction).not.toHaveBeenCalled();
   });
 
-  it('resets hasStartedSubmission on submission error', async () => {
+  it('keeps hasStartedSubmission set after a submission error', async () => {
     const lockedQuote = createMockLockedQuote('request-1');
     mockSubmitBridgeTransaction.mockRejectedValue(
       new Error('submission failed'),
@@ -170,7 +170,42 @@ describe('useHwSwapSubmission', () => {
       await Promise.resolve();
     });
 
-    expect(result.current.hasStartedSubmission.current).toBe(false);
+    expect(result.current.hasStartedSubmission.current).toBe(true);
+  });
+
+  it('does not auto-resubmit after a rejection when submitBridgeTransaction identity changes', async () => {
+    const lockedQuote = createMockLockedQuote('request-1');
+    const rejectionError = new Error('Ledger: User rejected the transaction');
+    mockSubmitBridgeTransaction.mockRejectedValue(rejectionError);
+
+    // Simulates the real caller, where `submitBridgeTransaction` gets a new
+    // identity on every render (e.g. after the rejected event re-renders).
+    const { rerender } = renderHookWithProvider(
+      () =>
+        useHwSwapSubmission({
+          lockedQuote,
+          needsTwoConfirmations: false,
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          dispatchSignatureEvent: mockDispatchSignatureEvent,
+          submitBridgeTransaction: (...args: unknown[]) =>
+            mockSubmitBridgeTransaction(...args),
+        }),
+      {},
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    rerender();
+    await act(async () => {
+      await Promise.resolve();
+    });
+    rerender();
+
+    expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
   });
 
   it('submitActiveQuote does nothing when lockedQuote is undefined', async () => {
