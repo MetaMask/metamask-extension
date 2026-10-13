@@ -62,6 +62,7 @@ export const ASSETS_CONTROLLER_DELEGATED_EVENTS = [
   'PreferencesController:stateChange',
   'TransactionController:transactionConfirmed',
   'TransactionController:unapprovedTransactionAdded',
+  'MultichainTransactionsController:transactionConfirmed',
   'AccountActivityService:balanceUpdated',
   'AccountActivityService:statusChanged',
   'RemoteFeatureFlagController:stateChange',

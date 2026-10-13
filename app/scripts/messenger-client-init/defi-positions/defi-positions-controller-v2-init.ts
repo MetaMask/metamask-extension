@@ -3,7 +3,6 @@ import {
   DeFiPositionsControllerV2Messenger,
 } from '@metamask/assets-controllers';
 import { createApiPlatformClient } from '@metamask/core-backend';
-import type { ApiPlatformClient } from '@metamask/core-backend';
 import { MessengerClientInitFunction } from '../types';
 import { DeFiPositionsControllerV2InitMessenger } from '../messengers/defi-positions';
 import {
@@ -15,6 +14,10 @@ import {
   getBackendApiUrlsOption,
   isBackendAuthDisabled,
 } from '../../../../shared/lib/core-backend-api-urls';
+
+type ApiPlatformClient = ConstructorParameters<
+  typeof DeFiPositionsControllerV2
+>[0]['apiClient'];
 
 /**
  * Cached API client instance shared across init calls (matches AssetsController).
@@ -55,7 +58,7 @@ function getApiClient(
       clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
       ...getBackendApiUrlsOption(),
-    });
+    }) as unknown as ApiPlatformClient;
   }
   return apiClient;
 }
