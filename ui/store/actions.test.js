@@ -1621,13 +1621,7 @@ describe('Actions', () => {
               'ledger-account': {
                 address: LEDGER_ADDRESS,
                 id: 'ledger-account',
-                metadata: {
-                  name: 'Ledger 1',
-                  keyring: { type: KeyringTypes.ledger },
-                },
-                options: {},
-                methods: ETH_EOA_METHODS,
-                type: EthAccountType.Eoa,
+                metadata: { keyring: { type: KeyringTypes.ledger } },
               },
             },
           },

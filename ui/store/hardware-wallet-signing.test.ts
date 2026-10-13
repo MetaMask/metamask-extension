@@ -128,7 +128,7 @@ describe('listenForHardwareSigningCompletion', () => {
     jest.resetAllMocks();
   });
 
-  it('completes after a required funding transaction is signed', async () => {
+  async function startListening() {
     let eventHandler:
       | ((event: [{ transactionMeta: TransactionMeta }]) => void)
       | undefined;
@@ -140,14 +140,11 @@ describe('listenForHardwareSigningCompletion', () => {
       },
     );
     const onComplete = jest.fn();
+    const signed = (id: string) =>
+      buildTransaction({ id, status: TransactionStatus.signed });
     const state = buildState(
       ['funding-transaction'],
-      [
-        buildTransaction({
-          id: 'funding-transaction',
-          status: TransactionStatus.signed,
-        }),
-      ],
+      [signed('funding-transaction')],
     );
 
     const stopListening = await listenForHardwareSigningCompletion({
@@ -156,14 +153,17 @@ describe('listenForHardwareSigningCompletion', () => {
       getState: async () => state,
       onComplete,
     });
-    eventHandler?.([
-      {
-        transactionMeta: buildTransaction({
-          id: 'funding-transaction',
-          status: TransactionStatus.signed,
-        }),
-      },
-    ]);
+    const emitSigned = (id: string) =>
+      eventHandler?.([{ transactionMeta: signed(id) }]);
+
+    return { emitSigned, onComplete, stopListening, unsubscribe };
+  }
+
+  it('completes after a required funding transaction is signed', async () => {
+    const { emitSigned, onComplete, stopListening, unsubscribe } =
+      await startListening();
+
+    emitSigned('funding-transaction');
     await stopListening();
 
     expect(onComplete).toHaveBeenCalledTimes(1);
@@ -171,40 +171,9 @@ describe('listenForHardwareSigningCompletion', () => {
   });
 
   it('ignores signed transactions unrelated to the parent', async () => {
-    let eventHandler:
-      | ((event: [{ transactionMeta: TransactionMeta }]) => void)
-      | undefined;
-    subscribeToMessengerEventMock.mockImplementation(
-      async (_event, callback) => {
-        eventHandler = callback as typeof eventHandler;
-        return jest.fn().mockResolvedValue(undefined);
-      },
-    );
-    const onComplete = jest.fn();
-    const state = buildState(
-      ['funding-transaction'],
-      [
-        buildTransaction({
-          id: 'funding-transaction',
-          status: TransactionStatus.signed,
-        }),
-      ],
-    );
+    const { emitSigned, onComplete, stopListening } = await startListening();
 
-    const stopListening = await listenForHardwareSigningCompletion({
-      transactionId: PARENT_ID,
-      expectedQuoteCount: 1,
-      getState: async () => state,
-      onComplete,
-    });
-    eventHandler?.([
-      {
-        transactionMeta: buildTransaction({
-          id: 'unrelated-transaction',
-          status: TransactionStatus.signed,
-        }),
-      },
-    ]);
+    emitSigned('unrelated-transaction');
     await stopListening();
 
     expect(onComplete).not.toHaveBeenCalled();

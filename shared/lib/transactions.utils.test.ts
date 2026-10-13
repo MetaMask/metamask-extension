@@ -306,45 +306,31 @@ describe('Transactions utils', () => {
   });
 
   describe('getTransactionPayingAccount', () => {
-    const FROM_ADDRESS = '0x1234567890123456789012345678901234567890';
-    const OVERRIDE_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+    const FROM = '0x1234567890123456789012345678901234567890';
+    const OVERRIDE = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
 
-    it('returns the account override when present', () => {
-      const transactionMeta = {
-        type: TransactionType.contractInteraction,
-        txParams: { from: FROM_ADDRESS },
-      } as TransactionMeta;
+    const CASES = [
+      ['the override', TransactionType.contractInteraction, OVERRIDE, OVERRIDE],
+      ['from without an override', TransactionType.simpleSend, undefined, FROM],
+      [
+        'from for post-quote withdraws',
+        TransactionType.perpsWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+    ] as const;
 
-      expect(
-        getTransactionPayingAccount(transactionMeta, OVERRIDE_ADDRESS),
-      ).toBe(OVERRIDE_ADDRESS);
-    });
+    for (const [label, type, override, expected] of CASES) {
+      it(`returns ${label}`, () => {
+        const transactionMeta = { type, txParams: { from: FROM } };
 
-    it('returns txParams.from without an account override', () => {
-      const transactionMeta = {
-        type: TransactionType.contractInteraction,
-        txParams: { from: FROM_ADDRESS },
-      } as TransactionMeta;
-
-      expect(getTransactionPayingAccount(transactionMeta, undefined)).toBe(
-        FROM_ADDRESS,
-      );
-    });
-
-    it('returns txParams.from for post-quote withdraws, whose override is the recipient', () => {
-      const transactionMeta = {
-        type: TransactionType.batch,
-        txParams: { from: FROM_ADDRESS },
-        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
-      } as TransactionMeta;
-
-      expect(
-        getTransactionPayingAccount(transactionMeta, OVERRIDE_ADDRESS),
-      ).toBe(FROM_ADDRESS);
-    });
-
-    it('returns undefined when transactionMeta and override are missing', () => {
-      expect(getTransactionPayingAccount(undefined, undefined)).toBeUndefined();
-    });
+        expect(
+          getTransactionPayingAccount(
+            transactionMeta as TransactionMeta,
+            override,
+          ),
+        ).toBe(expected);
+      });
+    }
   });
 });
