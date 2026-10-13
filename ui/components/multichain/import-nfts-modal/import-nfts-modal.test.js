@@ -27,7 +27,7 @@ const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 
 const getImportButton = () =>
-  screen.getByRole('button', { name: messages.import.message });
+  screen.getByRole('button', { name: messages.save.message });
 
 const mockStateWithTestNetworks = {
   ...mockState,

@@ -408,7 +408,7 @@ export const ImportNftsForm = ({
               isFullWidth
               data-testid="import-nfts-modal-import-button"
             >
-              {t('import')}
+              {t('save')}
             </Button>
           </Box>
         </form>
