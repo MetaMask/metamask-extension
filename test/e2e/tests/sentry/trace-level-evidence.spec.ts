@@ -66,8 +66,8 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+          .withAnalyticsController({
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
