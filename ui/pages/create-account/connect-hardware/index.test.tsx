@@ -99,9 +99,11 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
 
 const mockUseNavigate = jest.fn();
 let mockLocationKey = 'default';
+let mockSearch = '';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useSearchParams: () => [new URLSearchParams(mockSearch)],
   useLocation: () => ({
     pathname: '/test',
     key: mockLocationKey,
@@ -191,6 +193,7 @@ describe('ConnectHardwareForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationKey = 'default';
+    mockSearch = '';
     mockCheckHardwareStatus.mockResolvedValue(false);
   });
 
@@ -533,6 +536,50 @@ describe('ConnectHardwareForm', () => {
       });
 
       expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+    });
+  });
+
+  describe('device query param', () => {
+    it('connects to the requested device on mount without requesting WebHID access', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+      });
+      expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
+      expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+        HardwareDeviceNames.ledger,
+        0,
+        DEFAULT_HD_PATH,
+        false,
+        expect.any(Function),
+      );
+    });
+
+    it('shows the device selection with the error when the connection fails', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockRejectedValue(new Error('Device not found'));
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByText('Device not found')).toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('connect-hardware-wallet-ledger'),
+      ).toBeInTheDocument();
+    });
+
+    it('ignores unknown devices', () => {
+      mockSearch = 'device=unknown';
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+      expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
     });
   });
 
