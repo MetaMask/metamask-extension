@@ -50,7 +50,7 @@ describe('NFTs list', () => {
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
       selectedNetworkClientId: 'testNetworkConfigurationId',
       enabledNetworkMap: {
@@ -61,7 +61,8 @@ describe('NFTs list', () => {
           '0xaa36a7': true,
         },
       },
-      dataCollectionForMarketing: false,
+      optedInToMarketing: false,
+      marketingConsentDecisionMade: true,
     };
 
     await act(async () => {

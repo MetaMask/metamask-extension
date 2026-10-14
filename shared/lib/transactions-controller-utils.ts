@@ -180,8 +180,3 @@ export function getSwapsTokensReceivedFromTxMeta(
   }
   return null;
 }
-
-export const TRANSACTION_ENVELOPE_TYPE_NAMES = {
-  FEE_MARKET: 'fee-market',
-  LEGACY: 'legacy',
-};

@@ -1,10 +1,20 @@
 import {
   RampsController,
+  RampsOrderStatus,
   getDefaultRampsControllerState,
   type RampsControllerMessenger,
 } from '@metamask/ramps-controller';
 import type { OnboardingControllerState } from '../controllers/onboarding';
 import type { PreferencesControllerState } from '../controllers/preferences-controller';
+import { removeStalePrecreatedOrders } from '../lib/ramps-stale-order-cleanup';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { createEventBuilder } from '../../../shared/lib/analytics/create-event-builder';
+import { trace } from '../../../shared/lib/trace';
+import { captureException } from '../../../shared/lib/sentry';
+import { trackEvent } from '../controllers/analytics';
 import type { MessengerClientInitFunction } from './types';
 import { getRampsControllerApi } from './ramps-controller-api';
 import type { RampsControllerInitMessenger } from './messengers/ramps-controller-messenger';
@@ -21,6 +31,29 @@ function isRampsNetworkAllowed(
   );
 
   return completedOnboarding && Boolean(useExternalServices);
+}
+
+/**
+ * Statuses where the user has committed to a purchase and is waiting on the
+ * provider to settle.
+ *
+ * Deliberately narrower than "not terminal". `PRECREATED` and `UNKNOWN` stubs
+ * may never resolve — see `removeStalePrecreatedOrders`, where the API "can
+ * neither complete nor expire" them — so counting those as in-flight would keep
+ * the poll alive forever. Worse, it would be self-sustaining: `lifecycleStarted`
+ * would never clear, so `startRampsLifecycle` would short-circuit on every
+ * later call and the cleanup that prunes those very stubs would never run
+ * again. Leaving them out lets polling stop, which lets the cleanup run.
+ */
+const IN_FLIGHT_ORDER_STATUSES = new Set<string>([
+  RampsOrderStatus.Created,
+  RampsOrderStatus.Pending,
+]);
+
+function hasInFlightOrders(messengerClient: RampsController): boolean {
+  return (messengerClient.state?.orders ?? []).some((order) =>
+    IN_FLIGHT_ORDER_STATUSES.has(order.status),
+  );
 }
 
 function createRampsLifecycleManager(
@@ -43,6 +76,7 @@ function createRampsLifecycleManager(
         if (runId !== lifecycleRunId || !isPollingAllowed()) {
           return;
         }
+        removeStalePrecreatedOrders(messengerClient);
         messengerClient.startOrderPolling();
       })
       .catch((error) => {
@@ -60,7 +94,30 @@ function createRampsLifecycleManager(
     lifecycleStarted = false;
   };
 
-  return { startRampsLifecycle, stopRampsLifecycle };
+  /**
+   * Stop requested because the last UI window closed.
+   *
+   * Ramps checkout deliberately runs with no UI open — that is the whole reason
+   * the callback watcher lives in the background (see
+   * `app/scripts/lib/ramps/checkout-watch.ts`). Providers then take minutes to
+   * settle, so the PENDING -> COMPLETED transition lands squarely in the window
+   * where nothing would be polling, leaving the order showing its callback-time
+   * snapshot until the user next opens the wallet. Keep polling while an order
+   * is still in flight, the same way pending transactions keep polling while
+   * the UI is closed. A revoked network gate still stops immediately.
+   */
+  const stopRampsLifecycleWhenSettled = (): void => {
+    if (isPollingAllowed() && hasInFlightOrders(messengerClient)) {
+      return;
+    }
+    stopRampsLifecycle();
+  };
+
+  return {
+    startRampsLifecycle,
+    stopRampsLifecycle,
+    stopRampsLifecycleWhenSettled,
+  };
 }
 
 function registerRampsLifecycleSubscriptions(
@@ -102,23 +159,49 @@ function registerRampsLifecycleSubscriptions(
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state to hydrate from.
  * @param request.initMessenger - Messenger for onboarding and preferences state.
+ * @param request.platform
  * @returns The initialized controller and background API.
  */
 export const RampsControllerInit: MessengerClientInitFunction<
   RampsController,
   RampsControllerMessenger,
   RampsControllerInitMessenger
-> = ({ controllerMessenger, persistedState, initMessenger }) => {
+> = ({ controllerMessenger, persistedState, initMessenger, platform }) => {
   const messengerClient = new RampsController({
     messenger: controllerMessenger,
     state: persistedState.RampsController ?? getDefaultRampsControllerState(),
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
+    onOrderSyncErroneousSituation: (situationMessage, sentryContext) => {
+      captureException(
+        new Error(`Ramps order sync - ${situationMessage}`),
+        sentryContext,
+      );
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.ProfileActivityUpdated)
+          .addCategory(MetaMetricsEventCategory.BackupAndSync)
+          .addProperties({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            feature_name: 'Backup And Sync',
+            action: 'Ramps Order Sync Erroneous Situation',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            additional_description: situationMessage,
+          })
+          .build(),
+      );
+    },
   });
 
   const isNetworkAllowed = () => isRampsNetworkAllowed(initMessenger);
   applyRampsNetworkGate(messengerClient, isNetworkAllowed);
 
-  const { startRampsLifecycle, stopRampsLifecycle } =
-    createRampsLifecycleManager(messengerClient, isNetworkAllowed);
+  const {
+    startRampsLifecycle,
+    stopRampsLifecycle,
+    stopRampsLifecycleWhenSettled,
+  } = createRampsLifecycleManager(messengerClient, isNetworkAllowed);
 
   const tryStartRampsLifecycle = (): void => {
     if (isNetworkAllowed()) {
@@ -142,9 +225,10 @@ export const RampsControllerInit: MessengerClientInitFunction<
   return {
     messengerClient,
     api: {
-      ...getRampsControllerApi(messengerClient),
+      ...getRampsControllerApi(messengerClient, platform),
       startRampsLifecycle: tryStartRampsLifecycle,
-      stopRampsLifecycle,
+      // Called by `stopNetworkRequests` when the last UI window closes.
+      stopRampsLifecycle: stopRampsLifecycleWhenSettled,
     },
   };
 };

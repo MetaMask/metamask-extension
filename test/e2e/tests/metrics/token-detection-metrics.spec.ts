@@ -3,7 +3,12 @@ import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { MOCK_ANALYTICS_ID } from '../../constants';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import { waitForSettingsUpdated } from './helpers';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -15,7 +20,7 @@ import { MOCK_ANALYTICS_ID } from '../../constants';
  * @param mockServer - The mock server instance.
  * @returns
  */
-async function mockSegment(mockServer: Mockttp) {
+async function mockSegmentTrack(mockServer: Mockttp) {
   return [
     // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
     await mockServer
@@ -28,10 +33,28 @@ async function mockSegment(mockServer: Mockttp) {
           statusCode: 200,
         };
       }),
+  ];
+}
+
+async function mockBasicFunctionalityTurnedOff(mockServer: Mockttp) {
+  return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'token_detection_enabled' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Settings Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              settings_type: 'basic_functionality',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_value: true,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_value: false,
+            },
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -46,19 +69,19 @@ describe('Token detection event', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2({ onboarding: true })
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: mockSegmentTrack,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeCreateNewWalletOnboardingFlow({
           driver,
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         });
 
@@ -79,6 +102,49 @@ describe('Token detection event', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
+        });
+      },
+    );
+  });
+
+  it('sends Settings Updated when basic functionality is turned off', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withAnalyticsController({
+            analyticsId: MOCK_ANALYTICS_ID,
+            consentDecisionMade: true,
+            optedIn: true,
+          })
+          .withPreferencesController({
+            useTokenDetection: true,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockBasicFunctionalityTurnedOff,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await login(driver);
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.checkPageIsLoaded();
+
+        await privacySettings.toggleBasicFunctionalityOff();
+        await waitForSettingsUpdated(driver, mockedEndpoints, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          settings_type: 'basic_functionality',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          old_value: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_value: false,
+          category: 'Settings',
         });
       },
     );

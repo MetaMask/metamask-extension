@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import { BigNumber } from '@ethersproject/bignumber';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useTokenData } from './useTokenData';
 

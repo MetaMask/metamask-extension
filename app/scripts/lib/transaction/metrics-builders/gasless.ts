@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/lib/gas.utils';
 import { Numeric } from '../../../../../shared/lib/Numeric';

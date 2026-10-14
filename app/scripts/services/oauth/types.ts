@@ -6,12 +6,15 @@ import {
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
-import type { MetaMetricsEventPayload } from '../../../../shared/constants/metametrics';
 import type {
-  TraceRequest,
-  EndTraceRequest,
-} from '../../../../shared/lib/trace';
+  AnalyticsEvent,
+  AnalyticsEventBuildOptions,
+} from '../../../../shared/lib/analytics/create-event-builder';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from '../sentry/sentry-tracing-service-method-action-types';
 import ExtensionPlatform from '../../platforms/extension';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
@@ -37,7 +40,9 @@ export type OAuthServiceAction =
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
   | OnboardingControllerGetStateAction
-  | GeolocationControllerGetGeolocationAction;
+  | GeolocationControllerGetGeolocationAction
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction;
 
 /**
  * All possible events that the OAuthService can emit.
@@ -150,28 +155,12 @@ export type OAuthServiceOptions = {
   platform: ExtensionPlatform;
 
   /**
-   * Buffered trace methods that handle consent checking
+   * Track an analytics event built with createEventBuilder.
    */
-  bufferedTrace: (
-    request: TraceRequest,
-    fn?: (context?: unknown) => unknown,
+  trackEvent: (
+    built: AnalyticsEvent,
+    options?: AnalyticsEventBuildOptions,
   ) => void;
-  bufferedEndTrace: (request: EndTraceRequest) => void;
-
-  /**
-   * Add an event before metrics opt-in (for buffering before user consent)
-   */
-  addEventBeforeMetricsOptIn: (event: MetaMetricsEventPayload) => void;
-
-  /**
-   * Get whether the user has completed the analytics onboarding prompt
-   */
-  getCompletedMetaMetricsOnboarding: () => boolean;
-
-  /**
-   * Get whether the user has opted into analytics
-   */
-  getOptedIn: () => boolean;
 
   /**
    * Persist the temporary Telegram profile-sync JWT until the SRP profile is

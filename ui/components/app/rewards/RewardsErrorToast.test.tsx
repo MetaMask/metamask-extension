@@ -1,21 +1,27 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setErrorToast } from '../../../ducks/rewards';
+import { useDispatch } from '../../../store/hooks';
 import RewardsErrorToast from './RewardsErrorToast';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => {
   const actual = jest.requireActual('react-redux');
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: jest.fn(),
   };
 });
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
+const mockUseAppDispatch = useDispatch as jest.MockedFunction<
+  typeof useDispatch
+>;
 
 describe('RewardsErrorToast', () => {
   beforeEach(() => {
@@ -38,7 +44,7 @@ describe('RewardsErrorToast', () => {
   it('renders ToastContainer and content when open', () => {
     const onActionClick = jest.fn();
     const mockDispatch = jest.fn();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
 
     const title = 'Something went wrong';
     const description = 'Please try again later';
@@ -66,7 +72,7 @@ describe('RewardsErrorToast', () => {
   it('dispatches setErrorToast to close when close button is clicked', () => {
     const onActionClick = jest.fn();
     const mockDispatch = jest.fn();
-    mockUseDispatch.mockReturnValue(mockDispatch);
+    mockUseAppDispatch.mockReturnValue(mockDispatch);
 
     const title = 'Critical error';
     const description = 'Operation failed';

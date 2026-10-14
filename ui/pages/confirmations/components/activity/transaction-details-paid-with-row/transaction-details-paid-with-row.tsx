@@ -15,7 +15,6 @@ import { useTokenWithBalance } from '../../../hooks/tokens/useTokenWithBalance';
 import { TokenIcon } from '../../token-icon';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsPaidWithRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();

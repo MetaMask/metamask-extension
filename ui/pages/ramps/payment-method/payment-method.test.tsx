@@ -3,30 +3,52 @@
  */
 import React from 'react';
 import { act, fireEvent, screen } from '@testing-library/react';
-import type { PaymentMethod } from '@metamask/ramps-controller';
+import type { PaymentMethod, Quote } from '@metamask/ramps-controller';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { RampsPaymentMethodScreen } from './payment-method';
 
 const mockNavigate = jest.fn();
 const mockSetSelectedPaymentMethod = jest.fn().mockResolvedValue(undefined);
+const mockUseRampsQuotes = jest.fn();
+let mockLocationState: { amount?: number } | null = null;
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
+  useLocation: () => ({
+    pathname: '/ramps/payment-method',
+    search: '',
+    hash: '',
+    state: mockLocationState,
+    key: 'default',
+  }),
 }));
 
 jest.mock('../../../hooks/ramps/useRampsController', () => ({
   useRampsController: jest.fn(),
 }));
 
+jest.mock('../../../hooks/ramps/useRampsQuotes', () => ({
+  useRampsQuotes: (...args: unknown[]) => mockUseRampsQuotes(...args),
+}));
+
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  getInternalAccountBySelectedAccountGroupAndCaip: jest.fn(() => null),
+}));
+
 const { useRampsController } = jest.requireMock(
   '../../../hooks/ramps/useRampsController',
 );
+const { getInternalAccountBySelectedAccountGroupAndCaip } = jest.requireMock(
+  '../../../selectors/multichain-accounts/account-tree',
+);
 
-const createStore = () =>
+const createStore = (orders: unknown[] = []) =>
   configureStore({
     metamask: {
+      orders,
       selectedNetworkClientId: 'mainnet',
       currentCurrency: 'usd',
       networkConfigurationsByChainId: {
@@ -63,14 +85,41 @@ const bankTransfer: PaymentMethod = {
   delay: [0, 0],
 };
 
+const selectedToken = {
+  assetId: 'eip155:1/slip44:60',
+  symbol: 'ETH',
+  chainId: 'eip155:1',
+};
+
+const selectedProvider = {
+  id: '/providers/test',
+  name: 'Test Provider',
+};
+
+const debitQuote: Quote = {
+  provider: selectedProvider.id,
+  quote: {
+    amountIn: 100,
+    amountOut: '0.05',
+    paymentMethod: debitCard.id,
+    amountOutInFiat: 99.5,
+  },
+};
+
 const defaultControllerState = {
   paymentMethods: [debitCard, bankTransfer],
   paymentMethodsLoading: false,
   paymentMethodsStatus: 'success',
   paymentMethodsError: null,
   selectedPaymentMethod: debitCard,
-  selectedProvider: null,
+  providers: [],
+  providersLoading: false,
+  providersError: null,
+  setSelectedProvider: jest.fn().mockResolvedValue(undefined),
+  selectedProvider,
+  selectedToken,
   userRegion: {
+    regionCode: 'us',
     country: { currency: 'USD' },
   },
   setSelectedPaymentMethod: mockSetSelectedPaymentMethod,
@@ -79,8 +128,18 @@ const defaultControllerState = {
 describe('RampsPaymentMethodScreen', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationState = null;
     mockSetSelectedPaymentMethod.mockResolvedValue(undefined);
     useRampsController.mockReturnValue(defaultControllerState);
+    mockUseRampsQuotes.mockReturnValue({
+      data: null,
+      loading: false,
+      status: 'idle',
+      isSuccess: false,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
   });
 
   it('matches snapshot with payment methods', () => {
@@ -91,6 +150,40 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('tags only payment methods used by a completed order', () => {
+    const orders = [
+      {
+        walletAddress: '0xABC123',
+        status: 'COMPLETED',
+        paymentMethod: { id: 'debit-credit-card' },
+      },
+      {
+        walletAddress: '0xabc123',
+        status: 'PENDING',
+        paymentMethod: { id: 'bank-transfer' },
+      },
+      {
+        walletAddress: '0xsomeoneelse',
+        status: 'COMPLETED',
+        paymentMethod: { id: 'bank-transfer' },
+      },
+    ];
+
+    const { queryByTestId } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(orders),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      queryByTestId('ramps-payment-method-item-tag-debit-credit-card'),
+    ).toBeInTheDocument();
+    // Pending order, and another account's completed order, do not count.
+    expect(
+      queryByTestId('ramps-payment-method-item-tag-bank-transfer'),
+    ).not.toBeInTheDocument();
   });
 
   it('matches snapshot while loading', () => {
@@ -148,7 +241,7 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('keeps back navigation available when idle', () => {
@@ -168,7 +261,7 @@ describe('RampsPaymentMethodScreen', () => {
     );
 
     fireEvent.click(screen.getByTestId('ramps-payment-method-back'));
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('matches snapshot when payment methods fail to load', () => {
@@ -226,7 +319,129 @@ describe('RampsPaymentMethodScreen', () => {
     expect(
       screen.queryByTestId('ramps-payment-method-error'),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('ramps-change-provider-button'),
+    ).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('fetches quotes for all payment method ids when amount is provided', () => {
+    mockLocationState = { amount: 100 };
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(mockUseRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        amount: 100,
+        walletAddress: '0xabc123',
+        region: 'us',
+        fiat: 'USD',
+        paymentMethods: [debitCard.id, bankTransfer.id],
+        providers: [selectedProvider.id],
+      }),
+    );
+  });
+
+  it('matches snapshot with per-method quotes', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [debitQuote],
+        sorted: [],
+        error: [],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    const { container } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('keeps payment methods selectable when they have no success quote', async () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [debitQuote],
+        sorted: [],
+        error: [],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    const bankRow = screen.getByTestId(
+      'ramps-payment-method-item-bank-transfer',
+    );
+    expect(bankRow).not.toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(bankRow);
+    });
+
+    expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
+  });
+
+  it('does not reuse a provider error across payment methods', () => {
+    mockLocationState = { amount: 100 };
+    mockUseRampsQuotes.mockReturnValue({
+      data: {
+        success: [],
+        sorted: [],
+        error: [
+          {
+            provider: selectedProvider.id,
+            error: 'Minimum purchase is 24 USD',
+          },
+        ],
+        customActions: [],
+      },
+      loading: false,
+      status: 'success',
+      isSuccess: true,
+      error: null,
+      getQuotes: jest.fn(),
+      getBuyWidgetData: jest.fn(),
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(
+      screen.getByTestId('ramps-payment-method-item-debit-credit-card'),
+    ).toHaveTextContent('Quote unavailable');
+    expect(
+      screen.getByTestId('ramps-payment-method-item-bank-transfer'),
+    ).toHaveTextContent('Quote unavailable');
   });
 
   it('selects a payment method and navigates back', async () => {
@@ -243,7 +458,7 @@ describe('RampsPaymentMethodScreen', () => {
     });
 
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
-    expect(mockNavigate).toHaveBeenCalledWith(-1);
+    expect(mockNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('ignores a second tap while selection is in flight', async () => {
@@ -294,5 +509,69 @@ describe('RampsPaymentMethodScreen', () => {
 
     expect(mockSetSelectedPaymentMethod).toHaveBeenCalledWith(bankTransfer);
     expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('opens provider selection modal when change provider is clicked', () => {
+    mockLocationState = { amount: 100 };
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      providers: [
+        {
+          id: '/providers/transak',
+          name: 'Transak',
+          supportedCryptoCurrencies: { 'eip155:1/slip44:60': true },
+        },
+      ],
+    });
+
+    const { baseElement } = renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    fireEvent.click(screen.getByTestId('ramps-change-provider-button'));
+
+    expect(
+      screen.getByTestId('ramps-provider-selection-modal'),
+    ).toBeInTheDocument();
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(baseElement).toMatchSnapshot();
+  });
+
+  it('uses the chain-matching account address for non-EVM assets', () => {
+    mockLocationState = { amount: 100 };
+
+    const solanaAccount = {
+      id: 'sol-account-1',
+      address: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      metadata: { name: 'Solana Account' },
+    };
+    const solanaToken = {
+      assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      symbol: 'SOL',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    };
+
+    jest
+      .mocked(getInternalAccountBySelectedAccountGroupAndCaip)
+      .mockReturnValue(solanaAccount);
+
+    useRampsController.mockReturnValue({
+      ...defaultControllerState,
+      selectedToken: solanaToken,
+    });
+
+    renderWithProvider(
+      <RampsPaymentMethodScreen />,
+      createStore(),
+      '/ramps/payment-method',
+    );
+
+    expect(mockUseRampsQuotes).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletAddress: '7NpQ2kKqLhB5rJ3mF8vXcYaZ9wEd1tGsR2VnQ4bHkU',
+      }),
+    );
   });
 });

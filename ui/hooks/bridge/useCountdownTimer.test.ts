@@ -1,17 +1,21 @@
 import { act } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { flushPromises } from '../../../test/lib/timer-helpers';
 import { useCountdownTimer } from './useCountdownTimer';
 
-jest.useFakeTimers();
 const renderUseCountdownTimer = (mockStoreState: object) =>
   renderHookWithProvider(() => useCountdownTimer(), mockStoreState);
 
 describe('useCountdownTimer', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     jest.clearAllTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   it('returns time remaining', async () => {
@@ -28,15 +32,17 @@ describe('useCountdownTimer', () => {
       }),
     );
 
-    await act(async () => {
-      let i = 0;
-      while (i <= 40) {
-        const secondsLeft = Math.min(41, 40 - i + 1);
-        expect(result.current).toStrictEqual(secondsLeft);
-        i += 10;
+    expect(result.current).toStrictEqual(41);
+
+    for (let elapsedSeconds = 10; elapsedSeconds <= 40; elapsedSeconds += 10) {
+      await act(async () => {
         jest.advanceTimersByTime(10000);
-        await flushPromises();
-      }
+      });
+      expect(result.current).toStrictEqual(41 - elapsedSeconds);
+    }
+
+    await act(async () => {
+      jest.advanceTimersByTime(10000);
     });
     expect(result.current).toStrictEqual(0);
   });

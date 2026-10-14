@@ -39,7 +39,6 @@ export const NotificationSectionSubPage = ({
     hasNotificationPreferences,
     isLoading: isLoadingPreferences,
     updatePreference,
-    refetchPreferences,
   } = useNotificationPreferences();
 
   const section = useMemo(
@@ -112,7 +111,7 @@ export const NotificationSectionSubPage = ({
     <Box
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Stretch}
-      className="h-full min-h-0"
+      className="h-full min-h-0 overflow-y-auto"
       paddingTop={3}
       paddingHorizontal={4}
       gap={6}
@@ -123,7 +122,6 @@ export const NotificationSectionSubPage = ({
         notificationAccountGroups={notificationAccountGroups}
         accountSettingsProps={accountSettingsProps}
         updatePreference={updatePreference}
-        refetchNotificationPreferences={refetchPreferences}
       />
     </Box>
   );

@@ -9,6 +9,7 @@ import {
 import {
   isSolanaChainId,
   isBitcoinChainId,
+  isNonEvmChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -16,7 +17,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
-  isNonEvmChainId,
+  isStellarChainId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -84,10 +85,7 @@ const buildTokenData = (
       type: AssetType.native,
       address: '', // Return empty string to match useMultichainBalances output
       image:
-        image ??
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
+        image ?? (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
@@ -160,8 +158,8 @@ export const useTokensWithFiltering = (
       }
       return undefined;
     }
-    // For Solana chains, we don't cache in the same way, return undefined to trigger fetch
-    if (isSolanaChainId(chainId)) {
+    // For Solana chains and Stellar Chain, we don't cache in the same way, return undefined to trigger fetch
+    if (isSolanaChainId(chainId) || isStellarChainId(chainId)) {
       return undefined;
     }
     // For EVM chains, check the cache
@@ -304,7 +302,6 @@ export const useTokensWithFiltering = (
                   MULTICHAIN_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
                   ] ??
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string must fall through (https://github.com/MetaMask/metamask-extension/issues/31880)
                   (nativeAsset?.icon || nativeAsset?.iconUrl || assetImageUrl),
                 accountType: token.accountType,
               };

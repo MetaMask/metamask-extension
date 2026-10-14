@@ -1,10 +1,13 @@
 import { Suite } from 'mocha';
-import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_URL,
+  SECOND_NODE_NETWORK_CLIENT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { login } from '../../page-objects/flows/login.flow';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
@@ -18,6 +21,11 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilderV2()
           .withNetworkControllerDoubleNode()
+          // Seed the dapp's connection to chain 1338 only
+          .withPermissionControllerConnectedToTestDapp({ chainIds: [1338] })
+          .withSelectedNetworkController({
+            domains: { [DAPP_URL]: SECOND_NODE_NETWORK_CLIENT_ID },
+          })
           .build(),
         localNodeOptions: [
           {
@@ -40,31 +48,10 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
           await contractRegistry.getContractAddress(smartContract);
         await login(driver, { localNode: localNodes[0] });
 
+        // The dapp is seeded with a connection to Localhost 8546
+        // (chain 1338) only, so no live connect is needed
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
-        await testDapp.checkPageIsLoaded();
-        await testDapp.clickConnectAccountButton();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const connectAccountConfirmation = new ConnectAccountConfirmation(
-          driver,
-        );
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.goToPermissionsTab();
-        await connectAccountConfirmation.openEditNetworksModal();
-
-        // Disconnect Localhost 8545. By Default, this was the globally selected network
-        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
-          driver,
-        );
-        await reviewPermissionsConfirmation.clickDisconnectNetwork(
-          'Localhost 8545',
-        );
-        await reviewPermissionsConfirmation.clickConnectMoreChainsButton();
-        await connectAccountConfirmation.confirmConnect();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
         // Switch Ethereum Chain
@@ -80,6 +67,9 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        const reviewPermissionsConfirmation = new ReviewPermissionsConfirmation(
+          driver,
+        );
         await reviewPermissionsConfirmation.checkUseEnabledNetworksMessageIsDisplayed();
 
         // Switch back to test dapp

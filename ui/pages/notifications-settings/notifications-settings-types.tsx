@@ -71,19 +71,20 @@ export const getNotificationsSettingsSectionConfigs = (
   }
 
   nextSections.push({
-    type: 'marketing',
-    title: t('notificationsSettingsMarketingTitle'),
-    description: t('notificationsSettingsMarketingDescription'),
-    iconName: IconName.Campaign,
-  });
-
-  nextSections.push({
     type: 'agenticCli',
     title: t('notificationsSettingsAgenticCliTitle'),
     description: t('notificationsSettingsAgenticCliDescription'),
     iconName: IconName.Code,
   });
 
+  nextSections.push({
+    type: 'marketing',
+    title: t('notificationsSettingsMarketingTitle'),
+    description: t('notificationsSettingsMarketingDescription'),
+    iconName: IconName.Campaign,
+  });
+  // WARNING: This marketing section must ALWAYS remain the very last item in the array.
+  // New sections must be added ABOVE this entry (never below).
   return nextSections;
 };
 
@@ -108,7 +109,11 @@ export function NotificationsSettingsTypes({
         <SettingsSelectItem
           key={section.type}
           label={section.title}
-          value={getStatusText(t, preferences?.[section.type])}
+          value={
+            section.type === 'walletActivity'
+              ? ''
+              : getStatusText(t, preferences?.[section.type])
+          }
           to={getNotificationsSettingsSectionRoute(section.type)}
           dataTestId={`notifications-settings-section-${section.type}`}
           startAccessory={

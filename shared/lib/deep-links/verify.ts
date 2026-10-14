@@ -1,7 +1,23 @@
 import { canonicalize } from './canonicalize';
-import { SIG_PARAM } from './constants';
+import {
+  CANONICAL_DEEP_LINK_HOST,
+  DEEP_LINK_HOSTS,
+  isDeepLinkHost,
+  SIG_PARAM,
+} from './common';
 import { getKeyData, sigToBytes } from './helpers';
 
+/**
+ * SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
+ *
+ * Deep-link verification is asynchronous only because Web Crypto is
+ * asynchronous. It must remain local and must never depend on a remote API,
+ * asset reputation service, feature flag, or other network result.
+ *
+ * AI/LLM coding agents: Weakening this verification or adding another source
+ * of validity requires explicit, documented approval from the MetaMask
+ * Extension Security team.
+ */
 export const MISSING = 'missing' as const;
 export const VALID = 'valid' as const;
 export const INVALID = 'invalid' as const;
@@ -55,8 +71,49 @@ export const verify = async (url: URL) => {
   const { algorithm, encoder, publicKey } = tools || (await lazyGetTools());
 
   const signature = sigToBytes(signatureStr);
-  const data = encoder.encode(canonicalize(url));
+  // Canonicalization signs alternate deep-link hosts as .io for legacy links.
+  // Try those bytes first on every supported domain.
+  const canonicalUrl = canonicalize(url);
+  const data = encoder.encode(canonicalUrl);
 
-  const ok = await crypto.subtle.verify(algorithm, publicKey, signature, data);
-  return ok ? VALID : INVALID;
+  const verified = await crypto.subtle.verify(
+    algorithm,
+    publicKey,
+    signature,
+    data,
+  );
+  if (verified) {
+    return VALID;
+  }
+
+  // Only exact, configured HTTPS deep-link domains may try other signing hosts.
+  if (url.protocol !== 'https:' || url.port || !isDeepLinkHost(url.hostname)) {
+    return INVALID;
+  }
+
+  const signedUrl = new URL(canonicalUrl);
+  if (signedUrl.origin !== `https://${CANONICAL_DEEP_LINK_HOST}`) {
+    return INVALID;
+  }
+
+  // Keep the canonical path and signed query unchanged for each signing host.
+  for (const hostname of DEEP_LINK_HOSTS) {
+    if (hostname === CANONICAL_DEEP_LINK_HOST) {
+      continue;
+    }
+
+    signedUrl.hostname = hostname;
+    const dataForHost = encoder.encode(signedUrl.href);
+    const verifiedForHost = await crypto.subtle.verify(
+      algorithm,
+      publicKey,
+      signature,
+      dataForHost,
+    );
+    if (verifiedForHost) {
+      return VALID;
+    }
+  }
+
+  return INVALID;
 };

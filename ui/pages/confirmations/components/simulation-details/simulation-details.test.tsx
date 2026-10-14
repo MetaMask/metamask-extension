@@ -42,7 +42,6 @@ jest.mock('./useSimulationMetrics');
 jest.mock(
   '../../../../components/app/confirm/info/row/alert-row/alert-row',
   () => ({
-    ConfirmInfoAlertRow: jest.fn(({ label }) => <>{label}</>),
     getAlertTextColors: jest.fn(() => 'textDefault'),
   }),
 );

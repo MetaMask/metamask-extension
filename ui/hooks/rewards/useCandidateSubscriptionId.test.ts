@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -908,7 +907,6 @@ describe('useCandidateSubscriptionId', () => {
 
       // Resolve the promise
       await act(async () => {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         resolvePromise?.('delayed-sub-id');
       });
     });

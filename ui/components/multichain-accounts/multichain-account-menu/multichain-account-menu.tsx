@@ -1,6 +1,12 @@
-import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -28,7 +34,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
+import { useDispatch } from '../../../store/hooks';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
@@ -41,24 +50,37 @@ export const MultichainAccountMenu = ({
 }: MultichainAccountMenuProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
+    null,
+  );
+  const setPopoverRef = useCallback((node: HTMLDivElement | null) => {
+    popoverRef.current = node;
+    setReferenceElement((previous) => (previous === node ? previous : node));
+  }, []);
   const accountTree = useSelector(getAccountTree);
   const { trackEvent, createEventBuilder } = useAnalytics();
+  const disconnectAccountGroup = useDisconnectAccountGroup();
 
-  // Get the account group metadata to check pinned/hidden state
-  const accountGroupMetadata = useMemo(() => {
+  // Get the wallet holding the account group, both for the group's pinned and
+  // hidden state and to know which actions the account supports
+  const accountWallet = useMemo(() => {
     const { wallets } = accountTree;
-    for (const wallet of Object.values(wallets)) {
-      const group = wallet.groups?.[accountGroupId];
-      if (group) {
-        return group.metadata;
-      }
-    }
-    return null;
+    return (
+      Object.values(wallets).find((wallet) =>
+        Boolean(wallet.groups?.[accountGroupId]),
+      ) ?? null
+    );
   }, [accountTree, accountGroupId]);
+
+  const accountGroupMetadata =
+    accountWallet?.groups?.[accountGroupId]?.metadata ?? null;
 
   const isPinned = accountGroupMetadata?.pinned ?? false;
   const isHidden = accountGroupMetadata?.hidden ?? false;
+  // An imported private key account is removed rather than hidden, and hiding
+  // it would leave the user without a way to bring it back.
+  const isHideable = !accountWallet || !isPrivateKeyWallet(accountWallet);
 
   // Helper function to count pinned/hidden accounts from the account tree
   const countAccountsByStatus = useCallback(
@@ -167,6 +189,12 @@ export const MultichainAccountMenu = ({
         await dispatch(setAccountGroupPinned(accountGroupId, false));
       }
 
+      if (newHiddenState) {
+        // A hidden account cannot be managed from the list, so leaving it
+        // connected would strand dapp permissions out of the user's reach.
+        await disconnectAccountGroup(accountGroupId);
+      }
+
       await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
 
       // Track the Account Hidden event
@@ -213,12 +241,15 @@ export const MultichainAccountMenu = ({
         iconName: isPinned ? IconName.Unpin : IconName.Pin,
         onClick: handleAccountPinClick,
       },
-      {
+    ];
+
+    if (isHideable) {
+      baseMenuItems.push({
         textKey: isHidden ? 'showAccount' : 'hideAccount',
         iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
         onClick: handleAccountHideClick,
-      },
-    ];
+      });
+    }
 
     if (isRemovable) {
       baseMenuItems.push({
@@ -237,7 +268,9 @@ export const MultichainAccountMenu = ({
     isRemovable,
     isPinned,
     isHidden,
+    isHideable,
     dispatch,
+    disconnectAccountGroup,
     onToggle,
     trackEvent,
     countAccountsByStatus,
@@ -247,7 +280,7 @@ export const MultichainAccountMenu = ({
     <>
       <Box
         className="flex multichain-account-cell-popover-menu-button rounded-lg"
-        ref={popoverRef}
+        ref={setPopoverRef}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         backgroundColor={
@@ -265,7 +298,7 @@ export const MultichainAccountMenu = ({
         className="multichain-account-cell-popover-menu"
         isOpen={isOpen}
         position={PopoverPosition.LeftStart}
-        referenceElement={popoverRef.current}
+        referenceElement={referenceElement}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
         isPortal

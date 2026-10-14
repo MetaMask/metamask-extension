@@ -2,12 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import { AnyAction, Dispatch } from 'redux';
 
 import { connect } from 'react-redux';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
-import { NetworkManager } from '../../multichain/network-manager';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../../contexts/hardware-wallets/constants';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
@@ -15,11 +12,8 @@ import {
   TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   TurnOnBackupAndSyncModal,
 } from './identity';
-import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
-
-import ConfirmResetAccount from './confirm-reset-account';
 
 import ConfirmDeleteNetwork from './confirm-delete-network';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
@@ -64,37 +58,6 @@ type ModalConfig = {
 };
 
 const MODALS: Record<string, ModalConfig> = {
-  HIDE_TOKEN_CONFIRMATION: {
-    contents: <HideTokenConfirmationModal />,
-    testId: 'hide-token-confirmation-modal',
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '400px' : '449px',
-      top: 'calc(33% + 45px)',
-      paddingLeft:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-      paddingRight:
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : undefined,
-    },
-  },
-
-  CONFIRM_RESET_ACCOUNT: {
-    contents: <ConfirmResetAccount />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
   CONVERT_TOKEN_TO_NFT: {
     contents: <ConvertTokenToNftModal />,
     mobileModalStyle: {
@@ -234,16 +197,6 @@ const MODALS: Record<string, ModalConfig> = {
     },
   },
 
-  NETWORK_MANAGER: {
-    contents: <NetworkManager />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-  },
-
   [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
     contents: <HardwareWalletErrorModal />,
     testId: 'hardware-wallet-error-modal',
@@ -286,7 +239,6 @@ function mapDispatchToProps(dispatch: Dispatch) {
     }) => {
       dispatch(actions.hideModal());
       if (customOnHideOpts && customOnHideOpts.action) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatch(
           customOnHideOpts.action(
             ...(customOnHideOpts.args ?? []),
@@ -327,8 +279,11 @@ export function Modal({ active, hideModal, modalState }: ModalProps) {
 
   const modal = MODALS[modalState.name ?? 'DEFAULT'];
   const { contents: children, disableBackdropClick = false, testId } = modal;
-  const modalStyle =
-    modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
+  const modalStyle = {
+    ...modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'],
+    backgroundColor: 'var(--color-background-elevated1)',
+    border: '1px solid var(--color-border-alternative)',
+  };
   const contentStyle = modal.contentStyle ?? {};
 
   return (

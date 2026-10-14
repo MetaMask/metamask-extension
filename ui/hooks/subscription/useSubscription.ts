@@ -1,5 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   CANCEL_TYPES,
   PAYMENT_TYPES,
@@ -29,6 +36,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  getCustomerServiceToken,
   getRewardsHasAccountOptedIn,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -41,11 +49,8 @@ import {
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
-import { MetaMaskReduxDispatch } from '../../store/store';
-import {
-  selectIsSignedIn,
-  selectSessionData,
-} from '../../selectors/identity/authentication';
+import { useDispatch } from '../../store/hooks';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
@@ -69,7 +74,6 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   getMetaMaskHdKeyrings,
-  getAnalyticsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
   getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -90,6 +94,7 @@ import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -105,7 +110,7 @@ import {
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const userSubscriptions = useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
@@ -163,7 +168,7 @@ export const useUserLastSubscriptionByProduct = (
 };
 
 export const useCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldMembershipCancelledEvent } = useSubscriptionMetrics();
 
   const latestSubscriptionDuration = useMemo(() => {
@@ -212,8 +217,11 @@ export const useCancelSubscription = (subscription?: Subscription) => {
       }
 
       const subscriptionId = subscription.id;
-      const cancelAtPeriodEnd =
-        cancelType === CANCEL_TYPES.ALLOWED_AT_PERIOD_END;
+      // Missing cancelType defaults to period-end cancellation, matching the
+      // cancel modal's default copy. cancelType is optional since
+      // subscription-controller@10 (required again in the type here only
+      // because the UI compiles against v8).
+      const cancelAtPeriodEnd = cancelType !== CANCEL_TYPES.ALLOWED_IMMEDIATE;
 
       await dispatch(cancelSubscription({ subscriptionId, cancelAtPeriodEnd }));
       trackMembershipCancelledEvent('succeeded');
@@ -227,12 +235,12 @@ export const useCancelSubscription = (subscription?: Subscription) => {
 };
 
 export const useUnCancelSubscription = (subscription?: Subscription) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureShieldSubscriptionRestartRequestEvent } =
     useSubscriptionMetrics();
 
   const trackSubscriptionUncancelRequestEvent = useCallback(
-    (status: 'completed' | 'failed', errorMessage?: string) => {
+    (status: 'succeeded' | 'failed', error?: string) => {
       if (!subscription) {
         return;
       }
@@ -246,8 +254,8 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         billingInterval: subscription.interval,
         cryptoPaymentChain,
         cryptoPaymentCurrency,
-        requestStatus: status,
-        errorMessage,
+        status,
+        error,
       });
     },
     [captureShieldSubscriptionRestartRequestEvent, subscription],
@@ -260,7 +268,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
         return;
       }
       await dispatch(unCancelSubscription({ subscriptionId }));
-      trackSubscriptionUncancelRequestEvent('completed');
+      trackSubscriptionUncancelRequestEvent('succeeded');
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -273,7 +281,7 @@ export const useUnCancelSubscription = (subscription?: Subscription) => {
 export const useOpenGetSubscriptionBillingPortal = (
   subscription?: Subscription,
 ) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -311,7 +319,7 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   subscription?: Subscription;
   newRecurringInterval?: RecurringInterval;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
 
@@ -501,7 +509,7 @@ export const useSubscriptionCryptoApprovalTransaction = (
  * @returns An object with the getSubscriptionEligibility function.
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
   const evmInternalAccount = useSelector((state) =>
@@ -585,7 +593,7 @@ export const useHandleSubscription = ({
   useTestClock?: boolean;
   rewardPoints?: number;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
@@ -734,26 +742,21 @@ export const useHandleSubscription = ({
 
 export const useHandleSubscriptionSupportAction = () => {
   const version = process.env.METAMASK_VERSION as string;
-  const sessionData = useSelector(selectSessionData);
-  const profileId = sessionData?.profile?.profileId;
-  const canonicalProfileId = sessionData?.profile?.canonicalProfileId;
-  const analyticsId = useSelector(getAnalyticsId);
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
-  const handleClickContactSupport = useCallback(() => {
+  const handleClickContactSupport = useCallback(async () => {
+    const customerServiceToken = await getCustomerServiceToken();
     const supportLinkWithUserId = buildSupportLinkWithUserData(
       SUPPORT_LINK as string,
       {
         version,
-        profileId,
-        canonicalProfileId,
-        analyticsId,
+        customerServiceToken,
         shieldCustomerId,
       },
     );
 
     openWindow(supportLinkWithUserId);
-  }, [version, profileId, canonicalProfileId, analyticsId, shieldCustomerId]);
+  }, [version, shieldCustomerId]);
 
   return {
     handleClickContactSupport,
@@ -765,7 +768,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 }: {
   subscription?: Subscription;
 }) => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
     | Pick<
         TokenWithApprovalAmount,
@@ -848,7 +851,7 @@ export const useShieldRewards = (): {
   isRewardsSeason: boolean;
   hasAccountOptedIn: boolean;
 } => {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
@@ -956,7 +959,10 @@ export const useSubscriptionError = (): {
 
   // Keep a ref so the unmount-only cleanup can read the latest value
   const shieldSubscriptionErrorRef = useRef(shieldSubscriptionError);
-  shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+
+  useLayoutEffect(() => {
+    shieldSubscriptionErrorRef.current = shieldSubscriptionError;
+  }, [shieldSubscriptionError]);
 
   // Clear shield subscription error when unmounting
   useEffect(() => {

@@ -1,12 +1,19 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+import {
+  createMemoryRouter,
+  matchRoutes,
+  RouterProvider,
+} from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
+  DISCOVER_SEARCH_ROUTE,
+  HARDWARE_WALLET_SIGNATURES_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -16,7 +23,9 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes, { TokenManagementFeatureRoute } from '.';
+import { RequireAuthenticated } from '../../layouts/require-authenticated';
+import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
+import Routes, { routeConfig, TokenManagementFeatureRoute } from '.';
 
 const middlewares = [thunk];
 
@@ -110,12 +119,6 @@ jest.mock('../../hooks/musd', () => ({
   useMusdCtaVisibility: () => ({
     shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
     shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
-    shouldShowBuyGetMusdCta: jest.fn().mockReturnValue({
-      shouldShowCta: false,
-      selectedChainId: null,
-      isEmptyWallet: false,
-      variant: null,
-    }),
     isTokenWithCta: jest.fn().mockReturnValue(false),
     getCtaKey: jest.fn().mockReturnValue(''),
     isGeoBlocked: false,
@@ -161,10 +164,8 @@ jest.mock('../../hooks/musd', () => ({
     customAmount: null,
     setCustomAmount: jest.fn(),
   }),
-  BuyGetMusdCtaVariant: { BUY: 'buy', GET: 'get' },
   isTokenInWildcardList: jest.fn().mockReturnValue(false),
   checkTokenAllowed: jest.fn().mockReturnValue(false),
-  isMerklClaimTransaction: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('../../hooks/useMultiPolling', () => ({
@@ -222,6 +223,29 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  it('registers the hardware wallet signing page outside guarded swap routes', () => {
+    const path = `${CROSS_CHAIN_SWAP_ROUTE}${HARDWARE_WALLET_SIGNATURES_ROUTE}`;
+    const matches = matchRoutes(routeConfig, path);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      path,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+  });
+
+  it('guards discover search with basic functionality', () => {
+    const matches = matchRoutes(routeConfig, DISCOVER_SEARCH_ROUTE);
+
+    expect(matches?.map(({ route }) => route.path)).toStrictEqual([
+      undefined,
+      undefined,
+      DISCOVER_SEARCH_ROUTE,
+    ]);
+    expect(matches?.[0].route.element.type).toBe(RequireAuthenticated);
+    expect(matches?.[1].route.element.type).toBe(RequireBasicFunctionality);
   });
 
   describe('render during send flow', () => {
@@ -363,10 +387,14 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 
-  it('does not render toastContainer on confirmation route', () => {
+  // The container is always mounted outside the home/perps/settings screens so
+  // the Basic Functionality migration toast can surface on confirmation routes,
+  // but it stays empty while no toast is scheduled.
+  it('renders an bft toastContainer on confirmation route', () => {
     render(CONFIRMATION_V_NEXT_ROUTE, getToastDisplayTestState(new Date(0)));
     const toastContainer = document.querySelector('.toasts-container');
 
-    expect(toastContainer).not.toBeInTheDocument();
+    expect(toastContainer).toBeInTheDocument();
+    expect(toastContainer).toBeEmptyDOMElement();
   });
 });

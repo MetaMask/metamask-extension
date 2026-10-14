@@ -6,18 +6,15 @@ import {
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
-} from '@metamask/design-system-react';
-import {
-  Text,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-} from '../../../components/component-library';
-import {
+  Text,
   TextColor,
   TextVariant,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTronResources, TronResource } from '../hooks/useTronResources';
 
@@ -98,7 +95,7 @@ const ResourceCircle = ({ resource, iconName }: ResourceCircleProps) => {
       >
         <Icon
           name={iconName}
-          color={IconColor.iconDefault}
+          color={IconColor.IconDefault}
           size={IconSize.Sm}
         />
       </Box>
@@ -113,6 +110,8 @@ type ResourceRowProps = {
   description: string;
   currentValue: string;
   maxValue: string;
+  testId: string;
+  descriptionTestId: string;
 };
 
 const ResourceRow = ({
@@ -122,6 +121,8 @@ const ResourceRow = ({
   description,
   currentValue,
   maxValue,
+  testId,
+  descriptionTestId,
 }: ResourceRowProps) => {
   return (
     <Box
@@ -130,6 +131,7 @@ const ResourceRow = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
       marginTop={3}
+      data-testid={testId}
     >
       <Box
         className="flex"
@@ -140,21 +142,26 @@ const ResourceRow = ({
         <ResourceCircle resource={resource} iconName={iconName} />
         <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textDefault}
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
           >
             {label}
           </Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            data-testid={descriptionTestId}
+          >
             {description}
           </Text>
         </Box>
       </Box>
       <Box className="flex" flexDirection={BoxFlexDirection.Row}>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
           {currentValue}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           /{maxValue}
         </Text>
       </Box>
@@ -203,6 +210,7 @@ export const TronDailyResources = ({
       paddingRight={4}
       paddingTop={1}
       paddingBottom={3}
+      data-testid="tron-daily-resources"
     >
       <Box
         className="flex"
@@ -210,10 +218,18 @@ export const TronDailyResources = ({
         gap={2}
         marginBottom={3}
       >
-        <Text variant={TextVariant.headingSm} color={TextColor.textDefault}>
+        <Text
+          variant={TextVariant.HeadingSm}
+          color={TextColor.TextDefault}
+          data-testid="tron-daily-resources-title"
+        >
           {t('tronDailyResources')}
         </Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          data-testid="tron-daily-resources-description"
+        >
           {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
         </Text>
       </Box>
@@ -231,6 +247,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(energy.current)}
         maxValue={formatValue(energy.max)}
+        testId="tron-daily-resources-energy"
+        descriptionTestId="tron-daily-resources-energy-description"
       />
 
       <ResourceRow
@@ -246,6 +264,8 @@ export const TronDailyResources = ({
         }
         currentValue={formatValue(bandwidth.current)}
         maxValue={formatValue(bandwidth.max)}
+        testId="tron-daily-resources-bandwidth"
+        descriptionTestId="tron-daily-resources-bandwidth-description"
       />
     </Box>
   );

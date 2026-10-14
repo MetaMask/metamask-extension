@@ -15,11 +15,21 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
+  MONEY_HOME_ROUTE,
   PERPS_HOME_PAGE_ROUTE,
-  SWAP_PATH,
 } from '../../../helpers/constants/routes';
+import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
 import { getDefaultHomeActiveTabName } from '../../../selectors';
+import { transitionForward } from '../../ui/transition';
+import { useMoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
+import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+} from '../../../pages/money/constants/money-events';
 import { getActiveBottomNavTabs } from './bottom-nav-bar.utils';
 
 type NavTabProps = {
@@ -49,13 +59,13 @@ const NavTab = ({
         name={icon}
         size={IconSize.Lg}
         color={isActive ? IconColor.IconDefault : IconColor.IconAlternative}
-        className="group-hover/tab:text-icon-default-hover"
+        className="transition-colors duration-200 group-hover/tab:text-icon-default-hover"
       />
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Medium}
         color={isActive ? TextColor.TextDefault : TextColor.TextAlternative}
-        className="group-hover/tab:text-text-default"
+        className="transition-colors duration-200 group-hover/tab:text-text-default"
       >
         {label}
       </Text>
@@ -68,35 +78,63 @@ export function BottomNavBar() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isPerpsAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const { availability: moneyAccountAvailability } =
+    useMoneyAccountAvailability();
   const lastActiveTab = useSelector(getDefaultHomeActiveTabName);
+  const { trackButtonClicked: trackMoneyButtonClicked } = useMoneyAnalytics({
+    componentName: MoneyComponentName.HomeTab,
+  });
 
-  const { isHome, isPerps, isSwaps, isActivity } =
+  const { isHome, isPerps, isMoney, isActivity } =
     getActiveBottomNavTabs(pathname);
 
-  const handleHomeClick = useCallback(
-    () =>
+  const handleHomeClick = useCallback(() => {
+    transitionForward(() =>
       navigate(
         lastActiveTab ? `${DEFAULT_ROUTE}?tab=${lastActiveTab}` : DEFAULT_ROUTE,
+        {
+          state: {
+            entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+            stayOnHomePage: true,
+          },
+        },
       ),
-    [navigate, lastActiveTab],
-  );
+    );
+  }, [navigate, lastActiveTab]);
 
-  const handlePerpsClick = useCallback(
-    () => navigate(PERPS_HOME_PAGE_ROUTE),
-    [navigate],
-  );
+  const handlePerpsClick = useCallback(() => {
+    transitionForward(() =>
+      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  }, [navigate]);
 
-  const handleSwapsClick = useCallback(() => navigate(SWAP_PATH), [navigate]);
+  const handleMoneyClick = useCallback(() => {
+    trackMoneyButtonClicked({
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.GoToMoneyHome,
+      labelKey: 'money',
+      redirectTarget: MoneyScreenName.MoneyHome,
+    });
+    transitionForward(() =>
+      navigate(MONEY_HOME_ROUTE, { state: { stayOnHomePage: true } }),
+    );
+  }, [navigate, trackMoneyButtonClicked]);
 
-  const handleActivityClick = useCallback(
-    () => navigate(ACTIVITY_ROUTE),
-    [navigate],
-  );
+  const handleActivityClick = useCallback(() => {
+    transitionForward(() =>
+      navigate(ACTIVITY_ROUTE, {
+        state: {
+          entryPoint: ScreenViewedEntryPoint.BottomNavClick,
+          stayOnHomePage: true,
+        },
+      }),
+    );
+  }, [navigate]);
 
   return (
     <nav
-      data-testid="bottom-nav-bar"
-      className="bottom-nav-bar w-full bg-background-default border-t border-border-muted flex flex-row justify-between p-2 gap-2 z-[100]"
+      data-testid="parent-selector-bottom-nav-bar"
+      className="bottom-nav-bar sticky bottom-0 mt-auto w-full shrink-0 bg-background-default border-t border-[color:var(--bar-border-color)] flex flex-row justify-between p-2 gap-2 z-[100] transition-[background-color,backdrop-filter] duration-200"
       style={{ viewTransitionName: 'bottom-nav-bar' }}
     >
       <NavTab
@@ -115,13 +153,15 @@ export function BottomNavBar() {
           data-testid="bottom-nav-perps"
         />
       )}
-      <NavTab
-        isActive={isSwaps}
-        icon={IconName.SwapVertical}
-        label={t('swap')}
-        onClick={handleSwapsClick}
-        data-testid="bottom-nav-swaps"
-      />
+      {moneyAccountAvailability.isAvailable && (
+        <NavTab
+          isActive={isMoney}
+          icon={isMoney ? IconName.MusdFilled : IconName.Musd}
+          label={t('money')}
+          onClick={handleMoneyClick}
+          data-testid="bottom-nav-money"
+        />
+      )}
       <NavTab
         isActive={isActivity}
         icon={isActivity ? IconName.ClockFilled : IconName.Clock}

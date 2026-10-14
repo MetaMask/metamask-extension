@@ -9,6 +9,7 @@ import React, {
 import { Tooltip } from 'react-tippy';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
+import { useEventListener } from '../../../hooks/useEventListener';
 
 const INPUT_HORIZONTAL_PADDING = 4;
 
@@ -77,15 +78,12 @@ const UnitInput = forwardRef(function UnitInput(
     }
   }, []);
 
-  useEffect(() => {
-    if (isFocusOnInput) {
-      document.addEventListener('keypress', handleFocus);
-      return () => {
-        document.removeEventListener('keypress', handleFocus);
-      };
+  useEventListener('keypress', () => {
+    if (!isFocusOnInput) {
+      return;
     }
-    return undefined;
-  }, [handleFocus, isFocusOnInput]);
+    handleFocus();
+  });
 
   const handleInputFocus = useCallback(({ target: { value: inputValue } }) => {
     if (inputValue === '0') {

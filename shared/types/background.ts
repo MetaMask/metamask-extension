@@ -12,8 +12,10 @@ import type {
   MultichainAssetsRatesControllerState,
   MultichainAssetsControllerState,
   DeFiPositionsControllerState,
+  DeFiPositionsControllerV2State,
   AccountTrackerControllerState,
 } from '@metamask/assets-controllers';
+import type { AssetsControllerState } from '@metamask/assets-controller';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import type { KeyringControllerState } from '@metamask/keyring-controller';
@@ -21,7 +23,6 @@ import type { AddressBookControllerState } from '@metamask/address-book-controll
 import type { ApprovalControllerState } from '@metamask/approval-controller';
 import type { BridgeControllerState } from '@metamask/bridge-controller';
 import type { BridgeStatusControllerState } from '@metamask/bridge-status-controller';
-import type { EnsControllerState } from '@metamask/ens-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type { NetworkState } from '@metamask/network-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -59,6 +60,7 @@ import type {
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
 import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
+import type { NetworkConnectionBannerControllerState } from '@metamask/network-connection-banner-controller';
 import type { AnalyticsControllerState } from '@metamask/analytics-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
@@ -71,12 +73,16 @@ import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers
 import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
-import type { MetaMetricsControllerState } from '../../app/scripts/controllers/metametrics-controller';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
-import type { IsEquivalent } from './type-level-utils';
 
 export type ControllerStatePropertiesEnumerated = {
+  assetsInfo: AssetsControllerState['assetsInfo'];
+  assetsBalance: AssetsControllerState['assetsBalance'];
+  assetsPrice: AssetsControllerState['assetsPrice'];
+  customAssets: AssetsControllerState['customAssets'];
+  assetPreferences: AssetsControllerState['assetPreferences'];
+  selectedCurrency: AssetsControllerState['selectedCurrency'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
@@ -93,6 +99,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentMigrationVersion: AppMetadataControllerState['currentMigrationVersion'];
   previousAppVersion: AppMetadataControllerState['previousAppVersion'];
   previousMigrationVersion: AppMetadataControllerState['previousMigrationVersion'];
+  installAttribution: AppMetadataControllerState['installAttribution'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   pendingApprovalCount: ApprovalControllerState['pendingApprovalCount'];
@@ -114,11 +121,11 @@ export type ControllerStatePropertiesEnumerated = {
   lastViewedUserSurvey: AppStateControllerState['lastViewedUserSurvey'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
+  arcUsageNoticeShown: AppStateControllerState['arcUsageNoticeShown'];
   pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
-  canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   lastQrScanCompletedSuccessfully: AppStateControllerState['lastQrScanCompletedSuccessfully'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
@@ -131,6 +138,7 @@ export type ControllerStatePropertiesEnumerated = {
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   hasShownMultichainAccountsIntroModal: AppStateControllerState['hasShownMultichainAccountsIntroModal'];
   perpsTabBadgeSeen: AppStateControllerState['perpsTabBadgeSeen'];
+  lastPerpsDepositEntryPoint: AppStateControllerState['lastPerpsDepositEntryPoint'];
   musdConversionEducationSeen: AppStateControllerState['musdConversionEducationSeen'];
   musdConversionDismissedCtaKeys: AppStateControllerState['musdConversionDismissedCtaKeys'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
@@ -147,10 +155,10 @@ export type ControllerStatePropertiesEnumerated = {
   pendingShieldCohort: AppStateControllerState['pendingShieldCohort'];
   pendingShieldCohortTxType: AppStateControllerState['pendingShieldCohortTxType'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
-  networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
   sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   passkeyAutoUnlockSuppressed: AppStateControllerState['passkeyAutoUnlockSuppressed'];
+  lastShownPrfMigrationReminderAt: AppStateControllerState['lastShownPrfMigrationReminderAt'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -175,10 +183,9 @@ export type ControllerStatePropertiesEnumerated = {
   unapprovedDecryptMsgCount: DecryptMessageControllerState['unapprovedDecryptMsgCount'];
   allDeFiPositions: DeFiPositionsControllerState['allDeFiPositions'];
   allDeFiPositionsCount: DeFiPositionsControllerState['allDeFiPositionsCount'];
+  allDeFiPositionsV2: DeFiPositionsControllerV2State['allDeFiPositionsV2'];
   unapprovedEncryptionPublicKeyMsgs: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgs'];
   unapprovedEncryptionPublicKeyMsgCount: EncryptionPublicKeyControllerState['unapprovedEncryptionPublicKeyMsgCount'];
-  ensResolutionsByAddress: EnsControllerState['ensResolutionsByAddress'];
-  ensEntries: EnsControllerState['ensEntries'];
   gasFeeEstimatesByChainId?: GasFeeState['gasFeeEstimatesByChainId'];
   gasFeeEstimates: GasFeeState['gasFeeEstimates'];
   estimatedGasFeeTimeBounds: GasFeeState['estimatedGasFeeTimeBounds'];
@@ -190,16 +197,14 @@ export type ControllerStatePropertiesEnumerated = {
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
-  eventsBeforeMetricsOptIn: MetaMetricsControllerState['eventsBeforeMetricsOptIn'];
-  tracesBeforeMetricsOptIn: MetaMetricsControllerState['tracesBeforeMetricsOptIn'];
-  fragments: MetaMetricsControllerState['fragments'];
-  completedMetaMetricsOnboarding: MetaMetricsControllerState['completedMetaMetricsOnboarding'];
+  consentDecisionMade?: AnalyticsControllerState['consentDecisionMade'];
+  marketingConsentDecisionMade?: AnalyticsControllerState['marketingConsentDecisionMade'];
+  preConsentEventQueue?: AnalyticsControllerState['preConsentEventQueue'];
   optedIn: AnalyticsControllerState['optedIn'];
+  optedInToMarketing?: AnalyticsControllerState['optedInToMarketing'];
   analyticsId: AnalyticsControllerState['analyticsId'];
   passkeyRecord: PasskeyControllerState['passkeyRecord'];
-  traits: MetaMetricsControllerState['traits'];
-  dataCollectionForMarketing: MetaMetricsControllerState['dataCollectionForMarketing'];
-  marketingCampaignCookieId: MetaMetricsControllerState['marketingCampaignCookieId'];
+  marketingCampaignCookieId?: AnalyticsControllerState['marketingCampaignCookieId'];
   metaMetricsDataDeletionId: MetaMetricsDataDeletionState['metaMetricsDataDeletionId'];
   metaMetricsDataDeletionStatus?: MetaMetricsDataDeletionState['metaMetricsDataDeletionStatus'];
   metaMetricsDataDeletionTimestamp: MetaMetricsDataDeletionState['metaMetricsDataDeletionTimestamp'];
@@ -315,6 +320,7 @@ export type ControllerStatePropertiesEnumerated = {
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
   transactionBatches: TransactionControllerState['transactionBatches'];
+  batchTransactionCounts: TransactionControllerState['batchTransactionCounts'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
@@ -322,6 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingEnabled: UserStorageController.UserStorageControllerState['isAccountSyncingEnabled'];
   isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
   isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
+  isRampsSyncingEnabled: UserStorageController.UserStorageControllerState['isRampsSyncingEnabled'];
   rewardsActiveAccount: RewardsControllerState['rewardsActiveAccount'];
   rewardsAccounts: RewardsControllerState['rewardsAccounts'];
   rewardsSubscriptions: RewardsControllerState['rewardsSubscriptions'];
@@ -334,11 +341,14 @@ export type ControllerStatePropertiesEnumerated = {
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
   connectivityStatus: ConnectivityControllerState['connectivityStatus'];
+  networkConnectionBannerStatus: NetworkConnectionBannerControllerState['networkConnectionBannerStatus'];
+  networkConnectionBannerNetwork: NetworkConnectionBannerControllerState['networkConnectionBannerNetwork'];
 };
 
-type ControllerStateTypesMerged = AccountsControllerState &
+export type ControllerStateTypesMerged = AccountsControllerState &
   AccountTrackerControllerState &
   AddressBookControllerState &
+  AssetsControllerState &
   AlertControllerState &
   AnnouncementControllerState &
   AuthenticationController.AuthenticationControllerState &
@@ -353,13 +363,12 @@ type ControllerStateTypesMerged = AccountsControllerState &
   CurrencyRateState &
   DecryptMessageControllerState &
   DeFiPositionsControllerState &
-  EncryptionPublicKeyControllerState &
-  EnsControllerState & {
+  DeFiPositionsControllerV2State &
+  EncryptionPublicKeyControllerState & {
     // This is necessary due to the nested unions and intersections in the `GasFeeState` type definition
     [P in keyof GasFeeState]: GasFeeState[P];
   } & KeyringControllerState &
   LoggingControllerState &
-  MetaMetricsControllerState &
   AnalyticsControllerState &
   MetaMetricsDataDeletionState &
   MultichainBalancesControllerState &
@@ -398,20 +407,14 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
   RewardsControllerState &
-  ConnectivityControllerState;
+  ConnectivityControllerState &
+  NetworkConnectionBannerControllerState;
 
 /**
  * This type contains all controller state top-level properties, and
  * is the source-of-truth for the type of the Redux store `metamask` slice.
  *
- * Evaluates to `never` if the type definition is wrong or incomplete.
  */
-export type FlattenedBackgroundStateProxy =
-  IsEquivalent<
-    ControllerStatePropertiesEnumerated,
-    ControllerStateTypesMerged
-  > extends true
-    ? { isInitialized: boolean } & {
-        [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
-      }
-    : never;
+export type FlattenedBackgroundStateProxy = { isInitialized: boolean } & {
+  [P in keyof ControllerStatePropertiesEnumerated]: ControllerStatePropertiesEnumerated[P];
+};

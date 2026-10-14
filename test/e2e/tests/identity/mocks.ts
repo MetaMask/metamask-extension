@@ -6,6 +6,7 @@ import {
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { USER_STORAGE_RAMPS_ORDERS_FEATURE } from './constants';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -30,6 +31,8 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
   mockAPICall(server, AuthMocks.getMockAuthPairResponse());
+  mockAPICall(server, AuthMocks.getMockAuthPairSocialIdentifierResponse());
+  mockAPICall(server, AuthMocks.getMockCustomerServiceTokenResponse());
 
   // Storage
   userStorageMockttpControllerInstance.setupPath(
@@ -46,6 +49,10 @@ export async function mockIdentityServices(
   );
   userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_RAMPS_ORDERS_FEATURE,
     server,
   );
 }
@@ -101,15 +108,20 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     ]);
     const requestBody = requestBodyJson ?? requestBodyText;
 
-    const json = (
-      response.response as (
-        requestBody: object | string | undefined,
-        path: string,
-        getE2ESrpIdentifierForPublicKey: (
-          publicKey: string,
-        ) => string | undefined,
-      ) => void
-    )(requestBody, path, getE2ESrpIdentifierForPublicKey);
+    // Some auth mocks return a static JSON body, others return a factory
+    // function that builds the body from the request (e.g. login / nonce).
+    const json =
+      typeof response.response === 'function'
+        ? (
+            response.response as (
+              requestBody: object | string | undefined,
+              path: string,
+              getE2ESrpIdentifierForPublicKey: (
+                publicKey: string,
+              ) => string | undefined,
+            ) => unknown
+          )(requestBody, path, getE2ESrpIdentifierForPublicKey)
+        : response.response;
 
     return {
       statusCode: 200,

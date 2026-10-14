@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 
@@ -14,7 +14,7 @@ import {
   AlignItems,
   JustifyContent,
   DISPLAY,
-  SEVERITIES,
+  Severity,
   FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
@@ -34,6 +34,99 @@ import { ModalContent } from '../../../components/component-library/modal-conten
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
+import { useDispatch } from '../../../store/hooks';
+
+const NO_NOTIFICATION = {
+  severity: Severity.Info,
+  text: '',
+  title: '',
+  errorKey: null,
+};
+
+/**
+ * Builds the slippage notification banner content, along with the swaps error
+ * key the entered value implies.
+ *
+ * @param options - The current slippage state.
+ * @param options.t - The i18n translation function.
+ * @param options.customValue - The custom slippage input, as a string e.g. '0'.
+ * @param options.newSlippage - The slippage that would be applied on submit.
+ * @param options.maxAllowedSlippage - The highest slippage quotes support.
+ * @param options.isSlippageCapped - Whether the entered value was reduced to the 100% maximum.
+ * @returns The banner severity and copy, plus the error key to store. A `null`
+ * error key leaves the currently stored key untouched.
+ */
+function getSlippageNotification({
+  t,
+  customValue,
+  newSlippage,
+  maxAllowedSlippage,
+  isSlippageCapped,
+}) {
+  if (isSlippageCapped) {
+    return {
+      severity: Severity.Danger,
+      text: t('swapSlippageCappedDescription'),
+      title: t('swapSlippageOverLimitTitle'),
+      errorKey: SLIPPAGE_VERY_HIGH_ERROR,
+    };
+  }
+
+  if (!customValue) {
+    return NO_NOTIFICATION;
+  }
+
+  const value = Number(customValue);
+
+  if (value < 0) {
+    return {
+      severity: Severity.Danger,
+      text: t('swapSlippageNegativeDescription'),
+      title: t('swapSlippageNegativeTitle'),
+      errorKey: SLIPPAGE_NEGATIVE_ERROR,
+    };
+  }
+
+  // We will not show the low warning for 0% slippage, because we will only
+  // return non-slippage quotes from off-chain makers.
+  if (value > 0 && value <= 1) {
+    return {
+      severity: Severity.Warning,
+      text: t('swapSlippageLowDescription', [newSlippage]),
+      title: t('swapSlippageLowTitle'),
+      errorKey: null,
+    };
+  }
+
+  if (value >= 5 && value <= maxAllowedSlippage) {
+    return {
+      severity: Severity.Warning,
+      text: t('swapSlippageHighDescription', [newSlippage]),
+      title: t('swapSlippageHighTitle'),
+      errorKey: null,
+    };
+  }
+
+  if (value > maxAllowedSlippage) {
+    return {
+      severity: Severity.Danger,
+      text: t('swapSlippageOverLimitDescription'),
+      title: t('swapSlippageOverLimitTitle'),
+      errorKey: SLIPPAGE_VERY_HIGH_ERROR,
+    };
+  }
+
+  if (value === 0) {
+    return {
+      severity: Severity.Info,
+      text: t('swapSlippageZeroDescription'),
+      title: t('swapSlippageZeroTitle'),
+      errorKey: null,
+    };
+  }
+
+  return { ...NO_NOTIFICATION, errorKey: '' };
+}
 
 export default function TransactionSettings({
   onSelect,
@@ -71,8 +164,20 @@ export default function TransactionSettings({
   });
   const [inputRef, setInputRef] = useState(null);
   const [newSlippage, setNewSlippage] = useState(currentSlippage);
+  const [isSlippageCapped, setIsSlippageCapped] = useState(false);
 
   const didFormChange = newSlippage !== currentSlippage;
+
+  const finishEnteringCustomValue = () => {
+    const numericValue = Number(customValue);
+    const isCapped = customValue !== '' && numericValue > 100;
+    if (isCapped) {
+      setCustomValue('100');
+      setNewSlippage(100);
+    }
+    setIsSlippageCapped(isCapped);
+    setEnteringCustomValue(false);
+  };
 
   const updateTransactionSettings = () => {
     if (newSlippage !== currentSlippage) {
@@ -80,43 +185,24 @@ export default function TransactionSettings({
     }
   };
 
-  let notificationText = '';
-  let notificationTitle = '';
-  let notificationSeverity = SEVERITIES.INFO;
-  if (customValue) {
-    // customValue is a string, e.g. '0'
-    if (Number(customValue) < 0) {
-      notificationSeverity = SEVERITIES.DANGER;
-      notificationText = t('swapSlippageNegativeDescription');
-      notificationTitle = t('swapSlippageNegativeTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_NEGATIVE_ERROR));
-    } else if (Number(customValue) > 0 && Number(customValue) <= 1) {
-      // We will not show this warning for 0% slippage, because we will only
-      // return non-slippage quotes from off-chain makers.
-      notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageLowDescription', [newSlippage]);
-      notificationTitle = t('swapSlippageLowTitle');
-    } else if (
-      Number(customValue) >= 5 &&
-      Number(customValue) <= maxAllowedSlippage
-    ) {
-      notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageHighDescription', [newSlippage]);
-      notificationTitle = t('swapSlippageHighTitle');
-    } else if (Number(customValue) > maxAllowedSlippage) {
-      notificationSeverity = SEVERITIES.DANGER;
-      notificationText = t('swapSlippageOverLimitDescription');
-      notificationTitle = t('swapSlippageOverLimitTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
-    } else if (Number(customValue) === 0) {
-      notificationSeverity = SEVERITIES.INFO;
-      notificationText = t('swapSlippageZeroDescription');
-      notificationTitle = t('swapSlippageZeroTitle');
-    } else if (swapsErrorKey) {
-      dispatch(setSwapsErrorKey(''));
-    }
+  const {
+    severity: notificationSeverity,
+    text: notificationText,
+    title: notificationTitle,
+    errorKey: notificationErrorKey,
+  } = getSlippageNotification({
+    t,
+    customValue,
+    newSlippage,
+    maxAllowedSlippage,
+    isSlippageCapped,
+  });
+
+  if (notificationErrorKey !== null && notificationErrorKey !== swapsErrorKey) {
+    dispatch(setSwapsErrorKey(notificationErrorKey));
   }
-  const isDangerSeverity = notificationSeverity === SEVERITIES.DANGER;
+
+  const isDangerSeverity = notificationSeverity === Severity.Danger;
 
   const customValueText = customValue || t('swapCustom');
 
@@ -189,6 +275,7 @@ export default function TransactionSettings({
                     <Button
                       onClick={() => {
                         setCustomValue('');
+                        setIsSlippageCapped(false);
                         setEnteringCustomValue(false);
                         setActiveButtonIndex(0);
                         setNewSlippage(
@@ -210,6 +297,7 @@ export default function TransactionSettings({
                     <Button
                       onClick={() => {
                         setCustomValue('');
+                        setIsSlippageCapped(false);
                         setEnteringCustomValue(false);
                         setActiveButtonIndex(1);
                         setNewSlippage(Slippage.high);
@@ -241,10 +329,12 @@ export default function TransactionSettings({
                         >
                           <input
                             data-testid="transaction-settings-custom-slippage"
+                            inputMode="decimal"
                             onChange={(event) => {
                               const { value } = event.target;
                               const isValueNumeric = !isNaN(Number(value));
                               if (isValueNumeric) {
+                                setIsSlippageCapped(false);
                                 setCustomValue(value);
                                 setNewSlippage(Number(value));
                               }
@@ -252,12 +342,10 @@ export default function TransactionSettings({
                             type="text"
                             maxLength="4"
                             ref={setInputRef}
-                            onBlur={() => {
-                              setEnteringCustomValue(false);
-                            }}
+                            onBlur={finishEnteringCustomValue}
                             onKeyDown={(event) => {
                               if (event.key === 'Enter') {
-                                setEnteringCustomValue(false);
+                                finishEnteringCustomValue();
                               }
                             }}
                             value={customValue || ''}

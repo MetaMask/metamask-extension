@@ -31,21 +31,19 @@ import { NotificationsSettingsPerAccount } from './notifications-settings-per-ac
 import type { NotificationWalletGroup } from './notifications-settings-helpers';
 import type { NotificationsSettingsSectionConfig } from './notifications-settings-types';
 
-type WalletActivityAccount =
-  NotificationPreferences['walletActivity']['accounts'][number];
+type SectionType = NotificationsSettingsSectionConfig['type'];
 
 type AccountSettingsProps = {
   data?: Record<string, boolean>;
   initialLoading: boolean;
+  error: string | null;
   accountsBeingUpdated: string[];
   update: (addresses: string[]) => Promise<void>;
 };
 
 type SectionContentProps = {
-  preferences: NotificationPreferences;
   notificationAccountGroups: NotificationWalletGroup[];
   accountSettingsProps: AccountSettingsProps;
-  refetchNotificationPreferences: () => Promise<unknown>;
 };
 
 type NotificationSettingsSectionProps = {
@@ -58,20 +56,14 @@ type NotificationSettingsSectionProps = {
     key: NotificationPreferenceChannelKey,
     value: boolean,
   ) => Promise<void>;
-  refetchNotificationPreferences: () => Promise<unknown>;
 };
 
-const getWalletActivityAccountsByAddress = (
-  preferences: NotificationPreferences,
-): Map<string, WalletActivityAccount> =>
-  new Map(
-    preferences.walletActivity.accounts.map(
-      (account: WalletActivityAccount) => [
-        account.address.toLowerCase(),
-        account,
-      ],
-    ),
-  );
+const SETTINGS_TYPE_BY_SECTION: Record<SectionType, string> = {
+  walletActivity: 'wallet_activity',
+  perps: 'perps',
+  marketing: 'marketing',
+  agenticCli: 'agentic_cli',
+};
 
 type PendingAccountToggle = {
   value: boolean;
@@ -79,13 +71,12 @@ type PendingAccountToggle = {
 };
 
 const WalletActivitySectionContent = ({
-  preferences,
   notificationAccountGroups,
   accountSettingsProps,
-  refetchNotificationPreferences,
 }: SectionContentProps) => {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const { trackEvent, createEventBuilder } = useAnalytics();
   const { onChange: switchAccountNotifications, error: accountToggleError } =
     useSwitchAccountNotificationsChange();
   const [updatingAllAccounts, setUpdatingAllAccounts] = useSafeState(false);
@@ -95,10 +86,15 @@ const WalletActivitySectionContent = ({
   const accountToggleGenerationRef = useRef<Record<string, number>>({});
   const accountToggleWriteChainRef = useRef<Promise<void>>(Promise.resolve());
 
-  const walletAccountsByAddress = useMemo(
-    () => getWalletActivityAccountsByAddress(preferences),
-    [preferences],
-  );
+  // Account settings live in the Trigger API, which reports an unreadable
+  // config as a failure rather than "every account disabled". Surface that
+  // failure instead of showing switches in the wrong position — but only when
+  // there is no earlier successful read to fall back on.
+  const hasAccountSettings =
+    Object.keys(accountSettingsProps.data ?? {}).length > 0;
+  const accountSettingsError = hasAccountSettings
+    ? null
+    : accountSettingsProps.error;
 
   const accountAddresses = useMemo(
     () =>
@@ -114,14 +110,9 @@ const WalletActivitySectionContent = ({
 
   const isAccountEnabled = useCallback(
     (address: string) => {
-      const lowerAddress = address.toLowerCase();
-      return (
-        accountSettingsProps.data?.[lowerAddress] ??
-        walletAccountsByAddress.get(lowerAddress)?.enabled ??
-        false
-      );
+      return accountSettingsProps.data?.[address.toLowerCase()] ?? false;
     },
-    [accountSettingsProps.data, walletAccountsByAddress],
+    [accountSettingsProps.data],
   );
 
   const getAccountEnabledValue = useCallback(
@@ -139,6 +130,24 @@ const WalletActivitySectionContent = ({
     [accountAddresses, getAccountEnabledValue],
   );
 
+  const trackWalletActivityAccountsAggregateToggle = useCallback(
+    (enabled: boolean) => {
+      trackEvent(
+        createEventBuilder(MetaMetricsEventName.NotificationsSettingsUpdated)
+          .addCategory(MetaMetricsEventCategory.NotificationSettings)
+          .addProperties({
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_type: 'wallet_activity',
+            notification_channel: 'all',
+            enabled,
+            /* eslint-enable @typescript-eslint/naming-convention */
+          })
+          .build(),
+      );
+    },
+    [createEventBuilder, trackEvent],
+  );
+
   const toggleAllAccounts = useCallback(async () => {
     if (accountAddresses.length === 0) {
       return;
@@ -146,9 +155,16 @@ const WalletActivitySectionContent = ({
 
     setUpdatingAllAccounts(true);
     try {
-      await switchAccountNotifications(accountAddresses, !hasEnabledAccount);
+      const newState = !hasEnabledAccount;
+      try {
+        await switchAccountNotifications(accountAddresses, newState);
+      } catch {
+        // Failed enable/disable already surfaced via accountToggleError; avoid
+        // leaving a rejected promise from the onClick handler.
+        return;
+      }
       await refetchAccountSettings();
-      await refetchNotificationPreferences();
+      trackWalletActivityAccountsAggregateToggle(newState);
       listNotifications();
     } finally {
       setUpdatingAllAccounts(false);
@@ -158,14 +174,31 @@ const WalletActivitySectionContent = ({
     hasEnabledAccount,
     listNotifications,
     refetchAccountSettings,
-    refetchNotificationPreferences,
     setUpdatingAllAccounts,
     switchAccountNotifications,
+    trackWalletActivityAccountsAggregateToggle,
   ]);
 
   const handleToggleAccountNotifications = useCallback(
     async (address: string, nextValue: boolean) => {
       const lowerAddress = address.toLowerCase();
+
+      // Aggregate events track user-facing intention (optimistic UI), not BE lag.
+      // Capture the boundary *before* this click's pending override is applied.
+      const optimisticEnabledCount = accountAddresses.filter(
+        getAccountEnabledValue,
+      ).length;
+      let aggregateTransition: boolean | null = null;
+      if (nextValue && optimisticEnabledCount === 0) {
+        aggregateTransition = true;
+      } else if (
+        !nextValue &&
+        optimisticEnabledCount === 1 &&
+        getAccountEnabledValue(address)
+      ) {
+        aggregateTransition = false;
+      }
+
       const generation =
         (accountToggleGenerationRef.current[lowerAddress] ?? 0) + 1;
       accountToggleGenerationRef.current[lowerAddress] = generation;
@@ -175,12 +208,18 @@ const WalletActivitySectionContent = ({
       }));
 
       const persistWrite = accountToggleWriteChainRef.current.then(async () => {
-        await switchAccountNotifications([address], nextValue);
-        await refetchAccountSettings();
-        await refetchNotificationPreferences();
-        listNotifications();
+        try {
+          await switchAccountNotifications([address], nextValue);
+          await refetchAccountSettings();
+          listNotifications();
+          if (aggregateTransition !== null) {
+            trackWalletActivityAccountsAggregateToggle(aggregateTransition);
+          }
+        } catch {
+          // write failed; chain resolves so subsequent toggles can still run
+        }
       });
-      accountToggleWriteChainRef.current = persistWrite.catch(() => undefined);
+      accountToggleWriteChainRef.current = persistWrite;
 
       try {
         await persistWrite;
@@ -197,10 +236,12 @@ const WalletActivitySectionContent = ({
       }
     },
     [
+      accountAddresses,
+      getAccountEnabledValue,
       listNotifications,
       refetchAccountSettings,
-      refetchNotificationPreferences,
       switchAccountNotifications,
+      trackWalletActivityAccountsAggregateToggle,
     ],
   );
 
@@ -209,109 +250,113 @@ const WalletActivitySectionContent = ({
   }
 
   const shouldDisableAccountSwitches =
-    accountSettingsProps.initialLoading || updatingAllAccounts;
+    accountSettingsProps.initialLoading ||
+    updatingAllAccounts ||
+    Boolean(accountSettingsError);
   const shouldDisableToggleAllAccounts =
     shouldDisableAccountSwitches ||
     accountSettingsProps.accountsBeingUpdated.length > 0 ||
     Object.keys(pendingAccountToggles).length > 0;
 
   return (
-    <>
-      <Box className="w-full h-px border-t border-muted" />
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Stretch}
-        gap={4}
-        data-testid="notifications-settings-per-account"
-      >
-        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.Between}
-            alignItems={BoxAlignItems.Stretch}
-            gap={4}
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Stretch}
+      gap={4}
+      data-testid="notifications-settings-per-account"
+    >
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Stretch}
+          gap={4}
+        >
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+          >
+            {t('notificationsSettingsSelectAccounts')}
+          </Text>
+          <button
+            className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
+            data-testid="notifications-settings-toggle-all-accounts"
+            disabled={shouldDisableToggleAllAccounts}
+            onClick={toggleAllAccounts}
           >
             <Text
               variant={TextVariant.BodyMd}
               fontWeight={FontWeight.Medium}
-              color={TextColor.TextDefault}
+              color={TextColor.PrimaryDefault}
             >
-              {t('notificationsSettingsSelectAccounts')}
+              {hasEnabledAccount
+                ? t('notificationsSettingsDeselectAll')
+                : t('selectAll')}
             </Text>
-            <button
-              className="border-0 bg-transparent p-0 text-primary-default cursor-pointer"
-              data-testid="notifications-settings-toggle-all-accounts"
-              disabled={shouldDisableToggleAllAccounts}
-              onClick={toggleAllAccounts}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.PrimaryDefault}
-              >
-                {hasEnabledAccount
-                  ? t('notificationsSettingsDeselectAll')
-                  : t('selectAll')}
-              </Text>
-            </button>
-          </Box>
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Regular}
-            color={TextColor.TextAlternative}
-          >
-            {t('notificationsSettingsSelectAccountsDescription')}
-          </Text>
+          </button>
         </Box>
-        {accountToggleError && (
-          <Text color={TextColor.ErrorDefault}>
-            {t('notificationsSettingsBoxError')}
-          </Text>
-        )}
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          alignItems={BoxAlignItems.Stretch}
-          gap={4}
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Regular}
+          color={TextColor.TextAlternative}
         >
-          {notificationAccountGroups.map((walletGroup) => (
-            <Box
-              key={walletGroup.walletId}
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Stretch}
-              gap={2}
-            >
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
-              >
-                {walletGroup.walletName}
-              </Text>
-              {walletGroup.accounts.map((account) => (
-                <NotificationsSettingsPerAccount
-                  key={account.id}
-                  address={account.address}
-                  name={account.name}
-                  disabledSwitch={shouldDisableAccountSwitches}
-                  isLoading={
-                    Boolean(
-                      pendingAccountToggles[account.address.toLowerCase()],
-                    ) ||
-                    accountSettingsProps.accountsBeingUpdated.includes(
-                      account.address,
-                    )
-                  }
-                  isEnabled={getAccountEnabledValue(account.address)}
-                  onToggle={(nextValue: boolean) =>
-                    handleToggleAccountNotifications(account.address, nextValue)
-                  }
-                />
-              ))}
-            </Box>
-          ))}
-        </Box>
+          {t('notificationsSettingsSelectAccountsDescription')}
+        </Text>
+        {accountSettingsError ? (
+          <Text color={TextColor.ErrorDefault} variant={TextVariant.BodySm}>
+            {t('notificationsSettingsAccountsLoadError')}
+          </Text>
+        ) : null}
       </Box>
-    </>
+      {accountToggleError && (
+        <Text color={TextColor.ErrorDefault}>
+          {t('notificationsSettingsBoxError')}
+        </Text>
+      )}
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Stretch}
+        gap={4}
+      >
+        {notificationAccountGroups.map((walletGroup) => (
+          <Box
+            key={walletGroup.walletId}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Stretch}
+            gap={2}
+          >
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
+            >
+              {walletGroup.walletName}
+            </Text>
+            {walletGroup.accounts.map((account) => (
+              <NotificationsSettingsPerAccount
+                key={account.id}
+                address={account.address}
+                name={account.name}
+                disabledSwitch={shouldDisableAccountSwitches}
+                isLoading={
+                  Boolean(
+                    pendingAccountToggles[account.address.toLowerCase()],
+                  ) ||
+                  accountSettingsProps.accountsBeingUpdated.includes(
+                    account.address,
+                  )
+                }
+                isEnabled={getAccountEnabledValue(account.address)}
+                onToggle={(nextValue: boolean) =>
+                  handleToggleAccountNotifications(account.address, nextValue)
+                }
+              />
+            ))}
+          </Box>
+        ))}
+      </Box>
+    </Box>
   );
 };
 
@@ -319,7 +364,7 @@ const MarketingSectionContent = () => {
   const t = useI18nContext();
 
   return (
-    <Box className="mt-auto">
+    <Box className="mt-auto pb-4">
       <Text
         variant={TextVariant.BodySm}
         fontWeight={FontWeight.Regular}
@@ -348,7 +393,6 @@ export function NotificationSettingsSection({
   notificationAccountGroups,
   accountSettingsProps,
   updatePreference,
-  refetchNotificationPreferences,
 }: NotificationSettingsSectionProps) {
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
@@ -365,6 +409,7 @@ export function NotificationSettingsSection({
         >)
       : preferences[section.type];
   const SectionContent = SECTION_CONTENT_BY_TYPE[section.type];
+  const showChannelToggles = section.type !== 'walletActivity';
 
   const handleTogglePreference = useCallback(
     async (key: NotificationPreferenceChannelKey) => {
@@ -378,14 +423,12 @@ export function NotificationSettingsSection({
             .addCategory(MetaMetricsEventCategory.NotificationSettings)
             .addProperties({
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              settings_type: `${section.type}_${key}`,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              old_value: oldValue,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              new_value: newValue,
+              /* eslint-disable @typescript-eslint/naming-convention */
+              settings_type: SETTINGS_TYPE_BY_SECTION[section.type],
+              notification_channel:
+                key === 'pushNotificationsEnabled' ? 'push' : 'in_app',
+              enabled: newValue,
+              /* eslint-enable @typescript-eslint/naming-convention */
             })
             .build(),
         );
@@ -418,39 +461,39 @@ export function NotificationSettingsSection({
       gap={6}
       data-testid={`notifications-settings-section-content-${section.type}`}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Stretch}
-        gap={4}
-      >
-        <NotificationsSettingsBox
-          value={sectionPreferences.pushNotificationsEnabled}
-          onToggle={() => handleTogglePreference('pushNotificationsEnabled')}
-          error={preferenceError}
-          dataTestId={`${section.type}-push-notifications`}
+      {showChannelToggles ? (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Stretch}
+          gap={4}
         >
-          <NotificationsSettingsType
-            title={t('notificationsSettingsPushNotifications')}
-          />
-        </NotificationsSettingsBox>
-        <NotificationsSettingsBox
-          value={sectionPreferences.inAppNotificationsEnabled}
-          onToggle={() => handleTogglePreference('inAppNotificationsEnabled')}
-          error={preferenceError}
-          dataTestId={`${section.type}-in-app-notifications`}
-        >
-          <NotificationsSettingsType
-            title={t('notificationsSettingsInAppNotifications')}
-          />
-        </NotificationsSettingsBox>
-      </Box>
+          <NotificationsSettingsBox
+            value={sectionPreferences.pushNotificationsEnabled}
+            onToggle={() => handleTogglePreference('pushNotificationsEnabled')}
+            error={preferenceError}
+            dataTestId={`${section.type}-push-notifications`}
+          >
+            <NotificationsSettingsType
+              title={t('notificationsSettingsPushNotifications')}
+            />
+          </NotificationsSettingsBox>
+          <NotificationsSettingsBox
+            value={sectionPreferences.inAppNotificationsEnabled}
+            onToggle={() => handleTogglePreference('inAppNotificationsEnabled')}
+            error={preferenceError}
+            dataTestId={`${section.type}-in-app-notifications`}
+          >
+            <NotificationsSettingsType
+              title={t('notificationsSettingsInAppNotifications')}
+            />
+          </NotificationsSettingsBox>
+        </Box>
+      ) : null}
 
       {SectionContent && (
         <SectionContent
-          preferences={preferences}
           notificationAccountGroups={notificationAccountGroups}
           accountSettingsProps={accountSettingsProps}
-          refetchNotificationPreferences={refetchNotificationPreferences}
         />
       )}
     </Box>

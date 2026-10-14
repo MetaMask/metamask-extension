@@ -31,7 +31,7 @@ export type CopyParams = {
   /**
    * Callback function to execute when the copy action is triggered
    */
-  callback: () => void;
+  callback: () => Promise<boolean>;
 };
 
 type QrParams = {
@@ -97,8 +97,17 @@ export const MultichainAddressRow = ({
   const timeoutRef = useRef<number | null>(null);
 
   // Update `subText` when the address prop changes
+  const prevAddressRef = useRef<typeof address | undefined>(undefined);
   useEffect(() => {
-    setSubText(truncatedAddress);
+    if (prevAddressRef.current === undefined) {
+      prevAddressRef.current = address;
+      return;
+    }
+    if (address === prevAddressRef.current) {
+      return;
+    }
+    prevAddressRef.current = address;
+    queueMicrotask(() => setSubText(truncatedAddress));
   }, [address, truncatedAddress]);
 
   // Cleanup timeout when component unmounts
@@ -112,16 +121,19 @@ export const MultichainAddressRow = ({
   }, []);
 
   // Handle "Copy" button click events
-  const handleCopyClick = () => {
+  const handleCopyClick = async () => {
     // Clear existing timeout if clicking multiple times in rapid succession
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    setAddressCopied(true);
-
     // Trigger copy callback and update UI state
-    copyActionParams.callback();
+    const copied = await copyActionParams.callback();
+    if (!copied) {
+      return;
+    }
+
+    setAddressCopied(true);
     setSubText(copyActionParams.message);
     setCopyIcon(IconName.CopySuccess);
 

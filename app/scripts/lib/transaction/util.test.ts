@@ -1,11 +1,17 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
-  TransactionController,
+  TransactionControllerState,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { cloneDeep, omit } from 'lodash';
 import { Hex } from '@metamask/utils';
 import {
@@ -21,20 +27,15 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import {
-  SupportedEVMChain,
-  ResultType,
-  AddAddressSecurityAlertResponse,
-  GetAddressSecurityAlertResponse,
-} from '../../../../shared/lib/trust-signals';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import { accountSupports7702 } from '../account-supports-7702';
 import {
   AddDappTransactionRequest,
+  AddTransactionMessenger,
   AddTransactionOptions,
   AddTransactionRequest,
   addDappTransaction,
   addTransaction,
-  stripSingleLeadingZero,
 } from './util';
 import { getTempoTransactionBatchArgs } from './tempo-tx-utils';
 
@@ -163,29 +164,27 @@ const TRANSACTION_REQUEST_MOCK: AddTransactionRequest = {
   internalAccounts: [],
 } as unknown as AddTransactionRequest;
 
-function createTransactionControllerMock() {
-  return {
-    addTransaction: jest.fn(),
-    addTransactionBatch: jest.fn(),
-    state: { transactions: [] },
-  } as unknown as jest.Mocked<TransactionController>;
-}
+type TestMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<AddTransactionMessenger>,
+  MessengerEvents<AddTransactionMessenger>
+>;
 
-function createUserOperationControllerMock() {
-  return {
-    addUserOperationFromTransaction: jest.fn(),
-    startPollingByNetworkClientId: jest.fn(),
-  } as unknown as jest.Mocked<UserOperationController>;
+function createMessenger(): TestMessenger {
+  return new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 }
 
 describe('Transaction Utils', () => {
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let tempoDappRequest: AddDappTransactionRequest;
-  let transactionController: jest.Mocked<TransactionController>;
-  let userOperationController: jest.Mocked<UserOperationController>;
-  let getAddressSecurityAlertResponseMock: jest.Mock;
-  let addAddressSecurityAlertResponseMock: jest.Mock;
+  let messenger: TestMessenger;
+  let transactions: TransactionMeta[];
+  let addTransactionMock: jest.Mock;
+  let addTransactionBatchMock: jest.Mock;
+  let addUserOperationFromTransactionMock: jest.Mock;
+  let startPollingByNetworkClientIdMock: jest.Mock;
+  let scanAddressActionMock: jest.Mock;
   const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   const generateSecurityAlertIdMock = jest.mocked(generateSecurityAlertId);
   const scanAddressAndAddToCacheMock = jest.mocked(scanAddressAndAddToCache);
@@ -199,10 +198,8 @@ describe('Transaction Utils', () => {
       realGetTempoTransactionBatchArgsImpl,
     );
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
-    transactionController = createTransactionControllerMock();
-    userOperationController = createUserOperationControllerMock();
-    getAddressSecurityAlertResponseMock = jest.fn();
-    addAddressSecurityAlertResponseMock = jest.fn();
+
+    transactions = [];
 
     scanAddressAndAddToCacheMock.mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -210,39 +207,57 @@ describe('Transaction Utils', () => {
       label: 'Safe address',
     });
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    request.ppomController = {} as any;
-
-    transactionController.addTransaction.mockResolvedValue({
+    addTransactionMock = jest.fn().mockResolvedValue({
       result: Promise.resolve('testHash'),
       transactionMeta: TRANSACTION_META_MOCK,
     });
 
-    transactionController.addTransactionBatch.mockImplementation(async () => {
-      transactionController.state.transactions.push(
-        BATCH_TRANSACTION_META_MOCK,
-      );
+    addTransactionBatchMock = jest.fn().mockImplementation(async () => {
+      transactions.push(BATCH_TRANSACTION_META_MOCK);
       return {
         batchId: BATCHID_MOCK,
       };
     });
 
-    transactionController.state.transactions.push(TRANSACTION_META_MOCK);
+    transactions.push(TRANSACTION_META_MOCK);
 
-    userOperationController.addUserOperationFromTransaction.mockResolvedValue({
+    addUserOperationFromTransactionMock = jest.fn().mockResolvedValue({
       id: TRANSACTION_META_MOCK.id,
       hash: jest.fn().mockResolvedValue({}),
       transactionHash: jest.fn().mockResolvedValue(TRANSACTION_META_MOCK.hash),
     });
+    startPollingByNetworkClientIdMock = jest.fn();
+
+    messenger = createMessenger();
+    messenger.registerActionHandler(
+      'TransactionController:addTransaction',
+      addTransactionMock,
+    );
+    messenger.registerActionHandler(
+      'TransactionController:addTransactionBatch',
+      addTransactionBatchMock,
+    );
+    messenger.registerActionHandler(
+      'TransactionController:getState',
+      () => ({ transactions }) as unknown as TransactionControllerState,
+    );
+    messenger.registerActionHandler(
+      'UserOperationController:addUserOperationFromTransaction',
+      addUserOperationFromTransactionMock,
+    );
+    messenger.registerActionHandler(
+      'UserOperationController:startPollingByNetworkClientId',
+      startPollingByNetworkClientIdMock,
+    );
+    scanAddressActionMock = jest.fn();
+    messenger.registerActionHandler(
+      'PhishingController:scanAddress',
+      scanAddressActionMock,
+    );
 
     generateSecurityAlertIdMock.mockReturnValue(SECURITY_ALERT_ID_MOCK);
 
-    request.transactionController = transactionController;
-    request.userOperationController = userOperationController;
-    request.updateSecurityAlertResponse = jest.fn();
-    request.getSecurityAlertResponse = getAddressSecurityAlertResponseMock;
-    request.addSecurityAlertResponse = addAddressSecurityAlertResponseMock;
+    request.messenger = messenger;
 
     dappRequest = {
       ...request,
@@ -268,14 +283,13 @@ describe('Transaction Utils', () => {
       it('adds transaction', async () => {
         await addTransaction(request);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-        });
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+          },
+        );
       });
 
       it('returns transaction meta', async () => {
@@ -284,7 +298,7 @@ describe('Transaction Utils', () => {
       });
 
       it('does not throw if result promise fails if waitForSubmit is false', async () => {
-        transactionController.addTransaction.mockResolvedValue({
+        addTransactionMock.mockResolvedValue({
           result: Promise.reject(new Error('Test Error')),
           transactionMeta: TRANSACTION_META_MOCK,
         });
@@ -295,7 +309,7 @@ describe('Transaction Utils', () => {
       it('throws if result promise fails if waitForSubmit is true', async () => {
         request.waitForSubmit = true;
 
-        transactionController.addTransaction.mockResolvedValue({
+        addTransactionMock.mockResolvedValue({
           result: Promise.reject(new Error('Test Error')),
           transactionMeta: TRANSACTION_META_MOCK,
         });
@@ -304,7 +318,7 @@ describe('Transaction Utils', () => {
       });
 
       it('does not wait for result if waitForSubmit is false', async () => {
-        transactionController.addTransaction.mockResolvedValue({
+        addTransactionMock.mockResolvedValue({
           result: new Promise(() => {
             /* Intentionally not resolved */
           }),
@@ -324,7 +338,7 @@ describe('Transaction Utils', () => {
           resultResolve = resolve;
         });
 
-        transactionController.addTransaction.mockResolvedValue({
+        addTransactionMock.mockResolvedValue({
           result: resultPromise,
           transactionMeta: TRANSACTION_META_MOCK,
         });
@@ -354,29 +368,26 @@ describe('Transaction Utils', () => {
       it('adds user operation', async () => {
         await addTransaction(request);
 
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
-          origin: TRANSACTION_OPTIONS_MOCK.origin,
-          requireApproval: TRANSACTION_OPTIONS_MOCK.requireApproval,
-          swaps: undefined,
-          type: TRANSACTION_OPTIONS_MOCK.type,
-        });
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
+            origin: TRANSACTION_OPTIONS_MOCK.origin,
+            requireApproval: TRANSACTION_OPTIONS_MOCK.requireApproval,
+            swaps: undefined,
+            type: TRANSACTION_OPTIONS_MOCK.type,
+          },
+        );
       });
 
       it('starts polling', async () => {
         await addTransaction(request);
 
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
+        expect(startPollingByNetworkClientIdMock).toHaveBeenCalledTimes(1);
+        expect(startPollingByNetworkClientIdMock).toHaveBeenCalledWith(
+          TRANSACTION_REQUEST_MOCK.networkClientId,
+        );
       });
 
       it('returns transaction meta', async () => {
@@ -385,16 +396,14 @@ describe('Transaction Utils', () => {
       });
 
       it('does not wait for transaction hash promise if waitForSubmit is false', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: undefined as never,
-            transactionHash: () =>
-              new Promise(() => {
-                /* Intentionally not resolved */
-              }),
-          },
-        );
+        addUserOperationFromTransactionMock.mockResolvedValue({
+          id: TRANSACTION_META_MOCK.id,
+          hash: undefined as never,
+          transactionHash: () =>
+            new Promise(() => {
+              /* Intentionally not resolved */
+            }),
+        });
 
         await expect(addTransaction(request)).resolves.toBeTruthy();
       });
@@ -409,13 +418,11 @@ describe('Transaction Utils', () => {
           transactionHashResolve = resolve;
         });
 
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: () => Promise.resolve(TRANSACTION_META_MOCK.hash),
-            transactionHash: () => transactionHashPromise,
-          },
-        );
+        addUserOperationFromTransactionMock.mockResolvedValue({
+          id: TRANSACTION_META_MOCK.id,
+          hash: () => Promise.resolve(TRANSACTION_META_MOCK.hash),
+          transactionHash: () => transactionHashPromise,
+        });
 
         addTransaction(request).then(() => {
           completed = true;
@@ -434,13 +441,11 @@ describe('Transaction Utils', () => {
       });
 
       it('does not throw if transaction hash promise fails and waitForSubmit is false', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: jest.fn().mockRejectedValue(new Error('Test Error')),
-            transactionHash: jest.fn().mockResolvedValue({}),
-          },
-        );
+        addUserOperationFromTransactionMock.mockResolvedValue({
+          id: TRANSACTION_META_MOCK.id,
+          hash: jest.fn().mockRejectedValue(new Error('Test Error')),
+          transactionHash: jest.fn().mockResolvedValue({}),
+        });
 
         await expect(addTransaction(request)).resolves.toBeTruthy();
       });
@@ -448,15 +453,11 @@ describe('Transaction Utils', () => {
       it('throws if transaction hash promise fails and waitForSubmit is true', async () => {
         request.waitForSubmit = true;
 
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: undefined as never,
-            transactionHash: jest
-              .fn()
-              .mockRejectedValue(new Error('Test Error')),
-          },
-        );
+        addUserOperationFromTransactionMock.mockResolvedValue({
+          id: TRANSACTION_META_MOCK.id,
+          hash: undefined as never,
+          transactionHash: jest.fn().mockRejectedValue(new Error('Test Error')),
+        });
 
         await expect(addTransaction(request)).rejects.toThrow('Test Error');
       });
@@ -471,12 +472,8 @@ describe('Transaction Utils', () => {
 
         await addTransaction(request);
 
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
           expect.objectContaining({
             swaps: {
@@ -492,12 +489,8 @@ describe('Transaction Utils', () => {
 
         await addTransaction(request);
 
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledWith(
           {
             ...TRANSACTION_PARAMS_MOCK,
             maxFeePerGas: '0xa',
@@ -516,22 +509,21 @@ describe('Transaction Utils', () => {
           chainId: '0x1',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          securityAlertResponse: {
-            reason: BlockaidReason.inProgress,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            result_type: BlockaidResultType.Loading,
-            securityAlertId: SECURITY_ALERT_ID_MOCK,
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            securityAlertResponse: {
+              reason: BlockaidReason.inProgress,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              result_type: BlockaidResultType.Loading,
+              securityAlertId: SECURITY_ALERT_ID_MOCK,
+            },
           },
-        });
+        );
       });
 
       it('unless blockaid is disabled', async () => {
@@ -541,13 +533,9 @@ describe('Transaction Utils', () => {
           chainId: '0x1',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
+        expect(addTransactionMock).toHaveBeenCalledWith(
           TRANSACTION_PARAMS_MOCK,
           TRANSACTION_OPTIONS_MOCK,
         );
@@ -570,13 +558,9 @@ describe('Transaction Utils', () => {
           internalAccounts: [INTERNAL_ACCOUNT],
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
+        expect(addTransactionMock).toHaveBeenCalledWith(
           sendRequest.transactionParams,
           TRANSACTION_OPTIONS_MOCK,
         );
@@ -594,16 +578,15 @@ describe('Transaction Utils', () => {
           chainId: '0x1',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          type: TransactionType.swap,
-        });
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            type: TransactionType.swap,
+          },
+        );
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
@@ -618,16 +601,15 @@ describe('Transaction Utils', () => {
           chainId: '0x1',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          type: TransactionType.swapApproval,
-        });
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            type: TransactionType.swapApproval,
+          },
+        );
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
@@ -659,9 +641,7 @@ describe('Transaction Utils', () => {
           chainId: '0x1',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
@@ -672,10 +652,6 @@ describe('Transaction Utils', () => {
         request.transactionOptions.origin = ORIGIN_METAMASK;
         request.transactionParams.to =
           '0x1234567890123456789012345678901234567890';
-        request.addSecurityAlertResponse =
-          jest.fn() as AddAddressSecurityAlertResponse;
-        request.getSecurityAlertResponse =
-          jest.fn() as GetAddressSecurityAlertResponse;
       });
 
       it('calls scanAddressAndAddToCache', async () => {
@@ -690,7 +666,28 @@ describe('Transaction Utils', () => {
           '0x1234567890123456789012345678901234567890',
           expect.any(Function),
           expect.any(Function),
-          SupportedEVMChain.Ethereum,
+          CHAIN_IDS.MAINNET,
+          expect.objectContaining({ scanAddress: expect.any(Function) }),
+        );
+      });
+
+      it('provides a scanAddress adapter that forwards to PhishingController:scanAddress', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        const scanAdapter = scanAddressAndAddToCacheMock.mock.calls[0][4];
+        await scanAdapter.scanAddress(
+          CHAIN_IDS.MAINNET,
+          '0x1234567890123456789012345678901234567890',
+        );
+
+        expect(scanAddressActionMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressActionMock).toHaveBeenCalledWith(
+          CHAIN_IDS.MAINNET,
+          '0x1234567890123456789012345678901234567890',
         );
       });
 
@@ -728,15 +725,23 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
       });
 
-      it('does not call scanAddressAndAddToCache when chain is not supported', async () => {
-        // Test with a chain ID that the real function doesn't support
+      it('calls scanAddressAndAddToCache even for a chain the extension does not recognize', async () => {
+        // The PhishingController now decides chain support internally, so
+        // callers no longer pre-gate on a recognized chain ID.
         const transactionMeta = await addTransaction({
           ...request,
           securityAlertsEnabled: true,
-          chainId: '0xfake-chain-id', // This will return undefined from the real function
+          chainId: '0xfake-chain-id',
         });
 
-        expect(scanAddressAndAddToCacheMock).not.toHaveBeenCalled();
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
+        expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
+          '0x1234567890123456789012345678901234567890',
+          expect.any(Function),
+          expect.any(Function),
+          '0xfake-chain-id',
+          expect.objectContaining({ scanAddress: expect.any(Function) }),
+        );
         expect(transactionMeta).toStrictEqual(TRANSACTION_META_MOCK);
       });
     });
@@ -747,20 +752,19 @@ describe('Transaction Utils', () => {
       it('adds transaction', async () => {
         await addDappTransaction(dappRequest);
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          method: makeDappRequest().method,
-          requireApproval: true,
-          securityAlertResponse: makeRequestContext().assertGet(
-            'securityAlertResponse',
-          ),
-          type: undefined,
-        });
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            method: makeDappRequest().method,
+            requireApproval: true,
+            securityAlertResponse: makeRequestContext().assertGet(
+              'securityAlertResponse',
+            ),
+            type: undefined,
+          },
+        );
       });
 
       it('returns transaction hash', async () => {
@@ -769,7 +773,7 @@ describe('Transaction Utils', () => {
       });
 
       it('throws if result promise fails', async () => {
-        transactionController.addTransaction.mockResolvedValue({
+        addTransactionMock.mockResolvedValue({
           result: Promise.reject(new Error('Test Error')),
           transactionMeta: TRANSACTION_META_MOCK,
         });
@@ -788,29 +792,26 @@ describe('Transaction Utils', () => {
       it('adds user operation', async () => {
         await addDappTransaction(dappRequest);
 
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.userOperationController.addUserOperationFromTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
-          origin: TRANSACTION_OPTIONS_MOCK.origin,
-          requireApproval: true,
-          swaps: undefined,
-          type: undefined,
-        });
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addUserOperationFromTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
+            origin: TRANSACTION_OPTIONS_MOCK.origin,
+            requireApproval: true,
+            swaps: undefined,
+            type: undefined,
+          },
+        );
       });
 
       it('starts polling', async () => {
         await addDappTransaction(dappRequest);
 
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          userOperationController.startPollingByNetworkClientId,
-        ).toHaveBeenCalledWith(TRANSACTION_REQUEST_MOCK.networkClientId);
+        expect(startPollingByNetworkClientIdMock).toHaveBeenCalledTimes(1);
+        expect(startPollingByNetworkClientIdMock).toHaveBeenCalledWith(
+          TRANSACTION_REQUEST_MOCK.networkClientId,
+        );
       });
 
       it('returns transaction hash', async () => {
@@ -819,15 +820,11 @@ describe('Transaction Utils', () => {
       });
 
       it('throws if transaction hash promise fails', async () => {
-        userOperationController.addUserOperationFromTransaction.mockResolvedValue(
-          {
-            id: TRANSACTION_META_MOCK.id,
-            hash: jest.fn().mockResolvedValue({}),
-            transactionHash: jest
-              .fn()
-              .mockRejectedValue(new Error('Test Error')),
-          },
-        );
+        addUserOperationFromTransactionMock.mockResolvedValue({
+          id: TRANSACTION_META_MOCK.id,
+          hash: jest.fn().mockResolvedValue({}),
+          transactionHash: jest.fn().mockRejectedValue(new Error('Test Error')),
+        });
 
         await expect(addDappTransaction(dappRequest)).rejects.toThrow(
           'Test Error',
@@ -842,22 +839,21 @@ describe('Transaction Utils', () => {
           chainId: '0x1079',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          method: makeDappRequest().method,
-          requireApproval: true,
-          securityAlertResponse: makeRequestContext().assertGet(
-            'securityAlertResponse',
-          ),
-          type: undefined,
-          gasFeeToken: '0x20c0000000000000000000000000000000000000',
-          excludeNativeTokenForFee: true,
-        });
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            method: makeDappRequest().method,
+            requireApproval: true,
+            securityAlertResponse: makeRequestContext().assertGet(
+              'securityAlertResponse',
+            ),
+            type: undefined,
+            gasFeeToken: '0x20c0000000000000000000000000000000000000',
+            excludeNativeTokenForFee: true,
+          },
+        );
       });
 
       it('sends a classic tx if `to` is missing (contract deployment)', async () => {
@@ -871,20 +867,19 @@ describe('Transaction Utils', () => {
           chainId: '0x1079',
         });
 
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(transactionParamsMockWithoutTo, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          method: makeDappRequest().method,
-          requireApproval: true,
-          securityAlertResponse: makeRequestContext().assertGet(
-            'securityAlertResponse',
-          ),
-          type: undefined,
-        });
+        expect(addTransactionMock).toHaveBeenCalledTimes(1);
+        expect(addTransactionMock).toHaveBeenCalledWith(
+          transactionParamsMockWithoutTo,
+          {
+            ...TRANSACTION_OPTIONS_MOCK,
+            method: makeDappRequest().method,
+            requireApproval: true,
+            securityAlertResponse: makeRequestContext().assertGet(
+              'securityAlertResponse',
+            ),
+            type: undefined,
+          },
+        );
       });
     });
 
@@ -892,12 +887,8 @@ describe('Transaction Utils', () => {
       it('calls addTransactionBatch with converted Tempo-specific params', async () => {
         const result = await addDappTransaction(tempoDappRequest);
 
-        expect(
-          request.transactionController.addTransactionBatch,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransactionBatch,
-        ).toHaveBeenCalledWith(
+        expect(addTransactionBatchMock).toHaveBeenCalledTimes(1);
+        expect(addTransactionBatchMock).toHaveBeenCalledWith(
           expect.objectContaining({
             actionId: TRANSACTION_OPTIONS_MOCK.actionId,
             networkClientId: TRANSACTION_OPTIONS_MOCK.networkClientId,
@@ -925,9 +916,7 @@ describe('Transaction Utils', () => {
         await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
           `Tempo Transaction: Mock error`,
         );
-        expect(
-          request.transactionController.addTransactionBatch,
-        ).not.toHaveBeenCalled();
+        expect(addTransactionBatchMock).not.toHaveBeenCalled();
       });
 
       it('does not call addTransactionBatch if accountSupports7702 resolves to false', async () => {
@@ -935,22 +924,8 @@ describe('Transaction Utils', () => {
         await expect(addDappTransaction(tempoDappRequest)).rejects.toThrow(
           `Wallet not supported for Tempo Transactions.`,
         );
-        expect(
-          request.transactionController.addTransactionBatch,
-        ).not.toHaveBeenCalled();
+        expect(addTransactionBatchMock).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('stripSingleLeadingZero', () => {
-    it('returns the same hex if it does not start with 0x0', () => {
-      expect(stripSingleLeadingZero('0x1a2b3c')).toBe('0x1a2b3c');
-    });
-
-    it('strips a single leading zero from the hex', () => {
-      expect(stripSingleLeadingZero('0x0123')).toBe('0x123');
-      expect(stripSingleLeadingZero('0x0abcdef')).toBe('0xabcdef');
-      expect(stripSingleLeadingZero('0x0001')).toBe('0x001');
     });
   });
 });

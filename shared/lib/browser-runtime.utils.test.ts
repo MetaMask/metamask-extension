@@ -68,22 +68,6 @@ describe('Browser Runtime Utils', () => {
     });
   });
 
-  describe('checkForLastErrorAndWarn', () => {
-    it('warns and returns error if error was found', () => {
-      mockRuntimeLastError = { ...mockLastError };
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {
-        // noop
-      });
-
-      const result = BrowserRuntimeUtil.checkForLastErrorAndWarn();
-
-      expect(warnSpy).toHaveBeenCalledWith(result);
-      expect(result).toStrictEqual(mockLastError);
-
-      warnSpy.mockRestore();
-    });
-  });
-
   describe('getIsBrowserPrerenderBroken', () => {
     it('calls Bowser.getParser when no parameter is passed', () => {
       const spy = jest.spyOn(Bowser, 'getParser');
@@ -243,72 +227,6 @@ describe('Browser Runtime Utils', () => {
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       );
       expect(BrowserRuntimeUtil.isFirefoxBrowser(bowser)).toBe(false);
-    });
-  });
-
-  describe('getChromiumCameraSettingsUrl', () => {
-    it('uses window.navigator defaults when called with no arguments', () => {
-      const getParserSpy = jest.spyOn(Bowser, 'getParser');
-      const explicit = BrowserRuntimeUtil.getChromiumCameraSettingsUrl(
-        Bowser.getParser(window.navigator.userAgent),
-        window.navigator,
-      );
-      getParserSpy.mockClear();
-
-      const implicit = BrowserRuntimeUtil.getChromiumCameraSettingsUrl();
-
-      expect(getParserSpy).toHaveBeenCalledTimes(1);
-      expect(getParserSpy).toHaveBeenCalledWith(window.navigator.userAgent);
-      expect(implicit).toBe(explicit);
-      getParserSpy.mockRestore();
-    });
-
-    it('returns Brave URL when navigator exposes brave', () => {
-      const ua =
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36';
-      const bowser = Bowser.getParser(ua);
-      const nav = {
-        userAgent: ua,
-        brave: {},
-      } as unknown as Navigator;
-      expect(BrowserRuntimeUtil.getChromiumCameraSettingsUrl(bowser, nav)).toBe(
-        'brave://settings/content/camera',
-      );
-    });
-
-    it('returns Edge URL for Edge user agent', () => {
-      const ua =
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0';
-      const bowser = Bowser.getParser(ua);
-      expect(
-        BrowserRuntimeUtil.getChromiumCameraSettingsUrl(bowser, {
-          userAgent: ua,
-        } as Navigator),
-      ).toBe('edge://settings/content/camera');
-    });
-
-    it('returns Chrome URL for Chrome user agent', () => {
-      const ua =
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-      const bowser = Bowser.getParser(ua);
-      expect(
-        BrowserRuntimeUtil.getChromiumCameraSettingsUrl(bowser, {
-          userAgent: ua,
-        } as Navigator),
-      ).toBe('chrome://settings/content/camera');
-    });
-
-    it('returns Edge URL when getBrowserName returns Microsoft Edge', () => {
-      const mockBowser = {
-        getBrowserName: jest.fn().mockReturnValue('Microsoft Edge'),
-      } as unknown as Bowser.Parser.Parser;
-      const nav = {
-        userAgent: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1)',
-      } as Navigator;
-
-      expect(
-        BrowserRuntimeUtil.getChromiumCameraSettingsUrl(mockBowser, nav),
-      ).toBe('edge://settings/content/camera');
     });
   });
 

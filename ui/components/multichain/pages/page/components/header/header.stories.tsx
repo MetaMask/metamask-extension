@@ -3,7 +3,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-} from '../../../../../component-library';
+} from '@metamask/design-system-react';
 import { Header } from '.';
 
 const story = {

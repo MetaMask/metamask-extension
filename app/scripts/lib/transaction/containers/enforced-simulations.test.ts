@@ -44,6 +44,11 @@ const TX_PARAMS_MOCK: TransactionParams = {
 const DELEGATION_ADDRESS_MOCK =
   '0x63c0c19a282a1B52b07dD5a65b58948A07DAE32B' as Hex;
 
+// Expected `NativeBalanceChangeEnforcer` terms for a zero-tolerance decrease:
+// `0x01` (enforceDecrease) + recipient (from) + 32 zero bytes (amount = 0).
+const NO_NATIVE_DECREASE_TERMS_MOCK =
+  `0x01${remove0x(TX_PARAMS_MOCK.from as Hex)}${'00'.repeat(32)}`.toLowerCase() as Hex;
+
 const TRANSACTION_META_MOCK: TransactionMeta = {
   chainId: CHAIN_ID_MOCK,
   delegationAddress: DELEGATION_ADDRESS_MOCK,
@@ -252,6 +257,44 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
+    it('handles missing token balance changes', async () => {
+      options.transactionMeta.simulationData = {
+        nativeBalanceChange: BALANCE_CHANGE_MOCK,
+      } as SimulationData;
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+    });
+
+    it('ignores unsupported token standards', async () => {
+      simulationData.tokenBalanceChanges = [
+        {
+          ...BALANCE_CHANGE_MOCK,
+          address: TOKEN_MOCK,
+          standard: 'unsupported' as SimulationTokenStandard,
+        },
+      ];
+
+      const { updateTransaction } = await enforceSimulations(options);
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).not.toStrictEqual(
+        expect.stringContaining(remove0x(TOKEN_MOCK).toLowerCase()),
+      );
+    });
+
     it('signs delegation if useRealSignature', async () => {
       options.useRealSignature = true;
 
@@ -267,18 +310,56 @@ describe('Enforced Simulations Utils', () => {
       );
     });
 
-    it('throws when no caveats can be generated', async () => {
+    it('adds a no-decrease native caveat when simulationData has no native balance change', async () => {
       const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
       transactionMeta.simulationData = {
         tokenBalanceChanges: [],
       };
 
-      await expect(
-        enforceSimulations({
-          ...options,
-          transactionMeta,
-        }),
-      ).rejects.toThrow('No caveats generated for enforced simulations');
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
+      );
+    });
+
+    it('adds a no-decrease native caveat when simulation data is missing', async () => {
+      const transactionMeta = cloneDeep(TRANSACTION_META_MOCK);
+      transactionMeta.simulationData = undefined;
+
+      const { updateTransaction } = await enforceSimulations({
+        ...options,
+        transactionMeta,
+      });
+
+      const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+      updateTransaction?.(newTransaction);
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(
+          remove0x(
+            DELEGATOR_CONTRACTS['1.3.0']['1'].NativeBalanceChangeEnforcer,
+          ).toLowerCase(),
+        ),
+      );
+
+      expect(newTransaction.txParams.data).toStrictEqual(
+        expect.stringContaining(remove0x(NO_NATIVE_DECREASE_TERMS_MOCK)),
+      );
     });
 
     describe('applies slippage', () => {
@@ -287,6 +368,7 @@ describe('Enforced Simulations Utils', () => {
           {
             ...BALANCE_CHANGE_MOCK,
             difference: toHex(100000),
+            previousBalance: toHex(200000),
             address: TOKEN_MOCK,
             standard: SimulationTokenStandard.erc20,
           },
@@ -299,6 +381,50 @@ describe('Enforced Simulations Utils', () => {
 
         expect(newTransaction.txParams.data).toStrictEqual(
           expect.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps an ERC-20 decrease at the previous balance', async () => {
+        simulationData.tokenBalanceChanges = [
+          {
+            ...BALANCE_CHANGE_MOCK,
+            difference: toHex(100000),
+            previousBalance: toHex(105000),
+            address: TOKEN_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ];
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
+        );
+      });
+
+      it('caps a native decrease at the previous balance', async () => {
+        simulationData.nativeBalanceChange = {
+          ...BALANCE_CHANGE_MOCK,
+          difference: toHex(100000),
+          previousBalance: toHex(105000),
+        };
+
+        const { updateTransaction } = await enforceSimulations(options);
+
+        const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+        updateTransaction?.(newTransaction);
+
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.stringContaining(remove0x(toHex(105000)).toLowerCase()),
+        );
+        expect(newTransaction.txParams.data).toStrictEqual(
+          expect.not.stringContaining(remove0x(toHex(110000)).toLowerCase()),
         );
       });
 
