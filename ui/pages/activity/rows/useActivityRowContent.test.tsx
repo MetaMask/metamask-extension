@@ -54,9 +54,25 @@ jest.mock('../../../hooks/useGetDisplayName', () => ({
   useGetDisplayName: jest.fn(() => mockGetDisplayName),
 }));
 
+jest.mock('../useAddressPoisoningActivity', () => ({
+  useAddressPoisoningActivity: () => false,
+}));
+
 const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
   typeof useGetDisplayName
 >;
+
+function getActivityRowTitleText(title: React.ReactElement) {
+  const children = title.props.children;
+  const span = Array.isArray(children) ? children[0] : children;
+  return span.props.children;
+}
+
+function getActivityRowTitleClassName(title: React.ReactElement) {
+  const children = title.props.children;
+  const span = Array.isArray(children) ? children[0] : children;
+  return span.props.className;
+}
 
 const STELLAR_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
@@ -94,7 +110,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(buildActivity('assetActivation')),
     );
 
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_assetActivation_success_title|USDC',
     );
     expect(result.current.subtitle).toBe(
@@ -107,7 +123,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(buildActivity('assetDeactivation')),
     );
 
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_assetDeactivation_success_title|USDC',
     );
     expect(result.current.subtitle).toBe(
@@ -138,7 +154,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(activity),
     );
 
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_swapIncomplete_success_title|ETH',
     );
     expect(result.current.subtitle).toBe('activity_swap_success_description');
@@ -172,7 +188,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(activity),
     );
 
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_swap_success_title',
     );
     expect(result.current.subtitle).toBe('ETH → USDC');
@@ -196,7 +212,7 @@ describe('useActivityRowContent', () => {
       useActivityRowContent(activity),
     );
 
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_rampBuy_success_title|ETH',
     );
     expect(result.current.subtitle).toBe('MoonPay');
@@ -281,7 +297,7 @@ describe('useActivityRowContent', () => {
     );
 
     expect(result.current.subtitle).toBe('MoonPay');
-    expect(result.current.title.props.children).toBe(
+    expect(getActivityRowTitleText(result.current.title)).toBe(
       'activity_rampSell_success_title|ETH',
     );
     expect(result.current.secondaryAmount).toBe('100 USD');
@@ -389,7 +405,7 @@ describe('useActivityRowContent', () => {
         ),
       );
 
-      expect(result.current.title.props.children).toBe(
+      expect(getActivityRowTitleText(result.current.title)).toBe(
         'activity_moneyAccountDeposit_success_title|mUSD',
       );
       expect(result.current.subtitle).toBe(
@@ -408,7 +424,7 @@ describe('useActivityRowContent', () => {
         ),
       );
 
-      expect(result.current.title.props.children).toBe(
+      expect(getActivityRowTitleText(result.current.title)).toBe(
         'activity_moneyAccountWithdraw_success_title|mUSD',
       );
       expect(result.current.subtitle).toBe(
@@ -491,10 +507,10 @@ describe('useActivityRowContent', () => {
         ),
       );
 
-      expect(result.current.title.props.children).toBe(
+      expect(getActivityRowTitleText(result.current.title)).toBe(
         'activity_moneyAccountDeposit_failed_title|mUSD',
       );
-      expect(result.current.title.props.className).toContain(
+      expect(getActivityRowTitleClassName(result.current.title)).toContain(
         'text-error-default',
       );
     });
