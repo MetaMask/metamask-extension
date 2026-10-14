@@ -10,6 +10,8 @@ type PerpsNotionalOptions = (
 ) & {
   closePercent?: number;
   multiplier?: number;
+  /** Allow empty editable amount/price fields, but never an empty asset size. */
+  allowEmpty?: boolean;
 };
 
 /**
@@ -17,19 +19,32 @@ type PerpsNotionalOptions = (
  * TP/SL pairs use their largest trigger price; reverse orders use a multiplier.
  *
  * @param options - USD amount or asset size and price, with optional close percentage and multiplier.
- * @returns Absolute USD notional, with empty inputs treated as zero.
+ * @returns Absolute USD notional, with empty editable amount/price fields treated as zero unless allowEmpty is false.
+ * @throws RangeError when a required input is empty, malformed or nonfinite.
  */
 export function getPerpsNotionalUsd(options: PerpsNotionalOptions): number {
-  const parse = (value: string | number): number =>
-    typeof value === 'number'
-      ? value
-      : Number.parseFloat(value.replaceAll(',', '')) || 0;
+  const parse = (
+    value: string | number,
+    allowEmpty = options.allowEmpty ?? true,
+  ): number => {
+    const normalized =
+      typeof value === 'string' ? value.replaceAll(',', '').trim() : value;
+    // A decimal point alone is an unfinished editable amount, not a live size.
+    if ((normalized === '' || normalized === '.') && allowEmpty) {
+      return 0;
+    }
+    const parsed = normalized === '' ? NaN : Number(normalized);
+    if (!Number.isFinite(parsed)) {
+      throw new RangeError('Invalid Perps notional input');
+    }
+    return parsed;
+  };
   const notional =
     'usdAmount' in options
       ? Math.abs(parse(options.usdAmount))
-      : Math.abs(parse(options.size)) *
+      : Math.abs(parse(options.size, false)) *
         (Array.isArray(options.price)
-          ? Math.max(...options.price.map(parse))
+          ? Math.max(...options.price.map((price) => parse(price)))
           : parse(options.price));
   return (
     notional * ((options.closePercent ?? 100) / 100) * (options.multiplier ?? 1)

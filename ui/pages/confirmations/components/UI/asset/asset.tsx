@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box as DSBox,
   BoxAlignItems,
@@ -29,6 +30,7 @@ import {
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { useFormatters } from '../../../../../hooks/useFormatters';
+import { getUseCurrencyRateCheck } from '../../../../../selectors';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 
@@ -163,6 +165,8 @@ const TokenAsset = ({
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
   const assetImage = chainId
     ? getAvatarTokenSrc({
         chainId: chainId as Hex,
@@ -284,12 +288,14 @@ const TokenAsset = ({
           className="shrink-0"
           style={dimmedStyle}
         >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {formatCurrencyWithMinThreshold(
-              fiat?.balance ?? 0,
-              fiat?.currency || '',
-            )}
-          </Text>
+          {useCurrencyRateCheck && (
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCurrencyWithMinThreshold(
+                fiat?.balance ?? 0,
+                fiat?.currency || '',
+              )}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}

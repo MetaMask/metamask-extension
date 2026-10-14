@@ -30,7 +30,7 @@ class NftsTab extends HomePage {
     text: errorMessage,
   });
 
-  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'p' };
 
   private readonly importNftNetworkDropdown =
     '[data-testid="test-import-tokens-drop-down-custom-import"]';

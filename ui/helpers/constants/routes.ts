@@ -44,6 +44,9 @@ export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const SYNC_ACCOUNTS_ROUTE = '/sync-accounts';
+export const MFA_FLOW_ROUTE = '/mfa';
+export const MFA_SETTINGS_ROUTE =
+  '/settings/security-and-password/verification-methods';
 export const DEVELOPER_OPTIONS_ROUTE = DEBUG_ROUTE;
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
@@ -94,6 +97,7 @@ export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const DISCOVER_SEARCH_ROUTE = '/discover-search';
 export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
+export const IMPORT_NFTS_ROUTE = '/import-nfts';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -494,6 +498,16 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
+    path: MFA_FLOW_ROUTE,
+    label: 'MFA Flow Page',
+    trackInAnalytics: false,
+  },
+  {
+    path: MFA_SETTINGS_ROUTE,
+    label: 'MFA Settings Page',
+    trackInAnalytics: false,
+  },
+  {
     path: BASIC_FUNCTIONALITY_OFF_ROUTE,
     label: 'Basic Functionality Off Page',
     trackInAnalytics: false,
@@ -616,6 +630,11 @@ export const ROUTES = [
   {
     path: CUSTOM_TOKEN_IMPORT_ROUTE,
     label: 'Custom Token Import Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: IMPORT_NFTS_ROUTE,
+    label: 'Import NFTs Page',
     trackInAnalytics: true,
   },
   {
