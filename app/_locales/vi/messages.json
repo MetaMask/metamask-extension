@@ -6725,6 +6725,13 @@
   "onboardedMetametricsKey3": {
     "message": "Các tài liệu khuyến mại liên quan khác"
   },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Ngoài $1, chúng tôi muốn sử dụng dữ liệu để hiểu cách bạn tương tác với với các thông tin tiếp thị.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
   "onboardedMetametricsParagraph2": {
     "message": "Điều này sẽ giúp chúng tôi cá nhân hóa nội dung mà chúng tôi chia sẻ với bạn, chẳng hạn như:"
   },
