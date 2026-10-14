@@ -1,5 +1,6 @@
 import type { Json } from '@metamask/utils';
 import { MetaMetricsEventName } from '../../constants/metametrics';
+import { sanitizeErrorMessage } from '../sanitize-error-message';
 import { createEventBuilder } from './create-event-builder';
 import type { AnalyticsEventBuildOptions } from './create-event-builder';
 
@@ -97,15 +98,11 @@ export type TrackErrorReporter = (event: {
 
 // Snake_case metric property keys are required by the MetaMetrics schema.
 const ERROR_MESSAGE_KEY = 'error_message';
-const ERROR_STACK_KEY = 'error_stack';
 
 type ErrorProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   error_message: string;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  error_stack?: string;
 };
 
 let emittedCount = 0;
@@ -113,34 +110,30 @@ let emittedCount = 0;
 const lastEmittedAtBySignature = new Map<string, number>();
 
 /**
- * Normalizes any thrown value into a stable string representation.
+ * Normalizes any thrown value into a sanitized string representation.
  *
  * @param error - The caught value to normalize.
- * @returns The normalized error message and stack (stack is only present
- * for `Error`-like values).
+ * @returns The sanitized error message.
  */
-function normalizeError(error: unknown): {
-  errorMessage: string;
-  errorStack?: string;
-} {
+function normalizeError(error: unknown): { errorMessage: string } {
   if (error instanceof Error) {
-    return { errorMessage: error.message, errorStack: error.stack };
+    return { errorMessage: sanitizeErrorMessage(error.message) };
   }
   if (error === null || error === undefined) {
     return { errorMessage: 'Unknown error' };
   }
   if (typeof error === 'string') {
-    return { errorMessage: error };
+    return { errorMessage: sanitizeErrorMessage(error) };
   }
   if (
     typeof error === 'object' &&
     'message' in error &&
-    typeof (error as { message: unknown }).message === 'string'
+    typeof error.message === 'string'
   ) {
-    return { errorMessage: (error as { message: string }).message };
+    return { errorMessage: sanitizeErrorMessage(error.message) };
   }
   try {
-    return { errorMessage: String(error) };
+    return { errorMessage: sanitizeErrorMessage(String(error)) };
   } catch {
     return { errorMessage: 'Unknown error' };
   }
@@ -150,9 +143,12 @@ function normalizeError(error: unknown): {
  * Reports a caught error as an analytics event.
  *
  * Emits `MetaMetricsEventName.ErrorOccured` with `category`, `severity`,
- * normalized error fields (`error_message`, `error_stack`) in properties,
- * and any `context` under the `error_context` namespace. Mirrors Mobile's
- * `trackErrorAsAnalytics` (single shared error event, regular properties).
+ * a sanitized `error_message` (whitespace-normalized, capped at 500
+ * characters) in properties, and any `context` under the `error_context`
+ * namespace. Raw stack traces are never sent: Sentry is the stack
+ * destination (call sites that need it use `captureException`). Mirrors
+ * Mobile's `trackErrorAsAnalytics` (single shared error event, regular
+ * properties).
  *
  * Fail-safe: never throws, and the returned promise always resolves.
  * Volume controls (`samplingRate`, `dedupWindowMs`, `sessionCap`) bound
@@ -204,7 +200,7 @@ export async function trackErrorAsAnalytics(
       return;
     }
 
-    const { errorMessage, errorStack } = normalizeError(error);
+    const { errorMessage } = normalizeError(error);
 
     const signature = `${MetaMetricsEventName.ErrorOccured}:${errorMessage}`;
     const lastEmittedAt = lastEmittedAtBySignature.get(signature);
@@ -220,9 +216,6 @@ export async function trackErrorAsAnalytics(
         severity,
         ...({
           [ERROR_MESSAGE_KEY]: errorMessage,
-          ...(errorStack === undefined
-            ? {}
-            : { [ERROR_STACK_KEY]: errorStack }),
         } satisfies ErrorProperties),
         ...(options.context
           ? { [ERROR_CONTEXT_NAMESPACE]: options.context }

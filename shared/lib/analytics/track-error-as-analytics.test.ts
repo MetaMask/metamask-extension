@@ -17,7 +17,7 @@ describe('trackErrorAsAnalytics', () => {
   });
 
   describe('error normalization', () => {
-    it('emits normalized message and stack for an Error instance', async () => {
+    it('emits the sanitized message and no stack for an Error instance', async () => {
       const error = new Error('boom');
 
       await trackErrorAsAnalytics(report, error, { category: CATEGORY });
@@ -25,7 +25,44 @@ describe('trackErrorAsAnalytics', () => {
       expect(report).toHaveBeenCalledTimes(1);
       const event = report.mock.calls[0][0] as AnalyticsEvent;
       expect(event.properties.error_message).toBe('boom');
-      expect(event.properties.error_stack).toBe(error.stack);
+      expect(event.properties.error_stack).toBeUndefined();
+    });
+
+    it('normalizes error message whitespace', async () => {
+      await trackErrorAsAnalytics(
+        report,
+        new Error('failed\nwith   whitespace\taround'),
+        { category: CATEGORY },
+      );
+
+      const event = report.mock.calls[0][0] as AnalyticsEvent;
+      expect(event.properties.error_message).toBe(
+        'failed with whitespace around',
+      );
+    });
+
+    it('truncates messages above the 500 character cap', async () => {
+      const longMessage = 'x'.repeat(600);
+
+      await trackErrorAsAnalytics(report, new Error(longMessage), {
+        category: CATEGORY,
+      });
+
+      const event = report.mock.calls[0][0] as AnalyticsEvent;
+      const message = event.properties.error_message as string;
+      expect(message).toHaveLength(501);
+      expect(message.startsWith('x'.repeat(500))).toBe(true);
+      expect(message.endsWith('…')).toBe(true);
+    });
+
+    it('sanitizes non-Error thrown values too', async () => {
+      await trackErrorAsAnalytics(report, 'unexpected\n  string   value', {
+        category: CATEGORY,
+      });
+
+      const event = report.mock.calls[0][0] as AnalyticsEvent;
+      expect(event.properties.error_message).toBe('unexpected string value');
+      expect(event.properties.error_stack).toBeUndefined();
     });
 
     it('stringifies non-Error thrown values', async () => {
