@@ -9,6 +9,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
+import { resetTrackErrorAsAnalyticsStateForTesting } from '../../../../shared/lib/analytics/track-error-as-analytics';
 import ClearMetaMetricsData from './clear-metametrics-data';
 
 const mockTrackEvent = jest.fn();
@@ -47,6 +48,10 @@ jest.mock('../../../ducks/app/app.ts', () => {
 });
 
 describe('ClearMetaMetricsData', () => {
+  beforeEach(() => {
+    resetTrackErrorAsAnalyticsStateForTesting();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

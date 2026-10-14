@@ -295,5 +295,57 @@ describe('trackErrorAsAnalytics', () => {
       const event = report.mock.calls[0][0] as AnalyticsEvent;
       expect(event.properties.error_message).toBe('first');
     });
+
+    it('clamps an out-of-range sampling rate instead of failing open', async () => {
+      const options = {
+        category: CATEGORY,
+        volumeControls: { samplingRate: 1.2, draw: () => 0.75 },
+      };
+
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
+
+      expect(report).toHaveBeenCalledTimes(1);
+    });
+
+    it('falls back to the default sampling rate for NaN', async () => {
+      const options = {
+        category: CATEGORY,
+        volumeControls: {
+          samplingRate: Number.NaN,
+          draw: () => 0.99,
+        },
+      };
+
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
+
+      expect(report).toHaveBeenCalledTimes(1);
+    });
+
+    it('still dedupes when dedupWindowMs is NaN', async () => {
+      let currentTime = 1000;
+      const now = () => currentTime;
+      const options = {
+        category: CATEGORY,
+        volumeControls: { dedupWindowMs: Number.NaN, now },
+      };
+
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
+      currentTime = 2000;
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
+
+      expect(report).toHaveBeenCalledTimes(1);
+    });
+
+    it('still caps when sessionCap is NaN', async () => {
+      const options = {
+        category: CATEGORY,
+        volumeControls: { sessionCap: Number.NaN },
+      };
+
+      await trackErrorAsAnalytics(report, new Error('first'), options);
+      await trackErrorAsAnalytics(report, new Error('second'), options);
+
+      expect(report).toHaveBeenCalledTimes(2);
+    });
   });
 });

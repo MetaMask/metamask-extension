@@ -140,6 +140,41 @@ function normalizeError(error: unknown): { errorMessage: string } {
 }
 
 /**
+ * Resolves the sampling rate, clamping to [0, 1] and falling back to the
+ * default for non-finite values, so a caller bug can never disable the
+ * sampling control (NaN comparisons are always false and would emit).
+ *
+ * @param samplingRate - Caller-supplied rate, or undefined for default.
+ * @returns A finite sampling rate between 0 and 1.
+ */
+function resolveSamplingRate(samplingRate?: number): number {
+  const fallback = DEFAULT_ERROR_TRACKING_OPTIONS.samplingRate;
+  if (typeof samplingRate !== 'number' || !Number.isFinite(samplingRate)) {
+    return fallback;
+  }
+  return Math.min(Math.max(samplingRate, 0), 1);
+}
+
+/**
+ * Resolves a volume-control number, falling back to the default for
+ * non-finite or negative values, so a caller bug can never disable the
+ * corresponding control.
+ *
+ * @param value - Caller-supplied value, or undefined for default.
+ * @param fallback - Default value used when the input is invalid.
+ * @returns A finite, non-negative number.
+ */
+function resolveNonNegativeNumber(
+  value: number | undefined,
+  fallback: number,
+): number {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+    return fallback;
+  }
+  return value;
+}
+
+/**
  * Reports a caught error as an analytics event.
  *
  * Emits `MetaMetricsEventName.ErrorOccured` with `category`, `severity`,
@@ -186,14 +221,15 @@ export async function trackErrorAsAnalytics(
     const volumeControls = options.volumeControls ?? {};
     const now = volumeControls.now ?? Date.now;
     const draw = volumeControls.draw ?? Math.random;
-    const samplingRate =
-      volumeControls.samplingRate ??
-      DEFAULT_ERROR_TRACKING_OPTIONS.samplingRate;
-    const dedupWindowMs =
-      volumeControls.dedupWindowMs ??
-      DEFAULT_ERROR_TRACKING_OPTIONS.dedupWindowMs;
-    const sessionCap =
-      volumeControls.sessionCap ?? DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap;
+    const samplingRate = resolveSamplingRate(volumeControls.samplingRate);
+    const dedupWindowMs = resolveNonNegativeNumber(
+      volumeControls.dedupWindowMs,
+      DEFAULT_ERROR_TRACKING_OPTIONS.dedupWindowMs,
+    );
+    const sessionCap = resolveNonNegativeNumber(
+      volumeControls.sessionCap,
+      DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap,
+    );
 
     if (emittedCount >= sessionCap) {
       return;
