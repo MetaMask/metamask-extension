@@ -28,6 +28,7 @@ import {
   getConsentDecisionMade,
   getOptedIn,
 } from '../../../selectors';
+import { getIsBasicFunctionalityForcedOnDuringOnboarding } from '../../../selectors/multichain/basic-functionality';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 
 import {
@@ -139,14 +140,22 @@ export default function OnboardingMetametrics() {
   const isOptedIn = useSelector(getOptedIn);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
+  const isBasicFunctionalityForcedOn = useSelector(
+    getIsBasicFunctionalityForcedOnDuringOnboarding,
+  );
+
   const [isUsByGeolocation, setIsUsByGeolocation] = useState(false);
   const [geolocationSettled, setGeolocationSettled] = useState(false);
   const hasStoredMarketingPreference = dataCollectionForMarketing !== null;
-  const marketingPreferenceReady =
-    hasStoredMarketingPreference || geolocationSettled;
+  // The geolocation lookup needs basic functionality. At this step it is only
+  // known to be on where it is forced on (social login); everyone else can
+  // still turn it off, so they get no regional default.
+  const usesRegionDefault =
+    isBasicFunctionalityForcedOn && !hasStoredMarketingPreference;
+  const marketingPreferenceReady = !usesRegionDefault || geolocationSettled;
 
   useEffect(() => {
-    if (hasStoredMarketingPreference) {
+    if (!usesRegionDefault) {
       return;
     }
 
@@ -187,7 +196,7 @@ export default function OnboardingMetametrics() {
         clearTimeout(timeoutId);
       }
     };
-  }, [hasStoredMarketingPreference]);
+  }, [usesRegionDefault]);
 
   const [checkboxDraft, setCheckboxDraft] = useState({
     participateTouched: false,
