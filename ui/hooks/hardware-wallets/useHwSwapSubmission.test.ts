@@ -26,6 +26,38 @@ const mockRejectPendingApproval = rejectPendingApproval as jest.MockedFunction<
   typeof rejectPendingApproval
 >;
 
+const mockEnsureDeviceReady = jest.fn();
+let mockConnectionState: { status: string } = { status: 'error' };
+
+jest.mock('../../contexts/hardware-wallets', () => ({
+  useHardwareWalletActions: (): {
+    ensureDeviceReady: typeof mockEnsureDeviceReady;
+  } => ({
+    ensureDeviceReady: mockEnsureDeviceReady,
+  }),
+  useHardwareWalletState: (): { connectionState: { status: string } } => ({
+    connectionState: mockConnectionState,
+  }),
+}));
+
+const createAppClosedError = () =>
+  new HardwareWalletError('Ethereum app is not open', {
+    code: ErrorCode.DeviceStateEthAppClosed,
+    severity: Severity.Err,
+    category: Category.DeviceState,
+    userMessage: 'Ethereum app is not open',
+  });
+
+/** Flushes microtasks so submissions and effects settle within act(). */
+const flushAsync = async () => {
+  await act(async () => {
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+};
+
 const createMockLockedQuote = (requestId: string) =>
   ({
     quote: { requestId },
@@ -39,6 +71,8 @@ describe('useHwSwapSubmission', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSubmitBridgeTransaction.mockResolvedValue(undefined);
+    mockEnsureDeviceReady.mockResolvedValue(true);
+    mockConnectionState = { status: 'error' };
     mockRejectPendingApproval.mockImplementation(
       () => (() => Promise.resolve()) as never,
     );
@@ -214,41 +248,111 @@ describe('useHwSwapSubmission', () => {
     expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
   });
 
-  it('re-arms auto-submit after an error that maps to no signature event', async () => {
-    const lockedQuote = createMockLockedQuote('request-1');
-    mockSubmitBridgeTransaction.mockRejectedValue(
-      new HardwareWalletError('Ethereum app is not open', {
-        code: ErrorCode.DeviceStateEthAppClosed,
-        severity: Severity.Err,
-        category: Category.DeviceState,
-        userMessage: 'Ethereum app is not open',
-      }),
-    );
+  describe('recovery from errors that map to no signature event', () => {
+    // Mirrors the real caller: `submitBridgeTransaction` gets a new identity
+    // every render.
+    const renderSubmissionHook = () => {
+      const lockedQuote = createMockLockedQuote('request-1');
 
-    const { result, rerender } = renderHookWithProvider(
-      () =>
-        useHwSwapSubmission({
-          lockedQuote,
-          needsTwoConfirmations: false,
-          signatureState: createSignatureState(
-            HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          ),
-          dispatchSignatureEvent: mockDispatchSignatureEvent,
-          submitBridgeTransaction: (...args: unknown[]) =>
-            mockSubmitBridgeTransaction(...args),
-        }),
-      {},
-    );
+      return renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: false,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: (...args: unknown[]) =>
+              mockSubmitBridgeTransaction(...args),
+          }),
+        {},
+      );
+    };
 
-    await act(async () => {
-      await Promise.resolve();
+    it('keeps auto-submit disarmed while the device is not ready', async () => {
+      mockSubmitBridgeTransaction.mockRejectedValueOnce(createAppClosedError());
+      mockEnsureDeviceReady.mockResolvedValue(false);
+
+      const { result, rerender } = renderSubmissionHook();
+
+      await flushAsync();
+
+      // A live readiness check is made...
+      expect(mockEnsureDeviceReady).toHaveBeenCalled();
+      // ...but the flag stays armed, so rerenders cannot resubmit while the
+      // Ethereum app is still closed.
+      expect(result.current.hasStartedSubmission.current).toBe(true);
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+
+      rerender();
+      await flushAsync();
+      rerender();
+      await flushAsync();
+
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+      expect(result.current.hasStartedSubmission.current).toBe(true);
     });
 
-    expect(result.current.hasStartedSubmission.current).toBe(false);
+    it('re-arms auto-submit once after the device recovers', async () => {
+      mockSubmitBridgeTransaction
+        .mockRejectedValueOnce(createAppClosedError())
+        .mockResolvedValue(undefined);
+      mockEnsureDeviceReady.mockResolvedValueOnce(false);
 
-    rerender();
+      const { result, rerender } = renderSubmissionHook();
 
-    expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(2);
+      await flushAsync();
+
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+      expect(result.current.hasStartedSubmission.current).toBe(true);
+
+      // Device recovers: readiness passes and connectionState changes.
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      mockConnectionState = { status: 'ready' };
+      rerender();
+      await flushAsync();
+
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(2);
+      // The restarted attempt succeeded, so auto-submit stays armed.
+      expect(result.current.hasStartedSubmission.current).toBe(true);
+    });
+
+    it('clears the pending recovery when the locked quote changes', async () => {
+      const quote1 = createMockLockedQuote('request-1');
+      const quote2 = createMockLockedQuote('request-2');
+      let lockedQuote = quote1;
+      mockSubmitBridgeTransaction.mockRejectedValueOnce(createAppClosedError());
+      mockEnsureDeviceReady.mockResolvedValue(false);
+
+      const { rerender } = renderHookWithProvider(
+        () =>
+          useHwSwapSubmission({
+            lockedQuote,
+            needsTwoConfirmations: false,
+            signatureState: createSignatureState(
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            ),
+            dispatchSignatureEvent: mockDispatchSignatureEvent,
+            submitBridgeTransaction: (...args: unknown[]) =>
+              mockSubmitBridgeTransaction(...args),
+          }),
+        {},
+      );
+
+      await flushAsync();
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+
+      // A new quote auto-submits immediately, even with the old quote's
+      // recovery still pending.
+      lockedQuote = quote2;
+      mockSubmitBridgeTransaction.mockClear();
+      rerender();
+      await flushAsync();
+
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledWith(quote2);
+    });
   });
 
   it('submitActiveQuote does nothing when lockedQuote is undefined', async () => {
