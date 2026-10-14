@@ -13,7 +13,6 @@ import { useAppSelector, useDispatch } from '../../store/hooks';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import { ImportNftsModal } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
 
 import {
@@ -64,6 +63,7 @@ import {
   TOKEN_MANAGEMENT_ROUTE,
   DISCOVER_SEARCH_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
+  IMPORT_NFTS_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_DETAILS_ROUTE,
@@ -88,9 +88,12 @@ import {
   HARDWARE_WALLET_REPAIR_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getIsQrSyncEnabled } from '../../../shared/lib/environment';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa';
+import MfaFlowLauncher from '../mfa/mfa-flow-launcher';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
@@ -103,7 +106,6 @@ import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
 import {
-  hideImportNftsModal,
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
@@ -181,6 +183,7 @@ const RevealSeedConfirmation = mmLazy(
 );
 const Settings = mmLazy(() => import('../settings/index.ts'));
 const SyncAccounts = mmLazy(() => import('../settings/sync-accounts/index.ts'));
+const MfaFlowHost = mmLazy(() => import('../mfa/mfa-flow-host.tsx'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -189,6 +192,7 @@ const DiscoverSearchPage = mmLazy(() => import('../discover-search/index.ts'));
 const CustomTokenImportPage = mmLazy(
   () => import('../custom-token-import/index.ts'),
 );
+const ImportNftsPage = mmLazy(() => import('../import-nfts/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -337,6 +341,10 @@ export const CustomTokenImportFeatureRoute = () => {
   return <CustomTokenImportPage />;
 };
 
+export const ImportNftsFeatureRoute = () => {
+  return <ImportNftsPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -411,6 +419,10 @@ export const routeConfig = [
         element: <CustomTokenImportFeatureRoute />,
       },
       {
+        path: IMPORT_NFTS_ROUTE,
+        element: <ImportNftsFeatureRoute />,
+      },
+      {
         path: `${SETTINGS_ROUTE}/*`,
         element: (
           <GlobalMenuRouteTransition>
@@ -423,6 +435,14 @@ export const routeConfig = [
             {
               path: SYNC_ACCOUNTS_ROUTE,
               element: <SyncAccounts />,
+            },
+          ]
+        : []),
+      ...(isMfaKitEnabled()
+        ? [
+            {
+              path: MFA_FLOW_ROUTE,
+              element: <MfaFlowHost />,
             },
           ]
         : []),
@@ -762,9 +782,6 @@ export default function Routes() {
   const isDeprecatedNetworkModalOpen = useAppSelector(
     (state) => state.appState.deprecatedNetworkModalOpen,
   );
-  const isImportNftsModalOpen = useAppSelector(
-    (state) => state.appState.importNftsModal.open,
-  );
   const isIpfsModalOpen = useAppSelector(
     (state) => state.appState.showIpfsModalOpen,
   );
@@ -906,16 +923,13 @@ export default function Routes() {
       <ConfirmationRouter />
       <NetworkHandler />
       <ToastListener />
+      {isUnlocked && isMfaKitEnabled() ? <MfaFlowLauncher /> : null}
 
       <QRHardwarePopover />
       {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
-      {isImportNftsModalOpen ? (
-        <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
-      ) : null}
-
       {isIpfsModalOpen ? (
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}

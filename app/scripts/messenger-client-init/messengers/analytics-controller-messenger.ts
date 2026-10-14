@@ -21,6 +21,10 @@ import type {
   AnalyticsControllerUpdateEventFragmentAction,
   AnalyticsControllerUpsertEventFragmentAction,
 } from '@metamask/analytics-controller';
+import type {
+  ConfigRegistryControllerGetStateAction,
+  ConfigRegistryControllerStateChangedEvent,
+} from '@metamask/config-registry-controller';
 import type { MultichainNetworkControllerGetStateAction } from '@metamask/multichain-network-controller';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
@@ -35,6 +39,7 @@ import type {
 import type { RootMessenger } from '../../lib/messenger';
 
 type InitActions =
+  | ConfigRegistryControllerGetStateAction
   | PreferencesControllerGetStateAction
   | MultichainNetworkControllerGetStateAction
   | NetworkControllerGetStateAction
@@ -58,7 +63,7 @@ type InitActions =
   | SentryTracingServiceTrackTracesAfterMetricsOptInAction
   | SentryTracingServiceClearTracesAfterMetricsOptInAction;
 
-type InitEvents = never;
+type InitEvents = ConfigRegistryControllerStateChangedEvent;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -80,8 +85,11 @@ export function getAnalyticsControllerMessenger(
     });
   messenger.delegate({
     messenger: analyticsControllerMessenger,
-    actions: ['GeolocationController:getGeolocationData'],
-    events: [],
+    actions: [
+      'GeolocationController:getGeolocationData',
+      'ConfigRegistryController:getState',
+    ],
+    events: ['ConfigRegistryController:stateChanged'],
   });
   return analyticsControllerMessenger;
 }
@@ -134,8 +142,9 @@ export function getAnalyticsControllerInitMessenger(
       'AnalyticsController:finalizeEventFragment',
       'SentryTracingService:trackTracesAfterMetricsOptIn',
       'SentryTracingService:clearTracesAfterMetricsOptIn',
+      'ConfigRegistryController:getState',
     ],
-    events: [],
+    events: ['ConfigRegistryController:stateChanged'],
   });
 
   return analyticsControllerInitMessenger;

@@ -88,6 +88,7 @@ export const SECURITY_ITEMS = {
   'manage-wallet-recovery': 'manageWalletRecovery',
   password: 'password',
   passkey: 'unlockWithPasskey',
+  mfa: 'mfaSettingsTitle',
   'auto-lock': 'autoLock',
   'phishing-detection': 'usePhishingDetection',
 } as const;
