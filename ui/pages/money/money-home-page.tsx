@@ -188,15 +188,16 @@ export function MoneyHomePage() {
   const monthlyEarnings =
     formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ??
     projectedMonthlyEarnings;
-  const lifetimeEarnings =
-    formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd) ??
-    FORMATTED_ZERO;
+  const lifetimeEarnings = sinceInceptionQuery.isError
+    ? undefined
+    : formatInterestEarned(sinceInceptionQuery.data?.interest_earned_usd);
   const isMonthlyEarningsLoading =
     last30DaysQuery.isLoading ||
     (formatInterestEarned(last30DaysQuery.data?.interest_earned_usd) ===
       undefined &&
       (vaultApyQuery.isLoading || isBalanceLoading));
-  const isLifetimeEarningsLoading = sinceInceptionQuery.isLoading;
+  const isLifetimeEarningsLoading =
+    !sinceInceptionQuery.isError && sinceInceptionQuery.isLoading;
   const { tokens: depositTokens, isNoFeeToken } = useMoneyDepositTokens();
   const privacyMode = useSelector(getPrivacyMode);
   const {
