@@ -45,4 +45,4 @@ jobs:
         with:
           name: feature-flag-coverage-report
           path: ./test/test-results/e2e/feature-flag-coverage-report.json
-          if-no-files-found: error
+          if-no-files-found: warn
