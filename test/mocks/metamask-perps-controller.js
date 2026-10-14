@@ -45,6 +45,7 @@ const mockPerpsEventPropertyKeys = {
   BUTTON_LOCATION: 'button_location',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
+  OUTAGE_BANNER_SHOWN: 'outage_banner_shown',
   MAX_SLIPPAGE_PCT: 'max_slippage_pct',
   MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
   ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',

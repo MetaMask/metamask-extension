@@ -35,6 +35,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { ERC20 } from '@metamask/controller-utils';
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -246,7 +247,12 @@ const getManagedTokenListOrderKey = (token: ManagedAsset) => {
 const getSearchResultListOrderKey = (result: TokenSearchResult) => {
   const payload = convertSearchResultToImportPayload(result);
   if (payload?.hexChainId) {
-    return getTokenAddressKey(payload.hexChainId, payload.assetReference);
+    // The API references native assets by slip44 coin type, the wallet by
+    // the chain's native address.
+    const address = payload.isNative
+      ? getNativeTokenAddress(payload.hexChainId)
+      : payload.assetReference;
+    return getTokenAddressKey(payload.hexChainId, address);
   }
 
   return result.assetId.toLowerCase();
@@ -783,10 +789,14 @@ export const TokenManagementPage = () => {
       return [];
     }
 
-    return apiTokenResults.filter((result) =>
-      getSearchResultAssetKeys(result).every(
-        (key) => !visibleTokenAssetIds.has(key),
-      ),
+    // The wallet always lists the chain's native asset as its own locked row,
+    // so a native browse result is a duplicate on every chain.
+    return apiTokenResults.filter(
+      (result) =>
+        !convertSearchResultToImportPayload(result)?.isNative &&
+        getSearchResultAssetKeys(result).every(
+          (key) => !visibleTokenAssetIds.has(key),
+        ),
     );
   }, [
     apiTokenResults,

@@ -12,6 +12,7 @@ describe('NetworkSelectorCustomImport', () => {
   it('should match snapshot', () => {
     const props = {
       title: 'Test Title',
+      ariaLabel: 'Network: Test Title',
       buttonDataTestId: 'network-selector-button',
       chainId: '1',
       onSelectNetwork: jest.fn(),
@@ -31,6 +32,7 @@ describe('NetworkSelectorCustomImport', () => {
 
     const props = {
       title: 'Clickable Network',
+      ariaLabel: 'Network: Clickable Network',
       buttonDataTestId: 'network-selector-click',
       chainId: '1',
       onSelectNetwork,

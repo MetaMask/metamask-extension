@@ -6,8 +6,15 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
-import * as actions from '../../../../../store/actions';
+import { IMPORT_NFTS_ROUTE } from '../../../../../helpers/constants/routes';
 import { NftEmptyState } from './nft-empty-state';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 describe('NftEmptyState', () => {
   const mockStore = configureMockStore([thunk]);
@@ -20,6 +27,7 @@ describe('NftEmptyState', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavigate.mockClear();
   });
 
   it('should render the component with correct test id', () => {
@@ -41,8 +49,7 @@ describe('NftEmptyState', () => {
     ).toBeInTheDocument();
   });
 
-  it('should dispatch showImportNftsModal when import button is clicked', () => {
-    const showImportNftsModalSpy = jest.spyOn(actions, 'showImportNftsModal');
+  it('navigates to the import NFTs page when import button is clicked', () => {
     renderComponent();
 
     const importButton = screen.getByRole('button', {
@@ -50,7 +57,7 @@ describe('NftEmptyState', () => {
     });
     fireEvent.click(importButton);
 
-    expect(showImportNftsModalSpy).toHaveBeenCalledWith({});
+    expect(mockNavigate).toHaveBeenCalledWith(IMPORT_NFTS_ROUTE);
   });
 
   it('should render light theme icon by default', () => {
