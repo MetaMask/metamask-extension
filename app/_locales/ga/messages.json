@@ -3290,6 +3290,13 @@
   "onboardedMetametricsKey3": {
     "message": "Ábhair chur chun cinn ábhartha eile"
   },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Chomh maith le $1, ba mhaith linn sonraí a úsáid chun tuiscint a fháil ar an gcaoi a n-idirghníomhaíonn tú le cumarsáid mhargaíochta.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
   "onboardedMetametricsParagraph2": {
     "message": "Cuidíonn sé seo linn a bhfuil á roinnt againn leat a phearsantú, mar shampla:"
   },

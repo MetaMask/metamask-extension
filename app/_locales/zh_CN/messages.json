@@ -6721,6 +6721,13 @@
   "onboardedMetametricsKey3": {
     "message": "其他相关宣传材料"
   },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "除了 $1，我们还想使用数据来了解您如何与营销通信交互。",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
   "onboardedMetametricsParagraph2": {
     "message": "这可以帮助我们个性化与您分享的内容，例如："
   },
