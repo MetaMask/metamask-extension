@@ -168,7 +168,7 @@ export function useTransactionConfirm() {
       await dispatch(
         updateAndApproveTx(
           txToApprove,
-          true,
+          !isPayingWithHardwareWallet,
           isPayingWithHardwareWallet ? t('swapConfirmWithHwWallet') : '',
           payingAccount,
         ),
