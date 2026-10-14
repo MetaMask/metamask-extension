@@ -181,6 +181,9 @@
   "activityEmptyNoFundsDescription": {
     "message": "Add funds to your wallet to get started."
   },
+  "activityUntrustedSenderBadge": {
+    "message": "New sender"
+  },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
     "description": "$1 is the token symbol"
@@ -1433,9 +1436,6 @@
   "addressMismatchPunycode": {
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
-  },
-  "activityUntrustedSenderBadge": {
-    "message": "New sender"
   },
   "addressPoisoningBadge": {
     "message": "Poisoned"
