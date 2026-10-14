@@ -152,7 +152,10 @@ function normalizeError(error: unknown): { errorMessage: string } {
  *
  * Fail-safe: never throws, and the returned promise always resolves.
  * Volume controls (`samplingRate`, `dedupWindowMs`, `sessionCap`) bound
- * event volume. See `TrackErrorVolumeControls`.
+ * event volume. See `TrackErrorVolumeControls`. The dedup map and the
+ * session cap are per JavaScript context (popup, notification, expanded
+ * view, and background count separately, and popups reset on close). The
+ * cap budget is shared by all callers and categories in that context.
  *
  * The `report` callback must be the consent-aware reporting path (the
  * `trackEvent` from `useAnalytics`, or the background `trackEvent`), so
@@ -202,13 +205,14 @@ export async function trackErrorAsAnalytics(
 
     const { errorMessage } = normalizeError(error);
 
-    const signature = `${MetaMetricsEventName.ErrorOccured}:${errorMessage}`;
+    const severity = options.severity ?? 'error';
+
+    const signature = `${MetaMetricsEventName.ErrorOccured}:${options.category}:${severity}:${errorMessage}`;
+
     const lastEmittedAt = lastEmittedAtBySignature.get(signature);
     if (lastEmittedAt !== undefined && now() - lastEmittedAt < dedupWindowMs) {
       return;
     }
-
-    const severity = options.severity ?? 'error';
 
     const event = createEventBuilder(MetaMetricsEventName.ErrorOccured)
       .addCategory(options.category)

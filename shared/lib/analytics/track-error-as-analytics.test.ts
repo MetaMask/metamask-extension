@@ -248,6 +248,40 @@ describe('trackErrorAsAnalytics', () => {
       expect(report).toHaveBeenCalledTimes(2);
     });
 
+    it('emits again for the same message under a different category within the window', async () => {
+      const currentTime = 1000;
+      const now = () => currentTime;
+
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: 'Swaps',
+        volumeControls: { now },
+      });
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: 'Settings',
+        volumeControls: { now },
+      });
+
+      expect(report).toHaveBeenCalledTimes(2);
+    });
+
+    it('emits again for the same message and category under a different severity within the window', async () => {
+      const currentTime = 1000;
+      const now = () => currentTime;
+
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: CATEGORY,
+        severity: 'error',
+        volumeControls: { now },
+      });
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: CATEGORY,
+        severity: 'warning',
+        volumeControls: { now },
+      });
+
+      expect(report).toHaveBeenCalledTimes(2);
+    });
+
     it('suppresses all events once the session cap is reached', async () => {
       const options = {
         category: CATEGORY,
