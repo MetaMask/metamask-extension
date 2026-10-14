@@ -90,7 +90,7 @@ describe(`migration #${version}`, () => {
     await migrate(state, changedControllers);
 
     expect(getConfiguration(state, TEMPO_CHAIN_ID).nativeCurrency).toBe('USD');
-    expect(changedControllers).toStrictEqual(new Set());
+    expect(changedControllers.size).toBe(0);
   });
 
   it('leaves a customized Tempo native currency unchanged', async () => {
@@ -102,7 +102,7 @@ describe(`migration #${version}`, () => {
     expect(getConfiguration(state, TEMPO_CHAIN_ID).nativeCurrency).toBe(
       'CUSTOM',
     );
-    expect(changedControllers).toStrictEqual(new Set());
+    expect(changedControllers.size).toBe(0);
   });
 
   it('is a no-op when Tempo is not configured', async () => {
@@ -125,7 +125,7 @@ describe(`migration #${version}`, () => {
         networkConfigurationsByChainId: {},
       },
     });
-    expect(changedControllers).toStrictEqual(new Set());
+    expect(changedControllers.size).toBe(0);
   });
 
   it('is a no-op when the Tempo configuration is invalid', async () => {
@@ -156,7 +156,7 @@ describe(`migration #${version}`, () => {
         },
       },
     });
-    expect(changedControllers).toStrictEqual(new Set());
+    expect(changedControllers.size).toBe(0);
     warnSpy.mockRestore();
   });
 });
