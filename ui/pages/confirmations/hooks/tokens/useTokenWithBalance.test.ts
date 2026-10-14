@@ -5,6 +5,8 @@ import { useTokenWithBalance } from './useTokenWithBalance';
 
 const CHAIN_ID = '0x1' as Hex;
 const ACCOUNT_ADDRESS = '0x1111111111111111111111111111111111111111' as Hex;
+const OTHER_ACCOUNT_ADDRESS =
+  '0x4444444444444444444444444444444444444444' as Hex;
 const TOKEN_ADDRESS = '0x2222222222222222222222222222222222222222' as Hex;
 
 function createMockState() {
@@ -45,12 +47,21 @@ function createMockState() {
             [TOKEN_ADDRESS]: '0x64',
           },
         },
+        [OTHER_ACCOUNT_ADDRESS]: {
+          [CHAIN_ID]: {
+            [TOKEN_ADDRESS]: '0xc8',
+          },
+        },
       },
       accountsByChainId: {
         [CHAIN_ID]: {
           [ACCOUNT_ADDRESS]: {
             address: ACCOUNT_ADDRESS,
             balance: '0x1bc16d674ec80000',
+          },
+          [OTHER_ACCOUNT_ADDRESS]: {
+            address: OTHER_ACCOUNT_ADDRESS,
+            balance: '0xde0b6b3a7640000',
           },
         },
       },
@@ -81,9 +92,9 @@ function createMockState() {
   };
 }
 
-function runHook(tokenAddress: Hex, chainId: Hex) {
+function runHook(tokenAddress: Hex, chainId: Hex, accountAddress?: Hex) {
   return renderHookWithProvider(
-    () => useTokenWithBalance(tokenAddress, chainId),
+    () => useTokenWithBalance(tokenAddress, chainId, accountAddress),
     createMockState(),
   );
 }
@@ -120,6 +131,29 @@ describe('useTokenWithBalance', () => {
     });
 
     expect(result.current?.balanceFiat).toContain('20,000');
+  });
+
+  it('reads the token balance of an explicit account', () => {
+    const { result } = runHook(TOKEN_ADDRESS, CHAIN_ID, OTHER_ACCOUNT_ADDRESS);
+
+    expect(result.current).toMatchObject({
+      balance: '0.02',
+      balanceRaw: '200',
+    });
+  });
+
+  it('reads the native balance of an explicit account', () => {
+    const nativeTokenAddress = getNativeTokenAddress(CHAIN_ID);
+    const { result } = runHook(
+      nativeTokenAddress,
+      CHAIN_ID,
+      OTHER_ACCOUNT_ADDRESS,
+    );
+
+    expect(result.current).toMatchObject({
+      balance: '1',
+      balanceRaw: '1000000000000000000',
+    });
   });
 
   it('returns undefined if no token exists for the given address and chain ID', () => {

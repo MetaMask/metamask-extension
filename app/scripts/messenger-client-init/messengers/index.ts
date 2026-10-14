@@ -88,7 +88,6 @@ import {
 } from './smart-transactions-controller-messenger';
 import { getNetworkConnectionBannerControllerMessenger } from './network-connection-banner';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
-import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
 import {
   getTokenListControllerInitMessenger,
@@ -242,7 +241,6 @@ export {
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
-export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type { NameControllerInitMessenger } from './name-controller-messenger';
@@ -481,10 +479,6 @@ export const MESSENGER_FACTORIES = {
   },
   LoggingController: {
     getMessenger: getLoggingControllerMessenger,
-    getInitMessenger: noop,
-  },
-  MetaMetricsController: {
-    getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
   },
   MetaMetricsDataDeletionController: {

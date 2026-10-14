@@ -134,7 +134,7 @@ describe('BasicFunctionalityMigrationModal', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('dismisses when Accept and close is clicked', () => {
+  it('dismisses when Continue is clicked', () => {
     const { getByTestId } = renderComponent();
 
     fireEvent.click(getByTestId('basic-functionality-migration-modal-accept'));

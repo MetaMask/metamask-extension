@@ -37,7 +37,7 @@ export function ViewContactContent({
   onDelete,
 }: ViewContactContentProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const networks = useSelector(getNetworkConfigurationsByChainId);
   const network = networks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');

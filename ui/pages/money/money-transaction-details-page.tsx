@@ -1,11 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -32,7 +26,7 @@ import {
 import {
   DEFAULT_ROUTE,
   MONEY_ACTIVITY_ROUTE,
-  PREVIOUS_ROUTE,
+  MONEY_HOME_ROUTE,
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
@@ -41,6 +35,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { useFormatters } from '../../hooks/useFormatters';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
+import { useInAppBack } from '../../hooks/useInAppBack';
 import { useMoneyActivityItems } from '../../hooks/money/use-money-activity-items';
 import { useMoneyTransactionFee } from '../../hooks/money/use-money-transaction-fee';
 import { selectMoneyActivityDetailsEnabled } from '../../selectors/money/money-account-feature-flags';
@@ -62,6 +57,7 @@ import {
   getMoneyActivityErrorMessage,
   getMoneyActivityExplorerUrl,
   getMoneyActivityPaidWith,
+  getMoneyActivityTransactionHash,
   getMoneyTransactionDetailsHeroAmount,
   shortenMoneyActivityHex,
 } from './utils/money-transaction-details-display';
@@ -87,7 +83,6 @@ const STATUS_COLOR = {
 export function MoneyTransactionDetailsPage() {
   const t = useI18nContext() as MoneyActivityTranslate;
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const navigate = useNavigate();
   const { transactionId } = useParams<{ transactionId: string }>();
   const privacyMode = useSelector(getPrivacyMode);
   const detailsEnabled = useSelector(selectMoneyActivityDetailsEnabled);
@@ -100,7 +95,7 @@ export function MoneyTransactionDetailsPage() {
   );
   const pageRef = useRef<HTMLDivElement>(null);
   // useCopyToClipboard analysis: Copies a public transaction hash
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   useLayoutEffect(() => {
     resetOverflowAncestorScroll(pageRef.current);
@@ -140,20 +135,23 @@ export function MoneyTransactionDetailsPage() {
   const fromAddress =
     item?.kind === 'onchain' ? item.tx.txParams.from : undefined;
   const onchainTx = item?.kind === 'onchain' ? item.tx : undefined;
+  const requiredTx = useSelector((state: TransactionState) =>
+    selectTransactionById(state, onchainTx?.requiredTransactionIds?.at(-1)),
+  );
+  const transactionHash = onchainTx
+    ? getMoneyActivityTransactionHash(onchainTx, requiredTx)
+    : undefined;
   const { feeUsd, totalUsd, isNetworkFeePaidByMetaMask } =
     useMoneyTransactionFee(onchainTx);
   const fromAccount = useSelector((state) =>
     fromAddress ? getInternalAccountByAddress(state, fromAddress) : undefined,
   );
 
-  const explorerUrl =
-    item?.kind === 'onchain'
-      ? getMoneyActivityExplorerUrl(item.tx.chainId, item.tx.hash)
-      : undefined;
+  const explorerUrl = transactionHash
+    ? getMoneyActivityExplorerUrl(transactionHash.chainId, transactionHash.hash)
+    : undefined;
 
-  const handleBack = useCallback(() => {
-    navigate(PREVIOUS_ROUTE);
-  }, [navigate]);
+  const handleBack = useInAppBack(MONEY_HOME_ROUTE);
   const formattedFee =
     feeUsd === undefined
       ? '-'
@@ -216,7 +214,6 @@ export function MoneyTransactionDetailsPage() {
     if (accountLabel && fromAccount) {
       accountLabel = `${fromAccount.metadata.name} (${accountLabel})`;
     }
-    const transactionHash = tx.hash;
 
     body = (
       <div
@@ -361,12 +358,12 @@ export function MoneyTransactionDetailsPage() {
                     variant={TextVariant.BodyMd}
                     fontWeight={FontWeight.Medium}
                   >
-                    {shortenMoneyActivityHex(transactionHash)}
+                    {shortenMoneyActivityHex(transactionHash.hash)}
                   </Text>
                   <ButtonIcon
                     iconName={IconName.Copy}
                     ariaLabel={t('copyTransactionId')}
-                    onClick={() => handleCopy(transactionHash)}
+                    onClick={() => handleCopy(transactionHash.hash)}
                     data-testid="money-transaction-details-copy-hash"
                   />
                 </Box>
@@ -390,7 +387,10 @@ export function MoneyTransactionDetailsPage() {
                   {showSponsoredNetworkFeeInTooltip ? (
                     <>
                       <br />
-                      {`${t('networkFee')}: ${t('paidByMetaMask')}`}
+                      {`${t('networkFee')}: ${formatCurrencyWithMinThreshold(
+                        0,
+                        MONEY_ACCOUNT_FIAT_CURRENCY,
+                      )}`}
                     </>
                   ) : null}
                 </Text>

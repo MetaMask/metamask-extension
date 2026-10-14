@@ -31,6 +31,7 @@ type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
   onSubmit: (password: string, termsChecked: boolean) => Promise<void>;
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  error?: boolean;
   loading?: boolean;
 };
 
@@ -38,6 +39,7 @@ const CreatePasswordForm = ({
   isSocialLoginFlow,
   onSubmit,
   onBack,
+  error = false,
   loading = false,
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
@@ -159,6 +161,19 @@ const CreatePasswordForm = ({
             onChange={(newPassword) => setPassword(newPassword)}
             disabled={loading}
           />
+          {error ? (
+            <Box marginTop={4}>
+              <Text
+                asChild
+                color={TextColor.ErrorDefault}
+                variant={TextVariant.BodySm}
+              >
+                <span role="alert" data-testid="create-password-error">
+                  {t('notificationsSettingsBoxError')}
+                </span>
+              </Text>
+            </Box>
+          ) : null}
           <Box
             className="create-password__terms-container rounded-lg"
             marginTop={6}
