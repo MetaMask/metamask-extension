@@ -7,6 +7,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { selectAddressPoisoningKnownAddresses } from '../../../selectors/address-poisoning-known-addresses';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
 import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
@@ -14,6 +15,7 @@ import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
 import { isIncomingTokenTransfer } from './incoming-token-transfer';
+import { isPoisoningLookalikeFromAddress } from './poisoning-lookalike-from-address';
 import { isSpamTransaction } from './spam-transactions';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
@@ -30,6 +32,7 @@ export function useQueryFilters(queryFilters: Props) {
   const protectedLocalTransactions = useSelector(
     selectProtectedLocalTransactions,
   );
+  const knownAddresses = useSelector(selectAddressPoisoningKnownAddresses);
   const assetId = 'assetId' in queryFilters ? queryFilters.assetId : undefined;
 
   return useCallback(
@@ -41,6 +44,8 @@ export function useQueryFilters(queryFilters: Props) {
         (tx) => !isIncomingTokenTransfer(tx, subjectAddress),
         (tx) => !isIncomingNativeAssetTransfer(tx, subjectAddress),
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
+        (tx) =>
+          !isPoisoningLookalikeFromAddress(tx, subjectAddress, knownAddresses),
       ];
       // This really should be moved to the API
       const activityFilters: ((activity: ActivityListItem) => boolean)[] = [
@@ -73,6 +78,12 @@ export function useQueryFilters(queryFilters: Props) {
         })),
       };
     },
-    [assetId, excludedHashes, protectedLocalTransactions, subjectAddress],
+    [
+      assetId,
+      excludedHashes,
+      knownAddresses,
+      protectedLocalTransactions,
+      subjectAddress,
+    ],
   );
 }

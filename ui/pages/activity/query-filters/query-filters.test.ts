@@ -2,6 +2,10 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { selectAddressPoisoningKnownAddresses } from '../../../selectors/address-poisoning-known-addresses';
+import { selectProtectedLocalTransactions } from '../../../selectors/activity';
+import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
+import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
 import { isIncomingTokenTransfer } from './incoming-token-transfer';
@@ -33,7 +37,21 @@ function transaction(overrides = {}) {
 
 describe('query filters', () => {
   beforeEach(() => {
-    jest.mocked(useSelector).mockReturnValue(new Set());
+    jest.mocked(useSelector).mockImplementation((selector) => {
+      if (selector === selectAddressPoisoningKnownAddresses) {
+        return [];
+      }
+      if (selector === selectProtectedLocalTransactions) {
+        return new Set<string>();
+      }
+      if (
+        selector === selectRequiredTransactionHashes ||
+        selector === selectRampsSettlementHashes
+      ) {
+        return new Set<string>();
+      }
+      return new Set<string>();
+    });
   });
 
   it('matches excluded transaction hashes case-insensitively', () => {
