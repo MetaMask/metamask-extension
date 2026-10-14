@@ -538,43 +538,59 @@ async function mockDepositSettlement(
       };
     });
 
+  const mainnetSentinelNetwork = {
+    name: 'Mainnet',
+    group: 'ethereum',
+    chainID: 1,
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: false,
+    relayTransactions: false,
+    hidden: false,
+    sendBundle: false,
+  };
+
+  const monadSentinelNetwork = {
+    name: 'Monad Mainnet',
+    group: 'monad',
+    chainID: MONAD_CHAIN_ID_DECIMAL,
+    nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
+    network: 'monad-mainnet',
+    explorer: 'https://monadscan.com/',
+    confirmations: true,
+    // The 7702 publish hook refuses the sponsored vault batch unless
+    // Sentinel lists relay signers for this chain.
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    smartTransactions: false,
+    relayTransactions: true,
+    hidden: false,
+    sendBundle: false,
+  };
+
   await server
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '1': {
-          name: 'Mainnet',
-          group: 'ethereum',
-          chainID: 1,
-          nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-          network: 'ethereum-mainnet',
-          explorer: 'https://etherscan.io',
-          confirmations: true,
-          smartTransactions: false,
-          relayTransactions: false,
-          hidden: false,
-          sendBundle: false,
-        },
-        [String(MONAD_CHAIN_ID_DECIMAL)]: {
-          name: 'Monad Mainnet',
-          group: 'monad',
-          chainID: MONAD_CHAIN_ID_DECIMAL,
-          nativeCurrency: { name: 'MON', symbol: 'MON', decimals: 18 },
-          network: 'monad-mainnet',
-          explorer: 'https://monadscan.com/',
-          confirmations: true,
-          // The 7702 publish hook refuses the sponsored vault batch unless
-          // Sentinel lists relay signers for this chain.
-          cubistSigners: ['0x1111111111111111111111111111111111111111'],
-          smartTransactions: false,
-          relayTransactions: true,
-          hidden: false,
-          sendBundle: false,
-        },
+        '1': mainnetSentinelNetwork,
+        [String(MONAD_CHAIN_ID_DECIMAL)]: monadSentinelNetwork,
       },
     }));
+
+  // Per-chain flags (relay support, signers) are read from each network's
+  // own `/network` endpoint.
+  for (const [sentinelUrl, network] of [
+    [TX_SENTINEL_URL, mainnetSentinelNetwork],
+    [MONAD_TX_SENTINEL_URL, monadSentinelNetwork],
+  ] as const) {
+    await server
+      .forGet(`${sentinelUrl}/network`)
+      .always()
+      .thenCallback(() => ({ statusCode: 200, json: network }));
+  }
 
   for (const sentinelUrl of [TX_SENTINEL_URL, MONAD_TX_SENTINEL_URL]) {
     await server
