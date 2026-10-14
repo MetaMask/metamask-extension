@@ -1,46 +1,11 @@
 import { getIsPerpsIncludedInBuild } from '../../environment';
 import {
+  getNotificationsSettingsSectionTypeFromSlug,
+  NotificationsSettingsQueryParams,
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
-  Route,
-} from './route';
-
-export enum NotificationsSettingsQueryParams {
-  Section = 'section',
-}
-
-type NotificationsSettingsSectionType =
-  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
-
-const NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH = new Map(
-  Object.entries(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).map(
-    ([sectionType, path]): [string, NotificationsSettingsSectionType] => [
-      path,
-      sectionType as NotificationsSettingsSectionType,
-    ],
-  ),
-);
-
-/**
- * Resolves a `section` slug (e.g. from a deep-link query param) to a section
- * type. Accepts only kebab-case slugs matching a registered section route;
- * unknown, empty, or missing slugs resolve to null.
- *
- * @param slug - The raw slug value, if any.
- * @returns The matching section type, or null when unsupported.
- */
-export function getNotificationsSettingsSectionTypeFromSlug(
-  slug: string | null | undefined,
-): NotificationsSettingsSectionType | null {
-  if (!slug) {
-    return null;
-  }
-  return (
-    NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH.get(
-      `${NOTIFICATIONS_SETTINGS_ROUTE}/${slug.trim().toLowerCase()}`,
-    ) ?? null
-  );
-}
+} from '../../notifications-settings';
+import { Route } from './route';
 
 /**
  * Opens notification settings, or an available preference section.

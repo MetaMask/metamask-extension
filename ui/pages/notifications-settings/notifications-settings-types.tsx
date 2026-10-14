@@ -13,10 +13,10 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
-import type { NotificationsSettingsSectionType } from '../../helpers/constants/routes';
-import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
-
-export type { NotificationsSettingsSectionType } from '../../helpers/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  type NotificationsSettingsSectionType,
+} from '../../../shared/lib/notifications-settings';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;

@@ -11,7 +11,9 @@ import Preloader from '../../../components/ui/icon/preloader/preloader-icon.comp
 import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
-} from '../../../helpers/constants/routes';
+  NotificationsSettingsQueryParams,
+  type NotificationsSettingsSectionType,
+} from '../../../../shared/lib/notifications-settings';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNotificationPreferences } from '../../../hooks/metamask-notifications/useNotificationPreferences';
@@ -22,9 +24,6 @@ import { NotificationSettingsSection } from '../../notifications-settings/notifi
 import { useNotificationAccountGroups } from '../../notifications-settings/notifications-settings-helpers';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { getNotificationsSettingsSectionConfigs } from '../../notifications-settings/notifications-settings-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
-import { NotificationsSettingsQueryParams } from '../../../../shared/lib/deep-links/routes/notifications-settings';
 
 type NotificationSectionSubPageProps = {
   sectionType: NotificationsSettingsSectionType;

@@ -9,15 +9,14 @@ import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
 import {
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-} from '../../../helpers/constants/routes';
+  type NotificationsSettingsSectionType,
+} from '../../../../shared/lib/notifications-settings';
 import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
 import {
   useNotificationPreferences,
   type NotificationPreferences,
 } from '../../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();

@@ -1,6 +1,21 @@
 import { memoize } from 'lodash';
 
 import { MUSD_ROUTE_DEFINITIONS } from '../../pages/musd/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+} from '../../../shared/lib/notifications-settings';
+
+export {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+  NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
+  NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
+  NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
+};
 
 type AppRoute = {
   path: string;
@@ -139,31 +154,6 @@ export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
-export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
-export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/wallet-activity`;
-export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/perps`;
-export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/marketing`;
-export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/agentic-cli`;
-const NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE = {
-  walletActivity: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-  perps: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
-  marketing: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
-  agenticCli: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
-} as const;
-
-/**
- * Null-prototype lookup of notification settings section types to routes.
- * Indexed with deep-link-derived values elsewhere, so the null prototype keeps
- * inherited keys like `constructor` or `__proto__` out of the lookup space.
- */
-export const NOTIFICATIONS_SETTINGS_SECTION_ROUTES: typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE =
-  Object.assign(
-    Object.create(null) as Record<string, string>,
-    NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE,
-  );
-
-export type NotificationsSettingsSectionType =
-  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';

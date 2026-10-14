@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -10,18 +10,17 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
-} from '../../helpers/constants/routes';
+  type NotificationsSettingsSectionType,
+} from '../../../shared/lib/notifications-settings';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
 import { useNotificationPreferences } from '../../hooks/metamask-notifications/useNotificationPreferences';
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
 
-import { getNotificationsSettingsSectionTypeFromSlug } from '../../../shared/lib/deep-links/routes/notifications-settings';
 // eslint-disable-next-line import-x/no-restricted-paths -- Test the section redirect and main page together.
 import { NotificationSectionSubPage } from '../settings/notifications-tab/notification-section-sub-page';
 import { NotificationsSettingsContent } from './notifications-settings';
-import type { NotificationsSettingsSectionType } from './notifications-settings-types';
 
 const mockEnableNotifications = jest.fn();
 const mockRefetchPreferences = jest.fn();
@@ -112,18 +111,6 @@ const createPreferencesResult = (): ReturnType<
 const NotificationSettingsFlow = () => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  // Mirrors the app router: section sub-pages live directly under the
-  // notifications settings base path.
-  const sectionSlug = pathname.startsWith(`${NOTIFICATIONS_SETTINGS_ROUTE}/`)
-    ? pathname.slice(NOTIFICATIONS_SETTINGS_ROUTE.length + 1)
-    : null;
-  const sectionType = getNotificationsSettingsSectionTypeFromSlug(sectionSlug);
-  let page = <div>Other page</div>;
-  if (pathname === NOTIFICATIONS_SETTINGS_ROUTE) {
-    page = <NotificationsSettingsContent />;
-  } else if (sectionType) {
-    page = <NotificationSectionSubPage sectionType={sectionType} />;
-  }
   return (
     <>
       <output data-testid="notification-settings-location">
@@ -134,7 +121,26 @@ const NotificationSettingsFlow = () => {
         Back to notifications
       </button>
       <button onClick={() => navigate('/other-page')}>Leave settings</button>
-      {page}
+      <Routes>
+        <Route
+          path={NOTIFICATIONS_SETTINGS_ROUTE}
+          element={<NotificationsSettingsContent />}
+        />
+        {Object.entries(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).map(
+          ([sectionType, path]) => (
+            <Route
+              key={sectionType}
+              path={path}
+              element={
+                <NotificationSectionSubPage
+                  sectionType={sectionType as NotificationsSettingsSectionType}
+                />
+              }
+            />
+          ),
+        )}
+        <Route path="*" element={<div>Other page</div>} />
+      </Routes>
     </>
   );
 };
@@ -354,6 +360,47 @@ describe('NotificationsSettingsContent', () => {
       await waitFor(() => {
         expect(mockRefetchPreferences).toHaveBeenCalled();
       });
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(`${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`);
+      expect(
+        screen.queryByTestId(
+          'notifications-settings-section-content-walletActivity',
+        ),
+      ).not.toBeInTheDocument();
+    });
+
+    it('returns to the main page when the requested section has no preferences', () => {
+      const { store } = createStore(true);
+      const preferences = createMockNotificationPreferences();
+      Reflect.deleteProperty(preferences, 'agenticCli');
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        ...createPreferencesResult(),
+        preferences,
+      });
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        NOTIFICATIONS_SETTINGS_SECTION_ROUTES.agenticCli,
+      );
+
+      expect(
+        screen.getByTestId('notification-settings-location').textContent,
+      ).toBe(NOTIFICATIONS_SETTINGS_ROUTE);
+    });
+
+    it('does not resume a pending section when preferences fail to load', () => {
+      const { store } = createStore(true);
+      jest.mocked(useNotificationPreferences).mockReturnValue({
+        ...createPreferencesResult(),
+        error: new Error('Unable to load preferences'),
+      });
+      renderWithProvider(
+        <NotificationSettingsFlow />,
+        store,
+        `${NOTIFICATIONS_SETTINGS_ROUTE}?section=wallet-activity`,
+      );
 
       expect(
         screen.getByTestId('notification-settings-location').textContent,

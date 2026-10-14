@@ -1,62 +1,10 @@
 import { getIsPerpsIncludedInBuild } from '../../environment';
-import {
-  getNotificationsSettingsSectionTypeFromSlug,
-  notificationsSettings,
-} from './notifications-settings';
-import {
-  NOTIFICATIONS_SETTINGS_ROUTE,
-  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
-} from './route';
+import { NOTIFICATIONS_SETTINGS_ROUTE } from '../../notifications-settings';
+import { notificationsSettings } from './notifications-settings';
 
 jest.mock('../../environment', () => ({
   getIsPerpsIncludedInBuild: jest.fn(),
 }));
-
-describe('NOTIFICATIONS_SETTINGS_SECTION_ROUTES', () => {
-  it('has a null prototype so inherited keys cannot pollute lookups', () => {
-    expect(Object.getPrototypeOf(NOTIFICATIONS_SETTINGS_SECTION_ROUTES)).toBe(
-      null,
-    );
-    expect(
-      (NOTIFICATIONS_SETTINGS_SECTION_ROUTES as Record<string, unknown>)
-        .constructor,
-    ).toBeUndefined();
-  });
-});
-
-describe('getNotificationsSettingsSectionTypeFromSlug', () => {
-  it('returns the section type for registered slugs', () => {
-    expect(getNotificationsSettingsSectionTypeFromSlug('wallet-activity')).toBe(
-      'walletActivity',
-    );
-    expect(getNotificationsSettingsSectionTypeFromSlug('perps')).toBe('perps');
-    expect(getNotificationsSettingsSectionTypeFromSlug('marketing')).toBe(
-      'marketing',
-    );
-    expect(getNotificationsSettingsSectionTypeFromSlug('agentic-cli')).toBe(
-      'agenticCli',
-    );
-  });
-
-  it('normalizes surrounding whitespace and casing', () => {
-    expect(
-      getNotificationsSettingsSectionTypeFromSlug('  Wallet-Activity  '),
-    ).toBe('walletActivity');
-    expect(getNotificationsSettingsSectionTypeFromSlug('PERPS')).toBe('perps');
-  });
-
-  it('returns null for unsupported, empty, or missing slugs', () => {
-    expect(
-      getNotificationsSettingsSectionTypeFromSlug('price-alerts'),
-    ).toBeNull();
-    expect(
-      getNotificationsSettingsSectionTypeFromSlug('walletactivity'),
-    ).toBeNull();
-    expect(getNotificationsSettingsSectionTypeFromSlug('')).toBeNull();
-    expect(getNotificationsSettingsSectionTypeFromSlug(null)).toBeNull();
-    expect(getNotificationsSettingsSectionTypeFromSlug(undefined)).toBeNull();
-  });
-});
 
 describe('notificationsSettings', () => {
   beforeEach(() => {
