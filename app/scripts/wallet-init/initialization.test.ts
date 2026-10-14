@@ -1,6 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import type { Encryptor } from '@metamask/keyring-controller';
 import type { ConnectivityAdapter } from '@metamask/connectivity-controller';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
+import { unrestrictedMethods } from '../controllers/permissions';
 import { initializeWallet } from './initialization';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
@@ -25,8 +27,6 @@ import {
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
-import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
-import { unrestrictedMethods } from '../controllers/permissions';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
