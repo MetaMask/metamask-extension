@@ -1,141 +1,101 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
-
+import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import type { Driver } from '../../webdriver/driver';
 import {
-  completeOnboardingInPage,
+  normalizeSecretRecoveryPhrase,
   runSelfOnboarding,
-  type SelfOnboardingPage,
 } from './self-onboarding';
+
+jest.mock('../../page-objects/flows/onboarding.flow', () => ({
+  importSRPOnboardingFlow: jest.fn(),
+}));
+
+const mockCompleteLoaded = jest.fn();
+const mockCompleteOnboarding = jest.fn();
+
+jest.mock(
+  '../../page-objects/pages/onboarding/onboarding-complete-page',
+  () => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: jest.fn().mockImplementation(() => ({
+      checkPageIsLoaded: mockCompleteLoaded,
+      completeOnboarding: mockCompleteOnboarding,
+    })),
+  }),
+);
+
+const mockFlow = jest.mocked(importSRPOnboardingFlow);
 
 const PHRASE =
   'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
 
-type RecordedMessage = {
-  name?: string;
-  data?: { id?: number; method?: string; params?: unknown[] };
-};
+const PASSWORD = 'correct horse battery staple';
 
-function installFakeChrome(failMethod?: string) {
-  const events: string[] = [];
-  const messages: RecordedMessage[] = [];
-  const listeners: ((message: unknown) => void)[] = [];
-  const emit = (message: unknown) => {
-    for (const listener of [...listeners]) {
-      listener(message);
-    }
-  };
-  const port = {
-    postMessage: (message: RecordedMessage) => {
-      events.push(`request:${message.data?.method}`);
-      messages.push(message);
-      const id = message.data?.id;
-      emit({
-        name: 'controller',
-        data:
-          message.data?.method === failMethod
-            ? { id, error: { message: PHRASE } }
-            : { id, result: true },
-      });
-    },
-    disconnect: jest.fn(),
-    onMessage: {
-      addListener: (listener: (message: unknown) => void) => {
-        listeners.push(listener);
-      },
-    },
-    onDisconnect: {
-      addListener: () => undefined,
-    },
-  };
-  (globalThis as { chrome?: unknown }).chrome = {
-    runtime: {
-      connect: () => {
-        setTimeout(() => {
-          events.push('sync');
-          emit({
-            name: 'controller',
-            data: { jsonrpc: '2.0', method: 'START_UI_SYNC', params: [{}] },
-          });
-        }, 0);
-        return port;
-      },
-    },
-  };
-  return { events, messages, port };
-}
+const driver = { timeout: 30_000 } as unknown as Driver;
 
-const page: SelfOnboardingPage = {
-  evaluate: async (fn, payload) => fn(payload),
-};
-
-describe('runSelfOnboarding', () => {
-  afterEach(() => {
-    delete (globalThis as { chrome?: unknown }).chrome;
+describe('normalizeSecretRecoveryPhrase', () => {
+  it('collapses whitespace', () => {
+    expect(
+      normalizeSecretRecoveryPhrase(`  ${PHRASE.replace(/ /gu, '\n ')}\n`),
+    ).toBe(PHRASE);
   });
 
-  it('restores the vault and completes onboarding without returning the phrase', async () => {
-    const { events, messages, port } = installFakeChrome();
-
-    await runSelfOnboarding(page, `${PHRASE}\n`);
-
-    expect(events[0]).toBe('sync');
-    expect(messages.map((message) => message.data?.method)).toStrictEqual([
-      'createNewVaultAndRestore',
-      'setFirstTimeFlowType',
-      'setSeedPhraseBackedUp',
-      'setTermsOfUseLastAgreed',
-      'completeOnboarding',
-      'setHasSeenOnboardingCompletionPage',
-    ]);
-    const restore = messages[0]?.data?.params;
-    expect(restore?.[1]).toStrictEqual(Array.from(Buffer.from(PHRASE, 'utf8')));
-    expect(typeof restore?.[0]).toBe('string');
-    expect(restore?.[0]).not.toBe(PHRASE);
-    expect(messages[1]?.data?.params).toStrictEqual(['import']);
-    expect(port.disconnect).toHaveBeenCalledTimes(1);
-  });
-
-  it('rejects a background failure without echoing the phrase', async () => {
-    const { port } = installFakeChrome('createNewVaultAndRestore');
-
-    await expect(runSelfOnboarding(page, PHRASE)).rejects.toThrow(
-      'self-onboarding failed: createNewVaultAndRestore',
+  it('rejects phrases that are not 12 or 24 words', () => {
+    expect(() => normalizeSecretRecoveryPhrase('one two three')).toThrow(
+      'secret recovery phrase must be 12 or 24 words',
     );
-    expect(port.disconnect).toHaveBeenCalledTimes(1);
   });
 
-  it('refuses a phrase that is not 12 or 24 words before calling the page', async () => {
-    const evaluate = jest.fn();
-    await expect(
-      runSelfOnboarding({ evaluate }, 'one two three'),
-    ).rejects.toThrow(/12 or 24 words/u);
-    expect(evaluate).not.toHaveBeenCalled();
+  it('rejects canary marker strings', () => {
+    const canary = `CANARY-NOT-A-REAL-SRP-${' x'.repeat(11)}`;
+    expect(() => normalizeSecretRecoveryPhrase(canary)).toThrow(
+      'marker strings cannot onboard MetaMask',
+    );
   });
 });
 
-describe('completeOnboardingInPage', () => {
-  it('fails when the extension runtime is unavailable', async () => {
-    delete (globalThis as { chrome?: unknown }).chrome;
-    await expect(
-      completeOnboardingInPage({ password: 'pw', encodedSeedPhrase: [1] }),
-    ).rejects.toThrow('chrome.runtime is unavailable');
+describe('runSelfOnboarding', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockFlow.mockResolvedValue(undefined);
+    mockCompleteLoaded.mockResolvedValue(undefined);
+    mockCompleteOnboarding.mockResolvedValue(undefined);
   });
 
-  it('stays free of helpers tsx injects, since only its source reaches the page', () => {
-    // The esbuild that tsx uses is the transform that matters for the daemon.
-    const { transformSync } = jest.requireActual<typeof import('esbuild')>(
-      require.resolve('esbuild', {
-        paths: [path.dirname(require.resolve('tsx/package.json'))],
-      }),
+  it('imports the phrase with the given password through the e2e onboarding flow, then finishes the completion page', async () => {
+    await runSelfOnboarding(driver, `${PHRASE}\n`, PASSWORD);
+
+    expect(mockFlow).toHaveBeenCalledWith({
+      driver,
+      seedPhrase: PHRASE,
+      password: PASSWORD,
+      needNavigateToNewPage: false,
+    });
+    expect(OnboardingCompletePage).toHaveBeenCalledWith(driver);
+    expect(mockCompleteLoaded).toHaveBeenCalled();
+    expect(mockCompleteOnboarding).toHaveBeenCalled();
+  });
+
+  it('does not start the flow for an invalid phrase', async () => {
+    await expect(
+      runSelfOnboarding(driver, 'one two three', PASSWORD),
+    ).rejects.toThrow('secret recovery phrase must be 12 or 24 words');
+    expect(mockFlow).not.toHaveBeenCalled();
+  });
+
+  it('reports flow errors that do not contain secrets', async () => {
+    mockFlow.mockRejectedValue(new Error('Waiting for element timed out'));
+
+    await expect(runSelfOnboarding(driver, PHRASE, PASSWORD)).rejects.toThrow(
+      'self-onboarding failed: Waiting for element timed out',
     );
-    const { code } = transformSync(
-      readFileSync(path.join(__dirname, 'self-onboarding.ts'), 'utf8'),
-      { loader: 'ts', keepNames: true },
+  });
+
+  it('drops flow errors that contain the phrase', async () => {
+    mockFlow.mockRejectedValueOnce(new Error(`could not paste ${PHRASE}`));
+    await expect(runSelfOnboarding(driver, PHRASE, PASSWORD)).rejects.toThrow(
+      /^self-onboarding failed$/u,
     );
-    const start = code.indexOf('async function completeOnboardingInPage(');
-    const end = code.indexOf('__name(completeOnboardingInPage,');
-    expect(start).toBeGreaterThanOrEqual(0);
-    expect(end).toBeGreaterThan(start);
-    expect(code.slice(start, end)).not.toContain('__name(');
   });
 });

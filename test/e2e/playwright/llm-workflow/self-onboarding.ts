@@ -1,30 +1,8 @@
-import { randomBytes } from 'node:crypto';
+import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
+import type { Driver } from '../../webdriver/driver';
 
 const CANARY_SRP_PREFIX = 'CANARY-NOT-A-REAL-SRP-';
-const PASSWORD_RANDOM_BYTES = 18;
-
-type OnboardingPayload = {
-  password: string;
-  encodedSeedPhrase: number[];
-};
-
-type BackgroundPort = {
-  postMessage: (message: unknown) => void;
-  disconnect: () => void;
-  onMessage: {
-    addListener: (listener: (message: unknown) => void) => void;
-  };
-  onDisconnect: {
-    addListener: (listener: () => void) => void;
-  };
-};
-
-export type SelfOnboardingPage = {
-  evaluate: (
-    pageFunction: (payload: OnboardingPayload) => Promise<void>,
-    payload: OnboardingPayload,
-  ) => Promise<void>;
-};
 
 /**
  * Normalizes a secret recovery phrase to single-spaced words.
@@ -47,177 +25,40 @@ export function normalizeSecretRecoveryPhrase(phrase: string): string {
 }
 
 /**
- * Encodes a secret recovery phrase as the UTF-8 byte list the background
- * vault API expects.
+ * Imports `phrase` by walking the onboarding UI with the e2e onboarding flow,
+ * so a UI change that breaks it also fails the e2e suite.
  *
- * @param phrase - A normalized secret recovery phrase.
- * @returns UTF-8 code units.
- */
-export function encodeSecretRecoveryPhrase(phrase: string): number[] {
-  return Array.from(Buffer.from(phrase, 'utf8'));
-}
-
-/**
- * Runs inside the extension page. Opens a trusted UI port, waits until the
- * background controller stream is live, restores the vault, then marks
- * onboarding complete. Errors name the background step only, so a thrown
- * message cannot carry the phrase or password.
+ * The completion screen is finished here rather than through
+ * `completeImportSRPOnboardingFlow`, whose sidepanel handling uses the raw
+ * Selenium driver; the launcher navigates home itself afterwards.
  *
- * `page.evaluate` serializes only this function's source, so it must not
- * reference anything defined outside its body. It must also not declare named
- * functions: the `mm` daemon runs under tsx, which wraps them in an `__name`
- * helper that does not exist in the page.
- *
- * @param payload - The vault password and the encoded phrase.
- */
-export async function completeOnboardingInPage(
-  payload: OnboardingPayload,
-): Promise<void> {
-  const STEP_TIMEOUT_MS = 60_000;
-  const UI_SYNC_KEY = 'START_UI_SYNC';
-
-  const runtime = (
-    globalThis as unknown as {
-      chrome?: {
-        runtime?: { connect?: (info: { name: string }) => BackgroundPort };
-      };
-    }
-  ).chrome?.runtime;
-  if (!runtime?.connect) {
-    throw new Error(
-      'chrome.runtime is unavailable; use a test or development build',
-    );
-  }
-
-  const port = runtime.connect({ name: 'fullscreen' });
-  const waiters = new Map<string | number, (failed: boolean) => void>();
-  const connection = { open: true };
-
-  port.onMessage.addListener((message: unknown) => {
-    if (
-      typeof message !== 'object' ||
-      message === null ||
-      !('name' in message) ||
-      message.name !== 'controller' ||
-      !('data' in message) ||
-      typeof message.data !== 'object' ||
-      message.data === null
-    ) {
-      return;
-    }
-    const data = message.data as {
-      id?: unknown;
-      method?: unknown;
-      error?: unknown;
-    };
-    let key: string | number | undefined;
-    if (data.method === UI_SYNC_KEY) {
-      key = UI_SYNC_KEY;
-    } else if (typeof data.id === 'number') {
-      key = data.id;
-    }
-    const waiter = key === undefined ? undefined : waiters.get(key);
-    if (key === undefined || !waiter) {
-      return;
-    }
-    waiters.delete(key);
-    waiter(Boolean(data.error));
-  });
-  port.onDisconnect.addListener(() => {
-    connection.open = false;
-    for (const waiter of waiters.values()) {
-      waiter(true);
-    }
-    waiters.clear();
-  });
-
-  const calls: { method: string; params: unknown[] }[] = [
-    {
-      method: 'createNewVaultAndRestore',
-      params: [payload.password, payload.encodedSeedPhrase],
-    },
-    { method: 'setFirstTimeFlowType', params: ['import'] },
-    { method: 'setSeedPhraseBackedUp', params: [true] },
-    { method: 'setTermsOfUseLastAgreed', params: [Date.now()] },
-    { method: 'completeOnboarding', params: [] },
-    { method: 'setHasSeenOnboardingCompletionPage', params: [true] },
-  ];
-  // The background attaches its RPC handler before it pushes START_UI_SYNC;
-  // requests sent earlier can be dropped while it is still initializing.
-  const steps: { key: string | number; step: string; request?: unknown }[] = [
-    { key: UI_SYNC_KEY, step: 'background connection' },
-    ...calls.map(({ method, params }, index) => ({
-      key: index + 1,
-      step: method,
-      request: {
-        name: 'controller',
-        data: { id: index + 1, jsonrpc: '2.0', method, params },
-      },
-    })),
-  ];
-
-  try {
-    for (const { key, step, request } of steps) {
-      await new Promise<void>((resolve, reject) => {
-        if (!connection.open) {
-          reject(new Error(step));
-          return;
-        }
-        const timer = setTimeout(() => {
-          waiters.delete(key);
-          reject(new Error(step));
-        }, STEP_TIMEOUT_MS);
-        waiters.set(key, (failed) => {
-          clearTimeout(timer);
-          if (failed) {
-            reject(new Error(step));
-          } else {
-            resolve();
-          }
-        });
-        if (request !== undefined) {
-          port.postMessage(request);
-        }
-      });
-    }
-  } finally {
-    if (connection.open) {
-      port.disconnect();
-    }
-  }
-}
-
-/**
- * Restores a vault from `phrase` and completes onboarding through the
- * extension background API. The vault password is generated here and dropped
- * before this function returns.
- *
- * @param page - The extension page that can reach `chrome.runtime`.
- * @param phrase - The secret recovery phrase to restore.
+ * @param driver - The e2e driver bound to the extension page, which must be
+ * on the onboarding welcome screen.
+ * @param phrase - The secret recovery phrase to import.
+ * @param password - The wallet password to set, so the wallet can be
+ * unlocked again later.
  */
 export async function runSelfOnboarding(
-  page: SelfOnboardingPage,
+  driver: Driver,
   phrase: string,
+  password: string,
 ): Promise<void> {
-  const normalized = normalizeSecretRecoveryPhrase(phrase);
-  const payload: OnboardingPayload = {
-    password: randomBytes(PASSWORD_RANDOM_BYTES).toString('base64'),
-    encodedSeedPhrase: encodeSecretRecoveryPhrase(normalized),
-  };
+  const seedPhrase = normalizeSecretRecoveryPhrase(phrase);
   try {
-    await page.evaluate(completeOnboardingInPage, payload);
+    await importSRPOnboardingFlow({
+      driver,
+      seedPhrase,
+      password,
+      needNavigateToNewPage: false,
+    });
+    const completePage = new OnboardingCompletePage(driver);
+    await completePage.checkPageIsLoaded();
+    await completePage.completeOnboarding();
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
-    if (
-      message.length > 0 &&
-      !message.includes(normalized) &&
-      !message.includes(payload.password)
-    ) {
+    if (message.length > 0 && !message.includes(seedPhrase)) {
       throw new Error(`self-onboarding failed: ${message}`);
     }
     throw new Error('self-onboarding failed');
-  } finally {
-    payload.password = '';
-    payload.encodedSeedPhrase = [];
   }
 }

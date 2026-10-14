@@ -279,7 +279,11 @@ export class MetaMaskExtensionLauncher {
         let phrase = this.options.srp ?? '';
         this.options.srp = undefined;
         try {
-          await runSelfOnboarding(this.extensionPage as Page, phrase);
+          await runSelfOnboarding(
+            getE2EDriver(this.extensionPage as Page),
+            phrase,
+            DEFAULT_PASSWORD,
+          );
         } finally {
           phrase = '';
         }

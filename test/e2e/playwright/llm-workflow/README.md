@@ -152,9 +152,12 @@ mm launch --state onboarding
 
 ### Self-onboarding
 
-Restore a secret recovery phrase and finish onboarding inside `launch()`,
-without clicking through the onboarding UI. The phrase is read from stdin.
-A local setup writes a generated phrase; a pooled setup writes the leased one.
+Import a secret recovery phrase and finish onboarding inside `launch()`. The
+launcher walks the onboarding UI with the e2e onboarding flow
+(`importSRPOnboardingFlow` and `OnboardingCompletePage`), so it breaks only when
+the e2e suite does.
+The phrase is read from stdin. A local setup writes a generated phrase; a
+pooled setup writes the leased one.
 
 ```bash
 mm launch --context prod --state onboarding --self-onboarding < phrase.txt
