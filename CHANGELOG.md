@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.53.0]
+
+### Added
+
+- Added Chainlist network suggestions when adding a network (#46859)
+- Added Chainlist RPC URL suggestions when adding or editing a network (#46869)
+- Added support for a feature-flagged ticker widget on X (#45741)
+
+### Changed
+
+- Updated delegation deployment data for Ark (#46777)
+
+### Fixed
+
+- Showed the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
+- Fixed Arc USDC balances and asset details in the Swap asset picker (#46840)
+- Fixed payment provider tags appearing at the row edge instead of beside the provider name (#46942)
+- Prevented Perps limit orders below $10 from being submitted and failing (#46868)
+- Fixed Ledger connections after WebHID permission was revoked (#46662)
+- Fixed the MetaMask side panel remaining on the add-wallet screen after connecting a hardware wallet in the expanded tab (#46763)
+- Fixed Perps market list rows reordering while live prices updated (#46638)
+
+### Security
+
+- Restricted deep-link handling to exact configured hosts instead of their subdomains (#46748)
+- Added warnings for homograph RPC hostnames in add-network confirmations (#46900)
+- Fixed signature verification for deep links signed with configured MetaMask domains (#46755)
+
 ## [13.52.0]
 
 ### Added
@@ -3445,6 +3473,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.53.0...HEAD
+[13.53.0]: https://github.com/MetaMask/metamask-extension/compare/v13.52.0...v13.53.0
 [13.52.0]: https://github.com/MetaMask/metamask-extension/compare/v13.51.0...v13.52.0
 [13.51.0]: https://github.com/MetaMask/metamask-extension/compare/v13.50.0...v13.51.0
 [13.50.0]: https://github.com/MetaMask/metamask-extension/compare/v13.49.0...v13.50.0

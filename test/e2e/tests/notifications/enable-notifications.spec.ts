@@ -10,6 +10,7 @@ import {
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import { completeOnboardFlowIdentity } from '../../page-objects/flows/identity.flow';
+import { waitUntilAccountTreeSyncIdle } from '../../page-objects/flows/tron-account-derivation.flow';
 import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
@@ -138,6 +139,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
     });
     async function onboardAndAddAccount(driver: Driver) {
       await completeOnboardFlowIdentity(driver);
+      await waitUntilAccountTreeSyncIdle(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.checkPageIsLoaded();

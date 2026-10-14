@@ -9,6 +9,7 @@ import {
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
 import {
+  TransactionContainerType,
   TransactionControllerGetNonceLockAction,
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerUpdateTransactionAction,
@@ -23,9 +24,11 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { getSentinelSigners } from '../sentinel-api';
 import { Delegation7702PublishHook } from './delegation-7702-publish';
 
 jest.mock('../transaction-relay');
+jest.mock('../sentinel-api');
 jest.mock('../delegation', () => {
   return {
     ...jest.requireActual('../delegation'),
@@ -49,6 +52,9 @@ const UPGRADE_CONTRACT_ADDRESS_MOCK =
 const DELEGATION_MANAGER_ADDRESS_MOCK =
   '0x12345678901234567890123456789012345678a0';
 
+const SENTINEL_SIGNER_1_MOCK = '0xB01caEa8c6C47bbf4F4b4c5080Ca642043359C2E';
+const SENTINEL_SIGNER_2_MOCK = '0xB42F812A44c22cc6b861478900401ee759EbEAD6';
+
 const TRANSACTION_META_MOCK = {
   chainId: '0x1',
   txParams: {
@@ -63,6 +69,7 @@ const TRANSACTION_META_MOCK = {
 describe('Delegation 7702 Publish Hook', () => {
   const submitRelayTransactionMock = jest.mocked(submitRelayTransaction);
   const waitForRelayResultMock = jest.mocked(waitForRelayResult);
+  const getSentinelSignersMock = jest.mocked(getSentinelSigners);
 
   let messenger: TransactionControllerInitMessenger;
   let hookClass: Delegation7702PublishHook;
@@ -171,6 +178,7 @@ describe('Delegation 7702 Publish Hook', () => {
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);
+    getSentinelSignersMock.mockResolvedValue([SENTINEL_SIGNER_1_MOCK]);
     signTypedMessageMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
     signDelegationControllerMock.mockResolvedValue(DELEGATION_SIGNATURE_MOCK);
 
@@ -529,7 +537,7 @@ describe('Delegation 7702 Publish Hook', () => {
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(3);
   });
 
   it('relays the parent execute as a single execution for sponsored batches with nested calls', async () => {
@@ -612,7 +620,7 @@ describe('Delegation 7702 Publish Hook', () => {
     // Ensure caveats contain a single exactExecution for gasless flow
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
     expect(Array.isArray(signArgs.delegation.caveats)).toBe(true);
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(3);
     // No transfer execution should be included for gasless flow
   });
 
@@ -637,6 +645,95 @@ describe('Delegation 7702 Publish Hook', () => {
 
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
     const signArgs = signDelegationControllerMock.mock.calls[0][0];
-    expect(signArgs.delegation.caveats).toHaveLength(2);
+    expect(signArgs.delegation.caveats).toHaveLength(3);
+  });
+
+  describe('redeemer caveat', () => {
+    beforeEach(() => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: TRANSACTION_META_MOCK.chainId,
+          delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+          isSupported: true,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+    });
+
+    it('restricts redemption to the Sentinel signers', async () => {
+      getSentinelSignersMock.mockResolvedValueOnce([
+        SENTINEL_SIGNER_1_MOCK,
+        SENTINEL_SIGNER_2_MOCK,
+      ]);
+
+      await hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      );
+
+      const { caveatEnforcers } = getDeleGatorEnvironment(
+        parseInt(TRANSACTION_META_MOCK.chainId, 16),
+      );
+
+      expect(getSentinelSignersMock).toHaveBeenCalledWith(
+        TRANSACTION_META_MOCK.chainId,
+      );
+
+      const signArgs = signDelegationControllerMock.mock.calls[0][0];
+
+      expect(signArgs.delegation.caveats).toHaveLength(3);
+      expect(signArgs.delegation.caveats).toContainEqual({
+        enforcer: caveatEnforcers.RedeemerEnforcer,
+        terms:
+          `0x${SENTINEL_SIGNER_1_MOCK.slice(2)}${SENTINEL_SIGNER_2_MOCK.slice(2)}`.toLowerCase(),
+        args: '0x',
+      });
+    });
+
+    it('includes the redeemer caveat for enforced simulations', async () => {
+      await hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          containerTypes: [TransactionContainerType.EnforcedSimulations],
+          isGasFeeSponsored: true,
+        },
+        SIGNED_TX_MOCK,
+      );
+
+      const { caveatEnforcers } = getDeleGatorEnvironment(
+        parseInt(TRANSACTION_META_MOCK.chainId, 16),
+      );
+
+      const signArgs = signDelegationControllerMock.mock.calls[0][0];
+      const enforcers = signArgs.delegation.caveats.map(
+        (caveat: { enforcer: string }) => caveat.enforcer,
+      );
+
+      expect(enforcers).toContain(caveatEnforcers.RedeemerEnforcer);
+      expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws if no Sentinel signers are available', async () => {
+      getSentinelSignersMock.mockResolvedValueOnce([]);
+
+      await expect(
+        hookClass.getHook()(
+          {
+            ...TRANSACTION_META_MOCK,
+            isGasFeeSponsored: true,
+          },
+          SIGNED_TX_MOCK,
+        ),
+      ).rejects.toThrow(
+        `No relay signers found for chain ${TRANSACTION_META_MOCK.chainId}`,
+      );
+
+      expect(signDelegationControllerMock).not.toHaveBeenCalled();
+      expect(updateTransactionMock).not.toHaveBeenCalled();
+      expect(submitRelayTransactionMock).not.toHaveBeenCalled();
+    });
   });
 });
