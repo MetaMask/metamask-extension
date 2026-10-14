@@ -27,8 +27,7 @@ import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
   NODE_MODULES_RE,
-  TYPESCRIPT_NON_TSX_FILE_RE,
-  TYPESCRIPT_TSX_FILE_RE,
+  TYPESCRIPT_FILE_RE,
   UI_COMPONENT_RE,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
@@ -334,22 +333,14 @@ if (args.bundleAnalyzer) {
 // #endregion plugins
 
 const swcConfig = { browsersListQuery, isDevelopment, refresh: false };
-// @swc/core >= 1.16 parses TypeScript generics as JSX when tsx:true, so .ts
-// and .tsx must use separate loaders.
+// SWC enables TSX from the filename. Default to plain TypeScript for .mts.
 const tsLoader = getSwcLoader('typescript', false, safeVariables, swcConfig);
-const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 
 const swcReactRefreshConfig = { ...swcConfig, refresh: true };
 const reactRefreshTsLoader = getSwcLoader(
   'typescript',
   false,
-  safeVariables,
-  swcReactRefreshConfig,
-);
-const reactRefreshTsxLoader = getSwcLoader(
-  'typescript',
-  true,
   safeVariables,
   swcReactRefreshConfig,
 );
@@ -360,22 +351,18 @@ const reactRefreshJsxLoader = getSwcLoader(
   swcReactRefreshConfig,
 );
 
-// First-party loaders substitute the full `safeVariables` map at compile time.
-// Vendor (`node_modules`) loaders intentionally do not, so secrets never land
-// in third-party code. Packages like `@metamask/network-controller` still need
-// `IN_TEST` though: without it they treat the flag as false and use the slow
-// production block-tracker interval (20s) in E2E instead of the 1s test one.
-// Substitute only that one non-secret flag for npm/CJS loaders.
-const npmEnvs: Record<string, string> =
-  safeVariables.IN_TEST === undefined ? {} : { IN_TEST: safeVariables.IN_TEST };
+// Inline public flags in .js/.mjs dependencies: IN_TEST controls E2E polling,
+// and NODE_ENV removes runtime reads before policy generation.
+const npmEnvs = {
+  // TODO: Remove vendor IN_TEST inlining once the Core changes are released and
+  // adopted in Extension (explicit test polling and gas-estimation mocks):
+  // https://github.com/MetaMask/core/pull/10831
+  // https://github.com/MetaMask/metamask-extension/pull/47090
+  IN_TEST: safeVariables.IN_TEST,
+  NODE_ENV: safeVariables.NODE_ENV,
+};
 const npmLoader = getSwcLoader('ecmascript', false, npmEnvs, swcConfig);
-const cjsLoader = getSwcLoader(
-  'ecmascript',
-  false,
-  npmEnvs,
-  swcConfig,
-  'commonjs',
-);
+const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
 
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
@@ -502,42 +489,21 @@ const config = {
       ...(isDevelopmentWatchMode
         ? [
             {
-              // typescript without JSX (UI, react-refresh)
-              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              test: TYPESCRIPT_FILE_RE,
               include: UI_DIR_RE,
               use: reactRefreshTsLoader,
             },
             {
-              // typescript JSX (UI, react-refresh)
-              test: TYPESCRIPT_TSX_FILE_RE,
-              include: UI_DIR_RE,
-              use: reactRefreshTsxLoader,
-            },
-            {
-              // typescript without JSX
-              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              test: TYPESCRIPT_FILE_RE,
               exclude: [NODE_MODULES_RE, UI_DIR_RE],
               use: tsLoader,
-            },
-            {
-              // typescript JSX
-              test: TYPESCRIPT_TSX_FILE_RE,
-              exclude: [NODE_MODULES_RE, UI_DIR_RE],
-              use: tsxLoader,
             },
           ]
         : [
             {
-              // typescript without JSX
-              test: TYPESCRIPT_NON_TSX_FILE_RE,
+              test: TYPESCRIPT_FILE_RE,
               exclude: NODE_MODULES_RE,
               use: tsLoader,
-            },
-            {
-              // typescript JSX
-              test: TYPESCRIPT_TSX_FILE_RE,
-              exclude: NODE_MODULES_RE,
-              use: tsxLoader,
             },
           ]),
       // own javascript, and own javascript with jsx
