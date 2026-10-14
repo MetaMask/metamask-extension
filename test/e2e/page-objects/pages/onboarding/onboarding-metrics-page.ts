@@ -83,8 +83,9 @@ class OnboardingMetricsPage {
 
   /**
    * Ensures the marketing data-collection checkbox is checked, without
-   * assuming its initial state: US users are checked by default once the
-   * geolocation lookup settles, so an unconditional click could uncheck it.
+   * assuming its initial state: social login users in the US are checked by
+   * default once the geolocation lookup settles, so an unconditional click
+   * could uncheck it.
    */
   async ensureDataCollectionForMarketingIsChecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
@@ -95,9 +96,9 @@ class OnboardingMetricsPage {
   }
 
   /**
-   * Ensures the marketing data-collection checkbox is unchecked. US users
-   * are checked by default once the geolocation lookup settles, so the
-   * checkbox must be explicitly unchecked in that case.
+   * Ensures the marketing data-collection checkbox is unchecked. Social login
+   * users in the US are checked by default once the geolocation lookup
+   * settles, so the checkbox must be explicitly unchecked in that case.
    */
   async ensureDataCollectionForMarketingIsUnchecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
@@ -128,7 +129,8 @@ class OnboardingMetricsPage {
 
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
-    // Marketing defaults to checked in the US (the E2E geolocation mock).
+    // Marketing defaults to checked for social login users in the US (the
+    // E2E geolocation mock).
     await this.ensureDataCollectionForMarketingIsUnchecked();
     await this.driver.clickElement(this.continueButton);
   }
@@ -143,8 +145,8 @@ class OnboardingMetricsPage {
 
   /**
    * Waits until the geolocation lookup settles and the marketing checkbox
-   * becomes interactive: the continue button is disabled while the lookup
-   * that decides the US default is pending.
+   * becomes interactive: for social login users, the continue button is
+   * disabled while the lookup that decides the US default is pending.
    */
   private async waitForMarketingPreferenceReady(): Promise<void> {
     await this.driver.waitForSelector(this.continueEnabled);
