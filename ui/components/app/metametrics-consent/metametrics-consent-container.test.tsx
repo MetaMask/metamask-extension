@@ -79,6 +79,12 @@ describe('MetaMetricsConsentContainer', () => {
     expect(
       screen.getByText(messages.onboardedMetametricsTitle.message),
     ).toBeInTheDocument();
+    // Marketing consent is independent of MetaMetrics, so the copy must not
+    // present it as an addition to MetaMetrics.
+    expect(
+      screen.getByText(messages.marketingConsentModalParagraph1.message),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/MetaMetrics/u)).not.toBeInTheDocument();
   });
 
   it('opts in when the accept button is clicked', () => {
