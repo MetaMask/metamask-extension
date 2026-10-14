@@ -159,6 +159,11 @@ export function getSubscriptionPaymentData(subscription?: Subscription): {
 export function getSubscriptionDurationInDays(
   subscription: Subscription,
 ): number {
+  // `currentPeriodStart` is optional on subscriptions (subscription-controller
+  // >= 10); without it the duration is unknowable, not NaN.
+  if (!subscription.currentPeriodStart) {
+    return 0;
+  }
   let subscriptionEndDate = new Date();
   if (subscription.endDate) {
     subscriptionEndDate = new Date(subscription.endDate);
