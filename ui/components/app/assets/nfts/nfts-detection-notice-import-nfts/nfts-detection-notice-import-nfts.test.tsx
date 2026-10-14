@@ -5,11 +5,16 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
-import {
-  ASSETS_ROUTE,
-  PRIVACY_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { ASSETS_ROUTE } from '../../../../../helpers/constants/routes';
+import { toggleBasicFunctionality } from '../../../../../store/actions';
 import NftsDetectionNoticeImportNFTs from './nfts-detection-notice-import-nfts';
+
+jest.mock('../../../../../store/actions', () => ({
+  toggleBasicFunctionality: jest.fn((value: boolean) => ({
+    type: 'toggleBasicFunctionality',
+    value,
+  })),
+}));
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -32,6 +37,7 @@ const createStore = (isBasicFunctionalityConsolidatedEnabled: boolean) =>
 describe('NftsDetectionNoticeImportNFTs', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
+    jest.mocked(toggleBasicFunctionality).mockClear();
   });
 
   it('points to Display NFT Media in Assets settings when Basic Functionality is not consolidated', () => {
@@ -61,28 +67,26 @@ describe('NftsDetectionNoticeImportNFTs', () => {
     expect(onActionButtonClick).toHaveBeenCalled();
   });
 
-  it('points to Basic Functionality in Privacy settings when Basic Functionality is consolidated', () => {
+  it('turns Basic Functionality on without leaving the NFT page when it is consolidated', () => {
     const onActionButtonClick = jest.fn();
+    const store = createStore(true);
     renderWithProvider(
       <NftsDetectionNoticeImportNFTs
         onActionButtonClick={onActionButtonClick}
       />,
-      createStore(true),
+      store,
     );
-
-    expect(
-      screen.getByText(
-        messages.newNFTDetectedInImportNFTsBasicFunctionalityStrongText.message,
-      ),
-    ).toBeInTheDocument();
 
     fireEvent.click(
       screen.getByText(messages.turnOnBasicFunctionality.message),
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
-      `${PRIVACY_ROUTE}#basic-functionality`,
-    );
-    expect(onActionButtonClick).toHaveBeenCalled();
+    expect(toggleBasicFunctionality).toHaveBeenCalledWith(true);
+    expect(store.getActions()).toContainEqual({
+      type: 'toggleBasicFunctionality',
+      value: true,
+    });
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(onActionButtonClick).not.toHaveBeenCalled();
   });
 });

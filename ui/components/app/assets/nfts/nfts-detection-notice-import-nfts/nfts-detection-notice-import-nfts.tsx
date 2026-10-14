@@ -11,11 +11,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  ASSETS_ROUTE,
-  PRIVACY_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { ASSETS_ROUTE } from '../../../../../helpers/constants/routes';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../../../../selectors/multichain/feature-flags';
+import { toggleBasicFunctionality } from '../../../../../store/actions';
+import { useDispatch } from '../../../../../store/hooks';
 
 type NftsDetectionNoticeImportNFTsProps = {
   onActionButtonClick: () => void;
@@ -26,6 +25,7 @@ export default function NftsDetectionNoticeImportNFTs({
 }: NftsDetectionNoticeImportNFTsProps) {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
@@ -53,11 +53,11 @@ export default function NftsDetectionNoticeImportNFTs({
           type="button"
           size={TextButtonSize.BodySm}
           onClick={() => {
-            navigate(
-              isBasicFunctionalityConsolidationEnabled
-                ? `${PRIVACY_ROUTE}#basic-functionality`
-                : `${ASSETS_ROUTE}#display-nft-media`,
-            );
+            if (isBasicFunctionalityConsolidationEnabled) {
+              dispatch(toggleBasicFunctionality(true));
+              return;
+            }
+            navigate(`${ASSETS_ROUTE}#display-nft-media`);
             onActionButtonClick?.();
           }}
         >
