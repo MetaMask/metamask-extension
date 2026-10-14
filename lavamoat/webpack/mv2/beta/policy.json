@@ -2406,8 +2406,6 @@
     },
     "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils": {
       "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
@@ -2558,7 +2556,7 @@
       "packages": {
         "@ethersproject/providers": true,
         "@ngraveio/bc-ur>assert": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true
+        "async-mutex": true
       }
     },
     "@metamask/notification-services-controller": {
@@ -3302,7 +3300,7 @@
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "eth-method-registry": true,
-        "@metamask/transaction-controller>ethereum-cryptography": true,
+        "ethereum-cryptography": true,
         "webpack>events": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/transaction-controller>uuid": true
@@ -3770,11 +3768,6 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -4629,15 +4622,6 @@
         "tslib": true
       }
     },
-    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "tslib": true
-      }
-    },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
@@ -5460,16 +5444,6 @@
       },
       "packages": {
         "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/transaction-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
