@@ -242,6 +242,10 @@ jobs:
       - name: Checkout quality-gate sources
         uses: actions/checkout@v6
         with:
+          # Compile the gate from the base branch, so a pull request cannot
+          # change the thresholds or gated-metric list that judge it. On push
+          # events `base_ref` is empty and this is the pushed commit, as before.
+          ref: ${{ github.base_ref || github.sha }}
           sparse-checkout: |
             .nvmrc
             tsconfig.json
