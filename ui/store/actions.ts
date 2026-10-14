@@ -51,7 +51,6 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
@@ -292,10 +291,12 @@ export function startOAuthLogin(
 
     try {
       const [oauth2LoginResult] = await Promise.all([
-        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+        submitRequestToBackground('OAuthService:startOAuthLogin', [
           authConnection,
         ]),
-        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+        submitRequestToBackground(
+          'SeedlessOnboardingController:preloadToprfNodeDetails',
+        ), // fetch the toprf node details for seedless authentication in parallel
       ]);
 
       let seedlessAuthSuccess = false;
@@ -305,9 +306,10 @@ export function startOAuthLogin(
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           op: TraceOperation.OnboardingSecurityOp,
         });
-        ({ isNewUser } = await submitRequestToBackground('authenticate', [
-          oauth2LoginResult,
-        ]));
+        ({ isNewUser } = await submitRequestToBackground(
+          'SeedlessOnboardingController:authenticate',
+          [oauth2LoginResult],
+        ));
         seedlessAuthSuccess = true;
       } catch (error) {
         trackEvent?.({
@@ -369,7 +371,7 @@ export function resetOAuthLoginState() {
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('resetOAuthLoginState');
+      await submitRequestToBackground('OAuthService:resetOAuthLoginState');
 
       dispatch({
         type: actionConstants.RESET_SOCIAL_LOGIN_ONBOARDING,
@@ -538,9 +540,10 @@ export function getSubscriptionsEligibilities(params?: {
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities', [
-        params,
-      ]);
+      return await submitRequestToBackground(
+        'SubscriptionController:getSubscriptionsEligibilities',
+        [params],
+      );
     } catch (error) {
       log.warn('[getSubscriptionsEligibilities] error', error);
       throw error;
@@ -561,9 +564,10 @@ export function submitSubscriptionUserEvents(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('submitSubscriptionUserEvents', [
-        eventRequest,
-      ]);
+      await submitRequestToBackground(
+        'SubscriptionController:submitUserEvent',
+        [eventRequest],
+      );
     } catch (error) {
       log.error('[submitSubscriptionUserEvents] error', error);
     }
@@ -582,7 +586,10 @@ export function assignUserToCohort(params: {
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('assignUserToCohort', [params]);
+      await submitRequestToBackground(
+        'SubscriptionController:assignUserToCohort',
+        [params],
+      );
     } catch (error) {
       log.error('[assignUserToCohort] error', error);
       throw error;
@@ -603,7 +610,9 @@ export function getSubscriptions(): ThunkAction<
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
-      const subscriptions = await submitRequestToBackground('getSubscriptions');
+      const subscriptions = await submitRequestToBackground(
+        'SubscriptionController:getSubscriptions',
+      );
       return subscriptions;
     } catch (error) {
       log.error('[getSubscriptions] error', error);
@@ -625,8 +634,8 @@ export function getSubscriptionPricing(): ThunkAction<
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
-      const pricing = await submitRequestToBackground<PricingResponse>(
-        'getSubscriptionPricing',
+      const pricing = await submitRequestToBackground(
+        'SubscriptionController:getPricing',
       );
       return pricing;
     } catch (error) {
@@ -648,8 +657,8 @@ export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
 ): Promise<GetCryptoApproveTransactionResponse> {
   try {
-    const cryptoApprovalAmount = await submitRequestToBackground<string>(
-      'getSubscriptionCryptoApprovalAmount',
+    const cryptoApprovalAmount = await submitRequestToBackground(
+      'SubscriptionController:getCryptoApproveTransactionParams',
       [params],
     );
     return cryptoApprovalAmount;
@@ -678,8 +687,8 @@ export function startSubscriptionWithCard(params: {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       const currentTab = await global.platform.currentTab();
-      const subscriptions = await submitRequestToBackground<Subscription[]>(
-        'startSubscriptionWithCard',
+      const subscriptions = await submitRequestToBackground(
+        'ShieldSubscriptionService:startSubscriptionWithCard',
         [params, currentTab?.id],
       );
 
@@ -702,7 +711,7 @@ export function updateSubscriptionCardPaymentMethod(params: {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground(
-      'updateSubscriptionCardPaymentMethod',
+      'ShieldSubscriptionService:updateSubscriptionCardPaymentMethod',
       [params, currentTab?.id],
     );
 
@@ -714,9 +723,10 @@ export function updateSubscriptionCryptoPaymentMethod(
   params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('updateSubscriptionCryptoPaymentMethod', [
-      params,
-    ]);
+    await submitRequestToBackground(
+      'ShieldSubscriptionService:updateSubscriptionCryptoPaymentMethod',
+      [params],
+    );
   };
 }
 
@@ -725,7 +735,10 @@ export function cancelSubscription(params: {
   cancelAtPeriodEnd?: boolean;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('cancelSubscription', [params]);
+    await submitRequestToBackground(
+      'SubscriptionController:cancelSubscription',
+      [params],
+    );
   };
 }
 
@@ -734,7 +747,10 @@ export function unCancelSubscription(params: {
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('unCancelSubscription', [params]);
+      await submitRequestToBackground(
+        'SubscriptionController:unCancelSubscription',
+        [params],
+      );
     } catch (error) {
       const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
@@ -753,7 +769,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       const billingPortalUrl = await submitRequestToBackground(
-        'getSubscriptionBillingPortalUrl',
+        'SubscriptionController:getBillingPortalUrl',
       );
       return billingPortalUrl;
     } catch (error) {
@@ -782,7 +798,10 @@ export function setShowShieldEntryModalOnce({
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       if (shouldUpdateBackgroundState) {
-        await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+        await submitRequestToBackground(
+          'AppStateController:setShowShieldEntryModalOnce',
+          [show],
+        );
       }
       dispatch(
         setShowShieldEntryModalOnceAction({
@@ -818,7 +837,10 @@ export function setPendingRedirectRoute(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setPendingRedirectRoute', [route]);
+      await submitRequestToBackground(
+        'AppStateController:setPendingRedirectRoute',
+        [route],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('[setPendingRedirectRoute] error', error);
@@ -833,10 +855,10 @@ export function setPendingShieldCohort(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setPendingShieldCohort', [
-        cohort,
-        txType,
-      ]);
+      await submitRequestToBackground(
+        'AppStateController:setPendingShieldCohort',
+        [cohort, txType],
+      );
     } catch (error) {
       log.error('[setPendingShieldCohort] error', error);
       throw error;
@@ -850,9 +872,10 @@ export function setLastUsedSubscriptionPaymentDetails(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
-        { product, paymentMethod: payload },
-      ]);
+      await submitRequestToBackground(
+        'SubscriptionController:cacheLastSelectedPaymentMethod',
+        [{ product, paymentMethod: payload }],
+      );
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
       throw error;
@@ -865,9 +888,10 @@ export function setDefaultSubscriptionPaymentOptions(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setDefaultSubscriptionPaymentOptions', [
-        payload,
-      ]);
+      await submitRequestToBackground(
+        'AppStateController:setDefaultSubscriptionPaymentOptions',
+        [payload],
+      );
     } catch (error) {
       log.error('[setDefaultSubscriptionPaymentOptions] error', error);
       throw error;
@@ -880,9 +904,10 @@ export function setShieldSubscriptionMetricsProps(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShieldSubscriptionMetricsProps', [
-        payload,
-      ]);
+      await submitRequestToBackground(
+        'AppStateController:setShieldSubscriptionMetricsProps',
+        [payload],
+      );
     } catch (error) {
       log.error('[setShieldSubscriptionMetricsProps] error', error);
       throw error;
@@ -902,10 +927,10 @@ export function linkRewardToShieldSubscription(
   rewardPoints: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('linkRewardToShieldSubscription', [
-      subscriptionId,
-      rewardPoints,
-    ]);
+    await submitRequestToBackground(
+      'ShieldSubscriptionService:linkRewardToExistingSubscription',
+      [subscriptionId, rewardPoints],
+    );
 
     // refetch the subscriptions
     await dispatch(getSubscriptions());
@@ -922,7 +947,10 @@ export async function setShieldSubscriptionError(
   error: { message: string; code?: string } | null,
 ): Promise<void> {
   try {
-    await submitRequestToBackground('setShieldSubscriptionError', [error]);
+    await submitRequestToBackground(
+      'AppStateController:setShieldSubscriptionError',
+      [error],
+    );
   } catch (e) {
     logErrorWithMessage(e);
     throw e;
@@ -946,7 +974,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
   return async (dispatch: MetaMaskReduxDispatch) => {
     // restore the vault using the seed phrase
     const mnemonic = await submitRequestToBackground(
-      'restoreSocialBackupAndGetSeedPhrase',
+      'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
       [password],
     );
 
@@ -977,7 +1005,9 @@ export function syncSeedPhrases(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('syncSeedPhrases');
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:syncSeedPhrases',
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('[syncSeedPhrases] error', error);
@@ -1003,19 +1033,20 @@ export function changePassword(
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('changePassword', [
-      newPassword,
-      oldPassword,
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:changePassword',
+      [newPassword, oldPassword],
+    );
   };
 }
 
 export function storeKeyringEncryptionKey(
   encryptionKey: string,
 ): Promise<void> {
-  return submitRequestToBackground('storeKeyringEncryptionKey', [
-    encryptionKey,
-  ]);
+  return submitRequestToBackground(
+    'SeedlessOnboardingController:storeKeyringEncryptionKey',
+    [encryptionKey],
+  );
 }
 
 export function tryUnlockMetamask(
@@ -1025,7 +1056,10 @@ export function tryUnlockMetamask(
     dispatch(showLoadingIndication());
     log.debug(`background.syncPasswordAndUnlockWallet`);
 
-    return submitRequestToBackground('syncPasswordAndUnlockWallet', [password])
+    return submitRequestToBackground(
+      'LegacyBackgroundApiService:syncPasswordAndUnlockWallet',
+      [password],
+    )
       .then(() => {
         return forceUpdateMetamaskState(dispatch);
       })
@@ -1053,8 +1087,8 @@ export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       dispatch(showLoadingIndication());
-      const isAuthenticated = await submitRequestToBackground<boolean>(
-        'getIsSeedlessOnboardingUserAuthenticated',
+      const isAuthenticated = await submitRequestToBackground(
+        'SeedlessOnboardingController:isAuthenticated',
         [],
       );
       return isAuthenticated;
@@ -1089,8 +1123,8 @@ export function checkIsSeedlessPasswordOutdated(
 
     let isPasswordOutdated = false;
     try {
-      isPasswordOutdated = await submitRequestToBackground<boolean>(
-        'checkIsSeedlessPasswordOutdated',
+      isPasswordOutdated = await submitRequestToBackground(
+        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
         [{ skipCache, captureSentryError }],
       );
       if (isPasswordOutdated) {
@@ -1122,10 +1156,10 @@ export function createNewVaultAndRestore(
 
     const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
 
-    return submitRequestToBackground('createNewVaultAndRestore', [
-      password,
-      encodedSeedPhrase,
-    ])
+    return submitRequestToBackground(
+      'LegacyBackgroundApiService:createNewVaultAndRestore',
+      [password, encodedSeedPhrase],
+    )
       .then(() => dispatch(unMarkPasswordForgotten()))
       .then(() => {
         dispatch(showAccountsPage());
@@ -1145,7 +1179,10 @@ export function importMnemonicToVault(
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return submitRequestToBackground('importMnemonicToVault', [mnemonic])
+    return submitRequestToBackground(
+      'LegacyBackgroundApiService:importMnemonicToVault',
+      [mnemonic],
+    )
       .then(async (result) => {
         dispatch(hideLoadingIndication());
         return result;
@@ -1202,9 +1239,10 @@ export function unlockAndGetSeedPhrase(
 }
 
 export function submitPassword(password: string): Promise<void> {
-  return submitRequestToBackground('submitPasswordOrEncryptionKey', [
-    { password },
-  ]);
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:submitPasswordOrEncryptionKey',
+    [{ password }],
+  );
 }
 
 /**
@@ -1220,15 +1258,16 @@ export async function createSeedPhraseBackup(
   keyringId: string,
 ): Promise<void> {
   const encodedSeedPhrase = encodeSeedPhraseForBackground(seedPhrase);
-  await submitRequestToBackground('createSeedPhraseBackup', [
-    password,
-    encodedSeedPhrase,
-    keyringId,
-  ]);
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:createSeedPhraseBackup',
+    [password, encodedSeedPhrase, keyringId],
+  );
 }
 
 export async function verifyPassword(password: string): Promise<boolean> {
-  await submitRequestToBackground('verifyPassword', [password]);
+  await submitRequestToBackground('KeyringController:verifyPassword', [
+    password,
+  ]);
   // If verifying the password fails, we would throw before returning.
   return true;
 }
@@ -1265,8 +1304,8 @@ export function resetAccount(): ThunkAction<
     dispatch(showLoadingIndication());
 
     try {
-      const account = await submitRequestToBackground<string>(
-        'resetAccount',
+      const account = await submitRequestToBackground(
+        'LegacyBackgroundApiService:resetAccount',
         [],
       );
 
@@ -1287,7 +1326,10 @@ export function removeAccount(
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('removeAccount', [address]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:removeAccount',
+        [address],
+      );
       await forceUpdateMetamaskState(dispatch);
     } finally {
       dispatch(hideLoadingIndication());
@@ -1316,10 +1358,10 @@ export function importNewAccount(
 
     try {
       log.debug(`background.importAccountWithStrategy`);
-      await submitRequestToBackground('importAccountWithStrategy', [
-        strategy,
-        args,
-      ]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:importAccountWithStrategy',
+        [strategy, args],
+      );
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -1338,8 +1380,8 @@ export function checkHardwareStatus(
 
     let unlocked = false;
     try {
-      unlocked = await submitRequestToBackground<boolean>(
-        'checkHardwareStatus',
+      unlocked = await submitRequestToBackground(
+        'LegacyBackgroundApiService:checkHardwareStatus',
         [deviceName, hdPath],
       );
     } catch (error) {
@@ -1361,7 +1403,10 @@ export function forgetDevice(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      await submitRequestToBackground('forgetDevice', [deviceName]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:forgetDevice',
+        [deviceName],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1415,8 +1460,8 @@ export function connectHardware(
         }
       }
 
-      accounts = await submitRequestToBackground<{ address: string }[]>(
-        'connectHardware',
+      accounts = await submitRequestToBackground(
+        'LegacyBackgroundApiService:connectHardware',
         [deviceName, page, hdPath],
       );
     } catch (error) {
@@ -1466,12 +1511,10 @@ export function unlockHardwareWalletAccounts(
 
     for (const index of indexes) {
       try {
-        await submitRequestToBackground('unlockHardwareWalletAccount', [
-          index,
-          deviceName,
-          hdPath,
-          hdPathDescription,
-        ]);
+        await submitRequestToBackground(
+          'LegacyBackgroundApiService:unlockHardwareWalletAccount',
+          [index, deviceName, hdPath, hdPathDescription],
+        );
       } catch (err) {
         logErrorWithMessage(err);
         dispatch(hideLoadingIndication());
@@ -1506,7 +1549,10 @@ export function setCurrentCurrency(
     dispatch(showLoadingIndication());
     log.debug(`background.setCurrentCurrency`);
     try {
-      await submitRequestToBackground('setCurrentCurrency', [currencyCode]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:setCurrentCurrency',
+        [currencyCode],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
@@ -1530,9 +1576,10 @@ export function decryptMsgInline(
     log.debug(`actions calling background.decryptMessageInline`);
 
     try {
-      await submitRequestToBackground('decryptMessageInline', [
-        decryptedMsgData,
-      ]);
+      await submitRequestToBackground(
+        'DecryptMessageController:decryptMessageInline',
+        [decryptedMsgData],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1557,7 +1604,10 @@ export function decryptMsg(
     log.debug(`actions calling background.decryptMessage`);
 
     try {
-      await submitRequestToBackground('decryptMessage', [decryptedMsgData]);
+      await submitRequestToBackground(
+        'DecryptMessageController:decryptMessage',
+        [decryptedMsgData],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1586,8 +1636,8 @@ export function encryptionPublicKeyMsg(
     log.debug(`actions calling background.encryptionPublicKey`);
 
     try {
-      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-        'encryptionPublicKey',
+      await submitRequestToBackground(
+        'EncryptionPublicKeyController:encryptionPublicKey',
         [msgData],
       );
     } catch (error) {
@@ -1634,7 +1684,7 @@ export function updatePreviousGasParams(
     let updatedTransaction: TransactionMeta;
     try {
       updatedTransaction = await submitRequestToBackground(
-        'updatePreviousGasParams',
+        'TransactionController:updatePreviousGasParams',
         [txId, previousGasParams],
       );
     } catch (error) {
@@ -1659,7 +1709,7 @@ export function updateEditableParams(
 
     try {
       updatedTransaction = await submitRequestToBackground(
-        'updateEditableParams',
+        'TransactionController:updateEditableParams',
         args,
       );
     } catch (error) {
@@ -1706,7 +1756,9 @@ export function updateSlides(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('updateSlides', [slides]);
+      await submitRequestToBackground('AppStateController:updateSlides', [
+        slides,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1719,7 +1771,7 @@ export function removeSlide(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeSlide', [id]);
+      await submitRequestToBackground('AppStateController:removeSlide', [id]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -1740,7 +1792,10 @@ export function updateTransaction(
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('updateTransaction', [txMeta]);
+      await submitRequestToBackground(
+        'TransactionController:updateTransaction',
+        [txMeta],
+      );
     } catch (error) {
       dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
       dispatch(hideLoadingIndication());
@@ -1789,8 +1844,8 @@ export function addTransactionAndRouteToConfirmationPage(
     try {
       log.debug('background.addTransaction');
 
-      const transactionMeta = await submitRequestToBackground<TransactionMeta>(
-        'addTransaction',
+      const transactionMeta = await submitRequestToBackground(
+        'LegacyBackgroundApiService:addTransaction',
         [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
       );
 
@@ -1834,8 +1889,8 @@ export async function addTransactionAndWaitForPublish(
 
   const actionId = generateActionId();
 
-  return await submitRequestToBackground<TransactionMeta>(
-    'addTransactionAndWaitForPublish',
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:addTransactionAndWaitForPublish',
     [
       txParams,
       {
@@ -1877,14 +1932,17 @@ export async function addTransaction(
 
   const actionId = generateActionId();
 
-  return await submitRequestToBackground<TransactionMeta>('addTransaction', [
-    txParams,
-    {
-      ...options,
-      origin: ORIGIN_METAMASK,
-      actionId,
-    },
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:addTransaction',
+    [
+      txParams,
+      {
+        ...options,
+        origin: ORIGIN_METAMASK,
+        actionId,
+      },
+    ],
+  );
 }
 
 /**
@@ -1949,11 +2007,10 @@ async function approveTransaction(
   const actionId = generateActionId();
 
   try {
-    await submitRequestToBackground('resolvePendingApproval', [
-      String(txMeta.id),
-      { txMeta, actionId },
-      { waitForResult: true },
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:resolvePendingApproval',
+      [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
+    );
 
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
     await forceUpdateMetamaskState(dispatch);
@@ -2025,14 +2082,17 @@ async function approveHardwareWalletTransaction(
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
 
   try {
-    await submitRequestToBackground('approveHardwareWalletTransaction', [
-      {
-        txId: txMeta.id,
-        txMeta,
-        actionId: generateActionId(),
-        walletType,
-      },
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:approveHardwareWalletTransaction',
+      [
+        {
+          txId: txMeta.id,
+          txMeta,
+          actionId: generateActionId(),
+          walletType,
+        },
+      ],
+    );
 
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
@@ -2057,9 +2117,10 @@ export async function getTransactions(
     searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
   } = {},
 ): Promise<TransactionMeta[]> {
-  return await submitRequestToBackground<TransactionMeta[]>('getTransactions', [
-    filters,
-  ]);
+  return await submitRequestToBackground(
+    'TransactionController:getTransactions',
+    [filters],
+  );
 }
 
 export async function checkFirstTimeInteraction(request: {
@@ -2098,7 +2159,7 @@ export function disableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('disableSnap', [snapId]);
+    await submitRequestToBackground('SnapController:disableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2107,25 +2168,33 @@ export function enableSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('enableSnap', [snapId]);
+    await submitRequestToBackground('SnapController:enableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export async function getPhishingResult(website: string) {
-  return await submitRequestToBackground('getPhishingResult', [website]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getPhishingResult',
+    [website],
+  );
 }
 
 export async function scanUrlForPhishing(
   origin: string,
 ): Promise<PhishingDetectionScanResult | null> {
-  return await submitRequestToBackground('scanUrlForPhishing', [origin]);
+  return await submitRequestToBackground('PhishingController:scanUrl', [
+    origin,
+  ]);
 }
 
 export async function checkAddressPoisoning(
   address: string,
 ): Promise<SimilarAddressMatch[]> {
-  return await submitRequestToBackground('checkAddressPoisoning', [address]);
+  return await submitRequestToBackground(
+    'PhishingController:checkAddressPoisoning',
+    [address],
+  );
 }
 
 // TODO: Clean this up.
@@ -2146,15 +2215,18 @@ export function removeSnap(
     try {
       if (isAccountsSnap) {
         const addresses: string[] = await submitRequestToBackground(
-          'getAccountsBySnapId',
+          'LegacyBackgroundApiService:getAccountsBySnapId',
           [snapId],
         );
         for (const address of addresses) {
-          await submitRequestToBackground('removeAccount', [address]);
+          await submitRequestToBackground(
+            'LegacyBackgroundApiService:removeAccount',
+            [address],
+          );
         }
       }
 
-      await submitRequestToBackground('removeSnap', [snapId]);
+      await submitRequestToBackground('SnapController:removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
     } finally {
       dispatch(hideLoadingIndication());
@@ -2170,7 +2242,7 @@ export async function handleSnapRequest<
   handler: string;
   request: JsonRpcRequest<Params>;
 }): Promise<unknown> {
-  return submitRequestToBackground('handleSnapRequest', [args]);
+  return submitRequestToBackground('SnapController:handleRequest', [args]);
 }
 
 export function revokeDynamicSnapPermissions(
@@ -2178,10 +2250,10 @@ export function revokeDynamicSnapPermissions(
   permissionNames: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('revokeDynamicSnapPermissions', [
-      snapId,
-      permissionNames,
-    ]);
+    await submitRequestToBackground(
+      'SnapController:revokeDynamicSnapPermissions',
+      [snapId, permissionNames],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2210,9 +2282,10 @@ export function deleteExpiredNotifications(): ThunkAction<
       .map(({ id }) => id);
 
     if (notificationIdsToDelete.length) {
-      await submitRequestToBackground('deleteNotificationsById', [
-        notificationIdsToDelete,
-      ]);
+      await submitRequestToBackground(
+        'NotificationServicesController:deleteNotificationsById',
+        [notificationIdsToDelete],
+      );
       await forceUpdateMetamaskState(dispatch);
     }
   };
@@ -2232,7 +2305,7 @@ export function disconnectOriginFromSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('disconnectOriginFromSnap', [
+    await submitRequestToBackground('SnapController:disconnectOrigin', [
       origin,
       snapId,
     ]);
@@ -2252,8 +2325,8 @@ export function cancelDecryptMsg(
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-        'cancelDecryptMessage',
+      await submitRequestToBackground(
+        'DecryptMessageController:cancelDecryptMessage',
         [msgData.id],
       );
     } finally {
@@ -2279,8 +2352,8 @@ export function cancelEncryptionPublicKeyMsg(
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground<MetaMaskReduxState['metamask']>(
-        'cancelEncryptionPublicKey',
+      await submitRequestToBackground(
+        'EncryptionPublicKeyController:cancelEncryptionPublicKey',
         [msgData.id],
       );
     } finally {
@@ -2306,10 +2379,10 @@ export function cancelTx(
   return async (dispatch: MetaMaskReduxDispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     try {
-      await submitRequestToBackground('rejectPendingApproval', [
-        String(txMeta.id),
-        providerErrors.userRejectedRequest().serialize(),
-      ]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:rejectPendingApproval',
+        [String(txMeta.id), providerErrors.userRejectedRequest().serialize()],
+      );
 
       await forceUpdateMetamaskState(dispatch);
 
@@ -2333,7 +2406,9 @@ export function markPasswordForgotten(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('markPasswordForgotten', []);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:markPasswordForgotten',
+      );
     } finally {
       // TODO: handle errors
       dispatch(hideLoadingIndication());
@@ -2349,7 +2424,9 @@ export function unMarkPasswordForgotten(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('unMarkPasswordForgotten', []);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:unMarkPasswordForgotten',
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2401,7 +2478,7 @@ export function updateMetamaskState(
 }
 
 const backgroundSetLocked = (): Promise<void> => {
-  return submitRequestToBackground('setLocked', []);
+  return submitRequestToBackground('LegacyBackgroundApiService:setLocked');
 };
 
 export function lockMetamask(
@@ -2427,7 +2504,10 @@ export function lockMetamask(
 
 async function _setSelectedInternalAccount(accountId: string): Promise<void> {
   log.debug(`background.setSelectedInternalAccount`);
-  await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:setSelectedInternalAccount',
+    [accountId],
+  );
 }
 
 /**
@@ -2443,9 +2523,10 @@ export function setSelectedMultichainAccount(
     try {
       // Fullscreen loading indication removed; callers are responsible for pending UX
       // (e.g. component-local state, or `useTransition` where appropriate).
-      await submitRequestToBackground('setSelectedMultichainAccount', [
-        accountGroupId,
-      ]);
+      await submitRequestToBackground(
+        'AccountTreeController:setSelectedAccountGroup',
+        [accountGroupId],
+      );
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
@@ -2468,9 +2549,10 @@ export function createNextMultichainAccountGroup(
     try {
       const walletIdWithoutTypePrefix =
         stripWalletTypePrefixFromWalletId(walletId);
-      await submitRequestToBackground('createNextMultichainAccountGroup', [
-        { entropySource: walletIdWithoutTypePrefix },
-      ]);
+      await submitRequestToBackground(
+        'MultichainAccountService:createNextMultichainAccountGroup',
+        [{ entropySource: walletIdWithoutTypePrefix }],
+      );
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
@@ -2493,10 +2575,10 @@ export function setAccountGroupPinned(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setAccountGroupPinned`);
     try {
-      await submitRequestToBackground('setAccountGroupPinned', [
-        accountGroupId,
-        pinned,
-      ]);
+      await submitRequestToBackground(
+        'AccountTreeController:setAccountGroupPinned',
+        [accountGroupId, pinned],
+      );
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
@@ -2519,10 +2601,10 @@ export function setAccountGroupHidden(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setAccountGroupHidden`);
     try {
-      await submitRequestToBackground('setAccountGroupHidden', [
-        accountGroupId,
-        hidden,
-      ]);
+      await submitRequestToBackground(
+        'AccountTreeController:setAccountGroupHidden',
+        [accountGroupId, hidden],
+      );
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
@@ -2545,10 +2627,10 @@ export function setAccountGroupName(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setAccountGroupName`);
     try {
-      await submitRequestToBackground('setAccountGroupName', [
-        accountGroupId,
-        newAccountName,
-      ]);
+      await submitRequestToBackground(
+        'AccountTreeController:setAccountGroupName',
+        [accountGroupId, newAccountName],
+      );
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
       await forceUpdateMetamaskState(dispatch);
@@ -2660,7 +2742,10 @@ export function addPermittedAccount(
   address: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedAccount', [origin, address]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:addPermittedAccount',
+      [origin, address],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2669,7 +2754,10 @@ export function addPermittedAccounts(
   address: string[],
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedAccounts', [origin, address]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:addPermittedAccounts',
+      [origin, address],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2679,10 +2767,10 @@ export function removePermittedAccount(
   address: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removePermittedAccount', [
-      origin,
-      address,
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:removePermittedAccount',
+      [origin, address],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2692,10 +2780,10 @@ export function setPermittedAccounts(
   caipAccountIds: CaipAccountId[],
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setPermittedAccounts', [
-      origin,
-      caipAccountIds,
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:setPermittedAccounts',
+      [origin, caipAccountIds],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2705,7 +2793,10 @@ export function addPermittedChain(
   chainId: CaipChainId,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedChain', [origin, chainId]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:addPermittedChain',
+      [origin, chainId],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2714,7 +2805,10 @@ export function addPermittedChains(
   chainIds: string[],
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('addPermittedChains', [origin, chainIds]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:addPermittedChains',
+      [origin, chainIds],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2724,7 +2818,10 @@ export function removePermittedChain(
   chainId: string,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removePermittedChain', [origin, chainId]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:removePermittedChain',
+      [origin, chainId],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2734,7 +2831,10 @@ export function setPermittedChains(
   chainIds: string[],
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setPermittedChains', [origin, chainIds]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:setPermittedChains',
+      [origin, chainIds],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2761,7 +2861,9 @@ export function setShowSupportDataConsentModal(show: boolean) {
 
 export function clearProductTour() {
   return async () => {
-    return submitRequestToBackground('setProductTour', ['']);
+    return submitRequestToBackground('AppStateController:clearProductTour', [
+      '',
+    ]);
   };
 }
 export function addToken(
@@ -2788,7 +2890,7 @@ export function addToken(
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('addToken', [
+      await submitRequestToBackground('LegacyBackgroundApiService:addToken', [
         {
           address,
           symbol,
@@ -2818,7 +2920,7 @@ export function addImportedTokens(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addImportedTokens', [
+      await submitRequestToBackground('TokensController:addTokens', [
         tokensToImport,
         networkClientId,
       ]);
@@ -2842,7 +2944,7 @@ export function multichainAddAssets(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('multichainAddAssets', [
+      await submitRequestToBackground('MultichainAssetsController:addAssets', [
         assetIds,
         accountId,
       ]);
@@ -2880,7 +2982,7 @@ export function ignoreTokens({
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('ignoreTokens', [
+      await submitRequestToBackground('TokensController:ignoreTokens', [
         _tokensToIgnore,
         networkClientId,
       ]);
@@ -2904,7 +3006,7 @@ export function hideAsset(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('hideAsset', [assetId]);
+      await submitRequestToBackground('AssetsController:hideAsset', [assetId]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2927,7 +3029,10 @@ export function addCustomAsset(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addCustomAsset', [accountId, assetId]);
+      await submitRequestToBackground('AssetsController:addCustomAsset', [
+        accountId,
+        assetId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2948,7 +3053,9 @@ export function unhideAsset(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('unhideAsset', [assetId]);
+      await submitRequestToBackground('AssetsController:unhideAsset', [
+        assetId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2971,7 +3078,7 @@ export function removeCustomAsset(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('removeCustomAsset', [
+      await submitRequestToBackground('AssetsController:removeCustomAsset', [
         accountId,
         assetId,
       ]);
@@ -3002,8 +3109,8 @@ export function importCustomAssetsBatch(
     const results = await Promise.allSettled(
       assets.map(({ assetId, isHidden }) =>
         isHidden
-          ? submitRequestToBackground('unhideAsset', [assetId])
-          : submitRequestToBackground('addCustomAsset', [
+          ? submitRequestToBackground('AssetsController:unhideAsset', [assetId])
+          : submitRequestToBackground('AssetsController:addCustomAsset', [
               accountId,
               assetId,
               pendingMetadataByAssetId?.[assetId],
@@ -3033,10 +3140,10 @@ export function multichainIgnoreAssets(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('multichainIgnoreAssets', [
-        assetIds,
-        accountId,
-      ]);
+      await submitRequestToBackground(
+        'MultichainAssetsController:ignoreAssets',
+        [assetIds, accountId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -3065,7 +3172,10 @@ export function refreshAssetsForSelectedAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('getAssets', [accounts, options]);
+      await submitRequestToBackground('LegacyBackgroundApiService:getAssets', [
+        accounts,
+        options,
+      ]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       logErrorWithMessage(error);
@@ -3085,11 +3195,10 @@ export async function getBalancesInSingleCall(
   tokensToDetect: string[],
   networkClientId: string,
 ): Promise<BalanceMap> {
-  return await submitRequestToBackground('getBalancesInSingleCall', [
-    selectedAddress,
-    tokensToDetect,
-    networkClientId,
-  ]);
+  return await submitRequestToBackground(
+    'AssetsContractController:getBalancesInSingleCall',
+    [selectedAddress, tokensToDetect, networkClientId],
+  );
 }
 
 /**
@@ -3100,9 +3209,10 @@ export async function getBalancesInSingleCall(
 export async function findNetworkClientIdByChainId(
   chainId: string,
 ): Promise<string> {
-  return await submitRequestToBackground('findNetworkClientIdByChainId', [
-    chainId,
-  ]);
+  return await submitRequestToBackground(
+    'NetworkController:findNetworkClientIdByChainId',
+    [chainId],
+  );
 }
 
 export function addNft(
@@ -3217,7 +3327,10 @@ export function getAssets(
   options: GetAssetsOptions,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('getAssets', [accounts, options]);
+    await submitRequestToBackground('LegacyBackgroundApiService:getAssets', [
+      accounts,
+      options,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3301,11 +3414,10 @@ export async function getTokenStandardAndDetails(
   userAddress?: string,
   tokenId?: string,
 ): Promise<TokenStandAndDetails> {
-  return await submitRequestToBackground('getTokenStandardAndDetails', [
-    address,
-    userAddress,
-    tokenId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getTokenStandardAndDetails',
+    [address, userAddress, tokenId],
+  );
 }
 
 export async function getTokenStandardAndDetailsByChain(
@@ -3314,16 +3426,17 @@ export async function getTokenStandardAndDetailsByChain(
   tokenId?: string,
   chainId?: string,
 ): Promise<TokenStandAndDetails> {
-  return await submitRequestToBackground('getTokenStandardAndDetailsByChain', [
-    address,
-    userAddress,
-    tokenId,
-    chainId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getTokenStandardAndDetailsByChain',
+    [address, userAddress, tokenId, chainId],
+  );
 }
 
 export async function getTokenSymbol(address: string): Promise<string | null> {
-  return await submitRequestToBackground('getTokenSymbol', [address]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getTokenSymbol',
+    [address],
+  );
 }
 
 export function clearPendingTokens(): Action {
@@ -3359,7 +3472,10 @@ export function setCurrentExtensionPopupId(
   id: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+    await submitRequestToBackground(
+      'AppStateController:setCurrentExtensionPopupId',
+      [id],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3369,10 +3485,10 @@ export function setBrowserEnvironment(
   _browserName: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground<void>('setBrowserEnvironment', [
-      os,
-      _browserName,
-    ]);
+    await submitRequestToBackground(
+      'AppStateController:setBrowserEnvironment',
+      [os, _browserName],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3384,7 +3500,10 @@ export function abortTransactionSigning(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('abortTransactionSigning', [transactionId]);
+    await submitRequestToBackground(
+      'TransactionController:abortTransactionSigning',
+      [transactionId],
+    );
   };
 }
 
@@ -3400,7 +3519,7 @@ export function getLayer1GasFee({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
   return async () =>
-    await submitRequestToBackground('getLayer1GasFee', [
+    await submitRequestToBackground('TransactionController:getLayer1GasFee', [
       { chainId, networkClientId, transactionParams },
     ]);
 }
@@ -3417,7 +3536,7 @@ export function createCancelTransaction(
     getState: () => MetaMaskReduxState,
   ) => {
     const actionId = generateActionId();
-    await submitRequestToBackground('createCancelTransaction', [
+    await submitRequestToBackground('TransactionController:stopTransaction', [
       txId,
       customGasSettings,
       { ...options, actionId },
@@ -3443,11 +3562,10 @@ export function createSpeedUpTransaction(
     getState: () => MetaMaskReduxState,
   ) => {
     const actionId = generateActionId();
-    await submitRequestToBackground('createSpeedUpTransaction', [
-      txId,
-      customGasSettings,
-      { ...options, actionId },
-    ]);
+    await submitRequestToBackground(
+      'TransactionController:speedUpTransaction',
+      [txId, customGasSettings, { ...options, actionId }],
+    );
 
     await forceUpdateMetamaskState(dispatch);
 
@@ -3469,10 +3587,10 @@ export function addNetwork(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.addNetwork`, networkConfiguration);
     try {
-      return await submitRequestToBackground('addNetwork', [
-        networkConfiguration,
-        options,
-      ]);
+      return await submitRequestToBackground(
+        'LegacyBackgroundApiService:addNetwork',
+        [networkConfiguration, options],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -3487,11 +3605,10 @@ export function updateNetwork(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.updateNetwork`, networkConfiguration);
     try {
-      return await submitRequestToBackground('updateNetwork', [
-        networkConfiguration.chainId,
-        networkConfiguration,
-        options,
-      ]);
+      return await submitRequestToBackground(
+        'NetworkController:updateNetwork',
+        [networkConfiguration.chainId, networkConfiguration, options],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -3505,7 +3622,10 @@ export function setActiveNetwork(
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${id}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [id]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:setActiveNetwork',
+        [id],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -3518,9 +3638,10 @@ export function setActiveNetworkWithError(
   return async (dispatch) => {
     log.debug(`background.setActiveNetwork: ${networkConfigurationId}`);
     try {
-      await submitRequestToBackground('setActiveNetwork', [
-        networkConfigurationId,
-      ]);
+      await submitRequestToBackground(
+        'MultichainNetworkController:setActiveNetwork',
+        [networkConfigurationId],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw new Error('Had a problem changing networks!');
@@ -3538,7 +3659,7 @@ export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
     log.debug('background.getNetworksWithTransactionActivityByAccounts');
     try {
       return await submitRequestToBackground(
-        'getNetworksWithTransactionActivityByAccounts',
+        'MultichainNetworkController:getNetworksWithTransactionActivityByAccounts',
       );
     } catch (error) {
       logErrorWithMessage(error);
@@ -3557,7 +3678,7 @@ export function setActiveNetworkConfigurationId(
       `background.setActiveNetworkConfigurationId: ${networkConfigurationId}`,
     );
     try {
-      await submitRequestToBackground('setActiveNetworkConfigurationId', [
+      await submitRequestToBackground('NetworkController:setActiveNetwork', [
         networkConfigurationId,
       ]);
     } catch (error) {
@@ -3574,7 +3695,9 @@ export function rollbackToPreviousProvider(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('rollbackToPreviousProvider');
+      await submitRequestToBackground(
+        'NetworkController:rollbackToPreviousProvider',
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -3586,7 +3709,9 @@ export function removeNetwork(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('removeNetwork', [chainId]);
+      await submitRequestToBackground('NetworkController:removeNetwork', [
+        chainId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -3606,7 +3731,7 @@ export function addToAddressBook(
     const chainId = customChainId || getProviderConfig(getState()).chainId;
     let set;
     try {
-      set = await submitRequestToBackground('setAddressBook', [
+      set = await submitRequestToBackground('AddressBookController:set', [
         toChecksumHexAddress(recipient),
         nickname,
         chainId,
@@ -3632,7 +3757,7 @@ export function removeFromAddressBook(
   log.debug(`background.removeFromAddressBook`);
 
   return async (dispatch) => {
-    await submitRequestToBackground('removeFromAddressBook', [
+    await submitRequestToBackground('AddressBookController:delete', [
       chainId,
       toChecksumHexAddress(addressToRemove),
     ]);
@@ -3765,7 +3890,10 @@ export function updateNftDropDownState(
   value: NftDropDownState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('updateNftDropDownState', [value]);
+    await submitRequestToBackground(
+      'AppStateController:updateNftDropDownState',
+      [value],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3862,7 +3990,9 @@ export function exportAccount(
 
     try {
       log.debug(`background.verifyPassword`);
-      await submitRequestToBackground('verifyPassword', [password]);
+      await submitRequestToBackground('KeyringController:verifyPassword', [
+        password,
+      ]);
     } catch (error) {
       log.error('Error in verifying password.');
       dispatch(hideLoadingIndication());
@@ -3871,10 +4001,10 @@ export function exportAccount(
 
     try {
       log.debug(`background.exportAccount`);
-      const result = await submitRequestToBackground<string>('exportAccount', [
-        address,
-        password,
-      ]);
+      const result = await submitRequestToBackground(
+        'LegacyBackgroundApiService:exportAccount',
+        [address, password],
+      );
 
       setPrivateKey(result);
       setShowHoldToReveal(true);
@@ -3893,10 +4023,10 @@ export function exportAccounts(
     return Promise.all(
       addresses.map(async (address) => {
         try {
-          return await submitRequestToBackground<string>('exportAccount', [
-            address,
-            password,
-          ]);
+          return await submitRequestToBackground(
+            'LegacyBackgroundApiService:exportAccount',
+            [address, password],
+          );
         } catch (err) {
           logErrorWithMessage(err);
           throw err;
@@ -3922,7 +4052,10 @@ export function setAccountLabel(
     log.debug(`background.setAccountLabel`);
 
     try {
-      await submitRequestToBackground('setAccountLabel', [account, label]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:setAccountLabel',
+        [account, label],
+      );
 
       dispatch({
         type: actionConstants.SET_ACCOUNT_LABEL,
@@ -3961,11 +4094,10 @@ export function setFeatureFlag(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
-      const updatedFeatureFlags =
-        await submitRequestToBackground<TemporaryFeatureFlagDef>(
-          'setFeatureFlag',
-          [feature, activated],
-        );
+      const updatedFeatureFlags = await submitRequestToBackground(
+        'PreferencesController:setFeatureFlag',
+        [feature, activated],
+      );
 
       if (notificationType) {
         dispatch(showModal({ name: notificationType }));
@@ -3991,8 +4123,8 @@ export function setPreference(
   return async (dispatch: MetaMaskReduxDispatch) => {
     showLoading && dispatch(showLoadingIndication());
     try {
-      return await submitRequestToBackground<TemporaryPreferenceFlagDef>(
-        'setPreference',
+      return await submitRequestToBackground(
+        'PreferencesController:setPreference',
         [preference, value],
       );
     } finally {
@@ -4005,7 +4137,10 @@ export async function setDefaultHomeActiveTabName(
   value: string,
 ): Promise<void> {
   try {
-    await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
+    await submitRequestToBackground(
+      'AppStateController:setDefaultHomeActiveTabName',
+      [value],
+    );
   } catch {
     // noop
   }
@@ -4022,7 +4157,10 @@ export function setLastVisitedPerpsRoute(
     // (persist:false) and every Perps route change would otherwise pull
     // the entire background state.
     try {
-      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+      await submitRequestToBackground(
+        'AppStateController:setLastVisitedPerpsRoute',
+        ['perps', path],
+      );
     } catch (error) {
       log.error('[setLastVisitedPerpsRoute] error', error);
     }
@@ -4226,7 +4364,9 @@ export function setCompletedOnboarding(): ThunkAction<
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('completeOnboarding');
+      await submitRequestToBackground(
+        'OnboardingController:completeOnboarding',
+      );
       dispatch(completeOnboarding());
     } finally {
       dispatch(hideLoadingIndication());
@@ -4244,7 +4384,9 @@ export function setCompletedOnboardingWithSidepanel(): ThunkAction<
     dispatch(showLoadingIndication());
 
     try {
-      await submitRequestToBackground('completeOnboarding');
+      await submitRequestToBackground(
+        'OnboardingController:completeOnboarding',
+      );
       dispatch(completeOnboardingWithSidepanel());
     } finally {
       dispatch(hideLoadingIndication());
@@ -4310,7 +4452,10 @@ export function resetWallet(restoreOnly = false) {
         await dispatch(resetOnboarding());
       }
 
-      await submitRequestToBackground('resetWallet', [restoreOnly]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:resetWallet',
+        [restoreOnly],
+      );
 
       // force update metamask state
       await forceUpdateMetamaskState(dispatch);
@@ -4402,7 +4547,7 @@ export function setPna25Acknowledged(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     log.debug(`background.setPna25Acknowledged`);
-    await submitRequestToBackground('setPna25Acknowledged', [
+    await submitRequestToBackground('AppStateController:setPna25Acknowledged', [
       acknowledged,
       disableDelay,
     ]);
@@ -4419,9 +4564,10 @@ export function setMarketingConsent(
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      const res = await submitRequestToBackground('setMarketingConsent', [
-        hasEmailMarketingConsent,
-      ]);
+      const res = await submitRequestToBackground(
+        'OAuthService:setMarketingConsent',
+        [hasEmailMarketingConsent],
+      );
       return Boolean(res);
     } catch (error) {
       logErrorWithMessage(getErrorMessage(error));
@@ -4435,7 +4581,9 @@ export function setMarketingConsent(
  */
 export async function getMarketingConsent() {
   try {
-    const res = await submitRequestToBackground('getMarketingConsent');
+    const res = await submitRequestToBackground(
+      'OAuthService:getMarketingConsent',
+    );
     return Boolean(res);
   } catch (error) {
     logErrorWithMessage(getErrorMessage(error));
@@ -4454,7 +4602,10 @@ export function setUsePhishDetect(
     dispatch(showLoadingIndication());
     log.debug(`background.setUsePhishDetect`);
     try {
-      await submitRequestToBackground('setUsePhishDetect', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUsePhishDetect',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4470,9 +4621,10 @@ export function setUseMultiAccountBalanceChecker(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseMultiAccountBalanceChecker`);
     try {
-      await submitRequestToBackground('setUseMultiAccountBalanceChecker', [
-        val,
-      ]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseMultiAccountBalanceChecker',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4488,7 +4640,10 @@ export function setUseSafeChainsListValidation(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseSafeChainsListValidation`);
     try {
-      await submitRequestToBackground('setUseSafeChainsListValidation', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseSafeChainsListValidation',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4504,7 +4659,10 @@ export function setUseTokenDetection(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseTokenDetection`);
     try {
-      await submitRequestToBackground('setUseTokenDetection', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseTokenDetection',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4520,7 +4678,10 @@ export function setOpenSeaEnabled(
     dispatch(showLoadingIndication());
     log.debug(`background.setOpenSeaEnabled`);
     try {
-      await submitRequestToBackground('setOpenSeaEnabled', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setOpenSeaEnabled',
+        [val],
+      );
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -4534,7 +4695,10 @@ export function setUseNftDetection(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
     try {
-      await submitRequestToBackground('setUseNftDetection', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseNftDetection',
+        [val],
+      );
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -4548,7 +4712,10 @@ export function setUse4ByteResolution(
     dispatch(showLoadingIndication());
     log.debug(`background.setUse4ByteResolution`);
     try {
-      await submitRequestToBackground('setUse4ByteResolution', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUse4ByteResolution',
+        [val],
+      );
     } catch (error) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4564,7 +4731,10 @@ export function setUseCurrencyRateCheck(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseCurrencyRateCheck`);
     try {
-      await submitRequestToBackground('setUseCurrencyRateCheck', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseCurrencyRateCheck',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4580,7 +4750,9 @@ export function detectTokens(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens', [{ chainIds }]);
+    await submitRequestToBackground('TokenDetectionController:detectTokens', [
+      { chainIds },
+    ]);
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -4611,7 +4783,10 @@ export function setAdvancedGasFee(val: {
     dispatch(showLoadingIndication());
     log.debug(`background.setAdvancedGasFee`);
     try {
-      await submitRequestToBackground('setAdvancedGasFee', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setAdvancedGasFee',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     } finally {
@@ -4627,7 +4802,7 @@ export function setTheme(
     dispatch(showLoadingIndication());
     log.debug(`background.setTheme`);
     try {
-      await submitRequestToBackground('setTheme', [val]);
+      await submitRequestToBackground('PreferencesController:setTheme', [val]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -4640,7 +4815,9 @@ export function setIpfsGateway(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIpfsGateway`);
     try {
-      await submitRequestToBackground('setIpfsGateway', [val]);
+      await submitRequestToBackground('PreferencesController:setIpfsGateway', [
+        val,
+      ]);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -4655,7 +4832,7 @@ export function toggleExternalServices(
     log.debug(`background.toggleExternalServices`);
     try {
       await submitRequestToBackground(
-        'toggleExternalServices',
+        'LegacyBackgroundApiService:toggleExternalServices',
         ownedPreferences ? [val, ownedPreferences] : [val],
       );
       await forceUpdateMetamaskState(dispatch);
@@ -4671,7 +4848,10 @@ export function toggleBasicFunctionality(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.toggleBasicFunctionality`);
     try {
-      await submitRequestToBackground('toggleBasicFunctionality', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:toggleBasicFunctionality',
+        [val],
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
@@ -4709,7 +4889,9 @@ export function consolidateBasicFunctionality(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('consolidateBasicFunctionality');
+      await submitRequestToBackground(
+        'PreferencesController:consolidateBasicFunctionality',
+      );
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       log.error('[consolidateBasicFunctionality] error', error);
@@ -4726,7 +4908,7 @@ function dismissBasicFunctionalityMigrationNotification(): ThunkAction<
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground(
-        'dismissBasicFunctionalityMigrationNotification',
+        'PreferencesController:dismissBasicFunctionalityMigrationNotification',
       );
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
@@ -4762,7 +4944,10 @@ export function setIsIpfsGatewayEnabled(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIsIpfsGatewayEnabled`);
     try {
-      await submitRequestToBackground('setIsIpfsGatewayEnabled', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setIsIpfsGatewayEnabled',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -4775,7 +4960,10 @@ export function setUseAddressBarEnsResolution(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);
     try {
-      await submitRequestToBackground('setUseAddressBarEnsResolution', [val]);
+      await submitRequestToBackground(
+        'PreferencesController:setUseAddressBarEnsResolution',
+        [val],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -4791,9 +4979,10 @@ export function updateCurrentLocale(
     try {
       await loadRelativeTimeFormatLocaleData(key);
       const localeMessages = await fetchLocale(key);
-      const textDirection = await submitRequestToBackground<
-        'rtl' | 'ltr' | 'auto'
-      >('setCurrentLocale', [key]);
+      const textDirection = await submitRequestToBackground(
+        'PreferencesController:setCurrentLocale',
+        [key],
+      );
       switchDirection(textDirection);
       dispatch(setCurrentLocale(key, localeMessages));
     } catch (error) {
@@ -5061,7 +5250,7 @@ export function stopPollingForQuotes(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('stopPollingForQuotes');
+    await submitRequestToBackground('BridgeController:stopPollingForQuotes');
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5114,7 +5303,7 @@ export function requestAccountsAndChainPermissionsWithId(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const id = await submitRequestToBackground(
-      'requestAccountsAndChainPermissionsWithId',
+      'LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId',
       [origin],
     );
     await forceUpdateMetamaskState(dispatch);
@@ -5132,7 +5321,10 @@ export function approvePermissionsRequest(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('approvePermissionsRequest', [request]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:acceptPermissionsRequest',
+        [request],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -5149,7 +5341,10 @@ export function rejectPermissionsRequest(
   requestId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('rejectPermissionsRequest', [requestId]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:rejectPermissionsRequest',
+      [requestId],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5164,7 +5359,10 @@ export function removePermissionsFor(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('removePermissionsFor', [subjects]);
+      await submitRequestToBackground(
+        'LegacyBackgroundApiService:removePermissionsFor',
+        [subjects],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -5180,7 +5378,10 @@ export function updateNetworksList(
   chainIds: CaipChainId[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateNetworksList', [chainIds]);
+    await submitRequestToBackground(
+      'NetworkOrderController:updateNetworksList',
+      [chainIds],
+    );
   };
 }
 
@@ -5193,7 +5394,10 @@ export function updateAccountsList(
   pinnedAccountList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+    await submitRequestToBackground(
+      'AccountOrderController:updateAccountsList',
+      [pinnedAccountList],
+    );
   };
 }
 
@@ -5212,7 +5416,10 @@ export function setEnabledNetworks(
   chainId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [chainId]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:setEnabledNetworks',
+      [chainId],
+    );
   };
 }
 
@@ -5228,7 +5435,9 @@ export function setEnabledAllPopularNetworks(): ThunkAction<
   AnyAction
 > {
   return async () => {
-    await submitRequestToBackground('setEnabledAllPopularNetworks');
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:setEnabledAllPopularNetworks',
+    );
   };
 }
 
@@ -5241,9 +5450,10 @@ export function updateHiddenAccountsList(
   hiddenAccountList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateHiddenAccountsList', [
-      hiddenAccountList,
-    ]);
+    await submitRequestToBackground(
+      'AccountOrderController:updateHiddenAccountsList',
+      [hiddenAccountList],
+    );
   };
 }
 
@@ -5324,11 +5534,10 @@ async function resolveStandardApproval(
       ? { waitForResult: options.waitForResult }
       : undefined;
 
-  await submitRequestToBackground('resolvePendingApproval', [
-    id,
-    value,
-    requestOptions,
-  ]);
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:resolvePendingApproval',
+    [id, value, requestOptions],
+  );
   // Before closing the current window, check if any additional confirmations
   // are added as a result of this confirmation being accepted
   const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
@@ -5362,11 +5571,10 @@ async function resolveHardwareWalletApproval(
       walletType,
     };
 
-    await submitRequestToBackground('resolvePendingApproval', [
-      id,
-      value,
-      requestOptions,
-    ]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:resolvePendingApproval',
+      [id, value, requestOptions],
+    );
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
@@ -5397,7 +5605,10 @@ export function rejectPendingApproval(
   error: unknown,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('rejectPendingApproval', [id, error]);
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:rejectPendingApproval',
+      [id, error],
+    );
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being rejected
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
@@ -5418,10 +5629,10 @@ export function updateThrottledOriginState(
   throttledOriginState: ThrottledOrigin,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateThrottledOriginState', [
-      origin,
-      throttledOriginState,
-    ]);
+    await submitRequestToBackground(
+      'AppStateController:updateThrottledOriginState',
+      [origin, throttledOriginState],
+    );
   };
 }
 
@@ -5431,7 +5642,10 @@ export function setFirstTimeFlowType(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       log.debug(`background.setFirstTimeFlowType`);
-      await submitRequestToBackground('setFirstTimeFlowType', [type]);
+      await submitRequestToBackground(
+        'OnboardingController:setFirstTimeFlowType',
+        [type],
+      );
       dispatch({
         type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
         value: type,
@@ -5504,7 +5718,7 @@ export function setLastActiveTime(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setLastActiveTime', []);
+      await submitRequestToBackground('AppStateController:setLastActiveTime');
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -5516,7 +5730,10 @@ export function setDismissSeedBackUpReminder(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setDismissSeedBackUpReminder', [value]);
+    await submitRequestToBackground(
+      'PreferencesController:setDismissSeedBackUpReminder',
+      [value],
+    );
     dispatch(hideLoadingIndication());
   };
 }
@@ -5526,9 +5743,10 @@ export function setOverrideContentSecurityPolicyHeader(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setOverrideContentSecurityPolicyHeader', [
-      value,
-    ]);
+    await submitRequestToBackground(
+      'PreferencesController:setOverrideContentSecurityPolicyHeader',
+      [value],
+    );
     dispatch(hideLoadingIndication());
   };
 }
@@ -5538,20 +5756,10 @@ export function setManageInstitutionalWallets(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    await submitRequestToBackground('setManageInstitutionalWallets', [value]);
-    dispatch(hideLoadingIndication());
-  };
-}
-
-export function getRpcMethodPreferences(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('getRpcMethodPreferences', []);
+    await submitRequestToBackground(
+      'PreferencesController:setManageInstitutionalWallets',
+      [value],
+    );
     dispatch(hideLoadingIndication());
   };
 }
@@ -5564,7 +5772,7 @@ export function setConnectedStatusPopoverHasBeenShown(): ThunkAction<
 > {
   return async () => {
     await submitRequestToBackground(
-      'setConnectedStatusPopoverHasBeenShown',
+      'AppStateController:setConnectedStatusPopoverHasBeenShown',
       [],
     );
   };
@@ -5573,7 +5781,7 @@ export function setConnectedStatusPopoverHasBeenShown(): ThunkAction<
 export function setRecoveryPhraseReminderHasBeenShown() {
   return async () => {
     await submitRequestToBackground(
-      'setRecoveryPhraseReminderHasBeenShown',
+      'AppStateController:setRecoveryPhraseReminderHasBeenShown',
       [],
     );
   };
@@ -5583,37 +5791,46 @@ export function setRecoveryPhraseReminderLastShown(
   lastShown: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setRecoveryPhraseReminderLastShown', [
-      lastShown,
-    ]);
+    await submitRequestToBackground(
+      'AppStateController:setRecoveryPhraseReminderLastShown',
+      [lastShown],
+    );
   };
 }
 
 export function setTermsOfUseLastAgreed(lastAgreed: number) {
   return async () => {
-    await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
+    await submitRequestToBackground(
+      'AppStateController:setTermsOfUseLastAgreed',
+      [lastAgreed],
+    );
   };
 }
 
 export async function setUpdateModalLastDismissedAt(
   updateModalLastDismissedAt: number,
 ) {
-  await submitRequestToBackground('setUpdateModalLastDismissedAt', [
-    updateModalLastDismissedAt,
-  ]);
+  await submitRequestToBackground(
+    'AppStateController:setUpdateModalLastDismissedAt',
+    [updateModalLastDismissedAt],
+  );
 }
 
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
-    await submitRequestToBackground('setLastViewedUserSurvey', [id]);
+    await submitRequestToBackground(
+      'AppStateController:setLastViewedUserSurvey',
+      [id],
+    );
   };
 }
 
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
-    await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
-      lastShown,
-    ]);
+    await submitRequestToBackground(
+      'AppStateController:setOutdatedBrowserWarningLastShown',
+      [lastShown],
+    );
   };
 }
 
@@ -5645,10 +5862,10 @@ export function getContractMethodData(
     };
 
     try {
-      await submitRequestToBackground('addKnownMethodData', [
-        fourBytePrefix,
-        { name, params },
-      ]);
+      await submitRequestToBackground(
+        'PreferencesController:addKnownMethodData',
+        [fourBytePrefix, { name, params }],
+      );
     } catch (err) {
       // TODO: Stop suppressing this error (either log or re-throw)
     }
@@ -5661,9 +5878,10 @@ export function setSeedPhraseBackedUp(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setSeedPhraseBackedUp`);
-    await submitRequestToBackground('setSeedPhraseBackedUp', [
-      seedPhraseBackupState,
-    ]);
+    await submitRequestToBackground(
+      'OnboardingController:setSeedPhraseBackedUp',
+      [seedPhraseBackupState],
+    );
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -5674,9 +5892,10 @@ export function setHasSeenOnboardingCompletionPage(
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       log.debug(`background.setHasSeenOnboardingCompletionPage`);
-      await submitRequestToBackground('setHasSeenOnboardingCompletionPage', [
-        hasSeenOnboardingCompletionPage,
-      ]);
+      await submitRequestToBackground(
+        'OnboardingController:setHasSeenOnboardingCompletionPage',
+        [hasSeenOnboardingCompletionPage],
+      );
       if (hasSeenOnboardingCompletionPage) {
         dispatch(setHasSeenOnboardingCompletionPageAction());
       }
@@ -5726,10 +5945,10 @@ export function getNextNonce(
   return async (dispatch, getState) => {
     const networkClientIdValue =
       networkClientId ?? getSelectedNetworkClientId(getState());
-    const nextNonce = await submitRequestToBackground<string>('getNextNonce', [
-      address,
-      networkClientIdValue,
-    ]);
+    const nextNonce = await submitRequestToBackground(
+      'LegacyBackgroundApiService:getNextNonce',
+      [address, networkClientIdValue],
+    );
     dispatch(setNextNonce(nextNonce));
     return nextNonce;
   };
@@ -5753,9 +5972,9 @@ export function getRequestAccountTabIds(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const requestAccountTabIds = await submitRequestToBackground<{
-      [origin: string]: string;
-    }>('getRequestAccountTabIds');
+    const requestAccountTabIds = await submitRequestToBackground(
+      'LegacyBackgroundApiService:getRequestAccountTabIds',
+    );
     dispatch(setRequestAccountTabIds(requestAccountTabIds));
   };
 }
@@ -5776,9 +5995,9 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const openMetaMaskTabIDs = await submitRequestToBackground<{
-      [tabId: string]: boolean;
-    }>('getOpenMetamaskTabsIds');
+    const openMetaMaskTabIDs = await submitRequestToBackground(
+      'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
+    );
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
   };
 }
@@ -5789,7 +6008,9 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
  * @returns A promise that resolves to a boolean indicating whether the transport was created successfully.
  */
 export async function attemptLedgerTransportCreation() {
-  return await submitRequestToBackground('attemptLedgerTransportCreation');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:attemptLedgerTransportCreation',
+  );
 }
 
 /**
@@ -5798,16 +6019,23 @@ export async function attemptLedgerTransportCreation() {
  * @returns A promise that resolves to an object containing the app name and version.
  */
 export async function getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
-  return await submitRequestToBackground('getAppNameAndVersion');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getAppNameAndVersion',
+  );
 }
 
 export async function getLedgerAppConfiguration(): Promise<AppConfigurationResponse> {
-  return await submitRequestToBackground('getLedgerAppConfiguration');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getLedgerAppConfiguration',
+  );
 }
 export async function getLedgerPublicKey(
   hdPath: string,
 ): Promise<GetPublicKeyResponse> {
-  return await submitRequestToBackground('getLedgerPublicKey', [hdPath]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getLedgerPublicKey',
+    [hdPath],
+  );
 }
 
 /**
@@ -5816,7 +6044,9 @@ export async function getLedgerPublicKey(
  * @returns Resolves to `LedgerHandlerMode.DMK` when the DMK bridge handler is active, or `LedgerHandlerMode.Legacy` otherwise.
  */
 export async function getLedgerMode(): Promise<LedgerHandlerMode> {
-  return await submitRequestToBackground('getLedgerMode');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getLedgerMode',
+  );
 }
 
 /**
@@ -5825,7 +6055,9 @@ export async function getLedgerMode(): Promise<LedgerHandlerMode> {
  * @returns The Trezor device features response including model, capabilities, and session info
  */
 export async function getTrezorFeatures(): Promise<TrezorGetFeaturesResponse> {
-  return await submitRequestToBackground('getTrezorFeatures');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getTrezorFeatures',
+  );
 }
 
 /**
@@ -5862,14 +6094,18 @@ export function captureSingleException(
  */
 
 export function estimateGas(params: TransactionParams): Promise<Hex> {
-  return submitRequestToBackground('estimateGas', [params]);
+  return submitRequestToBackground('LegacyBackgroundApiService:estimateGas', [
+    params,
+  ]);
 }
 
 export async function updateTokenType(
   tokenAddress: string,
 ): Promise<Token | undefined> {
   try {
-    return await submitRequestToBackground('updateTokenType', [tokenAddress]);
+    return await submitRequestToBackground('TokensController:updateTokenType', [
+      tokenAddress,
+    ]);
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -5877,14 +6113,14 @@ export async function updateTokenType(
 }
 
 export async function addPollingTokenToAppState(pollingToken: string) {
-  return submitRequestToBackground('addPollingTokenToAppState', [
+  return submitRequestToBackground('AppStateController:addPollingToken', [
     pollingToken,
     POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
   ]);
 }
 
 export async function removePollingTokenFromAppState(pollingToken: string) {
-  return submitRequestToBackground('removePollingTokenFromAppState', [
+  return submitRequestToBackground('AppStateController:removePollingToken', [
     pollingToken,
     POLLING_TOKEN_ENVIRONMENT_TYPES[getEnvironmentType()],
   ]);
@@ -6008,7 +6244,7 @@ export function updateBalancesFoAccounts(
   queryAllAccounts: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('updateBalances', [
+    await submitRequestToBackground('TokenBalancesController:updateBalances', [
       { chainIds, queryAllAccounts },
     ]);
   };
@@ -6127,7 +6363,7 @@ export function getGasFeeTimeEstimate(
   maxPriorityFeePerGas: string,
   maxFeePerGas: string,
 ): Promise<ReturnType<GasFeeController['getTimeEstimate']>> {
-  return submitRequestToBackground('getGasFeeTimeEstimate', [
+  return submitRequestToBackground('GasFeeController:getTimeEstimate', [
     maxPriorityFeePerGas,
     maxFeePerGas,
   ]);
@@ -6145,7 +6381,9 @@ export async function closeNotificationFromPopup(): Promise<void> {
     );
     return;
   }
-  await submitRequestToBackground('closeNotificationPopup');
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:closeNotificationPopup',
+  );
 }
 
 export async function attemptCloseNotificationPopup() {
@@ -6168,7 +6406,9 @@ export async function attemptCloseNotificationPopup() {
     );
   }
 
-  await submitRequestToBackground('markNotificationPopupAsAutomaticallyClosed');
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:markNotificationPopupAsAutomaticallyClosed',
+  );
 
   // First attempt: Try window.close()
   // This has limitations according to MDN:
@@ -6207,17 +6447,20 @@ export function upsertTransactionUIMetricsFragment(
   transactionId: string,
   payload: MetaMetricsEventFragmentPayload,
 ) {
-  return submitRequestToBackground('upsertTransactionUIMetricsFragment', [
-    transactionId,
-    payload,
-  ]);
+  return submitRequestToBackground(
+    'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment',
+    [transactionId, payload],
+  );
 }
 
 export function updateEventFragment(
   id: string,
   payload: MetaMetricsEventFragmentPayload,
 ) {
-  return submitRequestToBackground('updateEventFragment', [id, payload]);
+  return submitRequestToBackground('AnalyticsController:updateEventFragment', [
+    id,
+    payload,
+  ]);
 }
 
 /**
@@ -6243,23 +6486,29 @@ export async function setAlertEnabledness(
   alertId: string,
   enabledness: boolean,
 ) {
-  await submitRequestToBackground('setAlertEnabledness', [
+  await submitRequestToBackground('AlertController:setAlertEnabledness', [
     alertId,
     enabledness,
   ]);
 }
 
 export async function setUnconnectedAccountAlertShown(origin: string) {
-  await submitRequestToBackground('setUnconnectedAccountAlertShown', [origin]);
+  await submitRequestToBackground(
+    'AlertController:setUnconnectedAccountAlertShown',
+    [origin],
+  );
 }
 
 export async function setWeb3ShimUsageAlertDismissed(origin: string) {
-  await submitRequestToBackground('setWeb3ShimUsageAlertDismissed', [origin]);
+  await submitRequestToBackground(
+    'AlertController:setWeb3ShimUsageAlertDismissed',
+    [origin],
+  );
 }
 
 // Smart Transactions Controller
 export function clearSmartTransactionFees() {
-  submitRequestToBackground('clearSmartTransactionFees');
+  submitRequestToBackground('SmartTransactionsController:clearFees');
 }
 
 export function fetchSmartTransactionFees(
@@ -6272,7 +6521,7 @@ export function fetchSmartTransactionFees(
     }
     try {
       const smartTransactionFees = await submitRequestToBackground(
-        'fetchSmartTransactionFees',
+        'SmartTransactionsController:getFees',
         [unsignedTransaction, approveTxParams],
       );
       dispatch({
@@ -6315,9 +6564,10 @@ const createSignedTransactions = async (
     gas: unsignedTransaction.gas,
     value: unsignedTransaction.value,
   }));
-  const signedTransactions = await submitRequestToBackground<
-    TransactionParams[]
-  >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
+  const signedTransactions = await submitRequestToBackground(
+    'TransactionController:approveTransactionsWithSameNonce',
+    [unsignedTransactionsWithFees],
+  );
   return signedTransactions;
 };
 
@@ -6336,8 +6586,8 @@ export function signAndSendSmartTransaction({
       smartTransactionFees.fees,
     );
     try {
-      const response = await submitRequestToBackground<{ uuid: string }>(
-        'submitSignedTransactions',
+      const response = await submitRequestToBackground(
+        'SmartTransactionsController:submitSignedTransactions',
         [
           {
             signedTransactions,
@@ -6369,12 +6619,15 @@ export function updateSmartTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('updateSmartTransaction', [
-        {
-          uuid,
-          ...txMeta,
-        },
-      ]);
+      await submitRequestToBackground(
+        'SmartTransactionsController:updateSmartTransaction',
+        [
+          {
+            uuid,
+            ...txMeta,
+          },
+        ],
+      );
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -6400,9 +6653,10 @@ export function setSmartTransactionsRefreshInterval(
       return;
     }
     try {
-      await submitRequestToBackground('setStatusRefreshInterval', [
-        refreshInterval,
-      ]);
+      await submitRequestToBackground(
+        'SmartTransactionsController:setStatusRefreshInterval',
+        [refreshInterval],
+      );
     } catch (err) {
       logErrorWithMessage(err);
     }
@@ -6414,7 +6668,10 @@ export function cancelSmartTransaction(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('cancelSmartTransaction', [uuid]);
+      await submitRequestToBackground(
+        'SmartTransactionsController:cancelSmartTransaction',
+        [uuid],
+      );
     } catch (err) {
       logErrorWithMessage(err);
       if (isErrorWithMessage(err)) {
@@ -6443,9 +6700,10 @@ export function fetchSmartTransactionsLiveness({
 } = {}) {
   return async () => {
     try {
-      await submitRequestToBackground('fetchSmartTransactionsLiveness', [
-        { networkClientId, chainId },
-      ]);
+      await submitRequestToBackground(
+        'SmartTransactionsController:fetchLiveness',
+        [{ networkClientId, chainId }],
+      );
     } catch (err) {
       logErrorWithMessage(err);
     }
@@ -6461,15 +6719,18 @@ export function setNetworkClientIdForDomain(
   selectedTabOrigin: string,
   networkClientId: string,
 ): Promise<void> {
-  return submitRequestToBackground('setNetworkClientIdForDomain', [
-    selectedTabOrigin,
-    networkClientId,
-  ]);
+  return submitRequestToBackground(
+    'SelectedNetworkController:setNetworkClientIdForDomain',
+    [selectedTabOrigin, networkClientId],
+  );
 }
 
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
-    submitRequestToBackground('setSecurityAlertsEnabled', [val]);
+    submitRequestToBackground(
+      'PreferencesController:setSecurityAlertsEnabled',
+      [val],
+    );
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -6480,9 +6741,10 @@ export function setWatchEthereumAccountEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setWatchEthereumAccountEnabled', [
-        value,
-      ]);
+      await submitRequestToBackground(
+        'PreferencesController:setWatchEthereumAccountEnabled',
+        [value],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -6494,7 +6756,10 @@ export function setAddSnapAccountEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+      await submitRequestToBackground(
+        'PreferencesController:setAddSnapAccountEnabled',
+        [value],
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -6519,7 +6784,7 @@ export function hideKeyringRemovalResultModal() {
 
 export async function getSnapAccountsById(snapId: string): Promise<string[]> {
   const addresses: string[] = await submitRequestToBackground(
-    'getAccountsBySnapId',
+    'LegacyBackgroundApiService:getAccountsBySnapId',
     [snapId],
   );
 
@@ -6528,7 +6793,10 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 
 export function setUseExternalNameSources(val: boolean): void {
   try {
-    submitRequestToBackground('setUseExternalNameSources', [val]);
+    submitRequestToBackground(
+      'PreferencesController:setUseExternalNameSources',
+      [val],
+    );
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -6536,7 +6804,10 @@ export function setUseExternalNameSources(val: boolean): void {
 
 export function setUseTransactionSimulations(val: boolean): void {
   try {
-    submitRequestToBackground('setUseTransactionSimulations', [val]);
+    submitRequestToBackground(
+      'PreferencesController:setUseTransactionSimulations',
+      [val],
+    );
   } catch (error) {
     logErrorWithMessage(error);
   }
@@ -6548,7 +6819,9 @@ export function completeQrCodeScan(
   scanResult: SerializedUR,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('completeQrCodeScan', [scanResult]);
+    await submitRequestToBackground('AppStateController:completeQrCodeScan', [
+      scanResult,
+    ]);
   };
 }
 
@@ -6563,7 +6836,10 @@ export function cancelQrCodeScan(
       ? [error instanceof HardwareWalletError ? error.toJSON() : error.message]
       : [];
 
-    await submitRequestToBackground('cancelQrCodeScan', cancelPayload);
+    await submitRequestToBackground(
+      'AppStateController:cancelQrCodeScan',
+      cancelPayload,
+    );
   };
 }
 
@@ -6573,8 +6849,8 @@ export function getRewardsHasAccountOptedIn(
   account: CaipAccountId,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    return await submitRequestToBackground<boolean>(
-      'getRewardsHasAccountOptedIn',
+    return await submitRequestToBackground(
+      'RewardsController:getHasAccountOptedIn',
       [account],
     );
   };
@@ -6584,8 +6860,8 @@ export function getRewardsCandidateSubscriptionId(
   primaryWalletGroupAccounts?: InternalAccount[],
 ): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    return await submitRequestToBackground<string | null>(
-      'getRewardsCandidateSubscriptionId',
+    return await submitRequestToBackground(
+      'RewardsController:getCandidateSubscriptionId',
       primaryWalletGroupAccounts ? [primaryWalletGroupAccounts] : undefined,
     );
   };
@@ -6600,8 +6876,8 @@ export function getRewardsSeasonMetadata(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<SeasonDtoState>(
-      'getRewardsSeasonMetadata',
+    return await submitRequestToBackground(
+      'RewardsController:getSeasonMetadata',
       type ? [type] : [],
     );
   };
@@ -6617,8 +6893,8 @@ export function getRewardsSeasonStatus(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<SeasonStatusState>(
-      'getRewardsSeasonStatus',
+    return await submitRequestToBackground(
+      'RewardsController:getSeasonStatus',
       [subscriptionId, seasonId],
     );
   };
@@ -6633,10 +6909,9 @@ export function estimateRewardsPoints(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<EstimatedPointsDto>(
-      'estimateRewardsPoints',
-      [request],
-    );
+    return await submitRequestToBackground('RewardsController:estimatePoints', [
+      request,
+    ]);
   };
 }
 
@@ -6649,10 +6924,10 @@ export function validateRewardsReferralCode(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<{
-      valid: boolean;
-      isVipCode: boolean;
-    }>('validateRewardsReferralCode', [code]);
+    return await submitRequestToBackground(
+      'RewardsController:validateReferralCode',
+      [code],
+    );
   };
 }
 
@@ -6663,8 +6938,8 @@ export function getRewardsGeoMetadata(): ThunkAction<
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<RewardsGeoMetadata | null>(
-      'getRewardsGeoMetadata',
+    return await submitRequestToBackground(
+      'RewardsController:getGeoRewardsMetadata',
     );
   };
 }
@@ -6682,7 +6957,7 @@ export function rewardsOptIn({
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<string | null>('rewardsOptIn', [
+    return await submitRequestToBackground('RewardsController:optIn', [
       accounts,
       referralCode,
     ]);
@@ -6695,9 +6970,10 @@ export function rewardsIsOptInSupported({
   account: InternalAccount;
 }): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    return await submitRequestToBackground<boolean>('rewardsIsOptInSupported', [
-      account,
-    ]);
+    return await submitRequestToBackground(
+      'RewardsController:isOptInSupported',
+      [account],
+    );
   };
 }
 
@@ -6710,10 +6986,9 @@ export function rewardsGetOptInStatus(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<OptInStatusDto>(
-      'rewardsGetOptInStatus',
-      [params],
-    );
+    return await submitRequestToBackground('RewardsController:getOptInStatus', [
+      params,
+    ]);
   };
 }
 
@@ -6727,10 +7002,8 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   AnyAction
 > {
   return async () => {
-    return await submitRequestToBackground<
-      { account: InternalAccount; success: boolean }[]
-    >(
-      'rewardsLinkAccountsToSubscriptionCandidate',
+    return await submitRequestToBackground(
+      'RewardsController:linkAccountsToSubscriptionCandidate',
       primaryWalletGroupAccounts
         ? [accounts, primaryWalletGroupAccounts]
         : [accounts],
@@ -6749,13 +7022,16 @@ export function requestUserApproval({
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('requestUserApproval', [
-        {
-          origin,
-          type,
-          requestData,
-        },
-      ]);
+      return await submitRequestToBackground(
+        'ApprovalController:addAndShowApprovalRequest',
+        [
+          {
+            origin,
+            type,
+            requestData,
+          },
+        ],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       return null;
@@ -6765,7 +7041,9 @@ export function requestUserApproval({
 
 export function rejectAllApprovals() {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('rejectAllPendingApprovals');
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:rejectAllPendingApprovals',
+    );
 
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
 
@@ -6780,8 +7058,8 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
 > {
   let networkEIP1559Compatibility;
   try {
-    networkEIP1559Compatibility = await submitRequestToBackground<boolean>(
-      'getCurrentNetworkEIP1559Compatibility',
+    networkEIP1559Compatibility = await submitRequestToBackground(
+      'NetworkController:getEIP1559Compatibility',
     );
   } catch (error) {
     console.error(error);
@@ -6794,11 +7072,10 @@ export async function getNetworkConfigurationByNetworkClientId(
 ): Promise<NetworkConfiguration | undefined> {
   let networkConfiguration;
   try {
-    networkConfiguration =
-      await submitRequestToBackground<NetworkConfiguration>(
-        'getNetworkConfigurationByNetworkClientId',
-        [networkClientId],
-      );
+    networkConfiguration = await submitRequestToBackground(
+      'NetworkController:getNetworkConfigurationByNetworkClientId',
+      [networkClientId],
+    );
   } catch (error) {
     console.error(error);
   }
@@ -6811,7 +7088,9 @@ export async function getNetworkConfigurationByNetworkClientId(
  */
 export function lookupSelectedNetworks() {
   return async () => {
-    await submitRequestToBackground('lookupSelectedNetworks');
+    await submitRequestToBackground(
+      'LegacyBackgroundApiService:lookupSelectedNetworks',
+    );
   };
 }
 
@@ -6824,8 +7103,8 @@ export function updateProposedNames(
   AnyAction
 > {
   return (async () => {
-    const data = await submitRequestToBackground<UpdateProposedNamesResult>(
-      'updateProposedNames',
+    const data = await submitRequestToBackground(
+      'NameController:updateProposedNames',
       [request],
     );
 
@@ -6840,7 +7119,7 @@ export function setName(
   request: SetNameRequest,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async () => {
-    await submitRequestToBackground<void>('setName', [request]);
+    await submitRequestToBackground('NameController:setName', [request]);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -6851,14 +7130,18 @@ export function setName(
  * To create a data deletion regulation for MetaMetrics data deletion
  */
 export async function createMetaMetricsDataDeletionTask() {
-  return await submitRequestToBackground('createMetaMetricsDataDeletionTask');
+  return await submitRequestToBackground(
+    'MetaMetricsDataDeletionController:createMetaMetricsDataDeletionTask',
+  );
 }
 
 /**
  * To check the status of the current delete regulation.
  */
 export async function updateDataDeletionTaskStatus() {
-  return await submitRequestToBackground('updateDataDeletionTaskStatus');
+  return await submitRequestToBackground(
+    'MetaMetricsDataDeletionController:updateDataDeletionTaskStatus',
+  );
 }
 
 /**
@@ -6869,7 +7152,9 @@ export async function updateDataDeletionTaskStatus() {
  * this for handling errors.
  */
 export async function throwTestBackgroundError(message: string): Promise<void> {
-  await submitRequestToBackground('throwTestError', [message]);
+  await submitRequestToBackground('LegacyBackgroundApiService:throwTestError', [
+    message,
+  ]);
 }
 
 /**
@@ -6882,7 +7167,10 @@ export async function throwTestBackgroundError(message: string): Promise<void> {
 export async function captureTestBackgroundError(
   message: string,
 ): Promise<void> {
-  await submitRequestToBackground('captureTestError', [message]);
+  await submitRequestToBackground(
+    'LegacyBackgroundApiService:captureTestError',
+    [message],
+  );
 }
 
 /**
@@ -6894,7 +7182,7 @@ export async function captureTestBackgroundError(
 export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   return async () => {
     await submitRequestToBackground(
-      'setSnapsInstallPrivacyWarningShownStatus',
+      'AppStateController:setSnapsInstallPrivacyWarningShownStatus',
       [shown],
     );
   };
@@ -6912,7 +7200,10 @@ export function updateInterfaceState(
   state: InterfaceState,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground<void>('updateInterfaceState', [id, state]);
+    await submitRequestToBackground(
+      'SnapInterfaceController:updateInterfaceState',
+      [id, state],
+    );
     await forceUpdateMetamaskState(dispatch);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -6930,7 +7221,9 @@ export function deleteInterface(
   id: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground<void>('deleteInterface', [id]);
+    await submitRequestToBackground('SnapInterfaceController:deleteInterface', [
+      id,
+    ]);
     await forceUpdateMetamaskState(dispatch);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -6938,9 +7231,10 @@ export function deleteInterface(
   }) as any;
 }
 export async function setSnapsAddSnapAccountModalDismissed() {
-  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
-    true,
-  ]);
+  await submitRequestToBackground(
+    'PreferencesController:setSnapsAddSnapAccountModalDismissed',
+    [true],
+  );
 }
 
 /**
@@ -6960,7 +7254,7 @@ export function performSignIn(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('performSignIn');
+      await submitRequestToBackground('AuthenticationController:performSignIn');
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -7014,7 +7308,9 @@ export function performSignOut(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('performSignOut');
+      await submitRequestToBackground(
+        'AuthenticationController:performSignOut',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7039,10 +7335,10 @@ export function setIsBackupAndSyncFeatureEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setIsBackupAndSyncFeatureEnabled', [
-        feature,
-        enabled,
-      ]);
+      await submitRequestToBackground(
+        'UserStorageController:setIsBackupAndSyncFeatureEnabled',
+        [feature, enabled],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7076,7 +7372,9 @@ export async function getUserProfileLineage(): Promise<
  */
 export async function getBearerToken(): Promise<string | undefined> {
   try {
-    const bearerToken = await submitRequestToBackground('getBearerToken');
+    const bearerToken = await submitRequestToBackground(
+      'AuthenticationController:getBearerToken',
+    );
     return bearerToken;
   } catch (error) {
     logErrorWithMessage(error);
@@ -7103,6 +7401,8 @@ export async function getCustomerServiceToken(): Promise<string | undefined> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   try {
+    // TODO: We don't have to use `messengerCall` here, we can just pass the
+    // action type string
     const tokenPromise = submitRequestToBackground<string>('messengerCall', [
       'AuthenticationController:getCustomerServiceToken',
       [],
@@ -7146,7 +7446,9 @@ export function createOnChainTriggers(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('createOnChainTriggers');
+      await submitRequestToBackground(
+        'NotificationServicesController:createOnChainTriggers',
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7169,7 +7471,10 @@ export function disableAccounts(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('disableAccounts', [accounts]);
+      await submitRequestToBackground(
+        'NotificationServicesController:disableAccounts',
+        [accounts],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7192,7 +7497,10 @@ export function enableAccounts(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('enableAccounts', [accounts]);
+      await submitRequestToBackground(
+        'NotificationServicesController:enableAccounts',
+        [accounts],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7215,7 +7523,7 @@ export function fetchAndUpdateMetamaskNotifications(
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'fetchAndUpdateMetamaskNotifications',
+        'NotificationServicesController:fetchAndUpdateMetamaskNotifications',
         [previewToken],
       );
       return response;
@@ -7241,7 +7549,7 @@ export function deleteNotificationsById(
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'deleteNotificationsById',
+        'NotificationServicesController:deleteNotificationsById',
         [ids],
       );
       return response;
@@ -7269,7 +7577,7 @@ export function syncAccountTreeWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncAccountTreeWithUserStorage',
+        'AccountTreeController:syncWithUserStorage',
       );
       return response;
     } catch (error) {
@@ -7296,12 +7604,14 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   return async () => {
     try {
       await Promise.all([
-        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          USER_STORAGE_GROUPS_FEATURE_KEY,
-        ]),
-        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
-          USER_STORAGE_WALLETS_FEATURE_KEY,
-        ]),
+        submitRequestToBackground(
+          'UserStorageController:performDeleteStorageAllFeatureEntries',
+          [USER_STORAGE_GROUPS_FEATURE_KEY],
+        ),
+        submitRequestToBackground(
+          'UserStorageController:performDeleteStorageAllFeatureEntries',
+          [USER_STORAGE_WALLETS_FEATURE_KEY],
+        ),
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -7327,7 +7637,7 @@ export function syncContactsWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncContactsWithUserStorage',
+        'UserStorageController:syncContactsWithUserStorage',
       );
       return response;
     } catch (error) {
@@ -7352,9 +7662,10 @@ export function markMetamaskNotificationsAsRead(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('markMetamaskNotificationsAsRead', [
-        notifications,
-      ]);
+      await submitRequestToBackground(
+        'NotificationServicesController:markMetamaskNotificationsAsRead',
+        [notifications],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7377,9 +7688,10 @@ export function setFeatureAnnouncementsEnabled(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setFeatureAnnouncementsEnabled', [
-        state,
-      ]);
+      await submitRequestToBackground(
+        'NotificationServicesController:setFeatureAnnouncementsEnabled',
+        [state],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7403,7 +7715,7 @@ export function checkAccountsPresence(
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'checkAccountsPresence',
+        'NotificationServicesController:checkAccountsPresence',
         [accounts],
       );
       return response;
@@ -7428,7 +7740,7 @@ export function getNotificationPreferences(): ThunkAction<
   return async () => {
     try {
       return (await submitRequestToBackground(
-        'getNotificationPreferences',
+        'AuthenticatedUserStorageService:getNotificationPreferences',
       )) as NotificationPreferences | null;
     } catch (error) {
       logErrorWithMessage(error);
@@ -7448,10 +7760,10 @@ export function putNotificationPreferences(
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('putNotificationPreferences', [
-        preferences,
-        'extension',
-      ]);
+      await submitRequestToBackground(
+        'AuthenticatedUserStorageService:putNotificationPreferences',
+        [preferences, 'extension'],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -7473,7 +7785,7 @@ export function enableMetamaskNotifications(
   return async () => {
     try {
       await submitRequestToBackground(
-        'enableMetamaskNotifications',
+        'NotificationServicesController:enableMetamaskNotifications',
         options ? [options] : [],
       );
     } catch (error) {
@@ -7497,7 +7809,9 @@ export function disableMetamaskNotifications(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('disableMetamaskNotifications');
+      await submitRequestToBackground(
+        'NotificationServicesController:disableNotificationServices',
+      );
     } catch (error) {
       log.error(error);
       throw error;
@@ -7511,9 +7825,10 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
 
 export function setMultichainAccountsIntroModalShown(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
-      value,
-    ]);
+    await submitRequestToBackground(
+      'AppStateController:setHasShownMultichainAccountsIntroModal',
+      [value],
+    );
   };
 }
 
@@ -7525,7 +7840,10 @@ export function setMultichainAccountsIntroModalShown(value: boolean) {
  */
 export function setMusdConversionEducationSeen(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setMusdConversionEducationSeen', [value]);
+    await submitRequestToBackground(
+      'AppStateController:setMusdConversionEducationSeen',
+      [value],
+    );
   };
 }
 
@@ -7537,14 +7855,17 @@ export function setMusdConversionEducationSeen(value: boolean) {
  */
 export function setPerpsTabBadgeSeen(value: boolean) {
   return async () => {
-    await submitRequestToBackground('setPerpsTabBadgeSeen', [value]);
+    await submitRequestToBackground('AppStateController:setPerpsTabBadgeSeen', [
+      value,
+    ]);
   };
 }
 
 export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
-  return submitRequestToBackground('setLastPerpsDepositEntryPoint', [
-    entryPoint,
-  ]);
+  return submitRequestToBackground(
+    'AppStateController:setLastPerpsDepositEntryPoint',
+    [entryPoint],
+  );
 }
 
 /**
@@ -7555,17 +7876,11 @@ export function setLastPerpsDepositEntryPoint(entryPoint: string | null) {
  */
 export function addMusdConversionDismissedCtaKey(key: string) {
   return async () => {
-    await submitRequestToBackground('addMusdConversionDismissedCtaKey', [key]);
+    await submitRequestToBackground(
+      'AppStateController:addMusdConversionDismissedCtaKey',
+      [key],
+    );
   };
-}
-
-export async function getNextAvailableAccountName(
-  keyring?: KeyringTypes,
-): Promise<string> {
-  return await submitRequestToBackground<string>(
-    'getNextAvailableAccountName',
-    [keyring],
-  );
 }
 
 export async function decodeTransactionData({
@@ -7577,56 +7892,64 @@ export async function decodeTransactionData({
   contractAddress: Hex;
   chainId: Hex;
 }): Promise<DecodedTransactionDataResponse | undefined> {
-  return await submitRequestToBackground<string>('decodeTransactionData', [
-    {
-      transactionData,
-      contractAddress,
-      chainId,
-    },
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:decodeTransactionData',
+    [
+      {
+        transactionData,
+        contractAddress,
+        chainId,
+      },
+    ],
+  );
 }
 
 export async function multichainUpdateBalance(
   accountId: string,
 ): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateBalance', [
-    accountId,
-  ]);
+  return await submitRequestToBackground<void>(
+    'MultichainBalancesController:updateBalance',
+    [accountId],
+  );
 }
 
 export async function multichainUpdateTransactions(
   accountId: string,
 ): Promise<void> {
-  return await submitRequestToBackground<void>('multichainUpdateTransactions', [
-    accountId,
-  ]);
+  return await submitRequestToBackground(
+    'MultichainTransactionsController:updateTransactionsForAccount',
+    [accountId],
+  );
 }
 
 export async function alignMultichainWallets(): Promise<void> {
-  return await submitRequestToBackground<void>('alignMultichainWallets', []);
+  return await submitRequestToBackground(
+    'MultichainAccountService:alignWallets',
+  );
 }
 
 export async function getLastInteractedConfirmationInfo(): Promise<
   LastInteractedConfirmationInfo | undefined
 > {
-  return await submitRequestToBackground<void>(
-    'getLastInteractedConfirmationInfo',
+  return await submitRequestToBackground(
+    'AppStateController:getLastInteractedConfirmationInfo',
   );
 }
 
 export async function deleteDappSwapComparisonData(
   uniqueId: string,
 ): Promise<void> {
-  return await submitRequestToBackground<void>('deleteDappSwapComparisonData', [
-    uniqueId,
-  ]);
+  return await submitRequestToBackground(
+    'AppStateController:deleteDappSwapComparisonData',
+    [uniqueId],
+  );
 }
 
 export async function setLastInteractedConfirmationInfo(
   info: LastInteractedConfirmationInfo,
 ): Promise<void> {
-  return await submitRequestToBackground<void>(
-    'setLastInteractedConfirmationInfo',
+  return await submitRequestToBackground(
+    'AppStateController:setLastInteractedConfirmationInfo',
     [info],
   );
 }
@@ -7643,7 +7966,7 @@ function applyPatches(
 }
 
 export async function getCode(address: Hex, networkClientId: string) {
-  return await submitRequestToBackground<string>('getCode', [
+  return await submitRequestToBackground('LegacyBackgroundApiService:getCode', [
     address,
     networkClientId,
   ]);
@@ -7654,31 +7977,34 @@ export function setTransactionActive(
   isFocused: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setTransactionActive', [
-      transactionId,
-      isFocused,
-    ]);
+    await submitRequestToBackground(
+      'TransactionController:setTransactionActive',
+      [transactionId, isFocused],
+    );
   };
 }
 
 export async function isRelaySupported(chainId: Hex): Promise<boolean> {
-  return await submitRequestToBackground<boolean>('isRelaySupported', [
-    chainId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:isRelaySupported',
+    [chainId],
+  );
 }
 
 export async function isSendBundleSupported(chainId: Hex): Promise<boolean> {
-  return await submitRequestToBackground<boolean>('isSendBundleSupported', [
-    chainId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:isSendBundleSupported',
+    [chainId],
+  );
 }
 
 export async function getSentinelNetworkFlags(
   chainId: Hex,
 ): Promise<SentinelNetwork> {
-  return await submitRequestToBackground<boolean>('getSentinelNetworkFlags', [
-    chainId,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:getSentinelNetworkFlags',
+    [chainId],
+  );
 }
 
 /**
@@ -7700,7 +8026,9 @@ export function setSkipDeepLinkInterstitial(value: boolean) {
  * @returns
  */
 export async function requestSafeReload() {
-  return await submitRequestToBackground('requestSafeReload');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:requestSafeReload',
+  );
 }
 
 /**
@@ -7711,7 +8039,9 @@ export async function requestSafeReload() {
  * If opening the tab fails, the error is logged, and the reload proceeds anyway.
  */
 export async function openUpdateTabAndReload() {
-  return await submitRequestToBackground('openUpdateTabAndReload');
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:openUpdateTabAndReload',
+  );
 }
 
 export async function getERC1155BalanceOf(
@@ -7720,12 +8050,10 @@ export async function getERC1155BalanceOf(
   tokenId: string,
   networkClientId: string,
 ): Promise<string> {
-  return await submitRequestToBackground<string>('getERC1155BalanceOf', [
-    userAddress,
-    tokenAddress,
-    tokenId,
-    networkClientId,
-  ]);
+  return await submitRequestToBackground(
+    'AssetsContractController:getERC1155BalanceOf',
+    [userAddress, tokenAddress, tokenId, networkClientId],
+  );
 }
 
 export async function applyTransactionContainersExisting(
@@ -7733,13 +8061,10 @@ export async function applyTransactionContainersExisting(
   containerTypes: TransactionContainerType[],
   incrementToggleCount = false,
 ) {
-  return await submitRequestToBackground<{
-    enforcedSimulationsSlippage?: number;
-  }>('applyTransactionContainersExisting', [
-    transactionId,
-    containerTypes,
-    incrementToggleCount,
-  ]);
+  return await submitRequestToBackground(
+    'LegacyBackgroundApiService:applyTransactionContainersExisting',
+    [transactionId, containerTypes, incrementToggleCount],
+  );
 }
 
 export async function getLayer1GasFeeValue({
@@ -7751,9 +8076,10 @@ export async function getLayer1GasFeeValue({
   chainId?: Hex;
   networkClientId?: NetworkClientId;
 }) {
-  return await submitRequestToBackground('getLayer1GasFee', [
-    { chainId, networkClientId, transactionParams },
-  ]);
+  return await submitRequestToBackground(
+    'TransactionController:getLayer1GasFee',
+    [{ chainId, networkClientId, transactionParams }],
+  );
 }
 
 /**
@@ -7773,8 +8099,8 @@ export async function getLayer1GasFeeValue({
 export async function submitShieldClaim(
   params: CreateClaimRequest & { files?: FileList },
 ) {
-  const submitClaimConfig = await submitRequestToBackground<SubmitClaimConfig>(
-    'getSubmitClaimConfig',
+  const submitClaimConfig = await submitRequestToBackground(
+    'ClaimsController:getSubmitClaimConfig',
     [params],
   );
   const { headers, method, url } = submitClaimConfig;
@@ -7834,7 +8160,9 @@ export async function submitShieldClaim(
  */
 export async function getShieldClaims() {
   try {
-    const claims = await submitRequestToBackground<Claim[]>('getClaims');
+    const claims = await submitRequestToBackground(
+      'ClaimsController:getClaims',
+    );
     return claims;
   } catch (error) {
     log.error('[getShieldClaims] Failed to get shield claims:', error);
@@ -7853,15 +8181,15 @@ export async function generateClaimSignature(
   chainId: string,
   walletAddress: string,
 ) {
-  return await submitRequestToBackground<string>('generateClaimSignature', [
-    chainId,
-    walletAddress,
-  ]);
+  return await submitRequestToBackground(
+    'ClaimsController:generateClaimSignature',
+    [chainId, walletAddress],
+  );
 }
 
 export async function getHdPathForLedgerKeyring(): Promise<string> {
-  const hdPath = await submitRequestToBackground<string>(
-    'getHdPathForLedgerKeyring',
+  const hdPath = await submitRequestToBackground(
+    'LegacyBackgroundApiService:getHdPathForLedgerKeyring',
     [],
   );
   return hdPath;
@@ -7876,7 +8204,10 @@ export async function getHdPathForLedgerKeyring(): Promise<string> {
 export async function saveClaimDraft(
   draft: Partial<ClaimDraft>,
 ): Promise<ClaimDraft> {
-  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+  return await submitRequestToBackground(
+    'ClaimsController:saveOrUpdateClaimDraft',
+    [draft],
+  );
 }
 
 /**
@@ -7886,7 +8217,9 @@ export async function saveClaimDraft(
  * @returns The deleted draft.
  */
 export async function deleteClaimDraft(draftId: string): Promise<void> {
-  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
+  return await submitRequestToBackground('ClaimsController:deleteClaimDraft', [
+    draftId,
+  ]);
 }
 
 /**
@@ -7901,7 +8234,9 @@ export function removeDeferredDeepLink(): ThunkAction<
   return async () => {
     log.debug(`background.removeDeferredDeepLink`);
     try {
-      await submitRequestToBackground<void>('removeDeferredDeepLink');
+      await submitRequestToBackground(
+        'AppStateController:removeDeferredDeepLink',
+      );
     } catch (error) {
       logErrorWithMessage(error);
     }
@@ -7911,7 +8246,7 @@ export function removeDeferredDeepLink(): ThunkAction<
 export async function perpsToggleTestnet(): Promise<void> {
   log.debug(`background.perpsToggleTestnet`);
   try {
-    await submitRequestToBackground<void>('perpsToggleTestnet');
+    await submitRequestToBackground<void>('PerpsController:toggleTestnet');
   } catch (error) {
     logErrorWithMessage(error);
   }
