@@ -24,7 +24,7 @@ export const AccountTypeLabel = ({ accountType }: AccountTypeLabelProps) => {
   }
 
   return (
-    <Tag className="shrink-0" data-testid="account-type-label">
+    <Tag className="shrink-0 self-center" data-testid="account-type-label">
       {label}
     </Tag>
   );
