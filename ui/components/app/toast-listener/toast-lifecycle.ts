@@ -20,6 +20,17 @@ export function shouldShowTerminalToast(id: string) {
   return true;
 }
 
+// Failed toasts may fire with no prior pending toast (publish/RPC failure
+// never reaches `submitted`).
+export function shouldShowFailedToast(id: string) {
+  if (toastPhaseById.get(id) === 'terminal') {
+    return false;
+  }
+
+  toastPhaseById.set(id, 'terminal');
+  return true;
+}
+
 export function clearToastPhase(id: string) {
   toastPhaseById.delete(id);
 }

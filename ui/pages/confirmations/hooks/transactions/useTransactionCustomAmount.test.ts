@@ -11,6 +11,7 @@ import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { useConfirmContext } from '../../context/confirm';
 import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
@@ -205,13 +206,16 @@ function runHook({
   });
 
   return renderHookWithConfirmContextProvider(
-    () =>
-      useTransactionCustomAmount({
+    () => {
+      const amount = useTransactionCustomAmount({
         balanceUsdOverride,
         currency,
         disableUpdate,
         prefillMaxOnLoad,
-      }),
+      });
+      const { isAmountPending } = useConfirmContext();
+      return { ...amount, isAmountPending };
+    },
     getMockConfirmStateForTransaction(transactionMeta, {
       metamask: {
         ...(paymentOverride
@@ -735,6 +739,28 @@ describe('useTransactionCustomAmount', () => {
           sourceTokenAddress: '0xtokenb',
         },
       );
+    });
+
+    it('clears a pending amount when the pay token changes', () => {
+      const { result, rerender } = runHook({
+        transactionMeta: moneyAccountDepositMeta,
+        payTokenAddress: '0xtokena',
+        requiredTokens: [{ amountUsd: '50' }],
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      expect(result.current.isAmountPending).toBe(true);
+
+      selectPayToken('0xtokenb');
+
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.isAmountPending).toBe(false);
     });
 
     it('keeps isMaxAmount armed while the pay token is unchanged', () => {
@@ -1798,6 +1824,77 @@ describe('useTransactionCustomAmount', () => {
           sourceTokenAddress: '0xpaytoken',
         },
       );
+    });
+
+    it('keeps the amount pending while Max is still the committed token', () => {
+      const updateTokenAmountMock = jest.fn();
+      const { result, rerender } = runHook({
+        ...depositMaxPayToken,
+        isMaxAmount: true,
+        requiredTokens: [{ amountUsd: '2.25' }],
+        updateTokenAmountMock,
+      });
+
+      updateTokenAmountMock.mockClear();
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      // The field updates immediately. Confirm stays pending until Pay commits
+      // that amount, including while Max has not cleared yet.
+      expect(result.current.amountFiat).toBe('1');
+      expect(result.current.isAmountPending).toBe(true);
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(updateTokenAmountMock).not.toHaveBeenCalled();
+      expect(result.current.isAmountPending).toBe(true);
+
+      jest
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
+        .mockReturnValue({
+          amountUsd: '1',
+          skipIfBalance: false,
+        } as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
+
+      rerender();
+
+      expect(result.current.isAmountPending).toBe(false);
+    });
+
+    it('keeps a typed amount pending while Max still displays the previous quote', () => {
+      const { result, rerender } = runHook({
+        isMaxAmount: true,
+        requiredTokens: [{ amountUsd: '50' }],
+        totals: {
+          isInputBased: false,
+          targetAmount: { usd: '50' },
+        } as TransactionPayTotals,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('1');
+      });
+
+      // The field still shows the quote target until isMaxAmount clears.
+      expect(result.current.amountFiat).toBe('50');
+      expect(result.current.isAmountPending).toBe(true);
+
+      jest
+        .mocked(useTransactionPayDataModule.useTransactionPayIsMaxAmount)
+        .mockReturnValue(false);
+
+      rerender();
+
+      expect(result.current.amountFiat).toBe('1');
+      expect(result.current.isAmountPending).toBe(true);
     });
 
     it('prefers live funding-account balanceRaw over a stale payToken snapshot', () => {
