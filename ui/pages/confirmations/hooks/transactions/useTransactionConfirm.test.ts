@@ -271,9 +271,24 @@ describe('useTransactionConfirm', () => {
 
     expect(updateAndApproveTxMock).toHaveBeenCalledWith(
       expect.any(Object),
-      true,
+      false,
       'Confirm with your hardware wallet',
       payingAccount,
+    );
+  });
+
+  it('skips the loading indicator when the paying account is not a hardware wallet', async () => {
+    mockUseIsHardwareWalletAccount.mockReturnValue(false);
+
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      '',
+      TRANSACTION_META_MOCK.txParams.from,
     );
   });
 

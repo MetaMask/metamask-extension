@@ -3522,6 +3522,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_theNotificationsSettingsPage": {
+    "message": "the notification settings page"
+  },
   "deepLink_theOnboardingPage": {
     "message": "the onboarding page"
   },
