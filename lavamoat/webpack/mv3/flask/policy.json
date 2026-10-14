@@ -5729,6 +5729,14 @@
         "@ngraveio/bc-ur>sha.js": true
       }
     },
+    "crypto-browserify>pbkdf2>create-hash": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "buffer": true
+      }
+    },
     "crypto-browserify>create-hmac": {
       "packages": {
         "ethereumjs-util>create-hash>cipher-base": true,
@@ -6398,16 +6406,24 @@
       "packages": {
         "duplexify>inherits": true,
         "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js>to-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "duplexify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true,
-        "@ngraveio/bc-ur>sha.js>to-buffer": true
+        "mockttp>express>safe-buffer": true
+      }
+    },
+    "crypto-browserify>pbkdf2>ripemd160>hash-base": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "buffer": true,
+        "duplexify>inherits": true,
+        "stream-browserify": true
       }
     },
     "ethers>@ethersproject/sha2>hash.js": {
@@ -7005,9 +7021,9 @@
         "setTimeout": true
       },
       "packages": {
-        "ethereumjs-util>create-hash": true,
+        "crypto-browserify>pbkdf2>create-hash": true,
         "process": true,
-        "ethereumjs-util>create-hash>ripemd160": true,
+        "crypto-browserify>pbkdf2>ripemd160": true,
         "mockttp>express>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
@@ -7554,43 +7570,31 @@
     },
     "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
       "globals": {
-        "process.browser": true,
+        "process.nextTick": true,
         "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
+        "process.stdout": true
       },
       "packages": {
-        "core-js-pure": true,
-        "readable-stream-2>core-util-is": true,
+        "buffer": true,
         "webpack>events": true,
         "duplexify>inherits": true,
-        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>isarray": true,
         "process": true,
-        "readable-stream-2>process-nextick-args": true,
-        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>safe-buffer": true,
-        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "readable-stream-2>util-deprecate": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": {
       "globals": {
-        "process.browser": true,
+        "process.nextTick": true,
         "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
+        "process.stdout": true
       },
       "packages": {
-        "core-js-pure": true,
-        "readable-stream-2>core-util-is": true,
+        "buffer": true,
         "webpack>events": true,
         "duplexify>inherits": true,
-        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>isarray": true,
         "process": true,
-        "readable-stream-2>process-nextick-args": true,
-        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>safe-buffer": true,
-        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>string_decoder": true,
+        "browserify>string_decoder": true,
         "readable-stream-2>util-deprecate": true
       }
     },
@@ -7763,6 +7767,16 @@
         "duplexify>inherits": true
       }
     },
+    "crypto-browserify>pbkdf2>ripemd160": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "buffer": true,
+        "crypto-browserify>pbkdf2>ripemd160>hash-base": true,
+        "duplexify>inherits": true
+      }
+    },
     "eth-lattice-keyring>rlp": {
       "globals": {
         "TextEncoder": true
@@ -7807,27 +7821,7 @@
         "buffer": true
       }
     },
-    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>safe-buffer": {
-      "packages": {
-        "buffer": true
-      }
-    },
-    "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>safe-buffer": {
-      "packages": {
-        "buffer": true
-      }
-    },
     "crypto-browserify>browserify-sign>readable-stream>string_decoder>safe-buffer": {
-      "packages": {
-        "buffer": true
-      }
-    },
-    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>string_decoder>safe-buffer": {
-      "packages": {
-        "buffer": true
-      }
-    },
-    "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>string_decoder>safe-buffer": {
       "packages": {
         "buffer": true
       }
@@ -7841,7 +7835,7 @@
     },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
-        "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
+        "remote-redux-devtools>socketcluster-client>component-emitter": true
       }
     },
     "remote-redux-devtools>socketcluster-client>sc-formatter": {
@@ -8060,16 +8054,6 @@
     "crypto-browserify>browserify-sign>readable-stream>string_decoder": {
       "packages": {
         "crypto-browserify>browserify-sign>readable-stream>string_decoder>safe-buffer": true
-      }
-    },
-    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream>string_decoder>safe-buffer": true
-      }
-    },
-    "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>string_decoder": {
-      "packages": {
-        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream>string_decoder>safe-buffer": true
       }
     },
     "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": {

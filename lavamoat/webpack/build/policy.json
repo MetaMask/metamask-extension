@@ -1213,7 +1213,6 @@
         "mockttp>body-parser>bytes": true,
         "webpack-dev-server>compression>compressible": true,
         "webpack-dev-server>compression>debug": true,
-        "koa>destroy": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
         "mockttp>express>safe-buffer": true,
