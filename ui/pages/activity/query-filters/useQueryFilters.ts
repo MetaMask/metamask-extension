@@ -12,8 +12,6 @@ import { selectRampsSettlementHashes } from '../../../selectors/rampsController'
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
-import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
-import { isIncomingTokenTransfer } from './incoming-token-transfer';
 import { isSpamTransaction } from './spam-transactions';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
@@ -38,8 +36,6 @@ export function useQueryFilters(queryFilters: Props) {
       const txFilters: ((tx: V1TransactionByHashResponse) => boolean)[] = [
         (tx) => !isSpamTransaction(tx),
         (tx) => !isZeroValueSelfSend(tx, subjectAddress),
-        (tx) => !isIncomingTokenTransfer(tx, subjectAddress),
-        (tx) => !isIncomingNativeAssetTransfer(tx, subjectAddress),
         (tx) => !isExcludedTransactionHash(tx, excludedHashes),
       ];
       // This really should be moved to the API
