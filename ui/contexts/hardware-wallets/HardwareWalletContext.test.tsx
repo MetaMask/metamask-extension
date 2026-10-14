@@ -98,6 +98,7 @@ jest.mock('./useHardwareWalletConnection', () => ({
     disconnect: jest.fn().mockResolvedValue(undefined),
     clearError: jest.fn(),
     ensureDeviceReady: jest.fn().mockResolvedValue(true),
+    ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
   }),
 }));
 
