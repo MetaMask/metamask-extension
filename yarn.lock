@@ -8043,9 +8043,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@12.1.0-preview-5c31618f1":
-  version: 12.1.0-preview-5c31618f1
-  resolution: "@metamask-previews/core-backend@npm:12.1.0-preview-5c31618f1"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@12.1.0-preview-4fa35a45a":
+  version: 12.1.0-preview-4fa35a45a
+  resolution: "@metamask-previews/core-backend@npm:12.1.0-preview-4fa35a45a"
   dependencies:
     "@metamask/account-tree-controller": "npm:^11.0.1"
     "@metamask/controller-utils": "npm:^13.0.0"
@@ -8058,7 +8058,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.2.1"
     uuid: "npm:^11.1.1"
-  checksum: 10/2c41030df3233c37de4f048cff742447345bdc152b5675d86de8fcc6639bb08b0d3d5f8a35f9f04bcc7932b2f71ef6183f2dcd7edb0db7be0b013a87fdb027bb
+  checksum: 10/3403f053474b02c662b30f626579e22ab0cb1fb4a70fb1d8c88d527c650ccfffbd6f9aeebadeb66ab48427d9fa5a712640ec7d3c0f8feb6a5da6b74134e55c30
   languageName: node
   linkType: hard
 
