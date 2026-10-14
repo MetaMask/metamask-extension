@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { upperFirst } from 'lodash';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
@@ -401,7 +401,7 @@ const ConnectHardwareForm = () => {
   ]);
 
   const connectToHardwareWallet = useCallback(
-    (nextDevice: string) => {
+    (nextDevice: string, loadHid = true) => {
       if (latestPendingDevice.current === nextDevice) {
         return;
       }
@@ -422,7 +422,7 @@ const ConnectHardwareForm = () => {
           .build(),
       );
 
-      getPage(nextDevice, 0, defaultHdPaths[nextDevice], true);
+      getPage(nextDevice, 0, defaultHdPaths[nextDevice], loadHid);
     },
     [
       createEventBuilder,
@@ -434,6 +434,30 @@ const ConnectHardwareForm = () => {
       trackEvent,
     ],
   );
+
+  // The accounts list links here with `?device=<name>` to add more accounts
+  // from an already connected device, skipping the device selection.
+  const [searchParams] = useSearchParams();
+  const requestedDevice = searchParams.get('device');
+  const hasConnectedRequestedDevice = useRef(false);
+
+  useEffect(() => {
+    if (
+      hasConnectedRequestedDevice.current ||
+      !requestedDevice ||
+      !Object.values(HardwareDeviceNames).includes(
+        requestedDevice as HardwareDeviceNames,
+      )
+    ) {
+      return;
+    }
+    hasConnectedRequestedDevice.current = true;
+    // WebHID access was granted when the device was first connected, and
+    // requesting it again needs a user gesture this page may not have (e.g.
+    // when opened in a new tab). If access is missing, the error is shown on
+    // the device selection, where picking the device requests it.
+    connectToHardwareWallet(requestedDevice, false);
+  }, [connectToHardwareWallet, requestedDevice]);
 
   const onPathChange = useCallback(
     (path: string) => {
