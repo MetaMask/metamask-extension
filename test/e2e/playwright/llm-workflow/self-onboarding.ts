@@ -1,8 +1,17 @@
 import { importSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import type { Driver } from '../../webdriver/driver';
+import type { ScreenName } from './launcher-types';
+import { SCREEN_CHECKS, waitForAnyScreen } from './launcher/state-inspector';
 
 const CANARY_SRP_PREFIX = 'CANARY-NOT-A-REAL-SRP-';
+
+const FINISH_SCREENS: ScreenName[] = ['onboarding-complete', 'unlock', 'home'];
+const FINISH_SCREEN_CHECKS = SCREEN_CHECKS.filter(({ screen }) =>
+  FINISH_SCREENS.includes(screen),
+);
+const MAX_FINISH_STEPS = 3;
 
 /**
  * Normalizes a secret recovery phrase to single-spaced words.
@@ -22,6 +31,32 @@ export function normalizeSecretRecoveryPhrase(phrase: string): string {
     throw new Error('marker strings cannot onboard MetaMask');
   }
   return words.join(' ');
+}
+
+/**
+ * Finishes onboarding from wherever the UI is: the completion page, or the
+ * unlock page the UI shows when the wallet locks before onboarding completes.
+ * Returns once home is shown or the completion page has been confirmed.
+ *
+ * @param driver - The e2e driver bound to the extension page.
+ * @param password - The wallet password, used to unlock.
+ */
+export async function finishOnboarding(
+  driver: Driver,
+  password: string,
+): Promise<void> {
+  for (let step = 0; step < MAX_FINISH_STEPS; step++) {
+    const { screen } = await waitForAnyScreen(driver, FINISH_SCREEN_CHECKS);
+    if (screen === 'home') {
+      return;
+    }
+    if (screen === 'onboarding-complete') {
+      await new OnboardingCompletePage(driver).completeOnboarding();
+      return;
+    }
+    await new LoginPage(driver).loginToHomepage(password);
+  }
+  throw new Error('onboarding did not finish after unlocking');
 }
 
 /**
@@ -51,9 +86,7 @@ export async function runSelfOnboarding(
       password,
       needNavigateToNewPage: false,
     });
-    const completePage = new OnboardingCompletePage(driver);
-    await completePage.checkPageIsLoaded();
-    await completePage.completeOnboarding();
+    await finishOnboarding(driver, password);
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
     if (message.length > 0 && !message.includes(seedPhrase)) {

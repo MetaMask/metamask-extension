@@ -25,7 +25,7 @@ import type {
   NetworkConfig,
 } from './launcher-types';
 import { resolveRepoRoot } from './resolve-repo-root';
-import { runSelfOnboarding } from './self-onboarding';
+import { finishOnboarding, runSelfOnboarding } from './self-onboarding';
 import { getE2EDriver, withTimeout } from './e2e-driver';
 import {
   LAUNCH_SCREEN_CHECKS,
@@ -287,13 +287,14 @@ export class MetaMaskExtensionLauncher {
         } finally {
           phrase = '';
         }
+        const driver = withTimeout(
+          getE2EDriver(this.extensionPage as Page),
+          UI_READY_TIMEOUT_MS,
+        );
         await this.navigateToHome();
-        await new HomePage(
-          withTimeout(
-            getE2EDriver(this.extensionPage as Page),
-            UI_READY_TIMEOUT_MS,
-          ),
-        ).checkPageIsLoaded();
+        await finishOnboarding(driver, DEFAULT_PASSWORD);
+        await this.navigateToHome();
+        await new HomePage(driver).checkPageIsLoaded();
       }
 
       return {
