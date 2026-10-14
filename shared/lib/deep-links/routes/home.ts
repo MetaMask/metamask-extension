@@ -1,8 +1,8 @@
-import { DEEP_LINK_HOST } from '../constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../constants';
 import { DEFAULT_ROUTE, Route } from './route';
 import type { Destination } from './route';
 
-export const DEEP_LINK_ORIGIN = `https://${DEEP_LINK_HOST}`;
+export const DEEP_LINK_ORIGIN = `https://${CANONICAL_DEEP_LINK_HOST}`;
 
 export enum HomeQueryParams {
   BatchSellDeeplinkUrl = 'batchSellDeeplinkUrl',

@@ -21,7 +21,7 @@ import autoprefixer from 'autoprefixer';
 import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
-import { loadBuildTypesConfig } from '../lib/build-type';
+import { loadBuildTypesConfig } from '../lib/build-type.js';
 import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,

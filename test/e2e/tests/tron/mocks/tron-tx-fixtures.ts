@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { StatusTypes } from '@metamask/bridge-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 import { base58AddressToHex } from '../../../seeder/tron/assets';
-import { SUN_PER_TRX, TRON_ACCOUNT_ADDRESS } from './common-tron';
+import {
+  SUN_PER_TRX,
+  TRON_ACCOUNT_ADDRESS,
+  TRON_CHAIN_ID,
+} from './common-tron';
 
 export type TronTxStatus = 'Confirmed' | 'Pending' | 'Failed';
 
@@ -21,6 +27,16 @@ export const MOCK_TRON_BLOCK_NUMBER = 77_000_000;
 // arbitrary placeholder strings here.
 const SUNSWAP_ROUTER_ADDRESS = 'TKzxdSv2FZKQrEqkKVgp5DcwEXBEKMg2Ax';
 const USDT_CONTRACT_ADDRESS = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+
+// Ethereum mainnet USDC, the bridge destination asset for
+// `tronBridgeHistoryItem`.
+const ETH_MAINNET_CHAIN_ID = 1;
+const ETH_USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+const ETH_USDC_ASSET_ID =
+  `eip155:${ETH_MAINNET_CHAIN_ID}/erc20:${ETH_USDC_ADDRESS}` as const;
+const TRON_USDT_ASSET_ID =
+  `${TRON_CHAIN_ID}/trc20:${USDT_CONTRACT_ADDRESS}` as const;
 
 const TRC20_INFO = {
   USDT: {
@@ -335,10 +351,15 @@ function buildSwapTrc20(opts: {
 }
 
 /**
- * A bridge transaction without `bridgeHistoryItem` should fall back to the
+ * A bridge transaction without `tronBridgeHistoryItem` falls back to the
  * Interaction (i.e. Unknown) rendering. The snap maps a TriggerSmartContract
  * with a TRC20 transfer of type='Approval' as TransactionType.Unknown, which
  * the activity hook renders as 'Interaction'.
+ *
+ * Pair `bridgeTx` with {@link tronBridgeHistoryItem} (keyed by the same
+ * `raw.txID`) to have the activity list and details reclassify the matching
+ * snap transaction as 'Bridged <src symbol>'.
+ *
  * @param opts
  * @param opts.srcSymbol
  * @param opts.srcAmount
@@ -412,5 +433,88 @@ function buildBridgeTrc20(opts: {
     type: 'Approval',
     value: opts.srcAmount,
     final_result: STATUS_TO_CONTRACT_RET[opts.status],
+  };
+}
+
+/**
+ * Builds a `BridgeStatusController.txHistory` entry for a completed
+ * Tron → Ethereum USDT bridge. Seeding the history under the snap
+ * transaction's TronGrid `txID` (non-EVM transactions are keyed by their tx
+ * hash) makes the activity list and details reclassify the matching
+ * {@link bridgeTx} snap transaction as 'Bridged USDT' instead of a
+ * spending-cap interaction.
+ *
+ * @param opts - Options.
+ * @param opts.txId - TronGrid `txID` of the source snap transaction (use
+ * `bridgeTx(...).raw.txID`).
+ * @param opts.srcAmount - Human-readable source amount (e.g. '1.5').
+ * @param opts.destAmount - Human-readable destination amount (e.g. '1.49').
+ * @param opts.timestamp - Optional start time in ms (defaults to ~1 min ago).
+ * @returns The bridge history item to merge into `BridgeStatusController.txHistory`.
+ */
+export function tronBridgeHistoryItem(opts: {
+  txId: string;
+  srcAmount: string;
+  destAmount: string;
+  timestamp?: number;
+}): BridgeHistoryItem {
+  const srcAsset = {
+    symbol: 'USDT',
+    chainId: 728126428,
+    name: 'Tether USD',
+    assetId: TRON_USDT_ASSET_ID,
+    decimals: 6,
+    address: USDT_CONTRACT_ADDRESS,
+  };
+  const destAsset = {
+    symbol: 'USDC',
+    chainId: ETH_MAINNET_CHAIN_ID,
+    name: 'USD Coin',
+    assetId: ETH_USDC_ASSET_ID,
+    decimals: 6,
+    address: ETH_USDC_ADDRESS,
+  };
+
+  return {
+    account: TRON_ACCOUNT_ADDRESS,
+    hasApprovalTx: false,
+    quote: {
+      srcChainId: srcAsset.chainId,
+      destChainId: destAsset.chainId,
+      srcTokenAmount: opts.srcAmount,
+      destTokenAmount: opts.destAmount,
+      srcAsset,
+      destAsset,
+      requestId: opts.txId,
+      feeData: {
+        metabridge: {
+          amount: '0',
+          asset: srcAsset,
+        },
+      },
+      steps: [],
+      bridgeId: 'rango',
+      bridges: ['rango'],
+    },
+    status: {
+      status: StatusTypes.COMPLETE,
+      srcChain: {
+        chainId: srcAsset.chainId,
+        txHash: opts.txId,
+        amount: opts.srcAmount,
+        token: srcAsset,
+      },
+      destChain: {
+        chainId: destAsset.chainId,
+        // A deterministic placeholder destination hash: the destination
+        // settlement is never asserted on-chain in these tests.
+        txHash: `0x${'ab'.repeat(32)}`,
+        amount: opts.destAmount,
+        token: destAsset,
+      },
+    },
+    startTime: ts(opts.timestamp),
+    estimatedProcessingTimeInSeconds: 60,
+    slippagePercentage: 0.5,
   };
 }

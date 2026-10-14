@@ -57,6 +57,8 @@ export function getShieldSubscriptionServiceMessenger(
       'RewardsController:getSeasonStatus',
       'RewardsController:getSeasonMetadata',
       'RewardsController:getHasAccountOptedIn',
+      // For metrics, to get the rewards subscription ID after checkout
+      'RewardsController:getActualSubscriptionId',
     ],
   });
   return serviceMessenger;

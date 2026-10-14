@@ -33,6 +33,12 @@ export type ConfirmContextType = {
    * rejected/removed. See CONF-1865.
    */
   suppressAutoExit: () => void;
+  /**
+   * The amount field has changed and Pay has not committed that amount yet.
+   * Confirm stays disabled, and quote rows stay pending, until it matches.
+   */
+  isAmountPending: boolean;
+  setIsAmountPending: (isAmountPending: boolean) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -43,16 +49,22 @@ export const ConfirmContextProvider = ({
   children,
   confirmationId,
   currentConfirmationOverride,
+  initialIsAmountPending = false,
 }: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId?: string;
   /** When provided, injects this as currentConfirmation (e.g. for gas modal opened from cancel-speedup). Skips route sync and navigation. */
   currentConfirmationOverride?: Confirmation;
+  /** Test hook for a confirmation that opens with a typed amount still pending. */
+  initialIsAmountPending?: boolean;
 }>) => {
   const { goBackTo: goBackFromUrl } = useConfirmationNavigationOptions();
   const [goBackTo] = useState(goBackFromUrl);
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
+  const [isAmountPending, setIsAmountPending] = useState(
+    initialIsAmountPending,
+  );
   const { currentConfirmation: currentConfirmationFromHook } =
     useCurrentConfirmation(confirmationId);
   const currentConfirmation =
@@ -111,6 +123,8 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       suppressAutoExit,
+      isAmountPending,
+      setIsAmountPending,
     }),
     [
       currentConfirmation,
@@ -118,6 +132,8 @@ export const ConfirmContextProvider = ({
       setIsScrollToBottomCompleted,
       goBackTo,
       suppressAutoExit,
+      isAmountPending,
+      setIsAmountPending,
     ],
   );
 
@@ -142,5 +158,7 @@ export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
     goBackTo: string | undefined;
     suppressAutoExit: () => void;
+    isAmountPending: boolean;
+    setIsAmountPending: (isAmountPending: boolean) => void;
   };
 };

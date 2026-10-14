@@ -210,19 +210,12 @@ const analyticsController = {
   },
 };
 
-messenger.registerActionHandler('MetaMetricsController:getState', () => ({
-  marketingCampaignCookieId: null,
-}));
 messenger.registerActionHandler(
   'SentryTracingService:trackTracesAfterMetricsOptIn',
   () => undefined,
 );
 messenger.registerActionHandler(
   'SentryTracingService:clearTracesAfterMetricsOptIn',
-  () => undefined,
-);
-messenger.registerActionHandler(
-  'MetaMetricsController:setMarketingCampaignCookieId',
   () => undefined,
 );
 

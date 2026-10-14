@@ -35,13 +35,11 @@ export const getIsPerpsIncludedInBuild = (): boolean => {
 };
 
 /**
- * Compile-time gate (`ASSETS_UNIFIED_STATE_ENABLED`): controls whether
- * AssetsController populates state. The controller is always instantiated,
- * but when this is false the state remains empty. Distinct from the remote
- * `assetsUnifyState` rollout flag which provides an additional runtime gate.
+ * The assets unified state is included in every build. This compatibility
+ * helper remains while its callers are removed in the subsequent stack PR.
  */
 export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
-  return process.env.ASSETS_UNIFIED_STATE_ENABLED?.toString() === 'true';
+  return true;
 };
 
 /**

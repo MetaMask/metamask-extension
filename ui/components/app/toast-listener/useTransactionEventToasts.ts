@@ -34,8 +34,8 @@ import {
 } from './shared';
 import {
   clearToastPhase,
-  shouldShowPendingToast,
   shouldShowFailedToast,
+  shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
 

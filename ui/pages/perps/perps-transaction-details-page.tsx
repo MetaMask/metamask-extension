@@ -141,8 +141,7 @@ const TradeDetailRows = ({
   const pnlNumber = fill.amountNumber;
   const showPnl =
     transaction.category === 'position_close' &&
-    !isNaN(pnlNumber) &&
-    pnlNumber !== 0;
+    (pnlNumber === undefined || (!isNaN(pnlNumber) && pnlNumber !== 0));
 
   return (
     <>
@@ -159,10 +158,14 @@ const TradeDetailRows = ({
         <Row
           label={t('perpsPnl')}
           value={
-            <SignedValue
-              value={formatPnl(pnlNumber)}
-              isPositive={pnlNumber >= 0}
-            />
+            pnlNumber === undefined ? (
+              t('unknown')
+            ) : (
+              <SignedValue
+                value={formatPnl(pnlNumber)}
+                isPositive={pnlNumber >= 0}
+              />
+            )
           }
         />
       )}

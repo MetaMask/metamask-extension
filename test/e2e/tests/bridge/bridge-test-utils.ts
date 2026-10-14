@@ -1521,7 +1521,7 @@ export const getBridgeFixtures = ({
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withMetaMetricsController({
+    .withAnalyticsController({
       analyticsId: MOCK_ANALYTICS_ID,
       consentDecisionMade: true,
       optedIn: true,

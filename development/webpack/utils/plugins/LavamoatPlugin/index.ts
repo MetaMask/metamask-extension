@@ -83,6 +83,13 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   'opr',
   // for @popperjs/core and snap simple keyring site
   'devicePixelRatio',
+  // for @floating-ui/dom (via @metamask/design-system-react Popover), which
+  // reads these off the real window returned by `ownerDocument.defaultView`
+  'parent',
+  'frameElement',
+  'scrollX',
+  'scrollY',
+  'Node',
   // for @tanstack/react-virtual
   'ResizeObserver',
   'setTimeout',
@@ -178,7 +185,7 @@ export const lavamoatPlugin = (args: Args) =>
 // Matches the app's `background` root module, which the service worker imports.
 // This is the boundary at which the 'unsafe' layer must stop, so that `background`
 // and its entire dependency graph run inside LavaMoat.
-const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.js$/u;
+const backgroundEntryRe = /[\\/]app[\\/]scripts[\\/]background\.(?:js|ts)$/u;
 
 // Unsafe layer that runs code without LavaMoat. `background` is excluded here
 // because, although it is imported from the unsafe service worker, it must

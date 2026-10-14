@@ -191,13 +191,7 @@ describe('Add hide token', function () {
       },
     );
   });
-
-  // Under unified state (assetsUnifyState), the UI reads token balances from
-  // AssetsController.assetsBalance, but the WebSocket balance update only
-  // reaches TokenBalancesController. Until AssetsController subscribes to
-  // AccountActivityService:balanceUpdated, this test cannot pass.
-  // eslint-disable-next-line mocha/no-skipped-tests -- blocked until unified balance path receives WS updates
-  it.skip('updates token balance when a WebSocket balance update is received', async function () {
+  it('updates token balance when a WebSocket balance update is received', async function () {
     const account = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
     const tstBalanceHolder = { value: '10' };
     const fixture = new FixtureBuilderV2()

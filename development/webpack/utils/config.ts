@@ -3,8 +3,8 @@ import { readFileSync } from 'node:fs';
 import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
-import type { Variables } from '../../lib/variables';
-import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
+import type { Variables } from '../../lib/variables.js';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type.js';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
 import {

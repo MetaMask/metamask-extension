@@ -1,6 +1,9 @@
 import { act, waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
-import { PAYMENT_TYPES } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  type Subscription,
+} from '@metamask/subscription-controller';
 import type { Hex } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
@@ -17,6 +20,7 @@ import {
   useSubscriptionCryptoApprovalTransaction,
   useShieldRewards,
   useHandleSubscriptionSupportAction,
+  useUnCancelSubscription,
 } from './useSubscription';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import type { TokenWithApprovalAmount } from './useSubscriptionPricing';
@@ -31,14 +35,29 @@ jest.mock('../../store/actions', () => ({
   estimateGas: jest.fn().mockResolvedValue('0x5208'),
   addTransaction: jest.fn().mockResolvedValue({}),
   getCustomerServiceToken: jest.fn(),
+  unCancelSubscription: jest.fn(() => async () => undefined),
   getSubscriptionPricing: jest.fn().mockResolvedValue({}),
   getRewardsSeasonMetadata: jest.fn(() => async () => null),
   estimateRewardsPoints: jest.fn(() => async () => null),
   getRewardsHasAccountOptedIn: jest.fn(() => async () => false),
 }));
 
+const mockCaptureShieldSubscriptionRestartRequestEvent = jest.fn();
+
+jest.mock('../shield/metrics/useSubscriptionMetrics', () => ({
+  useSubscriptionMetrics: () => ({
+    captureShieldSubscriptionRestartRequestEvent:
+      mockCaptureShieldSubscriptionRestartRequestEvent,
+    captureShieldMembershipCancelledEvent: jest.fn(),
+    captureCommonExistingShieldSubscriptionEvents: jest.fn(),
+    captureShieldSubscriptionRequestEvent: jest.fn(),
+    setShieldSubscriptionMetricsPropsToBackground: jest.fn(),
+  }),
+}));
+
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockAddTransaction = jest.mocked(actions.addTransaction);
+const mockUnCancelSubscription = jest.mocked(actions.unCancelSubscription);
 const mockGetCustomerServiceToken = jest.mocked(
   actions.getCustomerServiceToken,
 );
@@ -295,6 +314,50 @@ describe('useSubscriptionCryptoApprovalTransaction', () => {
       // No gas fees should be set when values can't be parsed
       expect(txParams.maxPriorityFeePerGas).toBeUndefined();
       expect(txParams.maxFeePerGas).toBeUndefined();
+    });
+  });
+});
+
+describe('useUnCancelSubscription', () => {
+  const subscription = {
+    id: 'shield-subscription-id',
+    status: 'active',
+    paymentMethod: {
+      type: PAYMENT_TYPES.byCard,
+    },
+    interval: 'month',
+  } as unknown as Subscription;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUnCancelSubscription.mockImplementation(() => async () => undefined);
+  });
+
+  it('tracks a succeeded restart request after uncancelling a subscription', async () => {
+    const { result } = renderHookWithProvider(
+      () => useUnCancelSubscription(subscription),
+      mockState,
+    );
+
+    const [execute] = result.current;
+
+    await act(async () => {
+      await execute();
+    });
+
+    expect(mockUnCancelSubscription).toHaveBeenCalledWith({
+      subscriptionId: subscription.id,
+    });
+    expect(
+      mockCaptureShieldSubscriptionRestartRequestEvent,
+    ).toHaveBeenCalledWith({
+      subscriptionStatus: subscription.status,
+      paymentType: PAYMENT_TYPES.byCard,
+      billingInterval: subscription.interval,
+      cryptoPaymentChain: undefined,
+      cryptoPaymentCurrency: undefined,
+      status: 'succeeded',
+      error: undefined,
     });
   });
 });

@@ -22,8 +22,6 @@ export const PERPS_EVENT_PROPERTY = {
   ...CONTROLLER_PERPS_EVENT_PROPERTY,
   /** @deprecated Prefer ORDER_SIZE or POSITION_SIZE from the controller contract. */
   SIZE: 'size',
-  /** Extension UI interaction property (button identity). */
-  BUTTON_TYPE: 'button_type',
   /** Extension market-list filter property. */
   MARKET_CATEGORY_FILTER: 'market_category_filter',
   /** Extension close-all summary property. */
