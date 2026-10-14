@@ -86,7 +86,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
         const addressList = new AccountAddressListPage(driver);
 
         await homepage.checkPageIsLoaded();
-        await homepage.clickOnReceiveButton();
+        await homepage.clickOnReceiveButton('default');
 
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayed(

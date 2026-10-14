@@ -2679,6 +2679,14 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "chainlistEnterNetworkDetailsManually": {
+    "message": "Enter network details manually",
+    "description": "Subtitle for keeping a typed network name that is not on Chainlist."
+  },
+  "chainlistEnterRpcUrlManually": {
+    "message": "Enter RPC details manually",
+    "description": "Subtitle for keeping a typed RPC URL that is not on Chainlist."
+  },
   "chainlistLearnHowToStaySafe": {
     "message": "Learn how to stay safe.",
     "description": "Link label in the Add from ChainList banner that opens an article about safely adding networks."
@@ -2690,6 +2698,22 @@
   "chainlistNetworkDetails": {
     "message": "Symbol: $1 · ID: $2",
     "description": "$1 is the native currency symbol and $2 is the network chain ID."
+  },
+  "chainlistNoMatches": {
+    "message": "No matches from ChainList",
+    "description": "Shown when Chainlist has no match for the text typed in the network name or RPC URL field."
+  },
+  "chainlistRpcDataSourceBanner": {
+    "message": "RPC data comes from ChainList. Always verify before adding. $1",
+    "description": "Informational banner in the Add RPC URL Chainlist suggestions. $1 is the 'Learn how to stay safe.' link."
+  },
+  "chainlistUseTypedNetworkName": {
+    "message": "Use \"$1\" as network name",
+    "description": "Action that keeps the typed network name and closes Chainlist suggestions. $1 is the typed name."
+  },
+  "chainlistUseTypedRpcUrl": {
+    "message": "Use \"$1\" as RPC URL",
+    "description": "Action that keeps the typed RPC URL and closes Chainlist suggestions. $1 is the typed URL."
   },
   "changeInSettings": {
     "message": "Change in Settings"
@@ -4317,7 +4341,7 @@
     "message": "MetaMask covers the network fee for this transaction. This includes a one-time smart account activation."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
+    "message": "This network requires keeping at least $1 $2 in your account after the transaction. Smart accounts cannot go below this reserve.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4591,6 +4615,10 @@
   },
   "hardwareWalletErrorContinueButton": {
     "message": "Continue"
+  },
+  "hardwareWalletErrorDeviceLockedDescription": {
+    "message": "Unlock it and try again to continue",
+    "description": "Description shown when a hardware wallet is locked during an operation"
   },
   "hardwareWalletErrorOnlyV4SupportedDescription": {
     "message": "Your $1 can only sign version 4 (V4) typed data. This site requested an older signature type that isn't supported",
@@ -5517,6 +5545,153 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mfaEmailEntryContinue": {
+    "message": "Continue"
+  },
+  "mfaEmailEntryDescription": {
+    "message": "We'll send a verification code to this address."
+  },
+  "mfaEmailEntryInvalid": {
+    "message": "Enter a valid email address."
+  },
+  "mfaEmailEntryPlaceholder": {
+    "message": "Email address"
+  },
+  "mfaEmailEntryTitle": {
+    "message": "Enter your email"
+  },
+  "mfaErrorCooldown": {
+    "message": "Too many requests. Wait a moment and try again."
+  },
+  "mfaErrorEmailTaken": {
+    "message": "This email is already in use. Try a different one."
+  },
+  "mfaErrorFlowInProgress": {
+    "message": "Another verification is already in progress."
+  },
+  "mfaErrorGeneric": {
+    "message": "Something went wrong. Try again."
+  },
+  "mfaErrorInvalidCode": {
+    "message": "That code is incorrect. Try again."
+  },
+  "mfaErrorInvalidPasskey": {
+    "message": "Your passkey couldn't be verified. Try again."
+  },
+  "mfaErrorLimitReached": {
+    "message": "You've reached the limit for this method."
+  },
+  "mfaErrorMultiPrimarySrp": {
+    "message": "Verification isn't available yet for wallets with more than one Secret Recovery Phrase."
+  },
+  "mfaErrorPasskeyCancelled": {
+    "message": "Passkey request was cancelled."
+  },
+  "mfaErrorSignedOut": {
+    "message": "Sign in to continue."
+  },
+  "mfaErrorTooManyAttempts": {
+    "message": "Too many attempts. Request a new code."
+  },
+  "mfaErrorUnsupported": {
+    "message": "This method isn't supported on this device."
+  },
+  "mfaFailureClose": {
+    "message": "Close"
+  },
+  "mfaFailureRetry": {
+    "message": "Try again"
+  },
+  "mfaFailureTitle": {
+    "message": "Something went wrong"
+  },
+  "mfaIntroContinue": {
+    "message": "Get started"
+  },
+  "mfaIntroDescription": {
+    "message": "We’ll set up a few ways to confirm it’s you. You’ll use them to approve important actions, and if you lose access to one, you can use another."
+  },
+  "mfaIntroListTitle": {
+    "message": "You’ll set up"
+  },
+  "mfaIntroTitle": {
+    "message": "Set up 2-step verification"
+  },
+  "mfaMethodEmail": {
+    "message": "Email"
+  },
+  "mfaMethodPasskey": {
+    "message": "Passkey"
+  },
+  "mfaOtpDescription": {
+    "message": "We sent a 6-digit code to your email."
+  },
+  "mfaOtpDescriptionWithEmail": {
+    "message": "We sent a 6-digit code to $1.",
+    "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpResend": {
+    "message": "Resend code"
+  },
+  "mfaOtpResendIn": {
+    "message": "Resend code in $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpResent": {
+    "message": "We sent you a new code."
+  },
+  "mfaOtpSendIn": {
+    "message": "Sending a new code in $1s",
+    "description": "$1 is a number of seconds"
+  },
+  "mfaOtpSending": {
+    "message": "Sending code..."
+  },
+  "mfaOtpSubmit": {
+    "message": "Verify"
+  },
+  "mfaOtpTitle": {
+    "message": "Enter the code"
+  },
+  "mfaPasskeyContinue": {
+    "message": "Continue"
+  },
+  "mfaPasskeyDescription": {
+    "message": "Your device will ask you to confirm."
+  },
+  "mfaPasskeyTitleSetup": {
+    "message": "Create a passkey"
+  },
+  "mfaPasskeyTitleVerify": {
+    "message": "Use your passkey"
+  },
+  "mfaPickerTitle": {
+    "message": "Confirm with 2-step verification"
+  },
+  "mfaSettingsDescription": {
+    "message": "Used to confirm it's you before sensitive actions."
+  },
+  "mfaSettingsEmailLinked": {
+    "message": "Linked to your sign-in"
+  },
+  "mfaSettingsEmailPending": {
+    "message": "Setup not finished"
+  },
+  "mfaSettingsFinishSetup": {
+    "message": "Finish setup"
+  },
+  "mfaSettingsSetUp": {
+    "message": "Set up"
+  },
+  "mfaSettingsTitle": {
+    "message": "Verification methods"
+  },
+  "mfaSuccessDone": {
+    "message": "Done"
+  },
+  "mfaSuccessTitle": {
+    "message": "You're all set"
+  },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
   },
@@ -5692,9 +5867,6 @@
   "moneyBalanceLastKnown": {
     "message": "Last known balance"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Retry"
   },
@@ -5768,6 +5940,10 @@
   },
   "moneyFundDescriptionWithApy": {
     "message": "Fund your Money account and watch your balance grow with up to $1 APY."
+  },
+  "moneyGetApy": {
+    "message": "Get $1 APY",
+    "description": "Token list row CTA that opens a Money account deposit. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
   },
   "moneyHomeApyTooltip": {
     "message": "The rate shown is the current Annual Percentage Yield (APY). APY is variable and is not guaranteed."
@@ -7555,6 +7731,13 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsAbout": {
+    "message": "About"
+  },
+  "perpsAboutAsset": {
+    "message": "About $1",
+    "description": "$1 is the asset name"
+  },
   "perpsActivity": {
     "message": "Activity"
   },
@@ -8163,6 +8346,13 @@
   "perpsRateLimitExceeded": {
     "message": "Too many requests. Please wait and try again."
   },
+  "perpsReadMore": {
+    "message": "Read more"
+  },
+  "perpsReadMoreAbout": {
+    "message": "Read more about $1",
+    "description": "$1 is the asset name"
+  },
   "perpsRecentActivity": {
     "message": "Recent activity"
   },
@@ -8209,6 +8399,22 @@
   "perpsSeeAll": {
     "message": "See all",
     "description": "Accessible label for the arrow button that navigates to the full activity list"
+  },
+  "perpsServiceInterruptionContactSupport": {
+    "message": "contact support",
+    "description": "Inline link in the Perps outage banner that opens MetaMask support."
+  },
+  "perpsServiceInterruptionDescription": {
+    "message": "Some services are temporarily unavailable. $1, or $2.",
+    "description": "$1 is the FAQ link. $2 is the contact-support link. Shown on the Perps outage banner."
+  },
+  "perpsServiceInterruptionFaqLink": {
+    "message": "See your options in FAQs",
+    "description": "Inline link in the Perps outage banner that opens the Perps help-center hub."
+  },
+  "perpsServiceInterruptionTitle": {
+    "message": "We're experiencing an outage",
+    "description": "Title of the Perps outage banner."
   },
   "perpsServiceUnavailable": {
     "message": "Service temporarily unavailable. Please try again later."

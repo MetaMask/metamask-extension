@@ -9,7 +9,7 @@ import {
   ButtonVariant,
 } from '../../components/component-library/button';
 import { parse } from '../../../shared/lib/deep-links/parse';
-import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,

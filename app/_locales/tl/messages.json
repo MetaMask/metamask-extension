@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Huling kilalang balanse"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Subukang muli"
   },

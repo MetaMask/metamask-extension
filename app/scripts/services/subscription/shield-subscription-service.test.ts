@@ -25,10 +25,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
-import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
 import { SHIELD_ERROR } from '../../../../shared/lib/shield';
 import { getIsSmartTransaction } from '../../../../shared/lib/selectors';
+import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
 import { ShieldSubscriptionService } from './shield-subscription-service';
 import { ShieldSubscriptionServiceMessenger } from './types';
 
@@ -54,27 +54,10 @@ type RootMessenger = Messenger<MockAnyNamespace, Actions, Events>;
 
 jest.mock('../../platforms/extension');
 
-jest.mock('../../../../shared/lib/fetch-with-timeout');
+jest.mock('../../lib/transaction/sentinel-api');
 
 const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
-
-const MAINNET_BASE = {
-  name: 'Mainnet',
-  group: 'ethereum',
-  chainID: 1,
-  nativeCurrency: {
-    name: 'ETH',
-    symbol: 'ETH',
-    decimals: 18,
-  },
-  network: 'ethereum-mainnet',
-  explorer: 'https://etherscan.io',
-  confirmations: true,
-  smartTransactions: true,
-  relayTransactions: true,
-  hidden: false,
-  sendBundle: true,
-} as const;
+const mockIsSendBundleSupported = jest.mocked(isSendBundleSupported);
 
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 
@@ -545,8 +528,6 @@ describe('ShieldSubscriptionService - startSubscriptionWithCard', () => {
 });
 
 describe('ShieldSubscriptionService - handlePostTransaction', () => {
-  const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
-    jest.fn();
   const MOCK_STATE = createSwapsMockStore().metamask;
   const MOCK_TX_META = {
     id: '1',
@@ -560,13 +541,7 @@ describe('ShieldSubscriptionService - handlePostTransaction', () => {
     jest.resetAllMocks();
     mockGetIsSmartTransaction.mockReturnValue(true);
 
-    jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
-    fetchMock.mockResolvedValueOnce({
-      json: async () => ({
-        '1': MAINNET_BASE,
-      }),
-      ok: true,
-    } as Response);
+    mockIsSendBundleSupported.mockResolvedValue(true);
 
     mockGetAppStateControllerState.mockReturnValue({
       defaultSubscriptionPaymentOptions: {
@@ -932,20 +907,12 @@ describe('ShieldSubscriptionService - submitSubscriptionSponsorshipIntent', () =
       from: MOCK_STATE.internalAccounts.selectedAccount,
     },
   };
-  const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
-    jest.fn();
 
   beforeEach(() => {
     jest.resetAllMocks();
     mockGetIsSmartTransaction.mockReturnValue(true);
     // assign mocks
-    jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
-    fetchMock.mockResolvedValueOnce({
-      json: async () => ({
-        '1': MAINNET_BASE,
-      }),
-      ok: true,
-    } as Response);
+    mockIsSendBundleSupported.mockResolvedValue(true);
     mockGetAccountsState.mockReturnValueOnce({
       internalAccounts: MOCK_STATE.internalAccounts,
     });
@@ -1017,14 +984,7 @@ describe('ShieldSubscriptionService - submitSubscriptionSponsorshipIntent', () =
   });
 
   it('should not submit sponsorship intent if send bundle is not supported for chain', async () => {
-    fetchMock.mockRestore();
-
-    fetchMock.mockResolvedValueOnce({
-      json: async () => ({
-        '1': { ...MAINNET_BASE, sendBundle: false },
-      }),
-      ok: true,
-    } as Response);
+    mockIsSendBundleSupported.mockResolvedValue(false);
 
     // @ts-expect-error mock tx meta
     await subscriptionService.submitSubscriptionSponsorshipIntent(MOCK_TX_META);

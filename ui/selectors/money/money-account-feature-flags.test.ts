@@ -7,10 +7,11 @@ import {
   selectMoneyAccountVaultConfig,
   selectMoneyActivityDetailsEnabled,
   selectMoneyActivityMockDataEnabled,
-  selectMoneyBalanceShowMusdLabelEnabled,
   selectMoneyEarningSectionEnabled,
   selectMoneyHomeScreenCardEnabled,
   selectMoneyDepositMinBalance,
+  selectMoneyDepositCtaTokenKeys,
+  selectMoneyTokenListItemCtaEnabled,
   selectMoneyVaultApyRemoteConfig,
 } from './money-account-feature-flags';
 
@@ -321,28 +322,6 @@ describe('selectMoneyAccountDepositQuotePipelineEnabled', () => {
   });
 });
 
-describe('selectMoneyBalanceShowMusdLabelEnabled', () => {
-  it('defaults to false', () => {
-    expect(selectMoneyBalanceShowMusdLabelEnabled(mockState())).toBe(false);
-  });
-
-  it('is true when the remote flag is true', () => {
-    expect(
-      selectMoneyBalanceShowMusdLabelEnabled(
-        mockState({ moneyBalanceShowMusdLabel: true }),
-      ),
-    ).toBe(true);
-  });
-
-  it('is false when the remote flag is false', () => {
-    expect(
-      selectMoneyBalanceShowMusdLabelEnabled(
-        mockState({ moneyBalanceShowMusdLabel: false }),
-      ),
-    ).toBe(false);
-  });
-});
-
 describe('selectMoneyActivityMockDataEnabled', () => {
   let originalEnv: string | undefined;
 
@@ -426,5 +405,57 @@ describe('selectMoneyActivityDetailsEnabled', () => {
 
   it('is false when the flag is unserved and the env var is off', () => {
     expect(selectMoneyActivityDetailsEnabled(mockState())).toBe(false);
+  });
+});
+
+describe('selectMoneyTokenListItemCtaEnabled', () => {
+  it('is true when both the CTA and Money Account flags are on', () => {
+    expect(
+      selectMoneyTokenListItemCtaEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+          earnMoneyTokenListItemCtaEnabled: {
+            enabled: true,
+            minimumVersion: '0.0.1',
+          },
+        }),
+      ),
+    ).toBe(true);
+  });
+
+  it('is false when the CTA flag is unserved', () => {
+    expect(
+      selectMoneyTokenListItemCtaEnabled(
+        mockState({
+          moneyEnableMoneyAccount: { enabled: true, minimumVersion: '0.0.1' },
+        }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe('selectMoneyDepositCtaTokenKeys', () => {
+  it('returns lowercased chainId:address keys', () => {
+    expect(
+      selectMoneyDepositCtaTokenKeys(
+        mockState({
+          earnMoneyDepositCtaTokenAddresses: {
+            '0x1': ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'],
+            '0xe708': ['0x176211869cA2b568f2A7D4EE941E073a821EE1ff'],
+          },
+        }),
+      ),
+    ).toStrictEqual(
+      new Set([
+        '0x1:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        '0xe708:0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+      ]),
+    );
+  });
+
+  it('is empty when the flag is unserved', () => {
+    expect(selectMoneyDepositCtaTokenKeys(mockState())).toStrictEqual(
+      new Set(),
+    );
   });
 });
