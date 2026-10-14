@@ -76,7 +76,7 @@ export type FeatureFlagRegistryEntry = {
  * Remote flag values are stored in the exact format returned by the production
  * client-config API, so they can be served directly by mock-e2e.js.
  *
- * Production defaults last synced: 2026-09-29
+ * Production defaults last synced: 2026-10-06
  * Source: https://client-config.api.cx.metamask.io/v1/flags?client=extension&distribution=main&environment=prod
  */
 /* eslint-disable @typescript-eslint/naming-convention -- production API flag names */
@@ -132,24 +132,28 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   assetsAccountsApiV6: {
     inProd: true,
     name: 'assetsAccountsApiV6',
-    productionDefault: [
-      {
-        name: 'feature is ON',
-        scope: {
-          type: 'threshold',
-          value: 0,
-        },
-        value: true,
+    productionDefault: {
+      versions: {
+        '13.52.0': [
+          {
+            name: 'feature is ON',
+            scope: {
+              type: 'threshold',
+              value: 0,
+            },
+            value: true,
+          },
+          {
+            name: 'feature is OFF',
+            scope: {
+              type: 'threshold',
+              value: 1,
+            },
+            value: false,
+          },
+        ],
       },
-      {
-        name: 'feature is OFF',
-        scope: {
-          type: 'threshold',
-          value: 1,
-        },
-        value: false,
-      },
-    ],
+    },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -383,6 +387,10 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           name: 'Base',
         },
         {
+          chainId: 'stellar:pubnet',
+          name: 'Stellar',
+        },
+        {
           chainId: 'eip155:42161',
           name: 'Arbitrum',
         },
@@ -609,6 +617,11 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
           isActiveDest: true,
           isActiveSrc: true,
           isSingleSwapBridgeButtonEnabled: true,
+        },
+        '20000000000002': {
+          isActiveDest: true,
+          isActiveSrc: true,
+          isSingleSwapBridgeButtonEnabled: false,
         },
       },
       maxRefreshCount: 5,
@@ -1451,7 +1464,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: {
       blockedTokens: {
         default: {
-          chainIds: ['0xaa36a7', '0xe705', '0x4cef52'],
+          chainIds: ['0xaa36a7', '0xe705', '0x4cef52', '0x531'],
           tokens: [
             {
               address: '0x66a3c2fa3e467aa586e90912f977e648589cabaf',
@@ -1509,7 +1522,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         },
         overrides: {
           perpsDeposit: {
-            chainIds: ['0xaa36a7', '0xe705', '0x4cef52'],
+            chainIds: ['0xaa36a7', '0xe705', '0x4cef52', '0x531'],
             tokens: [
               {
                 address: '0x33A3d962955A3862C8093D1273344719f03cA17C',
@@ -3034,7 +3047,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
   extensionPlatformAutoReloadAfterUpdate: {
     inProd: true,
     name: 'extensionPlatformAutoReloadAfterUpdate',
-    productionDefault: true,
+    productionDefault: false,
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,
   },
@@ -3134,7 +3147,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
       enabled: true,
       minimumVersion: '13.28.0',
     },
-    status: FeatureFlagStatus.Active,
+    status: FeatureFlagStatus.Deprecated,
     type: FeatureFlagType.Remote,
   },
 
@@ -3934,8 +3947,8 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     inProd: true,
     name: 'stellarAccounts',
     productionDefault: {
-      enabled: false,
-      minimumVersion: '0.0.1',
+      enabled: true,
+      minimumVersion: '13.50.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

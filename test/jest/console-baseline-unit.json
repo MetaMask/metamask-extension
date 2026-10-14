@@ -328,6 +328,7 @@
       "MetaMask: Background connection not initialized": 2
     },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 3
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {

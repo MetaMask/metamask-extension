@@ -3,8 +3,7 @@ export const CANONICAL_DEEP_LINK_HOST =
   process.env.CANONICAL_DEEP_LINK_HOST ?? 'link.metamask.io';
 
 // `DEEP_LINK_HOSTS` configures every host accepted for incoming deep links.
-// `CANONICAL_DEEP_LINK_HOST` remains separate because signed URLs always use
-// that host.
+// `CANONICAL_DEEP_LINK_HOST` remains separate for legacy .io signatures.
 const configuredDeepLinkHosts = (
   process.env.DEEP_LINK_HOSTS ?? 'link.metamask.io,link.metamask.com'
 )
@@ -20,16 +19,12 @@ export const DEEP_LINK_HOSTS = [
 
 /**
  * Checks whether a hostname belongs to a configured MetaMask deep-link host.
- * Configured subdomains are accepted because the browser request filter also
- * matches subdomains.
  *
  * @param hostname - The hostname to check.
- * @returns Whether the hostname is a configured deep-link host or subdomain.
+ * @returns Whether the hostname is a configured deep-link host.
  */
 export function isDeepLinkHost(hostname: string): boolean {
-  return DEEP_LINK_HOSTS.some(
-    (host) => hostname === host || hostname.endsWith(`.${host}`),
-  );
+  return DEEP_LINK_HOSTS.includes(hostname);
 }
 
 export const DEEP_LINK_MAX_LENGTH = 2048;
