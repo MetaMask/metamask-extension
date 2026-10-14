@@ -25,6 +25,8 @@ import {
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
+import { unrestrictedMethods } from '../controllers/permissions';
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
@@ -179,7 +181,15 @@ describe('initializeWallet', () => {
           },
         },
         passkeyController: 'passkey-options',
+        permissionController: {
+          caveatSpecifications: expect.any(Object),
+          permissionSpecifications: expect.any(Object),
+          unrestrictedMethods,
+        },
         seedlessOnboardingController: 'seedless-onboarding-options',
+        selectedNetworkController: {
+          domainProxyMap: new WeakRefObjectMap(),
+        },
         shieldApiService: 'shield-api-service-options',
         shieldController: 'shield-controller-options',
         remoteFeatureFlagController: 'rffc-options',
