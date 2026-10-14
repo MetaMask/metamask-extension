@@ -18,7 +18,7 @@ export function getNetworkControllerInstanceOptions(infuraProjectId: string) {
         ? { pollingInterval: 1000 }
         : {},
     analyticsOptions: {
-      isRpcEndpointUrlPublic: (endpointUrl) =>
+      isRpcEndpointUrlPublic: (endpointUrl: string) =>
         isPublicEndpointUrl(endpointUrl, infuraProjectId),
       rpcServiceEventsSampleRate: getRpcServiceEventsSampleRate(),
     },
