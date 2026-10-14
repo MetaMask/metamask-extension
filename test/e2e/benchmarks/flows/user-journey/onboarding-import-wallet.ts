@@ -200,20 +200,10 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
           ),
         );
 
-        // Restored 2026-10-07. This was commented out on 2026-06-02 as
-        // "temporarily to unblock the release" for
-        // `MetaMask/metamask-extension#42792` (onboarding benchmarks show a
-        // degradation with Assets Unified State on), and that issue is CLOSED, so the
-        // stated reason is discharged.
-        //
-        // The cost of leaving it was not a missing nice-to-have: `onboardingNewWallet.cls`
-        // and `onboardingImportWallet.cls` are both in `GATED_METRIC_VALUES`, so for four
-        // months two gated metrics produced no value and the gate reported PASS beside
-        // them. That is I2 of the admission gate, and these two legs are what it fires on.
-        //
-        // If the degradation `extension#42792` named -- the Assets Unified State
-        // regression on these two onboarding benchmarks -- still exists, restoring
-        // collection is how it becomes visible rather than a reason to keep it hidden.
+        // `cls` from this flow is in GATED_METRIC_VALUES, so collection must run:
+        // without it the metric has no value and cannot fail its threshold. It was
+        // disabled as a workaround for #42792 (onboarding benchmarks degraded with
+        // Assets Unified State on), which is closed.
         try {
           webVitals = await collectWebVitals(driver);
         } catch (error) {
