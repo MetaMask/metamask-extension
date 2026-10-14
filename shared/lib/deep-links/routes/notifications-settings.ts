@@ -2,13 +2,15 @@ import { getIsPerpsIncludedInBuild } from '../../environment';
 import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
-  type NotificationsSettingsSectionType,
   Route,
 } from './route';
 
 export enum NotificationsSettingsQueryParams {
   Section = 'section',
 }
+
+type NotificationsSettingsSectionType =
+  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
 
 const NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH = new Map(
   Object.entries(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).map(
