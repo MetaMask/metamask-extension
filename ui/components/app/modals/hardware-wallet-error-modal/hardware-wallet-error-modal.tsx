@@ -166,6 +166,11 @@ type HardwareWalletErrorModalProps = {
   onClose?: () => void;
   onRetry?: () => void;
   onRepairDevice?: (walletType: HardwareWalletType) => void;
+  /**
+   * Readiness check run on retry, for flows targeting a device other than the
+   * selected account's. Defaults to the selected account's device.
+   */
+  ensureDeviceReady?: () => Promise<boolean>;
 };
 
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
@@ -223,6 +228,7 @@ export const HardwareWalletErrorModal = React.memo(
     onCancel: onCancelProp,
     onRetry: onRetryProp,
     onRepairDevice: onRepairDeviceProp,
+    ensureDeviceReady: ensureDeviceReadyProp,
   }: HardwareWalletErrorModalProps) => {
     const t = useI18nContext();
     const { trackEvent, createEventBuilder } = useAnalytics();
@@ -237,13 +243,21 @@ export const HardwareWalletErrorModal = React.memo(
     const lastTrackedErrorKeyRef = useRef<string | null>(null);
     const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
     const successModalMetricSentRef = useRef(false);
-    const { error, onClose, onCancel, onRetry, onRepairDevice } = {
+    const {
+      error,
+      onClose,
+      onCancel,
+      onRetry,
+      onRepairDevice,
+      ensureDeviceReady: ensureTargetDeviceReady,
+    } = {
       ...modalProps,
       error: errorProp ?? modalProps?.error,
       onClose: onCloseProp ?? modalProps?.onClose,
       onCancel: onCancelProp ?? modalProps?.onCancel,
       onRetry: onRetryProp ?? modalProps?.onRetry,
       onRepairDevice: onRepairDeviceProp ?? modalProps?.onRepairDevice,
+      ensureDeviceReady: ensureDeviceReadyProp ?? modalProps?.ensureDeviceReady,
     };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
@@ -370,9 +384,11 @@ export const HardwareWalletErrorModal = React.memo(
 
       setIsLoading(true);
       try {
-        const result = await ensureDeviceReady();
+        const result = await (ensureTargetDeviceReady ?? ensureDeviceReady)();
         if (result) {
-          setConnectionReady();
+          if (!ensureTargetDeviceReady) {
+            setConnectionReady();
+          }
           setRecovered(true);
         } else if (error && trackableMetricDeviceType) {
           errorTypeViewCountRef.current += 1;
@@ -431,9 +447,12 @@ export const HardwareWalletErrorModal = React.memo(
 
     const handleRecoveredClose = useCallback(() => {
       clearError();
-      setConnectionReady();
+      // A target device check says nothing about the selected account's device.
+      if (!ensureTargetDeviceReady) {
+        setConnectionReady();
+      }
       hideModal();
-    }, [clearError, hideModal, setConnectionReady]);
+    }, [clearError, ensureTargetDeviceReady, hideModal, setConnectionReady]);
 
     useEffect(() => {
       if (!recovered) {
