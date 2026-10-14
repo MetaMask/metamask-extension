@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 230,
+      "currentMigrationVersion": 232,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -130,9 +130,11 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {}
+        "networks": {},
+        "eventsConfig": null
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
@@ -2251,6 +2253,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 230
+    "version": 232
   }
 }

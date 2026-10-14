@@ -135,6 +135,22 @@ export const getIsPerpsCloseLimitOrderEnabled = createSelector(
 );
 
 /**
+ * Whether the Perps service-interruption (outage) banner is enabled.
+ *
+ * Remote flag `perpsPerpTradingServiceInterruptionBannerEnabled` — the same
+ * camel-cased LaunchDarkly key mobile uses, so SRE can turn the banner on
+ * for both clients during an outage. Defaults to off. Supports the standard
+ * boolean or `{ enabled, minimumVersion }` rollout shape.
+ */
+export const getIsPerpsServiceInterruptionBannerEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    isPerpsRemoteConfigSatisfied(
+      remoteFeatureFlags.perpsPerpTradingServiceInterruptionBannerEnabled,
+    ),
+);
+
+/**
  * Whether perps surfaces should render full asset names (e.g. "Bitcoin")
  * instead of just the ticker (e.g. "BTC").
  *
