@@ -2,7 +2,6 @@ import React from 'react';
 import { BtcAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import { Tag } from '@metamask/design-system-react';
 
-// Same labels previously shown beside assets. P2sh uses "Nested SegWit".
 const ACCOUNT_TYPE_LABELS: Partial<Record<KeyringAccountType, string>> = {
   [BtcAccountType.P2pkh]: 'Legacy',
   [BtcAccountType.P2sh]: 'Nested SegWit',
