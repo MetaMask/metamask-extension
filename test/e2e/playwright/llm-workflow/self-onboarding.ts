@@ -7,11 +7,13 @@ import { SCREEN_CHECKS, waitForAnyScreen } from './launcher/state-inspector';
 
 const CANARY_SRP_PREFIX = 'CANARY-NOT-A-REAL-SRP-';
 
-const FINISH_SCREENS: ScreenName[] = ['onboarding-complete', 'unlock', 'home'];
-const FINISH_SCREEN_CHECKS = SCREEN_CHECKS.filter(({ screen }) =>
-  FINISH_SCREENS.includes(screen),
+const UNLOCKED_SCREENS: ScreenName[] = ['onboarding-complete', 'home'];
+const UNLOCKED_SCREEN_CHECKS = SCREEN_CHECKS.filter(({ screen }) =>
+  UNLOCKED_SCREENS.includes(screen),
 );
-const MAX_FINISH_STEPS = 3;
+const FINISH_SCREEN_CHECKS = SCREEN_CHECKS.filter(
+  ({ screen }) => screen === 'unlock' || UNLOCKED_SCREENS.includes(screen),
+);
 
 /**
  * Normalizes a secret recovery phrase to single-spaced words.
@@ -45,18 +47,16 @@ export async function finishOnboarding(
   driver: Driver,
   password: string,
 ): Promise<void> {
-  for (let step = 0; step < MAX_FINISH_STEPS; step++) {
-    const { screen } = await waitForAnyScreen(driver, FINISH_SCREEN_CHECKS);
-    if (screen === 'home') {
-      return;
-    }
-    if (screen === 'onboarding-complete') {
-      await new OnboardingCompletePage(driver).completeOnboarding();
-      return;
-    }
+  let { screen } = await waitForAnyScreen(driver, FINISH_SCREEN_CHECKS);
+  if (screen === 'unlock') {
     await new LoginPage(driver).loginToHomepage(password);
+    // The unlock form stays mounted while the vault decrypts, so only the
+    // screens that follow a successful unlock count as progress.
+    ({ screen } = await waitForAnyScreen(driver, UNLOCKED_SCREEN_CHECKS));
   }
-  throw new Error('onboarding did not finish after unlocking');
+  if (screen === 'onboarding-complete') {
+    await new OnboardingCompletePage(driver).completeOnboarding();
+  }
 }
 
 /**

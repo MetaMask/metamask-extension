@@ -130,13 +130,26 @@ describe('finishOnboarding', () => {
     expect(mockCompleteOnboarding).not.toHaveBeenCalled();
   });
 
-  it('gives up when unlocking keeps returning to the unlock page', async () => {
-    showScreens('unlock', 'unlock', 'unlock');
+  it('does not accept the unlock page again after unlocking', async () => {
+    showScreens('unlock', 'home');
+
+    await finishOnboarding(driver, PASSWORD);
+
+    const [, checks] = mockWaitForAnyScreen.mock.calls[1];
+    expect(checks.map(({ screen }) => screen)).toStrictEqual([
+      'home',
+      'onboarding-complete',
+    ]);
+  });
+
+  it('fails when unlocking does not leave the unlock page', async () => {
+    showScreens('unlock');
+    mockWaitForAnyScreen.mockRejectedValueOnce(new Error('timed out'));
 
     await expect(finishOnboarding(driver, PASSWORD)).rejects.toThrow(
-      'onboarding did not finish after unlocking',
+      'timed out',
     );
-    expect(mockLogin).toHaveBeenCalledTimes(3);
+    expect(mockLogin).toHaveBeenCalledTimes(1);
   });
 });
 
