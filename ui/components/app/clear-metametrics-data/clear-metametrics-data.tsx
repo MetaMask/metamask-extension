@@ -64,6 +64,7 @@ export default function ClearMetaMetricsData({
       dispatch(openDataDeletionErrorModal());
       trackErrorAsAnalytics(trackEvent, error, {
         category: MetaMetricsEventCategory.Settings,
+        source: 'clear-metametrics-data',
         buildOptions: { excludeMetaMetricsId: true },
       });
     } finally {

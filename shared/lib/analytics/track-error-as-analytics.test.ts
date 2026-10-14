@@ -2,11 +2,13 @@ import { MetaMetricsEventName } from '../../constants/metametrics';
 import {
   trackErrorAsAnalytics,
   resetTrackErrorAsAnalyticsStateForTesting,
+  DEFAULT_ERROR_TRACKING_OPTIONS,
 } from './track-error-as-analytics';
 import type { AnalyticsEvent } from './create-event-builder';
 import type { TrackErrorReporter } from './track-error-as-analytics';
 
 const CATEGORY = 'Swaps';
+const SOURCE = 'test';
 
 describe('trackErrorAsAnalytics', () => {
   let report: jest.MockedFunction<TrackErrorReporter>;
@@ -27,7 +29,10 @@ describe('trackErrorAsAnalytics', () => {
     it('emits the sanitized message and no stack for an Error instance', async () => {
       const error = new Error('boom');
 
-      await trackErrorAsAnalytics(report, error, { category: CATEGORY });
+      await trackErrorAsAnalytics(report, error, {
+        category: CATEGORY,
+        source: SOURCE,
+      });
 
       expect(report).toHaveBeenCalledTimes(1);
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -39,7 +44,7 @@ describe('trackErrorAsAnalytics', () => {
       await trackErrorAsAnalytics(
         report,
         new Error('failed\nwith   whitespace\taround'),
-        { category: CATEGORY },
+        { category: CATEGORY, source: SOURCE },
       );
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -53,18 +58,20 @@ describe('trackErrorAsAnalytics', () => {
 
       await trackErrorAsAnalytics(report, new Error(longMessage), {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
       const message = event.properties.error_message as string;
-      expect(message).toHaveLength(501);
-      expect(message.startsWith('x'.repeat(500))).toBe(true);
+      expect(message).toHaveLength(500);
+      expect(message.startsWith('x'.repeat(499))).toBe(true);
       expect(message.endsWith('…')).toBe(true);
     });
 
     it('sanitizes non-Error thrown values too', async () => {
       await trackErrorAsAnalytics(report, 'unexpected\n  string   value', {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -75,6 +82,7 @@ describe('trackErrorAsAnalytics', () => {
     it('stringifies non-Error thrown values', async () => {
       await trackErrorAsAnalytics(report, 'unexpected string', {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -84,7 +92,10 @@ describe('trackErrorAsAnalytics', () => {
 
     it('resolves without throwing for null input', async () => {
       await expect(
-        trackErrorAsAnalytics(report, null, { category: CATEGORY }),
+        trackErrorAsAnalytics(report, null, {
+          category: CATEGORY,
+          source: SOURCE,
+        }),
       ).resolves.toBeUndefined();
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -93,26 +104,32 @@ describe('trackErrorAsAnalytics', () => {
 
     it('resolves without throwing for undefined input', async () => {
       await expect(
-        trackErrorAsAnalytics(report, undefined, { category: CATEGORY }),
+        trackErrorAsAnalytics(report, undefined, {
+          category: CATEGORY,
+          source: SOURCE,
+        }),
       ).resolves.toBeUndefined();
     });
   });
 
   describe('canonical schema', () => {
-    it('always includes event name, category, and severity', async () => {
+    it('always includes event name, category, source, and severity', async () => {
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
       expect(event.name).toBe(MetaMetricsEventName.ErrorOccured);
       expect(event.properties.category).toBe(CATEGORY);
+      expect(event.properties.source).toBe(SOURCE);
       expect(event.properties.severity).toBe('error');
     });
 
     it('keeps optional caller context inside the error_context namespace', async () => {
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         context: { origin: 'swap-quote-fetch' },
       });
 
@@ -126,6 +143,7 @@ describe('trackErrorAsAnalytics', () => {
     it('omits the context namespace entirely when no context is given', async () => {
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       const event = report.mock.calls[0][0] as AnalyticsEvent;
@@ -133,8 +151,11 @@ describe('trackErrorAsAnalytics', () => {
     });
 
     it('keeps volume-control fields out of the emitted event options', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.25);
+
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         buildOptions: {
           excludeMetaMetricsId: true,
           matomoEvent: true,
@@ -161,6 +182,7 @@ describe('trackErrorAsAnalytics', () => {
       await expect(
         trackErrorAsAnalytics(report, new Error('boom'), {
           category: CATEGORY,
+          source: SOURCE,
         }),
       ).resolves.toBeUndefined();
     });
@@ -173,6 +195,7 @@ describe('trackErrorAsAnalytics', () => {
       await expect(
         trackErrorAsAnalytics(report, new Error('boom'), {
           category: CATEGORY,
+          source: SOURCE,
         }),
       ).resolves.toBeUndefined();
     });
@@ -184,6 +207,7 @@ describe('trackErrorAsAnalytics', () => {
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { samplingRate: 0.5 },
       });
 
@@ -195,6 +219,7 @@ describe('trackErrorAsAnalytics', () => {
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { samplingRate: 0.5 },
       });
 
@@ -206,10 +231,12 @@ describe('trackErrorAsAnalytics', () => {
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
       });
       jest.setSystemTime(2000);
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
       });
 
       expect(report).toHaveBeenCalledTimes(1);
@@ -220,11 +247,13 @@ describe('trackErrorAsAnalytics', () => {
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { dedupWindowMs: 5000 },
       });
       jest.setSystemTime(1000 + 5000 + 1);
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { dedupWindowMs: 5000 },
       });
 
@@ -235,10 +264,27 @@ describe('trackErrorAsAnalytics', () => {
       jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('first'), {
+        source: SOURCE,
         category: CATEGORY,
       });
       await trackErrorAsAnalytics(report, new Error('second'), {
+        source: SOURCE,
         category: CATEGORY,
+      });
+
+      expect(report).toHaveBeenCalledTimes(2);
+    });
+
+    it('emits again for the same message under a different source within the window', async () => {
+      jest.setSystemTime(1000);
+
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: CATEGORY,
+        source: 'first-source',
+      });
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: CATEGORY,
+        source: 'second-source',
       });
 
       expect(report).toHaveBeenCalledTimes(2);
@@ -248,9 +294,11 @@ describe('trackErrorAsAnalytics', () => {
       jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
+        source: SOURCE,
         category: 'Swaps',
       });
       await trackErrorAsAnalytics(report, new Error('boom'), {
+        source: SOURCE,
         category: 'Settings',
       });
 
@@ -261,10 +309,12 @@ describe('trackErrorAsAnalytics', () => {
       jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
+        source: SOURCE,
         category: CATEGORY,
         severity: 'error',
       });
       await trackErrorAsAnalytics(report, new Error('boom'), {
+        source: SOURCE,
         category: CATEGORY,
         severity: 'warning',
       });
@@ -275,6 +325,7 @@ describe('trackErrorAsAnalytics', () => {
     it('suppresses all events once the session cap is reached', async () => {
       const options = {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { sessionCap: 1 },
       };
 
@@ -291,6 +342,7 @@ describe('trackErrorAsAnalytics', () => {
 
       const options = {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { samplingRate: 1.2 },
       };
 
@@ -304,6 +356,7 @@ describe('trackErrorAsAnalytics', () => {
 
       const options = {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { samplingRate: Number.NaN },
       };
 
@@ -316,6 +369,7 @@ describe('trackErrorAsAnalytics', () => {
       jest.setSystemTime(1000);
       const options = {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { dedupWindowMs: Number.NaN },
       };
 
@@ -329,11 +383,79 @@ describe('trackErrorAsAnalytics', () => {
     it('still caps when sessionCap is NaN', async () => {
       const options = {
         category: CATEGORY,
+        source: SOURCE,
         volumeControls: { sessionCap: Number.NaN },
       };
 
       await trackErrorAsAnalytics(report, new Error('first'), options);
       await trackErrorAsAnalytics(report, new Error('second'), options);
+
+      expect(report).toHaveBeenCalledTimes(2);
+    });
+
+    it('never emits when the sampling rate is zero, even on a zero random draw', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0);
+
+      await trackErrorAsAnalytics(report, new Error('boom'), {
+        category: CATEGORY,
+        source: SOURCE,
+        volumeControls: { samplingRate: 0 },
+      });
+
+      expect(report).not.toHaveBeenCalled();
+    });
+
+    it('clamps a caller-supplied sessionCap above the global default', async () => {
+      const options = {
+        category: CATEGORY,
+        source: SOURCE,
+        volumeControls: { sessionCap: Number.MAX_SAFE_INTEGER },
+      };
+
+      await Promise.all(
+        Array.from(
+          { length: DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap + 1 },
+          (_, index) =>
+            trackErrorAsAnalytics(report, new Error(`error-${index}`), options),
+        ),
+      );
+
+      expect(report).toHaveBeenCalledTimes(
+        DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap,
+      );
+    });
+
+    it('reserves the session cap synchronously so concurrent calls cannot bypass it', async () => {
+      let releaseReport: () => void = () => undefined;
+      report.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            releaseReport = resolve;
+          }),
+      );
+
+      const options = {
+        category: CATEGORY,
+        source: SOURCE,
+        volumeControls: { sessionCap: 1 },
+      };
+      const first = trackErrorAsAnalytics(report, new Error('boom'), options);
+      const second = trackErrorAsAnalytics(report, new Error('boom'), options);
+      releaseReport();
+      await Promise.all([first, second]);
+
+      expect(report).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not consume the session budget or dedup when the reporter rejects', async () => {
+      report.mockRejectedValueOnce(new Error('dispatch failed'));
+      const options = {
+        category: CATEGORY,
+        source: SOURCE,
+      };
+
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
+      await trackErrorAsAnalytics(report, new Error('boom'), options);
 
       expect(report).toHaveBeenCalledTimes(2);
     });

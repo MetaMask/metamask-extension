@@ -54,6 +54,7 @@ export default function DeleteMetametricsModal({
       captureException(error);
       trackErrorAsAnalytics(trackEvent, error, {
         category: MetaMetricsEventCategory.Settings,
+        source: 'delete-metametrics-modal',
         buildOptions: { excludeMetaMetricsId: true },
       });
       onError();

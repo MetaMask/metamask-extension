@@ -18,8 +18,8 @@ describe('sanitizeErrorMessage', () => {
   it('truncates messages above the cap with an ellipsis', () => {
     const long = 'x'.repeat(600);
     const result = sanitizeErrorMessage(long);
-    expect(result).toHaveLength(501);
-    expect(result.startsWith('x'.repeat(500))).toBe(true);
+    expect(result).toHaveLength(500);
+    expect(result.startsWith('x'.repeat(499))).toBe(true);
     expect(result.endsWith('…')).toBe(true);
   });
 
@@ -31,7 +31,7 @@ describe('sanitizeErrorMessage', () => {
   it('caps the message after whitespace normalization shrinks it', () => {
     const message = `${'a '.repeat(300)}${'x'.repeat(400)}`;
     const result = sanitizeErrorMessage(message);
-    expect(result).toHaveLength(501);
+    expect(result).toHaveLength(500);
     expect(result.endsWith('…')).toBe(true);
   });
 });

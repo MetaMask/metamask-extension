@@ -3,6 +3,7 @@
  * error-as-analytics producers.
  */
 const MAX_ERROR_MESSAGE_LENGTH = 500;
+const ELLIPSIS = '…';
 
 /**
  * Normalizes whitespace and caps length for Segment `error_message`.
@@ -15,5 +16,5 @@ export function sanitizeErrorMessage(message: string): string {
   if (trimmed.length <= MAX_ERROR_MESSAGE_LENGTH) {
     return trimmed;
   }
-  return `${trimmed.slice(0, MAX_ERROR_MESSAGE_LENGTH)}…`;
+  return `${trimmed.slice(0, MAX_ERROR_MESSAGE_LENGTH - ELLIPSIS.length)}${ELLIPSIS}`;
 }

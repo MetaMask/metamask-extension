@@ -22,7 +22,8 @@ export const ERROR_CONTEXT_NAMESPACE = 'error_context';
  * `samplingRate`: probability (0-1) that an individual event is emitted.
  * `dedupWindowMs`: repeated events with the same signature within this
  * window are suppressed.
- * `sessionCap`: maximum number of events emitted per runtime session.
+ * `sessionCap`: maximum number of events emitted per runtime session,
+ * with caller-supplied values above this default clamped.
  */
 export const DEFAULT_ERROR_TRACKING_OPTIONS = {
   samplingRate: 1,
@@ -45,7 +46,9 @@ export type TrackErrorVolumeControls = {
    */
   dedupWindowMs?: number;
   /**
-   * Maximum number of events emitted per runtime session.
+   * Maximum number of events emitted per runtime session. May only lower
+   * the global cap (`DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap`). Larger
+   * values are clamped so no caller can bypass the session bound.
    */
   sessionCap?: number;
 };
@@ -56,6 +59,11 @@ export type TrackErrorAsAnalyticsOptions = {
    * Required canonical field.
    */
   category: string;
+  /**
+   * Identifies the operation or callsite that produced the error (e.g.
+   * `'clear-metametrics-data'`). Required canonical field.
+   */
+  source: string;
   /**
    * Canonical severity of the reported error. Defaults to `'error'`.
    */
@@ -167,17 +175,18 @@ function resolveNonNegativeNumber(
 /**
  * Reports a caught error as an analytics event.
  *
- * Emits `MetaMetricsEventName.ErrorOccured` with `category`, `severity`,
- * a sanitized `error_message` (whitespace-normalized, capped at 500
- * characters) in properties, and any `context` under the `error_context`
- * namespace. Raw stack traces are never sent: Sentry is the stack
- * destination (call sites that need it use `captureException`). Mirrors
- * Mobile's `trackErrorAsAnalytics` (single shared error event, regular
- * properties).
+ * Emits `MetaMetricsEventName.ErrorOccured` with `category`, `source`,
+ * `severity`, a sanitized `error_message` (whitespace-normalized, capped
+ * at 500 characters) in properties, and any `context` under the
+ * `error_context` namespace.
+ * Raw stack traces are never sent: Sentry is the stack destination
+ * (call sites that need it use `captureException`). Mirrors Mobile's
+ * `trackErrorAsAnalytics` (single shared error event, regular properties).
  *
  * Fail-safe: never throws, and the returned promise always resolves.
  * Volume controls (`samplingRate`, `dedupWindowMs`, `sessionCap`) bound
- * event volume. See `TrackErrorVolumeControls`. The dedup map and the
+ * event volume, and `sessionCap` may only be lowered, never raised. See
+ * `TrackErrorVolumeControls`. The dedup map and the
  * session cap are per JavaScript context (popup, notification, expanded
  * view, and background count separately, and popups reset on close). The
  * cap budget is shared by all callers and categories in that context.
@@ -196,6 +205,7 @@ function resolveNonNegativeNumber(
  * } catch (error) {
  *   await trackErrorAsAnalytics(trackAnalyticsEvent, error, {
  *     category: MetaMetricsEventCategory.Swaps,
+ *     source: 'swap-quote-fetch',
  *     severity: 'warning',
  *     context: { origin: 'swap-quote-fetch' },
  *     buildOptions: { excludeMetaMetricsId: true },
@@ -214,8 +224,13 @@ export async function trackErrorAsAnalytics(
       volumeControls.dedupWindowMs,
       DEFAULT_ERROR_TRACKING_OPTIONS.dedupWindowMs,
     );
-    const sessionCap = resolveNonNegativeNumber(
-      volumeControls.sessionCap,
+    // The global cap is a hard ceiling: a caller-supplied sessionCap may
+    // only lower it, never raise it.
+    const sessionCap = Math.min(
+      resolveNonNegativeNumber(
+        volumeControls.sessionCap,
+        DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap,
+      ),
       DEFAULT_ERROR_TRACKING_OPTIONS.sessionCap,
     );
 
@@ -223,15 +238,16 @@ export async function trackErrorAsAnalytics(
       return;
     }
 
-    if (Math.random() > samplingRate) {
+    if (Math.random() >= samplingRate) {
       return;
     }
 
     const { errorMessage } = normalizeError(error);
 
     const severity = options.severity ?? 'error';
+    const { source } = options;
 
-    const signature = `${MetaMetricsEventName.ErrorOccured}:${options.category}:${severity}:${errorMessage}`;
+    const signature = `${MetaMetricsEventName.ErrorOccured}:${options.category}:${source}:${severity}:${errorMessage}`;
 
     const lastEmittedAt = lastEmittedAtBySignature.get(signature);
     if (
@@ -244,6 +260,7 @@ export async function trackErrorAsAnalytics(
     const event = createEventBuilder(MetaMetricsEventName.ErrorOccured)
       .addCategory(options.category)
       .addProperties({
+        source,
         severity,
         ...({
           [ERROR_MESSAGE_KEY]: errorMessage,
@@ -254,10 +271,24 @@ export async function trackErrorAsAnalytics(
       })
       .build(options.buildOptions);
 
-    await report(event);
-
+    // Reserve the cap budget and dedup timestamp synchronously, before
+    // awaiting the reporter, so concurrent calls cannot all pass the
+    // checks while a first report is still pending.
+    const reservedAt = Date.now();
     emittedCount += 1;
-    lastEmittedAtBySignature.set(signature, Date.now());
+    lastEmittedAtBySignature.set(signature, reservedAt);
+
+    try {
+      await report(event);
+    } catch {
+      // Rollback policy: a failed report emitted nothing, so release the
+      // reservation. The session budget is not consumed and the next
+      // identical error is not suppressed by dedup.
+      emittedCount = Math.max(0, emittedCount - 1);
+      if (lastEmittedAtBySignature.get(signature) === reservedAt) {
+        lastEmittedAtBySignature.delete(signature);
+      }
+    }
   } catch {
     // Fail-safe by contract: telemetry must never break the calling flow.
   }
