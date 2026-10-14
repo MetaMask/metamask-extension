@@ -1434,6 +1434,9 @@
     "message": "Punycode version: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "activityUntrustedSenderBadge": {
+    "message": "New sender"
+  },
   "addressPoisoningBadge": {
     "message": "Poisoned"
   },

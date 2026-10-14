@@ -30,6 +30,8 @@ import { hasPositiveNumericAmount } from '../../../hooks/ramps/utils/hasPositive
 import type { ActivityRowProps } from '../types';
 import { useFormatAsFiat } from '../../../hooks/useFormatAsFiat';
 import { useFormatTokenAmount } from './useFormatTokenAmount';
+import { UntrustedSenderBadge } from '../components/untrusted-sender-badge';
+import { useUntrustedSenderBadge } from '../hooks/useUntrustedSenderBadge';
 
 type ActivityContent = {
   title: string;
@@ -108,6 +110,7 @@ function getChainDisplay(caipChainId: CaipChainId) {
 
 export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const t = useI18nContext();
+  const showUntrustedSenderBadge = useUntrustedSenderBadge(activity);
   const formatTokenAmount = useFormatTokenAmount();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { chainId } = getChainDisplay(activity.chainId);
@@ -442,7 +445,6 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
     primaryAmount !== undefined &&
     primaryAmount !== null &&
     primaryAmount !== '';
-
   return {
     avatar: (
       <ChainBadge chainId={chainId}>
@@ -450,14 +452,17 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
       </ChainBadge>
     ),
     title: (
-      <span
-        className={cn(
-          'truncate',
-          activity.status === 'failed' && 'text-error-default',
-        )}
-      >
-        {content.title}
-      </span>
+      <>
+        <span
+          className={cn(
+            'truncate',
+            activity.status === 'failed' && 'text-error-default',
+          )}
+        >
+          {content.title}
+        </span>
+        {showUntrustedSenderBadge && <UntrustedSenderBadge />}
+      </>
     ),
     subtitle: content.subtitle,
     primaryAmount: hasPrimaryAmount ? (
