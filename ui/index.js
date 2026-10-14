@@ -54,6 +54,7 @@ import {
   submitRequestToBackground,
 } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+import { initializeUsefulScreenReadyTrace } from './helpers/utils/useful-screen-ready';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
@@ -239,6 +240,10 @@ async function startApp(metamaskState, opts) {
   initWebVitals();
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
+  initializeUsefulScreenReadyTrace({
+    isUnlocked: tags['wallet.unlocked'],
+    uiType: tags['wallet.ui_type'],
+  });
 
   const store = await trace(
     {

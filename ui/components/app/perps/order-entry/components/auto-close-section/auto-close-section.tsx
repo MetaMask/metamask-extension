@@ -27,6 +27,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { usePerpsOrderFees } from '../../../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../../../hooks/perps/perps-fee-utils';
 import { TextField, TextFieldSize } from '../../../../../component-library';
 import ToggleButton from '../../../../../ui/toggle-button';
 import type { AutoCloseSectionProps } from '../../order-entry.types';
@@ -73,6 +74,7 @@ const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
  * @param props.limitPrice - Limit price string used as reference price for limit-order TP/SL validation
  * @param props.liquidationPrice - Estimated liquidation price for stop-loss safety validation
  * @param props.leverage - Leverage multiplier for RoE% calculation
+ * @param props.feeNotionalUsd - Shared fee-resolution notional used by the submit path
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
 export const AutoCloseSection = ({
@@ -86,6 +88,7 @@ export const AutoCloseSection = ({
   currentPrice,
   entryPrice: entryPriceProp,
   estimatedSize,
+  feeNotionalUsd,
   orderType,
   limitPrice,
   liquidationPrice,
@@ -93,10 +96,6 @@ export const AutoCloseSection = ({
   asset,
 }: AutoCloseSectionProps) => {
   const t = useI18nContext();
-  const { feeRate: closingFeeRate } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: 'market',
-  });
 
   // Priority: explicit entry price (modify mode) > limit price (limit orders) > current price.
   // This ensures % ↔ price conversions are anchored to the price the user will actually fill at.
@@ -216,7 +215,7 @@ export const AutoCloseSection = ({
       return;
     }
 
-    const parsed = Number.parseFloat(takeProfitPrice);
+    const parsed = Number.parseFloat(takeProfitPrice.replaceAll(',', ''));
     if (Number.isFinite(parsed) && parsed > 0) {
       onTakeProfitPriceChange(parsed.toString());
       return;
@@ -273,7 +272,7 @@ export const AutoCloseSection = ({
       return;
     }
 
-    const parsed = Number.parseFloat(stopLossPrice);
+    const parsed = Number.parseFloat(stopLossPrice.replaceAll(',', ''));
     if (Number.isFinite(parsed) && parsed > 0) {
       onStopLossPriceChange(parsed.toString());
       return;
@@ -335,6 +334,20 @@ export const AutoCloseSection = ({
     ? validationReferencePrice
     : entryPrice;
 
+  // TP/SL submission shares one builder rate across the pair. Standalone
+  // position edits resolve that rate from the largest included trigger.
+  const { feeRate: closingFeeRate } = usePerpsOrderFees({
+    symbol: asset,
+    orderType: 'market',
+    amount: String(
+      feeNotionalUsd ??
+        getPerpsNotionalUsd({
+          size: estimatedSize ?? 0,
+          price: [takeProfitPrice, stopLossPrice],
+        }),
+    ),
+  });
+
   const estimatedPnlAtTp = useMemo(() => {
     if (
       !estimatedSize ||
@@ -344,7 +357,7 @@ export const AutoCloseSection = ({
     ) {
       return null;
     }
-    const exitPrice = Number.parseFloat(takeProfitPrice);
+    const exitPrice = Number.parseFloat(takeProfitPrice.replaceAll(',', ''));
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
@@ -362,7 +375,7 @@ export const AutoCloseSection = ({
     ) {
       return null;
     }
-    const exitPrice = Number.parseFloat(stopLossPrice);
+    const exitPrice = Number.parseFloat(stopLossPrice.replaceAll(',', ''));
     if (!Number.isFinite(exitPrice) || exitPrice <= 0) {
       return null;
     }
