@@ -12,8 +12,15 @@ describe('trackErrorAsAnalytics', () => {
   let report: jest.MockedFunction<TrackErrorReporter>;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
     resetTrackErrorAsAnalyticsStateForTesting();
     report = jest.fn().mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   describe('error normalization', () => {
@@ -136,8 +143,6 @@ describe('trackErrorAsAnalytics', () => {
           samplingRate: 0.5,
           dedupWindowMs: 12_345,
           sessionCap: 7,
-          draw: () => 0.5,
-          now: () => 1000,
         },
       });
 
@@ -175,108 +180,93 @@ describe('trackErrorAsAnalytics', () => {
 
   describe('volume controls', () => {
     it('suppresses events outside the sampling rate', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.75);
+
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: {
-          samplingRate: 0.5,
-          draw: () => 0.75,
-        },
+        volumeControls: { samplingRate: 0.5 },
       });
 
       expect(report).not.toHaveBeenCalled();
     });
 
     it('emits events inside the sampling rate', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.25);
+
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: {
-          samplingRate: 0.5,
-          draw: () => 0.25,
-        },
+        volumeControls: { samplingRate: 0.5 },
       });
 
       expect(report).toHaveBeenCalledTimes(1);
     });
 
     it('emits only once for a duplicate signature within the dedup window', async () => {
-      let currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: { now },
       });
-      currentTime = 2000;
+      jest.setSystemTime(2000);
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: { now },
       });
 
       expect(report).toHaveBeenCalledTimes(1);
     });
 
     it('emits again for the same signature after the dedup window', async () => {
-      let currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: { now, dedupWindowMs: 5000 },
+        volumeControls: { dedupWindowMs: 5000 },
       });
-      currentTime = 1000 + 5000 + 1;
+      jest.setSystemTime(1000 + 5000 + 1);
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
-        volumeControls: { now, dedupWindowMs: 5000 },
+        volumeControls: { dedupWindowMs: 5000 },
       });
 
       expect(report).toHaveBeenCalledTimes(2);
     });
 
     it('treats different error messages as distinct signatures', async () => {
-      const currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('first'), {
         category: CATEGORY,
-        volumeControls: { now },
       });
       await trackErrorAsAnalytics(report, new Error('second'), {
         category: CATEGORY,
-        volumeControls: { now },
       });
 
       expect(report).toHaveBeenCalledTimes(2);
     });
 
     it('emits again for the same message under a different category within the window', async () => {
-      const currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: 'Swaps',
-        volumeControls: { now },
       });
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: 'Settings',
-        volumeControls: { now },
       });
 
       expect(report).toHaveBeenCalledTimes(2);
     });
 
     it('emits again for the same message and category under a different severity within the window', async () => {
-      const currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
 
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
         severity: 'error',
-        volumeControls: { now },
       });
       await trackErrorAsAnalytics(report, new Error('boom'), {
         category: CATEGORY,
         severity: 'warning',
-        volumeControls: { now },
       });
 
       expect(report).toHaveBeenCalledTimes(2);
@@ -297,9 +287,11 @@ describe('trackErrorAsAnalytics', () => {
     });
 
     it('clamps an out-of-range sampling rate instead of failing open', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.75);
+
       const options = {
         category: CATEGORY,
-        volumeControls: { samplingRate: 1.2, draw: () => 0.75 },
+        volumeControls: { samplingRate: 1.2 },
       };
 
       await trackErrorAsAnalytics(report, new Error('boom'), options);
@@ -308,12 +300,11 @@ describe('trackErrorAsAnalytics', () => {
     });
 
     it('falls back to the default sampling rate for NaN', async () => {
+      jest.spyOn(Math, 'random').mockReturnValue(0.99);
+
       const options = {
         category: CATEGORY,
-        volumeControls: {
-          samplingRate: Number.NaN,
-          draw: () => 0.99,
-        },
+        volumeControls: { samplingRate: Number.NaN },
       };
 
       await trackErrorAsAnalytics(report, new Error('boom'), options);
@@ -322,15 +313,14 @@ describe('trackErrorAsAnalytics', () => {
     });
 
     it('still dedupes when dedupWindowMs is NaN', async () => {
-      let currentTime = 1000;
-      const now = () => currentTime;
+      jest.setSystemTime(1000);
       const options = {
         category: CATEGORY,
-        volumeControls: { dedupWindowMs: Number.NaN, now },
+        volumeControls: { dedupWindowMs: Number.NaN },
       };
 
       await trackErrorAsAnalytics(report, new Error('boom'), options);
-      currentTime = 2000;
+      jest.setSystemTime(2000);
       await trackErrorAsAnalytics(report, new Error('boom'), options);
 
       expect(report).toHaveBeenCalledTimes(1);

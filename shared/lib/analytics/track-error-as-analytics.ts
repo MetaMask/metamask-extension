@@ -48,16 +48,6 @@ export type TrackErrorVolumeControls = {
    * Maximum number of events emitted per runtime session.
    */
   sessionCap?: number;
-  /**
-   * Injectable draw used for sampling, for deterministic tests. Returns a
-   * number between 0 and 1.
-   */
-  draw?: () => number;
-  /**
-   * Injectable clock used for dedup timing, for deterministic tests.
-   * Returns the current time in milliseconds.
-   */
-  now?: () => number;
 };
 
 export type TrackErrorAsAnalyticsOptions = {
@@ -219,8 +209,6 @@ export async function trackErrorAsAnalytics(
 ): Promise<void> {
   try {
     const volumeControls = options.volumeControls ?? {};
-    const now = volumeControls.now ?? Date.now;
-    const draw = volumeControls.draw ?? Math.random;
     const samplingRate = resolveSamplingRate(volumeControls.samplingRate);
     const dedupWindowMs = resolveNonNegativeNumber(
       volumeControls.dedupWindowMs,
@@ -235,7 +223,7 @@ export async function trackErrorAsAnalytics(
       return;
     }
 
-    if (draw() > samplingRate) {
+    if (Math.random() > samplingRate) {
       return;
     }
 
@@ -246,7 +234,10 @@ export async function trackErrorAsAnalytics(
     const signature = `${MetaMetricsEventName.ErrorOccured}:${options.category}:${severity}:${errorMessage}`;
 
     const lastEmittedAt = lastEmittedAtBySignature.get(signature);
-    if (lastEmittedAt !== undefined && now() - lastEmittedAt < dedupWindowMs) {
+    if (
+      lastEmittedAt !== undefined &&
+      Date.now() - lastEmittedAt < dedupWindowMs
+    ) {
       return;
     }
 
@@ -266,7 +257,7 @@ export async function trackErrorAsAnalytics(
     await report(event);
 
     emittedCount += 1;
-    lastEmittedAtBySignature.set(signature, now());
+    lastEmittedAtBySignature.set(signature, Date.now());
   } catch {
     // Fail-safe by contract: telemetry must never break the calling flow.
   }
