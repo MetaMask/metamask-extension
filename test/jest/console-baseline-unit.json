@@ -348,7 +348,7 @@
     "ui/components/multichain/import-account/json.test.tsx": {
       "error: Warning: Component \"FileInput\" contains the": 1
     },
-    "ui/components/multichain/import-nfts-modal/import-nfts-modal.test.js": {
+    "ui/components/multichain/import-nfts-modal/import-nfts-form.test.tsx": {
       "error: Warning: React does not recognize": 1
     },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {

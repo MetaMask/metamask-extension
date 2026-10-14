@@ -1,10 +1,11 @@
 import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { ImportNftsModal } from '.';
+import { ImportNftsPage } from '../../../pages/import-nfts';
 
 const createStore = (chainId = CHAIN_IDS.MAINNET, useTokenDetection = true) => {
   return configureStore({
@@ -17,23 +18,19 @@ const createStore = (chainId = CHAIN_IDS.MAINNET, useTokenDetection = true) => {
   });
 };
 
-export default {
-  title: 'Components/Multichain/ImportNftsModal',
-  component: ImportNftsModal,
-  argTypes: {
-    onClose: {
-      action: 'onClose',
-    },
-  },
+const meta: Meta<typeof ImportNftsPage> = {
+  title: 'Components/Multichain/ImportNftsPage',
+  component: ImportNftsPage,
+  decorators: [
+    (Story) => (
+      <Provider store={createStore()}>
+        <Story />
+      </Provider>
+    ),
+  ],
 };
 
-export const DefaultStory = (args) => <ImportNftsModal {...args} />;
-DefaultStory.decorators = [
-  (Story) => (
-    <Provider store={createStore()}>
-      <Story />
-    </Provider>
-  ),
-];
+export default meta;
+type Story = StoryObj<typeof ImportNftsPage>;
 
-DefaultStory.storyName = 'Default';
+export const Default: Story = {};

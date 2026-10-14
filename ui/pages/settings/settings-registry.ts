@@ -13,6 +13,7 @@ import {
   DEVELOPER_OPTIONS_ROUTE,
   DEVELOPER_TOOLS_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
+  MFA_SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
@@ -48,6 +49,7 @@ import type {
 } from '../../messengers/ui-messenger';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa/isMfaKitEnabled';
 import {
   PASSKEY_PASSWORD_CHANGE_ROUTE_CAPABILITIES,
   PASSKEY_REGISTRATION_ROUTE_CAPABILITIES,
@@ -228,6 +230,15 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
       () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
     ),
   },
+  ...(isMfaKitEnabled()
+    ? {
+        [MFA_SETTINGS_ROUTE]: {
+          labelKey: 'mfaSettingsTitle',
+          parentPath: SECURITY_AND_PASSWORD_ROUTE,
+          component: mmLazy(() => import('./mfa-settings/mfa-settings.tsx')),
+        },
+      }
+    : {}),
   [MANAGE_WALLET_RECOVERY_ROUTE]: {
     labelKey: 'manageWalletRecovery',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
