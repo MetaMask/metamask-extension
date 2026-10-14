@@ -33,6 +33,9 @@ import {
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
+import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
+import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
 
 /**
  * Construct the `@metamask/wallet` `Wallet` for the extension. Each
@@ -56,6 +59,8 @@ export function initializeWallet(request: InitializeWalletRequest) {
     platform,
   } = request;
 
+  const permissionControllerInitMessenger =
+    getPermissionControllerInitMessenger(messenger);
   const transactionControllerInitMessenger =
     getTransactionControllerInitMessenger(messenger);
   const seedlessOnboardingControllerInitMessenger =
@@ -90,6 +95,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
         messenger,
         platform,
       }),
+      permissionController: getPermissionControllerInstanceOptions(
+        permissionControllerInitMessenger,
+      ),
       seedlessOnboardingController:
         getSeedlessOnboardingControllerInstanceOptions({
           initMessenger: seedlessOnboardingControllerInitMessenger,
@@ -98,6 +106,9 @@ export function initializeWallet(request: InitializeWalletRequest) {
       shieldController: getShieldControllerInstanceOptions(),
       remoteFeatureFlagController:
         getRemoteFeatureFlagControllerInstanceOptions({ messenger, state }),
+      selectedNetworkController: {
+        domainProxyMap: new WeakRefObjectMap(),
+      },
       storageService: getStorageServiceInstanceOptions(),
       subscriptionService: getSubscriptionServiceInstanceOptions(),
       transactionController: getTransactionControllerInstanceOptions({
