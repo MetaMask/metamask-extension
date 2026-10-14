@@ -6721,13 +6721,6 @@
   "onboardedMetametricsKey3": {
     "message": "Άλλο σχετικό προωθητικό υλικό"
   },
-  "onboardedMetametricsLink": {
-    "message": "MetaMetrics"
-  },
-  "onboardedMetametricsParagraph1": {
-    "message": "Εκτός από το $1, θα θέλαμε να χρησιμοποιήσουμε δεδομένα για να κατανοήσουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ.",
-    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
-  },
   "onboardedMetametricsParagraph2": {
     "message": "Αυτό μας βοηθά να εξατομικεύσουμε αυτά που κοινοποιούμε σε εσάς, όπως:"
   },
