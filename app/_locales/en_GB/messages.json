@@ -5668,6 +5668,24 @@
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
   },
+  "mfaSettingsDescription": {
+    "message": "Used to confirm it's you before sensitive actions."
+  },
+  "mfaSettingsEmailLinked": {
+    "message": "Linked to your sign-in"
+  },
+  "mfaSettingsEmailPending": {
+    "message": "Setup not finished"
+  },
+  "mfaSettingsFinishSetup": {
+    "message": "Finish setup"
+  },
+  "mfaSettingsSetUp": {
+    "message": "Set up"
+  },
+  "mfaSettingsTitle": {
+    "message": "Verification methods"
+  },
   "mfaSuccessDone": {
     "message": "Done"
   },
