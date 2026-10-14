@@ -11,9 +11,11 @@
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
- * 1 — at least one allowlisted metric exceeded its fail threshold;
- * non-allowlisted breaches are degraded to warnings and do not block
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, and
+ * every allowlisted metric of each entry present produced a value
+ * 1 — at least one allowlisted metric exceeded its fail threshold, or produced
+ * no value in an entry the artifact contains; non-allowlisted breaches are
+ * degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
