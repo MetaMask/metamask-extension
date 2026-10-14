@@ -31,6 +31,7 @@ import {
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useDispatch } from '../../../store/hooks';
+import { trackErrorAsAnalytics } from '../../../../shared/lib/analytics/track-error-as-analytics';
 
 import {
   MetaMetricsEventCategory,
@@ -61,11 +62,10 @@ export default function ClearMetaMetricsData({
       onDeletionSuccess?.();
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ErrorOccured)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .build({ excludeMetaMetricsId: true }),
-      );
+      trackErrorAsAnalytics(trackEvent, error, {
+        category: MetaMetricsEventCategory.Settings,
+        buildOptions: { excludeMetaMetricsId: true },
+      });
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }

@@ -24,6 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
+import { trackErrorAsAnalytics } from '../../../../shared/lib/analytics/track-error-as-analytics';
 import { PrivacyPolicyLink } from '../shared';
 
 type DeleteMetametricsModalProps = {
@@ -51,11 +52,10 @@ export default function DeleteMetametricsModal({
       onSuccess();
     } catch (error) {
       captureException(error);
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.ErrorOccured)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .build({ excludeMetaMetricsId: true }),
-      );
+      trackErrorAsAnalytics(trackEvent, error, {
+        category: MetaMetricsEventCategory.Settings,
+        buildOptions: { excludeMetaMetricsId: true },
+      });
       onError();
     } finally {
       onClose();
