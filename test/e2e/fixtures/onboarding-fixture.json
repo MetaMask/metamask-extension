@@ -184,9 +184,6 @@
     "MultichainAssetsRatesController": {
       "conversionRates": {}
     },
-    "MultichainBalancesController": {
-      "balances": {}
-    },
     "MultichainNetworkController": {
       "isEvmSelected": true,
       "multichainNetworkConfigurationsByChainId": {
