@@ -1,5 +1,8 @@
 import { useSelector } from 'react-redux';
-import { selectKnownAddresses } from '#ui/selectors/known-addresses';
+import {
+  normalizeKnownAddress,
+  selectKnownAddresses,
+} from '#ui/selectors/known-addresses';
 import type { ActivityRowProps } from '../types';
 
 export function isUntrustedSender(
@@ -10,12 +13,12 @@ export function isUntrustedSender(
     return false;
   }
 
-  const fromAddress = activity.data.from;
-  if (!fromAddress) {
+  const normalizedFrom = normalizeKnownAddress(activity.data.from);
+  if (!normalizedFrom) {
     return false;
   }
 
-  return !knownAddresses.has(fromAddress.toLowerCase());
+  return !knownAddresses.has(normalizedFrom);
 }
 
 export function useUntrustedSenderBadge(activity: ActivityRowProps['data']) {
