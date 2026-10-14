@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MONEY_HOW_IT_WORKS_ROUTE } from '../../../helpers/constants/routes';
-import { MONEY_LANDING_URL, MUSD_PRICE_URL } from '../constants/urls';
+import {
+  MONEY_URLS,
+  MoneyComponentName,
+  MoneyScreenName,
+  type MoneyRedirectTarget,
+} from '../constants/money-events';
 
 const CARD_CLASS_NAME =
   'flex min-h-[110px] w-full items-center gap-4 rounded-xl bg-background-section p-4 text-left no-underline text-inherit cursor-pointer';
@@ -15,8 +20,19 @@ type CondensedCard = {
   imageWidth: number;
   imageHeight: number;
   labelKey: string;
+  componentName: MoneyComponentName;
+  redirectTarget: MoneyRedirectTarget;
   href?: string;
   to?: string;
+};
+
+export type MoneyCondensedInfoCardClick = Pick<
+  CondensedCard,
+  'componentName' | 'redirectTarget'
+>;
+
+type MoneyCondensedInfoCardsProps = {
+  onCardClick?: (card: MoneyCondensedInfoCardClick) => void;
 };
 
 const CONDENSED_CARDS: CondensedCard[] = [
@@ -27,6 +43,8 @@ const CONDENSED_CARDS: CondensedCard[] = [
     imageWidth: 58,
     imageHeight: 58,
     labelKey: 'moneyHowYourMoneyGrows',
+    componentName: MoneyComponentName.CondensedInfoCardsHowItWorks,
+    redirectTarget: MoneyScreenName.MoneyHowItWorks,
     to: MONEY_HOW_IT_WORKS_ROUTE,
   },
   {
@@ -36,7 +54,9 @@ const CONDENSED_CARDS: CondensedCard[] = [
     imageWidth: 48,
     imageHeight: 48,
     labelKey: 'moneyMeetMusd',
-    href: MUSD_PRICE_URL,
+    componentName: MoneyComponentName.CondensedInfoCardsMusd,
+    redirectTarget: MONEY_URLS.MUSD_PRICE,
+    href: MONEY_URLS.MUSD_PRICE,
   },
   {
     key: 'benefits',
@@ -45,11 +65,15 @@ const CONDENSED_CARDS: CondensedCard[] = [
     imageWidth: 66,
     imageHeight: 66,
     labelKey: 'moneyExploreBenefits',
-    href: MONEY_LANDING_URL,
+    componentName: MoneyComponentName.CondensedInfoCardsWhatYouGet,
+    redirectTarget: MONEY_URLS.MONEY_LANDING,
+    href: MONEY_URLS.MONEY_LANDING,
   },
 ];
 
-export function MoneyCondensedInfoCards() {
+export function MoneyCondensedInfoCards({
+  onCardClick,
+}: MoneyCondensedInfoCardsProps = {}) {
   const t = useI18nContext();
 
   return (
@@ -66,9 +90,13 @@ export function MoneyCondensedInfoCards() {
           imageWidth,
           imageHeight,
           labelKey,
+          componentName,
+          redirectTarget,
           href,
           to,
         }) => {
+          const handleClick = () =>
+            onCardClick?.({ componentName, redirectTarget });
           const content = (
             <>
               <span
@@ -95,6 +123,7 @@ export function MoneyCondensedInfoCards() {
               <Link
                 key={key}
                 to={to}
+                onClick={handleClick}
                 className={CARD_CLASS_NAME}
                 data-testid={`money-condensed-info-card-${key}`}
               >
@@ -111,6 +140,7 @@ export function MoneyCondensedInfoCards() {
               rel="noopener noreferrer"
               onClick={(event) => {
                 event.preventDefault();
+                handleClick();
                 global.platform.openTab({ url: href as string });
               }}
               className={CARD_CLASS_NAME}

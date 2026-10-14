@@ -285,7 +285,7 @@ describe('moneyActivityKindToIcon', () => {
     ['deposited', IconName.Add],
     ['received', IconName.Arrow2Down],
     ['converted', IconName.Refresh],
-    ['sent', IconName.SwapHorizontal],
+    ['sent', IconName.Arrow2UpRight],
   ])('maps %s to the matching icon', (kind, icon) => {
     expect(moneyActivityKindToIcon(kind)).toBe(icon);
   });

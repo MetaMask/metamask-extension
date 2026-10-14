@@ -13,4 +13,5 @@ export const createMoneyAnalyticsMock = (): MoneyAnalyticsMock => ({
   trackScreenViewed: jest.fn(),
   trackBottomSheetViewed: jest.fn(),
   trackComponentViewed: jest.fn(),
+  trackOnboardingEvent: jest.fn(),
 });

@@ -2,8 +2,8 @@
 
 exports[`formatPaymentMethodLimits matches snapshot for min/max formatting 1`] = `
 {
-  "both": "Up to $2000",
-  "maxOnly": "Up to $2000",
+  "both": "$2000 limit",
+  "maxOnly": "$2000 limit",
   "minOnly": "Min $25",
   "missing": null,
 }

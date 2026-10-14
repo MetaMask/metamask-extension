@@ -58,8 +58,12 @@ export function pairedIdentifiersIncludeSocialLogin(
 }
 
 /**
- * Reads `pairedIdentifierIds` from the primary SRP session profile in
- * `srpSessionData`, as exposed by Core after SRP login / pairing.
+ * Reads `pairedIdentifierIds` as exposed by Core after SRP login / pairing.
+ *
+ * `performSignIn` and the pair calls store the identifiers on the profile of
+ * each `srpSessionData` entry, preserving the last known value when the API
+ * omits them. Only the primary SRP profile is populated by pair responses, so
+ * scan every session rather than assuming a particular entropy source.
  *
  * @param authState - AuthenticationController state after `performSignIn`.
  */
@@ -67,16 +71,13 @@ export function getPairedIdentifierIdsFromAuthState(
   authState: AuthenticationControllerState,
 ): readonly PairedIdentifier[] | undefined {
   const { srpSessionData } = authState;
+
   if (!srpSessionData) {
     return undefined;
   }
 
   for (const session of Object.values(srpSessionData)) {
-    // Core PR #10394 adds this field to `UserProfile`; cast until the
-    // `@metamask/profile-sync-controller` bump lands in Extension.
-    const { pairedIdentifierIds } = session.profile as {
-      pairedIdentifierIds?: readonly PairedIdentifier[];
-    };
+    const pairedIdentifierIds = session?.profile?.pairedIdentifierIds;
     if (pairedIdentifierIds?.length) {
       return pairedIdentifierIds;
     }

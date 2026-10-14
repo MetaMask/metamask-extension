@@ -13,6 +13,10 @@ import { getManifestFlags } from '../manifestFlags';
 import { StorageWriteErrorType } from '../../constants/app-state';
 import { getPersistenceWriteTelemetrySampleRate } from '../sentry-remote-rates';
 import { IndexedDBStore } from './indexeddb-store';
+import {
+  BACKUP_INDEXED_DB_NAME,
+  BACKUP_INDEXED_DB_VERSION,
+} from './indexeddb-storage-constants';
 import type {
   MetaMaskStateType,
   MetaMaskStorageStructure,
@@ -26,7 +30,6 @@ export type StorageKind = 'data' | 'split';
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
-  'MetaMetricsController',
   'AnalyticsController',
 ] as const;
 
@@ -71,18 +74,20 @@ export type WriteRetryRecoveredEvent = {
 
 export type SplitStateWriteEvent = {
   /**
-   * Per-controller size estimates from `JSON.stringify(value).length`.
-   * Not exact storage byte counts.
+   * Per-controller size measurements. Exact storage bytes when
+   * {@link sizeMeasurementSource} is `storage_get_bytes_in_use`; otherwise
+   * estimates from `JSON.stringify(value).length`.
    */
   bytesByController: Map<string, number>;
   coalescedUpdates: number;
-  controllerKeys: string[];
   idleStatus: 'active' | 'idle' | 'unknown';
   measurementDurationMs: number;
   sampleRate: number;
+  sizeMeasurementSource:
+    | 'storage_get_bytes_in_use'
+    | 'json_string_length_estimate';
   /**
-   * Sum of {@link bytesByController} values. Approximate write size, not exact
-   * encoded payload bytes.
+   * Sum of {@link bytesByController} values.
    */
   totalBytes: number;
   writeDurationMs: number;
@@ -489,7 +494,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       // cost is negligible here because the write is skipped unless the
       // serialized backup actually changed.
       const db = new IndexedDBStore({ strictDurability: true });
-      await db.open('metamask-backup', 1);
+      await db.open(BACKUP_INDEXED_DB_NAME, BACKUP_INDEXED_DB_VERSION);
       this.#backupDb = db;
     } catch (error) {
       // `indexedDB` can't be used by addons in FF in some instances of
@@ -778,36 +783,60 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.#pendingUpdateCount += 1;
   }
 
-  #recordSplitStateWrite(
+  async #recordSplitStateWrite(
     pairs: Map<string, unknown>,
     coalescedUpdates: number,
     writeDurationMs: number,
-  ): void {
+  ): Promise<void> {
     const sampleRate = this.#getPersistenceWriteSampleRate();
     if (sampleRate <= 0 || this.#random() >= sampleRate) {
       return;
     }
 
     const measurementStartedAt = performance.now();
-    const bytesByController: Map<string, number> = new Map();
-    let totalBytes = 0;
+    const controllerKeys = [...pairs.keys()].filter(
+      (key) => key !== 'data' && key !== 'manifest' && key !== 'meta',
+    );
 
-    for (const [key, value] of pairs) {
-      if (key === 'data' || key === 'manifest' || key === 'meta') {
-        continue;
-      }
-
-      // Cheap size estimate for telemetry: `JSON.stringify` string length
-      // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
-      const serializedValue = JSON.stringify(value);
-      const serializedLength =
-        serializedValue === undefined ? 0 : serializedValue.length;
-      bytesByController.set(key, serializedLength);
-      totalBytes += serializedLength;
+    if (controllerKeys.length === 0) {
+      return;
     }
 
-    if (bytesByController.size === 0) {
-      return;
+    let bytesByController: Map<string, number> | undefined;
+    let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
+      'json_string_length_estimate';
+    let totalBytes = 0;
+
+    try {
+      const storageBytes =
+        await this.#localStore.getBytesInUseByKey?.(controllerKeys);
+      if (storageBytes && storageBytes.size > 0) {
+        bytesByController = storageBytes;
+        sizeMeasurementSource = 'storage_get_bytes_in_use';
+        totalBytes = [...bytesByController.values()].reduce(
+          (total, bytes) => total + bytes,
+          0,
+        );
+      }
+    } catch {
+      // Fall back to a synchronous estimate when exact storage bytes are
+      // unavailable or fail. Telemetry must not fail a successful write.
+    }
+
+    if (!bytesByController) {
+      bytesByController = new Map();
+      totalBytes = 0;
+      for (const key of controllerKeys) {
+        const value = pairs.get(key);
+        // Cheap size estimate for telemetry: `JSON.stringify` string length
+        // (UTF-16 code units), not UTF-8 byte length via `TextEncoder`.
+        const serializedValue = JSON.stringify(value);
+        const serializedLength =
+          serializedValue === undefined ? 0 : serializedValue.length;
+        bytesByController.set(key, serializedLength);
+        totalBytes += serializedLength;
+      }
+      sizeMeasurementSource = 'json_string_length_estimate';
     }
 
     const isIdle = this.#getIsIdle();
@@ -821,10 +850,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     this.emit('splitStateWrite', {
       bytesByController,
       coalescedUpdates,
-      controllerKeys: [...bytesByController.keys()],
       idleStatus,
       measurementDurationMs: performance.now() - measurementStartedAt,
       sampleRate,
+      sizeMeasurementSource,
       totalBytes,
       writeDurationMs,
     });
@@ -899,7 +928,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
 
           try {
             // Telemetry must not treat a successful write as a failure.
-            this.#recordSplitStateWrite(
+            await this.#recordSplitStateWrite(
               clone,
               coalescedUpdates,
               writeDurationMs,
@@ -1079,7 +1108,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               log.info('Backup vault found in IndexedDB, triggering recovery');
 
               // Track vault corruption detected event directly to Segment.
-              // We do this here (before throwing) because MetaMetricsController
+              // We do this here (before throwing) because AnalyticsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
                 ? StateCorruptionErrorType.InaccessibleDatabase

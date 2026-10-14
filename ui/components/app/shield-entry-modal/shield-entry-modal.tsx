@@ -206,13 +206,6 @@ const ShieldEntryModal = ({
         marketingUtmParams,
       });
 
-      captureShieldEntryModalEvent({
-        source,
-        type: modalType,
-        modalCtaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
-        marketingUtmParams,
-      });
-
       window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
     } catch (error) {
       log.error('[handleOnLearnMoreClick] error', error);

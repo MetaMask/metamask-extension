@@ -54,6 +54,12 @@ type SendBranchResult = {
   securityAlert: { key: string } | undefined;
 };
 
+function getScamDomains(flagValue: unknown): string[] {
+  return Array.isArray(flagValue)
+    ? flagValue.filter((domain): domain is string => typeof domain === 'string')
+    : [];
+}
+
 function checkSendBranch({
   variant,
   currentConfirmation,
@@ -94,10 +100,7 @@ function checkDomainBranch({
   remoteFlags: Record<string, unknown>;
   hasPassed: boolean;
 }): boolean {
-  const flagValue = remoteFlags[SCAM_QUESTIONNAIRE_FLAG_KEY] as
-    | { name?: string; value?: string[] }
-    | undefined;
-  const scamDomains = flagValue?.value ?? [];
+  const scamDomains = getScamDomains(remoteFlags[SCAM_QUESTIONNAIRE_FLAG_KEY]);
   const { origin } = currentConfirmation ?? {};
   const isDappInitiated = Boolean(origin && origin !== ORIGIN_METAMASK);
   return (

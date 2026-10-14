@@ -59,7 +59,6 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "clipboardWrite",
     "http://*/*",
     "https://*/*",
     "ws://*/*",
