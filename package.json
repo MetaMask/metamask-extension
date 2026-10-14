@@ -935,7 +935,7 @@
   "previewBuilds": {
     "@metamask/wallet": {
       "type": "non-breaking",
-      "previewVersion": "17.0.0-preview-b59bc5b6f"
+      "previewVersion": "17.1.0-preview-bcc46779f"
     }
   }
 }
