@@ -13,18 +13,6 @@ import { mockTokenMetadataApis } from './utils/mocks';
 const BSC_BAT_ADDRESS = '0x0d8775f648430679a709e98d2b0cb6250d2887ef';
 const BSC_BAT_ASSET_ID = `eip155:56/erc20:${BSC_BAT_ADDRESS}`;
 
-const BSC_BAT_TOKEN_LIST_ENTRY = {
-  [BSC_BAT_ADDRESS]: {
-    name: 'Basic Attention Token',
-    symbol: 'BAT',
-    decimals: 18,
-    address: BSC_BAT_ADDRESS,
-    occurrences: 1,
-    aggregators: [],
-    iconUrl: '',
-  },
-};
-
 describe('Add existing token using search', function () {
   // Mock all spot-price requests for BSC (BNB native + BAT)
   async function mockPriceFetch(
@@ -218,18 +206,6 @@ describe('Add existing token using search', function () {
           .withSelectedNetwork(NETWORK_CLIENT_ID.BSC_MAINNET)
           .withEnabledNetworks({ eip155: { [CHAIN_IDS.BSC]: true } })
           .withPreferencesController({ useTokenDetection: true })
-          .withTokenListController({
-            tokensChainsCache: {
-              [CHAIN_IDS.BSC]: {
-                timestamp: Date.now(),
-                data: BSC_BAT_TOKEN_LIST_ENTRY,
-              },
-            },
-          })
-          // Seed both for reliable search
-          .withTokenListControllerStorageServiceData([
-            { chainId: CHAIN_IDS.BSC, data: BSC_BAT_TOKEN_LIST_ENTRY },
-          ])
           .withAssetsController({
             customAssets: {
               [DEFAULT_FIXTURE_ACCOUNT_ID]: [BSC_BAT_ASSET_ID],
