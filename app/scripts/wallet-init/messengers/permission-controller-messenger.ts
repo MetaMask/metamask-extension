@@ -4,10 +4,10 @@ import {
   MultichainRoutingServiceGetSupportedAccountsAction,
   MultichainRoutingServiceIsSupportedScopeAction,
 } from '@metamask/snaps-controllers';
-import { SnapPermissionSpecificationsActions } from '../../controllers/permissions/snaps/specifications';
 import { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/messenger';
+import { SnapPermissionSpecificationsActions } from '../../controllers/permissions/snaps/specifications';
 import { RootMessenger } from '../../lib/messenger';
 
 export type PermissionControllerInitMessengerActions =

@@ -8,6 +8,7 @@ import {
   CURRENCY_SYMBOLS,
   LOCALHOST_DISPLAY_NAME,
 } from '../../../shared/constants/network';
+import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
@@ -33,7 +34,6 @@ import {
   getShieldControllerInstanceOptions,
 } from './instance-options/shield-controller';
 import { getSubscriptionServiceInstanceOptions } from './instance-options/subscription-service';
-import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { getPermissionControllerInstanceOptions } from './instance-options/permission-controller';
 import { getPermissionControllerInitMessenger } from './messengers/permission-controller-messenger';
 
