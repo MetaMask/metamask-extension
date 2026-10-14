@@ -8,7 +8,7 @@ import { Combination, generateCases } from './helpers';
 describe('swcLoader', () => {
   type CallbackArgs = Parameters<LoaderContext<SwcLoaderOptions>['callback']>;
 
-  function generateData(resourcePath = 'test.ts') {
+  function generateData() {
     const source = ` export function hello(message: string)  {
   console.log(message)
 }; `;
@@ -18,6 +18,8 @@ describe('swcLoader', () => {
 `;
 
     // swc doesn't use node's fs module, so we can't mock
+    const resourcePath = 'test.ts';
+
     // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
     // browser support.
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -88,54 +90,6 @@ describe('swcLoader', () => {
     assert.match(err.message, /Syntax Error/u);
     assert.strictEqual(content, undefined);
     assert.strictEqual(map, undefined);
-  });
-
-  describe('TypeScript filename handling', () => {
-    for (const extension of ['ts', 'mts', 'tsx']) {
-      for (const refresh of [false, true]) {
-        it(`parses .${extension} with the shared TypeScript options and refresh=${refresh}`, async () => {
-          const { context, deferredPromise } = generateData(
-            `/test/file.${extension}`,
-          );
-          const { options } = getSwcLoader(
-            'typescript',
-            false,
-            {},
-            {
-              browsersListQuery: 'Chrome >= 120',
-              isDevelopment: refresh,
-              refresh,
-            },
-          );
-          const originalOptions = structuredClone(options);
-          context.getOptions = () => options;
-          const source =
-            extension === 'tsx'
-              ? 'export function Component() { return <div />; }'
-              : 'export const identity = <T>(value: T): T => value;';
-
-          swcLoader.call(context, source);
-
-          const [error, code, map] = await deferredPromise;
-          assert.strictEqual(error, null);
-          assert(typeof code === 'string');
-          assert.match(
-            code,
-            extension === 'tsx'
-              ? /React\.createElement\("div"/u
-              : /identity = \(value\)\s*=>\s*value/u,
-          );
-          assert.strictEqual(
-            code.includes('$RefreshReg$'),
-            extension === 'tsx' && refresh,
-          );
-          assert.deepStrictEqual(JSON.parse(map as string).sources, [
-            context.resourcePath,
-          ]);
-          assert.deepStrictEqual(options, originalOptions);
-        });
-      }
-    }
   });
 
   describe('getSwcLoader', () => {

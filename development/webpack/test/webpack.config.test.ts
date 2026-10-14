@@ -408,6 +408,27 @@ ${Object.entries(env)
     }
   }
 
+  for (const watch of [false, true]) {
+    it(`compiles TypeScript files with configured loaders and watch=${watch}`, async () => {
+      const config = getWebpackConfig(watch ? ['--watch'] : []);
+      for (const extension of ['ts', 'mts', 'tsx']) {
+        const filename = resolve(__dirname, `../../../ui/test.${extension}`);
+        const rule = getSwcReactRules(config).find(
+          ({ test }) => test instanceof RegExp && test.test(filename),
+        );
+        assert(rule, `Missing loader for .${extension}`);
+        const { options } = rule.use as { options: SwcLoaderOptions };
+
+        await transform(
+          extension === 'tsx'
+            ? 'export const Component = (text: string) => <div>{text}</div>;'
+            : 'export const identity = <T>(value: T): T => value;',
+          { ...options, filename, swcrc: false },
+        );
+      }
+    });
+  }
+
   it('enables React Refresh for development watch builds', () => {
     mockOptionalRcFiles();
 
