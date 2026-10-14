@@ -25,7 +25,7 @@ describe('getNotificationsSettingsSectionTypeFromSlug', () => {
     ['  Wallet-Activity  ', 'walletActivity'],
     ['PERPS', 'perps'],
   ]) {
-    it(`resolves ${slug} to ${sectionType}`, () => {
+    it(`returns section type "${sectionType}" for slug "${slug}"`, () => {
       expect(getNotificationsSettingsSectionTypeFromSlug(slug)).toBe(
         sectionType,
       );
@@ -44,7 +44,7 @@ describe('getNotificationsSettingsSectionTypeFromSlug', () => {
     null,
     undefined,
   ]) {
-    it(`rejects unsupported slug ${slug}`, () => {
+    it(`returns null for unsupported or missing slug ${JSON.stringify(slug)}`, () => {
       expect(getNotificationsSettingsSectionTypeFromSlug(slug)).toBeNull();
     });
   }

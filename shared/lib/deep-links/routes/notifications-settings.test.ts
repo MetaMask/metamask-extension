@@ -11,11 +11,14 @@ describe('notificationsSettings', () => {
     jest.mocked(getIsPerpsIncludedInBuild).mockReturnValue(true);
   });
 
-  it('opens notification settings without a section', () => {
+  it('registers the notifications settings deep-link path and title', () => {
     expect(notificationsSettings.pathname).toBe('/notifications-settings');
     expect(notificationsSettings.getTitle(new URLSearchParams())).toBe(
       'deepLink_theNotificationsSettingsPage',
     );
+  });
+
+  it('returns the notifications settings path when no section is provided', () => {
     expect(notificationsSettings.handler(new URLSearchParams())).toStrictEqual({
       path: NOTIFICATIONS_SETTINGS_ROUTE,
       query: new URLSearchParams(),
@@ -30,14 +33,14 @@ describe('notificationsSettings', () => {
   ];
 
   for (const [section, path] of sections) {
-    it(`opens the ${section} section directly`, () => {
+    it(`returns the section settings path for supported section "${section}"`, () => {
       expect(
         notificationsSettings.handler(new URLSearchParams({ section })),
       ).toStrictEqual({ path, query: new URLSearchParams() });
     });
   }
 
-  it('opens the main page when Perps is not included in the build', () => {
+  it('returns the notifications settings path for the Perps section when Perps is not included in the build', () => {
     jest.mocked(getIsPerpsIncludedInBuild).mockReturnValue(false);
 
     expect(
@@ -60,7 +63,7 @@ describe('notificationsSettings', () => {
     'price-alerts',
     'priceAlerts',
   ]) {
-    it(`opens the main page for section ${section}`, () => {
+    it(`returns the notifications settings path for unsupported section "${section}"`, () => {
       expect(
         notificationsSettings.handler(
           new URLSearchParams({ section, unrelated: 'ignored' }),
