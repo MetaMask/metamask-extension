@@ -6716,6 +6716,13 @@
   "onboardedMetametricsKey3": {
     "message": "Materi promosi lain yang relevan"
   },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Selain $1, kami ingin menggunakan data untuk memahami cara Anda berinteraksi dengan komunikasi pemasaran.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
   "onboardedMetametricsParagraph2": {
     "message": "Ini membantu kami mempersonalisasi hal yang kami bagikan kepada Anda, seperti:"
   },

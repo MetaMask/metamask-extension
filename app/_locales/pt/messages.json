@@ -6712,6 +6712,13 @@
   "onboardedMetametricsKey3": {
     "message": "Outros materiais promocionais relevantes"
   },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "Além do $1, gostaríamos de usar dados para entender como você interage com comunicações de marketing.",
+    "description": "$1 represents the 'onboardedMetametricsLink' locale string"
+  },
   "onboardedMetametricsParagraph2": {
     "message": "Isso nos ajuda a personalizar o que compartilhamos com você, como:"
   },
