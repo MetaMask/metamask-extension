@@ -146,6 +146,39 @@ describe('AssetStickyActions', () => {
     );
   });
 
+  it('opens native sticky swap with Token View as the source', () => {
+    const nativeAsset = {
+      type: AssetType.native,
+      isOriginalNativeSymbol: true,
+      chainId: CHAIN_IDS.MAINNET,
+      decimals: 18,
+      symbol: 'ETH',
+      image: '',
+      balance: { value: '1', display: '1', fiat: '2000' },
+    } as Asset;
+
+    const { getByTestId } = renderWithProvider(
+      <AssetStickyActions asset={nativeAsset} />,
+      store,
+    );
+
+    fireEvent.click(getByTestId('asset-sticky-swap'));
+
+    const [source] = mockOpenBridgeExperience.mock.calls[0];
+    expect(source).toBe(MetaMetricsSwapsEventSource.TokenView);
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: MetaMetricsEventName.TokenDetailsCtaClicked,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          cta_type: 'swap',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: nativeAsset.chainId,
+        }),
+      }),
+    );
+  });
+
   it('swaps from a funded token and into the current one when it has no balance', () => {
     const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
     mockGetAssetsBySelectedAccountGroup.mockReturnValue({
