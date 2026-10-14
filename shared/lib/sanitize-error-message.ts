@@ -2,7 +2,7 @@
  * Segment-safe cap for analytics `error_message` values, shared by all
  * error-as-analytics producers.
  */
-export const MAX_ERROR_MESSAGE_LENGTH = 500;
+const MAX_ERROR_MESSAGE_LENGTH = 500;
 
 /**
  * Normalizes whitespace and caps length for Segment `error_message`.
