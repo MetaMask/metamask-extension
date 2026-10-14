@@ -1,0 +1,16 @@
+{
+  "nodeOptions": {
+    "--disable-warning": "SecurityWarning",
+    "--permission": true,
+    "--allow-fs-read": ["/"],
+    "--allow-fs-write": ["./"],
+    "--allow-fs-tmp": true,
+    "--allow-child-process": true,
+    "--allow-net": false,
+    "--allow-worker": false,
+    "--allow-addons": false,
+    "--allow-wasi": false,
+    "--allow-inspector": false
+  },
+  "notes": "Use this one ONLY for scripts that are only creating nested Yarn processes, e.g., a composition of multiple other scripts via `yarn something && yarn something-else`."
+}
