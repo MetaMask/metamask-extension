@@ -128,6 +128,8 @@ class OnboardingMetricsPage {
 
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
+    // Marketing defaults to checked in the US (the E2E geolocation mock).
+    await this.ensureDataCollectionForMarketingIsUnchecked();
     await this.driver.clickElement(this.continueButton);
   }
 
