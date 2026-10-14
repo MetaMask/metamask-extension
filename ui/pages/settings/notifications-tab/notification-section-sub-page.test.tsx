@@ -6,7 +6,10 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { getIsPerpsIncludedInBuild } from '../../../../shared/lib/environment';
-import { NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
+import {
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
+} from '../../../helpers/constants/routes';
 import { createMockNotificationPreferences } from '../../../hooks/metamask-notifications/mocks';
 import {
   useNotificationPreferences,
@@ -15,8 +18,6 @@ import {
 import { useAccountSettingsProps } from '../../../hooks/metamask-notifications/useSwitchNotifications';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import type { NotificationsSettingsSectionType } from '../../notifications-settings/notifications-settings-types';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
-import { getNotificationsSettingsSectionRoute } from '../../notifications-settings/notifications-settings-routes';
 import { NotificationSectionSubPage } from './notification-section-sub-page';
 
 const mockTrackEvent = jest.fn();
@@ -937,7 +938,7 @@ describe('NotificationSectionSubPage', () => {
       renderWithProvider(
         <NotificationSectionSubPage sectionType={section} />,
         buildStore(),
-        getNotificationsSettingsSectionRoute(section),
+        NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section],
       );
       return updatePreference;
     };

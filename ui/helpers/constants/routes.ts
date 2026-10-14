@@ -144,12 +144,26 @@ export const NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE = `${NOTIFICATIONS_SET
 export const NOTIFICATIONS_SETTINGS_PERPS_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/perps`;
 export const NOTIFICATIONS_SETTINGS_MARKETING_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/marketing`;
 export const NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE = `${NOTIFICATIONS_SETTINGS_ROUTE}/agentic-cli`;
-export const NOTIFICATIONS_SETTINGS_SECTION_ROUTES = {
+const NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE = {
   walletActivity: NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
   perps: NOTIFICATIONS_SETTINGS_PERPS_ROUTE,
   marketing: NOTIFICATIONS_SETTINGS_MARKETING_ROUTE,
   agenticCli: NOTIFICATIONS_SETTINGS_AGENTIC_CLI_ROUTE,
 } as const;
+
+/**
+ * Null-prototype lookup of notification settings section types to routes.
+ * Indexed with deep-link-derived values elsewhere, so the null prototype keeps
+ * inherited keys like `constructor` or `__proto__` out of the lookup space.
+ */
+export const NOTIFICATIONS_SETTINGS_SECTION_ROUTES: typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE =
+  Object.assign(
+    Object.create(null) as Record<string, string>,
+    NOTIFICATIONS_SETTINGS_SECTION_ROUTES_BASE,
+  );
+
+export type NotificationsSettingsSectionType =
+  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';

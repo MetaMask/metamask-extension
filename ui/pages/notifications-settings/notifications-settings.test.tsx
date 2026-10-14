@@ -8,6 +8,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import {
   NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
   NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE,
 } from '../../helpers/constants/routes';
 import { createMockNotificationPreferences } from '../../hooks/metamask-notifications/mocks';
@@ -15,13 +16,11 @@ import { useNotificationPreferences } from '../../hooks/metamask-notifications/u
 import { useAccountSettingsProps } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
+
+import { getNotificationsSettingsSectionTypeFromSlug } from '../../../shared/lib/deep-links/routes/notifications-settings';
 // eslint-disable-next-line import-x/no-restricted-paths -- Test the section redirect and main page together.
 import { NotificationSectionSubPage } from '../settings/notifications-tab/notification-section-sub-page';
 import { NotificationsSettingsContent } from './notifications-settings';
-import {
-  getNotificationsSettingsSectionTypeFromPath,
-  getNotificationsSettingsSectionRoute,
-} from './notifications-settings-routes';
 import type { NotificationsSettingsSectionType } from './notifications-settings-types';
 
 const mockEnableNotifications = jest.fn();
@@ -113,7 +112,12 @@ const createPreferencesResult = (): ReturnType<
 const NotificationSettingsFlow = () => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const sectionType = getNotificationsSettingsSectionTypeFromPath(pathname);
+  // Mirrors the app router: section sub-pages live directly under the
+  // notifications settings base path.
+  const sectionSlug = pathname.startsWith(`${NOTIFICATIONS_SETTINGS_ROUTE}/`)
+    ? pathname.slice(NOTIFICATIONS_SETTINGS_ROUTE.length + 1)
+    : null;
+  const sectionType = getNotificationsSettingsSectionTypeFromSlug(sectionSlug);
   let page = <div>Other page</div>;
   if (pathname === NOTIFICATIONS_SETTINGS_ROUTE) {
     page = <NotificationsSettingsContent />;
@@ -370,7 +374,7 @@ describe('NotificationsSettingsContent', () => {
       it(`resumes the ${sectionType} section after enabling`, async () => {
         const { store, enable } = createStore();
         mockEnableNotifications.mockImplementation(async () => enable());
-        const path = getNotificationsSettingsSectionRoute(sectionType);
+        const path = NOTIFICATIONS_SETTINGS_SECTION_ROUTES[sectionType];
         renderWithProvider(<NotificationSettingsFlow />, store, path);
         fireEvent.click(
           screen.getByTestId('notifications-settings-allow-toggle-input'),

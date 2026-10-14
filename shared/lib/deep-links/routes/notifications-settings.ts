@@ -2,6 +2,7 @@ import { getIsPerpsIncludedInBuild } from '../../environment';
 import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+  type NotificationsSettingsSectionType,
   Route,
 } from './route';
 
@@ -9,14 +10,14 @@ export enum NotificationsSettingsQueryParams {
   Section = 'section',
 }
 
-type NotificationsSettingsSectionType =
-  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
-
-const NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH = Object.fromEntries(
+const NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH = new Map(
   Object.entries(NOTIFICATIONS_SETTINGS_SECTION_ROUTES).map(
-    ([sectionType, path]) => [path, sectionType],
+    ([sectionType, path]): [string, NotificationsSettingsSectionType] => [
+      path,
+      sectionType as NotificationsSettingsSectionType,
+    ],
   ),
-) as Record<string, NotificationsSettingsSectionType>;
+);
 
 /**
  * Resolves a `section` slug (e.g. from a deep-link query param) to a section
@@ -33,9 +34,9 @@ export function getNotificationsSettingsSectionTypeFromSlug(
     return null;
   }
   return (
-    NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH[
-      `${NOTIFICATIONS_SETTINGS_ROUTE}/${slug.trim().toLowerCase()}`
-    ] ?? null
+    NOTIFICATIONS_SETTINGS_SECTION_ROUTE_BY_PATH.get(
+      `${NOTIFICATIONS_SETTINGS_ROUTE}/${slug.trim().toLowerCase()}`,
+    ) ?? null
   );
 }
 

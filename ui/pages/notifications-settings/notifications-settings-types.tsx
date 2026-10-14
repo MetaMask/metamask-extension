@@ -11,13 +11,12 @@ import {
 import type { NotificationPreferences } from '@metamask/authenticated-user-storage';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getIsPerpsIncludedInBuild } from '../../../shared/lib/environment';
-import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { SettingsSelectItem } from '../settings/shared';
-import { getNotificationsSettingsSectionRoute } from './notifications-settings-routes';
+import type { NotificationsSettingsSectionType } from '../../helpers/constants/routes';
+import { NOTIFICATIONS_SETTINGS_SECTION_ROUTES } from '../../helpers/constants/routes';
 
-export type NotificationsSettingsSectionType =
-  keyof typeof NOTIFICATIONS_SETTINGS_SECTION_ROUTES;
+export type { NotificationsSettingsSectionType } from '../../helpers/constants/routes';
 
 export type NotificationsSettingsSectionConfig = {
   type: NotificationsSettingsSectionType;
@@ -112,7 +111,7 @@ export function NotificationsSettingsTypes({
               ? ''
               : getStatusText(t, preferences?.[section.type])
           }
-          to={getNotificationsSettingsSectionRoute(section.type)}
+          to={NOTIFICATIONS_SETTINGS_SECTION_ROUTES[section.type]}
           dataTestId={`notifications-settings-section-${section.type}`}
           startAccessory={
             <Icon

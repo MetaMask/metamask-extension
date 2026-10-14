@@ -3,11 +3,26 @@ import {
   getNotificationsSettingsSectionTypeFromSlug,
   notificationsSettings,
 } from './notifications-settings';
-import { NOTIFICATIONS_SETTINGS_ROUTE } from './route';
+import {
+  NOTIFICATIONS_SETTINGS_ROUTE,
+  NOTIFICATIONS_SETTINGS_SECTION_ROUTES,
+} from './route';
 
 jest.mock('../../environment', () => ({
   getIsPerpsIncludedInBuild: jest.fn(),
 }));
+
+describe('NOTIFICATIONS_SETTINGS_SECTION_ROUTES', () => {
+  it('has a null prototype so inherited keys cannot pollute lookups', () => {
+    expect(Object.getPrototypeOf(NOTIFICATIONS_SETTINGS_SECTION_ROUTES)).toBe(
+      null,
+    );
+    expect(
+      (NOTIFICATIONS_SETTINGS_SECTION_ROUTES as Record<string, unknown>)
+        .constructor,
+    ).toBeUndefined();
+  });
+});
 
 describe('getNotificationsSettingsSectionTypeFromSlug', () => {
   it('returns the section type for registered slugs', () => {
