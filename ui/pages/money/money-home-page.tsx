@@ -25,6 +25,7 @@ import {
 } from '../../helpers/constants/routes';
 import { PopoverPosition } from '../../components/component-library';
 import { TooltipText } from '../../components/app/money/tooltip-text';
+import { useScrollContainerGutterWidth } from '../../contexts/scroll-container';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMoneyAccountAvailability } from '../../hooks/money/use-money-account-availability';
 import { useUpgradeMoneyAccount } from '../../hooks/money/use-upgrade-money-account';
@@ -144,6 +145,7 @@ const MoneyActionCard = ({
 
 export function MoneyHomePage() {
   const t = useI18nContext();
+  const scrollbarGutterWidth = useScrollContainerGutterWidth();
   const navigate = useNavigate();
   const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
   const { availability, isLoading: isAvailabilityLoading } =
@@ -408,7 +410,10 @@ export function MoneyHomePage() {
   return (
     <>
       <div className="min-h-full pb-5" data-testid="money-home-page">
-        <header className="flex h-14 items-center justify-between pl-4">
+        <header
+          className="flex h-14 items-center justify-between pl-4"
+          style={{ paddingRight: `calc(1rem - ${scrollbarGutterWidth}px)` }}
+        >
           <Text variant={TextVariant.HeadingLg} fontWeight={FontWeight.Bold}>
             {t('money')}
           </Text>
