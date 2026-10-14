@@ -2881,7 +2881,7 @@
         "@metamask/phishing-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller": true,
         "@noble/hashes": true,
-        "@metamask/phishing-controller>ethereum-cryptography": true,
+        "ethereum-cryptography": true,
         "stylelint>fastest-levenshtein": true,
         "punycode": true
       }
@@ -4348,11 +4348,6 @@
         "crypto": true
       }
     },
-    "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@metamask/transaction-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
@@ -5778,11 +5773,6 @@
         "storybook>recast>tiny-invariant": true
       }
     },
-    "css-loader": {
-      "globals": {
-        "btoa": true
-      }
-    },
     "currency-formatter": {
       "packages": {
         "currency-formatter>accounting": true,
@@ -6060,16 +6050,6 @@
       },
       "packages": {
         "@metamask/eth-money-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/phishing-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true,
-        "module": true
-      },
-      "packages": {
-        "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/transaction-controller>ethereum-cryptography": {
