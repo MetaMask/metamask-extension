@@ -348,7 +348,6 @@ import { StaticAssetsControllerInit } from './messenger-client-init/static-asset
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './messenger-client-init/currency-rate-controller-init';
 import { NameControllerInit } from './messenger-client-init/confirmations/name-controller-init';
-import { SelectedNetworkControllerInit } from './messenger-client-init/selected-network-controller-init';
 import { ShieldSubscriptionServiceInit } from './messenger-client-init/subscription';
 import { NetworkConnectionBannerControllerInit } from './messenger-client-init/network-connection-banner';
 import { AccountTrackerControllerInit } from './messenger-client-init/account-tracker-controller-init';
@@ -357,8 +356,6 @@ import { BridgeControllerInit } from './messenger-client-init/bridge-controller-
 import { BridgeStatusControllerInit } from './messenger-client-init/bridge-status-controller-init';
 import { PreferencesControllerInit } from './messenger-client-init/preferences-controller-init';
 import { AppStateControllerInit } from './messenger-client-init/app-state-controller-init';
-import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
-import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -565,9 +562,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
       EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
       SignatureController: SignatureControllerInit,
-      PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
-      SubjectMetadataController: SubjectMetadataControllerInit,
       AppStateController: AppStateControllerInit,
       OnboardingController: OnboardingControllerInit,
       // GeolocationController must init before AnalyticsController, which
@@ -586,7 +581,6 @@ export default class MetamaskController extends EventEmitter {
       RateLimitController: RateLimitControllerInit,
       SnapRegistryController: SnapRegistryControllerInit,
       CronjobController: CronjobControllerInit,
-      SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
@@ -707,11 +701,12 @@ export default class MetamaskController extends EventEmitter {
     this.encryptionPublicKeyController =
       messengerClientsByName.EncryptionPublicKeyController;
     this.signatureController = messengerClientsByName.SignatureController;
-    this.permissionController = messengerClientsByName.PermissionController;
+    this.permissionController = this.wallet.getInstance('PermissionController');
     this.permissionLogController =
       messengerClientsByName.PermissionLogController;
-    this.subjectMetadataController =
-      messengerClientsByName.SubjectMetadataController;
+    this.subjectMetadataController = this.wallet.getInstance(
+      'SubjectMetadataController',
+    );
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
@@ -727,8 +722,9 @@ export default class MetamaskController extends EventEmitter {
       messengerClientsByName.UserOperationController;
     this.cronjobController = messengerClientsByName.CronjobController;
     this.rateLimitController = messengerClientsByName.RateLimitController;
-    this.selectedNetworkController =
-      messengerClientsByName.SelectedNetworkController;
+    this.selectedNetworkController = this.wallet.getInstance(
+      'SelectedNetworkController',
+    );
     this.snapController = messengerClientsByName.SnapController;
     this.snapInsightsController = messengerClientsByName.SnapInsightsController;
     this.snapInterfaceController =

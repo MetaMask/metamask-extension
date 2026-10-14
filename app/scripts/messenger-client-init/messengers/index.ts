@@ -118,7 +118,6 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
@@ -141,11 +140,6 @@ import {
 import { getBridgeStatusControllerMessenger } from './bridge-status-controller-messenger';
 import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 import { getAppStateControllerMessenger } from './app-state-controller-messenger';
-import {
-  getPermissionControllerMessenger,
-  getPermissionControllerInitMessenger,
-} from './permission-controller-messenger';
-import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 import { getShieldSubscriptionServiceMessenger } from './subscription/shield-subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
@@ -257,14 +251,6 @@ export {
 } from './ramps-controller-messenger';
 export type { RampsControllerInitMessenger } from './ramps-controller-messenger';
 export { getRampsServiceMessenger } from './ramps-service-messenger';
-export type {
-  PermissionControllerMessenger,
-  PermissionControllerInitMessenger,
-} from './permission-controller-messenger';
-export {
-  getPermissionControllerMessenger,
-  getPermissionControllerInitMessenger,
-} from './permission-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
@@ -293,13 +279,11 @@ export { getComplianceServiceMessenger } from './compliance-service-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export { getPhishingControllerMessenger } from './phishing-controller-messenger';
-export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
-export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type { TokenBalancesControllerInitMessenger } from './token-balances-controller-messenger';
 export {
@@ -549,10 +533,6 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getOnboardingControllerMessenger,
     getInitMessenger: noop,
   },
-  PermissionController: {
-    getMessenger: getPermissionControllerMessenger,
-    getInitMessenger: getPermissionControllerInitMessenger,
-  },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
     getInitMessenger: noop,
@@ -571,10 +551,6 @@ export const MESSENGER_FACTORIES = {
   },
   RatesController: {
     getMessenger: getRatesControllerMessenger,
-    getInitMessenger: noop,
-  },
-  SelectedNetworkController: {
-    getMessenger: getSelectedNetworkControllerMessenger,
     getInitMessenger: noop,
   },
   SentinelApiService: {
@@ -616,10 +592,6 @@ export const MESSENGER_FACTORIES = {
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,
     getInitMessenger: getStaticAssetsControllerInitMessenger,
-  },
-  SubjectMetadataController: {
-    getMessenger: getSubjectMetadataControllerMessenger,
-    getInitMessenger: noop,
   },
   ShieldSubscriptionService: {
     getMessenger: getShieldSubscriptionServiceMessenger,
