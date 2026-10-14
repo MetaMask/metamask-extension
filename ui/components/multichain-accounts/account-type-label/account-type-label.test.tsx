@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { it } from '@jest/globals';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
 
 import { AccountTypeLabel } from './account-type-label';
@@ -13,7 +14,7 @@ describe('AccountTypeLabel', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it.each([
+  it.each<[string, string]>([
     [BtcAccountType.P2pkh, 'Legacy'],
     [BtcAccountType.P2sh, 'Nested SegWit'],
     [BtcAccountType.P2wpkh, 'Native SegWit'],
