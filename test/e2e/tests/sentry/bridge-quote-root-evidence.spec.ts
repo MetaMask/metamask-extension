@@ -47,13 +47,11 @@ async function captureSentryTransactions(mockServer: Mockttp) {
         const body = await request.body.getText();
         for (const txn of parseTransactions(body ?? '')) {
           captured.push(txn);
-          // eslint-disable-next-line no-console
           console.log(
             `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
           );
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.log('CAPTURE-ERR', String(error));
       }
       return { statusCode: 200, json: {} };
@@ -140,15 +138,11 @@ describe('Bridge quote-fetch trace-root evidence (#43930)', function (this: Suit
           !t.transaction.endsWith('Quotes Fetched'),
       );
 
-      // eslint-disable-next-line no-console
       console.log(
         `EVIDENCE captured=${captured.length} quoteRounds=${quoteRounds.length} distinctTraceIds=${distinct.length} sharingSwPageload=${sharingSw}`,
       );
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-QUOTE-ROUNDS ${JSON.stringify(quoteRounds)}`);
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-NON-QUOTE ${JSON.stringify(nonQuoteBridge)}`);
 
       // Each `* Quotes Fetched`

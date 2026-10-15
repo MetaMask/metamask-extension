@@ -64,13 +64,11 @@ async function captureSentryTransactions(mockServer: Mockttp) {
         const body = await request.body.getText();
         for (const txn of parseTransactions(body ?? '')) {
           captured.push(txn);
-          // eslint-disable-next-line no-console
           console.log(
             `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)} tags=${JSON.stringify(txn.tags ?? {})}`,
           );
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.log('CAPTURE-ERR', String(error));
       }
       return { statusCode: 200, json: {} };
@@ -154,15 +152,11 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
         ...new Set(pollCycles.map((t) => t.tags?.controller)),
       ];
 
-      // eslint-disable-next-line no-console
       console.log(
         `EVIDENCE captured=${captured.length} pollCycles=${pollCycles.length} distinctTraceIds=${distinct.length} sharingSwPageload=${sharingSw} controllers=${JSON.stringify(controllers)}`,
       );
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-POLL-CYCLES ${JSON.stringify(pollCycles)}`);
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
-      // eslint-disable-next-line no-console
       console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
       // The PR's claim: `traceBackgroundPoll` roots EVERY scheduled poll
@@ -241,15 +235,11 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
           swIds.has(t.traceId),
         ).length;
 
-        // eslint-disable-next-line no-console
         console.log(
           `EVIDENCE captured=${captured.length} wsConnections=${wsConnections.length} sharingSwPageload=${sharingSw}`,
         );
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-WS ${JSON.stringify(wsConnections)}`);
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
         // The PR's claim: the websocket connection trace is rooted via
