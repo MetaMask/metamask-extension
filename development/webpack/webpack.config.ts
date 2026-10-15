@@ -288,6 +288,8 @@ const basePlugins: WebpackPluginInstance[] = [
     ],
   }),
 ];
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
 /** Loads optional plugins in configuration order. */
 async function getPlugins() {
   const plugins = [...basePlugins];
@@ -722,6 +724,8 @@ const config = {
   ],
 } as const satisfies Configuration;
 
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
 /** Finishes the configuration after loading optional dependencies. */
 export default async function createConfig() {
   return {

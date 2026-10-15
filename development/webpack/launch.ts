@@ -27,6 +27,8 @@ const alias = { cache: 'c', help: 'h', watch: 'w' };
 type Args = { [x in keyof typeof alias]?: boolean };
 const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 
+// TODO: Replace this wrapper with top-level await once the tooling runs
+// as ESM under LavaMoat.
 async function main() {
   if (args.cache === false || args.help === true || args.watch === true) {
     // there are no time savings to running the build in a child process if: the
