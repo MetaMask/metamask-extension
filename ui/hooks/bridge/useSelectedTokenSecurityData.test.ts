@@ -124,11 +124,30 @@ describe('useSelectedTokenSecurityData', () => {
   it('skips tokens with existing security metadata', async () => {
     const enrichedToken = {
       ...createBridgeToken(SOURCE_ASSET_ID),
-      isVerified: false,
+      securityData: { type: BridgeAssetSecurityDataType.BENIGN },
     };
     renderSecurityHook({
       fromToken: enrichedToken,
       toToken: createBridgeToken(DESTINATION_ASSET_ID),
+    });
+
+    await waitFor(() => {
+      expect(mockFetchCachedTokenAssets).toHaveBeenCalledWith([
+        DESTINATION_ASSET_ID,
+      ]);
+    });
+  });
+
+  it('fetches tokens that only have isVerified set', async () => {
+    renderSecurityHook({
+      fromToken: {
+        ...createBridgeToken(SOURCE_ASSET_ID),
+        securityData: { type: BridgeAssetSecurityDataType.BENIGN },
+      },
+      toToken: {
+        ...createBridgeToken(DESTINATION_ASSET_ID),
+        isVerified: false,
+      },
     });
 
     await waitFor(() => {

@@ -66,9 +66,7 @@ export function useSelectedTokenSecurityData(
     const assetIdsByKey = new Map<CaipAssetType, CaipAssetType>();
 
     tokens.forEach((token) => {
-      const hasSecurityData =
-        token.isVerified !== undefined || token.securityData !== undefined;
-      if (!hasSecurityData) {
+      if (!token.securityData?.type) {
         assetIdsByKey.set(
           getTokenSecurityAssetKey(token.assetId),
           token.assetId,
