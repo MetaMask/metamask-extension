@@ -45,6 +45,7 @@ jest.mock('../../contexts/onboarding-trace', () => ({
   useOnboardingTrace: () => ({
     startJourney: mockStartJourney,
     endJourney: mockEndJourney,
+    setOAuthInProgress: jest.fn(),
   }),
 }));
 

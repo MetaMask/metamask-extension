@@ -108,6 +108,56 @@ describe('useOnboardingTrace', () => {
     });
   });
 
+  it('ends the journey as abandoned on pagehide', () => {
+    const { result, unmount } = renderHook(() => useOnboardingTrace(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.startJourney();
+      window.dispatchEvent(new Event('pagehide'));
+    });
+
+    unmount();
+
+    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
+    expect(bufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingJourneyOverall,
+      data: {
+        outcome: 'abandoned',
+        last_step: 'welcome',
+      },
+    });
+  });
+
+  it('does not abandon the journey when pagehide occurs during OAuth', () => {
+    const { result } = renderHook(() => useOnboardingTrace(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.startJourney();
+      result.current.setOAuthInProgress(true);
+      window.dispatchEvent(new Event('pagehide'));
+    });
+
+    expect(bufferedEndTrace).not.toHaveBeenCalled();
+
+    act(() => {
+      result.current.setOAuthInProgress(false);
+      window.dispatchEvent(new Event('pagehide'));
+    });
+
+    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
+    expect(bufferedEndTrace).toHaveBeenCalledWith({
+      name: TraceName.OnboardingJourneyOverall,
+      data: {
+        outcome: 'abandoned',
+        last_step: 'welcome',
+      },
+    });
+  });
+
   it('uses the latest route as the last step', () => {
     const navigateRef: { current?: ReturnType<typeof useNavigate> } = {};
 

@@ -5,11 +5,13 @@ export type OnboardingTraceOutcome = 'completed' | 'abandoned';
 export type OnboardingTraceContextValue = {
   startJourney: () => void;
   endJourney: (outcome: OnboardingTraceOutcome) => void;
+  setOAuthInProgress: (isInProgress: boolean) => void;
 };
 
 const defaultOnboardingTraceContext: OnboardingTraceContextValue = {
   startJourney: () => undefined,
   endJourney: () => undefined,
+  setOAuthInProgress: () => undefined,
 };
 
 const OnboardingTraceContext = createContext<OnboardingTraceContextValue>(

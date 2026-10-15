@@ -43,10 +43,11 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const lastStepRef = useRef(getOnboardingTraceStep(pathname));
   const hasStartedRef = useRef(false);
   const hasEndedRef = useRef(false);
+  const isOAuthInProgressRef = useRef(false);
 
-  useEffect(() => {
-    lastStepRef.current = getOnboardingTraceStep(pathname);
-  }, [pathname]);
+  const setOAuthInProgress = useCallback((isInProgress: boolean) => {
+    isOAuthInProgressRef.current = isInProgress;
+  }, []);
 
   const startJourney = useCallback(() => {
     if (hasStartedRef.current) {
@@ -70,7 +71,7 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
 
   const endJourney = useCallback(
     (outcome: OnboardingTraceOutcome) => {
-      if (hasEndedRef.current) {
+      if (!hasStartedRef.current || hasEndedRef.current) {
         return;
       }
 
@@ -87,7 +88,25 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
     [bufferedEndTrace],
   );
 
-  return { startJourney, endJourney };
+  useEffect(() => {
+    lastStepRef.current = getOnboardingTraceStep(pathname);
+  }, [pathname]);
+
+  useEffect(() => {
+    const handlePageHide = () => {
+      if (!isOAuthInProgressRef.current) {
+        endJourney('abandoned');
+      }
+    };
+
+    window.addEventListener('pagehide', handlePageHide);
+
+    return () => {
+      window.removeEventListener('pagehide', handlePageHide);
+    };
+  }, [endJourney]);
+
+  return { startJourney, endJourney, setOAuthInProgress };
 }
 
 /**

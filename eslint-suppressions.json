@@ -630,7 +630,7 @@
   },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
-      "count": 3
+      "count": 2
     }
   },
   "ui/pages/permissions-connect/permissions-connect.tsx": {

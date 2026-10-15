@@ -38,6 +38,7 @@ import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../../contexts/metametrics';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import type { MetaMetricsEventOptions } from '../../../../shared/constants/metametrics';
 import { ENVIRONMENT } from '../../../../shared/constants/build';
@@ -117,6 +118,7 @@ export default function OnboardingWelcome() {
   const [loginError, setLoginError] = useState<LoginErrorType | null>(null);
 
   const { animationCompleted } = useRiveWasmContext();
+  const { setOAuthInProgress } = useOnboardingTrace();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
@@ -282,22 +284,27 @@ export default function OnboardingWelcome() {
   const handleSocialLogin = useCallback(
     async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        bufferedTrace?.({
-          name: TraceName.OnboardingSocialLoginAttempt,
-          op: TraceOperation.OnboardingUserJourney,
-          tags: { provider: socialConnectionType },
-          parentContext: onboardingParentContext?.current,
-        });
-        const isNewUser = await dispatch(
-          startOAuthLogin(
-            socialConnectionType as AuthConnection,
-            bufferedTrace,
-            bufferedEndTrace,
-            trackLegacyEventForAction,
-          ),
-        );
-        bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
-        return isNewUser;
+        setOAuthInProgress(true);
+        try {
+          bufferedTrace?.({
+            name: TraceName.OnboardingSocialLoginAttempt,
+            op: TraceOperation.OnboardingUserJourney,
+            tags: { provider: socialConnectionType },
+            parentContext: onboardingParentContext?.current,
+          });
+          const isNewUser = await dispatch(
+            startOAuthLogin(
+              socialConnectionType as AuthConnection,
+              bufferedTrace,
+              bufferedEndTrace,
+              trackLegacyEventForAction,
+            ),
+          );
+          bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
+          return isNewUser;
+        } finally {
+          setOAuthInProgress(false);
+        }
       }
       return true;
     },
@@ -308,6 +315,7 @@ export default function OnboardingWelcome() {
       bufferedTrace,
       bufferedEndTrace,
       trackLegacyEventForAction,
+      setOAuthInProgress,
     ],
   );
 

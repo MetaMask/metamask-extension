@@ -10,6 +10,7 @@ describe('useOnboardingTrace', () => {
     const actions = {
       startJourney: jest.fn(),
       endJourney: jest.fn(),
+      setOAuthInProgress: jest.fn(),
     };
 
     const wrapper = ({ children }: { children: ReactNode }) => (
