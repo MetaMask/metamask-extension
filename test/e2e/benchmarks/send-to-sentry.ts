@@ -210,6 +210,9 @@ async function main() {
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
+    'ci.runnerName': process.env.RUNNER_NAME || 'unknown',
+    'ci.runnerOs': process.env.RUNNER_OS || 'unknown',
+    'ci.runnerArch': process.env.RUNNER_ARCH || 'unknown',
   };
 
   let sentCount = 0;
