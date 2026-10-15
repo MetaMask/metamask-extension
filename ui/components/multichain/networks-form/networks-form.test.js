@@ -115,6 +115,7 @@ const propNetworkDisplay = {
     },
     clear: () => ({}),
     name: MAINNET_DISPLAY_NAME,
+    source: 'manual',
     rpcUrls: {
       defaultRpcEndpointIndex: 0,
       rpcEndpoints: [
@@ -130,6 +131,7 @@ const propNetworkDisplay = {
     setChainId: () => ({}),
     setName: () => ({}),
     setRpcUrls: () => ({}),
+    setSource: () => ({}),
     setTicker: () => ({}),
     ticker: 'ETH',
   },
@@ -577,6 +579,37 @@ describe('NetworkForm Component', () => {
         },
         { setActive: true },
       );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'manual',
+          }),
+        }),
+      );
+    });
+  });
+
+  it('tracks Chainlist as the source when saving a suggested network', async () => {
+    const { getByText } = renderComponent({
+      ...propNetworkDisplay,
+      networkFormState: {
+        ...propNetworkDisplay.networkFormState,
+        source: 'chainlist',
+      },
+    });
+
+    fireEvent.click(getByText(messages.save.message));
+
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Custom Network Added',
+          properties: expect.objectContaining({
+            source: 'chainlist',
+          }),
+        }),
+      );
     });
   });
 
@@ -843,8 +876,7 @@ describe('NetworkForm Component', () => {
       rpcEndpoints: [
         {
           networkClientId: 'bsc',
-          // An Infura endpoint renders through RpcListItem rather than the
-          // inline custom branch.
+          // An Infura endpoint still shows the failover tag from shared config.
           type: 'infura',
           url: 'https://bsc-mainnet.infura.io/v3/test',
           failoverUrls: [],

@@ -90,6 +90,12 @@ describe('DiscoverAssetRow', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('renders the symbol, market cap, and volume subtitle', () => {
+    const { getByText } = renderRow();
+
+    expect(getByText('ETH · $20B cap · $126M vol')).toBeInTheDocument();
+  });
+
   it('does not render a badge when securityData is missing', () => {
     const { queryByTestId, queryByText } = renderRow({
       ...baseAsset,
