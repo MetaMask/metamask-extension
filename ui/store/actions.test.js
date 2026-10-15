@@ -913,6 +913,132 @@ describe('Actions', () => {
     });
   });
 
+  describe('#updateAndApproveTx', () => {
+    const qrAccountAddress = '0xQrAddress';
+    const qrAccountId = 'b3f1a0c2-7d4e-4f6a-9b8c-1d2e3f4a5b6c';
+    const txMeta = {
+      id: 'tx-1',
+      txParams: { from: qrAccountAddress, to: '0xTo', value: '0x0' },
+    };
+
+    const getQrAccountState = () => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        internalAccounts: {
+          ...defaultState.metamask.internalAccounts,
+          accounts: {
+            ...defaultState.metamask.internalAccounts.accounts,
+            [qrAccountId]: {
+              address: qrAccountAddress,
+              id: qrAccountId,
+              metadata: {
+                name: 'Keystone',
+                keyring: { type: 'QR Hardware Wallet Device' },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+        },
+        accountIdByAddress: {
+          ...defaultState.metamask.accountIdByAddress,
+          [qrAccountAddress]: qrAccountId,
+        },
+      },
+    });
+
+    const getLoadingActionTypes = (store) =>
+      store
+        .getActions()
+        .map(({ type }) => type)
+        .filter(
+          (type) =>
+            type === 'SHOW_LOADING_INDICATION' ||
+            type === 'HIDE_LOADING_INDICATION',
+        );
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('does not show the loading indicator for a hardware wallet when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore(getQrAccountState());
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.updateAndApproveTx(txMeta, true, ''));
+
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(1);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('shows the loading indicator for a hardware wallet when dontShowLoadingIndicator is false', async () => {
+      const store = mockStore(getQrAccountState());
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          txMeta,
+          false,
+          'Confirm with your hardware wallet',
+        ),
+      );
+
+      expect(store.getActions()).toContainEqual({
+        type: 'SHOW_LOADING_INDICATION',
+        payload: 'Confirm with your hardware wallet',
+      });
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'SHOW_LOADING_INDICATION',
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('does not show the loading indicator for a software account when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore();
+      const resolvePendingApproval = sinon.stub().resolves();
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        resolvePendingApproval,
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          {
+            ...txMeta,
+            txParams: { ...txMeta.txParams, from: '0xFirstAddress' },
+          },
+          true,
+          '',
+        ),
+      );
+
+      expect(resolvePendingApproval.callCount).toStrictEqual(1);
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(0);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+  });
+
   describe('#getLedgerAppConfiguration', () => {
     afterEach(() => {
       sinon.restore();

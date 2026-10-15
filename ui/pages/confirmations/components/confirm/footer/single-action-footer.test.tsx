@@ -84,6 +84,8 @@ function render({
   }[],
   pathname,
   isMoneyAccountPayEnabled = false,
+  quotes,
+  isAmountPending = false,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -102,6 +104,15 @@ function render({
   }[];
   pathname?: string;
   isMoneyAccountPayEnabled?: boolean;
+  isAmountPending?: boolean;
+  quotes?: {
+    strategy: string;
+    request?: {
+      isMaxAmount?: boolean;
+      sourceTokenAmount?: string;
+      targetAmountMinimum?: string;
+    };
+  }[];
 } = {}) {
   const baseState = getMockConfirmStateForTransaction(confirmation);
 
@@ -118,6 +129,13 @@ function render({
           },
         },
       },
+      ...(quotes
+        ? {
+            transactionData: {
+              [confirmation.id]: { quotes },
+            },
+          }
+        : {}),
     },
     confirmAlerts: {
       alerts: { [confirmation.id]: alerts },
@@ -132,6 +150,9 @@ function render({
     />,
     configureStore(state),
     pathname,
+    undefined,
+    undefined,
+    isAmountPending,
   );
 }
 
@@ -412,6 +433,28 @@ describe('<SingleActionFooter />', () => {
     });
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('keeps confirm pending while the typed amount has not been committed', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      isAmountPending: true,
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('enables confirm once the typed amount is no longer pending', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      isAmountPending: false,
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeEnabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
   });
 
   it('shows Withdraw label for perpsWithdraw transaction type', () => {
