@@ -191,17 +191,19 @@ test('trace-usage reruns are identical and ignore false importers', () => {
 
   const first = runTrace();
   assert.equal(first.status, 0, first.stderr);
-  const outputFiles = [
+  const outputNames = [
     'out/trace.md',
     'out/trace.json',
     'out/trace.by-type.csv',
     'out/trace.by-selector.csv',
-  ].map((file) => fs.readFileSync(path.join(root, file), 'utf8'));
+    'out/trace.by-migration-selector.csv',
+  ];
+  const outputFiles = outputNames.map((file) => fs.readFileSync(path.join(root, file), 'utf8'));
 
   const second = runTrace();
   assert.equal(second.status, 0, second.stderr);
   outputFiles.forEach((contents, index) => {
-    const file = ['out/trace.md', 'out/trace.json', 'out/trace.by-type.csv', 'out/trace.by-selector.csv'][index];
+    const file = outputNames[index];
     assert.equal(fs.readFileSync(path.join(root, file), 'utf8'), contents);
   });
 
@@ -225,13 +227,14 @@ test('trace-usage reruns are identical and ignore false importers', () => {
   );
   assert.equal(summary.completedFileCount, 1);
   assert.equal(summary.status, 'ok');
-  assert.equal(summary.schemaVersion, 2);
+  assert.equal(summary.schemaVersion, 3);
   assert.deepEqual(
     summary.edges.find((edge) => edge.to === 'ui/hooks/useAsset.ts'),
     {
       from: 'ui/selectors/assets.ts',
       to: 'ui/hooks/useAsset.ts',
       selectors: ['getAsset'],
+      migrationSelectors: ['getAsset'],
       lines: [1],
     },
   );
@@ -241,6 +244,7 @@ test('trace-usage reruns are identical and ignore false importers', () => {
       from: 'ui/selectors/derived.ts',
       to: 'ui/pages/home.tsx',
       selectors: ['getDerived'],
+      migrationSelectors: ['getAsset'],
       lines: [1],
     },
   );
@@ -271,4 +275,55 @@ test('trace-usage reruns are identical and ignore false importers', () => {
   assert.deepEqual(driftedSummary.unresolvedSelectors, [
     { file: 'ui/selectors/assets.ts', selector: 'missingSelector' },
   ]);
+});
+
+test('aliases keep the assets-migration selector they rename', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'trace-alias-'));
+  writeFile(
+    path.join(root, 'shared/lib/selectors/assets-migration.ts'),
+    `export const getTokensControllerAllTokens = (state) => state.tokens;\n`,
+  );
+  writeFile(
+    path.join(root, 'ui/selectors/selectors.js'),
+    `
+      import { getTokensControllerAllTokens } from '../../shared/lib/selectors/assets-migration';
+      export { getTokensControllerAllTokens as getAllTokens };
+      export const selectAllTokensFlat = createSelector(
+        getTokensControllerAllTokens,
+        (tokens) => tokens,
+      );
+    `,
+  );
+  writeFile(
+    path.join(root, 'ui/hooks/useTokens.ts'),
+    `import { getAllTokens, selectAllTokensFlat } from '../selectors/selectors';\nexport function useTokens() { return null; }\n`,
+  );
+  writeFile(
+    path.join(root, 'config.json'),
+    JSON.stringify({
+      output: 'out/trace.md',
+      roots: [{ file: 'shared/lib/selectors/assets-migration.ts' }],
+    }),
+  );
+  const result = spawnSync(
+    process.execPath,
+    [path.join(scriptsDir, 'trace-usage.js'), '--config', 'config.json'],
+    { cwd: root, encoding: 'utf8' },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const summary = JSON.parse(fs.readFileSync(path.join(root, 'out/trace.json'), 'utf8'));
+  assert.deepEqual(
+    summary.edges.find((edge) => edge.to === 'ui/hooks/useTokens.ts'),
+    {
+      from: 'ui/selectors/selectors.js',
+      to: 'ui/hooks/useTokens.ts',
+      selectors: ['getAllTokens', 'selectAllTokensFlat'],
+      migrationSelectors: ['getTokensControllerAllTokens'],
+      lines: [1],
+    },
+  );
+  assert.deepEqual(
+    summary.files.find((file) => file.path === 'ui/selectors/selectors.js').migrationSelectors,
+    ['getTokensControllerAllTokens'],
+  );
 });

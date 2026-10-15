@@ -53,7 +53,12 @@ function resolveRelative(fromFile, specifier) {
 function specifierMatches(specifier, { pathFragment, barrelMode, sourceFile, importerFile }) {
   const withoutExt = specifier.replace(/\.(js|jsx|ts|tsx)$/, '');
   if (barrelMode) {
-    return withoutExt === pathFragment || withoutExt.endsWith(`/${pathFragment}`);
+    if (withoutExt === pathFragment) return true;
+    const suffix = `/${pathFragment}`;
+    if (!withoutExt.endsWith(suffix)) return false;
+    // `selectors/selectors` is the file selectors.js, not the barrel directory.
+    const parent = withoutExt.slice(0, -suffix.length);
+    return parent !== pathFragment && !parent.endsWith(suffix);
   }
   if (withoutExt === pathFragment || withoutExt.endsWith(`/${pathFragment}`)) {
     return true;

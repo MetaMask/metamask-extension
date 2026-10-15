@@ -1,0 +1,5805 @@
+{
+  "schemaVersion": 3,
+  "status": "ok",
+  "issues": [],
+  "metricsNote": "importedSymbolSlots counts distinct imported names on each file. It is not a count of call sites. selectors are those imported names. migrationSelectors are the shared/lib/selectors/assets-migration.ts exports those names trace back to. edges[].lines and files[].lines are 1-based lines of the import or export keyword in the consumer.",
+  "configPath": "trace-selectors/config.assets-controllers.json",
+  "output": "trace-selectors/output/selector-usage-trace-assets-migration.md",
+  "truncated": false,
+  "maxLayers": 0,
+  "completedFileCount": 0,
+  "unresolvedSelectors": [],
+  "roots": [
+    {
+      "file": "shared/lib/selectors/assets-migration.ts",
+      "selectors": null
+    }
+  ],
+  "remaining": {
+    "files": 146,
+    "terminalFiles": 127,
+    "nonTerminalFiles": 19,
+    "importedSymbolSlots": 274
+  },
+  "layers": [
+    {
+      "layer": 1,
+      "files": 1,
+      "terminalFiles": 0,
+      "nonTerminalFiles": 1,
+      "importedSymbolSlots": 15
+    },
+    {
+      "layer": 2,
+      "files": 17,
+      "terminalFiles": 5,
+      "nonTerminalFiles": 12,
+      "importedSymbolSlots": 71
+    },
+    {
+      "layer": 3,
+      "files": 119,
+      "terminalFiles": 112,
+      "nonTerminalFiles": 7,
+      "importedSymbolSlots": 192
+    },
+    {
+      "layer": 4,
+      "files": 10,
+      "terminalFiles": 10,
+      "nonTerminalFiles": 0,
+      "importedSymbolSlots": 11
+    }
+  ],
+  "byType": [
+    {
+      "type": "component",
+      "files": 65
+    },
+    {
+      "type": "hook",
+      "files": 62
+    },
+    {
+      "type": "selector",
+      "files": 8
+    },
+    {
+      "type": "duck",
+      "files": 6
+    },
+    {
+      "type": "other",
+      "files": 4
+    },
+    {
+      "type": "util",
+      "files": 1
+    }
+  ],
+  "bySelector": [
+    {
+      "selector": "getCurrentCurrency",
+      "files": 52
+    },
+    {
+      "selector": "getCurrencyRates",
+      "files": 17
+    },
+    {
+      "selector": "getMarketData",
+      "files": 13
+    },
+    {
+      "selector": "getSelectedAccount",
+      "files": 12
+    },
+    {
+      "selector": "getAllTokens",
+      "files": 10
+    },
+    {
+      "selector": "getAssetsRates",
+      "files": 9
+    },
+    {
+      "selector": "getTokensControllerAllTokens",
+      "files": 9
+    },
+    {
+      "selector": "getAccountTrackerControllerAccountsByChainId",
+      "files": 7
+    },
+    {
+      "selector": "getCurrencyRateControllerCurrencyRates",
+      "files": 7
+    },
+    {
+      "selector": "getMultichainBalances",
+      "files": 7
+    },
+    {
+      "selector": "getMultichainCurrentCurrency",
+      "files": 7
+    },
+    {
+      "selector": "getTokenExchangeRates",
+      "files": 6
+    },
+    {
+      "selector": "getWalletsWithAccounts",
+      "files": 6
+    },
+    {
+      "selector": "selectConversionRateByChainId",
+      "files": 6
+    },
+    {
+      "selector": "getTokenBalancesControllerTokenBalances",
+      "files": 5
+    },
+    {
+      "selector": "getAssetsMetadata",
+      "files": 4
+    },
+    {
+      "selector": "getCurrencyRateControllerCurrentCurrency",
+      "files": 4
+    },
+    {
+      "selector": "getMetaMaskAccountsOrdered",
+      "files": 4
+    },
+    {
+      "selector": "getSwapsDefaultToken",
+      "files": 4
+    },
+    {
+      "selector": "getTokenBalances",
+      "files": 4
+    },
+    {
+      "selector": "getTokenRatesControllerMarketData",
+      "files": 4
+    },
+    {
+      "selector": "getWalletIdAndNameByAccountAddress",
+      "files": 4
+    },
+    {
+      "selector": "selectBalanceForAllWallets",
+      "files": 4
+    },
+    {
+      "selector": "getAccountAssets",
+      "files": 3
+    },
+    {
+      "selector": "getCrossChainTokenExchangeRates",
+      "files": 3
+    },
+    {
+      "selector": "getFromAmountInCurrency",
+      "files": 3
+    },
+    {
+      "selector": "getMetaMaskAccounts",
+      "files": 3
+    },
+    {
+      "selector": "getMultichainAggregatedBalance",
+      "files": 3
+    },
+    {
+      "selector": "getMultiChainBalancesControllerBalances",
+      "files": 3
+    },
+    {
+      "selector": "getNativeTokenCachedBalanceByChainIdSelector",
+      "files": 3
+    },
+    {
+      "selector": "selectAccountGroupBalanceForEmptyState",
+      "files": 3
+    },
+    {
+      "selector": "getAvailableBatchSellSwapAssetsForNetwork",
+      "files": 2
+    },
+    {
+      "selector": "getCrossChainMetaMaskCachedBalances",
+      "files": 2
+    },
+    {
+      "selector": "getMultiChainAssets",
+      "files": 2
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAllIgnoredAssets",
+      "files": 2
+    },
+    {
+      "selector": "getMultichainAssetsRatesControllerConversionRates",
+      "files": 2
+    },
+    {
+      "selector": "getMultichainNativeTokenBalance",
+      "files": 2
+    },
+    {
+      "selector": "getTokenBalancesEvm",
+      "files": 2
+    },
+    {
+      "selector": "getTokensControllerAllIgnoredTokens",
+      "files": 2
+    },
+    {
+      "selector": "selectLocalActivityItemsByIdentifier",
+      "files": 2
+    },
+    {
+      "selector": "selectSingleTokenByAddressAndChainId",
+      "files": 2
+    },
+    {
+      "selector": "*",
+      "files": 1
+    },
+    {
+      "selector": "accountsWithSendEtherInfoSelector",
+      "files": 1
+    },
+    {
+      "selector": "getAccountsWithLabels",
+      "files": 1
+    },
+    {
+      "selector": "getFormattedPriceImpactFiat",
+      "files": 1
+    },
+    {
+      "selector": "getFromTokenConversionRate",
+      "files": 1
+    },
+    {
+      "selector": "getHistoricalMultichainAggregatedBalance",
+      "files": 1
+    },
+    {
+      "selector": "getIsAssetsUnifyStateEnabled",
+      "files": 1
+    },
+    {
+      "selector": "getMetaMaskAccountsConnected",
+      "files": 1
+    },
+    {
+      "selector": "getMetaMaskCachedBalances",
+      "files": 1
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAccountsAssets",
+      "files": 1
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAssetsMetadata",
+      "files": 1
+    },
+    {
+      "selector": "getMultichainCoinRates",
+      "files": 1
+    },
+    {
+      "selector": "getMultichainNativeAssetType",
+      "files": 1
+    },
+    {
+      "selector": "getRatesControllerRates",
+      "files": 1
+    },
+    {
+      "selector": "getShouldShowSeedPhraseReminder",
+      "files": 1
+    },
+    {
+      "selector": "getToAccounts",
+      "files": 1
+    },
+    {
+      "selector": "getTokensAcrossChainsByAccountAddressSelector",
+      "files": 1
+    },
+    {
+      "selector": "getUpdatedAndSortedAccountsWithCaipAccountId",
+      "files": 1
+    },
+    {
+      "selector": "selectAccountGroupBalanceIsLoadedForEmptyState",
+      "files": 1
+    },
+    {
+      "selector": "selectAllTokensFlat",
+      "files": 1
+    },
+    {
+      "selector": "selectBalanceBySelectedAccountGroup",
+      "files": 1
+    },
+    {
+      "selector": "selectLocalActivityItems",
+      "files": 1
+    },
+    {
+      "selector": "selectMarketRates",
+      "files": 1
+    },
+    {
+      "selector": "selectNonEvmActivityItems",
+      "files": 1
+    },
+    {
+      "selector": "selectNonEvmActivityItemsById",
+      "files": 1
+    }
+  ],
+  "byMigrationSelector": [
+    {
+      "selector": "getCurrencyRateControllerCurrentCurrency",
+      "files": 62
+    },
+    {
+      "selector": "getAccountTrackerControllerAccountsByChainId",
+      "files": 52
+    },
+    {
+      "selector": "getMultiChainBalancesControllerBalances",
+      "files": 43
+    },
+    {
+      "selector": "getCurrencyRateControllerCurrencyRates",
+      "files": 34
+    },
+    {
+      "selector": "getTokenRatesControllerMarketData",
+      "files": 33
+    },
+    {
+      "selector": "getTokensControllerAllTokens",
+      "files": 27
+    },
+    {
+      "selector": "getMultichainAssetsRatesControllerConversionRates",
+      "files": 22
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAccountsAssets",
+      "files": 12
+    },
+    {
+      "selector": "getTokenBalancesControllerTokenBalances",
+      "files": 10
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAssetsMetadata",
+      "files": 9
+    },
+    {
+      "selector": "getIsAssetsUnifyStateEnabled",
+      "files": 6
+    },
+    {
+      "selector": "getMultiChainAssetsControllerAllIgnoredAssets",
+      "files": 2
+    },
+    {
+      "selector": "getRatesControllerRates",
+      "files": 2
+    },
+    {
+      "selector": "getTokensControllerAllIgnoredTokens",
+      "files": 2
+    }
+  ],
+  "edges": [
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "app/scripts/metamask-controller.js",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        178
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "app/scripts/services/legacy-background-api-service.ts",
+      "selectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        298
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "app/scripts/services/user-traits-service.ts",
+      "selectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        17
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/components/app/arc-usage-notice-toast/selectors.ts",
+      "selectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/ducks/bridge/asset-selectors.ts",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/ducks/bridge/selectors.ts",
+      "selectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        70
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/ducks/metamask/base-selectors.ts",
+      "selectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/ducks/metamask/metamask.js",
+      "selectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/pages/confirmations/confirmation/stories/util.js",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/pages/confirmations/hooks/alerts/transactions/useIsMonadReserveViolation.ts",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/pages/routes/routes.component.tsx",
+      "selectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        156
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/pages/token-management/token-management.tsx",
+      "selectors": [
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/selectors/activity.ts",
+      "selectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        32
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/selectors/assets.ts",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getIsAssetsUnifyStateEnabled",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getIsAssetsUnifyStateEnabled",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        83
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/selectors/confirm-transaction.js",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/selectors/multichain.ts",
+      "selectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates"
+      ],
+      "lines": [
+        33
+      ]
+    },
+    {
+      "from": "shared/lib/selectors/assets-migration.ts",
+      "to": "ui/selectors/selectors.js",
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        50
+      ]
+    },
+    {
+      "from": "ui/ducks/batch-sell/selectors.ts",
+      "to": "ui/pages/batch-sell/pages/review/hooks/useBatchSellQuotesConfig.ts",
+      "selectors": [
+        "getAvailableBatchSellSwapAssetsForNetwork"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/ducks/batch-sell/selectors.ts",
+      "to": "ui/pages/batch-sell/pages/select/batch-sell-select-page.tsx",
+      "selectors": [
+        "getAvailableBatchSellSwapAssetsForNetwork"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/ducks/bridge/selectors.ts",
+      "to": "ui/hooks/bridge/useQuoteFetchEvents.ts",
+      "selectors": [
+        "getFromAmountInCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/ducks/bridge/selectors.ts",
+      "to": "ui/hooks/bridge/useSubmitBridgeTransaction.ts",
+      "selectors": [
+        "getFromAmountInCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "ui/ducks/bridge/selectors.ts",
+      "to": "ui/pages/bridge/hooks/useBridgeAlerts.ts",
+      "selectors": [
+        "getFormattedPriceImpactFiat"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/ducks/bridge/selectors.ts",
+      "to": "ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx",
+      "selectors": [
+        "getToAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "from": "ui/ducks/bridge/selectors.ts",
+      "to": "ui/pages/bridge/prepare/prepare-bridge-page.tsx",
+      "selectors": [
+        "getFromAmountInCurrency",
+        "getFromTokenConversionRate"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/account-group-balance-change/account-group-balance-change.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/account-group-balance/account-group-balance.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        29
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/asset-list/sort-control/sort-control.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/hooks/useMultichainAssets.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        14
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/hooks/useTokenDisplayInfo.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        19
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/assets/nfts/nft-details/nft-details.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        70
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/currency-input/currency-input.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/transaction/token-fiat-value.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/app/wallet-overview/aggregated-percentage-overview.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        39
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/components/ui/aggregated-balance/aggregated-balance.tsx",
+      "selectors": [
+        "getCurrentCurrency",
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/bridge/useBridgeExchangeRates.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/money/use-money-deposit-cta-eligibility.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/money/use-money-deposit-tokens.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/multichain-accounts/useAccountBalance.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useAccountTotalCrossChainFiatBalance.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useAccountTotalFiatBalance.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        19
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useConvertToFiat.ts",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useCurrencyDisplay.js",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useEthFiatAmount.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useFiatFormatter.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useFormatAsFiat.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useTokenBalances.ts",
+      "selectors": [
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useTokenFiatAmount.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useTokenInsightsData.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/hooks/useTokensToSearch.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/asset/components/asset-market-details.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        19
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/asset/components/asset-page.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        55
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/asset/hooks/useCurrentPrice.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        13
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/batch-sell/pages/review/components/header.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/batch-sell/pages/review/components/quotes-list-item.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/batch-sell/pages/review/components/review-and-confirm-modal.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        44
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/batch-sell/pages/review/components/select-received-asset-modal.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/batch-sell/pages/select/components/asset-list-item.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/bridge/asset-picker/asset.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/bridge/prepare/prepare-bridge-page.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        88
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/bridge/quotes/bridge-quotes-modal.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        38
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/bridge/quotes/multichain-bridge-quote-card.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        34
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.ts",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        14
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-list-item/gas-fee-token-list-item.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        14
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/components/transactions/custom-amount/custom-amount.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/hooks/test-utils.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/confirmations/hooks/tokens/useTokenWithBalance.ts",
+      "selectors": [
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        13
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/discover-search/discover-asset-row.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        26
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/remove-snap-account/snap-account-card.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        42
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/settings/assets-tab/currency-sub-page.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/settings/preferences-and-display-tab/local-currency-item.tsx",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/pages/swaps/awaiting-swap/awaiting-swap.js",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/selectors/assets.ts",
+      "selectors": [
+        "getCurrentCurrency",
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        65
+      ]
+    },
+    {
+      "from": "ui/ducks/metamask/metamask.js",
+      "to": "ui/selectors/multichain.ts",
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        38
+      ]
+    },
+    {
+      "from": "ui/selectors/activity.ts",
+      "to": "ui/components/app/toast-listener/useToastLabel.ts",
+      "selectors": [
+        "selectLocalActivityItemsByIdentifier"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/selectors/activity.ts",
+      "to": "ui/hooks/useConvertToFiat.ts",
+      "selectors": [
+        "selectMarketRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "from": "ui/selectors/activity.ts",
+      "to": "ui/pages/activity/useLocalTransactions.ts",
+      "selectors": [
+        "selectLocalActivityItems"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/activity.ts",
+      "to": "ui/pages/activity/useNonEvmTransactions.ts",
+      "selectors": [
+        "selectNonEvmActivityItems"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/selectors/activity.ts",
+      "to": "ui/pages/details/transaction-details.tsx",
+      "selectors": [
+        "selectLocalActivityItemsByIdentifier",
+        "selectNonEvmActivityItemsById"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/assets/account-group-balance/account-group-balance.tsx",
+      "selectors": [
+        "getMultichainNativeTokenBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets"
+      ],
+      "lines": [
+        13
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/assets/hooks/useMultichainAssets.tsx",
+      "selectors": [
+        "getMultiChainAssets"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/assets/token-list/token-list.tsx",
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        59
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx",
+      "selectors": [
+        "getMultiChainAssets"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/transaction-activity-empty-state/transaction-activity-empty-state.tsx",
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/wallet-overview/aggregated-percentage-overview.tsx",
+      "selectors": [
+        "getHistoricalMultichainAggregatedBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/app/wallet-overview/coin-overview.tsx",
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState",
+        "selectAccountGroupBalanceIsLoadedForEmptyState",
+        "selectBalanceBySelectedAccountGroup"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        63
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx",
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.tsx",
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        33
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/multichain/account-list-item/account-list-item.js",
+      "selectors": [
+        "getMultichainAggregatedBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        60
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/components/ui/aggregated-balance/aggregated-balance.tsx",
+      "selectors": [
+        "getAccountAssets",
+        "getAssetsRates",
+        "getMultichainAggregatedBalance",
+        "getMultichainNativeTokenBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/ducks/batch-sell/selectors.ts",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        18
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/ducks/bridge/asset-selectors.ts",
+      "selectors": [
+        "getAccountAssets",
+        "getAssetsMetadata",
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        29
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/ducks/bridge/selectors.ts",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        80
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/hooks/money/use-money-activity-display.ts",
+      "selectors": [
+        "selectSingleTokenByAddressAndChainId"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/hooks/subscription/useSubscriptionPricing.ts",
+      "selectors": [
+        "getTokenBalancesEvm"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/hooks/useConvertToFiat.ts",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/hooks/useMultichainBalances.ts",
+      "selectors": [
+        "getAccountAssets",
+        "getAssetsMetadata",
+        "getAssetsRates",
+        "getTokenBalancesEvm"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/hooks/useMultichainTransactionDisplay.ts",
+      "selectors": [
+        "getAssetsMetadata"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/asset/components/asset-market-details.tsx",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/asset/components/asset-page.tsx",
+      "selectors": [
+        "getMultichainNativeAssetType"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets"
+      ],
+      "lines": [
+        71
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/asset/hooks/useCurrentPrice.ts",
+      "selectors": [
+        "getAssetsRates"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/confirmations/hooks/tokens/useTokenWithBalance.ts",
+      "selectors": [
+        "selectSingleTokenByAddressAndChainId"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx",
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        74
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/pages/settings/sync-accounts/components/wallet-selection-list.tsx",
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/selectors/activity.ts",
+      "selectors": [
+        "getAssetsMetadata"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata"
+      ],
+      "lines": [
+        56
+      ]
+    },
+    {
+      "from": "ui/selectors/assets.ts",
+      "to": "ui/selectors/multi-srp/multi-srp.ts",
+      "selectors": [
+        "getMultichainAggregatedBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/assets/defi-list/useDefiPositionsList.ts",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/assets/hooks/useLowValueTokenPartition.ts",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/assets/hooks/useTokenDisplayInfo.tsx",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx",
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx",
+      "selectors": [
+        "getCrossChainTokenExchangeRates",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx",
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx",
+      "selectors": [
+        "getMarketData",
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/wallet-overview/aggregated-percentage-overview.tsx",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/app/wallet-overview/coin-buttons.tsx",
+      "selectors": [
+        "getSwapsDefaultToken"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        47
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
+      "selectors": [
+        "getAllTokens",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/multichain/carousel/carousel.tsx",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/multichain/funding-method-modal/funding-method-modal.tsx",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/multichain/token-list-item/token-list-item.tsx",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        49
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/components/ui/account-mismatch-warning/account-mismatch-warning.component.js",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/ducks/batch-sell/selectors.ts",
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        19
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/ducks/swaps/swaps.js",
+      "selectors": [
+        "getSelectedAccount",
+        "getSwapsDefaultToken",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        56
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/helpers/utils/tags.ts",
+      "selectors": [
+        "selectAllTokensFlat"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/accounts/useAccountNetworkAvailability.ts",
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/bridge/useBridgeExchangeRates.ts",
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/hardware-wallets/useSendBundleAmountSymbol.ts",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/musd/useMusdBalance.ts",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        17
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/rewards/usePrimaryWalletGroupAccounts.ts",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/subscription/useSubscription.ts",
+      "selectors": [
+        "getUpdatedAndSortedAccountsWithCaipAccountId"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useAccountTotalCrossChainFiatBalance.ts",
+      "selectors": [
+        "getCrossChainMetaMaskCachedBalances",
+        "getCrossChainTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useAccountTotalFiatBalance.js",
+      "selectors": [
+        "getAllTokens",
+        "getMetaMaskCachedBalances",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useGetFormattedTokensPerChain.ts",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useTokenFiatAmount.js",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useTokenInsightsData.ts",
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/hooks/useTokensToSearch.js",
+      "selectors": [
+        "getSwapsDefaultToken",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/asset/hooks/useCurrentPrice.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/cancel-speedup/cancel-speedup.tsx",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/approve/hooks/use-received-token.ts",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.ts",
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        29
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts",
+      "selectors": [
+        "getCrossChainMetaMaskCachedBalances"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.tsx",
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx",
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts",
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        15
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/send/useCurrencyConversions.ts",
+      "selectors": [
+        "getCrossChainTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/test-utils.js",
+      "selectors": [
+        "getTokenExchangeRates",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/tokens/useTokenWithBalance.ts",
+      "selectors": [
+        "getNativeTokenCachedBalanceByChainIdSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/transactions/useDepositPrefill.ts",
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/confirmations/hooks/useHasInsufficientBalance.ts",
+      "selectors": [
+        "getNativeTokenCachedBalanceByChainIdSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/create-account/connect-hardware/index.tsx",
+      "selectors": [
+        "getMetaMaskAccounts",
+        "getMetaMaskAccountsConnected"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/custom-token-import/custom-token-import.tsx",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        38
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/defi/components/defi-details-page.tsx",
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/discover-search/discover-asset-row.tsx",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        27
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/permissions-connect/permissions-connect.tsx",
+      "selectors": [
+        "getAccountsWithLabels"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        55
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/remove-snap-account/snap-account-card.tsx",
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/pages/swaps/create-new-swap/create-new-swap.js",
+      "selectors": [
+        "getSwapsDefaultToken"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        18
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/selectors/activity.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        68
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/selectors/assets.ts",
+      "selectors": [
+        "getAllTokens",
+        "getCurrencyRates",
+        "getMarketData",
+        "getNativeTokenCachedBalanceByChainIdSelector",
+        "getTokensAcrossChainsByAccountAddressSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        110
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/selectors/confirm-transaction.js",
+      "selectors": [
+        "getMetaMaskAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        35
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/selectors/multichain-accounts/account-tree.ts",
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "ui/selectors/index.js",
+      "to": "ui/store/actions.ts",
+      "selectors": [
+        "getMetaMaskAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        121
+      ]
+    },
+    {
+      "from": "ui/selectors/multi-srp/multi-srp.ts",
+      "to": "ui/components/app/recovery-phrase-reminder/seed-phrase-backup-notification-container.tsx",
+      "selectors": [
+        "getShouldShowSeedPhraseReminder"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/ducks/bridge/selectors.ts",
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        108
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/hooks/rewards/usePrimaryWalletGroupAccounts.ts",
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/hooks/useDisplayName.ts",
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/bridge/hooks/useDestinationAccount.ts",
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/confirmations/components/account-select-modal/account-select-modal.tsx",
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/confirmations/hooks/send/useAccountRecipients.ts",
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts",
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress",
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx",
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        35
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain-accounts/account-tree.ts",
+      "to": "ui/pages/shield/transaction-shield/account-selector/account-selector.tsx",
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        27
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/components/multichain/account-list-item/account-list-item.js",
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        46
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        46
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/ducks/bridge/asset-selectors.ts",
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        28
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/ducks/bridge/selectors.ts",
+      "selectors": [
+        "getMultichainBalances",
+        "getMultichainCoinRates"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates"
+      ],
+      "lines": [
+        74
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/hooks/useCurrencyDisplay.js",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/hooks/useMultichainAccountTotalFiatBalance.ts",
+      "selectors": [
+        "getMultichainBalances",
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/hooks/useMultichainBalances.ts",
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/hooks/useUserPreferencedCurrency.js",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/pages/asset/hooks/useAssetActivation.ts",
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/pages/confirmations/hooks/send/useCurrencyConversions.ts",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        11
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/pages/confirmations/hooks/test-utils.js",
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "from": "ui/selectors/multichain.ts",
+      "to": "ui/selectors/assets.ts",
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        108
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/ducks/metamask/metamask.js",
+      "selectors": [
+        "accountsWithSendEtherInfoSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        18
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/hooks/useTokenInsightsData.ts",
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        13
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/pages/asset/components/asset-market-details.tsx",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        26
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/pages/confirmations/hooks/tokens/useAddToken.ts",
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/selectors/activity.ts",
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        68
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/selectors/assets.ts",
+      "selectors": [
+        "getAllTokens",
+        "getCurrencyRates",
+        "getMarketData",
+        "getNativeTokenCachedBalanceByChainIdSelector",
+        "getTokensAcrossChainsByAccountAddressSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        110
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/selectors/confirm-transaction.js",
+      "selectors": [
+        "getMetaMaskAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        35
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/selectors/index.js",
+      "selectors": [
+        "*"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "from": "ui/selectors/selectors.js",
+      "to": "ui/selectors/multichain-accounts/account-tree.ts",
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        28
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "app/scripts/metamask-controller.js",
+      "layer": 2,
+      "type": "other",
+      "terminal": false,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        178
+      ]
+    },
+    {
+      "path": "app/scripts/services/legacy-background-api-service.ts",
+      "layer": 2,
+      "type": "other",
+      "terminal": false,
+      "selectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        298
+      ]
+    },
+    {
+      "path": "app/scripts/services/user-traits-service.ts",
+      "layer": 2,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "ui/components/app/arc-usage-notice-toast/selectors.ts",
+      "layer": 2,
+      "type": "other",
+      "terminal": false,
+      "selectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/ducks/bridge/asset-selectors.ts",
+      "layer": 2,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "getAccountAssets",
+        "getAccountTrackerControllerAccountsByChainId",
+        "getAssetsMetadata",
+        "getAssetsRates",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        21,
+        28,
+        29
+      ]
+    },
+    {
+      "path": "ui/ducks/bridge/selectors.ts",
+      "layer": 2,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "getAssetsRates",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainBalances",
+        "getMultichainCoinRates",
+        "getTokenRatesControllerMarketData",
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        70,
+        74,
+        80,
+        108
+      ]
+    },
+    {
+      "path": "ui/ducks/metamask/base-selectors.ts",
+      "layer": 2,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/ducks/metamask/metamask.js",
+      "layer": 2,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "accountsWithSendEtherInfoSelector",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        9,
+        18
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/confirmation/stories/util.js",
+      "layer": 2,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/alerts/transactions/useIsMonadReserveViolation.ts",
+      "layer": 2,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "path": "ui/pages/routes/routes.component.tsx",
+      "layer": 2,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        156
+      ]
+    },
+    {
+      "path": "ui/pages/token-management/token-management.tsx",
+      "layer": 2,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "path": "ui/selectors/activity.ts",
+      "layer": 2,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getAssetsMetadata",
+        "getCurrencyRates",
+        "getMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        32,
+        56,
+        68
+      ]
+    },
+    {
+      "path": "ui/selectors/assets.ts",
+      "layer": 2,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getAllTokens",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getIsAssetsUnifyStateEnabled",
+        "getMarketData",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultichainBalances",
+        "getMultiChainBalancesControllerBalances",
+        "getNativeTokenCachedBalanceByChainIdSelector",
+        "getTokenBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensAcrossChainsByAccountAddressSelector",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getIsAssetsUnifyStateEnabled",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAllIgnoredAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllIgnoredTokens",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        65,
+        83,
+        108,
+        110
+      ]
+    },
+    {
+      "path": "ui/selectors/confirm-transaction.js",
+      "layer": 2,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMetaMaskAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        10,
+        35
+      ]
+    },
+    {
+      "path": "ui/selectors/multichain.ts",
+      "layer": 2,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getRatesControllerRates"
+      ],
+      "lines": [
+        33,
+        38
+      ]
+    },
+    {
+      "path": "ui/selectors/selectors.js",
+      "layer": 2,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        50
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/account-group-balance-change/account-group-balance-change.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/account-group-balance/account-group-balance.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultichainNativeTokenBalance"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets"
+      ],
+      "lines": [
+        13,
+        29
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/asset-list/sort-control/sort-control.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/defi-list/useDefiPositionsList.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/hooks/useLowValueTokenPartition.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/hooks/useMultichainAssets.tsx",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultiChainAssets"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        14,
+        20
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/hooks/useTokenDisplayInfo.tsx",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5,
+        19
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/nfts/nft-details/nft-details.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        70
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAssetsRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        7,
+        10
+      ]
+    },
+    {
+      "path": "ui/components/app/assets/token-list/token-list.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        59
+      ]
+    },
+    {
+      "path": "ui/components/app/currency-input/currency-input.js",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCrossChainTokenExchangeRates",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11
+      ]
+    },
+    {
+      "path": "ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultiChainAssets"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12,
+        16
+      ]
+    },
+    {
+      "path": "ui/components/app/toast-listener/useToastLabel.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "selectLocalActivityItemsByIdentifier"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/components/app/transaction-activity-empty-state/transaction-activity-empty-state.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "path": "ui/components/app/transaction/token-fiat-value.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "path": "ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMarketData",
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        8,
+        16
+      ]
+    },
+    {
+      "path": "ui/components/app/wallet-overview/aggregated-percentage-overview.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getHistoricalMultichainAggregatedBalance",
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6,
+        7,
+        28
+      ]
+    },
+    {
+      "path": "ui/components/app/wallet-overview/coin-buttons.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSwapsDefaultToken"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        47
+      ]
+    },
+    {
+      "path": "ui/components/app/wallet-overview/coin-overview.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectAccountGroupBalanceForEmptyState",
+        "selectAccountGroupBalanceIsLoadedForEmptyState",
+        "selectBalanceBySelectedAccountGroup"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        63
+      ]
+    },
+    {
+      "path": "ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "path": "ui/components/multichain-accounts/multichain-address-rows-triggered-list/multichain-triggered-address-rows-list.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        33
+      ]
+    },
+    {
+      "path": "ui/components/multichain/account-list-item/account-list-item.js",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getMultichainAggregatedBalance",
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        46,
+        60
+      ]
+    },
+    {
+      "path": "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-network.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        39
+      ]
+    },
+    {
+      "path": "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens",
+        "getMultichainCurrentCurrency",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        31,
+        46
+      ]
+    },
+    {
+      "path": "ui/components/multichain/asset-picker-amount/asset-picker-modal/Asset.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "path": "ui/components/multichain/carousel/carousel.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "path": "ui/components/multichain/funding-method-modal/funding-method-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "path": "ui/components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/components/multichain/token-list-item/token-list-item.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        49
+      ]
+    },
+    {
+      "path": "ui/components/ui/account-mismatch-warning/account-mismatch-warning.component.js",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/components/ui/aggregated-balance/aggregated-balance.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAccountAssets",
+        "getAssetsRates",
+        "getCurrentCurrency",
+        "getMultichainAggregatedBalance",
+        "getMultichainNativeTokenBalance",
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        8,
+        12
+      ]
+    },
+    {
+      "path": "ui/ducks/batch-sell/selectors.ts",
+      "layer": 3,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "getAssetsRates",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        18,
+        19
+      ]
+    },
+    {
+      "path": "ui/ducks/swaps/swaps.js",
+      "layer": 3,
+      "type": "duck",
+      "terminal": false,
+      "selectors": [
+        "getSelectedAccount",
+        "getSwapsDefaultToken",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        56
+      ]
+    },
+    {
+      "path": "ui/helpers/utils/tags.ts",
+      "layer": 3,
+      "type": "util",
+      "terminal": false,
+      "selectors": [
+        "selectAllTokensFlat"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/hooks/accounts/useAccountNetworkAvailability.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/hooks/bridge/useBridgeExchangeRates.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        4,
+        5
+      ]
+    },
+    {
+      "path": "ui/hooks/bridge/useQuoteFetchEvents.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getFromAmountInCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/hooks/bridge/useSubmitBridgeTransaction.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getFromAmountInCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "path": "ui/hooks/gator-permissions/useGatorPermissionTokenInfo.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/hooks/hardware-wallets/useSendBundleAmountSymbol.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "path": "ui/hooks/money/use-money-activity-display.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "selectSingleTokenByAddressAndChainId"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/hooks/money/use-money-deposit-cta-eligibility.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "ui/hooks/money/use-money-deposit-tokens.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/hooks/multichain-accounts/useAccountBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/hooks/musd/useMusdBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        17
+      ]
+    },
+    {
+      "path": "ui/hooks/rewards/usePrimaryWalletGroupAccounts.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount",
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        5,
+        6
+      ]
+    },
+    {
+      "path": "ui/hooks/subscription/useSubscription.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getUpdatedAndSortedAccountsWithCaipAccountId"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        75
+      ]
+    },
+    {
+      "path": "ui/hooks/subscription/useSubscriptionPricing.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getTokenBalancesEvm"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/hooks/useAccountTotalCrossChainFiatBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCrossChainMetaMaskCachedBalances",
+        "getCrossChainTokenExchangeRates",
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        4,
+        8
+      ]
+    },
+    {
+      "path": "ui/hooks/useAccountTotalFiatBalance.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens",
+        "getCurrentCurrency",
+        "getMetaMaskCachedBalances",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5,
+        19
+      ]
+    },
+    {
+      "path": "ui/hooks/useConvertToFiat.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAssetsRates",
+        "getCurrencyRates",
+        "selectMarketRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "path": "ui/hooks/useCurrencyDisplay.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        5,
+        21
+      ]
+    },
+    {
+      "path": "ui/hooks/useEthFiatAmount.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/hooks/useFiatFormatter.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/hooks/useFormatAsFiat.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "path": "ui/hooks/useGetFormattedTokensPerChain.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/hooks/useMultichainAccountTotalFiatBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getMultichainBalances",
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/hooks/useMultichainBalances.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAccountAssets",
+        "getAssetsMetadata",
+        "getAssetsRates",
+        "getMultichainBalances",
+        "getTokenBalancesEvm"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        16,
+        22
+      ]
+    },
+    {
+      "path": "ui/hooks/useMultichainTransactionDisplay.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAssetsMetadata"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "path": "ui/hooks/useTokenBalances.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getTokenBalances"
+      ],
+      "migrationSelectors": [
+        "getTokenBalancesControllerTokenBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/hooks/useTokenFiatAmount.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getMarketData",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        3,
+        12
+      ]
+    },
+    {
+      "path": "ui/hooks/useTokenInsightsData.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "path": "ui/hooks/useTokensToSearch.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getSwapsDefaultToken",
+        "getTokenExchangeRates"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        7,
+        9
+      ]
+    },
+    {
+      "path": "ui/hooks/useUserPreferencedCurrency.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/pages/activity/useLocalTransactions.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "selectLocalActivityItems"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "ui/pages/activity/useNonEvmTransactions.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "selectNonEvmActivityItems"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata"
+      ],
+      "lines": [
+        3
+      ]
+    },
+    {
+      "path": "ui/pages/asset/components/asset-market-details.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAssetsRates",
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        19,
+        25,
+        26
+      ]
+    },
+    {
+      "path": "ui/pages/asset/components/asset-page.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultichainNativeAssetType"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainAssetsControllerAccountsAssets"
+      ],
+      "lines": [
+        55,
+        71
+      ]
+    },
+    {
+      "path": "ui/pages/asset/hooks/useAssetActivation.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getMultichainBalances"
+      ],
+      "migrationSelectors": [
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "path": "ui/pages/asset/hooks/useCurrentPrice.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAssetsRates",
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/review/components/header.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/review/components/quotes-list-item.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/review/components/review-and-confirm-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        44
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/review/components/select-received-asset-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/select/components/asset-list-item.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        24
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/asset-picker/asset.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/hooks/useBridgeAlerts.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getFormattedPriceImpactFiat"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getToAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        23
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/prepare/prepare-bridge-page.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getFromAmountInCurrency",
+        "getFromTokenConversionRate"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        28,
+        88
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/quotes/bridge-quotes-modal.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        38
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/quotes/multichain-bridge-quote-card.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        34
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/cancel-speedup/cancel-speedup.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/approve/hooks/use-received-token.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/hooks/useFeeCalculations.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        23,
+        29
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        14
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/hooks/useMaxValueRefresher.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCrossChainMetaMaskCachedBalances"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        9
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/hooks/useTokenDetails.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-list-item/gas-fee-token-list-item.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        31
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates"
+      ],
+      "lines": [
+        21
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        14,
+        15
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/transactions/custom-amount/custom-amount.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/send/useCurrencyConversions.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCrossChainTokenExchangeRates",
+        "getMultichainCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        6,
+        11
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/test-utils.js",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMultichainCurrentCurrency",
+        "getTokenExchangeRates",
+        "selectConversionRateByChainId"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        6,
+        7,
+        24
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/tokens/useAddToken.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        10
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency",
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        4,
+        7
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/tokens/useTokenWithBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getNativeTokenCachedBalanceByChainIdSelector",
+        "getTokenBalances",
+        "selectSingleTokenByAddressAndChainId"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getTokenBalancesControllerTokenBalances",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        7,
+        9,
+        13
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/transactions/useDepositPrefill.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getMarketData"
+      ],
+      "migrationSelectors": [
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        22
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/useHasInsufficientBalance.ts",
+      "layer": 3,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getNativeTokenCachedBalanceByChainIdSelector"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/pages/create-account/connect-hardware/index.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getMetaMaskAccounts",
+        "getMetaMaskAccountsConnected"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "path": "ui/pages/custom-token-import/custom-token-import.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAllTokens"
+      ],
+      "migrationSelectors": [
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        38
+      ]
+    },
+    {
+      "path": "ui/pages/defi/components/defi-details-page.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSelectedAccount"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        25
+      ]
+    },
+    {
+      "path": "ui/pages/details/transaction-details.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectLocalActivityItemsByIdentifier",
+        "selectNonEvmActivityItemsById"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAssetsMetadata",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/pages/discover-search/discover-asset-row.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrencyRates",
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrencyRates",
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        26,
+        27
+      ]
+    },
+    {
+      "path": "ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        74
+      ]
+    },
+    {
+      "path": "ui/pages/permissions-connect/permissions-connect.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAccountsWithLabels"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        55
+      ]
+    },
+    {
+      "path": "ui/pages/remove-snap-account/snap-account-card.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency",
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrentCurrency",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        31,
+        42
+      ]
+    },
+    {
+      "path": "ui/pages/settings/assets-tab/currency-sub-page.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/pages/settings/preferences-and-display-tab/local-currency-item.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/pages/settings/sync-accounts/components/wallet-selection-list.tsx",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "selectBalanceForAllWallets"
+      ],
+      "migrationSelectors": [
+        "getIsAssetsUnifyStateEnabled"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/pages/swaps/awaiting-swap/awaiting-swap.js",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getCurrentCurrency"
+      ],
+      "migrationSelectors": [
+        "getCurrencyRateControllerCurrentCurrency"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "ui/pages/swaps/create-new-swap/create-new-swap.js",
+      "layer": 3,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getSwapsDefaultToken"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        18
+      ]
+    },
+    {
+      "path": "ui/selectors/index.js",
+      "layer": 3,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "*"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getCurrencyRateControllerCurrencyRates",
+        "getMultiChainBalancesControllerBalances",
+        "getTokenRatesControllerMarketData",
+        "getTokensControllerAllTokens"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/selectors/multi-srp/multi-srp.ts",
+      "layer": 3,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getMultichainAggregatedBalance"
+      ],
+      "migrationSelectors": [
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        12
+      ]
+    },
+    {
+      "path": "ui/selectors/multichain-accounts/account-tree.ts",
+      "layer": 3,
+      "type": "selector",
+      "terminal": false,
+      "selectors": [
+        "getMetaMaskAccountsOrdered"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        28
+      ]
+    },
+    {
+      "path": "ui/store/actions.ts",
+      "layer": 3,
+      "type": "other",
+      "terminal": false,
+      "selectors": [
+        "getMetaMaskAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        121
+      ]
+    },
+    {
+      "path": "ui/components/app/recovery-phrase-reminder/seed-phrase-backup-notification-container.tsx",
+      "layer": 4,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getShouldShowSeedPhraseReminder"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainAssetsControllerAccountsAssets",
+        "getMultichainAssetsRatesControllerConversionRates"
+      ],
+      "lines": [
+        7
+      ]
+    },
+    {
+      "path": "ui/hooks/useDisplayName.ts",
+      "layer": 4,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        16
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/review/hooks/useBatchSellQuotesConfig.ts",
+      "layer": 4,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getAvailableBatchSellSwapAssetsForNetwork"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/pages/batch-sell/pages/select/batch-sell-select-page.tsx",
+      "layer": 4,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getAvailableBatchSellSwapAssetsForNetwork"
+      ],
+      "migrationSelectors": [
+        "getMultichainAssetsRatesControllerConversionRates",
+        "getTokenRatesControllerMarketData"
+      ],
+      "lines": [
+        5
+      ]
+    },
+    {
+      "path": "ui/pages/bridge/hooks/useDestinationAccount.ts",
+      "layer": 4,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        8
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/components/account-select-modal/account-select-modal.tsx",
+      "layer": 4,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        20
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/send/useAccountRecipients.ts",
+      "layer": 4,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        4
+      ]
+    },
+    {
+      "path": "ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts",
+      "layer": 4,
+      "type": "hook",
+      "terminal": true,
+      "selectors": [
+        "getWalletIdAndNameByAccountAddress",
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        6
+      ]
+    },
+    {
+      "path": "ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx",
+      "layer": 4,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        35
+      ]
+    },
+    {
+      "path": "ui/pages/shield/transaction-shield/account-selector/account-selector.tsx",
+      "layer": 4,
+      "type": "component",
+      "terminal": true,
+      "selectors": [
+        "getWalletsWithAccounts"
+      ],
+      "migrationSelectors": [
+        "getAccountTrackerControllerAccountsByChainId",
+        "getMultiChainBalancesControllerBalances"
+      ],
+      "lines": [
+        27
+      ]
+    }
+  ]
+}

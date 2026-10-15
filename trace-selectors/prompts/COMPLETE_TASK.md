@@ -65,7 +65,7 @@ node trace-selectors/scripts/trace-usage.js --config trace-selectors/config.asse
 ```
 
 - **Requirement:** `ripgrep` (`rg`) must be on `PATH`.
-- **Output:** The report is written to the path in the config’s `output` (e.g. `trace-selectors/output/selector-usage-trace-assets-controllers.md`). The same run writes `.json`, `.by-type.csv`, and `.by-selector.csv` beside that markdown file. Completed paths are omitted from the tables. Completed non-terminal files are still walked, so their unfinished consumers remain.
+- **Output:** The report is written to the path in the config’s `output` (e.g. `trace-selectors/output/selector-usage-trace-assets-migration.md`). The same run writes `.json`, `.by-type.csv`, and `.by-selector.csv` beside that markdown file. Completed paths are omitted from the tables. Completed non-terminal files are still walked, so their unfinished consumers remain.
 - **Exit codes:** `0` means the JSON `status` is `ok`. `3` means the summary was written but a configured selector is missing or the layer walk was capped. `2` means `rg` is not on `PATH`.
 
 Optional: cap depth for large graphs:
@@ -82,7 +82,7 @@ You **must** stage and commit all changes from this flow:
 
 1. **Stage** at least:
    - `trace-selectors/completed.txt`
-   - The trace output file (e.g. `trace-selectors/output/selector-usage-trace-assets-controllers.md`)
+   - The trace output file (e.g. `trace-selectors/output/selector-usage-trace-assets-migration.md`)
    - Any config change (e.g. `trace-selectors/config.assets-controllers.json`) if you added `completionFile`.
 2. **Commit** with a clear message, for example:
 

@@ -25,7 +25,7 @@ Optional env: `TRACE_MAX_LAYERS` — cap depth (e.g. `TRACE_MAX_LAYERS=4`) to ke
 
 ## Example
 
-See `config.assets-controllers.json`: one root with no filter (all of `assets.ts`), one root with a `selectors` list (only `getMultichainBalances` and `getMultichainNetwork` from `multichain.ts`).
+See `config.assets-controllers.json`. Its only root is `shared/lib/selectors/assets-migration.ts`, with every export tracked.
 
 ## Completion file (migrated files)
 
@@ -47,9 +47,10 @@ Every successful or attention run writes three files beside the markdown output 
 
 | File | Purpose |
 | --- | --- |
-| `.json` | Dashboard payload, schema version 2. `status` is `ok` or `attention`. `remaining.files` is the cleanup total. `edges` is the import tree. |
+| `.json` | Dashboard payload, schema version 3. `status` is `ok` or `attention`. `remaining.files` is the cleanup total. `edges` is the import tree. |
 | `.by-type.csv` | Columns `type,files`. |
-| `.by-selector.csv` | Columns `selector,files`. |
+| `.by-selector.csv` | Columns `selector,files`. These are the imported names. |
+| `.by-migration-selector.csv` | Columns `selector,files`. These are the assets-migration exports. |
 
 `importedSymbolSlots` counts distinct imported names on each file. It is not a count of call sites. `unresolvedSelectors` lists configured names that are not exported; those names are omitted from the trace until the config is updated.
 
@@ -60,6 +61,7 @@ Each `edges` item is one import relationship:
 | `from` | File that was imported. A barrel with no `index` file is `ui/selectors` or `ui/ducks`. |
 | `to` | Consumer file. Completed consumers are omitted. A completed file can still appear as `from` when its consumers remain. |
 | `selectors` | Names imported by that consumer from `from`. |
+| `migrationSelectors` | Exports from the root file that those imported names trace back to. An alias such as `getAllTokens` stays in `selectors`, and `getTokensControllerAllTokens` is listed here. |
 | `lines` | 1-based lines in `to` where the `import` or `export ... from` keyword starts. |
 
 `files[].lines` repeats those line numbers for the consumer. Both lists are sorted. A second run with the same tree rewrites the same bytes, so the JSON does not include a timestamp or duration.

@@ -38,7 +38,7 @@ function countBy(items, keyFn) {
  * @param {{ layer: number, path: string, symbols: string, type: string, terminal: boolean }[]} input.entries
  * @param {boolean} input.truncated
  * @param {number} input.maxLayers
- * @param {{ from: string, to: string, selectors: string[] | string, lines?: number[] }[]} [input.edges]
+ * @param {{ from: string, to: string, selectors: string[] | string, migrationSelectors?: string[] | string, lines?: number[] }[]} [input.edges]
  */
 function normalizeEdges(edges) {
   const merged = new Map();
@@ -47,16 +47,24 @@ function normalizeEdges(edges) {
     const selectors = splitSymbols(
       Array.isArray(edge.selectors) ? edge.selectors.join(', ') : edge.selectors,
     );
+    const migrationSelectors = splitSymbols(
+      Array.isArray(edge.migrationSelectors)
+        ? edge.migrationSelectors.join(', ')
+        : edge.migrationSelectors,
+    );
     const lines = [...new Set(edge.lines || [])]
       .filter((line) => Number.isInteger(line) && line > 0)
       .sort((a, b) => a - b);
     const existing = merged.get(key);
     if (!existing) {
-      merged.set(key, { from: edge.from, to: edge.to, selectors, lines });
+      merged.set(key, { from: edge.from, to: edge.to, selectors, migrationSelectors, lines });
       continue;
     }
     existing.selectors = splitSymbols(
       [...existing.selectors, ...selectors].join(', '),
+    );
+    existing.migrationSelectors = splitSymbols(
+      [...existing.migrationSelectors, ...migrationSelectors].join(', '),
     );
     existing.lines = [...new Set([...existing.lines, ...lines])].sort((a, b) => a - b);
   }
@@ -87,11 +95,16 @@ function buildSummary({
   const normalizedEdges = normalizeEdges(edges);
   const linesByFile = new Map();
   const selectorsByFile = new Map();
+  const migrationByFile = new Map();
   for (const edge of normalizedEdges) {
     linesByFile.set(edge.to, (linesByFile.get(edge.to) || []).concat(edge.lines));
     selectorsByFile.set(
       edge.to,
       (selectorsByFile.get(edge.to) || []).concat(edge.selectors),
+    );
+    migrationByFile.set(
+      edge.to,
+      (migrationByFile.get(edge.to) || []).concat(edge.migrationSelectors),
     );
   }
   for (const entry of consumers) {
@@ -132,12 +145,16 @@ function buildSummary({
     });
   }
 
+  const migrationSelectors = consumers.flatMap((entry) =>
+    splitSymbols((migrationByFile.get(entry.path) || []).join(', ')),
+  );
+
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     status: issues.length > 0 ? 'attention' : 'ok',
     issues,
     metricsNote:
-      'importedSymbolSlots counts distinct imported names on each file. It is not a count of call sites. edges[].lines and files[].lines are 1-based lines of the import or export keyword in the consumer.',
+      'importedSymbolSlots counts distinct imported names on each file. It is not a count of call sites. selectors are those imported names. migrationSelectors are the shared/lib/selectors/assets-migration.ts exports those names trace back to. edges[].lines and files[].lines are 1-based lines of the import or export keyword in the consumer.',
     configPath,
     output,
     truncated: Boolean(truncated),
@@ -171,6 +188,10 @@ function buildSummary({
       selector: item.key,
       files: item.count,
     })),
+    byMigrationSelector: countBy(migrationSelectors, (symbol) => symbol).map((item) => ({
+      selector: item.key,
+      files: item.count,
+    })),
     edges: normalizedEdges,
     files: consumers.map((entry) => ({
       path: entry.path,
@@ -178,6 +199,7 @@ function buildSummary({
       type: entry.type,
       terminal: entry.terminal,
       selectors: entry.symbols,
+      migrationSelectors: splitSymbols((migrationByFile.get(entry.path) || []).join(', ')),
       lines: [...new Set(linesByFile.get(entry.path) || [])].sort((a, b) => a - b),
     })),
   };
@@ -199,10 +221,19 @@ function toSelectorCsv(summary) {
   return `${lines.join('\n')}\n`;
 }
 
+function toMigrationSelectorCsv(summary) {
+  const lines = ['selector,files'];
+  for (const row of summary.byMigrationSelector) {
+    lines.push(`${row.selector},${row.files}`);
+  }
+  return `${lines.join('\n')}\n`;
+}
+
 module.exports = {
   splitSymbols,
   normalizeEdges,
   buildSummary,
   toTypeCsv,
   toSelectorCsv,
+  toMigrationSelectorCsv,
 };
