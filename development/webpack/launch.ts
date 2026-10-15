@@ -17,6 +17,7 @@ import { totalmem } from 'node:os';
 import { join } from 'node:path';
 import { isatty } from 'node:tty';
 import { spawn, type StdioOptions } from 'node:child_process';
+import * as nodePty from '@lydell/node-pty';
 import parser from 'yargs-parser';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
@@ -33,7 +34,7 @@ async function main() {
     const { build } = await import('./build');
     await build();
   } else {
-    await fork(process, join(__dirname, 'fork'), rawArgv);
+    fork(process, join(__dirname, 'fork'), rawArgv);
   }
 }
 main().catch((error) => {
@@ -50,11 +51,11 @@ main().catch((error) => {
  * @param file - Path to the file to run, given as an argument to the command
  * @param argv - Arguments to pass to the executable
  */
-async function fork(process: NodeJS.Process, file: string, argv: string[]) {
+function fork(process: NodeJS.Process, file: string, argv: string[]) {
   const env = { NODE_OPTIONS: '', ...process.env, PPID: `${process.pid}` };
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
-  const maxOldSpaceMB = ~~((totalmem() * 0.75) / (1 << 20));
+  const maxOldSpaceMB = Math.trunc((totalmem() * 0.75) / (1 << 20));
   // `--max-semi-space-size=128` reduces garbage collection pauses; 128MB provided max benefit in perf testing.
   const nodeOptions = [
     `--max-old-space-size=${maxOldSpaceMB}`,
@@ -64,7 +65,7 @@ async function fork(process: NodeJS.Process, file: string, argv: string[]) {
   // run the build in a child process so that we can exit the parent process as
   // soon as the build completes, but let the cache serialization finish in the
   // background (the cache can take 30% of build-time to serialize and persist).
-  const { connectToChild, destroy, stdio } = await createOutputStreams(process);
+  const { connectToChild, destroy, stdio } = createOutputStreams(process);
 
   const node = process.execPath;
   const options = { detached: true, env, stdio };
@@ -80,19 +81,17 @@ async function fork(process: NodeJS.Process, file: string, argv: string[]) {
  * @param process - The parent process, like `globalThis.process`
  * @returns The stdio streams for the child process to use
  */
-async function createOutputStreams(process: NodeJS.Process) {
+function createOutputStreams(process: NodeJS.Process) {
   const isWindows = process.platform === 'win32';
   // use IPC for communication on Windows, as it doesn't support POSIX signals
   const ipc = isWindows ? 'ipc' : 'ignore';
-  const outs = (await Promise.all(
-    (['stdout', 'stderr'] as const).map(function createStream(name) {
-      const parentStream = process[name];
-      // TODO: get Windows PTY working
-      return !isWindows && isatty(parentStream.fd)
-        ? createTTYStream(parentStream)
-        : createNonTTYStream(parentStream, name);
-    }),
-  )) as [Stdio, Stdio];
+  const outs = (['stdout', 'stderr'] as const).map(function createStream(name) {
+    const parentStream = process[name];
+    // TODO: get Windows PTY working
+    return !isWindows && isatty(parentStream.fd)
+      ? createTTYStream(parentStream)
+      : createNonTTYStream(parentStream, name);
+  }) as [Stdio, Stdio];
 
   return {
     /**
@@ -148,11 +147,9 @@ function createNonTTYStream(stream: NodeJS.WriteStream, name: StdName): Stdio {
  * @param stream - The parent process's stdio stream
  * @returns The PTY stream for the child process to use
  */
-async function createTTYStream(stream: NodeJS.WriteStream): Promise<Stdio> {
+function createTTYStream(stream: NodeJS.WriteStream): Stdio {
   // create a PTY (Pseudo TTY) so the child stream behaves like a TTY
   const options = { cols: stream.columns, encoding: null, rows: stream.rows };
-  const nodePtyModule = await import('@lydell/node-pty');
-  const nodePty = nodePtyModule.default ?? nodePtyModule;
   const pty: PTY = nodePty.open(options);
 
   return {
