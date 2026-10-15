@@ -10,8 +10,8 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import type {
-  OnboardingJourneyTraceControllerEndRequest,
-  OnboardingJourneyTraceControllerRequest,
+  OnboardingJourneyTraceEndRequest,
+  OnboardingJourneyTraceRequest,
 } from '../../../shared/types/onboarding';
 import type ExtensionPlatform from '../platforms/extension';
 import type {
@@ -168,7 +168,7 @@ export class OnboardingController extends BaseController<
   readonly #platform: ExtensionPlatform;
 
   readonly #onboardingJourneysByTabId = new Map<
-    number | undefined,
+    number | string | undefined,
     OnboardingJourney
   >();
 
@@ -324,9 +324,7 @@ export class OnboardingController extends BaseController<
    * @param request - The onboarding tab and current step.
    * @returns The opaque ID used to parent child traces.
    */
-  startOnboardingJourney(
-    request: OnboardingJourneyTraceControllerRequest,
-  ): string {
+  startOnboardingJourney(request: OnboardingJourneyTraceRequest): string {
     const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
 
     if (currentJourney) {
@@ -358,9 +356,7 @@ export class OnboardingController extends BaseController<
    *
    * @param request - The onboarding tab and current step.
    */
-  updateOnboardingJourney(
-    request: OnboardingJourneyTraceControllerRequest,
-  ): void {
+  updateOnboardingJourney(request: OnboardingJourneyTraceRequest): void {
     const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
 
     if (!currentJourney) {
@@ -375,9 +371,7 @@ export class OnboardingController extends BaseController<
    *
    * @param request - The onboarding tab, result, and last step.
    */
-  endOnboardingJourney(
-    request: OnboardingJourneyTraceControllerEndRequest,
-  ): void {
+  endOnboardingJourney(request: OnboardingJourneyTraceEndRequest): void {
     const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
 
     if (!currentJourney) {
