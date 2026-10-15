@@ -1,16 +1,26 @@
-import { useAddressPoisoningDetection } from '../confirmations/hooks/send/useAddressPoisoningDetection';
+import { useQuery } from '@tanstack/react-query';
+import { selectAddressPoisoningKnownRecipients } from '../../selectors/address-poisoning-known-recipients';
 import {
   getFromAddress,
   useAddressPoisoningActivity,
 } from './useAddressPoisoningActivity';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 
-jest.mock('../confirmations/hooks/send/useAddressPoisoningDetection', () => ({
-  useAddressPoisoningDetection: jest.fn(),
+jest.mock('@tanstack/react-query', () => {
+  const actual = jest.requireActual('@tanstack/react-query');
+  return {
+    ...actual,
+    useQuery: jest.fn(),
+  };
+});
+
+jest.mock('../../selectors/address-poisoning-known-recipients', () => ({
+  selectAddressPoisoningKnownRecipients: jest.fn(),
 }));
 
-const mockUseAddressPoisoningDetection = jest.mocked(
-  useAddressPoisoningDetection,
+const mockUseQuery = jest.mocked(useQuery);
+const mockSelectKnownRecipients = jest.mocked(
+  selectAddressPoisoningKnownRecipients,
 );
 
 const receiveActivity = {
@@ -25,7 +35,7 @@ const receiveActivity = {
   },
 } as Parameters<typeof useAddressPoisoningActivity>[0];
 
-describe('getReceiveFromAddressForPoisoningCheck', () => {
+describe('getFromAddress', () => {
   it('returns from on a confirmed receive', () => {
     expect(getFromAddress(receiveActivity)).toBe(receiveActivity.data.from);
   });
@@ -52,33 +62,37 @@ describe('getReceiveFromAddressForPoisoningCheck', () => {
 describe('useAddressPoisoningActivity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSelectKnownRecipients.mockReturnValue({
+      recipients: ['0x111122223333444455556666777788889999aaaa'],
+      fingerprint: 'fp',
+    });
+    mockUseQuery.mockReturnValue({
+      data: [],
+      isPending: false,
+      isFetching: false,
+    } as ReturnType<typeof useQuery>);
   });
 
-  it('is true when phishing controller reports a lookalike match', () => {
-    mockUseAddressPoisoningDetection.mockReturnValue({
-      isPoisoningSuspect: true,
-      bestMatch: null,
-      matches: [],
-      pending: false,
-    });
+  it('is true when lookalike matches exist', () => {
+    mockUseQuery.mockReturnValue({
+      data: [{ knownAddress: '0x111122223333444455556666777788889999aaaa' }],
+      isPending: false,
+      isFetching: false,
+    } as ReturnType<typeof useQuery>);
 
     const { result } = renderHookWithProvider(() =>
       useAddressPoisoningActivity(receiveActivity),
     );
 
-    expect(mockUseAddressPoisoningDetection).toHaveBeenCalledWith(
-      receiveActivity.data.from,
-    );
     expect(result.current).toBe(true);
   });
 
-  it('is false while the poisoning check is pending', () => {
-    mockUseAddressPoisoningDetection.mockReturnValue({
-      isPoisoningSuspect: false,
-      bestMatch: null,
-      matches: [],
-      pending: true,
-    });
+  it('is false while the query is pending', () => {
+    mockUseQuery.mockReturnValue({
+      data: undefined,
+      isPending: true,
+      isFetching: true,
+    } as ReturnType<typeof useQuery>);
 
     const { result } = renderHookWithProvider(() =>
       useAddressPoisoningActivity(receiveActivity),
@@ -88,13 +102,6 @@ describe('useAddressPoisoningActivity', () => {
   });
 
   it('is false when there is no lookalike match', () => {
-    mockUseAddressPoisoningDetection.mockReturnValue({
-      isPoisoningSuspect: false,
-      bestMatch: null,
-      matches: [],
-      pending: false,
-    });
-
     const { result } = renderHookWithProvider(() =>
       useAddressPoisoningActivity(receiveActivity),
     );
