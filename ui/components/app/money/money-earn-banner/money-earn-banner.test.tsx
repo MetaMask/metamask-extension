@@ -131,6 +131,20 @@ describe('MoneyEarnBanner', () => {
     ).toHaveAttribute('src', './images/money-earn-banner-usdc.png');
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each([
+    ['AUSDC', 'ausdc'],
+    ['AUSDCN', 'ausdc'],
+    ['AUSDT', 'ausdt'],
+    ['ADAI', 'adai'],
+  ])('uses the aToken artwork for %s', (symbol: string, imageName: string) => {
+    const { getByTestId } = renderBanner({ ...token, symbol });
+
+    expect(
+      getByTestId(`${MONEY_EARN_BANNER_TEST_ID}-source-image`),
+    ).toHaveAttribute('src', `./images/money-earn-banner-${imageName}.png`);
+  });
+
   it('uses the mUSD artwork by address', () => {
     const { getByTestId } = renderBanner({
       ...token,

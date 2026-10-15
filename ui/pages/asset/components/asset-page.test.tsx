@@ -929,6 +929,50 @@ describe('AssetPage', () => {
       );
     });
 
+    it('renders the earn banner above an unchanged balance section for an aToken', () => {
+      const aToken = {
+        ...token,
+        address: '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c',
+        symbol: 'AUSDC',
+        decimals: 6,
+      } as const;
+      mockUseMoneyEarnBanner.mockReturnValue({
+        isVisible: true,
+        apyPercentFormatted: '6%',
+        onBannerClick: jest.fn(),
+        onCtaClick: jest.fn(),
+        onDismiss: jest.fn(),
+      });
+
+      const { getByTestId, getByText } = renderWithProvider(
+        <AssetPage asset={aToken} optionsButton={null} />,
+        store,
+      );
+
+      expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(
+        expect.objectContaining({
+          address: toChecksumHexAddress(aToken.address),
+          chainId: aToken.chainId,
+          symbol: 'AUSDC',
+        }),
+      );
+      expect(getByTestId('money-earn-banner-source-image')).toHaveAttribute(
+        'src',
+        './images/money-earn-banner-ausdc.png',
+      );
+      expect(getByTestId('money-earn-banner-cta')).toHaveTextContent(
+        messages.moneyEarnBannerCta.message.replace('$1', 'AUSDC'),
+      );
+
+      const yourBalanceHeading = getByText(messages.yourBalance.message);
+      expect(
+        getByTestId('money-earn-banner').compareDocumentPosition(
+          yourBalanceHeading,
+        ),
+      ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+      expect(getByTestId('asset-token-decimals')).toHaveTextContent('6');
+    });
+
     it('renders placeholders while the APY loads', () => {
       mockUseMoneyAssetOverviewBalanceCta.mockReturnValue({
         display: undefined,

@@ -350,6 +350,105 @@ describe('use-money-asset-overview-ctas', () => {
     });
   });
 
+  describe('useMoneyEarnBanner for aTokens', () => {
+    const A_TOKENS: [string, Hex, Hex][] = [
+      [
+        'Arbitrum aUSDC',
+        '0xa4b1',
+        '0x724dc807b04555b71ed48a6896b6F41593b8C637',
+      ],
+      ['Base aUSDC', '0x2105', '0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB'],
+      ['BNB aUSDC', '0x38', '0x00901a076785e0906d1028c7d6372d247bec7d61'],
+      ['Ethereum aUSDC', '0x1', '0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c'],
+      ['BNB aUSDT', '0x38', '0xa9251ca9DE909CB71783723713B21E4233fbf1B1'],
+      ['Ethereum aUSDT', '0x1', '0x23878914EFE38d27C4D67Ab83ed1b93A74D4086a'],
+      ['Ethereum aDAI', '0x1', '0x018008bfb33d285247A21d44E50697654f754e63'],
+      ['Linea aUSDC', '0xe708', '0x374D7860c4f2f604De0191298dD393703Cce84f3'],
+    ];
+
+    const A_TOKEN_ALLOWLIST = A_TOKENS.reduce<Record<Hex, Hex[]>>(
+      (allowlist, [, chainId, address]) => ({
+        ...allowlist,
+        [chainId]: [...(allowlist[chainId] ?? []), address],
+      }),
+      {},
+    );
+
+    const A_TOKEN_FLAGS = {
+      earnMoneyDepositCtaTokenAddresses: A_TOKEN_ALLOWLIST,
+    };
+
+    const createAToken = (
+      chainId: Hex,
+      address: Hex,
+      overrides: Partial<MoneyAssetOverviewToken> = {},
+    ) => createToken({ chainId, address, symbol: 'AUSDC', ...overrides });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(A_TOKENS)(
+      'shows for %s with a balance',
+      (_name: string, chainId: Hex, address: Hex) => {
+        expect(
+          renderBanner(createAToken(chainId, address), A_TOKEN_FLAGS).isVisible,
+        ).toBe(true);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(A_TOKENS)(
+      'hides for %s with a zero balance',
+      (_name: string, chainId: Hex, address: Hex) => {
+        expect(
+          renderBanner(
+            createAToken(chainId, address, {
+              balance: '0',
+              tokenFiatAmount: 0,
+            }),
+            A_TOKEN_FLAGS,
+          ).isVisible,
+        ).toBe(false);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(A_TOKENS)(
+      'deposits with %s pre-selected',
+      (_name: string, chainId: Hex, address: Hex) => {
+        renderBanner(
+          createAToken(chainId, address),
+          A_TOKEN_FLAGS,
+        ).onBannerClick();
+
+        expect(mockInitiateDeposit).toHaveBeenCalledWith({
+          preferredPaymentToken: { address, chainId },
+        });
+      },
+    );
+
+    it('hides for an aToken that is not allowlisted', () => {
+      const [, chainId, address] = A_TOKENS[0];
+
+      expect(
+        renderBanner(createAToken(chainId, address), {
+          earnMoneyDepositCtaTokenAddresses: { '0x1': [USDC_ADDRESS] },
+        }).isVisible,
+      ).toBe(false);
+    });
+
+    it('hides for an allowlisted aToken when geoblocked', () => {
+      mockUseMoneyAccountInfo.mockReturnValue({
+        isMoneyAccountFeatureEnabled: true,
+        hasMoneyAccount: false,
+        primaryMoneyAccount: undefined,
+      });
+      const [, chainId, address] = A_TOKENS[0];
+
+      expect(
+        renderBanner(createAToken(chainId, address), A_TOKEN_FLAGS).isVisible,
+      ).toBe(false);
+    });
+  });
+
   describe('useMoneyAssetOverviewBalanceCta', () => {
     it('returns the APY and one year of projected earnings', () => {
       mockApy(0.062, 6.2);
