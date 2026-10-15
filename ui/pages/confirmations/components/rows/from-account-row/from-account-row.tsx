@@ -75,9 +75,11 @@ const RECIPIENT_ACCOUNT_ROW_TRANSACTION_TYPES = [
  * deposit) read "From", whereas withdraws read "To" because the selected
  * account receives the funds.
  *
- * Flows that cannot be funded by a hardware device (Money Account deposit and
- * withdraw, Perps, Predict) hide hardware accounts from the modal, so the user
- * cannot pick an account that `usePayHardwareAccountAlert` would then block.
+ * Flows that cannot be funded by a hardware device (Perps, Predict, and Money
+ * Account deposit unless enabled) hide hardware accounts from the modal, so
+ * the user cannot pick an account that `usePayHardwareAccountAlert` would then
+ * block. Money Account withdraws list hardware accounts because the recipient
+ * never signs.
  *
  * @param props - Component props.
  * @param props.showDivider - Whether to render a divider below the row.

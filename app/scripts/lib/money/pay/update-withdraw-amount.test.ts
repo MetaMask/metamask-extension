@@ -22,6 +22,7 @@ const buildWithdrawBatchMock = jest.mocked(buildMoneyAccountWithdrawBatch);
 const TRANSACTION_ID = 'withdraw-amount-tx';
 const ACCOUNT_OVERRIDE = '0xabcdef1234567890abcdef1234567890abcdef12' as Hex;
 const SELECTED_ACCOUNT = '0x1111111111111111111111111111111111111111' as Hex;
+const HARDWARE_RECIPIENT = '0x2222222222222222222222222222222222222222' as Hex;
 const WITHDRAW_DATA = '0xaaa1' as Hex;
 const TRANSFER_DATA = '0xbbb2' as Hex;
 const WITHDRAW_DATA_2 = '0xccc3' as Hex;
@@ -49,9 +50,11 @@ function createWithdrawTransaction(): TransactionMeta {
 function setup({
   transactions = [createWithdrawTransaction()],
   selectedAddress = SELECTED_ACCOUNT,
+  handlers = {},
 }: {
   transactions?: TransactionMeta[];
   selectedAddress?: string;
+  handlers?: Record<string, (...args: unknown[]) => unknown>;
 } = {}) {
   const updateTransaction = jest.fn();
   const mock = createMoneyPayMessengerMock({
@@ -61,6 +64,7 @@ function setup({
       'AccountsController:getSelectedAccount': () => ({
         address: selectedAddress,
       }),
+      ...handlers,
     },
   });
   return { ...mock, updateTransaction };
@@ -117,6 +121,45 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     expect(nextTransaction.nestedTransactions[0].data).toBe(WITHDRAW_DATA);
     expect(nextTransaction.nestedTransactions[1].data).toBe(TRANSFER_DATA);
     expect(nextTransaction.requiredAssets).toBeUndefined();
+  });
+
+  it('encodes for a locked hardware recipient without calling any keyring', async () => {
+    const lockedKeyring = jest.fn(() => {
+      throw new Error('Hardware device is locked or disconnected');
+    });
+    const { messenger, call } = setup({
+      handlers: {
+        'KeyringController:signTransaction': lockedKeyring,
+        'KeyringController:signTypedMessage': lockedKeyring,
+        'KeyringController:signEip7702Authorization': lockedKeyring,
+        'KeyringController:withKeyring': lockedKeyring,
+        'DelegationController:signDelegation': lockedKeyring,
+      },
+    });
+
+    const result = await updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1',
+      HARDWARE_RECIPIENT,
+    );
+
+    expect(result).toStrictEqual({
+      withdrawData: WITHDRAW_DATA,
+      transferData: TRANSFER_DATA,
+    });
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        moneyAccountAddress: MONEY_ACCOUNT_ADDRESS_MOCK,
+        recipient: HARDWARE_RECIPIENT,
+      }),
+    );
+    expect(lockedKeyring).not.toHaveBeenCalled();
+    expect(
+      call.mock.calls.filter(([action]) =>
+        /^(KeyringController|DelegationController):/u.test(action),
+      ),
+    ).toStrictEqual([]);
   });
 
   it('falls back to the selected account when no override is set', async () => {
