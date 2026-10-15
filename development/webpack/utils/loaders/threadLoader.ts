@@ -1,4 +1,5 @@
 import { availableParallelism, arch, freemem } from 'node:os';
+import { pathToFileURL } from 'node:url';
 import type { RuleSetUseItem } from 'webpack';
 
 export type ThreadLoaderConfig = {
@@ -67,6 +68,11 @@ export function getThreadLoader(config: ThreadLoaderConfig) {
   return {
     loader: 'thread-loader',
     options: {
+      // Workers don't inherit the main process's tsx hooks. Source loaders need
+      // the same runtime for TypeScript imports; emitted CJS loaders don't.
+      workerNodeArgs: __filename.endsWith('.ts')
+        ? ['--import', pathToFileURL(require.resolve('tsx')).href]
+        : [],
       workers: resolvedThreads,
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,
