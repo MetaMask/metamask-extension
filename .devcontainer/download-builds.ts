@@ -1,28 +1,24 @@
-import { execSync } from 'node:child_process';
-import unzipper from 'unzipper';
-import { version } from '../package.json';
+import { execFileSync } from 'node:child_process';
 import { program, Option } from 'commander';
+import { getGitHubToken } from '../.github/scripts/shared/github-token.mts';
 import {
-  BuildType,
-  getBuildLinks,
-} from '../development/metamaskbot-build-announce/artifacts';
+  downloadBuilds,
+  type DownloadBuildsOptions,
+} from '../development/download-builds';
 
-const getBranch = () => {
+function getBranch(): string {
   try {
-    return execSync('git symbolic-ref --short HEAD').toString().trim();
-  } catch (error) {
+    return execFileSync('git', ['symbolic-ref', '--short', 'HEAD'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
     return 'main';
   }
-};
+}
 
-interface DownloadBuildsArgs {
-  owner: string;
-  repository: string;
-  workflowId: string;
-  branch: string;
-  buildType: BuildType;
+interface DownloadBuildsArgs extends DownloadBuildsOptions {
   githubToken: string;
-  awsCloudfrontUrl: string;
 }
 
 program
@@ -62,51 +58,44 @@ program
       .default('https://diuv6g5fj9pvx.cloudfront.net')
       .env('AWS_CLOUDFRONT_URL'),
   )
+  .option(
+    '--ref <commit>',
+    'pin an exact commit/ref instead of the latest branch workflow run',
+  )
+  .addOption(
+    new Option('--browser <browser>', 'browser to download')
+      .choices(['chrome', 'firefox', 'all'])
+      .default('all'),
+  )
+  .option(
+    '--destination <directory>',
+    'browser output parent directory',
+    'dist',
+  )
+  .option(
+    '--metadata <file>',
+    'write source/build provenance and download URLs as JSON',
+  )
+  .option(
+    '--wait-seconds <seconds>',
+    'polling budget for canonical build availability',
+    Number,
+    1200,
+  )
+  .option('--poll-seconds <seconds>', 'poll interval while waiting', Number, 20)
   .action(async (args: DownloadBuildsArgs) => {
     const { Octokit } = await import('octokit');
-
-    console.log('Downloading latest builds from');
-    console.log(`- Branch: ${args.branch}`);
-    console.log(`- Build type: ${args.buildType}`);
-    console.log('- Bundler: webpack');
-
-    const github = new Octokit({ auth: args.githubToken });
-
-    const runs = await github.rest.actions.listWorkflowRuns({
-      owner: args.owner,
-      repo: args.repository,
-      workflow_id: args.workflowId,
-      branch: args.branch,
-      status: 'success',
-      per_page: 1,
+    const github = new Octokit({ auth: args.githubToken || getGitHubToken() });
+    const metadata = await downloadBuilds(args, {
+      api: async (endpoint) => (await github.request(`GET /${endpoint}`)).data,
     });
-
-    const latestRun = runs.data.workflow_runs.at(0);
-
-    if (!latestRun)
-      throw new Error(`No successful builds found on branch '${args.branch}'`);
-
-    console.log(`- Run number: ${latestRun.id}`);
-
-    const HOST_URL = `${args.awsCloudfrontUrl}/${args.repository}/${latestRun.id}`;
-
-    const buildLinks = getBuildLinks({ hostUrl: HOST_URL, version });
-
-    const builds = buildLinks.webpack[args.buildType];
-
-    console.log(`Downloading build for chrome from ${builds.chrome}`);
-    console.log(`Downloading build for firefox from ${builds.firefox}`);
-
-    await Promise.all(
-      Object.entries(builds).map(async ([platform, url]) => {
-        const artifact = await fetch(url);
-        const buffer = Buffer.from(await artifact.arrayBuffer());
-        const zip = await unzipper.Open.buffer(buffer);
-        await zip.extract({ path: `dist/${platform}` });
-      }),
+    console.log(
+      `Build run: ${metadata.runId} · source: ${metadata.requestedCommit} · donor: ${metadata.buildCommit}`,
     );
-
     console.log('Builds downloaded and unzipped successfully.');
   });
 
-program.parse();
+program.parseAsync().catch((error: unknown) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});
