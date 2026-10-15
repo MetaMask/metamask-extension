@@ -3,7 +3,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { isStrictHexString } from '@metamask/utils';
+import { isStrictHexString, type Hex } from '@metamask/utils';
 
 export function isValidTransactionHash(hash: string) {
   return hash.length === 66 && isStrictHexString(hash);
@@ -111,6 +111,31 @@ export function isPostQuoteWithdrawTransaction(
   transactionMeta: TransactionMeta | undefined,
 ): boolean {
   return Boolean(getPostQuoteWithdrawTransactionType(transactionMeta));
+}
+
+/**
+ * Address of the account that funds the transaction and signs its funding
+ * legs on-device.
+ *
+ * Most flows use `txParams.from`. Money Account deposits are signed by the
+ * money account but funded by the account in `accountOverride`. Post-quote
+ * withdraws keep `from` because their override is only the recipient.
+ *
+ * @param transactionMeta - The transaction metadata.
+ * @param accountOverride - MetaMask Pay account override for the transaction.
+ * @returns The paying account address, if known.
+ */
+export function getTransactionPayingAccount(
+  transactionMeta: TransactionMeta | undefined,
+  accountOverride: Hex | undefined,
+): Hex | undefined {
+  const from = transactionMeta?.txParams?.from as Hex | undefined;
+
+  if (isPostQuoteWithdrawTransaction(transactionMeta)) {
+    return from;
+  }
+
+  return accountOverride ?? from;
 }
 
 /**

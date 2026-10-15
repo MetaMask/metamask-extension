@@ -53,6 +53,7 @@
       "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": "object",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
