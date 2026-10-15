@@ -206,22 +206,22 @@ describe('getCurrentTraceId() under concurrent trace() calls (MetaMask-planning#
 
         await tick(2);
 
+        // Operation B: a logically unrelated concurrent operation
+        // continuing a DIFFERENT, explicit distributed trace, started
+        // and still pending while A is paused. B's stack layers push on
+        // top of A's and stay there.
+        const bPromise = trace(
+          {
+            name: TraceName.Transaction,
+            id: 'B-distributed-concurrent',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            parentContext: { _traceId: TRACE_ID_B, _spanId: SPAN_ID_B },
+          },
+          async () => {
+            await bGate.promise;
+          },
+        );
         try {
-          // Operation B: a logically unrelated concurrent operation
-          // continuing a DIFFERENT, explicit distributed trace, started
-          // and still pending while A is paused. B's stack layers push on
-          // top of A's and stay there.
-          const bPromise = trace(
-            {
-              name: TraceName.Transaction,
-              id: 'B-distributed-concurrent',
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              parentContext: { _traceId: TRACE_ID_B, _spanId: SPAN_ID_B },
-            },
-            async () => {
-              await bGate.promise;
-            },
-          );
           await tick(2);
 
           // Resolve only A's gate. B is still pending (its layers are
