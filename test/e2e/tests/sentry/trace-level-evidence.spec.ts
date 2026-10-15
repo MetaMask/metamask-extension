@@ -43,13 +43,11 @@ async function captureSentryTransactions(mockServer: MockttpServer) {
         const body = await request.body.getText();
         for (const txn of parseTransactions(body ?? '')) {
           captured.push(txn);
-          // eslint-disable-next-line no-console
           console.log(
             `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
           );
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.log('CAPTURE-ERR', String(error));
       }
       return { statusCode: 200, json: {} };
@@ -59,7 +57,6 @@ async function captureSentryTransactions(mockServer: MockttpServer) {
 
 describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
   it('roots each background RPC op in its own trace id', async function () {
-    // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(300000);
     captured.length = 0;
 
@@ -93,13 +90,10 @@ describe('Sentry trace-level evidence (#43931 per-op roots)', function () {
         );
         const sharingSw = bgRpc.filter((t) => swIds.has(t.traceId)).length;
 
-        // eslint-disable-next-line no-console
         console.log(
           `EVIDENCE captured=${captured.length} bgRpc=${bgRpc.length} distinctTraceIds=${distinct.length} sharingSwPageload=${sharingSw}`,
         );
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-BGRPC ${JSON.stringify(bgRpc)}`);
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
 
         // The startNewTrace fix: EVERY background RPC op roots its own trace.
