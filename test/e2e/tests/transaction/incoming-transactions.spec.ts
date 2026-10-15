@@ -57,6 +57,21 @@ const RESPONSE_STANDARD_2_MOCK = {
   ],
 };
 
+const RESPONSE_TOKEN_TRANSFER_MOCK = {
+  ...RESPONSE_STANDARD_MOCK,
+  to: '0x2',
+  valueTransfers: [
+    {
+      contractAddress: '0x123',
+      decimal: 18,
+      symbol: 'ABC',
+      from: '0x2',
+      to: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
+      amount: '4560000000000000000',
+    },
+  ],
+};
+
 const RESPONSE_OUTGOING_MOCK = {
   ...RESPONSE_STANDARD_MOCK,
   from: DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
@@ -102,6 +117,58 @@ async function mockAccountsApi(
 }
 
 describe('Incoming Transactions', function () {
+  it('ignores incoming native transfer transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockAccountsApi,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, { validateBalance: false });
+        const homepage = new HomePage(driver);
+        await homepage.goToActivityList();
+
+        const activityTab = new ActivityTab(driver);
+        await activityTab.checkNoTxInActivity();
+      },
+    );
+  });
+
+  it('ignores token transfer transactions', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) =>
+          mockAccountsApi(server, {
+            transactions: [
+              RESPONSE_STANDARD_MOCK,
+              RESPONSE_TOKEN_TRANSFER_MOCK,
+            ],
+          }),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        const activityTab = await changeNetworkAndGoToActivity(driver);
+        await activityTab.checkNoTxInActivity();
+      },
+    );
+  });
+
   it('adds outgoing transactions', async function () {
     await withFixtures(
       {

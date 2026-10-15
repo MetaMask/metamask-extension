@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { findSimilarAddresses } from '@metamask/phishing-controller';
 import { useSelector } from 'react-redux';
-import { selectAddressPoisoningKnownRecipients } from '../../selectors/address-poisoning-known-recipients';
+import { checkAddressPoisoning } from '../../store/actions';
+import { getCompleteAddressBook } from '../../selectors/selectors';
+import { selectTransactions } from '../../selectors/transactionController';
 import type { ActivityRowProps } from './types';
 
 export function getFromAddress(activity: ActivityRowProps['data']) {
@@ -12,25 +13,33 @@ export function getFromAddress(activity: ActivityRowProps['data']) {
   return activity.data.from;
 }
 
+function selectKnownRecipientsVersion(state: Parameters<typeof selectTransactions>[0]) {
+  const transactions = selectTransactions(state);
+  const addressBook = getCompleteAddressBook(state);
+  return `${transactions.length}\0${addressBook.length}`;
+}
+
 export function useAddressPoisoningActivity(
   activity: ActivityRowProps['data'],
 ) {
-  const fromAddress = getFromAddress(activity);
-  const normalizedFrom = fromAddress?.toLowerCase();
-  const { recipients, fingerprint } = useSelector(
-    selectAddressPoisoningKnownRecipients,
-  );
+  const normalizedFrom = getFromAddress(activity)?.toLowerCase();
+  const knownRecipientsVersion = useSelector(selectKnownRecipientsVersion);
 
   const { data, isPending, isFetching } = useQuery({
-    queryKey: ['activityAddressPoisoning', normalizedFrom, fingerprint],
+    queryKey: [
+      'activityAddressPoisoning',
+      normalizedFrom,
+      knownRecipientsVersion,
+    ],
     enabled: Boolean(normalizedFrom),
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: 10 * 60 * 1000,
-    queryFn: () => {
+    queryFn: async () => {
       if (!normalizedFrom) {
         return [];
       }
-      return findSimilarAddresses(normalizedFrom, [...recipients]);
+      const matches = await checkAddressPoisoning(normalizedFrom);
+      return Array.isArray(matches) ? matches : [];
     },
   });
 

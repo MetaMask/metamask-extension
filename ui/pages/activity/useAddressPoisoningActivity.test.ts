@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { selectAddressPoisoningKnownRecipients } from '../../selectors/address-poisoning-known-recipients';
 import {
   getFromAddress,
   useAddressPoisoningActivity,
@@ -14,14 +13,7 @@ jest.mock('@tanstack/react-query', () => {
   };
 });
 
-jest.mock('../../selectors/address-poisoning-known-recipients', () => ({
-  selectAddressPoisoningKnownRecipients: jest.fn(),
-}));
-
 const mockUseQuery = jest.mocked(useQuery);
-const mockSelectKnownRecipients = jest.mocked(
-  selectAddressPoisoningKnownRecipients,
-);
 
 const receiveActivity = {
   type: 'receive',
@@ -62,10 +54,6 @@ describe('getFromAddress', () => {
 describe('useAddressPoisoningActivity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSelectKnownRecipients.mockReturnValue({
-      recipients: ['0x111122223333444455556666777788889999aaaa'],
-      fingerprint: 'fp',
-    });
     mockUseQuery.mockReturnValue({
       data: [],
       isPending: false,

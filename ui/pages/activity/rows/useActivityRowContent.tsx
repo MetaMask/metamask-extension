@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { AddressPoisoningBadge } from '#ui/components/app/address-poisoning/address-poisoning-badge';
+import { AddressPoisoningBadge } from '#ui/components/app/transaction/address-poisoning-badge';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
