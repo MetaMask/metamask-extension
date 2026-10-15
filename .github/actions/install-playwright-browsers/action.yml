@@ -41,4 +41,6 @@ runs:
     - name: Install browsers (cache miss only)
       if: steps.pw-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn playwright install ${{ inputs.browsers }}
+      env:
+        INPUTS_BROWSERS: ${{ inputs.browsers }}
+      run: yarn playwright install "${INPUTS_BROWSERS}"
