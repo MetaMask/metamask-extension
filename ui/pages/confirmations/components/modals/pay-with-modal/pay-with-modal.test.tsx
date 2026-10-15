@@ -25,7 +25,10 @@ import {
   addToken,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { selectIsMoneyAccountTransactionEnabled } from '../../../selectors/feature-flags';
+import {
+  selectIsMoneyAccountTransactionEnabled,
+  selectIsSolanaPayEnabled,
+} from '../../../selectors/feature-flags';
 import { usePayWithSections } from '../../../hooks/pay/usePayWithSections';
 import { PayWithModal } from './pay-with-modal';
 
@@ -43,6 +46,7 @@ jest.mock('../../../../../hooks/musd');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(),
+  selectIsSolanaPayEnabled: jest.fn(),
 }));
 jest.mock('../../../context/confirm', () => ({
   useConfirmContext: jest.fn(),
@@ -182,6 +186,7 @@ describe('PayWithModal', () => {
   const selectIsMoneyAccountTransactionEnabledMock = jest.mocked(
     selectIsMoneyAccountTransactionEnabled,
   );
+  const selectIsSolanaPayEnabledMock = jest.mocked(selectIsSolanaPayEnabled);
   const usePayWithSectionsMock = jest.mocked(usePayWithSections);
 
   beforeEach(() => {
@@ -191,6 +196,7 @@ describe('PayWithModal', () => {
       currentConfirmation: {},
     } as ReturnType<typeof useConfirmContext>);
     selectIsMoneyAccountTransactionEnabledMock.mockReturnValue(false);
+    selectIsSolanaPayEnabledMock.mockReturnValue(true);
     usePayWithSectionsMock.mockReturnValue({ sections: [] });
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
@@ -332,6 +338,16 @@ describe('PayWithModal', () => {
       }),
     );
     expect(onCloseMock).toHaveBeenCalled();
+  });
+
+  it('does not admit a new Solana source when rollout is disabled', () => {
+    selectIsSolanaPayEnabledMock.mockReturnValue(false);
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    fireEvent.click(screen.getByTestId('select-solana-token'));
+
+    expect(setSolanaPaySourceMock).not.toHaveBeenCalled();
+    expect(onCloseMock).not.toHaveBeenCalled();
   });
 
   it('calls setPayToken and closes modal when token is selected', () => {

@@ -288,7 +288,7 @@ async function signAndSendTransaction(
 ): Promise<SolanaPaySubmissionResult> {
   const expectedPreparationId = await getPreparationId(request);
   if (expectedPreparationId !== request.preparationId) {
-    return { outcome: 'not-submitted', reason: 'preparation-mismatch' };
+    return { outcome: 'not-submitted', errorCode: 'construction_failed' };
   }
 
   try {
@@ -333,9 +333,9 @@ function getSubmissionFailure(error: unknown): SolanaPaySubmissionResult {
   }
   const code = getErrorCode(error);
   if (code !== undefined && INVALID_REQUEST_CODES.has(code)) {
-    return { outcome: 'not-submitted', reason: `snap-rpc-${code}` };
+    return { outcome: 'not-submitted', errorCode: 'construction_failed' };
   }
-  return { outcome: 'ambiguous', reason: 'snap-completion-unknown' };
+  return { outcome: 'ambiguous' };
 }
 
 function getErrorCode(error: unknown): number | undefined {
@@ -377,7 +377,7 @@ async function submitNonAtomicFollowUp(
   messenger: TransactionPayControllerInitMessenger,
 ): Promise<SolanaPaySubmissionResult> {
   if (!request.relayTransactionId) {
-    return { outcome: 'not-submitted', reason: 'missing-relay-transaction' };
+    return { outcome: 'not-submitted', errorCode: 'construction_failed' };
   }
   const amount = await getSettledAmount(request, messenger);
   const { updates } = await getMoneyAccountAmountData(
@@ -391,7 +391,7 @@ async function submitNonAtomicFollowUp(
     (transaction) => ({ ...transaction }),
   );
   if (!nestedTransactions?.length || !updates.length) {
-    return { outcome: 'not-submitted', reason: 'missing-follow-up-calls' };
+    return { outcome: 'not-submitted', errorCode: 'construction_failed' };
   }
   updates.forEach(({ nestedTransactionIndex, data }) => {
     const transaction = nestedTransactions[nestedTransactionIndex];
@@ -401,7 +401,7 @@ async function submitNonAtomicFollowUp(
   });
   const { from } = request.transaction.txParams;
   if (!from) {
-    return { outcome: 'not-submitted', reason: 'missing-follow-up-account' };
+    return { outcome: 'not-submitted', errorCode: 'construction_failed' };
   }
   try {
     const { batchId } = await messenger.call(

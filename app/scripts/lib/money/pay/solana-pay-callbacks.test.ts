@@ -164,12 +164,15 @@ describe('createSolanaPayCallbacks', () => {
     {
       name: 'invalid request',
       error: { code: -32602 },
-      expected: { outcome: 'not-submitted', reason: 'snap-rpc--32602' },
+      expected: {
+        outcome: 'not-submitted',
+        errorCode: 'construction_failed',
+      },
     },
     {
       name: 'unknown completion',
       error: new Error('request completion unknown'),
-      expected: { outcome: 'ambiguous', reason: 'snap-completion-unknown' },
+      expected: { outcome: 'ambiguous' },
     },
   ];
 

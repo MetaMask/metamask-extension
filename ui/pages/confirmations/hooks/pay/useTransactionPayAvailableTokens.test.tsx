@@ -50,6 +50,7 @@ function createWrapper(metamaskPay?: TransactionMeta['metamaskPay']) {
     metamask: {
       transactions: [{ id: TRANSACTION_ID_MOCK, metamaskPay, time: 0 }],
       transactionData: {},
+      remoteFeatureFlags: {},
     },
   });
 
@@ -114,6 +115,7 @@ describe('useTransactionPayAvailableTokens', () => {
         }),
       ]),
       blockedTokens: blockedTokensMock,
+      isSolanaPayEnabled: false,
       payToken: undefined,
       paySource: undefined,
     });
