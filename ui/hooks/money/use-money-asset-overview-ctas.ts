@@ -4,7 +4,10 @@ import BigNumber from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 import { captureException } from '../../../shared/lib/sentry';
 import type { TokenWithFiatAmount } from '../../components/app/assets/types';
-import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  moneyFormatUsd,
+  moneyFormatUsdWithoutSymbol,
+} from '../../helpers/money/format';
 import {
   MoneyButtonIntent,
   MoneyButtonType,
@@ -197,12 +200,14 @@ export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
  * @param options - Hook options.
  * @param options.enabled - Whether the page is showing the "Your balance"
  * section the CTA renders in.
+ * @param options.showFiat - Whether the user sees fiat values; when not, the
+ * projected earnings are shown in the token's symbol instead of dollars.
  * @returns The values to display (`undefined` when hidden or loading),
  * whether the APY is loading, and handlers.
  */
 export function useMoneyAssetOverviewBalanceCta(
   token: MoneyAssetOverviewToken,
-  { enabled }: { enabled: boolean },
+  { enabled, showFiat }: { enabled: boolean; showFiat: boolean },
 ) {
   const isFlagEnabled = useSelector(selectMoneyAssetOverviewBalanceCtaEnabled);
   const {
@@ -223,20 +228,17 @@ export function useMoneyAssetOverviewBalanceCta(
   const { apyDecimal, apyPercent, apyPercentFormatted, vaultApyQuery } =
     vaultApy;
 
-  const projectedEarningsFormatted = useMemo(
-    () =>
-      fiatAmountUsd === undefined || apyDecimal === undefined
-        ? undefined
-        : `+${moneyFormatUsd(
-            new BigNumber(
-              calculateMoneyProjectedEarnings(
-                fiatAmountUsd,
-                apyDecimal,
-              ).toString(),
-            ),
-          )}`,
-    [apyDecimal, fiatAmountUsd],
-  );
+  const projectedEarningsFormatted = useMemo(() => {
+    if (fiatAmountUsd === undefined || apyDecimal === undefined) {
+      return undefined;
+    }
+    const earnings = new BigNumber(
+      calculateMoneyProjectedEarnings(fiatAmountUsd, apyDecimal).toString(),
+    );
+    return showFiat
+      ? `+${moneyFormatUsd(earnings)}`
+      : `+${moneyFormatUsdWithoutSymbol(earnings)} ${token.symbol}`;
+  }, [apyDecimal, fiatAmountUsd, showFiat, token.symbol]);
 
   const onStartEarning = useCallback(() => {
     if (isDepositLoading) {

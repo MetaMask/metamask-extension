@@ -29,16 +29,40 @@ export const isMoneyBalanceFunded = (tokenTotal: BigNumber | undefined) =>
  * @param value - The dollar value to format.
  * @returns The formatted dollar value.
  */
-export const moneyFormatUsd = (value: BigNumber): string => {
+export const moneyFormatUsd = (value: BigNumber): string =>
+  formatMoneyAmount(value, {
+    style: 'currency',
+    currency: 'USD',
+    currencyDisplay: 'narrowSymbol',
+  });
+
+/**
+ * Formats a US-dollar value like `moneyFormatUsd`, but without the currency
+ * symbol (1,234.56), for when the user has chosen not to see fiat values.
+ *
+ * @param value - The dollar value to format.
+ * @returns The formatted value.
+ */
+export const moneyFormatUsdWithoutSymbol = (value: BigNumber): string =>
+  formatMoneyAmount(value, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+function formatMoneyAmount(
+  value: BigNumber,
+  options: Intl.NumberFormatOptions,
+): string {
   if (value.isNaN()) {
     return '';
   }
 
   const effective = value.abs().lt(DUST_THRESHOLD) ? new BigNumber(0) : value;
 
-  return formatWithThreshold(effective.toNumber(), DUST_THRESHOLD, 'en-US', {
-    style: 'currency',
-    currency: 'USD',
-    currencyDisplay: 'narrowSymbol',
-  });
-};
+  return formatWithThreshold(
+    effective.toNumber(),
+    DUST_THRESHOLD,
+    'en-US',
+    options,
+  );
+}

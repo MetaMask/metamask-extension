@@ -906,7 +906,27 @@ describe('AssetPage', () => {
       expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(expectedToken);
       expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenCalledWith(
         expectedToken,
-        { enabled: true },
+        { enabled: true, showFiat: true },
+      );
+    });
+
+    it('evaluates eligibility on the fiat balance when fiat is hidden', () => {
+      renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: { ...mockStore.metamask, useCurrencyRateCheck: false },
+        }),
+      );
+
+      const expectedToken = expect.objectContaining({
+        symbol: token.symbol,
+        tokenFiatAmount: expect.any(Number),
+      });
+      expect(mockUseMoneyEarnBanner).toHaveBeenCalledWith(expectedToken);
+      expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenCalledWith(
+        expectedToken,
+        { enabled: true, showFiat: false },
       );
     });
 
@@ -1110,7 +1130,7 @@ describe('AssetPage', () => {
 
       expect(mockUseMoneyAssetOverviewBalanceCta).toHaveBeenLastCalledWith(
         expect.anything(),
-        { enabled: false },
+        expect.objectContaining({ enabled: false }),
       );
     });
   });

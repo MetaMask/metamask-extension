@@ -5913,7 +5913,7 @@
   },
   "moneyEarnBalanceDescription": {
     "message": "Add your $1 to your Money account and earn up to $2 in one year.",
-    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected earnings, e.g. +$74.34, or +74.34 USDC when the user hides fiat values"
   },
   "moneyEarnBannerCta": {
     "message": "Add $1",

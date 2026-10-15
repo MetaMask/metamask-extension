@@ -99,10 +99,10 @@ const renderBanner = (
 const renderBalanceCta = (
   token = createToken(),
   remoteFeatureFlags?: Record<string, unknown>,
-  { enabled = true } = {},
+  { enabled = true, showFiat = true } = {},
 ) =>
   renderHookWithProvider(
-    () => useMoneyAssetOverviewBalanceCta(token, { enabled }),
+    () => useMoneyAssetOverviewBalanceCta(token, { enabled, showFiat }),
     buildState(remoteFeatureFlags),
   ).result.current;
 
@@ -458,6 +458,15 @@ describe('use-money-asset-overview-ctas', () => {
         apyPercentFormatted: '6.2%',
         projectedEarningsFormatted: '+$62.00',
       });
+    });
+
+    it('shows the projected earnings in the token symbol when fiat is hidden', () => {
+      mockApy(0.062, 6.2);
+
+      expect(
+        renderBalanceCta(createToken(), undefined, { showFiat: false }).display
+          ?.projectedEarningsFormatted,
+      ).toBe('+62.00 USDC');
     });
 
     // @ts-expect-error This is missing from the Mocha type definitions
