@@ -222,6 +222,7 @@ describe('Transaction Controller Hooks', () => {
         shouldSign?.({
           transactionMeta: {
             ...mockTransactionMeta,
+            forceIsGasFeeSponsored: true,
             nestedTransactions: [
               { type: TransactionType.moneyAccountWithdraw },
             ],
@@ -229,6 +230,19 @@ describe('Transaction Controller Hooks', () => {
           },
         }),
       ).resolves.toStrictEqual({ shouldSign: false });
+    });
+
+    it('signs Transaction Pay legs of Money Account withdrawals locally', async () => {
+      const { shouldSign } = getTransactionControllerHooks(buildMockRequest());
+
+      await expect(
+        shouldSign?.({
+          transactionMeta: {
+            ...mockTransactionMeta,
+            type: TransactionType.moneyAccountWithdraw,
+          },
+        }),
+      ).resolves.toStrictEqual({ shouldSign: true });
     });
 
     it('does not sign locally when sponsored through the 7702 relay', async () => {
@@ -584,6 +598,7 @@ describe('Transaction Controller Hooks', () => {
       await publish?.(
         {
           ...mockTransactionMeta,
+          forceIsGasFeeSponsored: true,
           nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
           type: TransactionType.batch,
         },

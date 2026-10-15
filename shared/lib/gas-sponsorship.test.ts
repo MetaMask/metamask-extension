@@ -74,19 +74,30 @@ describe('isGasFeeSponsorshipPossible', () => {
 });
 
 describe('isGasFeeSponsorshipRequired', () => {
-  it('returns true for Money Account withdrawals', () => {
+  it('returns true for Money Account withdrawals that force sponsorship', () => {
+    expect(
+      isGasFeeSponsorshipRequired({
+        ...TRANSACTION_MOCK,
+        forceIsGasFeeSponsored: true,
+        type: TransactionType.moneyAccountWithdraw,
+      }),
+    ).toBe(true);
+  });
+
+  it('returns false for Money Account withdrawals that do not force sponsorship', () => {
     expect(
       isGasFeeSponsorshipRequired({
         ...TRANSACTION_MOCK,
         type: TransactionType.moneyAccountWithdraw,
       }),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('returns false for other transactions', () => {
     expect(
       isGasFeeSponsorshipRequired({
         ...TRANSACTION_MOCK,
+        forceIsGasFeeSponsored: true,
         type: TransactionType.moneyAccountDeposit,
       }),
     ).toBe(false);

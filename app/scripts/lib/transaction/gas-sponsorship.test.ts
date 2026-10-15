@@ -195,13 +195,13 @@ describe('isGasFeeSponsored', () => {
       expect(await isGasFeeSponsored(buildRequest(), WITHDRAW_MOCK)).toBe(true);
     });
 
-    it('throws when sponsorship is not available', async () => {
-      await expect(
-        isGasFeeSponsored(buildRequest(), {
+    it('returns false without throwing when sponsorship is not forced', async () => {
+      expect(
+        await isGasFeeSponsored(buildRequest(), {
           ...WITHDRAW_MOCK,
           forceIsGasFeeSponsored: false,
         }),
-      ).rejects.toThrow('Required transaction sponsorship is unavailable');
+      ).toBe(false);
     });
 
     it('throws when the user opted out', async () => {

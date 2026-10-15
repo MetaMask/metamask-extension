@@ -18,6 +18,7 @@ import { Hex } from '@metamask/utils';
 
 import { AccountOverviewTabKey } from '../../../../../shared/constants/app-state';
 import { getEip7702SupportedChains } from '../../../../../shared/lib/eip7702-support-utils';
+import { isGasFeeSponsorshipRequired } from '../../../../../shared/lib/gas-sponsorship';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import {
   getInternalEvmAddresses,
@@ -105,9 +106,7 @@ async function getSponsorshipRoute(
     return { isGasFeeSponsored: false, isSponsoredVia7702: false };
   }
 
-  if (
-    hasTransactionType(transactionMeta, [TransactionType.moneyAccountWithdraw])
-  ) {
+  if (isGasFeeSponsorshipRequired(transactionMeta)) {
     return { isGasFeeSponsored: true, isSponsoredVia7702: true };
   }
 
@@ -148,11 +147,7 @@ function shouldSignHook(
       return { shouldSign: false };
     }
 
-    if (
-      hasTransactionType(transactionMeta, [
-        TransactionType.moneyAccountWithdraw,
-      ])
-    ) {
+    if (isGasFeeSponsorshipRequired(transactionMeta)) {
       return { shouldSign: false };
     }
 

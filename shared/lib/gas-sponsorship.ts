@@ -41,15 +41,20 @@ export function isGasFeeSponsorshipPossible(
 /**
  * Whether the transaction requires sponsorship to be published.
  *
+ * Transaction Pay submits the user's own legs of a Money Account withdrawal
+ * with the same transaction type but without forcing sponsorship, so only the
+ * withdrawal created with `forceIsGasFeeSponsored` requires it.
+ *
  * @param transaction - The transaction to evaluate.
- * @returns True for Money Account withdrawals.
+ * @returns True for Money Account withdrawals that force sponsorship.
  */
 export function isGasFeeSponsorshipRequired(
   transaction: TransactionMeta | undefined,
 ): boolean {
-  return hasTransactionType(transaction, [
-    TransactionType.moneyAccountWithdraw,
-  ]);
+  return (
+    Boolean(transaction?.forceIsGasFeeSponsored) &&
+    hasTransactionType(transaction, [TransactionType.moneyAccountWithdraw])
+  );
 }
 
 /**
