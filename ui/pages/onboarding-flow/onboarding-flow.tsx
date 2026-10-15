@@ -121,17 +121,7 @@ const ExperimentalArea = mmLazy(
 const toRelativePath = (path: string) =>
   toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
-// The provider has to wrap the component that starts and ends the journey.
-// A hook call in this component reads the default context and drops the trace.
-export default function OnboardingFlow() {
-  return (
-    <OnboardingTraceProvider>
-      <OnboardingFlowContent />
-    </OnboardingTraceProvider>
-  );
-}
-
-function OnboardingFlowContent() {
+const OnboardingFlowContent = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -588,6 +578,16 @@ function OnboardingFlowContent() {
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>
+  );
+};
+
+// The provider has to wrap the component that starts and ends the journey.
+// A hook call in this component reads the default context and drops the trace.
+export default function OnboardingFlow() {
+  return (
+    <OnboardingTraceProvider>
+      <OnboardingFlowContent />
+    </OnboardingTraceProvider>
   );
 }
 

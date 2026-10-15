@@ -2413,7 +2413,6 @@ export default class MetamaskController extends EventEmitter {
       gatorPermissionsController,
       networkController,
       announcementController,
-      onboardingController,
       preferencesController,
       tokensController,
       smartTransactionsController,

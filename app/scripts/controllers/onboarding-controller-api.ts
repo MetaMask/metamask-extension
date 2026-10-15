@@ -13,6 +13,8 @@ import type { OnboardingController } from './onboarding';
  *
  * @param onboardingController - The onboarding controller.
  * @param sender - The browser message sender for the trusted connection.
+ * @param sender.tab - The sender's browser tab, when the connection has one.
+ * @param sender.tab.id - The numeric id of that tab.
  * @returns Bound onboarding controller methods.
  */
 export function getOnboardingControllerApi(
