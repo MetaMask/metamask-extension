@@ -1,5 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import { submitRequestToBackground } from '../../store/background-connection';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Routes, Route } from 'react-router-dom';
@@ -40,13 +41,44 @@ const mockTrackEvent = jest.fn();
 const mockStartJourney = jest.fn();
 const mockEndJourney = jest.fn();
 
-jest.mock('../../contexts/onboarding-trace', () => ({
-  ...jest.requireActual('../../contexts/onboarding-trace'),
-  useOnboardingTrace: () => ({
-    startJourney: mockStartJourney,
-    endJourney: mockEndJourney,
-  }),
+jest.mock('../../store/background-connection', () => ({
+  ...jest.requireActual('../../store/background-connection'),
+  submitRequestToBackground: jest.fn((method: string) =>
+    Promise.resolve(
+      method === 'startOnboardingJourney' ? 'journey-id' : undefined,
+    ),
+  ),
 }));
+
+const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
+
+jest.mock('../../contexts/onboarding-trace', () => {
+  const actual = jest.requireActual('../../contexts/onboarding-trace');
+  const { useMemo } = jest.requireActual('react');
+
+  return {
+    ...actual,
+    useOnboardingTrace: () => {
+      const trace = actual.useOnboardingTrace();
+
+      // Keep the callback identities stable so the start effect runs once,
+      // while still invoking the provider's real lifecycle.
+      return useMemo(
+        () => ({
+          startJourney: () => {
+            mockStartJourney();
+            trace.startJourney();
+          },
+          endJourney: (data: Parameters<typeof trace.endJourney>[0]) => {
+            mockEndJourney(data);
+            trace.endJourney(data);
+          },
+        }),
+        [trace],
+      );
+    },
+  };
+});
 
 jest.mock('../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -291,13 +323,19 @@ describe('Onboarding Flow', () => {
     jest.clearAllMocks();
   });
 
-  it('starts the onboarding journey through the lifecycle hook', () => {
+  it('starts the onboarding journey through the lifecycle hook', async () => {
     renderWithProvider(
       <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_WELCOME_ROUTE,
     );
 
+    await waitFor(() => {
+      expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+        'startOnboardingJourney',
+        [{ lastStep: 'welcome' }],
+      );
+    });
     expect(mockStartJourney).toHaveBeenCalledTimes(1);
   });
 
@@ -475,6 +513,10 @@ describe('Onboarding Flow', () => {
       await waitFor(() => {
         expect(unlockAndGetSeedPhrase).toHaveBeenCalled();
         expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
+        expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+          'endOnboardingJourney',
+          [{ lastStep: 'unlock', success: true }],
+        );
       });
     });
 

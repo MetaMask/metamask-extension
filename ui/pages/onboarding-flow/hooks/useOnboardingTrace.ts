@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   type ReactNode,
 } from 'react';
@@ -125,7 +126,10 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
     });
   }, [pathname]);
 
-  return { startJourney, endJourney };
+  return useMemo(
+    () => ({ startJourney, endJourney }),
+    [startJourney, endJourney],
+  );
 }
 
 /**
