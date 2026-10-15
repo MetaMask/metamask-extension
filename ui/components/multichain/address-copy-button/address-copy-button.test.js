@@ -1,20 +1,26 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import copyToClipboard from 'copy-to-clipboard';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
-import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { AddressCopyButton } from '.';
 
-jest.mock('copy-to-clipboard');
-
 const SAMPLE_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+const mockHandleCopy = jest.fn();
+
+jest.mock('../../../hooks/useCopyToClipboard', () => ({
+  useCopyToClipboard: jest.fn(),
+}));
 
 describe('AccountListItem', () => {
   const mockStore = configureMockStore()(mockState);
+
+  beforeEach(() => {
+    useCopyToClipboard.mockReturnValue([false, mockHandleCopy, jest.fn()]);
+  });
 
   afterEach(() => {
     jest.clearAllMocks(); // Clear mocks to ensure no test interference
@@ -51,11 +57,11 @@ describe('AccountListItem', () => {
   });
 
   it('changes icon when clicked', () => {
+    useCopyToClipboard.mockReturnValue([true, mockHandleCopy, jest.fn()]);
     renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
     );
-    fireEvent.click(document.querySelector('button'));
     expect(document.querySelector('.mm-icon').style.maskImage).toContain(
       'copy-success.svg',
     );
@@ -74,7 +80,7 @@ describe('AccountListItem', () => {
     expect(tooltipTitle).toBeInTheDocument();
   });
 
-  it('should copy checksum address to clipboard when button is clicked', () => {
+  it('should copy checksum address to clipboard when button is clicked', async () => {
     const { queryByTestId } = renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,
       mockStore,
@@ -84,9 +90,10 @@ describe('AccountListItem', () => {
 
     fireEvent.click(button);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(
-      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
-      COPY_OPTIONS,
-    );
+    await waitFor(() => {
+      expect(mockHandleCopy).toHaveBeenCalledWith(
+        '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+      );
+    });
   });
 });

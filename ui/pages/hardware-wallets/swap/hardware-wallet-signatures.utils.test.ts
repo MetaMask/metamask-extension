@@ -2,11 +2,23 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { TextColor } from '@metamask/design-system-react';
 import { providerErrors } from '@metamask/rpc-errors';
 import { it } from '@jest/globals';
-import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
+import { KeyringControllerError } from '@metamask/keyring-controller';
+import {
+  HardwareWalletSignatureEvent,
+  HardwareWalletSignatureStatus,
+} from './hardware-wallet-signatures-state-machine';
 import { SignatureStepStatus } from './types';
 import {
   cleanupPendingApproval,
   getAllStepStatuses,
+  getHardwareWalletSignatureViewModel,
+  getHardwareWalletSignatureErrorEvent,
   getQrHardwareSigningPageTitle,
   getQrScanButtonLabelKey,
   getStepDescriptions,
@@ -18,6 +30,8 @@ import {
   getStepLabels,
   getFirstStepDescription,
   getFinalStepDescription,
+  getSignatureStepDescriptionLines,
+  isAwaitingSignature,
   isErrorStepStatus,
   isQrHardwareSignRequest,
   getTransactionField,
@@ -27,7 +41,6 @@ jest.mock('../../../store/actions', () => ({
   rejectPendingApproval: jest.fn(() => 'REJECT_ACTION'),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockRejectPendingApproval = jest.requireMock(
   '../../../store/actions',
 ).rejectPendingApproval;
@@ -517,6 +530,70 @@ describe('hardware-wallet-signatures utils', () => {
         }),
       ).toBe('hardwareSendAmount[1.5,ETH]');
     });
+
+    describe('swap destination', () => {
+      const swapBase = {
+        fromAmount: '10',
+        fromTokenSymbol: 'USDC',
+        isSwap: true,
+        toAmount: '9.9',
+        toTokenSymbol: 'USDT',
+        t,
+      };
+
+      it('returns swapped amounts when submitted', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.Submitted,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toBe('hardwareSwappedAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('returns swapping amounts when active', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toBe('hardwareSwappingAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('returns swap amounts when pending', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toBe('hardwareSwapAmount[10,USDC,9.9,USDT]');
+      });
+
+      it('falls back to send labels when not a swap', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            isSwap: false,
+            status: HardwareWalletSignatureStatus.Submitted,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toBe('hardwareSentAmount[10,USDC]');
+      });
+
+      it('falls back to send labels when destination token data is missing', () => {
+        expect(
+          getFinalStepLabel({
+            ...swapBase,
+            toAmount: undefined,
+            toTokenSymbol: undefined,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toBe('hardwareSendingAmount[10,USDC]');
+      });
+    });
   });
 
   describe('getStepLabels', () => {
@@ -694,6 +771,91 @@ describe('hardware-wallet-signatures utils', () => {
         });
       });
     });
+
+    describe('swap flow with destination token data', () => {
+      const swapBase = {
+        isSendBundleFlow: false,
+        needsTwoConfirmations: true,
+        fromAmount: '10',
+        fromTokenSymbol: 'USDC',
+        isSwap: true,
+        toAmount: '9.9',
+        toTokenSymbol: 'USDT',
+        t,
+      };
+
+      it('uses Swapped for the final step when submitted', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.Submitted,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Complete,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwappedAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('uses Swapping for the final step when active', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwappingAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('uses Swap for the final step when pending', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            firstStepStatus: SignatureStepStatus.Active,
+            finalStepStatus: SignatureStepStatus.Pending,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApproveAmount[10,USDC]',
+          finalStepLabel: 'hardwareSwapAmount[10,USDC,9.9,USDT]',
+        });
+      });
+
+      it('keeps send labels for bridges even with destination token data', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            isSwap: false,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[10,USDC]',
+        });
+      });
+
+      it('keeps send labels when the destination amount is missing', () => {
+        expect(
+          getStepLabels({
+            ...swapBase,
+            toAmount: undefined,
+            status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+            firstStepStatus: SignatureStepStatus.Complete,
+            finalStepStatus: SignatureStepStatus.Active,
+          }),
+        ).toEqual({
+          firstStepLabel: 'hardwareApprovedAmount[10,USDC]',
+          finalStepLabel: 'hardwareSendingAmount[10,USDC]',
+        });
+      });
+    });
   });
 
   describe('getStepDescriptions', () => {
@@ -711,7 +873,7 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
           finalStepDescription: undefined,
         });
       });
@@ -728,7 +890,7 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
     });
@@ -745,8 +907,28 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareSpender[0xabcde...def12]',
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { spender: 'hardwareSpender[0xabcde...def12]' },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
+        });
+      });
+
+      it('threads the approval token address into the first-step description', () => {
+        expect(
+          getStepDescriptions({
+            isSendBundleFlow: false,
+            needsTwoConfirmations: true,
+            firstStepStatus: SignatureStepStatus.Active,
+            spenderAddress,
+            approvalTokenAddress: toAddress,
+            toAddress,
+            t,
+          }),
+        ).toEqual({
+          firstStepDescription: {
+            token: 'hardwareToken[0x12345...45678]',
+            spender: 'hardwareSpender[0xabcde...def12]',
+          },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
 
@@ -761,8 +943,8 @@ describe('hardware-wallet-signatures utils', () => {
             t,
           }),
         ).toEqual({
-          firstStepDescription: 'hardwareRejected',
-          finalStepDescription: 'hardwareToAddress[0x12345...45678]',
+          firstStepDescription: { error: 'hardwareRejected' },
+          finalStepDescription: { to: 'hardwareToAddress[0x12345...45678]' },
         });
       });
     });
@@ -776,7 +958,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('hardwareRejected');
+      ).toStrictEqual({ error: 'hardwareRejected' });
     });
 
     it('returns reconnect text', () => {
@@ -786,7 +968,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('hardwareReconnectDevice');
+      ).toStrictEqual({ error: 'hardwareReconnectDevice' });
     });
 
     it('returns failed text', () => {
@@ -796,7 +978,7 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x123',
           t,
         }),
-      ).toBe('transactionFailed');
+      ).toStrictEqual({ error: 'transactionFailed' });
     });
 
     it('returns spender address text', () => {
@@ -806,7 +988,43 @@ describe('hardware-wallet-signatures utils', () => {
           spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('hardwareSpender[0x12345...45678]');
+      ).toStrictEqual({ spender: 'hardwareSpender[0x12345...45678]' });
+    });
+
+    it('returns token and spender on separate lines when both addresses are available', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: '0xabcdef1234567890abcdef1234567890abcdef12',
+          approvalTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        }),
+      ).toStrictEqual({
+        token: 'hardwareToken[0x12345...45678]',
+        spender: 'hardwareSpender[0xabcde...def12]',
+      });
+    });
+
+    it('falls back to spender-only text when the token address is missing', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          approvalTokenAddress: undefined,
+          t,
+        }),
+      ).toStrictEqual({ spender: 'hardwareSpender[0x12345...45678]' });
+    });
+
+    it('returns undefined when the approval calldata is undecodable (no spender)', () => {
+      expect(
+        getFirstStepDescription({
+          firstStepStatus: SignatureStepStatus.Active,
+          spenderAddress: undefined,
+          approvalTokenAddress: '0x1234567890abcdef1234567890abcdef12345678',
+          t,
+        }),
+      ).toBeUndefined();
     });
 
     it('returns undefined when no spender address', () => {
@@ -827,7 +1045,7 @@ describe('hardware-wallet-signatures utils', () => {
           toAddress: '0x1234567890abcdef1234567890abcdef12345678',
           t,
         }),
-      ).toBe('hardwareToAddress[0x12345...45678]');
+      ).toStrictEqual({ to: 'hardwareToAddress[0x12345...45678]' });
     });
 
     it('returns undefined when no to address', () => {
@@ -837,6 +1055,39 @@ describe('hardware-wallet-signatures utils', () => {
           t,
         }),
       ).toBeUndefined();
+    });
+  });
+
+  describe('getSignatureStepDescriptionLines', () => {
+    it('returns an empty array for undefined', () => {
+      expect(getSignatureStepDescriptionLines(undefined)).toStrictEqual([]);
+    });
+
+    it('returns only the error line when present', () => {
+      expect(
+        getSignatureStepDescriptionLines({
+          error: 'Rejected',
+          token: 'Token: 0x1',
+          spender: 'Spender: 0x2',
+          to: 'To: 0x3',
+        }),
+      ).toStrictEqual(['Rejected']);
+    });
+
+    it('flattens detail lines in token, spender, to order', () => {
+      expect(
+        getSignatureStepDescriptionLines({
+          token: 'Token: 0x1',
+          spender: 'Spender: 0x2',
+          to: 'To: 0x3',
+        }),
+      ).toStrictEqual(['Token: 0x1', 'Spender: 0x2', 'To: 0x3']);
+    });
+
+    it('omits missing detail lines', () => {
+      expect(
+        getSignatureStepDescriptionLines({ spender: 'Spender: 0x2' }),
+      ).toStrictEqual(['Spender: 0x2']);
     });
   });
 
@@ -971,6 +1222,345 @@ describe('hardware-wallet-signatures utils', () => {
         }),
       );
       expect(dispatch).toHaveBeenCalledWith('REJECT_ACTION');
+    });
+  });
+
+  describe('isAwaitingSignature', () => {
+    it.each([
+      HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      HardwareWalletSignatureStatus.AwaitingFinalSignature,
+    ])('returns true for %s', (status) => {
+      expect(isAwaitingSignature(status)).toBe(true);
+    });
+
+    it.each([
+      HardwareWalletSignatureStatus.Submitted,
+      HardwareWalletSignatureStatus.Rejected,
+      HardwareWalletSignatureStatus.Failed,
+      HardwareWalletSignatureStatus.Disconnected,
+    ])('returns false for %s', (status) => {
+      expect(isAwaitingSignature(status)).toBe(false);
+    });
+  });
+
+  describe('getHardwareWalletSignatureViewModel', () => {
+    const baseParams = {
+      signatureState: {
+        status: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      },
+      isSendBundleFlow: false,
+      needsTwoConfirmations: true,
+      toAddress: '0xtrade',
+      spenderAddress: '0xspender',
+      fromAmount: '1',
+      fromTokenSymbol: 'ETH',
+      hasSigningRequest: true,
+      hasSignatureTimedOut: false,
+      isRetrying: false,
+      hasRetried: false,
+      showInlineQrSigning: false,
+      isReadingQrSignature: false,
+      t,
+    };
+
+    it('derives step labels, descriptions, and default title while awaiting', () => {
+      const viewModel = getHardwareWalletSignatureViewModel(baseParams);
+
+      expect(viewModel.firstStepStatus).toBe(SignatureStepStatus.Active);
+      expect(viewModel.finalStepStatus).toBe(SignatureStepStatus.Pending);
+      expect(viewModel.title).toBe('swapConfirmWithHwWallet');
+      expect(viewModel.isRetryable).toBe(false);
+      expect(viewModel.showStuckRetryButton).toBe(false);
+      expect(viewModel.showFooter).toBe(true);
+      expect(viewModel.hasSigningRequest).toBe(true);
+      expect(viewModel.firstStepLabel).toBeTruthy();
+      expect(viewModel.finalStepLabel).toBeTruthy();
+    });
+
+    it('marks rejected/failed/disconnected statuses as retryable', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Rejected,
+            rejectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Failed,
+            failedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Disconnected,
+            disconnectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+        }).isRetryable,
+      ).toBe(true);
+    });
+
+    it('shows the stuck retry button only after timeout, retry, and awaiting', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+        }).showStuckRetryButton,
+      ).toBe(true);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: false,
+        }).showStuckRetryButton,
+      ).toBe(false);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+          isRetrying: true,
+        }).showStuckRetryButton,
+      ).toBe(false);
+
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Rejected,
+            rejectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+          hasSignatureTimedOut: true,
+          hasRetried: true,
+        }).showStuckRetryButton,
+      ).toBe(false);
+    });
+
+    it('hides the footer after submission', () => {
+      expect(
+        getHardwareWalletSignatureViewModel({
+          ...baseParams,
+          signatureState: {
+            status: HardwareWalletSignatureStatus.Submitted,
+          },
+        }).showFooter,
+      ).toBe(false);
+    });
+
+    it('uses the inline QR title while displaying a QR code', () => {
+      const viewModel = getHardwareWalletSignatureViewModel({
+        ...baseParams,
+        showInlineQrSigning: true,
+        isReadingQrSignature: false,
+        activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      });
+
+      expect(viewModel.showInlineQrCode).toBe(true);
+      expect(viewModel.showQrSigningPage).toBe(false);
+      expect(viewModel.isFinalSignature).toBe(false);
+      expect(viewModel.title).toBe(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          isDisplayPhase: true,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      );
+    });
+
+    it('shows the QR signing page while reading a signature', () => {
+      const viewModel = getHardwareWalletSignatureViewModel({
+        ...baseParams,
+        showInlineQrSigning: true,
+        isReadingQrSignature: true,
+        activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      });
+
+      expect(viewModel.showInlineQrCode).toBe(false);
+      expect(viewModel.showQrSigningPage).toBe(true);
+      expect(viewModel.isFinalSignature).toBe(true);
+      expect(viewModel.qrSigningPageTitle).toBe(
+        getQrHardwareSigningPageTitle({
+          activeQrStep: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          needsTwoConfirmations: true,
+          t,
+        }),
+      );
+    });
+  });
+
+  describe('getHardwareWalletSignatureErrorEvent', () => {
+    it('returns TransactionRejected for a user rejection error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 4001,
+          message: 'User rejected',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it('returns TransactionRejected for a user cancelled error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 2001,
+          message: 'User cancelled',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it.each([
+      ['AuthenticationDeviceLocked', 1100],
+      ['AuthenticationDeviceBlocked', 1101],
+      ['AuthenticationSecurityCondition', 1200],
+      ['ConnectionTransportMissing', 4000],
+      ['DeviceDisconnected', 3003],
+      ['ConnectionTimeout', 4002],
+    ])('returns DeviceDisconnected for %s', (_label, code) => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({ code, message: 'error' }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it('returns DeviceDisconnected for ConnectionClosed via HardwareWalletError', () => {
+      // ConnectionClosed (4001) is numerically equal to EIP-1193
+      // userRejectedRequest, so a plain { code: 4001 } object is ambiguous.
+      // A real HardwareWalletError instance disambiguates: the HW error
+      // check short-circuits the EIP-1193 fallback in isUserRejected.
+      const error = new HardwareWalletError('Connection closed', {
+        code: ErrorCode.ConnectionClosed,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Connection closed',
+      });
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it.each([
+      ['AuthenticationDeviceLocked', ErrorCode.AuthenticationDeviceLocked],
+      ['ConnectionTimeout', ErrorCode.ConnectionTimeout],
+      ['DeviceDisconnected', ErrorCode.DeviceDisconnected],
+    ])(
+      'returns DeviceDisconnected for KeyringControllerError wrapping %s on cause',
+      (_label, code) => {
+        const error = new KeyringControllerError('sign operation failed', {
+          cause: new HardwareWalletError('device unavailable', {
+            code,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'device unavailable',
+          }),
+        });
+
+        expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+          type: HardwareWalletSignatureEvent.DeviceDisconnected,
+        });
+      },
+    );
+
+    it('returns TransactionRejected for KeyringControllerError wrapping EIP-1193 4001 on cause', () => {
+      // Plain { code: 4001 } is ambiguous with ConnectionClosed. At the top
+      // level, isUserRejected treats it as EIP-1193 userRejectedRequest. The
+      // same payload on a KeyringControllerError cause must not flip to
+      // DeviceDisconnected just because we now read nested codes.
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: providerErrors.userRejectedRequest('error'),
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionRejected,
+      });
+    });
+
+    it('returns DeviceDisconnected for KeyringControllerError wrapping ConnectionClosed HardwareWalletError on cause', () => {
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: new HardwareWalletError('Connection closed', {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: 'Connection closed',
+        }),
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
+      });
+    });
+
+    it('returns null for DeviceStateEthAppClosed so signing stays on the awaiting path', () => {
+      const error = new HardwareWalletError('Ethereum app is not open', {
+        code: ErrorCode.DeviceStateEthAppClosed,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Ethereum app is not open',
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toBeNull();
+    });
+
+    it('returns null for KeyringControllerError wrapping DeviceStateEthAppClosed on cause', () => {
+      const error = new KeyringControllerError('sign operation failed', {
+        cause: new HardwareWalletError('Ethereum app is not open', {
+          code: ErrorCode.DeviceStateEthAppClosed,
+          severity: Severity.Err,
+          category: Category.DeviceState,
+          userMessage: 'Ethereum app is not open',
+        }),
+      });
+
+      expect(getHardwareWalletSignatureErrorEvent(error)).toBeNull();
+    });
+
+    it('returns TransactionFailed for an unknown error code', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent({
+          code: 99999,
+          message: 'Unknown',
+        }),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for a plain Error without a code property', () => {
+      expect(
+        getHardwareWalletSignatureErrorEvent(new Error('something broke')),
+      ).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for null', () => {
+      expect(getHardwareWalletSignatureErrorEvent(null)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
+    });
+
+    it('returns TransactionFailed for undefined', () => {
+      expect(getHardwareWalletSignatureErrorEvent(undefined)).toStrictEqual({
+        type: HardwareWalletSignatureEvent.TransactionFailed,
+      });
     });
   });
 });

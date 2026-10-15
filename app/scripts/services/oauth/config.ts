@@ -208,15 +208,6 @@ export function isReleaseCandidateBuild() {
   return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
 }
 
-export function getProfilePairingEnv(): ProfileSyncEnv {
-  if (isProductionBuild() || isReleaseCandidateBuild()) {
-    return ProfileSyncEnv.PRD;
-  } else if (isDevOrTestBuild()) {
-    return ProfileSyncEnv.DEV;
-  }
-  return ProfileSyncEnv.UAT;
-}
-
 /**
  * Load the OAuth config based on the build type and environment.
  *

@@ -12,35 +12,42 @@ const TRON_NATIVE_CAIP_ASSET_ID = 'tron:728126428/slip44:195';
 const TRON_CHAIN_CAIP_ID = 'tron:728126428';
 
 /**
- * Mock GET /v2/supportedNetworks for the Tokens API.
+ * Mock GET /v2/supportedNetworks for the Token API and the Tokens API.
  *
- * The TokenDataSource calls this endpoint to determine which chain IDs are
- * supported before fetching asset metadata. Without non-EVM chains in the
- * response, the BTC/SOL assets are filtered out and no metadata is fetched,
- * leaving AssetsController.assetsInfo empty — which causes the balance
- * migration selector to skip those balances entirely.
+ * Rpc token detection calls `token.api`. TokenDataSource calls `tokens.api`.
+ * Both use this chain list to decide which networks can be enriched. Without
+ * the non-EVM chains, BTC/SOL assets are filtered out and no metadata is
+ * fetched, leaving AssetsController.assetsInfo empty.
  *
  * @param mockServer - The mock server instance.
+ * @returns The mocked endpoints, one per host.
  */
-export const mockTokensV2SupportedNetworks = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
-    .always()
-    .thenJson(200, {
-      fullSupport: [
-        BTC_CHAIN_CAIP_ID,
-        SOL_CHAIN_CAIP_ID,
-        TRON_CHAIN_CAIP_ID,
-        'eip155:1',
-        'eip155:137',
-        'eip155:56',
-        'eip155:1337',
-        'eip155:42161',
-        'eip155:10',
-        'eip155:8453',
-      ],
-      partialSupport: [],
-    });
+export const mockTokensV2SupportedNetworks = async (mockServer: Mockttp) => {
+  const supportedNetworks = {
+    fullSupport: [
+      BTC_CHAIN_CAIP_ID,
+      SOL_CHAIN_CAIP_ID,
+      TRON_CHAIN_CAIP_ID,
+      'eip155:1',
+      'eip155:137',
+      'eip155:56',
+      'eip155:1337',
+      'eip155:42161',
+      'eip155:10',
+      'eip155:8453',
+    ],
+    partialSupport: [],
+  };
+
+  return Promise.all(
+    [
+      'https://token.api.cx.metamask.io/v2/supportedNetworks',
+      'https://tokens.api.cx.metamask.io/v2/supportedNetworks',
+    ].map((url) =>
+      mockServer.forGet(url).always().thenJson(200, supportedNetworks),
+    ),
+  );
+};
 
 /**
  * Mock GET /v3/assets for the Tokens API.
@@ -74,6 +81,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'USD Coin',
           symbol: 'USDC',
           decimals: 6,
+          occurrences: 3,
         });
       }
       if (
@@ -86,6 +94,7 @@ export const mockTokensV3Assets = (mockServer: Mockttp) =>
           name: 'Tether USD',
           symbol: 'USDT',
           decimals: 6,
+          occurrences: 3,
         });
       }
 

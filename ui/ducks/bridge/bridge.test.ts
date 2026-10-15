@@ -7,11 +7,10 @@ import * as networkConstants from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import * as cacheUtils from '../../pages/bridge/utils/cache';
 import * as storeActions from '../../store/actions';
 import * as sentry from '../../../shared/lib/sentry';
-import bridgeReducer, { initialState } from './bridge';
+import bridgeReducer, { bridgeSlice, initialState } from './bridge';
 import { BridgeMissingNetworkConfigError } from './errors';
 import {
   setFromToken,
@@ -20,6 +19,7 @@ import {
   updateQuoteRequestParams,
   setWasTxDeclined,
   setSlippage,
+  setSlippageUserOverride,
   resetBridgeController,
   resetInputFields,
 } from './actions';
@@ -366,7 +366,8 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: SlippageValue.BridgeDefault,
+        slippage: undefined,
+        isSlippageUserOverride: false,
         isDestAssetPickerOpen: false,
         isSrcAssetPickerOpen: false,
         sortOrder: 'cost_ascending',
@@ -378,6 +379,23 @@ describe('Ducks - Bridge', () => {
         fromNativeBalance: null,
       });
     });
+  });
+
+  it('clears user slippage when an asset changes', () => {
+    let state = bridgeReducer(initialState, setSlippageUserOverride(undefined));
+
+    state = bridgeReducer(
+      state,
+      bridgeSlice.actions.setToToken({
+        assetId: 'eip155:1/erc20:0xabc',
+        symbol: 'TEST',
+        name: 'Test',
+        decimals: 18,
+      }),
+    );
+
+    expect(state.slippage).toBeUndefined();
+    expect(state.isSlippageUserOverride).toBe(false);
   });
 
   describe('setWasTxDeclined', () => {

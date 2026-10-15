@@ -14,7 +14,6 @@ export type TransactionDetailsRowProps = {
   'data-testid'?: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsRow({
   children,
   label,

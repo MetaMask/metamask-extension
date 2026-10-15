@@ -1,26 +1,26 @@
-import React, { useMemo, useEffect, useRef, useCallback } from 'react';
+import React, {
+  useMemo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   twMerge,
   Box,
   BoxFlexDirection,
-  BoxAlignItems,
   Button,
   ButtonVariant,
   ButtonSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Tag } from '../../../component-library';
 import { usePerpsOrderForm } from '../../../../hooks/perps';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { usePerpsMarketInfo } from '../../../../hooks/perps/usePerpsMarketInfo';
-import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { selectPerpsActiveProvider } from '../../../../selectors/perps-controller';
-import {
-  BackgroundColor,
-  BorderRadius,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
 import { getDisplaySymbol } from '../utils';
+import type { OrderType } from '../types';
 import type { OrderEntryProps, OrderCalculations } from './order-entry.types';
 
 import { AmountInput } from './components/amount-input';
@@ -29,6 +29,7 @@ import { LeverageSlider } from './components/leverage-slider';
 import { OrderSummary } from './components/order-summary';
 import { AutoCloseSection } from './components/auto-close-section';
 import { CloseAmountSection } from './components/close-amount-section';
+import { OrderTypeToggle } from './components/order-type-toggle';
 /**
  * OrderEntry - Main component for creating perps orders
  *
@@ -61,11 +62,17 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.onCalculationsChange
  * @param props.onAddFunds
  * @param props.initialLeverage
+ * @param props.initialDraft
+ * @param props.onLeverageChange
  * @param props.sizeDecimals
  * @param props.markPrice
  * @param props.autoFocusUsd
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
+ * @param props.limitPricePrefill
+ * @param props.onInputMethodChange
+ * @param props.isLoadingAccount
+ * @param props.hasNoAvailableBalance
  */
 export const OrderEntry = ({
   asset,
@@ -75,6 +82,7 @@ export const OrderEntry = ({
   initialDirection = 'long',
   onSubmit,
   onFormStateChange,
+  onInputMethodChange,
   onCalculationsChange,
   showSubmitButton = true,
   showOrderSummary = true,
@@ -84,35 +92,28 @@ export const OrderEntry = ({
   midPrice,
   onOrderTypeChange,
   onAddFunds,
+  isLoadingAccount = false,
+  hasNoAvailableBalance = false,
   initialLeverage,
+  initialDraft,
+  onLeverageChange,
   sizeDecimals,
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
   usdPlaceholder,
+  limitPricePrefill,
 }: OrderEntryProps) => {
   const t = useI18nContext();
   const activeProvider = useSelector(selectPerpsActiveProvider);
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)
-  const marketInfo = usePerpsMarketInfo(asset);
-
-  // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const {
-    feeRate,
-    undiscountedFeeRate,
-    protocolFeeRate,
-    metamaskFeeRate,
-    originalMetamaskFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
+  const { market: marketInfo } = usePerpsMarketInfo(asset);
 
   // Use custom hook for form state management
   const {
     formState,
+    orderFees,
     closePercent,
     calculations,
     handleAmountChange,
@@ -136,12 +137,30 @@ export const OrderEntry = ({
     onSubmit,
     orderType,
     initialLeverage,
+    initialDraft,
     sizeDecimals,
     maxLeverage,
     szDecimals: marketInfo?.szDecimals,
     markPrice,
-    feeRate,
+    limitPricePrefill,
   });
+
+  const {
+    feeRate,
+    undiscountedFeeRate,
+    protocolFeeRate,
+    metamaskFeeRate,
+    originalMetamaskFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = orderFees;
+
+  const handlePersistedLeverageChange = useCallback(
+    (leverage: number) => {
+      handleLeverageChange(leverage);
+      onLeverageChange?.(leverage);
+    },
+    [handleLeverageChange, onLeverageChange],
+  );
 
   const isLong = formState.direction === 'long';
 
@@ -163,7 +182,10 @@ export const OrderEntry = ({
       : t('perpsFeesTooltipProviderFee');
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
-  onCalculationsChangeRef.current = onCalculationsChange;
+
+  useLayoutEffect(() => {
+    onCalculationsChangeRef.current = onCalculationsChange;
+  }, [onCalculationsChange]);
 
   const prevCalculationsRef = useRef<OrderCalculations | null>(null);
 
@@ -172,13 +194,16 @@ export const OrderEntry = ({
       if (a === null) {
         return true;
       }
+      // `Object.is` rather than `!==`: a market price of 0 makes the fee and
+      // liquidation figures NaN, and `NaN !== NaN` reports a change on every
+      // render, so the effect below would re-notify the page without end.
       return (
-        a.positionSize !== b.positionSize ||
-        a.marginRequired !== b.marginRequired ||
-        a.liquidationPrice !== b.liquidationPrice ||
-        a.liquidationPriceRaw !== b.liquidationPriceRaw ||
-        a.orderValue !== b.orderValue ||
-        a.estimatedFees !== b.estimatedFees
+        !Object.is(a.positionSize, b.positionSize) ||
+        !Object.is(a.marginRequired, b.marginRequired) ||
+        !Object.is(a.liquidationPrice, b.liquidationPrice) ||
+        !Object.is(a.liquidationPriceRaw, b.liquidationPriceRaw) ||
+        !Object.is(a.orderValue, b.orderValue) ||
+        !Object.is(a.estimatedFees, b.estimatedFees)
       );
     },
     [],
@@ -191,7 +216,7 @@ export const OrderEntry = ({
     }
   }, [calculations, hasCalculationsChanged]);
 
-  const handleOrderTypeClick = (type: 'market' | 'limit') => {
+  const handleOrderTypeClick = (type: OrderType) => {
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
@@ -250,7 +275,7 @@ export const OrderEntry = ({
         fillPrice = parsed;
       }
     }
-    if (fillPrice === 0) {
+    if (!Number.isFinite(fillPrice) || fillPrice <= 0) {
       return undefined;
     }
 
@@ -266,6 +291,32 @@ export const OrderEntry = ({
     currentPrice,
   ]);
 
+  const existingSignedSize =
+    Number.parseFloat(existingPosition?.size.replaceAll(',', '') ?? '0') || 0;
+  const orderSignedSize = estimatedSize ?? 0;
+  // The page classifies flips using its legacy leverage-based sizing before
+  // the provider recalculates the actual size from usdAmount.
+  const sizeForSubmitRoute =
+    currentPrice > 0
+      ? ((Number.parseFloat(formState.amount) || 0) * formState.leverage) /
+        currentPrice
+      : 0;
+  const signedSizeForSubmitRoute =
+    formState.direction === 'long' ? sizeForSubmitRoute : -sizeForSubmitRoute;
+  // Match the page's new/flip market flow: attach after placement using the
+  // resulting position size. Other orders share their order's fee resolution.
+  const submitsTpslSeparately =
+    formState.type === 'market' &&
+    (existingSignedSize === 0 ||
+      (existingSignedSize * signedSizeForSubmitRoute < 0 &&
+        Math.abs(signedSizeForSubmitRoute) > Math.abs(existingSignedSize)));
+  const tpslFeeNotionalUsd = submitsTpslSeparately
+    ? getPerpsNotionalUsd({
+        size: existingSignedSize + orderSignedSize,
+        price: [formState.takeProfitPrice, formState.stopLossPrice],
+      })
+    : getPerpsNotionalUsd({ usdAmount: formState.amount });
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -280,63 +331,10 @@ export const OrderEntry = ({
       >
         {/* Order Type: Market and Limit as separate pills (Tag component) — hidden in close mode */}
         {mode !== 'close' && (
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Center}
-            gap={2}
-            className="w-full"
-          >
-            <Tag
-              as="button"
-              type="button"
-              label={t('perpsMarket')}
-              onClick={() => handleOrderTypeClick('market')}
-              backgroundColor={
-                formState.type === 'market'
-                  ? BackgroundColor.backgroundMuted
-                  : BackgroundColor.backgroundDefault
-              }
-              borderWidth={0}
-              className={twMerge(
-                'cursor-pointer transition-colors',
-                formState.type !== 'market' && 'hover:opacity-80',
-              )}
-              borderRadius={BorderRadius.pill}
-              labelProps={{
-                color:
-                  formState.type === 'market'
-                    ? TextColor.textDefault
-                    : TextColor.textAlternative,
-              }}
-              padding={4}
-              data-testid="order-type-market"
-            />
-            <Tag
-              as="button"
-              type="button"
-              label={t('perpsLimit')}
-              onClick={() => handleOrderTypeClick('limit')}
-              backgroundColor={
-                formState.type === 'limit'
-                  ? BackgroundColor.backgroundMuted
-                  : BackgroundColor.backgroundDefault
-              }
-              borderWidth={0}
-              borderRadius={BorderRadius.pill}
-              className={twMerge(
-                'cursor-pointer transition-colors',
-                formState.type !== 'limit' && 'hover:opacity-80',
-              )}
-              labelProps={{
-                color:
-                  formState.type === 'limit'
-                    ? TextColor.textDefault
-                    : TextColor.textAlternative,
-              }}
-              padding={4}
-              data-testid="order-type-limit"
-            />
-          </Box>
+          <OrderTypeToggle
+            orderType={formState.type}
+            onOrderTypeChange={handleOrderTypeClick}
+          />
         )}
 
         {/* Close Mode: Show CloseAmountSection */}
@@ -345,6 +343,7 @@ export const OrderEntry = ({
             positionSize={positionSize}
             closePercent={closePercent}
             onClosePercentChange={handleClosePercentChange}
+            onInputMethodChange={onInputMethodChange}
             asset={asset}
             currentPrice={currentPrice}
             sizeDecimals={sizeDecimals}
@@ -369,6 +368,7 @@ export const OrderEntry = ({
           <AmountInput
             amount={formState.amount}
             onAmountChange={handleAmountChange}
+            onInputMethodChange={onInputMethodChange}
             balancePercent={formState.balancePercent}
             onBalancePercentChange={handleBalancePercentChange}
             availableBalance={availableBalance}
@@ -380,6 +380,8 @@ export const OrderEntry = ({
               mode === 'modify' ? existingPosition?.size : undefined
             }
             onAddFunds={onAddFunds}
+            isLoadingAccount={isLoadingAccount}
+            hasNoAvailableBalance={hasNoAvailableBalance}
             autoFocus={autoFocusUsd && formState.type === 'market'}
             usdPlaceholder={usdPlaceholder}
             usdInputRef={usdInputRef}
@@ -390,7 +392,7 @@ export const OrderEntry = ({
         {mode !== 'close' && (
           <LeverageSlider
             leverage={formState.leverage}
-            onLeverageChange={handleLeverageChange}
+            onLeverageChange={handlePersistedLeverageChange}
             maxLeverage={maxLeverage}
             minLeverage={
               mode === 'modify' && existingPosition
@@ -414,6 +416,7 @@ export const OrderEntry = ({
             leverage={formState.leverage}
             entryPrice={undefined}
             estimatedSize={estimatedSize}
+            feeNotionalUsd={tpslFeeNotionalUsd}
             orderType={formState.type}
             limitPrice={formState.limitPrice}
             liquidationPrice={calculations.liquidationPriceRaw}

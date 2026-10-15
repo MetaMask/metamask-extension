@@ -7,6 +7,8 @@ import {
   derivePositionTpslPricesFromOrders,
   willFlipPosition,
   formatOrderLabel,
+  getOrderStatusI18nKey,
+  isOrderNoLongerOpenError,
 } from './orderUtils';
 
 const makeOrder = (overrides: Partial<Order> = {}): Order => ({
@@ -169,8 +171,9 @@ describe('orderUtils', () => {
       ).toBe(true);
     });
 
-    it('excludes full-position reduce-only and isPositionTpsl orders', () => {
+    it('includes full-position plain reduce-only limit closes', () => {
       const fullClose = makeOrder({
+        orderType: 'limit',
         reduceOnly: true,
         symbol: 'ETH',
         side: 'sell',
@@ -179,14 +182,32 @@ describe('orderUtils', () => {
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
       expect(shouldDisplayOrderInMarketDetailsOrders(fullClose, position)).toBe(
-        false,
+        true,
       );
+    });
 
+    it('excludes orders flagged as position TP/SL', () => {
       const positionTpsl = makeOrder({
         reduceOnly: true,
         isPositionTpsl: true,
       });
       expect(shouldDisplayOrderInMarketDetailsOrders(positionTpsl)).toBe(false);
+    });
+
+    it('excludes full-position TP/SL identified by detailed order type', () => {
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const positionTpsl = makeOrder({
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+        detailedOrderType: 'Take Profit Limit',
+      });
+
+      expect(
+        shouldDisplayOrderInMarketDetailsOrders(positionTpsl, position),
+      ).toBe(false);
     });
 
     it('excludes zero-size reduce-only trigger orders matching the position even without isPositionTpsl flag', () => {
@@ -464,6 +485,65 @@ describe('orderUtils', () => {
       expect(syntheticOrders).toHaveLength(0);
     });
 
+    it('does not add synthetic row when a real trigger shares the parent order id', () => {
+      // perps-controller v11 populates `parentOrderId` on real TP/SL children
+      // streamed over the WebSocket, where previously only client-built
+      // synthetic rows carried it. The parent here has no takeProfitOrderId and
+      // the real trigger has an unrelated orderId, so the child-link path is the
+      // only thing that can suppress the duplicate row.
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const realTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-1',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        realTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(0);
+      expect(result.map((o) => o.orderId)).toStrictEqual([
+        'parent-1',
+        'real-tp-9',
+      ]);
+    });
+
+    it('adds synthetic row when a real trigger does not share the parent order id', () => {
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const unrelatedTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-2',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        unrelatedTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(1);
+    });
+
     it('skips synthetic rows for trigger orders (no recursion)', () => {
       const triggerOrder = makeOrder({
         isTrigger: true,
@@ -543,6 +623,24 @@ describe('orderUtils', () => {
         orders: [partialClose],
         existingPosition: position,
       });
+      expect(result).toHaveLength(1);
+    });
+
+    it('shows full-position plain limit-close orders', () => {
+      const fullClose = makeOrder({
+        orderType: 'limit',
+        reduceOnly: true,
+        symbol: 'ETH',
+        side: 'sell',
+        size: '1.0',
+        originalSize: '1.0',
+      });
+      const position = makePosition({ symbol: 'ETH', size: '1.0' });
+      const result = normalizeMarketDetailsOrders({
+        orders: [fullClose],
+        existingPosition: position,
+      });
+
       expect(result).toHaveLength(1);
     });
 
@@ -661,14 +759,81 @@ describe('orderUtils', () => {
       expect(formatOrderLabel(order)).toBe('Stop market close short');
     });
 
-    it('treats isTrigger alone as closing (no reduceOnly)', () => {
+    it('treats a non-reduce-only trigger as an opening order', () => {
       const order = makeOrder({
         side: 'sell',
         orderType: 'market',
         isTrigger: true,
+        reduceOnly: false,
+        detailedOrderType: 'Stop Market',
+      });
+      expect(formatOrderLabel(order)).toBe('Stop market short');
+    });
+
+    it('treats a position TP/SL order as closing', () => {
+      const order = makeOrder({
+        side: 'sell',
+        orderType: 'market',
+        isTrigger: true,
+        reduceOnly: false,
+        isPositionTpsl: true,
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop market close long');
+    });
+  });
+
+  describe('getOrderStatusI18nKey', () => {
+    // @ts-expect-error: each is a valid test function in jest
+    it.each([
+      ['Open', 'perpsStatusOpen'],
+      ['open', 'perpsStatusOpen'],
+      ['Filled', 'perpsStatusFilled'],
+      ['Canceled', 'perpsStatusCanceled'],
+      ['Queued', 'perpsStatusQueued'],
+      ['Rejected', 'perpsStatusRejected'],
+      ['Triggered', 'perpsStatusTriggered'],
+    ])(
+      'maps status text "%s" to i18n key "%s"',
+      (statusText: string, expectedKey: string) => {
+        expect(getOrderStatusI18nKey(statusText)).toBe(expectedKey);
+      },
+    );
+
+    it('defaults to the "open" i18n key for an unrecognized status', () => {
+      expect(getOrderStatusI18nKey('SomeUnknownStatus')).toBe(
+        'perpsStatusOpen',
+      );
+    });
+
+    it('defaults to the "open" i18n key when status text is undefined', () => {
+      expect(getOrderStatusI18nKey(undefined)).toBe('perpsStatusOpen');
+    });
+  });
+
+  describe('isOrderNoLongerOpenError', () => {
+    it('matches the provider rejection for an order that is already gone', () => {
+      const error = new Error(
+        'cancel 0: Order was never placed, already canceled, or filled. asset=4',
+      );
+
+      expect(isOrderNoLongerOpenError(error)).toBe(true);
+    });
+
+    it('matches the rejection when it arrives as a plain string', () => {
+      expect(
+        isOrderNoLongerOpenError(
+          'Order 0: Order was never placed, already canceled, or filled',
+        ),
+      ).toBe(true);
+    });
+
+    it('does not match an unrelated failure', () => {
+      expect(isOrderNoLongerOpenError(new Error('Network error'))).toBe(false);
+    });
+
+    it('does not match a missing error', () => {
+      expect(isOrderNoLongerOpenError(undefined)).toBe(false);
     });
   });
 });

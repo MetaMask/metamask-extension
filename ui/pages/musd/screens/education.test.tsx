@@ -49,12 +49,13 @@ jest.mock('../../../hooks/musd', () => ({
   useCanBuyMusd: () => mockUseCanBuyMusd(),
 }));
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
-let mockIsRampsEnabled = false;
+const mockGoToBuy = jest.fn();
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => ({ goToBuy: mockGoToBuy, isRampsEnabled: mockIsRampsEnabled }),
+  default: () => ({
+    goToBuy: mockGoToBuy,
+  }),
 }));
 
 // Mock useTheme
@@ -125,7 +126,7 @@ describe('MusdEducationScreen', () => {
       canBuyMusdInRegion: true,
       isLoading: false,
     });
-    mockIsRampsEnabled = false;
+    mockGoToBuy.mockResolvedValue('portfolio');
   });
 
   it('renders the headline with the bonus percentage', () => {
@@ -208,7 +209,6 @@ describe('MusdEducationScreen', () => {
     expect(mockDispatch).toHaveBeenCalled();
     expect(mockStartConversionFlow).toHaveBeenCalledWith({
       preferredToken: mockDefaultPaymentToken,
-      skipEducation: true,
     });
   });
 
@@ -299,7 +299,7 @@ describe('MusdEducationScreen', () => {
       });
     });
 
-    it('routes through goToBuy (mainnet) and returns home when the ramps flag is off', async () => {
+    it('routes through goToBuy (mainnet) and returns home when Buy opens Portfolio', async () => {
       mockUseCanBuyMusd.mockReturnValue({
         canBuyMusdInRegion: true,
         isLoading: false,
@@ -317,19 +317,19 @@ describe('MusdEducationScreen', () => {
         assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         chainId: '0x1',
       });
-      // Flag off opens Portfolio in a new tab, so the screen returns home.
+      // Portfolio opens in a new tab, so the screen returns home.
       await waitFor(() =>
         expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE),
       );
       expect(mockStartConversionFlow).not.toHaveBeenCalled();
     });
 
-    it('routes through goToBuy and stays put (in-app routing) when the ramps flag is on', async () => {
+    it('routes through goToBuy and stays put when Buy navigates in-app', async () => {
       mockUseCanBuyMusd.mockReturnValue({
         canBuyMusdInRegion: true,
         isLoading: false,
       });
-      mockIsRampsEnabled = true;
+      mockGoToBuy.mockResolvedValue('native');
       const store = createMockStore();
       renderWithProvider(<MusdEducationScreen />, store);
 
@@ -411,7 +411,6 @@ describe('MusdEducationScreen', () => {
       expect(mockDispatch).toHaveBeenCalled();
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         preferredToken: mockDefaultPaymentToken,
-        skipEducation: true,
         entryPoint: 'deeplink',
       });
       expect(mockGoToBuy).not.toHaveBeenCalled();
@@ -432,7 +431,6 @@ describe('MusdEducationScreen', () => {
       expect(mockDispatch).toHaveBeenCalled();
       expect(mockStartConversionFlow).toHaveBeenCalledWith({
         preferredToken: mockDefaultPaymentToken,
-        skipEducation: true,
         entryPoint: 'deeplink',
       });
       expect(mockGoToBuy).not.toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { removeNetwork, showModal } from '../../../../store/actions';
 import { getSelectedMultichainNetworkChainId } from '../../../../selectors';

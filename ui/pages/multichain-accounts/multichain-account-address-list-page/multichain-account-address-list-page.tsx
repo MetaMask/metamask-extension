@@ -103,7 +103,7 @@ export const MultichainAccountAddressListPage = ({
   }, [navigate]);
 
   return (
-    <Page>
+    <Page data-testid="parent-selector-multichain-account-address-list-page">
       <Header
         textProps={{
           variant: TextVariant.headingSm,

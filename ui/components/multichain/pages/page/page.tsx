@@ -52,7 +52,7 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('multichain-page__inner-container', className)}
+        className={className}
         {...props}
       >
         {children}

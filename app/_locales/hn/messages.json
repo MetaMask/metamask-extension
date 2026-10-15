@@ -66,9 +66,6 @@
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },
-  "decimalsMustZerotoTen": {
-    "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
-  },
   "details": {
     "message": "संदेश विवरण"
   },
@@ -96,9 +93,6 @@
   },
   "gasLimit": {
     "message": "गैस सीमा"
-  },
-  "gasLimitTooLow": {
-    "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
   "here": {
     "message": "यहां",
@@ -191,9 +185,6 @@
   "privateKey": {
     "message": "निजी कुंजी",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "चेतावनी: कभी भी इस कुंजी का खुलासा न करें। आपकी निजी कुंजी वाले कोई भी आपके खाते में रखी किसी भी संपत्ति को चुरा सकता है।"
   },
   "privateNetwork": {
     "message": "निजी नेटवर्क"

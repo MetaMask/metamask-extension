@@ -39,11 +39,26 @@ describe('Test Snap manageState', function () {
           'encryptedStateResultSpan',
           JSON.stringify({ foo: 'bar' }, null, 2),
         );
+        await testSnaps.fillMessage('setStateKeyInput', 'baz');
+        await testSnaps.fillMessage('dataStateInput', '"qux"');
+        await testSnaps.scrollAndClickButton('sendStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'encryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         // Retrieve one state key and validate
         await testSnaps.fillMessage('getStateInput', 'foo');
         await testSnaps.scrollAndClickButton('sendGetStateButton');
         await testSnaps.checkMessageResultSpan('getStateResultSpan', '"bar"');
+
+        // Retrieve two state keys and validate
+        await testSnaps.fillMessage('getStateInput', 'foo,baz');
+        await testSnaps.scrollAndClickButton('sendGetStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'getStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         // Clear results and validate
         await testSnaps.clickButton('clearStateButton');
@@ -60,12 +75,26 @@ describe('Test Snap manageState', function () {
           'unencryptedStateResultSpan',
           JSON.stringify({ foo: 'bar' }, null, 2),
         );
+        await testSnaps.fillMessage('setStateKeyUnencryptedInput', 'baz');
+        await testSnaps.fillMessage('dataUnencryptedStateInput', '"qux"');
+        await testSnaps.scrollAndClickButton('sendUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'unencryptedStateResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
+        );
 
         await testSnaps.fillMessage('getUnencryptedStateInput', 'foo');
         await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
         await testSnaps.checkMessageResultSpan(
           'getStateUnencryptedResultSpan',
           '"bar"',
+        );
+
+        await testSnaps.fillMessage('getUnencryptedStateInput', 'foo,baz');
+        await testSnaps.scrollAndClickButton('sendGetUnencryptedStateButton');
+        await testSnaps.checkMessageResultSpan(
+          'getStateUnencryptedResultSpan',
+          JSON.stringify({ foo: 'bar', baz: 'qux' }, null, 2),
         );
 
         await testSnaps.clickButton('clearStateUnencryptedButton');

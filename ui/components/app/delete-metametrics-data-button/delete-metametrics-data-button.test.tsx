@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
+import { useDispatch } from '../../../store/hooks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 
@@ -9,13 +10,22 @@ import {
   getMetaMetricsDataDeletionTimestamp,
   getMetaMetricsDataDeletionStatus,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getShowDeleteMetaMetricsDataModal,
 } from '../../../selectors';
 import { openDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import DeleteMetaMetricsDataButton from './delete-metametrics-data-button';
+
+jest.mock('../../../store/hooks', () => ({
+  useDispatch: jest.fn().mockReturnValue((action: unknown) => {
+    if (typeof action === 'function') {
+      return action(jest.fn(), jest.fn());
+    }
+    return action;
+  }),
+}));
 
 const mockTrackEvent = jest.fn();
 
@@ -35,7 +45,6 @@ jest.mock('../../../hooks/useAnalytics', () => {
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 jest.mock('../../../store/actions', () => ({
@@ -55,7 +64,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       undefined,
     );
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -117,7 +126,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       if (selector === getMetaMetricsDataDeletionStatus) {
         return 'INITIALIZED';
       }
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -147,7 +156,7 @@ describe('DeleteMetaMetricsDataButton', () => {
   // If the user does not opt in to metrics or backup and sync, analyticsId will not be created.
   it('should disable the data deletion button when there is no analytics id available', async () => {
     useSelectorMock.mockImplementation((selector) => {
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {
@@ -191,7 +200,7 @@ describe('DeleteMetaMetricsDataButton', () => {
       if (selector === getMetaMetricsDataDeletionTimestamp) {
         return 1717779342113;
       }
-      if (selector === getCompletedMetaMetricsOnboarding) {
+      if (selector === getConsentDecisionMade) {
         return true;
       }
       if (selector === getOptedIn) {

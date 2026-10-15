@@ -32,7 +32,6 @@ function setEnv(overrides: Record<string, string | undefined> = {}): void {
 async function flushPromises(): Promise<void> {
   // Several passes to let chained promises resolve
   for (let i = 0; i < 5; i++) {
-    // eslint-disable-next-line no-await-in-loop
     await new Promise<void>((resolve) => setImmediate(resolve));
   }
 }
@@ -56,6 +55,7 @@ function configureMocks(): void {
     changelog: [{ hash: 'def5678', subject: 'feat: new feature (#456)' }],
     mergeBase: 'base123',
     previousTag: 'v13.32.0',
+    changelogFromReleaseBranch: false,
   });
   cherryPicks.buildWhatsInRcSection.mockReturnValue('<p>whats-in-this-rc</p>');
   cherryPicks.buildWhatsInRcFailureSection.mockReturnValue(

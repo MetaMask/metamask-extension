@@ -20,10 +20,6 @@ jest.mock('../../../../shared/lib/trace', () => ({
   trace: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/environment', () => ({
-  isProduction: () => false,
-}));
-
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
     UserStorageControllerMessenger,

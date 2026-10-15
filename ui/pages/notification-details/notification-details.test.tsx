@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppSelector } from '../../store/store';
+import { useAppSelector } from '../../store/hooks';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import NotificationDetails from './notification-details';
@@ -13,13 +13,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockUseNavigate,
 }));
 
-jest.mock('../../store/store', () => {
-  const actual = jest.requireActual('../../store/store');
-  return {
-    ...actual,
-    useAppSelector: jest.fn(),
-  };
-});
+jest.mock('../../store/hooks', () => ({
+  useAppSelector: jest.fn(),
+}));
 
 jest.mock('../../hooks/metamask-notifications/useNotifications', () => ({
   useMarkNotificationAsRead: () => ({

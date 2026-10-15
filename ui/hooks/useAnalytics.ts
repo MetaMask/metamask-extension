@@ -7,17 +7,15 @@ import {
 } from '../../shared/lib/analytics/create-event-builder';
 import {
   MetaMetricsEventName,
-  type MetaMetricsEventPayload,
   type MetaMetricsPageObject,
   type MetaMetricsReferrerObject,
 } from '../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../shared/lib/environment-type';
 import {
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
 } from '../selectors';
-import { submitRequestToBackground } from '../store/background-connection';
 import { trackAnalyticsEvent } from '../store/actions';
 import { useSegmentContext } from './useSegmentContext';
 
@@ -29,37 +27,21 @@ type UIAnalyticsTrackEventOptions = AnalyticsEventBuildOptions & {
 
 type UseAnalyticsResult = {
   createEventBuilder: typeof createEventBuilder;
-  trackEvent: (built: AnalyticsEvent) => void;
+  trackEvent: (built: AnalyticsEvent) => Promise<void>;
 };
-
-function toMetaMetricsEventPayload(
-  built: AnalyticsEvent,
-  options: UIAnalyticsTrackEventOptions,
-): MetaMetricsEventPayload {
-  return {
-    event: built.name,
-    properties: built.properties,
-    sensitiveProperties: built.sensitiveProperties,
-    environmentType: options.environmentType,
-    page: options.page,
-    referrer: options.referrer,
-  };
-}
 
 export function useAnalytics(): UseAnalyticsResult {
   const context = useSegmentContext();
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const analyticsId = useSelector(getAnalyticsId);
-  const isMetricsEnabled = completedMetaMetricsOnboarding && isOptedIn;
+  const isMetricsEnabled = consentDecisionMade && isOptedIn;
   const canTrackImmediately = isMetricsEnabled && Boolean(analyticsId);
   const canMaybeTrackLater =
-    !completedMetaMetricsOnboarding || (isMetricsEnabled && !analyticsId);
+    !consentDecisionMade || (isMetricsEnabled && !analyticsId);
 
   const trackEvent = useCallback(
-    (built: AnalyticsEvent) => {
+    async (built: AnalyticsEvent): Promise<void> => {
       const options: UIAnalyticsTrackEventOptions = {
         ...built.options,
         environmentType: getEnvironmentType(),
@@ -68,13 +50,10 @@ export function useAnalytics(): UseAnalyticsResult {
 
       if (
         canTrackImmediately ||
+        canMaybeTrackLater ||
         built.name === MetaMetricsEventName.MetricsOptOut
       ) {
-        trackAnalyticsEvent(built, options).catch(() => undefined);
-      } else if (canMaybeTrackLater) {
-        submitRequestToBackground('addEventBeforeMetricsOptIn', [
-          toMetaMetricsEventPayload(built, options),
-        ]).catch(() => undefined);
+        await trackAnalyticsEvent(built, options).catch(() => undefined);
       }
     },
     [canMaybeTrackLater, canTrackImmediately, context],

@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { MetaMaskReduxState } from '../../../store/store';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
+import { isTransactionGasFeeSponsored } from '../../../../shared/lib/transaction-gas-fee.utils';
 
 export const getTransactionBreakdownData = ({
   state,
@@ -42,7 +43,6 @@ export const getTransactionBreakdownData = ({
     destinationTokenSymbol,
     status,
     type,
-    isGasFeeSponsored,
   } = transaction;
 
   const sourceTokenAmount =
@@ -110,13 +110,6 @@ export const getTransactionBreakdownData = ({
     l1HexGasTotal ?? 0,
   );
 
-  const isGasActuallySponsored =
-    isGasFeeSponsored &&
-    type !== TransactionType.revokeDelegation &&
-    !isHardwareWalletAccount &&
-    status !== TransactionStatus.rejected &&
-    !(status === TransactionStatus.failed && !transaction.txReceipt?.gasUsed);
-
   return {
     nativeCurrency: getNativeCurrency(state),
     showFiat: getShouldShowFiat(state),
@@ -130,7 +123,10 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isGasFeeSponsored: isGasActuallySponsored,
+    isGasFeeSponsored: isTransactionGasFeeSponsored({
+      transaction,
+      isHardwareWalletAccount,
+    }),
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,

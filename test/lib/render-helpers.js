@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
@@ -8,6 +8,7 @@ import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
+import { createUIMessenger } from '../../ui/messengers/ui-messenger';
 
 /** @type {import('react').FC<{ currentLocale?: string; current?: object; en?: object; children?: import('react').ReactNode }>} */
 export const I18nProvider = ({ currentLocale, current, en: eng, children }) => {
@@ -88,11 +89,34 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  connectToBackground(backgroundConnection, noop);
+  // Test background mocks typically only stub `onNotification`, but mounting
+  // the UI subscribes to messenger events through the real
+  // `subscribeToMessengerEvent`, which needs these RPC methods to exist.
+  connectToBackground(
+    {
+      messengerSubscribe: () => Promise.resolve(),
+      messengerUnsubscribe: () => Promise.resolve(),
+      ...backgroundConnection,
+    },
+    noop,
+  );
 
   const store = await setupInitialStore(preloadedState, activeTab);
 
-  return {
-    ...render(<Root store={store} />, { ...renderOptions }),
-  };
+  let result;
+  // Wrap render + microtask flush so async setState from mount effects
+  // (e.g. useAsyncResult / useUserSubscriptions) stays inside act.
+  await act(async () => {
+    result = render(<Root store={store} uiMessenger={createUIMessenger()} />, {
+      // Prefer the legacy root for integration tests. RTL v14 defaults to
+      // createRoot (concurrent), which interacts poorly with existing
+      // act()/waitFor patterns and floods act-environment console warnings.
+      legacyRoot: true,
+      ...renderOptions,
+    });
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  return result;
 }

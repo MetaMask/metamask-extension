@@ -29,19 +29,6 @@ export function prependZero(num: number, maxLength: number): string {
 }
 
 /**
- * Converts a camelCase or PascalCase string to kebab-case.
- * Handles leading uppercase letters without creating a leading hyphen.
- *
- * @param str - Input string (e.g., "startupStandardHome" or "SwapPage").
- * @returns Kebab-case string (e.g., "startup-standard-home" or "swap-page").
- */
-export function toKebabCase(str: string): string {
-  return str
-    .replaceAll(/([A-Z])/gu, (char) => `-${char.toLowerCase()}`)
-    .replace(/^-/u, '');
-}
-
-/**
  * Converts a kebab-case string to camelCase.
  * Used to convert filenames (e.g., 'onboarding-import-wallet')
  * to benchmark names (e.g., 'onboardingImportWallet').
@@ -51,4 +38,14 @@ export function toKebabCase(str: string): string {
  */
 export function toCamelCase(str: string): string {
   return str.replaceAll(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+}
+
+/**
+ * Converts a camelCase string to snake_case.
+ *
+ * @param value - CamelCase string (e.g., 'walletAddress')
+ * @returns snake_case string (e.g., 'wallet_address')
+ */
+export function toSnakeCase(value: string): string {
+  return value.replace(/[A-Z]/gu, (letter) => `_${letter.toLowerCase()}`);
 }

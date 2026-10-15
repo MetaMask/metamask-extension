@@ -1,8 +1,15 @@
+import { EXTENSION_TRUST_AND_SECURITY_TDP_FLAG } from '../../../shared/lib/assets/security-trust-feature-flags';
+import { TOKEN_DETAILS_ADVANCED_CHARTS_FLAG } from '../../../shared/lib/assets/advanced-charts-feature-flags';
 import {
+  BFT_CHILD_PREFERENCES,
+  getIsAdvancedChartsEnabled,
   getIsBasicFunctionalityConsolidationEnabled,
   getIsBasicFunctionalityToggleEnabled,
   getIsNetworkManagementEnabled,
+  getIsSecurityTrustTdpEnabled,
   getIsTokenManagementFilterEnabled,
+  getShouldShowBasicFunctionalityMigrationModal,
+  getShouldShowBasicFunctionalityMigrationToast,
 } from './feature-flags';
 
 const buildState = (
@@ -21,6 +28,29 @@ const buildState = (
     preferences: {
       isBasicFunctionalityConsolidatedEnabled,
     },
+  },
+});
+
+const buildBftState = (
+  useExternalServices: boolean,
+  remoteFlag = true,
+  childOverrides: Partial<
+    Record<(typeof BFT_CHILD_PREFERENCES)[number], boolean>
+  > = {},
+) => ({
+  ...buildState({ extensionBasicFunctionalityToggle: remoteFlag }, false),
+  metamask: {
+    ...buildState().metamask,
+    remoteFeatureFlags: {
+      extensionBasicFunctionalityToggle: remoteFlag,
+    },
+    useExternalServices,
+    ...Object.fromEntries(
+      BFT_CHILD_PREFERENCES.map((preference) => [
+        preference,
+        childOverrides[preference] ?? useExternalServices,
+      ]),
+    ),
   },
 });
 
@@ -243,7 +273,100 @@ describe('getIsBasicFunctionalityToggleEnabled', () => {
   });
 });
 
+describe('Basic Functionality migration notification selectors', () => {
+  it('shows a scheduled modal when the remote flag is disabled', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'modal' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(getShouldShowBasicFunctionalityMigrationModal(state)).toBe(true);
+  });
+
+  it('hides a scheduled toast while the wallet is locked', () => {
+    const state = {
+      metamask: {
+        isUnlocked: false,
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: false,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
+  });
+
+  it('hides a dismissed notification', () => {
+    const state = {
+      metamask: {
+        remoteFeatureFlags: { extensionBasicFunctionalityToggle: false },
+        preferences: {
+          basicFunctionalityMigrationNotification: 'toast' as const,
+          basicFunctionalityMigrationNotificationDismissed: true,
+        },
+      },
+    };
+
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getShouldShowBasicFunctionalityMigrationToast(state as any),
+    ).toBe(false);
+  });
+});
+
 describe('getIsBasicFunctionalityConsolidationEnabled', () => {
+  it('returns true for an all-on legacy BFT user when the remote flag is enabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(true);
+  });
+
+  it('returns true for an all-off legacy BFT user when the remote flag is enabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(false) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a mixed legacy BFT user', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true, true, {
+          useTokenDetection: false,
+        }) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for a consistent legacy BFT user when the remote flag is disabled', () => {
+    expect(
+      getIsBasicFunctionalityConsolidationEnabled(
+        buildBftState(true, false) as unknown as Parameters<
+          typeof getIsBasicFunctionalityConsolidationEnabled
+        >[0],
+      ),
+    ).toBe(false);
+  });
+
   it('returns true when the remote flag and persisted cohort marker are both true', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
@@ -262,12 +385,138 @@ describe('getIsBasicFunctionalityConsolidationEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns false when the persisted cohort marker is true but the remote flag is false', () => {
+  it('keeps a consolidated user on the consolidated experience when the remote flag is turned off', () => {
     expect(
       getIsBasicFunctionalityConsolidationEnabled(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         buildState({ extensionBasicFunctionalityToggle: false }, true) as any,
       ),
+    ).toBe(true);
+  });
+});
+
+describe('getIsSecurityTrustTdpEnabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
     ).toBe(false);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsSecurityTrustTdpEnabled(
+        buildState({
+          [EXTENSION_TRUST_AND_SECURITY_TDP_FLAG]: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsSecurityTrustTdpEnabled(buildState() as any),
+    ).toBe(false);
+  });
+});
+
+describe('getIsAdvancedChartsEnabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+            minimumVersion: '999.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for malformed objects missing the minimumVersion field', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: {
+            enabled: true,
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false when the flag is missing', () => {
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getIsAdvancedChartsEnabled(buildState() as any),
+    ).toBe(false);
+  });
+
+  it('handles backward-compatible boolean shape', () => {
+    expect(
+      getIsAdvancedChartsEnabled(
+        buildState({
+          [TOKEN_DETAILS_ADVANCED_CHARTS_FLAG]: true,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
   });
 });

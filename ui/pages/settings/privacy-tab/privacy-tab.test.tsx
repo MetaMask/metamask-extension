@@ -1,12 +1,19 @@
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  DEFAULT_SETTING_ANCHOR,
+  SETTING_ANCHORS,
+} from '../../../../shared/lib/deep-links/routes/privacy';
 import mockState from '../../../../test/data/mock-state.json';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import PrivacyTab from './privacy-tab';
+import PrivacyTab, {
+  CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS,
+  PRIVACY_SETTING_ITEMS,
+} from './privacy-tab';
 
 const backgroundConnectionMock = new Proxy(
   {},
@@ -44,6 +51,21 @@ describe('PrivacyTab', () => {
     });
   });
 
+  it('keeps privacy deeplink anchors in sync with settings item ids', () => {
+    const ids = PRIVACY_SETTING_ITEMS.map((item) => item.id);
+    const consolidatedIds = CONSOLIDATED_BASIC_FUNCTIONALITY_PRIVACY_ITEMS.map(
+      (item) => item.id,
+    );
+
+    expect(ids).toContain(DEFAULT_SETTING_ANCHOR);
+    expect(SETTING_ANCHORS.has(DEFAULT_SETTING_ANCHOR)).toBe(true);
+
+    for (const anchor of SETTING_ANCHORS) {
+      expect(ids).toContain(anchor);
+      expect(consolidatedIds).toContain(anchor);
+    }
+  });
+
   it('hides granular privacy controls when consolidated Basic Functionality is enabled', () => {
     renderWithProvider(
       <PrivacyTab />,
@@ -73,6 +95,18 @@ describe('PrivacyTab', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('batch-account-balance-requests-toggle'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows an error when the user enters an Infura IPFS gateway', () => {
+    renderWithProvider(<PrivacyTab />, mockStore);
+
+    fireEvent.change(screen.getByDisplayValue('dweb.link'), {
+      target: { value: 'ipfs.infura.io' },
+    });
+
+    expect(
+      screen.getByText(messages.forbiddenIpfsGateway.message),
     ).toBeInTheDocument();
   });
 });

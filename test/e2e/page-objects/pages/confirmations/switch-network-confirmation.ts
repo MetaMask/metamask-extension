@@ -1,11 +1,31 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Legacy switch-network confirmation for `wallet_switchEthereumChain`.
+ *
+ * Screen: `#/confirmation` using the template confirmation chrome (not the
+ * redesigned confirm footer testids).
+ * Owns: "Allow this site to switch the network" copy and
+ * confirmation-submit / confirmation-cancel actions.
+ * Boundaries: add/update chain approvals are `AddNetworkConfirmation` /
+ * `UpdateNetworkConfirmation`. This object does not cover redesigned
+ * confirm footer buttons.
+ * Related: `AddNetworkConfirmation`, `UpdateNetworkConfirmation`.
+ *
+ * @see ui/pages/confirmations/confirmation/templates/switch-ethereum-chain.js
+ * @see ui/pages/confirmations/confirmation/components/confirmation-footer/confirmation-footer.js
+ * @see ui/pages/confirmations/confirmation/confirmation.js
+ */
 class SwitchNetworkConfirmation {
-  private readonly driver: Driver;
-
   private readonly approveButton = { testId: 'confirmation-submit-button' };
 
   private readonly cancelButton = { testId: 'confirmation-cancel-button' };
+
+  private readonly driver: Driver;
+
+  private readonly parentSelector = {
+    testId: 'parent-selector-template-confirmation-page',
+  };
 
   private readonly switchNetworkMessage = {
     text: 'Allow this site to switch the network',
@@ -18,6 +38,7 @@ class SwitchNetworkConfirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.switchNetworkMessage,
         this.approveButton,
         this.cancelButton,

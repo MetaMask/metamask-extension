@@ -5,13 +5,13 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('PPOM Settings', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests, mocha/handle-done-callback
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
@@ -49,7 +49,7 @@ describe('PPOM Settings', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests, mocha/handle-done-callback
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {

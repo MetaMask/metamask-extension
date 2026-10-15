@@ -66,9 +66,6 @@
   "decimal": {
     "message": "Decimalen van precisie"
   },
-  "decimalsMustZerotoTen": {
-    "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
   "done": {
     "message": "Gedaan"
   },
@@ -93,9 +90,6 @@
   },
   "gasLimit": {
     "message": "Gaslimiet"
-  },
-  "gasLimitTooLow": {
-    "message": "De gaslimiet moet minstens 21000 zijn"
   },
   "here": {
     "message": "hier",
@@ -181,9 +175,6 @@
   "privateKey": {
     "message": "Prive sleutel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Waarschuwing: open deze sleutel nooit. Iedereen met uw privésleutels kan stelen van alle items in uw account."
   },
   "privateNetwork": {
     "message": "Prive netwerk"

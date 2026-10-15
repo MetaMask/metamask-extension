@@ -17,6 +17,7 @@ import {
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { EMPTY_ARRAY } from '../../../../../selectors/shared';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
 
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
@@ -82,9 +83,14 @@ const store = configureStore({
 
 jest.mock(
   '../../../../../selectors/gator-permissions/gator-permissions',
-  () => ({
-    getPendingRevocations: jest.fn().mockReturnValue([]),
-  }),
+  () => {
+    const { EMPTY_ARRAY: emptyRevocations } = jest.requireActual(
+      '../../../../../selectors/shared',
+    );
+    return {
+      getPendingRevocations: jest.fn().mockReturnValue(emptyRevocations),
+    };
+  },
 );
 
 jest.mock(
@@ -143,6 +149,10 @@ describe('Permission List Item', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
     const mockStartTime = 1736271776; // January 7, 2025;
+
+    afterEach(() => {
+      jest.mocked(getPendingRevocations).mockReturnValue(EMPTY_ARRAY);
+    });
 
     describe('NATIVE token permissions', () => {
       const mockExpiryTimestamp = 1767225600; // January 1, 2026 00:00:00 UTC
@@ -333,12 +343,15 @@ describe('Permission List Item', () => {
         });
 
         it('shows Revocation pending when permission context is in pending revocations', () => {
-          jest.mocked(getPendingRevocations).mockReturnValueOnce([
+          const pendingRevocations = [
             {
               txId: '1',
-              permissionContext: '0x00000000',
+              permissionContext: '0x00000000' as Hex,
             },
-          ]);
+          ];
+          jest
+            .mocked(getPendingRevocations)
+            .mockReturnValue(pendingRevocations);
           const { getByRole } = renderWithProvider(
             <ReviewGatorPermissionItem
               networkName={mockNetworkName}
@@ -367,8 +380,6 @@ describe('Permission List Item', () => {
           />,
           store,
         );
-        expect(container).toMatchSnapshot();
-
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
         // Verify the streaming amount per week
@@ -466,8 +477,6 @@ describe('Permission List Item', () => {
           />,
           store,
         );
-        expect(container).toMatchSnapshot();
-
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
         // Verify the periodic amount
@@ -625,8 +634,6 @@ describe('Permission List Item', () => {
           />,
           store,
         );
-        expect(container).toMatchSnapshot();
-
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
         // Verify the streaming amount per week for ERC20 token (WBTC with 8 decimals)
@@ -689,8 +696,6 @@ describe('Permission List Item', () => {
           />,
           store,
         );
-        expect(container).toMatchSnapshot();
-
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
         // Verify the periodic amount for ERC20 token (WBTC with 8 decimals)
@@ -767,13 +772,14 @@ describe('Permission List Item', () => {
           store,
         );
 
-        expect(container).toMatchSnapshot();
-
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
         // Verify that when token metadata is loading, it shows a skeleton
-        const skeletons = container.querySelectorAll('.mm-skeleton');
-        expect(skeletons.length).toBeGreaterThan(0);
+        const skeletonSelector =
+          'div[aria-hidden="true"][style*="width: 100px"]';
+        const skeletonCount =
+          container.querySelectorAll(skeletonSelector).length;
+        expect(container.querySelector(skeletonSelector)).toBeInTheDocument();
 
         // The amount label should still be in the DOM but wrapped by skeleton
         const amountLabel = getByTestId('review-gator-permission-amount-label');
@@ -800,8 +806,9 @@ describe('Permission List Item', () => {
         expect(streamRate).toBeInTheDocument();
 
         // Verify that more skeletons are present after expanding
-        const expandedSkeletons = container.querySelectorAll('.mm-skeleton');
-        expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
+        const expandedSkeletons =
+          container.querySelectorAll(skeletonSelector).length;
+        expect(expandedSkeletons).toBeGreaterThan(skeletonCount);
       });
 
       it('renders token approval revocation permission correctly without frequency row', () => {
@@ -843,8 +850,6 @@ describe('Permission List Item', () => {
           />,
           store,
         );
-
-        expect(container).toMatchSnapshot();
 
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 

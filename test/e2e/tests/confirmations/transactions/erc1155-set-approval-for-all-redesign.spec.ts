@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Mockttp } from '../../../mock-e2e';
 import { login } from '../../../page-objects/flows/login.flow';

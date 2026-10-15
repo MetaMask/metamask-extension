@@ -19,7 +19,6 @@ import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
 import { Messenger } from '@metamask/messenger';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
 import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getIsSmartTransaction,
@@ -267,8 +266,6 @@ class SmartTransactionHook {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;
@@ -330,7 +327,6 @@ class SmartTransactionHook {
       // Single transaction mode requiring signing
       const signed = await this.#createSignedTransactions(
         getFeesResponse.tradeTxFees?.fees ?? [],
-        false,
       );
       signedTransactionsWithMetadata = signed.map((signedTx) => ({
         tx: signedTx,
@@ -347,7 +343,6 @@ class SmartTransactionHook {
     const submitRequest: SmartTransactionSubmitSignedTransactionsRequest = {
       signedTransactions,
       signedTransactionsWithMetadata,
-      signedCanceledTransactions: [],
       txParams,
       transactionMeta,
       networkClientId: this.#transactionMeta.networkClientId,
@@ -358,44 +353,29 @@ class SmartTransactionHook {
     );
   }
 
-  #applyFeeToTransaction(fee: Fee, isCancel: boolean): TransactionParams {
+  #applyFeeToTransaction(fee: Fee): TransactionParams {
     if (!this.#txParams) {
       throw new Error('Transaction params are required');
     }
 
-    const unsignedTransaction = {
+    return {
       ...this.#txParams,
       maxFeePerGas: `0x${decimalToHex(fee.maxFeePerGas)}`,
       maxPriorityFeePerGas: `0x${decimalToHex(fee.maxPriorityFeePerGas)}`,
-      gas: isCancel
-        ? `0x${decimalToHex(CANCEL_GAS_LIMIT_DEC)}` // It has to be 21000 for cancel transactions, otherwise the API would reject it.
-        : this.#txParams.gas,
     } as TransactionParams;
-
-    if (isCancel) {
-      unsignedTransaction.to = unsignedTransaction.from;
-      unsignedTransaction.data = '0x';
-    }
-
-    return unsignedTransaction;
   }
 
-  async #createSignedTransactions(
-    fees: Fee[],
-    isCancel: boolean,
-  ): Promise<string[]> {
+  async #createSignedTransactions(fees: Fee[]): Promise<string[]> {
     if (!this.#txParams || !this.#chainId) {
       throw new Error('Transaction params and chainId are required');
     }
 
     const unsignedTransactions = fees.map((fee) => {
-      return this.#applyFeeToTransaction(fee, isCancel);
+      return this.#applyFeeToTransaction(fee);
     });
 
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       chainId: tx.chainId || this.#chainId,
     }));
 

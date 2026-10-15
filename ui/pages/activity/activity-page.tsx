@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
-import { Page } from '../../components/multichain/pages/page';
-import { ScrollContainer } from '../../contexts/scroll-container';
+import { ScreenViewedEntryPoint } from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { ActivityList } from './activity-list';
 
@@ -9,9 +9,15 @@ import { ActivityList } from './activity-list';
 // Bottom navigation bar is shown in the A/B test coreExtensionUxCeux1141AbtestBottomNav
 export const ActivityPage = () => {
   const t = useI18nContext();
+  const location = useLocation();
+  const [entryPoint] = useState(() =>
+    location.state?.entryPoint === ScreenViewedEntryPoint.BottomNavClick
+      ? ScreenViewedEntryPoint.BottomNavClick
+      : undefined,
+  );
 
   return (
-    <Page data-testid="activity-page">
+    <div className="flex min-h-full flex-col" data-testid="activity-page">
       <Text
         variant={TextVariant.HeadingLg}
         fontWeight={FontWeight.Bold}
@@ -19,10 +25,8 @@ export const ActivityPage = () => {
       >
         {t('activity')}
       </Text>
-      <ScrollContainer className="flex-1 overflow-auto">
-        <ActivityList />
-      </ScrollContainer>
-    </Page>
+      <ActivityList entryPoint={entryPoint} />
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import classnames from 'clsx';
 
 import {
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   BlockSize,
   Display,
@@ -112,8 +113,9 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
-            backgroundColor={BackgroundColor.backgroundDefault}
-            borderRadius={BorderRadius.LG}
+            backgroundColor={BackgroundColor.backgroundElevated1}
+            borderColor={BorderColor.borderAlternative}
+            borderWidth={1}
             width={BlockSize.Full}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -122,6 +124,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(
+              'rounded-[32px]',
               'mm-modal-content__dialog',
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,

@@ -148,6 +148,8 @@ describe('useContactRecipients', () => {
 
     renderHookWithProvider(() => useContactRecipients(), mockState);
 
-    expect(mockGetCompleteAddressBook).toHaveBeenCalledTimes(1);
+    // react-redux v8 useSelector (useSyncExternalStoreWithSelector) may
+    // invoke the selector twice per mount for render + snapshot compare.
+    expect(mockGetCompleteAddressBook).toHaveBeenCalled();
   });
 });

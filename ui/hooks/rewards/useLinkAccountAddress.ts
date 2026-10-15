@@ -1,6 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useDispatch } from 'react-redux';
 import {
   getRewardsHasAccountOptedIn,
   rewardsGetOptInStatus,
@@ -18,6 +17,7 @@ import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
+import { useDispatch } from '../../store/hooks';
 import { usePrimaryWalletGroupAccounts } from './usePrimaryWalletGroupAccounts';
 
 type UseLinkAccountAddressResult = {

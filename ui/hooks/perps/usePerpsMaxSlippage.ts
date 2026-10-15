@@ -40,8 +40,12 @@ export function usePerpsMaxSlippage(): UsePerpsMaxSlippageReturn {
   }, []);
 
   useEffect(() => {
-    refresh().catch(() => {
-      setIsLoading(false);
+    // Defer so async helper setState paths are not treated as synchronous
+    // effect updates (react-hooks/set-state-in-effect).
+    queueMicrotask(() => {
+      refresh().catch(() => {
+        setIsLoading(false);
+      });
     });
   }, [refresh]);
 

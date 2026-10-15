@@ -31,12 +31,22 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isActiveSrc: true,
       isActiveDest: true,
     },
+    '143': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
+    '4663': {
+      isActiveSrc: true,
+      isActiveDest: true,
+    },
   },
   chainRanking: [
     { chainId: 'eip155:1', name: 'Ethereum' },
     { chainId: 'eip155:42161', name: 'Arbitrum' },
     { chainId: 'eip155:59144', name: 'Linea' },
     { chainId: 'eip155:8453', name: 'Base' },
+    { chainId: 'eip155:143', name: 'Monad' },
+    { chainId: 'eip155:4663', name: 'Robinhood' },
   ],
 };
 
@@ -51,15 +61,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
 };
 
 export const ETH_CONVERSION_RATE_USD = 1;
-export const MOCK_CURRENCY_RATES = {
-  currencyRates: {
-    ETH: {
-      conversionDate: 1665507609.0,
-      conversionRate: ETH_CONVERSION_RATE_USD,
-      usdConversionRate: ETH_CONVERSION_RATE_USD,
-    },
-  },
-};
 
 const ETH_ASSET_PRICE_ENTRY = (ethConversionRate: number) => ({
   allTimeHigh: 4946.05,
@@ -93,6 +94,7 @@ export const getMockAssetsPrice = (
   'eip155:59144/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:8453/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
   'eip155:42161/slip44:60': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
+  'eip155:143/slip44:268435779': ETH_ASSET_PRICE_ENTRY(ethConversionRate),
 });
 
 export const MOCK_ASSETS_PRICE = getMockAssetsPrice();
@@ -132,6 +134,48 @@ export const TOP_ASSETS_API_ARBITRUM_MOCK_RESULT = [
   {
     address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
     symbol: 'USDC',
+  },
+];
+
+export const TOP_ASSETS_API_MONAD_MOCK_RESULT = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'MON',
+  },
+];
+
+export const TOP_ASSETS_API_BASE_MOCK_RESULT = [
+  {
+    address: '0x0000000000000000000000000000000000000000',
+    symbol: 'ETH',
+  },
+  {
+    address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+    symbol: 'USDC',
+  },
+];
+
+export const MOCK_TOKENS_BASE = [
+  {
+    symbol: 'USDC',
+    decimals: 6,
+    aggregators: ['coinGecko', 'oneInch', 'liFi'],
+    occurrences: 3,
+    iconUrl: '',
+    address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+    name: 'USD Coin',
+  },
+];
+
+export const MOCK_TOKENS_MONAD = [
+  {
+    symbol: 'USDC',
+    decimals: 6,
+    aggregators: ['coinGecko', 'oneInch', 'liFi'],
+    occurrences: 3,
+    iconUrl: '',
+    address: '0x754704bc059f8c67012fed69bc8a327a5aafb603',
+    name: 'USD Coin',
   },
 ];
 
@@ -429,6 +473,8 @@ export const MOCK_TOKENS_LINEA = [
   },
   getNativeAssetForChainId(59144),
 ];
+
+export const MOCK_TOKENS_ROBINHOOD = [getNativeAssetForChainId(4663)];
 
 export const MOCK_GET_TOKEN_ARBITRUM = [
   getNativeAssetForChainId(42161),
@@ -2022,6 +2068,165 @@ export const MOCK_BRIDGE_ETH_TO_USDC_ARBITRUM = [
   },
 ];
 
+/** Mocked MON (Monad) → USDC (Base) bridge quote for WPN-1798 / EXT-4. */
+export const MOCK_BRIDGE_MON_TO_USDC_BASE = [
+  {
+    quote: {
+      requestId: 'b8e2c1a4-7d3f-4e91-9c2a-1f6e8d0b5a73',
+      srcChainId: 143,
+      srcTokenAmount: '991250000000000000',
+      srcAsset: {
+        address: '0x0000000000000000000000000000000000000000',
+        chainId: 143,
+        assetId: 'eip155:143/slip44:268435779',
+        symbol: 'MON',
+        decimals: 18,
+        name: 'Monad',
+        coingeckoId: 'monad',
+        aggregators: [],
+        occurrences: 100,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/143/native/268435779.png',
+        metadata: {
+          honeypotStatus: {},
+          isContractVerified: false,
+          erc20Permit: false,
+          description: {},
+          createdAt: '2025-01-01T00:00:00.000Z',
+        },
+        price: '1657.94',
+      },
+      destChainId: 8453,
+      destTokenAmount: '1642004253',
+      minDestTokenAmount: '1612004253',
+      destAsset: {
+        address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+        chainId: 8453,
+        assetId: 'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USDC',
+        coingeckoId: 'usd-coin',
+        aggregators: ['coinGecko', 'oneInch', 'liFi'],
+        occurrences: 3,
+        iconUrl:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/8453/erc20/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.png',
+        metadata: {
+          honeypotStatus: {},
+          isContractVerified: true,
+          erc20Permit: true,
+          description: {},
+          createdAt: '2023-10-31T21:35:04.606Z',
+        },
+        price: '1.000100010001',
+      },
+      feeData: {
+        metabridge: {
+          amount: '8750000000000000',
+          asset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 143,
+            assetId: 'eip155:143/slip44:268435779',
+            symbol: 'MON',
+            decimals: 18,
+            name: 'Monad',
+            coingeckoId: 'monad',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/143/native/268435779.png',
+            metadata: {
+              honeypotStatus: {},
+              isContractVerified: false,
+              erc20Permit: false,
+              description: {},
+              createdAt: '2025-01-01T00:00:00.000Z',
+            },
+            price: '1657.94',
+          },
+        },
+      },
+      bridgeId: 'lifi',
+      bridges: ['across'],
+      steps: [
+        {
+          action: 'bridge',
+          srcChainId: 143,
+          destChainId: 8453,
+          protocol: {
+            name: 'across',
+            displayName: 'AcrossV3',
+            icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png',
+          },
+          srcAsset: {
+            address: '0x0000000000000000000000000000000000000000',
+            chainId: 143,
+            assetId: 'eip155:143/slip44:268435779',
+            symbol: 'MON',
+            decimals: 18,
+            name: 'Monad',
+            coingeckoId: 'monad',
+            aggregators: [],
+            occurrences: 100,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/143/native/268435779.png',
+            metadata: {
+              honeypotStatus: {},
+              isContractVerified: false,
+              erc20Permit: false,
+              description: {},
+              createdAt: '2025-01-01T00:00:00.000Z',
+            },
+          },
+          destAsset: {
+            address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            chainId: 8453,
+            assetId:
+              'eip155:8453/erc20:0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+            symbol: 'USDC',
+            decimals: 6,
+            name: 'USDC',
+            coingeckoId: 'usd-coin',
+            aggregators: ['coinGecko', 'oneInch', 'liFi'],
+            occurrences: 3,
+            iconUrl:
+              'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/8453/erc20/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.png',
+            metadata: {
+              honeypotStatus: {},
+              isContractVerified: true,
+              erc20Permit: true,
+              description: {},
+              createdAt: '2023-10-31T21:35:04.606Z',
+            },
+          },
+          srcAmount: '991250000000000000',
+          destAmount: '1642004253',
+        },
+      ],
+      bridgePriceData: {
+        totalFromAmountUsd: '1643.4330',
+        totalToAmountUsd: '1642.1685',
+        priceImpact: '0.0007694259516512071',
+      },
+      priceData: {
+        totalFromAmountUsd: '1643.4330',
+        totalToAmountUsd: '1642.1685',
+        priceImpact: '0.0007694259516512071',
+        totalFeeAmountUsd: '1.2645',
+      },
+    },
+    trade: {
+      chainId: 143,
+      to: '0xE3d0d2607182Af5B24f5C3C2E4990A053aDd64e3',
+      from: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+      value: '0x0de0b6b3a7640000',
+      data: '0x',
+      gasLimit: 158000,
+    },
+    estimatedProcessingTimeInSeconds: 48,
+  },
+];
+
 export const MOCK_BRIDGE_DAI_TO_ETH_LINEA = [
   {
     quote: {
@@ -2737,9 +2942,6 @@ export const EXPECTED_INPUT_CHANGES = {
     {
       token_destination:
         'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
-    },
-    {
-      slippage: 2,
     },
     {
       chain_source: 'eip155:1',

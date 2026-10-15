@@ -1,5 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Alert modal for pending confirmations when adding/switching networks.
+ *
+ * Screen: alert modal layered over an add/switch Ethereum chain confirmation
+ * when other pending confirmations exist from the same origin (action key
+ * `showPendingConfirmation`).
+ * Owns: "Got it" dismiss and "Review pending transactions" /
+ * show-pending-confirmation action.
+ * Boundaries: stops at this alert modal. The parent add/switch confirmation
+ * belongs to `NetworkSwitchModalConfirmation` / `SwitchNetworkConfirmation`.
+ * Signature/tx confirm-alert acknowledge belongs to `ConfirmAlertModal`.
+ * Related: `NetworkSwitchModalConfirmation`, `SwitchNetworkConfirmation`,
+ * `ConfirmAlertModal`; alert content is produced by
+ * `useUpdateEthereumChainAlerts`.
+ *
+ * @see ui/components/app/alert-system/alert-modal/alert-modal.tsx
+ */
 class NetworkSwitchAlertModal {
   driver: Driver;
 

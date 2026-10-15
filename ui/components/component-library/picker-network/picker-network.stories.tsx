@@ -1,6 +1,5 @@
 import React from 'react';
-import README from './README.mdx';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import {
   Display,
   FlexDirection,
@@ -20,11 +19,6 @@ export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
   component: PickerNetwork,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     label: {
       control: 'text',

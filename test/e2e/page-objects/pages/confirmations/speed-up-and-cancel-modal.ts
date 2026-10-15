@@ -2,12 +2,19 @@ import { Driver } from '../../../webdriver/driver';
 import { RawLocator } from '../../common';
 
 /**
- * Page object for the Speed up / Cancel transaction modal.
- * Used when user clicks "Speed up" or "Cancel" on a pending transaction in the activity list.
+ * Speed up / cancel replacement-transaction modal for a pending activity item.
+ *
+ * Screen: overlay modal from the activity list Speed up or Cancel action (not
+ * a `#/confirmation` route).
+ * Owns: cancel vs speed-up titles, speed/increase row, and confirm when the
+ * replacement gas state is ready.
+ * Boundaries: the activity list click that opens this modal is outside this
+ * object. Full redesigned confirmation gas editing is `GasFeeModal`.
+ * Related: home/activity list page objects that open Speed up or Cancel.
+ *
+ * @see ui/pages/confirmations/cancel-speedup/cancel-speedup.tsx
  */
 export default class SpeedUpAndCancelModal {
-  private driver: Driver;
-
   private readonly cancelTransactionTitle: RawLocator = {
     text: 'Cancel transaction',
   };
@@ -15,18 +22,20 @@ export default class SpeedUpAndCancelModal {
   private readonly confirmButton: RawLocator =
     '[data-testid="cancel-speedup-confirm-button"]';
 
+  private driver: Driver;
+
   private readonly modal: RawLocator =
     '[data-testid="speed-up-and-cancel-modal"]';
-
-  private readonly tenPercentText: RawLocator = {
-    text: '10% increase',
-  };
 
   private readonly speedRow: RawLocator =
     '[data-testid="gas-fee-details-speed"]';
 
   private readonly speedUpTransactionTitle: RawLocator = {
     text: 'Speed up transaction',
+  };
+
+  private readonly tenPercentText: RawLocator = {
+    text: '10% increase',
   };
 
   constructor(driver: Driver) {

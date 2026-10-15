@@ -4,10 +4,12 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import * as useTronResourcesHook from '../hooks/useTronResources';
+import * as useFreshTronAssetsHook from '../hooks/useFreshTronAssets';
 import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
+jest.mock('../hooks/useFreshTronAssets');
 
 const mockT = tEn as (key: string, substitutions?: string[]) => string;
 
@@ -28,9 +30,13 @@ describe('TronDailyResources', () => {
 
   const mockUseTronResources =
     useTronResourcesHook.useTronResources as jest.Mock;
+  const mockUseFreshTronAssets =
+    useFreshTronAssetsHook.useFreshTronAssets as jest.Mock;
+  mockUseFreshTronAssets.mockReturnValue(undefined);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseFreshTronAssets.mockReturnValue(undefined);
   });
 
   describe('rendering', () => {
@@ -69,6 +75,51 @@ describe('TronDailyResources', () => {
       expect(screen.getByText(messages.tronEnergy.message)).toBeInTheDocument();
       expect(
         screen.getByText(messages.tronBandwidth.message),
+      ).toBeInTheDocument();
+    });
+
+    it('renders with data-testids', () => {
+      mockUseTronResources.mockReturnValue({
+        energy: {
+          type: 'energy',
+          current: 65000,
+          max: 100000,
+          percentage: 65,
+        },
+        bandwidth: {
+          type: 'bandwidth',
+          current: 1000,
+          max: 5000,
+          percentage: 20,
+        },
+      });
+
+      render(
+        <TronDailyResources
+          account={mockAccount}
+          chainId={chainId}
+          t={mockT}
+        />,
+      );
+
+      expect(screen.getByTestId('tron-daily-resources')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-title'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-energy-description'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('tron-daily-resources-bandwidth-description'),
       ).toBeInTheDocument();
     });
 

@@ -4,6 +4,7 @@
 
 import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
+import type { Runtime } from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   PLATFORM_BRAVE,
@@ -52,19 +53,6 @@ export function checkForLastErrorAndLog(): Error | undefined {
 
   if (error) {
     log.error(error);
-  }
-
-  return error;
-}
-
-/**
- * @returns The last error, or undefined
- */
-export function checkForLastErrorAndWarn(): Error | undefined {
-  const error = checkForLastError();
-
-  if (error) {
-    console.warn(error);
   }
 
   return error;
@@ -120,26 +108,6 @@ export function isFirefoxBrowser(
 }
 
 /**
- * Camera settings URL for Chromium-based browsers (Chrome, Brave, Edge).
- *
- * @param args - Same optional `[bowser, navigator]` accepted by {@link getBrowserName}.
- * @returns `chrome://`, `brave://`, or `edge://` settings path for camera permissions.
- */
-export function getChromiumCameraSettingsUrl(
-  ...args: Parameters<typeof getBrowserName>
-): string {
-  const name = getBrowserName(...args);
-  if (name === PLATFORM_BRAVE) {
-    return 'brave://settings/content/camera';
-  }
-  // Bowser reports "Microsoft Edge"; PLATFORM_EDGE is the short analytics id "Edge".
-  if (name === PLATFORM_EDGE || name === 'Microsoft Edge') {
-    return 'edge://settings/content/camera';
-  }
-  return 'chrome://settings/content/camera';
-}
-
-/**
  * Chromium-family browsers URL that opens **this extension's** site settings.
  * Uses {@link browser.runtime.getURL} so the `site` query parameter always matches the running build.
  *
@@ -184,4 +152,12 @@ export function getMozExtensionOriginForDisplay(): string {
   } catch {
     return '';
   }
+}
+
+/**
+ * Bridges webextension-polyfill `Runtime.Port` to APIs typed against `chrome.runtime.Port`.
+ * @param port
+ */
+export function asChromeRuntimePort(port: Runtime.Port): chrome.runtime.Port {
+  return port as chrome.runtime.Port;
 }

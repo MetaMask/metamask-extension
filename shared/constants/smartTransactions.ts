@@ -21,6 +21,7 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_DEVELOPMENT: string[] = [
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
@@ -30,6 +31,7 @@ const ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS_PRODUCTION: string[] = [
   CHAIN_IDS.ARBITRUM,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.POLYGON,
+  CHAIN_IDS.ROBINHOOD_CHAIN,
 ];
 
 export const getAllowedSmartTransactionsChainIds = (): string[] => {
@@ -47,8 +49,6 @@ export const DEFAULT_SMART_TRANSACTIONS_ALLOWED_RPC_HOSTS: string[] = [
   '.infura.io',
   '.binance.org',
 ];
-
-export const CANCEL_GAS_LIMIT_DEC = 21000;
 
 export const SMART_TRANSACTIONS_LEARN_MORE_URL =
   'https://support.metamask.io/transactions-and-gas/transactions/smart-transactions/?utm_source=extension';

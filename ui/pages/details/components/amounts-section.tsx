@@ -8,6 +8,8 @@ import type {
 } from '../../../../shared/lib/activity/types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { useIsGasFeeSponsored } from '../../../hooks/activity/useIsGasFeeSponsored';
+import { SuccessPill } from '../../../components/component-library';
 import { TokenFiatValue } from '../../../components/app/transaction/token-fiat-value';
 import { TokenLabel } from '../../../components/app/transaction/token-label';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -30,10 +32,17 @@ function feeToToken(fee: ActivityFee): TokenAmount {
 
 export function FeesRows({ item }: { item: ActivityListItem }) {
   const t = useI18nContext();
-  const visibleFees =
+  const isGasFeeSponsored = useIsGasFeeSponsored(item.hash);
+
+  const amountFees =
     'fees' in item.data
-      ? (item.data.fees?.filter((fee) => fee.amount) ?? [])
+      ? (item.data.fees?.filter((fee) => Boolean(fee.amount)) ?? [])
       : [];
+  const hasBaseFee = amountFees.some((fee) => fee.type === 'base');
+  const visibleFees =
+    isGasFeeSponsored && !hasBaseFee
+      ? [{ type: 'base' }, ...amountFees]
+      : amountFees;
 
   if (!visibleFees.length) {
     return null;
@@ -44,9 +53,18 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
       {visibleFees.map((fee, index) => {
         const { assetId, symbol, type } = fee;
         let label = type;
+        let value = (
+          <div className="flex items-center justify-end gap-2">
+            <TokenFiatValue token={feeToToken(fee)} />
+            <TokenLabel assetId={assetId as CaipAssetType} symbol={symbol} />
+          </div>
+        );
 
         if (type === 'base') {
           label = t('networkFee');
+          if (isGasFeeSponsored) {
+            value = <SuccessPill label={t('paidByMetaMask')} />;
+          }
         } else if (type === 'priority') {
           label = t('priorityFee');
         }
@@ -56,15 +74,7 @@ export function FeesRows({ item }: { item: ActivityListItem }) {
             key={`${type}-${assetId ?? symbol ?? index}`}
             label={label}
             testId={type === 'base' ? 'transaction-base-fee' : undefined}
-            value={
-              <div className="flex items-center justify-end gap-2">
-                <TokenFiatValue token={feeToToken(fee)} />
-                <TokenLabel
-                  assetId={assetId as CaipAssetType}
-                  symbol={symbol}
-                />
-              </div>
-            }
+            value={value}
           />
         );
       })}
