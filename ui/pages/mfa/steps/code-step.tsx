@@ -109,8 +109,10 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
     );
   };
 
+  // A cooldown with a wait time shows as the countdown, also once it ended.
   const showError =
-    error !== undefined && !(isCoolingDown && COOLDOWN_CODES.has(error));
+    error !== undefined &&
+    !(resendAvailableAt !== undefined && COOLDOWN_CODES.has(error));
 
   return (
     <StepLayout

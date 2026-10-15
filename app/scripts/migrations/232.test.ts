@@ -1,116 +1,162 @@
-import { cloneDeep } from 'lodash';
-import { migrate, version } from './232';
+import migrate, { version } from './232';
 
-const VERSION = version;
-const OLD_VERSION = VERSION - 1;
+const TEMPO_CHAIN_ID = '0x1079';
+const OTHER_CHAIN_ID = '0x1';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-describe(`migration #${VERSION}`, () => {
-  it('bumps the version', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
+function buildNetworkConfiguration(chainId: string, nativeCurrency: string) {
+  return {
+    chainId,
+    name: 'Test Network',
+    nativeCurrency,
+    blockExplorerUrls: ['https://explorer.example'],
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'test-network',
+        url: 'https://rpc.example',
+        type: 'custom',
+      },
+    ],
+  };
+}
+
+function buildState(nativeCurrency: string): VersionedData {
+  return {
+    meta: { version: version - 1 },
+    data: {
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          [OTHER_CHAIN_ID]: buildNetworkConfiguration(OTHER_CHAIN_ID, 'ETH'),
+          [TEMPO_CHAIN_ID]: buildNetworkConfiguration(
+            TEMPO_CHAIN_ID,
+            nativeCurrency,
+          ),
+        },
+      },
+    },
+  };
+}
+
+function getConfiguration(state: VersionedData, chainId: string) {
+  const networkController = state.data.NetworkController as {
+    networkConfigurationsByChainId: Record<string, { nativeCurrency: string }>;
+  };
+  return networkController.networkConfigurationsByChainId[chainId];
+}
+
+describe(`migration #${version}`, () => {
+  it('bumps the state version', async () => {
+    const state: VersionedData = {
+      meta: { version: version - 1 },
       data: {},
     };
 
-    const versionedData = cloneDeep(oldStorage);
-    await migrate(versionedData, new Set<string>());
+    await migrate(state, new Set());
 
-    expect(versionedData.meta.version).toBe(VERSION);
+    expect(state.meta.version).toBe(version);
   });
 
-  it('sets needsSocialPairing to true when it was false and keeps other fields', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
+  it('replaces the Tempo pathUSD native currency with USD', async () => {
+    const state = buildState('pathUSD');
+    const changedControllers = new Set<string>();
+
+    await migrate(state, changedControllers);
+
+    expect(getConfiguration(state, TEMPO_CHAIN_ID).nativeCurrency).toBe('USD');
+    expect(changedControllers).toStrictEqual(new Set(['NetworkController']));
+  });
+
+  it('does not modify other networks', async () => {
+    const state = buildState('pathUSD');
+
+    await migrate(state, new Set());
+
+    expect(getConfiguration(state, OTHER_CHAIN_ID)).toStrictEqual(
+      buildNetworkConfiguration(OTHER_CHAIN_ID, 'ETH'),
+    );
+  });
+
+  it('leaves Tempo unchanged when the native currency is already USD', async () => {
+    const state = buildState('USD');
+    const changedControllers = new Set<string>();
+
+    await migrate(state, changedControllers);
+
+    expect(getConfiguration(state, TEMPO_CHAIN_ID).nativeCurrency).toBe('USD');
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('leaves a customized Tempo native currency unchanged', async () => {
+    const state = buildState('CUSTOM');
+    const changedControllers = new Set<string>();
+
+    await migrate(state, changedControllers);
+
+    expect(getConfiguration(state, TEMPO_CHAIN_ID).nativeCurrency).toBe(
+      'CUSTOM',
+    );
+    expect(changedControllers.size).toBe(0);
+  });
+
+  it('is a no-op when Tempo is not configured', async () => {
+    const state: VersionedData = {
+      meta: { version: version - 1 },
       data: {
-        AuthenticationController: {
-          isSignedIn: true,
-          needsProfilePairing: false,
-          needsSocialPairing: false,
-          srpSessionData: { id: { accessToken: 'token' } },
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {},
         },
-        OtherController: { preserved: true },
       },
     };
-
-    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
 
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: {
-        isSignedIn: true,
-        needsProfilePairing: false,
-        needsSocialPairing: true,
-        srpSessionData: { id: { accessToken: 'token' } },
+    await migrate(state, changedControllers);
+
+    expect(state.data).toStrictEqual({
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {},
       },
-      OtherController: { preserved: true },
     });
-    expect(changedControllers).toStrictEqual(
-      new Set(['AuthenticationController']),
-    );
-  });
-
-  it('sets needsSocialPairing to true when the field is absent', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: { isSignedIn: false } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: { isSignedIn: false, needsSocialPairing: true },
-    });
-    expect(changedControllers).toStrictEqual(
-      new Set(['AuthenticationController']),
-    );
-  });
-
-  it('keeps needsSocialPairing true when it is already true', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: { needsSocialPairing: true } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    await migrate(versionedData, new Set<string>());
-
-    expect(versionedData.data).toStrictEqual({
-      AuthenticationController: { needsSocialPairing: true },
-    });
-  });
-
-  it('does not change state when AuthenticationController is absent', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { OtherController: { preserved: true } },
-    };
-
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
     expect(changedControllers.size).toBe(0);
   });
 
-  it('does not change state when AuthenticationController is not an object', async () => {
-    const oldStorage: VersionedData = {
-      meta: { version: OLD_VERSION },
-      data: { AuthenticationController: 'invalid' },
+  it('is a no-op when the Tempo configuration is invalid', async () => {
+    const state: VersionedData = {
+      meta: { version: version - 1 },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            [TEMPO_CHAIN_ID]: { chainId: TEMPO_CHAIN_ID },
+          },
+        },
+      },
     };
-
-    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
-    await migrate(versionedData, changedControllers);
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    await migrate(state, changedControllers);
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      `Migration ${version}: Invalid Tempo Mainnet network configuration, skip the migration`,
+    );
+    expect(state.data).toStrictEqual({
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          [TEMPO_CHAIN_ID]: { chainId: TEMPO_CHAIN_ID },
+        },
+      },
+    });
     expect(changedControllers.size).toBe(0);
+    warnSpy.mockRestore();
   });
 });

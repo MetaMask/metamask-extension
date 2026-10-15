@@ -166,32 +166,58 @@ describe('EmailEntryStep', () => {
     });
   });
 
-  it.each(['nope', 'a@b', 'a@b..co', 'a@.co', 'a b@c.co'])(
-    'rejects %s without sending it',
-    (address) => {
-      const onAction = jest.fn();
-      render(
-        <EmailEntryStep
-          {...buildState(
-            { name: 'emailEntry' },
-            { error: 'credential_already_enrolled' },
-          )}
-          reason={reason}
-          onAction={onAction}
-        />,
-      );
+  it.each([
+    'nope',
+    'a@b',
+    'a@b..co',
+    'a@.co',
+    'a b@c.co',
+    '.a@b.co',
+    'a.@b.co',
+    'a..b@c.co',
+    '@b.co',
+    'a@@b.co',
+    'a@b.co.',
+  ])('rejects %s without sending it', (address) => {
+    const onAction = jest.fn();
+    render(
+      <EmailEntryStep
+        {...buildState(
+          { name: 'emailEntry' },
+          { error: 'credential_already_enrolled' },
+        )}
+        reason={reason}
+        onAction={onAction}
+      />,
+    );
 
-      const input = screen.getByRole('textbox');
-      fireEvent.change(input, { target: { value: address } });
-      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: address } });
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
 
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        messages.mfaEmailEntryInvalid.message,
-      );
-      expect(input).toHaveAttribute('aria-invalid', 'true');
-      expect(onAction).not.toHaveBeenCalled();
-    },
-  );
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaEmailEntryInvalid.message,
+    );
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(onAction).not.toHaveBeenCalled();
+  });
+
+  it('accepts dots inside the local part', () => {
+    const onAction = jest.fn();
+    render(
+      <EmailEntryStep
+        {...buildState({ name: 'emailEntry', prefillEmail: 'first.last@b.co' })}
+        reason={reason}
+        onAction={onAction}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.PRIMARY_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({
+      type: 'submitEmail',
+      email: 'first.last@b.co',
+    });
+  });
 
   it('shows the error for an address already in use', () => {
     render(
@@ -332,6 +358,29 @@ describe('CodeStep', () => {
     ).toBeInTheDocument();
     expect(screen.queryByTestId(MfaFlowTestIds.ERROR)).toBeNull();
     expect(screen.queryByTestId(MfaFlowTestIds.RESEND_BUTTON)).toBeNull();
+  });
+
+  it('lets the user resend once the cooldown ends, without its error', () => {
+    const { onAction } = renderCode(otp(true), {
+      error: 'rate_limited',
+      resendAvailableAt: Date.now() + 1_000,
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(1_000);
+    });
+
+    expect(screen.queryByTestId(MfaFlowTestIds.ERROR)).toBeNull();
+    fireEvent.click(screen.getByTestId(MfaFlowTestIds.RESEND_BUTTON));
+    expect(onAction).toHaveBeenCalledWith({ type: 'resend' });
+  });
+
+  it('shows a cooldown that came without a wait time', () => {
+    renderCode(otp(true), { error: 'rate_limited' });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      messages.mfaErrorCooldown.message,
+    );
   });
 
   it('sends the first code by itself once the cooldown ends', () => {
