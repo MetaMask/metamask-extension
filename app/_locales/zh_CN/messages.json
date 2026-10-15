@@ -6776,7 +6776,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "除了 $1，我们还想使用数据（例如来自 Cookie 的信息）来了解您如何与我们的营销通信互动。",
+    "message": "除了 $1，我们还想使用数据来了解您如何与营销通信交互。",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6829,13 +6829,13 @@
     "message": "我们将收集基本的产品使用数据，并可能会将这些信息与链上数据关联。"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "我们会收集数据以了解您与营销内容的互动情况，并可能使用这些数据向您推送相关资讯（如产品更新）。"
+    "message": "我们会使用这些数据了解您与营销内容的互动情况，并可能向您推送相关资讯（如产品功能更新）。"
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "基本使用数据"
+    "message": "收集基本使用数据"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "营销数据"
+    "message": "营销更新"
   },
   "onboardingMetametricsContinue": {
     "message": "继续"

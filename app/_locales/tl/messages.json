@@ -6776,7 +6776,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Dagdag pa sa $1, nais naming gamitin ang data (tulad ng impormasyon mula sa cookies) upang matutunan kung paano ka nakikipag-ugnayan sa aming komunikasyon sa marketing.",
+    "message": "Dagdag pa sa $1, nais naming gamitin ang data upang maunawaan kung paano ka nakikipag-ugnayan sa komunikasyon sa marketing.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6829,13 +6829,13 @@
     "message": "Mangongolekta kami ng karaniwang data sa paggamit ng produkto. Maaari naming iugnay ang impormasyong ito sa data sa chain."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Mangongolekta kami ng data upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari naming gamitin ang data na ito upang magbahagi ng kaugnay na balita (tulad ng mga update sa produkto)."
+    "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Pangunahing data ng paggamit"
+    "message": "Mangalap ng pangunahing data ng paggamit"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Data sa marketing"
+    "message": "Mga update sa marketing"
   },
   "onboardingMetametricsContinue": {
     "message": "Magpatuloy"

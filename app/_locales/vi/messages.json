@@ -6780,7 +6780,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Ngoài $1, chúng tôi muốn sử dụng dữ liệu (chẳng hạn như thông tin từ cookie) để tìm hiểu cách bạn tương tác với các thông tin tiếp thị của chúng tôi.",
+    "message": "Ngoài $1, chúng tôi muốn sử dụng dữ liệu để hiểu cách bạn tương tác với với các thông tin tiếp thị.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6833,13 +6833,13 @@
     "message": "Chúng tôi sẽ thu thập dữ liệu sử dụng sản phẩm cơ bản. Chúng tôi có thể liên kết thông tin này với dữ liệu trên chuỗi."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Chúng tôi sẽ thu thập dữ liệu để tìm hiểu cách bạn tương tác với các thông tin tiếp thị của chúng tôi. Chúng tôi có thể sử dụng dữ liệu này để chia sẻ tin tức liên quan (chẳng hạn như cập nhật sản phẩm)."
+    "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Dữ liệu sử dụng cơ bản"
+    "message": "Thu thập dữ liệu sử dụng cơ bản"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Dữ liệu tiếp thị"
+    "message": "Cập nhật hoạt động tiếp thị"
   },
   "onboardingMetametricsContinue": {
     "message": "Tiếp tục"
@@ -6848,7 +6848,7 @@
     "message": "Chúng tôi muốn yêu cầu các quyền sau. Bạn có thể từ chối hoặc xóa dữ liệu sử dụng của mình bất cứ lúc nào."
   },
   "onboardingMetametricsTitle": {
-    "message": "Giúp chúng tôi cải thiện MetaMask"
+    "message": "Giúp cải thiện MetaMask"
   },
   "onboardingSignInWith": {
     "message": "Đăng nhập bằng $1",

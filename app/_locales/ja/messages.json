@@ -6780,7 +6780,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "$1に加え、当社のマーケティングコミュニケーションとのインタラクションを把握するために、データ (Cookieから得られる情報など) も使用します。",
+    "message": "$1に加え、マーケティングコミュニケーションとのインタラクションについて把握するためにもデータを使用します。",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6833,13 +6833,13 @@
     "message": "当社は製品の基本的な使用状況データを収集します。この情報はオンチェーンデータと関連付けられる場合があります。"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "当社は、マーケティングコミュニケーションとのインタラクションを把握するためにデータを収集します。このデータを使用して、関連ニュース (製品の最新情報など) をお伝えする場合があります。"
+    "message": "このデータは、当社の各種マーケティング活動に対するユーザーの反応を把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "基本的な使用状況データ"
+    "message": "基本的な使用状況データの収集"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "マーケティングデータ"
+    "message": "マーケティング関連の最新情報"
   },
   "onboardingMetametricsContinue": {
     "message": "続行"

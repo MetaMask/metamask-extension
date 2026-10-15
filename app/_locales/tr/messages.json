@@ -6780,7 +6780,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "$1 bağlantısına ek olarak pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek amacıyla verileri (çerezlerden elde edilen bilgiler gibi) kullanmak istiyoruz.",
+    "message": "$1 bağlantısına ek olarak pazarlama iletişimleri ile nasıl etkileşimde bulunduğunuzu anlamak amacıyla verileri kullanmak istiyoruz.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6833,13 +6833,13 @@
     "message": "Temel ürün kullanım verilerini toplarız. Bu bilgileri zincir içi verilerle ilişkilendirebiliriz."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için veri toplayacağız. Bu verileri ilgili haberleri (ürün güncellemeleri gibi) paylaşmak için kullanabiliriz."
+    "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Temel kullanım verileri"
+    "message": "Temel kullanım verilerini topla"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Pazarlama verileri"
+    "message": "Pazarlama güncellemeleri"
   },
   "onboardingMetametricsContinue": {
     "message": "Devam et"
@@ -6848,7 +6848,7 @@
     "message": "Bu izinleri talep etmek istiyoruz. Dilediğiniz zaman vazgeçebilir veya kullanım verilerinizi silebilirsiniz."
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMask'i iyileştirmemize yardımcı olun"
+    "message": "MetaMask'in iyileştirilmesine yardımcı olun"
   },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",
