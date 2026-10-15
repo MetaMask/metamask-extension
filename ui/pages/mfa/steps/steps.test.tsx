@@ -344,6 +344,8 @@ describe('CodeStep', () => {
 
   beforeEach(() => {
     jest.useFakeTimers({ now: 1_000_000 });
+    // jsdom does not implement it; Paste focuses the page before reading.
+    jest.spyOn(window, 'focus').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
