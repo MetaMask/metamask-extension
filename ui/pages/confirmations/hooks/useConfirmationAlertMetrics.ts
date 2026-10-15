@@ -28,6 +28,8 @@ export const ALERTS_NAME_METRICS: Record<AlertsName | string, string> = {
   [AlertsName.NetworkBusy]: 'network_busy',
   [AlertsName.NoGasPrice]: 'no_gas_price',
   [AlertsName.PendingTransaction]: 'pending_transaction',
+  [AlertsName.PerpsWithdrawBalanceUnavailable]:
+    'perps_withdraw_balance_unavailable',
   [AlertsName.SigningOrSubmitting]: 'signing_or_submitting',
   [AlertsName.Blockaid]: 'blockaid',
 };

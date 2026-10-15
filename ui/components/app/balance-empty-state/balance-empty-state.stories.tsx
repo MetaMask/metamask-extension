@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { BalanceEmptyState } from './balance-empty-state';
 
 const meta: Meta<typeof BalanceEmptyState> = {

@@ -55,8 +55,13 @@ const FUNDED_CLEARING_HOUSE_STATE = {
  *
  * `marginUsed` must exceed notional/leverage (7125/3 = 2375) so the UI allows removing margin
  * (`calculateMaxRemovableMargin` in usePerpsMarginCalculations); otherwise "Available to subtract" is $0.
+ *
+ * Exported so the REST `clearinghouseState` mock can serve the same account as this
+ * subscription. perps-controller 15.1.0 reads positions from the current-connection DEX
+ * slice *or* an HTTP read and never merges the two, so a REST response that disagrees
+ * with the stream makes symbol operations fail.
  */
-const ETH_LONG_CLEARING_HOUSE_STATE = {
+export const ETH_LONG_CLEARING_HOUSE_STATE = {
   ...FUNDED_CLEARING_HOUSE_STATE,
   marginSummary: {
     ...FUNDED_CLEARING_HOUSE_STATE.marginSummary,

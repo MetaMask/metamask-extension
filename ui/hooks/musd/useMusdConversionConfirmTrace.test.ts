@@ -166,6 +166,40 @@ describe('useMusdConversionConfirmTrace', () => {
     );
   });
 
+  it('ends trace when transaction confirms after the transactionId prop becomes empty', () => {
+    setupMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.submitted)],
+      MOCK_PAYMENT_TOKEN,
+      [MOCK_QUOTE],
+    );
+
+    const { rerender } = renderHook(
+      ({ id }: { id: string }) => useMusdConversionConfirmTrace(id),
+      { initialProps: { id: 'tx-1' } },
+    );
+
+    expect(mockTrace).toHaveBeenCalledTimes(1);
+
+    updateMock(
+      [createMusdConversionTx('tx-1', TransactionStatus.confirmed)],
+      MOCK_PAYMENT_TOKEN,
+      [MOCK_QUOTE],
+    );
+
+    rerender({ id: '' });
+
+    expect(mockEndTrace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'MusdConversionConfirm',
+        id: 'tx-1',
+        data: expect.objectContaining({
+          success: true,
+          status: TransactionStatus.confirmed,
+        }),
+      }),
+    );
+  });
+
   it('ends trace with success when transaction is confirmed', () => {
     setupMock(
       [createMusdConversionTx('tx-1', TransactionStatus.submitted)],

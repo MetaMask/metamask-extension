@@ -1,16 +1,12 @@
 import { providerErrors, errorCodes } from '@metamask/rpc-errors';
-import type {
-  Json,
-  JsonRpcError,
-  JsonRpcResponse,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { Json, JsonRpcError, JsonRpcResponse } from '@metamask/utils';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import type { ThrottledOrigin } from '../../../shared/types/origin-throttling';
+import type { OriginAwareJsonRpcRequest } from './rpc-request-utils';
 
 export const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
 export const REJECTION_THRESHOLD_IN_MS = 30000;
@@ -38,8 +34,6 @@ const TEST_ORIGINS = [
   'http://localhost:8082',
 ];
 
-export type ExtendedJSONRPCRequest = JsonRpcRequest & { origin: string };
-
 export const SPAM_FILTER_ACTIVATED_ERROR = providerErrors.unauthorized(
   'Request blocked due to spam filter.',
 );
@@ -60,7 +54,7 @@ export default function createOriginThrottlingMiddleware({
   updateThrottledOriginState,
 }: CreateOriginThrottlingMiddlewareOptions) {
   return function originThrottlingMiddleware(
-    req: ExtendedJSONRPCRequest,
+    req: OriginAwareJsonRpcRequest,
     res: JsonRpcResponse<Json | JsonRpcError>,
     next: JsonRpcEngineNextCallback,
     end: JsonRpcEngineEndCallback,

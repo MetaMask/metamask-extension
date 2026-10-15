@@ -8,7 +8,7 @@ import { connectBitcoinTestDapp } from '../../page-objects/flows/bitcoin-dapp.fl
 import { switchToAccount } from '../../page-objects/flows/account-list.flow';
 import { DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
+import EditConnectedAccountsPage from '../../page-objects/pages/permission/edit-connected-accounts-page';
 import {
   account1Short,
   account2Short,
@@ -99,11 +99,11 @@ describe('Bitcoin Wallet Standard Connect - e2e tests', function () {
           );
           await connectAccountConfirmation.checkPageIsLoaded();
           await connectAccountConfirmation.openEditAccountsModal();
-          const editConnectedAccountsModal = new EditConnectedAccountsModal(
+          const editConnectedAccountsPage = new EditConnectedAccountsPage(
             driver,
           );
-          await editConnectedAccountsModal.selectAccount(2);
-          await editConnectedAccountsModal.clickOnConnect();
+          await editConnectedAccountsPage.selectAccount(2);
+          await editConnectedAccountsPage.clickOnConnect();
           await connectAccountConfirmation.confirmConnect();
 
           await testDapp.switchTo();

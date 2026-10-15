@@ -1,10 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import {
-  BtcAccountType,
-  BtcScope,
-  EthAccountType,
-} from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TokenFiatDisplayInfo } from '../../types';
 import { TokenCellTitle } from './token-cell-title';
 
@@ -26,14 +22,6 @@ jest.mock('../../../../multichain/token-list-item/stakeable-link', () => ({
   ),
 }));
 
-jest.mock('../../../../component-library', () => ({
-  Tag: ({ label }: { label: string }) => (
-    <span data-testid="tag" data-label={label}>
-      {label}
-    </span>
-  ),
-}));
-
 jest.mock('../../stock-badge/stock-badge', () => ({
   StockBadge: ({ isMarketClosed }: { isMarketClosed: boolean }) => (
     <span data-testid="stock-badge" data-market-closed={String(isMarketClosed)}>
@@ -44,6 +32,10 @@ jest.mock('../../stock-badge/stock-badge', () => ({
 
 jest.mock('../../asset-inactive-badge/asset-inactive-badge', () => ({
   AssetInactiveBadge: () => <span data-testid="asset-inactive-badge" />,
+}));
+
+jest.mock('../../../security-trust/security-trust-inline-badge', () => ({
+  SecurityBadge: () => null,
 }));
 
 const mockIsStockToken = jest.fn();
@@ -93,13 +85,6 @@ describe('TokenCellTitle', () => {
     expect(getByTestId('asset-cell-title')).toHaveTextContent('My Test Token');
   });
 
-  it('renders without any tag when token.type is undefined', () => {
-    const token = createMockToken({ accountType: EthAccountType.Eoa });
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
-
-    expect(queryByTestId('tag')).not.toBeInTheDocument();
-  });
-
   it('renders inactive trustline badge when token requires activation', () => {
     const token = createMockToken({
       accountType: undefined,
@@ -114,49 +99,6 @@ describe('TokenCellTitle', () => {
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(getByTestId('asset-inactive-badge')).toBeInTheDocument();
-  });
-
-  it('does not render tag when accountType is undefined', () => {
-    const token = createMockToken({ accountType: undefined });
-    const { queryByTestId } = render(<TokenCellTitle token={token} />);
-
-    expect(queryByTestId('tag')).not.toBeInTheDocument();
-  });
-
-  it('renders Legacy tag for P2pkh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2pkh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Legacy');
-    expect(tag).toHaveAttribute('data-label', 'Legacy');
-  });
-
-  it('renders Nested SegWit tag for P2sh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2sh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Nested SegWit');
-    expect(tag).toHaveAttribute('data-label', 'Nested SegWit');
-  });
-
-  it('renders Native SegWit tag for P2wpkh account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2wpkh });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Native SegWit');
-    expect(tag).toHaveAttribute('data-label', 'Native SegWit');
-  });
-
-  it('renders Taproot tag for P2tr account type', () => {
-    const token = createMockToken({ accountType: BtcAccountType.P2tr });
-    const { getByTestId } = render(<TokenCellTitle token={token} />);
-
-    const tag = getByTestId('tag');
-    expect(tag).toHaveTextContent('Taproot');
-    expect(tag).toHaveAttribute('data-label', 'Taproot');
   });
 
   it('renders StakeableLink when isStakeable is true', () => {
@@ -185,27 +127,6 @@ describe('TokenCellTitle', () => {
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('stakeable-link')).not.toBeInTheDocument();
-  });
-
-  it('renders both tag and StakeableLink when both conditions are met', () => {
-    const token = createMockToken({
-      title: 'Bitcoin',
-      accountType: BtcAccountType.P2tr,
-      isStakeable: true,
-      chainId: BtcScope.Mainnet,
-      symbol: 'BTC',
-    });
-    const { container } = render(<TokenCellTitle token={token} />);
-
-    expect(
-      container.querySelector('[data-testid="asset-cell-title"]'),
-    ).toHaveTextContent('Bitcoin');
-    expect(container.querySelector('[data-testid="tag"]')).toHaveTextContent(
-      'Taproot',
-    );
-    expect(
-      container.querySelector('[data-testid="stakeable-link"]'),
-    ).toBeInTheDocument();
   });
 
   describe('StockBadge', () => {
@@ -589,6 +510,137 @@ describe('TokenCellTitle', () => {
       );
 
       expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.offhours.nextOpen changes', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(false);
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market: {
+            nextOpen: '2026-01-01T10:00:00Z',
+            nextClose: '2026-01-01T16:00:00Z',
+          },
+          offhours: {
+            nextOpen: '2026-01-01T16:00:00Z',
+            nextClose: '2026-01-01T20:00:00Z',
+          },
+        },
+      });
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
+
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'true',
+      );
+
+      mockIsTokenTradingOpen.mockReturnValue(true);
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market: {
+                nextOpen: '2026-01-01T10:00:00Z',
+                nextClose: '2026-01-01T16:00:00Z',
+              },
+              offhours: {
+                nextOpen: '2026-01-01T17:00:00Z',
+                nextClose: '2026-01-01T20:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsTokenTradingOpen).toHaveBeenCalledTimes(2);
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'false',
+      );
+    });
+
+    it('re-renders when rwaData.offhours.nextClose changes', () => {
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          offhours: {
+            nextOpen: '2026-01-01T16:00:00Z',
+            nextClose: '2026-01-01T20:00:00Z',
+          },
+        },
+      });
+      const { rerender } = render(<TokenCellTitle token={token} />);
+
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              offhours: {
+                nextOpen: '2026-01-01T16:00:00Z',
+                nextClose: '2026-01-01T22:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsStockToken).toHaveBeenCalledTimes(2);
+    });
+
+    it('re-renders when rwaData.offhours arrives without market/nextPause changes', () => {
+      mockIsStockToken.mockReturnValue(true);
+      mockIsTokenTradingOpen.mockReturnValue(false);
+      const market = {
+        nextOpen: '2026-01-01T10:00:00Z',
+        nextClose: '2026-01-01T16:00:00Z',
+      };
+      const token = createMockToken({
+        title: 'OUSG',
+        rwaData: {
+          instrumentType: 'stock' as const,
+          market,
+        },
+      });
+      const { getByTestId, rerender } = render(
+        <TokenCellTitle token={token} />,
+      );
+
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'true',
+      );
+
+      mockIsTokenTradingOpen.mockReturnValue(true);
+      rerender(
+        <TokenCellTitle
+          token={createMockToken({
+            title: 'OUSG',
+            rwaData: {
+              instrumentType: 'stock' as const,
+              market,
+              offhours: {
+                nextOpen: '2026-01-01T16:00:00Z',
+                nextClose: '2026-01-01T20:00:00Z',
+              },
+            },
+          })}
+        />,
+      );
+
+      expect(mockIsTokenTradingOpen).toHaveBeenCalledTimes(2);
+      expect(getByTestId('stock-badge')).toHaveAttribute(
+        'data-market-closed',
+        'false',
+      );
     });
 
     it('skips re-render when rwaData is undefined for both renders', () => {

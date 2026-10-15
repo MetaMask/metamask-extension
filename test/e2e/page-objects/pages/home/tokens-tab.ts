@@ -43,8 +43,6 @@ class TokensTab extends HomePage {
   private readonly assetPriceInDetailsModal =
     '[data-testid="asset-hovered-price"]';
 
-  private readonly coinOverviewBuyButton = '[data-testid="coin-overview-buy"]';
-
   private readonly coinOverviewSendButton =
     '[data-testid="coin-overview-send"]';
 
@@ -85,9 +83,8 @@ class TokensTab extends HomePage {
   private readonly hideTokenConfirmationButton =
     '[data-testid="hide-token-confirmation__hide"]';
 
-  private readonly hideTokenConfirmationModalTitle = {
-    text: 'Hide token',
-    css: '.hide-token-confirmation__title',
+  private readonly hideTokenConfirmationModal = {
+    testId: 'hide-token-confirmation-modal',
   };
 
   private readonly importTokenModalTitle = { text: 'Import tokens', tag: 'h4' };
@@ -116,10 +113,6 @@ class TokensTab extends HomePage {
   private readonly manageTokensButton = '[data-testid="manageTokens__button"]';
 
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
-
-  private readonly multichainTokenListButton = {
-    testId: 'multichain-token-list-button',
-  };
 
   private readonly noPriceAvailableMessage = {
     css: '[data-testid="multichain-token-list-item-secondary-value"]',
@@ -190,16 +183,16 @@ class TokensTab extends HomePage {
   private readonly tokenManagementCustomTokenSuccessToast =
     '[data-testid="token-management-custom-token-success-toast"]';
 
+  private readonly tokenManagementCustomTokenSuccessToastClose =
+    '[data-testid="toast-close-button"]';
+
   private readonly tokenManagementPage =
-    '[data-testid="token-management-page"]';
+    '[data-testid="parent-selector-token-management-page"]';
 
   private readonly tokenManagementSearchInput =
     '[data-testid="token-management-search-input"]';
 
   private readonly tokenName =
-    '[data-testid="multichain-token-list-item-token-name"]';
-
-  private readonly tokenNameInDetails =
     '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenOptionsButton =
@@ -211,6 +204,10 @@ class TokensTab extends HomePage {
 
   private readonly tokenSearchSelected =
     '.token-list__tokens-container .mm-checkbox__input--checked';
+
+  private readonly tokensPage = {
+    testId: 'parent-selector-tokens-tab',
+  };
 
   private readonly tokenSymbolInput =
     '[data-testid="import-tokens-modal-custom-symbol"]';
@@ -226,11 +223,6 @@ class TokensTab extends HomePage {
       css: this.tokenName,
       text: symbol,
     });
-  }
-
-  async checkBuySellButtonIsPresent(): Promise<void> {
-    console.log(`Verify the buy/sell button is displayed`);
-    await this.driver.waitForSelector(this.coinOverviewBuyButton);
   }
 
   /**
@@ -287,13 +279,26 @@ class TokensTab extends HomePage {
     );
     await this.driver.waitForSelector({
       css: this.lowValueAssetsToggle,
-      text: `Low value tokens (${expectedCount})`,
+      text: `Low balance tokens (${expectedCount})`,
     });
   }
 
   async checkMultichainTokenListButtonIsPresent(): Promise<void> {
     console.log(`Verify the multichain-token-list-button is displayed`);
     await this.driver.waitForSelector(this.tokenListItem);
+  }
+
+  /**
+   * Checks that the Tokens tab shows the "—" (em dash) fiat placeholder because
+   * no conversion rate is available (e.g. price API does not support the asset).
+   *
+   * @param timeout - How long to wait for the placeholder to appear.
+   */
+  async checkNoConversionRateDisplayed(timeout: number = 10000): Promise<void> {
+    await this.expandLowValueAssetsIfPresent();
+    await this.driver.waitForSelector(this.noPriceAvailableMessage, {
+      timeout,
+    });
   }
 
   /**
@@ -314,6 +319,11 @@ class TokensTab extends HomePage {
       });
     }
     await this.checkTokenItemNumber(symbols.length);
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForSelector(this.tokensPage);
+    console.log('Tokens tab is loaded');
   }
 
   async checkPriceChartIsShown(): Promise<void> {
@@ -377,6 +387,7 @@ class TokensTab extends HomePage {
    */
   async checkTokenAmountIsDisplayed(tokenAmount: string): Promise<void> {
     console.log(`Waiting for token amount ${tokenAmount} to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
@@ -673,7 +684,7 @@ class TokensTab extends HomePage {
     console.log(`Verifying token details for ${symbol}`);
 
     await this.driver.waitForSelector({
-      css: this.tokenNameInDetails,
+      css: this.tokenName,
       text: symbol,
     });
 
@@ -693,7 +704,7 @@ class TokensTab extends HomePage {
 
   async clickMultichainTokenListButton(): Promise<void> {
     console.log('Clicking on multichain token list button');
-    await this.driver.clickElement(this.multichainTokenListButton);
+    await this.driver.clickElement(this.tokenListItem);
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
@@ -736,17 +747,25 @@ class TokensTab extends HomePage {
   }
 
   private async expandLowValueAssetsIfPresent(): Promise<void> {
-    // If the low value assets section is already expanded, no action is required.
     try {
       await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
         timeout: 1000,
       });
       return;
     } catch {
-      // Not expanded yet (or low value section not present), attempt to expand it below.
+      // Not expanded yet (or section not present)
     }
 
-    await this.driver.clickElementSafe(this.lowValueAssetsToggle);
+    const togglePresent = await this.driver.isElementPresentAndVisible(
+      this.lowValueAssetsToggle,
+      1000,
+    );
+    if (!togglePresent) {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded);
   }
 
   private async findTokenRowByName(tokenName: string): Promise<WebElement> {
@@ -793,7 +812,7 @@ class TokensTab extends HomePage {
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
     await this.driver.clickElement(this.assetOptionsButton);
     await this.driver.clickElement(this.hideTokenButton);
-    await this.driver.waitForSelector(this.hideTokenConfirmationModalTitle);
+    await this.driver.waitForSelector(this.hideTokenConfirmationModal);
     await this.driver.clickElementAndWaitToDisappear(
       this.hideTokenConfirmationButton,
     );
@@ -806,7 +825,7 @@ class TokensTab extends HomePage {
     decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
-    await this.driver.waitForSelector(this.multichainTokenListButton, {
+    await this.driver.waitForSelector(this.tokenListItem, {
       waitAtLeastGuard: 1000,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -853,6 +872,9 @@ class TokensTab extends HomePage {
     await this.driver.waitForSelector(
       this.tokenManagementCustomTokenSuccessToast,
     );
+    await this.driver.clickElementAndWaitToDisappear(
+      this.tokenManagementCustomTokenSuccessToastClose,
+    );
     await this.returnFromTokenManagementToHome();
   }
 
@@ -873,7 +895,7 @@ class TokensTab extends HomePage {
     decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage via import modal`);
-    await this.driver.waitForSelector(this.multichainTokenListButton, {
+    await this.driver.waitForSelector(this.tokenListItem, {
       waitAtLeastGuard: largeDelayMs,
     });
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -940,7 +962,7 @@ class TokensTab extends HomePage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.manageTokensButton);
     await this.driver.waitForSelector(this.tokenManagementPage, {
@@ -966,7 +988,7 @@ class TokensTab extends HomePage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search via import modal`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle, {
@@ -997,7 +1019,7 @@ class TokensTab extends HomePage {
     networkName: string;
   }) {
     console.log(`Import token ${tokenName} on homepage by search`);
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.manageTokensButton);
     await this.driver.waitForSelector(this.tokenManagementPage);
@@ -1032,7 +1054,7 @@ class TokensTab extends HomePage {
     console.log(
       `Import token ${tokenName} on homepage by search via import modal`,
     );
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -1070,7 +1092,7 @@ class TokensTab extends HomePage {
     await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       text: tokenSymbol,
-      css: this.tokenNameInDetails,
+      css: this.tokenName,
     });
   }
 
@@ -1086,7 +1108,7 @@ class TokensTab extends HomePage {
 
   private async returnFromTokenManagementToHome(): Promise<void> {
     await this.driver.clickElement(this.tokenManagementBackButton);
-    await this.driver.waitForSelector(this.multichainTokenListButton);
+    await this.driver.waitForSelector(this.tokenListItem);
   }
 
   async sortTokenList(

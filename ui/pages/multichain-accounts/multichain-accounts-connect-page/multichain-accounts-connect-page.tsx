@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import {
   generateCaip25Caveat,
   getAllNamespacesFromCaip25CaveatValue,
@@ -74,6 +73,7 @@ import { MultichainEditAccountsPage } from '../../../components/multichain-accou
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
@@ -116,7 +116,7 @@ export enum MultichainAccountsConnectPageMode {
 type SingleAccountCellProps = {
   accountGroupId: AccountGroupObject['id'];
   accountName: string;
-  balance: string;
+  balance?: string;
   onEdit: () => void;
   privacyMode?: boolean;
 };
@@ -470,24 +470,18 @@ export const MultichainAccountsConnectPage = ({
     [defaultConnectChainIds, supportedAccountGroups],
   );
 
-  useEffect(() => {
-    const defaultAccountGroupIds = suggestedAccountGroups.map(
-      (group) => group.id,
-    );
-    if (
-      !userHasModifiedAccountSelection &&
-      !isEqual(defaultAccountGroupIds, selectedAccountGroupIds)
-    ) {
-      handleAccountGroupIdsSelected(defaultAccountGroupIds, {
-        isUserModified: false,
-      });
-    }
-  }, [
-    userHasModifiedAccountSelection,
-    handleAccountGroupIdsSelected,
-    selectedAccountGroupIds,
-    suggestedAccountGroups,
-  ]);
+  const defaultAccountGroupIds = useMemo(
+    () => suggestedAccountGroups.map((group) => group.id),
+    [suggestedAccountGroups],
+  );
+
+  const effectiveSelectedAccountGroupIds = userHasModifiedAccountSelection
+    ? selectedAccountGroupIds
+    : defaultAccountGroupIds;
+
+  const effectiveSelectedCaipAccountIds = userHasModifiedAccountSelection
+    ? selectedCaipAccountIds
+    : suggestedCaipAccountIds;
 
   const setModeToEditAccounts = useCallback(() => {
     trackEvent(
@@ -513,7 +507,7 @@ export const MultichainAccountsConnectPage = ({
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValueWithExistingPermissions,
-          selectedCaipAccountIds,
+          effectiveSelectedCaipAccountIds,
           defaultConnectChainIds,
         ),
       },
@@ -522,7 +516,7 @@ export const MultichainAccountsConnectPage = ({
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
-    selectedCaipAccountIds,
+    effectiveSelectedCaipAccountIds,
     defaultConnectChainIds,
     approveConnection,
   ]);
@@ -536,32 +530,38 @@ export const MultichainAccountsConnectPage = ({
     trustSignalState === TrustSignalDisplayState.Warning;
 
   const seedAddresses = useSelector((state) =>
-    selectedAccountGroupIds.map((id) =>
+    effectiveSelectedAccountGroupIds.map((id) =>
       getIconSeedAddressByAccountGroupId(state, id),
     ),
   );
 
   const singleAccountData = useMemo(() => {
-    if (selectedAccountGroupIds.length !== 1) {
+    if (effectiveSelectedAccountGroupIds.length !== 1) {
       return null;
     }
-    const accountGroupId = selectedAccountGroupIds[0];
+    const accountGroupId = effectiveSelectedAccountGroupIds[0];
     const accountGroup = supportedAccountGroups.find(
       (group) => group.id === accountGroupId,
     );
     const account = accountGroup
       ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
       : undefined;
-    const balance = account?.totalBalanceInUserCurrency ?? 0;
-    const currency = account?.userCurrency ?? '';
+    // Undefined when this group has no known balance yet, so the cell renders
+    // nothing instead of a misleading "$0.00".
+    const groupBalance = getAccountGroupDisplayBalance(account);
 
     return {
       accountGroupId,
       accountName: accountGroup?.metadata.name ?? 'Unknown Account',
-      balance: formatCurrencyWithMinThreshold(balance, currency),
+      balance:
+        groupBalance &&
+        formatCurrencyWithMinThreshold(
+          groupBalance.amount,
+          groupBalance.currency,
+        ),
     };
   }, [
-    selectedAccountGroupIds,
+    effectiveSelectedAccountGroupIds,
     supportedAccountGroups,
     wallets,
     formatCurrencyWithMinThreshold,
@@ -579,7 +579,7 @@ export const MultichainAccountsConnectPage = ({
         />
       )}
       <Page
-        data-testid="connect-page"
+        data-testid="parent-selector-connect-page"
         className="main-container multichain-connect-page"
         backgroundColor={BackgroundColor.backgroundDefault}
       >
@@ -647,11 +647,11 @@ export const MultichainAccountsConnectPage = ({
                   privacyMode={privacyMode}
                 />
               )}
-              {selectedAccountGroupIds.length > 1 && (
+              {effectiveSelectedAccountGroupIds.length > 1 && (
                 <MultiAccountRow
                   seedAddresses={seedAddresses}
                   onEdit={setModeToEditAccounts}
-                  accountsCount={selectedAccountGroupIds.length}
+                  accountsCount={effectiveSelectedAccountGroupIds.length}
                 />
               )}
             </Box>
@@ -714,7 +714,7 @@ export const MultichainAccountsConnectPage = ({
       title={t('selectAccounts')}
       confirmButtonText={t('save')}
       supportedAccountGroups={supportedAccountGroups}
-      defaultSelectedAccountGroups={selectedAccountGroupIds}
+      defaultSelectedAccountGroups={effectiveSelectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}
       onClose={() => setPageMode(MultichainAccountsConnectPageMode.Summary)}
     />

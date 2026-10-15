@@ -43,6 +43,7 @@ export default function ImportSRP({
 }: ImportSRPProps) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const navigate = useNavigate();
   const resetOnboardingAndReturn = useOnboardingReset();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -74,6 +75,12 @@ export default function ImportSRP({
       return;
     }
 
+    if (shouldClearClipboard) {
+      navigator.clipboard.writeText('').catch(() => {
+        // Do not block onboarding if clipboard access remains unavailable.
+      });
+    }
+
     submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
     trackEvent(
@@ -96,11 +103,13 @@ export default function ImportSRP({
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,
+    shouldClearClipboard,
   ]);
 
-  useEffect(() => {
+  const handleSecretRecoveryPhraseChange = useCallback((phrase: string) => {
+    setSecretRecoveryPhrase(phrase);
     setSrpError('');
-  }, [secretRecoveryPhrase]);
+  }, []);
 
   return (
     <Box
@@ -108,7 +117,7 @@ export default function ImportSRP({
       justifyContent={BoxJustifyContent.Between}
       className="import-srp h-full"
       gap={4}
-      data-testid="import-srp"
+      data-testid="parent-selector-onboarding-srp"
     >
       <Box>
         <Box marginBottom={4}>
@@ -126,8 +135,10 @@ export default function ImportSRP({
         </Box>
         <SrpInputForm
           error={srpError}
-          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          setSecretRecoveryPhrase={handleSecretRecoveryPhraseChange}
           onClearCallback={() => setSrpError('')}
+          onClearClipboardRetry={() => setShouldClearClipboard(false)}
+          onClipboardClearFailed={() => setShouldClearClipboard(true)}
         />
       </Box>
       <Box

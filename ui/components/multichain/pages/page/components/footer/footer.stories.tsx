@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonPrimary } from '../../../../../component-library';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { Display } from '../../../../../../helpers/constants/design-system';
 import { Footer } from '.';
 
@@ -14,7 +14,9 @@ export default story;
 
 export const DefaultStory = (args) => (
   <Footer {...args}>
-    <ButtonPrimary block>Confirm</ButtonPrimary>
+    <Button variant={ButtonVariant.Primary} isFullWidth>
+      Confirm
+    </Button>
   </Footer>
 );
 DefaultStory.storyName = 'Default';
@@ -22,10 +24,12 @@ DefaultStory.args = {};
 
 export const CancelConfirm = (args) => (
   <Footer {...args} display={Display.Flex} gap={4}>
-    <ButtonPrimary block disabled>
+    <Button variant={ButtonVariant.Primary} isFullWidth isDisabled>
       Cancel
-    </ButtonPrimary>
-    <ButtonPrimary block>Confirm</ButtonPrimary>
+    </Button>
+    <Button variant={ButtonVariant.Primary} isFullWidth>
+      Confirm
+    </Button>
   </Footer>
 );
 DefaultStory.storyName = 'Default';

@@ -57,4 +57,15 @@ describe('SettingsSelectItem', () => {
 
     expect(screen.queryByTestId('leading-icon')).not.toBeInTheDocument();
   });
+
+  it('does not render a value when it is an empty string', () => {
+    renderWithProvider(
+      <SettingsSelectItem label="My label" value="" to="/test-route" />,
+      mockStore,
+    );
+
+    expect(screen.getByText('My label')).toBeInTheDocument();
+    expect(screen.queryByText('My value')).not.toBeInTheDocument();
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/test-route');
+  });
 });

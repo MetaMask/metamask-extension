@@ -1,42 +1,14 @@
-import React from 'react';
-import { renderHook, cleanup, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, cleanup } from '@testing-library/react';
 import { CaipAssetId } from '@metamask/keyring-api';
-import { Asset } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { TRON_SPECIAL_ASSET_CAIP_TYPES } from '../../../../shared/constants/multichain/assets';
 import * as assetsSelectors from '../../../selectors/assets';
-import * as multichainSelectors from '../../../selectors/multichain';
-import * as assetsUnifyStateSelectors from '../../../selectors/assets-unify-state';
 import { useTronResources } from './useTronResources';
 
-const mockGetAccountBalances = jest.fn();
-
-jest.mock('@metamask/keyring-snap-client', () => ({
-  KeyringClient: jest.fn().mockImplementation(() => ({
-    getAccountBalances: mockGetAccountBalances,
-  })),
-}));
-
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapSender', () => ({
-  MultichainWalletSnapSender: jest.fn(),
-}));
-
-// Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroupWithTronSpecialAssets: jest.fn(),
-}));
-
-jest.mock('../../../selectors/multichain', () => ({
-  ...jest.requireActual('../../../selectors/multichain'),
-  getMultichainBalances: jest.fn(),
-}));
-
-jest.mock('../../../selectors/assets-unify-state', () => ({
-  ...jest.requireActual('../../../selectors/assets-unify-state'),
-  getIsAssetsUnifyStateEnabled: jest.fn(),
+  getAssetsBalance: jest.fn(),
 }));
 
 jest.mock('react-redux', () => ({
@@ -44,20 +16,10 @@ jest.mock('react-redux', () => ({
     selector({} as State),
 }));
 
-let queryClient: QueryClient;
-
-const createWrapper = () => {
-  return ({ children }: { children: React.ReactNode }) =>
-    React.createElement(QueryClientProvider, { client: queryClient }, children);
-};
-
 const renderTronResourcesHook = (
   account: InternalAccount | undefined,
   chainId: string,
-) =>
-  renderHook(() => useTronResources(account, chainId), {
-    wrapper: createWrapper(),
-  });
+) => renderHook(() => useTronResources(account, chainId));
 
 describe('useTronResources', () => {
   const mockAccount: InternalAccount = {
@@ -72,70 +34,25 @@ describe('useTronResources', () => {
     methods: [],
   } as unknown as InternalAccount;
 
-  const mockSnapAccount: InternalAccount = {
-    ...mockAccount,
-    metadata: {
-      ...mockAccount.metadata,
-      snap: {
-        id: 'npm:@metamask/tron-wallet-snap',
-        enabled: true,
-        name: 'Tron',
-      },
-    },
-  } as unknown as InternalAccount;
-
   const chainId = MultichainNetworks.TRON;
 
-  const createTronSpecialAsset = (
-    symbol: string,
-    assetId: CaipAssetId,
-  ): Asset =>
-    ({
-      assetId,
-      symbol,
-      name: symbol,
-      decimals: 0,
-      image: '',
-      isNative: false,
-    }) as Asset;
-
-  const mockSelector = (
-    assets: Record<string, Asset[]>,
-    balances: Record<string, Record<string, { amount: string; unit: string }>>,
-    isAssetsUnifyStateEnabled = false,
+  const mockAssetsBalance = (
+    assetsControllerBalances: Record<
+      string,
+      Record<string, { amount: string }>
+    > = {},
   ) => {
-    (
-      assetsSelectors.getAssetsBySelectedAccountGroupWithTronSpecialAssets as unknown as jest.Mock
-    ).mockReturnValue(assets);
-
-    (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
-      balances,
+    (assetsSelectors.getAssetsBalance as jest.Mock).mockReturnValue(
+      assetsControllerBalances,
     );
-
-    (
-      assetsUnifyStateSelectors.getIsAssetsUnifyStateEnabled as unknown as jest.Mock
-    ).mockReturnValue(isAssetsUnifyStateEnabled);
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAccountBalances.mockReset();
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-      logger: {
-        log: () => undefined,
-        warn: () => undefined,
-        // Silence expected error output from rejected snap queries.
-        error: () => undefined,
-      },
-    });
   });
 
   afterEach(() => {
     cleanup();
-    queryClient.clear();
   });
 
   describe('when account and chainId are provided', () => {
@@ -149,24 +66,14 @@ describe('useTronResources', () => {
       const maxBandwidthAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset('maximum-energy', maxEnergyAssetId),
-            createTronSpecialAsset('bandwidth', bandwidthAssetId),
-            createTronSpecialAsset('maximum-bandwidth', maxBandwidthAssetId),
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: '500' },
+          [maxEnergyAssetId]: { amount: '1000' },
+          [bandwidthAssetId]: { amount: '300' },
+          [maxBandwidthAssetId]: { amount: '600' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: '500', unit: 'energy' },
-            [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-            [bandwidthAssetId]: { amount: '300', unit: 'bandwidth' },
-            [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -186,20 +93,7 @@ describe('useTronResources', () => {
     });
 
     it('returns zero values with max of 0 when no balances exist', () => {
-      const energyAssetId =
-        `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
-      const bandwidthAssetId =
-        `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
-
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset('bandwidth', bandwidthAssetId),
-          ],
-        },
-        { [mockAccount.id]: {} },
-      );
+      mockAssetsBalance({ [mockAccount.id]: {} });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -224,20 +118,12 @@ describe('useTronResources', () => {
       const bandwidthAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset('bandwidth', bandwidthAssetId),
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: '250' },
+          [bandwidthAssetId]: { amount: '150' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: '250', unit: 'energy' },
-            [bandwidthAssetId]: { amount: '150', unit: 'bandwidth' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -262,20 +148,12 @@ describe('useTronResources', () => {
       const maxBandwidthAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('maximum-energy', maxEnergyAssetId),
-            createTronSpecialAsset('maximum-bandwidth', maxBandwidthAssetId),
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [maxEnergyAssetId]: { amount: '2000' },
+          [maxBandwidthAssetId]: { amount: '1500' },
         },
-        {
-          [mockAccount.id]: {
-            [maxEnergyAssetId]: { amount: '2000', unit: 'energy' },
-            [maxBandwidthAssetId]: { amount: '1500', unit: 'bandwidth' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -294,33 +172,18 @@ describe('useTronResources', () => {
       });
     });
 
-    it('filters out non-special Tron assets', () => {
+    it('ignores non-resource asset balances when computing resources', () => {
       const energyAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
       const tokenAssetId =
         `${chainId}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            {
-              assetId: tokenAssetId,
-              symbol: 'USDT',
-              name: 'Tether USD',
-              decimals: 6,
-              image: '',
-              isNative: false,
-            } as Asset,
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: '100' },
+          [tokenAssetId]: { amount: '1000' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: '100', unit: 'energy' },
-            [tokenAssetId]: { amount: '1000', unit: 'USDT' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -349,32 +212,17 @@ describe('useTronResources', () => {
       const inLockPeriodId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.IN_LOCK_PERIOD}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset(
-              '195-ready-for-withdrawal',
-              readyForWithdrawalId,
-            ),
-            createTronSpecialAsset('195-staking-rewards', stakingRewardsId),
-            createTronSpecialAsset('195-in-lock-period', inLockPeriodId),
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: '500' },
+          [readyForWithdrawalId]: { amount: '100' },
+          [stakingRewardsId]: { amount: '50' },
+          [inLockPeriodId]: { amount: '200' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: '500', unit: 'energy' },
-            [readyForWithdrawalId]: { amount: '100', unit: 'TRX' },
-            [stakingRewardsId]: { amount: '50', unit: 'TRX' },
-            [inLockPeriodId]: { amount: '200', unit: 'TRX' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
-      // Staking state assets are included in the special assets filter
-      // but should not affect energy/bandwidth output
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 500,
@@ -390,8 +238,8 @@ describe('useTronResources', () => {
       });
     });
 
-    it('handles empty assets array', () => {
-      mockSelector({ [chainId]: [] }, { [mockAccount.id]: {} });
+    it('handles empty account balances', () => {
+      mockAssetsBalance({ [mockAccount.id]: {} });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -410,8 +258,8 @@ describe('useTronResources', () => {
       });
     });
 
-    it('handles chainId with no assets', () => {
-      mockSelector({}, { [mockAccount.id]: {} });
+    it('handles missing account balances entry', () => {
+      mockAssetsBalance({});
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -440,24 +288,14 @@ describe('useTronResources', () => {
       const maxBandwidthAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset('maximum-energy', maxEnergyAssetId),
-            createTronSpecialAsset('bandwidth', bandwidthAssetId),
-            createTronSpecialAsset('maximum-bandwidth', maxBandwidthAssetId),
-          ],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: '1000' },
+          [maxEnergyAssetId]: { amount: '1000' },
+          [bandwidthAssetId]: { amount: '800' },
+          [maxBandwidthAssetId]: { amount: '800' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: '1000', unit: 'energy' },
-            [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-            [bandwidthAssetId]: { amount: '800', unit: 'bandwidth' },
-            [maxBandwidthAssetId]: { amount: '800', unit: 'bandwidth' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
@@ -468,7 +306,7 @@ describe('useTronResources', () => {
 
   describe('when account is undefined', () => {
     it('returns default values', () => {
-      mockSelector({}, {});
+      mockAssetsBalance({});
 
       const { result } = renderTronResourcesHook(undefined, chainId);
 
@@ -490,44 +328,9 @@ describe('useTronResources', () => {
 
   describe('when chainId is empty', () => {
     it('returns default values', () => {
-      mockSelector({}, { [mockAccount.id]: {} });
+      mockAssetsBalance({ [mockAccount.id]: {} });
 
       const { result } = renderTronResourcesHook(mockAccount, '');
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-    });
-  });
-
-  describe('when account balances are undefined', () => {
-    it('returns default values', () => {
-      const energyAssetId =
-        `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
-      const bandwidthAssetId =
-        `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
-
-      mockSelector(
-        {
-          [chainId]: [
-            createTronSpecialAsset('energy', energyAssetId),
-            createTronSpecialAsset('bandwidth', bandwidthAssetId),
-          ],
-        },
-        {},
-      );
-
-      const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy).toEqual({
         type: 'energy',
@@ -550,130 +353,16 @@ describe('useTronResources', () => {
       const energyAssetId =
         `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
 
-      mockSelector(
-        {
-          [chainId]: [createTronSpecialAsset('energy', energyAssetId)],
+      mockAssetsBalance({
+        [mockAccount.id]: {
+          [energyAssetId]: { amount: 'invalid' },
         },
-        {
-          [mockAccount.id]: {
-            [energyAssetId]: { amount: 'invalid', unit: 'energy' },
-          },
-        },
-      );
+      });
 
       const { result } = renderTronResourcesHook(mockAccount, chainId);
 
       expect(result.current.energy.current).toBeNaN();
       expect(result.current.energy.percentage).toBeNaN();
-    });
-  });
-
-  describe('when the unified AssetsController state is enabled', () => {
-    const energyAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.ENERGY}` as CaipAssetId;
-    const maxEnergyAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_ENERGY}` as CaipAssetId;
-    const bandwidthAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.BANDWIDTH}` as CaipAssetId;
-    const maxBandwidthAssetId =
-      `${chainId}/${TRON_SPECIAL_ASSET_CAIP_TYPES.MAXIMUM_BANDWIDTH}` as CaipAssetId;
-
-    it('falls back to fetching balances directly from the snap', async () => {
-      // Redux state is empty because the new AssetsController strips assets
-      // without metadata. The hook should still surface values fetched from
-      // the snap directly.
-      mockSelector({}, {}, true);
-
-      mockGetAccountBalances.mockResolvedValue({
-        [energyAssetId]: { amount: '500', unit: 'energy' },
-        [maxEnergyAssetId]: { amount: '1000', unit: 'energy' },
-        [bandwidthAssetId]: { amount: '300', unit: 'bandwidth' },
-        [maxBandwidthAssetId]: { amount: '600', unit: 'bandwidth' },
-      });
-
-      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
-
-      await waitFor(() => expect(result.current.energy.current).toBe(500));
-
-      expect(mockGetAccountBalances).toHaveBeenCalledWith(mockSnapAccount.id, [
-        energyAssetId,
-        maxEnergyAssetId,
-        bandwidthAssetId,
-        maxBandwidthAssetId,
-      ]);
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 500,
-        max: 1000,
-        percentage: 50,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 300,
-        max: 600,
-        percentage: 50,
-      });
-    });
-
-    it('does not call the snap when the account has no snap metadata', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(mockAccount, chainId);
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('returns zero values when the snap call fails', async () => {
-      mockSelector({}, {}, true);
-
-      mockGetAccountBalances.mockRejectedValue(new Error('snap blew up'));
-
-      const { result } = renderTronResourcesHook(mockSnapAccount, chainId);
-
-      await waitFor(() => expect(mockGetAccountBalances).toHaveBeenCalled());
-
-      expect(result.current.energy).toEqual({
-        type: 'energy',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-
-      expect(result.current.bandwidth).toEqual({
-        type: 'bandwidth',
-        current: 0,
-        max: 0,
-        percentage: 0,
-      });
-    });
-
-    it('does not call the snap when the feature flag is disabled', () => {
-      mockSelector({}, {}, false);
-
-      renderTronResourcesHook(mockSnapAccount, chainId);
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is not a Tron chain', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(
-        mockSnapAccount,
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      );
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
-    });
-
-    it('does not call the snap when the chainId is empty', () => {
-      mockSelector({}, {}, true);
-
-      renderTronResourcesHook(mockSnapAccount, '');
-
-      expect(mockGetAccountBalances).not.toHaveBeenCalled();
     });
   });
 });

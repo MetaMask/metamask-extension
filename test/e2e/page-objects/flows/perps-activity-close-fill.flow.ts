@@ -30,23 +30,14 @@ export async function assertPerpsActivityShowsCloseFill({
   await marketDetailPage.clickBack();
 
   const marketListPage = new PerpsMarketListPage(driver);
-  const onMarketList = await driver.isElementPresentAndVisible(
-    { testId: 'market-list-view' },
-    2000,
-  );
+  const onMarketList = await marketListPage.isPageLoaded();
   if (onMarketList) {
     await marketListPage.clickBack();
   }
 
   const perpsTab = new PerpsTab(driver);
-  const onPerpsHome = await driver.isElementPresentAndVisible(
-    { testId: 'perps-view' },
-    2000,
-  );
-  if (!onPerpsHome) {
-    await perpsTab.navigateToPerpsHome();
-  }
-  await perpsTab.checkPageIsLoaded();
+  await perpsTab.navigateToPerpsHome();
+  await perpsTab.waitForPerpsViewStable();
   await perpsTab.waitForRecentActivitySection();
   await perpsTab.clickRecentActivitySeeAll();
 

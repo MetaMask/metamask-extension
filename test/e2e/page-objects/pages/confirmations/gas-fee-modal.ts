@@ -32,7 +32,10 @@ export default class GasFeeModal {
 
   private driver: Driver;
 
-  private readonly editGasFeeModalTitle = { text: 'Edit gas fee', tag: 'h4' };
+  private readonly editGasFeeModalTitle = {
+    text: 'Edit network fee',
+    tag: 'h4',
+  };
 
   private readonly estimatesModal: RawLocator =
     '[data-testid="gas-fee-estimates-modal"]';
@@ -56,6 +59,10 @@ export default class GasFeeModal {
   private readonly gasPriceInput: RawLocator = '[id="gas-price-input"]';
 
   private readonly maxBaseFeeInput: RawLocator = '[id="max-base-fee-input"]';
+
+  private readonly parentSelector: RawLocator = {
+    testId: 'parent-selector-gas-fee-modal',
+  };
 
   private readonly priorityFeeInput: RawLocator = '[id="priority-fee-input"]';
 
@@ -126,6 +133,7 @@ export default class GasFeeModal {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.editGasFeeModalTitle,
         this.gasOptionLow,
         this.gasOptionMedium,

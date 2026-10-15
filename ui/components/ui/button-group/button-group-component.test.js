@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import ButtonGroup from '.';
 
@@ -36,5 +37,20 @@ describe('ButtonGroup Component', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('re-applies newActiveButtonIndex after an internal click', () => {
+    const { getByTestId } = renderWithProvider(
+      <ButtonGroup newActiveButtonIndex={0}>{mockButtons}</ButtonGroup>,
+    );
+
+    fireEvent.click(getByTestId('button-group__button2'));
+
+    expect(getByTestId('button-group__button0')).toHaveClass(
+      'button-group__button--active',
+    );
+    expect(getByTestId('button-group__button2')).not.toHaveClass(
+      'button-group__button--active',
+    );
   });
 });

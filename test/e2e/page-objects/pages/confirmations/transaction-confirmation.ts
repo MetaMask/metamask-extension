@@ -44,7 +44,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly advancedGasFeeEdit: RawLocator =
     '[data-testid="advanced-gas-fee-edit"]';
 
-  private readonly advancedGasSet: RawLocator = { tag: 'p', text: 'Advanced' };
+  private readonly advancedGasSet: RawLocator = {
+    testId: 'gas-fee-details-speed',
+  };
 
   private readonly alertBanner: RawLocator =
     '[data-testid="confirm-banner-alert"]';
@@ -218,6 +220,11 @@ class TransactionConfirmation extends Confirmation {
     console.log(`Waiting for enforced simulations toggle to finish loading.`);
     await this.driver.waitForSelector(this.enforcedSimulationsRow);
     await this.driver.waitForSelector(this.enforcedSimulationsToggle);
+  }
+
+  async checkEnforcedSimulationsRowIsNotDisplayed(): Promise<void> {
+    console.log(`Checking enforced simulations row is not displayed.`);
+    await this.driver.assertElementNotPresent(this.enforcedSimulationsRow);
   }
 
   async checkEnforcedSimulationsToggleUnchecked(): Promise<void> {

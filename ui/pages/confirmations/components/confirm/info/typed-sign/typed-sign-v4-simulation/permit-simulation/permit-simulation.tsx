@@ -1,7 +1,10 @@
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { PrimaryType } from '../../../../../../../../../shared/constants/signatures';
-import { parseTypedDataMessage } from '../../../../../../../../../shared/lib/transaction.utils';
+import {
+  getEip712TokenId,
+  parseSanitizeTypedDataMessage,
+} from '../../../../../../utils';
 import { ConfirmInfoRow } from '../../../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../../../components/component-library';
 import {
@@ -11,6 +14,7 @@ import {
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../../context/confirm';
 import { SignatureRequestType } from '../../../../../../types/confirm';
+import { getIsRevokeDAIPermit } from '../../../../utils';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
 
@@ -51,9 +55,10 @@ const PermitSimulation = () => {
   const {
     domain: { verifyingContract },
     message,
-    message: { tokenId },
     primaryType,
-  } = parseTypedDataMessage(msgData as string);
+    types,
+  } = parseSanitizeTypedDataMessage(msgData as string);
+  const tokenId = getEip712TokenId(message, types, primaryType);
   const isNFT = tokenId !== undefined;
 
   const tokenDetails = extractTokenDetailsByPrimaryType(message, primaryType);
@@ -75,7 +80,7 @@ const PermitSimulation = () => {
     />
   );
 
-  const isRevoke = message.allowed === false;
+  const isRevoke = getIsRevokeDAIPermit(currentConfirmation);
   let infoRowLabelKey = 'spendingCap';
   let descriptionKey = 'permitSimulationDetailInfo';
 
@@ -108,7 +113,7 @@ const PermitSimulation = () => {
           <PermitSimulationValueDisplay
             tokenContract={verifyingContract}
             value={message.value}
-            tokenId={message.tokenId}
+            tokenId={tokenId}
             chainId={chainId}
             message={message}
             canDisplayValueAsUnlimited

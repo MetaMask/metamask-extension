@@ -22,7 +22,7 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>
@@ -34,6 +34,7 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
     </div>
     <div
       class="flex-1 overflow-y-auto"
+      data-testid="ramps-token-selection-scroll-container"
     >
       <div
         data-testid="send-asset-picker"
@@ -63,27 +64,14 @@ exports[`RampsTokenSelectionScreen matches snapshot with send asset picker 1`] =
         >
           Apply network filter
         </button>
-        <button
-          data-testid="mapped-token-eip155:1/slip44:60"
-        >
-          ETH
-        </button>
+        <div>
+          <button
+            data-testid="mapped-token-eip155:1/slip44:60"
+          >
+            ETH
+          </button>
+        </div>
       </div>
-    </div>
-    <div
-      class="border-t border-border-muted px-4 py-3"
-    >
-      <button
-        class="inline-flex items-center justify-center font-medium overflow-hidden relative duration-100 ease-linear active:ease-[cubic-bezier(0.3,0.8,0.3,1)] h-auto rounded-none bg-transparent px-0 transform-none transition-none active:scale-100 text-primary-default hover:text-primary-default-hover hover:underline hover:decoration-primary-default-hover hover:decoration-2 hover:underline-offset-4 active:text-primary-default-pressed active:decoration-primary-default-pressed"
-        data-testid="ramps-show-all-tokens"
-        role="button"
-      >
-        <span
-          class="text-inherit text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default"
-        >
-          Show all tokens
-        </span>
-      </button>
     </div>
   </div>
 </div>
@@ -111,7 +99,7 @@ exports[`RampsTokenSelectionScreen shows error state when tokensError exists 1`]
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+            d="M15.53 18.97a.75.75 0 0 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 1.06L8.56 12Z"
           />
         </svg>
       </button>

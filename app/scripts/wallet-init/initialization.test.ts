@@ -19,6 +19,7 @@ import { getGasFeeControllerInitMessenger } from './messengers/gas-fee-controlle
 import { getSeedlessOnboardingControllerInitMessenger } from './messengers/seedless-onboarding-controller-messenger';
 import { getSeedlessOnboardingControllerInstanceOptions } from './instance-options/seedless-onboarding-controller';
 import { getClaimsServiceInstanceOptions } from './instance-options/claims-service';
+import { getConfigRegistryApiServiceInstanceOptions } from './instance-options/config-registry-api-service';
 import {
   getShieldApiServiceInstanceOptions,
   getShieldControllerInstanceOptions,
@@ -27,9 +28,15 @@ import { getSubscriptionServiceInstanceOptions } from './instance-options/subscr
 import { createMockMessenger } from './test-utils';
 
 const mockWalletInit = jest.fn();
+const mockNetworkController = {
+  addNetwork: jest.fn(),
+};
 
 jest.mock('@metamask/wallet', () => ({
-  Wallet: jest.fn(() => ({ init: mockWalletInit })),
+  Wallet: jest.fn(() => ({
+    getInstance: jest.fn(() => mockNetworkController),
+    init: mockWalletInit,
+  })),
 }));
 jest.mock('./remote-feature-flags', () => ({
   setupRemoteFeatureFlagToggle: jest.fn(),
@@ -44,6 +51,11 @@ jest.mock('./instance-options/connectivity-controller', () => ({
 }));
 jest.mock('./instance-options/claims-service', () => ({
   getClaimsServiceInstanceOptions: jest.fn(() => 'claims-options'),
+}));
+jest.mock('./instance-options/config-registry-api-service', () => ({
+  getConfigRegistryApiServiceInstanceOptions: jest.fn(
+    () => 'config-registry-api-service-options',
+  ),
 }));
 jest.mock('./instance-options/shield-controller', () => ({
   getShieldApiServiceInstanceOptions: jest.fn(
@@ -138,6 +150,7 @@ describe('initializeWallet', () => {
       instanceOptions: {
         approvalController: 'approval-options',
         claimsService: 'claims-options',
+        configRegistryApiService: 'config-registry-api-service-options',
         connectivityController: 'connectivity-options',
         gasFeeController: 'gas-fee-controller-options',
         keyringController: 'keyring-options',
@@ -179,6 +192,47 @@ describe('initializeWallet', () => {
     });
   });
 
+  it('adds Localhost for a fixture-less extension test build', () => {
+    const originalInTest = process.env.IN_TEST;
+    const originalJestWorkerId = process.env.JEST_WORKER_ID;
+    process.env.IN_TEST = 'true';
+    process.env.JEST_WORKER_ID = 'undefined';
+
+    try {
+      initializeWallet({
+        connectivityAdapter,
+        getFlatState,
+        getPermittedAccounts,
+        getTransactionMetricsRequest,
+        infuraProjectId: 'fake-infura-project-id',
+        messenger: createMockMessenger(),
+        platform,
+        state: {},
+      });
+
+      expect(mockNetworkController.addNetwork).toHaveBeenCalledWith({
+        blockExplorerUrls: [],
+        chainId: '0x539',
+        defaultRpcEndpointIndex: 0,
+        name: 'Localhost 8545',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'http://localhost:8545',
+          },
+        ],
+      });
+    } finally {
+      if (originalInTest === undefined) {
+        delete process.env.IN_TEST;
+      } else {
+        process.env.IN_TEST = originalInTest;
+      }
+      process.env.JEST_WORKER_ID = originalJestWorkerId;
+    }
+  });
+
   it('threads the messenger, state, and injected values through to the builders', () => {
     const messenger = createMockMessenger();
     const state = { OnboardingController: { completedOnboarding: true } };
@@ -202,6 +256,7 @@ describe('initializeWallet', () => {
       showApprovalRequest,
     });
     expect(getClaimsServiceInstanceOptions).toHaveBeenCalledWith();
+    expect(getConfigRegistryApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldApiServiceInstanceOptions).toHaveBeenCalledWith();
     expect(getShieldControllerInstanceOptions).toHaveBeenCalledWith();
     expect(getSubscriptionServiceInstanceOptions).toHaveBeenCalledWith();
@@ -247,6 +302,29 @@ describe('initializeWallet', () => {
       messenger: 'transaction-controller-init-messenger',
     });
   });
+
+  it('sets up TransactionController listeners before constructing the Wallet, so the TransactionController can emit events to the wallet messenger during initialization', () => {
+    const messenger = createMockMessenger();
+    const state = { KeyringController: { vault: 'encrypted-vault-blob' } };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger,
+      platform,
+      state,
+    });
+
+    const setupListenersCallOrder = jest.mocked(
+      setupTransactionControllerListeners,
+    ).mock.invocationCallOrder[0];
+    const walletConstructorCallOrder = MockWallet.mock.invocationCallOrder[0];
+
+    expect(setupListenersCallOrder).toBeLessThan(walletConstructorCallOrder);
+  });
 });
 
 describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
@@ -277,6 +355,7 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       // `useExternalServices` is absent, so it defaults to on, matching the
       // live `PreferencesController` default.
       preferencesState: { useExternalServices: true },
+      authenticationState: { srpSessionData: undefined },
     });
   });
 
@@ -296,6 +375,29 @@ describe('initializeWallet — RemoteFeatureFlagController toggle', () => {
       expect.objectContaining({
         onboardingState: { completedOnboarding: false },
         preferencesState: { useExternalServices: false },
+      }),
+    );
+  });
+
+  it('seeds the canonical-id comparison from persisted AuthenticationController state', () => {
+    const srpSessionData = {
+      'srp-1': { profile: { canonicalProfileId: 'canonical-id' } },
+    };
+
+    initializeWallet({
+      connectivityAdapter,
+      getFlatState,
+      getPermittedAccounts,
+      getTransactionMetricsRequest,
+      infuraProjectId: 'fake-infura-project-id',
+      messenger: createMockMessenger(),
+      platform,
+      state: { AuthenticationController: { srpSessionData } },
+    });
+
+    expect(mockSetupToggle).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authenticationState: { srpSessionData },
       }),
     );
   });
