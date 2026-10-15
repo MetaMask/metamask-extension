@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import DappBarNetworkSelectorPopover from '../../page-objects/pages/dialog/dapp-bar-network-selector-popover';
 import { login } from '../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Deprecated networks', function (this: Suite) {

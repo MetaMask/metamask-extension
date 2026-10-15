@@ -1,1 +1,5 @@
-export { default as PerpsMarketBalanceActions } from './perps-market-balance-actions';
+export {
+  default as PerpsMarketBalanceActions,
+  invokePerpsBalanceAction,
+  type PerpsBalanceActionHandler,
+} from './perps-market-balance-actions';

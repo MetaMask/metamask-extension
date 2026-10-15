@@ -1097,6 +1097,40 @@ class TestDapp {
   }
 
   /**
+   * Asks the wallet to watch an ERC-20 token (EIP-747). Does not wait for the
+   * request to settle, so the caller can handle the resulting confirmation.
+   *
+   * @param options - The ERC-20 asset to watch.
+   * @param options.address - The token contract address.
+   * @param options.decimals - The number of token decimals.
+   * @param options.symbol - The token symbol.
+   */
+  async requestWatchErc20Asset({
+    address,
+    decimals,
+    symbol,
+  }: {
+    address: string;
+    decimals: number;
+    symbol: string;
+  }): Promise<void> {
+    console.log(`Request wallet_watchAsset for ${symbol} at ${address}`);
+    await this.driver.executeScript(`
+      window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: '${address}',
+            symbol: '${symbol}',
+            decimals: ${decimals}
+          },
+        }
+      })
+    `);
+  }
+
+  /**
    * Click permit sign button in test dapp.
    * Note: Dialog handling should be done separately in test files.
    */

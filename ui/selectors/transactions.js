@@ -442,14 +442,19 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
   transactions.forEach((transaction) => {
     const {
       networkClientId,
-      txParams: { nonce } = {},
+      txParams: { nonce, from } = {},
       status,
       type,
       time: txTime,
       txReceipt,
     } = transaction;
 
-    const nonceNetworkKey = `${nonce}-${networkClientId}`;
+    // Nonce spaces are per sender. Include `from` so mixing accounts (e.g.
+    // selected account + money-account batches) cannot collapse unrelated
+    // transactions that share a nonce on the same network client.
+    const nonceNetworkKey = `${nonce}-${networkClientId}-${(
+      from ?? ''
+    ).toLowerCase()}`;
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined
     // 2. Tx is incoming (deposit)

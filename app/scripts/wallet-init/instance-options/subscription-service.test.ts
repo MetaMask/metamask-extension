@@ -11,9 +11,13 @@ describe('getSubscriptionServiceInstanceOptions', () => {
       subscriptionEnv: Env.UAT,
     } as ReturnType<typeof loadShieldConfig>);
 
-    expect(getSubscriptionServiceInstanceOptions()).toStrictEqual({
+    const options = getSubscriptionServiceInstanceOptions();
+
+    expect(options).toStrictEqual({
       env: Env.UAT,
       captureException,
+      fetchFunction: expect.any(Function),
     });
+    expect(options.fetchFunction).not.toBe(globalThis.fetch);
   });
 });

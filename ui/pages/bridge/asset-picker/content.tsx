@@ -21,7 +21,6 @@ import {
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import { getIsNetworkManagementEnabled } from '../../../selectors/multichain/feature-flags';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
@@ -79,14 +78,10 @@ export const BridgeAssetPickerContent = forwardRef<
     );
 
     const t = useI18nContext();
-    const isNetworkManagementEnabled = useSelector(
-      getIsNetworkManagementEnabled,
-    );
     const { isStockToken, isTokenTradingOpen } = useRWAToken();
     const [showMarketClosedModal, setShowMarketClosedModal] = useState(false);
     const closeFromMarketCloseRef = useRef(false);
 
-    const networkPickerButtonRef = useRef<HTMLButtonElement>(null);
     const [isNetworkPickerOpen, setIsNetworkPickerOpen] = useState(false);
     // Mirrors `isNetworkPickerOpen` for the asset picker's outside-click handler.
     // `ModalContent` registers its document `mousedown` listener once on mount,
@@ -117,7 +112,7 @@ export const BridgeAssetPickerContent = forwardRef<
     }, [chainIdsList]);
 
     const selectedNetworkName = selectedChainId
-      ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
+      ? `${t('network')}: ${NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]}`
       : t('allNetworks');
 
     const [searchQuery, setSearchQuery] = useState<string>('');
@@ -178,7 +173,6 @@ export const BridgeAssetPickerContent = forwardRef<
             />
           </Box>
           <ButtonBase
-            ref={networkPickerButtonRef}
             onClick={() =>
               isNetworkPickerOpen
                 ? setIsNetworkPickerOpen(false)
@@ -188,7 +182,7 @@ export const BridgeAssetPickerContent = forwardRef<
             size={ButtonBaseSize.Sm}
             startIconName={IconName.Filter}
             startIconProps={{ size: IconSize.Md }}
-            className={`mx-4 w-max rounded-lg border border-muted bg-default px-2 hover:bg-hover active:bg-pressed ${
+            className={`mx-4 w-max border border-muted bg-default hover:bg-hover active:bg-pressed ${
               selectedChainId ? 'text-primary-default' : 'text-default'
             }`}
           >
@@ -206,11 +200,6 @@ export const BridgeAssetPickerContent = forwardRef<
             </Text>
           </ButtonBase>
           <NetworkPicker
-            buttonElement={
-              isNetworkManagementEnabled
-                ? undefined
-                : networkPickerButtonRef.current
-            }
             isOpen={isNetworkPickerOpen}
             chains={chains}
             selectedChainId={selectedChainId}
@@ -224,28 +213,26 @@ export const BridgeAssetPickerContent = forwardRef<
           />
         </div>
 
-        {isNetworkManagementEnabled || !isNetworkPickerOpen ? (
-          <BridgeAssetList
-            accountGroupId={accountGroup?.id}
-            chainIds={chainIdsSet}
-            searchQuery={searchQuery.trim()}
-            selectedAssetId={selectedAsset.assetId}
-            onAssetChange={(asset: BridgeToken) => {
-              if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
-                closeFromMarketCloseRef.current = true;
-                setShowMarketClosedModal(true);
-                return;
-              }
-              closeFromMarketCloseRef.current = false;
-              onAssetChange(asset);
-              if (selectedChainId === asset.chainId) {
-                setPersistedChainId(selectedChainId);
-              }
-              handleClose();
-            }}
-            {...assetListProps}
-          />
-        ) : null}
+        <BridgeAssetList
+          accountGroupId={accountGroup?.id}
+          chainIds={chainIdsSet}
+          searchQuery={searchQuery.trim()}
+          selectedAssetId={selectedAsset.assetId}
+          onAssetChange={(asset: BridgeToken) => {
+            if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
+              closeFromMarketCloseRef.current = true;
+              setShowMarketClosedModal(true);
+              return;
+            }
+            closeFromMarketCloseRef.current = false;
+            onAssetChange(asset);
+            if (selectedChainId === asset.chainId) {
+              setPersistedChainId(selectedChainId);
+            }
+            handleClose();
+          }}
+          {...assetListProps}
+        />
         <MarketClosedModal
           isOpen={showMarketClosedModal}
           onClose={() => {

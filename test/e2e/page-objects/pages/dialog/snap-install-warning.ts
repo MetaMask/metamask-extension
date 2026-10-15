@@ -17,7 +17,9 @@ class SnapInstallWarning {
   private readonly buttonConfirm =
     '[data-testid="snap-install-warning-modal-confirm"]';
 
-  private readonly checkBoxPermission = '.mm-checkbox__input';
+  private readonly checkBoxPermission = {
+    testId: 'snap-install-warning-checkbox',
+  };
 
   private driver: Driver;
 

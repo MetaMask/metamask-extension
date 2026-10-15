@@ -119,6 +119,32 @@ class TransactionDetailsPage {
   async checkViewDetailsLink(): Promise<void> {
     await this.driver.waitForSelector(this.viewDetailsLink);
   }
+
+  /**
+   * Clicks the details back button and waits for the details route to close.
+   * The button can remain mounted during the route transition, so waiting for
+   * its WebDriver node to become stale is not reliable here.
+   */
+  async clickBackButton(): Promise<void> {
+    await this.driver.clickElement(this.backButton);
+    await this.waitForDetailsRouteToClose();
+  }
+
+  /**
+   * Clicks the details back button only when it is present, e.g. after a
+   * navigation may have already closed the details view.
+   */
+  async clickBackButtonIfPresent(): Promise<void> {
+    await this.driver.clickElementSafe(this.backButton, 1_000);
+    await this.waitForDetailsRouteToClose();
+  }
+
+  private async waitForDetailsRouteToClose(): Promise<void> {
+    await this.driver.waitUntil(
+      async () => !(await this.driver.getCurrentUrl()).includes('/tx/'),
+      { interval: 100, timeout: 10_000 },
+    );
+  }
 }
 
 export default TransactionDetailsPage;

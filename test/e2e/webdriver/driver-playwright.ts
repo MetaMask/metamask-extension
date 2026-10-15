@@ -93,6 +93,12 @@ function sanitizeTestTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9-_]/gu, '_');
 }
 
+const DOWNLOADS_FOLDER = path.join(
+  process.cwd(),
+  'test-artifacts',
+  'downloads',
+);
+
 /**
  * Wraps a Playwright `Locator` with the same surface as the Selenium-flavored
  * elements returned by `wrapElementWithAPI` in `webdriver/driver.js`. Page
@@ -285,6 +291,16 @@ export class PlaywrightDriver {
     this.handleCounter += 1;
     const handle = `pw-handle-${this.handleCounter}`;
     this.pages.set(handle, page);
+    page.on('download', (download) => {
+      download
+        .saveAs(path.join(DOWNLOADS_FOLDER, download.suggestedFilename()))
+        .catch((error) => {
+          console.error(
+            `PlaywrightDriver: failed to save download '${download.suggestedFilename()}'`,
+            error,
+          );
+        });
+    });
     page.on('close', () => {
       this.pages.delete(handle);
       if (this.currentPage === page) {
@@ -793,7 +809,6 @@ export class PlaywrightDriver {
 
   async findScrollToAndClickElement(rawLocator: RawLocator): Promise<void> {
     const locator = this.buildLocator(rawLocator).first();
-    await locator.scrollIntoViewIfNeeded();
     await locator.click();
   }
 
@@ -805,17 +820,20 @@ export class PlaywrightDriver {
     await element.locator.hover();
   }
 
-  async clickElementUsingMouseMove(_rawLocator: RawLocator): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.clickElementUsingMouseMove is not yet implemented.',
-    );
+  async clickElementUsingMouseMove(rawLocator: RawLocator): Promise<void> {
+    // `force: true`, which skips the receives-pointer-events actionability
+    // check while still waiting for the element to be visible and stable.
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click({ force: true, timeout: this.timeout });
   }
 
   async pasteIntoField(
-    _rawLocator: RawLocator,
-    _content: string,
+    rawLocator: RawLocator,
+    contentToPaste: string,
   ): Promise<void> {
-    throw new Error('PlaywrightDriver.pasteIntoField is not yet implemented.');
+    const locator = this.buildLocator(rawLocator).first();
+    await locator.click();
+    await this.page.keyboard.insertText(contentToPaste);
   }
 
   async holdMouseDownOnElement(
@@ -879,9 +897,10 @@ export class PlaywrightDriver {
 
   async openNewPage(url: string): Promise<string> {
     const page = await this.context.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
     this.currentPage = page;
-    return this.handleFor(page);
+    const handle = this.handleFor(page);
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+    return handle;
   }
 
   async openNewURL(url: string): Promise<void> {
@@ -890,6 +909,28 @@ export class PlaywrightDriver {
 
   async getCurrentUrl(): Promise<string> {
     return this.page.url();
+  }
+
+  /**
+   * Waits until the current page's URL equals the given URL. Mirrors the
+   * Selenium driver's `waitForUrl` (`until.urlIs`). Playwright treats a
+   * plain string (no glob characters) as an exact-match pattern.
+   *
+   * @param options - Parameters for the function.
+   * @param options.url - The URL to wait for.
+   * @param options.timeout - Optional timeout period, defaults to `this.timeout`.
+   */
+  async waitForUrl({
+    url,
+    timeout = this.timeout,
+  }: {
+    url: string;
+    timeout?: number;
+  }): Promise<void> {
+    await this.page.waitForURL((current) => current.href === url, {
+      timeout,
+      waitUntil: 'commit',
+    });
   }
 
   async refresh(): Promise<void> {
@@ -907,15 +948,26 @@ export class PlaywrightDriver {
   }
 
   // -- Window / tab management ---------------------------------------------
-
-  async getAllWindowHandles(): Promise<string[]> {
-    throw new Error(
-      'PlaywrightDriver.getAllWindowHandles is not yet implemented.',
-    );
+  async getCurrentWindowHandle(): Promise<string> {
+    return this.handleFor(this.page);
   }
 
-  async switchToWindow(_handle: string): Promise<void> {
-    throw new Error('PlaywrightDriver.switchToWindow is not yet implemented.');
+  async getAllWindowHandles(): Promise<string[]> {
+    for (const page of this.context.pages()) {
+      this.registerPage(page);
+    }
+    return [...this.pages.keys()];
+  }
+
+  async switchToWindow(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page || page.isClosed()) {
+      throw new Error(
+        `PlaywrightDriver.switchToWindow: no open window with handle '${handle}'`,
+      );
+    }
+    this.currentPage = page;
+    await page.bringToFront();
   }
 
   async switchToNewWindow(): Promise<void> {
@@ -960,10 +1012,14 @@ export class PlaywrightDriver {
     throw new Error('PlaywrightDriver.closeWindow is not yet implemented.');
   }
 
-  async closeWindowHandle(_handle: string): Promise<void> {
-    throw new Error(
-      'PlaywrightDriver.closeWindowHandle is not yet implemented.',
-    );
+  async closeWindowHandle(handle: string): Promise<void> {
+    const page = this.pages.get(handle);
+    if (!page) {
+      throw new Error(
+        `PlaywrightDriver.closeWindowHandle: no window with handle '${handle}'`,
+      );
+    }
+    await page.close();
   }
 
   async switchToFrame(frame: PlaywrightElement | string): Promise<void> {

@@ -11,8 +11,10 @@ import swapsReducer from './swaps/swaps';
 import bridgeReducer from './bridge/bridge';
 import historyReducer from './history/history';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
+import sendMaxValueReducer from './send-max-value/send-max-value';
 import smartAccountsReducer from './smart-accounts/smart-accounts';
 import rewardsReducer from './rewards';
+import moneyBalanceReducer from './money-balance';
 import { perpsTutorialReducer } from './perps';
 
 export default combineReducers({
@@ -24,6 +26,7 @@ export default combineReducers({
   DNS: domainReducer,
   history: historyReducer,
   confirmAlerts: confirmAlertsReducer,
+  sendMaxValue: sendMaxValueReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,
   bridge: bridgeReducer,
@@ -32,4 +35,5 @@ export default combineReducers({
   smartAccounts: smartAccountsReducer,
   rewards: rewardsReducer,
   perpsTutorial: perpsTutorialReducer,
+  moneyBalance: moneyBalanceReducer,
 });

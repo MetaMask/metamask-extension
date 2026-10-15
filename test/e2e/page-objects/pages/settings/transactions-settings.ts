@@ -21,13 +21,20 @@ export default class TransactionsSettingsPage {
 
   private readonly securityAlertSection = '[data-testid="securityAlert"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check transactions settings page is loaded');
-    await this.driver.waitForSelector(this.hexDataToggle);
+    await this.driver.waitForMultipleSelectors([
+      this.hexDataToggle,
+      this.settingsPage,
+    ]);
   }
 
   async toggleOnHexData(): Promise<void> {

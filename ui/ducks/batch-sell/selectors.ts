@@ -41,6 +41,7 @@ import {
   BATCH_SELL_SUPPORTED_CHAIN_IDS,
   ONDO_TOKENIZED_TOKEN_NAME,
 } from '../../../shared/constants/batch-sell';
+import { BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE } from '../../../shared/constants/bridge';
 import { isStockRWAToken } from '../../pages/bridge/hooks/useRWAToken';
 import { BatchSellAsset } from './types';
 
@@ -338,6 +339,7 @@ export const getBatchSellQuotes = createSelector(
       sortOrder,
       requestCount,
       selectedQuote,
+      migrationPhase: BRIDGE_QUOTE_RESPONSE_MIGRATION_PHASE,
     });
   },
 );
@@ -357,19 +359,20 @@ export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
     getPriceImpactThresholds,
     (state: BridgeAppState) => isHardwareWallet(state),
     ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
+      metamask.minimumBalanceForRentExemptionInLamports,
   ],
   (
     { recommendedQuotes },
     priceImpactThresholds,
     isHardwareWalletAccount,
-    minimumBalanceForRentExemptionInSOL,
+    minimumBalanceForRentExemptionInLamports,
   ): QuoteValidationErrors[] =>
     recommendedQuotes.map((quote) =>
       computeQuoteValidationErrors(quote, {
         priceImpactThresholds,
         isHardwareWalletAccount,
-        minimumBalanceForRentExemptionInSOL,
+        minimumBalanceForRentExemptionInLamports,
+        balances: {},
       }),
     ),
 );

@@ -101,7 +101,7 @@ async function mockChain1337(mockServer: Mockttp) {
       .always()
       .thenJson(200, {
         fullSupport: [],
-        partialSupport: { balances: [] },
+        partialSupport: [],
       }),
     await mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
@@ -121,25 +121,6 @@ async function mockChain1337(mockServer: Mockttp) {
         }
 
         return { statusCode: 200, json: { data: results } };
-      }),
-  ];
-}
-
-async function mockDisabledWebsocketBalance(mockServer: Mockttp) {
-  return [
-    ...(await mockChain1337(mockServer)),
-    await mockServer
-      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-      .always()
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [
-            {
-              backendWebSocketConnection: false,
-            },
-          ],
-        };
       }),
   ];
 }
@@ -294,13 +275,12 @@ describe('Account Activity WebSocket Balance Resilience', function (this: Suite)
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        // At the moment, setting this flag has no effect because of this issue #42049, so we need to mock the request
         manifestFlags: {
           remoteFeatureFlags: {
             backendWebSocketConnection: { value: false },
           },
         },
-        testSpecificMock: mockDisabledWebsocketBalance,
+        testSpecificMock: mockChain1337,
       },
       async ({
         driver,

@@ -131,7 +131,9 @@ function withRequest<ReturnValue>(
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
     tradeTxFees: {
-      cancelFees: [],
+      cancelFees: [
+        { maxFeePerGas: 25687273902, maxPriorityFeePerGas: 5706290472 },
+      ],
       feeEstimate: 42000000000000,
       fees: [{ maxFeePerGas: 12843636951, maxPriorityFeePerGas: 2853145236 }],
       gasLimit: 21000,
@@ -337,16 +339,18 @@ describe('submitSmartTransactionHook', () => {
         expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
           expect.objectContaining({
             signedTransactions: [request.signedTransactionInHex],
-            signedCanceledTransactions: [],
             txParams,
             transactionMeta: request.transactionMeta,
           }),
+        );
+        expect(submitSignedTransactionsSpy.mock.calls[0][0]).not.toHaveProperty(
+          'signedCanceledTransactions',
         );
       },
     );
   });
 
-  it('signs and submits a smart transaction', async () => {
+  it('signs and submits only the trade smart transaction', async () => {
     await withRequest(
       {
         options: {
@@ -386,13 +390,18 @@ describe('submitSmartTransactionHook', () => {
           ],
           { hasNonce: true },
         );
+        expect(
+          request.transactionController.approveTransactionsWithSameNonce,
+        ).toHaveBeenCalledTimes(1);
         expect(submitSignedTransactionsSpy).toHaveBeenCalledWith(
           expect.objectContaining({
             signedTransactions: [createSignedTransaction()],
-            signedCanceledTransactions: [],
             txParams,
             transactionMeta: request.transactionMeta,
           }),
+        );
+        expect(submitSignedTransactionsSpy.mock.calls[0][0]).not.toHaveProperty(
+          'signedCanceledTransactions',
         );
       },
     );
@@ -470,14 +479,14 @@ describe('submitBatchSmartTransactionHook', () => {
         },
       },
       async ({ request, messenger }) => {
-        request.smartTransactionsController.submitSignedTransactions = jest.fn(
-          async (_) => {
-            return {
-              uuid,
-              txHashes: ['hash1', 'hash2'],
-            };
-          },
-        );
+        const submitSignedTransactionsMock = jest.fn(async (_) => {
+          return {
+            uuid,
+            txHashes: ['hash1', 'hash2'],
+          };
+        });
+        request.smartTransactionsController.submitSignedTransactions =
+          submitSignedTransactionsMock;
 
         setImmediate(() => {
           messenger.publish('SmartTransactionsController:smartTransaction', {
@@ -502,12 +511,9 @@ describe('submitBatchSmartTransactionHook', () => {
           results: [{ transactionHash: 'hash1' }, { transactionHash: 'hash2' }],
         });
 
-        expect(
-          request.smartTransactionsController.submitSignedTransactions,
-        ).toHaveBeenCalledWith(
+        expect(submitSignedTransactionsMock).toHaveBeenCalledWith(
           expect.objectContaining({
             signedTransactions: ['0x1234', '0x5678'],
-            signedCanceledTransactions: [],
             ...(request.transactionMeta?.txParams && {
               txParams: request.transactionMeta.txParams,
             }),
@@ -516,6 +522,9 @@ describe('submitBatchSmartTransactionHook', () => {
             }),
           }),
         );
+        expect(submitSignedTransactionsMock).toHaveBeenCalledTimes(1);
+        const submitRequest = submitSignedTransactionsMock.mock.calls[0][0];
+        expect(submitRequest).not.toHaveProperty('signedCanceledTransactions');
       },
     );
   });

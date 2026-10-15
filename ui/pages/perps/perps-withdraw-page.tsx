@@ -570,7 +570,7 @@ const PerpsWithdrawPage = () => {
   const amountHasAlert = Boolean(validationMessage);
 
   return (
-    <Page data-testid="perps-withdraw-page">
+    <Page data-testid="parent-selector-perps-withdraw">
       <Box
         alignItems={BoxAlignItems.Center}
         className="bg-background-default"

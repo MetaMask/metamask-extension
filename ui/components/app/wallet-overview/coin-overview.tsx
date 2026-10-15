@@ -13,6 +13,7 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, Skeleton } from '@metamask/design-system-react';
+import { useCoordinatedTrace } from '#ui/hooks/useTraceCoordinator';
 import { ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -28,7 +29,7 @@ import { getMultichainAccountAddressListReceivePagePath } from '../../../pages/m
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { trace, TraceName } from '../../../../shared/lib/trace';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
@@ -36,7 +37,7 @@ import {
   getChainIdsToPoll,
   getDataCollectionForMarketing,
   getAnalyticsId,
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getOptedIn,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
@@ -211,13 +212,11 @@ export const CoinOverview = ({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   const analyticsId = useSelector(getAnalyticsId);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
   const isMetaMetricsEnabled = useMemo(
-    () => completedMetaMetricsOnboarding && isOptedIn,
-    [completedMetaMetricsOnboarding, isOptedIn],
+    () => consentDecisionMade && isOptedIn,
+    [consentDecisionMade, isOptedIn],
   );
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
@@ -287,14 +286,28 @@ export const CoinOverview = ({
 
   const [hasZeroFiatBalanceDelayElapsed, setHasZeroFiatBalanceDelayElapsed] =
     useState(false);
+  const [prevDelayKey, setPrevDelayKey] = useState(enabledNetworksDelayKey);
+  const [prevShouldDelayZeroFiatBalance, setPrevShouldDelayZeroFiatBalance] =
+    useState(shouldDelayZeroFiatBalance);
+
+  if (
+    enabledNetworksDelayKey !== prevDelayKey ||
+    shouldDelayZeroFiatBalance !== prevShouldDelayZeroFiatBalance
+  ) {
+    setPrevDelayKey(enabledNetworksDelayKey);
+    setPrevShouldDelayZeroFiatBalance(shouldDelayZeroFiatBalance);
+    setHasZeroFiatBalanceDelayElapsed(false);
+  }
+
+  const isZeroFiatBalanceDelayStateCurrent =
+    enabledNetworksDelayKey === prevDelayKey &&
+    shouldDelayZeroFiatBalance === prevShouldDelayZeroFiatBalance;
 
   useEffect(() => {
     if (!shouldDelayZeroFiatBalance) {
-      setHasZeroFiatBalanceDelayElapsed(false);
       return undefined;
     }
 
-    setHasZeroFiatBalanceDelayElapsed(false);
     const timeoutId = setTimeout(() => {
       setHasZeroFiatBalanceDelayElapsed(true);
     }, ZERO_FIAT_BALANCE_DELAY_MS);
@@ -305,13 +318,16 @@ export const CoinOverview = ({
   const shouldShowBalanceLoadingState = useMemo(
     () =>
       isEvm &&
-      ((shouldDelayZeroFiatBalance && !hasZeroFiatBalanceDelayElapsed) ||
+      ((shouldDelayZeroFiatBalance &&
+        (!isZeroFiatBalanceDelayStateCurrent ||
+          !hasZeroFiatBalanceDelayElapsed)) ||
         (shouldCheckBalanceState &&
           !hasBalance &&
           (balanceIsLoading || !balanceIsLoaded))),
     [
       isEvm,
       shouldDelayZeroFiatBalance,
+      isZeroFiatBalanceDelayStateCurrent,
       hasZeroFiatBalanceDelayElapsed,
       shouldCheckBalanceState,
       hasBalance,
@@ -328,6 +344,19 @@ export const CoinOverview = ({
       !shouldShowBalanceLoadingState,
     [isEvm, shouldCheckBalanceState, hasBalance, shouldShowBalanceLoadingState],
   );
+  const balanceReady = !shouldShowBalanceLoadingState;
+
+  useCoordinatedTrace({
+    name: TraceName.HomepageSectionTimeToContent,
+    op: TraceOperation.HomepageSectionPerformance,
+    generationKey: `${selectedAccountGroup ?? 'none'}:${enabledNetworksDelayKey}`,
+    ready: balanceReady,
+    sectionId: 'balance',
+    data: {
+      success: true,
+      contentState: shouldShowBalanceEmptyState ? 'empty' : 'filled',
+    },
+  });
 
   const handleSensitiveToggle = useCallback(() => {
     dispatch(setPrivacyMode(!privacyMode));

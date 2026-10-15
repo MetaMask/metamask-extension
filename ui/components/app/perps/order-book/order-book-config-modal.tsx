@@ -44,9 +44,10 @@ import type {
 
 const PILL_BASE_CLASS =
   'flex items-center justify-center rounded-full py-3 px-4 cursor-pointer transition-colors duration-150 border';
-const PILL_SELECTED_CLASS = 'bg-transparent border-muted';
+
+const PILL_SELECTED_CLASS = 'bg-muted border-transparent';
 const PILL_UNSELECTED_CLASS =
-  'bg-muted border-transparent hover:bg-muted-hover';
+  'bg-transparent border-muted hover:bg-muted-hover';
 
 type PillProps = {
   label: string;

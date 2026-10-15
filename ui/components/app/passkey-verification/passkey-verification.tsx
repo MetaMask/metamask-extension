@@ -15,7 +15,6 @@ import { createSentryError } from '../../../../shared/lib/error';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   getPasskeyAuthMethodKey,
-  startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
@@ -23,8 +22,8 @@ import {
 } from '../../../../shared/lib/passkey';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { generatePasskeyAuthenticationOptions } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePasskeyAuthentication } from '../../../hooks/passkey/usePasskeyAuthentication';
 import Spinner from '../../ui/spinner';
 import { toast, ToastContent } from '../../ui/toast/toast';
 import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
@@ -39,6 +38,7 @@ export type RunPasskeyVerificationCeremonyOptions = {
   t: ReturnType<typeof useI18nContext>;
   showErrorToast?: boolean;
   toastDurationMs?: number;
+  authenticateWithPasskey: () => Promise<PasskeyAuthenticationResponse>;
 };
 
 /**
@@ -50,6 +50,7 @@ export type RunPasskeyVerificationCeremonyOptions = {
  * @param options.t
  * @param options.showErrorToast
  * @param options.toastDurationMs
+ * @param options.authenticateWithPasskey
  * @returns The authentication response, or null when cancelled or failed.
  */
 export async function runPasskeyVerificationCeremony({
@@ -58,10 +59,10 @@ export async function runPasskeyVerificationCeremony({
   t,
   showErrorToast = true,
   toastDurationMs,
+  authenticateWithPasskey,
 }: RunPasskeyVerificationCeremonyOptions): Promise<PasskeyAuthenticationResponse | null> {
   try {
-    const authOptions = await generatePasskeyAuthenticationOptions();
-    return await startPasskeyAuthentication(authOptions);
+    return await authenticateWithPasskey();
   } catch (error: unknown) {
     if (isPasskeyCeremonySilentError(error)) {
       log.debug(`${sentryContext} cancelled or timed out`, error);
@@ -114,6 +115,7 @@ export function PasskeyVerification({
   toastDurationMs,
 }: PasskeyVerificationProps) {
   const t = useI18nContext();
+  const authenticateWithPasskey = usePasskeyAuthentication();
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const [isVerifying, setIsVerifying] = useState(false);
@@ -129,11 +131,19 @@ export function PasskeyVerification({
         t,
         showErrorToast,
         toastDurationMs,
+        authenticateWithPasskey,
       });
     } finally {
       setIsVerifying(false);
     }
-  }, [sentryContext, passkeyMethodLabel, t, showErrorToast, toastDurationMs]);
+  }, [
+    authenticateWithPasskey,
+    sentryContext,
+    passkeyMethodLabel,
+    t,
+    showErrorToast,
+    toastDurationMs,
+  ]);
 
   useEffect(() => {
     if (!autoRunOnMount || deferToBrowserTab) {

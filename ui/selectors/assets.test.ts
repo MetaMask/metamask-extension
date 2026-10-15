@@ -1,5 +1,6 @@
 import {
   EthScope,
+  SolAccountType,
   SolScope,
   XlmAccountType,
   XlmScope,
@@ -10,15 +11,12 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import { cloneDeep } from 'lodash';
 import {
   calculateBalanceForAllWallets,
-  calculateBalanceChangeForAllWallets,
   selectAllAssets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import type {
-  AccountGroupAssets,
-  BalanceChangeResult,
-} from '@metamask/assets-controllers';
+import type { AccountGroupAssets } from '@metamask/assets-controllers';
 import type { MetaMaskReduxState } from '../store/store';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
   AssetsRatesState,
   AssetsState,
@@ -26,6 +24,7 @@ import {
   getAssetsInfo,
   getAssetsMetadata,
   getAssetsBalance,
+  selectIsAssetInAssetsBalance,
   getAssetsPrice,
   getAssetPreferences,
   getCustomAssets,
@@ -215,6 +214,137 @@ describe('getAssetsBalance', () => {
     expect(
       getAssetsBalance({ metamask: {} } as AssetSelectorTestState),
     ).toEqual({});
+  });
+});
+
+describe('selectIsAssetInAssetsBalance', () => {
+  const evmAccountId = 'evm-account-id';
+  const solanaAccountId = 'solana-account-id';
+  const otherGroupAccountId = 'other-group-account-id';
+  const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+  const groupId = `${walletId}/0`;
+  const assetId = 'eip155:1/erc20:0xabc' as CaipAssetType;
+  const solanaAssetId =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:abc' as CaipAssetType;
+
+  const evmAccount = createMockInternalAccount({
+    id: evmAccountId,
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    name: 'Test Account',
+  });
+  const solanaAccount = createMockInternalAccount({
+    id: solanaAccountId,
+    address: '7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV',
+    type: SolAccountType.DataAccount,
+    name: 'Test Solana Account',
+  });
+  const otherGroupAccount = createMockInternalAccount({
+    id: otherGroupAccountId,
+    address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+    name: 'Other Account',
+  });
+
+  const buildState = ({
+    assetsBalance = {},
+    selectedAccountGroup = groupId,
+  }: {
+    assetsBalance?: Record<string, unknown>;
+    selectedAccountGroup?: string | null;
+  }): AssetSelectorTestState => ({
+    metamask: {
+      selectedAccountGroup,
+      accountTree: {
+        wallets: {
+          [walletId]: {
+            id: walletId,
+            type: 'entropy',
+            groups: {
+              [groupId]: {
+                id: groupId,
+                type: 'multichain-account',
+                // The selected group holds both accounts; the third account
+                // below belongs to another group.
+                accounts: [evmAccountId, solanaAccountId],
+                metadata: { name: 'Account 1' },
+              },
+            },
+            metadata: { name: 'Wallet 1' },
+          },
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          [evmAccountId]: evmAccount,
+          [solanaAccountId]: solanaAccount,
+          [otherGroupAccountId]: otherGroupAccount,
+        },
+        selectedAccount: evmAccountId,
+      },
+      assetsBalance,
+    },
+  });
+
+  it('returns true when an account in the selected group holds the asset', () => {
+    const state = buildState({
+      assetsBalance: { [evmAccountId]: { [assetId]: { amount: '1' } } },
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(true);
+  });
+
+  it('returns true when a non-selected account in the group holds the asset', () => {
+    const state = buildState({
+      assetsBalance: {
+        [solanaAccountId]: { [solanaAssetId]: { amount: '1' } },
+      },
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, solanaAssetId)).toBe(true);
+  });
+
+  it('returns true when the asset reference casing differs', () => {
+    const state = buildState({
+      assetsBalance: {
+        [evmAccountId]: { 'eip155:1/erc20:0xABC': { amount: '1' } },
+      },
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(true);
+  });
+
+  it('returns false when no account in the group holds the asset', () => {
+    const state = buildState({
+      assetsBalance: {
+        [evmAccountId]: { 'eip155:1/erc20:0xdef': { amount: '1' } },
+      },
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(false);
+  });
+
+  it('returns false when the group accounts have no assetsBalance entry', () => {
+    const state = buildState({ assetsBalance: {} });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(false);
+  });
+
+  it('returns false when only an account outside the group holds the asset', () => {
+    const state = buildState({
+      assetsBalance: {
+        [otherGroupAccountId]: { [assetId]: { amount: '1' } },
+      },
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(false);
+  });
+
+  it('returns false when there is no selected account group', () => {
+    const state = buildState({
+      assetsBalance: { [evmAccountId]: { [assetId]: { amount: '1' } } },
+      selectedAccountGroup: null,
+    });
+
+    expect(selectIsAssetInAssetsBalance(state, assetId)).toBe(false);
   });
 });
 

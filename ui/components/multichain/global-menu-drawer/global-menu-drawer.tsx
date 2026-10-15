@@ -6,9 +6,7 @@ import {
   BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
-  IconColor,
   IconName,
-  usePureBlack,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
@@ -90,15 +88,13 @@ export const GlobalMenuDrawer = ({
   'data-testid': dataTestId,
 }: GlobalMenuDrawerProps) => {
   const t = useI18nContext();
-  // TODO: @metamask/design-system-engineers remove isPureBlack once pure black is shipped targeted(13.43.0)
-  const isPureBlack = usePureBlack();
   const environmentType = getEnvironmentType();
   const isFullscreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  // TODO: @metamask/design-system-engineers remove once pure black is shipped targeted(13.43.0)
   const isLargeDrawer = isFullscreen || isSidepanel;
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
@@ -114,6 +110,9 @@ export const GlobalMenuDrawer = ({
           // jsdom does not implement HTMLDialogElement.showModal
           dialog.setAttribute('open', '');
         }
+      }
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0;
       }
       return;
     }
@@ -157,10 +156,10 @@ export const GlobalMenuDrawer = ({
 
   const panel = (
     <Box
-      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isPureBlack && isLargeDrawer ? ' border-l border-muted' : ''}`}
+      className={`h-full min-h-0 flex flex-col overflow-hidden shadow-[var(--shadow-size-lg)_var(--color-shadow-default)]${isLargeDrawer ? ' border-l border-alternative' : ''}`}
       backgroundColor={
-        isPureBlack && isLargeDrawer
-          ? BoxBackgroundColor.BackgroundAlternative
+        isLargeDrawer
+          ? BoxBackgroundColor.BackgroundElevated1
           : BoxBackgroundColor.BackgroundDefault
       }
     >
@@ -172,8 +171,6 @@ export const GlobalMenuDrawer = ({
             ariaLabel={title || t('close')}
             onClick={requestClose}
             data-testid="drawer-close-button"
-            className="text-icon-alternative"
-            iconProps={{ color: IconColor.IconAlternative }}
           />
           {title && (
             <span className="sr-only" id={titleId}>
@@ -184,6 +181,7 @@ export const GlobalMenuDrawer = ({
       )}
 
       <Box
+        ref={scrollRef}
         flexDirection={BoxFlexDirection.Column}
         className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden pb-6"
       >

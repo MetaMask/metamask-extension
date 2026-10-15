@@ -9,6 +9,7 @@ import {
   selectTransactionPaymentTokenByTransactionId,
   selectTransactionPaySourceAmountsByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayAccountOverrideByTransactionId,
   selectPaymentOverrideByTransactionId,
   TransactionPayState,
@@ -253,6 +254,30 @@ describe('transactionPayController selectors', () => {
       const state = createMockState();
 
       const result = selectTransactionPayIsMaxAmountByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('selectTransactionPayIsPostQuoteByTransactionId', () => {
+    it('returns true when isPostQuote is true', () => {
+      const state = createMockState({ isPostQuote: true });
+
+      const result = selectTransactionPayIsPostQuoteByTransactionId(
+        state,
+        TRANSACTION_ID,
+      );
+
+      expect(result).toBe(true);
+    });
+
+    it('returns false when isPostQuote is absent', () => {
+      const state = createMockState();
+
+      const result = selectTransactionPayIsPostQuoteByTransactionId(
         state,
         TRANSACTION_ID,
       );
