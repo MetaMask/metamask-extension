@@ -1100,7 +1100,6 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch.bind": true,
         "performance.now": true,
         "performance.timeOrigin": true,
         "setInterval": true,
@@ -1161,7 +1160,7 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
-        "immer": true,
+        "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
@@ -1668,6 +1667,23 @@
       }
     },
     "@metamask/sentinel-api-service>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/assets-controller>lodash-es": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -3013,6 +3029,18 @@
         "@metamask/profile-metrics-controller>@metamask/polling-controller>uuid": true
       }
     },
+    "@metamask/smart-transactions-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -3295,14 +3323,14 @@
         "@ethersproject/bytes": true,
         "ethers>@ethersproject/keccak256": true,
         "@ethersproject/transactions": true,
-        "@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/polling-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "lodash": true,
+        "@metamask/assets-controller>lodash-es": true,
         "reselect": true
       }
     },
@@ -6133,6 +6161,11 @@
       },
       "packages": {
         "eth-ens-namehash>idna-uts46-hx>punycode": true
+      }
+    },
+    "@metamask/assets-controllers>immer": {
+      "globals": {
+        "Iterator": true
       }
     },
     "string.prototype.matchall>internal-slot": {

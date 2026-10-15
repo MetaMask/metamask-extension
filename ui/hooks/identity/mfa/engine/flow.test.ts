@@ -173,7 +173,9 @@ describe('createMfaFlow', () => {
 
     expect(flow.getState().step).toStrictEqual({
       name: 'intro',
+      methods: ['email_otp'],
       missing: ['email_otp'],
+      email: undefined,
     });
 
     await act(flow, { type: 'continue' });
@@ -203,9 +205,8 @@ describe('createMfaFlow', () => {
       reason: { operation: 'vba.activate' },
     });
     expect(fake.controller.beginCredentialVerification).not.toHaveBeenCalled();
-    expect(flow.getState().step).toStrictEqual({ name: 'success' });
+    await expect(flow.result).resolves.toBeDefined();
 
-    await act(flow, { type: 'dismiss' });
     expect(await outcome).toMatchObject({
       ok: true,
       value: { token: buildToken('email_otp') },
@@ -237,7 +238,7 @@ describe('createMfaFlow', () => {
     });
 
     await act(flow, { type: 'submitCode', code: '222222' });
-    expect(flow.getState().step).toStrictEqual({ name: 'success' });
+    await expect(flow.result).resolves.toBeDefined();
   });
 
   describe('Kalshi: email and passkey set up, verified with the passkey', () => {
@@ -260,19 +261,20 @@ describe('createMfaFlow', () => {
 
       expect(flow.getState().step).toStrictEqual({
         name: 'intro',
+        methods: ['email_otp', 'passkey'],
         missing: ['email_otp', 'passkey'],
+        email: undefined,
       });
       await act(flow, { type: 'continue' });
       await act(flow, { type: 'submitEmail', email: 'new@b.co' });
       await act(flow, { type: 'submitCode', code: '111111' });
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
       expect(adapter.create).toHaveBeenCalledTimes(1);
       expect(adapter.get).not.toHaveBeenCalled();
       expect(
         fake.controller.beginCredentialVerification,
       ).not.toHaveBeenCalled();
 
-      await act(flow, { type: 'dismiss' });
       expect(await outcome).toMatchObject({
         ok: true,
         value: { token: buildToken('passkey') },
@@ -288,7 +290,9 @@ describe('createMfaFlow', () => {
 
       expect(flow.getState().step).toStrictEqual({
         name: 'intro',
+        methods: ['email_otp', 'passkey'],
         missing: ['passkey'],
+        email: undefined,
       });
       await act(flow, { type: 'continue' });
       expect(flow.getState().step).toMatchObject({
@@ -297,17 +301,30 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'submitCode', code: '123456' });
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
       expect(fake.controller.beginCredentialVerification).toHaveBeenCalledTimes(
         1,
       );
       expect(adapter.create).toHaveBeenCalledTimes(1);
       expect(adapter.get).not.toHaveBeenCalled();
 
-      await act(flow, { type: 'dismiss' });
       expect(await outcome).toMatchObject({
         ok: true,
         value: { token: buildToken('passkey') },
+      });
+    });
+
+    it('lists the email already set up, with its address, on the intro', async () => {
+      const fake = createFakeController([activeEmail]);
+      const { flow } = await startFlow(KALSHI, fake.controller, {
+        passkey: createPasskeyAdapter(),
+      });
+
+      expect(flow.getState().step).toStrictEqual({
+        name: 'intro',
+        methods: ['email_otp', 'passkey'],
+        missing: ['passkey'],
+        email: 'a@b.co',
       });
     });
 
@@ -352,7 +369,6 @@ describe('createMfaFlow', () => {
     });
 
     await act(flow, { type: 'submitCode', code: '123456' });
-    await act(flow, { type: 'dismiss' });
     expect((await outcome).ok).toBe(true);
   });
 
@@ -368,7 +384,6 @@ describe('createMfaFlow', () => {
     await act(flow, { type: 'submitCode', code: '111111' });
     expect(fake.controller.beginCredentialVerification).not.toHaveBeenCalled();
 
-    await act(flow, { type: 'dismiss' });
     expect(await outcome).toStrictEqual({
       ok: true,
       value: { credentials: [{ ...activeEmail, email: 'new@b.co' }] },
@@ -416,7 +431,7 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'submitCode', code: '123456' });
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
     });
 
     it('shows a countdown when a code was sent less than a minute ago', async () => {
@@ -567,7 +582,7 @@ describe('createMfaFlow', () => {
       });
 
       await act(flow, { type: 'retry' });
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
     });
 
     it('treats a network error without a code as temporary', async () => {
@@ -680,7 +695,7 @@ describe('createMfaFlow', () => {
     expect((await outcome).ok).toBe(false);
   });
 
-  it('resolves when the host cancels on the success screen', async () => {
+  it('resolves as soon as the last step succeeds, with no screen after it', async () => {
     const fake = createFakeController([activeEmail]);
     const { flow, outcome } = await startFlow(EMAIL_ONLY, fake.controller);
 
@@ -758,9 +773,8 @@ describe('createMfaFlow', () => {
       expect(
         fake.controller.beginCredentialVerification,
       ).not.toHaveBeenCalled();
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
 
-      await act(flow, { type: 'dismiss' });
       expect(await outcome).toMatchObject({ ok: true });
     });
   });
@@ -778,9 +792,8 @@ describe('createMfaFlow', () => {
       expect(
         fake.controller.beginCredentialVerification,
       ).not.toHaveBeenCalled();
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
 
-      await act(flow, { type: 'dismiss' });
       expect(await outcome).toMatchObject({
         ok: true,
         value: { token: buildToken('passkey') },
@@ -826,7 +839,7 @@ describe('createMfaFlow', () => {
 
       await act(flow, { type: 'continue' });
       expect(passkeyAdapter.get).toHaveBeenCalledTimes(2);
-      expect(flow.getState().step).toStrictEqual({ name: 'success' });
+      await expect(flow.result).resolves.toBeDefined();
     });
   });
 
@@ -844,7 +857,7 @@ describe('createMfaFlow', () => {
     expect(
       fake.controller.completeCredentialVerification,
     ).toHaveBeenCalledTimes(1);
-    expect(flow.getState().step).toStrictEqual({ name: 'success' });
+    await expect(flow.result).resolves.toBeDefined();
   });
 
   it('does not offer a passkey to confirm with when the client has no passkey support', async () => {

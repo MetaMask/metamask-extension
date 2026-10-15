@@ -46,7 +46,7 @@ async function mockBtcSendLocalMocks(
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
     ...(await proxyBitcoinBlockchainCalls(mockServer, bitcoinNode)),
   ];

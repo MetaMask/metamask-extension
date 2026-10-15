@@ -116,14 +116,22 @@ describe('Add existing token using search', function () {
   async function mockSupportedNetworks(
     mockServer: Mockttp,
   ): Promise<MockedEndpoint[]> {
+    const supportedNetworks = {
+      fullSupport: ['eip155:56'],
+    };
+
     return [
+      await mockServer
+        .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: supportedNetworks,
+        })),
       await mockServer
         .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
         .thenCallback(() => ({
           statusCode: 200,
-          json: {
-            fullSupport: ['eip155:56'],
-          },
+          json: supportedNetworks,
         })),
     ];
   }
