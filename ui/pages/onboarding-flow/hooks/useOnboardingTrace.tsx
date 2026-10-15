@@ -7,7 +7,9 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useLocation } from 'react-router-dom';
-import { submitRequestToBackground } from '../../../store/background-connection';
+import { useSelector } from 'react-redux';
+import { useMessenger } from '../../../hooks/useMessenger';
+import { getOnboardingTabId } from '../../../selectors/onboarding';
 import {
   OnboardingTraceContextProvider,
   type OnboardingTraceContextValue,
@@ -16,21 +18,9 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { TraceName } from '../../../../shared/lib/trace';
 import type {
   OnboardingJourneyTraceEndData,
-  OnboardingJourneyTraceEndRequest,
   OnboardingJourneyTraceRequest,
 } from '../../../../shared/types/onboarding';
-
-function callOnboardingTraceService<Response = void>(
-  method:
-    | 'startOnboardingJourney'
-    | 'updateOnboardingJourney'
-    | 'endOnboardingJourney',
-  request: OnboardingJourneyTraceRequest | OnboardingJourneyTraceEndRequest,
-): Promise<Response | undefined> {
-  return submitRequestToBackground<Response>(method, [request]).catch(
-    () => undefined,
-  );
-}
+import type { OnboardingTraceRouteMessenger } from '../messenger';
 
 /**
  * Converts an onboarding pathname into a stable, query-free step identifier.
@@ -52,6 +42,8 @@ export function getOnboardingTraceStep(pathname: string): string {
  */
 function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const { pathname } = useLocation();
+  const messenger = useMessenger<OnboardingTraceRouteMessenger>();
+  const tabId = useSelector(getOnboardingTabId);
   const { onboardingParentContext: onboardingParentContextRef } =
     useContext(MetaMetricsContext);
   const lastStepRef = useRef(getOnboardingTraceStep(pathname));
@@ -59,6 +51,13 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const hasEndedRef = useRef(false);
   const startJourneyPromiseRef = useRef<Promise<string | undefined>>(
     Promise.resolve(undefined),
+  );
+  const getJourneyRequest = useCallback(
+    (lastStep: string): OnboardingJourneyTraceRequest => ({
+      lastStep,
+      ...(tabId === undefined ? {} : { tabId }),
+    }),
+    [tabId],
   );
 
   const startJourney = useCallback(async () => {
@@ -68,12 +67,12 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
 
     hasStartedRef.current = true;
 
-    const startJourneyPromise = callOnboardingTraceService<string>(
-      'startOnboardingJourney',
-      {
-        lastStep: lastStepRef.current,
-      },
-    );
+    const startJourneyPromise = messenger
+      .call(
+        'OnboardingController:startOnboardingJourney',
+        getJourneyRequest(lastStepRef.current),
+      )
+      .catch(() => undefined);
     startJourneyPromiseRef.current = startJourneyPromise;
 
     // Wait for the trace ID to be resolved from the previous promise.
@@ -91,7 +90,7 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       _id: traceId,
     };
-  }, [onboardingParentContextRef]);
+  }, [getJourneyRequest, messenger, onboardingParentContextRef]);
 
   const endJourney = useCallback(
     async (data: OnboardingJourneyTraceEndData) => {
@@ -102,12 +101,14 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       hasEndedRef.current = true;
 
       await startJourneyPromiseRef.current;
-      await callOnboardingTraceService('endOnboardingJourney', {
-        lastStep: lastStepRef.current,
-        ...data,
-      });
+      await messenger
+        .call('OnboardingController:endOnboardingJourney', {
+          ...getJourneyRequest(lastStepRef.current),
+          ...data,
+        })
+        .catch(() => undefined);
     },
-    [],
+    [getJourneyRequest, messenger],
   );
 
   useEffect(() => {
@@ -121,12 +122,13 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
     // eslint-disable-next-line no-void
     void startJourneyPromiseRef.current
       .then(() =>
-        callOnboardingTraceService('updateOnboardingJourney', {
-          lastStep,
-        }),
+        messenger.call(
+          'OnboardingController:updateOnboardingJourney',
+          getJourneyRequest(lastStep),
+        ),
       )
       .catch(() => undefined);
-  }, [pathname]);
+  }, [getJourneyRequest, messenger, pathname]);
 
   return useMemo(
     () => ({ startJourney, endJourney }),

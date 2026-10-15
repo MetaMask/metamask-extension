@@ -1,25 +1,24 @@
 import { act, render, renderHook } from '@testing-library/react';
 import React, { type ReactNode } from 'react';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
 import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../contexts/metametrics';
-import { submitRequestToBackground } from '../../../store/background-connection';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
+import { UIMessengerProvider } from '../../../contexts/ui-messenger';
+import { createMockUIMessenger } from '../../../../test/lib/mock-ui-messenger';
 import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import { TraceName } from '../../../../shared/lib/trace';
+import { ONBOARDING_TRACE_ROUTE_CAPABILITIES } from '../messenger';
 import {
   getOnboardingTraceStep,
   OnboardingTraceProvider,
 } from './useOnboardingTrace';
 
 /* eslint-disable @typescript-eslint/naming-convention */
-
-jest.mock('../../../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
-}));
-
-const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
 
 describe('getOnboardingTraceStep', () => {
   it('returns the route after the onboarding prefix', () => {
@@ -41,6 +40,9 @@ describe('useOnboardingTrace', () => {
   const bufferedTrace = jest.fn().mockResolvedValue(undefined);
   const bufferedEndTrace = jest.fn();
   const onboardingParentContext = { current: null };
+  const startOnboardingJourney = jest.fn();
+  const updateOnboardingJourney = jest.fn();
+  const endOnboardingJourney = jest.fn();
 
   const contextValue: MetaMetricsContextValue = {
     trackEvent: jest.fn().mockResolvedValue(undefined),
@@ -49,8 +51,26 @@ describe('useOnboardingTrace', () => {
     onboardingParentContext,
   };
 
-  const createWrapper = (initialEntry = '/onboarding/welcome') => {
+  const createWrapper = (
+    initialEntry = '/onboarding/welcome',
+    tabId?: number,
+  ) => {
+    const store = configureStore({
+      reducer: () => ({
+        activeTab: { id: tabId },
+        metamask: {
+          appActiveTab: tabId === undefined ? undefined : { id: tabId },
+        },
+      }),
+    });
+
     return function wrapper({ children }: { children: ReactNode }) {
+      const uiMessenger = createMockUIMessenger({
+        'OnboardingController:startOnboardingJourney': startOnboardingJourney,
+        'OnboardingController:updateOnboardingJourney': updateOnboardingJourney,
+        'OnboardingController:endOnboardingJourney': endOnboardingJourney,
+      } as never);
+
       return (
         <MemoryRouter
           initialEntries={[initialEntry]}
@@ -59,9 +79,18 @@ describe('useOnboardingTrace', () => {
             v7_relativeSplatPath: true,
           }}
         >
-          <MetaMetricsContext.Provider value={contextValue}>
-            <OnboardingTraceProvider>{children}</OnboardingTraceProvider>
-          </MetaMetricsContext.Provider>
+          <Provider store={store}>
+            <UIMessengerProvider value={uiMessenger}>
+              <RouteMessengerProvider
+                path="/onboarding"
+                capabilities={ONBOARDING_TRACE_ROUTE_CAPABILITIES}
+              >
+                <MetaMetricsContext.Provider value={contextValue}>
+                  <OnboardingTraceProvider>{children}</OnboardingTraceProvider>
+                </MetaMetricsContext.Provider>
+              </RouteMessengerProvider>
+            </UIMessengerProvider>
+          </Provider>
         </MemoryRouter>
       );
     };
@@ -70,11 +99,9 @@ describe('useOnboardingTrace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     onboardingParentContext.current = null;
-    submitRequestToBackgroundMock.mockImplementation((method) =>
-      method === 'startOnboardingJourney'
-        ? Promise.resolve('journey-id')
-        : Promise.resolve(undefined),
-    );
+    startOnboardingJourney.mockResolvedValue('journey-id');
+    updateOnboardingJourney.mockResolvedValue(undefined);
+    endOnboardingJourney.mockResolvedValue(undefined);
   });
 
   it('starts the overall journey only once when requested repeatedly', async () => {
@@ -88,14 +115,29 @@ describe('useOnboardingTrace', () => {
       await Promise.resolve();
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'startOnboardingJourney',
-      [{ lastStep: 'welcome' }],
-    );
+    expect(startOnboardingJourney).toHaveBeenCalledTimes(1);
+    expect(startOnboardingJourney).toHaveBeenCalledWith({
+      lastStep: 'welcome',
+    });
     expect(onboardingParentContext.current).toEqual({
       _name: TraceName.OnboardingJourneyOverall,
       _id: 'journey-id',
+    });
+  });
+
+  it('includes the UI tab ID in tracing requests', async () => {
+    const { result } = renderHook(() => useOnboardingTrace(), {
+      wrapper: createWrapper('/onboarding/welcome', 42),
+    });
+
+    await act(async () => {
+      result.current.startJourney();
+      await Promise.resolve();
+    });
+
+    expect(startOnboardingJourney).toHaveBeenCalledWith({
+      lastStep: 'welcome',
+      tabId: 42,
     });
   });
 
@@ -111,12 +153,12 @@ describe('useOnboardingTrace', () => {
       await Promise.resolve();
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(2);
-    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
-      2,
-      'endOnboardingJourney',
-      [{ lastStep: 'welcome', success: true }],
-    );
+    expect(startOnboardingJourney).toHaveBeenCalledTimes(1);
+    expect(endOnboardingJourney).toHaveBeenCalledTimes(1);
+    expect(endOnboardingJourney).toHaveBeenCalledWith({
+      lastStep: 'welcome',
+      success: true,
+    });
   });
 
   it('uses the latest route as the last step', async () => {
@@ -137,20 +179,11 @@ describe('useOnboardingTrace', () => {
       );
     }
 
+    const Wrapper = createWrapper();
     const { getByRole } = render(
-      <MemoryRouter
-        initialEntries={['/onboarding/welcome']}
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <MetaMetricsContext.Provider value={contextValue}>
-          <OnboardingTraceProvider>
-            <TestComponent />
-          </OnboardingTraceProvider>
-        </MetaMetricsContext.Provider>
-      </MemoryRouter>,
+      <Wrapper>
+        <TestComponent />
+      </Wrapper>,
     );
 
     await act(async () => {
@@ -166,21 +199,13 @@ describe('useOnboardingTrace', () => {
       await Promise.resolve();
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
-      2,
-      'updateOnboardingJourney',
-      [{ lastStep: 'review-recovery-phrase' }],
-    );
-    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
-      3,
-      'endOnboardingJourney',
-      [
-        {
-          lastStep: 'review-recovery-phrase',
-          success: false,
-          abandoned: true,
-        },
-      ],
-    );
+    expect(updateOnboardingJourney).toHaveBeenCalledWith({
+      lastStep: 'review-recovery-phrase',
+    });
+    expect(endOnboardingJourney).toHaveBeenCalledWith({
+      lastStep: 'review-recovery-phrase',
+      success: false,
+      abandoned: true,
+    });
   });
 });

@@ -84,6 +84,7 @@ import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
 import { useOnboardingTrace } from '../../contexts/onboarding-trace';
 import { ONBOARDING_UNLOCK_ROUTE_CAPABILITIES } from './unlock-messenger';
+import { ONBOARDING_TRACE_ROUTE_CAPABILITIES } from './messenger';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -585,9 +586,14 @@ const OnboardingFlowContent = () => {
 // A hook call in this component reads the default context and drops the trace.
 export default function OnboardingFlow() {
   return (
-    <OnboardingTraceProvider>
-      <OnboardingFlowContent />
-    </OnboardingTraceProvider>
+    <RouteMessengerProvider
+      path={ONBOARDING_ROUTE}
+      capabilities={ONBOARDING_TRACE_ROUTE_CAPABILITIES}
+    >
+      <OnboardingTraceProvider>
+        <OnboardingFlowContent />
+      </OnboardingTraceProvider>
+    </RouteMessengerProvider>
   );
 }
 
