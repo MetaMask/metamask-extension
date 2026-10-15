@@ -1,7 +1,6 @@
 import type * as Sentry from '@sentry/browser';
 import {
   endTrace,
-  rootTrace,
   trace,
   traceBackgroundPoll,
   TraceName,
@@ -444,7 +443,7 @@ describe('Trace', () => {
       );
     });
 
-    it('does not inherit from active span when rootTrace is used', () => {
+    it('does not inherit from the active span when root is true', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -454,61 +453,35 @@ describe('Trace', () => {
 
       getActiveSpanMock.mockReturnValue(activeSpanMock);
 
-      rootTrace({ name: NAME_MOCK }, () => true);
+      trace({ name: NAME_MOCK, root: true }, () => true);
 
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          forceTransaction: undefined,
           parentSpan: null,
+          forceTransaction: undefined,
         }),
         expect.any(Function),
       );
     });
 
-    it('starts a new trace (fresh propagation context) when rootTrace is used', () => {
-      rootTrace({ name: NAME_MOCK }, () => true);
+    it('starts a new trace (fresh propagation context) when root is true', () => {
+      trace({ name: NAME_MOCK, root: true }, () => true);
 
       // startNewTrace resets the propagation-context trace id, so the op roots
       // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      // withIsolationScope alone would clone the same trace id — severing the
+      // parent span but leaving the op in the mega-trace (grouped by trace id).
       expect(startNewTraceMock).toHaveBeenCalledTimes(1);
       expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
     });
 
-    it('does not start a new trace for a non-root trace', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
-
+    it('does not start a new trace when root is not set', () => {
       trace({ name: NAME_MOCK }, () => true);
 
       expect(startNewTraceMock).not.toHaveBeenCalled();
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('roots background poll traces with poll metadata', () => {
-      const activeSpanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: 'abc123',
-          spanId: 'def456',
-        }),
-      } as unknown as Sentry.Span;
-
-      getActiveSpanMock.mockReturnValue(activeSpanMock);
-
-      traceBackgroundPoll('StaticAssetsController', () => true);
-
-      expect(startSpanMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          forceTransaction: undefined,
-          name: TraceName.BackgroundPoll,
-          op: 'background.poll',
-          parentSpan: null,
-        }),
-        expect.any(Function),
-      );
-      expect(setTagMock).toHaveBeenCalledWith(
-        'controller',
-        'StaticAssetsController',
-      );
     });
   });
 
@@ -624,6 +597,35 @@ describe('Trace', () => {
     it('returns undefined when sentry is not initialized', () => {
       globalThis.sentry = undefined;
       expect(getSerializedTraceContext()).toBeUndefined();
+    });
+  });
+
+  describe('traceBackgroundPoll', () => {
+    it('roots background poll traces with poll metadata', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      traceBackgroundPoll('StaticAssetsController', () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          forceTransaction: undefined,
+          name: TraceName.BackgroundPoll,
+          op: 'background.poll',
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(setTagMock).toHaveBeenCalledWith(
+        'controller',
+        'StaticAssetsController',
+      );
     });
   });
 });

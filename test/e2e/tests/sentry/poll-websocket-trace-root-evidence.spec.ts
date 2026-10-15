@@ -12,7 +12,7 @@ import { mockIdentityServices } from '../identity/mocks';
 
 // Literals for TraceName.BackgroundPoll and the core-backend websocket
 // connection trace — the ops this PR roots via `traceBackgroundPoll` /
-// `rootTrace`.
+// `trace({ root: true })`.
 const BACKGROUND_POLL = 'Background Poll';
 const WEBSOCKET_CONNECTION = 'BackendWebSocketService Connection';
 
@@ -253,7 +253,7 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
         console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
         // The PR's claim: the websocket connection trace is rooted via
-        // `rootTrace` so it does NOT sit on the SW pageload trace.
+        // `trace({ root: true })` so it does NOT sit on the SW pageload trace.
         assert.ok(
           wsConnections.length >= 1,
           `expected at least 1 websocket connection trace, got 0: ${JSON.stringify(captured)}`,

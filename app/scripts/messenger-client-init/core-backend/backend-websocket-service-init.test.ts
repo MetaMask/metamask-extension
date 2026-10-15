@@ -13,10 +13,13 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
-import { rootTrace } from '../../../../shared/lib/trace';
+import { trace } from '../../../../shared/lib/trace';
 import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 
 jest.mock('@metamask/core-backend');
+jest.mock('../../../../shared/lib/trace', () => ({
+  trace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -72,9 +75,23 @@ describe('BackendWebSocketServiceInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       url: 'wss://gateway.api.cx.metamask.io/v1',
-      traceFn: rootTrace,
+      traceFn: expect.any(Function),
       isEnabled: expect.any(Function),
     });
+  });
+
+  it('roots every websocket trace in its own trace', () => {
+    BackendWebSocketServiceInit(getInitRequestMock());
+
+    const { traceFn } = jest.mocked(BackendWebSocketService).mock.calls[0][0];
+    const callback = jest.fn();
+
+    traceFn?.({ name: 'WebSocket Connect' }, callback);
+
+    expect(trace).toHaveBeenCalledWith(
+      { name: 'WebSocket Connect', root: true },
+      callback,
+    );
   });
 
   it('returns null for both state keys', () => {
