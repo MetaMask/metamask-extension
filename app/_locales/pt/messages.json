@@ -6776,7 +6776,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Além do $1, gostaríamos de usar dados para entender como você interage com comunicações de marketing.",
+    "message": "Além do $1, gostaríamos de usar dados (como informações de cookies) para saber como você interage com nossas comunicações de marketing.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6829,13 +6829,13 @@
     "message": "Coletaremos dados básicos de uso do produto. Podemos associar essas informações a dados na rede."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Usaremos esses dados para saber como você interage com nossas comunicações de marketing. Podemos compartilhar novidades relevantes (como recursos de produtos)."
+    "message": "Coletaremos dados para saber como você interage com nossas comunicações de marketing. Podemos usar esses dados para compartilhar novidades relevantes (como atualizações de produtos)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Coletar dados básicos de uso"
+    "message": "Dados básicos de uso"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Atualizações de marketing"
+    "message": "Dados de marketing"
   },
   "onboardingMetametricsContinue": {
     "message": "Continuar"

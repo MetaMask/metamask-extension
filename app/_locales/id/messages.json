@@ -6780,7 +6780,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Selain $1, kami ingin menggunakan data untuk memahami cara Anda berinteraksi dengan komunikasi pemasaran.",
+    "message": "Selain $1, kami ingin menggunakan data (seperti informasi dari cookie) untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran kami.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6833,13 +6833,13 @@
     "message": "Kami akan mengumpulkan data penggunaan produk dasar. Kami mungkin akan menghubungkan informasi ini dengan data on-chain."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
+    "message": "Kami akan mengumpulkan data untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran kami. Kami mungkin akan menggunakan data ini untuk membagikan berita yang relevan (seperti pembaruan produk)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Kumpulkan data penggunaan dasar"
+    "message": "Data penggunaan dasar"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Pembaruan pemasaran"
+    "message": "Data pemasaran"
   },
   "onboardingMetametricsContinue": {
     "message": "Lanjutkan"
@@ -6848,7 +6848,7 @@
     "message": "Kami ingin meminta izin ini. Anda dapat memilih keluar atau menghapus data penggunaan setiap saat."
   },
   "onboardingMetametricsTitle": {
-    "message": "Bantu tingkatkan MetaMask"
+    "message": "Bantu kami meningkatkan MetaMask"
   },
   "onboardingSignInWith": {
     "message": "Masuk dengan $1",

@@ -6776,7 +6776,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Zusätzlich zu $1 möchten wir Daten verwenden, um zu verstehen, wie Sie mit Marketingkommunikation umgehen.",
+    "message": "Zusätzlich zu $1 möchten wir Daten (wie Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6829,13 +6829,13 @@
     "message": "Wir erfassen grundlegende Daten zur Produktnutzung. Wir können diese Informationen mit On-Chain-Daten verknüpfen."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
+    "message": "Wir erfassen Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können diese Daten nutzen, um relevante Neuigkeiten (wie Produkt-Updates) zu teilen."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Grundlegende Nutzungsdaten sammeln"
+    "message": "Grundlegende Nutzungsdaten"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Marketing-Updates"
+    "message": "Marketingdaten"
   },
   "onboardingMetametricsContinue": {
     "message": "Fortfahren"
@@ -6844,7 +6844,7 @@
     "message": "Wir möchten Sie um diese Genehmigungen bitten. Sie können Ihre Genehmigung jederzeit widerrufen oder Ihre Nutzungsdaten löschen lassen."
   },
   "onboardingMetametricsTitle": {
-    "message": "Helfen Sie dabei, MetaMask zu verbessern"
+    "message": "Helfen Sie uns, MetaMask zu verbessern"
   },
   "onboardingSignInWith": {
     "message": "Mit $1 anmelden",

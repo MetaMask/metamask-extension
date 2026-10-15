@@ -6780,7 +6780,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "$1 외에도 데이터를 활용하여 사용자가 마케팅 커뮤니케이션과 상호 작용하는 방식을 이해하고자 합니다.",
+    "message": "$1 외에도 데이터(예: 쿠키에서 얻은 정보)를 활용하여 사용자가 마케팅 커뮤니케이션과 상호 작용하는 방식을 파악하고자 합니다.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6833,19 +6833,19 @@
     "message": "기본적인 제품 사용 데이터를 수집합니다. 이 정보를 온체인 데이터와 연관시킬 수 있습니다."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "해당 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
+    "message": "사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악하기 위해 데이터를 수집합니다. 이 데이터를 사용하여 관련 뉴스(예: 제품 업데이트)를 공유할 수 있습니다."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "기본 사용 데이터 수집"
+    "message": "기본 사용 데이터"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "마케팅 업데이트"
+    "message": "마케팅 데이터"
   },
   "onboardingMetametricsContinue": {
     "message": "계속"
   },
   "onboardingMetametricsDescription": {
-    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
+    "message": "다음 권한을 요청하고자 합니다. 언제든지 사용 데이터 수집을 거부하거나 데이터를 삭제할 수 있습니다."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask 개선에 도움을 주세요"

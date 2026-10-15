@@ -559,7 +559,21 @@ export function NotificationSettingsSection({
         isOpen={pendingMarketingChannel !== null}
         isSubmitting={isMarketingConsentSubmitting}
         title={t('notificationsSettingsMarketingConsentSheetTitle')}
-        description={t('notificationsSettingsMarketingConsentSheetDescription')}
+        paragraphs={[
+          t('notificationsSettingsMarketingConsentSheetDescription'),
+          t('notificationsSettingsMarketingConsentSheetTurnOffHint', [
+            <Text asChild key="settings" fontWeight={FontWeight.Bold}>
+              <span>{t('settings')}</span>
+            </Text>,
+            <Text
+              asChild
+              key="security-and-privacy"
+              fontWeight={FontWeight.Bold}
+            >
+              <span>{t('securityAndPrivacy')}</span>
+            </Text>,
+          ]),
+        ]}
         confirmLabel={t('notificationsSettingsMarketingConsentSheetOptIn')}
         testId="marketing-consent-sheet"
         error={marketingSheetError}

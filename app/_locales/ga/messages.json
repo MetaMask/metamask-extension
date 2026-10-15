@@ -1293,7 +1293,7 @@
     "message": "Bailiú sonraí le haghaidh margaíochta"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Úsáidfimid MetaMetrics chun foghlaim conas a idirghníomhaíonn tú lenár gcumarsáid mhargaíochta. Féadfaimid nuacht ábhartha (cosúil le gnéithe táirgí agus ábhair eile) a roinnt."
+    "message": "Baileoimid sonraí faoin gcaoi a n-idirghníomhaíonn tú lenár gcumarsáid mhargaíochta, ionas gur féidir linn nuacht ábhartha (cosúil le gnéithe táirgí agus ábhair eile) a roinnt."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Faigh nuashonruithe táirgí, leideanna agus nuacht - lena n-áirítear trí ríomhphost. Féadfaimid d’idirghníomhaíochtaí a úsáid chun feabhas a chur ar a bhfuil á roinnt againn."
@@ -3288,7 +3288,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Chomh maith le $1, ba mhaith linn sonraí a úsáid chun tuiscint a fháil ar an gcaoi a n-idirghníomhaíonn tú le cumarsáid mhargaíochta.",
+    "message": "Chomh maith le $1, ba mhaith linn sonraí (cosúil le faisnéis ó fhianáin) a úsáid chun foghlaim conas a idirghníomhaíonn tú lenár gcumarsáid mhargaíochta.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -3338,13 +3338,13 @@
     "message": "Téarmaí Úsáide"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+    "message": "Baileoimid sonraí chun foghlaim conas a idirghníomhaíonn tú lenár gcumarsáid mhargaíochta. Féadfaimid na sonraí seo a úsáid chun nuacht ábhartha (cosúil le nuashonruithe táirgí) a roinnt."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Bailigh sonraí úsáide bunúsacha"
+    "message": "Sonraí úsáide bunúsacha"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Nuashonruithe táirgí"
+    "message": "Sonraí margaíochta"
   },
   "onboardingMetametricsContinue": {
     "message": "Lean ar aghaidh"
