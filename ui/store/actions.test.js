@@ -920,7 +920,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#updateAndApproveTx', () => {
+  describe('#updateAndApproveTx QR account', () => {
     const qrAccountAddress = '0xQrAddress';
     const qrAccountId = 'b3f1a0c2-7d4e-4f6a-9b8c-1d2e3f4a5b6c';
     const txMeta = {
@@ -1726,7 +1726,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#updateAndApproveTx', () => {
+  describe('#updateAndApproveTx hardware wallet signing', () => {
     const LEDGER_ADDRESS = '0x2222222222222222222222222222222222222222';
     const txMeta = {
       id: 'pay-tx',
