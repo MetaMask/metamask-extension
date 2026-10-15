@@ -122,6 +122,8 @@ describe('webpack.config.test.ts', () => {
     // reset argv to avoid affecting other tests
     process.argv = [process.argv0, process.argv[1]];
     process.env = originalEnv;
+    // The config reads argv and env when loaded, so reload it for each case.
+    delete require.cache[require.resolve('../webpack.config.ts')];
     mock.restoreAll();
   });
 
@@ -129,7 +131,7 @@ describe('webpack.config.test.ts', () => {
     args: string[] = [],
     env: NodeJS.ProcessEnv = {},
   ) {
-    // The config factory reads argv when called.
+    // The config reads argv when its module is loaded.
     // first two args are always ignored.
     process.argv = [...process.argv.slice(0, 2), ...args];
     process.env = { ...env };
@@ -145,7 +147,7 @@ ${Object.entries(env)
       }
       return originalReadFileSync.call(fs, path, options);
     });
-    return (await import('../webpack.config.ts')).default();
+    return require('../webpack.config.ts').default();
   }
 
   function getPluginNames(config: Configuration): string[] {
