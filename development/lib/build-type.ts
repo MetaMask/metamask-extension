@@ -22,9 +22,12 @@ import {
   type StructError,
 } from '@metamask/superstruct';
 import yaml from 'yaml';
-import { cloneDeep, merge, uniqWith } from 'lodash';
+import lodash from 'lodash';
+import { projectRoot } from './build-paths.ts';
 
-const BUILDS_YML_PATH = path.resolve(__dirname, '../../builds.yml');
+const { cloneDeep, merge, uniqWith } = lodash;
+
+const BUILDS_YML_PATH = path.join(projectRoot, 'builds.yml');
 
 let _cachedBuildTypes: BuildTypesConfig | null = null;
 

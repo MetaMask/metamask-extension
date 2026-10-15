@@ -40,7 +40,10 @@ module.exports = {
     'json',
     'node',
   ],
-  modulePathIgnorePatterns: ['<rootDir>/.metamask/cache/java-tron-up/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/.metamask/cache/java-tron-up/',
+    '<rootDir>/development/.webpack/',
+  ],
   // The path to the Prettier executable used to format snapshots
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
@@ -92,7 +95,10 @@ module.exports = {
     '<rootDir>/test/e2e/feature-flags/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/playwright/llm-workflow/**/*.test.(js|ts|tsx)',
   ],
-  testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
+  testPathIgnorePatterns: [
+    '<rootDir>/development/webpack/',
+    '<rootDir>/development/lib/build-paths.test.ts',
+  ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the

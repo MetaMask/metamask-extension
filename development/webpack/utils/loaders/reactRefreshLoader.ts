@@ -1,12 +1,14 @@
 import { dirname } from 'node:path';
 import type { LoaderContext } from 'webpack';
+import { resolvePackage } from '../../../lib/build-paths.ts';
 
 export type ReactRefreshLoaderOptions = {
   clientRequest: string;
 };
 
-const REACT_REFRESH_ENTRY_PATH =
-  require.resolve('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry');
+const REACT_REFRESH_ENTRY_PATH = resolvePackage(
+  '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry',
+);
 
 export default function reactRefreshLoader(
   this: LoaderContext<ReactRefreshLoaderOptions>,

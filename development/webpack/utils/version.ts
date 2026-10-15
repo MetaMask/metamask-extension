@@ -1,3 +1,4 @@
+import packageJson from '../../../package.json' with { type: 'json' };
 import type { BuildType } from '../../lib/build-type.js';
 
 /**
@@ -16,7 +17,7 @@ export const getExtensionVersion = (
   { id, isPrerelease }: Pick<BuildType, 'id' | 'isPrerelease'>,
   releaseVersion: number,
 ): { version: string; versionName: string } => {
-  const { version } = require('../../../package.json') as { version: string };
+  const { version } = packageJson;
 
   if (id < 10 || id > 64 || releaseVersion < 0 || releaseVersion > 999) {
     throw new Error(

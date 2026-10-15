@@ -1,13 +1,16 @@
+import { syncBuiltinESMExports } from 'node:module';
 import fs from 'node:fs';
 import process from 'node:process';
 import { describe, it, afterEach, beforeEach, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
-import { version } from '../../../package.json';
-import { loadBuildTypesConfig } from '../../lib/build-type';
-import * as config from '../utils/config';
-import { parseArgv } from '../utils/cli';
+import packageJson from '../../../package.json' with { type: 'json' };
+import { loadBuildTypesConfig } from '../../lib/build-type.ts';
+import * as config from '../utils/config.ts';
+import { parseArgv } from '../utils/cli.ts';
 import { VARIABLES_REQUIRED_IN_PRODUCTION } from '../utils/constants.ts';
+
+const { version } = packageJson;
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
@@ -22,13 +25,15 @@ describe('./utils/config.ts', () => {
     ) {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
         // mock the rc files as users might have customized it which may break our tests
-        if (path === resolve(__dirname, '../../../.metamaskrc')) {
+        if (path === resolve(import.meta.dirname, '../../../.metamaskrc')) {
           return `
             ${Object.entries(env)
               .map(([key, value]) => `${key}=${value}`)
               .join('\n')}
             `;
-        } else if (path === resolve(__dirname, '../../../.metamaskprodrc')) {
+        } else if (
+          path === resolve(import.meta.dirname, '../../../.metamaskprodrc')
+        ) {
           return `
             ${Object.entries(prodEnv)
               .map(([key, value]) => `${key}=${value}`)
@@ -37,6 +42,7 @@ describe('./utils/config.ts', () => {
         }
         return originalReadFileSync(path, options);
       });
+      syncBuiltinESMExports();
     }
     beforeEach(() => {
       process.env = {};
@@ -45,6 +51,7 @@ describe('./utils/config.ts', () => {
     afterEach(() => {
       process.env = { ...originalEnv };
       mock.restoreAll();
+      syncBuiltinESMExports();
     });
 
     it('should return valid build variables for the default build', () => {

@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --require "./node_modules/tsx/dist/preflight.cjs" --import "./node_modules/tsx/dist/loader.mjs"
+#!/usr/bin/env node
 
 /**
  * @file This script optimizes build processes by conditionally forking child
@@ -8,16 +8,15 @@
  * considerations for Windows environments.
  *
  * On Linux-like systems you can skip the overhead of running `yarn` by
- * executing this file directly, e.g., `./development/webpack/launch.ts`, or via
- * bun or tsx.
+ * executing this file directly, e.g., `./development/webpack/launch.ts`.
  */
 
 // Note: minimize non-`type` imports to decrease load time.
 import { totalmem } from 'node:os';
-import { join } from 'node:path';
 import { isatty } from 'node:tty';
 import { spawn, type StdioOptions } from 'node:child_process';
 import parser from 'yargs-parser';
+import { webpackFile } from '../lib/build-paths.ts';
 import type { Child, PTY, Stdio, StdName } from './types.ts';
 
 const rawArgv = process.argv.slice(2);
@@ -30,10 +29,10 @@ async function main() {
   if (args.cache === false || args.help === true || args.watch === true) {
     // there are no time savings to running the build in a child process if: the
     // cache is disabled, we need to output "help", or we're in watch mode.
-    const { build } = await import('./build');
+    const { build } = await import('./build.ts');
     await build();
   } else {
-    await fork(process, join(__dirname, 'fork'), rawArgv);
+    await fork(process, webpackFile('fork'), rawArgv);
   }
 }
 main().catch((error) => {

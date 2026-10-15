@@ -1,8 +1,8 @@
 import type { Compilation, Compiler, Stats } from 'webpack';
 import type { Configuration } from 'webpack-dev-server';
-import { logStats } from '../helpers';
-import { setupUiClient, type UiClientRule } from './setup-ui-client';
-import { setupBackgroundClient } from './setup-background-client';
+import { logStats } from '../helpers.ts';
+import { setupUiClient, type UiClientRule } from './setup-ui-client.ts';
+import { setupBackgroundClient } from './setup-background-client.ts';
 
 export function getDevServerOptions({
   uiClientRule,
