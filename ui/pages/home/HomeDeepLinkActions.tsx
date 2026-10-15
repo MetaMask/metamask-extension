@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   BATCH_SELL_SELECT_ROUTE,
   DEFAULT_ROUTE,
@@ -9,10 +9,10 @@ import { selectIsNetworkMenuOpen } from '../../selectors';
 import { getIsBatchSellEnabled } from '../../selectors/batch-sell/feature-flags';
 import { toggleNetworkMenu } from '../../store/actions';
 import { setHomeDeepLinkQrCode } from '../../ducks/app/app';
-import {
-  DEEP_LINK_ORIGIN,
-  HomeQueryParams,
-} from '../../../shared/lib/deep-links/routes/home';
+import { useDispatch } from '../../store/hooks';
+
+import { HomeQueryParams } from '../../../shared/lib/deep-links/routes/home';
+import { isDeepLinkHost } from '../../../shared/lib/deep-links/common';
 
 export type HomeDeepLinkQrCode = {
   deeplinkUrl: string;
@@ -29,7 +29,12 @@ function isDeepLinkUrlForPath(urlString: string | undefined, pathname: string) {
 
   try {
     const url = new URL(urlString);
-    return url.origin === DEEP_LINK_ORIGIN && url.pathname === pathname;
+    return (
+      url.protocol === 'https:' &&
+      !url.port &&
+      isDeepLinkHost(url.hostname) &&
+      url.pathname === pathname
+    );
   } catch {
     return false;
   }

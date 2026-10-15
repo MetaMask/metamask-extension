@@ -74,9 +74,9 @@ describe('Error Page', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),
@@ -96,6 +96,8 @@ describe('Error Page', function () {
         await errorPage.checkPageIsLoaded();
 
         await errorPage.clickContactButton();
+
+        // Apply bigger timeout to consentDataToMetamaskSupport to avoid flakiness
         await errorPage.consentDataToMetamaskSupport();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
@@ -117,9 +119,9 @@ describe('Error Page', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: MOCK_ANALYTICS_ID,
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .build(),

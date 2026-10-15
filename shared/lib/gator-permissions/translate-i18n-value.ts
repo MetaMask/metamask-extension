@@ -1,4 +1,4 @@
-import type { I18nFunction, I18nValue } from './permission-detail-schema.types';
+import type { I18nFunction, I18nValue } from '@metamask/7715-permission-types';
 
 /**
  * Translates an {@link I18nValue} (key + optional interpolation args) with the given i18n function.

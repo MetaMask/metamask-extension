@@ -82,11 +82,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         );
 
         // Network Selector
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
@@ -120,7 +116,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkPageNumbers(1, 2);
-        await transactionConfirmation.clickFooterCancelButton();
+        await transactionConfirmation.clickFooterButton({ button: 'cancel' });
 
         // TODO: No second confirmation from dapp two will show, have to go back to the extension to see the switch chain & dapp two's tx.
         await driver.switchToWindowWithTitle(
@@ -137,7 +133,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Pending confirm stays in the dialog popup on Firefox.
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

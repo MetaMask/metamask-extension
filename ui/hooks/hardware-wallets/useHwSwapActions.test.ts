@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import { ConnectionStatus } from '../../contexts/hardware-wallets';
 import { cleanupPendingApproval } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
@@ -112,7 +112,7 @@ describe('useHwSwapActions', () => {
       });
       expect(mockRetrySubmission).toHaveBeenCalledTimes(1);
       expect(mockRetrySendBundleSubmission).not.toHaveBeenCalled();
-      expect(result.current.hasRetriedRef.current).toBe(true);
+      expect(result.current.hasRetried).toBe(true);
       expect(isRetryingRef.current).toBe(false);
       expect(result.current.isRetrying).toBe(false);
     });

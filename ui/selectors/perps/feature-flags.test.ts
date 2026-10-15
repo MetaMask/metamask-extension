@@ -5,6 +5,8 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import {
   getIsPerpsCloseLimitOrderEnabled,
   getIsPerpsExperienceAvailable,
+  getIsPerpsOrderBookEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
   getIsPerpsShowFullAssetNamesEnabled,
   getIsPerpsTerminalBackendEnabled,
   getIsVipProgramEnabled,
@@ -186,6 +188,51 @@ describe('Perps Feature Flags', () => {
     });
   });
 
+  describe('getIsPerpsOrderBookEnabled', () => {
+    it('returns false when the perpsOrderBookEnabled flag is absent (default OFF)', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns false when the flag is disabled', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: false, minimumVersion: '0.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: true, minimumVersion: '12.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    });
+
+    it('returns false when enabled but the version check fails', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsOrderBookEnabled: { enabled: true, minimumVersion: '99.0.0' },
+          },
+        },
+      };
+      expect(getIsPerpsOrderBookEnabled(state)).toBe(false);
+    });
+  });
+
   describe('getIsPerpsCloseLimitOrderEnabled', () => {
     it('returns false when the flag is absent', () => {
       const state = { metamask: { remoteFeatureFlags: {} } };
@@ -256,6 +303,87 @@ describe('Perps Feature Flags', () => {
       expect(getIsPerpsCloseLimitOrderEnabled(disabledState)).toBe(false);
       semverGteMock.mockReturnValue(false);
       expect(getIsPerpsCloseLimitOrderEnabled(futureVersionState)).toBe(false);
+    });
+  });
+
+  describe('getIsPerpsServiceInterruptionBannerEnabled', () => {
+    it('returns false when the flag is absent', () => {
+      const state = { metamask: { remoteFeatureFlags: {} } };
+
+      expect(getIsPerpsServiceInterruptionBannerEnabled(state)).toBe(false);
+      expect(semverGteMock).not.toHaveBeenCalled();
+    });
+
+    it('supports boolean flags', () => {
+      const enabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsPerpTradingServiceInterruptionBannerEnabled: true,
+          },
+        },
+      };
+      const disabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsPerpTradingServiceInterruptionBannerEnabled: false,
+          },
+        },
+      };
+
+      expect(getIsPerpsServiceInterruptionBannerEnabled(enabledState)).toBe(
+        true,
+      );
+      expect(getIsPerpsServiceInterruptionBannerEnabled(disabledState)).toBe(
+        false,
+      );
+    });
+
+    it('returns true when enabled and the version check passes', () => {
+      semverGteMock.mockReturnValue(true);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsPerpTradingServiceInterruptionBannerEnabled: {
+              enabled: true,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsServiceInterruptionBannerEnabled(state)).toBe(true);
+      expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.0.0');
+    });
+
+    it('returns false when disabled or the version check fails', () => {
+      const disabledState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsPerpTradingServiceInterruptionBannerEnabled: {
+              enabled: false,
+              minimumVersion: '12.0.0',
+            },
+          },
+        },
+      };
+      const futureVersionState = {
+        metamask: {
+          remoteFeatureFlags: {
+            perpsPerpTradingServiceInterruptionBannerEnabled: {
+              enabled: true,
+              minimumVersion: '99.0.0',
+            },
+          },
+        },
+      };
+
+      expect(getIsPerpsServiceInterruptionBannerEnabled(disabledState)).toBe(
+        false,
+      );
+      semverGteMock.mockReturnValue(false);
+      expect(
+        getIsPerpsServiceInterruptionBannerEnabled(futureVersionState),
+      ).toBe(false);
     });
   });
 

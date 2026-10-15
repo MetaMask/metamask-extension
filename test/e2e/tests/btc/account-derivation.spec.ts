@@ -5,9 +5,9 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import AccountAddressListPage from '../../page-objects/pages/accounts/address-list-page';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -32,7 +32,7 @@ async function mockBtcAccountDerivationMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -49,11 +49,11 @@ describe('Bitcoin account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         await homepage.headerNavbar.openAccountMenu();
         await accountList.checkPageIsLoaded();
@@ -80,13 +80,13 @@ describe('Bitcoin account derivation', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Bitcoin');
+        await switchToNetworkFromNetworkSelect(driver, 'Bitcoin');
 
         const homepage = new HomePage(driver);
-        const addressList = new AddressListModal(driver);
+        const addressList = new AccountAddressListPage(driver);
 
         await homepage.checkPageIsLoaded();
-        await homepage.clickOnReceiveButton();
+        await homepage.clickOnReceiveButton('default');
 
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayed(

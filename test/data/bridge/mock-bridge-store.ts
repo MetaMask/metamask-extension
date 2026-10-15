@@ -17,8 +17,12 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import type { SmartTransactionsNetworks } from '../../../shared/lib/selectors/feature-flags';
+import type { ChainValueOrderOverride } from '../../../shared/lib/bridge/chain-value-order';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
+import type {
+  BridgeAppState,
+  getValidationErrors,
+} from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
@@ -26,6 +30,24 @@ import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bri
 import { KeyringType } from '../../../shared/constants/keyring';
 import { mockTokenData } from './mock-token-data';
 
+export const DEFAULT_VALIDATION_ERRORS: ReturnType<typeof getValidationErrors> =
+  {
+    isNoQuotesAvailable: false,
+    isInsufficientGasForQuote: false,
+    isInsufficientBalance: false,
+    isStockMarketClosed: false,
+    isInOffHoursTrading: false,
+    isQuoteExpired: false,
+    isPriceImpactWarning: false,
+    isPriceImpactError: false,
+    isInsufficientGasBalance: false,
+    isInsufficientNativeReserve: false,
+    isTxAlertPresent: false,
+    isTxAlertLoading: false,
+    isNetworkFeeUnavailable: false,
+    isEstimatedReturnLow: false,
+    isDestAssetRequireActivate: false,
+  };
 export const MOCK_LEDGER_ACCOUNT = {
   id: 'bf588376-0492-4a35-b653-0f1304a6c5f1',
   address: '0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
@@ -186,11 +208,12 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   featureFlagOverrides?: {
-    bridgeConfig: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
+    bridgeConfig?: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
     gasFeesSponsoredNetwork?: { [chainId: Hex]: boolean };
+    swapsChainValueOrderOverride?: ChainValueOrderOverride;
   };
   bridgeStateOverrides?: Partial<
     Omit<BridgeControllerState, 'quoteRequest'>

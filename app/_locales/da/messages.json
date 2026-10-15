@@ -81,9 +81,6 @@
   "back": {
     "message": "Tilbage"
   },
-  "backupApprovalInfo": {
-    "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
-  },
   "backupApprovalNotice": {
     "message": "Sikkerhedskopiér din Hemmelige Gendannelseskode for at holde din tegnebog og dine penge sikre."
   },
@@ -227,9 +224,6 @@
   "gasLimit": {
     "message": "Gas-grænse"
   },
-  "gasLimitTooLow": {
-    "message": "Brændstofgrænsen skal være mindst 21000"
-  },
   "gasUsed": {
     "message": "Gas brugt"
   },
@@ -340,9 +334,6 @@
   "networks": {
     "message": "Netværk"
   },
-  "nevermind": {
-    "message": "Lige meget"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -408,9 +399,6 @@
   "privateKey": {
     "message": "Privat nøgle",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advarsel: afslør aldrig denne nøgle. Enhver med dine private nøgler kan stjæle alle aktiver i din konto."
   },
   "privateNetwork": {
     "message": "Privat netværk"

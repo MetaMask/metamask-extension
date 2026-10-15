@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem, createSelectItem } from '../shared';
 import {
+  selectIsTickerWidgetFeatureEnabled,
   getManageInstitutionalWallets,
   getShowExtensionInFullSizeView,
+  selectShowTickerWidget,
   getTheme,
 } from '../../../selectors';
 import {
   setManageInstitutionalWallets,
   setShowExtensionInFullSizeView,
+  setShowTickerWidget,
 } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -64,6 +68,26 @@ const ShowExtensionItem = createToggleItem({
   },
 });
 
+const ShowTickerWidgetItem = createToggleItem({
+  name: 'ShowTickerWidgetItem',
+  titleKey: PREFERENCES_ITEMS['show-ticker-widget'],
+  descriptionKey: 'showTickerWidgetDescription',
+  selector: selectShowTickerWidget,
+  action: setShowTickerWidget,
+  dataTestId: 'show-ticker-widget',
+  trackEvent: {
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: (newValue) => ({
+      /* eslint-disable @typescript-eslint/naming-convention */
+      settings_type: 'show_metamask_widget_on_x',
+      old_value: !newValue,
+      new_value: newValue,
+      /* eslint-enable @typescript-eslint/naming-convention */
+      location: 'settings',
+    }),
+  },
+});
+
 const ManageInstitutionalWalletItem = createToggleItem({
   name: 'ManageInstitutionalWalletItem',
   titleKey: PREFERENCES_ITEMS['manage-institutional-wallet'],
@@ -74,26 +98,42 @@ const ManageInstitutionalWalletItem = createToggleItem({
   trackEventProperty: 'manage_institutional_wallets',
 });
 
-/** Registry of setting items for the Preferences and Display page. Add new items here */
-const PREFERENCES_AND_DISPLAY_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'theme', component: ThemeItem },
-  { id: 'language', component: LanguageItem },
-  { id: 'local-currency', component: LocalCurrencyItem },
-  { id: 'account-identicon', component: AccountIdenticonItem },
-  { id: 'show-default-address', component: ShowDefaultAddressItem },
-  {
-    id: 'show-extension',
-    component: ShowExtensionItem,
-    hasDividerBefore: true,
-  },
-  {
-    id: 'manage-institutional-wallet',
-    component: ManageInstitutionalWalletItem,
-  },
-];
+const PreferencesAndDisplayTab = () => {
+  const isTickerWidgetFeatureEnabled = useSelector(
+    selectIsTickerWidgetFeatureEnabled,
+  );
 
-const PreferencesAndDisplayTab = () => (
-  <SettingsTab items={PREFERENCES_AND_DISPLAY_SETTING_ITEMS} />
-);
+  /** Registry of setting items for the page. Add new items here. */
+  const items = useMemo<SettingItemConfig[]>(
+    () => [
+      { id: 'theme', component: ThemeItem },
+      { id: 'language', component: LanguageItem },
+      { id: 'local-currency', component: LocalCurrencyItem },
+      { id: 'account-identicon', component: AccountIdenticonItem },
+      { id: 'show-default-address', component: ShowDefaultAddressItem },
+      ...(isTickerWidgetFeatureEnabled
+        ? [
+            {
+              id: 'show-ticker-widget',
+              component: ShowTickerWidgetItem,
+              hasDividerBefore: true,
+            },
+          ]
+        : []),
+      {
+        id: 'show-extension',
+        component: ShowExtensionItem,
+        hasDividerBefore: !isTickerWidgetFeatureEnabled,
+      },
+      {
+        id: 'manage-institutional-wallet',
+        component: ManageInstitutionalWalletItem,
+      },
+    ],
+    [isTickerWidgetFeatureEnabled],
+  );
+
+  return <SettingsTab items={items} />;
+};
 
 export default PreferencesAndDisplayTab;

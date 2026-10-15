@@ -145,9 +145,6 @@
   "gasLimit": {
     "message": "Limit gaz"
   },
-  "gasLimitTooLow": {
-    "message": "Limit gaz dwe omwen 21000"
-  },
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },
@@ -243,9 +240,6 @@
   "networks": {
     "message": "Rezo"
   },
-  "nevermind": {
-    "message": "Pa pwoblèm"
-  },
   "newAccountNumberName": {
     "message": "Kont $1",
     "description": "Default name of next account to be created on create account screen"
@@ -299,9 +293,6 @@
   "privateKey": {
     "message": "Prive kle",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Atansyon: pa janm divilge kle sa. Nenpòt moun kapab avèk kle prive ou a vòlè sa ou gen ou sou kont ou a."
   },
   "privateNetwork": {
     "message": "Rezo Prive"

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type Hex } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
@@ -8,22 +8,20 @@ import {
   BoxBorderColor,
   BoxFlexDirection,
   BoxJustifyContent,
+  AvatarNetworkSize,
   FontWeight,
   Icon,
   IconColor,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useAnalytics } from '../../../hooks/useAnalytics';
-import {
-  AvatarNetworkSize,
-  Popover,
-  PopoverPosition,
-  PopoverRole,
-} from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -33,7 +31,8 @@ import {
   getOrderedNetworksList,
   getOriginOfCurrentTab,
   getPermittedEVMChainsForSelectedTab,
-  getShowTestNetworks,
+  getShouldShowTestNetworks,
+  getIsTestnetInUse,
   getAllChainsToPoll,
 } from '../../../selectors';
 import { getPreferences } from '../../../../shared/lib/selectors/preferences';
@@ -43,9 +42,8 @@ import {
   setActiveNetwork,
   setNetworkClientIdForDomain,
   setNextNonce,
-  setShowTestNetworks,
+  setShowTestNetworksPreference,
   setTokenNetworkFilter,
-  showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../store/actions';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -56,6 +54,8 @@ import {
   sortNetworks,
 } from '../../../../shared/lib/network.utils';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -91,7 +91,8 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
+  const currentlyOnTestnet = useSelector(getIsTestnetInUse);
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -137,20 +138,12 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
     [nonTestEvmNetworksByKey, orderedNetworksList],
   );
 
-  const currentlyOnTestnet = useMemo(
-    () => Boolean(activeDappChainId && TEST_CHAINS.includes(activeDappChainId)),
-    [activeDappChainId],
-  );
-
-  // Only include test networks when the global "Show test networks" toggle is
-  // on, or when the dapp is already on a testnet (so the user can see the
-  // current selection).
   const visibleNetworks = useMemo(() => {
-    if (showTestnets || currentlyOnTestnet) {
+    if (showTestnets) {
       return [...orderedNetworks, ...testEvmNetworks];
     }
     return orderedNetworks;
-  }, [orderedNetworks, testEvmNetworks, showTestnets, currentlyOnTestnet]);
+  }, [orderedNetworks, testEvmNetworks, showTestnets]);
 
   const handleSelectNetwork = useCallback(
     async (network: MultichainNetworkConfiguration) => {
@@ -175,7 +168,6 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
             await dispatch(
               addPermittedChain(selectedTabOrigin, network.chainId),
             );
-            dispatch(showPermittedNetworkToast());
           }
 
           await setNetworkClientIdForDomain(
@@ -242,7 +234,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
         return;
       }
       const newValue = !currentValue;
-      dispatch(setShowTestNetworks(newValue));
+      dispatch(setShowTestNetworksPreference(newValue));
       trackEvent(
         createEventBuilder(MetaMetricsEventName.TestNetworksDisplayed)
           .addCategory(MetaMetricsEventCategory.Network)
@@ -264,10 +256,9 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
       offset={[0, 8]}
       flip
       preventOverflow
-      padding={0}
       referenceHidden={false}
       data-testid="dapp-bar-network-selector-popover"
-      className="dapp-bar-network-selector-popover"
+      className="dapp-bar-network-selector-popover p-0"
     >
       <Box
         flexDirection={BoxFlexDirection.Column}
@@ -298,7 +289,7 @@ export const DappBarEVMNetworkSelectorPopover: React.FC<
           </Text>
           <ToggleButton
             dataTestId="dapp-bar-network-selector-popover__testnet-toggle"
-            value={showTestnets || currentlyOnTestnet}
+            value={showTestnets}
             disabled={currentlyOnTestnet}
             onToggle={handleToggleTestNetworks}
           />

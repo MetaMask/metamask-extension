@@ -38,7 +38,8 @@ const DEVICE_READ_METHODS = [
   'getFirstPage',
   'getNextPage',
   'getPreviousPage',
-  'isUnlocked',
+  'isUnlocked', // only for Trezor/Ledger
+  'getMode', // only for QR
   'getModel',
   'getName',
   'attemptMakeApp',

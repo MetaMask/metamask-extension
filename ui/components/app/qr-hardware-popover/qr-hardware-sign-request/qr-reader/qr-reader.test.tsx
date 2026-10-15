@@ -2,6 +2,7 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import type { UR } from '@ngraveio/bc-ur';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import * as uuid from 'uuid';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import {
@@ -17,6 +18,9 @@ let mockUr: UR | undefined;
 let mockLastReaderError: Error | undefined;
 
 jest.mock('../../base-qr-reader', () => {
+  const { ErrorCode: MockErrorCode } = jest.requireActual(
+    '@metamask/hw-wallet-sdk',
+  );
   const MockBaseQrReader = (mockProps: BaseQrReaderProps) => (
     <div data-testid="mock-base-qr-reader">
       <span data-testid="base-qr-reader-is-reading-wallet">
@@ -49,6 +53,14 @@ jest.mock('../../base-qr-reader', () => {
       <button
         data-testid="base-qr-reader-set-error-active"
         onClick={() => mockProps.setErrorActive(true)}
+      />
+      <button
+        data-testid="base-qr-reader-set-camera-permission-error-code"
+        onClick={() =>
+          mockProps.setCameraPermissionErrorCode?.(
+            MockErrorCode.PermissionCameraDenied,
+          )
+        }
       />
     </div>
   );
@@ -90,6 +102,7 @@ describe('QrReader', () => {
     requestId: 'matching-request-id',
     setErrorTitle: jest.fn(),
     setErrorActive: jest.fn(),
+    setCameraPermissionErrorCode: jest.fn(),
   };
 
   beforeEach(() => {
@@ -186,6 +199,20 @@ describe('QrReader', () => {
       await screen.getByTestId('base-qr-reader-set-error-active').click();
 
       expect(defaultProps.setErrorActive).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('setCameraPermissionErrorCode propagation', () => {
+    it('passes setCameraPermissionErrorCode through to BaseQrReader', async () => {
+      renderWithProvider(<QrReader {...defaultProps} />);
+
+      await screen
+        .getByTestId('base-qr-reader-set-camera-permission-error-code')
+        .click();
+
+      expect(defaultProps.setCameraPermissionErrorCode).toHaveBeenCalledWith(
+        ErrorCode.PermissionCameraDenied,
+      );
     });
   });
 });

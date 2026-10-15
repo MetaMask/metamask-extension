@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   ButtonsAlignment,
@@ -15,6 +15,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import { useDispatch } from '../../../store/hooks';
 
 export type MultichainAccountEditModalProps = {
   isOpen: boolean;
@@ -68,8 +69,6 @@ export const MultichainAccountEditModal = ({
           data-testid="account-edit-modal-header"
           onClose={onClose}
           closeButtonProps={{ ariaLabel: t('close') }}
-          onBack={onClose}
-          backButtonProps={{ ariaLabel: t('back') }}
         >
           {t('rename')}
         </ModalHeader>

@@ -9,6 +9,7 @@ import { ChainId } from '@metamask/controller-utils';
 import type {
   AddNetworkFields,
   NetworkConfiguration,
+  NetworkState,
 } from '@metamask/network-controller';
 import {
   AVALANCHE_DISPLAY_NAME,
@@ -28,6 +29,7 @@ import {
   getRpcDataByChainId,
   sortNetworksByPrioity,
   getFilteredFeaturedNetworks,
+  getAllEnabledNetworkClientIds,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -517,6 +519,60 @@ describe('network utils', () => {
       expect(result).not.toContainEqual(
         expect.objectContaining({ chainId: '0xa86a' }),
       );
+    });
+  });
+
+  describe('getAllEnabledNetworkClientIds', () => {
+    const networkConfigurationsByChainId = {
+      '0x1': {
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'mainnet' }],
+      },
+      '0xe708': {
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'linea-mainnet' }],
+      },
+    } as unknown as NetworkState['networkConfigurationsByChainId'];
+
+    it('returns client IDs for enabled EIP-155 networks only', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': true,
+            '0xe708': false,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual(['mainnet']);
+    });
+
+    it('returns an empty array when no EIP-155 networks are enabled', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': false,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('skips enabled chain IDs that have no network configuration', () => {
+      const result = getAllEnabledNetworkClientIds(
+        {
+          eip155: {
+            '0x1': true,
+            '0x89': true,
+          },
+        },
+        networkConfigurationsByChainId,
+      );
+
+      expect(result).toStrictEqual(['mainnet']);
     });
   });
 });

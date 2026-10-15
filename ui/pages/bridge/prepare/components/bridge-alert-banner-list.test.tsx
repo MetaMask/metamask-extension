@@ -2,7 +2,6 @@ import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import {
   formatChainIdToCaip,
-  QuoteResponse,
   QuoteStreamCompleteReason,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -10,7 +9,10 @@ import * as reactRouterUtils from 'react-router-dom';
 import { BridgeAssetSecurityDataType } from '../../utils/tokens';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../../shared/lib/asset-utils';
-import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  DEFAULT_VALIDATION_ERRORS,
+} from '../../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../../test/data/bridge/mock-quotes-erc20-erc20';
 import { createTestProviderTools } from '../../../../../test/stub/provider';
@@ -25,12 +27,11 @@ import * as bridgeSelectors from '../../../../ducks/bridge/selectors';
 import PrepareBridgePage from '../prepare-bridge-page';
 
 // Mock the bridge hooks
-jest.mock('../../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
+jest.mock('../../hooks/useGasIncludedSupport', () => ({
+  useGasIncludedSupport: jest.fn().mockReturnValue({
+    gasIncluded: false,
+    gasIncluded7702: false,
+  }),
 }));
 
 const mockUseHardwareWalletConfig = jest.fn();
@@ -43,6 +44,23 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
+
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
 
 setBackgroundConnection({
   resetState: async () => jest.fn(),
@@ -71,7 +89,7 @@ describe('BridgeAlertBannerList', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },
@@ -189,10 +207,14 @@ describe('BridgeAlertBannerList', () => {
       jest
         .spyOn(reactRouterUtils, 'useSearchParams')
         .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
+      jest.spyOn(bridgeSelectors, 'getActiveQuotePriceData').mockReturnValue({
+        priceImpact: { amount: '0' },
+      });
       validationErrors &&
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrors as never);
+        jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+          ...DEFAULT_VALIDATION_ERRORS,
+          ...validationErrors,
+        });
       const mockStore = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
@@ -259,11 +281,12 @@ describe('BridgeAlertBannerList', () => {
         .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
       jest
         .spyOn(bridgeSelectors, 'getActiveQuotePriceData')
-        .mockReturnValue(undefined as never);
+        .mockReturnValue(undefined);
       if (Object.keys(validationErrorOverrides).length > 0) {
-        jest
-          .spyOn(bridgeSelectors, 'getValidationErrors')
-          .mockReturnValue(validationErrorOverrides as never);
+        jest.spyOn(bridgeSelectors, 'getValidationErrors').mockReturnValue({
+          ...DEFAULT_VALIDATION_ERRORS,
+          ...validationErrorOverrides,
+        });
       }
 
       const mockStore = createBridgeMockStore({

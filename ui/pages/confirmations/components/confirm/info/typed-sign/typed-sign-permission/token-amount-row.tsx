@@ -4,7 +4,6 @@ import {
   BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
-import { BigNumber } from 'bignumber.js';
 import React from 'react';
 
 import { Hex } from '@metamask/utils';
@@ -18,7 +17,7 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  *
  * @param props - The component props.
  * @param props.label - The label to display for the row.
- * @param props.value - The amount of the token as a BigNumber.
+ * @param props.value - The amount of the token as a bigint.
  * @param props.tokenAddress - The contract address of the token.
  * @param props.chainId - The chain ID on which the token exists.
  * @param props.decimals - The number of decimals the token uses.
@@ -34,7 +33,7 @@ export const TokenAmountRow = ({
   tooltip,
 }: {
   label: string;
-  value: BigNumber;
+  value: bigint;
   tokenAddress: string;
   chainId: Hex;
   decimals: number | undefined;
@@ -50,7 +49,10 @@ export const TokenAmountRow = ({
         {decimals === undefined ? (
           <Skeleton width="100%" height={20} />
         ) : (
-          <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
+          <ConfirmInfoRowTextTokenUnits
+            value={value.toString()}
+            decimals={decimals}
+          />
         )}
 
         <Name

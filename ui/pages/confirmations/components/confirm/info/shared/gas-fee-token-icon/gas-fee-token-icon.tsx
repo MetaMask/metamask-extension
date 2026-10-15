@@ -10,12 +10,12 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
-import { selectERC20TokensByChain } from '../../../../../../../selectors';
 import {
   selectNetworkConfigurationByChainId,
   type NetworkConfigurationsByChainIdState,
 } from '../../../../../../../../shared/lib/selectors/networks';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { getAssetImageUrl } from '../../../../../../../../shared/lib/asset-utils';
 
 export enum GasFeeTokenIconSize {
   Sm = 'sm',
@@ -37,15 +37,11 @@ export function GasFeeTokenIcon({
       selectNetworkConfigurationByChainId(state, chainId),
   );
 
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const image = getAssetImageUrl(tokenAddress, chainId);
 
   if (!currentConfirmation) {
     return null;
   }
-
-  const variation = chainId;
-  const { iconUrl: image } =
-    erc20TokensByChain?.[variation]?.data?.[tokenAddress] ?? {};
 
   if (tokenAddress !== NATIVE_TOKEN_ADDRESS) {
     const avatarSize =

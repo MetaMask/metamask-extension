@@ -1,6 +1,7 @@
 import {
   TransactionMeta,
   TransactionType,
+  hasTransactionType,
 } from '@metamask/transaction-controller';
 import {
   TokenStandard,
@@ -49,6 +50,7 @@ export async function buildTransactionMetricsContext({
     determineTransactionTypeAndContractInteraction(
       transactionMeta.type ?? '',
       transactionMeta.originalType,
+      transactionMeta,
     );
 
   let contractMethodName;
@@ -86,9 +88,33 @@ export async function buildTransactionMetricsContext({
   };
 }
 
+/**
+ * Pay flows submitted with `addTransactionBatch` keep `batch` as the parent
+ * type. `hasTransactionType` from the transaction controller matches a nested
+ * call, which is how mobile's `getTransactionTypeValue` resolves these.
+ *
+ * `getTransactionType` is not used here: a deposit batch is
+ * `[approve, deposit]`, so the first nested type is `tokenMethodApprove`.
+ */
+const NESTED_PAY_TRANSACTION_TYPES: [TransactionType, string][] = [
+  [TransactionType.moneyAccountDeposit, 'money_account_deposit'],
+  [TransactionType.moneyAccountWithdraw, 'money_account_withdraw'],
+];
+
+function getNestedPayTransactionType(
+  transactionMeta: TransactionMeta | undefined,
+): string | undefined {
+  const match = NESTED_PAY_TRANSACTION_TYPES.find(([transactionType]) =>
+    hasTransactionType(transactionMeta, [transactionType]),
+  );
+
+  return match?.[1];
+}
+
 function determineTransactionTypeAndContractInteraction(
   type: string,
-  originalType?: string,
+  originalType: string | undefined,
+  transactionMeta: TransactionMeta | undefined,
 ): {
   transactionType: string;
   isContractInteraction: boolean;
@@ -96,6 +122,15 @@ function determineTransactionTypeAndContractInteraction(
   const isContractInteraction = CONTRACT_INTERACTION_TYPES.includes(
     type as TransactionType,
   );
+
+  const nestedPayTransactionType = getNestedPayTransactionType(transactionMeta);
+
+  if (nestedPayTransactionType) {
+    return {
+      transactionType: nestedPayTransactionType,
+      isContractInteraction,
+    };
+  }
 
   const directTypeMappings: Record<string, string> = {
     swapAndSend: 'swap_and_send',
@@ -118,7 +153,11 @@ function determineTransactionTypeAndContractInteraction(
   }
 
   if (type === 'retry' && originalType) {
-    return determineTransactionTypeAndContractInteraction(originalType);
+    return determineTransactionTypeAndContractInteraction(
+      originalType,
+      undefined,
+      transactionMeta,
+    );
   }
 
   if (isContractInteraction) {

@@ -569,6 +569,117 @@ describe('applySyncResultToRegistry', () => {
 
     expect(merged.unknownFlag).toBeUndefined();
   });
+
+  it('writes deterministic threshold scopes for A/B values from production', () => {
+    const merged = applySyncResultToRegistry(
+      {
+        newInProduction: [
+          {
+            name: 'newAbTest',
+            value: [
+              {
+                name: 'control',
+                scope: { type: 'threshold', value: 0.95 },
+              },
+              {
+                name: 'treatment',
+                scope: { type: 'threshold', value: 1 },
+              },
+            ],
+          },
+        ],
+        removedFromProduction: [],
+        valueMismatches: [
+          {
+            name: 'changedAbTest',
+            productionValue: [
+              {
+                name: 'control',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                name: 'treatment',
+                scope: { type: 'threshold', value: 1 },
+              },
+            ],
+            registryValue: false,
+          },
+        ],
+        inProdMismatches: [],
+        hasDrift: true,
+      },
+      {
+        changedAbTest: {
+          name: 'changedAbTest',
+          type: FeatureFlagType.Remote,
+          inProd: true,
+          productionDefault: false,
+          status: FeatureFlagStatus.Active,
+        },
+      },
+    );
+
+    const expected = [
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ];
+
+    expect(merged.newAbTest.productionDefault).toStrictEqual(expected);
+    expect(merged.changedAbTest.productionDefault).toStrictEqual(expected);
+  });
+
+  it('writes deterministic scopes for inProd mismatches', () => {
+    const merged = applySyncResultToRegistry(
+      {
+        newInProduction: [],
+        removedFromProduction: [],
+        valueMismatches: [],
+        inProdMismatches: [
+          {
+            name: 'staleAbTest',
+            productionValue: [
+              {
+                name: 'control',
+                scope: { type: 'threshold', value: 0.95 },
+              },
+              {
+                name: 'treatment',
+                scope: { type: 'threshold', value: 1 },
+              },
+            ],
+          },
+        ],
+        hasDrift: true,
+      },
+      {
+        staleAbTest: {
+          name: 'staleAbTest',
+          type: FeatureFlagType.Remote,
+          inProd: false,
+          productionDefault: false,
+          status: FeatureFlagStatus.Active,
+        },
+      },
+    );
+
+    expect(merged.staleAbTest.inProd).toBe(true);
+    expect(merged.staleAbTest.productionDefault).toStrictEqual([
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ]);
+  });
 });
 
 describe('updateRegistryFile integration', () => {
@@ -744,5 +855,76 @@ describe('compareProductionFlagsToRegistry', () => {
       name: 'flagC',
       value: [1, 2, 3],
     });
+  });
+
+  it('ignores allocation-only threshold drift after normalization', () => {
+    const registryMap = {
+      abTestFlag: [
+        {
+          name: 'control',
+          scope: { type: 'threshold', value: 1 },
+        },
+        {
+          name: 'treatment',
+          scope: { type: 'threshold', value: 0 },
+        },
+      ],
+    };
+    const prodResponse = [
+      {
+        abTestFlag: [
+          {
+            name: 'control',
+            scope: { type: 'threshold', value: 0.95 },
+          },
+          {
+            name: 'treatment',
+            scope: { type: 'threshold', value: 1 },
+          },
+        ],
+      },
+    ];
+
+    const result = compareProductionFlagsToRegistry(prodResponse, registryMap);
+
+    expect(result.valueMismatches).toHaveLength(0);
+    expect(result.hasDrift).toBe(false);
+  });
+
+  it('detects threshold payload and variant-name changes', () => {
+    const registryMap = {
+      abTestFlag: [
+        {
+          name: 'control',
+          scope: { type: 'threshold', value: 1 },
+        },
+        {
+          name: 'treatment',
+          scope: { type: 'threshold', value: 0 },
+        },
+      ],
+    };
+    const prodResponse = [
+      {
+        abTestFlag: [
+          {
+            name: 'control',
+            scope: { type: 'threshold', value: 0.95 },
+          },
+          {
+            name: 'treatment-b',
+            scope: { type: 'threshold', value: 1 },
+          },
+        ],
+      },
+    ];
+
+    const result = compareProductionFlagsToRegistry(prodResponse, registryMap);
+    const mismatch = result.valueMismatches.find(
+      (m) => m.name === 'abTestFlag',
+    );
+
+    expect(mismatch).toBeDefined();
+    expect(result.hasDrift).toBe(true);
   });
 });

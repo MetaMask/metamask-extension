@@ -5,6 +5,7 @@ import { getMarketData, getCurrencyRates } from '../../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
 import { toChecksumHexAddress } from '../../../../../shared/lib/hexstring-utils';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { selectStablecoins } from '../../selectors/feature-flags';
 import { useDeepMemo } from '../useDeepMemo';
 
 export type TokenFiatRateRequest = {
@@ -20,6 +21,7 @@ export function useTokenFiatRates(
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const stablecoins = useSelector(selectStablecoins);
   const safeRequests = useDeepMemo(() => requests, [requests]);
 
   const result = useMemo(
@@ -27,6 +29,20 @@ export function useTokenFiatRates(
       safeRequests.map(({ address, chainId, currency: currencyOverride }) => {
         const currency = currencyOverride ?? selectedCurrency;
         const isUsd = currency.toLowerCase() === 'usd';
+
+        // USD-pegged tokens are worth exactly $1, so skip market data entirely.
+        // Deriving their rate as `priceInNative * nativeUsdRate` lands a few
+        // hundredths of a cent off (e.g. $0.99987 for USDC), and MM Pay divides
+        // by that rate to size amounts — the drift makes Max quote for more than
+        // the balance covers. Only applies to USD; other display currencies
+        // still need a real conversion.
+        const isStablecoin = stablecoins[chainId]?.includes(
+          address.toLowerCase() as Hex,
+        );
+
+        if (isUsd && isStablecoin) {
+          return 1;
+        }
 
         const chainTokens = marketData?.[chainId] ?? {};
         const token = chainTokens[toChecksumHexAddress(address) as Hex];
@@ -51,6 +67,7 @@ export function useTokenFiatRates(
       networkConfigurations,
       selectedCurrency,
       marketData,
+      stablecoins,
     ],
   );
 

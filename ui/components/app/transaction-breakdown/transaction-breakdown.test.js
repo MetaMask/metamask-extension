@@ -120,7 +120,7 @@ describe('TransactionBreakdown', () => {
         ['Gas used (units)', '31260'],
         ['Base fee (GWEI)', '0.000000007'],
         ['Priority fee (GWEI)', '2.467043796'],
-        ['Total gas fee', '0.000077ETH'],
+        ['Total network fee', '0.000077ETH'],
         ['Max fee per gas', '0.000000003ETH'],
         ['Total', '0.01007712ETH'],
       ]);
@@ -173,7 +173,7 @@ describe('TransactionBreakdown', () => {
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
         ['Priority fee (GWEI)', '0.0873'],
-        ['Total gas fee', '0.001281ETH'],
+        ['Total network fee', '0.001281ETH'],
         ['Max fee per gas', '0.000000008ETH'],
         ['Total', '0.00128108ETH'],
       ]);
@@ -205,7 +205,7 @@ describe('TransactionBreakdown', () => {
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
         ['Priority fee (GWEI)', '0.0873'],
-        ['Total gas fee', '0.001281ETH'],
+        ['Total network fee', '0.001281ETH'],
         ['Max fee per gas', '0.000000008ETH'],
         ['Total', '0.00128108ETH'],
       ]);

@@ -5,6 +5,7 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { ExtensionPortStream } from 'extension-port-stream';
+import { isObject } from '@metamask/utils';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -20,6 +21,7 @@ import {
 } from '../constants/stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { checkForLastError } from '../../../shared/lib/browser-runtime.utils';
+import { onRequestOpenSidepanel } from '../sidepanel/content-script';
 import { logStreamDisconnectWarning, MessageType } from './stream-utils';
 import { connectPhishingChannelToWarningSystem } from './phishing-stream';
 
@@ -289,14 +291,17 @@ const destroyLegacyExtensionStreams = () => {
  * @param msg.name - custom property and name to identify the message received
  * @returns
  */
-const onMessageSetUpExtensionStreams = (msg: MessageType) => {
-  if (msg.name === EXTENSION_MESSAGES.READY) {
+const onMessageSetUpExtensionStreams = (
+  msg: unknown,
+): Promise<string> | undefined => {
+  if (isObject(msg) && msg.name === EXTENSION_MESSAGES.READY) {
     if (!extensionStream) {
       setupExtensionStreams();
       setupLegacyExtensionStreams();
     }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
+  // A Promise would claim the response channel from other message listeners.
   return undefined;
 };
 
@@ -358,6 +363,10 @@ export const initStreams = () => {
   setupLegacyExtensionStreams();
 
   browser.runtime.onMessage.addListener(onMessageSetUpExtensionStreams);
+
+  if (!process.env.IN_TEST) {
+    browser.runtime.onMessage.addListener(onRequestOpenSidepanel);
+  }
 };
 
 // TODO:LegacyProvider: Delete

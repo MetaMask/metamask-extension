@@ -12,7 +12,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectBalanceBySelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -53,7 +53,9 @@ export const AccountGroupBalance = ({
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  const selectedGroupBalance = useSelector(
+    selectUnifiedBalanceBySelectedAccountGroup,
+  );
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
@@ -164,6 +166,7 @@ export const AccountGroupBalance = ({
   return (
     <Skeleton
       hideChildren={
+        isEvm &&
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }

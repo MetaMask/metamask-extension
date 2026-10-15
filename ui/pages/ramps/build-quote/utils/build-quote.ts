@@ -5,10 +5,8 @@ type NamedSelection = {
   name: string;
 } | null;
 
-/** Fields used for provider quote matching. */
 type QuoteSelectionItem = Pick<Quote, 'provider'>;
 
-/** Fields used for provider quote error display. */
 type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
 
 /**
@@ -16,7 +14,7 @@ type QuoteErrorItem = Pick<QuoteError, 'provider' | 'error'>;
  * selection and error UI. Wider Quote fields are not required here.
  */
 type QuotesResponseOrNull = {
-  success?: QuoteSelectionItem[];
+  success?: Quote[];
   error?: QuoteErrorItem[];
 } | null;
 
@@ -86,7 +84,7 @@ export function findSelectedQuote(
   quotesResponse: QuotesResponseOrNull,
   selectedProvider: NamedSelection,
   selectedPaymentMethod: NamedSelection,
-): QuoteSelectionItem | null {
+): Quote | null {
   if (!quotesResponse?.success || !selectedProvider || !selectedPaymentMethod) {
     return null;
   }
@@ -118,6 +116,23 @@ export function resolvePaymentMethodLabel(
   return paymentMethods[0]?.name ?? fallbackLabel;
 }
 
+/**
+ * Resolves the message shown under the amount when a quote cannot be shown.
+ *
+ * When the quote request settles without a usable quote, the provider error is
+ * surfaced if present. Providers can also return no error (e.g. an unsupported
+ * token pair), in which case `quoteUnavailableMessage` is used so the disabled
+ * Continue button is always explained. Mirrors payment-method selection.
+ * @param options0
+ * @param options0.quoteFetchErrorMessage
+ * @param options0.hasAmount
+ * @param options0.hasSettledQuoteAmount
+ * @param options0.selectedQuoteLoading
+ * @param options0.hasQuoteFetchError
+ * @param options0.quotesResponse
+ * @param options0.selectedQuote
+ * @param options0.quoteUnavailableMessage
+ */
 export function resolveDisplayedQuoteError({
   quoteFetchErrorMessage,
   hasAmount,
@@ -126,6 +141,7 @@ export function resolveDisplayedQuoteError({
   hasQuoteFetchError,
   quotesResponse,
   selectedQuote,
+  quoteUnavailableMessage,
 }: {
   quoteFetchErrorMessage: string | null;
   hasAmount: boolean;
@@ -134,6 +150,7 @@ export function resolveDisplayedQuoteError({
   hasQuoteFetchError: boolean;
   quotesResponse: QuotesResponseOrNull;
   selectedQuote: QuoteSelectionItem | null;
+  quoteUnavailableMessage: string;
 }): string | null {
   if (quoteFetchErrorMessage) {
     return quoteFetchErrorMessage;
@@ -147,11 +164,11 @@ export function resolveDisplayedQuoteError({
     quotesResponse !== null &&
     selectedQuote === null;
 
-  if (!hasNoQuotes || !quotesResponse?.error?.length) {
+  if (!hasNoQuotes) {
     return null;
   }
 
-  return quotesResponse.error[0]?.error ?? null;
+  return quotesResponse?.error?.[0]?.error ?? quoteUnavailableMessage;
 }
 
 /**

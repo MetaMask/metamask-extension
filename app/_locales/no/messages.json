@@ -81,9 +81,6 @@
   "back": {
     "message": "Tilbake"
   },
-  "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
-  },
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
   },
@@ -224,9 +221,6 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
-  "gasLimitTooLow": {
-    "message": "Datakraftsgrense må være minst 21000"
-  },
   "gasUsed": {
     "message": "Brukt datakraft "
   },
@@ -340,9 +334,6 @@
   "networks": {
     "message": "Nettverk"
   },
-  "nevermind": {
-    "message": "Bare glem det"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
@@ -411,9 +402,6 @@
   "privateKey": {
     "message": "Privat nøkkel",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advarsel: aldri gjør kjent denne nøkkelen. Alle som har tilgang til dine private nøkler kan stjele midlene dine som er på konto."
   },
   "privateNetwork": {
     "message": "Privat nettverk "

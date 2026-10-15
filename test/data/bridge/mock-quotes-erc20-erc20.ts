@@ -1,6 +1,6 @@
 import {
   getNativeAssetForChainId,
-  QuoteResponse,
+  toQuoteResponseV2,
 } from '@metamask/bridge-controller';
 
 const mockQuotes = [
@@ -47,7 +47,6 @@ const mockQuotes = [
           },
         },
       },
-      priceData: {},
       bridgeId: 'socket',
       bridges: ['across'],
       steps: [
@@ -182,7 +181,6 @@ const mockQuotes = [
           },
         },
       },
-      priceData: {},
       bridgeId: 'socket',
       bridges: ['celercircle'],
       steps: [
@@ -272,4 +270,4 @@ const mockQuotes = [
   },
 ];
 
-export default mockQuotes as unknown as QuoteResponse[];
+export default mockQuotes.map(toQuoteResponseV2);

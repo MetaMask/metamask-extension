@@ -5,7 +5,7 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   useNavigate,
   useLocation,
@@ -86,6 +86,7 @@ import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
 } from '../../helpers/utils/caip25-permissions';
+import { useDispatch } from '../../store/hooks';
 import { ConnectionTrustSignalGate } from './connection-trust-signal-gate';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';

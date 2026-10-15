@@ -9,15 +9,10 @@ import {
   Text,
   TextAlign,
   TextColor,
+  TextFieldSearch,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-} from '../../../helpers/constants/design-system';
-import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -56,7 +51,7 @@ export const MultichainAddressRowsList = ({
   const [searchPattern, setSearchPattern] = React.useState<string>('');
 
   // useCopyToClipboard analysis: Copies one of your public addresses
-  const [, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [, handleCopy] = useCopyToClipboard();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -130,15 +125,14 @@ export const MultichainAddressRowsList = ({
       },
       index: number,
     ): JSX.Element => {
-      const handleCopyClick = () => {
-        handleCopy(item.normalizedAddress);
-      };
+      const handleCopyClick = () => handleCopy(item.normalizedAddress);
 
       return (
         <MultichainAddressRow
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
+          accountType={item.account.type}
           address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
@@ -164,17 +158,12 @@ export const MultichainAddressRowsList = ({
     >
       <Box paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
-          size={TextFieldSearchSize.Lg}
+          className="w-full"
+          clearButtonOnClick={handleClearSearch}
+          data-testid="multichain-address-rows-list-search"
+          onChange={handleSearchChange}
           placeholder={t('searchNetworks')}
           value={searchPattern}
-          onChange={handleSearchChange}
-          clearButtonOnClick={handleClearSearch}
-          width={BlockSize.Full}
-          borderWidth={0}
-          marginBottom={2}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.LG}
-          data-testid="multichain-address-rows-list-search"
         />
       </Box>
 

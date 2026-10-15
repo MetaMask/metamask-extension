@@ -1,17 +1,21 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getUnapprovedConfirmations } from '../../../../selectors';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { useDispatch } from '../../../../store/hooks';
 import PopularNetworkList from './popular-network-list';
+
+jest.mock('../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
 

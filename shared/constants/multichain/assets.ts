@@ -26,8 +26,6 @@ export enum MultichainNativeAssets {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   SOLANA_TESTNET = `${MultichainNetworks.SOLANA_TESTNET}/slip44:501`,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   TRON = `${MultichainNetworks.TRON}/slip44:195`,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,8 +33,6 @@ export enum MultichainNativeAssets {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   TRON_SHASTA = `${MultichainNetworks.TRON_SHASTA}/slip44:195`,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   STELLAR = `${MultichainNetworks.STELLAR}/slip44:148`,
 }
 

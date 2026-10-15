@@ -21,8 +21,6 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   accountName,
@@ -37,7 +35,7 @@ function QrCodeView({
   const { trackEvent, createEventBuilder } = useAnalytics();
 
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
   const { message, data } = Qr;
   const checksummedAddress = normalizeSafeAddress(data);

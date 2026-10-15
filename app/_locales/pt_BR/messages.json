@@ -155,9 +155,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backupApprovalInfo": {
-    "message": "Esse código secreto é obrigatório para recuperar sua carteira caso você perca seu dispositivo, esqueça sua senha, precise reinstalar a MetaMask ou queira acessar sua carteira em outro dispositivo."
-  },
   "backupApprovalNotice": {
     "message": "Faça backup da Frase de Recuperação Secreta para manter sua carteira e seus fundos em segurança."
   },
@@ -351,9 +348,6 @@
   },
   "currencySymbolDefinition": {
     "message": "O símbolo do ticker exibido para a moeda dessa rede."
-  },
-  "currentAccountNotConnected": {
-    "message": "Sua conta atual não está conectada"
   },
   "currentExtension": {
     "message": "Página atual da extensão"
@@ -603,9 +597,6 @@
   },
   "gasLimit": {
     "message": "Limite de gás"
-  },
-  "gasLimitTooLow": {
-    "message": "O limite de gás deve ser de pelo menos 21000"
   },
   "gasPriceExcessive": {
     "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
@@ -934,9 +925,6 @@
   "networks": {
     "message": "Redes"
   },
-  "nevermind": {
-    "message": "Não importa"
-  },
   "newAccountNumberName": {
     "message": "Conta $1",
     "description": "Default name of next account to be created on create account screen"
@@ -1059,9 +1047,6 @@
   "privateKey": {
     "message": "Chave privada",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Advertência: jamais revele essa chave. Qualquer pessoa com suas chaves privadas poderá roubar os ativos mantidos na sua conta."
   },
   "privateNetwork": {
     "message": "Rede privada"

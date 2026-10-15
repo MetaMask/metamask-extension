@@ -9,13 +9,6 @@ import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import {
-  ASSETS_UNIFY_STATE_FLAG,
-  ASSETS_UNIFY_STATE_VERSION_1,
-  AssetsUnifyStateFeatureFlag,
-  isAssetsUnifyStateFeatureEnabled,
-} from '../../../shared/lib/assets-unify-state/remote-feature-flag';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { trace, traceBackgroundPoll } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
@@ -160,26 +153,7 @@ export const BridgeControllerInit: MessengerClientInitFunction<
       customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
     },
 
-    getUseAssetsControllerForRates: () => {
-      try {
-        const remoteFeatureFlagController = getMessengerClient(
-          'RemoteFeatureFlagController',
-        );
-        const featureFlag = remoteFeatureFlagController?.state
-          ?.remoteFeatureFlags?.[ASSETS_UNIFY_STATE_FLAG] as
-          | AssetsUnifyStateFeatureFlag
-          | undefined;
-
-        return (
-          isAssetsUnifyStateFeatureEnabled(
-            featureFlag,
-            ASSETS_UNIFY_STATE_VERSION_1,
-          ) && getIsAssetsUnifiedStateIncludedInBuild()
-        );
-      } catch {
-        return false;
-      }
-    },
+    getUseAssetsControllerForRates: () => true,
   });
 
   // Root each scheduled poll cycle in its own trace before the controller's

@@ -62,9 +62,9 @@ describe('Test Snap installed', function () {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
+          .withAnalyticsController({
             analyticsId: 'fake-metrics-id',
-            completedMetaMetricsOnboarding: true,
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withSnapsPrivacyWarningAlreadyShown()

@@ -8,6 +8,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import Spinner from '../../../components/ui/spinner';
 import RampsTokenSelectionHeader from '../token-selection/components/ramps-token-selection-header';
 
 type RampsSelectionPageProps = {
@@ -46,6 +47,24 @@ export function RampsSelectionPage({
         backButtonTestId={backButtonTestId}
       />
       {children}
+    </Box>
+  );
+}
+
+/**
+ * Centered spinner body used while a selection screen loads. Rendered inside
+ * `RampsSelectionPage` so the header stays interactive and the user can
+ * navigate back even if the underlying request never resolves.
+ */
+export function RampsSelectionCenteredSpinner() {
+  return (
+    <Box
+      className="flex-1"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+    >
+      <Spinner className="h-8 w-8" />
     </Box>
   );
 }
