@@ -186,43 +186,52 @@ describe('useSelectedTokenSecurityData', () => {
     expect(result.current[OTHER_ASSET_ID]).toBeUndefined();
   });
 
-  it('keeps existing entries while a new request is in flight', async () => {
-    mockFetchCachedTokenAssets
-      .mockResolvedValueOnce([
-        createTokenAsset(SOURCE_ASSET_ID, BridgeAssetSecurityDataType.VERIFIED),
-        createTokenAsset(
-          DESTINATION_ASSET_ID,
-          BridgeAssetSecurityDataType.MALICIOUS,
-        ),
-      ])
-      .mockReturnValueOnce(new Promise<TokenAsset[]>(() => undefined));
+  it.each([
+    ['is in flight', new Promise<TokenAsset[]>(() => undefined)],
+    ['returns no data', Promise.resolve([])],
+  ])(
+    'keeps existing entries while a follow-up request %s',
+    async (_, followUp) => {
+      mockFetchCachedTokenAssets
+        .mockResolvedValueOnce([
+          createTokenAsset(
+            SOURCE_ASSET_ID,
+            BridgeAssetSecurityDataType.VERIFIED,
+          ),
+          createTokenAsset(
+            DESTINATION_ASSET_ID,
+            BridgeAssetSecurityDataType.MALICIOUS,
+          ),
+        ])
+        .mockReturnValueOnce(followUp);
 
-    const fromToken = createBridgeToken(SOURCE_ASSET_ID);
-    let toToken = createBridgeToken(DESTINATION_ASSET_ID);
-    const { result, rerender } = renderHookWithProvider(
-      () => useSelectedTokenSecurityData(fromToken, toToken),
-      createBridgeMockStore({
-        metamaskStateOverrides: { useExternalServices: true },
-      }),
-    );
+      const fromToken = createBridgeToken(SOURCE_ASSET_ID);
+      let toToken = createBridgeToken(DESTINATION_ASSET_ID);
+      const { result, rerender } = renderHookWithProvider(
+        () => useSelectedTokenSecurityData(fromToken, toToken),
+        createBridgeMockStore({
+          metamaskStateOverrides: { useExternalServices: true },
+        }),
+      );
 
-    await waitFor(() => {
+      await waitFor(() => {
+        expect(result.current[SOURCE_ASSET_ID]?.isVerified).toBe(true);
+      });
+
+      toToken = {
+        ...toToken,
+        securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
+      };
+      rerender();
+
+      await waitFor(() => {
+        expect(mockFetchCachedTokenAssets).toHaveBeenLastCalledWith([
+          SOURCE_ASSET_ID,
+        ]);
+      });
       expect(result.current[SOURCE_ASSET_ID]?.isVerified).toBe(true);
-    });
-
-    toToken = {
-      ...toToken,
-      securityData: { type: BridgeAssetSecurityDataType.MALICIOUS },
-    };
-    rerender();
-
-    await waitFor(() => {
-      expect(mockFetchCachedTokenAssets).toHaveBeenLastCalledWith([
-        SOURCE_ASSET_ID,
-      ]);
-    });
-    expect(result.current[SOURCE_ASSET_ID]?.isVerified).toBe(true);
-  });
+    },
+  );
 
   it('ignores stale responses when selected asset IDs change', async () => {
     let resolveFirstRequest: (tokens: TokenAsset[]) => void = () => undefined;

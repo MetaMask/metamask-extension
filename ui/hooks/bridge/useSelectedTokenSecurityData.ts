@@ -77,8 +77,8 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
-  // Entries are keyed by asset ID, so results from a previous request stay
-  // visible while a new one is in flight without being shown for other tokens.
+  // Results accumulate by asset ID, so a pending or failed follow-up request
+  // never hides data already fetched for a token.
   const [securityDataByAssetId, setSecurityDataByAssetId] =
     useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
@@ -107,13 +107,12 @@ export function useSelectedTokenSecurityData(
             return result;
           }, {});
 
-        setSecurityDataByAssetId(nextSecurityData);
+        setSecurityDataByAssetId((previous) => ({
+          ...previous,
+          ...nextSecurityData,
+        }));
       })
-      .catch(() => {
-        if (isCurrentRequest) {
-          setSecurityDataByAssetId(EMPTY_SECURITY_DATA);
-        }
-      });
+      .catch(() => undefined);
 
     return () => {
       isCurrentRequest = false;
