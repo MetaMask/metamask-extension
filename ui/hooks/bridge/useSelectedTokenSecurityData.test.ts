@@ -186,12 +186,12 @@ describe('useSelectedTokenSecurityData', () => {
     expect(result.current[OTHER_ASSET_ID]).toBeUndefined();
   });
 
-  it.each([
-    ['is in flight', new Promise<TokenAsset[]>(() => undefined)],
-    ['returns no data', Promise.resolve([])],
-  ])(
-    'keeps existing entries while a follow-up request %s',
-    async (_, followUp) => {
+  const followUpCases: [string, () => Promise<TokenAsset[]>][] = [
+    ['is in flight', () => new Promise<TokenAsset[]>(() => undefined)],
+    ['returns no data', async () => []],
+  ];
+  followUpCases.forEach(([description, getFollowUp]) => {
+    it(`keeps existing entries while a follow-up request ${description}`, async () => {
       mockFetchCachedTokenAssets
         .mockResolvedValueOnce([
           createTokenAsset(
@@ -203,7 +203,7 @@ describe('useSelectedTokenSecurityData', () => {
             BridgeAssetSecurityDataType.MALICIOUS,
           ),
         ])
-        .mockReturnValueOnce(followUp);
+        .mockReturnValueOnce(getFollowUp());
 
       const fromToken = createBridgeToken(SOURCE_ASSET_ID);
       let toToken = createBridgeToken(DESTINATION_ASSET_ID);
@@ -230,8 +230,8 @@ describe('useSelectedTokenSecurityData', () => {
         ]);
       });
       expect(result.current[SOURCE_ASSET_ID]?.isVerified).toBe(true);
-    },
-  );
+    });
+  });
 
   it('ignores stale responses when selected asset IDs change', async () => {
     let resolveFirstRequest: (tokens: TokenAsset[]) => void = () => undefined;
