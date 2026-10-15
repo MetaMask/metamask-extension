@@ -1,5 +1,4 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
-import type { PreferencesState } from '@metamask/preferences-controller';
 import { Json } from '@metamask/utils';
 import { MessengerClientInitFunction } from '../types';
 import {
@@ -7,6 +6,7 @@ import {
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
+import type { PreferencesControllerState } from '../../controllers/preferences-controller';
 import { trace } from '../../../../shared/lib/trace';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
@@ -86,9 +86,7 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
       () => {
         onChange(isBasicFunctionality());
       },
-      (state: PreferencesState) =>
-        (state as PreferencesState & { useExternalServices?: boolean })
-          .useExternalServices ?? true,
+      (state: PreferencesControllerState) => state.useExternalServices,
     );
     initMessenger.subscribe(
       'OnboardingController:stateChange',
