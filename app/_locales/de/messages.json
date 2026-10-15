@@ -5615,9 +5615,6 @@
   "moneyBalanceLastKnown": {
     "message": "Letzter bekannter Kontostand"
   },
-  "moneyBalanceMusdLabel": {
-    "message": "mUSD"
-  },
   "moneyBalanceRetry": {
     "message": "Erneut versuchen"
   },

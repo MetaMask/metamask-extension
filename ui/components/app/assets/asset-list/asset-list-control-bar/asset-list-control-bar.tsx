@@ -63,7 +63,6 @@ import {
   refreshAssetsForSelectedAccount,
   setEnabledAllPopularNetworks,
   setTokenNetworkFilter,
-  showImportNftsModal,
 } from '../../../../../store/actions';
 import type { MetaMaskReduxState } from '../../../../../store/store';
 import Tooltip from '../../../../ui/tooltip';
@@ -74,6 +73,7 @@ import {
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   ASSETS_ROUTE,
+  IMPORT_NFTS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../../../../helpers/constants/routes';
 import { useNetworkFilterButtonLabel } from '../../hooks/useNetworkFilterButtonLabel';
@@ -339,7 +339,7 @@ const AssetListControlBar = ({
   }, [createEventBuilder, navigate, trackEvent]);
 
   const handleNftImportModal = () => {
-    dispatch(showImportNftsModal({}));
+    navigate(IMPORT_NFTS_ROUTE);
     closePopover();
   };
 

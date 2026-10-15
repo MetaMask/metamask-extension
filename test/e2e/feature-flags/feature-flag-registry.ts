@@ -3391,14 +3391,6 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
   },
 
-  moneyBalanceShowMusdLabel: {
-    inProd: true,
-    name: 'moneyBalanceShowMusdLabel',
-    productionDefault: false,
-    status: FeatureFlagStatus.Active,
-    type: FeatureFlagType.Remote,
-  },
-
   moneyEnableActivityDetails: {
     inProd: true,
     name: 'moneyEnableActivityDetails',
@@ -3615,6 +3607,19 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'perpsPerpTradingGeoBlockedCountriesV2',
     productionDefault: {
       blockedRegions: ['BE', 'US', 'CA-ON', 'GB', 'CU', 'IR', 'KP', 'SY'],
+    },
+    status: FeatureFlagStatus.Active,
+    type: FeatureFlagType.Remote,
+  },
+
+  perpsPerpTradingServiceInterruptionBannerEnabled: {
+    // Dark until SRE enables it during a Perps outage. Not in the production
+    // client-config response until the LaunchDarkly flag is created.
+    inProd: false,
+    name: 'perpsPerpTradingServiceInterruptionBannerEnabled',
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '13.52.0',
     },
     status: FeatureFlagStatus.Active,
     type: FeatureFlagType.Remote,

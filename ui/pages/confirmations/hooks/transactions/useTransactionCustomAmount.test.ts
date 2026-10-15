@@ -933,6 +933,37 @@ describe('useTransactionCustomAmount', () => {
       expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
     });
 
+    it('commits a typed amount when updateTokenAmount is replaced during the debounce', () => {
+      const firstUpdate = jest.fn();
+      const { result, rerender } = runHook({
+        disableUpdate: false,
+        updateTokenAmountMock: firstUpdate,
+      });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      const secondUpdate = jest.fn();
+      jest
+        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mockReturnValue({
+          updateTokenAmount: secondUpdate,
+          isUpdating: false,
+        });
+
+      act(() => {
+        rerender();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(firstUpdate).not.toHaveBeenCalled();
+      expect(secondUpdate).toHaveBeenCalledWith('50');
+    });
+
     it('does not call updateTokenAmount for a zero amount after debounce', () => {
       const updateTokenAmountMock = jest.fn();
       runHook({
