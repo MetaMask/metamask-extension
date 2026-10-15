@@ -1,15 +1,15 @@
 /**
  * HyperEVM unsupported crypto handling - graceful degradation.
  *
- * Monitors the regression where selecting HyperEVM hits the price API
- * "None of the cryptocurrencies are supported by price api" failure path
- * (native HYPE is missing from `/v1/exchange-rates`, and spot-prices has no
- * fallback rate). The UI should handle this gracefully: homepage and Tokens
- * tab still load, HYPE still renders, fiat shows the em-dash placeholder, and
- * no blocking error toast appears.
+ * Assets-unify deprecates CurrencyRateController in tests, so native prices
+ * come from `/v3/spot-prices` rather than `/v1/exchange-rates`. The
+ * `unsupportedPrice` catalog answers the HYPE spot-prices request with an
+ * empty body. The UI should still load the homepage and Tokens tab, render
+ * HYPE, show the em-dash fiat placeholder, and not raise a blocking error
+ * toast.
  *
- * An em dash also shows when spot prices are empty, so the spec fails unless
- * that price-api error was logged and the exchange-rates mock was hit.
+ * An em dash also shows when no price request runs, so the spec fails unless
+ * the spot-prices mock was hit for the HyperEVM native asset id.
  *
  * See `test/e2e/helpers/custom-network-harness.ts`.
  */
@@ -22,29 +22,36 @@ import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
 
-const UNSUPPORTED_PRICE_CONSOLE_ERROR =
-  'None of the cryptocurrencies are supported by price api';
-
-function isExchangeRatesRequest(url: string): boolean {
+function isSpotPriceRequestForAsset(url: string, assetId: string): boolean {
   try {
     const parsed = new URL(url);
-    return (
-      parsed.hostname === 'price.api.cx.metamask.io' &&
-      parsed.pathname === '/v1/exchange-rates'
-    );
+    if (
+      parsed.hostname !== 'price.api.cx.metamask.io' ||
+      parsed.pathname !== '/v3/spot-prices'
+    ) {
+      return false;
+    }
+    const assetIds = parsed.searchParams
+      .getAll('assetIds')
+      .flatMap((value) => value.split(','))
+      .filter(Boolean);
+    return assetIds.includes(assetId);
   } catch {
     return false;
   }
 }
 
-async function exchangeRatesMockWasHit(
+async function spotPriceMockWasHitForAsset(
   mockedEndpoints: MockedEndpoint[],
+  assetId: string,
 ): Promise<boolean> {
   const seenGroups = await Promise.all(
     mockedEndpoints.map((endpoint) => endpoint.getSeenRequests()),
   );
   return seenGroups.some((requests) =>
-    requests.some((request) => isExchangeRatesRequest(request.url)),
+    requests.some((request) =>
+      isSpotPriceRequestForAsset(request.url, assetId),
+    ),
   );
 }
 
@@ -59,10 +66,10 @@ describe('HyperEVM unsupported crypto handling', function () {
         localNodeOptions,
         testSpecificMock,
         title: this.test?.fullTitle(),
-        // Allowed, not required. Chrome still fails below when the
-        // unsupported-crypto message was never logged.
+        // CurrencyRateController used to log these when HYPE was missing from
+        // exchange-rates. They are allowed if a leftover path still emits them.
         ignoredConsoleErrors: [
-          UNSUPPORTED_PRICE_CONSOLE_ERROR,
+          'None of the cryptocurrencies are supported by price api',
           'Failed to fetch exchange rates',
         ],
       },
@@ -73,12 +80,6 @@ describe('HyperEVM unsupported crypto handling', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        // Background console.error is invisible to the page listener until
-        // the service worker target is enabled. Polling starts after unlock.
-        if (process.env.SELENIUM_BROWSER === 'chrome') {
-          await driver.startObservingServiceWorkerConsoleErrors();
-        }
-
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
@@ -94,34 +95,21 @@ describe('HyperEVM unsupported crypto handling', function () {
         await homePage.checkPageIsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
         await tokensTab.checkTokenExistsInList(network.nativeSymbol);
-
-        // An em dash also shows when spot prices are empty, so it does not
-        // prove the exchange-rates error path ran.
         await tokensTab.checkNoConversionRateDisplayed();
 
         try {
-          await driver.wait(() => exchangeRatesMockWasHit(mockedEndpoint));
+          await driver.wait(() =>
+            spotPriceMockWasHitForAsset(
+              mockedEndpoint,
+              network.nativeAssetId,
+            ),
+          );
         } catch (error) {
           const reason = error instanceof Error ? error.message : String(error);
-          throw new Error(`exchange-rates mock was never hit (${reason})`);
-        }
-
-        // ignoredConsoleErrors is only applied on Chrome, which is also the
-        // only browser whose console stream this driver records.
-        if (process.env.SELENIUM_BROWSER === 'chrome') {
-          try {
-            await driver.wait(async () =>
-              driver.observedConsoleErrors.some((message) =>
-                message.includes(UNSUPPORTED_PRICE_CONSOLE_ERROR),
-              ),
-            );
-          } catch (error) {
-            const reason =
-              error instanceof Error ? error.message : String(error);
-            throw new Error(
-              `\`${UNSUPPORTED_PRICE_CONSOLE_ERROR}\` was not logged (${reason})`,
-            );
-          }
+          throw new Error(
+            `spot-prices mock was never hit for ${network.nativeAssetId} ` +
+              `(${reason})`,
+          );
         }
 
         await homePage.checkNoBlockingErrorToastWasObserved();
