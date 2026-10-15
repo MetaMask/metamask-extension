@@ -38,7 +38,6 @@ import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import type { UIMetricsEventPayload } from '../../../contexts/metametrics';
-import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import type { MetaMetricsEventOptions } from '../../../../shared/constants/metametrics';
 import { ENVIRONMENT } from '../../../../shared/constants/build';

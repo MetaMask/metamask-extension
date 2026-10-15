@@ -75,7 +75,6 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import LoadingScreen from '../../components/ui/loading-screen';
 import ErrorBoundary from '../../components/app/error-boundary/error-boundary';
-import type { MetaMaskReduxDispatch } from '../../store/store';
 import { useTheme } from '../../hooks/useTheme';
 import { RouteMessengerProvider } from '../../contexts/route-messenger';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -122,7 +121,7 @@ const ExperimentalArea = mmLazy(
 const toRelativePath = (path: string) =>
   toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
-const OnboardingFlowContent = () => {
+export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -411,184 +410,178 @@ const OnboardingFlowContent = () => {
   }, [pathname, isPopup]);
 
   return (
-    <Box
-      backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      flexDirection={BoxFlexDirection.Column}
-      alignItems={
-        pathname === ONBOARDING_WELCOME_ROUTE
-          ? BoxAlignItems.Start
-          : BoxAlignItems.Center
-      }
-      justifyContent={BoxJustifyContent.Start}
-      className="onboarding-flow h-full w-full"
-      style={{
-        backgroundColor: backgroundColorForWelcomePage,
-      }}
-    >
-      {!isPopup && !isSidepanel && (
-        <OnboardingAppHeader
-          isWelcomePage={isWelcomePage}
-          location={location}
-        />
-      )}
+    <OnboardingTraceProvider>
       <Box
-        className={classnames(
-          'onboarding-flow__container w-full rounded-lg mx-auto',
-          {
-            'onboarding-flow__container--full': isFullPage,
-            'onboarding-flow__container--popup': isPopup,
-            'onboarding-flow__container--sidepanel': isSidepanel,
-          },
-        )}
-        marginTop={
-          pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
-            ? 0
-            : 3
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={
+          pathname === ONBOARDING_WELCOME_ROUTE
+            ? BoxAlignItems.Start
+            : BoxAlignItems.Center
         }
-        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+        justifyContent={BoxJustifyContent.Start}
+        className="onboarding-flow h-full w-full"
         style={{
-          backgroundColor: onboardingContainerBackgroundColor,
+          backgroundColor: backgroundColorForWelcomePage,
         }}
       >
-        <ErrorBoundary>
-          <Suspense fallback={null}>
-            <Routes>
-              <Route
-                path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
-                element={<AccountExist />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_ACCOUNT_NOT_FOUND)}
-                element={<AccountNotFound />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_CREATE_PASSWORD_ROUTE)}
-                element={
-                  <CreatePassword
-                    createNewAccount={handleCreateNewAccount}
-                    importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
-                    secretRecoveryPhrase={secretRecoveryPhrase}
-                  />
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
-                element={
-                  <RouteMessengerProvider
-                    path={ONBOARDING_SETUP_PASSKEY_ROUTE}
-                    capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
-                  >
-                    <SetupPasskey />
-                  </RouteMessengerProvider>
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE)}
-                element={
-                  <RouteMessengerProvider
-                    path={ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE}
-                    capabilities={PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES}
-                  >
-                    <PasskeyPrfMigration />
-                  </RouteMessengerProvider>
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
-                element={
-                  <RouteMessengerProvider
-                    path={ONBOARDING_REVEAL_SRP_ROUTE}
-                    capabilities={REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES}
-                  >
-                    <RevealRecoveryPhrase
-                      setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                    />
-                  </RouteMessengerProvider>
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_REVIEW_SRP_ROUTE)}
-                element={
-                  <ReviewRecoveryPhrase
-                    secretRecoveryPhrase={secretRecoveryPhrase}
-                  />
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_CONFIRM_SRP_ROUTE)}
-                element={
-                  <ConfirmRecoveryPhrase
-                    secretRecoveryPhrase={secretRecoveryPhrase}
-                  />
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_IMPORT_WITH_SRP_ROUTE)}
-                element={
-                  <ImportSRP
-                    submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
-                  />
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
-                element={
-                  <RouteMessengerProvider
-                    path={ONBOARDING_UNLOCK_ROUTE}
-                    capabilities={ONBOARDING_UNLOCK_ROUTE_CAPABILITIES}
-                  >
-                    <Unlock
-                      onSubmit={handleUnlock}
-                      navigateAfterUnlock={handleNavigationAfterUnlock}
-                    />
-                  </RouteMessengerProvider>
-                }
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
-                element={<PrivacySettings />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
-                element={<CreationSuccessful />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
-                element={<OnboardingWelcome />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_METAMETRICS)}
-                element={<MetaMetricsComponent />}
-              />
-              <Route
-                path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
-                element={<OnboardingDownloadApp />}
-              />
-              {isFlask() && (
+        {!isPopup && !isSidepanel && (
+          <OnboardingAppHeader
+            isWelcomePage={isWelcomePage}
+            location={location}
+          />
+        )}
+        <Box
+          className={classnames(
+            'onboarding-flow__container w-full rounded-lg mx-auto',
+            {
+              'onboarding-flow__container--full': isFullPage,
+              'onboarding-flow__container--popup': isPopup,
+              'onboarding-flow__container--sidepanel': isSidepanel,
+            },
+          )}
+          marginTop={
+            pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
+              ? 0
+              : 3
+          }
+          marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
+          style={{
+            backgroundColor: onboardingContainerBackgroundColor,
+          }}
+        >
+          <ErrorBoundary>
+            <Suspense fallback={null}>
+              <Routes>
                 <Route
-                  path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
+                  path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
+                  element={<AccountExist />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_ACCOUNT_NOT_FOUND)}
+                  element={<AccountNotFound />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_CREATE_PASSWORD_ROUTE)}
                   element={
-                    <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                    <CreatePassword
+                      createNewAccount={handleCreateNewAccount}
+                      importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
+                      secretRecoveryPhrase={secretRecoveryPhrase}
+                    />
                   }
                 />
-              )}
-              <Route path="*" element={<OnboardingFlowSwitch />} />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
+                <Route
+                  path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
+                  element={
+                    <RouteMessengerProvider
+                      path={ONBOARDING_SETUP_PASSKEY_ROUTE}
+                      capabilities={PASSKEY_SETUP_ROUTE_CAPABILITIES}
+                    >
+                      <SetupPasskey />
+                    </RouteMessengerProvider>
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE)}
+                  element={
+                    <RouteMessengerProvider
+                      path={ONBOARDING_PASSKEY_PRF_MIGRATION_ROUTE}
+                      capabilities={PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES}
+                    >
+                      <PasskeyPrfMigration />
+                    </RouteMessengerProvider>
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
+                  element={
+                    <RouteMessengerProvider
+                      path={ONBOARDING_REVEAL_SRP_ROUTE}
+                      capabilities={REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES}
+                    >
+                      <RevealRecoveryPhrase
+                        setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                      />
+                    </RouteMessengerProvider>
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_REVIEW_SRP_ROUTE)}
+                  element={
+                    <ReviewRecoveryPhrase
+                      secretRecoveryPhrase={secretRecoveryPhrase}
+                    />
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_CONFIRM_SRP_ROUTE)}
+                  element={
+                    <ConfirmRecoveryPhrase
+                      secretRecoveryPhrase={secretRecoveryPhrase}
+                    />
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_IMPORT_WITH_SRP_ROUTE)}
+                  element={
+                    <ImportSRP
+                      submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                    />
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
+                  element={
+                    <RouteMessengerProvider
+                      path={ONBOARDING_UNLOCK_ROUTE}
+                      capabilities={ONBOARDING_UNLOCK_ROUTE_CAPABILITIES}
+                    >
+                      <Unlock
+                        onSubmit={handleUnlock}
+                        navigateAfterUnlock={handleNavigationAfterUnlock}
+                      />
+                    </RouteMessengerProvider>
+                  }
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+                  element={<PrivacySettings />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
+                  element={<CreationSuccessful />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
+                  element={<OnboardingWelcome />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_METAMETRICS)}
+                  element={<MetaMetricsComponent />}
+                />
+                <Route
+                  path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
+                  element={<OnboardingDownloadApp />}
+                />
+                {isFlask() && (
+                  <Route
+                    path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
+                    element={
+                      <ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />
+                    }
+                  />
+                )}
+                <Route path="*" element={<OnboardingFlowSwitch />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </Box>
+        {isLoading && <LoadingScreen />}
       </Box>
-      {isLoading && <LoadingScreen />}
-    </Box>
-  );
-};
-
-export default function OnboardingFlow() {
-  return (
-    <OnboardingTraceProvider>
-      <OnboardingFlowContent />
     </OnboardingTraceProvider>
   );
-}
+};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');
