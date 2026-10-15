@@ -308,6 +308,14 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Force this trace to start a new root, ignoring any currently active span.
+   * Use for independent background operations (e.g. per-operation background
+   * RPC roots) that must not nest under a concurrently in-flight operation's
+   * span. Has no effect when an explicit `parentContext` is provided.
+   */
+  root?: boolean;
 };
 
 /**
@@ -748,6 +756,7 @@ function startSpan<T>(
     startTime,
     op,
     allowActiveSpanFallback,
+    root,
   } = request;
   let parentSpan = resolveParentSpan(parentContext);
 
@@ -765,8 +774,12 @@ function startSpan<T>(
   // for monitoring. Decoupling the two would demote these operations out of
   // transaction-level dashboards and alerting, which needs per-operation review
   // first (see MetaMask-planning#7549) and is therefore not done here.
+  //
+  // `root: true` overrides `allowActiveSpanFallback`, and also runs the span
+  // under `startNewTrace` (below): a span with no parent still takes the scope's
+  // trace id, so only a fresh propagation context moves it off the ambient trace.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext && allowActiveSpanFallback) {
+  if (!root && !parentSpan && !parentContext && allowActiveSpanFallback) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -797,10 +810,21 @@ function startSpan<T>(
     );
   }
 
-  return sentryWithIsolationScope((scope: Sentry.Scope) => {
-    initScope(scope, request);
-    return callback(spanOptions);
-  });
+  const runInIsolationScope = () =>
+    sentryWithIsolationScope((scope: Sentry.Scope) => {
+      initScope(scope, request);
+      return callback(spanOptions);
+    });
+
+  // `root: true` severs the active-span parent (above), but `withIsolationScope`
+  // alone only clones the propagation context, so the span keeps the ambient
+  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
+  // accumulates into the mega-trace, which is grouped by trace id — not by
+  // parent span. `startNewTrace` resets the propagation context to a fresh trace
+  // id, so the op peels off at the trace level, not merely the span level.
+  return root
+    ? sentryStartNewTrace(runInIsolationScope)
+    : runInIsolationScope();
 }
 
 function logTrace(
@@ -941,6 +965,18 @@ function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
     } as unknown as Sentry.Scope;
 
     return callback(scope);
+  }
+
+  return actual(callback);
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function sentryStartNewTrace<T>(callback: () => T): T {
+  const actual = globalThis.sentry?.startNewTrace;
+
+  if (!actual) {
+    return callback();
   }
 
   return actual(callback);
