@@ -39,7 +39,7 @@ export function ContactListItem({
   isDuplicate = false,
 }: ContactListItemProps) {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const network = allNetworks?.[chainId as Hex];
   const networkName = network?.name ?? t('networkTabCustom');
@@ -117,7 +117,7 @@ export function ContactListItem({
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         gap={2}
-        className="mt-4 shrink-0"
+        className="shrink-0"
       >
         {isDuplicate && (
           <Tooltip title={t('duplicateContactTooltip')} position="top">

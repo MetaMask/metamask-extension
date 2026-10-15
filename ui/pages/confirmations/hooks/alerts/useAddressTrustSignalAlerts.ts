@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
+import type { Hex } from '@metamask/utils';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
@@ -23,9 +24,13 @@ export function useAddressTrustSignalAlerts(): Alert[] {
       return null;
     }
 
-    // For transactions, check the 'to' address
-    if ((currentConfirmation as TransactionMeta)?.txParams?.to) {
-      return (currentConfirmation as TransactionMeta).txParams.to;
+    // For transactions, check the original 'to' address before container
+    // wrapping replaces it with the delegation manager address.
+    const transactionMeta = currentConfirmation as TransactionMeta;
+    const transactionAddress =
+      transactionMeta?.txParamsOriginal?.to ?? transactionMeta?.txParams?.to;
+    if (transactionAddress) {
+      return transactionAddress;
     }
 
     // For signatures, check the verifying contract if available
@@ -48,7 +53,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
+    currentConfirmation?.chainId as Hex | undefined,
   );
 
   return useMemo(() => {
@@ -65,7 +70,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         isBlocking: false,
         key: 'trustSignalMalicious',
         message: t('alertMessageAddressTrustSignalMalicious'),
-        reason: t('nameModalTitleMalicious'),
+        reason: t('alertReasonAddressTrustSignalMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -75,7 +80,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         isBlocking: false,
         key: 'trustSignalWarning',
         message: t('alertMessageAddressTrustSignal'),
-        reason: t('nameModalTitleWarning'),
+        reason: t('alertReasonAddressTrustSignalWarning'),
         severity: Severity.Warning,
       });
     }

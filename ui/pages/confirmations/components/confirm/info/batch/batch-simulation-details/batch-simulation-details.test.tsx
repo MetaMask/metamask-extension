@@ -4,7 +4,7 @@ import {
   BatchTransactionParams,
   TransactionContainerType,
 } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../../store/store';
@@ -262,17 +262,19 @@ describe('BatchSimulationDetails', () => {
     expect(queryByText(messages.confirmSimulationApprove.message)).toBeNull();
   });
 
-  it('shows edit modal on edit click', () => {
+  it('shows edit modal on edit click', async () => {
     useBatchApproveBalanceChangesMock.mockReturnValue({
       pending: false,
       value: [BALANCE_CHANGE_ERC20_MOCK],
     });
 
-    const { getByTestId, getByText } = render();
+    const { getByTestId, findByText } = render();
 
-    getByTestId('balance-change-edit').click();
+    fireEvent.click(getByTestId('balance-change-edit'));
 
-    expect(getByText(messages.editSpendingCap.message)).toBeInTheDocument();
+    expect(
+      await findByText(messages.editSpendingCap.message),
+    ).toBeInTheDocument();
   });
 
   it('updates nested transaction data on modal submit', async () => {

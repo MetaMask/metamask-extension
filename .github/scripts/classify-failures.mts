@@ -1,10 +1,6 @@
 /**
  * classify-failures.mts
  *
- * REVIEWER FOCUS: The classification logic and retry decision tree are the
- * most important things to verify. See retry-config.jsonc for the pattern
- * definitions that drive classification.
- *
  * Analyzes failed jobs in a GitHub Actions workflow run and classifies each
  * failure (jobRetryable) based on job name patterns and transient error
  * detection. Derives an overall is-retryable decision from individual results.
@@ -41,7 +37,9 @@
  * Outputs (to $GITHUB_OUTPUT):
  *   is-retryable=true|false    — whether all failures are retryable
  *   has-retry-label=true|false — whether the originating PR has retry-ci
- *   will-retry=true|false      — is-retryable AND has-retry-label AND under attempt limit
+ *   will-retry=true|false      — is-retryable AND has PR AND under active retry limit
+ *   consume-retry-label=true|false — whether this retry should remove retry-ci
+ *   retry-mode=automatic|label|none — source of the retry budget used
  *   pr-number=<N>|""           — originating PR number (empty for push)
  *
  * Also writes a markdown report to $GITHUB_STEP_SUMMARY and optionally:
@@ -51,12 +49,24 @@
 
 import { appendFileSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { ghApi } from './shared/gh-api.mts';
 import { getGitHubToken } from './shared/github-token.mts';
 import { stripJsonComments } from './shared/json-tools.mts';
+import {
+  DEFAULT_RETRY_MAX_ATTEMPT,
+  getRetryBudget,
+  RETRY_CI_LABEL_MAX_ATTEMPT,
+  type RetryBudgetDecision,
+} from './shared/retry-budget.mts';
+import {
+  E2E_QUALITY_GATE_FAILURE_ANNOTATION_TITLE,
+  hasE2eQualityGateFailure,
+} from './shared/e2e-quality-gate.mts';
+import { partitionRetryableBlockerCascadeJobs } from './shared/failure-classification.mts';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -69,6 +79,7 @@ interface Job {
 }
 
 interface Annotation {
+  annotation_level?: 'notice' | 'warning' | 'failure';
   message?: string;
   title?: string;
   path?: string;
@@ -142,10 +153,9 @@ if (!MAIN_RUN_ID) {
   process.exit(1);
 }
 
-// Maximum number of workflow run attempts before retries are disabled.
-// Attempts are 1-indexed: after attempt MAX_ATTEMPTS, no further retries.
-// This must stay in sync with the guard in ci-status-gate.yml.
-const MAX_ATTEMPTS = 4;
+// Retry limits are 1-indexed and shared with ci-status-gate.yml's merge queue
+// deferral rules: default retries can create attempt 2, and retry-ci can create
+// attempts 3 and 4.
 
 const [owner, repo] = REPO.split('/');
 const repoApi = `/repos/${owner}/${repo}`;
@@ -293,13 +303,27 @@ function getFailedJobs(): Job[] {
   return jobs.filter((j) => j.conclusion === 'failure');
 }
 
-function getAnnotations(jobId: number): Annotation[] {
+function getAnnotations(jobId: number): {
+  annotations: Annotation[];
+  available: boolean;
+} {
   try {
-    return JSON.parse(
-      ghApi(`${repoApi}/check-runs/${jobId}/annotations`),
-    ) as Annotation[];
+    const raw = ghApi(`${repoApi}/check-runs/${jobId}/annotations`, {
+      paginate: true,
+      jq: '.[]',
+    });
+    const annotations: Annotation[] = [];
+    for (const line of raw.split('\n')) {
+      if (!line) continue;
+      try {
+        annotations.push(JSON.parse(line) as Annotation);
+      } catch {
+        console.warn(`Skipping malformed annotation JSON for job ${jobId}`);
+      }
+    }
+    return { annotations, available: true };
   } catch {
-    return [];
+    return { annotations: [], available: false };
   }
 }
 
@@ -307,7 +331,28 @@ const LOG_TAIL_LINES = 500;
 
 function getJobLogs(jobId: number): string {
   try {
-    const full = ghApi(`${repoApi}/actions/jobs/${jobId}/logs`);
+    // The raw job-log API can make gh reject GitHub Actions' ANSI-bearing
+    // response. `gh run view` is the CLI-supported per-job log path.
+    const full = execFileSync(
+      'gh',
+      [
+        'run',
+        'view',
+        MAIN_RUN_ID,
+        '--repo',
+        REPO,
+        '--log',
+        '--job',
+        String(jobId),
+      ],
+      {
+        encoding: 'utf8',
+        // Disable CLI color without removing runner output used below to
+        // classify transient failures.
+        env: { ...process.env, NO_COLOR: '1' },
+        maxBuffer: 10 * 1024 * 1024,
+      },
+    );
     // Only search the tail — error summaries appear at the end and this
     // avoids false positives from earlier benign output.
     const lines = full.split('\n');
@@ -353,6 +398,34 @@ function classifyJob(job: Job): JobClassification {
   }
 
   if (category === 'alwaysRetryable') {
+    const annotationResult = getAnnotations(jobId);
+    if (!annotationResult.available) {
+      // E2E jobs are normally retryable, but absent annotation evidence must
+      // fail closed so an unavailable API cannot bypass a terminal gate.
+      return {
+        jobName,
+        jobId,
+        category,
+        jobRetryable: false,
+        reason: 'Could not verify E2E quality-gate annotations',
+        unmatched,
+        deterministic: true,
+      };
+    }
+
+    if (hasE2eQualityGateFailure(annotationResult.annotations)) {
+      return {
+        jobName,
+        jobId,
+        category,
+        jobRetryable: false,
+        reason: 'Changed or new E2E test failed its quality gate',
+        errorSnippet: E2E_QUALITY_GATE_FAILURE_ANNOTATION_TITLE,
+        unmatched,
+        deterministic: true,
+      };
+    }
+
     return {
       jobName,
       jobId,
@@ -375,7 +448,7 @@ function classifyJob(job: Job): JobClassification {
   }
 
   // retryableOnTransientError: check annotations, then logs
-  const annotations = getAnnotations(jobId);
+  const { annotations } = getAnnotations(jobId);
   const annotationText = annotations
     .map((a) => `${a.message ?? ''} ${a.title ?? ''}`)
     .join('\n');
@@ -514,11 +587,62 @@ function classifyJob(job: Job): JobClassification {
   };
 }
 
+function resolvePrNumber(): string {
+  if (WORKFLOW_EVENT === 'pull_request' && PR_NUMBER_FROM_EVENT) {
+    return PR_NUMBER_FROM_EVENT;
+  }
+  const match = HEAD_BRANCH.match(/gh-readonly-queue\/[^/]+\/pr-(\d+)-/);
+  if (WORKFLOW_EVENT === 'merge_group' && match) {
+    return match[1];
+  }
+  return '';
+}
+
+function resolveTargetBranch(prNum: string): {
+  targetBranch: string;
+  verified: boolean;
+} {
+  const mergeQueueBranch = HEAD_BRANCH.match(/^gh-readonly-queue\/([^/]+)\//);
+  if (WORKFLOW_EVENT === 'merge_group' && mergeQueueBranch) {
+    return { targetBranch: mergeQueueBranch[1], verified: true };
+  }
+
+  if (WORKFLOW_EVENT !== 'pull_request' || !prNum) {
+    return { targetBranch: HEAD_BRANCH, verified: true };
+  }
+
+  try {
+    // workflow_run does not reliably expose the originating PR base, so query
+    // it directly before applying the stricter direct-to-main E2E policy.
+    const pullRequest = JSON.parse(ghApi(`${repoApi}/pulls/${prNum}`)) as {
+      base?: { ref?: string };
+    };
+    if (pullRequest.base?.ref) {
+      return { targetBranch: pullRequest.base.ref, verified: true };
+    }
+  } catch {
+    console.warn(
+      `Could not resolve the target branch for PR #${prNum}; requiring retry-ci for E2E failures.`,
+    );
+  }
+
+  return { targetBranch: '', verified: false };
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
 const WORKFLOW_CONCLUSION = process.env.WORKFLOW_CONCLUSION ?? '';
+
+function writeNoRetryOutput(): void {
+  if (GITHUB_OUTPUT) {
+    appendFileSync(
+      GITHUB_OUTPUT,
+      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\nconsume-retry-label=false\nretry-mode=none\npr-number=\n',
+    );
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Cancelled-run early exit
@@ -552,16 +676,11 @@ if (WORKFLOW_CONCLUSION === 'cancelled' && Number(ATTEMPT) > 1) {
     }
   }
 
-  if (GITHUB_OUTPUT) {
-    appendFileSync(
-      GITHUB_OUTPUT,
-      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-    );
-  }
+  writeNoRetryOutput();
 
   const Sentry = initSentry();
   if (Sentry) {
-    const branch = resolveTargetBranch();
+    const branch = resolveTargetBranch(resolvePrNumber()).targetBranch;
     const prNum = resolvePrNumber();
     Sentry.logger.info('Triage and Retry System: cancelled', {
       'ci.targetBranch': branch,
@@ -638,12 +757,7 @@ if (WORKFLOW_EVENT === 'merge_group') {
           }
         }
 
-        if (GITHUB_OUTPUT) {
-          appendFileSync(
-            GITHUB_OUTPUT,
-            'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-          );
-        }
+        writeNoRetryOutput();
         process.exit(0);
       }
     } catch (err) {
@@ -690,16 +804,18 @@ if (failedJobs.length === 0) {
     }
   }
 
-  if (GITHUB_OUTPUT) {
-    appendFileSync(
-      GITHUB_OUTPUT,
-      'is-retryable=false\nhas-retry-label=false\nwill-retry=false\npr-number=\n',
-    );
-  }
+  writeNoRetryOutput();
   process.exit(0);
 }
 
 console.log(`Found ${failedJobs.length} failed job(s):\n`);
+
+const prNumber = resolvePrNumber();
+const { targetBranch, verified: isTargetBranchVerified } =
+  resolveTargetBranch(prNumber);
+const requiresRetryCiForE2e =
+  WORKFLOW_EVENT === 'pull_request' &&
+  (!isTargetBranchVerified || targetBranch === 'main');
 
 // Partition into blockers and non-blockers. If any blocker fails
 // non-transiently, stop early and tag all remaining jobs as cascade.
@@ -751,8 +867,26 @@ if (blockedBy) {
   console.log(
     `\n  ♻️  Blocker(s) retryable — tagging ${otherJobs.length} downstream job(s) as cascade.\n`,
   );
+  const { jobsToClassify: alwaysRetryableJobs, jobsToCascade: cascadeJobs } =
+    partitionRetryableBlockerCascadeJobs({
+      jobs: otherJobs,
+      getCategory: (jobName) => matchCategory(jobName).category,
+    });
+
+  // A structured quality-gate annotation is deterministic evidence that a
+  // changed/new E2E test failed. It must still veto a retry when an unrelated
+  // blocker is retryable, so inspect E2E jobs before cascading the rest.
+  for (const job of alwaysRetryableJobs) {
+    console.log(`  Classifying after retryable blocker: ${job.name}`);
+    const result = classifyJob(job);
+    classifications.push(result);
+    console.log(
+      `    → ${result.jobRetryable ? '✅ retryable' : '❌ non-retryable'}: ${result.reason}`,
+    );
+  }
+
   tagCascade(
-    otherJobs,
+    cascadeJobs,
     true,
     `Cascade — will resolve when blocker retries (${blockerNames})`,
   );
@@ -775,36 +909,8 @@ const isRetryable =
 console.log(`\nDecision: is-retryable=${isRetryable}`);
 
 // ---------------------------------------------------------------------------
-// Resolve originating PR and check for retry-ci label
+// Resolve retry authorization
 // ---------------------------------------------------------------------------
-
-function resolvePrNumber(): string {
-  if (WORKFLOW_EVENT === 'pull_request' && PR_NUMBER_FROM_EVENT) {
-    return PR_NUMBER_FROM_EVENT;
-  }
-  const match = HEAD_BRANCH.match(/gh-readonly-queue\/[^/]+\/pr-(\d+)-/);
-  if (WORKFLOW_EVENT === 'merge_group' && match) {
-    return match[1];
-  }
-  return '';
-}
-
-/**
- * Resolves the target branch name from HEAD_BRANCH.
- *
- * For merge_group events HEAD_BRANCH is the temporary merge queue branch,
- * e.g. `gh-readonly-queue/main/pr-12345-abc123`. Extract the target branch
- * (`main`) so the dashboard field shows something meaningful.
- *
- * For push and pull_request events HEAD_BRANCH is already the real name.
- */
-function resolveTargetBranch(): string {
-  const match = HEAD_BRANCH.match(/^gh-readonly-queue\/([^/]+)\//);
-  if (WORKFLOW_EVENT === 'merge_group' && match) {
-    return match[1];
-  }
-  return HEAD_BRANCH;
-}
 
 function checkRetryLabel(prNum: string): boolean {
   if (!prNum) return false;
@@ -819,23 +925,41 @@ function checkRetryLabel(prNum: string): boolean {
   }
 }
 
-const prNumber = resolvePrNumber();
-const targetBranch = resolveTargetBranch();
-const hasRetryLabel = checkRetryLabel(prNumber);
-const atMaxAttempts = Number(ATTEMPT) >= MAX_ATTEMPTS;
-const willRetry = isRetryable && hasRetryLabel && !atMaxAttempts;
 const hasPR = Boolean(prNumber);
+const retryContext = hasPR
+  ? 'pr'
+  : WORKFLOW_EVENT === 'push' && HEAD_BRANCH.startsWith('release/')
+    ? 'release-push'
+    : 'observation';
+const hasRetryLabel = checkRetryLabel(prNumber);
+const hasMainTargetE2eFailure =
+  requiresRetryCiForE2e &&
+  classifications.some((job) => job.jobName.startsWith('e2e-'));
+// Reducing the automatic ceiling to the current attempt makes this first
+// direct-to-main E2E failure label-funded without introducing another retry
+// flow. Non-main PRs and merge groups retain the default ceiling.
+const retryBudget = getRetryBudget({
+  attempt: ATTEMPT,
+  context: retryContext,
+  hasRetryLabel,
+  isRetryable,
+  automaticRetryLimit: hasMainTargetE2eFailure
+    ? 1
+    : DEFAULT_RETRY_MAX_ATTEMPT,
+});
+const atRetryCiLimit = retryBudget.labelRetryLimitReached;
+const willRetry = retryBudget.willRetry;
 
-// The retry decision depends on three independent facts:
+// The retry decision depends on the classification result, whether the run
+// has an originating PR, and the active retry budget:
 //
 //   isRetryable    — did classification determine all failures are retryable?
 //   hasPR          — is there an originating PR? (false for push events)
-//   hasRetryLabel  — does that PR have the `retry-ci` label?
+//   retryContext   — PRs and release pushes can retry; other events observe
+//   retryBudget    — default retries through attempt 2, retry-ci through attempt 4
 //
-// A retry only happens when ALL THREE are true (will-retry). The other
-// combinations produce different reports and Sentry attributes so we can
-// distinguish "retryable but nobody asked for a retry" from "someone asked
-// but the failures aren't retryable."
+// Attempt 1 retries automatically. Attempts 2 and 3 require retry-ci and
+// consume the label after the rerun is triggered.
 //
 // Note: hasRetryLabel implies hasPR (can't have a label without a PR),
 // so the retryable=*,hasPR=false,hasLabel=true combination never occurs.
@@ -847,24 +971,57 @@ function resolveDecision(
   retryable: boolean,
   hasPr: boolean,
   hasLabel: boolean,
-  maxAttempts: boolean,
+  budget: RetryBudgetDecision,
   pr: string,
+  hasMainTargetE2eFailure: boolean,
 ): { key: string; label: string } {
+  // Keep the direct-to-main E2E exception ahead of generic budget messages so
+  // reviewers see the required retry-ci action instead of a vague limit note.
   if (retryable) {
-    if (hasPr && hasLabel && !maxAttempts)
+    if (
+      hasPr &&
+      hasMainTargetE2eFailure &&
+      budget.automaticRetryLimitReached &&
+      !hasLabel
+    )
+      return {
+        key: 'e2e-retry-ci-required',
+        label: `⏸️ Retryable E2E failure targeting main requires retry-ci on PR #${pr}`,
+      };
+    if (hasPr && budget.willRetry && budget.retryMode === 'automatic')
       return {
         key: 'will-retry',
-        label: '♻️ Will retry (retry-ci label present)',
+        label: `♻️ Will retry automatically (default retry budget: attempt ${budget.attemptNumber} of ${DEFAULT_RETRY_MAX_ATTEMPT})`,
       };
-    if (hasPr && hasLabel && maxAttempts)
+    if (hasPr && budget.willRetry && budget.retryMode === 'label')
+      return {
+        key: 'will-retry',
+        label: `♻️ Will retry (retry-ci label present; attempt ${budget.attemptNumber} of ${RETRY_CI_LABEL_MAX_ATTEMPT})`,
+      };
+    if (hasPr && budget.labelRetryLimitReached)
       return {
         key: 'max-attempts-reached',
-        label: `🛑 Retryable with retry-ci label, but attempt ${ATTEMPT} reached the limit of ${MAX_ATTEMPTS}`,
+        label: `🛑 Retryable, but attempt ${budget.attemptNumber} reached the retry-ci limit of ${budget.labelRetryLimit}`,
+      };
+    if (hasPr && budget.automaticRetryLimitReached)
+      return {
+        key: 'retryable-no-label',
+        label: `⏸️ Retryable, but the automatic retry budget ended at attempt ${budget.automaticRetryLimit}`,
       };
     if (hasPr)
       return {
         key: 'retryable-no-label',
         label: `⏸️ Retryable, but no retry-ci label on PR #${pr}`,
+      };
+    if (budget.willRetry && budget.retryMode === 'automatic')
+      return {
+        key: 'will-retry',
+        label: `♻️ Will retry automatically (default retry budget: attempt ${budget.attemptNumber} of ${DEFAULT_RETRY_MAX_ATTEMPT})`,
+      };
+    if (budget.automaticRetryLimitReached)
+      return {
+        key: 'retryable-no-pr',
+        label: `⏸️ Retryable, but the automatic retry budget ended at attempt ${budget.automaticRetryLimit}`,
       };
     return {
       key: 'retryable-no-pr',
@@ -883,37 +1040,43 @@ function resolveDecision(
     };
   return {
     key: 'not-retryable-no-pr',
-    label: '❌ Non-retryable, no originating PR (observation only)',
+    label:
+      retryContext === 'release-push'
+        ? '❌ Non-retryable release push'
+        : '❌ Non-retryable, no originating PR (observation only)',
   };
 }
 const { key: decision, label: decisionLabel } = resolveDecision(
   isRetryable,
   hasPR,
   hasRetryLabel,
-  atMaxAttempts,
+  retryBudget,
   prNumber,
+  hasMainTargetE2eFailure,
 );
 
-if (atMaxAttempts && hasRetryLabel && isRetryable) {
+if (atRetryCiLimit && isRetryable) {
   console.log(
-    `PR #${prNumber}: retry-ci label present but attempt ${ATTEMPT} >= ${MAX_ATTEMPTS} — will not retry`,
+    `${hasPR ? `PR #${prNumber}` : `Release branch ${HEAD_BRANCH}`}: attempt ${retryBudget.attemptNumber} reached the retry-ci limit (${retryBudget.labelRetryLimit}) — will not retry`,
   );
 } else {
   console.log(
     prNumber
-      ? `PR #${prNumber}: retry-ci label ${hasRetryLabel ? 'present' : 'absent'} → will-retry=${willRetry}`
-      : `No originating PR for event '${WORKFLOW_EVENT}' → will-retry=false`,
+      ? `PR #${prNumber}: retry-ci label ${hasRetryLabel ? 'present' : 'absent'}, retry-mode=${retryBudget.retryMode} → will-retry=${willRetry}`
+      : retryContext === 'release-push'
+        ? `Release branch ${HEAD_BRANCH}: retry-mode=${retryBudget.retryMode} → will-retry=${willRetry}`
+        : `No originating PR for event '${WORKFLOW_EVENT}' → will-retry=false`,
   );
 }
 
 // ---------------------------------------------------------------------------
 // Post deferred failure commit status (merge queue only)
 //
-// ci-status-gate.yml defers the "All jobs pass" commit status when it
-// sees retry-ci on attempts below the limit (< MAX_ATTEMPTS), giving
-// triage time to retry. If we decide NOT to retry (non-retryable
-// failures, or max attempts reached), we must post the failure status
-// here to unblock the merge queue for ejection.
+// ci-status-gate.yml defers the "All jobs pass" commit status for merge queue
+// failures while a retry budget is still available, giving triage time to
+// retry. If we decide NOT to retry (non-retryable failures, or retry limit
+// reached), we must post the failure status here to unblock the merge queue
+// for ejection.
 //
 // The merge queue requires two checks (ruleset or classic branch protection):
 //   Rule 1 — Merge queue > ALLGREEN (monitors check suites directly)
@@ -922,18 +1085,21 @@ if (atMaxAttempts && hasRetryLabel && isRetryable) {
 // can't eject the PR.
 // ---------------------------------------------------------------------------
 
-// The gate defers when: merge_group + failure + retry-ci + attempt < MAX_ATTEMPTS.
-// We can't re-check hasRetryLabel here because the API call might fail (rate
-// limit, transient outage), and if it does, the deferred status would never
-// post — leaving the queue stuck. Instead, post on any merge_group where we
-// won't retry. If the gate didn't actually defer (no label), this posts a
-// redundant failure status — harmless, since ci-status-gate already posted one.
+// The gate defers when a merge_group failure is under either the default or
+// retry-ci retry budget. We can't rely on re-checking labels here because the
+// API call might fail (rate limit, transient outage), and if it does, the
+// deferred status would never post — leaving the queue stuck. Instead, post on
+// any merge_group where we won't retry. If the gate didn't actually defer, this
+// posts a redundant failure status — harmless, since ci-status-gate already
+// posted one.
 if (WORKFLOW_EVENT === 'merge_group' && !willRetry) {
   const headSha = getRunHeadSha();
-  const description = atMaxAttempts
-    ? `Retry limit reached (attempt ${ATTEMPT} of ${MAX_ATTEMPTS})`
+  const description = retryBudget.labelRetryLimitReached
+    ? `Retry-ci limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.labelRetryLimit})`
+    : retryBudget.automaticRetryLimitReached
+      ? `Automatic retry limit reached (attempt ${retryBudget.attemptNumber} of ${retryBudget.automaticRetryLimit})`
     : isRetryable
-      ? 'Retryable failures, but no retry-ci label'
+      ? 'Retryable failures, but no retry budget available'
       : 'Non-retryable failures detected';
   try {
     ghApi(`${repoApi}/statuses/${headSha}`, {
@@ -961,6 +1127,12 @@ if (GITHUB_OUTPUT) {
       `is-retryable=${isRetryable}`,
       `has-retry-label=${hasRetryLabel}`,
       `will-retry=${willRetry}`,
+      `consume-retry-label=${retryBudget.consumeRetryLabel}`,
+      `retry-mode=${retryBudget.retryMode}`,
+      `automatic-retry-limit=${retryBudget.automaticRetryLimit}`,
+      `automatic-retry-limit-reached=${retryBudget.automaticRetryLimitReached}`,
+      `label-retry-limit=${retryBudget.labelRetryLimit}`,
+      `label-retry-limit-reached=${retryBudget.labelRetryLimitReached}`,
       `pr-number=${prNumber}`,
     ].join('\n') + '\n',
   );
@@ -979,6 +1151,7 @@ const reportLines = [
   `**Run:** [${MAIN_RUN_ID}](${mainRunUrl})${ATTEMPT ? ` (attempt ${ATTEMPT})` : ''}`,
   `**Classification:** ${isRetryable ? '✅ All failures retryable' : '❌ Non-retryable failures detected'}`,
   `**Retry:** ${decisionLabel}`,
+  `**Retry mode:** ${retryBudget.retryMode} (automatic limit ${retryBudget.automaticRetryLimit}; retry-ci limit ${retryBudget.labelRetryLimit})`,
   `**Failed jobs:** ${failedJobs.length}`,
   ``,
   `| Job | Category | Job Retryable | Reason |`,
@@ -998,10 +1171,10 @@ if (unmatchedJobs.length > 0) {
   );
 }
 
-if (atMaxAttempts && isRetryable && hasRetryLabel) {
+if (retryBudget.labelRetryLimitReached && isRetryable && hasPR) {
   reportLines.push(
     ``,
-    `> 🛑 **Retry limit reached** — attempt ${ATTEMPT} of ${MAX_ATTEMPTS}. The failures look retryable, but no more automatic retries will be attempted.`,
+    `> 🛑 **Retry-ci limit reached** — attempt ${retryBudget.attemptNumber} of ${retryBudget.labelRetryLimit}. The failures look retryable, but no further retries will be attempted for this run.`,
   );
 }
 
@@ -1102,6 +1275,14 @@ if (Sentry) {
     'ci.prNumber': prNumber || 'none',
     'ci.retry.date': new Date().toISOString().slice(0, 10),
     'ci.retry.decision': decision,
+    'ci.retry.mode': retryBudget.retryMode,
+    'ci.retry.automaticLimit': String(retryBudget.automaticRetryLimit),
+    'ci.retry.automaticLimitReached': String(
+      retryBudget.automaticRetryLimitReached,
+    ),
+    'ci.retry.labelLimit': String(retryBudget.labelRetryLimit),
+    'ci.retry.labelLimitReached': String(retryBudget.labelRetryLimitReached),
+    'ci.retry.consumeRetryLabel': String(retryBudget.consumeRetryLabel),
     'ci.retry.runId': MAIN_RUN_ID,
     'ci.retry.attempt': ATTEMPT || 'unknown',
     'ci.retry.event': WORKFLOW_EVENT || '',
@@ -1126,6 +1307,7 @@ if (Sentry) {
       'ci.retry.runId': MAIN_RUN_ID,
       'ci.retry.date': new Date().toISOString().slice(0, 10),
       'ci.retry.decision': decision,
+      'ci.retry.mode': retryBudget.retryMode,
       'ci.retry.attempt': ATTEMPT || 'unknown',
       'ci.retry.event': WORKFLOW_EVENT || '',
       'ci.retry.parentTriageLink': parentTriageLink,

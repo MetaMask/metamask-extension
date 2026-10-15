@@ -13,7 +13,6 @@ import {
   CONNECT_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   IMPORT_SRP_ROUTE,
-  DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
   PERMISSIONS,
@@ -29,6 +28,7 @@ import {
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   SYNC_ACCOUNTS_ROUTE,
+  MFA_FLOW_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -43,6 +43,15 @@ export function isConfirmTransactionRoute(pathname) {
   );
 }
 
+/**
+ * Resolves the user's theme preference to a concrete light/dark value for
+ * `data-theme` on `<html>`.
+ *
+ * TODO: Prefer stylesheet-level OS theming once design tokens support it
+ * (https://github.com/MetaMask/metamask-design-system/pull/814) instead of
+ * resolving `prefers-color-scheme` in JS.
+ * @param theme
+ */
 export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
@@ -54,10 +63,8 @@ export function getThemeFromRawTheme(theme) {
 }
 
 export function setTheme(theme) {
-  document.documentElement.setAttribute(
-    'data-theme',
-    getThemeFromRawTheme(theme),
-  );
+  const resolvedTheme = getThemeFromRawTheme(theme);
+  document.documentElement.dataset.theme = resolvedTheme;
 }
 
 function onConfirmPage(props) {
@@ -374,24 +381,15 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  if (matchPath({ path: MFA_FLOW_ROUTE, end: false }, location.pathname)) {
+    return true;
+  }
+
   return (
     isHandlingPermissionsRequest ||
     isHandlingAddEthereumChainRequest ||
     isConfirmTransactionRoute(location.pathname) ||
     isImportSrpPage
-  );
-}
-
-export function showAppHeader(props) {
-  const { location } = props;
-  return Boolean(
-    matchPath(
-      {
-        path: DEFAULT_ROUTE,
-        end: true,
-      },
-      location.pathname,
-    ),
   );
 }
 

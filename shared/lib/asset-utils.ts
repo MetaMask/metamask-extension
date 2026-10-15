@@ -23,14 +23,17 @@ import {
 import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_SPECIAL_ASSET_CAIP_TYPES_SET,
+  SLIP44_ASSET_NAMESPACE,
   type TronSpecialAssetCaipType,
 } from '../constants/multichain/assets';
+import { POLYGON_NATIVE_TOKEN_ADDRESS } from '../constants/transaction';
 import getFetchWithTimeout from './fetch-with-timeout';
 import { decimalToPrefixedHex } from './conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+const polygonCaipChainId = 'eip155:137' as CaipChainId;
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
@@ -52,7 +55,12 @@ export const toAssetId = (
     return undefined;
   }
 
-  if (isNativeAddress(addressToUse)) {
+  // TODO: Fix or replace `isNativeAddress` to support Polygon
+  const isPolygonNative =
+    chainIdToUse === polygonCaipChainId &&
+    addressToUse === POLYGON_NATIVE_TOKEN_ADDRESS;
+
+  if (isNativeAddress(addressToUse) || isPolygonNative) {
     try {
       return getNativeAssetForChainId(chainIdToUse)?.assetId;
     } catch {
@@ -66,6 +74,21 @@ export const toAssetId = (
   }
   if (chainIdToUse === MultichainNetworks.TRON) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
+  }
+  // Stellar classic: `CODE-ISSUER` (issuer StrKey starts with G).
+  // SEP-41 (Soroban) tokens: contract StrKey is `C` + 55 Base32 chars ([A-Z2-7]), 56 chars total.
+  if (chainIdToUse === MultichainNetworks.STELLAR) {
+    const ref = String(addressToUse);
+    if (/^[A-Za-z0-9]{1,12}-G[A-Z2-7]{55}$/u.test(ref)) {
+      return CaipAssetTypeStruct.create(`${chainIdToUse}/asset:${ref}`);
+    }
+    const sep41ContractMatch = /^(?:sep41:)?(C[A-Z2-7]{55})$/u.exec(ref);
+    if (sep41ContractMatch) {
+      return CaipAssetTypeStruct.create(
+        `${chainIdToUse}/sep41:${sep41ContractMatch[1]}`,
+      );
+    }
+    return undefined;
   }
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
@@ -96,6 +119,61 @@ export const getNativeAssetId = (
   } catch {
     return undefined;
   }
+};
+
+export const isNativeCaipAssetId = (assetId: CaipAssetType) => {
+  try {
+    return (
+      parseCaipAssetType(assetId).assetNamespace === SLIP44_ASSET_NAMESPACE
+    );
+  } catch {
+    return false;
+  }
+};
+
+export const normalizeTokenAssetId = (assetId: CaipAssetType) => {
+  const { chain } = parseCaipAssetType(assetId);
+  return chain.namespace === KnownCaipNamespace.Eip155
+    ? (assetId.toLowerCase() as CaipAssetType)
+    : assetId;
+};
+
+/**
+ * Builds a normalized CAIP-19 token id from a contract address and chain, or
+ * from an id that is already in CAIP-19 form. Returns `undefined` when the
+ * address or chain cannot be used (for example a decimal chain id like `"1").
+ *
+ * @param addressOrAssetId - Contract address, or an existing CAIP-19 asset id.
+ * @param chainId - Hex or CAIP chain id when `addressOrAssetId` is an address.
+ * @returns Normalized CAIP-19 asset id, or `undefined`.
+ */
+export const toNormalizedCaipAssetId = (
+  addressOrAssetId: string | undefined,
+  chainId?: CaipChainId | Hex | string | number,
+): CaipAssetType | undefined => {
+  if (!addressOrAssetId) {
+    return undefined;
+  }
+
+  let chainIdForLookup: CaipChainId | Hex | undefined;
+
+  // Get a chain id to pass to toAssetId
+  if (!isCaipAssetType(addressOrAssetId)) {
+    if (chainId === undefined || chainId === null) {
+      return undefined;
+    }
+    const chainIdString =
+      typeof chainId === 'string' ? chainId : String(chainId);
+    // Reject decimal and other invalid chain ids so toAssetId doesn't throw
+    if (!isStrictHexString(chainIdString) && !isCaipChainId(chainIdString)) {
+      return undefined;
+    }
+
+    chainIdForLookup = chainIdString;
+  }
+
+  const caipAssetId = toAssetId(addressOrAssetId, chainIdForLookup);
+  return caipAssetId ? normalizeTokenAssetId(caipAssetId) : undefined;
 };
 
 /**
@@ -334,6 +412,10 @@ export const isTronSpecialAsset = (
 export function getChainIdFromAssetId(
   assetId: CaipAssetType,
 ): CaipChainId | undefined {
+  if (!assetId) {
+    return undefined;
+  }
+
   return CaipAssetTypeStruct.is(assetId)
     ? parseCaipAssetType(assetId).chainId
     : undefined;

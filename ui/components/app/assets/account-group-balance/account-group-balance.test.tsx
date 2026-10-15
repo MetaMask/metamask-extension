@@ -8,11 +8,16 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
   getEnabledNetworksByNamespace,
+  getMultichainNetwork,
   getShowFiatInTestnets,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  getMultichainNativeTokenBalance,
+  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
+} from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import {
   AccountGroupBalance,
@@ -23,6 +28,7 @@ const mockStore = configureMockStore()(mockState);
 
 const SEPOLIA_CHAIN_ID = '0xaa36a7';
 const MAINNET_CHAIN_ID = '0x1';
+const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
 jest.mock('../../../../selectors/assets');
 jest.mock('../../../../selectors');
@@ -45,6 +51,7 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable?: boolean;
     showFiatInTestnets?: boolean;
     privacyMode?: boolean;
+    isAssetsLoading?: boolean;
   };
 
   const arrange = ({
@@ -54,10 +61,15 @@ describe('AccountGroupBalance', () => {
     anyEnabledNetworksAreAvailable = true,
     showFiatInTestnets = false,
     privacyMode = false,
+    isAssetsLoading = false,
   }: ArrangeOptions = {}) => {
-    const mockSelectBalanceBySelectedAccountGroup = jest
-      .mocked(selectBalanceBySelectedAccountGroup)
+    jest
+      .mocked(selectUnifiedBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
+
+    jest
+      .mocked(selectIsAssetsLoadingForSelectedAccountGroup)
+      .mockReturnValue(isAssetsLoading);
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -82,8 +94,17 @@ describe('AccountGroupBalance', () => {
       .mocked(getShowFiatInTestnets)
       .mockReturnValue(showFiatInTestnets);
 
+    jest.mocked(getMultichainNetwork).mockReturnValue({
+      network: {
+        ticker: 'SOL',
+      },
+    } as ReturnType<typeof getMultichainNetwork>);
+
+    jest.mocked(getMultichainNativeTokenBalance).mockReturnValue({
+      amount: '0',
+    } as ReturnType<typeof getMultichainNativeTokenBalance>);
+
     return {
-      mockSelectBalanceBySelectedAccountGroup,
       mockGetPreferences,
       mockGetIntlLocale,
       mockGetCurrentCurrency,
@@ -224,9 +245,54 @@ describe('AccountGroupBalance', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders a skeleton instead of a zero balance while assets are first loading', () => {
+    arrange({
+      isAssetsLoading: true,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+    });
+
+    const { getByTestId } = renderComponent();
+
+    expect(getByTestId('account-group-balance-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders a non-zero balance while assets are first loading', () => {
+    arrange({
+      isAssetsLoading: true,
+      selectedGroupBalance: createMockBalance(),
+    });
+
+    const { getByText, queryByTestId } = renderComponent();
+
+    expect(
+      queryByTestId('account-group-balance-skeleton'),
+    ).not.toBeInTheDocument();
+    expect(getByText(/123\.45/u)).toBeInTheDocument();
+  });
+
   it('renders skeleton when no networks available and no balance', () => {
     arrange({ anyEnabledNetworksAreAvailable: false });
     actAssertSkeletonPresent();
+  });
+
+  it('renders known zero non-EVM fiat balance when no networks are available', () => {
+    arrange({
+      anyEnabledNetworksAreAvailable: false,
+      selectedGroupBalance: {
+        ...createMockBalance(),
+        totalBalanceInUserCurrency: 0,
+      },
+      enabledNetworksByNamespace: { [SOLANA_CHAIN_ID]: true },
+    });
+
+    actAssertBalanceContent({
+      amount: '$0.00',
+      balance: '0',
+      chainId: SOLANA_CHAIN_ID,
+    });
   });
 
   it('applies cached balance class when balanceIsCached is true', () => {

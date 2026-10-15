@@ -3,25 +3,30 @@ import type {
   V1TransactionByHashResponse,
   V4MultiAccountTransactionsResponse,
 } from '@metamask/core-backend';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mapApiTransaction } from '@metamask/client-utils';
 import type { ActivityListItem } from '../../../../shared/lib/activity/types';
 import { selectProtectedLocalTransactions } from '../../../selectors/activity';
+import { selectRampsSettlementHashes } from '../../../selectors/rampsController';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { activityMatchesAssetId, type ActivityListFilter } from '../helpers';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
 import { isIncomingTokenTransfer } from './incoming-token-transfer';
 import { isSpamTransaction } from './spam-transactions';
-import { isTopLevelAccountTransaction } from './top-level-account-transaction';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
 type Props = ActivityListFilter & { subjectAddress: string };
 
 export function useQueryFilters(queryFilters: Props) {
   const { subjectAddress } = queryFilters;
-  const excludedHashes = useSelector(selectRequiredTransactionHashes);
+  const requiredHashes = useSelector(selectRequiredTransactionHashes);
+  const rampHashes = useSelector(selectRampsSettlementHashes);
+  const excludedHashes = useMemo(
+    () => new Set([...requiredHashes, ...rampHashes]),
+    [requiredHashes, rampHashes],
+  );
   const protectedLocalTransactions = useSelector(
     selectProtectedLocalTransactions,
   );
@@ -31,7 +36,6 @@ export function useQueryFilters(queryFilters: Props) {
     (data: InfiniteData<V4MultiAccountTransactionsResponse>) => {
       // Ideally we'd want to move some of these filters to the API
       const txFilters: ((tx: V1TransactionByHashResponse) => boolean)[] = [
-        (tx) => isTopLevelAccountTransaction(tx, subjectAddress),
         (tx) => !isSpamTransaction(tx),
         (tx) => !isZeroValueSelfSend(tx, subjectAddress),
         (tx) => !isIncomingTokenTransfer(tx, subjectAddress),

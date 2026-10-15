@@ -7,6 +7,8 @@ import {
   isBatchTransaction,
   hasTransactionType,
   getPostQuoteWithdrawTransactionType,
+  getTransactionPayingAccount,
+  getTransactionType,
   isPostQuoteWithdrawTransaction,
   isPerpsWithdrawTransaction,
   isValidTransactionHash,
@@ -140,6 +142,70 @@ describe('Transactions utils', () => {
     });
   });
 
+  describe('getTransactionType', () => {
+    it('returns undefined for undefined input', () => {
+      expect(getTransactionType(undefined)).toBeUndefined();
+    });
+
+    it('returns direct type for regular transactions', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+
+    it('returns nested type when nested transactions exist', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountDeposit,
+      );
+    });
+
+    it('returns direct type when nested transactions have no type', () => {
+      const transactionMeta = {
+        type: TransactionType.simpleSend,
+        nestedTransactions: [{}],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.simpleSend,
+      );
+    });
+
+    it('returns first nested type that has a type', () => {
+      const transactionMeta = {
+        type: TransactionType.batch,
+        nestedTransactions: [
+          {},
+          { type: TransactionType.perpsWithdraw },
+          { type: TransactionType.predictWithdraw },
+        ],
+      } as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsWithdraw,
+      );
+    });
+
+    it('returns direct type when nestedTransactions is empty', () => {
+      const transactionMeta = {
+        type: TransactionType.perpsDeposit,
+        nestedTransactions: [],
+      } as unknown as TransactionMeta;
+
+      expect(getTransactionType(transactionMeta)).toBe(
+        TransactionType.perpsDeposit,
+      );
+    });
+  });
+
   describe('isPerpsWithdrawTransaction', () => {
     it('returns true when type is perpsWithdraw', () => {
       const transactionMeta = {
@@ -185,6 +251,16 @@ describe('Transactions utils', () => {
       );
     });
 
+    it('returns moneyAccountWithdraw when type is moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(getPostQuoteWithdrawTransactionType(transactionMeta)).toBe(
+        TransactionType.moneyAccountWithdraw,
+      );
+    });
+
     it('returns perpsWithdraw when a nested transaction is perpsWithdraw', () => {
       const transactionMeta = {
         type: TransactionType.batch,
@@ -216,8 +292,45 @@ describe('Transactions utils', () => {
       expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
     });
 
+    it('returns true for moneyAccountWithdraw', () => {
+      const transactionMeta = {
+        type: TransactionType.moneyAccountWithdraw,
+      } as TransactionMeta;
+
+      expect(isPostQuoteWithdrawTransaction(transactionMeta)).toBe(true);
+    });
+
     it('returns false when transactionMeta is undefined', () => {
       expect(isPostQuoteWithdrawTransaction(undefined)).toBe(false);
     });
+  });
+
+  describe('getTransactionPayingAccount', () => {
+    const FROM = '0x1234567890123456789012345678901234567890';
+    const OVERRIDE = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd';
+
+    const CASES = [
+      ['the override', TransactionType.contractInteraction, OVERRIDE, OVERRIDE],
+      ['from without an override', TransactionType.simpleSend, undefined, FROM],
+      [
+        'from for post-quote withdraws',
+        TransactionType.perpsWithdraw,
+        OVERRIDE,
+        FROM,
+      ],
+    ] as const;
+
+    for (const [label, type, override, expected] of CASES) {
+      it(`returns ${label}`, () => {
+        const transactionMeta = { type, txParams: { from: FROM } };
+
+        expect(
+          getTransactionPayingAccount(
+            transactionMeta as TransactionMeta,
+            override,
+          ),
+        ).toBe(expected);
+      });
+    }
   });
 });

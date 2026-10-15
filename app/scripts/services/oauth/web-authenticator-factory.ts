@@ -66,7 +66,7 @@ export function webAuthenticatorFactory(): WebAuthenticator {
   if (process.env.IN_TEST) {
     const { mockWebAuthenticator } =
       // Load conditionally so this test-only code can be dead-code-eliminated from production builds.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       require('../../../../test/e2e/helpers/seedless-onboarding/mock-web-authenticator');
     return mockWebAuthenticator();
   }

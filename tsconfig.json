@@ -24,7 +24,9 @@
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
     "useUnknownInCatchVariables": true,
     // baseUrl is required for path mappings
-    "baseUrl": "."
+    "baseUrl": ".",
+    "module": "preserve",
+    "moduleResolution": "bundler"
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.

@@ -8,7 +8,6 @@ import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 import { hasTransactionType } from '../../../../../../shared/lib/transactions.utils';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsTotalRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();

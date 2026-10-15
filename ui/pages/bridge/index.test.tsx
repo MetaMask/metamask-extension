@@ -15,10 +15,6 @@ import {
 import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
-jest.mock('../../hooks/useBottomNavBar', () => ({
-  useBottomNavBar: jest.fn().mockReturnValue(false),
-}));
-
 const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
@@ -32,6 +28,23 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletActions: () => mockUseHardwareWalletActions(),
   useHardwareWalletState: () => mockUseHardwareWalletState(),
 }));
+
+const mockShowErrorModal = jest.fn();
+
+jest.mock(
+  '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: jest.fn(),
+      isErrorModalVisible: false,
+      setErrorModalSuppressed: jest.fn(),
+    }),
+  }),
+);
 
 jest.mock('../../hooks/bridge/usePopularTokens', () => ({
   usePopularTokens: jest.fn().mockReturnValue({
@@ -95,7 +108,7 @@ describe('Bridge', () => {
       isWebUsbAvailable: false,
     });
     mockUseHardwareWalletActions.mockReturnValue({
-      ensureDeviceReady: jest.fn().mockResolvedValue(true),
+      ensureDeviceReadyOrError: jest.fn().mockResolvedValue(null),
     });
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Disconnected },

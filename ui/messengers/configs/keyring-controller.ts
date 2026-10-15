@@ -4,7 +4,7 @@ import { defineExcludedCapabilities } from './helpers';
 // you think should NOT be accessible from the UI, update this.
 export const EXCLUDED_CAPABILITIES = defineExcludedCapabilities({
   actions: [
-    'KeyringController:addKeyring',
+    'KeyringController:addNewKeyring',
     'KeyringController:getKeyringsByType',
     'KeyringController:getKeyringForAccount',
     'KeyringController:withController',

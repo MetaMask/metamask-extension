@@ -13,16 +13,20 @@ import { useTokenTransactionData } from './useTokenTransactionData';
 export const useTokenValues = (transactionMeta: TransactionMeta) => {
   const locale = useSelector(getIntlLocale);
   const parsedTransactionData = useTokenTransactionData();
+  const { txParams, txParamsOriginal } = transactionMeta;
+  const tokenAddress = txParamsOriginal?.to ?? txParams.to;
+  const userAddress = txParamsOriginal?.from ?? txParams.from;
+  const transactionData = txParamsOriginal?.data ?? txParams.data;
   const exchangeRate = useTokenExchangeRate(
-    transactionMeta?.txParams?.to,
-    transactionMeta?.chainId as Hex,
+    tokenAddress,
+    transactionMeta.chainId as Hex,
   );
   const fiatFormatter = useFiatFormatter();
 
   const { decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    tokenAddress,
+    userAddress,
+    transactionData,
     transactionMeta.chainId,
   );
 

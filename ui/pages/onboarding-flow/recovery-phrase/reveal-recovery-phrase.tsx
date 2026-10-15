@@ -1,6 +1,6 @@
 import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Text,
@@ -36,10 +36,7 @@ import {
   TextFieldType,
 } from '../../../components/component-library';
 import { FontWeight as DesignSystemFontWeight } from '../../../helpers/constants/design-system';
-import {
-  getSeedPhrase,
-  getSeedPhraseWithPasskey,
-} from '../../../store/actions';
+import { getSeedPhrase } from '../../../store/actions';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -58,6 +55,7 @@ import { getHDEntropyIndex } from '../../../selectors';
 import { PasskeyVerification } from '../../../components/app/passkey-verification';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
 import { useOnboardingSearchParams } from '../hooks/useOnboardingSearchParams';
+import { usePasskeySeedPhraseExport } from '../../../hooks/passkey/usePasskeySeedPhraseExport';
 
 type RevealRecoveryPhraseScreen =
   | 'VERIFY_PASSKEY_SCREEN'
@@ -84,20 +82,18 @@ function getSrpExportEventProperties(
   };
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RevealRecoveryPhrase({
   setSecretRecoveryPhrase,
 }: {
   setSecretRecoveryPhrase: (seedPhrase: string) => void;
 }) {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const exportSeedPhraseWithPasskey = usePasskeySeedPhraseExport();
   const navigate = useNavigate();
   const t = useI18nContext();
   const isFirefox = useIsFirefox();
   const { trackEvent, createEventBuilder } = useAnalytics();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const { isFromSettingsSecurity, nextRouteQueryString } =
+  const { isFromSettingsSecurity, previousPage, nextRouteQueryString } =
     useOnboardingSearchParams();
   const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
@@ -202,7 +198,7 @@ export default function RevealRecoveryPhrase({
     async (authenticationResponse: PasskeyAuthenticationResponse) => {
       await revealSeedPhrase(
         MetaMetricsEventVerificationMethod.Passkey,
-        () => dispatch(getSeedPhraseWithPasskey(authenticationResponse)),
+        () => exportSeedPhraseWithPasskey(authenticationResponse),
         (error) => {
           captureException(
             createSentryError('Reveal SRP backup with passkey failed', error),
@@ -211,7 +207,7 @@ export default function RevealRecoveryPhrase({
         },
       );
     },
-    [dispatch, revealSeedPhrase],
+    [exportSeedPhraseWithPasskey, revealSeedPhrase],
   );
 
   const handleUsePassword = useCallback(() => {
@@ -243,11 +239,21 @@ export default function RevealRecoveryPhrase({
 
   const returnToPreviousPage = useCallback(() => {
     cancelPasskeyCeremony();
-    if (isFromSettingsSecurity) {
+    if (previousPage) {
+      navigate(previousPage, { replace: true });
+    } else if (isFromSettingsSecurity) {
       navigate(MANAGE_WALLET_RECOVERY_ROUTE, { replace: true });
     } else {
       navigate(DEFAULT_ROUTE, { replace: true });
     }
+  }, [navigate, isFromSettingsSecurity, previousPage]);
+
+  const closeBackupFlow = useCallback(() => {
+    cancelPasskeyCeremony();
+    navigate(
+      isFromSettingsSecurity ? MANAGE_WALLET_RECOVERY_ROUTE : DEFAULT_ROUTE,
+      { replace: true },
+    );
   }, [navigate, isFromSettingsSecurity]);
 
   return (
@@ -256,7 +262,7 @@ export default function RevealRecoveryPhrase({
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
       gap={6}
-      className="reveal-recovery-phrase h-full"
+      className="reveal-recovery-phrase h-full bg-default"
       data-testid="reveal-recovery-phrase"
     >
       <Box className="w-full">
@@ -282,7 +288,7 @@ export default function RevealRecoveryPhrase({
             color={IconColor.IconDefault}
             size={ButtonIconSize.Md}
             data-testid="reveal-recovery-phrase-close-button"
-            onClick={returnToPreviousPage}
+            onClick={closeBackupFlow}
             ariaLabel={t('close')}
           />
         </Box>

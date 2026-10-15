@@ -8,9 +8,15 @@ import { enLocale as messages } from '../../../../../../../../../test/lib/i18n-h
 import { MetaMetricsEventName } from '../../../../../../../../../shared/constants/metametrics';
 import * as actions from '../../../../../../../../store/actions';
 import { memoizedGetTokenStandardAndDetailsByChain } from '../../../../../../utils/token';
+import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
 import PermitSimulationValueDisplay from './value-display';
 
 const mockTrackEvent = jest.fn();
+
+jest.mock('../../../../../../../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../../../../../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
 
 jest.mock('../../../../../../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -47,18 +53,80 @@ describe('PermitSimulationValueDisplay', () => {
   it('renders component correctly', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    await act(async () => {
-      const { container, findByText } = renderWithProvider(
-        <PermitSimulationValueDisplay
-          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-          value="4321"
-          chainId="0x1"
-        />,
-        mockStore,
-      );
+    const { container, findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
 
-      expect(await findByText('0.432')).toBeInTheDocument();
-      expect(container).toMatchSnapshot();
+    expect(await findByText('0.432')).toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+  });
+
+  it('returns null if the token contract is missing', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { container } = renderWithProvider(
+      <PermitSimulationValueDisplay chainId="0x1" />,
+      mockStore,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('does not let an invalid token ID suppress the token value', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        tokenId="not-a-number"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
+
+    expect(await findByText('0.432')).toBeInTheDocument();
+  });
+
+  it('bounds the visible token ID length', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { findByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        tokenId="115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
+
+    expect(await findByText('#115792089237316...')).toBeInTheDocument();
+  });
+
+  it('does not render unlimited for a DAI revocation', async () => {
+    const mockStore = configureMockStore([])(mockState);
+
+    const { queryByText } = renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract={DAI_CONTRACT_ADDRESS}
+        chainId="0x1"
+        message={{ allowed: false }}
+        canDisplayValueAsUnlimited
+      />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(queryByText(messages.unlimited.message)).not.toBeInTheDocument();
     });
   });
 
@@ -72,16 +140,14 @@ describe('PermitSimulationValueDisplay', () => {
       .mocked(actions.getTokenStandardAndDetails)
       .mockResolvedValueOnce(tokenDetailsWithoutDecimals);
 
-    await act(async () => {
-      renderWithProvider(
-        <PermitSimulationValueDisplay
-          tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-          value="4321"
-          chainId="0x1"
-        />,
-        mockStore,
-      );
-    });
+    renderWithProvider(
+      <PermitSimulationValueDisplay
+        tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        value="4321"
+        chainId="0x1"
+      />,
+      mockStore,
+    );
 
     await waitFor(() => {
       expect(mockTrackEvent).toHaveBeenCalledWith(
@@ -95,7 +161,7 @@ describe('PermitSimulationValueDisplay', () => {
   it('renders unlimited if value at threshold', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { getByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <PermitSimulationValueDisplay
         tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         value={UNLIMITED_THRESHOLD}
@@ -105,17 +171,13 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
-    });
-
-    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+    expect(await findByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value over threshold', async () => {
     const mockStore = configureMockStore([])(mockState);
 
-    const { getByText } = renderWithProvider(
+    const { findByText } = renderWithProvider(
       <PermitSimulationValueDisplay
         tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
         value={`${UNLIMITED_THRESHOLD.slice(0, -1)}1`}
@@ -125,11 +187,7 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
-    });
-
-    expect(getByText(messages.unlimited.message)).toBeInTheDocument();
+    expect(await findByText(messages.unlimited.message)).toBeInTheDocument();
   });
 
   it('renders unlimited if value under threshold', async () => {
@@ -145,10 +203,8 @@ describe('PermitSimulationValueDisplay', () => {
       mockStore,
     );
 
-    await act(async () => {
-      // Intentionally empty
+    await waitFor(() => {
+      expect(queryByText(messages.unlimited.message)).toBeNull();
     });
-
-    expect(queryByText(messages.unlimited.message)).toBeNull();
   });
 });

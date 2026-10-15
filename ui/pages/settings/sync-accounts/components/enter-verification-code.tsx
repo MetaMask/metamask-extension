@@ -224,7 +224,6 @@ const EnterVerificationCode = ({ onRestart }: EnterVerificationCodeProps) => {
           <Input
             // The list is a fixed-length set of positional inputs, so the
             // index is a stable identity here.
-            // eslint-disable-next-line react/no-array-index-key
             key={`verification-code-${index}`}
             ref={(ref) => {
               inputRefs.current[index] = ref;

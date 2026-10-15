@@ -14,6 +14,13 @@ import type {
 import { DAPP_URL } from '../../../constants';
 import { aggregateDappPageLoadStatistics } from './dapp-page-load-stats';
 
+/**
+ * How long to wait for the static dapp server to report that it is accepting
+ * connections. Exceeding this is a failure rather than a fallback: a benchmark
+ * that navigates before the server binds measures nothing.
+ */
+const DAPP_SERVER_READY_TIMEOUT_MS = 30_000;
+
 declare global {
   /**
    * We override Performance interface to make sure Typescript allows us to access memory property without
@@ -135,36 +142,53 @@ export class PageLoadBenchmark {
         cwd: process.cwd(),
       });
 
-      // Handle process events
-      this.dappServerProcess.stdout?.on('data', (data) => {
-        const output = data.toString();
-
-        // `development/static-server.js` for further context on how server start up works
-        if (output.includes('Running at http://localhost:')) {
-          console.log('Static dapp server up!');
-        }
-      });
-
       this.dappServerProcess.stderr?.on('data', (data) => {
         console.error('Dapp server error:', data.toString());
       });
 
-      this.dappServerProcess.on('error', (error) => {
-        console.error('Failed to start dapp server:', error);
-      });
+      // Wait for the server to report readiness rather than guessing at a delay.
+      // `development/static-server.js` prints this line once it is accepting
+      // connections. A timeout rejects instead of resolving, so a server that
+      // never binds fails at this step rather than handing a dead port to the
+      // measurement and surfacing later as a missing results file.
+      return await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          reject(
+            new Error(
+              `Dapp server did not report readiness within ${DAPP_SERVER_READY_TIMEOUT_MS}ms`,
+            ),
+          );
+        }, DAPP_SERVER_READY_TIMEOUT_MS);
 
-      this.dappServerProcess.on('exit', (code) => {
-        if (code !== 0) {
-          console.error(`Dapp server exited with code ${code}`);
-        }
-      });
+        this.dappServerProcess?.stdout?.on('data', (data) => {
+          if (data.toString().includes('Running at http://localhost:')) {
+            console.log('Static dapp server up!');
+            clearTimeout(timer);
+            resolve();
+          }
+        });
 
-      // Give the server a moment to start up, otherwise benchmark may try to access page
-      // while it's not yet ready to be served.
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 500);
+        this.dappServerProcess?.on('error', (error) => {
+          console.error('Failed to start dapp server:', error);
+          clearTimeout(timer);
+          reject(error);
+        });
+
+        // Logging is unconditional: once the promise has settled a `reject` here
+        // is a no-op, so without this a server that dies mid-benchmark would
+        // exit silently — which is the class of failure this change exists to
+        // stop. The rejection only reaches a caller before readiness.
+        this.dappServerProcess?.on('exit', (code) => {
+          if (code !== 0) {
+            console.error(`Dapp server exited with code ${code}`);
+          }
+          clearTimeout(timer);
+          reject(
+            new Error(
+              `Dapp server exited with code ${code} before reporting readiness`,
+            ),
+          );
+        });
       });
     } catch (e) {
       console.log('ERROR starting dapp server:', e);

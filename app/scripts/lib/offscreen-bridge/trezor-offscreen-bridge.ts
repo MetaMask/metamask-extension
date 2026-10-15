@@ -17,6 +17,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../../../../shared/constants/offscreen-communication';
+import { withTrezorDeviceTimeout } from './with-trezor-device-timeout';
 
 /**
  * This class is used as a custom bridge for the Trezor connection. Every
@@ -76,48 +77,52 @@ export class TrezorOffscreenBridge implements TrezorBridge {
     });
   }
 
+  /**
+   * Send a message to the Offscreen Document and wait for its response,
+   * rejecting if the device does not respond within
+   * {@link TREZOR_DEVICE_OPERATION_TIMEOUT_MS}.
+   *
+   * @param message - The message to forward to the Offscreen Document.
+   * @param message.target - The target of the message.
+   * @param message.action - The Trezor action being requested.
+   * @param message.params - The parameters for the Trezor action.
+   * @returns The response from the Offscreen Document.
+   */
+  #sendDeviceMessage<ResponseType>(message: {
+    target: OffscreenCommunicationTarget;
+    action: TrezorAction;
+    params?: unknown;
+  }): Promise<ResponseType> {
+    const responsePromise = new Promise<ResponseType>((resolve) => {
+      chrome.runtime.sendMessage(message, (response) => {
+        resolve(response as ResponseType);
+      });
+    });
+
+    return withTrezorDeviceTimeout(responsePromise);
+  }
+
   getPublicKey(params: { path: string; coin: string }) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.getPublicKey,
-          params,
-        },
-        (response) => {
-          resolve(response);
-        },
-      );
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.getPublicKey,
+      params,
     }) as TrezorResponse<{ publicKey: string; chainCode: string }>;
   }
 
   ethereumSignTransaction(params: Params<EthereumSignTransaction>) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.signTransaction,
-          params,
-        },
-        (response) => {
-          resolve(response);
-        },
-      );
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.signTransaction,
+      params,
     }) as TrezorResponse<EthereumSignedTx>;
   }
 
   ethereumSignMessage(params: Params<EthereumSignMessage>) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.signMessage,
-          params,
-        },
-        (response) => {
-          resolve(response);
-        },
-      );
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.signMessage,
+      params,
     }) as TrezorResponse<PROTO.MessageSignature>;
   }
 
@@ -126,31 +131,17 @@ export class TrezorOffscreenBridge implements TrezorBridge {
   ethereumSignTypedData<T extends EthereumSignTypedDataTypes>(
     params: Params<EthereumSignTypedHash<T>>,
   ) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.signTypedData,
-          params,
-        },
-        (response) => {
-          resolve(response);
-        },
-      );
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.signTypedData,
+      params,
     }) as TrezorResponse<PROTO.EthereumTypedDataSignature>;
   }
 
   getFeatures() {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage(
-        {
-          target: OffscreenCommunicationTarget.trezorOffscreen,
-          action: TrezorAction.getFeatures,
-        },
-        (response) => {
-          resolve(response);
-        },
-      );
+    return this.#sendDeviceMessage({
+      target: OffscreenCommunicationTarget.trezorOffscreen,
+      action: TrezorAction.getFeatures,
     }) as TrezorResponse<Features>;
   }
 }

@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { Checkbox } from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
 } from '../../components/component-library/button';
 import { parse } from '../../../shared/lib/deep-links/parse';
-import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../../../shared/lib/deep-links/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -27,10 +28,10 @@ import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
 import { ButtonLink, Label } from '../../components/component-library';
-import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../../shared/lib/selectors/preferences';
-import { MetaMaskReduxState } from '../../store/store';
+import type { MetaMaskReduxState } from '../../store/types';
+import { useDispatch } from '../../store/hooks';
 import { VALID, verify } from '../../../shared/lib/deep-links/verify';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
@@ -93,7 +94,7 @@ async function updateStateFromUrl(
   setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   try {
-    const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
+    const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlPathAndQuery}`;
     const url = new URL(fullUrlStr);
     setIsLoading(true);
     const parsed = await parse(url);
@@ -208,7 +209,7 @@ export const DeepLink = () => {
 
           if (urlStr) {
             try {
-              const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
+              const fullUrlStr = `https://${CANONICAL_DEEP_LINK_HOST}${urlStr}`;
               const url = new URL(fullUrlStr);
               const signature = await verify(url);
 
@@ -286,6 +287,7 @@ export const DeepLink = () => {
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexDirection={FlexDirection.Column}
+      data-testid="parent-selector-deep-link-page"
       style={{ marginTop: '111px' }}
     >
       <Box
@@ -381,7 +383,7 @@ export const DeepLink = () => {
                   <Checkbox
                     id="dont-remind-me-checkbox"
                     data-testid="deep-link-checkbox"
-                    isChecked={skipDeepLinkInterstitialChecked}
+                    isSelected={skipDeepLinkInterstitialChecked}
                     onChange={onRemindMeStateChanged}
                   ></Checkbox>
                   <Label

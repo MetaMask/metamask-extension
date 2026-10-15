@@ -25,10 +25,13 @@ import reduceMetamask, {
 } from './metamask';
 import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
-jest.mock('@metamask/transaction-controller', () => ({
-  ...jest.requireActual('@metamask/transaction-controller'),
-  mergeGasFeeEstimates: jest.fn(),
-}));
+jest.mock('@metamask/transaction-controller', () => {
+  const actual = jest.requireActual('@metamask/transaction-controller');
+  return Object.defineProperty(Object.create(actual), 'mergeGasFeeEstimates', {
+    enumerable: true,
+    value: jest.fn(),
+  });
+});
 
 const GAS_FEE_CONTROLLER_ESTIMATES_MOCK = {
   low: '0x1',
@@ -215,7 +218,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: 'old-analytics-id',
-          completedMetaMetricsOnboarding: true,
+          consentDecisionMade: true,
           optedIn: true,
         },
         {
@@ -225,7 +228,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: 'old-analytics-id',
-      completedMetaMetricsOnboarding: false,
+      consentDecisionMade: false,
       optedIn: false,
     });
 
@@ -233,7 +236,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: null,
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: false,
         },
         {
@@ -243,7 +246,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: null,
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: true,
     });
 
@@ -251,7 +254,7 @@ describe('MetaMask Reducers', () => {
       reduceMetamask(
         {
           analyticsId: 'old-analytics-id',
-          completedMetaMetricsOnboarding: false,
+          consentDecisionMade: false,
           optedIn: true,
         },
         {
@@ -261,7 +264,7 @@ describe('MetaMask Reducers', () => {
       ),
     ).toMatchObject({
       analyticsId: 'old-analytics-id',
-      completedMetaMetricsOnboarding: true,
+      consentDecisionMade: true,
       optedIn: false,
     });
   });

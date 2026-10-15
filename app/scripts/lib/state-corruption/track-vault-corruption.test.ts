@@ -1,5 +1,5 @@
 import { segment } from '../segment';
-import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
+import { CriticalErrorType } from '../../../../shared/constants/critical-error';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -28,16 +28,14 @@ describe('trackVaultCorruptionEvent', () => {
       AnalyticsController: {
         optedIn: true,
         analyticsId: 'test-metrics-id-123',
-      },
-      MetaMetricsController: {
-        completedMetaMetricsOnboarding: true,
+        consentDecisionMade: true,
       },
     };
 
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.InaccessibleDatabase,
+      CriticalErrorType.InaccessibleDatabase,
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -45,7 +43,7 @@ describe('trackVaultCorruptionEvent', () => {
       event: MetaMetricsEventName.VaultCorruptionDetected,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_type: VaultCorruptionType.InaccessibleDatabase,
+        error_type: CriticalErrorType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
@@ -53,6 +51,7 @@ describe('trackVaultCorruptionEvent', () => {
           name: 'MetaMask Extension',
           version: process.env.METAMASK_VERSION,
         },
+        userAgent: window.navigator.userAgent,
       },
     });
     expect(mockSegment.flush).toHaveBeenCalledTimes(1);
@@ -81,7 +80,7 @@ describe('trackVaultCorruptionEvent', () => {
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.MissingVaultInDatabase,
+      CriticalErrorType.MissingVaultInDatabase,
     );
 
     expect(mockSegment.track).not.toHaveBeenCalled();

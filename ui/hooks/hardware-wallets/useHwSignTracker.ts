@@ -148,7 +148,9 @@ export function useHwSignTracker(
   retryGenerationRef?: React.RefObject<number | undefined>,
 ) {
   const dispatchRef = useRef(dispatchSignatureEvent);
-  dispatchRef.current = dispatchSignatureEvent;
+  useEffect(() => {
+    dispatchRef.current = dispatchSignatureEvent;
+  }, [dispatchSignatureEvent]);
 
   const enabled = options?.enabled ?? true;
   const {
@@ -208,11 +210,20 @@ export function useHwSignTracker(
     [useBatchTracking],
   );
 
-  const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
+  const lastSeenGenerationRef = useRef(0);
   const pendingAbortTxIdsRef = useRef<Set<string>>(new Set());
   const abortSettleResolveRef = useRef<((value: void) => void) | null>(null);
   /** Bumped when the subscription effect re-runs so stale cancel cleanup cannot wipe a new flow. */
   const subscriptionGenerationRef = useRef(0);
+
+  // Seeded in an effect (not during render) per react-hooks/refs. Declared
+  // before the subscription effect so the seed lands before any event can be
+  // processed; the ref object identity is stable, so it runs once on mount.
+  // Do not re-sync on every render: that would hide retry bumps from
+  // `checkRetryGeneration`.
+  useEffect(() => {
+    lastSeenGenerationRef.current = retryGenerationRef?.current ?? 0;
+  }, [retryGenerationRef]);
 
   const clearSubscriptionTracking = useCallback(() => {
     strategy.reset();
@@ -236,6 +247,8 @@ export function useHwSignTracker(
     };
 
     const txIds = [...strategy.getTrackedTxIds()];
+    // Capture before reset(), which would make hasSettledSigning() true for an empty set.
+    const hasSettledSigning = strategy.hasSettledSigning();
     strategy.reset();
 
     if (txIds.length === 0) {
@@ -264,7 +277,12 @@ export function useHwSignTracker(
       }),
     );
 
-    if (pendingAbortTxIdsRef.current.size === 0) {
+    if (
+      pendingAbortTxIdsRef.current.size === 0 ||
+      // Already terminal: abortTransactionSigning resolves with no follow-up
+      // event, so waiting here would stall Cancel for the full 5s timeout.
+      hasSettledSigning
+    ) {
       finishCancelCleanup();
       return;
     }
@@ -339,10 +357,13 @@ export function useHwSignTracker(
         const transactionMeta =
           'transactionMeta' in firstArg ? firstArg.transactionMeta : firstArg;
 
-        strategy.checkRetryGeneration(
+        const newLastSeenGeneration = strategy.checkRetryGeneration(
           retryGenerationRef,
-          lastSeenGenerationRef,
+          lastSeenGenerationRef.current,
         );
+        if (newLastSeenGeneration !== null) {
+          lastSeenGenerationRef.current = newLastSeenGeneration;
+        }
 
         const { status, type } = transactionMeta;
 

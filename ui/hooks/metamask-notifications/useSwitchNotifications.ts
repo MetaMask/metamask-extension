@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   checkAccountsPresence,
@@ -11,6 +11,7 @@ import {
   getIsUpdatingMetamaskNotificationsAccount,
   selectIsMetamaskNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
+import { useDispatch } from '../../store/hooks';
 import { useSafeState } from './useNotifications';
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
@@ -38,8 +39,10 @@ export function useSwitchAccountNotificationsChange(): {
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         log.error(errorMessage);
         setError(errorMessage);
+        throw e;
+      } finally {
+        dispatch(hideLoadingIndication());
       }
-      dispatch(hideLoadingIndication());
     },
     [dispatch],
   );
@@ -50,19 +53,40 @@ export function useSwitchAccountNotificationsChange(): {
   };
 }
 
+/**
+ * `checkAccountsPresence` preserves the casing of the addresses it was called
+ * with. Wallet-activity UI lookups always use lowercase keys, so normalize
+ * here — otherwise misses look like "not subscribed".
+ *
+ * @param data - Account presence map keyed by address
+ * @returns Presence map with lowercased address keys
+ */
+function normalizeAccountPresenceData(
+  data: UseSwitchAccountNotificationsData | null | undefined,
+): UseSwitchAccountNotificationsData {
+  return Object.fromEntries(
+    Object.entries(data ?? {}).map(([address, enabled]) => [
+      address.toLowerCase(),
+      enabled,
+    ]),
+  );
+}
+
 function useRefetchAccountSettings() {
   const dispatch = useDispatch();
 
   const getAccountSettings = useCallback(async (accounts: string[]) => {
-    try {
-      const result = (await dispatch(
-        checkAccountsPresence(accounts),
-      )) as unknown as UseSwitchAccountNotificationsData;
+    const result = (await dispatch(
+      checkAccountsPresence(accounts),
+    )) as unknown as UseSwitchAccountNotificationsData;
 
+    // Preserve empty/undefined results (same as pre-normalize behavior) so
+    // callers and tests don't get an extra state update from `{}`.
+    if (!result || Object.keys(result).length === 0) {
       return result;
-    } catch {
-      return {};
     }
+
+    return normalizeAccountPresenceData(result);
   }, []);
 
   return getAccountSettings;
@@ -96,6 +120,8 @@ export function useAccountSettingsProps(accounts: string[]) {
       const res = await fetchAccountSettings(addresses);
       setData(res);
     } catch {
+      // Keep any earlier successful read so a failed refresh does not flash
+      // every account as disabled.
       setError('Failed to get account settings');
     } finally {
       setLoading(false);

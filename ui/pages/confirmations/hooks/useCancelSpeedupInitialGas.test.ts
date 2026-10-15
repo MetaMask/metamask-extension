@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { PriorityLevels } from '../../../../shared/constants/gas';

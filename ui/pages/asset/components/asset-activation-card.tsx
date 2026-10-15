@@ -17,8 +17,10 @@ import {
 } from '@metamask/design-system-react';
 import React from 'react';
 
+import type { CaipAssetType } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAssetActivation } from '../hooks/useAssetActivation';
+import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
@@ -41,8 +43,10 @@ export const AssetActivateCard = ({
 }: AssetActivateCardProps) => {
   const t = useI18nContext();
   const { symbol } = asset;
+  const assetId =
+    asset.type === AssetType.token ? (asset.address as CaipAssetType) : '';
   const { activateAsset, isActivating, errorMessage, dismissErrorMessage } =
-    useAssetActivation({ asset });
+    useAssetActivation({ assetId, assetSymbol: symbol });
 
   return (
     <Box

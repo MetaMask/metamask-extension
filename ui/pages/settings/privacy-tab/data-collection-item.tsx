@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getCompletedMetaMetricsOnboarding,
+  getConsentDecisionMade,
   getDataCollectionForMarketing,
   getOptedIn,
 } from '../../../selectors/metametrics';
@@ -18,6 +18,8 @@ import {
 import { SettingsToggleItem } from '../shared/settings-toggle-item';
 import { PRIVACY_ITEMS } from '../search-config';
 import { useAnalytics } from '../../../hooks/useAnalytics';
+import { useDispatch } from '../../../store/hooks';
+
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -32,9 +34,7 @@ export const DataCollectionToggleItem = () => {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const useExternalServices = useSelector(getUseExternalServices);
   const socialLoginEnabled = useSelector(getIsSocialLoginFlow);
-  const completedMetaMetricsOnboarding = useSelector(
-    getCompletedMetaMetricsOnboarding,
-  );
+  const consentDecisionMade = useSelector(getConsentDecisionMade);
   const isOptedIn = useSelector(getOptedIn);
 
   // Match legacy Security tab: fetch remote marketing consent when the user is in
@@ -57,7 +57,7 @@ export const DataCollectionToggleItem = () => {
   }, [socialLoginEnabled, dispatch]);
 
   const isDisabled =
-    !useExternalServices || !(completedMetaMetricsOnboarding && isOptedIn);
+    !useExternalServices || !(consentDecisionMade && isOptedIn);
 
   const handleToggle = (currentValue: boolean) => {
     const newValue = !currentValue;
@@ -72,10 +72,8 @@ export const DataCollectionToggleItem = () => {
       createEventBuilder(MetaMetricsEventName.AnalyticsPreferenceSelected)
         .addCategory(MetaMetricsEventCategory.Settings)
         .addProperties({
-          /* eslint-disable @typescript-eslint/naming-convention */
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.HasMarketingConsent]: Boolean(newValue),
-          /* eslint-enable @typescript-eslint/naming-convention */
           location: 'Settings',
         })
         .build(),
@@ -90,7 +88,7 @@ export const DataCollectionToggleItem = () => {
     <SettingsToggleItem
       title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
-      value={dataCollectionForMarketing}
+      value={dataCollectionForMarketing === true}
       onToggle={handleToggle}
       dataTestId="data-collection-for-marketing-input"
       containerDataTestId="data-collection-for-marketing-toggle"

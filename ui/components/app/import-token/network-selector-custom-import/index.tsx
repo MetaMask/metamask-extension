@@ -1,80 +1,59 @@
 import React from 'react';
 import {
-  TextVariant,
-  TextColor,
-  BorderRadius,
-  AlignItems,
-  Display,
-  JustifyContent,
-  BorderColor,
-} from '../../../../helpers/constants/design-system';
-import {
-  ButtonIcon,
-  Box,
-  ButtonIconSize,
-  IconName,
-  Text,
   AvatarNetwork,
   AvatarNetworkSize,
-} from '../../../component-library';
+  ButtonBase,
+  IconColor,
+  IconName,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { getImageForChainId } from '../../../../selectors/multichain';
 
 export const NetworkSelectorCustomImport = ({
   title,
+  ariaLabel,
   buttonDataTestId,
   chainId,
   onSelectNetwork,
 }: {
   title: string;
+  ariaLabel: string;
   buttonDataTestId: string;
   chainId: string;
   onSelectNetwork: () => void;
 }) => {
-  const networkImageUrl = getImageForChainId(chainId);
+  const networkImageUrl = chainId ? getImageForChainId(chainId) : undefined;
 
   return (
-    <Box padding={4} onClick={onSelectNetwork} data-testid={buttonDataTestId}>
-      <Box
-        className="dropdown-editor__item-dropdown"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-        borderRadius={BorderRadius.LG}
-        borderColor={BorderColor.borderDefault}
-        borderWidth={1}
-        paddingLeft={4}
-        paddingRight={2}
-      >
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
-          paddingTop={3}
-          paddingBottom={3}
-        >
-          {title}
-        </Text>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          marginLeft="auto"
-        >
-          {networkImageUrl ? (
-            <AvatarNetwork
-              key={networkImageUrl}
-              name={networkImageUrl ?? ''}
-              src={networkImageUrl ?? undefined}
-              size={AvatarNetworkSize.Sm}
-            />
-          ) : null}
-          <ButtonIcon
-            marginLeft="auto"
-            iconName={IconName.ArrowRight}
-            size={ButtonIconSize.Sm}
-            ariaLabel={title}
+    <ButtonBase
+      type="button"
+      aria-label={ariaLabel}
+      className="h-12 w-full justify-between gap-x-2 rounded-xl border border-muted bg-muted px-4 font-normal text-left hover:bg-muted active:scale-100"
+      onClick={onSelectNetwork}
+      data-testid={buttonDataTestId}
+      startAccessory={
+        chainId ? (
+          <AvatarNetwork
+            key={networkImageUrl ?? chainId}
+            name={title}
+            src={networkImageUrl}
+            size={AvatarNetworkSize.Xs}
+            className="flex shrink-0 rounded-md"
           />
-        </Box>
-      </Box>
-    </Box>
+        ) : undefined
+      }
+      endIconName={IconName.ArrowDown}
+      endIconProps={{ color: IconColor.IconDefault }}
+    >
+      <Text
+        variant={TextVariant.BodyMd}
+        ellipsis
+        className="min-w-0 flex-1 text-left"
+      >
+        {title}
+      </Text>
+    </ButtonBase>
   );
 };
 

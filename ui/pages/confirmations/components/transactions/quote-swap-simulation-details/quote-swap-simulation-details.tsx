@@ -9,7 +9,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
-import { isNativeAddress, QuoteResponse } from '@metamask/bridge-controller';
+import { isNativeAddress, QuoteResponseV1 } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { toHex } from '@metamask/controller-utils';
 
@@ -26,7 +26,7 @@ import { BalanceChangeRow } from '../../simulation-details/balance-change-row';
 import { SimulationDetailsLayout } from '../../simulation-details/simulation-details';
 
 const getSrcAssetBalanceChange = (
-  srcAsset: QuoteResponse['quote']['srcAsset'],
+  srcAsset: QuoteResponseV1['quote']['srcAsset'],
   tokenDetails: Record<Hex, TokenStandAndDetails>,
   sourceTokenAmount: string | undefined,
   fiatRates: Record<Hex, number | undefined>,
@@ -62,7 +62,7 @@ const getSrcAssetBalanceChange = (
 };
 
 const getDestAssetBalanceChange = (
-  destAsset: QuoteResponse['quote']['destAsset'],
+  destAsset: QuoteResponseV1['quote']['destAsset'],
   tokenDetails: Record<Hex, TokenStandAndDetails>,
   destTokenAmount: string,
   fiatRates: Record<Hex, number | undefined>,
@@ -100,7 +100,7 @@ export const QuoteSwapSimulationDetails = ({
   minDestTokenAmountInUSD,
 }: {
   fiatRates?: Record<Hex, number | undefined>;
-  quote?: QuoteResponse;
+  quote?: QuoteResponseV1;
   sourceTokenAmount?: string;
   tokenDetails?: Record<Hex, TokenStandAndDetails>;
   tokenAmountDifference?: number;

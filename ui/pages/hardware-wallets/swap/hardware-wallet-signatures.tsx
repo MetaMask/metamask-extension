@@ -81,15 +81,13 @@ export default function HardwareWalletSignatures() {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleCancel}
             data-testid="hardware-wallet-signatures__back-button"
           />
         }
       />
       <Box
-        className="hardware-wallet-signatures__content h-full"
+        className="hardware-wallet-signatures__content"
         flexDirection={BoxFlexDirection.Column}
         paddingTop={6}
         paddingHorizontal={4}

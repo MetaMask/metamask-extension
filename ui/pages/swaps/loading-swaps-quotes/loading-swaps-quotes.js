@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +35,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 import { isFlask, isBeta } from '../../../../shared/lib/build-types';
+import { useDispatch } from '../../../store/hooks';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({
@@ -47,7 +48,7 @@ export default function LoadingSwapsQuotes({
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
-  const animationEventEmitter = useRef(new EventEmitter());
+  const [animationEventEmitter] = useState(() => new EventEmitter());
 
   const fetchParams = useSelector(getFetchParams, isEqual);
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
@@ -60,35 +61,12 @@ export default function LoadingSwapsQuotes({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
-  const quotesRequestCancelledEvent = createEventBuilder(
-    'Quotes Request Cancelled',
-  )
-    .addCategory(MetaMetricsEventCategory.Swaps)
-    .addSensitiveProperties({
-      token_from: fetchParams?.sourceTokenInfo?.symbol,
-      token_from_amount: fetchParams?.value,
-      request_type: fetchParams?.balanceError,
-      token_to: fetchParams?.destinationTokenInfo?.symbol,
-      slippage: fetchParams?.slippage,
-      custom_slippage: fetchParams?.slippage !== 2,
-      response_time: Date.now() - quotesFetchStartTime,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
-      stx_enabled: smartTransactionsEnabled,
-      current_stx_enabled: currentSmartTransactionsEnabled,
-      stx_user_opt_in: smartTransactionsOptInStatus,
-    })
-    .addProperties({
-      hd_entropy_index: hdEntropyIndex,
-    })
-    .build();
 
   const [aggregatorNames] = useState(() =>
     shuffle(Object.keys(aggregatorMetadata)),
   );
   const numberOfQuotes = aggregatorNames.length;
-  const mascotContainer = useRef();
-  const currentMascotContainer = mascotContainer.current;
+  const mascotContainer = useRef(null);
 
   const [quoteCount, updateQuoteCount] = useState(0);
   const [midPointTarget, setMidpointTarget] = useState(null);
@@ -106,7 +84,7 @@ export default function LoadingSwapsQuotes({
     }
     return (
       <Mascot
-        animationEventEmitter={animationEventEmitter.current}
+        animationEventEmitter={animationEventEmitter}
         width="90"
         height="90"
         lookAtTarget={midPointTarget}
@@ -143,13 +121,13 @@ export default function LoadingSwapsQuotes({
   }, [quoteCount, loadingComplete, onDone, numberOfQuotes]);
 
   useEffect(() => {
-    if (currentMascotContainer) {
-      const { top, left, width, height } =
-        currentMascotContainer.getBoundingClientRect();
-      const center = { x: left + width / 2, y: top + height / 2 };
-      setMidpointTarget(center);
+    if (!mascotContainer.current) {
+      return;
     }
-  }, [currentMascotContainer]);
+    const { top, left, width, height } =
+      mascotContainer.current.getBoundingClientRect();
+    setMidpointTarget({ x: left + width / 2, y: top + height / 2 });
+  }, []);
 
   return (
     <div className="loading-swaps-quotes">
@@ -205,7 +183,28 @@ export default function LoadingSwapsQuotes({
       <SwapsFooter
         submitText={t('back')}
         onSubmit={async () => {
-          trackEvent(quotesRequestCancelledEvent);
+          trackEvent(
+            createEventBuilder('Quotes Request Cancelled')
+              .addCategory(MetaMetricsEventCategory.Swaps)
+              .addSensitiveProperties({
+                token_from: fetchParams?.sourceTokenInfo?.symbol,
+                token_from_amount: fetchParams?.value,
+                request_type: fetchParams?.balanceError,
+                token_to: fetchParams?.destinationTokenInfo?.symbol,
+                slippage: fetchParams?.slippage,
+                custom_slippage: fetchParams?.slippage !== 2,
+                response_time: Date.now() - quotesFetchStartTime,
+                is_hardware_wallet: hardwareWalletUsed,
+                hardware_wallet_type: hardwareWalletType,
+                stx_enabled: smartTransactionsEnabled,
+                current_stx_enabled: currentSmartTransactionsEnabled,
+                stx_user_opt_in: smartTransactionsOptInStatus,
+              })
+              .addProperties({
+                hd_entropy_index: hdEntropyIndex,
+              })
+              .build(),
+          );
           await dispatch(navigateBackToPrepareSwap(navigate));
         }}
         hideCancel

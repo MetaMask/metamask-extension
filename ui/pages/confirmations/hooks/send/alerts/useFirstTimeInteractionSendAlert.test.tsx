@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -11,6 +11,12 @@ import { getExperience } from '../../../../../../shared/constants/verification';
 import { useSendContext } from '../../../context/send';
 import { checkFirstTimeInteraction } from '../../../../../store/actions';
 import { useFirstTimeInteractionSendAlert } from './useFirstTimeInteractionSendAlert';
+
+async function flushAsyncUpdates() {
+  await act(async () => {
+    await Promise.resolve();
+  });
+}
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -58,7 +64,7 @@ describe('useFirstTimeInteractionSendAlert', () => {
     mockCheckFirstTimeInteraction.mockResolvedValue(true);
   });
 
-  it('returns null when there is no recipient', () => {
+  it('returns null when there is no recipient', async () => {
     mockUseSendContext.mockReturnValue({
       to: undefined,
       toResolved: undefined,
@@ -68,9 +74,10 @@ describe('useFirstTimeInteractionSendAlert', () => {
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
-  it('returns null when there is no from address', () => {
+  it('returns null when there is no from address', async () => {
     mockUseSendContext.mockReturnValue({
       to: MOCK_TO,
       toResolved: MOCK_TO,
@@ -80,40 +87,44 @@ describe('useFirstTimeInteractionSendAlert', () => {
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
-  it('returns null when recipient is an internal account', () => {
+  it('returns null when recipient is an internal account', async () => {
     mockUseSelector.mockReturnValue([{ address: MOCK_TO.toLowerCase() }]);
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
   it('returns alert when it is a first-time interaction', async () => {
     mockCheckFirstTimeInteraction.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFirstTimeInteractionSendAlert(),
-    );
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
 
-    await waitForNextUpdate();
-
-    expect(result.current).not.toBeNull();
-    expect(result.current?.key).toBe('firstTimeInteraction');
-    expect(result.current?.title).toBe('sendAlertNewAddressTitle');
-    expect(result.current?.acknowledgeButtonLabel).toBe('continue');
-    expect(result.current?.message).toBeDefined();
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+      expect(result.current?.key).toBe('firstTimeInteraction');
+      expect(result.current?.title).toBe('sendAlertNewAddressTitle');
+      expect(result.current?.acknowledgeButtonLabel).toBe('continue');
+      expect(result.current?.message).toBeDefined();
+    });
   });
 
   it('returns null for a returning address (not first-time)', async () => {
     mockCheckFirstTimeInteraction.mockResolvedValue(false);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFirstTimeInteractionSendAlert(),
-    );
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
 
     try {
-      await waitForNextUpdate({ timeout: 100 });
+      const prevUpdate0 = result.current;
+      await waitFor(
+        () => {
+          expect(result.current).not.toBe(prevUpdate0);
+        },
+        { timeout: 100 },
+      );
     } catch {
       // No update expected
     }
@@ -124,12 +135,16 @@ describe('useFirstTimeInteractionSendAlert', () => {
   it('returns null when API returns undefined', async () => {
     mockCheckFirstTimeInteraction.mockResolvedValue(undefined);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFirstTimeInteractionSendAlert(),
-    );
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
 
     try {
-      await waitForNextUpdate({ timeout: 100 });
+      const prevUpdate1 = result.current;
+      await waitFor(
+        () => {
+          expect(result.current).not.toBe(prevUpdate1);
+        },
+        { timeout: 100 },
+      );
     } catch {
       // No update expected
     }
@@ -137,7 +152,7 @@ describe('useFirstTimeInteractionSendAlert', () => {
     expect(result.current).toBeNull();
   });
 
-  it('returns null when recipient is a verified address', () => {
+  it('returns null when recipient is a verified address', async () => {
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Verified,
       label: 'Verified',
@@ -145,9 +160,10 @@ describe('useFirstTimeInteractionSendAlert', () => {
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
-  it('returns null when trust signal is loading', () => {
+  it('returns null when trust signal is loading', async () => {
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Loading,
       label: null,
@@ -155,16 +171,18 @@ describe('useFirstTimeInteractionSendAlert', () => {
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
-  it('returns null when recipient is a first-party contract', () => {
+  it('returns null when recipient is a first-party contract', async () => {
     mockGetExperience.mockReturnValue('metamask' as never);
 
     const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
     expect(result.current).toBeNull();
+    await flushAsyncUpdates();
   });
 
-  it('calls useTrustSignal with correct arguments', () => {
+  it('calls useTrustSignal with correct arguments', async () => {
     renderHook(() => useFirstTimeInteractionSendAlert());
 
     expect(mockUseTrustSignal).toHaveBeenCalledWith(
@@ -172,31 +190,31 @@ describe('useFirstTimeInteractionSendAlert', () => {
       NameType.ETHEREUM_ADDRESS,
       '0x1',
     );
+    await flushAsyncUpdates();
   });
 
   it('calls checkFirstTimeInteraction with correct arguments', async () => {
-    const { waitForNextUpdate } = renderHook(() =>
-      useFirstTimeInteractionSendAlert(),
-    );
+    renderHook(() => useFirstTimeInteractionSendAlert());
 
-    await waitForNextUpdate();
-
-    expect(mockCheckFirstTimeInteraction).toHaveBeenCalledWith({
-      from: MOCK_FROM,
-      to: MOCK_TO,
-      chainId: 1,
+    await waitFor(() => {
+      expect(mockCheckFirstTimeInteraction).toHaveBeenCalledWith({
+        from: MOCK_FROM,
+        to: MOCK_TO,
+        chainId: 1,
+      });
     });
   });
 
   it('resets when recipient changes', async () => {
     mockCheckFirstTimeInteraction.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate, rerender } = renderHook(() =>
+    const { result, rerender } = renderHook(() =>
       useFirstTimeInteractionSendAlert(),
     );
 
-    await waitForNextUpdate();
-    expect(result.current).not.toBeNull();
+    await waitFor(() => {
+      expect(result.current).not.toBeNull();
+    });
 
     const newRecipient = '0x111122223333444455556666777788889999aaaa';
     mockCheckFirstTimeInteraction.mockResolvedValue(false);
@@ -210,7 +228,13 @@ describe('useFirstTimeInteractionSendAlert', () => {
     rerender();
 
     try {
-      await waitForNextUpdate({ timeout: 100 });
+      const prevUpdate2 = result.current;
+      await waitFor(
+        () => {
+          expect(result.current).not.toBe(prevUpdate2);
+        },
+        { timeout: 100 },
+      );
     } catch {
       // No update expected
     }
@@ -227,23 +251,21 @@ describe('useFirstTimeInteractionSendAlert', () => {
     } as unknown as ReturnType<typeof useSendContext>);
     mockCheckFirstTimeInteraction.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useFirstTimeInteractionSendAlert(),
-    );
+    const { result } = renderHook(() => useFirstTimeInteractionSendAlert());
 
-    await waitForNextUpdate();
-
-    expect(mockCheckFirstTimeInteraction).toHaveBeenCalledWith({
-      from: MOCK_FROM,
-      to: MOCK_TO,
-      chainId: 1,
+    await waitFor(() => {
+      expect(mockCheckFirstTimeInteraction).toHaveBeenCalledWith({
+        from: MOCK_FROM,
+        to: MOCK_TO,
+        chainId: 1,
+      });
+      expect(mockUseTrustSignal).toHaveBeenCalledWith(
+        MOCK_TO,
+        NameType.ETHEREUM_ADDRESS,
+        '0x1',
+      );
+      expect(result.current).not.toBeNull();
     });
-    expect(mockUseTrustSignal).toHaveBeenCalledWith(
-      MOCK_TO,
-      NameType.ETHEREUM_ADDRESS,
-      '0x1',
-    );
-    expect(result.current).not.toBeNull();
   });
 
   it('returns null while name resolution is pending (toResolved is not a hex address)', async () => {

@@ -12,7 +12,8 @@ import {
 } from '@metamask/design-system-react';
 import {
   getMultichainNativeTokenBalance,
-  selectBalanceBySelectedAccountGroup,
+  selectIsAssetsLoadingForSelectedAccountGroup,
+  selectUnifiedBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -53,10 +54,15 @@ export const AccountGroupBalance = ({
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
   const { formatCurrency, formatTokenQuantity } = useFormatters();
 
-  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  const selectedGroupBalance = useSelector(
+    selectUnifiedBalanceBySelectedAccountGroup,
+  );
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
+  );
+  const isAssetsLoading = useSelector(
+    selectIsAssetsLoadingForSelectedAccountGroup,
   );
 
   const caipChainId = useMemo(
@@ -161,11 +167,13 @@ export const AccountGroupBalance = ({
     showConversionForTestnets,
   ]);
 
+  const totalIsUnresolved = isZeroAmount(total) || currency === undefined;
+
   return (
     <Skeleton
       hideChildren={
-        !anyEnabledNetworksAreAvailable &&
-        (isZeroAmount(total) || currency === undefined)
+        totalIsUnresolved &&
+        ((isEvm && !anyEnabledNetworksAreAvailable) || isAssetsLoading)
       }
       className="mb-1"
       data-testid="account-group-balance-skeleton"

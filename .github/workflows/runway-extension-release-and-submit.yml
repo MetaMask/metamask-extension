@@ -2,33 +2,32 @@ name: Runway extension release and store submit
 
 # INFRA-3735 — Runway single entrypoint for release cut + CWS + AMO store uploads.
 #
-# Phase 0: validate branch, version, optional release_sha, CI, Runway sender (release/*).
+# Phase 0: validate branch, derive version from it, optional release_sha, CI, Runway sender (release/*).
 # Phase 1: workflow_call → publish-release-from-release-head.yml (auto-skipped if release exists at SHA)
 # Phase 2: workflow_call → upload-extension-to-cws.yml (production + flask; CWS pre-flight idempotency)
 # Phase 3: workflow_call → upload-extension-to-amo.yml (flask only; prod AMO triggered independently — no delayed-publish support)
 #
-# Runway contract: version, release_sha, execute_store_phases only.
+# Runway contract: no inputs required. The version is derived from the release/X.Y.Z branch
+# this workflow runs on (the branch is the single source of truth — there is no version input),
+# and all phases run by default. release_sha is an optional integrity check against the Runway
+# record; execute_store_phases=false gives a validation-only run; skip_* are manual break-glass
+# overrides. INFRA-3674 retired the bootstrap execute_store_phases=false default from #44017.
 # Recovery: re-run failed jobs on the same run, or re-dispatch (auto-skip handles completed phases).
-# skip_* inputs are manual break-glass overrides only.
 #
 # workflow_call (not gh workflow run) preserves Runway github.actor for WIF CEL on CWS/AMO.
 
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Release version X.Y.Z — must match release/X.Y.Z branch semver'
-        required: true
-        type: string
       release_sha:
         description: 'Optional integrity check — must match the commit this workflow runs on (Runway record)'
         required: false
         type: string
       execute_store_phases:
-        description: 'Run publish + store upload phases after validation'
+        description: 'Run publish + store upload phases after validation. Default true; set false for a validation-only run'
         required: false
         type: boolean
-        default: false
+        default: true
       skip_publish:
         description: 'Manual break-glass — skip Phase 1 (auto-skip also applies when GitHub Release exists at release_sha)'
         required: false
@@ -50,9 +49,11 @@ on:
         type: boolean
         default: false
 
-# One in-flight run per version (Runway must not double-dispatch). Queue, do not cancel.
+# One in-flight run per release branch (Runway must not double-dispatch). Queue, do not cancel.
+# Keyed on github.ref because the branch is 1:1 with the version and is the only version
+# source, matching publish-release-from-release-head.yml.
 concurrency:
-  group: runway-extension-release-and-submit-${{ inputs.version }}
+  group: runway-extension-release-and-submit-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -67,9 +68,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
-      version: ${{ steps.validate-version.outputs.version }}
+      version: ${{ steps.derive-version.outputs.semver }}
       release_sha: ${{ steps.resolve-sha.outputs.release_sha }}
-      release_tag: ${{ steps.validate-version.outputs.release_tag }}
+      release_tag: v${{ steps.derive-version.outputs.semver }}
       release_exists: ${{ steps.detect-release.outputs.release_exists }}
     steps:
       - name: Checkout repository
@@ -89,26 +90,11 @@ jobs:
             exit 1
           fi
 
-      - name: Validate version input
-        id: validate-version
-        env:
-          VERSION: ${{ inputs.version }}
-          GITHUB_REF: ${{ github.ref }}
-        run: |
-          set -euo pipefail
-          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid version: ${VERSION} — expected numeric X.Y.Z"
-            exit 1
-          fi
-          branch_version="${GITHUB_REF#refs/heads/release/}"
-          if [[ "${branch_version}" != "${VERSION}" ]]; then
-            echo "::error::Version input ${VERSION} does not match branch release/${branch_version}"
-            exit 1
-          fi
-          {
-            echo "version=${VERSION}"
-            echo "release_tag=v${VERSION}"
-          } >> "${GITHUB_OUTPUT}"
+      # Same derivation as publish-release-from-release-head.yml, so the orchestrator and the
+      # publish workflow it calls cannot disagree about which version is being released.
+      - name: Derive version from release branch
+        id: derive-version
+        run: .github/scripts/extract-semver.sh
 
       - name: Resolve release SHA
         id: resolve-sha
@@ -128,7 +114,7 @@ jobs:
         id: detect-release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.validate-version.outputs.release_tag }}
+          RELEASE_TAG: v${{ steps.derive-version.outputs.semver }}
           RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
         run: |
@@ -180,7 +166,7 @@ jobs:
 
       - name: Summary
         env:
-          VERSION: ${{ steps.validate-version.outputs.version }}
+          VERSION: ${{ steps.derive-version.outputs.semver }}
           RELEASE_SHA: ${{ steps.resolve-sha.outputs.release_sha }}
           EXECUTE_STORE: ${{ inputs.execute_store_phases }}
           RELEASE_EXISTS: ${{ steps.detect-release.outputs.release_exists }}
@@ -207,6 +193,14 @@ jobs:
         !inputs.skip_publish &&
         needs.validate.outputs.release_exists != 'true'
       }}
+    # A called workflow cannot exceed the calling job's permissions, so this must
+    # cover the whole callee (top-level plus its publish-release job).
+    permissions:
+      contents: read
+      statuses: read
+      actions: read
+      id-token: write
+      attestations: write # Required by actions/attest-build-provenance in the callee
     uses: ./.github/workflows/publish-release-from-release-head.yml
     secrets: inherit
 
@@ -223,6 +217,10 @@ jobs:
         needs.validate.result == 'success' &&
         (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
       }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read # Required by gh attestation verify in the callee
     uses: ./.github/workflows/upload-extension-to-cws.yml
     with:
       version: ${{ needs.validate.outputs.version }}
@@ -243,6 +241,10 @@ jobs:
         needs.validate.result == 'success' &&
         (needs.publish-release.result == 'success' || needs.publish-release.result == 'skipped')
       }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read # Required by gh attestation verify in the callee
     uses: ./.github/workflows/upload-extension-to-cws.yml
     with:
       version: ${{ needs.validate.outputs.version }}
@@ -314,6 +316,6 @@ jobs:
             if [[ "${EXECUTE_STORE}" != "true" ]]; then
               echo "Store phases were **not requested** (\`execute_store_phases=false\`)."
               echo ""
-              echo "**Recovery:** use **Re-run failed jobs** on the same run, or re-dispatch with the same \`version\` / \`release_sha\` (completed phases auto-skip)."
+              echo "**Recovery:** use **Re-run failed jobs** on the same run, or re-dispatch from the same release branch with the same \`release_sha\` (completed phases auto-skip)."
             fi
           } >> "${GITHUB_STEP_SUMMARY}"

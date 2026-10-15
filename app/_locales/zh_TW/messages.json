@@ -106,9 +106,6 @@
   "back": {
     "message": "上一頁"
   },
-  "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
-  },
   "backupApprovalNotice": {
     "message": "備份你的助憶詞，保護你的錢包與資金。"
   },
@@ -269,9 +266,6 @@
   "currencySymbolDefinition": {
     "message": "用來代表這個網路的貨幣的代碼。"
   },
-  "currentAccountNotConnected": {
-    "message": "您目前的帳戶並未連結"
-  },
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },
@@ -425,9 +419,6 @@
   },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitTooLow": {
-    "message": "Gas 上限至少為 21000"
   },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
@@ -645,9 +636,6 @@
   "networks": {
     "message": "網路"
   },
-  "nevermind": {
-    "message": "算了"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
@@ -735,9 +723,6 @@
   "privateKey": {
     "message": "私鑰",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "警告：永遠不要公開這個私鑰。任何取得這把私鑰的人都可以竊取這個帳戶中的所有資產。"
   },
   "privateNetwork": {
     "message": "私有網路"

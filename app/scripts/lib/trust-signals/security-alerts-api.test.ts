@@ -1,248 +1,188 @@
-import nock from 'nock';
-import { SECOND } from '../../../../shared/constants/time';
 import {
-  SupportedEVMChain,
-  ResultType,
-  createCacheKey,
-} from '../../../../shared/lib/trust-signals';
-import { scanAddress, scanAddressAndAddToCache } from './security-alerts-api';
+  AddressScanResultType,
+  PhishingController,
+} from '@metamask/phishing-controller';
+import { ResultType } from '../../../../shared/lib/trust-signals';
+import {
+  mapAddressScanResult,
+  scanAddressAndAddToCache,
+} from './security-alerts-api';
 
-const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
-const TEST_CHAIN = SupportedEVMChain.Ethereum;
-const TEST_CACHE_KEY = createCacheKey(TEST_CHAIN, TEST_ADDRESS);
+const CHAIN_ID_MOCK = '0x1';
+const ADDRESS_MOCK = '0xABCDEF0000000000000000000000000000000001';
+const CACHE_KEY_MOCK = `${CHAIN_ID_MOCK}:${ADDRESS_MOCK.toLowerCase()}`;
 
-const RESPONSE_MOCK = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  result_type: ResultType.Benign,
-  label: 'Safe address',
-};
-
-const BASE_URL = 'https://api.example.com';
-
-describe('Security Alerts API', () => {
-  beforeEach(() => {
-    nock.cleanAll();
-    process.env.SECURITY_ALERTS_API_URL = BASE_URL;
-  });
-
-  afterEach(() => {
-    nock.cleanAll();
-  });
-
-  describe('scanAddress', () => {
-    it('sends POST request with correct parameters', async () => {
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan', {
-          chain: TEST_CHAIN,
-          address: TEST_ADDRESS,
-        })
-        .reply(200, RESPONSE_MOCK);
-
-      const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
-
-      expect(response).toEqual(RESPONSE_MOCK);
-      expect(scope.isDone()).toBe(true);
-    });
-
-    it('returns malicious result when address is flagged', async () => {
-      const maliciousResponse = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+describe('mapAddressScanResult', () => {
+  it('maps the controller ErrorResult value to the extension Error value', () => {
+    expect(
+      mapAddressScanResult({
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: ResultType.Malicious,
-        label: 'Known scammer',
-      };
-
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan')
-        .reply(200, maliciousResponse);
-
-      const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
-
-      expect(response).toEqual(maliciousResponse);
-      expect(scope.isDone()).toBe(true);
-    });
-
-    it('handles different chain types', async () => {
-      const polygonChain = SupportedEVMChain.Polygon;
-
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan', {
-          chain: polygonChain,
-          address: TEST_ADDRESS,
-        })
-        .reply(200, RESPONSE_MOCK);
-
-      await scanAddress(polygonChain, TEST_ADDRESS);
-
-      expect(scope.isDone()).toBe(true);
-    });
-
-    it('throws an error if fetch fails', async () => {
-      nock(BASE_URL).post('/address/evm/scan').replyWithError('Network error');
-
-      await expect(scanAddress(TEST_CHAIN, TEST_ADDRESS)).rejects.toThrow(
-        'Network error',
-      );
-    });
-
-    it('returns error response for non-OK status', async () => {
-      const errorResponse = { error: 'Server error' };
-
-      nock(BASE_URL).post('/address/evm/scan').reply(500, errorResponse);
-
-      const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
-
-      expect(response).toEqual(errorResponse);
-    });
-
-    it('times out after 5 seconds', async () => {
-      nock(BASE_URL)
-        .post('/address/evm/scan')
-        .delay(SECOND * 6)
-        .reply(200, RESPONSE_MOCK);
-
-      await expect(scanAddress(TEST_CHAIN, TEST_ADDRESS)).rejects.toThrow(
-        'The user aborted a request.',
-      );
-    });
-  });
-
-  describe('scanAddressAndAddToCache', () => {
-    let getAddressSecurityAlertResponseMock: jest.Mock;
-    let addAddressSecurityAlertResponseMock: jest.Mock;
-
-    beforeEach(() => {
-      getAddressSecurityAlertResponseMock = jest.fn();
-      addAddressSecurityAlertResponseMock = jest.fn();
-    });
-
-    it('should return cached response when available and not loading', async () => {
-      const cachedResponse = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: ResultType.Benign,
-        label: 'Cached safe address',
-      };
-      getAddressSecurityAlertResponseMock.mockReturnValue(cachedResponse);
-
-      const result = await scanAddressAndAddToCache(
-        TEST_ADDRESS,
-        getAddressSecurityAlertResponseMock,
-        addAddressSecurityAlertResponseMock,
-        SupportedEVMChain.Ethereum,
-      );
-
-      expect(result).toEqual(cachedResponse);
-      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_CACHE_KEY,
-      );
-      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
-    });
-
-    it('should return cached loading state without making new API call', async () => {
-      const cachedLoadingResponse = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: ResultType.Loading,
+        result_type: AddressScanResultType.ErrorResult, // 'ErrorResult'
         label: '',
-      };
-      getAddressSecurityAlertResponseMock.mockReturnValue(
-        cachedLoadingResponse,
-      );
+      }).result_type,
+    ).toBe(ResultType.ErrorResult); // 'Error'
+  });
 
-      const result = await scanAddressAndAddToCache(
-        TEST_ADDRESS,
-        getAddressSecurityAlertResponseMock,
-        addAddressSecurityAlertResponseMock,
-        SupportedEVMChain.Ethereum,
-      );
+  it('maps Malicious/Warning/Benign to the matching extension ResultType', () => {
+    const cases: [AddressScanResultType, ResultType][] = [
+      [AddressScanResultType.Malicious, ResultType.Malicious],
+      [AddressScanResultType.Warning, ResultType.Warning],
+      [AddressScanResultType.Benign, ResultType.Benign],
+    ];
+    for (const [controllerValue, extensionValue] of cases) {
+      expect(
+        mapAddressScanResult({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: controllerValue,
+          label: 'x',
+        }).result_type,
+      ).toBe(extensionValue);
+    }
+  });
 
-      expect(result).toEqual(cachedLoadingResponse);
-      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_CACHE_KEY,
-      );
-      // Should not make any API calls or update cache when loading state is cached
-      expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+  // `scanAddress` forwards the API response without validating `result_type`,
+  // and the API can return `Trusted` even though the controller enum omits it.
+  // TODO: Remove the assertion after https://consensyssoftware.atlassian.net/browse/PSAFE-584
+  it('passes a Trusted verdict through even though the controller type omits it', () => {
+    expect(
+      mapAddressScanResult({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        result_type: 'Trusted' as AddressScanResultType,
+        label: 'Uniswap',
+      }),
+    ).toEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Trusted,
+      label: 'Uniswap',
+    });
+  });
+});
+
+describe('scanAddressAndAddToCache', () => {
+  const scanAddressMock = jest.fn();
+  const phishingControllerMock = {
+    scanAddress: scanAddressMock,
+  } as unknown as Pick<PhishingController, 'scanAddress'>;
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('returns the cached response without calling the controller', async () => {
+    const cached = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Benign,
+      label: '',
+    };
+    const result = await scanAddressAndAddToCache(
+      ADDRESS_MOCK,
+      jest.fn().mockReturnValue(cached),
+      jest.fn(),
+      CHAIN_ID_MOCK,
+      phishingControllerMock,
+    );
+    expect(result).toBe(cached);
+    expect(scanAddressMock).not.toHaveBeenCalled();
+  });
+
+  it('returns a cached Loading entry without scanning again, deduplicating concurrent scans', async () => {
+    const cachedLoading = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Loading,
+      label: '',
+    };
+    const addMock = jest.fn();
+    const result = await scanAddressAndAddToCache(
+      ADDRESS_MOCK,
+      jest.fn().mockReturnValue(cachedLoading),
+      addMock,
+      CHAIN_ID_MOCK,
+      phishingControllerMock,
+    );
+    expect(result).toBe(cachedLoading);
+    expect(scanAddressMock).not.toHaveBeenCalled();
+    expect(addMock).not.toHaveBeenCalled();
+  });
+
+  it('writes a Loading entry keyed by chain ID while the controller scan is pending', async () => {
+    const addMock = jest.fn();
+    let resolveScan!: (result: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType;
+      label: string;
+    }) => void;
+    scanAddressMock.mockReturnValue(
+      new Promise((resolve) => {
+        resolveScan = resolve;
+      }),
+    );
+
+    const scanPromise = scanAddressAndAddToCache(
+      ADDRESS_MOCK,
+      jest.fn().mockReturnValue(undefined),
+      addMock,
+      CHAIN_ID_MOCK,
+      phishingControllerMock,
+    );
+
+    expect(addMock).toHaveBeenCalledTimes(1);
+    expect(addMock).toHaveBeenCalledWith(CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Loading,
+      label: '',
     });
 
-    it('should scan address and cache result when not cached', async () => {
-      getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
-
-      const scope = nock(BASE_URL)
-        .post('/address/evm/scan', {
-          chain: SupportedEVMChain.Ethereum,
-          address: TEST_ADDRESS,
-        })
-        .reply(200, RESPONSE_MOCK);
-
-      const result = await scanAddressAndAddToCache(
-        TEST_ADDRESS,
-        getAddressSecurityAlertResponseMock,
-        addAddressSecurityAlertResponseMock,
-        SupportedEVMChain.Ethereum,
-      );
-
-      expect(result).toEqual(RESPONSE_MOCK);
-      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_CACHE_KEY,
-      );
-      // Should be called twice: once for loading state, once for result
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-        1,
-        TEST_CACHE_KEY,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Loading,
-          label: '',
-        },
-      );
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-        2,
-        TEST_CACHE_KEY,
-        RESPONSE_MOCK,
-      );
-      expect(scope.isDone()).toBe(true);
+    resolveScan({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Benign,
+      label: '',
     });
+    await scanPromise;
+  });
 
-    it('throw error when scan fails', async () => {
-      getAddressSecurityAlertResponseMock.mockReturnValue(undefined);
+  it('caches and returns a successful controller result', async () => {
+    const addMock = jest.fn();
+    scanAddressMock.mockResolvedValue({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: AddressScanResultType.Malicious,
+      label: 'scam',
+    });
+    const result = await scanAddressAndAddToCache(
+      ADDRESS_MOCK,
+      jest.fn().mockReturnValue(undefined),
+      addMock,
+      CHAIN_ID_MOCK,
+      phishingControllerMock,
+    );
+    expect(scanAddressMock).toHaveBeenCalledWith(CHAIN_ID_MOCK, ADDRESS_MOCK);
+    expect(result).toEqual({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Malicious,
+      label: 'scam',
+    });
+    expect(addMock).toHaveBeenNthCalledWith(2, CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.Malicious,
+      label: 'scam',
+    });
+  });
 
-      nock(BASE_URL).post('/address/evm/scan').replyWithError('Network error');
-
-      await expect(
-        scanAddressAndAddToCache(
-          TEST_ADDRESS,
-          getAddressSecurityAlertResponseMock,
-          addAddressSecurityAlertResponseMock,
-          SupportedEVMChain.Ethereum,
-        ),
-      ).rejects.toThrow('Network error');
-
-      expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_CACHE_KEY,
-      );
-      // Should be called twice: once for loading state, once for clearing on error
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-        1,
-        TEST_CACHE_KEY,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.Loading,
-          label: '',
-        },
-      );
-      expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-        2,
-        TEST_CACHE_KEY,
-        {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          result_type: ResultType.ErrorResult,
-          label: '',
-        },
-      );
+  it('caches ErrorResult and rethrows when the controller call rejects', async () => {
+    const addMock = jest.fn();
+    scanAddressMock.mockRejectedValue(new Error('network'));
+    await expect(
+      scanAddressAndAddToCache(
+        ADDRESS_MOCK,
+        jest.fn().mockReturnValue(undefined),
+        addMock,
+        CHAIN_ID_MOCK,
+        phishingControllerMock,
+      ),
+    ).rejects.toThrow('network');
+    expect(addMock).toHaveBeenNthCalledWith(2, CACHE_KEY_MOCK, {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: ResultType.ErrorResult,
+      label: '',
     });
   });
 });

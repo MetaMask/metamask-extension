@@ -55,7 +55,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         // Switch to ethereum network and check the chainId on testdapp
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Ethereum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdBeforeConnectAfterManualSwitch: string =
@@ -102,11 +102,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromNetworkSelect(
-          driver,
-          'Custom',
-          'Localhost 8546',
-        );
+        await switchToNetworkFromNetworkSelect(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

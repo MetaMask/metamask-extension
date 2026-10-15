@@ -5,7 +5,7 @@ import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { login } from '../page-objects/flows/login.flow';
-import LoginPage from '../page-objects/pages/login-page';
+import LoginPage from '../page-objects/pages/onboarding/login-page';
 import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 
 describe('eth_sendTransaction', function () {
@@ -52,7 +52,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(
@@ -103,7 +106,10 @@ describe('eth_sendTransaction', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const confirmation = new Confirmation(driver);
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'cancel',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const result = await driver
@@ -167,7 +173,10 @@ describe('eth_sendTransaction', function () {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkSiteSuggestedGas('~15 sec');
         await confirmation.checkNoInLineAlertIsDisplayed();
-        await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await confirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
         const actualHash = await driver.executeScript(

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -37,12 +37,13 @@ import {
   getIsSocialLoginFlow,
 } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import SetupPasskeyContent from '../../components/app/setup-passkey-content';
+import SetupPasskeyContent from '../../components/app/passkey-setup/setup-passkey-content';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../srp-input-form';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useDispatch } from '../../store/hooks';
 
 function RestoreVaultPage() {
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ function RestoreVaultPage() {
 
   const [srpError, setSrpError] = useState('');
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [shouldClearClipboard, setShouldClearClipboard] = useState(false);
   const [toggleSrpDetailsModal, setToggleSrpDetailsModal] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [showPasskeySetup, setShowPasskeySetup] = useState(false);
@@ -119,8 +121,13 @@ function RestoreVaultPage() {
   );
 
   const handleContinue = useCallback(() => {
+    if (shouldClearClipboard) {
+      navigator.clipboard.writeText('').catch(() => {
+        // Do not block vault restoration if clipboard access remains unavailable.
+      });
+    }
     setShowPasswordInput(true);
-  }, []);
+  }, [shouldClearClipboard]);
 
   const handleBack = useCallback(() => {
     if (loading) {
@@ -197,6 +204,8 @@ function RestoreVaultPage() {
             error={srpError}
             setSecretRecoveryPhrase={setSecretRecoveryPhrase}
             onClearCallback={() => setSrpError('')}
+            onClearClipboardRetry={() => setShouldClearClipboard(false)}
+            onClipboardClearFailed={() => setShouldClearClipboard(true)}
             showDescription={false}
             toggleSrpDetailsModal={toggleSrpDetailsModal}
             onSrpDetailsModalClose={() => setToggleSrpDetailsModal(false)}
@@ -228,7 +237,7 @@ function RestoreVaultPage() {
       justifyContent={BoxJustifyContent.Between}
       gap={4}
       className="import-srp-restore-vault h-full rounded-lg border border-solid"
-      data-testid="import-srp-restore-vault"
+      data-testid="parent-selector-import-srp-restore-vault"
       borderColor={BoxBorderColor.BorderMuted}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
     >

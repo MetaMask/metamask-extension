@@ -1,4 +1,4 @@
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -36,6 +36,8 @@ describe('useRecipientValidation', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Ensure real timers are active; the debouncing suite toggles fake timers.
+    jest.useRealTimers();
     mockUseI18nContext.mockReturnValue(mockT);
     mockUseSendAlerts.mockReturnValue({
       alerts: [],
@@ -69,6 +71,7 @@ describe('useRecipientValidation', () => {
       recipientResolvedLookup: undefined,
       resolutionProtocol: undefined,
       toAddressValidated: undefined,
+      isRecipientValidationPending: true,
       alerts: [],
       hasUnacknowledgedAlerts: false,
       acknowledgeAlerts: mockAcknowledgeAlerts,
@@ -121,6 +124,38 @@ describe('useRecipientValidation', () => {
 
     await waitFor(() => {
       expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
+  });
+
+  it('clears the previous result when the recipient is cleared', async () => {
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: 'vitalik.eth',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
+    });
+
+    const { result, rerender } = renderHook();
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+    });
+
+    mockUseSendContext.mockReturnValue({
+      asset: EVM_ASSET,
+      to: '',
+      chainId: '0x1',
+    } as unknown as ReturnType<typeof useSendContext>);
+    rerender({});
+
+    await waitFor(() => {
+      expect(result.current.recipientResolvedLookup).toBeUndefined();
+      expect(result.current.toAddressValidated).toBeUndefined();
+      expect(result.current.isRecipientValidationPending).toBe(false);
     });
   });
 
@@ -333,6 +368,17 @@ describe('useRecipientValidation', () => {
     });
 
     afterEach(() => {
+      // Flush and clear pending timers before restoring real timers so later
+      // tests (lodash debounce + waitFor) are not stuck on fake timers.
+      // RTL's waitFor schedules its own timers while fake timers are active.
+      act(() => {
+        try {
+          jest.runOnlyPendingTimers();
+        } catch {
+          // Ignore if no fake timers are installed
+        }
+      });
+      jest.clearAllTimers();
       jest.useRealTimers();
     });
 
@@ -378,7 +424,9 @@ describe('useRecipientValidation', () => {
 
       expect(mockValidateName).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledTimes(1);
@@ -388,6 +436,38 @@ describe('useRecipientValidation', () => {
           expect.any(Object),
         );
       });
+    });
+
+    it('reports validation as pending until the debounced result commits', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vitalik.eth',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { result } = renderHook();
+
+      expect(result.current.isRecipientValidationPending).toBe(true);
+      expect(mockValidateName).not.toHaveBeenCalled();
+
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
+
+      await waitFor(() => {
+        expect(result.current.isRecipientValidationPending).toBe(false);
+      });
+      expect(result.current.recipientResolvedLookup).toBe('0x123');
+      expect(result.current.toAddressValidated).toBe('vitalik.eth');
     });
 
     it('discards validation results when chainId changes during validation', async () => {
@@ -415,7 +495,9 @@ describe('useRecipientValidation', () => {
       const { result, rerender } = renderHook();
 
       // Advance timers to trigger the debounced validation
-      jest.advanceTimersByTime(500);
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+      });
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledWith(
@@ -434,19 +516,24 @@ describe('useRecipientValidation', () => {
       rerender();
 
       // Now resolve the original validation (for chainId 0x1)
-      if (resolveValidation) {
-        resolveValidation({
+      await act(async () => {
+        resolveValidation?.({
           resolvedLookup: '0xOldChainResult',
           protocol: 'ens',
         });
-      }
-
-      // Wait for any state updates
-      await jest.advanceTimersByTimeAsync(100);
+        await Promise.resolve();
+      });
 
       // The result from chainId 0x1 should be discarded
       // because chainId has changed to 0x89
       expect(result.current.recipientResolvedLookup).toBeUndefined();
+
+      // Flush the debounce scheduled for the new chainId so its setResult
+      // does not fire outside act during afterEach timer cleanup.
+      await act(async () => {
+        jest.advanceTimersByTime(500);
+        await Promise.resolve();
+      });
     });
   });
 

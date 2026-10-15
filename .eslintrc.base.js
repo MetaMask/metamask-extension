@@ -1,3 +1,4 @@
+const designTokensPlugin = require('@metamask/eslint-plugin-design-tokens');
 const {
   architecturalZones,
   buildSystemZones,
@@ -5,29 +6,20 @@ const {
 } = require('./development/eslint-restricted-paths-zones');
 
 module.exports = {
-  extends: ['@metamask/eslint-config'],
+  plugins: {
+    '@metamask/design-tokens': designTokensPlugin,
+  },
 
-  overrides: [
-    {
-      files: ['**/*-method-action-types.ts', '**/*-method-action-types.tmp.ts'],
-      rules: {
-        // Keep generated messenger action type formatting stable while the
-        // repository transitions from eslint-plugin-prettier to oxfmt.
-        'prettier/prettier': ['error', { endOfLine: 'auto' }],
-      },
+  languageOptions: {
+    globals: {
+      document: 'readonly',
+      window: 'readonly',
+      // `AggregateError` (ES2021) is used in our source, but `@metamask/eslint-config`
+      // pins `parserOptions.ecmaVersion` to 2017 (a transitive dependency uses Esprima,
+      // which can't parse ES2018+ syntax such as object rest/spread). Declare it manually
+      // until that shared config is bumped to at least ES2021.
+      AggregateError: 'readonly',
     },
-  ],
-
-  plugins: ['@metamask/design-tokens'],
-
-  globals: {
-    document: 'readonly',
-    window: 'readonly',
-    // `AggregateError` (ES2021) is used in our source, but `@metamask/eslint-config`
-    // pins `parserOptions.ecmaVersion` to 2017 (a transitive dependency uses Esprima,
-    // which can't parse ES2018+ syntax such as object rest/spread). Declare it manually
-    // until that shared config is bumped to at least ES2021.
-    AggregateError: 'readonly',
   },
 
   settings: {
@@ -168,6 +160,7 @@ module.exports = {
       },
     ],
     'import-x/no-nodejs-modules': 'off',
+    'jsdoc/no-undefined-types': 'off',
     'jsdoc/tag-lines': 'off',
     'no-restricted-syntax': [
       'error',
@@ -184,5 +177,24 @@ module.exports = {
         message: 'Sequence expressions are not allowed',
       },
     ],
+    'no-unused-private-class-members': 'off',
+    'no-unused-vars': [
+      'error',
+      {
+        vars: 'all',
+        args: 'all',
+        argsIgnorePattern: '[_]+',
+        caughtErrors: 'none',
+        ignoreRestSiblings: true,
+      },
+    ],
+    'promise/always-return': 'off',
+    'promise/catch-or-return': 'off',
+    'promise/no-return-wrap': 'off',
+    'promise/param-names': 'off',
+
+    // TODO: Update to `@metamask/eslint-config@15`, which includes these changes
+    'promise/no-nesting': 'error',
+    'promise/no-callback-in-promise': 'error',
   },
 };

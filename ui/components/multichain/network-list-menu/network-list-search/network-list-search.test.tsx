@@ -53,7 +53,7 @@ describe('NetworkListSearch', () => {
       />,
     );
 
-    const clearButton = getByRole('button', { name: /clear/u });
+    const clearButton = getByRole('button', { name: /clear/iu });
     fireEvent.click(clearButton);
 
     expect(mockSetSearchQuery).toHaveBeenCalledWith('');
