@@ -3304,7 +3304,7 @@
     "message": "Collecte de données à des fins de marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Nous collecterons des données sur la manière dont vous interagissez avec nos communications commerciales afin de partager avec vous des informations pertinentes (comme les caractéristiques des produits et d’autres contenus)."
+    "message": "Nous utiliserons MetaMetrics pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits et d’autres contenus)."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Recevez des mises à jour sur les produits, des conseils et des nouvelles, notamment par e-mail. Nous pouvons utiliser vos interactions pour trier le contenu que nous partageons avec vous."
@@ -6725,7 +6725,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "En plus de $1, nous aimerions utiliser des données (comme les informations issues des cookies) pour savoir comment vous interagissez avec nos communications commerciales.",
+    "message": "En plus de $1, nous aimerions utiliser les données pour comprendre comment vous interagissez avec les communications commerciales.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6781,19 +6781,19 @@
     "message": "Nous collecterons des données de base sur l’utilisation des produits. Nous pouvons associer ces informations aux données disponibles sur la chaîne."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Nous collecterons des données pour savoir comment vous interagissez avec nos communications commerciales. Nous pouvons utiliser ces données pour partager avec vous des informations pertinentes (comme les mises à jour des produits)."
+    "message": "Nous utiliserons ces données pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Données d’utilisation de base"
+    "message": "Collecte de données d’utilisation de base"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Données marketing"
+    "message": "Mises à jour du produit"
   },
   "onboardingMetametricsContinue": {
     "message": "Continuer"
   },
   "onboardingMetametricsDescription": {
-    "message": "Nous aimerions vous demander ces autorisations. Vous pouvez vous désinscrire ou supprimer vos données d’utilisation à tout moment."
+    "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"

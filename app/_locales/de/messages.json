@@ -3304,7 +3304,7 @@
     "message": "Datenerhebung für das Marketing"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "Wir erfassen Daten dazu, wie Sie mit unserer Marketingkommunikation umgehen, damit wir relevante Neuigkeiten (wie Produktmerkmale und andere Materialien) teilen können."
+    "message": "Wir verwenden MetaMetrics, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale und andere Materialien) teilen."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
@@ -6725,7 +6725,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "Zusätzlich zu $1 möchten wir Daten (wie Informationen aus Cookies) verwenden, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen.",
+    "message": "Zusätzlich zu $1 möchten wir Daten verwenden, um zu verstehen, wie Sie mit Marketingkommunikation umgehen.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6781,13 +6781,13 @@
     "message": "Wir erfassen grundlegende Daten zur Produktnutzung. Wir können diese Informationen mit On-Chain-Daten verknüpfen."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Wir erfassen Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können diese Daten nutzen, um relevante Neuigkeiten (wie Produkt-Updates) zu teilen."
+    "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Grundlegende Nutzungsdaten"
+    "message": "Grundlegende Nutzungsdaten sammeln"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Marketingdaten"
+    "message": "Produkt-Updates"
   },
   "onboardingMetametricsContinue": {
     "message": "Fortfahren"
@@ -6796,7 +6796,7 @@
     "message": "Wir möchten Sie um diese Genehmigungen bitten. Sie können Ihre Genehmigung jederzeit widerrufen oder Ihre Nutzungsdaten löschen lassen."
   },
   "onboardingMetametricsTitle": {
-    "message": "Helfen Sie uns, MetaMask zu verbessern"
+    "message": "Helfen Sie dabei, MetaMask zu verbessern"
   },
   "onboardingSignInWith": {
     "message": "Mit $1 anmelden",
