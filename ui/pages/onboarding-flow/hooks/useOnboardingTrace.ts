@@ -7,13 +7,31 @@ import {
   type ReactNode,
 } from 'react';
 import { useLocation } from 'react-router-dom';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import {
   OnboardingTraceContextProvider,
   type OnboardingTraceContextValue,
-  type OnboardingTraceOutcome,
 } from '../../../contexts/onboarding-trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { TraceName } from '../../../../shared/lib/trace';
+import type {
+  OnboardingJourneyTraceEndData,
+  OnboardingJourneyTraceEndRequest,
+  OnboardingJourneyTraceId,
+  OnboardingJourneyTraceRequest,
+} from '../../../../shared/types/onboarding';
+
+function callOnboardingTraceService<Response = void>(
+  method:
+    | 'startOnboardingJourney'
+    | 'updateOnboardingJourney'
+    | 'endOnboardingJourney',
+  request: OnboardingJourneyTraceRequest | OnboardingJourneyTraceEndRequest,
+): Promise<Response | undefined> {
+  return submitRequestToBackground<Response>(method, [request]).catch(
+    () => undefined,
+  );
+}
 
 /**
  * Converts an onboarding pathname into a stable, query-free step identifier.
@@ -35,19 +53,14 @@ export function getOnboardingTraceStep(pathname: string): string {
  */
 function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const { pathname } = useLocation();
-  const {
-    bufferedTrace,
-    bufferedEndTrace,
-    onboardingParentContext: onboardingParentContextRef,
-  } = useContext(MetaMetricsContext);
+  const { onboardingParentContext: onboardingParentContextRef } =
+    useContext(MetaMetricsContext);
   const lastStepRef = useRef(getOnboardingTraceStep(pathname));
   const hasStartedRef = useRef(false);
   const hasEndedRef = useRef(false);
-  const isOAuthInProgressRef = useRef(false);
-
-  const setOAuthInProgress = useCallback((isInProgress: boolean) => {
-    isOAuthInProgressRef.current = isInProgress;
-  }, []);
+  const startJourneyPromiseRef = useRef<
+    Promise<OnboardingJourneyTraceId | undefined>
+  >(Promise.resolve(undefined));
 
   const startJourney = useCallback(() => {
     if (hasStartedRef.current) {
@@ -55,64 +68,64 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
     }
 
     hasStartedRef.current = true;
-    bufferedTrace({
-      name: TraceName.OnboardingJourneyOverall,
-      op: TraceOperation.OnboardingUserJourney,
-      data: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        perf_fix: 'trace-registry-v1',
-      },
-    });
 
-    // Child screens read this shared ref when starting their own traces.
-    // Only the serializable trace identity crosses the UI/background RPC
-    // boundary; a live Sentry span cannot be passed through it.
-    onboardingParentContextRef.current = {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _name: TraceName.OnboardingJourneyOverall,
-    };
-  }, [bufferedTrace, onboardingParentContextRef]);
+    const startJourneyPromise =
+      callOnboardingTraceService<OnboardingJourneyTraceId>(
+        'startOnboardingJourney',
+        {
+          lastStep: lastStepRef.current,
+        },
+      );
+    startJourneyPromiseRef.current = startJourneyPromise;
 
-  const endJourney = useCallback(
-    (outcome: OnboardingTraceOutcome) => {
-      if (!hasStartedRef.current || hasEndedRef.current) {
+    startJourneyPromise.then((traceId) => {
+      if (!traceId) {
         return;
       }
 
-      hasEndedRef.current = true;
-      bufferedEndTrace({
-        name: TraceName.OnboardingJourneyOverall,
-        data: {
-          outcome,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          last_step: lastStepRef.current,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          perf_fix: 'trace-registry-v1',
-        },
+      // Child screens read this shared ref when starting their own traces.
+      // Only the opaque trace identity crosses the UI/background RPC boundary;
+      // a live Sentry span cannot be passed through it.
+      onboardingParentContextRef.current = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: TraceName.OnboardingJourneyOverall,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _id: traceId,
+      };
+    });
+  }, [onboardingParentContextRef]);
+
+  const endJourney = useCallback((data: OnboardingJourneyTraceEndData) => {
+    if (!hasStartedRef.current || hasEndedRef.current) {
+      return;
+    }
+
+    hasEndedRef.current = true;
+
+    startJourneyPromiseRef.current.then(() => {
+      callOnboardingTraceService('endOnboardingJourney', {
+        lastStep: lastStepRef.current,
+        ...data,
       });
-    },
-    [bufferedEndTrace],
-  );
+    });
+  }, []);
 
   useEffect(() => {
-    lastStepRef.current = getOnboardingTraceStep(pathname);
+    const lastStep = getOnboardingTraceStep(pathname);
+    lastStepRef.current = lastStep;
+
+    if (!hasStartedRef.current || hasEndedRef.current) {
+      return;
+    }
+
+    startJourneyPromiseRef.current?.then(() => {
+      callOnboardingTraceService('updateOnboardingJourney', {
+        lastStep,
+      });
+    });
   }, [pathname]);
 
-  useEffect(() => {
-    const handlePageHide = () => {
-      if (!isOAuthInProgressRef.current) {
-        endJourney('abandoned');
-      }
-    };
-
-    window.addEventListener('pagehide', handlePageHide);
-
-    return () => {
-      window.removeEventListener('pagehide', handlePageHide);
-    };
-  }, [endJourney]);
-
-  return { startJourney, endJourney, setOAuthInProgress };
+  return { startJourney, endJourney };
 }
 
 /**

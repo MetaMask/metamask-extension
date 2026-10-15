@@ -1,17 +1,14 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
-
-export type OnboardingTraceOutcome = 'completed' | 'abandoned';
+import type { OnboardingJourneyTraceEndData } from '../../shared/types/onboarding';
 
 export type OnboardingTraceContextValue = {
   startJourney: () => void;
-  endJourney: (outcome: OnboardingTraceOutcome) => void;
-  setOAuthInProgress: (isInProgress: boolean) => void;
+  endJourney: (data: OnboardingJourneyTraceEndData) => void;
 };
 
 const defaultOnboardingTraceContext: OnboardingTraceContextValue = {
   startJourney: () => undefined,
   endJourney: () => undefined,
-  setOAuthInProgress: () => undefined,
 };
 
 const OnboardingTraceContext = createContext<OnboardingTraceContextValue>(

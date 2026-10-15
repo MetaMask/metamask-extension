@@ -252,7 +252,7 @@ describe('Review Recovery Phrase Component', () => {
         replace: true,
       });
     });
-    expect(mockEndJourney).toHaveBeenCalledWith('completed');
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('should navigate to completion route on remind later when running on Firefox', async () => {

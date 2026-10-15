@@ -45,7 +45,6 @@ jest.mock('../../contexts/onboarding-trace', () => ({
   useOnboardingTrace: () => ({
     startJourney: mockStartJourney,
     endJourney: mockEndJourney,
-    setOAuthInProgress: jest.fn(),
   }),
 }));
 
@@ -475,7 +474,7 @@ describe('Onboarding Flow', () => {
 
       await waitFor(() => {
         expect(unlockAndGetSeedPhrase).toHaveBeenCalled();
-        expect(mockEndJourney).toHaveBeenCalledWith('completed');
+        expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
       });
     });
 

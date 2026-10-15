@@ -5,14 +5,21 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../contexts/metametrics';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
-import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { TraceName } from '../../../../shared/lib/trace';
 import {
   getOnboardingTraceStep,
   OnboardingTraceProvider,
 } from './useOnboardingTrace';
 
 /* eslint-disable @typescript-eslint/naming-convention */
+
+jest.mock('../../../store/background-connection', () => ({
+  submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
+}));
+
+const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
 
 describe('getOnboardingTraceStep', () => {
   it('returns the route after the onboarding prefix', () => {
@@ -63,102 +70,56 @@ describe('useOnboardingTrace', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     onboardingParentContext.current = null;
+    submitRequestToBackgroundMock.mockImplementation((method) =>
+      method === 'startOnboardingJourney'
+        ? Promise.resolve('journey-id')
+        : Promise.resolve(undefined),
+    );
   });
 
-  it('starts the overall journey only once when requested repeatedly', () => {
+  it('starts the overall journey only once when requested repeatedly', async () => {
     const { result } = renderHook(() => useOnboardingTrace(), {
       wrapper: createWrapper(),
     });
 
-    expect(bufferedTrace).not.toHaveBeenCalled();
-
-    act(() => {
+    await act(async () => {
       result.current.startJourney();
       result.current.startJourney();
+      await Promise.resolve();
     });
 
-    expect(bufferedTrace).toHaveBeenCalledTimes(1);
-    expect(bufferedTrace).toHaveBeenCalledWith({
-      name: TraceName.OnboardingJourneyOverall,
-      op: TraceOperation.OnboardingUserJourney,
-    });
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'startOnboardingJourney',
+      [{ lastStep: 'welcome' }],
+    );
     expect(onboardingParentContext.current).toEqual({
       _name: TraceName.OnboardingJourneyOverall,
+      _id: 'journey-id',
     });
   });
 
-  it('ends the journey once with its current step and outcome', () => {
+  it('ends the journey once with its current step and result', async () => {
     const { result } = renderHook(() => useOnboardingTrace(), {
       wrapper: createWrapper(),
     });
 
-    act(() => {
+    await act(async () => {
       result.current.startJourney();
-      result.current.endJourney('completed');
-      result.current.endJourney('abandoned');
+      result.current.endJourney({ success: true });
+      result.current.endJourney({ success: false, abandoned: true });
+      await Promise.resolve();
     });
 
-    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
-    expect(bufferedEndTrace).toHaveBeenCalledWith({
-      name: TraceName.OnboardingJourneyOverall,
-      data: {
-        outcome: 'completed',
-        last_step: 'welcome',
-      },
-    });
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(2);
+    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
+      2,
+      'endOnboardingJourney',
+      [{ lastStep: 'welcome', success: true }],
+    );
   });
 
-  it('ends the journey as abandoned on pagehide', () => {
-    const { result, unmount } = renderHook(() => useOnboardingTrace(), {
-      wrapper: createWrapper(),
-    });
-
-    act(() => {
-      result.current.startJourney();
-      window.dispatchEvent(new Event('pagehide'));
-    });
-
-    unmount();
-
-    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
-    expect(bufferedEndTrace).toHaveBeenCalledWith({
-      name: TraceName.OnboardingJourneyOverall,
-      data: {
-        outcome: 'abandoned',
-        last_step: 'welcome',
-      },
-    });
-  });
-
-  it('does not abandon the journey when pagehide occurs during OAuth', () => {
-    const { result } = renderHook(() => useOnboardingTrace(), {
-      wrapper: createWrapper(),
-    });
-
-    act(() => {
-      result.current.startJourney();
-      result.current.setOAuthInProgress(true);
-      window.dispatchEvent(new Event('pagehide'));
-    });
-
-    expect(bufferedEndTrace).not.toHaveBeenCalled();
-
-    act(() => {
-      result.current.setOAuthInProgress(false);
-      window.dispatchEvent(new Event('pagehide'));
-    });
-
-    expect(bufferedEndTrace).toHaveBeenCalledTimes(1);
-    expect(bufferedEndTrace).toHaveBeenCalledWith({
-      name: TraceName.OnboardingJourneyOverall,
-      data: {
-        outcome: 'abandoned',
-        last_step: 'welcome',
-      },
-    });
-  });
-
-  it('uses the latest route as the last step', () => {
+  it('uses the latest route as the last step', async () => {
     const navigateRef: { current?: ReturnType<typeof useNavigate> } = {};
 
     function TestComponent() {
@@ -167,7 +128,11 @@ describe('useOnboardingTrace', () => {
       return (
         <>
           <button onClick={startJourney}>Start</button>
-          <button onClick={() => endJourney('abandoned')}>End</button>
+          <button
+            onClick={() => endJourney({ success: false, abandoned: true })}
+          >
+            End
+          </button>
         </>
       );
     }
@@ -188,20 +153,34 @@ describe('useOnboardingTrace', () => {
       </MemoryRouter>,
     );
 
-    act(() => {
+    await act(async () => {
       getByRole('button', { name: 'Start' }).click();
-      navigateRef.current?.('/onboarding/review-recovery-phrase');
+      await Promise.resolve();
     });
-    act(() => {
+    await act(async () => {
+      navigateRef.current?.('/onboarding/review-recovery-phrase');
+      await Promise.resolve();
+    });
+    await act(async () => {
       getByRole('button', { name: 'End' }).click();
+      await Promise.resolve();
     });
 
-    expect(bufferedEndTrace).toHaveBeenCalledWith({
-      name: TraceName.OnboardingJourneyOverall,
-      data: {
-        outcome: 'abandoned',
-        last_step: 'review-recovery-phrase',
-      },
-    });
+    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
+      2,
+      'updateOnboardingJourney',
+      [{ lastStep: 'review-recovery-phrase' }],
+    );
+    expect(submitRequestToBackgroundMock).toHaveBeenNthCalledWith(
+      3,
+      'endOnboardingJourney',
+      [
+        {
+          lastStep: 'review-recovery-phrase',
+          success: false,
+          abandoned: true,
+        },
+      ],
+    );
   });
 });

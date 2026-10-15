@@ -118,7 +118,6 @@ export default function OnboardingWelcome() {
   const [loginError, setLoginError] = useState<LoginErrorType | null>(null);
 
   const { animationCompleted } = useRiveWasmContext();
-  const { setOAuthInProgress } = useOnboardingTrace();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
@@ -292,27 +291,22 @@ export default function OnboardingWelcome() {
   const handleSocialLogin = useCallback(
     async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
-        setOAuthInProgress(true);
-        try {
-          bufferedTrace?.({
-            name: TraceName.OnboardingSocialLoginAttempt,
-            op: TraceOperation.OnboardingUserJourney,
-            tags: { provider: socialConnectionType },
-            parentContext: onboardingParentContext?.current,
-          });
-          const isNewUser = await dispatch(
-            startOAuthLogin(
-              socialConnectionType as AuthConnection,
-              bufferedTrace,
-              bufferedEndTrace,
-              trackLegacyEventForAction,
-            ),
-          );
-          bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
-          return isNewUser;
-        } finally {
-          setOAuthInProgress(false);
-        }
+        bufferedTrace?.({
+          name: TraceName.OnboardingSocialLoginAttempt,
+          op: TraceOperation.OnboardingUserJourney,
+          tags: { provider: socialConnectionType },
+          parentContext: onboardingParentContext?.current,
+        });
+        const isNewUser = await dispatch(
+          startOAuthLogin(
+            socialConnectionType as AuthConnection,
+            bufferedTrace,
+            bufferedEndTrace,
+            trackLegacyEventForAction,
+          ),
+        );
+        bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
+        return isNewUser;
       }
       return true;
     },
@@ -323,7 +317,6 @@ export default function OnboardingWelcome() {
       bufferedTrace,
       bufferedEndTrace,
       trackLegacyEventForAction,
-      setOAuthInProgress,
     ],
   );
 

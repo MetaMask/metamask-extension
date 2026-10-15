@@ -172,7 +172,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
       replace: true,
     });
-    expect(mockEndJourney).toHaveBeenCalledWith('completed');
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('should go to Onboarding Completion page as a next step in firefox', async () => {
@@ -197,7 +197,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE, {
       replace: true,
     });
-    expect(mockEndJourney).toHaveBeenCalledWith('completed');
+    expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
   });
 
   it('onClose should navigate to reveal srp list route', () => {

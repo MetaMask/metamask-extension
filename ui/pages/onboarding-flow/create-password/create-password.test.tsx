@@ -749,7 +749,7 @@ describe('Onboarding Create Password', () => {
           },
         );
       });
-      expect(mockEndJourney).toHaveBeenCalledWith('completed');
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
 
     it('tracks Wallet Imported when import succeeds', async () => {
@@ -1471,7 +1471,7 @@ describe('Onboarding Create Password', () => {
           { replace: true },
         );
       });
-      expect(mockEndJourney).toHaveBeenCalledWith('completed');
+      expect(mockEndJourney).toHaveBeenCalledWith({ success: true });
     });
   });
 

@@ -319,7 +319,7 @@ const OnboardingFlowContent = () => {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
 
-      endJourney('completed');
+      endJourney({ success: true });
     } catch (error) {
       log.error('OnboardingFlow: failed to unlock wallet', error);
       throw error;

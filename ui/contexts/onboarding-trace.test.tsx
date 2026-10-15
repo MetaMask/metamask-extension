@@ -10,7 +10,6 @@ describe('useOnboardingTrace', () => {
     const actions = {
       startJourney: jest.fn(),
       endJourney: jest.fn(),
-      setOAuthInProgress: jest.fn(),
     };
 
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -28,6 +27,8 @@ describe('useOnboardingTrace', () => {
     const { result } = renderHook(() => useOnboardingTrace());
 
     expect(() => result.current.startJourney()).not.toThrow();
-    expect(() => result.current.endJourney('abandoned')).not.toThrow();
+    expect(() =>
+      result.current.endJourney({ success: false, abandoned: true }),
+    ).not.toThrow();
   });
 });

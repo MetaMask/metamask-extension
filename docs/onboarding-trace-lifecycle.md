@@ -5,16 +5,16 @@ Implementation tracker for centralizing the `Onboarding - Overall Journey` Sentr
 ## Goal
 
 Ensure every onboarding journey has one lifecycle owner, one start, and one
-idempotent end. Completed journeys should be tagged with `outcome: completed`;
-active sessions that close the extension UI should be tagged with
-`outcome: abandoned` and the last known onboarding step.
+idempotent end. Completed journeys are tagged with `success: true`; active
+journeys whose onboarding tab is removed are tagged with
+`success: false, abandoned: true` and the last known onboarding step.
 
 ## Current state
 
 - `OnboardingFlow` owns one `OnboardingTraceProvider` and explicitly starts the
   journey through `useOnboardingTrace`.
 - The provider exposes one shared lifecycle API to all onboarding screens.
-  Terminal actions call `endJourney('completed')` through the context instead
+  Terminal actions call `endJourney({ success: true })` through the context instead
   of receiving a completion callback through route props.
 - The overall journey is completed from these terminal actions:
   - `ui/pages/onboarding-flow/create-password/create-password.tsx`
@@ -26,22 +26,41 @@ active sessions that close the extension UI should be tagged with
   succeeds and before `navigateAfterUnlock`.
 - In-app exits to non-onboarding routes are intentionally outside the
   abandonment metric; successful terminal actions own completion.
-- No trace-service timeout fallback is needed for this lifecycle: expected
-  completion and abandonment paths explicitly end the journey, and
-  `pagehide` handles closing the onboarding page.
-- The MetaMetrics trace methods cross the UI/background boundary through `SentryTracingService`; lifecycle calls must continue using `bufferedTrace` and `bufferedEndTrace` rather than calling shared trace functions directly from UI code.
+- `OnboardingController` owns a background per-tab registry. The onboarding UI
+  sends only step and result data through connection-scoped background methods.
+  A dedicated trusted-connection adapter supplies its `sender.tab.id` when
+  available before calling the controller; the UI never reads or sends the
+  browser tab ID. Missing tab identity does not disable tracing, but it cannot
+  receive a tab-removal abandonment signal.
+- `OnboardingController` generates an opaque trace ID and returns it to the UI
+  for child trace parent-context propagation. It delegates only generic
+  `bufferedTrace` and `bufferedEndTrace` calls to `SentryTracingService`.
+- A reload reconnects to the same tab and updates the existing registry entry;
+  it does not end or restart the Sentry trace.
+- `tabs.onRemoved` is the abandonment signal. A removed tab ends the active
+  journey with `success: false, abandoned: true`.
+- There is no route-away abandonment observer, React unmount cleanup,
+  `pagehide` listener, `sessionStorage` state, or timeout workaround. Route
+  changes only synchronize the last known step with the background registry.
+  The omitted lifecycle signals are either not reliable for this full-screen
+  flow or would incorrectly classify reloads and in-app navigation.
+- The MetaMetrics trace methods cross the UI/background boundary through the
+  `OnboardingController`; lifecycle calls use generic `bufferedTrace` and
+  `bufferedEndTrace` rather than calling shared trace functions directly from
+  UI code.
 
-## Proposed design
+## Implemented design
 
-### Central lifecycle helper
+### UI lifecycle helper
 
-Add a TypeScript helper or hook under `ui/pages/onboarding-flow/hooks/` that owns:
+Use a TypeScript hook under `ui/pages/onboarding-flow/hooks/` that owns:
 
 - Providing an explicit `startJourney` API for `TraceName.OnboardingJourneyOverall`.
 - Tracking the current route as `last_step`.
 - Ending the journey exactly once with an idempotent ref.
 - Ending completed journeys before successful terminal navigation.
-- Ending abandoned journeys on `pagehide`.
+- Sending background step updates while the onboarding route changes.
+- Keeping tab identity resolution in the trusted background connection.
 
 The helper owns the serializable `onboardingParentContext` assignment when
 `startJourney` runs. This is an intentional ref mutation: child screens use the
@@ -55,7 +74,8 @@ Suggested end attributes:
 
 ```ts
 {
-  outcome: 'completed' | 'abandoned',
+  success: boolean,
+  abandoned?: true,
   last_step: string,
 }
 ```
@@ -67,25 +87,21 @@ complete the shared lifecycle before successful navigation:
 
 | Path | Completion action | Expected outcome |
 | --- | --- | --- |
-| New SRP | Review “remind later” or confirm action | `completed` |
-| SRP import | Successful password/import action | `completed` |
-| Social wallet creation | Successful wallet creation action | `completed` |
-| Unlock completion | `OnboardingFlow.handleUnlock` after a successful unlock | `completed` |
-| Closed onboarding UI | `pagehide` lifecycle signal | `abandoned` |
+| New SRP | Review “remind later” or confirm action | `success: true` |
+| SRP import | Successful password/import action | `success: true` |
+| Social wallet creation | Successful wallet creation action | `success: true` |
+| Unlock completion | `OnboardingFlow.handleUnlock` after a successful unlock | `success: true` |
+| Removed onboarding tab | Background `tabs.onRemoved` signal | `success: false, abandoned: true` |
 
 Child screens may continue ending their own child spans, but must not directly
 call `bufferedEndTrace` for `OnboardingJourneyOverall`.
 
-### Browser lifecycle behavior
+### Background lifecycle behavior
 
-Use the browser lifecycle signal for closure. A hidden document can be a normal
-part of social OAuth, so visibility handling must not immediately classify every
-hidden state as abandonment. `pagehide` handles browser/window dismissal and is
-idempotent with terminal completion.
-
-The mobile-equivalent timeout safety net is intentionally out of scope here.
-Adding a timer would obscure lifecycle ownership and is unnecessary for the
-extension's explicit completion and `pagehide` cleanup paths.
+The background owns closure detection with the browser tab-removal event. A
+reload keeps the same tab ID, so `OnboardingController` retains the registry
+entry and the new UI instance resumes it. A hidden document, route change, or
+component unmount is not treated as abandonment.
 
 ## Implementation checklist
 
@@ -94,27 +110,31 @@ extension's explicit completion and `pagehide` cleanup paths.
 - [x] Track the last onboarding route/step.
 - [x] Centralize successful terminal endings behind the shared lifecycle API.
 - [x] Remove overall-journey `bufferedEndTrace` calls from child screens.
-- [x] Add browser lifecycle abandonment cleanup.
+- [x] Add an `OnboardingController` per-tab registry and `tabs.onRemoved`
+  abandonment handling.
+- [x] Keep reloads on the same tab journey without starting a second trace.
 - [x] Make the shared completion/abandonment end API idempotent.
-- [x] Decide not to add a trace timeout fallback; lifecycle cleanup is explicit.
+- [x] Remove UI `sessionStorage`, `pagehide`, unmount, route-away abandonment,
+  and timeout handling.
 - [x] Add regression tests for the listed terminal paths.
-- [x] Add tests for abandonment and repeated cleanup signals.
-- [x] Run `yarn lint:changed:fix`.
-- [x] Run the focused onboarding unit tests.
-- [x] Run relevant trace-service tests.
+- [x] Add tests for tab-removal abandonment and repeated end signals.
+- [x] Run the final focused tests and lint after the background RPC refactor.
+- [ ] Manually verify reload versus tab close in the full-screen onboarding tab.
 
 ## Test matrix
 
-The tests should assert that the overall journey end request is emitted exactly once and includes the expected outcome and last step.
+The tests should assert that the overall journey end request is emitted exactly
+once and includes the expected result and last step.
 
 - [x] New SRP completion from review screen.
 - [x] New SRP completion from confirm screen.
 - [x] SRP import completion.
 - [x] Social wallet creation completion.
 - [x] Unlock-completion flow.
-- [x] `pagehide`/close abandonment.
-- [x] Duplicate completion plus cleanup signals do not produce a second end.
-- [x] Social OAuth backgrounding is not incorrectly recorded as abandonment.
+- [x] Tab-removal abandonment.
+- [x] Reload resumes the existing tab journey without a second start trace.
+- [x] Duplicate completion plus tab removal do not produce a second end.
+- [x] Multiple onboarding tabs remain isolated from one another.
 
 ## Mobile reference
 
@@ -176,8 +196,30 @@ The extension needs the same ownership model adapted to React Router and the UI/
   Suspense warnings in the newly covered `onboarding-flow.test.tsx`.
 - `yarn lint:changed:fix` and the editor linter report no errors.
 
+### 2026-10-15 (background lifecycle revision)
+
+- Moved abandonment ownership from the UI lifecycle to the background
+  `OnboardingController`.
+- Added a per-tab registry, a dedicated trusted-connection adapter for tab-ID
+  injection, and `tabs.onRemoved` handling.
+- Changed the end payload to the shared `{ success, abandoned? }` type.
+- Removed UI tab-ID lookup, `sessionStorage`, `pagehide`, unmount, route-away
+  abandonment, and timer handling so reloads and allowed in-app navigation do
+  not end the journey.
+- Updated the lifecycle tests and documentation to cover reload/resume and
+  tab-removal abandonment.
+
+### 2026-10-15 (ownership refinement)
+
+- Moved onboarding journey lifecycle methods out of the generic
+  `SentryTracingService` and into `OnboardingController`.
+- Kept `SentryTracingService` focused on generic trace buffering and consent
+  handling.
+- Moved tab-ID injection into a dedicated connection API adapter so
+  `metamask-controller.js` only wires the connection API.
+
 ## Next implementation step
 
-No further lifecycle implementation is pending. The next step is review and
-manual verification of the close/reload behavior in the full-screen onboarding
-page; no route-away or unmount abandonment handling should be added.
+Run the focused lint/type checks, then manually verify in the full-screen
+onboarding tab that reload resumes the same journey while closing the tab emits
+one abandonment end.

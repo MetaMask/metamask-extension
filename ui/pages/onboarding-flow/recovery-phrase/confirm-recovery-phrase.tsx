@@ -164,7 +164,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         .build(),
     );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    endJourney('completed');
+    endJourney({ success: true });
 
     const nextRoute =
       isFirefox || isFromReminder

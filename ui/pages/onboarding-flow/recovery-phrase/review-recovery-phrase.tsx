@@ -148,7 +148,7 @@ export default function RecoveryPhrase({
         .build(),
     );
     bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    endJourney('completed');
+    endJourney({ success: true });
 
     if (isFirefox || firstTimeFlowType === FirstTimeFlowType.restore) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });

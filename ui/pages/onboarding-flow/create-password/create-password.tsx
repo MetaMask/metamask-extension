@@ -216,7 +216,7 @@ export default function CreatePassword({
     }
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
-    endJourney('completed');
+    endJourney({ success: true });
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.WalletImported)
@@ -285,7 +285,7 @@ export default function CreatePassword({
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
-      endJourney('completed');
+      endJourney({ success: true });
     }
 
     trackEvent(

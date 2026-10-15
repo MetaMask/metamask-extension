@@ -10,3 +10,44 @@ export type OnboardingControllerState = {
   hasSeenOnboardingCompletionPage: boolean;
   onboardingTabs?: Record<string, string>;
 };
+
+/**
+ * Request data used to update an onboarding journey.
+ */
+export type OnboardingJourneyTraceRequest = {
+  lastStep: string;
+};
+
+/**
+ * Data used to end an onboarding journey.
+ */
+export type OnboardingJourneyTraceEndData = {
+  success: boolean;
+  abandoned?: true;
+};
+
+/**
+ * Request data used to end an onboarding journey.
+ */
+export type OnboardingJourneyTraceEndRequest = OnboardingJourneyTraceRequest &
+  OnboardingJourneyTraceEndData;
+
+/**
+ * Opaque identifier used to parent child traces to the onboarding journey.
+ */
+export type OnboardingJourneyTraceId = string;
+
+/**
+ * Request data used by the onboarding controller after the trusted connection
+ * has supplied the browser tab ID.
+ */
+export type OnboardingJourneyTraceControllerRequest =
+  OnboardingJourneyTraceRequest & {
+    tabId?: number;
+  };
+
+/**
+ * Request data used by the onboarding controller to end a journey.
+ */
+export type OnboardingJourneyTraceControllerEndRequest =
+  OnboardingJourneyTraceControllerRequest & OnboardingJourneyTraceEndData;
