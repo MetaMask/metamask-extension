@@ -201,8 +201,8 @@ describe('Sentry poll/websocket trace-root evidence (#43930)', function (this: S
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2()
-          .withMetaMetricsController({
-            completedMetaMetricsOnboarding: true,
+          .withAnalyticsController({
+            consentDecisionMade: true,
             optedIn: true,
           })
           .withRemoteFeatureFlagController({
