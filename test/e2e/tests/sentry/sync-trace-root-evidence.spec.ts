@@ -60,13 +60,11 @@ async function captureSentryTransactions(mockServer: Mockttp) {
         const body = await request.body.getText();
         for (const txn of parseTransactions(body ?? '')) {
           captured.push(txn);
-          // eslint-disable-next-line no-console
           console.log(
             `CAPTURED-TXN ${txn.traceId} ${JSON.stringify(txn.transaction)}`,
           );
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.log('CAPTURE-ERR', String(error));
       }
       return { statusCode: 200, json: {} };
@@ -84,10 +82,8 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
     // `user-storage-controller-init.test.ts`). Run locally per the PR's
     // Validation Run instructions to reproduce the captured evidence log.
     if (process.env.CI) {
-      // eslint-disable-next-line @typescript-eslint/no-invalid-this
       this.skip();
     }
-    // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(600000);
     captured.length = 0;
 
@@ -240,15 +236,11 @@ describe('Sentry sync trace-root evidence (#43929)', function () {
         );
         const sharingAmbient = syncOps.filter((t) => otherIds.has(t.traceId));
 
-        // eslint-disable-next-line no-console
         console.log(
           `EVIDENCE captured=${captured.length} accountSyncFull=${accountSyncOps.length} contactSyncFull=${contactSyncOps.length} distinctTraceIds=${distinct.length} sharingSwPageload=${sharingSw} sharingAmbient=${sharingAmbient.length}`,
         );
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-SYNC-OPS ${JSON.stringify(syncOps)}`);
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-SW-IDS ${JSON.stringify([...swIds])}`);
-        // eslint-disable-next-line no-console
         console.log(`EVIDENCE-ALL ${JSON.stringify(captured)}`);
 
         // The PR's claim: each sync entry op (`Multichain Account Syncing -
