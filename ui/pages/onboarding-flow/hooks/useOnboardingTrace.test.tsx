@@ -137,7 +137,7 @@ describe('useOnboardingTrace', () => {
 
     expect(startOnboardingJourney).toHaveBeenCalledWith({
       lastStep: 'welcome',
-      tabId: 42,
+      tabId: '42',
     });
   });
 

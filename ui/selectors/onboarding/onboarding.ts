@@ -30,7 +30,7 @@ export type OnboardingState = {
  */
 export function getOnboardingTabId(
   state: MetaMaskReduxState,
-): number | string | undefined {
+): string | undefined {
   const { appActiveTab } = state.metamask as MetaMaskReduxState['metamask'] & {
     appActiveTab?: { id?: number | string };
   };
@@ -39,7 +39,11 @@ export function getOnboardingTabId(
       ? appActiveTab?.id
       : state.activeTab?.id;
 
-  return currentTabId;
+  if (currentTabId) {
+    return String(currentTabId);
+  }
+
+  return undefined;
 }
 
 export function getSocialLoginType(

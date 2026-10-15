@@ -168,18 +168,19 @@ export class OnboardingController extends BaseController<
   readonly #platform: ExtensionPlatform;
 
   readonly #onboardingJourneysByTabId = new Map<
-    number | string | undefined,
+    string | undefined,
     OnboardingJourney
   >();
 
   readonly #handleTabRemoved = (tabId: number): void => {
-    const journey = this.#onboardingJourneysByTabId.get(tabId);
+    const normalizedTabId = String(tabId);
+    const journey = this.#onboardingJourneysByTabId.get(normalizedTabId);
     if (!journey) {
       return;
     }
 
     this.endOnboardingJourney({
-      tabId,
+      tabId: normalizedTabId,
       lastStep: journey.lastStep,
       success: false,
       abandoned: true,

@@ -80,7 +80,7 @@ describe('social-sync selectors', () => {
         .spyOn(environmentType, 'getEnvironmentType')
         .mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
-      expect(getOnboardingTabId(createTabState(42, 7))).toBe(42);
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('42');
     });
 
     it('returns the app active tab ID in the sidepanel', () => {
@@ -88,7 +88,7 @@ describe('social-sync selectors', () => {
         .spyOn(environmentType, 'getEnvironmentType')
         .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
-      expect(getOnboardingTabId(createTabState(42, 7))).toBe(7);
+      expect(getOnboardingTabId(createTabState(42, 7))).toBe('7');
     });
 
     it('returns a string active tab ID outside of the sidepanel', () => {

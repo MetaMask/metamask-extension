@@ -108,13 +108,13 @@ describe('OnboardingController', () => {
       ) => void;
 
       const traceId = controller.startOnboardingJourney({
-        tabId: 1,
+        tabId: '1',
         lastStep: 'welcome',
       });
 
       expect(
         controller.startOnboardingJourney({
-          tabId: 1,
+          tabId: '1',
           lastStep: 'create-password',
         }),
       ).toBe(traceId);
@@ -175,11 +175,11 @@ describe('OnboardingController', () => {
       ) => void;
 
       controller.startOnboardingJourney({
-        tabId: 1,
+        tabId: '1',
         lastStep: 'welcome',
       });
       controller.endOnboardingJourney({
-        tabId: 1,
+        tabId: '1',
         lastStep: 'welcome',
         success: true,
       });
@@ -208,11 +208,11 @@ describe('OnboardingController', () => {
       ) => void;
 
       controller.startOnboardingJourney({
-        tabId: 1,
+        tabId: '1',
         lastStep: 'welcome',
       });
       controller.startOnboardingJourney({
-        tabId: 2,
+        tabId: '2',
         lastStep: 'create-password',
       });
 

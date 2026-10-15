@@ -16,7 +16,7 @@ export type OnboardingControllerState = {
  */
 export type OnboardingJourneyTraceRequest = {
   lastStep: string;
-  tabId?: number | string;
+  tabId?: string;
 };
 
 /**
