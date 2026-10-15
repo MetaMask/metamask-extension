@@ -67,22 +67,35 @@ jobs:
     timeout-minutes: 5
     steps:
       - run: echo "PR author agreed to open a draft Segment schema PR"
-  # Fork check after agreement, so create does not mint the App token for a fork.
+  # Fork, open state, and no-schema-pr, read after agreement.
+  # create queues from this snapshot. The write lock is the create job, so an
+  # unmerged close can finish between this job and that one.
   is-cross-repo-pr:
     needs: did-user-agree-to-create-pr
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
+      IS_CROSS_REPO_PR: ${{ steps.client-pr.outputs.IS_CROSS_REPO_PR }}
+      CLIENT_PR_OPEN: ${{ steps.client-pr.outputs.CLIENT_PR_OPEN }}
+      HAS_OPT_OUT_LABEL: ${{ steps.client-pr.outputs.HAS_OPT_OUT_LABEL }}
     steps:
-      - id: is-cross-repo
-        run: echo "IS_CROSS_REPO_PR=$(gh pr view -R "$GITHUB_REPOSITORY" --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}")" >> "$GITHUB_OUTPUT"
+      - id: client-pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          json="$(gh pr view -R "$GITHUB_REPOSITORY" --json isCrossRepository,state,labels "${PR_NUMBER}")"
+          echo "IS_CROSS_REPO_PR=$(printf '%s' "$json" | jq -r '.isCrossRepository')" >> "$GITHUB_OUTPUT"
+          echo "CLIENT_PR_OPEN=$(printf '%s' "$json" | jq -r 'if .state == "OPEN" then "true" else "false" end')" >> "$GITHUB_OUTPUT"
+          echo "HAS_OPT_OUT_LABEL=$(printf '%s' "$json" | jq -r 'any(.labels[]; .name == "no-schema-pr")')" >> "$GITHUB_OUTPUT"
   create:
     needs: is-cross-repo-pr
-    if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
+    # Queued when the head is in this repository, the pull request is open,
+    # and no-schema-pr is off. The first step repeats that read under the write lock.
+    if: >
+      needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' &&
+      needs.is-cross-repo-pr.outputs.CLIENT_PR_OPEN == 'true' &&
+      needs.is-cross-repo-pr.outputs.HAS_OPT_OUT_LABEL == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: segment-schema
@@ -94,8 +107,24 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - id: client-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          json="$(gh pr view -R "$GITHUB_REPOSITORY" --json isCrossRepository,state,labels "${PR_NUMBER}")"
+          cross="$(printf '%s' "$json" | jq -r '.isCrossRepository')"
+          open="$(printf '%s' "$json" | jq -r 'if .state == "OPEN" then "true" else "false" end')"
+          opt_out="$(printf '%s' "$json" | jq -r 'any(.labels[]; .name == "no-schema-pr")')"
+          if [ "$cross" = "false" ] && [ "$open" = "true" ] && [ "$opt_out" = "false" ]; then
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+            echo "Schema create stopped after the write lock. cross=${cross} open=${open} opt_out=${opt_out}"
+          fi
       - uses: actions/create-github-app-token@v3
         id: app-token
+        if: ${{ steps.client-pr.outputs.allowed == 'true' && success() }}
         with:
           # Schema reads and writes use this token, so it must be the Consensys installation.
           client-id: ${{ vars.APP_CLIENT_ID }}
@@ -103,6 +132,7 @@ jobs:
           owner: Consensys
           repositories: segment-schema
       - uses: MetaMask/github-tools/.github/actions/draft-segment-schema-pr@50bd5ae6eab963370b7dd986e93ee4a91074fe64
+        if: ${{ steps.client-pr.outputs.allowed == 'true' && success() }}
         with:
           platform: extension
           mode: create
