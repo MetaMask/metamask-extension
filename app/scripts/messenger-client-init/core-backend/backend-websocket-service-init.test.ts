@@ -302,8 +302,8 @@ describe('BackendWebSocketServiceInit', () => {
       }) as never);
 
       BackendWebSocketServiceInit(request);
-      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService)
-        .mock.calls[0][0];
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
 
       expect(isBasicFunctionality?.()).toBe(false);
     });
@@ -323,8 +323,8 @@ describe('BackendWebSocketServiceInit', () => {
       }) as never);
 
       BackendWebSocketServiceInit(request);
-      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService)
-        .mock.calls[0][0];
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
 
       expect(isBasicFunctionality?.()).toBe(false);
     });
@@ -344,8 +344,8 @@ describe('BackendWebSocketServiceInit', () => {
       }) as never);
 
       BackendWebSocketServiceInit(request);
-      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService)
-        .mock.calls[0][0];
+      const { isBasicFunctionality } = jest.mocked(BackendWebSocketService).mock
+        .calls[0][0];
 
       expect(isBasicFunctionality?.()).toBe(true);
     });
