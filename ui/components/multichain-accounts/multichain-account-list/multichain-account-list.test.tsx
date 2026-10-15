@@ -1,4 +1,5 @@
 import React from 'react';
+import { cloneDeep } from 'lodash';
 import {
   screen,
   fireEvent,
@@ -114,11 +115,40 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
-    setAccountGroupHidden: jest.fn().mockImplementation(() => {
-      return async function () {
-        await Promise.resolve();
-      };
-    }),
+    // Like the real action, the store is refreshed before the dispatch
+    // resolves, which is what `Account Hidden` is built from.
+    setAccountGroupHidden: jest
+      .fn()
+      .mockImplementation((accountGroupId: string, hidden: boolean) => {
+        return async function (
+          dispatch: (action: unknown) => unknown,
+          getState: () => {
+            metamask: {
+              accountTree: {
+                wallets: Record<
+                  string,
+                  {
+                    groups: Record<string, { metadata: { hidden?: boolean } }>;
+                  }
+                >;
+              };
+            };
+          },
+        ) {
+          await Promise.resolve();
+          const metamask = jest
+            .requireActual('lodash')
+            .cloneDeep(getState().metamask);
+          const { wallets } = metamask.accountTree;
+          const walletId = Object.keys(wallets).find((id) =>
+            Boolean(wallets[id].groups[accountGroupId]),
+          );
+          if (walletId) {
+            wallets[walletId].groups[accountGroupId].metadata.hidden = hidden;
+            dispatch({ type: 'UPDATE_METAMASK_STATE', value: metamask });
+          }
+        };
+      }),
     removeAccount: jest.fn().mockImplementation(() => {
       return async function () {
         await Promise.resolve();
@@ -1703,10 +1733,17 @@ describe('MultichainAccountList', () => {
     });
 
     it('tracks Account Hidden from the manage accounts screen when unhiding', async () => {
-      renderComponent({
-        wallets: walletsWithHiddenAccount,
-        isEditMode: true,
-      });
+      const state = cloneDeep(mockDefaultState);
+      (state.metamask.accountTree.wallets as unknown as AccountTreeWallets)[
+        walletTwoId
+      ].groups[walletTwoGroupId].metadata.hidden = true;
+      renderComponent(
+        {
+          wallets: walletsWithHiddenAccount,
+          isEditMode: true,
+        },
+        state,
+      );
 
       fireEvent.click(
         within(
@@ -1730,6 +1767,32 @@ describe('MultichainAccountList', () => {
           },
           sensitiveProperties: {},
         }),
+      );
+    });
+
+    it('does not track Account Hidden when the write does not take effect', async () => {
+      // The real action logs and swallows background errors, so a failed
+      // write resolves without changing the store.
+      mockSetAccountGroupHidden.mockImplementationOnce(() => async () => {
+        await Promise.resolve();
+      });
+      renderComponent({ isEditMode: true });
+
+      fireEvent.click(
+        within(
+          screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
+        ).getByTestId('multichain-account-cell-edit-mode-visible-icon'),
+      );
+
+      await waitFor(() =>
+        expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
+          walletOneGroupId,
+          true,
+        ),
+      );
+      await act(async () => undefined);
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({ name: MetaMetricsEventName.AccountHidden }),
       );
     });
 

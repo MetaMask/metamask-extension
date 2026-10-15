@@ -80,11 +80,40 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
-    setAccountGroupHidden: jest.fn().mockImplementation(() => {
-      return async function () {
-        await Promise.resolve();
-      };
-    }),
+    // Like the real action, the store is refreshed before the dispatch
+    // resolves, which is what `Account Hidden` is built from.
+    setAccountGroupHidden: jest
+      .fn()
+      .mockImplementation((accountGroupId: string, hidden: boolean) => {
+        return async function (
+          dispatch: (action: unknown) => unknown,
+          getState: () => {
+            metamask: {
+              accountTree: {
+                wallets: Record<
+                  string,
+                  {
+                    groups: Record<string, { metadata: { hidden?: boolean } }>;
+                  }
+                >;
+              };
+            };
+          },
+        ) {
+          await Promise.resolve();
+          const metamask = jest
+            .requireActual('lodash')
+            .cloneDeep(getState().metamask);
+          const { wallets } = metamask.accountTree;
+          const walletId = Object.keys(wallets).find((id) =>
+            Boolean(wallets[id].groups[accountGroupId]),
+          );
+          if (walletId) {
+            wallets[walletId].groups[accountGroupId].metadata.hidden = hidden;
+            dispatch({ type: 'UPDATE_METAMASK_STATE', value: metamask });
+          }
+        };
+      }),
   };
 });
 
@@ -643,6 +672,33 @@ describe('MultichainAccountMenu', () => {
       },
       sensitiveProperties: {},
     });
+  });
+
+  it('does not track Account Hidden when the write does not take effect', async () => {
+    // The real action logs and swallows background errors, so a failed write
+    // resolves without changing the store.
+    mockSetAccountGroupHidden.mockImplementationOnce(() => async () => {
+      await Promise.resolve();
+    });
+    const mockOnToggle = jest.fn();
+
+    await renderComponent({
+      accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+      isRemovable: false,
+      isOpen: true,
+      onToggle: mockOnToggle,
+    });
+
+    const hideOption = document.querySelectorAll(menuItemSelector)[4];
+    await act(async () => {
+      fireEvent.click(hideOption);
+    });
+
+    expect(mockSetAccountGroupHidden).toHaveBeenCalled();
+    expect(mockOnToggle).toHaveBeenCalled();
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ name: MetaMetricsEventName.AccountHidden }),
+    );
   });
 
   describe('tracing', () => {
