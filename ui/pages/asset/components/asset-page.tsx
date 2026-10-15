@@ -523,7 +523,7 @@ const AssetPage = ({
             <Box>
               <TronDailyResources
                 account={selectedAccount}
-                chainId={chainId}
+                chainId={caipChainId}
                 t={t}
               />
               <Box

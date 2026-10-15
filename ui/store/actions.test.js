@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -35,6 +36,7 @@ import { createMockNotificationPreferences } from '../hooks/metamask-notificatio
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 
 const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
   type: 'Buffer',
@@ -53,6 +55,11 @@ jest.mock(
     }),
   }),
 );
+
+jest.mock('./hardware-wallet-signing', () => ({
+  ...jest.requireActual('./hardware-wallet-signing'),
+  listenForHardwareSigningCompletion: jest.fn(),
+}));
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -913,7 +920,7 @@ describe('Actions', () => {
     });
   });
 
-  describe('#updateAndApproveTx', () => {
+  describe('#updateAndApproveTx QR account', () => {
     const qrAccountAddress = '0xQrAddress';
     const qrAccountId = 'b3f1a0c2-7d4e-4f6a-9b8c-1d2e3f4a5b6c';
     const txMeta = {
@@ -1716,6 +1723,91 @@ describe('Actions', () => {
       expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
         [false],
       );
+    });
+  });
+
+  describe('#updateAndApproveTx hardware wallet signing', () => {
+    const LEDGER_ADDRESS = '0x2222222222222222222222222222222222222222';
+    const txMeta = {
+      id: 'pay-tx',
+      chainId: CHAIN_IDS.MAINNET,
+      status: TransactionStatus.unapproved,
+      txParams: { from: LEDGER_ADDRESS },
+    };
+
+    function createLedgerStore(transactionData = {}) {
+      return mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          internalAccounts: {
+            ...defaultState.metamask.internalAccounts,
+            accounts: {
+              ...defaultState.metamask.internalAccounts.accounts,
+              'ledger-account': {
+                address: LEDGER_ADDRESS,
+                id: 'ledger-account',
+                metadata: { keyring: { type: KeyringTypes.ledger } },
+              },
+            },
+          },
+          accountIdByAddress: {
+            ...defaultState.metamask.accountIdByAddress,
+            [LEDGER_ADDRESS]: 'ledger-account',
+          },
+          transactionData,
+        },
+      });
+    }
+
+    beforeEach(() => {
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+      jest
+        .mocked(listenForHardwareSigningCompletion)
+        .mockReset()
+        .mockResolvedValue(async () => undefined);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('hides the loading indication once a hardware wallet signs the Pay funding transactions', async () => {
+      const store = createLedgerStore({ [txMeta.id]: { quotes: [{}, {}] } });
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactionId: 'pay-tx',
+          expectedQuoteCount: 2,
+        }),
+      );
+
+      const [{ onComplete }] = jest.mocked(listenForHardwareSigningCompletion)
+        .mock.calls[0];
+      store.clearActions();
+      onComplete();
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('does not wait for funding signatures when the transaction has no Pay quotes', async () => {
+      const store = createLedgerStore();
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).not.toHaveBeenCalled();
     });
   });
 

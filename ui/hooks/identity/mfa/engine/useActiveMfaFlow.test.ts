@@ -42,7 +42,9 @@ describe('useActiveMfaFlow', () => {
     await waitFor(() =>
       expect(result.current?.state.step).toStrictEqual({
         name: 'intro',
+        methods: ['email_otp'],
         missing: ['email_otp'],
+        email: undefined,
       }),
     );
 

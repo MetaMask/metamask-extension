@@ -1100,7 +1100,6 @@
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
-        "fetch.bind": true,
         "performance.now": true,
         "performance.timeOrigin": true,
         "setInterval": true,
@@ -1161,7 +1160,7 @@
         "@tanstack/react-query>@tanstack/query-core": true,
         "async-mutex": true,
         "ethereumjs-util>bn.js": true,
-        "immer": true,
+        "@metamask/assets-controllers>immer": true,
         "@metamask/assets-controller>lodash-es": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
@@ -2647,8 +2646,6 @@
     },
     "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils": {
       "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
@@ -6137,6 +6134,11 @@
       },
       "packages": {
         "eth-ens-namehash>idna-uts46-hx>punycode": true
+      }
+    },
+    "@metamask/assets-controllers>immer": {
+      "globals": {
+        "Iterator": true
       }
     },
     "string.prototype.matchall>internal-slot": {

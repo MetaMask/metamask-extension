@@ -171,8 +171,9 @@ const MoneyHowItWorksContent = ({
 
       <div className="flex flex-col gap-3 px-4 py-5">
         <Text
-          variant={TextVariant.HeadingMd}
+          variant={TextVariant.HeadingSm}
           fontWeight={FontWeight.Bold}
+          color={TextColor.TextAlternative}
           data-testid="money-how-it-works-disclosures-title"
         >
           {t('moneyHowItWorksDisclosuresTitle')}
