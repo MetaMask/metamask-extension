@@ -117,11 +117,6 @@ const log = createModuleLogger(sentryLogger, 'trace');
 
 const ID_DEFAULT = 'default';
 const OP_DEFAULT = 'custom';
-/**
- * Sentinel parent context used to force `trace()` to start a new root trace
- * instead of inheriting from the currently active span.
- */
-const NEW_ROOT_TRACE_SYMBOL = Symbol('newRootTrace');
 
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
@@ -205,6 +200,14 @@ export type TraceRequest = {
    * Custom operation name to associate with the trace.
    */
   op?: string;
+
+  /**
+   * Force this trace to start a new root, ignoring any currently active span.
+   * Use for independent background operations (e.g. per-operation background
+   * RPC roots) that must not nest under a concurrently in-flight operation's
+   * span. Has no effect when an explicit `parentContext` is provided.
+   */
+  root?: boolean;
 };
 
 /**
@@ -234,18 +237,6 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
-/**
- * Checks whether a value is the sentinel used to force a new root trace.
- *
- * @param value - The value to inspect.
- * @returns Whether the value is the new-root sentinel.
- */
-function isNewRootTraceSentinel(
-  value: unknown,
-): value is typeof NEW_ROOT_TRACE_SYMBOL {
-  return value === NEW_ROOT_TRACE_SYMBOL;
-}
-
 export function trace<ResultType>(
   request: TraceRequest,
   fn: TraceCallback<ResultType>,
@@ -274,35 +265,6 @@ export function trace<T>(
   }
 
   return traceCallback(request, fn);
-}
-
-export function startNewTrace<ResultType>(
-  request: TraceRequest,
-  fn: TraceCallback<ResultType>,
-): ResultType;
-
-export function startNewTrace(request: TraceRequest): TraceContext;
-
-/**
- * Create a trace that does not inherit from the currently active span.
- *
- * @param request - The data associated with the trace, such as the name and tags.
- * @param fn - The optional callback to record the duration of.
- * @returns The context of the trace, or the result of the callback if provided.
- */
-export function startNewTrace<ResultType>(
-  request: TraceRequest,
-  fn?: TraceCallback<ResultType>,
-): ResultType | TraceContext {
-  // Use a dedicated sentinel so `trace()` skips inheriting the active span
-  // and starts a new root trace for this operation.
-  const newRootRequest = {
-    ...request,
-    parentContext: NEW_ROOT_TRACE_SYMBOL,
-  };
-  // Dispatch to the matching `trace` overload: with a callback it returns the
-  // callback result; without one it returns a TraceContext.
-  return fn ? trace(newRootRequest, fn) : trace(newRootRequest);
 }
 
 /**
@@ -572,17 +534,25 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime, op } = request;
+  const {
+    data: attributes,
+    name,
+    parentContext,
+    startTime,
+    op,
+    root,
+  } = request;
   let parentSpan = resolveParentSpan(parentContext);
-  const shouldStartNewRootTrace = isNewRootTraceSentinel(parentContext);
 
-  // Inherit from active span (e.g. browserTracingIntegration's pageload/navigation)
-  // when no explicit parent is provided. Must capture before withIsolationScope
-  // severs the active span context chain.
-  // forceTransaction preserves transaction-level visibility for monitoring while
-  // linking to the auto-instrumentation hierarchy.
+  // Inherit the active span (e.g. the browserTracingIntegration pageload) when no
+  // parent is given; capture it before sentryWithIsolationScope severs the
+  // active-span chain. `root: true` skips this to force an independent root —
+  // needed in the SW so a background op peels off the long-lived pageload root
+  // (and any concurrent in-flight op's still-active span) instead of sharing its
+  // trace id and feeding the keepalive mega-trace. forceTransaction keeps
+  // transaction-level visibility.
   let forceTransaction: boolean | undefined;
-  if (!parentSpan && !parentContext && !shouldStartNewRootTrace) {
+  if (!root && !parentSpan && !parentContext) {
     const activeSpan = sentryGetActiveSpan();
     if (activeSpan) {
       parentSpan = activeSpan;
@@ -617,14 +587,13 @@ function startSpan<T>(
       return callback(spanOptions);
     });
 
-  // The new-root sentinel severs the active-span parent (above), but
-  // `withIsolationScope` alone only clones the propagation context, so the span
-  // keeps the ambient trace id (e.g. the long-lived SW `/service-worker.js`
-  // pageload) and still accumulates into the mega-trace, which is grouped by
-  // trace id — not by parent span. `startNewTrace` resets the propagation
-  // context to a fresh trace id, so the quote round peels off at the trace
-  // level, not merely the span level.
-  return shouldStartNewRootTrace
+  // `root: true` severs the active-span parent (above), but `withIsolationScope`
+  // alone only clones the propagation context, so the span keeps the ambient
+  // trace id (e.g. the long-lived SW `/service-worker.js` pageload) and still
+  // accumulates into the mega-trace, which is grouped by trace id — not by
+  // parent span. `startNewTrace` resets the propagation context to a fresh trace
+  // id, so the op peels off at the trace level, not merely the span level.
+  return root
     ? sentryStartNewTrace(runInIsolationScope)
     : runInIsolationScope();
 }

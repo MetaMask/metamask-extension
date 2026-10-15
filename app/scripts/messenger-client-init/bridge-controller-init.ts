@@ -17,7 +17,6 @@ import {
 } from '../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import {
-  startNewTrace,
   trace,
   TraceCallback,
   TraceContext,
@@ -66,11 +65,11 @@ const traceQuoteFetchOperation = <ResultType>(
   request: TraceRequest,
   fn?: TraceCallback<ResultType>,
 ): ResultType | TraceContext => {
-  if (isQuoteFetchTraceName(request.name)) {
-    return fn ? startNewTrace(request, fn) : startNewTrace(request);
-  }
+  const routedRequest = isQuoteFetchTraceName(request.name)
+    ? { ...request, root: true }
+    : request;
 
-  return fn ? trace(request, fn) : trace(request);
+  return fn ? trace(routedRequest, fn) : trace(routedRequest);
 };
 
 /**

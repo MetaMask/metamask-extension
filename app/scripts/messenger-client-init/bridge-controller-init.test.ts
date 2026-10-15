@@ -3,7 +3,7 @@ import {
   BridgeControllerMessenger,
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import { startNewTrace, trace } from '../../../shared/lib/trace';
+import { trace } from '../../../shared/lib/trace';
 import { getRootMessenger } from '../lib/messenger';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -22,7 +22,6 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 jest.mock('../../../shared/lib/trace', () => ({
-  startNewTrace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
   trace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
 }));
 
@@ -79,7 +78,7 @@ describe('BridgeControllerInit', () => {
     'Bridge Quotes Fetched',
     'Swap Quotes Fetched',
   ]) {
-    it(`starts a new trace for ${name}`, async () => {
+    it(`roots a new trace for ${name}`, async () => {
       BridgeControllerInit(getInitRequestMock());
 
       const controllerMock = jest.mocked(BridgeController);
@@ -88,8 +87,7 @@ describe('BridgeControllerInit', () => {
 
       traceFn?.({ name }, callback);
 
-      expect(startNewTrace).toHaveBeenCalledWith({ name }, callback);
-      expect(trace).not.toHaveBeenCalled();
+      expect(trace).toHaveBeenCalledWith({ name, root: true }, callback);
     });
   }
 
@@ -106,6 +104,5 @@ describe('BridgeControllerInit', () => {
       { name: 'Bridge View Loaded' },
       callback,
     );
-    expect(startNewTrace).not.toHaveBeenCalled();
   });
 });

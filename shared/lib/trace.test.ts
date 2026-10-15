@@ -1,11 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import {
-  endTrace,
-  startNewTrace,
-  trace,
-  TraceName,
-  getSerializedTraceContext,
-} from './trace';
+import { endTrace, trace, TraceName, getSerializedTraceContext } from './trace';
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
@@ -22,9 +16,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
-  // Aliased: the module's own `startNewTrace` export is imported above; this is
-  // the underlying Sentry SDK method the root path delegates to.
-  startNewTrace: sentryStartNewTraceFn,
+  startNewTrace,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -51,7 +43,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
-  const sentryStartNewTraceMock = jest.mocked(sentryStartNewTraceFn);
+  const startNewTraceMock = jest.mocked(startNewTrace);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -64,7 +56,7 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
-      startNewTrace: sentryStartNewTraceMock,
+      startNewTrace: startNewTraceMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
@@ -75,7 +67,7 @@ describe('Trace', () => {
     // Pass-through: run the wrapped callback so root traces still create spans.
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sentryStartNewTraceMock.mockImplementation((fn: any) => fn());
+    startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
       fn({} as Sentry.Span, () => {
@@ -402,50 +394,6 @@ describe('Trace', () => {
   });
 
   describe('getActiveSpan fallback', () => {
-    it('does not inherit from the active span when starting a new trace', () => {
-      const activeSpanMock = {
-        spanContext: jest.fn().mockReturnValue({
-          traceId: 'abc123',
-          spanId: 'def456',
-        }),
-      } as unknown as Sentry.Span;
-
-      getActiveSpanMock.mockReturnValue(activeSpanMock);
-
-      startNewTrace({ name: NAME_MOCK }, () => true);
-
-      expect(getActiveSpanMock).not.toHaveBeenCalled();
-      expect(startSpanMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          parentSpan: null,
-          forceTransaction: undefined,
-        }),
-        expect.any(Function),
-      );
-    });
-
-    it('resets the propagation context (fresh trace id) when starting a new trace', () => {
-      startNewTrace({ name: NAME_MOCK }, () => true);
-
-      // The SDK `startNewTrace` resets the propagation-context trace id, so the
-      // quote round roots its own trace instead of inheriting the ambient (e.g.
-      // SW pageload) one — withIsolationScope alone would keep the same trace id.
-      expect(sentryStartNewTraceMock).toHaveBeenCalledTimes(1);
-      expect(sentryStartNewTraceMock).toHaveBeenCalledWith(
-        expect.any(Function),
-      );
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not reset the propagation context for a non-root trace', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
-
-      trace({ name: NAME_MOCK }, () => true);
-
-      expect(sentryStartNewTraceMock).not.toHaveBeenCalled();
-      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
-    });
-
     it('inherits from active span when no parentContext provided', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
@@ -487,6 +435,47 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    it('does not inherit from the active span when root is true', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+          forceTransaction: undefined,
+        }),
+        expect.any(Function),
+      );
+    });
+
+    it('starts a new trace (fresh propagation context) when root is true', () => {
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      // startNewTrace resets the propagation-context trace id, so the op roots
+      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      // withIsolationScope alone would clone the same trace id — severing the
+      // parent span but leaving the op in the mega-trace (grouped by trace id).
+      expect(startNewTraceMock).toHaveBeenCalledTimes(1);
+      expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not start a new trace when root is not set', () => {
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startNewTraceMock).not.toHaveBeenCalled();
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
     });
   });
 
