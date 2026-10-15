@@ -556,7 +556,7 @@ describe('Trace', () => {
       expect(continueTraceMock).toHaveBeenCalledWith(
         {
           sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-1`,
-          baggage: undefined,
+          baggage: `sentry-trace_id=${TRACE_ID_MOCK},sentry-sampled=true`,
         },
         expect.any(Function),
       );
@@ -609,7 +609,7 @@ describe('Trace', () => {
       expect(continueTraceMock).toHaveBeenCalledWith(
         {
           sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-1`,
-          baggage: undefined,
+          baggage: `sentry-trace_id=${TRACE_ID_MOCK},sentry-sampled=true`,
         },
         expect.any(Function),
       );
@@ -1005,11 +1005,32 @@ describe('Trace', () => {
       expect(continueTraceMock).toHaveBeenCalledWith(
         {
           sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-1`,
-          baggage: undefined,
+          baggage: `sentry-trace_id=${TRACE_ID_MOCK},sentry-sampled=true`,
         },
         expect.any(Function),
       );
       expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+    it('marks the continued baggage unsampled when the parent is unsampled', () => {
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
+
+      continueTraceContext(
+        {
+          traceId: TRACE_ID_MOCK,
+          parentSpanId: SPAN_ID_MOCK,
+          parentSampled: false,
+        },
+        jest.fn(),
+      );
+
+      expect(continueTraceMock).toHaveBeenCalledWith(
+        {
+          sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-0`,
+          baggage: `sentry-trace_id=${TRACE_ID_MOCK},sentry-sampled=false`,
+        },
+        expect.any(Function),
+      );
     });
 
     it('runs the callback directly when no trace context is provided', () => {

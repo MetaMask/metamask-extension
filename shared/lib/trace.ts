@@ -1096,6 +1096,27 @@ export function sentryGetActiveSpan(): Sentry.Span | null {
   return actual() ?? null;
 }
 
+/**
+ * Build the Sentry `baggage` that accompanies a `sentry-trace` header when a
+ * trace is continued across the UI/background boundary.
+ *
+ * Without baggage, `continueTrace` freezes an empty dynamic sampling context,
+ * so outbound requests in the continued trace carry a sampled `traceparent`
+ * but no `sentry-sampled` entry. Backends stamp `sentry.sampled` from that
+ * entry and route spans to Sentry on it, so the backend half of the trace
+ * never reaches Sentry. The entry mirrors the `sentry-trace` sampled flag.
+ *
+ * @param sentryTrace - A `{traceId}-{spanId}-{sampled}` header.
+ * @returns A `baggage` string, or undefined when the header is malformed.
+ */
+function sentryTraceToBaggage(sentryTrace: string): string | undefined {
+  const [traceId, , sampled] = sentryTrace.split('-');
+  if (!traceId || (sampled !== '0' && sampled !== '1')) {
+    return undefined;
+  }
+  return `sentry-trace_id=${traceId},sentry-sampled=${sampled === '1'}`;
+}
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
@@ -1105,5 +1126,8 @@ function sentryContinueTrace<T>(sentryTrace: string, callback: () => T): T {
     return callback();
   }
 
-  return actual({ sentryTrace, baggage: undefined }, callback);
+  return actual(
+    { sentryTrace, baggage: sentryTraceToBaggage(sentryTrace) },
+    callback,
+  );
 }
