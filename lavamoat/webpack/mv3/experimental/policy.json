@@ -2630,8 +2630,6 @@
     },
     "@metamask/wallet>@metamask/subscription-controller>@metamask/money-account-utils": {
       "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
