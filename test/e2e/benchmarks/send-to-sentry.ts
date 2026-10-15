@@ -45,6 +45,29 @@ const WEB_VITALS_METRICS = [
   { key: 'cls', ratingKey: 'clsRating' },
 ] as const;
 
+function getHostname(value: string | undefined): string | null {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return new URL(value).hostname;
+  } catch {
+    return null;
+  }
+}
+
+function getHostnameLabel(
+  hostname: string | null,
+  labelIndex: number,
+): string | null {
+  if (!hostname) {
+    return null;
+  }
+
+  return hostname.split('.')[labelIndex] || null;
+}
+
 /**
  * Send web vitals to Sentry as spans — separate from timer-based structured logs.
  *
@@ -205,6 +228,12 @@ async function main() {
   });
 
   // CI metadata
+  const nscStorageHostname = getHostname(process.env.NSC_STORAGE_ENDPOINT);
+  const nscEndpointHostname = getHostname(process.env.NSC_ENDPOINT);
+  const namespaceActionsResultsHostname = getHostname(
+    process.env.NAMESPACE_ACTIONS_RESULTS_URL,
+  );
+
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
     'ci.prNumber': process.env.PR_NUMBER || 'none',
@@ -214,6 +243,20 @@ async function main() {
     'ci.runnerName': process.env.RUNNER_NAME || 'unknown',
     'ci.runnerOs': process.env.RUNNER_OS || 'unknown',
     'ci.runnerArch': process.env.RUNNER_ARCH || 'unknown',
+    'ci.nscInstanceId': process.env.NSC_INSTANCE_ID || 'unknown',
+    'ci.nscInstanceUrl': process.env.NSC_INSTANCE_URL || 'unknown',
+    'ci.nscProfileTag': process.env.NSC_PROFILE_TAG || 'unknown',
+    'ci.nscInstanceShape': process.env.NSC_INSTANCE_SHAPE || 'unknown',
+    'ci.nscStorageEndpoint': process.env.NSC_STORAGE_ENDPOINT || 'unknown',
+    'ci.nscEndpoint': process.env.NSC_ENDPOINT || 'unknown',
+    'ci.namespaceActionsResultsUrl':
+      process.env.NAMESPACE_ACTIONS_RESULTS_URL || 'unknown',
+    'ci.namespaceStorageRegion':
+      getHostnameLabel(nscStorageHostname, 0) || 'unknown',
+    'ci.namespaceClusterRegion':
+      getHostnameLabel(nscEndpointHostname, 1) || 'unknown',
+    'ci.namespaceActionsResultsRegion':
+      getHostnameLabel(namespaceActionsResultsHostname, 1) || 'unknown',
   };
 
   const runnerDiagnostics = {
@@ -222,14 +265,12 @@ async function main() {
     'ci.cpuModel': os.cpus()[0]?.model || 'unknown',
     'ci.cpuCount': os.cpus().length,
     'ci.totalMemoryGb': Math.round(os.totalmem() / 1024 ** 3),
-    'ci.namespacePlacement':
-      process.env.NAMESPACE_PLACEMENT || process.env.NAMESPACE_SITE || 'unknown',
-    'ci.namespaceRegion': process.env.NAMESPACE_REGION || 'unknown',
-    'ci.namespaceInstanceId':
-      process.env.NSC_INSTANCE_ID || process.env.NAMESPACE_INSTANCE_ID || 'unknown',
   };
 
-  console.log('Benchmark runner diagnostics:', JSON.stringify(runnerDiagnostics));
+  console.log(
+    'Benchmark runner diagnostics:',
+    JSON.stringify(runnerDiagnostics),
+  );
 
   let sentCount = 0;
   let skippedCount = 0;
