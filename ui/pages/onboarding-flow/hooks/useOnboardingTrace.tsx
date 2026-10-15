@@ -102,7 +102,7 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       hasEndedRef.current = true;
 
       await startJourneyPromiseRef.current;
-      void callOnboardingTraceService('endOnboardingJourney', {
+      await callOnboardingTraceService('endOnboardingJourney', {
         lastStep: lastStepRef.current,
         ...data,
       });
@@ -118,11 +118,14 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       return;
     }
 
-    void startJourneyPromiseRef.current.then(() => {
-      void callOnboardingTraceService('updateOnboardingJourney', {
-        lastStep,
-      });
-    });
+    // eslint-disable-next-line no-void
+    void startJourneyPromiseRef.current
+      .then(() =>
+        callOnboardingTraceService('updateOnboardingJourney', {
+          lastStep,
+        }),
+      )
+      .catch(() => undefined);
   }, [pathname]);
 
   return useMemo(
