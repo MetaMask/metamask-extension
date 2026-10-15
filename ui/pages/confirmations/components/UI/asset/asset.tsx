@@ -1,4 +1,5 @@
 import React, { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box as DSBox,
   BoxAlignItems,
@@ -31,8 +32,10 @@ import {
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
+import { getUseCurrencyRateCheck } from '../../../../../selectors';
 import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 
 export type TokenTagRenderer = (token: AssetType) => ReactNode;
 
@@ -44,6 +47,7 @@ type AssetRowProps = {
 
 type TokenAssetProps = AssetRowProps & {
   hideBalances?: boolean;
+  safetyResult?: string;
   tagRenderers?: TokenTagRenderer[];
   /**
    * Optional renderers for a row-end accessory (e.g. ramps' unavailable-token
@@ -145,6 +149,7 @@ const TokenAsset = ({
   onClick,
   isSelected,
   hideBalances = false,
+  safetyResult,
   tagRenderers,
   endRenderers,
 }: TokenAssetProps) => {
@@ -162,6 +167,8 @@ const TokenAsset = ({
   } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
+
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
 
@@ -245,9 +252,9 @@ const TokenAsset = ({
         <DSBox
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
-          className="min-w-0 overflow-hidden"
+          className="min-w-0 gap-1 overflow-hidden"
         >
-          <DSBox className="mr-1 min-w-0 overflow-hidden" style={dimmedStyle}>
+          <DSBox className="min-w-0 overflow-hidden" style={dimmedStyle}>
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textDefault}
@@ -256,6 +263,7 @@ const TokenAsset = ({
               {name}
             </Text>
           </DSBox>
+          <SecurityBadge value={safetyResult} />
           {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
           {typeLabel ? (
             <DSBox className="shrink-0" style={dimmedStyle}>
@@ -290,12 +298,14 @@ const TokenAsset = ({
           className="shrink-0"
           style={dimmedStyle}
         >
-          <Text variant={TextVariant.bodyMdMedium}>
-            {formatCurrencyWithMinThreshold(
-              fiat?.balance ?? 0,
-              fiat?.currency || '',
-            )}
-          </Text>
+          {useCurrencyRateCheck && (
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCurrencyWithMinThreshold(
+                fiat?.balance ?? 0,
+                fiat?.currency || '',
+              )}
+            </Text>
+          )}
           <Text
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}
@@ -313,6 +323,7 @@ export const Asset = ({
   onClick,
   isSelected,
   hideBalances,
+  safetyResult,
   tagRenderers,
   endRenderers,
 }: TokenAssetProps) => {
@@ -325,6 +336,7 @@ export const Asset = ({
       onClick={onClick}
       isSelected={isSelected}
       hideBalances={hideBalances}
+      safetyResult={safetyResult}
       tagRenderers={tagRenderers}
       endRenderers={endRenderers}
     />

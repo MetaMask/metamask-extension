@@ -1521,7 +1521,7 @@ export const getBridgeFixtures = ({
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
-    .withMetaMetricsController({
+    .withAnalyticsController({
       analyticsId: MOCK_ANALYTICS_ID,
       consentDecisionMade: true,
       optedIn: true,
@@ -2155,6 +2155,7 @@ async function mockSentinelNetworks(
           confirmations: true,
           smartTransactions: true,
           relayTransactions: true,
+          cubistSigners: ['0x1111111111111111111111111111111111111111'],
           hidden: false,
           sendBundle,
         },

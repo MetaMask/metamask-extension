@@ -343,7 +343,6 @@ import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-l
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
-import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
@@ -581,7 +580,6 @@ export default class MetamaskController extends EventEmitter {
       GeolocationController: GeolocationControllerInit,
       AnalyticsController: AnalyticsControllerInit,
       SentryTracingService: SentryTracingServiceInit,
-      MetaMetricsController: MetaMetricsControllerInit,
       UserTraitsService: UserTraitsServiceInit,
       DataDeletionService: DataDeletionServiceInit,
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
@@ -720,7 +718,6 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = messengerClientsByName.AppStateController;
     this.networkController = this.wallet.getInstance('NetworkController');
     this.analyticsController = messengerClientsByName.AnalyticsController;
-    this.metaMetricsController = messengerClientsByName.MetaMetricsController;
     this.userTraitsService = messengerClientsByName.UserTraitsService;
     this.dataDeletionService = messengerClientsByName.DataDeletionService;
     this.metaMetricsDataDeletionController =
@@ -844,9 +841,9 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().provider;
 
     // Derives MetaMetrics user traits from the full state and forwards changes
-    // to the analytics pipeline. This lives in a service (not MetaMetricsController)
-    // as part of the MetaMetricsController deprecation; the `update` firehose
-    // subscription stays here because it is the only source of the flattened state.
+    // to the analytics pipeline. UserTraitsService consumes the flattened state
+    // firehose through this `update` subscription, the only source of the
+    // flattened state.
     this.on('update', (update) => {
       this.userTraitsService.handleMetaMaskStateUpdate(update);
     });
@@ -1370,7 +1367,6 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController,
       AnalyticsController: this.analyticsController,
-      MetaMetricsController: this.metaMetricsController,
       MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
@@ -1437,7 +1433,6 @@ export default class MetamaskController extends EventEmitter {
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController,
         AnalyticsController: this.analyticsController,
-        MetaMetricsController: this.metaMetricsController,
         MetaMetricsDataDeletionController:
           this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,

@@ -244,7 +244,7 @@ const AssetPage = ({
     return '';
   }, [shouldShowContractAddress, isEvm, tokenAddress, address]);
 
-  const { currentPrice } = useCurrentPrice(asset);
+  const { currentPrice, marketData } = useCurrentPrice(asset);
 
   const assetWithBalance = accountGroupIdAssets[chainId]?.find(
     (item) =>
@@ -702,7 +702,11 @@ const AssetPage = ({
                 </Box>
               </Box>
             )}
-            <AssetMarketDetails asset={updatedAsset} address={address} />
+            <AssetMarketDetails
+              asset={updatedAsset}
+              address={address}
+              fallbackMarketData={marketData}
+            />
             <Box className="asset-page__divider" />
             <Box marginBottom={4}>
               <Text

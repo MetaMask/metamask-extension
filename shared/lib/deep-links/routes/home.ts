@@ -1,4 +1,4 @@
-import { CANONICAL_DEEP_LINK_HOST } from '../constants';
+import { CANONICAL_DEEP_LINK_HOST } from '../common';
 import { DEFAULT_ROUTE, Route } from './route';
 import type { Destination } from './route';
 

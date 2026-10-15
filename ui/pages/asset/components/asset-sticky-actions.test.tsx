@@ -16,13 +16,12 @@ import {
   shouldPreferStickySwapCta,
 } from './asset-sticky-actions';
 
-const mockGoToBuy = jest.fn().mockResolvedValue(true);
+const mockGoToBuy = jest.fn().mockResolvedValue('native');
 jest.mock('../../../hooks/ramps/useRampsNavigation/useRampsNavigation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => ({
     goToBuy: mockGoToBuy,
-    opensBuyInPortfolioTab: false,
   }),
 }));
 

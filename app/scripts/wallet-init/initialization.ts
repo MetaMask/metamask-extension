@@ -1,5 +1,13 @@
 import type { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { Wallet } from '@metamask/wallet';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { isObject } from '@metamask/utils';
+import { isInE2eTest } from '../../../shared/lib/environment';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  LOCALHOST_DISPLAY_NAME,
+} from '../../../shared/constants/network';
 import { setupRemoteFeatureFlagToggle } from './remote-feature-flags';
 import { getApprovalControllerInstanceOptions } from './instance-options/approval-controller';
 import { getConnectivityControllerInstanceOptions } from './instance-options/connectivity-controller';
@@ -102,6 +110,28 @@ export function initializeWallet(request: InitializeWalletRequest) {
     messenger,
     state,
   });
+
+  // Fixture-less test builds (like `yarn build:test:dev`) have no persisted
+  // networks, so they would otherwise come up with Arc selected. Fixtures that
+  // define networks (e.g. onboarding) are left untouched.
+  if (
+    isInE2eTest() &&
+    !isObject(state.NetworkController?.networkConfigurationsByChainId)
+  ) {
+    wallet.getInstance('NetworkController').addNetwork({
+      blockExplorerUrls: [],
+      chainId: CHAIN_IDS.LOCALHOST,
+      defaultRpcEndpointIndex: 0,
+      name: LOCALHOST_DISPLAY_NAME,
+      nativeCurrency: CURRENCY_SYMBOLS.ETH,
+      rpcEndpoints: [
+        {
+          type: RpcEndpointType.Custom,
+          url: 'http://localhost:8545',
+        },
+      ],
+    });
+  }
 
   // Keep the wallet-owned `RemoteFeatureFlagController` in sync with onboarding
   // and the external-services preference, seeded from the same persisted state
