@@ -477,6 +477,28 @@ describe('CodeStep', () => {
     });
   });
 
+  it('gives up on a paste when the page does not get focus back', async () => {
+    jest.mocked(browser.permissions.request).mockResolvedValue(true);
+    const readText = jest
+      .fn()
+      .mockRejectedValue(new Error('Document is not focused'));
+    Object.assign(navigator, { clipboard: { readText } });
+    jest.spyOn(document, 'hasFocus').mockReturnValue(false);
+    const removeListener = jest.spyOn(window, 'removeEventListener');
+    const { onAction } = renderCode(otp(true));
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaFlowTestIds.PASTE_BUTTON));
+    });
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+
+    expect(readText).toHaveBeenCalledTimes(1);
+    expect(removeListener).toHaveBeenCalledWith('focus', expect.any(Function));
+    expect(onAction).not.toHaveBeenCalled();
+  });
+
   it('pastes nothing without the clipboard permission', async () => {
     jest.mocked(browser.permissions.request).mockResolvedValue(false);
     const { onAction } = renderCode(otp(true));

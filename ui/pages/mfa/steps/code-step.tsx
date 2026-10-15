@@ -34,6 +34,33 @@ const getCodeDigits = (text: string) =>
 
 const COOLDOWN_CODES = new Set(['otp_resend_cooldown', 'rate_limited']);
 
+const FOCUS_TIMEOUT_MS = 5000;
+
+/**
+ * Waits for the page to get focus back, for a few seconds at most.
+ *
+ * @returns Resolves once the page has focus; rejects when it did not come back.
+ */
+const waitForFocus = (): Promise<void> => {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  return new Promise<void>((resolve, reject) => {
+    const onFocus = () => {
+      clearTimeout(timeout);
+      window.removeEventListener('focus', onFocus);
+      resolve();
+    };
+    timeout = setTimeout(() => {
+      window.removeEventListener('focus', onFocus);
+      reject(new Error('The page did not get focus back'));
+    }, FOCUS_TIMEOUT_MS);
+    window.addEventListener('focus', onFocus);
+    // Focus can come back before the listener is added.
+    if (document.hasFocus()) {
+      onFocus();
+    }
+  });
+};
+
 /**
  * Reads the clipboard. Right after the browser's permission prompt the page
  * has no focus and the read fails: it is read again once focus is back.
@@ -47,9 +74,7 @@ const readClipboard = async (): Promise<string> => {
     if (document.hasFocus()) {
       throw error;
     }
-    await new Promise((resolve) =>
-      window.addEventListener('focus', resolve, { once: true }),
-    );
+    await waitForFocus();
     return navigator.clipboard.readText();
   }
 };
@@ -191,7 +216,8 @@ const CodeStep = ({ step, state, onAction }: StepProps<'otp'>) => {
         {/* One input for typing, pasting and one-time-code autofill, over
             the six boxes that show the code. */}
         <Box className="relative">
-          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+          {/* The input below is what assistive tech reads. */}
+          <Box flexDirection={BoxFlexDirection.Row} gap={2} aria-hidden="true">
             {CELLS.map((index) => (
               <Box
                 key={index}
