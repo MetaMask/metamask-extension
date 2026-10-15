@@ -31,24 +31,31 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
   #staleTxIds = new Set<string>();
 
   /**
+   * Tx IDs that have finished signing (signed / rejected / failed / finished).
+   * Cancel uses this to skip waiting for abort events that will never come.
+   */
+  #settledTxIds = new Set<string>();
+
+  /**
    * Detects a retry-generation bump and marks all currently tracked transaction
    * IDs as stale. When the retry generation referenced by `retryGenerationRef`
-   * advances beyond the last-seen value in `lastSeenGenerationRef`, every tracked
-   * ID is moved to {@link #staleTxIds} and {@link #trackedTxIds} is reset so only
-   * transactions from the new generation are processed going forward.
+   * advances beyond `lastSeenGeneration`, every tracked ID is moved to
+   * {@link #staleTxIds} and {@link #trackedTxIds} is reset so only transactions
+   * from the new generation are processed going forward.
    *
    * @param retryGenerationRef - Ref holding the current retry generation
    * (or `undefined` if retry tracking is disabled).
-   * @param lastSeenGenerationRef - Mutable ref tracking the last retry generation
-   * this strategy observed; updated in place when a bump is detected.
+   * @param lastSeenGeneration - The last-seen generation value to compare against.
+   * @returns The new last-seen generation when a bump was applied, otherwise
+   * `null`; the caller owns persisting the returned value.
    */
   checkRetryGeneration(
     retryGenerationRef: React.RefObject<number | undefined> | undefined,
-    lastSeenGenerationRef: React.MutableRefObject<number>,
-  ): void {
-    applyRetryGenerationBump(
+    lastSeenGeneration: number,
+  ): number | null {
+    return applyRetryGenerationBump(
       retryGenerationRef,
-      lastSeenGenerationRef,
+      lastSeenGeneration,
       this.#trackedTxIds,
       this.#staleTxIds,
     );
@@ -74,6 +81,15 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     }
 
     this.#trackedTxIds.add(transactionMeta.id);
+
+    // Mark settled even if the branches below emit no action.
+    if (
+      status === TransactionStatus.signed ||
+      status === TransactionStatus.failed ||
+      status === TransactionStatus.rejected
+    ) {
+      this.#settledTxIds.add(transactionMeta.id);
+    }
 
     if (status === TransactionStatus.signed) {
       if (!type) {
@@ -104,6 +120,9 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
       return NO_ACTION;
     }
 
+    // Signing is done; cancel can skip the abort wait.
+    this.#settledTxIds.add(transactionMeta.id);
+
     return {
       action: { type: HardwareWalletSignatureEvent.TransactionRejected },
     };
@@ -123,6 +142,9 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
     if (!this.#trackedTxIds.has(transactionMeta.id)) {
       return NO_ACTION;
     }
+
+    // Finished is always terminal, even if it maps to no action.
+    this.#settledTxIds.add(transactionMeta.id);
 
     if (
       status === TransactionStatus.rejected ||
@@ -145,11 +167,27 @@ export class SequentialTrackingStrategy implements TrackingStrategy {
   }
 
   /**
+   * True when every tracked tx has finished signing.
+   * Cancel uses this to skip waiting for abort confirmations.
+   *
+   * @returns True when all tracked transaction IDs have settled.
+   */
+  hasSettledSigning(): boolean {
+    for (const txId of this.#trackedTxIds) {
+      if (!this.#settledTxIds.has(txId)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Clears all tracking and stale state. Called on cancel, subscription
    * teardown, and when the tracker is disabled.
    */
   reset(): void {
     this.#trackedTxIds = new Set();
     this.#staleTxIds = new Set();
+    this.#settledTxIds = new Set();
   }
 }

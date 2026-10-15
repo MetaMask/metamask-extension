@@ -1,8 +1,9 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { isEqual } from 'lodash';
 import type { PriceUpdate } from '@metamask/perps-controller';
-import type { PerpsStreamManager } from '../../../providers/perps';
+import type { PerpsStreamManager } from '../../../providers/perps/PerpsStreamManager';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { usePerpsChannel } from './usePerpsChannel';
+import { usePerpsStreamManager } from './usePerpsStreamManager';
 
 /**
  * Options for usePerpsLivePrices hook
@@ -24,6 +25,8 @@ export type UsePerpsLivePricesOptions = {
 export type UsePerpsLivePricesReturn = {
   /** Map of symbol to price update */
   prices: Record<string, PriceUpdate>;
+  /** Whether the consumed snapshot came from this session's live stream. */
+  isLive: boolean;
   /** Whether we're waiting for the first data */
   isInitialLoading: boolean;
 };
@@ -31,7 +34,59 @@ export type UsePerpsLivePricesReturn = {
 const EMPTY_PRICES: PriceUpdate[] = [];
 const EMPTY_PRICES_RECORD: Record<string, PriceUpdate> = {};
 
-const getPricesChannel = (sm: PerpsStreamManager) => sm.prices;
+/**
+ * Cache a selected external-store snapshot so unrelated prices retain its identity.
+ * @param streamManager - Current account's stream manager.
+ * @param isInitializing - Whether account initialization is pending.
+ * @param symbolsKey - Canonical requested symbols, or empty for all prices.
+ * @returns A stable snapshot reader for useSyncExternalStore.
+ */
+function createPriceSnapshotReader(
+  streamManager: PerpsStreamManager | null,
+  isInitializing: boolean,
+  symbolsKey: string,
+): () => UsePerpsLivePricesReturn {
+  const requestedSymbols = new Set(symbolsKey ? symbolsKey.split('|') : []);
+  let previousPrices: PriceUpdate[] = EMPTY_PRICES;
+  let previous: UsePerpsLivePricesReturn | undefined;
+  return (): UsePerpsLivePricesReturn => {
+    const isInitialLoading =
+      !streamManager || isInitializing || !streamManager.prices.hasCachedData();
+    const allPrices = isInitialLoading
+      ? EMPTY_PRICES
+      : streamManager.prices.getCachedData();
+    const selected =
+      requestedSymbols.size === 0
+        ? allPrices
+        : allPrices.filter((price) => requestedSymbols.has(price.symbol));
+    const isLive = Boolean(
+      !isInitialLoading &&
+      streamManager.hasLivePrices(allPrices) &&
+      selected.some((price) => Number(price.price) > 0),
+    );
+    if (
+      previous &&
+      previous.isInitialLoading === isInitialLoading &&
+      previous.isLive === isLive &&
+      isEqual(previousPrices, selected)
+    ) {
+      return previous;
+    }
+    // Apply fallback timestamps only to changed snapshots so reads stay stable.
+    const prices: Record<string, PriceUpdate> =
+      selected.length === 0 ? EMPTY_PRICES_RECORD : {};
+    selected.forEach((update) => {
+      prices[update.symbol] = {
+        ...update,
+        timestamp: update.timestamp ?? Date.now(),
+        markPrice: update.markPrice,
+      };
+    });
+    previousPrices = selected;
+    previous = { prices, isInitialLoading, isLive };
+    return previous;
+  };
+}
 
 /**
  * Hook for real-time price updates via background stream notifications.
@@ -57,9 +112,10 @@ export function usePerpsLivePrices(
         .join('|'),
     [symbols],
   );
+  const { streamManager, isInitializing } = usePerpsStreamManager();
 
   useEffect(() => {
-    if (!activateStream || !symbolsKey) {
+    if (!activateStream || !symbolsKey || !streamManager || isInitializing) {
       return undefined;
     }
 
@@ -90,36 +146,29 @@ export function usePerpsLivePrices(
         },
       );
     };
-  }, [activateStream, includeMarketData, symbolsKey]);
+  }, [
+    activateStream,
+    includeMarketData,
+    symbolsKey,
+    streamManager,
+    isInitializing,
+  ]);
 
-  const { data: priceArray, isInitialLoading } = usePerpsChannel<PriceUpdate[]>(
-    getPricesChannel,
-    EMPTY_PRICES,
-  );
-
-  const requestedSymbols = useMemo(
-    () => (symbolsKey ? new Set(symbolsKey.split('|')) : new Set<string>()),
-    [symbolsKey],
-  );
-
-  const prices = useMemo(() => {
-    if (isInitialLoading || priceArray.length === 0) {
-      return EMPTY_PRICES_RECORD;
-    }
-
-    const priceRecord: Record<string, PriceUpdate> = {};
-    priceArray.forEach((update) => {
-      if (requestedSymbols.size === 0 || requestedSymbols.has(update.symbol)) {
-        priceRecord[update.symbol] = {
-          ...update,
-          timestamp: update.timestamp ?? Date.now(),
-          markPrice: update.markPrice,
-        };
+  const subscribe = useCallback(
+    (notify: () => void) => {
+      if (!streamManager || isInitializing) {
+        return () => undefined;
       }
-    });
+      return streamManager.prices.subscribe(notify);
+    },
+    [streamManager, isInitializing],
+  );
 
-    return priceRecord;
-  }, [isInitialLoading, priceArray, requestedSymbols]);
+  // A different symbol selection needs a fresh snapshot cache immediately.
+  const getSnapshot = useMemo(
+    () => createPriceSnapshotReader(streamManager, isInitializing, symbolsKey),
+    [streamManager, isInitializing, symbolsKey],
+  );
 
-  return { prices, isInitialLoading };
+  return useSyncExternalStore(subscribe, getSnapshot);
 }

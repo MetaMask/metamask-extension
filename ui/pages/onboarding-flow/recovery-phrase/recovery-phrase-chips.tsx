@@ -66,13 +66,7 @@ export default function RecoveryPhraseChips({
     () => quizWords.map((word) => word.index),
     [quizWords],
   );
-  const [quizAnswers, setQuizAnswers] = useState(
-    indicesToCheck.map((index) => ({
-      index, // the index in the SRP chips UI where the answer is inserted
-      word: '', // the answer value
-      actualIndexInSrp: -1, // the correct index of the answer value in the secret recovery phrase
-    })),
-  );
+  const quizWordsKey = quizWords;
 
   const setNextTargetIndex = (
     newQuizAnswers: { index: number; word: string }[],
@@ -90,8 +84,64 @@ export default function RecoveryPhraseChips({
 
     return firstEmpty;
   };
-  const [indexToFocus, setIndexToFocus] = useState(
-    setNextTargetIndex(quizAnswers),
+
+  const emptyQuizAnswers = useMemo(
+    () =>
+      indicesToCheck.map((index) => ({
+        index, // the index in the SRP chips UI where the answer is inserted
+        word: '', // the answer value
+        actualIndexInSrp: -1, // the correct index of the answer value in the secret recovery phrase
+      })),
+    [indicesToCheck],
+  );
+
+  // Key quiz UI state by quizWords identity so a new quiz resets without
+  // render-phase setState.
+  const [quizUiState, setQuizUiState] = useState(() => ({
+    key: quizWordsKey,
+    answers: emptyQuizAnswers,
+    indexToFocus: setNextTargetIndex(emptyQuizAnswers),
+  }));
+
+  const quizAnswers =
+    quizUiState.key === quizWordsKey ? quizUiState.answers : emptyQuizAnswers;
+  const indexToFocus =
+    quizUiState.key === quizWordsKey
+      ? quizUiState.indexToFocus
+      : setNextTargetIndex(emptyQuizAnswers);
+
+  const setQuizAnswers = useCallback(
+    (
+      next:
+        | typeof emptyQuizAnswers
+        | ((prev: typeof emptyQuizAnswers) => typeof emptyQuizAnswers),
+    ) => {
+      setQuizUiState((prev) => {
+        const prevAnswers =
+          prev.key === quizWordsKey ? prev.answers : emptyQuizAnswers;
+        const answers = typeof next === 'function' ? next(prevAnswers) : next;
+        return {
+          key: quizWordsKey,
+          answers,
+          indexToFocus:
+            prev.key === quizWordsKey
+              ? prev.indexToFocus
+              : setNextTargetIndex(answers),
+        };
+      });
+    },
+    [emptyQuizAnswers, quizWordsKey],
+  );
+
+  const setIndexToFocus = useCallback(
+    (nextIndex: number) => {
+      setQuizUiState((prev) => ({
+        key: quizWordsKey,
+        answers: prev.key === quizWordsKey ? prev.answers : emptyQuizAnswers,
+        indexToFocus: nextIndex,
+      }));
+    },
+    [emptyQuizAnswers, quizWordsKey],
   );
 
   const addQuizWord = useCallback(
@@ -108,7 +158,7 @@ export default function RecoveryPhraseChips({
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
     },
-    [quizAnswers, indexToFocus],
+    [quizAnswers, indexToFocus, setIndexToFocus, setQuizAnswers],
   );
 
   const removeQuizWord = useCallback(
@@ -126,24 +176,12 @@ export default function RecoveryPhraseChips({
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(newQuizAnswers[targetIndex].index);
     },
-    [quizAnswers],
+    [quizAnswers, setIndexToFocus, setQuizAnswers],
   );
 
   useEffect(() => {
     setInputValue?.(quizAnswers);
   }, [quizAnswers, setInputValue]);
-
-  useEffect(() => {
-    if (quizWords.length) {
-      const newQuizAnswers = quizWords.map((word) => ({
-        index: word.index,
-        word: '',
-        actualIndexInSrp: -1,
-      }));
-      setQuizAnswers(newQuizAnswers);
-      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
-    }
-  }, [quizWords]);
 
   // obfuscate the blurred recovery phrase to prevent blur-reversal attacks
   // from revealing the underlying words.

@@ -5,7 +5,10 @@ import { Driver } from '../../webdriver/driver';
  *
  */
 export class TxToastNotification {
-  private readonly closeButton = '[aria-label="Close"]';
+  private readonly anyTransactionToast =
+    '[data-testid="transaction-submitted-toast"], [data-testid="transaction-confirmed-toast"], [data-testid="transaction-failed-toast"]';
+
+  private readonly closeButton = '[data-testid="toast-close-button"]';
 
   protected driver: Driver;
 
@@ -33,6 +36,11 @@ export class TxToastNotification {
 
   async closeToastNotification(): Promise<void> {
     // The toast auto-dismisses after a few seconds, so use clickElementSafe to avoid race conditions.
-    await this.driver.clickElementSafe(this.closeButton, 5_000);
+    await this.driver.clickElementSafe(this.closeButton);
+  }
+
+  async waitForToastNotification(): Promise<void> {
+    console.log('Waiting for transaction toast notification');
+    await this.driver.waitForSelector(this.anyTransactionToast);
   }
 }

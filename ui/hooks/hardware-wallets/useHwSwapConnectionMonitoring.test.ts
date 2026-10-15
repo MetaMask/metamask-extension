@@ -1,4 +1,9 @@
-import { ErrorCode } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import { ConnectionStatus } from '../../contexts/hardware-wallets';
 import {
   HardwareWalletSignatureEvent,
@@ -11,19 +16,24 @@ import { useHwSwapConnectionMonitoring } from './useHwSwapConnectionMonitoring';
 jest.mock('../../contexts/hardware-wallets', () => ({
   ...jest.requireActual('../../contexts/hardware-wallets'),
   useHardwareWalletState: jest.fn(),
-  getHardwareWalletErrorCode: jest.fn(),
-  isUserRejectedHardwareWalletError: jest.fn(),
 }));
+
+jest.mock(
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+  () => ({
+    ...jest.requireActual(
+      '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+    ),
+    getHardwareWalletSignatureErrorEvent: jest.fn(),
+  }),
+);
 
 const mockUseHardwareWalletState = jest.requireMock(
   '../../contexts/hardware-wallets',
 ).useHardwareWalletState;
-const mockGetHardwareWalletErrorCode = jest.requireMock(
-  '../../contexts/hardware-wallets',
-).getHardwareWalletErrorCode;
-const mockIsUserRejectedHardwareWalletError = jest.requireMock(
-  '../../contexts/hardware-wallets',
-).isUserRejectedHardwareWalletError;
+const mockGetHardwareWalletSignatureErrorEvent = jest.requireMock(
+  '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils',
+).getHardwareWalletSignatureErrorEvent;
 
 describe('useHwSwapConnectionMonitoring', () => {
   const mockDispatchSignatureEvent = jest.fn();
@@ -32,6 +42,9 @@ describe('useHwSwapConnectionMonitoring', () => {
     jest.clearAllMocks();
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.Ready },
+    });
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue({
+      type: HardwareWalletSignatureEvent.TransactionFailed,
     });
   });
 
@@ -84,7 +97,9 @@ describe('useHwSwapConnectionMonitoring', () => {
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.ErrorState, error },
     });
-    mockGetHardwareWalletErrorCode.mockReturnValue(ErrorCode.ConnectionClosed);
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue({
+      type: HardwareWalletSignatureEvent.DeviceDisconnected,
+    });
 
     renderHookWithProvider(
       () =>
@@ -107,9 +122,9 @@ describe('useHwSwapConnectionMonitoring', () => {
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.ErrorState, error },
     });
-    mockGetHardwareWalletErrorCode.mockReturnValue(
-      ErrorCode.DeviceDisconnected,
-    );
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue({
+      type: HardwareWalletSignatureEvent.DeviceDisconnected,
+    });
 
     renderHookWithProvider(
       () =>
@@ -127,13 +142,40 @@ describe('useHwSwapConnectionMonitoring', () => {
     });
   });
 
+  it('does not dispatch when error code is DeviceStateEthAppClosed', () => {
+    const error = new HardwareWalletError('Ethereum app is not open', {
+      code: ErrorCode.DeviceStateEthAppClosed,
+      severity: Severity.Err,
+      category: Category.DeviceState,
+      userMessage: 'Ethereum app is not open',
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.ErrorState, error },
+    });
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue(null);
+
+    renderHookWithProvider(
+      () =>
+        useHwSwapConnectionMonitoring({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          dispatchSignatureEvent: mockDispatchSignatureEvent,
+        }),
+      {},
+    );
+
+    expect(mockDispatchSignatureEvent).not.toHaveBeenCalled();
+  });
+
   it('dispatches TransactionRejected when user rejected error', () => {
     const error = new Error('user rejected');
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.ErrorState, error },
     });
-    mockGetHardwareWalletErrorCode.mockReturnValue(null);
-    mockIsUserRejectedHardwareWalletError.mockReturnValue(true);
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue({
+      type: HardwareWalletSignatureEvent.TransactionRejected,
+    });
 
     renderHookWithProvider(
       () =>
@@ -156,8 +198,6 @@ describe('useHwSwapConnectionMonitoring', () => {
     mockUseHardwareWalletState.mockReturnValue({
       connectionState: { status: ConnectionStatus.ErrorState, error },
     });
-    mockGetHardwareWalletErrorCode.mockReturnValue(null);
-    mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
 
     renderHookWithProvider(
       () =>
@@ -173,6 +213,32 @@ describe('useHwSwapConnectionMonitoring', () => {
     expect(mockDispatchSignatureEvent).toHaveBeenCalledWith({
       type: HardwareWalletSignatureEvent.TransactionFailed,
     });
+  });
+
+  it('marks device-unavailable errors as disconnected', () => {
+    const error = new Error('device locked');
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.ErrorState, error },
+    });
+    mockGetHardwareWalletSignatureErrorEvent.mockReturnValue({
+      type: HardwareWalletSignatureEvent.DeviceDisconnected,
+    });
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useHwSwapConnectionMonitoring({
+          signatureState: createSignatureState(
+            HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          ),
+          dispatchSignatureEvent: mockDispatchSignatureEvent,
+        }),
+      {},
+    );
+
+    expect(mockGetHardwareWalletSignatureErrorEvent).toHaveBeenCalledWith(
+      error,
+    );
+    expect(result.current.isDeviceDisconnectedRef.current).toBe(true);
   });
 
   it('does not dispatch when signatureState is not awaiting', () => {
@@ -325,9 +391,6 @@ describe('useHwSwapConnectionMonitoring', () => {
       mockUseHardwareWalletState.mockReturnValue({
         connectionState: { status: ConnectionStatus.ErrorState, error },
       });
-      mockGetHardwareWalletErrorCode.mockReturnValue(
-        ErrorCode.DeviceDisconnected,
-      );
 
       renderHookWithProvider(
         () =>

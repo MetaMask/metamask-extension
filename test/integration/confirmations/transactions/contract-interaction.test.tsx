@@ -181,7 +181,8 @@ describe('Contract Interaction Confirmation', () => {
           analyticsId: 'test-metametrics-id',
           consentDecisionMade: true,
           optedIn: true,
-          dataCollectionForMarketing: false,
+          optedInToMarketing: false,
+          marketingConsentDecisionMade: true,
         },
         backgroundConnection: backgroundConnectionMocked,
       });
@@ -464,7 +465,7 @@ describe('Contract Interaction Confirmation', () => {
       });
     });
 
-    const headingText = tEn('blockaidTitleDeceptive');
+    const headingText = tEn('blockaidTitleHighRiskTransfer');
     const bodyText = tEn('blockaidDescriptionTransferFarming');
     expect(await screen.findByText(headingText)).toBeInTheDocument();
     expect(await screen.findByText(bodyText)).toBeInTheDocument();

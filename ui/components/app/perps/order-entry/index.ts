@@ -4,6 +4,7 @@ export { OrderEntry } from './order-entry';
 // Type exports
 export type {
   OrderEntryProps,
+  OrderFormDraft,
   OrderFormState,
   OrderDirection,
   OrderCalculations,

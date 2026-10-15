@@ -9,6 +9,7 @@ import {
 } from '@metamask/assets-controllers';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -61,7 +62,8 @@ type AllowedInitializationActions =
   | AssetsContractControllerGetBalancesInSingleCallAction
   | NetworkControllerGetStateAction
   | OnboardingControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type TokenDetectionControllerInitMessenger = ReturnType<
   typeof getTokenDetectionControllerInitMessenger
@@ -91,6 +93,7 @@ export function getTokenDetectionControllerInitMessenger(
       'AssetsContractController:getBalancesInSingleCall',
       'OnboardingController:getState',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
   });
   return controllerInitMessenger;

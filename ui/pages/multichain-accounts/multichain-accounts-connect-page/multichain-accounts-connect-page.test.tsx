@@ -702,6 +702,6 @@ describe('MultichainConnectPage', () => {
 
   it('renders connect page with correct test id', () => {
     const { getByTestId } = render();
-    expect(getByTestId('connect-page')).toBeDefined();
+    expect(getByTestId('parent-selector-connect-page')).toBeDefined();
   });
 });

@@ -22,6 +22,7 @@ export const DISCOVER_SEARCH_CHAIN_IDS: CaipChainId[] = [
   toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA),
   toEvmCaipChainId(CHAIN_IDS.ROBINHOOD_CHAIN),
   TrxScope.Mainnet,
+  MultichainNetworks.STELLAR,
 ];
 
 /** RWA / tokenized stocks default chains. */

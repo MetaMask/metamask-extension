@@ -34,6 +34,17 @@ class PrivacySettings {
   private readonly backToSrpListButton =
     '[data-testid="reveal-recovery-phrase-back-button"]';
 
+  private readonly basicConfigurationCheckbox = {
+    testId: 'basic-configuration-checkbox',
+  };
+
+  private readonly basicConfigurationModalToggleButton = {
+    testId: 'basic-configuration-modal-toggle-button',
+  };
+
+  private readonly basicFunctionalityToggle =
+    'label.toggle-button:has([data-testid="basic-functionality-toggle"])';
+
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
 
@@ -48,8 +59,8 @@ class PrivacySettings {
   private readonly confirmDeleteMetaMetricsDataButton =
     '[data-testid="clear-metametrics-data"]';
 
-  private readonly copiedSrpExclamation =
-    '[data-testid="reveal-seed-copy-success-toast-banner-base"]';
+  private readonly copiedSrpWarning =
+    '[data-testid="sensitive-clipboard-warning"]';
 
   private readonly copySrpButton = '[data-testid="reveal-seed-copy-button"]';
 
@@ -195,6 +206,10 @@ class PrivacySettings {
     text: `Secret Recovery Phrase ${srpIndex.toString()}`,
   });
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
   private readonly settingsTransactionsTab =
     '[data-testid="settings-tab-item-transactions"]';
@@ -263,12 +278,15 @@ class PrivacySettings {
   async checkDisplayedSrpCanBeCopied(): Promise<void> {
     console.log('Check displayed SRP on privacy settings page can be copied');
     await this.driver.clickElement(this.copySrpButton);
-    await this.driver.waitForSelector(this.copiedSrpExclamation);
+    await this.driver.waitForSelector(this.copiedSrpWarning);
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.privacySettingsLoadedMarker);
+      await this.driver.waitForMultipleSelectors([
+        this.privacySettingsLoadedMarker,
+        this.settingsPage,
+      ]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Privacy & Security Settings page to be loaded',
@@ -511,6 +529,18 @@ class PrivacySettings {
       'Toggle auto detect tokens in Security and Privacy settings page',
     );
     await this.driver.clickElement(this.autoDetectToken);
+  }
+
+  async toggleBasicFunctionality(): Promise<void> {
+    console.log('Toggle basic functionality on privacy settings page');
+    await this.driver.clickElement(this.basicFunctionalityToggle);
+  }
+
+  async toggleBasicFunctionalityOff(): Promise<void> {
+    console.log('Toggle basic functionality off on privacy settings page');
+    await this.toggleBasicFunctionality();
+    await this.driver.clickElement(this.basicConfigurationCheckbox);
+    await this.driver.clickElement(this.basicConfigurationModalToggleButton);
   }
 
   async toggleBlockaidAlerts(): Promise<void> {

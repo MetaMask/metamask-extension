@@ -13,6 +13,7 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 
 import { MultichainNetworkConfigurationsByChainIdState } from '../../../shared/lib/selectors/networks';
 import {
+  getAccountListStats,
   getAccountTree,
   getAllAccountGroups,
   getAccountGroupWithInternalAccounts,
@@ -1811,6 +1812,166 @@ describe('Multichain Accounts Selectors', () => {
         '0x0000000000000000000000000000000000000000',
       );
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getAccountListStats', () => {
+    it('counts wallets alongside accounts and their pinned and hidden totals', () => {
+      expect(getAccountListStats(typedMockState)).toStrictEqual({
+        pinnedCount: 0,
+        hiddenCount: 0,
+        totalAccounts: 5,
+        totalWallets: 5,
+      });
+    });
+
+    it('counts account groups, not addresses', () => {
+      // One account group can hold several addresses (the mock state's
+      // "Account 1" holds two), so an address-level count reads higher than
+      // the account count the UI shows. `total_accounts` must track groups,
+      // which is what the account list renders one row per.
+      const stats = getAccountListStats(typedMockState);
+
+      expect(stats.totalAccounts).toBe(
+        getAllAccountGroups(typedMockState).length,
+      );
+      expect(
+        Object.keys(typedMockState.metamask.internalAccounts.accounts),
+      ).toHaveLength(6);
+      expect(stats.totalAccounts).toBe(5);
+    });
+
+    it('counts one account per cell across BIP-44, hardware and private-key wallets', () => {
+      // Every account group is one row in the list and one hideable/removable
+      // unit, whatever wallet it belongs to. A multichain BIP-44 group counts
+      // once no matter how many addresses it spans, while each Ledger account
+      // and each imported private key is its own account.
+      const state = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            wallets: {
+              'entropy:srp-1': {
+                id: 'entropy:srp-1',
+                type: AccountWalletType.Entropy,
+                metadata: { name: 'Wallet 1', entropy: { id: 'srp-1' } },
+                groups: {
+                  // One BIP-44 account spanning EVM, Solana and Bitcoin.
+                  'entropy:srp-1/0': {
+                    accounts: ['evm-0', 'sol-0', 'btc-0'],
+                    metadata: { name: 'Account 1' },
+                  },
+                  'entropy:srp-1/1': {
+                    accounts: ['evm-1'],
+                    metadata: { name: 'Account 2' },
+                  },
+                },
+              },
+              'keyring:Ledger Hardware': {
+                id: 'keyring:Ledger Hardware',
+                type: AccountWalletType.Keyring,
+                metadata: {
+                  name: 'Ledger',
+                  keyring: { type: KeyringTypes.ledger },
+                },
+                groups: {
+                  'keyring:Ledger Hardware/0xaaa': {
+                    accounts: ['ledger-1'],
+                    metadata: { name: 'Ledger 1' },
+                  },
+                  'keyring:Ledger Hardware/0xbbb': {
+                    accounts: ['ledger-2'],
+                    metadata: { name: 'Ledger 2' },
+                  },
+                },
+              },
+              'keyring:Simple Key Pair': {
+                id: 'keyring:Simple Key Pair',
+                type: AccountWalletType.Keyring,
+                metadata: {
+                  name: 'Imported',
+                  keyring: { type: KeyringTypes.simple },
+                },
+                groups: {
+                  'keyring:Simple Key Pair/0xccc': {
+                    accounts: ['imported-1'],
+                    metadata: { name: 'Imported Account 1' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      const stats = getAccountListStats(state);
+
+      // 2 BIP-44 + 2 Ledger + 1 imported private key, each its own cell.
+      expect(stats.totalAccounts).toBe(5);
+      expect(stats.totalWallets).toBe(3);
+      // Seven addresses across those five accounts, which must not inflate it.
+      expect(stats.totalAccounts).not.toBe(7);
+    });
+
+    it('counts hidden accounts and the wallets holding them', () => {
+      const walletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as AccountWalletId;
+      const state = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {
+              [walletId]: {
+                ...typedMockState.metamask.accountTree.wallets[walletId],
+                groups: Object.fromEntries(
+                  Object.entries(
+                    typedMockState.metamask.accountTree.wallets[walletId]
+                      .groups,
+                  ).map(([groupId, group]) => [
+                    groupId,
+                    {
+                      ...group,
+                      metadata: {
+                        ...group.metadata,
+                        hidden: true,
+                        pinned: true,
+                      },
+                    },
+                  ]),
+                ),
+              },
+            },
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      const stats = getAccountListStats(state);
+
+      expect(stats.totalWallets).toBe(1);
+      expect(stats.hiddenCount).toBe(1);
+      expect(stats.pinnedCount).toBe(1);
+    });
+
+    it('reports zeroes rather than undefined when there are no wallets', () => {
+      const state = {
+        ...typedMockState,
+        metamask: {
+          ...typedMockState.metamask,
+          accountTree: {
+            ...typedMockState.metamask.accountTree,
+            wallets: {},
+          },
+        },
+      } as unknown as typeof typedMockState;
+
+      expect(getAccountListStats(state)).toStrictEqual({
+        pinnedCount: 0,
+        hiddenCount: 0,
+        totalAccounts: 0,
+        totalWallets: 0,
+      });
     });
   });
 });

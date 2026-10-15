@@ -9,6 +9,37 @@ jest.mock('../../../../../ui/helpers/utils/metrics', () => ({
   }),
 }));
 
+/**
+ * Builds a request whose transaction targets a fixed recipient on the given
+ * chain, with the given address security alert cache lookup mock.
+ *
+ * @param options - Options bag.
+ * @param options.chainId - The transaction's chainId.
+ * @param options.getAddressSecurityAlertResponse - Cache lookup mock.
+ */
+function buildAddressAlertRequest({
+  chainId,
+  getAddressSecurityAlertResponse,
+}: {
+  chainId: string | undefined;
+  getAddressSecurityAlertResponse: jest.Mock;
+}) {
+  return createBuilderRequest({
+    transactionMeta: {
+      ...createBuilderRequest().transactionMeta,
+      txParams: {
+        ...createBuilderRequest().transactionMeta.txParams,
+        to: '0x2222222222222222222222222222222222222222',
+      },
+      chainId,
+    } as never,
+    transactionMetricsRequest: {
+      ...createBuilderRequest().transactionMetricsRequest,
+      getAddressSecurityAlertResponse,
+    } as never,
+  });
+}
+
 describe('security builder', () => {
   it('builds security and ui customization metrics', async () => {
     const result = await getSecurityMetricsProperties(
@@ -75,5 +106,50 @@ describe('security builder', () => {
     );
     expect(result.properties.address_alert_response).toBe('Trusted');
     expect(result.properties.transaction_contract_verified).toBe(true);
+  });
+
+  it('returns the cached address alert response for a chain ID absent from the legacy mapping', async () => {
+    const getAddressSecurityAlertResponseMock = jest
+      .fn()
+      .mockReturnValue({ result_type: 'Malicious' });
+
+    const result = await getSecurityMetricsProperties(
+      buildAddressAlertRequest({
+        chainId: '0x123456789',
+        getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
+      }),
+    );
+
+    expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+      '0x123456789:0x2222222222222222222222222222222222222222',
+    );
+    expect(result.properties.address_alert_response).toBe('Malicious');
+  });
+
+  it('returns Loading when no cached response exists for the chain and address', async () => {
+    const result = await getSecurityMetricsProperties(
+      buildAddressAlertRequest({
+        chainId: '0x123456789',
+        getAddressSecurityAlertResponse: jest.fn().mockReturnValue(undefined),
+      }),
+    );
+
+    expect(result.properties.address_alert_response).toBe('Loading');
+  });
+
+  it('returns not_applicable when the transaction has no chainId', async () => {
+    const getAddressSecurityAlertResponseMock = jest
+      .fn()
+      .mockReturnValue({ result_type: 'Malicious' });
+
+    const result = await getSecurityMetricsProperties(
+      buildAddressAlertRequest({
+        chainId: undefined,
+        getAddressSecurityAlertResponse: getAddressSecurityAlertResponseMock,
+      }),
+    );
+
+    expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+    expect(result.properties.address_alert_response).toBe('not_applicable');
   });
 });

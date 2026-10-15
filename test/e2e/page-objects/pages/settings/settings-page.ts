@@ -85,6 +85,10 @@ class SettingsPage {
   private readonly securityAndPasswordSettingsButton =
     '[data-testid="settings-tab-item-security-and-password"]';
 
+  private readonly settingsPage = {
+    testId: 'parent-selector-settings-page',
+  };
+
   private readonly settingsPageFullscreenRoot =
     '[data-testid="settings-tab-bar-grouped"]';
 
@@ -120,7 +124,10 @@ class SettingsPage {
 
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
-    await this.driver.waitForSelector(this.settingsPageFullscreenRoot);
+    await this.driver.waitForMultipleSelectors([
+      this.settingsPage,
+      this.settingsPageFullscreenRoot,
+    ]);
   }
 
   /**
@@ -153,7 +160,7 @@ class SettingsPage {
         return;
       }
       await this.clickBackButton();
-      await this.driver.delay(1000);
+      await this.driver.delay(300);
     }
   }
 

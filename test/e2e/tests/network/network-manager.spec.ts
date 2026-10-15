@@ -7,7 +7,7 @@ import {
   NETWORK_CLIENT_ID,
   WINDOW_TITLES,
 } from '../../constants';
-import { withFixtures } from '../../helpers';
+import { getCleanAppState, withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import SelectNetworkModal, {
   NetworkId,
@@ -21,6 +21,117 @@ import { getMockAssetsPrice } from '../tokens/utils/mocks';
 const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
 const MUSD_MAINNET_ASSET_ID = `eip155:1/erc20:${MUSD_ADDRESS}`;
 const MUSD_LINEA_ASSET_ID = `eip155:59144/erc20:${MUSD_ADDRESS}`;
+
+// Keep this synthetic chain outside bundled and default network definitions so
+// Config Registry must add it during every run of this regression test.
+const FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID = 'eip155:4294967294';
+const FAKE_CONFIG_REGISTRY_HEX_CHAIN_ID = '0xfffffffe';
+const FAKE_CONFIG_REGISTRY_NETWORK_NAME = 'New Fake Network';
+const CONFIG_REGISTRY_API_URL =
+  'https://client-config.api.cx.metamask.io/v1/config/networks';
+
+// Config Registry makes the network picker show the new network before the asynchronous
+// NetworkEnablementController handler has processed NetworkController:networkAdded.
+// Wait for both controller updates so this test asserts the completed transition.
+async function waitForFakeNetworkToBeAutoEnabled(
+  driver: Driver,
+): Promise<void> {
+  await driver.wait(async () => {
+    const state = await getCleanAppState(driver);
+
+    return Boolean(
+      state.metamask.networkConfigurationsByChainId[
+        FAKE_CONFIG_REGISTRY_HEX_CHAIN_ID
+      ] &&
+      state.metamask.nativeAssetIdentifiers[FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID],
+    );
+  });
+}
+
+async function mockConfigRegistryWithAutoEnabledFakeNetwork(
+  mockServer: Mockttp,
+  responseReady: Promise<void>,
+) {
+  return [
+    // Hold the registry response until the test has established its Localhost-only
+    // starting state. Otherwise the fake network can be auto-added while login is
+    // still loading.
+    await mockServer
+      .forGet(CONFIG_REGISTRY_API_URL)
+      .always()
+      .thenCallback(async () => {
+        await responseReady;
+
+        return {
+          statusCode: 200,
+          json: {
+            data: {
+              version: '1.0.0',
+              timestamp: 0,
+              chains: [
+                {
+                  chainId: FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID,
+                  name: FAKE_CONFIG_REGISTRY_NETWORK_NAME,
+                  imageUrl:
+                    'https://config-registry-fake-network.invalid/icon.png',
+                  coingeckoPlatformId: 'config-registry-fake-network',
+                  assets: {
+                    native: {
+                      assetId: `${FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID}/slip44:60`,
+                      imageUrl:
+                        'https://config-registry-fake-network.invalid/token.png',
+                      name: FAKE_CONFIG_REGISTRY_NETWORK_NAME,
+                      symbol: 'FakeCoin',
+                      decimals: 18,
+                    },
+                  },
+                  rpcProviders: {
+                    default: {
+                      url: 'https://responsive-rpc.test/',
+                      type: 'custom',
+                      networkClientId: 'config-registry-fake-network',
+                    },
+                    fallbacks: [],
+                  },
+                  blockExplorerUrls: {
+                    default: 'https://config-registry-fake-network.invalid',
+                    fallbacks: [],
+                  },
+                  config: {
+                    isActive: true,
+                    isTestnet: false,
+                    isDefault: true,
+                    isFeatured: true,
+                    isDeprecated: false,
+                    isDeletable: false,
+                    isAutoEnabled: true,
+                    priority: 1,
+                  },
+                },
+              ],
+            },
+          },
+        };
+      }),
+    // NetworkController validates the new network RPC while adding it. A dedicated mock
+    // avoids reusing Localhost's endpoint, which would reject it as a duplicate.
+    await mockServer
+      .forPost('https://responsive-rpc.test/')
+      .always()
+      .thenCallback(async (request) => {
+        const requestBody = (await request.body.getJson()) as { id: unknown };
+
+        return {
+          statusCode: 200,
+          json: {
+            id: requestBody.id,
+            jsonrpc: '2.0',
+            result: FAKE_CONFIG_REGISTRY_HEX_CHAIN_ID,
+          },
+        };
+      }),
+  ];
+}
 
 function buildTokenFilterFixtures() {
   return new FixtureBuilderV2()
@@ -123,7 +234,7 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
       .always()
       .thenJson(200, {
         fullSupport: [],
-        partialSupport: { balances: [] },
+        partialSupport: [],
       }),
     await mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
@@ -196,7 +307,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
         await networkFilter.open();
@@ -217,7 +328,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver, { expectedBalance: '$0.00' });
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
         await networkFilter.open();
@@ -225,6 +336,58 @@ describe('Network Manager', function (this: Suite) {
 
         // there cannot be an inbetween value, either 1 network or all networks. So the controller updates to all networks
         await selectNetworkModal.checkAllPopularNetworksIsSelected();
+      },
+    );
+  });
+
+  it('keeps Localhost selected when Config Registry auto-adds a network', async function () {
+    // Regression: Arc originally exposed that adding an auto-enabled Config Registry
+    // network could replace a user's single-network filter, switching Localhost to
+    // the added network.
+    let releaseConfigRegistryResponse: () => void;
+    const configRegistryResponseReady = new Promise<void>((resolve) => {
+      releaseConfigRegistryResponse = resolve;
+    });
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.LOCALHOST)
+          .withEnabledNetworks({ eip155: { '0x539': true } })
+          .build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (mockServer: Mockttp) =>
+          mockConfigRegistryWithAutoEnabledFakeNetwork(
+            mockServer,
+            configRegistryResponseReady,
+          ),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        // Start with the fixture's single Localhost selection fully rendered.
+        await login(driver);
+
+        const networkFilter = new NetworkFilter(driver);
+        const selectNetworkModal = new SelectNetworkModal(driver);
+        await networkFilter.checkLabelIs('Network: Localhost 8545');
+
+        // Only now return the fake network from Config Registry, then wait until both the
+        // NetworkController and NetworkEnablementController have handled it.
+        releaseConfigRegistryResponse();
+        await waitForFakeNetworkToBeAutoEnabled(driver);
+
+        // The fake network must be available but must not replace the Localhost-only filter.
+        await networkFilter.open();
+        await selectNetworkModal.checkPageIsLoaded();
+
+        await selectNetworkModal.checkNetworkIsListed(
+          FAKE_CONFIG_REGISTRY_NETWORK_NAME,
+        );
+        await selectNetworkModal.checkNetworkIsDeselected(
+          FAKE_CONFIG_REGISTRY_CAIP_CHAIN_ID,
+        );
+        await selectNetworkModal.checkNetworkIsSelected('eip155:1337');
+        await selectNetworkModal.close();
+        await networkFilter.checkLabelIs('Network: Localhost 8545');
       },
     );
   });
@@ -239,7 +402,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
+        await login(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
         await networkFilter.open();
@@ -278,10 +441,7 @@ describe('Network Manager', function (this: Suite) {
         testSpecificMock: mockLineaAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, {
-          validateBalance: false,
-          waitForNonEvmAccounts: false,
-        });
+        await login(driver);
         const tokensTab = new TokensTab(driver);
         const selectNetworkModal = new SelectNetworkModal(driver);
         const networkFilter = new NetworkFilter(driver);
@@ -334,9 +494,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-
-        await driver.delay(1000);
+        await login(driver);
 
         // Add network via dapp
         const testDapp = new TestDapp(driver);
@@ -418,9 +576,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver, { validateBalance: false });
-
-        await driver.delay(1000);
+        await login(driver);
 
         // Add custom network via dapp
         const testDapp = new TestDapp(driver);

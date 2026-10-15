@@ -113,6 +113,63 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.isContractInteraction).toBe(false);
   });
 
+  it('returns money_account_deposit for a batch with a nested money account deposit', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.batch,
+        nestedTransactions: [
+          { type: TransactionType.tokenMethodApprove },
+          { type: TransactionType.moneyAccountDeposit },
+        ],
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('money_account_deposit');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns money_account_withdraw for a batch with a nested money account withdrawal', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.moneyAccountWithdraw }],
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('money_account_withdraw');
+  });
+
+  it('returns money_account_deposit when the transaction type is moneyAccountDeposit', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.moneyAccountDeposit,
+        txParams: {},
+      }),
+      transactionMetricsRequest: createRequest({
+        getMethodData: jest.fn(),
+      }),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('money_account_deposit');
+  });
+
+  it('keeps batch when nested transactions are not a money account flow', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.batch,
+        nestedTransactions: [{ type: TransactionType.tokenMethodTransfer }],
+        txParams: {},
+      }),
+      transactionMetricsRequest: createRequest({
+        getMethodData: jest.fn(),
+      }),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('batch');
+  });
+
   it('returns perps_withdraw as transaction type for perps withdraw transactions', async () => {
     const context = await buildTransactionMetricsContext({
       transactionMeta: createTransactionMeta({
@@ -165,6 +222,20 @@ describe('buildTransactionMetricsContext', () => {
 
       expect(context.transactionTypeForMetrics).toBe('mm_swap');
       expect(context.isContractInteraction).toBe(true);
+    });
+
+    it('returns money_account_deposit for a retried money account deposit batch', async () => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type: TransactionType.retry,
+          originalType: TransactionType.batch,
+          nestedTransactions: [{ type: TransactionType.moneyAccountDeposit }],
+          txParams: { data: '0xa9059cbb' },
+        }),
+        transactionMetricsRequest: createRequest(),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe('money_account_deposit');
     });
   });
 });

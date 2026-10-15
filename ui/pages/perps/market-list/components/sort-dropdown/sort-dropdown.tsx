@@ -80,6 +80,17 @@ export const SortDropdown = ({
     setIsOpen(false);
   }, []);
 
+  const handleSelectField = useCallback(
+    (field: SortField) => {
+      if (field === pendingField) {
+        setPendingDirection((current) => (current === 'desc' ? 'asc' : 'desc'));
+        return;
+      }
+      setPendingField(field);
+    },
+    [pendingField],
+  );
+
   const handleApply = useCallback(() => {
     onChange(pendingField, pendingDirection);
     setIsOpen(false);
@@ -121,29 +132,23 @@ export const SortDropdown = ({
           </ModalHeader>
 
           <ModalBody className="!p-0">
-            {/* "SORT BY" section header */}
-            <Box className="w-full px-4 pb-3">
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-                className="uppercase tracking-wide"
-              >
-                {t('perpsSortBySection')}
-              </Text>
-            </Box>
-
-            {/* Sort field options */}
+            {/* One list, no section headers: the design (Figma 12602:46701)
+                folds the rank into the sort row rather than giving it its own
+                section, so the selected field carries its direction inline and
+                pressing it again reverses it. */}
             <Box flexDirection={BoxFlexDirection.Column} className="w-full">
-              {SORT_FIELD_OPTIONS.map((option, index) => {
+              {SORT_FIELD_OPTIONS.map((option) => {
                 const isSelected = pendingField === option.id;
-                const isLast = index === SORT_FIELD_OPTIONS.length - 1;
                 return (
                   <ButtonBase
                     key={option.id}
-                    onClick={() => setPendingField(option.id)}
-                    className={`w-full justify-between text-left rounded-none px-4 min-w-0 h-[46px] active:bg-pressed ${
-                      isSelected ? 'bg-hover' : 'bg-transparent hover:bg-hover'
-                    } ${isLast ? 'border-b border-border-muted' : ''}`}
+                    onClick={() => handleSelectField(option.id)}
+                    className={`w-full justify-between text-left rounded-none p-4 min-w-0 h-auto active:bg-pressed ${
+                      isSelected
+                        ? 'bg-background-muted'
+                        : 'bg-transparent hover:bg-hover'
+                    }`}
+                    aria-pressed={isSelected}
                     data-testid={`sort-field-option-${option.id}`}
                   >
                     <Text
@@ -154,59 +159,36 @@ export const SortDropdown = ({
                       {t(option.labelKey)}
                     </Text>
                     {isSelected && (
-                      <Icon
-                        name={IconName.Check}
-                        size={IconSize.Sm}
-                        color={IconColor.IconDefault}
-                      />
-                    )}
-                  </ButtonBase>
-                );
-              })}
-            </Box>
-
-            {/* "RANK" section header */}
-            <Box className="w-full px-4 pb-3 pt-5">
-              <Text
-                variant={TextVariant.BodyXs}
-                color={TextColor.TextAlternative}
-                className="uppercase tracking-wide"
-              >
-                {t('perpsSortByRank')}
-              </Text>
-            </Box>
-
-            {/* Sort direction options */}
-            <Box flexDirection={BoxFlexDirection.Column} className="w-full">
-              {(
-                [
-                  { value: 'desc' as const, labelKey: 'perpsSortByHighToLow' },
-                  { value: 'asc' as const, labelKey: 'perpsSortByLowToHigh' },
-                ] as const
-              ).map(({ value, labelKey }) => {
-                const isSelected = pendingDirection === value;
-                return (
-                  <ButtonBase
-                    key={value}
-                    onClick={() => setPendingDirection(value)}
-                    className={`w-full justify-between text-left rounded-none px-4 min-w-0 h-[46px] active:bg-pressed ${
-                      isSelected ? 'bg-hover' : 'bg-transparent hover:bg-hover'
-                    }`}
-                    data-testid={`sort-direction-${value}`}
-                  >
-                    <Text
-                      variant={TextVariant.BodyMd}
-                      color={TextColor.TextDefault}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {t(labelKey)}
-                    </Text>
-                    {isSelected && (
-                      <Icon
-                        name={IconName.Check}
-                        size={IconSize.Sm}
-                        color={IconColor.IconDefault}
-                      />
+                      <Box
+                        flexDirection={BoxFlexDirection.Row}
+                        alignItems={BoxAlignItems.Center}
+                        gap={2}
+                        data-testid="sort-field-direction"
+                      >
+                        <Text
+                          variant={TextVariant.BodyMd}
+                          color={TextColor.TextAlternative}
+                          fontWeight={FontWeight.Medium}
+                        >
+                          {t(
+                            pendingDirection === 'desc'
+                              ? 'perpsSortByHighToLow'
+                              : 'perpsSortByLowToHigh',
+                          )}
+                        </Text>
+                        <Icon
+                          // `Arrow2Down`/`Arrow2Up` are the design's assets but
+                          // resolve to undefined on some design-system
+                          // installs, and `Icon` then renders nothing.
+                          name={
+                            pendingDirection === 'desc'
+                              ? IconName.ArrowDown
+                              : IconName.ArrowUp
+                          }
+                          size={IconSize.Md}
+                          color={IconColor.IconAlternative}
+                        />
+                      </Box>
                     )}
                   </ButtonBase>
                 );

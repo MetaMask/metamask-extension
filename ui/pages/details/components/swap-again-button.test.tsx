@@ -142,6 +142,7 @@ describe('SwapAgainButton', () => {
       token: null,
       search: expectedSearchParams,
       isEntrypoint: true,
+      entryPoint: MetaMetricsSwapsEventSource.ActivityDetails,
     });
     expect(mockDispatch).toHaveBeenCalledTimes(1);
   });
