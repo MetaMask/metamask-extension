@@ -27,6 +27,7 @@
  */
 import * as Sentry from '@sentry/browser';
 import type { Client } from '@sentry/core';
+import { it } from '@jest/globals';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   consensysTracePropagationIntegration,

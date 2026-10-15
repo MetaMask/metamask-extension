@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import { it } from '@jest/globals';
 import {
   annotateTrace,
   endTrace,
