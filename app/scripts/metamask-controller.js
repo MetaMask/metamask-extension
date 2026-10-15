@@ -122,6 +122,8 @@ import {
   HardwareDeviceNames,
   KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
+import { LogType } from '@metamask/logging-controller';
+import { LOG_EVENT } from '../../shared/constants/logs';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
@@ -517,14 +519,6 @@ export default class MetamaskController extends EventEmitter {
     /** @type {NodeJS.Timeout | null} */
     this.passkeyAutoUnlockSuppressedResetTimeoutId = null;
 
-    this.extension.runtime.onInstalled.addListener((details) => {
-      if (details.reason === 'update') {
-        if (version === '8.1.0') {
-          this.platform.openExtensionInBrowser();
-        }
-      }
-    });
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -820,6 +814,23 @@ export default class MetamaskController extends EventEmitter {
     this.geolocationController = messengerClientsByName.GeolocationController;
     this.moneyAccountUpgradeController =
       messengerClientsByName.MoneyAccountUpgradeController;
+
+    this.extension.runtime.onInstalled.addListener((details) => {
+      if (details.reason === 'update') {
+        this.loggingController.add({
+          type: LogType.GenericLog,
+          data: {
+            event: LOG_EVENT.VERSION_UPDATE,
+            previousVersion: details.previousVersion,
+            version: process.env.METAMASK_VERSION,
+          },
+        });
+
+        if (version === '8.1.0') {
+          this.platform.openExtensionInBrowser();
+        }
+      }
+    });
 
     // Record installation info if this is the first time the extension is running.
     // This captures the version and date when MetaMask was first installed.
