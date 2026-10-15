@@ -65,6 +65,12 @@ export const UI_COMPONENT_RE = new RegExp(
 
 export const TYPESCRIPT_FILE_RE = /\.(?:ts|mts|tsx)$/u;
 
+/** TypeScript without JSX (`.ts` / `.mts`). */
+export const TYPESCRIPT_NON_TSX_FILE_RE = /\.(?:ts|mts)$/u;
+
+/** TypeScript with JSX (`.tsx` only). */
+export const TYPESCRIPT_TSX_FILE_RE = /\.tsx$/u;
+
 export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
 
 /**
@@ -104,16 +110,17 @@ export const extensionToJs = (filename: string) =>
 /**
  * It gets minimizers for the webpack build.
  *
- * SWC mangling can still produce different `runtime.[contenthash].js` output
- * across Linux rebuilds (short-name swaps such as `c`/`l`), even with
- * TerserPlugin `parallel: false`. That breaks Firefox AMO reviewer `mtree`
- * comparisons. Disabling mangling for the runtime chunk keeps it
- * content-stable while leaving mangling ON for all other chunks.
+ * Mangling is enabled for every chunk, including the webpack runtime chunk.
+ * `runtime.[contenthash].js` used to come out differently for identical
+ * sources (short-name swaps such as `c`/`l`) because two things fed
+ * build-specific bytes into SWC's character-frequency analysis: the swc loader
+ * leaked the absolute build path into every module hash (see `swcLoader.ts`),
+ * and `@swc/core` < 1.16.2 attached stale, thread-timing dependent source-map
+ * positions to inlined `process.env` values. Both are fixed at the source, so
+ * no per-chunk special casing is needed here.
  */
 export function getMinimizers() {
   const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
-  // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
-  const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [
     new TerserPlugin({
       // use SWC to minify (about 7x faster than Terser)
@@ -123,25 +130,9 @@ export function getMinimizers() {
       // an unknown field. Earlier versions ignored it for `swcMinify`, so no
       // comments were ever extracted here; `false` keeps that behavior.
       extractComments: false,
+      // Determinism (and a small local build-time win): one minifier process.
       parallel: false,
-      terserOptions: {
-        mangle: true,
-      },
-      // do not minify snow or the runtime chunk (handled below).
-      exclude: [/snow\.prod/u, runtimeChunkRe],
-    }),
-    new TerserPlugin({
-      // use SWC to minify (about 7x faster than Terser)
-      minify: TerserPlugin.swcMinify,
-      // see the note on the minimizer above
-      extractComments: false,
-      parallel: false,
-      terserOptions: {
-        // Disable mangling for the runtime chunk so AMO Linux rebuilds stay
-        // content-stable.
-        mangle: false,
-      },
-      include: runtimeChunkRe,
+      // do not minify snow.
       exclude: /snow\.prod/u,
     }),
   ];
