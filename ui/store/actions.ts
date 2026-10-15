@@ -220,7 +220,10 @@ import {
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import {
+  getOAuthTraceTags,
+  OAuthLoginResult,
+} from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
@@ -290,6 +293,10 @@ export function startOAuthLogin(
     }
 
     try {
+      const oauthTraceTags = getOAuthTraceTags(
+        authConnection,
+        isRehydration,
+      );
       const [oauth2LoginResult] = await Promise.all([
         submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
           authConnection,
@@ -303,6 +310,7 @@ export function startOAuthLogin(
         bufferedTrace?.({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           op: TraceOperation.OnboardingSecurityOp,
+          tags: oauthTraceTags,
         });
         ({ isNewUser } = await submitRequestToBackground('authenticate', [
           oauth2LoginResult,
@@ -318,8 +326,7 @@ export function startOAuthLogin(
             account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_rehydration:
-              isRehydration === null ? 'unknown' : String(isRehydration),
+            is_rehydration: oauthTraceTags.is_rehydration,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failure_type: 'error',

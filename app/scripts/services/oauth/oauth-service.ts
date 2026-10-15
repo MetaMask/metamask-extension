@@ -28,6 +28,7 @@ import {
   SERVICE_NAME,
   ServiceName,
   WebAuthenticator,
+  getOAuthTraceTags,
 } from './types';
 import { loadOAuthConfig } from './config';
 
@@ -243,6 +244,7 @@ export class OAuthService {
       this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
+        tags: getOAuthTraceTags(authConnection, isRehydration),
       });
       const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
@@ -296,6 +298,7 @@ export class OAuthService {
       this.#messenger.call('SentryTracingService:bufferedTrace', {
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
+        tags: getOAuthTraceTags(authConnection, isRehydration),
       });
       const loginResult = await this.#handleOAuthResponse(
         loginHandler,

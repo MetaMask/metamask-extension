@@ -191,10 +191,18 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(mockBufferedTrace).toHaveBeenNthCalledWith(1, {
       name: TraceName.OnboardingOAuthProviderLogin,
       op: TraceOperation.OnboardingSecurityOp,
+      tags: {
+        provider: AuthConnection.Google,
+        is_rehydration: 'false',
+      },
     });
     expect(mockBufferedTrace).toHaveBeenNthCalledWith(2, {
       name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
       op: TraceOperation.OnboardingSecurityOp,
+      tags: {
+        provider: AuthConnection.Google,
+        is_rehydration: 'false',
+      },
     });
     expect(mockBufferedEndTrace).toHaveBeenNthCalledWith(1, {
       name: TraceName.OnboardingOAuthProviderLogin,

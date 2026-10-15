@@ -81,6 +81,8 @@ export enum TraceName {
   OnboardingAddSrp = 'Onboarding - Add SRP',
   OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthProviderLaunch = 'Onboarding - OAuth Provider Launch',
+  OnboardingOAuthProviderInteraction = 'Onboarding - OAuth Provider Interaction',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
