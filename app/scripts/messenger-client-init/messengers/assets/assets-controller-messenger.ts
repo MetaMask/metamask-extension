@@ -107,6 +107,7 @@ export function getAssetsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [...ASSETS_CONTROLLER_DELEGATED_ACTIONS],
+    // @ts-expect-error - assets-controller 19.0.0 omits the multichain confirmation event
     events: [...ASSETS_CONTROLLER_DELEGATED_EVENTS],
   });
 
