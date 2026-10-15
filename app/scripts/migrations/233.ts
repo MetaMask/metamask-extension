@@ -24,7 +24,8 @@ export const migrate = (async (versionedData, changedControllers) => {
 
   if (
     hasProperty(data, 'AuthenticationController') &&
-    isObject(data.AuthenticationController)
+    isObject(data.AuthenticationController) &&
+    data.AuthenticationController.needsSocialPairing !== true
   ) {
     data.AuthenticationController.needsSocialPairing = true;
     changedControllers.add('AuthenticationController');

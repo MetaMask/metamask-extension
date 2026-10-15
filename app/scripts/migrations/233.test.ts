@@ -72,18 +72,20 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  it('keeps needsSocialPairing true when it is already true', async () => {
+  it('leaves the controller unchanged when needsSocialPairing is already true', async () => {
     const oldStorage: VersionedData = {
       meta: { version: OLD_VERSION },
       data: { AuthenticationController: { needsSocialPairing: true } },
     };
 
     const versionedData = cloneDeep(oldStorage);
-    await migrate(versionedData, new Set<string>());
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
     expect(versionedData.data).toStrictEqual({
       AuthenticationController: { needsSocialPairing: true },
     });
+    expect(changedControllers.size).toBe(0);
   });
 
   it('does not change state when AuthenticationController is absent', async () => {
