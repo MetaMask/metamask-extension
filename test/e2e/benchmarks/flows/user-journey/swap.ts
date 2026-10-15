@@ -30,7 +30,6 @@ import {
 import { WITH_STATE_POWER_USER } from '../../utils/constants';
 import { collectWebVitals } from '../../utils';
 import type { BenchmarkRunResult, LongTaskStepResult } from '../../utils/types';
-import { registerSwapInterceptor } from '../../mocks/swap-mocks';
 
 export const testTitle = 'benchmark-swap-power-user';
 export const persona = BENCHMARK_PERSONA.POWER_USER;
@@ -60,13 +59,11 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         testSpecificMock: async (
           mockServer: Mockttp,
         ): Promise<MockedEndpoint[]> => {
-          // In pass-through mode (main/release branches), register
-          // interceptors inside the single thenPassThrough handler.
-          if (!shouldUseMockedRequests()) {
-            registerSwapInterceptor(mockServer);
-          }
-
-          // On PR branches, register the full mock suite
+          // PR / base-comparison runs register the full deterministic mock suite
+          // (incl. the swap quote/token mocks) via `branchMock`. On main/release
+          // `branchMock` registers no swap/price mocks, so quote and token-list
+          // requests hit the real bridge endpoints — release tracking must
+          // reflect real-world latency, not mocked fixtures. See #7201.
           const branchEndpoints = branchMock
             ? await branchMock(mockServer)
             : [];
