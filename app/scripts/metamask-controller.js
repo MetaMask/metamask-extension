@@ -673,6 +673,7 @@ export default class MetamaskController extends EventEmitter {
     // Backwards compatibility for existing references
     this.approvalController = this.wallet.getInstance('ApprovalController');
     this.loggingController = this.wallet.getInstance('LoggingController');
+    this.clientController = this.wallet.getInstance('ClientController');
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = this.wallet.getInstance('KeyringController');
@@ -1455,6 +1456,7 @@ export default class MetamaskController extends EventEmitter {
         AssetsController: this.assetsController,
         SelectedNetworkController: this.selectedNetworkController,
         LoggingController: this.loggingController,
+        ClientController: this.clientController,
         MultichainRatesController: this.multichainRatesController,
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
