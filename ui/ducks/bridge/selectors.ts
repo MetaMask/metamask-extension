@@ -94,7 +94,6 @@ import {
   getNativeReserve,
   getTotalNetworkFee,
 } from '../../pages/bridge/utils/quote';
-import { isArcTokenUSDC } from '../../components/app/assets/enablement/arc';
 import {
   getInternalAccountsByScope,
   getInternalAccountByAddress,
@@ -158,6 +157,7 @@ export type BridgeAppState = {
     GasFeeState &
     NetworkState &
     AccountsControllerState &
+    AssetsControllerState &
     AccountTreeControllerState &
     AccountTrackerControllerState &
     TokenBalancesControllerState &
@@ -947,14 +947,9 @@ export const getInsufficientNativeReserveError = createSelector(
     const isBitcoinNativeReserveChain = Boolean(
       fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
     );
-    const isArcUsdcReserveToken = Boolean(
-      fromToken?.assetId && isArcTokenUSDC(fromToken.assetId),
-    );
     const shouldApplyNativeReserve =
       minimumNativeReserveBalance !== '0' &&
-      (isNetworkGasSponsored ||
-        isBitcoinNativeReserveChain ||
-        isArcUsdcReserveToken);
+      (isNetworkGasSponsored || isBitcoinNativeReserveChain);
 
     const minimumNativeBalanceToBeKeptInAccount = shouldApplyNativeReserve
       ? minimumNativeReserveBalance

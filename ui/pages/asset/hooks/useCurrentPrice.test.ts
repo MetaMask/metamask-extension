@@ -181,7 +181,96 @@ describe('useCurrentPrice', () => {
 
       expect(mockGetV3SpotPricesQueryOptions).toHaveBeenCalledWith([assetId], {
         currency: 'usd',
+        includeMarketData: true,
       });
+    });
+
+    it('returns market data alongside the fetched spot price', async () => {
+      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+      const assetId = `eip155:1/erc20:${address}`;
+      const tokenAssetMissingMarket: Asset = {
+        chainId: '0x1',
+        type: AssetType.token,
+        address,
+        symbol: 'MISS',
+        decimals: 18,
+        name: 'Missing Token',
+        image: '',
+      };
+
+      mockSpotPricesFetch.mockResolvedValue({
+        [assetId]: {
+          price: 1.23,
+          marketCap: 2474982558,
+          totalVolume: 641147178,
+          circulatingSupply: 15434044.378848039,
+          allTimeHigh: 582.551095616534,
+          allTimeLow: 22.9079773125515,
+          dilutedMarketCap: 2565738439,
+        },
+      });
+
+      const { result } = renderHookWithProvider(
+        () => useCurrentPrice(tokenAssetMissingMarket),
+        mockStateIsEvm,
+      );
+
+      await waitFor(() => {
+        expect(result.current.marketData).toStrictEqual({
+          marketCap: 2474982558,
+          totalVolume: 641147178,
+          circulatingSupply: 15434044.378848039,
+          allTimeHigh: 582.551095616534,
+          allTimeLow: 22.9079773125515,
+          dilutedMarketCap: 2565738439,
+        });
+      });
+    });
+
+    it('returns undefined market data when the response omits market fields', async () => {
+      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+      const assetId = `eip155:1/erc20:${address}`;
+      const tokenAssetMissingMarket: Asset = {
+        chainId: '0x1',
+        type: AssetType.token,
+        address,
+        symbol: 'MISS',
+        decimals: 18,
+        name: 'Missing Token',
+        image: '',
+      };
+
+      mockSpotPricesFetch.mockResolvedValue({ [assetId]: { price: 1.23 } });
+
+      const { result } = renderHookWithProvider(
+        () => useCurrentPrice(tokenAssetMissingMarket),
+        mockStateIsEvm,
+      );
+
+      await waitFor(() => {
+        expect(result.current.currentPrice).toBe(1.23);
+      });
+
+      expect(result.current.marketData).toBeUndefined();
+    });
+
+    it('does not return market data when a cached price makes the query redundant', () => {
+      const tokenAsset: Asset = {
+        chainId: '0x1',
+        type: AssetType.token,
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+        image: '',
+      };
+
+      const { result } = renderHookWithProvider(
+        () => useCurrentPrice(tokenAsset),
+        mockStateIsEvm,
+      );
+
+      expect(result.current.marketData).toBeUndefined();
     });
 
     it('does not fetch the spot price when market data is available', () => {
@@ -345,6 +434,7 @@ describe('useCurrentPrice', () => {
 
       expect(mockGetV3SpotPricesQueryOptions).toHaveBeenCalledWith([assetId], {
         currency: 'usd',
+        includeMarketData: true,
       });
     });
   });

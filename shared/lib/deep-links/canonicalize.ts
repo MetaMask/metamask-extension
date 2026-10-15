@@ -3,7 +3,7 @@ import {
   DEEP_LINK_HOSTS,
   SIG_PARAM,
   SIG_PARAMS_PARAM,
-} from './constants';
+} from './common';
 
 /**
  * Canonicalizes a URL for signature verification by replacing configured

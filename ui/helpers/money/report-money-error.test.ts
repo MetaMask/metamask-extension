@@ -2,6 +2,7 @@ import { createSentryError } from '../../../shared/lib/error';
 import { captureException } from '../../../shared/lib/sentry';
 import {
   clearReportedMoneyQueryError,
+  getMoneyApiErrorDetails,
   reportMoneyError,
   reportMoneyQueryErrorOnce,
   resetReportedMoneyQueryErrorsForTests,
@@ -35,6 +36,16 @@ describe('reportMoneyError', () => {
     expect(hint).toStrictEqual({
       tags: { feature: 'money' },
       extra: { flow: 'deposit', intent: 'addMusd' },
+    });
+  });
+
+  it('applies tags over the default feature tag', () => {
+    reportMoneyError('[Money Account] Lifetime failed', 'boom', undefined, {
+      feature: 'money-lifetime-earnings',
+    });
+
+    expect(captureExceptionMock).toHaveBeenCalledWith(expect.any(Error), {
+      tags: { feature: 'money-lifetime-earnings' },
     });
   });
 
@@ -121,5 +132,45 @@ describe('reportMoneyQueryErrorOnce', () => {
     );
 
     expect(captureExceptionMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('getMoneyApiErrorDetails', () => {
+  it('reads diagnostics from a background error cause', () => {
+    const error = {
+      message: 'failed',
+      data: {
+        cause: {
+          name: 'MoneyAccountApiHttpError',
+          httpStatus: 404,
+          responseBody: '{"message":"Not Found"}',
+          responseHeaders: { 'content-type': 'application/json' },
+        },
+      },
+    };
+
+    expect(getMoneyApiErrorDetails(error)).toStrictEqual({
+      errorName: 'MoneyAccountApiHttpError',
+      httpStatus: 404,
+      responseBody: '{"message":"Not Found"}',
+      responseHeaders: { 'content-type': 'application/json' },
+    });
+  });
+
+  it('reads diagnostics from the error itself when there is no cause', () => {
+    const error = Object.assign(new Error('failed'), {
+      httpStatus: 500,
+      responseBody: null,
+    });
+
+    expect(getMoneyApiErrorDetails(error)).toStrictEqual({
+      errorName: 'Error',
+      httpStatus: 500,
+      responseBody: null,
+    });
+  });
+
+  it('returns no diagnostics for non-object errors', () => {
+    expect(getMoneyApiErrorDetails('boom')).toStrictEqual({});
   });
 });

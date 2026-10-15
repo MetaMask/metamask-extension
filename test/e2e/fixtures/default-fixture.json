@@ -173,6 +173,12 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": true,
+      "eventsConfig": {
+        "schemaVersion": "0",
+        "version": "0",
+        "timestamp": 0,
+        "events": {}
+      },
       "marketingCampaignCookieId": null,
       "marketingConsentDecisionMade": true,
       "optedIn": false,
@@ -182,7 +188,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 229,
+      "currentMigrationVersion": 232,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -321,29 +327,48 @@
         }
       },
       "assetsPrice": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "allTimeHigh": 126080,
+          "allTimeLow": 67.81,
+          "assetPriceType": "fungible",
+          "circulatingSupply": 19975290,
+          "id": "bip122:000000000019d6689c085ae165831e93/slip44:0",
+          "lastUpdated": 1776106420000,
+          "marketCap": 1836592437357,
+          "price": 106763,
+          "pricePercentChange14d": 4.795747124043681,
+          "pricePercentChange1d": 1.6980683447716627,
+          "pricePercentChange1h": -0.09840133404969334,
+          "pricePercentChange1y": -1.0484081200296924,
+          "pricePercentChange200d": -14.088182161660676,
+          "pricePercentChange30d": 2.1388997840239408,
+          "pricePercentChange7d": -1.6285705945180806,
+          "totalVolume": 45216146754,
+          "usdPrice": 106763
+        },
         "eip155:1/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:1337/slip44:1": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:42161/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         },
         "eip155:59144/slip44:60": {
           "assetPriceType": "fungible",
           "id": "ethereum",
-          "price": 2047.51,
-          "usdPrice": 2047.51
+          "price": 1700,
+          "usdPrice": 1700
         }
       },
       "customAssets": {},
@@ -371,11 +396,18 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {}
+        "networks": {},
+        "eventsConfig": {
+          "schemaVersion": "0",
+          "version": "0",
+          "timestamp": 0,
+          "events": {}
+        }
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
-      "version": null
+      "version": "0"
     },
     "CurrencyController": {
       "currencyRates": {
@@ -1182,6 +1214,13 @@
           "perpsFeeDiscount": null,
           "subscriptionId": null
         },
+        "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K": {
+          "account": "stellar:pubnet:GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K",
+          "lastFreshOptInStatusCheck": 1780567256841,
+          "lastPerpsDiscountRateFetched": null,
+          "perpsFeeDiscount": null,
+          "subscriptionId": null
+        },
         "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3": {
           "account": "tron:728126428:TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3",
           "lastFreshOptInStatusCheck": 1780567256841,
@@ -1289,6 +1328,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 229
+    "version": 232
   }
 }
