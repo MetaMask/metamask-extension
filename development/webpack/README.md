@@ -1,6 +1,6 @@
 # MetaMask Development Build Tool
 
-This tool is used to build the MetaMask extension for development purposes. It is not (yet) intended for production builds.
+This tool builds the MetaMask extension for development and production.
 
 ## Usage
 
@@ -17,6 +17,21 @@ yarn webpack
 ```
 
 This will create a `dist/chrome` directory containing the built extension. See usage for more options.
+
+### Protected production builds
+
+Development runs the TypeScript source directly with Node. Production compiles the
+same source to CommonJS for the existing LavaMoat runner:
+
+```bash
+yarn webpack:tsc
+yarn webpack:lavamoat:build
+```
+
+Stock TypeScript compilation emits CommonJS into `development/.webpack`, preserving
+the source directory structure and rewriting relative `.ts` imports to `.js`.
+Imports use LavaMoat's injected `require` in the compiled build. Build paths come
+from the project root, so tooling can also be launched from another directory.
 
 ### Dev server
 
@@ -167,7 +182,7 @@ yarn test:unit:webpack
 
 This will run the test suite for the build tool. These tests are also run as part of the MetaMask test suite in CI.
 
-To output an HTML, JSON, and text coverage reports, run the following command:
+To output HTML, JSON, and text coverage reports, run:
 
 ```bash
 yarn test:unit:webpack:coverage
@@ -185,7 +200,7 @@ When checking coverage its is sometimes good to check if your coverage is intent
 test coverage on a single test file. This can be done by running the following command:
 
 ```bash
-yarn nyc --reporter=html tsx --test development/webpack/test/your-test-file.test.ts
+yarn c8 --reporter=html node --test development/webpack/test/your-test-file.test.ts
 ```
 
 ### Performance

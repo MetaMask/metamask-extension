@@ -1,30 +1,37 @@
+import { createRequire, syncBuiltinESMExports } from 'node:module';
+import { execFileSync } from 'node:child_process';
 import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
-import { sources, type Compilation } from 'webpack';
+import webpackApi from 'webpack';
+import type { Compilation } from 'webpack';
 import {
   BUNDLE_SIZE_DEBUG_FILE,
   BUNDLE_SIZE_SUMMARY_FILE,
   type BundleSizeSummary,
-} from '../utils/plugins/ManifestPlugin/stats';
-import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
-import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip';
-import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
+} from '../utils/plugins/ManifestPlugin/stats.ts';
+import { ManifestPlugin } from '../utils/plugins/ManifestPlugin/index.ts';
+import { createBrowserZipBuilder } from '../utils/plugins/ManifestPlugin/zip.ts';
+import type { ZipOptions } from '../utils/plugins/ManifestPlugin/types.ts';
 import {
   DEFAULT_ZIP_MTIME,
   getDefaultZipMtime,
   isValidZipMtime,
-} from '../utils/plugins/ManifestPlugin/zip-mtime';
-import { Manifest } from '../utils/helpers';
+} from '../utils/plugins/ManifestPlugin/zip-mtime.ts';
+import { type Manifest } from '../utils/helpers.ts';
 import {
   CHROME_MANIFEST_KEY_NON_PRODUCTION,
   CHROME_MANIFEST_KEY_RELEASE_CANDIDATE,
   ENVIRONMENTS,
-} from '../utils/constants';
-import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
-import { getLatestCommit } from '../utils/git';
-import { generateCases, type Combination, mockWebpack } from './helpers';
+} from '../utils/constants.ts';
+import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers.ts';
+import { getLatestCommit } from '../utils/git.ts';
+import { generateCases, type Combination, mockWebpack } from './helpers.ts';
+
+const nodeRequire = createRequire(import.meta.url);
+
+const { sources } = webpackApi;
 
 const { RawSource } = sources;
 
@@ -128,8 +135,11 @@ describe('ManifestPlugin', () => {
         webAccessibleResources,
         zip,
       } = testCase;
-      const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
-      const baseManifest = require(
+      const context = join(
+        import.meta.dirname,
+        `fixtures/ManifestPlugin/${fixture}`,
+      );
+      const baseManifest = nodeRequire(
         join(context, `manifest/v${manifestVersion}`, '_base.json'),
       );
       const expectedAssets = getExpectedAssets(zip, browsers, files);
@@ -292,7 +302,10 @@ describe('ManifestPlugin', () => {
         files.map(() => null),
         'hidden-source-map',
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compiler.context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -344,7 +357,10 @@ describe('ManifestPlugin', () => {
         files.map(({ source }) => source),
         files.map(() => null),
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compiler.context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -401,7 +417,10 @@ describe('ManifestPlugin', () => {
         files.map(() => null),
         'hidden-source-map',
       );
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compiler.context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
 
       const manifestPlugin = new ManifestPlugin({
         browsers: ['chrome', 'firefox'],
@@ -445,7 +464,10 @@ describe('ManifestPlugin', () => {
 
     it('sets build_id in the emitted manifest when setBuildId is enabled', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
-      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      compiler.context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/empty',
+      );
       compilation.fullHash = 'test-full-hash';
 
       const manifestPlugin = new ManifestPlugin({
@@ -472,7 +494,7 @@ describe('ManifestPlugin', () => {
     });
 
     const entrypointsStatsFixtureContext = join(
-      __dirname,
+      import.meta.dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
     const chromeSummaryAssetPath = BUNDLE_SIZE_SUMMARY_FILE.replaceAll(
@@ -809,42 +831,26 @@ describe('ManifestPlugin', () => {
     });
 
     it('uses a deterministic default zip mtime when the latest commit timestamp is unavailable', () => {
-      const childProcess = require('node:child_process');
-      const { mock: testMock } = require('node:test');
-      const zipMtimePath =
-        require.resolve('../utils/plugins/ManifestPlugin/zip-mtime.ts');
-      const gitPath = require.resolve('../utils/git.ts');
-      const originalZipMtimeCache = require.cache[zipMtimePath];
-      const originalGitCache = require.cache[gitPath];
-
-      try {
-        testMock.method(childProcess, 'spawnSync', () => ({
-          stdout: Buffer.alloc(0),
-        }));
-        delete require.cache[zipMtimePath];
-        delete require.cache[gitPath];
-
-        const {
-          DEFAULT_ZIP_MTIME: defaultZipMtime,
-          getDefaultZipMtime: getFreshDefaultZipMtime,
-        } = require('../utils/plugins/ManifestPlugin/zip-mtime.ts');
-
-        withSourceDateEpoch(undefined, () => {
-          assert.strictEqual(getFreshDefaultZipMtime(), defaultZipMtime);
-        });
-      } finally {
-        testMock.restoreAll();
-        if (originalZipMtimeCache) {
-          require.cache[zipMtimePath] = originalZipMtimeCache;
-        } else {
-          delete require.cache[zipMtimePath];
-        }
-        if (originalGitCache) {
-          require.cache[gitPath] = originalGitCache;
-        } else {
-          delete require.cache[gitPath];
-        }
-      }
+      // A separate process gives git's module-level cache a clean lifetime.
+      execFileSync(
+        process.execPath,
+        [
+          '--input-type=module',
+          '--eval',
+          `
+        import assert from 'node:assert/strict';
+        import childProcess from 'node:child_process';
+        import { syncBuiltinESMExports } from 'node:module';
+        childProcess.spawnSync = () => ({ stdout: Buffer.alloc(0) });
+        syncBuiltinESMExports();
+        const { DEFAULT_ZIP_MTIME, getDefaultZipMtime } = await import(
+          ${JSON.stringify(new URL('../utils/plugins/ManifestPlugin/zip-mtime.ts', import.meta.url).href)}
+        );
+        assert.equal(getDefaultZipMtime(), DEFAULT_ZIP_MTIME);
+      `,
+        ],
+        { env: { ...process.env, SOURCE_DATE_EPOCH: undefined } },
+      );
     });
 
     it('uses SOURCE_DATE_EPOCH as the default zip mtime', () => {
@@ -1014,18 +1020,25 @@ describe('ManifestPlugin', () => {
       _flags: { remoteFeatureFlags: { testFlag: true } },
     };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
-    const fs = require('node:fs');
-    const { mock } = require('node:test');
+    const fs = nodeRequire('node:fs');
+    const { mock } = nodeRequire('node:test');
 
-    afterEach(() => mock.restoreAll());
+    afterEach(() => {
+      mock.restoreAll();
+      syncBuiltinESMExports();
+    });
 
     it('adds manifest flags in development mode with path provided and empty manifest', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
-        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
+        if (
+          path ===
+          resolve(import.meta.dirname, '../../../', manifestOverridesPath)
+        ) {
           return JSON.stringify(mockFlags);
         }
         return fs.readFileSync.original(path, options);
       });
+      syncBuiltinESMExports();
       const transform = transformManifest(
         {
           env: ENVIRONMENTS.DEVELOPMENT,
@@ -1049,11 +1062,15 @@ describe('ManifestPlugin', () => {
 
     it('overwrites existing manifest properties with override values but keeps original properties', () => {
       mock.method(fs, 'readFileSync', (path: string, options: object) => {
-        if (path === resolve(__dirname, '../../../', manifestOverridesPath)) {
+        if (
+          path ===
+          resolve(import.meta.dirname, '../../../', manifestOverridesPath)
+        ) {
           return JSON.stringify(mockFlags);
         }
         return fs.readFileSync.original(path, options);
       });
+      syncBuiltinESMExports();
       const transform = transformManifest(
         {
           env: ENVIRONMENTS.DEVELOPMENT,
@@ -1086,6 +1103,7 @@ describe('ManifestPlugin', () => {
         error.code = 'ENOENT';
         throw error;
       });
+      syncBuiltinESMExports();
 
       const transform = transformManifest(
         {
@@ -1125,6 +1143,7 @@ describe('ManifestPlugin', () => {
       mock.method(fs, 'readFileSync', () => {
         throw originalError;
       });
+      syncBuiltinESMExports();
 
       const transformed = transform(emptyTestManifest, 'chrome');
       assert.deepStrictEqual(
@@ -1213,7 +1232,10 @@ describe('ManifestPlugin', () => {
   });
 
   describe('build type overrides', () => {
-    const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+    const context = join(
+      import.meta.dirname,
+      'fixtures/ManifestPlugin/build-types',
+    );
 
     it('should apply build type base manifest overrides', async () => {
       const { compiler, compilation, promise } = mockWebpack([], [], []);
@@ -1511,7 +1533,7 @@ describe('ManifestPlugin', () => {
 
   describe('entrypoints', () => {
     const entrypointsContext = join(
-      __dirname,
+      import.meta.dirname,
       'fixtures/ManifestPlugin/entrypoints',
     );
     const html = [
@@ -2031,7 +2053,10 @@ describe('ManifestPlugin', () => {
   });
 
   describe('watch mode re-read', () => {
-    const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+    const context = join(
+      import.meta.dirname,
+      'fixtures/ManifestPlugin/entrypoints',
+    );
 
     it('should not re-read manifests when modifiedFiles does not include a watched file', async () => {
       const { compiler, promise } = mockWebpack([], [], []);
@@ -2140,7 +2165,10 @@ describe('ManifestPlugin', () => {
 
   describe('file dependencies (watch mode)', () => {
     it('should add manifest files to compilation.fileDependencies', async () => {
-      const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
+      const context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/build-types',
+      );
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 
@@ -2182,7 +2210,10 @@ describe('ManifestPlugin', () => {
 
     it('should add config files to fileDependencies when they exist', async () => {
       // The entrypoints fixture has a .metamaskrc in its parent (fixtures/ManifestPlugin/)
-      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/entrypoints',
+      );
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 
@@ -2218,7 +2249,10 @@ describe('ManifestPlugin', () => {
     });
 
     it('should not add non-existent manifest files to fileDependencies', async () => {
-      const context = join(__dirname, 'fixtures/ManifestPlugin/entrypoints');
+      const context = join(
+        import.meta.dirname,
+        'fixtures/ManifestPlugin/entrypoints',
+      );
       const { compiler, compilation, promise } = mockWebpack([], [], []);
       compiler.context = context;
 

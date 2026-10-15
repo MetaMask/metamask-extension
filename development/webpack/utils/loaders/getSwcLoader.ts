@@ -1,3 +1,4 @@
+import { webpackFile } from '../../../lib/build-paths.ts';
 import type { SwcLoaderOptions } from './swcLoader';
 
 export type SwcConfig = {
@@ -23,7 +24,7 @@ export function getSwcLoader(
   type: 'es6' | 'commonjs' = 'es6',
 ) {
   return {
-    loader: require.resolve('./swcLoader'),
+    loader: webpackFile('utils/loaders/swcLoader'),
     options: {
       env: {
         targets: swcConfig.browsersListQuery,

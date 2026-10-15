@@ -13,13 +13,14 @@
  */
 
 import { access, readdir, readFile, stat } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { join, relative, resolve } from 'node:path';
 import type {
   BasicSourceMapConsumer,
   IndexedSourceMapConsumer,
 } from 'source-map';
 import { SourceMapConsumer } from 'source-map';
 import { codeFrameColumns } from '@babel/code-frame';
+import { webpackFile } from '../lib/build-paths.ts';
 
 const PLATFORMS = ['chrome', 'firefox'] as const;
 const SOURCEMAPS_DIRNAME = 'sourcemaps';
@@ -512,7 +513,10 @@ export function indicesOf(substring: string, str: string): number[] {
 }
 
 // Run when executed directly (e.g. tsx ./development/webpack/sourcemap-validator.ts)
-if (require.main === module) {
+if (
+  process.argv[1] &&
+  resolve(process.argv[1]) === webpackFile('sourcemap-validator')
+) {
   main().catch((error) => {
     console.error(error);
     process.exit(1);

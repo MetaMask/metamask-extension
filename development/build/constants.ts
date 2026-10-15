@@ -1,4 +1,4 @@
-import ENVIRONMENT from '../../shared/constants/build-environment.json';
+import ENVIRONMENT from '../../shared/constants/build-environment.json' with { type: 'json' };
 
 /**
  * The build target. This describes the overall purpose of the build.

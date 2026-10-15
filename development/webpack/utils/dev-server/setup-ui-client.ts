@@ -1,6 +1,7 @@
 import type { Compiler, RuleSetRule } from 'webpack';
 import type WebpackDevServer from 'webpack-dev-server';
-import { getClientRequest } from './websocket';
+import { webpackFile } from '../../../lib/build-paths.ts';
+import { getClientRequest } from './websocket.ts';
 
 export type UiClientRule = Pick<RuleSetRule, 'include' | 'test'>;
 
@@ -28,9 +29,12 @@ export function setupUiClient(
       ...rule,
       enforce: 'pre',
       use: {
-        loader: require.resolve('../loaders/reactRefreshLoader'),
+        loader: webpackFile('utils/loaders/reactRefreshLoader'),
         options: {
-          clientRequest: getClientRequest(devServer, 'ui-client.ts'),
+          clientRequest: getClientRequest(
+            devServer,
+            webpackFile('utils/dev-server/ui-client'),
+          ),
         },
       },
     });

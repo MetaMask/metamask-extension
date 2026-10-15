@@ -1,13 +1,13 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import type { Chunk } from 'webpack';
-import type { Args } from '../utils/cli';
+import type { Args } from '../utils/cli.ts';
 import {
   lavamoatPlugin,
   lavamoatUnsafeLayerRule,
   lavamoatBackgroundLayerRule,
   lavamoatUnsafeLayerPlugin,
-} from '../utils/plugins/LavamoatPlugin';
+} from '../utils/plugins/LavamoatPlugin/index.ts';
 
 const mockArgs = {
   test: false,
