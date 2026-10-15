@@ -1,5 +1,4 @@
-import {
-  createElement,
+import React, {
   useCallback,
   useContext,
   useEffect,
@@ -103,7 +102,7 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       hasEndedRef.current = true;
 
       await startJourneyPromiseRef.current;
-      callOnboardingTraceService('endOnboardingJourney', {
+      void callOnboardingTraceService('endOnboardingJourney', {
         lastStep: lastStepRef.current,
         ...data,
       });
@@ -119,12 +118,11 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       return;
     }
 
-    (async () => {
-      await startJourneyPromiseRef.current;
-      callOnboardingTraceService('updateOnboardingJourney', {
+    void startJourneyPromiseRef.current.then(() => {
+      void callOnboardingTraceService('updateOnboardingJourney', {
         lastStep,
       });
-    })();
+    });
   }, [pathname]);
 
   return useMemo(
@@ -140,8 +138,14 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
  * @param options0.children
  * @returns The provider element.
  */
-export function OnboardingTraceProvider({ children }: { children: ReactNode }) {
+export function OnboardingTraceProvider({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   const value = useOnboardingTraceLifecycle();
 
-  return createElement(OnboardingTraceContextProvider, { value, children });
+  return (
+    <OnboardingTraceContextProvider value={value}>
+      {children}
+    </OnboardingTraceContextProvider>
+  );
 }

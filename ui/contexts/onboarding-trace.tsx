@@ -18,10 +18,10 @@ const OnboardingTraceContext = createContext<OnboardingTraceContextValue>(
 export function OnboardingTraceContextProvider({
   value,
   children,
-}: {
+}: Readonly<{
   value: OnboardingTraceContextValue;
   children: ReactNode;
-}) {
+}>) {
   return (
     <OnboardingTraceContext.Provider value={value}>
       {children}

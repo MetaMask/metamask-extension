@@ -33,11 +33,6 @@ export type OnboardingJourneyTraceEndRequest = OnboardingJourneyTraceRequest &
   OnboardingJourneyTraceEndData;
 
 /**
- * Opaque identifier used to parent child traces to the onboarding journey.
- */
-export type OnboardingJourneyTraceId = string;
-
-/**
  * Request data used by the onboarding controller after the trusted connection
  * has supplied the browser tab ID.
  */
