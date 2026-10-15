@@ -1630,6 +1630,9 @@
   "alertPayHardwareAccountTitle": {
     "message": "Wallet not supported"
   },
+  "alertPayHardwareWithdrawRecipientMessage": {
+    "message": "Hardware wallets can't receive this token.\nChoose a different token or account."
+  },
   "alertPerpsWithdrawBalanceUnavailable": {
     "message": "Couldn't check your Perps balance. Try again."
   },
