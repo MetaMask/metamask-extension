@@ -13,7 +13,8 @@ import StepLayout, {
   type StepProps,
 } from './step-layout';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/u;
+// No leading, trailing or repeated dot in the local part.
+const EMAIL_PATTERN = /^[^\s@.]+(?:\.[^\s@.]+)*@[^\s@.]+(?:\.[^\s@.]+)+$/u;
 
 const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
   const t = useI18nContext();

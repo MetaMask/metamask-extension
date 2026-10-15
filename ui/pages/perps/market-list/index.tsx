@@ -52,6 +52,7 @@ import {
 import {
   getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
+  getIsPerpsServiceInterruptionBannerEnabled,
 } from '../../../selectors/perps/feature-flags';
 import {
   selectPerpsIsTestnet,
@@ -222,6 +223,9 @@ export const MarketListView = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
   const watchlistMarketsState = useSelector(selectPerpsWatchlistMarkets);
   const isTestnet = useSelector(selectPerpsIsTestnet);
@@ -318,6 +322,8 @@ export const MarketListView = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]:
         PERPS_EVENT_VALUE.SOURCE.WALLET_HOME_PERPS_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
       [PERPS_EVENT_PROPERTY.MARKET_CATEGORY_FILTER]: selectedFilter,
     },
   });
@@ -813,7 +819,7 @@ export const MarketListView = () => {
 
   return (
     <Box
-      className="flex h-full flex-col bg-background-default"
+      className="flex min-h-0 flex-1 flex-col bg-background-default"
       flexDirection={BoxFlexDirection.Column}
       data-testid="parent-selector-perps-market-list"
     >

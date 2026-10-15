@@ -189,15 +189,6 @@ describe('MetaMask onboarding', function () {
               '0x1': true,
             },
           })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_PRICE,
-                usdConversionRate: MOCK_ETH_PRICE,
-              },
-            },
-          })
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_PRICE),
           })

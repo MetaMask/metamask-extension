@@ -156,7 +156,7 @@ export function BottomNavBar() {
       {moneyAccountAvailability.isAvailable && (
         <NavTab
           isActive={isMoney}
-          icon={isMoney ? IconName.MusdFilled : IconName.Musd}
+          icon={IconName.Musd}
           label={t('money')}
           onClick={handleMoneyClick}
           data-testid="bottom-nav-money"
