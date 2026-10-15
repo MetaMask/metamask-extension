@@ -468,7 +468,20 @@ describe('Trace', () => {
       expect(getActiveSpanMock).not.toHaveBeenCalled();
     });
 
-    it('does not inherit from active span when rooted explicitly', () => {
+    it('uses null parentSpan when no active span and no parentContext', () => {
+      getActiveSpanMock.mockReturnValue(undefined);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+    });
+
+    it('does not inherit from the active span when root is true', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -495,31 +508,18 @@ describe('Trace', () => {
 
       // startNewTrace resets the propagation-context trace id, so the op roots
       // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      // withIsolationScope alone would clone the same trace id — severing the
+      // parent span but leaving the op in the mega-trace (grouped by trace id).
       expect(startNewTraceMock).toHaveBeenCalledTimes(1);
       expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
     });
 
     it('does not start a new trace when root is not set', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
-
       trace({ name: NAME_MOCK }, () => true);
 
       expect(startNewTraceMock).not.toHaveBeenCalled();
       expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('uses null parentSpan when no active span and no parentContext', () => {
-      getActiveSpanMock.mockReturnValue(undefined);
-
-      trace({ name: NAME_MOCK }, () => true);
-
-      expect(startSpanMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          parentSpan: null,
-        }),
-        expect.any(Function),
-      );
     });
   });
 
