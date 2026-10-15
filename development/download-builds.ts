@@ -16,6 +16,7 @@ import {
 } from '../.github/scripts/shared/resolve-build-run.mts';
 import {
   getBuildLinks,
+  type BuildBrowser,
   type BuildType,
 } from './metamaskbot-build-announce/build-links';
 
@@ -47,6 +48,22 @@ type DownloadedBuilds = BuildProvenance & {
   version: string;
   destination: string;
   downloads: Partial<Record<Browser, string>>;
+};
+
+type BrowserDownloadPlan = {
+  browsers: Browser[];
+  links: BuildBrowser;
+  destination: string;
+  version: string;
+};
+
+type DownloadPolling = {
+  fetchBuild: typeof fetch;
+  sleep: (milliseconds: number) => Promise<void>;
+  now: () => number;
+  log: (message: string) => void;
+  deadline: number;
+  pollSeconds: number;
 };
 
 const artifacts: Record<BuildType, Record<Browser, string>> = {
@@ -87,26 +104,7 @@ export async function downloadBuilds(
   const repository = `${options.owner}/${options.repository}`;
   const browsers: Browser[] =
     options.browser === 'all' ? ['chrome', 'firefox'] : [options.browser];
-  let { ref } = options;
-  if (!ref) {
-    const query = new URLSearchParams({
-      branch: options.branch,
-      // eslint-disable-next-line @typescript-eslint/naming-convention -- GitHub API parameter.
-      per_page: '1',
-    });
-    const runs = (await api(
-      `repos/${repository}/actions/workflows/${encodeURIComponent(options.workflowId)}/runs?${query}`,
-    )) as {
-      // eslint-disable-next-line @typescript-eslint/naming-convention -- GitHub API response fields.
-      workflow_runs: { head_sha: string }[];
-    };
-    ref = runs.workflow_runs[0]?.head_sha;
-    if (!ref) {
-      throw new Error(
-        `No ${options.workflowId} runs found on branch '${options.branch}'`,
-      );
-    }
-  }
+  const ref = await resolveRequestedRef(options, api);
   const deadline = now() + waitSeconds * 1000;
   const provenance = await resolveBuildRun(
     {
@@ -120,54 +118,122 @@ export async function downloadBuilds(
     },
     { api, sleep, now, log },
   );
-  const pkg = (await api(
-    `repos/${repository}/contents/package.json?ref=${provenance.requestedCommit}`,
+  const version = await readRequestedBuildVersion(
+    repository,
+    provenance.requestedCommit,
+    api,
+  );
+  const hostUrl = `${options.awsCloudfrontUrl.replace(/\/$/u, '')}/${options.repository}/${provenance.runId}`;
+  const links = getBuildLinks({ hostUrl, version }).webpack[options.buildType];
+  const destination = resolve(options.destination);
+  const downloads = await downloadSelectedBrowserBuilds(
+    { browsers, links, destination, version },
+    { fetchBuild, sleep, now, log, deadline, pollSeconds },
+  );
+  const metadata = { ...provenance, version, destination, downloads };
+  if (options.metadata) {
+    await writeFile(options.metadata, `${JSON.stringify(metadata, null, 2)}\n`);
+  }
+  return metadata;
+}
+
+async function resolveRequestedRef(
+  options: DownloadBuildsOptions,
+  api: GitHubApi,
+): Promise<string> {
+  if (options.ref) {
+    return options.ref;
+  }
+  const repository = `${options.owner}/${options.repository}`;
+  const query = new URLSearchParams({
+    branch: options.branch,
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- GitHub API parameter.
+    per_page: '1',
+  });
+  const runs = (await api(
+    `repos/${repository}/actions/workflows/${encodeURIComponent(options.workflowId)}/runs?${query}`,
+  )) as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- GitHub API response fields.
+    workflow_runs: { head_sha: string }[];
+  };
+  const latestRunCommit = runs.workflow_runs[0]?.head_sha;
+  if (!latestRunCommit) {
+    throw new Error(
+      `No ${options.workflowId} runs found on branch '${options.branch}'`,
+    );
+  }
+  return latestRunCommit;
+}
+
+async function readRequestedBuildVersion(
+  repository: string,
+  requestedCommit: string,
+  api: GitHubApi,
+): Promise<string> {
+  const packageFile = (await api(
+    `repos/${repository}/contents/package.json?ref=${requestedCommit}`,
   )) as {
     content: string;
     encoding: string;
   };
-  if (pkg.encoding !== 'base64') {
+  if (packageFile.encoding !== 'base64') {
     throw new Error('Unexpected package.json response encoding');
   }
   const { version } = JSON.parse(
-    Buffer.from(pkg.content, 'base64').toString('utf8'),
+    Buffer.from(packageFile.content, 'base64').toString('utf8'),
   ) as { version: string };
   if (!/^\d+\.\d+\.\d+$/u.test(version)) {
     throw new Error('Invalid build version in requested commit');
   }
-  const hostUrl = `${options.awsCloudfrontUrl.replace(/\/$/u, '')}/${options.repository}/${provenance.runId}`;
-  const links = getBuildLinks({ hostUrl, version }).webpack[options.buildType];
-  const destination = resolve(options.destination);
+  return version;
+}
+
+async function downloadSelectedBrowserBuilds(
+  plan: BrowserDownloadPlan,
+  polling: DownloadPolling,
+): Promise<DownloadedBuilds['downloads']> {
+  const { browsers, links, destination, version } = plan;
   const downloads: Partial<Record<Browser, string>> = {};
   await mkdir(destination, { recursive: true });
   for (const browser of browsers) {
     const url = links[browser];
-    log(`Downloading ${browser} from ${url}`);
-    let response: Response;
-    for (;;) {
-      response = await fetchBuild(url);
-      const remaining = deadline - now();
-      if (response.status !== 404 || remaining <= 0) {
-        break;
-      }
+    polling.log(`Downloading ${browser} from ${url}`);
+    const buffer = await downloadPublishedBuildZip(url, polling);
+    await installBrowserBuild(buffer, destination, browser, version);
+    downloads[browser] = url;
+  }
+  return downloads;
+}
+
+async function downloadPublishedBuildZip(
+  url: string,
+  polling: DownloadPolling,
+): Promise<Buffer> {
+  const response = await waitForBuildZipPublication(url, polling);
+  return Buffer.from(await response.arrayBuffer());
+}
+
+async function waitForBuildZipPublication(
+  url: string,
+  polling: DownloadPolling,
+): Promise<Response> {
+  const { fetchBuild, deadline, now, log, sleep, pollSeconds } = polling;
+  for (;;) {
+    const response = await fetchBuild(url);
+    const remaining = deadline - now();
+    if (response.status === 404 && remaining > 0) {
       await response.body?.cancel();
       log('Build artifact is ready; waiting for its CloudFront ZIP upload.');
       await sleep(Math.min(pollSeconds * 1000, remaining));
+      continue;
     }
     if (!response.ok) {
       throw new Error(
         `Build download failed: HTTP ${response.status} from ${url}`,
       );
     }
-    const buffer = Buffer.from(await response.arrayBuffer());
-    await installBrowserBuild(buffer, destination, browser, version);
-    downloads[browser] = url;
+    return response;
   }
-  const metadata = { ...provenance, version, destination, downloads };
-  if (options.metadata) {
-    await writeFile(options.metadata, `${JSON.stringify(metadata, null, 2)}\n`);
-  }
-  return metadata;
 }
 
 /**

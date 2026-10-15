@@ -33,6 +33,10 @@ type Dependencies = {
   log: (message: string) => void;
 };
 
+type BuildAvailability =
+  | { status: 'ready'; provenance: BuildProvenance }
+  | { status: 'pending'; message: string };
+
 /**
  * Resolves an immutable source commit to CI's canonical donor run and waits for its artifacts.
  * Used by yarn download-builds and the fixture workflow, independent of download transport.
@@ -45,8 +49,36 @@ export async function resolveBuildRun(
   options: ResolveOptions,
   dependencies: Dependencies,
 ): Promise<BuildProvenance> {
+  validateResolveOptions(options);
+  const { repository, ref, artifactNames, waitSeconds } = options;
+  const { api, now } = dependencies;
+  const deadline = now() + waitSeconds * 1000;
+  const repositoryPath = `repos/${repository}`;
+  const { sha: requestedCommit } = (await api(
+    `${repositoryPath}/commits/${encodeURIComponent(ref)}`,
+  )) as { sha: string };
+
+  for (;;) {
+    const availability = await checkCanonicalBuildAvailability(
+      repositoryPath,
+      requestedCommit,
+      artifactNames,
+      api,
+    );
+    if (availability.status === 'ready') {
+      return availability.provenance;
+    }
+    await waitForNextBuildCheck(
+      availability.message,
+      deadline,
+      options,
+      dependencies,
+    );
+  }
+}
+
+function validateResolveOptions(options: ResolveOptions): void {
   const { repository, ref, artifactNames, waitSeconds, pollSeconds } = options;
-  const { api, sleep, now, log } = dependencies;
   if (
     !/^[\w.-]+\/[\w.-]+$/u.test(repository) ||
     !ref ||
@@ -60,105 +92,183 @@ export async function resolveBuildRun(
       'Invalid repository, ref, artifacts, or wait/poll interval',
     );
   }
-  const deadline = now() + waitSeconds * 1000;
-  const repositoryPath = `repos/${repository}`;
-  const { sha: requestedCommit } = (await api(
-    `${repositoryPath}/commits/${encodeURIComponent(ref)}`,
-  )) as { sha: string };
+}
 
-  async function listPages<Value>(
-    endpoint: string,
-    key: string,
-  ): Promise<Value[]> {
-    const items: Value[] = [];
-    for (let page = 1; ; page += 1) {
-      const response = (await api(
-        `${endpoint}${endpoint.includes('?') ? '&' : '?'}per_page=100&page=${page}`,
-      )) as Record<string, Value[]>;
-      const batch = response[key];
-      items.push(...batch);
-      if (batch.length < 100) {
-        return items;
-      }
-    }
+async function checkCanonicalBuildAvailability(
+  repositoryPath: string,
+  requestedCommit: string,
+  artifactNames: string[],
+  api: GitHubApi,
+): Promise<BuildAvailability> {
+  const runId = await findCanonicalBuildRunId(
+    repositoryPath,
+    requestedCommit,
+    api,
+  );
+  if (runId === undefined) {
+    return {
+      status: 'pending',
+      message: `No 'builds-from-run' status on ${requestedCommit} yet. The Main workflow must publish it.`,
+    };
   }
 
-  for (;;) {
-    const statuses = await listPages<BuildStatus>(
-      `${repositoryPath}/commits/${requestedCommit}/status`,
-      'statuses',
-    );
-    const pointer = statuses.find(
-      (status) => status.context === 'builds-from-run',
-    );
-    let pending = `No 'builds-from-run' status on ${requestedCommit} yet. The Main workflow must publish it.`;
-    if (pointer) {
-      const runId = Number(pointer.description);
-      if (
-        !/^\d+$/u.test(pointer.description ?? '') ||
-        !Number.isSafeInteger(runId) ||
-        runId <= 0
-      ) {
-        throw new Error(
-          `Invalid 'builds-from-run' status on ${requestedCommit}`,
-        );
-      }
-      const runPath = `${repositoryPath}/actions/runs/${runId}`;
-      const run = (await api(runPath)) as BuildRun;
-      const artifacts = await listPages<Artifact>(
-        `${runPath}/artifacts`,
-        'artifacts',
-      );
-      const missing = artifactNames.filter(
-        (name) =>
-          !artifacts.some((item) => item.name === name && !item.expired),
-      );
-      if (!missing.length) {
-        return {
-          requestedCommit,
-          buildCommit: run.head_sha,
-          runId,
-          runUrl: run.html_url,
-          reusedBuild: run.head_sha !== requestedCommit,
-        };
-      }
-      if (
-        artifacts.some((item) => missing.includes(item.name) && item.expired)
-      ) {
-        throw new Error(
-          `Build artifact expired on ${run.html_url}. Re-run the build.`,
-        );
-      }
-      const jobs = await listPages<BuildJob>(`${runPath}/jobs`, 'jobs');
-      const failed = jobs.find(
-        (job) =>
-          missing.some(
-            (name) => job.name === name || job.name.endsWith(`/ ${name}`),
-          ) &&
-          job.status === 'completed' &&
-          job.conclusion !== 'success',
-      );
-      if (failed) {
-        throw new Error(
-          `${failed.name} ${failed.conclusion} on ${run.html_url}`,
-        );
-      }
-      if (run.status === 'completed') {
-        throw new Error(
-          `${missing.join(', ')} missing from completed run ${run.html_url}. Re-run the build.`,
-        );
-      }
-      pending = `${missing.join(', ')} not uploaded yet: ${run.html_url}`;
-    }
-    const remaining = deadline - now();
-    if (remaining <= 0) {
-      throw new Error(
-        `${pending} Wait limit reached (${waitSeconds}s). Retry when available.`,
-      );
-    }
-    log(`${pending} Waiting up to ${Math.ceil(remaining / 1000)}s more.`);
-    await sleep(Math.min(pollSeconds * 1000, remaining));
+  const runPath = `${repositoryPath}/actions/runs/${runId}`;
+  const run = (await api(runPath)) as BuildRun;
+  const artifacts = await listGitHubPages<Artifact>(
+    api,
+    `${runPath}/artifacts`,
+    'artifacts',
+  );
+  const missingArtifactNames = findMissingArtifactNames(
+    artifactNames,
+    artifacts,
+  );
+  if (!missingArtifactNames.length) {
+    return {
+      status: 'ready',
+      provenance: {
+        requestedCommit,
+        buildCommit: run.head_sha,
+        runId,
+        runUrl: run.html_url,
+        reusedBuild: run.head_sha !== requestedCommit,
+      },
+    };
   }
+
+  assertArtifactsHaveNotExpired(missingArtifactNames, artifacts, run.html_url);
+  await assertBuildCanStillProduceArtifacts(
+    runPath,
+    run,
+    missingArtifactNames,
+    api,
+  );
+  return {
+    status: 'pending',
+    message: `${missingArtifactNames.join(', ')} not uploaded yet: ${run.html_url}`,
+  };
+}
+
+async function findCanonicalBuildRunId(
+  repositoryPath: string,
+  requestedCommit: string,
+  api: GitHubApi,
+): Promise<number | undefined> {
+  const statuses = await listGitHubPages<BuildStatus>(
+    api,
+    `${repositoryPath}/commits/${requestedCommit}/status`,
+    'statuses',
+  );
+  const pointer = statuses.find(
+    (status) => status.context === 'builds-from-run',
+  );
+  if (!pointer) {
+    return undefined;
+  }
+  const runId = Number(pointer.description);
+  if (
+    !/^\d+$/u.test(pointer.description ?? '') ||
+    !Number.isSafeInteger(runId) ||
+    runId <= 0
+  ) {
+    throw new Error(`Invalid 'builds-from-run' status on ${requestedCommit}`);
+  }
+  return runId;
+}
+
+function findMissingArtifactNames(
+  requiredNames: string[],
+  artifacts: Artifact[],
+): string[] {
+  const availableNames = new Set(
+    artifacts
+      .filter((artifact) => !artifact.expired)
+      .map((artifact) => artifact.name),
+  );
+  return requiredNames.filter((name) => !availableNames.has(name));
+}
+
+function assertArtifactsHaveNotExpired(
+  missingNames: string[],
+  artifacts: Artifact[],
+  runUrl: string,
+): void {
+  if (
+    artifacts.some(
+      (artifact) => missingNames.includes(artifact.name) && artifact.expired,
+    )
+  ) {
+    throw new Error(`Build artifact expired on ${runUrl}. Re-run the build.`);
+  }
+}
+
+async function assertBuildCanStillProduceArtifacts(
+  runPath: string,
+  run: BuildRun,
+  missingArtifactNames: string[],
+  api: GitHubApi,
+): Promise<void> {
+  const jobs = await listGitHubPages<BuildJob>(api, `${runPath}/jobs`, 'jobs');
+  const failedJob = jobs.find((job) =>
+    isFailedArtifactJob(job, missingArtifactNames),
+  );
+  if (failedJob) {
+    throw new Error(
+      `${failedJob.name} ${failedJob.conclusion} on ${run.html_url}`,
+    );
+  }
+  if (run.status === 'completed') {
+    throw new Error(
+      `${missingArtifactNames.join(', ')} missing from completed run ${run.html_url}. Re-run the build.`,
+    );
+  }
+}
+
+function isFailedArtifactJob(job: BuildJob, artifactNames: string[]): boolean {
+  const producesMissingArtifact = artifactNames.some(
+    (name) => job.name === name || job.name.endsWith(`/ ${name}`),
+  );
+  return (
+    producesMissingArtifact &&
+    job.status === 'completed' &&
+    job.conclusion !== 'success'
+  );
+}
+
+async function listGitHubPages<Value>(
+  api: GitHubApi,
+  endpoint: string,
+  key: string,
+): Promise<Value[]> {
+  const items: Value[] = [];
+  for (let page = 1; ; page += 1) {
+    const response = (await api(
+      `${endpoint}${endpoint.includes('?') ? '&' : '?'}per_page=100&page=${page}`,
+    )) as Record<string, Value[]>;
+    const batch = response[key];
+    items.push(...batch);
+    if (batch.length < 100) {
+      return items;
+    }
+  }
+}
+
+async function waitForNextBuildCheck(
+  pendingMessage: string,
+  deadline: number,
+  options: ResolveOptions,
+  dependencies: Dependencies,
+): Promise<void> {
+  const { waitSeconds, pollSeconds } = options;
+  const { now, log, sleep } = dependencies;
+  const remaining = deadline - now();
+  if (remaining <= 0) {
+    throw new Error(
+      `${pendingMessage} Wait limit reached (${waitSeconds}s). Retry when available.`,
+    );
+  }
+  log(`${pendingMessage} Waiting up to ${Math.ceil(remaining / 1000)}s more.`);
+  await sleep(Math.min(pollSeconds * 1000, remaining));
 }
 
 /** Resolves the fixture workflow's artifact owner; downloading stays with its gh step. */
