@@ -385,7 +385,6 @@ const AssetPage = ({
       rwaData,
     ],
   );
-  const moneyCtaToken = { ...tokenWithFiatAmount, tokenFiatAmount };
   const privacyMode = useSelector(getPrivacyMode);
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
@@ -430,9 +429,8 @@ const AssetPage = ({
     [type, isEvm, asset, isMusdFlowEnabled],
   );
   const isYourBalanceSectionShown = !isMusdAssetPage && !showSpendableBalance;
-  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(moneyCtaToken, {
+  const moneyBalanceCta = useMoneyAssetOverviewBalanceCta(tokenWithFiatAmount, {
     enabled: isYourBalanceSectionShown,
-    showFiat,
   });
   const moneyBalanceDisplay = moneyBalanceCta.display;
 
@@ -536,7 +534,10 @@ const AssetPage = ({
             />
           ) : null}
         </MaybePerpsViewStreamBoundary>
-        <MoneyEarnBanner key={`${chainId}:${address}`} token={moneyCtaToken} />
+        <MoneyEarnBanner
+          key={`${chainId}:${address}`}
+          token={tokenWithFiatAmount}
+        />
         <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
           {showTronResources && (
             <Box>

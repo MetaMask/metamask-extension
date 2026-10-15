@@ -1,9 +1,5 @@
 import BigNumber from 'bignumber.js';
-import {
-  DUST_THRESHOLD,
-  moneyFormatUsd,
-  moneyFormatUsdWithoutSymbol,
-} from './format';
+import { DUST_THRESHOLD, moneyFormatUsd } from './format';
 
 describe('moneyFormatUsd', () => {
   // Vectors derived from mobile's `moneyFormatUsd`
@@ -61,16 +57,5 @@ describe('moneyFormatUsd', () => {
 
   it('exposes the dust threshold as one cent', () => {
     expect(DUST_THRESHOLD).toBe(0.01);
-  });
-});
-
-describe('moneyFormatUsdWithoutSymbol', () => {
-  // @ts-expect-error This is missing from the Mocha type definitions
-  it.each([
-    ['1234.5', '1,234.50'],
-    ['0.005', '0.00'],
-    ['0.0123', '0.01'],
-  ])('formats %s as %s', (input: string, expected: string) => {
-    expect(moneyFormatUsdWithoutSymbol(new BigNumber(input))).toBe(expected);
   });
 });
