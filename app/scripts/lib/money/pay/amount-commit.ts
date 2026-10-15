@@ -175,10 +175,7 @@ export function commitTransactionPayUpdates(
     return false;
   }
 
-  if (
-    isPayCommitUnchanged(transaction, updates, requiredAssetAmount) ||
-    isEmptyBatchAmountWrite(transaction, updates)
-  ) {
+  if (isPayCommitUnchanged(transaction, updates, requiredAssetAmount)) {
     return false;
   }
 
@@ -243,27 +240,6 @@ function isPayCommitUnchanged(
     ({ nestedTransactionIndex, data }) =>
       transaction.nestedTransactions?.[nestedTransactionIndex]?.data === data,
   );
-}
-
-/**
- * A required-amount write with no nested calls, while parent batch data is
- * still empty, would make Pay quote a placeholder. Any Pay transaction skips
- * that write and commits the amount together with the encoded calls.
- *
- * @param transaction - Transaction currently stored.
- * @param updates - Nested calldata updates keyed by index.
- * @returns Whether this commit would only set an amount on an empty batch.
- */
-function isEmptyBatchAmountWrite(
-  transaction: TransactionMeta,
-  updates: GetAmountDataResponse['updates'],
-): boolean {
-  if (updates.length > 0) {
-    return false;
-  }
-
-  const parentData = transaction.txParams?.data;
-  return typeof parentData !== 'string' || parentData === '0x';
 }
 
 /**

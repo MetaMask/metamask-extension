@@ -18,7 +18,6 @@ import {
 } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
 import { useDispatch } from '../../../../store/hooks';
-import { beginPayAmountEncode, endPayAmountEncode } from './pay-amount-encode';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
@@ -40,20 +39,6 @@ type PendingAmountUpdate = {
   transactionId: string;
   fromAmountRaw: string;
 };
-
-function holdConfirmWhileEncoding(
-  transactionId: string,
-  pending: Promise<unknown>,
-): void {
-  const generation = beginPayAmountEncode(transactionId);
-  // `.finally()` rethrows, so the chain has to end in `.catch`. The caller
-  // logs the original rejection.
-  pending
-    .finally(() => {
-      endPayAmountEncode(transactionId, generation);
-    })
-    .catch(() => undefined);
-}
 
 export function useUpdateTokenAmount() {
   const dispatch = useDispatch();
@@ -112,15 +97,14 @@ export function useUpdateTokenAmount() {
       // calls and writes requiredAssets so TransactionPayController can
       // fetch quotes. Without this, typed amounts stay in local UI state.
       if (moneyAccountFlow === MoneyAccountFlow.Deposit) {
-        const pending = updateMoneyAccountDepositAmount(
-          transactionId,
-          amountHuman,
+        updateMoneyAccountDepositAmount(transactionId, amountHuman).catch(
+          (error) => {
+            console.error(
+              'Failed to update money account deposit amount',
+              error,
+            );
+          },
         );
-        // The previous quote stays executable until this write lands.
-        holdConfirmWhileEncoding(transactionId, pending);
-        pending.catch((error) => {
-          console.error('Failed to update money account deposit amount', error);
-        });
         return;
       }
 
@@ -128,13 +112,11 @@ export function useUpdateTokenAmount() {
       // background commit re-encodes both calls (vault rate + recipient).
       // Confirm patches the returned hexes onto the approval clone.
       if (moneyAccountFlow === MoneyAccountFlow.Withdraw) {
-        const pending = updateMoneyAccountWithdrawAmount(
+        updateMoneyAccountWithdrawAmount(
           transactionId,
           amountHuman,
           accountOverride,
-        );
-        holdConfirmWhileEncoding(transactionId, pending);
-        pending.catch((error) => {
+        ).catch((error) => {
           console.error(
             'Failed to update money account withdrawal amount',
             error,

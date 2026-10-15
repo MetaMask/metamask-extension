@@ -17,7 +17,6 @@ import {
   useTransactionPayPrimaryRequiredToken,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPayAmountEncodePending } from '../../../hooks/transactions/pay-amount-encode';
 import { useLastMoneyAccountWithdrawAmount } from '../../../hooks/transactions/useLastMoneyAccountWithdrawAmount';
 import { getConfirmationTransactionType } from '../../../utils/confirm';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
@@ -50,7 +49,6 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayQuotePending();
-  const isPayAmountEncoding = useIsPayAmountEncodePending(transactionId);
   const hasExecutableQuote = useTransactionPayHasExecutableQuote();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const isMoneyAccountWithdraw =
@@ -101,19 +99,13 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
         : defaultButtonText;
 
     const isDisabled =
-      isAwaitingRequiredToken ||
-      hasBlockingAlerts ||
-      !hasAmount ||
-      !isPayReady ||
-      isPayAmountEncoding;
+      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount || !isPayReady;
 
     // Direct withdraws do not fetch quotes and skip initial gas estimate.
     // Stuck pay/gasless loading flags would keep Send spinning after the
-    // amount is already typed. An in-flight amount encode still has the
-    // previous quote, so confirm waits until that calldata is written.
+    // amount is already typed.
     const isLoading =
       isAmountPending ||
-      isPayAmountEncoding ||
       isAwaitingRequiredToken ||
       (isGaslessLoading && !isMoneyAccountWithdraw) ||
       (isPayLoading && !(isMoneyAccountWithdraw && !primaryRequiredToken));
@@ -122,7 +114,6 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
   }, [
     blockingAlerts,
     isAmountPending,
-    isPayAmountEncoding,
     isGaslessLoading,
     isMoneyAccountWithdraw,
     isPayReady,

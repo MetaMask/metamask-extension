@@ -25,7 +25,6 @@ import { useIsHardwareWalletAccount } from '../../../../hooks/useIsHardwareWalle
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useShieldConfirm } from './useShieldConfirm';
 import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
-import { isPayAmountEncodePending } from './pay-amount-encode';
 import { useMoneyAccountWithdrawConfirm } from './useMoneyAccountWithdrawConfirm';
 import { useTransactionPayingAccount } from './useTransactionPayingAccount';
 
@@ -89,13 +88,8 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async (): Promise<boolean> => {
     // The field can already show the new amount while publish would still
     // execute the previous quote. The footer blocks the click; this covers
-    // any other confirm path. Calldata encoding has the same gap: the
-    // previous quote stays executable until the encoded calls are written.
-    if (
-      isAmountPending ||
-      (transactionMeta?.id !== undefined &&
-        isPayAmountEncodePending(transactionMeta.id))
-    ) {
+    // any other confirm path.
+    if (isAmountPending) {
       return false;
     }
 

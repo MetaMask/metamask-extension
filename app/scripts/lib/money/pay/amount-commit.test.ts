@@ -116,30 +116,6 @@ describe('commitTransactionPayUpdates', () => {
     expect(updateTransaction).not.toHaveBeenCalled();
   });
 
-  it('does not write a required amount onto an empty batch', () => {
-    const transaction = createTransaction();
-    const updateTransaction = jest.fn();
-    const { messenger } = createMoneyPayMessengerMock({
-      handlers: {
-        'TransactionController:getState': () => ({
-          transactions: [transaction],
-        }),
-        'TransactionController:updateTransaction': updateTransaction,
-      },
-    });
-
-    const didWrite = commitTransactionPayUpdates(
-      messenger,
-      TRANSACTION_ID,
-      [],
-      'test note',
-      '0xf4240',
-    );
-
-    expect(didWrite).toBe(false);
-    expect(updateTransaction).not.toHaveBeenCalled();
-  });
-
   it('writes a required amount when the parent batch already has calldata', () => {
     const transaction = createTransaction();
     transaction.txParams.data = '0xparent' as Hex;
