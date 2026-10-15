@@ -456,6 +456,7 @@ describe('Token Cell', () => {
           {...(props as TokenCellProps)}
           moneyCta={{
             label: 'Get 6% APY',
+            isLoading: false,
             shouldShow: jest.fn().mockReturnValue(true),
             onClick: jest.fn(),
           }}
