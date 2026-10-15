@@ -63,13 +63,13 @@ const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
 >;
 
 function getActivityRowTitleText(title: React.ReactElement) {
-  const children = title.props.children;
+  const { children } = title.props;
   const span = Array.isArray(children) ? children[0] : children;
   return span.props.children;
 }
 
 function getActivityRowTitleClassName(title: React.ReactElement) {
-  const children = title.props.children;
+  const { children } = title.props;
   const span = Array.isArray(children) ? children[0] : children;
   return span.props.className;
 }

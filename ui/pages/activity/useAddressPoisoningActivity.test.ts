@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { selectAddressPoisoningKnownRecipients } from '../../selectors/address-poisoning-known-recipients';
 import {
   getFromAddress,
   useAddressPoisoningActivity,
 } from './useAddressPoisoningActivity';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 
 jest.mock('@tanstack/react-query', () => {
   const actual = jest.requireActual('@tanstack/react-query');
