@@ -1,3 +1,4 @@
+require('tsx/cjs');
 const path = require('path');
 
 module.exports = function (api) {
@@ -17,6 +18,7 @@ module.exports = function (api) {
           `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*(?:\\.(?:test|spec|stories|container)\\.|__mocks__${slash}|\\.d\\.[jt]s$)).*\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
+        exclude: /\.storybook/u,
         plugins: [['babel-plugin-react-compiler', { target: '18' }]],
       },
     ],
@@ -24,7 +26,7 @@ module.exports = function (api) {
       [
         path.resolve(
           __dirname,
-          'development/build/transforms/import-meta-url.js',
+          'development/build/transforms/import-meta-url.ts',
         ),
         {
           pattern:
@@ -36,7 +38,7 @@ module.exports = function (api) {
       [
         path.resolve(
           __dirname,
-          'development/build/transforms/import-meta-url.js',
+          'development/build/transforms/import-meta-url.ts',
         ),
         {
           pattern: /^@rive-app\/canvas\/(rive)\.wasm$/u,

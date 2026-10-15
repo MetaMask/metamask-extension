@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { lt as semverLt, parse as semverParse } from 'semver';
 import { useAppSelector } from '../store/hooks';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
@@ -20,9 +20,6 @@ export function useMultichainAccountsIntroModal(
   isUnlocked: boolean,
   location: { pathname: string },
 ) {
-  const [showMultichainIntroModal, setShowMultichainIntroModal] =
-    useState(false);
-
   const hasShownMultichainAccountsIntroModal = useAppSelector(
     (state) => state.metamask.hasShownMultichainAccountsIntroModal,
   );
@@ -32,41 +29,40 @@ export function useMultichainAccountsIntroModal(
     (state) => state.metamask.previousAppVersion,
   );
 
-  useEffect(() => {
-    // Only show modal on the main wallet/home route
-    const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
+  // Only show modal on the main wallet/home route
+  const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    const parsedLastVersion = semverParse(lastUpdatedFromVersion);
-    // Strip prerelease versions as they just indicate build types.
-    const strippedLastVersion = parsedLastVersion
-      ? `${parsedLastVersion.major}.${parsedLastVersion.minor}.${parsedLastVersion.patch}`
-      : null;
+  const parsedLastVersion = semverParse(lastUpdatedFromVersion);
+  // Strip prerelease versions as they just indicate build types.
+  const strippedLastVersion = parsedLastVersion
+    ? `${parsedLastVersion.major}.${parsedLastVersion.minor}.${parsedLastVersion.patch}`
+    : null;
 
-    // Check if this is an upgrade from a version lower than BIP-44 introduction version
-    const isUpgradeFromLowerThanBip44Version = Boolean(
-      strippedLastVersion &&
-      semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
-    );
+  // Check if this is an upgrade from a version lower than BIP-44 introduction version
+  const isUpgradeFromLowerThanBip44Version = Boolean(
+    strippedLastVersion &&
+    semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+  );
 
-    // Show modal only for upgrades from versions < BIP-44 introduction version
-    const shouldShowModal =
-      isUnlocked &&
-      !hasShownMultichainAccountsIntroModal &&
-      lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
-      isUpgradeFromLowerThanBip44Version &&
-      isMainWalletArea;
+  // Show modal only for upgrades from versions < BIP-44 introduction version
+  const shouldShowModal =
+    isUnlocked &&
+    !hasShownMultichainAccountsIntroModal &&
+    lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
+    isUpgradeFromLowerThanBip44Version &&
+    isMainWalletArea;
 
-    setShowMultichainIntroModal(shouldShowModal);
-  }, [
-    isUnlocked,
-    hasShownMultichainAccountsIntroModal,
-    lastUpdatedAt,
-    lastUpdatedFromVersion,
-    location.pathname,
-  ]);
+  const [override, setOverride] = useState<boolean | null>(null);
+  const [prevShouldShowModal, setPrevShouldShowModal] =
+    useState(shouldShowModal);
+
+  if (shouldShowModal !== prevShouldShowModal) {
+    setPrevShouldShowModal(shouldShowModal);
+    setOverride(null);
+  }
 
   return {
-    showMultichainIntroModal,
-    setShowMultichainIntroModal,
+    showMultichainIntroModal: override ?? shouldShowModal,
+    setShowMultichainIntroModal: setOverride,
   };
 }

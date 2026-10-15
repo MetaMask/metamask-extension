@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Hex, Json } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -18,21 +18,23 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
+import { usePaySourceAccountMetrics } from './usePaySourceAccountMetrics';
 
 export function useTransactionPayMetrics() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { payToken } = useTransactionPayToken();
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
-  const automaticPayToken = useRef<TransactionPaymentToken>();
-  const hasLoadedQuoteRef = useRef(false);
+  const [hasLoadedQuote, setHasLoadedQuote] = useState(false);
   const quotes = useTransactionPayQuotes();
   const totals = useTransactionPayTotals();
   const tokens = useTransactionPayAvailableTokens();
+  const { presented: sourcePresented, selected: sourceSelected } =
+    usePaySourceAccountMetrics(Boolean(payToken));
 
   const hasQuotes = Boolean(quotes?.length);
-  if (hasQuotes && !hasLoadedQuoteRef.current) {
-    hasLoadedQuoteRef.current = true;
+  if (hasQuotes && !hasLoadedQuote) {
+    setHasLoadedQuote(true);
   }
 
   const availableTokens = useMemo(
@@ -44,8 +46,11 @@ export function useTransactionPayMetrics() {
   const { chainId } = transactionMeta ?? {};
   const sendingValue = Number(primaryRequiredToken?.amountHuman ?? '0');
 
-  if (!automaticPayToken.current && payToken) {
-    automaticPayToken.current = payToken;
+  const [presentedPayToken, setPresentedPayToken] = useState<
+    TransactionPaymentToken | undefined
+  >();
+  if (!presentedPayToken && payToken) {
+    setPresentedPayToken(payToken);
   }
 
   const nativeTokenAddress = getNativeTokenAddress(chainId as Hex);
@@ -65,10 +70,12 @@ export function useTransactionPayMetrics() {
       props.mm_pay_chain_selected = payToken.chainId;
       props.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
       props.mm_pay_transaction_step = props.mm_pay_transaction_step_total;
-      props.mm_pay_token_presented = automaticPayToken.current?.symbol ?? null;
-      props.mm_pay_chain_presented = automaticPayToken.current?.chainId ?? null;
+      props.mm_pay_token_presented = presentedPayToken?.symbol ?? null;
+      props.mm_pay_chain_presented = presentedPayToken?.chainId ?? null;
       props.mm_pay_payment_token_list_size = availableTokens.length;
-      props.mm_pay_quote_loaded = hasQuotes || hasLoadedQuoteRef.current;
+      props.mm_pay_quote_loaded = hasQuotes || hasLoadedQuote;
+      props.mm_pay_account_type_source_presented = sourcePresented ?? null;
+      props.mm_pay_account_type_source_selected = sourceSelected;
 
       if (
         hasTransactionType(transactionMeta, [
@@ -111,6 +118,10 @@ export function useTransactionPayMetrics() {
     totals,
     transactionMeta,
     hasQuotes,
+    hasLoadedQuote,
+    presentedPayToken,
+    sourcePresented,
+    sourceSelected,
   ]);
 
   useEffect(() => {

@@ -107,6 +107,28 @@ describe('useHasInsufficientBalance', () => {
     expect(result.isNativeBalanceKnown).toBe(true);
   });
 
+  it('uses submitted gas limit instead of simulation gas for balance check', () => {
+    const transaction = {
+      ...TRANSACTION_MOCK,
+      gasUsed: '0xe429',
+      gasLimitNoBuffer: '0xf807',
+      txParams: {
+        ...TRANSACTION_MOCK.txParams,
+        value: '0x0',
+        gas: '0x1740a',
+        maxFeePerGas: '0x83fdd112',
+      },
+    } as TransactionMeta;
+
+    const result = runHook({
+      balance: 167208508861377,
+      currentConfirmation: transaction,
+      transaction,
+    });
+
+    expect(result.hasInsufficientBalance).toBe(true);
+  });
+
   it('sums nested transaction values correctly', () => {
     const BATCH_TRANSACTION_MOCK = {
       ...TRANSACTION_MOCK,

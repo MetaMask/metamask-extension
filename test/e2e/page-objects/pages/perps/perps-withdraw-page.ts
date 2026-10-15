@@ -25,6 +25,10 @@ export class PerpsWithdrawPage {
 
   private readonly headerTitle = { testId: 'perps-withdraw-header-title' };
 
+  private readonly parentSelector = {
+    testId: 'parent-selector-perps-withdraw',
+  };
+
   private readonly submitButton = { testId: 'perps-withdraw-submit' };
 
   private readonly summaryAssetRow = { testId: 'perps-withdraw-summary-asset' };
@@ -37,10 +41,8 @@ export class PerpsWithdrawPage {
 
   private readonly summaryTimeRow = { testId: 'perps-withdraw-summary-time' };
 
-  private readonly withdrawPage = { testId: 'perps-withdraw-page' };
-
   private readonly withdrawPageChildren =
-    '[data-testid="perps-withdraw-page"] *';
+    '[data-testid="parent-selector-perps-withdraw"] *';
 
   private readonly withdrawToast = { testId: 'perps-withdraw-toast' };
 
@@ -62,7 +64,7 @@ export class PerpsWithdrawPage {
    */
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
-      this.withdrawPage,
+      this.parentSelector,
       this.headerTitle,
     ]);
   }

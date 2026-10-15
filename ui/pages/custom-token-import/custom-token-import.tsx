@@ -41,7 +41,6 @@ import {
   getAllTokens,
   selectERC20TokensByChain,
 } from '../../selectors';
-import { getIsAssetsUnifyStateEnabled } from '../../selectors/assets-unify-state/feature-flags';
 import {
   getAssetsControllerAssetPreferences,
   isAssetIdHiddenInPreferencesMap,
@@ -56,6 +55,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAnalytics } from '../../hooks/useAnalytics';
+import { toast, ToastContent } from '../../components/ui/toast/toast';
 import { useDispatch } from '../../store/hooks';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
@@ -137,9 +137,6 @@ export const CustomTokenImportPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
-  const assetsUnifyStateFeatureEnabled = useSelector(
-    getIsAssetsUnifyStateEnabled,
-  );
   const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
   // Chain-scoped token-list cache, same source the backend uses inside
   // `getTokenStandardAndDetailsByChain`. Provides a metadata fallback when
@@ -151,6 +148,13 @@ export const CustomTokenImportPage = () => {
 
   const [selectedNetwork, setSelectedNetwork] =
     useState<string>(currentChainId);
+  const [prevCurrentChainId, setPrevCurrentChainId] =
+    useState<string>(currentChainId);
+
+  if (currentChainId !== prevCurrentChainId) {
+    setPrevCurrentChainId(currentChainId);
+    setSelectedNetwork(currentChainId);
+  }
 
   const availableNetworks = useMemo<CustomTokenImportNetworkOption[]>(
     () =>
@@ -186,17 +190,12 @@ export const CustomTokenImportPage = () => {
     const tokens =
       allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [];
 
-    // When assets-unify-state is enabled, `allTokens` is derived from
-    // AssetsController state. Hiding a token only flips
-    // `assetPreferences[assetId].hidden = true`; the token stays in
+    // `allTokens` is derived from AssetsController state. Hiding a token only
+    // flips `assetPreferences[assetId].hidden = true`; the token stays in
     // `customAssets`, so it still appears in `allTokens`. Treat hidden tokens
     // as not-yet-imported so users can re-import them — `handleSubmit`
     // dispatches `importCustomAssetsBatch` with `isHidden: true`, which
     // unhides the asset rather than adding a duplicate.
-    if (!assetsUnifyStateFeatureEnabled) {
-      return tokens;
-    }
-
     return tokens.filter((token) => {
       if (!token?.address) {
         return true;
@@ -210,13 +209,7 @@ export const CustomTokenImportPage = () => {
       }
       return !isAssetIdHiddenInPreferencesMap(assetPreferences, assetId);
     });
-  }, [
-    allTokens,
-    assetPreferences,
-    assetsUnifyStateFeatureEnabled,
-    selectedAccount?.address,
-    selectedNetwork,
-  ]);
+  }, [allTokens, assetPreferences, selectedAccount?.address, selectedNetwork]);
 
   const tokenListForSelectedNetwork =
     erc20TokensByChain?.[selectedNetwork]?.data;
@@ -416,11 +409,18 @@ export const CustomTokenImportPage = () => {
     [t],
   );
 
-  useEffect(() => {
-    setSelectedNetwork(currentChainId);
-  }, [currentChainId]);
+  const prevSelectedNetworkForClearRef = useRef<string | null>(null);
 
   useEffect(() => {
+    const previousNetwork = prevSelectedNetworkForClearRef.current;
+    prevSelectedNetworkForClearRef.current = selectedNetwork;
+
+    // Skip the initial mount: the form starts empty and clearing here (especially
+    // via a microtask) races with the first address entry in tests and in fast UX.
+    if (previousNetwork === null || previousNetwork === selectedNetwork) {
+      return;
+    }
+
     // Bump the lookup token so any address lookup started on the previous
     // network can't apply its result here.
     addressLookupRef.current += 1;
@@ -511,10 +511,9 @@ export const CustomTokenImportPage = () => {
         ),
       );
 
-      // When assets-unify-state is enabled, the manage-tokens list reads from
-      // AssetsController (customAssets + assetsInfo) rather than
-      // TokensController.allTokens.
-      if (assetsUnifyStateFeatureEnabled && selectedAccount?.id) {
+      // Seed AssetsController so the manage-tokens list (customAssets +
+      // assetsInfo) stays in sync with the import.
+      if (selectedAccount?.id) {
         const assetId = toAssetId(
           address as Hex,
           selectedNetwork as CaipChainId | Hex,
@@ -548,14 +547,14 @@ export const CustomTokenImportPage = () => {
       }
 
       trackSubmitAttempt(1);
-      navigate(TOKEN_MANAGEMENT_ROUTE, {
-        state: {
-          tokenManagementToast: {
-            type: 'customTokenAdded',
-            symbol,
-          },
-        },
-      });
+      // The toaster is mounted globally, so the toast survives this navigation.
+      toast.success(
+        <ToastContent
+          title={t('newCustomTokenAdded', [symbol])}
+          dataTestId="token-management-custom-token-success-toast"
+        />,
+      );
+      navigate(TOKEN_MANAGEMENT_ROUTE);
     } catch (error) {
       trackSubmitAttempt(0);
       throw error;
@@ -565,7 +564,6 @@ export const CustomTokenImportPage = () => {
   }, [
     address,
     assetPreferences,
-    assetsUnifyStateFeatureEnabled,
     dispatch,
     isSubmitting,
     isValid,
@@ -576,6 +574,7 @@ export const CustomTokenImportPage = () => {
     selectedAccount?.id,
     selectedNetwork,
     symbol,
+    t,
     trackSubmitAttempt,
   ]);
 

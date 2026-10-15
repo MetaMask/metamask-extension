@@ -500,6 +500,41 @@ describe('Wallet Ready Page', () => {
     });
   });
 
+  describe('Side panel opened from the completion page', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(true);
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+    });
+
+    it('disables the "Manage default settings" button once the side panel is open', async () => {
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])(mockState);
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      expect(getByTestId('manage-default-settings')).not.toBeDisabled();
+
+      fireEvent.click(getByTestId('onboarding-complete-done'));
+
+      await waitFor(() => {
+        expect(getByTestId('manage-default-settings')).toBeDisabled();
+      });
+    });
+  });
+
   describe('Deferred Deep Link - Side Panel Disabled', () => {
     beforeEach(() => {
       jest.clearAllMocks();

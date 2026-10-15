@@ -8,10 +8,10 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Skeleton,
   Text,
   FontWeight,
 } from '@metamask/design-system-react';
-import Spinner from '../../../../components/ui/spinner';
 
 export type RampsPaymentMethodPillProps = {
   label: string;
@@ -26,12 +26,10 @@ export default function RampsPaymentMethodPill({
 }: RampsPaymentMethodPillProps) {
   if (isLoading) {
     return (
-      <Box
-        className="inline-flex min-h-9 min-w-[140px] items-center justify-center rounded-full bg-background-alternative px-4 py-2"
+      <Skeleton
+        className="min-h-9 min-w-[140px] rounded-full"
         data-testid="ramps-payment-method-pill-loading"
-      >
-        <Spinner className="h-4 w-4" />
-      </Box>
+      />
     );
   }
 

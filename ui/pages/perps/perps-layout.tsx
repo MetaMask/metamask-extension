@@ -3,6 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Outlet, useLocation } from 'react-router-dom';
 import { PROVIDER_CONFIG } from '@metamask/perps-controller';
 import { PerpsToastProvider } from '../../components/app/perps';
+import { PerpsServiceInterruptionBanner } from '../../components/app/perps/perps-service-interruption-banner';
 import { AccessRestrictedProvider } from '../../components/app/compliance';
 import { usePerpsViewActive } from '../../hooks/perps/stream/usePerpsViewActive';
 import { usePerpsLifecycleBreadcrumbs } from '../../hooks/perps/usePerpsLifecycleBreadcrumbs';
@@ -17,19 +18,35 @@ import { getIsPerpsTerminalBackendEnabled } from '../../selectors/perps';
 import { markPerpsUnmountInApp } from '../../helpers/perps/in-app-leave-marker';
 import { PerpsAttributionProvider } from '../../providers/perps/PerpsAttributionContext';
 import { useDispatch } from '../../store/hooks';
+import {
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
+} from '../../helpers/constants/routes';
 
 const MIN_HIDDEN_DURATION_MS = 30_000;
 
 /**
+ * Market list, market detail, and trade screens. Activity, transaction
+ * details, and withdraw stay outside this set.
+ * Market detail must use a trailing slash so `/perps/market-list` does not match.
+ * @param pathname
+ */
+export function isPerpsOutageBannerRoute(pathname: string): boolean {
+  return (
+    pathname === PERPS_MARKET_LIST_ROUTE ||
+    pathname.startsWith(`${PERPS_MARKET_DETAIL_ROUTE}/`) ||
+    pathname.startsWith(`${PERPS_ORDER_ENTRY_ROUTE}/`)
+  );
+}
+
+/**
  * Layout wrapper for all Perps pages.
  *
- * This component is lazy-loaded via mmLazy in routes so that
- * the Perps dependency chain (PerpsStreamManager, etc.) is excluded from
- * the common bundle and only loaded when a user first navigates to a Perps route.
- *
- * It is the single point that gates background stream emission: mounting
- * signals the background to start forwarding WebSocket data to this connection,
- * and unmounting signals it to stop.
+ * The route UI stays lazy-loaded via mmLazy. The data-only stream manager
+ * also serves the wallet-root preloader, independently of this layout.
+ * Mounting owns foreground detail streams; wallet-level market/account/price
+ * preload emissions continue when this layout unmounts.
  */
 type PerpsControllerCacheSnapshot = {
   activeProvider?: string;
@@ -174,6 +191,9 @@ export default function PerpsLayout() {
     <PerpsAttributionProvider locationSearch={search}>
       <AccessRestrictedProvider>
         <PerpsToastProvider>
+          {isPerpsOutageBannerRoute(pathname) ? (
+            <PerpsServiceInterruptionBanner />
+          ) : null}
           <Outlet />
         </PerpsToastProvider>
       </AccessRestrictedProvider>

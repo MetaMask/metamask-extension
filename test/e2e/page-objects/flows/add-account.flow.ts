@@ -1,6 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
-import AccountListPage from '../pages/account-list-page';
+import AccountListPage from '../pages/accounts/list-page';
 
 /**
  * Opens the account menu, adds a new multichain account, verifies it is
@@ -10,18 +10,21 @@ import AccountListPage from '../pages/account-list-page';
  * @param options.driver - The webdriver instance.
  * @param options.createdAccountLabel - Expected label of the newly created account. Defaults to 'Account 2'.
  * @param options.switchToAccount - Account label to switch to after creation.
+ * @param options.expectedBalance - Balance expected on the homepage before opening the account menu. Defaults to '25'.
  */
 export const addAccount = async ({
   driver,
   createdAccountLabel = 'Account 2',
   switchToAccount,
+  expectedBalance = '25',
 }: {
   driver: Driver;
   createdAccountLabel?: string;
   switchToAccount?: string;
+  expectedBalance?: string;
 }): Promise<void> => {
   const homepage = new HomePage(driver);
-  await homepage.checkExpectedBalanceIsDisplayed();
+  await homepage.checkExpectedBalanceIsDisplayed(expectedBalance);
   await homepage.headerNavbar.openAccountMenu();
 
   const accountListPage = new AccountListPage(driver);
@@ -77,6 +80,7 @@ export const addMultipleAccounts = async ({
 
 /**
  * Opens the account menu and imports an account from a private key.
+ * After a successful import, the wallet is on home with the imported account selected.
  *
  * @param driver - The WebDriver instance.
  * @param privateKey - The private key to import.
@@ -95,5 +99,6 @@ export async function importPrivateKeyAccount(
   const accountListPage = new AccountListPage(driver);
   await accountListPage.checkPageIsLoaded(options.accountListTimeout);
   await accountListPage.addNewImportedAccount(privateKey);
-  await accountListPage.closeMultichainAccountsPage();
+  await homepage.checkPageIsLoaded();
+  await homepage.dismissAccountImportedToast();
 }

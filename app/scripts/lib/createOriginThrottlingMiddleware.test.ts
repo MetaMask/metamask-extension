@@ -3,8 +3,8 @@ import { JsonRpcResponse } from '@metamask/utils';
 import type { Json } from '@metamask/utils';
 import createOriginThrottlingMiddleware, {
   SPAM_FILTER_ACTIVATED_ERROR,
-  ExtendedJSONRPCRequest,
 } from './createOriginThrottlingMiddleware';
+import type { OriginAwareJsonRpcRequest } from './rpc-request-utils';
 
 describe('createOriginThrottlingMiddleware', () => {
   let middleware: ReturnType<typeof createOriginThrottlingMiddleware>;
@@ -23,7 +23,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const req = {
       method: 'nonBlockableMethod',
       origin: 'testOrigin',
-    } as unknown as ExtendedJSONRPCRequest;
+    } as unknown as OriginAwareJsonRpcRequest;
     const next = jest.fn();
     const end = jest.fn();
 
@@ -37,7 +37,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const req = {
       method: 'eth_sendTransaction',
       origin: 'testOrigin',
-    } as unknown as ExtendedJSONRPCRequest;
+    } as unknown as OriginAwareJsonRpcRequest;
     const next = jest.fn();
     const end = jest.fn();
 
@@ -61,7 +61,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const req = {
       method: 'eth_sendTransaction',
       origin: 'testOrigin',
-    } as unknown as ExtendedJSONRPCRequest;
+    } as unknown as OriginAwareJsonRpcRequest;
     const nextCallback = jest.fn();
     const next = jest
       .fn()
@@ -91,7 +91,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const req = {
       method: 'eth_sendTransaction',
       origin: 'testOrigin',
-    } as unknown as ExtendedJSONRPCRequest;
+    } as unknown as OriginAwareJsonRpcRequest;
     const nextCallback = jest.fn();
     const next = jest
       .fn()
@@ -123,7 +123,7 @@ describe('createOriginThrottlingMiddleware', () => {
     const req = {
       method: 'eth_sendTransaction',
       origin: 'testOrigin',
-    } as unknown as ExtendedJSONRPCRequest;
+    } as unknown as OriginAwareJsonRpcRequest;
     const nextCallback = jest.fn();
     const next = jest
       .fn()

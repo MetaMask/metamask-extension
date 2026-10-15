@@ -39,6 +39,8 @@ class OnboardingPasswordPage {
   private readonly newPasswordInput =
     '[data-testid="create-password-new-input"]';
 
+  private readonly page = '[data-testid="parent-selector-onboarding-password"]';
+
   private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   constructor(driver: Driver) {
@@ -61,6 +63,7 @@ class OnboardingPasswordPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.page,
         this.createPasswordMessage,
         this.newPasswordInput,
         this.confirmPasswordInput,
@@ -85,7 +88,10 @@ class OnboardingPasswordPage {
   ): Promise<void> {
     console.log('Create password for wallet');
     await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(this.createPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.createPasswordButton,
+      15000,
+    );
   }
 
   /**
@@ -102,6 +108,10 @@ class OnboardingPasswordPage {
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
+  }
+
+  async isPageLoaded(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(this.page, 200);
   }
 }
 

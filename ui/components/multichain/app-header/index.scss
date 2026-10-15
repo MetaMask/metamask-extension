@@ -1,14 +1,10 @@
 @use "design-system";
 
 .multichain-app-header {
-  $height-screen-sm-max: 100%;
-  $width-screen-sm-min: 85vw;
-  $width-screen-md-min: 80vw;
-  $width-screen-lg-min: 62vw;
-
   // prevent overflow-x
   max-width: 100%;
   flex-flow: column nowrap;
+  view-transition-name: app-header;
   z-index: design-system.$header-z-index;
   min-height: var(--header-height);
 
@@ -33,46 +29,6 @@
       background: var(--color-background-default-hover);
     }
   }
-
-  &__lock-contents {
-    flex-flow: row nowrap;
-    height: var(--header-height);
-
-    @include design-system.screen-sm-max {
-      height: $height-screen-sm-max;
-    }
-
-    @include design-system.screen-sm-min {
-      width: $width-screen-sm-min;
-    }
-
-    @include design-system.screen-md-min {
-      width: $width-screen-md-min;
-    }
-
-    @include design-system.screen-lg-min {
-      width: $width-screen-lg-min;
-    }
-
-    // always display horizontal logo on locked screen
-    .app-header__metafox-logo {
-      &--icon {
-        display: none;
-      }
-
-      &--horizontal {
-        @include design-system.screen-sm-max {
-          display: block;
-          width: 60px;
-        }
-      }
-    }
-  }
-}
-
-.multichain-app-header-logo {
-  height: 75px;
-  flex: 0 0 auto;
 }
 
 .app-header__metafox-logo {
