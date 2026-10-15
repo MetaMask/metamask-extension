@@ -29,7 +29,7 @@ import {
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import { createSelector } from 'reselect';
+import { createSelector, lruMemoize } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -1343,6 +1343,10 @@ const getValidationErrorsAtTime = createParameterizedSelector(20)(
         ? false
         : getIsInOffHoursTrading(state, currentTimeInMs),
   }),
+  {
+    argsMemoize: lruMemoize,
+    argsMemoizeOptions: { maxSize: 20 },
+  },
 );
 
 /**
