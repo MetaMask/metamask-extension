@@ -98,7 +98,10 @@ import {
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
-import { isInE2eTest } from '../contexts/hardware-wallets/is-in-e2e-test';
+import {
+  isInE2eTest,
+  getIsSidePanelFeatureEnabled,
+} from '../../shared/lib/environment';
 import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
@@ -221,7 +224,7 @@ import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
-import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
+
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
@@ -1916,6 +1919,7 @@ export function updateAndApproveTx(
       return approveHardwareWalletTransaction(
         dispatch,
         txMeta,
+        dontShowLoadingIndicator,
         loadingIndicatorMessage,
         keyringType,
       );
@@ -1976,6 +1980,10 @@ async function approveTransaction(
  *
  * @param dispatch - Redux dispatch function
  * @param txMeta - The transaction metadata
+ * @param dontShowLoadingIndicator - Whether to skip showing loading indicator.
+ * Callers that render their own signing UI must pass true; the global overlay
+ * stays up until signing completes and would cover that UI (e.g. the QR code a
+ * QR hardware wallet must scan to finish signing).
  * @param loadingIndicatorMessage - Message to show during signing
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
@@ -1983,10 +1991,13 @@ async function approveTransaction(
 async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
   txMeta: TransactionMeta,
+  dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<TransactionMeta | null> {
-  dispatch(showLoadingIndication(loadingIndicatorMessage));
+  if (!dontShowLoadingIndicator) {
+    dispatch(showLoadingIndication(loadingIndicatorMessage));
+  }
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;

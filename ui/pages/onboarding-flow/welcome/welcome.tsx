@@ -238,6 +238,10 @@ export default function OnboardingWelcome() {
     bufferedTrace?.({
       name: TraceName.OnboardingNewSrpCreateWallet,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
       parentContext: onboardingParentContext?.current,
     });
 
@@ -267,6 +271,10 @@ export default function OnboardingWelcome() {
     bufferedTrace?.({
       name: TraceName.OnboardingExistingSrpImport,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountTypeForMetrics,
+      },
       parentContext: onboardingParentContext?.current,
     });
 
@@ -417,6 +425,10 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
             op: TraceOperation.OnboardingUserJourney,
+            data: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              account_type: accountTypeForSocialLoginMetrics,
+            },
             parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));

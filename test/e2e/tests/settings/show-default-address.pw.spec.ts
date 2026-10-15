@@ -7,10 +7,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { login } from '../../page-objects/flows/login.flow';
 import { closeSettings } from '../../page-objects/flows/settings.flow';
 
-const SHOW_DEFAULT_ADDRESS_FLAG = {
-  remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
-};
-
 pwTest.describe('Show default address', () => {
   pwTest(
     'displays Show default address section on General settings',
@@ -24,7 +20,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);
@@ -53,7 +48,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);
@@ -79,7 +73,6 @@ pwTest.describe('Show default address', () => {
           fixtures: new FixtureBuilderV2().build(),
           driverType: E2E_DRIVER.PLAYWRIGHT,
           title: testInfo.titlePath.join(' '),
-          manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
         },
         async ({ driver }) => {
           await login(driver);

@@ -58,6 +58,10 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
     bufferedTrace({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        perf_fix: 'trace-registry-v1',
+      },
     });
 
     // Child screens read this shared ref when starting their own traces.
@@ -82,6 +86,8 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
           outcome,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           last_step: lastStepRef.current,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          perf_fix: 'trace-registry-v1',
         },
       });
     },

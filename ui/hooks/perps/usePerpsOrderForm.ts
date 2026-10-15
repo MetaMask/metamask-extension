@@ -24,6 +24,8 @@ import type {
 } from '../../components/app/perps/order-entry/order-entry.types';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { usePerpsLiquidationPrice } from './usePerpsLiquidationPrice';
+import { usePerpsOrderFees } from './usePerpsOrderFees';
+import { getPerpsNotionalUsd } from './perps-fee-utils';
 
 function calculateFallbackLiquidationPrice(
   entryPrice: number,
@@ -159,15 +161,6 @@ export type UsePerpsOrderFormOptions = {
    */
   markPrice?: number;
   /**
-   * Combined fee rate (protocol + MetaMask builder) from usePerpsOrderFees.
-   * Includes user-specific volume-tier discounts, referral/staking discounts,
-   * HIP-3 multipliers, and MetaMask Rewards discounts.
-   *
-   * `undefined` while usePerpsOrderFees is loading or in an error state;
-   * fee estimates will show $0.00 until a real rate arrives (mobile parity).
-   */
-  feeRate?: number;
-  /**
    * One-shot limit-price prefill (e.g. from tapping a price in the order book).
    * Applied whenever a new object reference is provided, so re-selecting the
    * same price after a manual edit still re-applies it. Wrap the value in a
@@ -179,6 +172,8 @@ export type UsePerpsOrderFormOptions = {
 export type UsePerpsOrderFormReturn = {
   /** Current form state */
   formState: OrderFormState;
+  /** Fee quote for the current form's USD notional. */
+  orderFees: ReturnType<typeof usePerpsOrderFees>;
   /** Close percentage (for close mode) */
   closePercent: number;
   /** Calculated values (position size, margin, liquidation price, etc.) */
@@ -233,7 +228,6 @@ export type UsePerpsOrderFormReturn = {
  * @param options.maxLeverage - Maximum leverage for the asset, used by the local liquidation fallback
  * @param options.szDecimals - HyperLiquid size decimals (used for position-size rounding in margin calc)
  * @param options.markPrice - Oracle mark price for margin calculation (falls back to currentPrice)
- * @param options.feeRate - Dynamic fee rate from usePerpsOrderFees (falls back to static constant)
  * @param options.limitPricePrefill - One-shot limit-price prefill (fresh object per selection)
  * @param options.initialDraft
  * @returns Form state, handlers, and calculated values
@@ -254,7 +248,6 @@ export function usePerpsOrderForm({
   szDecimals,
   maxLeverage = 50,
   markPrice,
-  feeRate,
   limitPricePrefill,
 }: UsePerpsOrderFormOptions): UsePerpsOrderFormReturn {
   const displayAssetSymbol = getDisplaySymbol(asset);
@@ -586,6 +579,29 @@ export function usePerpsOrderForm({
 
   const parsedAmount =
     Number.parseFloat(formState.amount.replace(/,/gu, '')) || 0;
+  let feeNotional: number | undefined;
+  try {
+    feeNotional = getPerpsNotionalUsd(
+      mode === 'close' && existingPosition
+        ? {
+            size: existingPosition.size,
+            price: currentPrice,
+            closePercent: formState.closePercent,
+          }
+        : { usdAmount: formState.amount },
+    );
+  } catch (notionalError) {
+    if (!(notionalError instanceof RangeError)) {
+      throw notionalError;
+    }
+    // Invalid live values leave calculations unavailable until the next update.
+  }
+  const orderFees = usePerpsOrderFees({
+    symbol: asset,
+    orderType: formState.type,
+    amount: feeNotional?.toString(),
+  });
+  const { feeRate } = orderFees;
   const parsedLimitPrice = formState.limitPrice
     ? Number.parseFloat(formState.limitPrice.replace(/,/gu, ''))
     : NaN;
@@ -608,6 +624,17 @@ export function usePerpsOrderForm({
   // Calculate derived values
   const calculations = useMemo(() => {
     const displaySizeDecimals = sizeDecimals ?? szDecimals;
+
+    if (feeNotional === undefined) {
+      return {
+        positionSize: null,
+        marginRequired: null,
+        liquidationPrice: null,
+        liquidationPriceRaw: null,
+        orderValue: null,
+        estimatedFees: null,
+      };
+    }
 
     // For close mode, calculate based on close amount
     if (mode === 'close' && existingPosition) {
@@ -735,6 +762,7 @@ export function usePerpsOrderForm({
     szDecimals,
     markPrice,
     feeRate,
+    feeNotional,
     parsedAmount,
     controllerLiquidationPrice,
     maxLeverage,
@@ -802,6 +830,7 @@ export function usePerpsOrderForm({
 
   return {
     formState,
+    orderFees,
     closePercent: formState.closePercent,
     calculations,
     handleAmountChange,

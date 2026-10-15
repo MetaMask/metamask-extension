@@ -78,4 +78,36 @@ describe('useCurrencyConversions', () => {
 
     expect(result.conversionSupportedForAsset).toBeFalsy();
   });
+
+  it('conversionSupportedForAsset is false when the currency rate check is off', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        ...EVM_NATIVE_ASSET,
+        fiat: {
+          conversionRate: 2,
+        },
+      },
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook({ useCurrencyRateCheck: false });
+
+    expect(result.conversionSupportedForAsset).toBe(false);
+  });
+
+  it('conversionSupportedForAsset is true when the currency rate check is on and a rate is available', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        ...EVM_NATIVE_ASSET,
+        fiat: {
+          conversionRate: 2,
+        },
+      },
+      chainId: '0x5',
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook({ useCurrencyRateCheck: true });
+
+    expect(result.conversionSupportedForAsset).toBe(true);
+  });
 });
