@@ -5,6 +5,8 @@
     "isolatedModules": true,
     "outDir": "../.webpack",
     "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noCheck": true
