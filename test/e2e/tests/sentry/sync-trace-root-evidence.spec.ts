@@ -6,8 +6,8 @@ import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/home/header-navbar';
+import AccountListPage from '../../page-objects/pages/accounts/list-page';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
