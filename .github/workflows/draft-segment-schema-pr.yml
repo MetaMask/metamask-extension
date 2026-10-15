@@ -85,9 +85,11 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
           json="$(gh pr view -R "$GITHUB_REPOSITORY" --json isCrossRepository,state,labels "${PR_NUMBER}")"
-          echo "IS_CROSS_REPO_PR=$(printf '%s' "$json" | jq -r '.isCrossRepository')" >> "$GITHUB_OUTPUT"
-          echo "CLIENT_PR_OPEN=$(printf '%s' "$json" | jq -r 'if .state == "OPEN" then "true" else "false" end')" >> "$GITHUB_OUTPUT"
-          echo "HAS_OPT_OUT_LABEL=$(printf '%s' "$json" | jq -r 'any(.labels[]; .name == "no-schema-pr")')" >> "$GITHUB_OUTPUT"
+          {
+            echo "IS_CROSS_REPO_PR=$(printf '%s' "$json" | jq -r '.isCrossRepository')"
+            echo "CLIENT_PR_OPEN=$(printf '%s' "$json" | jq -r 'if .state == "OPEN" then "true" else "false" end')"
+            echo "HAS_OPT_OUT_LABEL=$(printf '%s' "$json" | jq -r 'any(.labels[]; .name == "no-schema-pr")')"
+          } >> "$GITHUB_OUTPUT"
   create:
     needs: is-cross-repo-pr
     # Queued when the head is in this repository, the pull request is open,
