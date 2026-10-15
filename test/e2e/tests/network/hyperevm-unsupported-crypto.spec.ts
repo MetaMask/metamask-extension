@@ -99,10 +99,7 @@ describe('HyperEVM unsupported crypto handling', function () {
 
         try {
           await driver.wait(() =>
-            spotPriceMockWasHitForAsset(
-              mockedEndpoint,
-              network.nativeAssetId,
-            ),
+            spotPriceMockWasHitForAsset(mockedEndpoint, network.nativeAssetId),
           );
         } catch (error) {
           const reason = error instanceof Error ? error.message : String(error);
