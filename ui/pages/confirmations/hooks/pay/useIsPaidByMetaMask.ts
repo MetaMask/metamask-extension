@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { TransactionType } from '@metamask/transaction-controller';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { useIsGasFeeSponsored } from '../gas/useIsGasFeeSponsored';
 import { useTransactionMetadataRequestOptional } from '../transactions/useTransactionMetadataRequest';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -28,8 +29,9 @@ const SUPPORTED_TYPES: TransactionType[] = [
 /**
  * Which Transaction Pay network fee legs are MetaMask-sponsored.
  *
- * `isGasFeeSponsored` applies to the parent (e.g. Monad money-account) tx, not
- * every Pay leg. Source gas is only sponsored on same-chain routes.
+ * Parent sponsorship (see {@link useIsGasFeeSponsored}) applies to the parent
+ * (e.g. Monad money-account) tx, not every Pay leg. Source gas is only
+ * sponsored on same-chain routes.
  *
  * @returns Sponsorship flags for source and target network fee components.
  */
@@ -37,9 +39,10 @@ export function useSponsoredNetworkFeeFlags(): SponsoredNetworkFeeFlags {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const { payToken } = useTransactionPayToken();
 
+  const { isGasFeeSponsored } = useIsGasFeeSponsored();
+
   const isSupported = hasTransactionType(transactionMeta, SUPPORTED_TYPES);
-  const isGasSponsored =
-    isSupported && Boolean(transactionMeta?.isGasFeeSponsored);
+  const isGasSponsored = isSupported && isGasFeeSponsored;
 
   const isSameChainPayRoute = Boolean(
     isGasSponsored &&
@@ -70,7 +73,7 @@ export function useIsNetworkFeePaidByMetaMask(): boolean {
 /**
  * Whether the confirmation should present fees as paid by MetaMask.
  *
- * For gas-sponsored transactions (`isGasFeeSponsored`), target-network gas
+ * For gas-sponsored transactions, target-network gas
  * estimates may still be non-zero after quoting even though the user does not
  * pay them. Same-chain source gas is also sponsored (and zeroed by the pay
  * controller); cross-chain source gas is user-paid and must remain in the

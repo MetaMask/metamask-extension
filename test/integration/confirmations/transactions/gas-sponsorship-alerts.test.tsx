@@ -47,10 +47,10 @@ jest.setTimeout(30_000);
 
 function getMonadSponsoredTransaction({
   accountAddress,
-  isGasFeeSponsored,
+  isGasFeeSponsoredAvailable,
 }: {
   accountAddress: string;
-  isGasFeeSponsored: boolean;
+  isGasFeeSponsoredAvailable: boolean;
 }) {
   const transaction = getUnapprovedContractInteractionTransaction(
     accountAddress,
@@ -62,7 +62,7 @@ function getMonadSponsoredTransaction({
     ...transaction,
     chainId: CHAIN_IDS.MONAD,
     networkClientId: MONAD_NETWORK_CLIENT_ID,
-    isGasFeeSponsored,
+    isGasFeeSponsoredAvailable,
     simulationData: {
       ...transaction.simulationData,
       callTraceErrors: ['reserve balance violation'],
@@ -72,10 +72,10 @@ function getMonadSponsoredTransaction({
 
 function getMetaMaskStateWithMonadSponsorshipTransaction({
   accountAddress,
-  isGasFeeSponsored,
+  isGasFeeSponsoredAvailable,
 }: {
   accountAddress: string;
-  isGasFeeSponsored: boolean;
+  isGasFeeSponsoredAvailable: boolean;
 }) {
   const sepoliaAccounts = mockMetaMaskState.accountsByChainId['0xaa36a7'];
 
@@ -123,7 +123,7 @@ function getMetaMaskStateWithMonadSponsorshipTransaction({
     transactions: [
       getMonadSponsoredTransaction({
         accountAddress,
-        isGasFeeSponsored,
+        isGasFeeSponsoredAvailable,
       }),
     ],
   };
@@ -176,7 +176,7 @@ describe('Gas sponsorship confirmation alerts', () => {
     await integrationTestRender({
       preloadedState: getMetaMaskStateWithMonadSponsorshipTransaction({
         accountAddress: account.address,
-        isGasFeeSponsored: false,
+        isGasFeeSponsoredAvailable: false,
       }),
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -208,7 +208,7 @@ describe('Gas sponsorship confirmation alerts', () => {
     await integrationTestRender({
       preloadedState: getMetaMaskStateWithMonadSponsorshipTransaction({
         accountAddress: account.address,
-        isGasFeeSponsored: true,
+        isGasFeeSponsoredAvailable: true,
       }),
       backgroundConnection: backgroundConnectionMocked,
     });

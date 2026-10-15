@@ -7,6 +7,7 @@ import { getUseTransactionSimulations } from '../../../../selectors';
 import { useHasInsufficientBalance } from '../useHasInsufficientBalance';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useIsGasFeeSponsored } from './useIsGasFeeSponsored';
 
 // Chains with no native may have selectedGasFeeToken inconsistent with gasFeeTokens
 function hasWrongSelectedGasFeeToken({
@@ -40,6 +41,8 @@ export function useIsGaslessLoading() {
     pending: isGaslessSupportedPending,
   } = useIsGaslessSupported();
 
+  const { isGasFeeSponsored } = useIsGasFeeSponsored();
+
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
 
   const { hasInsufficientBalance } = useHasInsufficientBalance();
@@ -50,12 +53,12 @@ export function useIsGaslessLoading() {
   const hasNoNativeTokenAvailable =
     excludeNativeTokenForFee || hasInsufficientBalance;
 
-  // Money Account batches skip the initial gas estimate and are often
-  // sponsored, so `gasFeeTokens` never arrives. Waiting on them leaves the
-  // confirm button spinning after quotes (and "Paid by MetaMask") are ready.
+  // Sponsored transactions do not need gas fee tokens. Money Account batches
+  // skip the initial gas estimate, so `gasFeeTokens` never arrives. Waiting on
+  // them leaves the confirm button spinning after quotes (and "Paid by
+  // MetaMask") are ready.
   const skipsGaslessTokenWait =
-    Boolean(transactionMeta?.isGasFeeSponsored) ||
-    Boolean(getMoneyAccountFlow(transactionMeta));
+    isGasFeeSponsored || Boolean(getMoneyAccountFlow(transactionMeta));
 
   const isGaslessLoading = Boolean(
     !skipsGaslessTokenWait &&

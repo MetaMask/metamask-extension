@@ -64,7 +64,7 @@ export const BridgeStatusControllerInit: MessengerClientInitFunction<
         return transactionController.addTransactionBatch(
           {
             ...request,
-            isGasFeeSponsored: false,
+            forceIsGasFeeSponsored: false,
             isGasFeeIncluded: false,
             disable7702: true,
           },

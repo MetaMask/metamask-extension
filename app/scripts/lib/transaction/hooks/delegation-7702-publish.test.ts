@@ -187,6 +187,7 @@ describe('Delegation 7702 Publish Hook', () => {
     );
 
     hookClass = new Delegation7702PublishHook({
+      isGasFeeSponsored: false,
       messenger,
     });
 
@@ -256,13 +257,10 @@ describe('Delegation 7702 Publish Hook', () => {
       ]);
 
       await expect(
-        hookClass.getHook()(
-          {
-            ...TRANSACTION_META_MOCK,
-            isGasFeeSponsored: true,
-          },
-          SIGNED_TX_MOCK,
-        ),
+        new Delegation7702PublishHook({
+          isGasFeeSponsored: true,
+          messenger,
+        }).getHook()(TRANSACTION_META_MOCK, SIGNED_TX_MOCK),
       ).rejects.toThrow(
         'Chain must support EIP-7702 for sponsored or gas included transaction',
       );
@@ -304,7 +302,6 @@ describe('Delegation 7702 Publish Hook', () => {
         {
           ...TRANSACTION_META_MOCK,
           type: TransactionType.revokeDelegation,
-          isGasFeeSponsored: true,
           gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
           selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
         } as unknown as TransactionMeta,
@@ -539,13 +536,10 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    await hookClass.getHook()(
-      {
-        ...TRANSACTION_META_MOCK,
-        isGasFeeSponsored: true,
-      },
-      SIGNED_TX_MOCK,
-    );
+    await new Delegation7702PublishHook({
+      isGasFeeSponsored: true,
+      messenger,
+    }).getHook()(TRANSACTION_META_MOCK, SIGNED_TX_MOCK);
 
     expect(submitRelayTransactionMock).toHaveBeenCalledTimes(1);
     expect(signDelegationControllerMock).toHaveBeenCalledTimes(1);
@@ -567,11 +561,13 @@ describe('Delegation 7702 Publish Hook', () => {
       },
     ]);
 
-    await hookClass.getHook()(
+    await new Delegation7702PublishHook({
+      isGasFeeSponsored: true,
+      messenger,
+    }).getHook()(
       {
         ...TRANSACTION_META_MOCK,
         type: TransactionType.batch,
-        isGasFeeSponsored: true,
         txParams: {
           ...TRANSACTION_META_MOCK.txParams,
           data: '0xdeadbeef',
@@ -662,7 +658,14 @@ describe('Delegation 7702 Publish Hook', () => {
   });
 
   describe('redeemer caveat', () => {
+    let sponsoredHookClass: Delegation7702PublishHook;
+
     beforeEach(() => {
+      sponsoredHookClass = new Delegation7702PublishHook({
+        isGasFeeSponsored: true,
+        messenger,
+      });
+
       isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
           chainId: TRANSACTION_META_MOCK.chainId,
@@ -679,10 +682,9 @@ describe('Delegation 7702 Publish Hook', () => {
         SENTINEL_SIGNER_2_MOCK,
       ]);
 
-      await hookClass.getHook()(
+      await sponsoredHookClass.getHook()(
         {
           ...TRANSACTION_META_MOCK,
-          isGasFeeSponsored: true,
         },
         SIGNED_TX_MOCK,
       );
@@ -707,11 +709,10 @@ describe('Delegation 7702 Publish Hook', () => {
     });
 
     it('includes the redeemer caveat for enforced simulations', async () => {
-      await hookClass.getHook()(
+      await sponsoredHookClass.getHook()(
         {
           ...TRANSACTION_META_MOCK,
           containerTypes: [TransactionContainerType.EnforcedSimulations],
-          isGasFeeSponsored: true,
         },
         SIGNED_TX_MOCK,
       );
@@ -733,10 +734,9 @@ describe('Delegation 7702 Publish Hook', () => {
       getSentinelSignersMock.mockResolvedValueOnce([]);
 
       await expect(
-        hookClass.getHook()(
+        sponsoredHookClass.getHook()(
           {
             ...TRANSACTION_META_MOCK,
-            isGasFeeSponsored: true,
           },
           SIGNED_TX_MOCK,
         ),

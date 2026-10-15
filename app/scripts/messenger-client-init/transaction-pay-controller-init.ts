@@ -15,6 +15,7 @@ import {
   getDelegationTransaction,
 } from '../lib/transaction/delegation';
 import { getBalance } from '../lib/money/pay/get-balance-callback';
+import { isGasFeeSponsored } from '../lib/transaction/gas-sponsorship';
 import {
   clearMaxSourceBalance,
   setMaxSourceBalance,
@@ -43,7 +44,8 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
   TransactionPayControllerMessenger,
   TransactionPayControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, initMessenger, persistedState } = request;
+  const { controllerMessenger, getFlatState, initMessenger, persistedState } =
+    request;
 
   const getDelegationTransactionCallback: (request: {
     transaction: TransactionMeta;
@@ -74,6 +76,21 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
         initMessenger as PaymentOverrideMessenger,
       ),
     getStrategy,
+    isGasFeeSponsored: async ({ transaction }) => ({
+      isGasFeeSponsored: await isGasFeeSponsored(
+        {
+          getFlatState,
+          keyringController: {
+            getKeyringForAccount: (address: string) =>
+              initMessenger.call(
+                'KeyringController:getKeyringForAccount',
+                address,
+              ),
+          },
+        },
+        transaction,
+      ),
+    }),
     messenger: controllerMessenger,
     state: persistedState.TransactionPayController,
   });

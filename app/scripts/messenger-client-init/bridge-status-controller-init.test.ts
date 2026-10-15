@@ -116,7 +116,7 @@ describe('BridgeStatusControllerInit', () => {
 
       await addTransactionBatchFn({
         from: '0xHardwareAccount',
-        isGasFeeSponsored: true,
+        forceIsGasFeeSponsored: true,
         isGasFeeIncluded: true,
         disable7702: false,
         networkClientId: 'test',
@@ -125,7 +125,7 @@ describe('BridgeStatusControllerInit', () => {
 
       expect(mockAddTransactionBatch).toHaveBeenCalledWith(
         expect.objectContaining({
-          isGasFeeSponsored: false,
+          forceIsGasFeeSponsored: false,
           isGasFeeIncluded: false,
           disable7702: true,
         }),
@@ -138,7 +138,7 @@ describe('BridgeStatusControllerInit', () => {
 
       await addTransactionBatchFn({
         from: '0xHDAccount',
-        isGasFeeSponsored: true,
+        forceIsGasFeeSponsored: true,
         isGasFeeIncluded: true,
         disable7702: false,
         networkClientId: 'test',
@@ -147,7 +147,7 @@ describe('BridgeStatusControllerInit', () => {
 
       expect(mockAddTransactionBatch).toHaveBeenCalledWith(
         expect.objectContaining({
-          isGasFeeSponsored: true,
+          forceIsGasFeeSponsored: true,
           isGasFeeIncluded: true,
           disable7702: false,
         }),
