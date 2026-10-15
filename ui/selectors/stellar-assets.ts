@@ -276,7 +276,7 @@ export const getSpendableForAccount = createParameterizedSelector(
   ACCOUNT_ASSET_LRU_CACHE_SIZE,
 )(
   selectAssetsBalance,
-  selectAssetsInfo,
+  getAssetsInfo,
   selectResolvedAccountIdForAsset,
   (_state: unknown, params: StellarAccountAssetParams) => params.assetId,
   (assetsBalance, assetsInfo, resolvedAccountId, assetId) => {
