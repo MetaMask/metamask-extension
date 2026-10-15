@@ -1,3 +1,4 @@
+import { it } from '@jest/globals';
 import {
   applyPerpsFallbackDiscount,
   getPerpsNotionalUsd,
@@ -33,6 +34,53 @@ describe('getPerpsNotionalUsd', () => {
   it('returns zero before an amount or trigger is entered', () => {
     expect(getPerpsNotionalUsd({ usdAmount: '' })).toBe(0);
     expect(getPerpsNotionalUsd({ size: 2, price: ['', ''] })).toBe(0);
+  });
+  it.each([
+    '',
+    '   ',
+    '.',
+    'invalid',
+    '2 ETH',
+    'Infinity',
+    'NaN',
+    NaN,
+    Infinity,
+  ])('reports malformed asset size %p', (size) => {
+    expect(() => getPerpsNotionalUsd({ size, price: 2000 })).toThrow(
+      'Invalid Perps notional input',
+    );
+  });
+
+  it.each(['', '   ', '.', 'invalid', '2 USD', 'Infinity', NaN, Infinity])(
+    'reports malformed live position value %p',
+    (usdAmount) => {
+      expect(() =>
+        getPerpsNotionalUsd({ usdAmount, allowEmpty: false }),
+      ).toThrow(RangeError);
+    },
+  );
+
+  it('preserves valid zero sizes and live values', () => {
+    expect(getPerpsNotionalUsd({ size: '0', price: 2000 })).toBe(0);
+    expect(getPerpsNotionalUsd({ usdAmount: 0, allowEmpty: false })).toBe(0);
+  });
+
+  it('permits incomplete editable amounts and trigger prices', () => {
+    expect(getPerpsNotionalUsd({ usdAmount: '  ' })).toBe(0);
+    expect(getPerpsNotionalUsd({ usdAmount: '.' })).toBe(0);
+    expect(getPerpsNotionalUsd({ size: 2, price: ['.', '40000'] })).toBe(80000);
+  });
+
+  it('rejects malformed amounts and prices rather than accepting numeric prefixes', () => {
+    expect(() => getPerpsNotionalUsd({ usdAmount: '10 USD' })).toThrow(
+      RangeError,
+    );
+    expect(() => getPerpsNotionalUsd({ size: 2, price: '2000 USD' })).toThrow(
+      RangeError,
+    );
+    expect(() =>
+      getPerpsNotionalUsd({ size: 2, price: [2000, Infinity] }),
+    ).toThrow(RangeError);
   });
 });
 
