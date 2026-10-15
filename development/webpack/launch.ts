@@ -55,7 +55,7 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   const env = { NODE_OPTIONS: '', ...process.env, PPID: `${process.pid}` };
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
-  const maxOldSpaceMB = Math.trunc((totalmem() * 0.75) / (1 << 20));
+  const maxOldSpaceMB = ~~((totalmem() * 0.75) / (1 << 20));
   // `--max-semi-space-size=128` reduces garbage collection pauses; 128MB provided max benefit in perf testing.
   const nodeOptions = [
     `--max-old-space-size=${maxOldSpaceMB}`,
