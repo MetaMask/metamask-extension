@@ -38,11 +38,13 @@ import OnboardingFlow from './onboarding-flow';
 
 const mockTrackEvent = jest.fn();
 const mockStartJourney = jest.fn();
+const mockEndJourney = jest.fn();
 
-jest.mock('./hooks/useOnboardingTrace', () => ({
+jest.mock('../../contexts/onboarding-trace', () => ({
+  ...jest.requireActual('../../contexts/onboarding-trace'),
   useOnboardingTrace: () => ({
     startJourney: mockStartJourney,
-    endJourney: jest.fn(),
+    endJourney: mockEndJourney,
   }),
 }));
 
@@ -470,7 +472,10 @@ describe('Onboarding Flow', () => {
 
       submitUnlock(getByTestId);
 
-      await waitFor(() => expect(unlockAndGetSeedPhrase).toHaveBeenCalled());
+      await waitFor(() => {
+        expect(unlockAndGetSeedPhrase).toHaveBeenCalled();
+        expect(mockEndJourney).toHaveBeenCalledWith('completed');
+      });
     });
 
     it('keeps the loading overlay visible until social import sidepanel rehydration completes', async () => {

@@ -1,9 +1,19 @@
-import { useCallback, useContext, useEffect, useRef } from 'react';
+import {
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  type ReactNode,
+} from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+  OnboardingTraceContextProvider,
+  type OnboardingTraceContextValue,
+  type OnboardingTraceOutcome,
+} from '../../../contexts/onboarding-trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
-
-export type OnboardingTraceOutcome = 'completed' | 'abandoned';
 
 /**
  * Converts an onboarding pathname into a stable, query-free step identifier.
@@ -23,7 +33,7 @@ export function getOnboardingTraceStep(pathname: string): string {
  * explicit because not every mount of the onboarding container necessarily
  * represents the beginning of a user journey.
  */
-export function useOnboardingTrace() {
+function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const { pathname } = useLocation();
   const {
     bufferedTrace,
@@ -31,6 +41,7 @@ export function useOnboardingTrace() {
     onboardingParentContext: onboardingParentContextRef,
   } = useContext(MetaMetricsContext);
   const lastStepRef = useRef(getOnboardingTraceStep(pathname));
+  const hasStartedRef = useRef(false);
   const hasEndedRef = useRef(false);
 
   useEffect(() => {
@@ -38,6 +49,11 @@ export function useOnboardingTrace() {
   }, [pathname]);
 
   const startJourney = useCallback(() => {
+    if (hasStartedRef.current) {
+      return;
+    }
+
+    hasStartedRef.current = true;
     bufferedTrace({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
@@ -72,4 +88,17 @@ export function useOnboardingTrace() {
   );
 
   return { startJourney, endJourney };
+}
+
+/**
+ * Provides one shared onboarding trace lifecycle to all onboarding screens.
+ *
+ * @param options0
+ * @param options0.children
+ * @returns The provider element.
+ */
+export function OnboardingTraceProvider({ children }: { children: ReactNode }) {
+  const value = useOnboardingTraceLifecycle();
+
+  return createElement(OnboardingTraceContextProvider, { value, children });
 }

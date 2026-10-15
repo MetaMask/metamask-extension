@@ -628,11 +628,6 @@
       "count": 1
     }
   },
-  "ui/pages/onboarding-flow/onboarding-flow.tsx": {
-    "react-hooks/immutability": {
-      "count": 1
-    }
-  },
   "ui/pages/onboarding-flow/welcome/welcome.tsx": {
     "react-hooks/preserve-manual-memoization": {
       "count": 3

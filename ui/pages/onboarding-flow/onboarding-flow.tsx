@@ -83,6 +83,7 @@ import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { useDispatch } from '../../store/hooks';
+import { useOnboardingTrace } from '../../contexts/onboarding-trace';
 import { ONBOARDING_UNLOCK_ROUTE_CAPABILITIES } from './unlock-messenger';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
@@ -105,7 +106,7 @@ import { PASSKEY_SETUP_ROUTE_CAPABILITIES } from './setup-passkey/messenger';
 import { REVEAL_RECOVERY_PHRASE_ROUTE_CAPABILITIES } from './recovery-phrase/messenger';
 import PasskeyPrfMigration from './passkey-prf-migration/passkey-prf-migration';
 import { PASSKEY_PRF_MIGRATION_ROUTE_CAPABILITIES } from './passkey-prf-migration/messenger';
-import { useOnboardingTrace } from './hooks/useOnboardingTrace';
+import { OnboardingTraceProvider } from './hooks/useOnboardingTrace';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -121,7 +122,7 @@ const ExperimentalArea = mmLazy(
 const toRelativePath = (path: string) =>
   toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
-export default function OnboardingFlow() {
+const OnboardingFlowContent = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
@@ -143,7 +144,7 @@ export default function OnboardingFlow() {
   const { isFromReminder, isFromSettingsSecurity } =
     useOnboardingSearchParams();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startJourney } = useOnboardingTrace();
+  const { startJourney, endJourney } = useOnboardingTrace();
 
   const trackLegacyEventForAction = useCallback(
     async (
@@ -317,6 +318,8 @@ export default function OnboardingFlow() {
       if (retrievedSecretRecoveryPhrase) {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
+
+      endJourney('completed');
     } catch (error) {
       log.error('OnboardingFlow: failed to unlock wallet', error);
       throw error;
@@ -576,6 +579,14 @@ export default function OnboardingFlow() {
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>
+  );
+};
+
+export default function OnboardingFlow() {
+  return (
+    <OnboardingTraceProvider>
+      <OnboardingFlowContent />
+    </OnboardingTraceProvider>
   );
 }
 

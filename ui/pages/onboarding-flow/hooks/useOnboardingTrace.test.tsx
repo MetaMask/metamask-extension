@@ -5,10 +5,11 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../contexts/metametrics';
+import { useOnboardingTrace } from '../../../contexts/onboarding-trace';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   getOnboardingTraceStep,
-  useOnboardingTrace,
+  OnboardingTraceProvider,
 } from './useOnboardingTrace';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -52,7 +53,7 @@ describe('useOnboardingTrace', () => {
           }}
         >
           <MetaMetricsContext.Provider value={contextValue}>
-            {children}
+            <OnboardingTraceProvider>{children}</OnboardingTraceProvider>
           </MetaMetricsContext.Provider>
         </MemoryRouter>
       );
@@ -64,7 +65,7 @@ describe('useOnboardingTrace', () => {
     onboardingParentContext.current = null;
   });
 
-  it('starts the overall journey when requested', () => {
+  it('starts the overall journey only once when requested repeatedly', () => {
     const { result } = renderHook(() => useOnboardingTrace(), {
       wrapper: createWrapper(),
     });
@@ -73,12 +74,16 @@ describe('useOnboardingTrace', () => {
 
     act(() => {
       result.current.startJourney();
+      result.current.startJourney();
     });
 
     expect(bufferedTrace).toHaveBeenCalledTimes(1);
     expect(bufferedTrace).toHaveBeenCalledWith({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
+    });
+    expect(onboardingParentContext.current).toEqual({
+      _name: TraceName.OnboardingJourneyOverall,
     });
   });
 
@@ -126,7 +131,9 @@ describe('useOnboardingTrace', () => {
         }}
       >
         <MetaMetricsContext.Provider value={contextValue}>
-          <TestComponent />
+          <OnboardingTraceProvider>
+            <TestComponent />
+          </OnboardingTraceProvider>
         </MetaMetricsContext.Provider>
       </MemoryRouter>,
     );

@@ -25,6 +25,13 @@ import { setBackgroundConnection } from '../../../store/background-connection';
 import CreatePassword from './create-password';
 
 const mockTrackEvent = jest.fn();
+const mockEndJourney = jest.fn();
+
+jest.mock('../../../contexts/onboarding-trace', () => ({
+  useOnboardingTrace: () => ({
+    endJourney: mockEndJourney,
+  }),
+}));
 
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
@@ -740,6 +747,7 @@ describe('Onboarding Create Password', () => {
           },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith('completed');
     });
 
     it('tracks Wallet Imported when import succeeds', async () => {
@@ -1152,6 +1160,7 @@ describe('Onboarding Create Password', () => {
           { replace: true },
         );
       });
+      expect(mockEndJourney).toHaveBeenCalledWith('completed');
     });
   });
 
