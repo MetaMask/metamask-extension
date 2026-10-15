@@ -5552,7 +5552,7 @@
     "message": "Continue"
   },
   "mfaEmailEntryDescription": {
-    "message": "We'll send a verification code to this address."
+    "message": "We’ll use your email to verify your account and send you occasional account updates."
   },
   "mfaEmailEntryInvalid": {
     "message": "Enter a valid email address."
@@ -5561,7 +5561,10 @@
     "message": "Email address"
   },
   "mfaEmailEntryTitle": {
-    "message": "Enter your email"
+    "message": "Verify your email"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Your verification code expired, get a new code."
   },
   "mfaErrorCooldown": {
     "message": "Too many requests. Wait a moment and try again."
@@ -5576,7 +5579,7 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "That code is incorrect. Try again."
+    "message": "That code isn’t right. Check it and try again."
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
@@ -5612,10 +5615,19 @@
     "message": "Get started"
   },
   "mfaIntroDescription": {
-    "message": "We’ll set up a few ways to confirm it’s you. You’ll use them to approve important actions, and if you lose access to one, you can use another."
+    "message": "We’ll set up a few ways to confirm it’s you. If you lose access to one method, you can use another."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Get a 6-digit code sent to your inbox"
   },
   "mfaIntroListTitle": {
     "message": "You’ll set up"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Confirm with your device or password manager"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Saved to this device"
   },
   "mfaIntroTitle": {
     "message": "Set up 2-step verification"
@@ -5627,11 +5639,17 @@
     "message": "Passkey"
   },
   "mfaOtpDescription": {
-    "message": "We sent a 6-digit code to your email."
+    "message": "We sent a 6-digit code to your email. Enter it below to verify your email."
   },
   "mfaOtpDescriptionWithEmail": {
-    "message": "We sent a 6-digit code to $1.",
+    "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Get new code"
+  },
+  "mfaOtpPaste": {
+    "message": "Paste"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -5650,23 +5668,23 @@
   "mfaOtpSending": {
     "message": "Sending code..."
   },
-  "mfaOtpSubmit": {
-    "message": "Verify"
-  },
   "mfaOtpTitle": {
-    "message": "Enter the code"
-  },
-  "mfaPasskeyContinue": {
-    "message": "Continue"
-  },
-  "mfaPasskeyDescription": {
-    "message": "Your device will ask you to confirm."
+    "message": "Enter your verification code"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
   },
   "mfaPasskeyTitleVerify": {
     "message": "Use your passkey"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Get a verification code"
+  },
+  "mfaPickerOr": {
+    "message": "or"
+  },
+  "mfaPickerPasskey": {
+    "message": "Verify with Passkey"
   },
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
@@ -5687,13 +5705,7 @@
     "message": "Set up"
   },
   "mfaSettingsTitle": {
-    "message": "Verification methods"
-  },
-  "mfaSuccessDone": {
-    "message": "Done"
-  },
-  "mfaSuccessTitle": {
-    "message": "You're all set"
+    "message": "2-step verification"
   },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
