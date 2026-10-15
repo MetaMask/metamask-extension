@@ -1,16 +1,16 @@
 import HomePage from './homepage';
 
 /**
- * Home NFTs tab: grid, empty state, and import-NFT modal.
+ * Home NFTs tab: grid and empty state.
  *
  * Screen: `#/` NFTs tab (`account-overview__nfts-tab`), reached via
  * `HomePage.goToNftTab()`.
- * Owns: NFT grid items and names, empty state, opening the import modal
- * (network / address / token id), and import/remove success toasts.
- * Boundaries: homepage chrome and other tabs stay on `HomePage`. Full NFT
- * detail screens are outside this object — `clickNFTIconOnActivityList` only
- * opens one.
- * Related: `HomePage` (`goToNftTab`).
+ * Owns: NFT grid items and names, empty state, opening the import NFT page,
+ * and import/remove success toasts.
+ * Boundaries: homepage chrome and other tabs stay on `HomePage`. The import
+ * form is `ImportNftPage`. Full NFT detail screens are outside this object —
+ * `clickNFTIconOnActivityList` only opens one.
+ * Related: `HomePage` (`goToNftTab`), `ImportNftPage`.
  *
  * @see ui/components/app/assets/nfts/nfts-tab/nfts-tab.tsx
  */
@@ -18,27 +18,7 @@ class NftsTab extends HomePage {
   private readonly actionBarButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
-  private readonly confirmImportNftButton =
-    '[data-testid="import-nfts-modal-import-button"]';
-
-  private readonly importNftAddressInput = '#address';
-
   private readonly importNftButton = '[data-testid="import-nfts__button"]';
-
-  private readonly importNftErrorMessageByText = (errorMessage: string) => ({
-    tag: 'p',
-    text: errorMessage,
-  });
-
-  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
-
-  private readonly importNftNetworkDropdown =
-    '[data-testid="test-import-tokens-drop-down-custom-import"]';
-
-  private readonly importNftNetworkName =
-    '[data-testid="network-list-item-0x539"]';
-
-  private readonly importNftTokenIdInput = '#token-id';
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
@@ -145,34 +125,12 @@ class NftsTab extends HomePage {
   }
 
   /**
-   * Imports an NFT by entering the NFT contract address and token ID
-   *
-   * @param nftContractAddress - The address of the NFT contract to import
-   * @param id - The ID of the NFT to import
-   * @param expectedErrorMessage - Expected error message if the import should fail
+   * Opens the Import NFT page from the NFTs tab overflow menu.
    */
-  async importNft(
-    nftContractAddress: string,
-    id: string,
-    expectedErrorMessage?: string,
-  ) {
+  async openImportNft(): Promise<void> {
+    console.log('Open the Import NFT page from the NFTs tab');
     await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
-    await this.driver.waitForSelector(this.importNftModalTitle);
-    await this.driver.clickElement(this.importNftNetworkDropdown);
-    await this.driver.clickElement(this.importNftNetworkName);
-    await this.driver.fill(this.importNftAddressInput, nftContractAddress);
-    await this.driver.fill(this.importNftTokenIdInput, id);
-    if (expectedErrorMessage) {
-      await this.driver.clickElement(this.confirmImportNftButton);
-      await this.driver.waitForSelector(
-        this.importNftErrorMessageByText(expectedErrorMessage),
-      );
-    } else {
-      await this.driver.clickElementAndWaitToDisappear(
-        this.confirmImportNftButton,
-      );
-    }
   }
 }
 

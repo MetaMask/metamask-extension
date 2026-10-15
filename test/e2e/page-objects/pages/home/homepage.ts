@@ -564,6 +564,19 @@ class HomePage {
     await this.waitForLoadingOverlayToDisappear();
   }
 
+  /**
+   * Returns the primary balance text shown on the account overview.
+   *
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout`.
+   */
+  async getBalance(timeout?: number): Promise<string> {
+    const balance = await this.driver.waitForSelector(
+      this.balance,
+      timeout === undefined ? {} : { timeout },
+    );
+    return (await balance.getText()).trim();
+  }
+
   async goToActivityList(): Promise<void> {
     console.log(`Open activity tab on homepage`);
     await this.driver.clickElement(this.activityTab);

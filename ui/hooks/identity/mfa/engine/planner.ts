@@ -104,7 +104,13 @@ export const getEnrollmentMaxSessionAgeMs = (
   now: number,
 ): number => Math.max(now - flowStartedAt, ENROLLMENT_MAX_SESSION_AGE_MS);
 
-const toList = (verifyWith: VerifyOrEnrollRequest['verifyWith']) => {
+/**
+ * Normalizes `verifyWith` to a list.
+ *
+ * @param verifyWith - The methods a feature verifies with, if any.
+ * @returns Those methods, as a list.
+ */
+export const toList = (verifyWith: VerifyOrEnrollRequest['verifyWith']) => {
   if (verifyWith === undefined) {
     return [];
   }

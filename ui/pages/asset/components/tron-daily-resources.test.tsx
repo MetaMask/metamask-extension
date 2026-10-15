@@ -4,10 +4,12 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import * as useTronResourcesHook from '../hooks/useTronResources';
+import * as useFreshTronAssetsHook from '../hooks/useFreshTronAssets';
 import { TronDailyResources } from './tron-daily-resources';
 
 // Mock the hooks
 jest.mock('../hooks/useTronResources');
+jest.mock('../hooks/useFreshTronAssets');
 
 const mockT = tEn as (key: string, substitutions?: string[]) => string;
 
@@ -28,9 +30,13 @@ describe('TronDailyResources', () => {
 
   const mockUseTronResources =
     useTronResourcesHook.useTronResources as jest.Mock;
+  const mockUseFreshTronAssets =
+    useFreshTronAssetsHook.useFreshTronAssets as jest.Mock;
+  mockUseFreshTronAssets.mockReturnValue(undefined);
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseFreshTronAssets.mockReturnValue(undefined);
   });
 
   describe('rendering', () => {
