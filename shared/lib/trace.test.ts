@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { it } from '@jest/globals';
+import { it as jestIt } from '@jest/globals';
 import {
   annotateTrace,
   endTrace,
@@ -902,7 +902,7 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
     // without overlap); asserting it here would keep this test failing after
     // a correct concurrency-only fix, so `it.failing` would keep passing and
     // the repair would go undetected. See the dedicated coverage below.
-    it.failing(
+    jestIt.failing(
       'does not parent the second span under the still-pending first one',
       async () => {
         const aGate = deferred<void>();
@@ -954,7 +954,7 @@ describe('concurrent trace() calls (MetaMask-planning#7523)', () => {
     // `spanC` resolves under B's already-corrupted lineage instead of being
     // independent. Passes today because the assertion fails; goes red when
     // the defect is fixed.
-    it.failing(
+    jestIt.failing(
       'does not let a third concurrent call inherit an already-corrupted lineage',
       async () => {
         const aGate = deferred<void>();
