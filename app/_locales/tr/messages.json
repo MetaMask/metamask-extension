@@ -3304,7 +3304,7 @@
     "message": "Pazarlama amacıyla veri toplama"
   },
   "dataCollectionForMarketingDescription": {
-    "message": "MetaMetrics'i, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri ve diğer materyaller gibi) paylaşabiliriz."
+    "message": "Pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuza dair veri toplayacağız; böylece ilgili haberleri (ürün özellikleri ve diğer materyaller gibi) paylaşabiliriz."
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "E-posta yoluyla dahil olmak üzere ürün güncellemeleri, ipuçları ve haberleri alın. Etkileşimlerinizi yaptığımız paylaşımları iyileştirmek için kullanabiliriz."
@@ -6729,7 +6729,7 @@
     "message": "MetaMetrics"
   },
   "onboardedMetametricsParagraph1": {
-    "message": "$1 bağlantısına ek olarak pazarlama iletişimleri ile nasıl etkileşimde bulunduğunuzu anlamak amacıyla verileri kullanmak istiyoruz.",
+    "message": "$1 bağlantısına ek olarak pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek amacıyla verileri (çerezlerden elde edilen bilgiler gibi) kullanmak istiyoruz.",
     "description": "$1 represents the 'onboardedMetametricsLink' locale string"
   },
   "onboardedMetametricsParagraph2": {
@@ -6785,13 +6785,13 @@
     "message": "Temel ürün kullanım verilerini toplarız. Bu bilgileri zincir içi verilerle ilişkilendirebiliriz."
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
+    "message": "Pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için veri toplayacağız. Bu verileri ilgili haberleri (ürün güncellemeleri gibi) paylaşmak için kullanabiliriz."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Temel kullanım verilerini topla"
+    "message": "Temel kullanım verileri"
   },
   "onboardingMetametricCheckboxTitleTwo": {
-    "message": "Ürün güncellemeleri"
+    "message": "Pazarlama verileri"
   },
   "onboardingMetametricsContinue": {
     "message": "Devam et"
@@ -6800,7 +6800,7 @@
     "message": "Bu izinleri talep etmek istiyoruz. Dilediğiniz zaman vazgeçebilir veya kullanım verilerinizi silebilirsiniz."
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMask'in iyileştirilmesine yardımcı olun"
+    "message": "MetaMask'i iyileştirmemize yardımcı olun"
   },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",

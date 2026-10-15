@@ -80,7 +80,7 @@ export const DataCollectionToggleItem = () => {
       <MarketingConsentSheet
         {...sheetProps}
         title={t('marketingConsentOptOutSheetTitle')}
-        description={t('marketingConsentOptOutSheetDescription')}
+        paragraphs={[t('marketingConsentOptOutSheetDescription')]}
         confirmLabel={t('marketingConsentOptOutSheetConfirm')}
         testId="marketing-consent-opt-out-sheet"
       />
