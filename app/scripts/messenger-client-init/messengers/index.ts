@@ -60,7 +60,6 @@ import {
   getNetworkEnablementControllerInitMessenger,
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
-  getClientControllerMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -384,10 +383,6 @@ export const MESSENGER_FACTORIES = {
   ChompApiService: {
     getMessenger: getChompApiServiceMessenger,
     getInitMessenger: getChompApiServiceInitMessenger,
-  },
-  ClientController: {
-    getMessenger: getClientControllerMessenger,
-    getInitMessenger: noop,
   },
   ComplianceService: {
     getMessenger: getComplianceServiceMessenger,
