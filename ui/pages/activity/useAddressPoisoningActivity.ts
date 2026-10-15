@@ -26,8 +26,12 @@ export function useAddressPoisoningActivity(
     enabled: Boolean(normalizedFrom),
     staleTime: Number.POSITIVE_INFINITY,
     gcTime: 10 * 60 * 1000,
-    queryFn: () =>
-      findSimilarAddresses(normalizedFrom!, [...recipients]),
+    queryFn: () => {
+      if (!normalizedFrom) {
+        return [];
+      }
+      return findSimilarAddresses(normalizedFrom, [...recipients]);
+    },
   });
 
   const isPoisoningSuspect = Boolean(normalizedFrom && data && data.length > 0);
