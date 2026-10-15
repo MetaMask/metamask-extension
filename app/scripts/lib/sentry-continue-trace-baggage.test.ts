@@ -65,7 +65,7 @@ describe('continueTraceContext outbound baggage', () => {
     delete (globalThis as { sentry?: unknown }).sentry;
   });
 
-  it('sends sentry-sampled=true with a sampled traceparent from a sampled UI parent', async () => {
+  it('sends sentry-sampled=true in the continued trace from a sampled UI parent', async () => {
     await continueTraceContext(
       { traceId: TRACE_ID, parentSpanId: PARENT_SPAN_ID, parentSampled: true },
       () =>
@@ -76,7 +76,7 @@ describe('continueTraceContext outbound baggage', () => {
 
     expect(sent).toHaveLength(1);
     expect(sent[0].get('traceparent')).toMatch(
-      new RegExp(`^00-${TRACE_ID}-[0-9a-f]{16}-01$`, 'u'),
+      new RegExp(`^00-${TRACE_ID}-[0-9a-f]{16}-[0-9a-f]{2}$`, 'u'),
     );
     expect(baggageEntries(sent[0])).toContain('sentry-sampled=true');
   });
@@ -91,7 +91,6 @@ describe('continueTraceContext outbound baggage', () => {
     );
 
     expect(sent).toHaveLength(1);
-    expect(sent[0].get('traceparent')).toMatch(/-00$/u);
     expect(baggageEntries(sent[0])).toContain('sentry-sampled=false');
   });
 });

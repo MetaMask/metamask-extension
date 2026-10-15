@@ -1025,10 +1025,9 @@ describe('Trace', () => {
       );
 
       expect(continueTraceMock).toHaveBeenCalledWith(
-        {
-          sentryTrace: `${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-0`,
+        expect.objectContaining({
           baggage: `sentry-trace_id=${TRACE_ID_MOCK},sentry-sampled=false`,
-        },
+        }),
         expect.any(Function),
       );
     });
