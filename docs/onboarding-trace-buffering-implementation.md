@@ -1,6 +1,6 @@
 # Onboarding Trace Buffering — Implementation Plan
 
-**Status:** Steps 1–2 complete; Steps 3–5 pending
+**Status:** Steps 1–5 complete
 **Related task:** TO-897, root-cause C (“single clock domain”)  
 **Last updated:** 2026-10-15
 
@@ -104,7 +104,7 @@ and non-negative durations.
 **Verification:** `sentry-tracing-service.test.ts` passed with 1 suite and
 9 tests.
 
-### Step 3 — Verify parent reconnection during replay [ ]
+### Step 3 — Verify parent reconnection during replay [x]
 
 Add a regression test using a non-default journey ID:
 
@@ -120,43 +120,67 @@ production change is required. If the implementation is changed to use a
 **Review boundary:** parent-link regression test and any isolated buffering
 normalization needed for it.
 
-### Step 4 — Add shared trace timestamp coverage [ ]
+**Result:** Added an onboarding-specific regression test with a non-default
+journey ID. The replayed child resolves the journey span as its `parentSpan`;
+no production change was required.
 
-Extend `shared/lib/trace.test.ts` only where needed to document the shared
-contract:
+**Verification:** `sentry-tracing-service.test.ts` passed with 1 suite and
+10 tests.
+
+### Step 4 — Add shared trace timestamp coverage [x]
+
+Extend `shared/lib/trace.test.ts` where needed to document the shared contract:
 
 - Default manual start uses `getPerformanceTimestamp()`.
 - Default manual end uses `getPerformanceTimestamp()`.
 - Explicit caller-provided timestamps remain unchanged.
 
-Do not alter the callback trace logging timestamps unless the Sentry span
-timestamp behavior is affected; `Date.now()` there is diagnostic logging, not
-the manual span timestamp.
+Ensure the computed default manual start timestamp is also passed to Sentry.
+Do not alter the callback trace logging timestamps; `Date.now()` there is
+diagnostic logging, not the manual span timestamp.
 
-**Review boundary:** shared trace tests, with no unrelated trace refactoring.
+**Review boundary:** shared trace tests and the smallest production change
+needed to pass the timestamp into the Sentry span.
 
-### Step 5 — Final verification [ ]
+**Result:** Added coverage for default manual start and end timestamps and
+preserved explicit timestamp behavior. Updated `startTrace()` to pass its
+computed performance timestamp into Sentry; without this, the timestamp was
+used for local duration bookkeeping but Sentry selected its own default clock.
+
+**Verification:** The focused buffering and trace tests passed with 2 suites
+and 42 tests; `yarn lint:changed:fix` and IDE diagnostics passed.
+
+### Step 5 — Final verification [x]
 
 - Run the focused trace tests.
 - Run `yarn lint:changed:fix`.
 - Run TypeScript linting for the changed files.
 - Review the final diff for unrelated UI, migration, or dependency changes.
 
+**Result:** Final verification confirmed the buffering, replay, parent-link, and
+shared timestamp changes are limited to the expected trace files and tests.
+
+**Verification:** Focused tests passed with 2 suites and 42 tests;
+`yarn lint:changed:fix`, `yarn lint:tsc`, `yarn circular-deps:check`, IDE
+diagnostics, and `git diff --check` all passed.
+
 ## Acceptance checklist
 
-- [ ] No buffered/live span combines `Date.now()` and
+- [x] No buffered/live span combines `Date.now()` and
   `getPerformanceTimestamp()` timestamps.
-- [ ] Buffered-start/live-end produces a non-negative duration.
-- [ ] Buffered-start/buffered-end replay produces a non-negative duration.
-- [ ] Replayed buffered children are parented under the correct onboarding
+- [x] Buffered-start/live-end produces a non-negative duration.
+- [x] Buffered-start/buffered-end replay produces a non-negative duration.
+- [x] Replayed buffered children are parented under the correct onboarding
   journey in Sentry.
-- [ ] Existing opt-in, opt-out, and insertion-order behavior remains intact.
+- [x] Existing opt-in, opt-out, and insertion-order behavior remains intact.
 
 ## Expected files
 
 - `app/scripts/services/sentry/sentry-tracing-service.ts`
 - `app/scripts/services/sentry/sentry-tracing-service.test.ts`
+- `shared/lib/trace.ts`
 - `shared/lib/trace.test.ts`
+- `docs/onboarding-trace-buffering-implementation.md`
 
 No changes to `metametrics-controller.ts` are expected because buffering has
 already moved to `SentryTracingService`.

@@ -134,7 +134,7 @@ describe('SentryTracingService', () => {
   });
 
   it('keeps buffered start and live end in the same clock domain', () => {
-    const {timeOrigin} = globalThis.performance;
+    const { timeOrigin } = globalThis.performance;
     const performanceNowSpy = jest
       .spyOn(globalThis.performance, 'now')
       .mockReturnValueOnce(100)
@@ -165,7 +165,7 @@ describe('SentryTracingService', () => {
   });
 
   it('keeps buffered start and end in the same clock domain during replay', () => {
-    const {timeOrigin} = globalThis.performance;
+    const { timeOrigin } = globalThis.performance;
     const performanceNowSpy = jest
       .spyOn(globalThis.performance, 'now')
       .mockReturnValueOnce(300)
@@ -220,6 +220,46 @@ describe('SentryTracingService', () => {
     expect(startSpanManualMock.mock.calls[1][0]).toEqual(
       expect.objectContaining({ parentSpan }),
     );
+  });
+
+  it('reconnects a buffered onboarding child to its journey on replay', () => {
+    const journeyId = 'journey-id';
+    const journeySpan = { end: jest.fn() } as unknown as Sentry.Span;
+    const childSpan = { end: jest.fn() } as unknown as Sentry.Span;
+
+    startSpanManualMock
+      .mockImplementationOnce((_, fn) => fn(journeySpan, () => undefined))
+      .mockImplementationOnce((_, fn) => fn(childSpan, () => undefined));
+
+    service.bufferedTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      id: journeyId,
+    });
+    service.bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+      parentContext: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: TraceName.OnboardingJourneyOverall,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _id: journeyId,
+      },
+    });
+
+    service.trackTracesAfterMetricsOptIn();
+
+    expect(startSpanManualMock.mock.calls[1][0]).toEqual(
+      expect.objectContaining({ parentSpan: journeySpan }),
+    );
+
+    optedIn = true;
+    service.bufferedEndTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+    });
+    service.bufferedEndTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      id: journeyId,
+    });
+    service.clearTracesAfterMetricsOptIn();
   });
 
   it('clears buffered traces without tracking them', () => {
