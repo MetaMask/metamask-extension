@@ -17,8 +17,10 @@ import {
   getAssetImageUrl,
   fetchAssetMetadata,
   toAssetId,
+  toNormalizedCaipAssetId,
   fetchAssetMetadataForAssetIds,
   getNativeAssetId,
+  isNativeCaipAssetId,
   isEvmChainId,
   isTronSpecialAsset,
 } from './asset-utils';
@@ -53,6 +55,28 @@ describe('asset-utils', () => {
     it('returns undefined for a chain unknown to the asset map', () => {
       // getNativeAssetForChainId throws on custom/unsupported networks.
       expect(getNativeAssetId('0x123456' as Hex)).toBeUndefined();
+    });
+  });
+
+  describe('isNativeCaipAssetId', () => {
+    it('returns true for slip44 native asset ids', () => {
+      expect(isNativeCaipAssetId('eip155:1/slip44:60' as CaipAssetType)).toBe(
+        true,
+      );
+    });
+
+    it('returns false for erc20 asset ids', () => {
+      expect(
+        isNativeCaipAssetId(
+          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f' as CaipAssetType,
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false for invalid asset ids', () => {
+      expect(isNativeCaipAssetId('not-a-caip-asset-id' as CaipAssetType)).toBe(
+        false,
+      );
     });
   });
 
@@ -149,6 +173,18 @@ describe('asset-utils', () => {
       ]);
     });
 
+    it('returns native asset ID for Polygon native token address', () => {
+      const polygonNativeAddress = '0x0000000000000000000000000000000000001010';
+      const chainId = 'eip155:137' as CaipChainId;
+
+      const result = toAssetId(polygonNativeAddress, chainId);
+      expect(result).toBe(getNativeAssetForChainId(chainId).assetId);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
     it('should handle checksummed addresses', () => {
       const address = '0x1F9840a85d5aF5bf1D1762F925BDADdC4201F984';
       const chainId = 'eip155:1' as CaipChainId;
@@ -198,6 +234,34 @@ describe('asset-utils', () => {
       expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
         `${chainId}/sep41:${contractId}`,
       );
+    });
+  });
+
+  describe('toNormalizedCaipAssetId', () => {
+    const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const normalizedUsdcId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+    it('returns a normalized CAIP-19 id for a caip chain id and address', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, 'eip155:1')).toBe(
+        normalizedUsdcId,
+      );
+    });
+
+    it('returns undefined for decimal chain ids that would make toAssetId throw', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, '1')).toBeUndefined();
+    });
+
+    it('returns undefined when the address is missing', () => {
+      expect(toNormalizedCaipAssetId(undefined, '0x1')).toBeUndefined();
+    });
+
+    it('normalizes an existing CAIP-19 asset id without a chain id', () => {
+      expect(
+        toNormalizedCaipAssetId(
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        ),
+      ).toBe(normalizedUsdcId);
     });
   });
 

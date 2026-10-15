@@ -1,7 +1,26 @@
 import { Key } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
-import { RawLocator } from '../../common';
+import { ClickWaitUntil, FooterButton, RawLocator } from '../../common';
 
+/**
+ * Shared base for redesigned confirmation screens: footer actions, multi-page
+ * nav, header account details entry, inline alerts, and common info-row checks.
+ *
+ * Screen: `#/confirmation` / `#/confirmation/:id` (not a feature hash route of
+ * its own; confirmation type is driven by pending approval state).
+ * Owns: confirm/cancel footer, previous/next/reject-all nav, scroll-to-bottom,
+ * section collapse, security-provider banner, opening account-details from the
+ * header, and generic address/name display assertions.
+ * Boundaries: type-specific info panels belong to subclasses
+ * (`TransactionConfirmation`, `PersonalSignConfirmation`, etc.). Overlay
+ * modals opened from here belong to `AlertModal`, `AccountDetailsModal`,
+ * `GasFeeModal`, or `GasFeeTokenModal`.
+ * Related: subclasses for typed confirmations; modal page objects for overlays.
+ *
+ * @see ui/pages/confirmations/confirm/confirm.tsx
+ * @see ui/pages/confirmations/components/confirm/footer/footer.tsx
+ * @see ui/pages/confirmations/components/confirm/nav/nav.tsx
+ */
 class Confirmation {
   private accountAddressDetails: RawLocator = {
     tag: 'p',
@@ -41,6 +60,10 @@ class Confirmation {
   private navigationTitle = '[data-testid="confirm-page-nav-position"]';
 
   private nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
+
+  private parentSelector = {
+    testId: 'parent-selector-confirmation-page',
+  };
 
   private previousPageButton =
     '[data-testid="confirm-nav__previous-confirmation"]';
@@ -89,6 +112,7 @@ class Confirmation {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.parentSelector,
         this.footerCancelButton,
         this.footerConfirmButton,
       ]);
@@ -154,32 +178,39 @@ class Confirmation {
     await this.driver.clickElement(this.sectionCollapseButton);
   }
 
-  async clickFooterCancelButton() {
-    await this.driver.clickElement(this.footerCancelButton);
+  /**
+   * Click the confirmation footer confirm or cancel button.
+   *
+   * @param options - Footer click options
+   * @param options.button - Which footer button to click
+   * @param options.waitUntil - Optional wait after click. Omitted uses a plain click.
+   */
+  async clickFooterButton({
+    button,
+    waitUntil,
+  }: {
+    button: FooterButton;
+    waitUntil?: ClickWaitUntil;
+  }): Promise<void> {
+    const locator =
+      button === 'confirm' ? this.footerConfirmButton : this.footerCancelButton;
+    await this.clickFooterButtonAndWait(locator, waitUntil);
   }
 
-  async clickFooterCancelButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerCancelButton,
-    );
-  }
-
-  async clickFooterCancelButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerCancelButton);
-  }
-
-  async clickFooterConfirmButton() {
-    await this.driver.clickElement(this.footerConfirmButton);
-  }
-
-  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.footerConfirmButton,
-    );
-  }
-
-  async clickFooterConfirmButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
+  private async clickFooterButtonAndWait(
+    locator: RawLocator,
+    waitUntil?: ClickWaitUntil,
+  ): Promise<void> {
+    switch (waitUntil) {
+      case 'windowClose':
+        await this.driver.clickElementAndWaitForWindowToClose(locator);
+        return;
+      case 'disappear':
+        await this.driver.clickElementAndWaitToDisappear(locator);
+        return;
+      default:
+        await this.driver.clickElement(locator);
+    }
   }
 
   async clickHeaderAccountDetailsButton() {

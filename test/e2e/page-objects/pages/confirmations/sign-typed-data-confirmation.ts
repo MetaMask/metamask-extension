@@ -7,6 +7,21 @@ import {
 } from '../../../tests/confirmations/signatures/sign-typed-data-expected';
 import Confirmation from './confirmation';
 
+/**
+ * eth_signTypedData (v1/v3/v4) confirmation on the redesigned confirm screen.
+ *
+ * Screen: `#/confirmation` for typed-data signature approvals.
+ * Owns: signature title, origin/network, primary type, request-section
+ * contract, and data-tree field assertions for v1–v4 payloads.
+ * Boundaries: inherits footer/nav from `Confirmation`. Permit-specific
+ * decoded simulation checks are `PermitConfirmation`. Personal/SIWE sign is
+ * `PersonalSignConfirmation`.
+ * Related: `Confirmation`, `PermitConfirmation`, `PersonalSignConfirmation`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign.tsx
+ * @see ui/pages/confirmations/components/confirm/info/typed-sign-v1/typed-sign-v1.tsx
+ * @see ui/pages/confirmations/components/confirm/row/typed-sign-data/typedSignData.tsx
+ */
 export default class SignTypedData extends Confirmation {
   private readonly contractAddress = (text: string): RawLocator => ({
     css: '[data-testid="confirmation_request-section"]',

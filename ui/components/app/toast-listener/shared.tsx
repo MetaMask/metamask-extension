@@ -5,6 +5,12 @@ import { useToastLabel } from './useToastLabel';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
+const transactionToastTestIds: Record<ToastStatus, string> = {
+  pending: 'transaction-submitted-toast',
+  success: 'transaction-confirmed-toast',
+  failed: 'transaction-failed-toast',
+};
+
 type Props = {
   toastId?: string;
   transactionId?: string;
@@ -21,7 +27,11 @@ const TransactionToastContent = ({
 
   return (
     <>
-      <ToastContent title={title} description={description} />
+      <ToastContent
+        title={title}
+        description={description}
+        dataTestId={transactionToastTestIds[status]}
+      />
 
       {to && (
         <Link

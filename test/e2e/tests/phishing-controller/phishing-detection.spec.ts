@@ -11,7 +11,7 @@ import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
-import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
+import PhishingWarningPage from '../../page-objects/pages/security/phishing-warning-page';
 import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import {

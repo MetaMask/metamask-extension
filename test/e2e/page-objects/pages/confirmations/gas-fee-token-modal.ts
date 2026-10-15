@@ -1,5 +1,20 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Modal for selecting which token pays the network fee.
+ *
+ * Screen: overlay modal opened from the selected gas-fee-token control on a
+ * transaction confirmation (not a hash route).
+ * Owns: gas-fee-token list items (symbol, balance, fiat/token amounts) and
+ * selecting a token.
+ * Boundaries: gas estimate tiers and advanced gas forms belong to
+ * `GasFeeModal`. Opening the token picker from the confirmation belongs to
+ * `TransactionConfirmation`.
+ * Related: `TransactionConfirmation`, `GasFeeModal`.
+ *
+ * @see ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.tsx
+ * @see ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-list-item/gas-fee-token-list-item.tsx
+ */
 export default class GasFeeTokenModal {
   protected driver: Driver;
 

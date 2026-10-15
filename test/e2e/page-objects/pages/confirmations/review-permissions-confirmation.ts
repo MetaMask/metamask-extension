@@ -1,14 +1,22 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Review permissions dialog for dapp-initiated permission requests (e.g. a
+ * `wallet_switchEthereumChain` request for a chain the dapp is not yet
+ * permitted to use).
+ *
+ * Screen: "Review permissions" confirmation dialog.
+ * Owns: "Review permissions" title, enabled-networks messaging, network
+ * presence checks, and page-container confirm/cancel.
+ * Boundaries: initial dapp connect is `ConnectAccountConfirmation`.
+ * Related: `ConnectAccountConfirmation`.
+ */
 class ReviewPermissionsConfirmation {
   private readonly cancelReviewPermissionsButton =
     '[data-testid="page-container-footer-cancel"]';
 
   private readonly confirmReviewPermissionsButton =
     '[data-testid="page-container-footer-next"]';
-
-  private readonly connectMoreChainsButton =
-    '[data-testid="connect-more-chains-button"]';
 
   driver: Driver;
 
@@ -71,19 +79,6 @@ class ReviewPermissionsConfirmation {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmReviewPermissionsButton,
     );
-  }
-
-  async clickConnectMoreChainsButton(): Promise<void> {
-    console.log('Click connect more chains button');
-    await this.driver.clickElement(this.connectMoreChainsButton);
-  }
-
-  async clickDisconnectNetwork(networkName: string): Promise<void> {
-    console.log(`Click to disconnect network: ${networkName}`);
-    await this.driver.clickElement({
-      text: networkName,
-      tag: 'p',
-    });
   }
 
   async confirmReviewPermissions(): Promise<void> {

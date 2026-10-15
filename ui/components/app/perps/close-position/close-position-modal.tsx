@@ -25,6 +25,7 @@ import {
 } from '@metamask/design-system-react';
 import type {
   ClosePositionParams,
+  InputMethod,
   OrderType,
 } from '@metamask/perps-controller';
 import {
@@ -63,6 +64,7 @@ import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
@@ -76,10 +78,14 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
+import {
+  getIsPerpsCloseLimitOrderEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
+} from '../../../../selectors/perps/feature-flags';
 import {
   getCloseLimitReferencePrice,
   isCloseLimitPriceOutsideDeviation,
@@ -107,6 +113,7 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  positionSize,
   sizeDecimals,
   orderType,
   limitPrice,
@@ -116,22 +123,42 @@ const buildCloseRequestParams = ({
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  positionSize: number;
   sizeDecimals?: number;
   orderType: OrderType;
   limitPrice?: string;
   position: Position;
 }): ClosePositionParams => {
-  const size =
+  // Round-half-up can lift a partial size onto the whole position — closing
+  // 99.999% of 2.5 at 4 decimals formats as "2.5000". A partial close must stay
+  // strictly under the position, so step the last decimal back when it does.
+  const roundedSize =
     sizeDecimals === undefined
       ? closeSize.toString()
       : closeSize.toFixed(sizeDecimals);
+  const roundsOntoWholePosition =
+    isPartialClose &&
+    sizeDecimals !== undefined &&
+    Number.parseFloat(roundedSize) >= positionSize;
+  const flooredSize =
+    sizeDecimals === undefined
+      ? roundedSize
+      : (positionSize - 10 ** -sizeDecimals).toFixed(sizeDecimals);
+  // On a market whose smallest step is the position itself — a 1-unit position
+  // on an integer-size market — stepping back lands on zero, which the venue
+  // rejects or treats as a no-op. The trader asked for all but a rounding
+  // sliver, so send it as the full close it effectively is.
+  const closesWholePosition =
+    roundsOntoWholePosition && Number.parseFloat(flooredSize) <= 0;
+  const size = roundsOntoWholePosition ? flooredSize : roundedSize;
+  const includeSize = isPartialClose && !closesWholePosition;
 
   if (orderType === 'limit') {
     return {
       symbol,
       orderType: 'limit',
       price: limitPrice,
-      ...(isPartialClose ? { size } : {}),
+      ...(includeSize ? { size } : {}),
       position,
     };
   }
@@ -140,7 +167,7 @@ const buildCloseRequestParams = ({
     symbol,
     orderType: 'market',
     currentPrice,
-    ...(isPartialClose ? { size } : {}),
+    ...(includeSize ? { size } : {}),
     position,
   };
 };
@@ -323,6 +350,9 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -334,6 +364,8 @@ export const ClosePositionModal = ({
       // Which CTA opened this modal — close vs reduce_exposure.
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -362,10 +394,20 @@ export const ClosePositionModal = ({
   // Abandon-order tracking state: latest form snapshot, a stable reader for it,
   // and the commit flag that suppresses the event once a close is submitted.
   const latestAbandonPropsRef = useRef<Record<string, Json>>({});
-  const getAbandonProperties = useRef(() => latestAbandonPropsRef.current);
+  const getAbandonProperties = useCallback(
+    () => latestAbandonPropsRef.current,
+    [],
+  );
   const hasConfirmedCloseRef = useRef(false);
 
-  useEffect(() => {
+  // Which control the trader last used to set the close amount. Mirrors mobile:
+  // a ref (not state) so recording it never re-renders the form, last-touched
+  // wins, and it rides `trackingData` to the controller's close event.
+  const inputMethodRef = useRef<InputMethod>('default');
+
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) {
       setClosePercent(100);
       setIsSubmitting(false);
@@ -373,18 +415,27 @@ export const ClosePositionModal = ({
       setIsGeoBlockModalOpen(false);
       setSelectedOrderType('market');
       setLimitPrice('');
-      // Reopening starts a fresh close session: a commit from the previous one
-      // must not suppress abandon tracking for this one.
+    }
+  }
+
+  // Reopening starts a fresh close session: a commit from the previous one
+  // must not suppress abandon tracking for this one.
+  useEffect(() => {
+    if (isOpen) {
       hasConfirmedCloseRef.current = false;
+      inputMethodRef.current = 'default';
     }
   }, [isOpen]);
 
-  useEffect(() => {
+  const [prevIsCloseLimitOrderEnabled, setPrevIsCloseLimitOrderEnabled] =
+    useState(isCloseLimitOrderEnabled);
+  if (isCloseLimitOrderEnabled !== prevIsCloseLimitOrderEnabled) {
+    setPrevIsCloseLimitOrderEnabled(isCloseLimitOrderEnabled);
     if (!isCloseLimitOrderEnabled) {
       setSelectedOrderType('market');
       setLimitPrice('');
     }
-  }, [isCloseLimitOrderEnabled]);
+  }
 
   const displayName = getDisplaySymbol(position.symbol);
   const headerDisplayPrice = displayPrice ?? formatFiat(currentPrice);
@@ -434,7 +485,7 @@ export const ClosePositionModal = ({
       : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * effectivePrice,
+    () => getPerpsNotionalUsd({ size: closeSize, price: effectivePrice }),
     [closeSize, effectivePrice],
   );
 
@@ -466,7 +517,7 @@ export const ClosePositionModal = ({
     closeNotionalUsd,
   ]);
   usePerpsAbandonOrderTracking({
-    getAbandonProperties: getAbandonProperties.current,
+    getAbandonProperties,
     hasCommittedRef: hasConfirmedCloseRef,
     active: isOpen,
   });
@@ -480,6 +531,7 @@ export const ClosePositionModal = ({
     symbol: position.symbol,
     orderType: effectiveOrderType,
     isMaker: effectiveOrderType === 'limit',
+    amount: String(closeNotionalUsd),
   });
 
   const liveUnrealizedPnl = useMemo(
@@ -657,6 +709,7 @@ export const ClosePositionModal = ({
           currentPrice,
           isPartialClose,
           closeSize,
+          positionSize,
           sizeDecimals,
           orderType: effectiveOrderType,
           limitPrice:
@@ -671,6 +724,7 @@ export const ClosePositionModal = ({
           vipTier,
           vipDiscount: metamaskFeeRateDiscountPercentage,
           hlFeeRate: protocolFeeRate,
+          inputMethod: inputMethodRef.current,
         });
         const result = await submitRequestToBackground<{
           success: boolean;
@@ -747,6 +801,7 @@ export const ClosePositionModal = ({
     isPartialClose,
     position,
     closeSize,
+    positionSize,
     displayName,
     t,
     formatNumber,
@@ -767,6 +822,10 @@ export const ClosePositionModal = ({
   const handlePercentChange = useCallback((percent: number) => {
     setClosePercent(percent);
     setError(null);
+  }, []);
+
+  const handleInputMethodChange = useCallback((inputMethod: InputMethod) => {
+    inputMethodRef.current = inputMethod;
   }, []);
 
   const handleOrderTypeChange = useCallback(
@@ -805,6 +864,7 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
+          <PerpsServiceInterruptionBanner />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}
@@ -840,6 +900,7 @@ export const ClosePositionModal = ({
                 asset={displayName}
                 currentPrice={effectivePrice}
                 sizeDecimals={sizeDecimals}
+                onInputMethodChange={handleInputMethodChange}
               />
 
               {isPartialCloseBelowMinNotional ? (

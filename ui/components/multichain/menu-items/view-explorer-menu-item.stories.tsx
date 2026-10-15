@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { ViewExplorerMenuItem } from './view-explorer-menu-item';
 
 const meta: Meta<typeof ViewExplorerMenuItem> = {

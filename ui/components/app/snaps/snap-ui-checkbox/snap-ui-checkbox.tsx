@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import classnames from 'clsx';
+import { Checkbox } from '@metamask/design-system-react';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useSnapUiFieldState } from '../../../../hooks/snaps/useSnapUiFieldState';
 import {
-  BorderColor,
   Display,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
@@ -11,7 +12,6 @@ import {
   Label,
   HelpText,
   HelpTextSeverity,
-  Checkbox,
 } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 
@@ -37,17 +37,13 @@ export const SnapUICheckbox = ({
 }: SnapUICheckboxProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
-  const initialValue = getValue(name, form) as boolean;
-
-  const [value, setValue] = useState(initialValue ?? false);
-
-  useEffect(() => {
-    if (initialValue !== undefined && initialValue !== null) {
-      setValue(initialValue);
-    }
-  }, [initialValue]);
+  const initialValue = getValue(name, form) as boolean | undefined;
+  const [value, setValue] = useSnapUiFieldState(initialValue, false);
 
   const handleChange = () => {
+    // ToggleButton passes the current value; design-system Checkbox passes the
+    // next selected value. Ignore the argument and always flip local state so
+    // both variants stay in sync.
     setValue(!value);
     handleInputChange(name, !value, form);
   };
@@ -72,14 +68,15 @@ export const SnapUICheckbox = ({
         />
       ) : (
         <Checkbox
+          id={name}
           onChange={handleChange}
-          isChecked={value}
+          isSelected={value}
           label={label}
-          inputProps={{
-            borderColor: BorderColor.borderMuted,
-          }}
           isDisabled={disabled}
           {...props}
+          inputProps={{
+            'data-testid': `snap-ui-checkbox-${name}`,
+          }}
         />
       )}
       {error && (

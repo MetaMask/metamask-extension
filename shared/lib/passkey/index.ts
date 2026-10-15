@@ -6,11 +6,13 @@ export {
   isPasskeyCeremonySilentError,
 } from './passkey-ceremony';
 export {
+  hasPasskeyPRFEnabled,
+  hasPasskeyPRFResult,
   isPasskeyPRFSupported,
   isWebAuthnSupported,
+  PasskeyPRFRequiredError,
 } from './passkey-capabilities';
 export {
-  ExtensionPasskeyErrorCode,
   translatePasskeyError,
   getPasskeyErrorCode,
   type TranslateFn,

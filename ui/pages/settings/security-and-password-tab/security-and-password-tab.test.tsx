@@ -8,6 +8,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { setBackgroundConnection } from '../../../store/background-connection';
 import SecurityAndPasswordTab from './security-and-password-tab';
 
+jest.mock('../../../hooks/passkey/usePasskeyRemoval', () => ({
+  useRemovePasskeyWithPasskey: () => jest.fn().mockResolvedValue(undefined),
+}));
+
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },

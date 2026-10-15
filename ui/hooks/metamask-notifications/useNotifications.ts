@@ -3,6 +3,7 @@ import {
   useRef,
   useEffect,
   useCallback,
+  startTransition,
   type Dispatch,
   type SetStateAction,
 } from 'react';
@@ -101,14 +102,16 @@ export function useListNotifications(): {
       const data = await dispatch(
         fetchAndUpdateMetamaskNotifications(previewToken ?? undefined),
       );
-      setNotificationsData(data as unknown as INotification[]);
+      startTransition(() => {
+        setNotificationsData(data as unknown as INotification[]);
+        setLoading(false);
+      });
       return data as unknown as INotification[];
     } catch (e) {
       log.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
-      throw e;
-    } finally {
       setLoading(false);
+      throw e;
     }
   }, [dispatch, setLoading, setError, setNotificationsData]);
 

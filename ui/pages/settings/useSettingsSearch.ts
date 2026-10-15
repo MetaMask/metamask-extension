@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../../selectors/multichain/feature-flags';
+import { selectIsTickerWidgetFeatureEnabled } from '../../selectors';
+import { isMfaKitEnabled } from '../../hooks/identity/mfa/isMfaKitEnabled';
 import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
 import { SETTINGS_SEARCH_CONFIG, type TabSearchConfig } from './search-config';
 import { useSettingsI18n } from './useSettingsI18n';
@@ -75,18 +77,41 @@ function getSearchConfig(
   });
 }
 
+function excludeHiddenItems(
+  configs: TabSearchConfig[],
+  hiddenItemIds: ReadonlySet<string>,
+): TabSearchConfig[] {
+  if (hiddenItemIds.size === 0) {
+    return configs;
+  }
+
+  return configs.map((config) => ({
+    ...config,
+    items: config.items.filter((item) => !hiddenItemIds.has(item.id)),
+    subPages: config.subPages?.map((subPage) => ({
+      ...subPage,
+      items: subPage.items.filter((item) => !hiddenItemIds.has(item.id)),
+    })),
+  }));
+}
+
 /**
  * Builds a flat list of searchable items by joining the lightweight
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
  *
  * @param isBasicFunctionalityToggleEnabled - Whether consolidated Basic Functionality settings should hide granular items.
+ * @param hiddenItemIds - Setting item ids that should be excluded from search results.
  */
 function buildSearchableItems(
   isBasicFunctionalityToggleEnabled: boolean,
+  hiddenItemIds: ReadonlySet<string>,
 ): SettingsSearchResult[] {
   const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
-  return getSearchConfig(isBasicFunctionalityToggleEnabled).flatMap((cfg) => {
+  return excludeHiddenItems(
+    getSearchConfig(isBasicFunctionalityToggleEnabled),
+    hiddenItemIds,
+  ).flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);
     if (!tab) {
       return [];
@@ -131,10 +156,22 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const isBasicFunctionalityConsolidationEnabled = useSelector(
     getIsBasicFunctionalityConsolidationEnabled,
   );
+  const isTickerWidgetFeatureEnabled = useSelector(
+    selectIsTickerWidgetFeatureEnabled,
+  );
 
   const fuse = useMemo(() => {
+    const hiddenItemIds = new Set<string>();
+    if (!isTickerWidgetFeatureEnabled) {
+      hiddenItemIds.add('show-ticker-widget');
+    }
+    if (!isMfaKitEnabled()) {
+      hiddenItemIds.add('mfa');
+    }
+
     const items = buildSearchableItems(
       isBasicFunctionalityConsolidationEnabled,
+      hiddenItemIds,
     );
     return new Fuse(items, {
       shouldSort: true,
@@ -149,7 +186,11 @@ export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
         return typeof labelKey === 'string' ? t(labelKey) : '';
       },
     });
-  }, [isBasicFunctionalityConsolidationEnabled, t]);
+  }, [
+    isBasicFunctionalityConsolidationEnabled,
+    isTickerWidgetFeatureEnabled,
+    t,
+  ]);
 
   return useMemo(() => {
     const query = searchValue.trim();

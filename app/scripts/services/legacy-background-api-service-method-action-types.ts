@@ -6,17 +6,7 @@
 import type { LegacyBackgroundApiService } from './legacy-background-api-service';
 
 /**
- * Checks if the assets unify state feature is enabled based on the remote feature flag and build configuration.
- *
- * @returns `true` if the assets unify state feature is enabled, `false` otherwise.
- */
-export type LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction = {
-  type: `LegacyBackgroundApiService:isAssetsUnifyStateEnabled`;
-  handler: LegacyBackgroundApiService['isAssetsUnifyStateEnabled'];
-};
-
-/**
- * Sets the current currency for the CurrencyRateController and AssetsController (if the assets unify state feature is enabled).
+ * Sets the current currency for the CurrencyRateController and AssetsController.
  *
  * @param currencyCode - The currency code to set as the current currency.
  */
@@ -29,17 +19,30 @@ export type LegacyBackgroundApiServiceSetCurrentCurrencyAction = {
  * Refreshes and returns the assets for the given accounts via the
  * AssetsController (force-updating from remote sources).
  *
- * No-ops when the assets unify state feature is not enabled, since the
- * AssetsController is not registered in that case.
- *
  * @param accounts - The accounts to fetch assets for.
  * @param options - Options for fetching assets (e.g. `chainIds`, `assetTypes`).
- * @returns The assets for the given accounts, or `undefined` when the feature
- * is not enabled.
+ * @returns The assets for the given accounts.
  */
 export type LegacyBackgroundApiServiceGetAssetsAction = {
   type: `LegacyBackgroundApiService:getAssets`;
   handler: LegacyBackgroundApiService['getAssets'];
+};
+
+/**
+ * Adds a token to the wallet as a custom asset on the AssetsController for
+ * the currently selected account (resolving the chain ID from the given
+ * network client and building the CAIP-19 asset ID from the address).
+ *
+ * @param token - The token to add.
+ * @param token.address - The token contract address.
+ * @param token.symbol - The token symbol.
+ * @param token.decimals - The number of decimals the token uses.
+ * @param token.image - An optional icon URL for the token.
+ * @param token.networkClientId - The ID of the network client the token is on.
+ */
+export type LegacyBackgroundApiServiceAddTokenAction = {
+  type: `LegacyBackgroundApiService:addToken`;
+  handler: LegacyBackgroundApiService['addToken'];
 };
 
 /**
@@ -111,6 +114,15 @@ export type LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction = {
 export type LegacyBackgroundApiServiceGetPhishingResultAction = {
   type: `LegacyBackgroundApiService:getPhishingResult`;
   handler: LegacyBackgroundApiService['getPhishingResult'];
+};
+
+/**
+ * Closes the notification popup window if one is open.
+ * Marks it as automatically closed so triggerUi knows not to reopen it.
+ */
+export type LegacyBackgroundApiServiceCloseNotificationPopupAction = {
+  type: `LegacyBackgroundApiService:closeNotificationPopup`;
+  handler: LegacyBackgroundApiService['closeNotificationPopup'];
 };
 
 /**
@@ -198,6 +210,47 @@ export type LegacyBackgroundApiServiceDecodeTransactionDataAction = {
 };
 
 /**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, without waiting for the
+ * transaction to be published.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAction = {
+  type: `LegacyBackgroundApiService:addTransaction`;
+  handler: LegacyBackgroundApiService['addTransaction'];
+};
+
+/**
+ * Adds a transaction to the TransactionController (or a user operation for
+ * smart accounts) after running security validation, waiting for the
+ * transaction to be published and returning the final transaction metadata.
+ *
+ * @param transactionParams - The parameters of the transaction to add.
+ * @param transactionOptions - Options for adding the transaction.
+ * @returns The final transaction metadata.
+ */
+export type LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction = {
+  type: `LegacyBackgroundApiService:addTransactionAndWaitForPublish`;
+  handler: LegacyBackgroundApiService['addTransactionAndWaitForPublish'];
+};
+
+/**
+ * Adds a network and (optionally) sets it as the active network.
+ *
+ * @param networkConfiguration - The network configuration to add.
+ * @param options - Options for post-add behavior.
+ * @param options.setActive - Whether to switch to the added network.
+ * @returns The added network configuration.
+ */
+export type LegacyBackgroundApiServiceAddNetworkAction = {
+  type: `LegacyBackgroundApiService:addNetwork`;
+  handler: LegacyBackgroundApiService['addNetwork'];
+};
+
+/**
  * Verifies the validity of the current vault's seed phrase.
  *
  * Validity: seed phrase restores the accounts belonging to the current vault.
@@ -256,6 +309,19 @@ export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
 };
 
 /**
+ * Resets the wallet to a clean state, clearing sensitive controller state and
+ * signing the user out.
+ *
+ * @param restoreOnly - When `true`, onboarding state is preserved (used by the
+ * restore-vault flow); when `false`, onboarding is also reset and the wallet
+ * reset progress flag is set.
+ */
+export type LegacyBackgroundApiServiceResetWalletAction = {
+  type: `LegacyBackgroundApiService:resetWallet`;
+  handler: LegacyBackgroundApiService['resetWallet'];
+};
+
+/**
  * @deprecated Avoid new references to the global network.
  * Will be removed once multi-chain support is fully implemented.
  *
@@ -264,6 +330,54 @@ export type LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction = {
 export type LegacyBackgroundApiServiceGetGlobalChainIdAction = {
   type: `LegacyBackgroundApiService:getGlobalChainId`;
   handler: LegacyBackgroundApiService['getGlobalChainId'];
+};
+
+/**
+ * Gets the standard and details for a token on the globally selected network.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction = {
+  type: `LegacyBackgroundApiService:getTokenStandardAndDetails`;
+  handler: LegacyBackgroundApiService['getTokenStandardAndDetails'];
+};
+
+/**
+ * Gets the standard and details for a token on a specific chain.
+ *
+ * Resolves the token metadata from the static token list, the dynamic token
+ * list and the user's tokens, falling back to an on-chain lookup via the
+ * `AssetsContractController` when the token cannot be treated as an ERC20.
+ *
+ * @param address - The token contract address.
+ * @param userAddress - The user account address.
+ * @param tokenId - The token ID (for ERC721/ERC1155).
+ * @param chainId - The chain ID to resolve the token on.
+ * @returns The token standard and details.
+ */
+export type LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction =
+  {
+    type: `LegacyBackgroundApiService:getTokenStandardAndDetailsByChain`;
+    handler: LegacyBackgroundApiService['getTokenStandardAndDetailsByChain'];
+  };
+
+/**
+ * Gets the symbol of a token via an on-chain lookup through the
+ * `AssetsContractController`.
+ *
+ * @param address - The token contract address.
+ * @returns The token symbol, or `null` if it could not be resolved.
+ */
+export type LegacyBackgroundApiServiceGetTokenSymbolAction = {
+  type: `LegacyBackgroundApiService:getTokenSymbol`;
+  handler: LegacyBackgroundApiService['getTokenSymbol'];
 };
 
 /**
@@ -411,6 +525,60 @@ export type LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction = {
 };
 
 /**
+ * Changes the wallet password using a verified passkey assertion.
+ *
+ * Delegates the actual password change and vault-key renewal to
+ * `PasskeyController:changePasswordWithPasskeyVerification`, but wraps the call
+ * in the shared `seedlessOperationMutex` so it stays serialized against the
+ * other keyring/seedless operations (password change, SRP backups, keyring
+ * encryption key sync) that mutate the same keyring encryption key and vault.
+ * The PasskeyController has its own internal mutex, which only serializes
+ * passkey operations against each other, so the extension-level lock is still
+ * required to avoid interleaving with those flows.
+ *
+ * @param params - Passkey password-change parameters.
+ * @param params.newPassword - The new wallet password.
+ * @param params.authenticationResponse - Result of `navigator.credentials.get()`.
+ * @param params.options - Optional flow controls.
+ * @param params.options.renewVaultKeyProtection - Re-wrap the vault key after the password change.
+ */
+export type LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction =
+  {
+    type: `LegacyBackgroundApiService:changePasswordWithPasskeyVerification`;
+    handler: LegacyBackgroundApiService['changePasswordWithPasskeyVerification'];
+  };
+
+/**
+ * Exports and JSON-encodes a seed phrase after passkey verification.
+ *
+ * @param params - Passkey seed export parameters.
+ * @param params.authenticationResponse - WebAuthn authentication response.
+ * @param params.keyringId - Optional HD keyring id.
+ * @returns UTF-8 seed phrase bytes as a JSON-safe number array.
+ */
+export type LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:exportSeedPhraseWithPasskey`;
+  handler: LegacyBackgroundApiService['exportSeedPhraseWithPasskey'];
+};
+
+/**
+ * Unlocks the vault with a passkey, then runs the post-unlock account
+ * initialization sequence.
+ *
+ * Delegates the keyring unlock to `PasskeyController:unlockWithPasskey` (which
+ * verifies the authentication assertion and submits the decrypted vault key to
+ * the KeyringController), then performs the awaited post-unlock account init
+ * (accounts / multichain / account-tree) that the controller's keyring-only
+ * unlock does not run.
+ *
+ * @param authenticationResponse - Result of `navigator.credentials.get()`.
+ */
+export type LegacyBackgroundApiServiceUnlockWithPasskeyAction = {
+  type: `LegacyBackgroundApiService:unlockWithPasskey`;
+  handler: LegacyBackgroundApiService['unlockWithPasskey'];
+};
+
+/**
  * Locks MetaMask
  *
  * @param options - The options for setting the locked state.
@@ -459,8 +627,12 @@ export type LegacyBackgroundApiServiceApplyTransactionContainersExistingAction =
 /**
  * Creates or updates the UI metrics fragment for a given transaction.
  *
+ * This fragment declares no events: the UI writes properties into it as the
+ * user interacts with a confirmation, and the transaction metrics builders
+ * read them back when they emit their own events.
+ *
  * @param transactionId - The id of the transaction.
- * @param payload - The fragment settings and properties to store.
+ * @param payload - The fragment properties to store.
  */
 export type LegacyBackgroundApiServiceUpsertTransactionUIMetricsFragmentAction =
   {
@@ -535,6 +707,9 @@ export type LegacyBackgroundApiServiceRejectAllPendingApprovalsAction = {
  * and the shield service is stopped if applicable.
  *
  * @param useExternal - Whether external services should be enabled.
+ * @param ownedPreferences - Optional per-preference values forwarded to
+ * PreferencesController so enabling can preserve granular onboarding choices
+ * in one write.
  */
 export type LegacyBackgroundApiServiceToggleExternalServicesAction = {
   type: `LegacyBackgroundApiService:toggleExternalServices`;
@@ -861,12 +1036,117 @@ export type LegacyBackgroundApiServiceHandleDefiReferralAction = {
 };
 
 /**
+ * Adds a permitted account for the given origin.
+ *
+ * @param origin - The origin to add the permitted account for.
+ * @param address - The address of the account to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedAccountAction = {
+  type: `LegacyBackgroundApiService:addPermittedAccount`;
+  handler: LegacyBackgroundApiService['addPermittedAccount'];
+};
+
+/**
+ * Adds permitted accounts for the given origin.
+ *
+ * @param origin - The origin to add the permitted accounts for.
+ * @param addresses - The addresses of the accounts to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedAccountsAction = {
+  type: `LegacyBackgroundApiService:addPermittedAccounts`;
+  handler: LegacyBackgroundApiService['addPermittedAccounts'];
+};
+
+/**
+ * Removes a permitted account for the given origin.
+ *
+ * @param origin - The origin to remove the permitted account for.
+ * @param address - The address of the account to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermittedAccountAction = {
+  type: `LegacyBackgroundApiService:removePermittedAccount`;
+  handler: LegacyBackgroundApiService['removePermittedAccount'];
+};
+
+/**
+ * Sets the permitted accounts for the given origin, syncing chain scopes for
+ * each account's namespace. Revokes the entire permission when no accounts
+ * are provided.
+ *
+ * @param origin - The origin to set the permitted accounts for.
+ * @param caipAccountIds - The CAIP account ids to permit.
+ */
+export type LegacyBackgroundApiServiceSetPermittedAccountsAction = {
+  type: `LegacyBackgroundApiService:setPermittedAccounts`;
+  handler: LegacyBackgroundApiService['setPermittedAccounts'];
+};
+
+/**
+ * Adds a permitted chain for the given origin.
+ *
+ * @param origin - The origin to add the permitted chain for.
+ * @param chainId - The chain id to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedChainAction = {
+  type: `LegacyBackgroundApiService:addPermittedChain`;
+  handler: LegacyBackgroundApiService['addPermittedChain'];
+};
+
+/**
+ * Adds permitted chains for the given origin.
+ *
+ * @param origin - The origin to add the permitted chains for.
+ * @param chainIds - The chain ids to permit.
+ */
+export type LegacyBackgroundApiServiceAddPermittedChainsAction = {
+  type: `LegacyBackgroundApiService:addPermittedChains`;
+  handler: LegacyBackgroundApiService['addPermittedChains'];
+};
+
+/**
+ * Removes a permitted chain for the given origin.
+ *
+ * @param origin - The origin to remove the permitted chain for.
+ * @param chainId - The chain id to remove.
+ */
+export type LegacyBackgroundApiServiceRemovePermittedChainAction = {
+  type: `LegacyBackgroundApiService:removePermittedChain`;
+  handler: LegacyBackgroundApiService['removePermittedChain'];
+};
+
+/**
+ * Sets the permitted chains for the given origin, preserving existing
+ * permitted accounts. Revokes the entire permission when no chains are
+ * provided (unless the origin is a Snap).
+ *
+ * @param origin - The origin to set the permitted chains for.
+ * @param chainIds - The chain ids to permit.
+ */
+export type LegacyBackgroundApiServiceSetPermittedChainsAction = {
+  type: `LegacyBackgroundApiService:setPermittedChains`;
+  handler: LegacyBackgroundApiService['setPermittedChains'];
+};
+
+/**
+ * Requests `eth_accounts` and `endowment:permitted-chains` permissions via an
+ * approval flow and returns the id of the created request.
+ *
+ * @param origin - The origin requesting the permissions.
+ * @returns The id of the created approval request.
+ */
+export type LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction =
+  {
+    type: `LegacyBackgroundApiService:requestAccountsAndChainPermissionsWithId`;
+    handler: LegacyBackgroundApiService['requestAccountsAndChainPermissionsWithId'];
+  };
+
+/**
  * Union of all LegacyBackgroundApiService action types.
  */
 export type LegacyBackgroundApiServiceMethodActions =
-  | LegacyBackgroundApiServiceIsAssetsUnifyStateEnabledAction
   | LegacyBackgroundApiServiceSetCurrentCurrencyAction
   | LegacyBackgroundApiServiceGetAssetsAction
+  | LegacyBackgroundApiServiceAddTokenAction
   | LegacyBackgroundApiServiceIsPublicEndpointUrlAction
   | LegacyBackgroundApiServiceIsSendBundleSupportedAction
   | LegacyBackgroundApiServiceGetRequestAccountTabIdsAction
@@ -874,6 +1154,7 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceRequestSafeReloadAction
   | LegacyBackgroundApiServiceOpenUpdateTabAndReloadAction
   | LegacyBackgroundApiServiceGetPhishingResultAction
+  | LegacyBackgroundApiServiceCloseNotificationPopupAction
   | LegacyBackgroundApiServiceMarkNotificationPopupAsAutomaticallyClosedAction
   | LegacyBackgroundApiServiceMarkPasswordForgottenAction
   | LegacyBackgroundApiServiceUnMarkPasswordForgottenAction
@@ -881,12 +1162,19 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckDelegationDisabledAction
   | LegacyBackgroundApiServiceEstimateGasAction
   | LegacyBackgroundApiServiceDecodeTransactionDataAction
+  | LegacyBackgroundApiServiceAddTransactionAction
+  | LegacyBackgroundApiServiceAddTransactionAndWaitForPublishAction
+  | LegacyBackgroundApiServiceAddNetworkAction
   | LegacyBackgroundApiServiceGetSeedPhraseAction
   | LegacyBackgroundApiServiceResetAccountAction
   | LegacyBackgroundApiServiceLookupSelectedNetworksAction
   | LegacyBackgroundApiServiceSetEnabledNetworksAction
   | LegacyBackgroundApiServiceSetEnabledAllPopularNetworksAction
+  | LegacyBackgroundApiServiceResetWalletAction
   | LegacyBackgroundApiServiceGetGlobalChainIdAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsAction
+  | LegacyBackgroundApiServiceGetTokenStandardAndDetailsByChainAction
+  | LegacyBackgroundApiServiceGetTokenSymbolAction
   | LegacyBackgroundApiServiceRemoveAccountAction
   | LegacyBackgroundApiServiceSetAccountLabelAction
   | LegacyBackgroundApiServiceOnAccountRemovedAction
@@ -900,6 +1188,9 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceCheckIsSeedlessPasswordOutdatedAction
   | LegacyBackgroundApiServiceSyncPasswordAndUnlockWalletAction
   | LegacyBackgroundApiServiceSubmitPasswordOrEncryptionKeyAction
+  | LegacyBackgroundApiServiceChangePasswordWithPasskeyVerificationAction
+  | LegacyBackgroundApiServiceExportSeedPhraseWithPasskeyAction
+  | LegacyBackgroundApiServiceUnlockWithPasskeyAction
   | LegacyBackgroundApiServiceSetLockedAction
   | LegacyBackgroundApiServiceSyncKeyringEncryptionKeyAction
   | LegacyBackgroundApiServiceExportAccountAction
@@ -936,4 +1227,13 @@ export type LegacyBackgroundApiServiceMethodActions =
   | LegacyBackgroundApiServiceIsRelaySupportedAction
   | LegacyBackgroundApiServiceGetSentinelNetworkFlagsAction
   | LegacyBackgroundApiServiceHandleDefiReferralOnPermittedAccountsAddedAction
-  | LegacyBackgroundApiServiceHandleDefiReferralAction;
+  | LegacyBackgroundApiServiceHandleDefiReferralAction
+  | LegacyBackgroundApiServiceAddPermittedAccountAction
+  | LegacyBackgroundApiServiceAddPermittedAccountsAction
+  | LegacyBackgroundApiServiceRemovePermittedAccountAction
+  | LegacyBackgroundApiServiceSetPermittedAccountsAction
+  | LegacyBackgroundApiServiceAddPermittedChainAction
+  | LegacyBackgroundApiServiceAddPermittedChainsAction
+  | LegacyBackgroundApiServiceRemovePermittedChainAction
+  | LegacyBackgroundApiServiceSetPermittedChainsAction
+  | LegacyBackgroundApiServiceRequestAccountsAndChainPermissionsWithIdAction;

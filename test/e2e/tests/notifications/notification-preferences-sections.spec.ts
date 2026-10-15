@@ -8,9 +8,13 @@ import { withFixtures } from '../../helpers';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { goToNotificationsSettingsPage } from '../../page-objects/flows/notifications.flow';
+import { closeSettings } from '../../page-objects/flows/settings.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
-import { mockNotificationServices } from './mocks';
+import {
+  getMockNotificationPreferences,
+  mockNotificationServices,
+} from './mocks';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -45,9 +49,12 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 describe('Notification Preferences Sections', function () {
   it('persists section in-app notification preferences to authenticated user storage', async function () {
     const triggerServer = new MockttpNotificationTriggerServer();
+    triggerServer.setNotificationPreferences(getMockNotificationPreferences());
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2().build(),
+        fixtures: new FixtureBuilderV2()
+          .withAuthenticationController({ isSignedIn: true })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           await mockNotificationServices(server, triggerServer);
@@ -88,10 +95,14 @@ describe('Notification Preferences Sections', function () {
           expectedState === 'enabled',
         );
 
-        // Re-open Settings > Notifications from a fresh (locked then unlocked)
-        // session so the preferences are re-fetched from authenticated user
-        // storage rather than read from in-memory state.
-        await driver.navigate();
+        // Lock and unlock so the notifications controller re-authenticates and
+        // re-fetches preferences from user storage on unlock, ensuring the final
+        // assertion reads persisted state rather than the in-memory toggle value.
+        //
+        // Exit Settings via the UI rather than a page reload: a reload triggers
+        // the same fetches, keeping the background busy when setLocked fires and
+        // causing the unlock-page wait to time out.
+        await closeSettings(driver);
         await lockAndWaitForLoginPage(driver);
         await login(driver);
         await goToNotificationsSettingsPage(driver);

@@ -467,11 +467,14 @@ describe.each<string, boolean>([
 
     rerender({ dispatch: dispatch2 });
 
+    expect(mockSubscribe).toHaveBeenCalledTimes(3);
+
     const cb = callbacks.get(STATUS_UPDATED);
     await act(async () => {
       cb?.([{ transactionMeta: createTxMeta() }]);
     });
 
+    expect(dispatch1).not.toHaveBeenCalled();
     expect(dispatch2).toHaveBeenCalledWith({
       type: HardwareWalletSignatureEvent.FirstSignatureSubmitted,
     });
@@ -513,6 +516,106 @@ describe.each<string, boolean>([
         'abortTransactionSigning',
         ['tx-1'],
       );
+    });
+
+    it('resolves cancel without waiting for the abort-settle timeout when signing has settled', async () => {
+      // Regression: after a device rejection the tx is already terminal, but
+      // the TransactionController leaks the tx's abort callback (the delete
+      // after the awaited signing promise is skipped on rejection), so
+      // abortTransactionSigning resolves without emitting any confirmation
+      // events. Cancel must not block on the 5s settle timeout in that case.
+      const { result, fire } = await setupTracker({ useBatchTracking });
+      // Track the tx with a non-terminal status, then let the device reject
+      // it: the strategy observes the terminal event and derives that
+      // signing has settled.
+      await fire(STATUS_UPDATED, {
+        id: 'tx-1',
+        batchId: 'batch-1',
+        status: 'unapproved',
+      });
+      await fire(REJECTED, { id: 'tx-1', batchId: 'batch-1' });
+      mockSubmitRequestToBackground.mockClear();
+
+      let resolved = false;
+      const cancelPromise = result.current.cancelCurrentBatch().then(() => {
+        resolved = true;
+      });
+
+      await act(async () => {
+        // Flush microtasks only; do NOT advance past the 5s settle timeout.
+        await jest.advanceTimersByTimeAsync(0);
+      });
+
+      expect(resolved).toBe(true);
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-1'],
+      );
+      await cancelPromise;
+    });
+
+    it('still waits for abort events to settle when signing has not settled', async () => {
+      const { result, fire } = await setupTracker({ useBatchTracking });
+      // Tracked, but no signing-terminal event observed for the tx yet.
+      await fire(STATUS_UPDATED, {
+        id: 'tx-1',
+        batchId: 'batch-1',
+        status: 'unapproved',
+      });
+      mockSubmitRequestToBackground.mockClear();
+
+      let resolved = false;
+      const cancelPromise = result.current.cancelCurrentBatch().then(() => {
+        resolved = true;
+      });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(0);
+      });
+
+      // Without a terminal event the cancel waits for abort confirmation
+      // events (or the timeout), so it must still be pending here.
+      expect(resolved).toBe(false);
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+      await cancelPromise;
+      expect(resolved).toBe(true);
+    });
+
+    it('resolves the settle wait early when a terminal event arrives mid-wait', async () => {
+      const { result, fire } = await setupTracker({ useBatchTracking });
+      await fire(STATUS_UPDATED, {
+        id: 'tx-1',
+        batchId: 'batch-1',
+        status: 'unapproved',
+      });
+      mockSubmitRequestToBackground.mockClear();
+
+      let resolved = false;
+      const cancelPromise = result.current.cancelCurrentBatch().then(() => {
+        resolved = true;
+      });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(0);
+      });
+
+      // Cancel is parked waiting for the tracked tx's abort confirmation.
+      expect(resolved).toBe(false);
+
+      // The terminal rejection consumes the pending abort and resolves the
+      // settle wait without the 5s timeout elapsing.
+      await fire(REJECTED, { id: 'tx-1', batchId: 'batch-1' });
+
+      await act(async () => {
+        // Flush microtasks only; the settle timer must not be needed.
+        await jest.advanceTimersByTimeAsync(0);
+      });
+
+      expect(resolved).toBe(true);
+      await cancelPromise;
     });
 
     it('calls abortTransactionSigning for tracked tx ids', async () => {

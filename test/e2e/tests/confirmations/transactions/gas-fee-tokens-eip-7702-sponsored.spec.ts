@@ -79,7 +79,10 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
         await transactionConfirmation.clickAdvancedDetailsButton();
 
         await transactionConfirmation.checkPaidByMetaMask();
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -144,7 +147,10 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
 
-        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await transactionConfirmation.clickFooterButton({
+          button: 'confirm',
+          waitUntil: 'windowClose',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -203,6 +209,15 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
 }
 
 async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
+  const network = {
+    network: 'ethereum-mainnet',
+    confirmations: true,
+    relayTransactions: true,
+    cubistSigners: ['0x1111111111111111111111111111111111111111'],
+    sendBundle: true,
+    smartTransactions: true,
+  };
+
   await mockServer
     .forGet(`${TX_SENTINEL_URL}/networks`)
     .always()
@@ -210,14 +225,18 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
       return {
         ok: true,
         statusCode: 200,
-        json: {
-          '1': {
-            network: 'ethereum-mainnet',
-            confirmations: true,
-            relayTransactions: true,
-            sendBundle: true,
-          },
-        },
+        json: { '1': network },
+      };
+    });
+
+  await mockServer
+    .forGet(`${TX_SENTINEL_URL}/network`)
+    .always()
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: network,
       };
     });
 }

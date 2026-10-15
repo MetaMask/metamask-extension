@@ -1,14 +1,26 @@
 import { Driver } from '../../../webdriver/driver';
 
 /**
- * Represents the select hardware wallet account page.
- * This page allows users to select accounts to connect.
+ * Hardware wallet account list: pick accounts to unlock or forget the device.
+ *
+ * Screen: account-selection step after `#/new-account/connect` device connect.
+ * Owns: page-loaded checks, counting/displayed addresses, unlocking selected
+ * accounts, cancel, and forget-device.
+ * Boundaries: the account list only. Device-type selection is
+ * `ConnectHardwareWalletPage`; wallet UI after unlock is outside this object.
+ * Related: `ConnectHardwareWalletPage` (how tests get here).
+ *
+ * @see ui/pages/create-account/connect-hardware/account-list.tsx
  */
 class SelectHardwareWalletAccountPage {
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
   protected readonly cancelButton = {
     testId: 'connect-hardware-account-list-cancel-btn',
+  };
+
+  protected readonly connectHardwareAccountListPage = {
+    testId: 'parent-selector-connect-hardware-account-list-page',
   };
 
   protected driver: Driver;
@@ -61,6 +73,7 @@ class SelectHardwareWalletAccountPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.connectHardwareAccountListPage,
         this.selectAccountPageTitle,
         this.cancelButton,
       ]);

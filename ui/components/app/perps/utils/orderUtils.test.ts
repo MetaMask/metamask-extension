@@ -7,6 +7,7 @@ import {
   derivePositionTpslPricesFromOrders,
   willFlipPosition,
   formatOrderLabel,
+  getOrderStatusI18nKey,
   isOrderNoLongerOpenError,
 } from './orderUtils';
 
@@ -484,6 +485,65 @@ describe('orderUtils', () => {
       expect(syntheticOrders).toHaveLength(0);
     });
 
+    it('does not add synthetic row when a real trigger shares the parent order id', () => {
+      // perps-controller v11 populates `parentOrderId` on real TP/SL children
+      // streamed over the WebSocket, where previously only client-built
+      // synthetic rows carried it. The parent here has no takeProfitOrderId and
+      // the real trigger has an unrelated orderId, so the child-link path is the
+      // only thing that can suppress the duplicate row.
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const realTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-1',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        realTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(0);
+      expect(result.map((o) => o.orderId)).toStrictEqual([
+        'parent-1',
+        'real-tp-9',
+      ]);
+    });
+
+    it('adds synthetic row when a real trigger does not share the parent order id', () => {
+      const parentOrder = makeOrder({
+        orderId: 'parent-1',
+        side: 'buy',
+        takeProfitPrice: '3200.00',
+        takeProfitOrderId: '',
+      });
+      const unrelatedTpOrder = makeOrder({
+        orderId: 'real-tp-9',
+        parentOrderId: 'parent-2',
+        side: 'sell',
+        symbol: 'ETH',
+        reduceOnly: true,
+        isTrigger: true,
+        triggerPrice: '3200.00',
+      });
+
+      const result = buildDisplayOrdersWithSyntheticTpsl([
+        parentOrder,
+        unrelatedTpOrder,
+      ]);
+
+      expect(result.filter((o) => o.isSynthetic)).toHaveLength(1);
+    });
+
     it('skips synthetic rows for trigger orders (no recursion)', () => {
       const triggerOrder = makeOrder({
         isTrigger: true,
@@ -720,6 +780,34 @@ describe('orderUtils', () => {
         detailedOrderType: 'Stop Market',
       });
       expect(formatOrderLabel(order)).toBe('Stop market close long');
+    });
+  });
+
+  describe('getOrderStatusI18nKey', () => {
+    // @ts-expect-error: each is a valid test function in jest
+    it.each([
+      ['Open', 'perpsStatusOpen'],
+      ['open', 'perpsStatusOpen'],
+      ['Filled', 'perpsStatusFilled'],
+      ['Canceled', 'perpsStatusCanceled'],
+      ['Queued', 'perpsStatusQueued'],
+      ['Rejected', 'perpsStatusRejected'],
+      ['Triggered', 'perpsStatusTriggered'],
+    ])(
+      'maps status text "%s" to i18n key "%s"',
+      (statusText: string, expectedKey: string) => {
+        expect(getOrderStatusI18nKey(statusText)).toBe(expectedKey);
+      },
+    );
+
+    it('defaults to the "open" i18n key for an unrecognized status', () => {
+      expect(getOrderStatusI18nKey('SomeUnknownStatus')).toBe(
+        'perpsStatusOpen',
+      );
+    });
+
+    it('defaults to the "open" i18n key when status text is undefined', () => {
+      expect(getOrderStatusI18nKey(undefined)).toBe('perpsStatusOpen');
     });
   });
 

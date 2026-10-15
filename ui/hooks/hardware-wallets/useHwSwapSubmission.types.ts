@@ -1,11 +1,8 @@
-import type {
-  QuoteResponseV1,
-  QuoteMetadata,
-} from '@metamask/bridge-controller';
+import type { QuoteResponse } from '@metamask/bridge-controller';
 import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 import { HardwareWalletSignatureEvent } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
-export type LockedQuote = (QuoteResponseV1 & QuoteMetadata) | null | undefined;
+export type LockedQuote = QuoteResponse | null | undefined;
 
 export type HardwareWalletSignatureAction = {
   type: typeof HardwareWalletSignatureEvent.Reset;
@@ -18,7 +15,7 @@ export type UseHwSwapSubmissionOptions = {
   signatureState: HardwareWalletSignaturesState;
   dispatchSignatureEvent: React.Dispatch<HardwareWalletSignatureAction>;
   submitBridgeTransaction: (
-    quote: QuoteResponseV1 & QuoteMetadata,
+    quote: QuoteResponse,
     options?: { rpcTimeoutMs?: number },
   ) => Promise<void>;
   /**

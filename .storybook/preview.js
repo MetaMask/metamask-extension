@@ -5,7 +5,6 @@ Instead, use export const parameters = {}; and export const decorators = []; in 
   * */
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { PureBlackProvider } from '@metamask/design-system-react';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
@@ -27,11 +26,10 @@ window.metamaskFeatureFlags = {};
 
 export const parameters = {
   backgrounds: {
-    default: 'default',
-    values: [
-      { name: 'default', value: 'var(--color-background-default)' },
-      { name: 'alternative', value: 'var(--color-background-alternative)' },
-    ],
+    options: {
+      default: { name: 'default', value: 'var(--color-background-default)' },
+      alternative: { name: 'alternative', value: 'var(--color-background-alternative)' }
+    }
   },
   options: {
     storySort: {
@@ -75,18 +73,6 @@ export const globalTypes = {
       dynamicTitle: true,
     },
   },
-  pureBlack: {
-    name: 'Pure Black',
-    description: 'Enable pure black dark mode (data-pure-black="true")',
-    defaultValue: false,
-    toolbar: {
-      items: [
-        { value: false, title: 'Off', icon: 'circlehollow' },
-        { value: true, title: 'On', icon: 'circle' },
-      ],
-      dynamicTitle: true,
-    },
-  },
 };
 
 export const getNewState = (state, props) => {
@@ -108,7 +94,7 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const { theme, pureBlack } = context.globals;
+  const { theme } = context.globals;
   const systemPrefersDark = window.matchMedia(
     '(prefers-color-scheme: dark)',
   ).matches;
@@ -129,13 +115,7 @@ const metamaskDecorator = (story, context) => {
     } else if (currentTheme === 'dark' && !isDark) {
       document.documentElement.setAttribute('data-theme', 'light');
     }
-
-    if (pureBlack) {
-      document.documentElement.setAttribute('data-pure-black', 'true');
-    } else {
-      document.documentElement.removeAttribute('data-pure-black');
-    }
-  }, [isDark, pureBlack]);
+  }, [isDark]);
 
   // Get initial entries from story parameters, default to ['/'] if not provided
   const initialEntries = context.parameters?.initialEntries || ['/'];
@@ -145,31 +125,29 @@ const metamaskDecorator = (story, context) => {
   const StoryComponent = () => story();
 
   return (
-    <PureBlackProvider isPureBlack={Boolean(pureBlack) && isDark}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={initialEntries}>
-            <AlertMetricsProvider
-              metrics={{
-                trackAlertActionClicked: () => undefined,
-                trackAlertRender: () => undefined,
-                trackInlineAlertClicked: () => undefined,
-              }}
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={initialEntries}>
+          <AlertMetricsProvider
+            metrics={{
+              trackAlertActionClicked: () => undefined,
+              trackAlertRender: () => undefined,
+              trackInlineAlertClicked: () => undefined,
+            }}
+          >
+            <I18nProvider
+              currentLocale={currentLocale}
+              current={current}
+              en={allLocales.en}
             >
-              <I18nProvider
-                currentLocale={currentLocale}
-                current={current}
-                en={allLocales.en}
-              >
-                <Routes>
-                  <Route path={path} element={<StoryComponent />} />
-                </Routes>
-              </I18nProvider>
-            </AlertMetricsProvider>
-          </MemoryRouter>
-        </QueryClientProvider>
-      </Provider>
-    </PureBlackProvider>
+              <Routes>
+                <Route path={path} element={<StoryComponent />} />
+              </Routes>
+            </I18nProvider>
+          </AlertMetricsProvider>
+        </MemoryRouter>
+      </QueryClientProvider>
+    </Provider>
   );
 };
 
@@ -224,3 +202,9 @@ const withColorScheme = (Story, context) => {
 };
 
 export const decorators = [metamaskDecorator, withColorScheme];
+
+export const initialGlobals = {
+  backgrounds: {
+    value: 'default',
+  },
+};

@@ -1,259 +1,44 @@
-import { generateDeterministicRandomNumber } from '@metamask/remote-feature-flag-controller';
-
 import {
   PRODUCTION_LIKE_ENVIRONMENTS,
-  shouldCreateRpcServiceEvents,
+  getRpcServiceEventsSampleRate,
 } from './utils';
 
-jest.mock('@metamask/remote-feature-flag-controller', () => ({
-  ...jest.requireActual('@metamask/remote-feature-flag-controller'),
-  // This is the name of the property that turns this into an ES module.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  generateDeterministicRandomNumber: jest.fn(),
-}));
+describe('getRpcServiceEventsSampleRate', () => {
+  // @ts-expect-error The Mocha types are incorrect.
+  describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
+    'if the environment is %s',
+    (environment: string) => {
+      it('returns 0.01', async () => {
+        await withChangesToEnvironmentVariables(() => {
+          process.env.METAMASK_ENVIRONMENT = environment;
 
-const generateDeterministicRandomNumberMock = jest.mocked(
-  generateDeterministicRandomNumber,
-);
-
-const MOCK_ANALYTICS_ID =
-  '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
-
-describe('shouldCreateRpcServiceEvents', () => {
-  describe('if not given an error', () => {
-    const error = undefined;
-
-    describe('if given an analytics ID', () => {
-      // @ts-expect-error The Mocha types are incorrect.
-      describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
-        'if the environment is %s',
-        (environment: string) => {
-          describe('if the user is in the MetaMetrics sample', () => {
-            const sampleUserRanking = 0.009999;
-
-            it('returns true', async () => {
-              await withChangesToEnvironmentVariables(() => {
-                process.env.METAMASK_ENVIRONMENT = environment;
-                generateDeterministicRandomNumberMock.mockReturnValue(
-                  sampleUserRanking,
-                );
-
-                expect(
-                  shouldCreateRpcServiceEvents({
-                    error,
-                    analyticsId: MOCK_ANALYTICS_ID,
-                  }),
-                ).toBe(true);
-              });
-            });
-          });
-
-          describe('if the user is not in the MetaMetrics sample', () => {
-            const sampleUserRanking = 0.2;
-
-            it('returns false', async () => {
-              await withChangesToEnvironmentVariables(() => {
-                process.env.METAMASK_ENVIRONMENT = environment;
-                generateDeterministicRandomNumberMock.mockReturnValue(
-                  sampleUserRanking,
-                );
-
-                expect(
-                  shouldCreateRpcServiceEvents({
-                    error,
-                    analyticsId: MOCK_ANALYTICS_ID,
-                  }),
-                ).toBe(false);
-              });
-            });
-          });
-        },
-      );
-
-      describe('if the environment is non-production', () => {
-        const environment = 'development';
-
-        it('returns true', async () => {
-          await withChangesToEnvironmentVariables(() => {
-            process.env.METAMASK_ENVIRONMENT = environment;
-
-            expect(
-              shouldCreateRpcServiceEvents({
-                error,
-                analyticsId: MOCK_ANALYTICS_ID,
-              }),
-            ).toBe(true);
-          });
+          expect(getRpcServiceEventsSampleRate()).toBe(0.01);
         });
       });
+    },
+  );
 
-      describe('if the environment is not set', () => {
-        it('returns false', async () => {
-          await withChangesToEnvironmentVariables(() => {
-            delete process.env.METAMASK_ENVIRONMENT;
+  describe('if the environment is non-production', () => {
+    it('returns 1', async () => {
+      await withChangesToEnvironmentVariables(() => {
+        process.env.METAMASK_ENVIRONMENT = 'development';
 
-            expect(
-              shouldCreateRpcServiceEvents({
-                error,
-                analyticsId: MOCK_ANALYTICS_ID,
-              }),
-            ).toBe(false);
-          });
-        });
-      });
-    });
-
-    describe('if the analytics ID is undefined', () => {
-      const analyticsId = undefined;
-
-      it('returns false', async () => {
-        expect(
-          shouldCreateRpcServiceEvents({
-            error: undefined,
-            analyticsId,
-          }),
-        ).toBe(false);
-      });
-    });
-
-    describe('if the analytics ID is null', () => {
-      const analyticsId = null;
-
-      it('returns false', async () => {
-        expect(
-          shouldCreateRpcServiceEvents({
-            error: undefined,
-            analyticsId,
-          }),
-        ).toBe(false);
+        expect(getRpcServiceEventsSampleRate()).toBe(1);
       });
     });
   });
 
-  describe('if given a non-connection error', () => {
-    const error = new Error('some error');
+  describe('if the environment is not set', () => {
+    it('returns 0', async () => {
+      await withChangesToEnvironmentVariables(() => {
+        delete process.env.METAMASK_ENVIRONMENT;
 
-    describe('if given an analytics ID', () => {
-      // @ts-expect-error The Mocha types are incorrect.
-      describe.each(PRODUCTION_LIKE_ENVIRONMENTS)(
-        'if the environment is %s',
-        (environment: string) => {
-          describe('if the user is in the MetaMetrics sample', () => {
-            const sampleUserRanking = 0.009999;
-
-            it('returns true', async () => {
-              await withChangesToEnvironmentVariables(() => {
-                process.env.METAMASK_ENVIRONMENT = environment;
-                generateDeterministicRandomNumberMock.mockReturnValue(
-                  sampleUserRanking,
-                );
-
-                expect(
-                  shouldCreateRpcServiceEvents({
-                    error,
-                    analyticsId: MOCK_ANALYTICS_ID,
-                  }),
-                ).toBe(true);
-              });
-            });
-          });
-
-          describe('if the user is not in the MetaMetrics sample', () => {
-            const sampleUserRanking = 0.2;
-
-            it('returns false', async () => {
-              await withChangesToEnvironmentVariables(() => {
-                process.env.METAMASK_ENVIRONMENT = environment;
-                generateDeterministicRandomNumberMock.mockReturnValue(
-                  sampleUserRanking,
-                );
-
-                expect(
-                  shouldCreateRpcServiceEvents({
-                    error,
-                    analyticsId: MOCK_ANALYTICS_ID,
-                  }),
-                ).toBe(false);
-              });
-            });
-          });
-        },
-      );
-
-      describe('if the environment is non-production', () => {
-        const environment = 'development';
-
-        it('returns true', async () => {
-          await withChangesToEnvironmentVariables(() => {
-            process.env.METAMASK_ENVIRONMENT = environment;
-
-            expect(
-              shouldCreateRpcServiceEvents({
-                error,
-                analyticsId: MOCK_ANALYTICS_ID,
-              }),
-            ).toBe(true);
-          });
-        });
+        expect(getRpcServiceEventsSampleRate()).toBe(0);
       });
-
-      describe('if the environment is not set', () => {
-        it('returns false', async () => {
-          await withChangesToEnvironmentVariables(() => {
-            delete process.env.METAMASK_ENVIRONMENT;
-
-            expect(
-              shouldCreateRpcServiceEvents({
-                error,
-                analyticsId: MOCK_ANALYTICS_ID,
-              }),
-            ).toBe(false);
-          });
-        });
-      });
-    });
-
-    describe('if the analytics ID is undefined', () => {
-      const analyticsId = undefined;
-
-      it('returns false', async () => {
-        expect(
-          shouldCreateRpcServiceEvents({
-            error: undefined,
-            analyticsId,
-          }),
-        ).toBe(false);
-      });
-    });
-
-    describe('if the analytics ID is null', () => {
-      const analyticsId = null;
-
-      it('returns false', async () => {
-        expect(
-          shouldCreateRpcServiceEvents({
-            error: undefined,
-            analyticsId,
-          }),
-        ).toBe(false);
-      });
-    });
-  });
-
-  describe('if given a connection error', () => {
-    const error = new TypeError('Failed to fetch');
-
-    it('returns false', async () => {
-      expect(
-        shouldCreateRpcServiceEvents({
-          error,
-          analyticsId: MOCK_ANALYTICS_ID,
-        }),
-      ).toBe(false);
     });
   });
 });
+
 /**
  * Ensures that changes to `process.env` during a test get rolled back after a
  * test.

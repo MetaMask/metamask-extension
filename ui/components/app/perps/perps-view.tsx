@@ -1,6 +1,7 @@
 import {
   Box,
   BoxFlexDirection,
+  FontWeight,
   Text,
   TextVariant,
   TextColor,
@@ -8,6 +9,8 @@ import {
 import type { Order, Position } from '@metamask/perps-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { usePerpsEntryTrace } from '../../../hooks/perps/usePerpsEntryTrace';
 import {
   usePerpsLivePositions,
   usePerpsLiveOrders,
@@ -22,6 +25,7 @@ import {
   selectPerpsIsFirstTimeUser,
   selectPerpsIsTestnet,
 } from '../../../selectors/perps-controller';
+import { getIsPerpsServiceInterruptionBannerEnabled } from '../../../selectors/perps/feature-flags';
 import {
   selectTutorialCompleted,
   setTutorialModalOpen,
@@ -39,23 +43,28 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
 import { useSelectedAccountComplianceGate } from '../compliance';
+import { PERPS_ACTIVITY_ROUTE } from '../../../helpers/constants/routes';
 import { useDispatch } from '../../../store/hooks';
+import type { PerpsTransaction } from './types';
+import { getPerpsTransactionDestination } from './utils/getPerpsTransactionDestination';
 import { trackPerpsErrorScreenViewed } from './utils/track-perps-error-screen';
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
-import { PerpsBalanceDropdown } from './perps-balance-dropdown';
+import { PerpsMarketBalanceActions } from './perps-market-balance-actions';
 import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
+import { PerpsProducts } from './perps-products';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
 import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
 import {
-  PerpsControlBarSkeleton,
+  PerpsBalanceActionsSkeleton,
   PerpsSectionSkeleton,
 } from './perps-skeletons';
 import { PerpsSupportLearn } from './perps-support-learn';
 import { PerpsTutorialModal } from './perps-tutorial-modal';
+import { PerpsTopMovers } from './perps-top-movers';
 import { PerpsWatchlist } from './perps-watchlist';
 import { usePerpsTabExploreData } from './hooks/usePerpsTabExploreData';
 
@@ -74,9 +83,13 @@ type BatchCloseResult = {
 
 export const PerpsView = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const bottomNavSource = usePerpsBottomNavSource();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
@@ -101,9 +114,12 @@ export const PerpsView = () => {
     usePerpsLiveOrders();
   const { account, isInitialLoading: accountLoading } = usePerpsLiveAccount();
   const {
+    allMarkets,
     exploreMarkets,
     watchlistMarkets,
+    watchlistCount,
     isInitialLoading: marketsLoading,
+    isLive: marketsLive,
   } = usePerpsTabExploreData();
 
   const {
@@ -148,6 +164,20 @@ export const PerpsView = () => {
   const applyOrdersSnapshot = useCallback((next: Order[]) => {
     getPerpsStreamManager().orders.pushData(next);
   }, []);
+
+  // Navigate to the transaction's details view instead of falling back to
+  // the general activity list (see `getPerpsTransactionDestination`).
+  const handleRecentActivityTransactionClick = useCallback(
+    (transaction: PerpsTransaction) => {
+      const destination = getPerpsTransactionDestination(transaction);
+      if (destination) {
+        navigate(destination.pathname, { state: destination.state });
+      } else {
+        navigate(PERPS_ACTIVITY_ROUTE);
+      }
+    },
+    [navigate],
+  );
 
   // Compliance gate wraps only the entry point: when the wallet is blocked the
   // access-restricted modal shows and the confirmation flow never opens. When
@@ -361,16 +391,25 @@ export const PerpsView = () => {
     }
   }, [isEligible, applyOrdersSnapshot, orders.length, t, track]);
 
-  const hasPositions = positions.length > 0;
-  // Only the single-position view can mirror a card-level RoE; for zero or
-  // multiple positions, summary RoE remains the account aggregate.
-  const singlePosition = positions.length === 1 ? positions[0] : undefined;
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
     account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
+  let entryVariant: 'empty' | 'position' | 'order' = 'empty';
+  if (orders.length > 0) {
+    entryVariant = 'order';
+  } else if (positions.length > 0) {
+    entryVariant = 'position';
+  }
+  usePerpsEntryTrace(
+    'home',
+    exploreMarkets,
+    isLoading,
+    marketsLive,
+    entryVariant,
+  );
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
 
   usePerpsEventTracking({
@@ -384,6 +423,8 @@ export const PerpsView = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]:
         bottomNavSource ?? PERPS_EVENT_VALUE.SOURCE.HOMESCREEN_TAB,
       [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
 
@@ -403,6 +444,20 @@ export const PerpsView = () => {
     }
   }, [dispatch, isFirstTimeUser, isLoading, isTestnet, tutorialCompleted]);
 
+  // The "Perps" heading is owned by PerpsView (single source of truth) so it
+  // renders identically from both wrappers (bottom-nav home page and the
+  // account-overview tab), including during the loading skeleton state.
+  const perpsHeading = (
+    <Text
+      variant={TextVariant.HeadingLg}
+      fontWeight={FontWeight.Bold}
+      className="px-4 pt-4"
+      data-testid="perps-view-title"
+    >
+      {t('perps')}
+    </Text>
+  );
+
   // Show loading state while initial stream data is being fetched.
   // Transaction history loads in parallel; Recent Activity skeleton is included here
   // so the section is represented before the main view mounts.
@@ -413,9 +468,23 @@ export const PerpsView = () => {
         gap={4}
         data-testid="perps-view-loading"
       >
-        <PerpsControlBarSkeleton />
+        {perpsHeading}
+        <Box paddingLeft={4} paddingRight={4}>
+          <PerpsBalanceActionsSkeleton />
+        </Box>
         <PerpsSectionSkeleton cardCount={5} showStartTradeCta />
         <PerpsSectionSkeleton cardCount={5} />
+        {/* Watchlist sits above Products once loaded, and is the one section
+            whose presence is known before the markets arrive: the starred
+            symbols are persisted. Reserving its rows here keeps Products in the
+            slot it will occupy instead of letting the watchlist push it down.
+            A user with nothing starred gets no section and no reservation. */}
+        {watchlistCount > 0 && (
+          <PerpsSectionSkeleton cardCount={watchlistCount} />
+        )}
+        {/* Reserves the Products section's height in the same slot it occupies
+            once loaded, so nothing below it shifts when the chips arrive. */}
+        <PerpsProducts isLoading />
         <Box data-testid="perps-recent-activity-skeleton">
           <PerpsSectionSkeleton cardCount={3} showStartTradeCta={false} />
         </Box>
@@ -427,15 +496,17 @@ export const PerpsView = () => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       gap={4}
-      data-testid="perps-view"
+      data-testid="parent-selector-perps-tab"
     >
-      {/* Balance header with Add funds / Withdraw dropdown */}
-      <PerpsBalanceDropdown
-        hasPositions={hasPositions}
-        singlePosition={singlePosition}
-        onAddFunds={triggerDeposit}
-        onWithdraw={triggerWithdraw}
-      />
+      {perpsHeading}
+      {/* Balance header with total balance, available balance, and persistent Withdraw / Add funds buttons */}
+      <Box paddingLeft={4} paddingRight={4}>
+        <PerpsMarketBalanceActions
+          onAddFunds={triggerDeposit}
+          onWithdraw={triggerWithdraw}
+          onLearnMore={() => dispatch(setTutorialModalOpen(true))}
+        />
+      </Box>
 
       {/* Positions + Orders sections */}
       {batchActionError ? (
@@ -447,6 +518,7 @@ export const PerpsView = () => {
       <PerpsPositionsOrders
         positions={positions}
         orders={orders}
+        account={account}
         onCloseAllPositions={handleCloseAllPositions}
         onCancelAllOrders={handleCancelAllOrders}
         isCloseAllPending={isCloseAllPending}
@@ -456,6 +528,15 @@ export const PerpsView = () => {
       {/* Watchlist */}
       <PerpsWatchlist markets={watchlistMarkets} />
 
+      {/* Products: the tab's shortcut into the full market list, below the
+          user's own watchlist so their own markets come first. Loading is not
+          a live state here: `marketsLoading` is part of the `isLoading` the
+          early return above already took, so it is false by this point. */}
+      <PerpsProducts isLoading={false} />
+
+      {/* Top movers */}
+      <PerpsTopMovers markets={allMarkets} isLoading={marketsLoading} />
+
       {/* Explore markets */}
       <PerpsExploreMarkets markets={exploreMarkets} />
 
@@ -463,6 +544,7 @@ export const PerpsView = () => {
       <PerpsRecentActivity
         transactions={recentActivityTransactions}
         maxTransactions={PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS}
+        onTransactionClick={handleRecentActivityTransactionClick}
         isLoading={recentActivityLoading}
         error={recentActivityError}
       />

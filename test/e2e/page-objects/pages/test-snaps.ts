@@ -187,6 +187,18 @@ const dropDownLocator = {
   multichainNetworkDropdown: '#select-multichain-chain',
 } satisfies Record<string, string>;
 
+/**
+ * Test Snaps playground dapp for installing and exercising example snaps.
+ *
+ * Screen: `DAPP_URL` when serving `@metamask/test-snaps` (Flask snaps E2E).
+ * Owns: connect buttons for each example snap, dialog/insight/cron/state
+ * inputs, result spans, and preference/version helpers used by snaps tests.
+ * Boundaries: the test-snaps site only. Snap install warnings, interactive
+ * dialogs, and confirmation UI belong to dialog/confirmation page objects.
+ * Related: `SnapInstall`, `SnapInteractiveDialog`, `SnapListPage`.
+ *
+ * @see node_modules/@metamask/test-snaps/dist/index.html
+ */
 export class TestSnaps {
   driver: Driver;
 

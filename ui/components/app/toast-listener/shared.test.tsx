@@ -24,11 +24,13 @@ jest.mock('../../ui/toast/toast', () => ({
   ToastContent: ({
     title,
     description,
+    dataTestId,
   }: {
     title: string;
     description?: string;
+    dataTestId?: string;
   }) => (
-    <div>
+    <div data-testid={dataTestId}>
       <p>{title}</p>
       {description ? <p>{description}</p> : null}
     </div>
@@ -113,5 +115,15 @@ describe('toast-listener/shared', () => {
     render(mockToastSuccess.mock.calls[0][0]);
 
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('sets a data-testid on the pending toast content', () => {
+    showPendingToast('pending-id');
+
+    render(mockToastLoading.mock.calls[0][0]);
+
+    expect(
+      screen.getByTestId('transaction-submitted-toast'),
+    ).toBeInTheDocument();
   });
 });

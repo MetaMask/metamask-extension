@@ -1,8 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  matchPath,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
+import {
+  BadgeWrapper,
+  BadgeWrapperPosition,
   Box,
   BoxAlignItems,
   BoxFlexDirection,
@@ -11,6 +18,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
+import { useBottomNavBar } from '#ui/hooks/useBottomNavBar';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { MultichainTriggeredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-triggered-list';
 import {
@@ -21,10 +29,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setShowSupportDataConsentModal } from '../../../store/actions';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenuDrawerWithList } from '../global-menu-drawer';
-import { getIsDefaultAddressEnabled } from '../../../selectors';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
   DISCOVER_SEARCH_ROUTE,
 } from '../../../helpers/constants/routes';
 import { transitionForward } from '../../ui/transition';
@@ -41,19 +50,24 @@ import { useDispatch } from '../../../store/hooks';
 import { getIsDiscoverSearchEnabled } from '../../../selectors/multichain/feature-flags';
 
 type AppHeaderUnlockedContentProps = {
-  disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
 };
 
 export const AppHeaderUnlockedContent = ({
-  disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
   const { trackEvent, createEventBuilder } = useAnalytics();
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
+  const showNavbar = useBottomNavBar();
   const [searchParams, setSearchParams] = useSearchParams();
+  const disableAccountPicker = Boolean(
+    matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname) ||
+    (matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname) &&
+      !showNavbar),
+  );
   // Derive from URL so drawer state survives route changes (e.g. homepage mount) without render>close>render flash
   const accountOptionsMenuOpen = searchParams.get('drawerOpen') === 'true';
   const selectedMultichainAccountId = useSelector(getSelectedAccountGroup);
@@ -61,7 +75,6 @@ export const AppHeaderUnlockedContent = ({
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
   const accountListStats = useSelector(getAccountListStats);
-  const isDefaultAddressEnabled = useSelector(getIsDefaultAddressEnabled);
   const isDiscoverSearchEnabled = useSelector(getIsDiscoverSearchEnabled);
 
   const accountName = selectedMultichainAccount?.metadata.name ?? '';
@@ -101,6 +114,14 @@ export const AppHeaderUnlockedContent = ({
   }, [accountOptionsMenuOpen, trackEvent, createEventBuilder, setSearchParams]);
 
   const handleOpenDiscoverSearch = useCallback(() => {
+    trackEvent(
+      createEventBuilder(MetaMetricsEventName.ExploreSearchInteracted)
+        .addProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          interaction_type: 'opened',
+        })
+        .build(),
+    );
     transitionForward(() =>
       navigate(DISCOVER_SEARCH_ROUTE, {
         state: {
@@ -108,7 +129,7 @@ export const AppHeaderUnlockedContent = ({
         },
       }),
     );
-  }, [navigate]);
+  }, [createEventBuilder, navigate, trackEvent]);
 
   const multichainAccountAppContent = useMemo(() => {
     return (
@@ -166,7 +187,6 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
-              showDefaultAddressSection={isDefaultAddressEnabled}
             >
               <MultichainAccountNetworkGroupWithCopyIcon
                 groupId={selectedMultichainAccountId}
@@ -179,7 +199,6 @@ export const AppHeaderUnlockedContent = ({
   }, [
     accountName,
     disableAccountPicker,
-    isDefaultAddressEnabled,
     selectedMultichainAccountId,
     navigate,
     trackEvent,
@@ -205,14 +224,9 @@ export const AppHeaderUnlockedContent = ({
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.End}
-          className="relative w-full"
+          className="w-full"
           gap={2}
         >
-          {!accountOptionsMenuOpen && (
-            <Box onClick={handleMainMenuToggle}>
-              <NotificationsTagCounter noLabel />
-            </Box>
-          )}
           {isDiscoverSearchEnabled && (
             <ButtonIcon
               iconName={IconName.Search}
@@ -222,17 +236,30 @@ export const AppHeaderUnlockedContent = ({
               size={ButtonIconSize.Md}
             />
           )}
-          <ButtonIcon
-            ref={menuRef}
-            iconName={IconName.Menu}
-            data-testid="account-options-menu-button"
-            ariaLabel={t('accountOptions')}
-            onClick={handleMainMenuToggle}
-            size={ButtonIconSize.Md}
-          />
+          <BadgeWrapper
+            badge={
+              accountOptionsMenuOpen ? null : (
+                <NotificationsTagCounter noLabel />
+              )
+            }
+            position={BadgeWrapperPosition.TopRight}
+            badgeContainerProps={{
+              onClick: handleMainMenuToggle,
+              className: 'cursor-pointer',
+            }}
+            className="self-center"
+          >
+            <ButtonIcon
+              ref={menuRef}
+              iconName={IconName.Menu}
+              data-testid="account-options-menu-button"
+              ariaLabel={t('accountOptions')}
+              onClick={handleMainMenuToggle}
+              size={ButtonIconSize.Md}
+            />
+          </BadgeWrapper>
         </Box>
         <GlobalMenuDrawerWithList
-          anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           onClose={closeAccountOptionsMenu}
         />

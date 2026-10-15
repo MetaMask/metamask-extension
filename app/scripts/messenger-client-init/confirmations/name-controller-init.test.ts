@@ -30,12 +30,6 @@ function getInitRequestMock(): jest.Mocked<
 
   // @ts-expect-error: Partial mock.
   requestMock.getMessengerClient.mockImplementation((name: string) => {
-    if (name === 'EnsController') {
-      return {
-        reverseResolveAddress: jest.fn(),
-      };
-    }
-
     if (name === 'SnapsNameProvider') {
       return {};
     }

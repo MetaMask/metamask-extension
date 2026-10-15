@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
-import { ButtonBase, IconName, Box } from '../../component-library';
+import { ButtonBase, Box, IconName } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,7 +24,7 @@ function AddressCopyButton({ address, shorten = false, wrap = false }) {
     : checksummedAddress;
 
   // useCopyToClipboard analysis: Copies a public address
-  const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
 
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');

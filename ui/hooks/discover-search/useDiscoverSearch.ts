@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
+import { useDebouncedValue } from '../useDebouncedValue';
 import { DISCOVER_SEARCH_DEBOUNCE_MS } from './constants';
 import type { DiscoverSearchResult, DiscoverSearchTab } from './types';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
@@ -21,16 +22,7 @@ export const useDiscoverSearch = ({
   query,
   activeTab,
 }: UseDiscoverSearchOptions): DiscoverSearchResult => {
-  const [debouncedQuery, setDebouncedQuery] = useState(query);
-
-  useEffect(() => {
-    const timer = setTimeout(
-      () => setDebouncedQuery(query),
-      DISCOVER_SEARCH_DEBOUNCE_MS,
-    );
-    return () => clearTimeout(timer);
-  }, [query]);
-
+  const debouncedQuery = useDebouncedValue(query, DISCOVER_SEARCH_DEBOUNCE_MS);
   const isDebouncing = query !== debouncedQuery;
   const isPerpsSearchActive = activeTab === 'all' || activeTab === 'perps';
 
@@ -49,12 +41,16 @@ export const useDiscoverSearch = ({
         isLoading: isDebouncing || cryptoSection.isLoading,
         error: cryptoSection.error,
         totalCount: cryptoSection.totalCount,
+        hasNextPage: cryptoSection.hasNextPage,
+        isFetchingNextPage: cryptoSection.isFetchingNextPage,
+        fetchNextPage: cryptoSection.fetchNextPage,
       },
       perps: {
         id: 'perps' as const,
         items: perps.data,
         isLoading: isPerpsSearchActive && (isDebouncing || perps.isLoading),
         error: perps.error,
+        totalCount: perps.totalCount,
       },
       stocks: {
         id: 'stocks' as const,
@@ -62,6 +58,9 @@ export const useDiscoverSearch = ({
         isLoading: isDebouncing || stocks.isLoading,
         error: stocks.error,
         totalCount: stocks.totalCount,
+        hasNextPage: stocks.hasNextPage,
+        isFetchingNextPage: stocks.isFetchingNextPage,
+        fetchNextPage: stocks.fetchNextPage,
       },
       isDebouncing,
     }),
@@ -70,15 +69,22 @@ export const useDiscoverSearch = ({
       cryptoSection.error,
       cryptoSection.isLoading,
       cryptoSection.totalCount,
+      cryptoSection.hasNextPage,
+      cryptoSection.isFetchingNextPage,
+      cryptoSection.fetchNextPage,
       isDebouncing,
       isPerpsSearchActive,
       perps.data,
       perps.error,
       perps.isLoading,
+      perps.totalCount,
       stocks.data,
       stocks.error,
       stocks.isLoading,
       stocks.totalCount,
+      stocks.hasNextPage,
+      stocks.isFetchingNextPage,
+      stocks.fetchNextPage,
     ],
   );
 };

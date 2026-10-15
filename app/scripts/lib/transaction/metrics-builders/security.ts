@@ -2,7 +2,6 @@
 import { MetaMetricsEventUiCustomization } from '../../../../../shared/constants/metametrics';
 import {
   createCacheKey,
-  mapChainIdToSupportedEVMChain,
   ResultType,
 } from '../../../../../shared/lib/trust-signals';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -42,18 +41,13 @@ export const getSecurityMetricsProperties: TransactionMetricsBuilder = ({
   if (securityAlertsEnabled) {
     const to =
       transactionMeta.txParamsOriginal?.to ?? transactionMeta.txParams.to;
-    if (typeof to === 'string') {
-      const supportedEVMChain = mapChainIdToSupportedEVMChain(
-        transactionMeta.chainId,
-      );
-      if (supportedEVMChain) {
-        const cacheKey = createCacheKey(supportedEVMChain, to);
-        const cachedResponse =
-          transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);
-        addressAlertResponse = cachedResponse
-          ? cachedResponse.result_type
-          : ResultType.Loading;
-      }
+    if (typeof to === 'string' && transactionMeta.chainId) {
+      const cacheKey = createCacheKey(transactionMeta.chainId, to);
+      const cachedResponse =
+        transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);
+      addressAlertResponse = cachedResponse
+        ? cachedResponse.result_type
+        : ResultType.Loading;
     }
   }
 

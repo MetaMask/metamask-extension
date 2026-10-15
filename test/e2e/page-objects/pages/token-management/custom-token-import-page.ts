@@ -1,5 +1,17 @@
 import { Driver } from '../../../webdriver/driver';
 
+/**
+ * Add Custom Token form: network, address, and submit.
+ *
+ * Screen: `#/custom-token-import`.
+ * Owns: page-loaded check, stable address input fill, submit, and back to
+ * homepage.
+ * Boundaries: the custom import form only. The manage-tokens hub that opens
+ * this page is `TokenManagementPage`.
+ * Related: `TokenManagementPage`.
+ *
+ * @see ui/pages/custom-token-import/custom-token-import.tsx
+ */
 class CustomTokenImportPage {
   private readonly addressInput =
     '[data-testid="custom-token-import-address-input"]';

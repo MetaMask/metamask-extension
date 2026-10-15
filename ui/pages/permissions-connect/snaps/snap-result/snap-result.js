@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
+  IconName,
+} from '@metamask/design-system-react';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -14,16 +20,10 @@ import {
   JustifyContent,
   TextVariant,
   BackgroundColor,
-  IconColor,
   TextAlign,
   Display,
 } from '../../../../helpers/constants/design-system';
-import {
-  AvatarIcon,
-  AvatarIconSize,
-  IconName,
-  Text,
-} from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
@@ -75,8 +75,7 @@ export default function SnapResult({
           className="snap-result__header__icon"
           iconName={IconName.Confirmation}
           size={AvatarIconSize.Xl}
-          color={IconColor.successDefault}
-          backgroundColor={BackgroundColor.successMuted}
+          severity={AvatarIconSeverity.Success}
         />
         <Text
           fontWeight={FontWeight.Bold}

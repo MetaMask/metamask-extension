@@ -87,7 +87,7 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const mintConfirmation = new TransactionConfirmation(driver);
-        await mintConfirmation.clickFooterConfirmButton();
+        await mintConfirmation.clickFooterButton({ button: 'confirm' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.clickERC721TransferFromButton();
         await driver.delay(veryLargeDelayMs); // this is needed for the transaction to be processed

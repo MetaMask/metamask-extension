@@ -1,11 +1,8 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  formatAddressToAssetId,
-  QuoteResponseV1,
-} from '@metamask/bridge-controller';
-import { parseCaipAssetType, type CaipAssetType } from '@metamask/utils';
+import { parseCaipAssetType } from '@metamask/utils';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
 import mockBridgeQuotesNativeErc20 from '../../../../../test/data/bridge/mock-quotes-native-erc20';
@@ -31,30 +28,14 @@ jest.mock('../../../../hooks/bridge/useSubmitBridgeTransaction', () => ({
 }));
 
 const renderModal = (
-  quotes: QuoteResponseV1[],
+  quotes: QuoteResponse[],
   priceImpact: string = '0.05',
   variant?: 'submit-cta' | 'alert-details',
   stateOverrides?: Record<string, unknown>,
   alertId?: BridgeAlert['id'],
 ) => {
-  const toToken = {
-    ...quotes[0].quote.destAsset,
-    assetId:
-      (quotes[0].quote.destAsset.assetId as CaipAssetType) ??
-      formatAddressToAssetId(
-        quotes[0].quote.destAsset.address,
-        quotes[0].quote.destChainId,
-      ),
-  };
-  const fromToken = {
-    ...quotes[0].quote.srcAsset,
-    assetId:
-      (quotes[0].quote.srcAsset.assetId as CaipAssetType) ??
-      formatAddressToAssetId(
-        quotes[0].quote.srcAsset.address,
-        quotes[0].quote.srcChainId,
-      ),
-  };
+  const toToken = quotes[0].quote.dest.asset;
+  const fromToken = quotes[0].quote.src.asset;
 
   const { bridgeStateOverrides, ...overrides } = stateOverrides ?? {};
   const mockStore = configureStore(
@@ -64,16 +45,20 @@ const renderModal = (
           ...quote,
           quote: {
             ...quote.quote,
-            priceData: { ...(quote.quote.priceData ?? {}), priceImpact },
-            destAsset: toToken,
-            srcAsset: fromToken,
+            priceData: {
+              ...(quote.quote.priceData ?? {}),
+              priceImpact: {
+                ...(quote.quote.priceData?.priceImpact ?? {}),
+                amount: priceImpact,
+              },
+            },
           },
         })),
         quoteRequest: {
           srcChainId: parseCaipAssetType(fromToken.assetId).chainId,
-          srcTokenAddress: fromToken.assetId,
+          srcTokenAddress: fromToken.assetId.toLowerCase(),
           destChainId: parseCaipAssetType(toToken.assetId).chainId,
-          destTokenAddress: toToken.assetId,
+          destTokenAddress: toToken.assetId.toLowerCase(),
         },
         ...(bridgeStateOverrides ?? {}),
       },
@@ -124,10 +109,16 @@ describe('BridgeAlertModal', () => {
         {
           bridgeStateOverrides: {
             assetExchangeRates: {
-              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-                exchangeRate: '2524.259',
-                usdExchangeRate: '1',
-              },
+              [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
+              [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
             },
           },
         },
@@ -187,10 +178,16 @@ describe('BridgeAlertModal', () => {
         {
           bridgeStateOverrides: {
             assetExchangeRates: {
-              'eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359': {
-                exchangeRate: '2524.259',
-                usdExchangeRate: '1',
-              },
+              [mockBridgeQuotesNativeErc20[0].quote.src.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
+              [mockBridgeQuotesNativeErc20[0].quote.dest.asset.assetId.toLowerCase()]:
+                {
+                  exchangeRate: '2524.259',
+                  usdExchangeRate: '1',
+                },
             },
           },
         },
@@ -276,7 +273,7 @@ describe('BridgeAlertModal', () => {
         _condition: string,
         priceImpact: string,
         stateOverrides: Record<string, unknown>,
-        quotes: QuoteResponseV1[],
+        quotes: QuoteResponse[],
       ) => {
         const { baseElement, getByRole, getAllByRole, queryByTestId } =
           renderModal(

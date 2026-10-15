@@ -160,7 +160,7 @@ export const MarketRow = ({
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={market.symbol}
-        size={AvatarTokenSize.Md}
+        size={AvatarTokenSize.Lg}
         className="shrink-0"
       />
       {/* Left side: Symbol, leverage, and metric */}

@@ -3,6 +3,20 @@ import { Driver } from '../../webdriver/driver';
 const FEEDBACK_MESSAGE =
   'Message: Unable to find value of key "debug" for locale "en"';
 
+/**
+ * React error boundary / crash page with Sentry feedback and support CTAs.
+ *
+ * Screen: in-app error page rendered when a UI crash is caught (not a stable
+ * hash route users navigate to).
+ * Owns: error title/message, contact support + data-consent modal, and Sentry
+ * feedback form submit/success modal flows.
+ * Boundaries: the error page and its support/Sentry modals only. Generating a
+ * crash belongs to `DebugOptions`; fatal startup failures belong to
+ * `CriticalErrorPage`.
+ * Related: `DebugOptions` (can trigger a crash into this page).
+ *
+ * @see ui/pages/error-page/error-page.component.tsx
+ */
 class ErrorPage {
   private readonly contactSupportButton =
     '[data-testid="error-page-contact-support-button"]';

@@ -4,6 +4,9 @@ export type OrderBookListCurrency = 'base' | 'usd';
 /** Metric shown in the value column: per-level size or cumulative total. */
 export type OrderBookListMetric = 'size' | 'total';
 
+/** Which side of the pro-mode trading view the order book is pinned to. */
+export type OrderBookLayoutPosition = 'left' | 'right';
+
 export type PerpsOrderBookProps = {
   /** Symbol to display the order book for (e.g. 'BTC', 'ETH'). */
   symbol: string;
@@ -47,11 +50,14 @@ export type PerpsOrderBookConfigModalProps = {
   grouping: number | null;
   /** Available price-grouping options. */
   groupingOptions: number[];
+  /** Currently applied order book layout position. */
+  layout: OrderBookLayoutPosition;
   /** Called with the chosen settings when the user taps Apply. */
   onApply: (next: {
     currency: OrderBookListCurrency;
     metric: OrderBookListMetric;
     grouping: number;
+    layout: OrderBookLayoutPosition;
   }) => void;
   /** Called when the modal is dismissed. */
   onClose: () => void;

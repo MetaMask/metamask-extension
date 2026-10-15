@@ -1,12 +1,14 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsDefiControllerV2Enabled } from '../../../selectors/defi-controller-v2/feature-flags';
-import { RouteWithMessenger } from '../../../layouts/route-with-messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { AssetListProps } from '../../../components/app/assets/asset-list/asset-list';
 import AssetListControlBar from '../../../components/app/assets/asset-list/asset-list-control-bar';
 import { useScreenViewedEvent } from '../../../hooks/useScreenViewedEvent';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import DefiList from '../../../components/app/assets/defi-list/defi-list';
+import { useDefiPositionsList } from '../../../components/app/assets/defi-list/useDefiPositionsList';
+import { useDeFiListItemsV2 } from '../hooks/useDeFiListItemsV2';
 import { useDeFiPositionsV2 } from '../hooks/useDeFiPositionsV2';
 import { DEFI_ROUTE_ALLOWED_CAPABILITIES } from '../messenger';
 import DefiListV2 from './defi-list-v2';
@@ -15,7 +17,7 @@ import DefiListV2 from './defi-list-v2';
  * V2 DeFi tab content. Mounts only when the V2 controller flag is enabled so
  * `useDeFiPositionsV2` always runs (no legacy `enabled` gate in the hook).
  *
- * Must run under {@link RouteWithMessenger} so it can call
+ * Must run under {@link RouteMessengerProvider} so it can call
  * `DeFiPositionsControllerV2:fetchDeFiPositions` via the route messenger.
  *
  * @param props - Component props.
@@ -24,6 +26,8 @@ import DefiListV2 from './defi-list-v2';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
   const { positions, isLoading, isError, refresh } = useDeFiPositionsV2();
+  const listItems = useDeFiListItemsV2({ positions, isLoading, isError });
+  const isEmpty = listItems?.length === 0;
 
   const handleRefresh = useCallback(() => {
     refresh().catch(() => {
@@ -35,14 +39,11 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
     <>
       <AssetListControlBar
         showImportTokenButton={false}
+        showSortControl={!isEmpty}
         onRefresh={handleRefresh}
+        data-testid="parent-selector-defi-tab"
       />
-      <DefiListV2
-        onClick={onClickAsset}
-        positions={positions}
-        isLoading={isLoading}
-        isError={isError}
-      />
+      <DefiListV2 items={listItems} onClick={onClickAsset} />
     </>
   );
 }
@@ -56,10 +57,17 @@ function DeFiTabContentV2({ onClickAsset }: Readonly<AssetListProps>) {
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function DeFiTabContentV1({ onClickAsset }: Readonly<AssetListProps>) {
+  const positions = useDefiPositionsList();
+  const isEmpty = positions?.length === 0;
+
   return (
     <>
-      <AssetListControlBar showImportTokenButton={false} />
-      <DefiList onClick={onClickAsset} />
+      <AssetListControlBar
+        showImportTokenButton={false}
+        showSortControl={!isEmpty}
+        data-testid="parent-selector-defi-tab"
+      />
+      <DefiList items={positions} onClick={onClickAsset} />
     </>
   );
 }
@@ -76,12 +84,12 @@ export default function DeFiTab({
   // UI messenger) keep working when the V2 flag is off.
   if (isDefiControllerV2Enabled) {
     return (
-      <RouteWithMessenger
+      <RouteMessengerProvider
         path="defi-tab"
         capabilities={DEFI_ROUTE_ALLOWED_CAPABILITIES}
       >
         <DeFiTabContentV2 onClickAsset={onClickAsset} />
-      </RouteWithMessenger>
+      </RouteMessengerProvider>
     );
   }
 

@@ -10,6 +10,7 @@ import {
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../constants';
+import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {
@@ -47,12 +48,10 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
             try {
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-              const text = 'Cancel';
-
-              await this.driver.findClickableElements({
-                text: 'Cancel',
-                tag: 'button',
-              });
+              const connectAccountConfirmation = new ConnectAccountConfirmation(
+                this.driver,
+              );
+              await connectAccountConfirmation.waitForCancelButton();
 
               const screenshot = await this.driver.driver.takeScreenshot();
               call.attachments = call.attachments || [];
@@ -60,7 +59,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
                 type: 'image',
                 data: `data:image/png;base64,${screenshot}`,
               });
-              await this.driver.clickElement({ text, tag: 'button' });
+              await connectAccountConfirmation.cancelConnect();
               // make sure to switch back to the dapp or else the next test will fail on the wrong window
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             } catch (e) {

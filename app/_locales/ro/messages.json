@@ -81,9 +81,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backupApprovalInfo": {
-    "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
-  },
   "backupApprovalNotice": {
     "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
   },
@@ -226,9 +223,6 @@
   },
   "gasLimit": {
     "message": "Limită gas"
-  },
-  "gasLimitTooLow": {
-    "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
@@ -408,9 +402,6 @@
   "privateKey": {
     "message": "Cheie privată",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Avertisment: nu dezvăluiți niciodată această cheie. Oricine are cheile dvs. private poate fura orice activ din contul dvs."
   },
   "privateNetwork": {
     "message": "Rețea privată"

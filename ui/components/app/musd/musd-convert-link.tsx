@@ -2,7 +2,7 @@
  * MusdConvertLink Component
  *
  * A CTA link that appears in the token list footer-right slot.
- * Shows "Get X% bonus" text and navigates to the mUSD conversion flow.
+ * Shows "Get mUSD" text and navigates to the mUSD conversion flow.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -22,7 +22,6 @@ import { useAnalytics } from '../../../hooks/useAnalytics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMusdConversion } from '../../../hooks/musd';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../selectors/multichain';
-import { MUSD_CONVERSION_APY } from './constants';
 import {
   createMusdCtaClickedEventProperties,
   musdConversionFlowEntryPointToCtaEventLocation,
@@ -71,7 +70,7 @@ export const MusdConvertLink = ({
 }: MusdConvertLinkProps) => {
   const t = useI18nContext();
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const { startConversionFlow, educationSeen } = useMusdConversion();
+  const { startConversionFlow } = useMusdConversion();
   const networkConfigurationsByChainId = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
@@ -87,8 +86,7 @@ export const MusdConvertLink = ({
     };
   }, []);
 
-  const displayText =
-    ctaText ?? t('musdGetBonusPercentage', [String(MUSD_CONVERSION_APY)]);
+  const displayText = ctaText ?? t('musdGetMusd');
 
   const handleClick = useCallback(
     async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -103,7 +101,6 @@ export const MusdConvertLink = ({
 
       const redirectsTo = resolveMusdConversionCtaRedirectsTo({
         intent: 'conversion',
-        educationSeen,
       });
       const eventLocation =
         musdConversionFlowEntryPointToCtaEventLocation(entryPoint);
@@ -148,7 +145,6 @@ export const MusdConvertLink = ({
       tokenSymbol,
       displayText,
       entryPoint,
-      educationSeen,
       networkName,
       createEventBuilder,
       trackEvent,

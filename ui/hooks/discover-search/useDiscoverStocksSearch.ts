@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchRwas, type TrendingAsset } from '@metamask/assets-controllers';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import {
+  fetchRwas,
+  type RwaToken,
+  type TokenSecurityData,
+  type TrendingAsset,
+} from '@metamask/assets-controllers';
 
 import {
   DISCOVER_SEARCH_GC_TIME_MS,
@@ -19,17 +24,26 @@ export type UseDiscoverStocksSearchResult = {
   data: TrendingAsset[];
   totalCount?: number;
   isLoading: boolean;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => Promise<unknown>;
   error: Error | null;
 };
 
 type StocksSearchPage = {
   data: TrendingAsset[];
   totalCount: number;
+  pageInfo: {
+    nextCursor: string | null;
+    hasNextPage: boolean;
+  };
 };
 
-const normalizeRwaToken = (
-  token: Awaited<ReturnType<typeof fetchRwas>>['data'][number],
-): TrendingAsset => ({
+type RwaTokenWithSecurityData = RwaToken & {
+  securityData?: TokenSecurityData;
+};
+
+const normalizeRwaToken = (token: RwaTokenWithSecurityData): TrendingAsset => ({
   assetId: token.assetId,
   symbol: token.symbol,
   name: token.name,
@@ -39,6 +53,7 @@ const normalizeRwaToken = (
   marketCap: token.rwaData.marketCap,
   priceChangePct: { h24: token.rwaData.priceChange },
   rwaData: token.rwaData as unknown as TrendingAsset['rwaData'],
+  securityData: token.securityData,
 });
 
 /**
@@ -62,36 +77,51 @@ export const useDiscoverStocksSearch = ({
     [hasQuery],
   );
 
-  const stocksQuery = useQuery<StocksSearchPage, Error>({
+  const stocksQuery = useInfiniteQuery({
     queryKey: [
       ...DISCOVER_SEARCH_QUERY_KEY_ROOT,
       'stocks',
       trimmedQuery,
       chainIds,
     ] as const,
-    queryFn: async (): Promise<StocksSearchPage> => {
+    queryFn: async ({ pageParam }): Promise<StocksSearchPage> => {
       const response = await fetchRwas({
         chainIds,
         query: hasQuery ? trimmedQuery : undefined,
         sortBy: 'price_change_desc',
         limit: DISCOVER_SEARCH_PAGE_SIZE,
+        after: pageParam,
+        includeTokenSecurityData: true,
       });
 
       const data = response.data.map(normalizeRwaToken);
       return {
         data,
         totalCount: response.totalCount ?? data.length,
+        pageInfo: response.pageInfo,
       };
     },
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.pageInfo.hasNextPage
+        ? (lastPage.pageInfo.nextCursor ?? undefined)
+        : undefined,
     enabled,
     staleTime: DISCOVER_SEARCH_STALE_TIME_MS,
-    cacheTime: DISCOVER_SEARCH_GC_TIME_MS,
+    gcTime: DISCOVER_SEARCH_GC_TIME_MS,
   });
 
+  const pages = stocksQuery.data?.pages ?? [];
+  const data = pages.flatMap((page) => page.data);
+  const lastPage = pages.at(-1);
+
   return {
-    data: stocksQuery.data?.data ?? [],
-    totalCount: stocksQuery.data?.totalCount,
+    data,
+    totalCount: lastPage?.totalCount ?? data.length,
     isLoading: stocksQuery.isLoading || stocksQuery.isFetching,
+    hasNextPage: stocksQuery.hasNextPage ?? false,
+    isFetchingNextPage: stocksQuery.isFetchingNextPage,
+    fetchNextPage: stocksQuery.fetchNextPage,
     error: stocksQuery.error ?? null,
   };
 };

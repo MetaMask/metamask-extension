@@ -1,8 +1,6 @@
 import log from 'loglevel';
 import React from 'react';
-// TODO: https://github.com/MetaMask/MetaMask-planning/issues/6925
-// eslint-disable-next-line react/no-deprecated
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -59,6 +57,10 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 import { initWebVitals } from './helpers/utils/web-vitals';
 import { getPerpsStreamManager } from './providers/perps';
+import {
+  primePerpsLifecycleContext,
+  markPerpsLifecycleWarm,
+} from './helpers/perps/entry-trace';
 import { createUIMessenger } from './messengers/ui-messenger';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
@@ -68,6 +70,17 @@ export {
 } from './helpers/utils/display-critical-error';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+const reactRoots = new WeakMap();
+
+function renderUi(element, container) {
+  let root = reactRoots.get(container);
+  if (!root) {
+    root = createRoot(container);
+    reactRoots.set(container, root);
+  }
+  root.render(element);
+}
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -91,9 +104,15 @@ export const connectToBackground = (
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === START_UI_SYNC) {
+      primePerpsLifecycleContext();
       await handleStartUISync(data.params[0]);
     } else if (method === 'perpsStreamUpdate') {
-      getPerpsStreamManager().handleBackgroundUpdate(data.params[0]);
+      const payload = data.params[0];
+      if (payload.channel === 'lifecycleContext' && payload.data === 'warm') {
+        markPerpsLifecycleWarm();
+      } else {
+        getPerpsStreamManager().handleBackgroundUpdate(payload);
+      }
     } else if (method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(data)}`,
@@ -248,8 +267,10 @@ async function startApp(metamaskState, opts) {
   // UI messenger is created here in preparation for completely replacing
   // `submitRequestToBackground` with it.
   const uiMessenger = createUIMessenger();
+  // StrictMode is applied once in `ui/pages/index.js` (withStrictMode).
+  // Do not wrap again here — nested StrictMode doubles remounts and races Rive.
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
+    renderUi(<Root store={store} uiMessenger={uiMessenger} />, opts.container),
   );
 
   return store;
@@ -474,18 +495,4 @@ window.logStateString = async function () {
   state.logs = window.stateHooks.getLogs();
   state.platform = await browser.runtime.getPlatformInfo();
   return JSON.stringify(state, null, 2);
-};
-
-window.logState = async function (toClipboard) {
-  try {
-    const result = await window.logStateString();
-    if (toClipboard) {
-      await navigator.clipboard.writeText(result);
-      console.log('State log copied');
-    } else {
-      console.log(result);
-    }
-  } catch (err) {
-    console.error(err.message);
-  }
 };

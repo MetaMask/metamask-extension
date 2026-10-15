@@ -16,11 +16,13 @@ import {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
+import postcss, { type AcceptedPlugin } from 'postcss';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import * as sassEmbedded from 'sass-embedded';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
-import { loadBuildTypesConfig } from '../lib/build-type';
+import { loadBuildTypesConfig } from '../lib/build-type.js';
 import {
   getMinimizers,
   JAVASCRIPT_FILE_RE,
@@ -67,6 +69,39 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
+// Styles for the outer X document. They cannot be bundled into the widget
+// frame HTML because that HTML is the iframe, so they are imported as strings
+// and injected by the content script instead.
+const cashtagPageStylesRe =
+  /scripts[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$/u;
+// HtmlBundlerPlugin extracts every stylesheet it recognises into its own asset,
+// which would break the string imports above, so they are excluded here.
+const bundledStylesRe =
+  /^(?!.*[\\/]cashtag[\\/](?:pill|widget)[\\/]page\.css$|.*[\\/]cashtag[\\/]widget[\\/]widget\.css$).*\.(?:css|scss|sass|less|styl)$/u;
+
+// Keep widget.css outside HtmlBundler. Its CSS @import is not resolved
+// correctly there, which leaves design-token variables undefined in dist
+// builds. This transform preserves the previous working bundle behavior.
+async function buildCashtagWidgetCss(content: Buffer | string, from: string) {
+  const tokens = readFileSync(
+    join(nodeModules, '@metamask/design-tokens/dist/styles.css'),
+    'utf8',
+  );
+  const source = content
+    .toString()
+    .replace(
+      /@import\s+['"]@metamask\/design-tokens\/styles\.css['"];?\s*/u,
+      '',
+    );
+  const cssPlugins: AcceptedPlugin[] = [
+    tailwindcss() as unknown as AcceptedPlugin,
+    autoprefixer({
+      overrideBrowserslist: browsersListQuery,
+    }) as unknown as AcceptedPlugin,
+  ];
+  const result = await postcss(cssPlugins).process(source, { from });
+  return `${tokens}\n${result.css}`;
+}
 
 // #region cache
 const cache = args.cache
@@ -153,6 +188,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
+    css: { test: bundledStylesRe },
     data: { isTest: args.test },
     // In watch mode, inject the dev-only background client into the relevant HTML page.
     beforeEmit: (content, entry, compilation) => {
@@ -202,6 +238,13 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // TODO: find alternative way to handle cashtag widget styles
+      {
+        from: join(context, 'scripts/cashtag/widget/widget.css'),
+        to: 'scripts/cashtag/widget/widget.css',
+        transform: async (content, absoluteFrom) =>
+          buildCashtagWidgetCss(content, absoluteFrom),
+      },
       // TODO: automatically bundle build-type specific images
       ...(args.type === 'flask'
         ? [
@@ -255,7 +298,7 @@ if (args.lavamoat) {
     lavamoatPlugin,
     lavamoatUnsafeLayerPlugin,
   } = require('./utils/plugins/LavamoatPlugin');
-  plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
+  plugins.push(lavamoatPlugin(args, manifestPlugin), lavamoatUnsafeLayerPlugin);
 }
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
@@ -503,9 +546,33 @@ const config = {
           },
         ],
       },
+      // TODO: remove feature-specific hack from config.
+      // Cashtag widget host-page styles, imported as text so the content script can inject
+      // and remove them without exposing a web-accessible stylesheet.
+      {
+        test: cashtagPageStylesRe,
+        use: [
+          { loader: 'css-loader', options: { exportType: 'string' } },
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                config: false,
+                plugins: [
+                  tailwindcss(),
+                  autoprefixer({ overrideBrowserslist: browsersListQuery }),
+                  rtlCss({ processEnv: false }),
+                  discardFontFace(['woff2']), // keep woff2 fonts
+                ],
+              },
+            },
+          },
+        ],
+      },
       // css, sass/scss
       {
         test: /\.(css|sass|scss)$/u,
+        exclude: cashtagPageStylesRe,
         use: [
           // Resolves CSS `@import` and `url()` paths and loads the files.
           'css-loader',
@@ -528,30 +595,31 @@ const config = {
             loader: 'sass-loader',
             options: {
               // Use 'sass-embedded', as it is usually faster than 'sass'
-              implementation: 'sass-embedded',
+              implementation: sassEmbedded,
+              api: 'modern-compiler',
+              // Disable Webpack's Sass importer because Sass's native
+              // importer keeps stylesheet resolution independent of Webpack
+              // and is faster for our current import graph. All current
+              // non-relative imports resolve through the loadPaths below.
+              webpackImporter: false,
               sassOptions: {
-                api: 'modern',
                 // We don't need to specify the charset because the HTML
                 // already does and browsers use the HTML's charset for CSS.
                 // Additionally, webpack + sass can cause problems with the
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
-                // The order of includePaths is important; prefer our own
+                quietDeps: true,
+                // TODO: Remove after https://github.com/MetaMask/metamask-extension/issues/44725
+                silenceDeprecations: ['import'],
+                // The order of loadPaths is important; prefer our own
                 // folders over `node_modules`
-                includePaths: [
+                loadPaths: [
                   // enables aliases to `@use design - system`,
                   // `@use utilities`, etc.
                   join(context, '../ui/css'),
                   join(context, '../node_modules'),
                 ],
-                // Disable the webpackImporter, as we:
-                //  a) don't want to rely on it in case we want to switch away
-                //     from webpack in the future
-                //  b) the sass importer is faster
-                //  c) the "modern" sass api doesn't work with the
-                //     webpackImporter yet.
-                webpackImporter: false,
               },
             },
           },
@@ -586,7 +654,9 @@ const config = {
     // chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
     chunkIds: 'deterministic',
-    ...(args.minify ? { minimize: true, minimizer: getMinimizers() } : {}),
+    ...(args.minify
+      ? { minimize: true, minimizer: getMinimizers() }
+      : { minimize: false }),
     // Make most chunks share a single runtime file, which contains the
     // webpack "runtime". The exception is @lavamoat/snow and all scripts
     // found in the extension manifest; these scripts must be self-contained

@@ -2,6 +2,8 @@ import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
 import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 
+import { isNativeCaipAssetId } from './asset-utils';
+
 type AssetsRatesState = {
   metamask: MultichainAssetsRatesControllerState;
 };
@@ -22,10 +24,13 @@ export function getConversionRatesForNativeAsset({
 
   Object.entries(conversionRates).forEach(
     ([caip19Identifier, conversionRate]) => {
-      const { assetNamespace, chainId: caipChainId } = parseCaipAssetType(
+      const { chainId: caipChainId } = parseCaipAssetType(
         caip19Identifier as CaipAssetType,
       );
-      if (assetNamespace === 'slip44' && caipChainId === chainId) {
+      if (
+        isNativeCaipAssetId(caip19Identifier as CaipAssetType) &&
+        caipChainId === chainId
+      ) {
         conversionRateResult = conversionRate;
       }
     },

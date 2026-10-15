@@ -142,7 +142,7 @@ describe('MultichainBridgeQuoteCard', () => {
         ),
       },
     });
-    const { container, queryByText } = renderWithProvider(
+    const { container, queryByText, queryByTestId } = renderWithProvider(
       <>
         <MultichainBridgeQuoteCard
           onOpenSlippageModal={() => {}}
@@ -156,6 +156,7 @@ describe('MultichainBridgeQuoteCard', () => {
     );
 
     expect(queryByText(/Includes.*MM fee\./u)).not.toBeInTheDocument();
+    expect(queryByTestId('relayer-fees')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 
@@ -196,11 +197,11 @@ describe('MultichainBridgeQuoteCard', () => {
             ...quote.quote,
             feeData: {
               ...quote.quote.feeData,
-              metabridge: {
-                ...quote.quote.feeData.metabridge,
+              metabridge: quote.quote.feeData.metabridge.map((fee) => ({
+                ...fee,
                 amount: '1',
                 quoteBpsFee: 87.5,
-              },
+              })),
             },
           },
         })),
@@ -505,13 +506,23 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
         bridgeStateOverrides: {
+          quoteRequest: {
+            srcChainId: 10,
+            destChainId: 137,
+            srcTokenAddress: '0x0000000000000000000000000000000000000000',
+            destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            srcTokenAmount: '14000000',
+          },
           quotes: mockBridgeQuotesNativeErc20.map((quote) => ({
             ...quote,
             quote: {
               ...quote.quote,
               priceData: {
                 ...quote.quote.priceData,
-                priceImpact,
+                priceImpact: {
+                  ...quote.quote.priceData?.priceImpact,
+                  amount: priceImpact,
+                },
               },
             },
           })),
@@ -1048,6 +1059,16 @@ describe('MultichainBridgeQuoteCard', () => {
           quote: {
             ...quote.quote,
             gasIncluded: true,
+            feeData: {
+              ...quote.quote.feeData,
+              relayer: [
+                {
+                  amount: '1000000000000000',
+                  asset: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+                  usd: '2.52425',
+                },
+              ],
+            },
           },
         })),
         quotesLastFetched: Date.now(),
@@ -1099,5 +1120,6 @@ describe('MultichainBridgeQuoteCard', () => {
 
     expect(queryByTestId('network-fees-included')).toBeInTheDocument();
     expect(queryByTestId('network-fees')).not.toBeInTheDocument();
+    expect(queryByTestId('relayer-fees')).toBeInTheDocument();
   });
 });

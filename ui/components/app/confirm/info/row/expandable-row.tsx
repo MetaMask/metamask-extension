@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
 import {
   Box,
@@ -23,15 +23,30 @@ export const ConfirmInfoExpandableRow = (
 ) => {
   const { content, children, startExpanded, ...rowProps } = props;
 
-  const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
-
   const { value: expanded, toggle } = useBoolean(startExpanded);
-  const [, setLoaded] = useState<boolean>(false);
+  const contentRef = useRef<HTMLSpanElement | null>(null);
+  const [contentHeight, setContentHeight] = useState(0);
 
-  // Required to force a re-render so the content height can be calculated.
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
+  useLayoutEffect(() => {
+    const node = contentRef.current;
+    if (!node) {
+      return undefined;
+    }
+
+    const updateHeight = () => {
+      setContentHeight(node.scrollHeight);
+    };
+
+    // Measure before paint so rows that start expanded are not clipped at 0px.
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(node);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [expanded, content]);
 
   return (
     <>
@@ -53,10 +68,10 @@ export const ConfirmInfoExpandableRow = (
         </Box>
       </ConfirmInfoRow>
       <Box
-        ref={ref}
+        ref={contentRef}
         className="expandable"
         style={{
-          height: expanded ? ref.current?.scrollHeight : '0px',
+          height: expanded ? contentHeight : '0px',
         }}
       >
         {

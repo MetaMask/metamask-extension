@@ -53,11 +53,11 @@ describe('formatPriceImpact', () => {
 });
 
 describe('formatPriceImpactFiat', () => {
-  it('returns undefined when activeQuote is null', () => {
+  it('returns undefined when amount is null', () => {
     expect(formatPriceImpactFiat(null, 'usd')).toBeUndefined();
   });
 
-  it('returns undefined when activeQuote is undefined', () => {
+  it('returns undefined when amount is missing', () => {
     expect(formatPriceImpactFiat(undefined, 'usd')).toBeUndefined();
   });
 
