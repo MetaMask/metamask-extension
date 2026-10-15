@@ -43,4 +43,6 @@ runs:
       shell: bash
       env:
         INPUTS_BROWSERS: ${{ inputs.browsers }}
-      run: yarn playwright install "${INPUTS_BROWSERS}"
+      run: |
+        IFS=' ' read -ra browsers_array <<< "${INPUTS_BROWSERS}"
+        yarn playwright install "${browsers_array[@]}"
