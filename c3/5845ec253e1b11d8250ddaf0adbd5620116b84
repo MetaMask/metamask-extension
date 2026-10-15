@@ -1,0 +1,27 @@
+development/download-builds.ts
+  s_1c2616b5a2ded2::t_89a216b06efce9 212-219,235
+  s_1c2616b5a2ded2::t_6575499622860b 19,53-68,107,126-139,144-160,164-167,179,188-195,200-207,220-224,228
+  s_1c2616b5a2ded2::t_b9b0d97179189d 121-125,140-143,161-163,168-174,183,208-211
+.github/scripts/shared/resolve-build-run.mts
+  s_1c2616b5a2ded2::t_1e61a7e8635a56 36-39,52-70,77-80,95,97-102,108-112,115-116,126-139,146-160,164-168,174-178,188-190,201-211,215,219-220,224-227,236-237,243-244,248-251,256-265,269-272
+  s_1c2616b5a2ded2::t_7cf19b219486c1 71-76,103-107,117-125,140-145,161-163,169-173,179-187,191-200,212-214,216-217,221-222,228-235,238-242,245-247,266-268
+  s_1c2616b5a2ded2::t_e7f31a36edc6b2 273
+jest.config.js
+  s_1c2616b5a2ded2::t_6575499622860b 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c35845ec253e1b11d8250ddaf0adbd5620116b84",
+  "prompts": {},
+  "sessions": {
+    "s_1c2616b5a2ded2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ec1a8bd65ffeK6IjPbbWjE4fpy",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
