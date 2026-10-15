@@ -86,10 +86,18 @@ class OnboardingMetricsPage {
    * assuming its initial state: social login users in the US are checked by
    * default once the geolocation lookup settles, so an unconditional click
    * could uncheck it.
+   *
+   * We check for the *unchecked* state (the default for everyone else)
+   * rather than the checked state so the lookup succeeds instantly in the
+   * common case.
    */
   async ensureDataCollectionForMarketingIsChecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    if (await this.driver.isElementPresent(this.marketingUnchecked)) {
+    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
+      this.marketingUnchecked,
+      1000,
+    );
+    if (isCurrentlyUnchecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
     }
     await this.validateDataCollectionForMarketingIsChecked();
@@ -99,10 +107,18 @@ class OnboardingMetricsPage {
    * Ensures the marketing data-collection checkbox is unchecked. Social login
    * users in the US are checked by default once the geolocation lookup
    * settles, so the checkbox must be explicitly unchecked in that case.
+   *
+   * We check for the *unchecked* state (the default for everyone else)
+   * rather than the checked state so the lookup succeeds instantly in the
+   * common case.
    */
   async ensureDataCollectionForMarketingIsUnchecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    if (await this.driver.isElementPresent(this.marketingChecked)) {
+    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
+      this.marketingUnchecked,
+      1000,
+    );
+    if (!isCurrentlyUnchecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
       await this.driver.waitForSelector(this.marketingUnchecked);
     }
