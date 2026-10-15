@@ -177,7 +177,7 @@
   "previewBuilds": {
     "@metamask/core-backend": {
       "type": "non-breaking",
-      "previewVersion": "12.1.0-preview-4fa35a45a"
+      "previewVersion": "12.1.0-preview-6c5c11696"
     }
   },
   "resolutions": {
