@@ -2003,6 +2003,9 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
   },
+  "basicFunctionalityIsOn": {
+    "message": "Basic functionality is on"
+  },
   "basicFunctionalityMigrationModalTitle": {
     "message": "We've updated our settings"
   },
@@ -6615,6 +6618,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "To use OpenSea to see your NFTs, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -12499,6 +12506,9 @@
   },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "turn on basic functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."
