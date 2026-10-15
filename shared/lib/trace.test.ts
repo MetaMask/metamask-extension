@@ -671,6 +671,49 @@ describe('Trace', () => {
       expectMachineTime(journey, 0);
     });
 
+    it('includes OAuth launch time but excludes provider wait', () => {
+      expect.assertions(1);
+      const journey = createSpanMock();
+      queueSpans([
+        journey,
+        createSpanMock(),
+        createSpanMock(),
+        createSpanMock(),
+      ]);
+
+      trace({ name: TraceName.OnboardingJourneyOverall, startTime: 0 });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        startTime: 1_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLaunch,
+        timestamp: 2_500,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        startTime: 2_500,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        timestamp: 40_000,
+        data: { success: true },
+      });
+      trace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        startTime: 40_000,
+      });
+      endTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        timestamp: 80_000,
+        data: { success: true },
+      });
+      endTrace({ name: TraceName.OnboardingJourneyOverall, timestamp: 90_000 });
+
+      expectMachineTime(journey, 1_500);
+    });
+
     it('counts open machine spans at successful journey end', () => {
       expect.assertions(1);
       const journey = createSpanMock();

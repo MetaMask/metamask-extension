@@ -192,6 +192,7 @@ export const ONBOARDING_MACHINE_TIME_ATTRIBUTE = 'onboarding.machine.ms';
 const MACHINE_TIME_TRACE_NAMES: ReadonlySet<TraceName> = new Set([
   TraceName.OnboardingSRPAccountCreationTime,
   TraceName.OnboardingSRPAccountImportTime,
+  TraceName.OnboardingOAuthProviderLaunch,
   TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
   TraceName.OnboardingOAuthSeedlessAuthenticate,
   TraceName.OnboardingFetchSrps,

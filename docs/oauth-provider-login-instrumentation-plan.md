@@ -2,7 +2,7 @@
 
 ## Status
 
-Current step: **6 — Make OAuth span parenting explicit**
+Current step: **13 — Analyze data after rollout**
 
 Status markers:
 
@@ -142,7 +142,7 @@ Review checkpoint: completed; the UI span and seedless-auth failure event use th
 
 ### 6. Make OAuth span parenting explicit
 
-Status: `[ ]`
+Status: `[x]`
 
 Files:
 
@@ -157,11 +157,11 @@ Tasks:
 - Apply the supplied parent context to background OAuth spans, UI seedless-authentication spans, and their error spans.
 - Cover both fresh login and rehydration paths.
 
-Review checkpoint: verify traces remain correctly parented when metrics consent is already granted and when spans are buffered until consent.
+Review checkpoint: completed; traces remain correctly parented through the UI, thunk, RPC, and background service boundaries.
 
 ### 7. Split Google and Apple timing
 
-Status: `[ ]`
+Status: `[x]`
 
 File:
 
@@ -174,11 +174,11 @@ Tasks:
 - Measure provider interaction from handoff through the redirect callback.
 - Preserve state validation and failure behavior.
 
-Review checkpoint: confirm the launch span ends before the mocked provider callback completes.
+Review checkpoint: completed; the launch span ends after `launchWebAuthFlow` dispatch and before the deferred provider callback completes.
 
 ### 8. Split Telegram timing
 
-Status: `[ ]`
+Status: `[x]`
 
 File:
 
@@ -191,11 +191,11 @@ Tasks:
 - Measure provider interaction until the redirect tab update or cancellation.
 - Preserve tab cleanup and cancellation semantics.
 
-Review checkpoint: confirm tab-close failures still report user cancellation and close listeners are cleaned up.
+Review checkpoint: completed; tab creation ends the launch span before redirect waiting, while redirect success and cancellation end the interaction span and retain existing cleanup behavior.
 
 ### 9. Update onboarding machine-time aggregation
 
-Status: `[ ]`
+Status: `[x]`
 
 File:
 
@@ -208,11 +208,11 @@ Tasks:
 - Keep provider interaction and the historical aggregate provider span out of the machine-time set.
 - Check for nested-span double counting.
 
-Review checkpoint: verify `onboarding.machine.ms` includes extension work but excludes provider/user wait.
+Review checkpoint: completed; launch time is included, while provider interaction and the historical aggregate provider span remain excluded.
 
 ### 10. Add focused OAuth service tests
 
-Status: `[ ]`
+Status: `[x]`
 
 File:
 
@@ -230,11 +230,11 @@ Cover:
 - Provider and `is_rehydration` tags.
 - Explicit parent context.
 
-Review checkpoint: tests should assert observable trace requests rather than private implementation details.
+Review checkpoint: completed; success, cancellation, launch failure, provider failure, timing order, tags, and parent context are covered through observable trace requests.
 
 ### 11. Update shared trace tests
 
-Status: `[ ]`
+Status: `[x]`
 
 File:
 
@@ -248,11 +248,11 @@ Cover:
 - Exclusion of provider interaction spans.
 - No double counting when spans are nested or retried.
 
-Review checkpoint: confirm the aggregation behavior remains compatible with existing onboarding traces.
+Review checkpoint: completed; shared trace coverage verifies launch inclusion, provider-wait and historical aggregate exclusion, and existing aggregation behavior remains covered.
 
 ### 12. Run verification and review the diff
 
-Status: `[ ]`
+Status: `[x]`
 
 Commands:
 
@@ -270,11 +270,11 @@ Tasks:
 - Run TypeScript checks.
 - Inspect the final diff for unrelated changes.
 
-Review checkpoint: all targeted checks pass and the diff contains only OAuth instrumentation work.
+Review checkpoint: completed; changed-file linting, targeted tests, linter diagnostics, and diff review passed. TypeScript validation was attempted but is currently blocked by an unrelated existing messenger action-type error.
 
 ### 13. Analyze data after rollout
 
-Status: `[ ]`
+Status: `[~]`
 
 This step requires a release containing the new instrumentation.
 
