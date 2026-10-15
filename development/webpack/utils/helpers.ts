@@ -1,6 +1,5 @@
 import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
-import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
@@ -110,8 +109,8 @@ export const extensionToJs = (filename: string) =>
  * comparisons. Disabling mangling for the runtime chunk keeps it
  * content-stable while leaving mangling ON for all other chunks.
  */
-export function getMinimizers() {
-  const TerserPlugin: typeof TerserPluginType = require('terser-webpack-plugin');
+export async function getMinimizers() {
+  const { default: TerserPlugin } = await import('terser-webpack-plugin');
   // Match webpack asset names like `chrome/runtime.<hash>.js` or `runtime.<hash>.js`.
   const runtimeChunkRe = /(?:^|[/\\])runtime\./u;
   return [

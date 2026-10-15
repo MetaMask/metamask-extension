@@ -11,6 +11,15 @@ export type PTY = IPty & {
   slave: Socket;
 };
 
+// The runtime exports open(), but its upstream declarations only describe spawn().
+declare module '@lydell/node-pty' {
+  export function open(options: {
+    cols: number;
+    rows: number;
+    encoding: null;
+  }): PTY;
+}
+
 /**
  * Node's ChildProcess type extended with `stderr` and `stdout`'s `unref`
  * method, which is missing from the standard Node.js types.
