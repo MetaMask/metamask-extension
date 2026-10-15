@@ -365,7 +365,8 @@
     "@opentelemetry/instrumentation@npm:^0.221.0": "0.222.0",
     "ses": "2.2.0",
     "@metamask/utils": "^12.0.0",
-    "@metamask/stellar-wallet-snap": "1.1.1-dev.3"
+    "@metamask/stellar-wallet-snap": "1.1.1-dev.3",
+    "@metamask/assets-controller@npm:^17.0.0": "npm:@metamask-previews/assets-controller@19.0.0-preview-3d1e571"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
