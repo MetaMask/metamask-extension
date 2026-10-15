@@ -55,15 +55,11 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
-import {
-  TransactionPayControllerGetDelegationTransactionAction,
-  TransactionPayControllerGetStateAction,
-  TransactionPayControllerGetStrategyAction,
-} from '@metamask/transaction-pay-controller';
+import { TransactionPayControllerActions } from '@metamask/transaction-pay-controller';
 import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { AppStateControllerSetDefaultHomeActiveTabNameAction } from '../../controllers/app-state-controller-method-action-types';
-import { SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
+import { ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
@@ -102,7 +98,7 @@ export type TransactionControllerInitMessengerActions =
   | SmartTransactionsControllerGetFeesAction
   | SmartTransactionsControllerSubmitSignedTransactionsAction
   | SubscriptionControllerActions
-  | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
+  | ShieldSubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | TransactionControllerAddTransactionAction
   | TransactionControllerAddTransactionBatchAction
   | TransactionControllerEstimateGasAction
@@ -110,9 +106,7 @@ export type TransactionControllerInitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
-  | TransactionPayControllerGetDelegationTransactionAction
-  | TransactionPayControllerGetStateAction
-  | TransactionPayControllerGetStrategyAction;
+  | TransactionPayControllerActions;
 
 export type TransactionControllerInitMessengerEvents =
   | BridgeStatusControllerStateChangeEvent
@@ -164,6 +158,7 @@ export function getTransactionControllerInitMessenger(
     ],
     actions: [
       'AccountTrackerController:getState',
+      'AccountsController:getState',
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
@@ -191,7 +186,7 @@ export function getTransactionControllerInitMessenger(
       'SmartTransactionsController:getFees',
       'SmartTransactionsController:submitSignedTransactions',
       'SubscriptionController:getSubscriptionByProduct',
-      'SubscriptionService:submitSubscriptionSponsorshipIntent',
+      'ShieldSubscriptionService:submitSubscriptionSponsorshipIntent',
       'TransactionController:addTransaction',
       'TransactionController:addTransactionBatch',
       'TransactionController:estimateGas',
@@ -200,8 +195,10 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
       'TransactionPayController:getDelegationTransaction',
+      'TransactionPayController:getPaymentOverrideData',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
+      'TransactionPayController:getAmountData',
     ],
   });
 

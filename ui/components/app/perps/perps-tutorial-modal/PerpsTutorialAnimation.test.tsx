@@ -41,8 +41,6 @@ jest.mock('../../../../contexts/rive-wasm', () => ({
     isWasmReady: true,
     loading: false,
     error: undefined,
-    urlBufferMap: {},
-    setUrlBufferCache: jest.fn(),
     animationCompleted: {},
     setIsAnimationCompleted: jest.fn(),
   })),
@@ -79,8 +77,6 @@ describe('PerpsTutorialAnimation', () => {
       isWasmReady: true,
       loading: false,
       error: undefined,
-      urlBufferMap: {},
-      setUrlBufferCache: jest.fn(),
       animationCompleted: {},
       setIsAnimationCompleted: jest.fn(),
     });
@@ -130,8 +126,6 @@ describe('PerpsTutorialAnimation', () => {
         isWasmReady: false,
         loading: true,
         error: undefined,
-        urlBufferMap: {},
-        setUrlBufferCache: jest.fn(),
         animationCompleted: {},
         setIsAnimationCompleted: jest.fn(),
       });

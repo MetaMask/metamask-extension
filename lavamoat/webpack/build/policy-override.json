@@ -1,4 +1,9 @@
 {
+  "resolutions": {
+    "sass-embedded": {
+      "@bufbuild/protobuf/codegenv2": "./node_modules/@bufbuild/protobuf/dist/commonjs/codegenv2/index.js"
+    }
+  },
   "resources": {
     "chokidar": {
       "packages": {
@@ -107,7 +112,7 @@
         "thread-loader": true
       }
     },
-    "webpack>loader-runner": {
+    "thread-loader>loader-runner": {
       "packages": {
         "$root$": true,
         "html-bundler-webpack-plugin": true,
@@ -135,7 +140,7 @@
       "packages": {
         "thread-loader>neo-async": true,
         "webpack": true,
-        "webpack>loader-runner": true,
+        "thread-loader>loader-runner": true,
         "thread-loader>json-parse-better-errors": true,
         "thread-loader>schema-utils": true
       }
@@ -253,7 +258,7 @@
       "packages": {
         "sass-embedded>immutable": true,
         "sass-embedded>@bufbuild/protobuf": true,
-        "wait-on>rxjs": true,
+        "rxjs": true,
         "mocha>supports-color": true,
         "sass-embedded>varint": true,
         "sass-embedded>buffer-builder": true
@@ -277,7 +282,7 @@
         "Buffer": true
       }
     },
-    "wait-on>rxjs": {
+    "rxjs": {
       "globals": {
         "setTimeout": true
       }

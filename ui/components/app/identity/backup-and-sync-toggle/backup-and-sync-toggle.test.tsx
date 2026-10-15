@@ -45,7 +45,7 @@ const initialStore = () => ({
     isSignedIn: false,
     useExternalServices: true,
     isBackupAndSyncEnabled: true,
-    completedMetaMetricsOnboarding: true,
+    consentDecisionMade: true,
     optedIn: false,
     isBackupAndSyncUpdateLoading: false,
     keyrings: [],
@@ -139,6 +139,10 @@ describe('BackupAndSyncToggle', () => {
       BACKUPANDSYNC_FEATURES.contactSyncing,
       true,
     );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
+      true,
+    );
   });
 
   it('opens the confirm modal when the toggle is turned on and basic functionality is off', async () => {
@@ -161,7 +165,7 @@ describe('BackupAndSyncToggle', () => {
     );
 
     // The modal's enableBackupAndSync callback should re-enable basic
-    // functionality (via toggleExternalServices, a thunk) and then enable B&S features.
+    // functionality (via a thunk) and then enable B&S features.
     const modalAction = mockDispatch.mock.calls.find(
       (call) => call[0]?.type === 'UI_MODAL_OPEN',
     )?.[0];
@@ -170,8 +174,9 @@ describe('BackupAndSyncToggle', () => {
     const dispatchCallCountBefore = mockDispatch.mock.calls.length;
     await enableCallback();
 
-    // toggleExternalServices is a thunk: each invocation returns a new function,
-    // so assert by detecting a thunk dispatch happened during the callback.
+    // toggleBasicFunctionality / toggleExternalServices are thunks: each
+    // invocation returns a new function, so assert by detecting a thunk
+    // dispatch happened during the callback.
     const dispatchedThunkAfterCallback = mockDispatch.mock.calls
       .slice(dispatchCallCountBefore)
       .some((call) => typeof call[0] === 'function');
@@ -186,6 +191,10 @@ describe('BackupAndSyncToggle', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      true,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       true,
     );
   });
@@ -216,6 +225,10 @@ describe('BackupAndSyncToggle', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       false,
     );
   });
@@ -266,6 +279,10 @@ describe('BackupAndSyncToggle', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
+    expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
+      BACKUPANDSYNC_FEATURES.rampsSyncing,
       false,
     );
   });

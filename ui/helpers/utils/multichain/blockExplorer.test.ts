@@ -12,9 +12,10 @@ import {
 } from '../../../../shared/constants/network';
 import type { MultichainNetwork } from '../../../selectors/multichain/networks';
 import {
-  getMultichainBlockExplorerUrl,
-  getMultichainAccountUrl,
   getAssetDetailsAccountUrl,
+  getFungibleAssetBlockExplorerLink,
+  getMultichainAccountUrl,
+  getMultichainBlockExplorerUrl,
 } from './blockExplorer';
 
 const mockEvmNetwork: MultichainNetwork = {
@@ -119,6 +120,75 @@ describe('Block Explorer Tests', () => {
       const result = getAssetDetailsAccountUrl(address, mockNonEvmNetwork);
 
       expect(result).toBe(expectedUrl);
+    });
+  });
+
+  describe('getFungibleAssetBlockExplorerLink', () => {
+    it('returns an EVM explorer link', () => {
+      const link = getFungibleAssetBlockExplorerLink({
+        caipChainId: 'eip155:1',
+        tokenAddress: '0xabc',
+        isNative: false,
+        evmNetworkConfigurations: {
+          '0x1': {
+            chainId: '0x1',
+            name: 'Ethereum Mainnet',
+            nativeCurrency: 'ETH',
+            defaultBlockExplorerUrlIndex: 0,
+            blockExplorerUrls: ['https://etherscan.io'],
+            rpcEndpoints: [],
+            defaultRpcEndpointIndex: 0,
+          },
+        },
+        multichainNetworkConfigurations: {
+          'eip155:1': {
+            chainId: 'eip155:1',
+            name: 'Ethereum Mainnet',
+            isEvm: true,
+            nativeCurrency: 'ETH',
+            blockExplorerUrls: ['https://etherscan.io'],
+            defaultBlockExplorerUrlIndex: 0,
+          },
+        },
+        fallbackExplorerLabel: 'Etherscan',
+      });
+
+      expect(link?.url).toContain('etherscan.io');
+      expect(link?.name).toBe('Ethereum Mainnet');
+    });
+
+    it('returns a non-EVM explorer link', () => {
+      const link = getFungibleAssetBlockExplorerLink({
+        caipChainId: MultichainNetworks.SOLANA,
+        tokenAddress: 'So11111111111111111111111111111111111111112',
+        isNative: false,
+        evmNetworkConfigurations: {},
+        multichainNetworkConfigurations: {
+          [MultichainNetworks.SOLANA]: {
+            chainId: MultichainNetworks.SOLANA,
+            name: 'Solana',
+            isEvm: false,
+            nativeCurrency: `${MultichainNetworks.SOLANA}/slip44:501`,
+          },
+        },
+        fallbackExplorerLabel: 'Etherscan',
+      });
+
+      expect(link?.url).toContain('solscan.io');
+      expect(link?.name).toBeTruthy();
+    });
+
+    it('returns null for native assets', () => {
+      expect(
+        getFungibleAssetBlockExplorerLink({
+          caipChainId: 'eip155:1',
+          tokenAddress: '0xabc',
+          isNative: true,
+          evmNetworkConfigurations: {},
+          multichainNetworkConfigurations: {},
+          fallbackExplorerLabel: 'Etherscan',
+        }),
+      ).toBeNull();
     });
   });
 });

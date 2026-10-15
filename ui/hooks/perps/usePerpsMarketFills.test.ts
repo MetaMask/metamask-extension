@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { OrderFill } from '@metamask/perps-controller';
 import {
   usePerpsMarketFills,
@@ -69,17 +69,17 @@ describe('usePerpsMarketFills', () => {
 
   describe('initialization', () => {
     it('returns empty fills and not loading once REST resolves', async () => {
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current).toEqual(
-        expect.objectContaining({
-          fills: [],
-          isInitialLoading: false,
-        }),
-      );
+      await waitFor(() => {
+        expect(result.current).toEqual(
+          expect.objectContaining({
+            fills: [],
+            isInitialLoading: false,
+          }),
+        );
+      });
     });
 
     it('is loading when REST is in-flight even if WS already resolved', () => {
@@ -98,12 +98,12 @@ describe('usePerpsMarketFills', () => {
     it('is not loading when REST resolved even if WS is still loading', async () => {
       setLiveFills([], true);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.isInitialLoading).toBe(false);
+      await waitFor(() => {
+        expect(result.current.isInitialLoading).toBe(false);
+      });
     });
 
     it('reports isInitialLoading when REST is in-flight', async () => {
@@ -123,13 +123,14 @@ describe('usePerpsMarketFills', () => {
       setLiveFills([], true);
       setRestFillsResponse([]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
 
       expect(result.current.isInitialLoading).toBe(true);
-      await waitForNextUpdate();
-      expect(result.current.isInitialLoading).toBe(false);
+      await waitFor(() => {
+        expect(result.current.isInitialLoading).toBe(false);
+      });
     });
   });
 
@@ -137,17 +138,17 @@ describe('usePerpsMarketFills', () => {
     it('fetches fills via perpsGetOrderFills on mount', async () => {
       setRestFillsResponse([makeFill({ orderId: 'rest-1', timestamp: 2000 })]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'perpsGetOrderFills',
-        [{ aggregateByTime: false, startTime: expect.any(Number) }],
-      );
-      expect(result.current.fills).toHaveLength(1);
-      expect(result.current.fills[0].orderId).toBe('rest-1');
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsGetOrderFills',
+          [{ aggregateByTime: false, startTime: expect.any(Number) }],
+        );
+        expect(result.current.fills).toHaveLength(1);
+        expect(result.current.fills[0].orderId).toBe('rest-1');
+      });
     });
 
     it('keeps fills empty when REST API returns an error', async () => {
@@ -155,24 +156,24 @@ describe('usePerpsMarketFills', () => {
         new Error('Network error'),
       );
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toEqual([]);
-      expect(result.current.isInitialLoading).toBe(false);
+      await waitFor(() => {
+        expect(result.current.fills).toEqual([]);
+        expect(result.current.isInitialLoading).toBe(false);
+      });
     });
 
     it('keeps fills empty when REST API returns null', async () => {
       setRestFillsResponse(null);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toEqual([]);
+      await waitFor(() => {
+        expect(result.current.fills).toEqual([]);
+      });
     });
   });
 
@@ -184,13 +185,15 @@ describe('usePerpsMarketFills', () => {
         makeFill({ orderId: 'btc-2', symbol: 'BTC', timestamp: 1000 }),
       ]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toHaveLength(2);
-      expect(result.current.fills.every((f) => f.symbol === 'BTC')).toBe(true);
+      await waitFor(() => {
+        expect(result.current.fills).toHaveLength(2);
+        expect(result.current.fills.every((f) => f.symbol === 'BTC')).toBe(
+          true,
+        );
+      });
     });
 
     it('only includes live fills matching the requested symbol', async () => {
@@ -199,13 +202,13 @@ describe('usePerpsMarketFills', () => {
         makeFill({ orderId: 'live-eth', symbol: 'ETH', timestamp: 4000 }),
       ]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toHaveLength(1);
-      expect(result.current.fills[0].orderId).toBe('live-btc');
+      await waitFor(() => {
+        expect(result.current.fills).toHaveLength(1);
+        expect(result.current.fills[0].orderId).toBe('live-btc');
+      });
     });
 
     it('returns empty when no fills match the symbol', async () => {
@@ -213,12 +216,12 @@ describe('usePerpsMarketFills', () => {
         makeFill({ orderId: 'eth-1', symbol: 'ETH', timestamp: 1000 }),
       ]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'SOL' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toEqual([]);
+      await waitFor(() => {
+        expect(result.current.fills).toEqual([]);
+      });
     });
   });
 
@@ -227,12 +230,12 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([makeFill({ orderId: 'rest-1', timestamp: 1000 })]);
       setLiveFills([makeFill({ orderId: 'live-1', timestamp: 2000 })]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toHaveLength(2);
+      await waitFor(() => {
+        expect(result.current.fills).toHaveLength(2);
+      });
     });
 
     it('deduplicates fills sharing orderId/timestamp/size/price', async () => {
@@ -246,12 +249,12 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([makeFill(shared)]);
       setLiveFills([makeFill(shared)]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toHaveLength(1);
+      await waitFor(() => {
+        expect(result.current.fills).toHaveLength(1);
+      });
     });
 
     it('prefers live fill data over REST for the same dedup key', async () => {
@@ -265,13 +268,13 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([makeFill({ ...shared, pnl: '0' })]);
       setLiveFills([makeFill({ ...shared, pnl: '100' })]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills).toHaveLength(1);
-      expect(result.current.fills[0].pnl).toBe('100');
+      await waitFor(() => {
+        expect(result.current.fills).toHaveLength(1);
+        expect(result.current.fills[0].pnl).toBe('100');
+      });
     });
   });
 
@@ -283,14 +286,14 @@ describe('usePerpsMarketFills', () => {
         makeFill({ orderId: 'mid', timestamp: 2000 }),
       ]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(result.current.fills.map((f) => f.timestamp)).toEqual([
-        3000, 2000, 1000,
-      ]);
+      await waitFor(() => {
+        expect(result.current.fills.map((f) => f.timestamp)).toEqual([
+          3000, 2000, 1000,
+        ]);
+      });
     });
   });
 
@@ -298,22 +301,23 @@ describe('usePerpsMarketFills', () => {
     it('clears stale fills and re-fetches for the new account', async () => {
       setRestFillsResponse([makeFill({ orderId: 'a-1', timestamp: 1000 })]);
 
-      const { result, waitForNextUpdate, rerender } = renderHook(
+      const { result, rerender } = renderHook(
         ({ address }: { address: string }) => {
           mockGetSelectedInternalAccount.mockReturnValue({ address });
           return usePerpsMarketFills({ symbol: 'BTC' });
         },
         { initialProps: { address: '0xaaa' } },
       );
-      await waitForNextUpdate();
-      expect(result.current.fills[0].orderId).toBe('a-1');
+      await waitFor(() => {
+        expect(result.current.fills[0].orderId).toBe('a-1');
+      });
 
       setRestFillsResponse([makeFill({ orderId: 'b-1', timestamp: 2000 })]);
       rerender({ address: '0xbbb' });
-      await waitForNextUpdate();
-
-      expect(result.current.fills[0].orderId).toBe('b-1');
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      await waitFor(() => {
+        expect(result.current.fills[0].orderId).toBe('b-1');
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+      });
     });
 
     it('discards stale REST response when account changes before fetch completes', async () => {
@@ -324,7 +328,7 @@ describe('usePerpsMarketFills', () => {
         }),
       );
 
-      const { result, waitForNextUpdate, rerender } = renderHook(
+      const { result, rerender } = renderHook(
         ({ address }: { address: string }) => {
           mockGetSelectedInternalAccount.mockReturnValue({ address });
           return usePerpsMarketFills({ symbol: 'BTC' });
@@ -334,7 +338,10 @@ describe('usePerpsMarketFills', () => {
 
       setRestFillsResponse([makeFill({ orderId: 'b-1', timestamp: 2000 })]);
       rerender({ address: '0xbbb' });
-      await waitForNextUpdate();
+      const prevUpdate0 = result.current;
+      await waitFor(() => {
+        expect(result.current).not.toBe(prevUpdate0);
+      });
 
       await act(async () => {
         resolveFirstFetch([makeFill({ orderId: 'stale-a', timestamp: 500 })]);
@@ -351,11 +358,10 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([fill]);
 
       // First render — populates cache
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      });
 
       // Second render (e.g. re-navigation) — cache is warm, no additional REST call
       const { result: result2 } = renderHook(() =>
@@ -399,7 +405,7 @@ describe('usePerpsMarketFills', () => {
     });
 
     it('re-fetches after TTL expires', async () => {
-      jest.useFakeTimers();
+      // Control TTL via Date.now only — fake timers break promise flushing with waitFor/act.
       const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(1_000_000);
 
       try {
@@ -407,10 +413,10 @@ describe('usePerpsMarketFills', () => {
           makeFill({ orderId: 'fresh-1', timestamp: 1000 }),
         ]);
 
-        const { waitForNextUpdate: waitFirst } = renderHook(() =>
-          usePerpsMarketFills({ symbol: 'BTC' }),
-        );
-        await waitFirst();
+        renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+        await act(async () => {
+          await Promise.resolve();
+        });
         expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
         mockSubmitRequestToBackground.mockClear();
 
@@ -420,11 +426,10 @@ describe('usePerpsMarketFills', () => {
           makeFill({ orderId: 'stale-1', timestamp: 2000 }),
         ]);
 
-        const { waitForNextUpdate: waitSecond } = renderHook(() =>
-          usePerpsMarketFills({ symbol: 'BTC' }),
-        );
-        await waitSecond();
-
+        renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+        await act(async () => {
+          await Promise.resolve();
+        });
         expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'perpsGetOrderFills',
@@ -432,51 +437,50 @@ describe('usePerpsMarketFills', () => {
         );
       } finally {
         nowSpy.mockRestore();
-        jest.useRealTimers();
       }
     });
 
     it('re-fetches for a different account even when cache is warm', async () => {
       setRestFillsResponse([makeFill({ orderId: 'abc-1', timestamp: 1000 })]);
 
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
+      renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await act(async () => {
+        await Promise.resolve();
+      });
       mockSubmitRequestToBackground.mockClear();
 
       // Different address — cache scope includes address
       mockGetSelectedInternalAccount.mockReturnValue({ address: '0xdef' });
       setRestFillsResponse([makeFill({ orderId: 'def-1', timestamp: 2000 })]);
 
-      const { result: result2, waitForNextUpdate: waitSecond } = renderHook(
-        () => usePerpsMarketFills({ symbol: 'BTC' }),
+      const { result: result2 } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitSecond();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-      expect(result2.current.fills[0].orderId).toBe('def-1');
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+        expect(result2.current.fills[0].orderId).toBe('def-1');
+      });
     });
 
     it('re-fetches when mainnet vs testnet scope changes even when cache is warm', async () => {
       setRestFillsResponse([makeFill({ orderId: 'main-1', timestamp: 1000 })]);
 
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
+      renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await act(async () => {
+        await Promise.resolve();
+      });
       mockSubmitRequestToBackground.mockClear();
 
       mockSelectPerpsIsTestnet.mockReturnValue(true);
       setRestFillsResponse([makeFill({ orderId: 'test-1', timestamp: 2000 })]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
-      expect(result.current.fills[0].orderId).toBe('test-1');
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+        expect(result.current.fills[0].orderId).toBe('test-1');
+      });
     });
 
     it('excludes live fills while scope is transitioning to prevent mixing env data', async () => {
@@ -486,12 +490,12 @@ describe('usePerpsMarketFills', () => {
       setRestFillsResponse([
         makeFill({ orderId: 'main-rest', timestamp: 1000 }),
       ]);
-      const {
-        result,
-        waitForNextUpdate: waitFirst,
-        rerender,
-      } = renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
-      await waitFirst();
+      const { result, rerender } = renderHook(() =>
+        usePerpsMarketFills({ symbol: 'BTC' }),
+      );
+      await act(async () => {
+        await Promise.resolve();
+      });
 
       // Switch to testnet with an in-flight REST request
       mockSelectPerpsIsTestnet.mockReturnValue(true);
@@ -529,22 +533,21 @@ describe('usePerpsMarketFills', () => {
     it('re-fetches after clearPerpsMarketFillsModuleCache', async () => {
       setRestFillsResponse([makeFill({ orderId: 'first', timestamp: 1000 })]);
 
-      const { waitForNextUpdate: waitFirst } = renderHook(() =>
-        usePerpsMarketFills({ symbol: 'BTC' }),
-      );
-      await waitFirst();
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      renderHook(() => usePerpsMarketFills({ symbol: 'BTC' }));
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(1);
+      });
 
       clearPerpsMarketFillsModuleCache();
       setRestFillsResponse([makeFill({ orderId: 'second', timestamp: 2000 })]);
 
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         usePerpsMarketFills({ symbol: 'BTC' }),
       );
-      await waitForNextUpdate();
-
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
-      expect(result.current.fills[0].orderId).toBe('second');
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+        expect(result.current.fills[0].orderId).toBe('second');
+      });
     });
   });
 });

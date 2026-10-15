@@ -1,6 +1,11 @@
 import React from 'react';
-import type { ActivityListItem } from '../../../../shared/lib/activity/types';
+import { render } from '@testing-library/react';
+import type {
+  ActivityListItem,
+  MoneyAccountActivityItem,
+} from '../../../../shared/lib/activity/types';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
 import { useActivityRowContent } from './useActivityRowContent';
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -8,16 +13,25 @@ jest.mock('../../../hooks/useI18nContext', () => ({
     substitutions ? `${key}|${substitutions.join(',')}` : key,
 }));
 
+const mockFormatTokenAmount = jest.fn();
+const mockFormatAsFiat = jest.fn();
+
 jest.mock('./useFormatTokenAmount', () => ({
-  useFormatTokenAmount: () => jest.fn(),
+  useFormatTokenAmount: () => mockFormatTokenAmount,
 }));
 
-jest.mock('./useFormatFiatAmount', () => ({
-  useFormatFiatAmount: () => jest.fn(),
+jest.mock('../../../hooks/useFormatAsFiat', () => ({
+  useFormatAsFiat: () => mockFormatAsFiat,
 }));
+
+const mockFormatCurrencyWithMinThreshold = jest.fn(
+  (amount: number, currency: string) => `${amount} ${currency}`,
+);
 
 jest.mock('../../../hooks/useFormatters', () => ({
-  useFormatters: () => ({ formatCurrencyWithMinThreshold: jest.fn() }),
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: mockFormatCurrencyWithMinThreshold,
+  }),
 }));
 
 jest.mock('../../../components/app/activity-list-item-avatar', () => ({
@@ -31,6 +45,18 @@ jest.mock('../../../components/app/chain-badge/chain-badge', () => ({
     <div data-testid="chain-badge">{children}</div>
   ),
 }));
+
+const mockGetDisplayName = jest.fn((address?: string): string =>
+  address ? '0x11111...11111' : '',
+);
+
+jest.mock('../../../hooks/useGetDisplayName', () => ({
+  useGetDisplayName: jest.fn(() => mockGetDisplayName),
+}));
+
+const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
+  typeof useGetDisplayName
+>;
 
 const STELLAR_USDC_ASSET =
   'stellar:pubnet/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
@@ -53,6 +79,16 @@ const buildActivity = (type: 'assetActivation' | 'assetDeactivation') =>
   }) as unknown as ActivityListItem;
 
 describe('useActivityRowContent', () => {
+  beforeEach(() => {
+    mockFormatTokenAmount.mockReset();
+    mockFormatAsFiat.mockReset();
+    mockFormatCurrencyWithMinThreshold.mockClear();
+    mockGetDisplayName.mockImplementation((address?: string) =>
+      address ? '0x11111...11111' : '',
+    );
+    mockUseGetDisplayName.mockReturnValue(mockGetDisplayName);
+  });
+
   it('derives the activation title and subtitle from the token symbol', () => {
     const { result } = renderHookWithProvider(() =>
       useActivityRowContent(buildActivity('assetActivation')),
@@ -108,7 +144,7 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe('activity_swap_success_description');
   });
 
-  it('keeps full swap copy when destination is present', () => {
+  it('uses a clean swap title with the token pair as subtitle', () => {
     const activity = {
       type: 'swap',
       chainId: 'eip155:1',
@@ -137,7 +173,339 @@ describe('useActivityRowContent', () => {
     );
 
     expect(result.current.title.props.children).toBe(
-      'activity_swap_success_title|ETH,USDC',
+      'activity_swap_success_title',
     );
+    expect(result.current.subtitle).toBe('ETH → USDC');
+  });
+
+  it('names the provider in the ramp order subtitle', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.title.props.children).toBe(
+      'activity_rampBuy_success_title|ETH',
+    );
+    expect(result.current.subtitle).toBe('MoonPay');
+  });
+
+  it('omits the ramp subtitle when the provider is unnamed', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH', amount: '1' },
+        provider: { id: '/providers/moonpay', name: '' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBeUndefined();
+  });
+
+  it('shows a placeholder for a pending ramp order without a crypto amount', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in', symbol: 'ETH' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('... ETH');
+  });
+
+  it('shows an ellipsis without a symbol when pending and symbol is missing', () => {
+    const activity = {
+      type: 'rampBuy',
+      chainId: 'eip155:1',
+      status: 'pending',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'in' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount.props.children).toBe('...');
+  });
+
+  it('uses the order fiat amount for the secondary amount on ramp sells', () => {
+    const activity = {
+      type: 'rampSell',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        token: { direction: 'out', symbol: 'ETH', amount: '1' },
+        fiat: { amount: '100', currency: 'USD' },
+        provider: { id: '/providers/moonpay', name: 'MoonPay' },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.subtitle).toBe('MoonPay');
+    expect(result.current.title.props.children).toBe(
+      'activity_rampSell_success_title|ETH',
+    );
+    expect(result.current.secondaryAmount).toBe('100 USD');
+    expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(100, 'USD');
+  });
+
+  it('shows the display name in send To: subtitles', () => {
+    const toAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    mockGetDisplayName.mockReturnValue('Alice');
+
+    const activity = {
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x2222222222222222222222222222222222222222',
+        to: toAddress,
+        token: {
+          direction: 'out',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(mockGetDisplayName).toHaveBeenCalledWith(toAddress);
+    expect(result.current.subtitle).toBe(
+      'activity_send_success_description|Alice',
+    );
+  });
+
+  it('shows the display name in receive From: subtitles', () => {
+    const fromAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    mockGetDisplayName.mockReturnValue('Bob');
+
+    const activity = {
+      type: 'receive',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: fromAddress,
+        to: '0x2222222222222222222222222222222222222222',
+        token: {
+          direction: 'in',
+          symbol: 'ETH',
+          amount: '1',
+          decimals: 18,
+          assetId: 'eip155:1/slip44:60',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(mockGetDisplayName).toHaveBeenCalledWith(fromAddress);
+    expect(result.current.subtitle).toBe(
+      'activity_receive_success_description|Bob',
+    );
+  });
+
+  describe('money account rows', () => {
+    const MUSD_ASSET_ID = 'eip155:1/erc20:0xmusd';
+
+    const buildMoneyActivity = (
+      type: MoneyAccountActivityItem['type'],
+      fiatAmount?: string,
+      status: MoneyAccountActivityItem['status'] = 'success',
+    ): MoneyAccountActivityItem => ({
+      type,
+      chainId: 'eip155:1',
+      status,
+      timestamp: 1,
+      hash: '0xabc',
+      data: {
+        from: '0x1111111111111111111111111111111111111111',
+        ...(fiatAmount === undefined ? {} : { fiat: { amount: fiatAmount } }),
+        token: {
+          assetId: MUSD_ASSET_ID,
+          direction: type === 'moneyAccountDeposit' ? 'out' : 'in',
+          symbol: 'mUSD',
+          decimals: 6,
+          amount: '25500000',
+        },
+      },
+    });
+
+    it('renders a deposit like a send to the money account', () => {
+      mockFormatTokenAmount.mockReturnValue('-25.5 mUSD');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountDeposit_success_title|mUSD',
+      );
+      expect(result.current.subtitle).toBe(
+        'activity_moneyAccountDeposit_success_description',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('-25.5 mUSD');
+      expect(result.current.primaryAmount.props.className).toBe('');
+    });
+
+    it('renders a withdrawal like a receive from the money account', () => {
+      mockFormatTokenAmount.mockReturnValue('+25.5 mUSD');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountWithdraw_success_title|mUSD',
+      );
+      expect(result.current.subtitle).toBe(
+        'activity_moneyAccountWithdraw_success_description',
+      );
+      expect(result.current.primaryAmount.props.children).toBe('+25.5 mUSD');
+      expect(result.current.primaryAmount.props.className).toBe(
+        'text-success-default',
+      );
+    });
+
+    it('prefers the market-rate fiat amount as the secondary amount', () => {
+      mockFormatAsFiat.mockReturnValue('-€23.10');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(result.current.secondaryAmount).toBe('-€23.10');
+    });
+
+    it('falls back to the pegged USD amount when no market rate is available', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5'),
+        ),
+      );
+
+      expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(
+        -25.5,
+        'usd',
+      );
+      expect(result.current.secondaryAmount).toBe('-25.5 usd');
+    });
+
+    it('adds a plus sign to the pegged USD amount of a withdrawal', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountWithdraw', '25.5'),
+        ),
+      );
+
+      expect(result.current.secondaryAmount).toBe('+25.5 usd');
+    });
+
+    it('omits the secondary amount when the activity has no fiat value', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit')),
+      );
+
+      expect(result.current.secondaryAmount).toBeUndefined();
+    });
+
+    it('shows the quoted fiat as the primary amount before the mUSD amount is known', () => {
+      mockFormatTokenAmount.mockReturnValue('-0 mUSD');
+      mockFormatAsFiat.mockReturnValue('-$0.00');
+      const activity = buildMoneyActivity(
+        'moneyAccountDeposit',
+        '25',
+        'pending',
+      );
+      delete activity.data.token?.amount;
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(activity),
+      );
+
+      expect(result.current.primaryAmount.props.children).toBe('-25 usd');
+      expect(result.current.secondaryAmount).toBeUndefined();
+      expect(mockFormatTokenAmount).not.toHaveBeenCalled();
+      expect(mockFormatAsFiat).not.toHaveBeenCalled();
+    });
+
+    it('marks a failed deposit title as an error', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(
+          buildMoneyActivity('moneyAccountDeposit', '25.5', 'failed'),
+        ),
+      );
+
+      expect(result.current.title.props.children).toBe(
+        'activity_moneyAccountDeposit_failed_title|mUSD',
+      );
+      expect(result.current.title.props.className).toContain(
+        'text-error-default',
+      );
+    });
+
+    it('shows the mUSD token avatar', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildMoneyActivity('moneyAccountDeposit', '1')),
+      );
+
+      const { getByTestId } = render(result.current.avatar);
+      expect(getByTestId('activity-avatar')).toHaveTextContent(MUSD_ASSET_ID);
+    });
   });
 });

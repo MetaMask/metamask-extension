@@ -168,7 +168,7 @@ export class PerpsDataChannel<TData> {
     }
 
     // Subscribe with a no-op callback just to keep connection alive
-    // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
+    // eslint-disable-next-line no-empty-function
     const unsubscribe = this.subscribe(() => {});
 
     this.prewarmUnsubscribe = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
 
 import configureStore from '../../../store/store';

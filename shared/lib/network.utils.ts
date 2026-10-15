@@ -9,9 +9,12 @@ import {
 import { convertHexToDecimal } from '@metamask/controller-utils';
 import type { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import type {
+  NetworkClientId,
   NetworkConfiguration,
+  NetworkState,
   AddNetworkFields,
 } from '@metamask/network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 
 import {
   MAX_SAFE_CHAIN_ID,
@@ -224,3 +227,30 @@ export const getFilteredFeaturedNetworks = (
     (network) => !blacklistedChainIds.includes(network.chainId),
   );
 };
+
+/**
+ * Returns default network client IDs for every enabled EIP-155 network.
+ *
+ * @param enabledNetworkMap - Map of enabled networks by CAIP namespace.
+ * @param networkConfigurationsByChainId - NetworkController configs by hex chain ID.
+ * @returns Network client IDs for enabled EVM networks.
+ */
+export function getAllEnabledNetworkClientIds(
+  enabledNetworkMap: NetworkEnablementControllerState['enabledNetworkMap'],
+  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
+): NetworkClientId[] {
+  const enabledEip155Networks =
+    enabledNetworkMap[KnownCaipNamespace.Eip155] ?? {};
+
+  const chainIds = Object.entries(enabledEip155Networks)
+    .filter(([_chainId, isEnabled]) => isEnabled)
+    .map(([chainId, _isEnabled]) => chainId) as Hex[];
+
+  return chainIds
+    .map((chainId) => networkConfigurationsByChainId[chainId])
+    .filter((config) => config !== undefined)
+    .map(
+      (config) =>
+        config.rpcEndpoints[config.defaultRpcEndpointIndex].networkClientId,
+    );
+}

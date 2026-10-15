@@ -1,7 +1,7 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Hex, Json } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponseV1 } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
@@ -33,7 +33,7 @@ export function selectDappSwapComparisonData(
   transactionId: string,
 ):
   | {
-      quotes?: QuoteResponse[];
+      quotes?: QuoteResponseV1[];
       latency?: number;
       commands?: string;
       error?: string;

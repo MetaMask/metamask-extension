@@ -1,7 +1,7 @@
-import { PPOMController } from '@metamask/ppom-validator';
 import {
-  TransactionController,
+  TransactionControllerGetStateAction,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateSecurityAlertResponseAction,
   TransactionMeta,
   TransactionParams,
   normalizeTransactionParams,
@@ -10,7 +10,7 @@ import { Hex, JsonRpcRequest, createProjectLogger } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
 import {
-  SignatureController,
+  GetSignatureState,
   SignatureControllerState,
   SignatureRequest,
   SignatureStateChange,
@@ -26,7 +26,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
-import { AppStateController } from '../../controllers/app-state-controller';
+import { AppStateControllerAddSignatureSecurityAlertResponseAction } from '../../controllers/app-state-controller-method-action-types';
 import { sanitizeMessageRecursively } from '../../../../shared/lib/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
@@ -46,6 +46,33 @@ const log = createProjectLogger('ppom-util');
 
 const { sentry } = global;
 
+/**
+ * Messenger able to run the PPOM security validation flow: validate via the
+ * PPOM controller, and read/write the loading + final security alert response
+ * onto the pending transaction or signature request.
+ */
+export type PPOMMessenger = RootMessenger<
+  | UsePPOMAction
+  | TransactionControllerGetStateAction
+  | TransactionControllerUpdateSecurityAlertResponseAction
+  | GetSignatureState
+  | AppStateControllerAddSignatureSecurityAlertResponseAction,
+  TransactionControllerUnapprovedTransactionAddedEvent | SignatureStateChange
+>;
+
+/**
+ * The `PPOMController:usePPOM` action. The published `UsePPOM` type omits the
+ * controller method's optional `chainId` argument, so it is redeclared here
+ * with the real runtime signature to forward the confirmation's chain id.
+ */
+export type UsePPOMAction = {
+  type: 'PPOMController:usePPOM';
+  handler: (
+    callback: (ppom: PPOM) => Promise<unknown>,
+    chainId?: string,
+  ) => Promise<unknown>;
+};
+
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -59,14 +86,14 @@ type PPOMRequest = JsonRpcRequest & {
 };
 
 export async function validateRequestWithPPOM({
-  ppomController,
+  messenger,
   request,
   securityAlertId,
   chainId,
   updateSecurityAlertResponse: updateSecurityResponse,
   getSecurityAlertsConfig,
 }: {
-  ppomController: PPOMController;
+  messenger: PPOMMessenger;
   request: PPOMRequest;
   securityAlertId: string;
   chainId: Hex;
@@ -86,16 +113,12 @@ export async function validateRequestWithPPOM({
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(
-          ppomController,
+          messenger,
           chainId,
           normalizedRequest,
           getSecurityAlertsConfig,
         )
-      : await validateWithController(
-          ppomController,
-          normalizedRequest,
-          chainId,
-        );
+      : await validateWithController(messenger, normalizedRequest, chainId);
 
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
@@ -114,32 +137,25 @@ export function generateSecurityAlertId(): string {
 }
 
 export async function updateSecurityAlertResponse({
-  appStateController,
   messenger,
   method,
   securityAlertId,
   securityAlertResponse,
-  signatureController,
-  transactionController,
 }: {
-  appStateController: AppStateController;
-  messenger: RootMessenger;
+  messenger: PPOMMessenger;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;
-  signatureController: SignatureController;
-  transactionController: TransactionController;
 }): Promise<TransactionMeta | SignatureRequest> {
   const isSignatureRequest = SIGNING_METHODS.includes(method);
 
   if (isSignatureRequest) {
     const signatureRequest = await waitForSignatureRequest(
-      signatureController,
       securityAlertId,
       messenger,
     );
 
-    appStateController.addSignatureSecurityAlertResponse({
+    messenger.call('AppStateController:addSignatureSecurityAlertResponse', {
       ...securityAlertResponse,
       securityAlertId,
     });
@@ -148,15 +164,18 @@ export async function updateSecurityAlertResponse({
   }
 
   const transactionMeta = await waitForTransactionMetadata(
-    transactionController,
     securityAlertId,
     messenger,
   );
 
-  transactionController.updateSecurityAlertResponse(transactionMeta.id, {
-    ...securityAlertResponse,
-    securityAlertId,
-  } as SecurityAlertResponse);
+  messenger.call(
+    'TransactionController:updateSecurityAlertResponse',
+    transactionMeta.id,
+    {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse,
+  );
 
   return transactionMeta;
 }
@@ -314,12 +333,13 @@ function getErrorData(error: unknown) {
 }
 
 async function validateWithController(
-  ppomController: PPOMController,
+  messenger: PPOMMessenger,
   request: SecurityAlertsAPIRequest | PPOMRequest,
   chainId: string,
 ): Promise<SecurityAlertResponse> {
   try {
-    const response = (await ppomController.usePPOM(
+    const response = (await messenger.call(
+      'PPOMController:usePPOM',
       (ppom: PPOM) => ppom.validateJsonRpc(request),
       chainId,
     )) as SecurityAlertResponse;
@@ -338,7 +358,7 @@ async function validateWithController(
 }
 
 async function validateWithAPI(
-  ppomController: PPOMController,
+  messenger: PPOMMessenger,
   chainId: string,
   request: SecurityAlertsAPIRequest | PPOMRequest,
   getSecurityAlertsConfig?: GetSecurityAlertsConfig,
@@ -356,24 +376,21 @@ async function validateWithAPI(
     };
   } catch (error: unknown) {
     handlePPOMError(error, `Error validating request with security alerts API`);
-    return await validateWithController(ppomController, request, chainId);
+    return await validateWithController(messenger, request, chainId);
   }
 }
 
 async function waitForTransactionMetadata(
-  transactionController: TransactionController,
   securityAlertId: string,
-  messenger: RootMessenger<
-    never,
-    TransactionControllerUnapprovedTransactionAddedEvent
-  >,
+  messenger: PPOMMessenger,
 ): Promise<TransactionMeta> {
   const transactionFilter = (meta: TransactionMeta) =>
     meta.securityAlertResponse?.securityAlertId === securityAlertId;
 
   return new Promise((resolve) => {
-    const transactionMeta =
-      transactionController.state.transactions.find(transactionFilter);
+    const transactionMeta = messenger
+      .call('TransactionController:getState')
+      .transactions.find(transactionFilter);
 
     if (transactionMeta) {
       resolve(transactionMeta);
@@ -405,9 +422,8 @@ async function waitForTransactionMetadata(
 }
 
 async function waitForSignatureRequest(
-  signatureController: SignatureController,
   securityAlertId: string,
-  messenger: RootMessenger<never, SignatureStateChange>,
+  messenger: PPOMMessenger,
 ): Promise<SignatureRequest> {
   const signatureFilter = (state: SignatureControllerState) =>
     Object.values(state.signatureRequests).find(
@@ -416,7 +432,9 @@ async function waitForSignatureRequest(
     );
 
   return new Promise((resolve) => {
-    const signatureRequest = signatureFilter(signatureController.state);
+    const signatureRequest = signatureFilter(
+      messenger.call('SignatureController:getState'),
+    );
 
     if (signatureRequest) {
       resolve(signatureRequest);

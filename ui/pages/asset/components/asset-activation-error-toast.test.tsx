@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { AssetActivationErrorToast } from './asset-activation-error-toast';
 
 describe('AssetActivationErrorToast', () => {
@@ -17,13 +18,13 @@ describe('AssetActivationErrorToast', () => {
 
     render(
       <AssetActivationErrorToast
-        message="Trustline activation test error"
+        message={messages.assetActivationError.message}
         onClose={onClose}
       />,
     );
 
     expect(
-      screen.getByText('Trustline activation test error'),
+      screen.getByText(messages.assetActivationError.message),
     ).toBeInTheDocument();
 
     const closeButton = document.querySelector('.mm-banner-base__close-button');

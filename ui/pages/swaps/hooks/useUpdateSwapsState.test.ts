@@ -1,6 +1,5 @@
-import { renderHook } from '@testing-library/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import { waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -19,10 +18,14 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
+import { useDispatch } from '../../../store/hooks';
 import useUpdateSwapsState from './useUpdateSwapsState';
 
-jest.mock('react-redux', () => ({
+jest.mock('../../../store/hooks', () => ({
   useDispatch: jest.fn(),
+}));
+
+jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 

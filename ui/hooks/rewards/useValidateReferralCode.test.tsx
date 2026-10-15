@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   REFERRAL_CODE_DEBOUNCE_MS,
@@ -427,5 +426,45 @@ describe('useValidateReferralCode', () => {
     });
 
     expect(result.current.isVipCode).toBe(false);
+  });
+
+  it('ignores stale validation errors after initialValue is cleared', async () => {
+    let rejectValidation: (error: Error) => void = () => undefined;
+    const pendingValidation = new Promise<{
+      valid: boolean;
+      isVipCode: boolean;
+    }>((_resolve, reject) => {
+      rejectValidation = reject;
+    });
+
+    validateRewardsReferralCode.mockReturnValueOnce(
+      async () => pendingValidation,
+    );
+
+    let initialCode = 'ABCDEF';
+    const { result, rerender } = renderHookWithProvider(
+      () => useValidateReferralCode(initialCode, 1000),
+      {},
+    );
+
+    expect(result.current.isValidating).toBe(true);
+
+    await advanceReferralCodeDebounce(1000);
+
+    expect(validateRewardsReferralCode).toHaveBeenCalledWith('ABCDEF');
+
+    initialCode = '';
+    rerender();
+
+    expect(result.current.referralCode).toBe('');
+    expect(result.current.isValidating).toBe(false);
+    expect(result.current.isUnknownError).toBe(false);
+
+    await act(async () => {
+      rejectValidation(new Error('boom'));
+    });
+
+    expect(result.current.isUnknownError).toBe(false);
+    expect(result.current.isValidating).toBe(false);
   });
 });

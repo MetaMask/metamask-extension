@@ -29,8 +29,6 @@ import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constan
 import { useNativeCurrencySymbol } from '../../hooks/useNativeCurrencySymbol';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasSponsorshipModal({ onClose }: { onClose: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =

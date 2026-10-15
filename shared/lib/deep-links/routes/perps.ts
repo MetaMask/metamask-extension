@@ -29,6 +29,7 @@ import {
  * - https://link.metamask.io/perps?screen=market-list
  * - https://link.metamask.io/perps?screen=market-list&tab=all
  * - https://link.metamask.io/perps?screen=market-list&tab=crypto
+ * - https://link.metamask.io/perps?screen=market-list&tab=memecoin
  * - https://link.metamask.io/perps?screen=market-list&tab=stock
  * - https://link.metamask.io/perps?screen=market-list&tab=commodity
  * - https://link.metamask.io/perps?screen=market-list&tab=forex

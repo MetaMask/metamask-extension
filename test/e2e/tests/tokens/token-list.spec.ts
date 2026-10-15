@@ -52,7 +52,14 @@ describe('Token List', function () {
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           ...(await mockTokenMetadataApis(mockServer, [
-            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+            {
+              address: tokenAddress,
+              symbol,
+              name: symbol,
+              decimals: 18,
+              chainId: 1,
+              balance: '1',
+            },
           ])),
           await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
@@ -65,12 +72,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
 
         await tokensTab.checkTokenGeneralChangePercentageNotPresent(
           zeroAddress(),
@@ -101,7 +102,14 @@ describe('Token List', function () {
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           ...(await mockTokenMetadataApis(mockServer, [
-            { address: tokenAddress, symbol, name: symbol, decimals: 18 },
+            {
+              address: tokenAddress,
+              symbol,
+              name: symbol,
+              decimals: 18,
+              chainId: 1,
+              balance: '1',
+            },
           ])),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': marketDataNative,
@@ -125,13 +133,6 @@ describe('Token List', function () {
         const tokensTab = new TokensTab(driver);
 
         await homePage.checkPageIsLoaded();
-        await tokensTab.importCustomTokenByChain(
-          chainId,
-          tokenAddress,
-          symbol,
-          '18',
-        );
-        await tokensTab.dismissTokenImportedMessage();
         await tokensTab.checkTokenGeneralChangePercentage(
           zeroAddress(),
           '+0.02%',

@@ -16,13 +16,18 @@ import {
   getUnapprovedTransaction,
   selectPendingApprovalsForNavigation,
 } from '../../../../../selectors';
+import { useDispatch } from '../../../../../store/hooks';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
+import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
+
+jest.mock('../../../../../store/hooks', () => ({
+  useDispatch: jest.fn(),
+}));
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
-  useDispatch: jest.fn(),
 }));
 
 const mockGetUnapprovedTransaction = jest.fn();
@@ -36,7 +41,9 @@ jest.mock('./useContractCode', () => ({
   useContractCode: jest.fn(),
 }));
 jest.mock('./NonContractAddressAlertMessage', () => ({
-  NonContractAddressAlertMessage: () => 'NonContractAddressAlertMessage',
+  NonContractAddressAlertMessage: jest.fn(
+    () => 'NonContractAddressAlertMessage',
+  ),
 }));
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
@@ -287,7 +294,9 @@ describe('useNonContractAddressAlerts', () => {
           key: 'hexDataWhileInteractingWithNonContractAddress',
           reason: 'nonContractAddressAlertTitle',
           severity: Severity.Warning,
-          content: 'NonContractAddressAlertMessage',
+          content: expect.objectContaining({
+            type: NonContractAddressAlertMessage,
+          }),
         },
       ]);
     });

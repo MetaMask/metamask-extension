@@ -1,8 +1,30 @@
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import { ThemeType } from '../../../shared/constants/preferences';
 import {
   extractIdFromPathname,
   getRelativeLocationForNestedRoutes,
+  setTheme,
 } from './utils';
+
+describe('setTheme', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+  });
+
+  it('sets data-theme on the document root from the resolved theme', () => {
+    setTheme(ThemeType.light);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.light,
+    );
+  });
+
+  it('sets data-theme to dark when theme is dark', () => {
+    setTheme(ThemeType.dark);
+    expect(document.documentElement.getAttribute('data-theme')).toBe(
+      ThemeType.dark,
+    );
+  });
+});
 
 describe('extractIdFromPathname', () => {
   const BASE_ROUTE = `${CONFIRM_TRANSACTION_ROUTE}/`;

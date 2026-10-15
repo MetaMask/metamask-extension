@@ -1,5 +1,5 @@
 import type { OrderBookData } from '@metamask/perps-controller';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { calculateEstimatedSlippageBps } from '../../components/app/perps/utils/slippageCalculation';
 import { usePerpsEstimatedSlippage } from './usePerpsEstimatedSlippage';
 import { usePerpsLiveOrderBook } from './stream/usePerpsLiveOrderBook';
@@ -25,6 +25,8 @@ describe('usePerpsEstimatedSlippage', () => {
     mockUsePerpsLiveOrderBook.mockReturnValue({
       orderBook: sampleBook,
       isInitialLoading: false,
+      connectionStatus: 'connected',
+      reconnect: jest.fn(),
     });
   });
 
@@ -75,6 +77,8 @@ describe('usePerpsEstimatedSlippage', () => {
     mockUsePerpsLiveOrderBook.mockReturnValue({
       orderBook: null,
       isInitialLoading: true,
+      connectionStatus: 'connecting',
+      reconnect: jest.fn(),
     });
     rerender({ symbol: 'ETH' });
 

@@ -10,19 +10,12 @@ import {
   TextVariant,
   TextColor,
   FontWeight,
-} from '@metamask/design-system-react';
-import {
   Modal,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  ModalContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
 import { useAnalytics } from '../../../hooks/useAnalytics';
@@ -73,13 +66,15 @@ export default function DeleteMetametricsModal({
     <Modal isOpen onClose={onClose} data-testid="delete-metametrics-modal">
       <ModalOverlay />
       <ModalContent
-        alignItems={AlignItems.center}
+        className="items-center"
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          flexDirection: BoxFlexDirection.Column,
         }}
       >
-        <ModalHeader onClose={onClose}>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{ ariaLabel: t('close') }}
+        >
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}

@@ -5,9 +5,8 @@ import {
   type ActionConstraint,
   type EventConstraint,
   type ExtractEventPayload,
-  type ExtractActionParameters,
-  ExtractActionResponse,
   ExtractEventHandler,
+  ActionHandler,
 } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
 
@@ -45,7 +44,7 @@ type MakeActionsAsynchronous<Action> = Action extends ActionConstraint
   ? { type: Action['type']; handler: MakeAsynchronous<Action['handler']> }
   : never;
 
-const EXCLUDED_ACTIONS = MESSENGERS_WITH_EXCLUSIONS.flatMap(
+const EXCLUDED_ACTIONS: string[] = MESSENGERS_WITH_EXCLUSIONS.flatMap(
   (config) => config.EXCLUDED_CAPABILITIES.actions,
 );
 
@@ -54,17 +53,6 @@ type ExcludedActionTypes =
   MessengerWithExclusions['EXCLUDED_CAPABILITIES']['actions'][number];
 type ExcludedEventTypes =
   MessengerWithExclusions['EXCLUDED_CAPABILITIES']['events'][number];
-
-/**
- * Keeps only actions whose parameters and return value are JSON-serializable,
- * since all actions go through the background connection.
- */
-type WithJsonParams<Action extends ActionConstraint> =
-  Action extends ActionConstraint
-    ? Parameters<Action['handler']> extends Json[]
-      ? Action
-      : never
-    : never;
 
 /**
  * Keeps only events whose payload is JSON-serializable, since all events come
@@ -79,7 +67,7 @@ type WithJsonPayload<Event> = Event extends {
   : never;
 
 export type UIMessengerActions = MakeActionsAsynchronous<
-  WithJsonParams<Exclude<RootMessengerActions, { type: ExcludedActionTypes }>>
+  Exclude<RootMessengerActions, { type: ExcludedActionTypes }>
 >;
 
 export type UIMessengerEvents = WithJsonPayload<
@@ -159,22 +147,22 @@ export class UIMessenger {
     messenger: Delegatee;
   }): Promise<void> {
     for (const actionType of actions ?? []) {
-      const delegatedActionHandler = (
-        ...args: ExtractActionParameters<
-          MessengerActions<Delegatee> & UIMessengerActions,
-          typeof actionType
-        >
-      ): ExtractActionResponse<
-        MessengerActions<Delegatee> & UIMessengerActions,
-        typeof actionType
-      > => {
+      // The action's parameter and response types would have to be extracted
+      // from `RootMessengerActions`, a union too large for TypeScript to index
+      // into per action without overflowing (TS2590). Every action crosses the
+      // background connection as JSON, so type the handler with that shape and
+      // cast it when registering below.
+      const delegatedActionHandler = (...args: Json[]): Promise<Json> => {
         if (EXCLUDED_ACTIONS.includes(actionType)) {
           throw new Error(
             `The action "${actionType}" has not been exposed to the UI.`,
           );
         }
 
-        return submitRequestToBackground('messengerCall', [actionType, args]);
+        return submitRequestToBackground('messengerCall', [
+          actionType as string,
+          args,
+        ]);
       };
 
       let delegationTargets = this.#actionDelegationTargets.get(actionType);
@@ -195,7 +183,10 @@ export class UIMessenger {
       // internal API for delegation.
       messenger._internalRegisterDelegatedActionHandler(
         actionType,
-        delegatedActionHandler,
+        delegatedActionHandler as ActionHandler<
+          Extract<UIMessengerActions, { type: typeof actionType }>,
+          typeof actionType
+        >,
       );
     }
 

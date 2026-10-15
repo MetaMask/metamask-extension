@@ -37,7 +37,9 @@ export const getAvatarTokenSrc = (
       return getNativeCurrencyForChain(opts.chainId) ?? opts.tokenImage ?? '';
     }
 
-    if (!opts.tokenImage && opts.assetId && !opts.isNative) {
+    // Fall back to the static CDN icon for any asset (including non-EVM natives
+    // like BTC) when the API/search payload omits an image URL.
+    if (!opts.tokenImage && opts.assetId) {
       return getAssetImageUrl(opts.assetId, opts.chainId) ?? '';
     }
 

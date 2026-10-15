@@ -49,6 +49,7 @@ export type MessengerClientsToInitialize =
   | 'ClientController'
   | 'CronjobController'
   | 'DeFiPositionsController'
+  | 'DeFiPositionsControllerV2'
   | 'ExecutionService'
   | 'MultichainAssetsController'
   | 'MultichainAssetsRatesController'
@@ -67,6 +68,9 @@ export type MessengerClientsToInitialize =
   | 'PerpsController'
   | 'PPOMController'
   | 'QrSyncController'
+  | 'SentinelApiService'
+  | 'SentryTracingService'
+  | 'ShieldSubscriptionService'
   | 'TransactionPayController'
   | 'UserStorageController';
 

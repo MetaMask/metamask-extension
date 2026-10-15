@@ -112,18 +112,8 @@ describe('Settings', () => {
 
     it('detaches form controls that can be retained by non-delegated React listeners on unmount', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-      const storeWithDefaultAddress = configureMockStore([thunk])({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          remoteFeatureFlags: {
-            ...mockState.metamask.remoteFeatureFlags,
-            extensionUxDefaultAddressVersioned: true,
-          },
-        },
-      });
 
-      const { unmount } = renderSettings(storeWithDefaultAddress);
+      const { unmount } = renderSettings(mockStore);
       const select = await screen.findByTestId(
         'default-address-scope-dropdown',
       );
@@ -161,9 +151,7 @@ describe('Settings', () => {
     it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -178,9 +166,7 @@ describe('Settings', () => {
       mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -195,9 +181,7 @@ describe('Settings', () => {
       mockPathname = CURRENCY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 
@@ -212,9 +196,7 @@ describe('Settings', () => {
       mockPathname = NOTIFICATIONS_SETTINGS_WALLET_ACTIVITY_ROUTE;
       renderSettings(mockStore);
 
-      const backButton = await screen.findByTestId(
-        'settings-header-back-button',
-      );
+      const backButton = await screen.findByTestId('page-header-back-button');
 
       fireEvent.click(backButton);
 

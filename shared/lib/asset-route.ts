@@ -7,7 +7,7 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 
-import { isEvmChainId } from './asset-utils';
+import { isEvmChainId, isNativeCaipAssetId } from './asset-utils';
 
 export const ASSET_ROUTE = '/asset';
 
@@ -27,6 +27,10 @@ export const buildAssetRoutePath = (assetId: CaipAssetType): string => {
   const { chainId } = parseCaipAssetType(assetId);
   return `${ASSET_ROUTE}/${chainId}/${encodeURIComponent(assetId)}`;
 };
+
+export const buildAssetSecurityTrustRoutePath = (
+  assetId: CaipAssetType,
+): string => `${buildAssetRoutePath(assetId)}/security-trust`;
 
 const decodeRouteParam = (value: string): string => {
   try {
@@ -93,7 +97,7 @@ export const resolveAssetRouteLookup = (
     const parsed = parseCaipAssetType(decodedAsset);
 
     if (isEvmChainId(parsed.chainId)) {
-      const isNative = parsed.assetNamespace === 'slip44';
+      const isNative = isNativeCaipAssetId(decodedAsset);
 
       return {
         ...processed,

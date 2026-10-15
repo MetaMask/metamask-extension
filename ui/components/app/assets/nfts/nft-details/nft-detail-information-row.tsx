@@ -70,8 +70,6 @@ const NftDetailInformationRow = ({
         <Box display={Display.Flex}>
           {buttonAddressValue ?? (
             <Text
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               color={valueColor || TextColor.textDefault}
               variant={TextVariant.bodyMdMedium}
             >
@@ -82,8 +80,6 @@ const NftDetailInformationRow = ({
         </Box>
       ) : (
         <Text
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           color={valueColor || TextColor.textDefault}
           variant={TextVariant.bodyMdMedium}
         >

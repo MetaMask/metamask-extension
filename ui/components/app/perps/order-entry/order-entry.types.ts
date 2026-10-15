@@ -1,3 +1,4 @@
+import type { InputMethod } from '@metamask/perps-controller';
 import { OrderType } from '../types';
 
 /**
@@ -71,6 +72,19 @@ export type OrderFormState = {
 };
 
 /**
+ * Transient new-order fields persisted by PerpsController for a short return
+ * window. Derived fields such as balancePercent and autoCloseEnabled are
+ * reconstructed when the form is restored.
+ */
+export type OrderFormDraft = Pick<OrderFormState, 'type' | 'direction'> &
+  Partial<
+    Pick<
+      OrderFormState,
+      'amount' | 'leverage' | 'takeProfitPrice' | 'stopLossPrice' | 'limitPrice'
+    >
+  >;
+
+/**
  * Calculated values derived from form state
  * These are read-only display values
  */
@@ -107,6 +121,8 @@ export type OrderEntryProps = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Callback when form state changes (used when showSubmitButton is false) */
   onFormStateChange?: (formState: OrderFormState) => void;
+  /** Callback when the user changes the size via a specific input control */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Callback when calculated values change (liquidation price, margin, fees) */
   onCalculationsChange?: (calculations: OrderCalculations) => void;
   /** Whether to show the internal submit button (defaults to true) */
@@ -125,8 +141,16 @@ export type OrderEntryProps = {
   onOrderTypeChange?: (orderType: OrderType) => void;
   /** Callback when add-funds icon is pressed in the amount input */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Initial leverage override for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
+  /** Unexpired same-market draft used to restore a new-order form. */
+  initialDraft?: OrderFormDraft;
+  /** Called when the user selects a leverage value. */
+  onLeverageChange?: (leverage: number) => void;
   /** Market size decimals for controller-based position-size formatting */
   sizeDecimals?: number;
   /**
@@ -141,6 +165,12 @@ export type OrderEntryProps = {
   autoFocusLimitPrice?: boolean;
   /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
   usdPlaceholder?: string;
+  /**
+   * One-shot limit-price prefill (e.g. from tapping a price in the order book).
+   * Provide a fresh object per selection; the value is applied to the limit
+   * price input while manual edits between selections are preserved.
+   */
+  limitPricePrefill?: { price: string };
 };
 
 /**
@@ -161,6 +191,11 @@ export type AmountInputProps = {
   amount: string;
   /** Callback when amount changes */
   onAmountChange: (amount: string) => void;
+  /**
+   * Callback reporting which control the user used to set the size
+   * (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
   /** Current balance percentage (0-100) */
   balancePercent: number;
   /** Callback when balance percentage changes */
@@ -184,6 +219,10 @@ export type AmountInputProps = {
   currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** True while the live perps account stream is still hydrating */
+  isLoadingAccount?: boolean;
+  /** True when the account is known to hold no tradeable collateral */
+  hasNoAvailableBalance?: boolean;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
   autoFocus?: boolean;
   /** Placeholder override for the USD input. Defaults to '0.00'. */
@@ -269,6 +308,8 @@ export type AutoCloseSectionProps = {
   entryPrice?: number;
   /** Signed position size in asset units (positive=long, negative=short) for estimated PnL */
   estimatedSize?: number;
+  /** Shared notional used to resolve the builder rate for both triggers. */
+  feeNotionalUsd?: number;
   /** Order type – used to pick the correct validation reference price */
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
@@ -298,4 +339,9 @@ export type CloseAmountSectionProps = {
   currentPrice: number;
   /** Market size decimals for controller-based position-size formatting */
   sizeDecimals?: number;
+  /**
+   * Callback when the user changes the close amount via a specific input
+   * control (keypad/slider/percentage/max), for analytics attribution.
+   */
+  onInputMethodChange?: (inputMethod: InputMethod) => void;
 };

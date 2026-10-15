@@ -156,7 +156,7 @@ export const Popover: PopoverComponent = React.forwardRef(
       <Box
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={BackgroundColor.backgroundElevated2}
         padding={4}
         role={role}
         className={classnames(

@@ -4,7 +4,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import {
@@ -158,7 +158,7 @@ function useIncompleteAssetEvent(
   },
 ) {
   const { trackEvent, createEventBuilder } = useAnalytics();
-  const [processedAssets, setProcessedAssets] = useState<string[]>([]);
+  const processedAssetsRef = useRef<string[]>([]);
 
   useEffect(() => {
     const assetsToTrack: {
@@ -172,12 +172,10 @@ function useIncompleteAssetEvent(
       const displayName = displayNamesByAddress[assetAddress];
 
       const isIncomplete =
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         (change.asset.address && !change.fiatAmount) ||
         getPetnameType(change, displayName) === PetnameType.Unknown;
 
-      if (!isIncomplete || processedAssets.includes(assetAddress)) {
+      if (!isIncomplete || processedAssetsRef.current.includes(assetAddress)) {
         continue;
       }
 
@@ -208,17 +206,11 @@ function useIncompleteAssetEvent(
       );
     }
 
-    setProcessedAssets((currentProcessed) => [
-      ...currentProcessed,
+    processedAssetsRef.current = [
+      ...processedAssetsRef.current,
       ...assetsToTrack.map(({ assetAddress }) => assetAddress),
-    ]);
-  }, [
-    balanceChanges,
-    createEventBuilder,
-    displayNamesByAddress,
-    processedAssets,
-    trackEvent,
-  ]);
+    ];
+  }, [balanceChanges, createEventBuilder, displayNamesByAddress, trackEvent]);
 }
 
 /** Placeholder used in metrics when asset has no contract address (e.g. native). */

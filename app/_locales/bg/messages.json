@@ -81,9 +81,6 @@
   "back": {
     "message": "Назад"
   },
-  "backupApprovalInfo": {
-    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
-  },
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
   },
@@ -227,9 +224,6 @@
   "gasLimit": {
     "message": "Ограничение на газ"
   },
-  "gasLimitTooLow": {
-    "message": "Ограничението за газ трябва да бъде поне 21000"
-  },
   "gasUsed": {
     "message": "Използван газ"
   },
@@ -349,9 +343,6 @@
   "networks": {
     "message": "Mрежи"
   },
-  "nevermind": {
-    "message": "Няма значение"
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"
@@ -420,9 +411,6 @@
   "privateKey": {
     "message": "Частен ключ",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Предупреждение: Никога не разкривайте този ключ. Всеки с достъп до вашите лични ключове може да открадне всички активи, съхранявани във вашия акаунт."
   },
   "privateNetwork": {
     "message": "Частна мрежа"

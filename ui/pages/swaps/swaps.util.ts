@@ -61,24 +61,30 @@ const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 type Validator = {
   property: string;
   type: string;
-  validator: (a: string) => boolean;
+  validator?: (value: unknown) => boolean;
 };
 
 export const TOKEN_VALIDATORS: Validator[] = [
   {
     property: 'address',
     type: 'string',
-    validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
+    validator: (input) =>
+      typeof input === 'string' &&
+      isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
     property: 'symbol',
     type: 'string',
-    validator: (string) => truthyString(string) && string.length <= 12,
+    validator: (value) =>
+      typeof value === 'string' && truthyString(value) && value.length <= 12,
   },
   {
     property: 'decimals',
     type: 'string|number',
-    validator: (string) => Number(string) >= 0 && Number(string) <= 36,
+    validator: (value) =>
+      (typeof value === 'string' || typeof value === 'number') &&
+      Number(value) >= 0 &&
+      Number(value) <= 36,
   },
 ];
 
@@ -88,24 +94,30 @@ const AGGREGATOR_METADATA_VALIDATORS: Validator[] = [
   {
     property: 'color',
     type: 'string',
-    validator: (string) => Boolean(string.match(/^#[A-Fa-f0-9]+$/u)),
+    validator: (value) =>
+      typeof value === 'string' && Boolean(value.match(/^#[A-Fa-f0-9]+$/u)),
   },
   {
     property: 'title',
     type: 'string',
-    validator: truthyString,
+    validator: (value) =>
+      truthyString(typeof value === 'string' ? value : undefined),
   },
   {
     property: 'icon',
     type: 'string',
-    validator: (string) => Boolean(string.match(/^data:image/u)),
+    validator: (value) =>
+      typeof value === 'string' && Boolean(value.match(/^data:image/u)),
   },
 ];
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isValidDecimalNumber = (string: any): boolean =>
-  !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string));
+
+const isValidDecimalNumber = (value: unknown): boolean =>
+  typeof value === 'string' &&
+  !Number.isNaN(Number(value)) &&
+  Boolean(value.match(/^[.0-9]+$/u)) &&
+  !Number.isNaN(parseFloat(value));
 
 const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
   {
@@ -420,8 +432,6 @@ export function getRenderableNetworkFeesForQuote({
   const gasTotalInWeiHex = sumHexes(
     tradeGasFeeTotalHex,
     approveGasFeeTotalHex,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     multiLayerL1FeeTotal || '0x0',
   );
 
@@ -461,8 +471,6 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
 
   return {

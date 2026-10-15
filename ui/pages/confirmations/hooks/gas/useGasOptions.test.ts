@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import { type GasOption } from '../../types/gas';
 import { useAdvancedGasFeeOption } from './useAdvancedGasFeeOption';

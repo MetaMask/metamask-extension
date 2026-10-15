@@ -1,5 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { UserHistoryItem } from '@metamask/perps-controller';
 import { useUserHistory } from './useUserHistory';
 import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';

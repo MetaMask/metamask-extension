@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { getGasMetricsProperties } from './gas';
 import { createBuilderRequest } from './test-utils';
 
