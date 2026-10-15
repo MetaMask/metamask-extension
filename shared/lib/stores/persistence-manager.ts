@@ -108,27 +108,8 @@ export type PersistenceManagerOptions = {
   random?: () => number;
 };
 
-type PersistenceWriteFailure =
-  | 'set-failed'
-  | 'set-backup-failed'
-  | 'persist-failed'
-  | 'persist-backup-failed';
-
-type PersistenceWriteRecovery =
-  | 'set-recovered'
-  | 'set-backup-recovered'
-  | 'persist-recovered'
-  | 'persist-backup-recovered';
-
-const writeRecoveryByFailure: Record<
-  PersistenceWriteFailure,
-  PersistenceWriteRecovery
-> = {
-  'set-failed': 'set-recovered',
-  'set-backup-failed': 'set-backup-recovered',
-  'persist-failed': 'persist-recovered',
-  'persist-backup-failed': 'persist-backup-recovered',
-};
+type PersistenceWriteTarget = 'primary' | 'backup';
+type PersistenceWriteOperation = 'set' | 'persist';
 
 type WriteRetryOptions = {
   supersedable: boolean;
@@ -308,7 +289,10 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
    * used to deduplicate error reports sent to Sentry while still allowing
    * recovery reporting to match the write target that actually failed.
    */
-  #dataPersistenceFailures = new Set<PersistenceWriteFailure>();
+  #dataPersistenceFailures = new Map<
+    PersistenceWriteTarget,
+    PersistenceWriteOperation
+  >();
 
   /**
    * mostRecentRetrievedState is a property that holds the most recent state
@@ -426,12 +410,20 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     return error instanceof Error ? error : new Error(String(error));
   }
 
-  #captureWriteFailure(error: unknown, failure: PersistenceWriteFailure) {
-    if (this.#dataPersistenceFailures.has(failure)) {
+  #captureWriteFailure(
+    error: unknown,
+    target: PersistenceWriteTarget,
+    operation: PersistenceWriteOperation,
+  ) {
+    if (this.#dataPersistenceFailures.has(target)) {
       return;
     }
 
-    this.#dataPersistenceFailures.add(failure);
+    this.#dataPersistenceFailures.set(target, operation);
+    const failure =
+      target === 'primary'
+        ? `${operation}-failed`
+        : `${operation}-backup-failed`;
 
     // Custom fingerprint prevents Sentry's deduplication from dropping
     // this event when other persistence errors with the same underlying
@@ -442,19 +434,27 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
     });
   }
 
-  #captureWriteRecovery(failure: PersistenceWriteFailure) {
-    if (!this.#dataPersistenceFailures.delete(failure)) {
+  #captureWriteRecovery(
+    target: PersistenceWriteTarget,
+    successfulOperation: PersistenceWriteOperation,
+  ) {
+    const failedOperation = this.#dataPersistenceFailures.get(target);
+    if (failedOperation === undefined) {
       return;
     }
+    this.#dataPersistenceFailures.delete(target);
 
-    const recovery = writeRecoveryByFailure[failure];
-
+    const recovery = `${target}-write-recovered`;
     // Track recovery to understand how often failures are temporary.
     // This helps answer: "Do write calls ever fail and then succeed in the same session?"
     captureMessage('Data persistence recovered after temporary failure', {
       level: 'info',
-      tags: { 'persistence.event': recovery },
-      fingerprint: ['persistence-event', recovery],
+      tags: {
+        'persistence.event': recovery,
+        'persistence.failed_operation': failedOperation,
+        'persistence.successful_operation': successfulOperation,
+      },
+      fingerprint: ['persistence-event', recovery, failedOperation],
     });
   }
 
@@ -725,7 +725,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
-        let backupSucceeded = false;
         try {
           // atomically set all the keys (includes test simulation check)
           await this.#retryWrite(
@@ -737,6 +736,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
             'set-retry-recovered',
             { supersedable: true },
           );
+          this.#captureWriteRecovery('primary', 'set');
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -754,7 +754,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                     'set-backup-retry-recovered',
                     { supersedable: false },
                   );
-                  backupSucceeded = true;
+                  this.#captureWriteRecovery('backup', 'set');
                 }
                 this.#backup = stringifiedBackup;
               } catch (backupErr) {
@@ -762,11 +762,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                 throw backupErr;
               }
             }
-          }
-
-          this.#captureWriteRecovery('set-failed');
-          if (backupSucceeded) {
-            this.#captureWriteRecovery('set-backup-failed');
           }
 
           return [true, undefined];
@@ -788,7 +783,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           }
           this.#captureWriteFailure(
             err,
-            backupFailed ? 'set-backup-failed' : 'set-failed',
+            backupFailed ? 'backup' : 'primary',
+            'set',
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
@@ -932,7 +928,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
         this.#currentLockAbortController = undefined;
         // Track which operation failed to use the correct Sentry tag
         let backupFailed = false;
-        let backupSucceeded = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
           const coalescedUpdates = this.#pendingUpdateCount;
@@ -948,6 +943,7 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
               'persist-retry-recovered',
               { supersedable: true },
             );
+            this.#captureWriteRecovery('primary', 'persist');
             writeDurationMs = performance.now() - writeStartedAt;
           } catch (err) {
             // merge the clone with the pending pairs again
@@ -992,17 +988,12 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
                   'persist-backup-retry-recovered',
                   { supersedable: false },
                 );
-                backupSucceeded = true;
+                this.#captureWriteRecovery('backup', 'persist');
               }
             } catch (backupErr) {
               backupFailed = true;
               throw backupErr;
             }
-          }
-
-          this.#captureWriteRecovery('persist-failed');
-          if (backupSucceeded) {
-            this.#captureWriteRecovery('persist-backup-failed');
           }
 
           return [true, undefined];
@@ -1024,7 +1015,8 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
           }
           this.#captureWriteFailure(
             err,
-            backupFailed ? 'persist-backup-failed' : 'persist-failed',
+            backupFailed ? 'backup' : 'primary',
+            'persist',
           );
           const normalizedError = this.#normalizePersistError(err);
           this.#notifySetFailed(normalizedError.message);
