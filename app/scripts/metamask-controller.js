@@ -287,7 +287,6 @@ import {
 import {
   AssetsContractControllerInit,
   AssetsControllerInit,
-  ClientControllerInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -652,8 +651,6 @@ export default class MetamaskController extends EventEmitter {
       ProfileMetricsService: ProfileMetricsServiceInit,
       ProofOfOwnershipService: ProofOfOwnershipServiceInit,
       QrSyncController: QrSyncControllerInit,
-      // ClientController must be initialized before AssetsController (AssetsController subscribes to ClientController:stateChange).
-      ClientController: ClientControllerInit,
       ChompApiService: ChompApiServiceInit,
       MoneyAccountApiDataService: MoneyAccountApiDataServiceInit,
       MoneyAccountAvailabilityService: MoneyAccountAvailabilityServiceInit,
