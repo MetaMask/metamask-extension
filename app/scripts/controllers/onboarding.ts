@@ -8,6 +8,17 @@ import type { Messenger } from '@metamask/messenger';
 import log from 'loglevel';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
+import type {
+  OnboardingJourneyTraceId,
+  OnboardingJourneyTraceControllerEndRequest,
+  OnboardingJourneyTraceControllerRequest,
+} from '../../../shared/types/onboarding';
+import type ExtensionPlatform from '../platforms/extension';
+import type {
+  SentryTracingServiceBufferedEndTraceAction,
+  SentryTracingServiceBufferedTraceAction,
+} from '../services/sentry/sentry-tracing-service-method-action-types';
 import { OnboardingControllerMethodActions } from './onboarding-method-action-types';
 
 // Unique name for the controller
@@ -37,6 +48,11 @@ export const getDefaultOnboardingControllerState = () => ({
 const defaultTransientState = {
   onboardingTabs: {},
 } satisfies Pick<OnboardingControllerState, 'onboardingTabs'>;
+
+type OnboardingJourney = {
+  lastStep: string;
+  traceId: OnboardingJourneyTraceId;
+};
 
 /**
  * {@link OnboardingController}'s metadata.
@@ -110,7 +126,9 @@ export type OnboardingControllerControllerEvents =
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions = never;
+export type AllowedActions =
+  | SentryTracingServiceBufferedTraceAction
+  | SentryTracingServiceBufferedEndTraceAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -134,6 +152,9 @@ const MESSENGER_EXPOSED_METHODS = [
   'registerOnboarding',
   'getIsSocialLoginFlow',
   'resetOnboarding',
+  'startOnboardingJourney',
+  'updateOnboardingJourney',
+  'endOnboardingJourney',
 ] as const;
 
 /**
@@ -145,21 +166,45 @@ export class OnboardingController extends BaseController<
   OnboardingControllerState,
   OnboardingControllerMessenger
 > {
+  readonly #platform: ExtensionPlatform;
+
+  readonly #onboardingJourneysByTabId = new Map<
+    number | undefined,
+    OnboardingJourney
+  >();
+
+  readonly #handleTabRemoved = (tabId: number): void => {
+    const journey = this.#onboardingJourneysByTabId.get(tabId);
+    if (!journey) {
+      return;
+    }
+
+    this.endOnboardingJourney({
+      tabId,
+      lastStep: journey.lastStep,
+      success: false,
+      abandoned: true,
+    });
+  };
+
   /**
    * Constructs a Onboarding  controller.
    *
    * @param options - the controller options
    * @param options.messenger - Messenger used to communicate with BaseV2 controller.
    * @param options.state - Initial controller state.
+   * @param options.platform - Extension platform used to observe tab removal.
    */
   constructor({
     messenger,
     state,
+    platform,
   }: {
     messenger: OnboardingControllerMessenger;
     state:
       | Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>
       | undefined;
+    platform: ExtensionPlatform;
   }) {
     super({
       messenger,
@@ -172,10 +217,12 @@ export class OnboardingController extends BaseController<
       },
     });
 
+    this.#platform = platform;
     this.messenger.registerMethodActionHandlers(
       this,
       MESSENGER_EXPOSED_METHODS,
     );
+    this.#platform.addTabRemovedListener?.(this.#handleTabRemoved);
   }
 
   /**
@@ -270,6 +317,87 @@ export class OnboardingController extends BaseController<
       firstTimeFlowType === FirstTimeFlowType.socialCreate ||
       firstTimeFlowType === FirstTimeFlowType.socialImport
     );
+  }
+
+  /**
+   * Start or resume the onboarding journey associated with a browser tab.
+   *
+   * @param request - The onboarding tab and current step.
+   * @returns The opaque ID used to parent child traces.
+   */
+  startOnboardingJourney(
+    request: OnboardingJourneyTraceControllerRequest,
+  ): OnboardingJourneyTraceId {
+    const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
+
+    if (currentJourney) {
+      currentJourney.lastStep = request.lastStep;
+      return currentJourney.traceId;
+    }
+
+    const traceId = crypto.randomUUID();
+    this.#onboardingJourneysByTabId.set(request.tabId, {
+      lastStep: request.lastStep,
+      traceId,
+    });
+
+    this.messenger.call('SentryTracingService:bufferedTrace', {
+      name: TraceName.OnboardingJourneyOverall,
+      id: traceId,
+      op: TraceOperation.OnboardingUserJourney,
+      data: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        perf_fix: 'trace-registry-v1',
+      },
+    });
+
+    return traceId;
+  }
+
+  /**
+   * Update the last known onboarding step for a browser tab.
+   *
+   * @param request - The onboarding tab and current step.
+   */
+  updateOnboardingJourney(
+    request: OnboardingJourneyTraceControllerRequest,
+  ): void {
+    const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
+
+    if (!currentJourney) {
+      return;
+    }
+
+    currentJourney.lastStep = request.lastStep;
+  }
+
+  /**
+   * End the onboarding journey associated with a browser tab.
+   *
+   * @param request - The onboarding tab, result, and last step.
+   */
+  endOnboardingJourney(
+    request: OnboardingJourneyTraceControllerEndRequest,
+  ): void {
+    const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
+
+    if (!currentJourney) {
+      return;
+    }
+
+    this.#onboardingJourneysByTabId.delete(request.tabId);
+    this.messenger.call('SentryTracingService:bufferedEndTrace', {
+      name: TraceName.OnboardingJourneyOverall,
+      id: currentJourney.traceId,
+      data: {
+        success: request.success,
+        ...(request.abandoned ? { abandoned: true } : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        last_step: request.lastStep,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        perf_fix: 'trace-registry-v1',
+      },
+    });
   }
 
   /**

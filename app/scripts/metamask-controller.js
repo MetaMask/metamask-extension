@@ -396,6 +396,7 @@ import { MoneyAccountControllerInit } from './messenger-client-init/money-accoun
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
+import { getOnboardingControllerApi } from './controllers/onboarding-controller-api';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -3250,18 +3251,6 @@ export default class MetamaskController extends EventEmitter {
           this.encryptionPublicKeyController,
         ),
 
-      // onboarding controller
-      setSeedPhraseBackedUp:
-        onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
-      completeOnboarding:
-        onboardingController.completeOnboarding.bind(onboardingController),
-      setHasSeenOnboardingCompletionPage:
-        onboardingController.setHasSeenOnboardingCompletionPage.bind(
-          onboardingController,
-        ),
-      setFirstTimeFlowType:
-        onboardingController.setFirstTimeFlowType.bind(onboardingController),
-
       // alert controller
       setAlertEnabledness:
         alertController.setAlertEnabledness.bind(alertController),
@@ -4604,6 +4593,7 @@ export default class MetamaskController extends EventEmitter {
     // connect features
     const { patchesPromise } = this.setupControllerConnection(
       mux.createStream('controller'),
+      sender,
     );
     this.setupProviderConnectionEip1193(
       mux.createStream('provider'),
@@ -4692,10 +4682,11 @@ export default class MetamaskController extends EventEmitter {
    * A method for providing our API over a stream using JSON-RPC.
    *
    * @param {*} outStream - The stream to provide our API over.
+   * @param {*} sender - The sender of the trusted UI connection.
    * @returns {{ patchesPromise: Promise<void> }} `patchesPromise` settles when
    * the UI starts sending patches or when this substream closes first.
    */
-  setupControllerConnection(outStream) {
+  setupControllerConnection(outStream, sender = {}) {
     const patchStore = new PatchStore(this.memStore);
     let uiReady = false;
 
@@ -4829,6 +4820,7 @@ export default class MetamaskController extends EventEmitter {
       ...this.getApi(),
       ...this.messengerClientApi,
       ...getTransactionControllerApi(this.txController),
+      ...getOnboardingControllerApi(this.onboardingController, sender),
       ...(perpsStream ? perpsStream.bridgeApi() : {}),
       startSendingPatches: () => {
         onStartSendingPatchesOrStreamClosed();

@@ -2947,6 +2947,7 @@ describe('MetaMaskController', () => {
             _name: 'controller',
             _parent: expect.any(ObjectMultiplex),
           }),
+          {},
         );
       });
 
