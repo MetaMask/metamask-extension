@@ -908,7 +908,10 @@ describe('PrepareBridgePage', () => {
       setBackgroundConnection(backgroundWithAllMethods);
       const mockState = makeStoreWithSecurityData(undefined);
       mockState.metamask.useExternalServices = true;
-      const toTokenAssetId = mockState.bridge.toToken.assetId;
+      const toTokenAssetId = toAssetId(
+        TOKEN_ADDRESS,
+        formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+      );
       const fetchSpy = jest
         .spyOn(tokenSecurityUtils, 'fetchCachedTokenAssets')
         .mockResolvedValue([
