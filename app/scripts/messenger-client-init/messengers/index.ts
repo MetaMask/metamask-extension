@@ -146,7 +146,6 @@ import { getAccountOrderControllerMessenger } from './account-order-controller-m
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 import {
@@ -232,7 +231,6 @@ export {
   getEncryptionPublicKeyControllerInitMessenger,
 } from './encryption-public-key-controller-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export { getAnalyticsControllerMessenger } from './analytics-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
@@ -454,10 +452,6 @@ export const MESSENGER_FACTORIES = {
   },
   LegacyBackgroundApiService: {
     getMessenger: getLegacyBackgroundApiServiceMessenger,
-    getInitMessenger: noop,
-  },
-  LoggingController: {
-    getMessenger: getLoggingControllerMessenger,
     getInitMessenger: noop,
   },
   MetaMetricsDataDeletionController: {
