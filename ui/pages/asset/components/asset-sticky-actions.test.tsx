@@ -1,3 +1,4 @@
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
@@ -6,6 +7,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { getSwapNativeTokenWithOverridesForChain } from '../../../components/app/wallet-overview/coin-buttons';
 import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
@@ -66,6 +68,47 @@ const store = configureMockStore()({
   },
 });
 
+const fundedBalance = { value: '1', display: '1', fiat: '1' };
+
+const nativeSwapToken = getSwapNativeTokenWithOverridesForChain(
+  CHAIN_IDS.MAINNET,
+);
+
+const stickySwapAnalyticsCases = [
+  {
+    type: AssetType.token,
+    asset: {
+      ...token,
+      balance: fundedBalance,
+    } as Asset,
+    tokenAddress: token.address,
+    sourceToken: {
+      ...token,
+      balance: fundedBalance,
+    },
+  },
+  {
+    type: AssetType.native,
+    asset: {
+      type: AssetType.native,
+      isOriginalNativeSymbol: true,
+      chainId: CHAIN_IDS.MAINNET,
+      decimals: 18,
+      symbol: 'ETH',
+      image: '',
+      balance: fundedBalance,
+    } as Asset,
+    tokenAddress: nativeSwapToken.address,
+    sourceToken: {
+      symbol: nativeSwapToken.symbol,
+      address: nativeSwapToken.address,
+      chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+      decimals: nativeSwapToken.decimals,
+      name: nativeSwapToken.name ?? nativeSwapToken.symbol,
+    },
+  },
+];
+
 describe('AssetStickyActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -112,72 +155,43 @@ describe('AssetStickyActions', () => {
     );
   });
 
-  it('opens the swap experience with the token as the source asset', () => {
-    const fundedToken = {
-      ...token,
-      balance: { value: '1', display: '1', fiat: '1' },
-    } as Asset & { type: AssetType.token };
+  // @ts-expect-error This is missing from the Mocha type definitions
+  it.each(stickySwapAnalyticsCases)(
+    'emits sticky swap clicked analytics for token type: $type',
+    ({
+      asset,
+      tokenAddress,
+      sourceToken,
+    }: (typeof stickySwapAnalyticsCases)[number]) => {
+      const { getByTestId } = renderWithProvider(
+        <AssetStickyActions asset={asset} />,
+        store,
+      );
 
-    const { getByTestId } = renderWithProvider(
-      <AssetStickyActions asset={fundedToken} />,
-      store,
-    );
+      fireEvent.click(getByTestId('asset-sticky-swap'));
 
-    fireEvent.click(getByTestId('asset-sticky-swap'));
-    expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
-      MetaMetricsSwapsEventSource.TokenView,
-      fundedToken,
-      undefined,
-    );
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: MetaMetricsEventName.TokenDetailsCtaClicked,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          cta_type: 'swap',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usd_amount_range: '1.00 - 9.99',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_address: fundedToken.address,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: fundedToken.chainId,
+      expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
+        MetaMetricsSwapsEventSource.TokenView,
+        sourceToken,
+        undefined,
+      );
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: MetaMetricsEventName.TokenDetailsCtaClicked,
+          properties: expect.objectContaining({
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            cta_type: 'swap',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            usd_amount_range: '1.00 - 9.99',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_address: tokenAddress,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: asset.chainId,
+          }),
         }),
-      }),
-    );
-  });
-
-  it('opens native sticky swap with Token View as the source', () => {
-    const nativeAsset = {
-      type: AssetType.native,
-      isOriginalNativeSymbol: true,
-      chainId: CHAIN_IDS.MAINNET,
-      decimals: 18,
-      symbol: 'ETH',
-      image: '',
-      balance: { value: '1', display: '1', fiat: '2000' },
-    } as Asset;
-
-    const { getByTestId } = renderWithProvider(
-      <AssetStickyActions asset={nativeAsset} />,
-      store,
-    );
-
-    fireEvent.click(getByTestId('asset-sticky-swap'));
-
-    const [source] = mockOpenBridgeExperience.mock.calls[0];
-    expect(source).toBe(MetaMetricsSwapsEventSource.TokenView);
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: MetaMetricsEventName.TokenDetailsCtaClicked,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          cta_type: 'swap',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: nativeAsset.chainId,
-        }),
-      }),
-    );
-  });
+      );
+    },
+  );
 
   it('swaps from a funded token and into the current one when it has no balance', () => {
     const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
