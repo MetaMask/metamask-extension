@@ -402,7 +402,6 @@ import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money
 import { initializeWallet } from './wallet-init/initialization';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
-import { createWalletPayHooks } from './lib/wallet-pay/hooks';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1164,9 +1163,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.delegate({
       messenger: walletPayMessenger,
       actions: [
-        'AccountsController:getSelectedAccount',
+        'NetworkController:findNetworkClientIdByChainId',
         'PerpsController:getState',
         'PerpsController:refreshEligibility',
+        'RemoteFeatureFlagController:getState',
+        'TransactionController:addTransaction',
       ],
     });
 
@@ -1175,12 +1176,10 @@ export default class MetamaskController extends EventEmitter {
         await walletPay(
           req,
           res,
-          createWalletPayHooks({
-            messenger: this.controllerMessenger,
-            getPermittedAccounts: () => this.getPermittedAccounts(req.origin),
-            getSecurityAlertsEnabled: () =>
-              Boolean(this.preferencesController.state?.securityAlertsEnabled),
-          }),
+          {
+            getPermittedAccountsForOrigin: async () =>
+              this.getPermittedAccounts(req.origin),
+          },
           walletPayMessenger,
         );
       }),
