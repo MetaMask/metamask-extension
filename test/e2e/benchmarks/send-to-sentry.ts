@@ -13,6 +13,7 @@
  */
 
 import { promises as fs, readFileSync } from 'fs';
+import os from 'os';
 import path from 'path';
 import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
@@ -214,6 +215,21 @@ async function main() {
     'ci.runnerOs': process.env.RUNNER_OS || 'unknown',
     'ci.runnerArch': process.env.RUNNER_ARCH || 'unknown',
   };
+
+  const runnerDiagnostics = {
+    ...baseCiAttributes,
+    'ci.hostname': os.hostname(),
+    'ci.cpuModel': os.cpus()[0]?.model || 'unknown',
+    'ci.cpuCount': os.cpus().length,
+    'ci.totalMemoryGb': Math.round(os.totalmem() / 1024 ** 3),
+    'ci.namespacePlacement':
+      process.env.NAMESPACE_PLACEMENT || process.env.NAMESPACE_SITE || 'unknown',
+    'ci.namespaceRegion': process.env.NAMESPACE_REGION || 'unknown',
+    'ci.namespaceInstanceId':
+      process.env.NSC_INSTANCE_ID || process.env.NAMESPACE_INSTANCE_ID || 'unknown',
+  };
+
+  console.log('Benchmark runner diagnostics:', JSON.stringify(runnerDiagnostics));
 
   let sentCount = 0;
   let skippedCount = 0;
