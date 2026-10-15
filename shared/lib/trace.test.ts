@@ -528,6 +528,10 @@ describe('Trace', () => {
     //
     it('does not promote an unresolvable in-process parent to a segment', () => {
       continueTraceMock.mockImplementation((_opts, fn) => fn());
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
 
       // No pending trace is created, so the map lookup misses.
       trace(
@@ -550,6 +554,9 @@ describe('Trace', () => {
       // A parent was named. Failing to resolve it locally must not silently
       // convert the span into a billed root.
       expect(continueTraceMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions.forceTransaction).toBeUndefined();
     });
 
     // `undefined` and `null` are different statements; only the first may be
@@ -566,6 +573,8 @@ describe('Trace', () => {
         expect.objectContaining({ forceTransaction: undefined }),
         expect.any(Function),
       );
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
     });
   });
 
