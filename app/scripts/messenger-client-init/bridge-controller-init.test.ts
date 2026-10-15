@@ -5,7 +5,6 @@ import {
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import { trace } from '../../../shared/lib/trace';
 import { getRootMessenger } from '../lib/messenger';
 import { trackEvent } from '../controllers/analytics';
 import { MessengerClientInitRequest } from './types';
@@ -23,10 +22,6 @@ jest.mock('@metamask/bridge-controller', () => {
     BridgeController: jest.fn(),
   };
 });
-
-jest.mock('../../../shared/lib/trace', () => ({
-  trace: jest.fn((_request, fn) => (fn ? fn() : undefined)),
-}));
 
 jest.mock('../controllers/analytics', () => ({
   ...jest.requireActual('../controllers/analytics'),
@@ -54,7 +49,6 @@ describe('BridgeControllerInit', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.METAMASK_VERSION = 'MOCK_VERSION';
-    jest.clearAllMocks();
   });
 
   it('initializes the controller', () => {
@@ -80,39 +74,6 @@ describe('BridgeControllerInit', () => {
       traceFn: expect.any(Function),
       getUseAssetsControllerForRates: expect.any(Function),
     });
-  });
-
-  for (const name of [
-    'Batch Sell Quotes Fetched',
-    'Bridge Quotes Fetched',
-    'Swap Quotes Fetched',
-  ]) {
-    it(`roots a new trace for ${name}`, async () => {
-      BridgeControllerInit(getInitRequestMock());
-
-      const controllerMock = jest.mocked(BridgeController);
-      const [[{ traceFn }]] = controllerMock.mock.calls;
-      const callback = jest.fn();
-
-      traceFn?.({ name }, callback);
-
-      expect(trace).toHaveBeenCalledWith({ name, root: true }, callback);
-    });
-  }
-
-  it('reuses the current trace for non-quote operations', async () => {
-    BridgeControllerInit(getInitRequestMock());
-
-    const controllerMock = jest.mocked(BridgeController);
-    const [[{ traceFn }]] = controllerMock.mock.calls;
-    const callback = jest.fn();
-
-    traceFn?.({ name: 'Bridge View Loaded' }, callback);
-
-    expect(trace).toHaveBeenCalledWith(
-      { name: 'Bridge View Loaded' },
-      callback,
-    );
   });
 
   describe('trackMetaMetricsFn', () => {
