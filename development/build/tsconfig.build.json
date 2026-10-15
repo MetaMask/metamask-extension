@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "resolveJsonModule": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "noCheck": true
+  },
+  "exclude": ["*.test.ts", "transforms/**"],
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "include": ["constants.ts", "set-environment-variables.ts"]
+}

@@ -100,7 +100,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
   });
 
   describe('Show account details', function () {
-    it('should show the correct private key from account menu', async function () {
+    it('copies the private key without revealing it', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilderV2()

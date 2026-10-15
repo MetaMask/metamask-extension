@@ -180,7 +180,7 @@ describe('Popular Networks', function (this: Suite) {
     );
   });
 
-  it("when the network details validation toggle is turned off, don't validate user inserted details", async function () {
+  it("when basic functionality is turned off, don't validate user inserted details", async function () {
     async function mockRPCURLAndChainId(mockServer: MockttpServer) {
       return [
         await mockServer
@@ -204,9 +204,7 @@ describe('Popular Networks', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilderV2()
-          .withBasicFunctionalityConsolidationDisabled()
-          .build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -214,7 +212,6 @@ describe('Popular Networks', function (this: Suite) {
         await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
 
-        // navigate to security & privacy settings and toggle off network details check
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
@@ -222,7 +219,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleNetworkDetailsCheck();
+        await privacySettings.toggleBasicFunctionalityOff();
         await closeSettings(driver);
 
         // return to the home screen

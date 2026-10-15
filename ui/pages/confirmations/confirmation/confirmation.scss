@@ -60,6 +60,7 @@
     display: flex;
     flex-direction: column;
     grid-area: content;
+    min-height: 0;
     min-width: 0;
 
     & > :last-child {

@@ -53,12 +53,7 @@ html[data-theme='dark'] {
 /* Overlay scrim, dialog top-aligned in panel. */
 #critical-error-content {
   justify-content: flex-start;
-  background-color:
-    color-mix(
-      in srgb,
-      var(--brand-colors-grey-grey400) 20%,
-      transparent
-    );
+  background-color: var(--color-overlay-default);
 }
 
 a {

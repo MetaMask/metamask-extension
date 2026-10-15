@@ -254,7 +254,9 @@ describe('DefiList', () => {
       ).toBeInTheDocument();
       expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
 
-      expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('sort-by-popover-toggle'),
+      ).not.toBeInTheDocument();
       expect(screen.getByTestId('sort-by-networks')).toBeInTheDocument();
 
       expect(
@@ -280,6 +282,20 @@ describe('DefiList', () => {
         '$20,000.00',
       );
     });
+  });
+
+  it('hides the sort control when V2 is enabled and there are no positions', async () => {
+    await act(async () => {
+      render('no-open-positions', { defiControllerV2Enabled: true });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByTestId('sort-by-popover-toggle'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows a refresh-only menu that fetches DeFi positions when V2 is enabled', async () => {

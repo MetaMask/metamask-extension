@@ -2,8 +2,10 @@ import {
   applySentryRemoteRates,
   resetSentryRemoteRates,
 } from '../../../shared/lib/sentry-remote-rates';
+import { TraceName } from '../../../shared/lib/trace';
 import {
   DEFAULT_TRANSACTION_SAMPLE_RATES,
+  SWAP_QUOTE_FETCH_SAMPLE_RATE,
   createTracesSampler,
   getTransactionSampleRate,
 } from './sentry-traces-sampler';
@@ -131,6 +133,35 @@ describe('createTracesSampler', () => {
     expect(sampler({ name: 'State Persist' })).toBeGreaterThan(
       defaultSampleRate,
     );
+  });
+
+  it('samples Perps preload transactions at 0.1% even with a sampled parent', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    for (const name of [
+      TraceName.PerpsMarketDataPreload,
+      TraceName.PerpsUserDataPreload,
+      TraceName.PerpsGetMarketDataWithPrices,
+    ]) {
+      expect(sampler({ name })).toBe(0.001);
+      // A pinned rate must not be bypassed by a sampled parent transaction.
+      expect(sampler({ name, parentSampled: true })).toBe(0.001);
+    }
+  });
+
+  it('pins the SwapBridge quote-fetch transaction to its own budget', () => {
+    delete process.env.SENTRY_SAMPLE_RATE_OVERRIDES;
+    const sampler = createTracesSampler({ defaultSampleRate });
+
+    expect(sampler({ name: TraceName.SwapQuoteFetch })).toBe(
+      SWAP_QUOTE_FETCH_SAMPLE_RATE,
+    );
+    // Without a pinned rate the `parentSampled` path returns 1, so a quote
+    // fetch nested under a sampled parent would be recorded at full rate.
+    expect(
+      sampler({ name: TraceName.SwapQuoteFetch, parentSampled: true }),
+    ).toBe(SWAP_QUOTE_FETCH_SAMPLE_RATE);
   });
 
   it('throttles a transaction supplied purely via the env override', () => {

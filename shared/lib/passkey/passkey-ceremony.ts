@@ -16,6 +16,7 @@ import type {
 } from '@metamask/passkey-controller';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../constants/app';
 import { getEnvironmentType } from '../environment-type';
+import { getManifestFlags } from '../manifestFlags';
 import {
   hasPasskeyPRFEnabled,
   hasPasskeyPRFResult,
@@ -33,6 +34,22 @@ export const MOCK_PASSKEY_PRF_RESULT = {
     first: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
   },
 };
+
+/**
+ * Whether test builds should supply a PRF result the virtual authenticator
+ * cannot produce.
+ *
+ * E2E disables this with `manifestFlags.testing.mockPasskeyPrfEnabled`.
+ *
+ * @returns `true` when the test build should inject the mock PRF result.
+ */
+function shouldInjectMockPasskeyPrfResult(): boolean {
+  if (!process.env.IN_TEST) {
+    return false;
+  }
+
+  return getManifestFlags().testing?.mockPasskeyPrfEnabled !== false;
+}
 
 export class PasskeyCeremonyTimeoutError extends Error {
   override readonly name = 'PasskeyCeremonyTimeoutError';
@@ -185,7 +202,7 @@ export async function startPasskeyAuthentication(
     // In test (e2e) env, we add a deterministic PRF result to the response for the virtual authenticator to use.
     // so we can test the passkey PRF flow in the e2e tests.
     if (
-      process.env.IN_TEST &&
+      shouldInjectMockPasskeyPrfResult() &&
       !hasPasskeyPRFResult({ clientExtensionResults })
     ) {
       clientExtensionResults.prf = MOCK_PASSKEY_PRF_RESULT;

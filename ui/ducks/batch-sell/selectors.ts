@@ -359,19 +359,20 @@ export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
     getPriceImpactThresholds,
     (state: BridgeAppState) => isHardwareWallet(state),
     ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
+      metamask.minimumBalanceForRentExemptionInLamports,
   ],
   (
     { recommendedQuotes },
     priceImpactThresholds,
     isHardwareWalletAccount,
-    minimumBalanceForRentExemptionInSOL,
+    minimumBalanceForRentExemptionInLamports,
   ): QuoteValidationErrors[] =>
     recommendedQuotes.map((quote) =>
       computeQuoteValidationErrors(quote, {
         priceImpactThresholds,
         isHardwareWalletAccount,
-        minimumBalanceForRentExemptionInSOL,
+        minimumBalanceForRentExemptionInLamports,
+        balances: {},
       }),
     ),
 );

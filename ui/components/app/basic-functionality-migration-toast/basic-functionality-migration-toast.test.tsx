@@ -14,6 +14,7 @@ import {
 } from '../../../../shared/constants/app';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { PRIVACY_ROUTE } from '../../../helpers/constants/routes';
+import { BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK } from '../basic-functionality-migration-modal/constants';
 import { BasicFunctionalityMigrationToast } from './basic-functionality-migration-toast';
 import {
   BASIC_FUNCTIONALITY_MIXED_TOAST_NOTICE_NAME,
@@ -93,13 +94,18 @@ describe('BasicFunctionalityMigrationToast', () => {
   });
 
   it('shows the enabled Basic Functionality state', () => {
-    const { getByTestId } = renderComponent({
+    const { getByTestId, getByRole } = renderComponent({
       isBasicFunctionalityEnabled: true,
     });
 
     expect(
       getByTestId('basic-functionality-migration-toast'),
-    ).toHaveTextContent('this setting is enabled.');
+    ).toHaveTextContent("It's turned on based on your previous settings.");
+    expect(
+      getByRole('link', {
+        name: messages.basicFunctionalityMigrationToastLearnMore.message,
+      }),
+    ).toHaveAttribute('href', BASIC_FUNCTIONALITY_MIGRATION_BLOG_POST_LINK);
   });
 
   it('shows the disabled Basic Functionality state', () => {
@@ -109,7 +115,7 @@ describe('BasicFunctionalityMigrationToast', () => {
 
     expect(
       getByTestId('basic-functionality-migration-toast'),
-    ).toHaveTextContent('this setting is disabled.');
+    ).toHaveTextContent("It's turned off based on your previous settings.");
   });
 
   it('does not render when no toast is scheduled', () => {

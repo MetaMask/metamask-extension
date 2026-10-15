@@ -1,6 +1,13 @@
 import { act } from '@testing-library/react';
-import { EthAccountType, BtcAccountType } from '@metamask/keyring-api';
+import {
+  EthAccountType,
+  EthScope,
+  BtcAccountType,
+  SolAccountType,
+  SolScope,
+} from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { AccountGroupType, AccountWalletType } from '@metamask/account-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MONEY_HOME_ROUTE } from '../../helpers/constants/routes';
 import { getMoneyAccountDepositIntent } from '../../helpers/money/deposit-intent';
@@ -93,6 +100,68 @@ const SOFTWARE_ACCOUNT = {
   metadata: { keyring: { type: KeyringTypes.hd } },
 };
 
+const SOLANA_ACCOUNT = {
+  id: 'solana-account-id-mock',
+  type: SolAccountType.DataAccount,
+  address: 'So1anaExampleExampleExampleExampleExampleEx',
+  scopes: [SolScope.Mainnet],
+  metadata: { keyring: { type: KeyringTypes.snap } },
+};
+
+const GROUP_ID = 'entropy:wallet/1';
+
+/**
+ * State mirroring a non-EVM network being picked in the network filter: the
+ * globally selected account is the Solana account of the second account
+ * group, and a different EVM account exists in the first group so the test
+ * can tell a group-aware lookup from a first-EVM-account fallback.
+ *
+ * @returns Mock state.
+ */
+const stateWithSelectedSolanaAccount = () => ({
+  metamask: {
+    selectedAccountGroup: GROUP_ID,
+    accountTree: {
+      wallets: {
+        'entropy:wallet': {
+          id: 'entropy:wallet',
+          type: AccountWalletType.Entropy,
+          status: 'ready',
+          groups: {
+            'entropy:wallet/0': {
+              id: 'entropy:wallet/0',
+              type: AccountGroupType.MultichainAccount,
+              accounts: [ACCOUNT_ID],
+              metadata: { name: 'Account 1' },
+            },
+            [GROUP_ID]: {
+              id: GROUP_ID,
+              type: AccountGroupType.MultichainAccount,
+              accounts: [SOLANA_ACCOUNT.id, SOFTWARE_ACCOUNT.id],
+              metadata: { name: 'Account 2' },
+            },
+          },
+          metadata: { name: 'Wallet' },
+        },
+      },
+    },
+    internalAccounts: {
+      selectedAccount: SOLANA_ACCOUNT.id,
+      accounts: {
+        [ACCOUNT_ID]: {
+          id: ACCOUNT_ID,
+          type: EthAccountType.Eoa,
+          address: '0x1234567890123456789012345678901234567890',
+          scopes: [EthScope.Eoa],
+          metadata: { keyring: { type: KeyringTypes.hd } },
+        },
+        [SOLANA_ACCOUNT.id]: SOLANA_ACCOUNT,
+        [SOFTWARE_ACCOUNT.id]: { ...SOFTWARE_ACCOUNT, scopes: [EthScope.Eoa] },
+      },
+    },
+  },
+});
+
 describe('useMoneyAccountDeposit', () => {
   const navigateToTransactionMock = jest.fn();
   const reportErrorMock = jest.fn();
@@ -129,6 +198,43 @@ describe('useMoneyAccountDeposit', () => {
       loader: ConfirmationLoader.CustomAmount,
       goBackTo: '/',
     });
+  });
+
+  it('ignores initiations from any entry point while one is in flight', async () => {
+    const { result } = renderHookWithProvider(
+      () => [useMoneyAccountDeposit(), useMoneyAccountDeposit()] as const,
+      EVM_ACCOUNT_STATE,
+    );
+    const [first, second] = result.current;
+
+    await act(async () => {
+      await Promise.all([
+        first.initiateDeposit(),
+        first.initiateDeposit(),
+        second.initiateDeposit(),
+      ]);
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(1);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('allows a new initiation once the previous one settles', async () => {
+    createDepositTransactionMock.mockRejectedValueOnce(new Error('failed'));
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      EVM_ACCOUNT_STATE,
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledTimes(2);
+    expect(navigateToTransactionMock).toHaveBeenCalledTimes(1);
   });
 
   it('passes the originating route as goBackTo so the confirmation returns there', async () => {
@@ -280,7 +386,28 @@ describe('useMoneyAccountDeposit', () => {
     );
   });
 
-  it('fails fast without creating the batch when the selected account is not EVM', async () => {
+  it("funds from the selected group's EVM account when a non-EVM network is selected", async () => {
+    const { result } = renderHookWithProvider(
+      () => useMoneyAccountDeposit(),
+      stateWithSelectedSolanaAccount(),
+    );
+
+    await act(async () => {
+      await result.current.initiateDeposit();
+    });
+
+    expect(createDepositTransactionMock).toHaveBeenCalledWith(
+      expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+      SOFTWARE_ADDRESS,
+    );
+    expect(navigateToTransactionMock).toHaveBeenCalledWith(
+      TRANSACTION_ID,
+      expect.objectContaining({ loader: ConfirmationLoader.CustomAmount }),
+    );
+    expect(reportErrorMock).not.toHaveBeenCalled();
+  });
+
+  it('fails fast without creating the batch when the only account is not EVM', async () => {
     const { result } = renderHookWithProvider(
       () => useMoneyAccountDeposit(),
       stateWithSelectedAccount(BtcAccountType.P2wpkh),
@@ -317,6 +444,59 @@ describe('useMoneyAccountDeposit', () => {
   });
 
   describe('when a hardware account is selected', () => {
+    it('funds from the hardware account when hardware deposits are enabled', async () => {
+      const state = stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]);
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        {
+          metamask: {
+            ...state.metamask,
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_pay_hardware: {
+                default: { enabled: false },
+                overrides: { moneyAccountDeposit: { enabled: true } },
+              },
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
+
+    it('keeps skipping the hardware account under the legacy flat flag', async () => {
+      const state = stateWithSelectedHardwareAccount([SOFTWARE_ACCOUNT]);
+      const { result } = renderHookWithProvider(
+        () => useMoneyAccountDeposit(),
+        {
+          metamask: {
+            ...state.metamask,
+            remoteFeatureFlags: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              confirmations_pay_hardware: { enabled: true },
+            },
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.initiateDeposit();
+      });
+
+      expect(createDepositTransactionMock).toHaveBeenCalledWith(
+        expect.stringMatching(/^0x[0-9a-f]{32}$/u),
+        SOFTWARE_ADDRESS,
+      );
+    });
+
     it('funds from the next eligible account instead of the hardware one', async () => {
       const { result } = renderHookWithProvider(
         () => useMoneyAccountDeposit(),

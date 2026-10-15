@@ -15,8 +15,9 @@ export type {
  * `@metamask/client-utils` has no money-account mapping (the transactions are
  * EIP-7702 batches it classifies as `contractInteraction`), so
  * `enrichLocalActivity` re-types them. They reuse the perps MM Pay data shape
- * (`fiat` + `token`) because the rows render the same way: a signed fiat
- * amount and token avatar without a counterparty address.
+ * (`fiat` + `token`): the activity row renders the token amount like a
+ * send/receive row with the money account as the counterparty, while the
+ * details view and toast use the pegged USD `fiat` amount.
  */
 export type MoneyAccountActivityKind =
   | 'moneyAccountDeposit'

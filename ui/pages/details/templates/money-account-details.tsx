@@ -5,8 +5,14 @@ import {
   ButtonVariant,
 } from '@metamask/design-system-react';
 import { TransactionStatus as TransactionMetaStatus } from '@metamask/transaction-controller';
+import {
+  applyDisplaySign,
+  getDisplaySignPrefix,
+} from '../../../../shared/lib/activity/fiat';
 import type { MoneyAccountActivityItem } from '../../../../shared/lib/activity/types';
 import { MONEY_ACCOUNT_FIAT_CURRENCY } from '../../../../shared/lib/money/constants';
+import { MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES } from '../../../components/app/money/messenger';
+import { RouteMessengerProvider } from '../../../contexts/route-messenger';
 import { useLocalTransactionMeta } from '../../../hooks/activity/useLocalTransactionMeta';
 import { useMoneyAccountDeposit } from '../../../hooks/money/useMoneyAccountDeposit';
 import { useMoneyAccountInfo } from '../../../hooks/money/useMoneyAccountInfo';
@@ -19,15 +25,7 @@ type Props = {
   item: MoneyAccountActivityItem;
 };
 
-/**
- * Details for money-account deposits and withdrawals, laid out like the
- * other MM Pay details (perps): fiat hero, status and date, MM Pay fee
- * breakdown, and the per-transaction summary.
- *
- * @param props - Component props.
- * @param props.item - The money-account activity item to render.
- */
-export function MoneyAccountDetails({ item }: Readonly<Props>) {
+const MoneyAccountDetailsContent = ({ item }: Readonly<Props>) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const { hasMoneyAccount } = useMoneyAccountInfo();
@@ -47,11 +45,15 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
         )
       : null;
 
+  const isIncoming = item.data.token?.direction === 'in';
   const formattedAmount = formatFiat(item.data.fiat?.amount);
-  const amountSign = isDeposit ? '+' : '-';
-  const signedAmount = formattedAmount
-    ? `${amountSign}${formattedAmount}`
-    : null;
+  const signedAmount =
+    formattedAmount && item.data.token
+      ? applyDisplaySign(
+          formattedAmount,
+          getDisplaySignPrefix(item.data.token.direction, { showPlus: true }),
+        )
+      : formattedAmount;
 
   return (
     <MmPayDetailsLayout
@@ -77,10 +79,35 @@ export function MoneyAccountDetails({ item }: Readonly<Props>) {
       }
       formatFiat={formatFiat}
       heroAmount={signedAmount}
-      heroTextColor={isDeposit ? 'text-success-default' : 'text-default'}
+      heroTextColor={isIncoming ? 'text-success-default' : 'text-default'}
       item={item}
       metamaskPay={{ bridgeFeeFiat, networkFeeFiat, totalFiat }}
       transactionMeta={transactionMeta}
     />
+  );
+};
+
+/**
+ * Details for money-account deposits and withdrawals, laid out like the
+ * other MM Pay details (perps): fiat hero, status and date, MM Pay fee
+ * breakdown, and the per-transaction summary. The hero is signed from the
+ * selected account's perspective, matching the activity row: a deposit is
+ * an outflow and a withdrawal an inflow.
+ *
+ * Rendered from the generic transaction details route and the activity list
+ * dialog, neither of which provides a route messenger, so the template brings
+ * its own for the money account availability lookup.
+ *
+ * @param props - Component props.
+ * @param props.item - The money-account activity item to render.
+ */
+export function MoneyAccountDetails(props: Readonly<Props>) {
+  return (
+    <RouteMessengerProvider
+      path="money-account-details"
+      capabilities={MONEY_ACCOUNT_BALANCE_ALLOWED_CAPABILITIES}
+    >
+      <MoneyAccountDetailsContent {...props} />
+    </RouteMessengerProvider>
   );
 }

@@ -40,8 +40,7 @@ const TEMPO_DEFAULT_BLOCK_EXPLORER_URL = 'https://explore.tempo.xyz/';
 const TEMPO_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'Tempo Explorer';
 const ARC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.arc.io/';
 const ARC_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL = 'Arc Explorer';
-const ROBINHOOD_DEFAULT_BLOCK_EXPLORER_URL =
-  'https://robinhoodchain.blockscout.com/';
+const ROBINHOOD_DEFAULT_BLOCK_EXPLORER_URL = 'https://robin.etherscan.io/';
 const ROBINHOOD_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL =
   'Robinhood Explorer';
 

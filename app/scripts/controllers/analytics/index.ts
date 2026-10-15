@@ -13,6 +13,7 @@ export {
   finalizeEventFragment,
   getEventFragmentById,
   identify,
+  setDataCollectionForMarketing,
   setParticipateInMetaMetrics,
   trackEvent,
   trackPage,

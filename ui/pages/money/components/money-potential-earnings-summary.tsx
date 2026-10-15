@@ -24,6 +24,7 @@ type MoneyPotentialEarningsSummaryProps = {
   apyPercent: number | undefined;
   privacyMode: boolean;
   headingVariant?: typeof TextVariant.HeadingMd | typeof TextVariant.HeadingLg;
+  onProjectionTooltipOpen?: () => void;
 };
 
 export function MoneyPotentialEarningsSummary({
@@ -32,6 +33,7 @@ export function MoneyPotentialEarningsSummary({
   apyPercent,
   privacyMode,
   headingVariant = TextVariant.HeadingMd,
+  onProjectionTooltipOpen,
 }: MoneyPotentialEarningsSummaryProps) {
   const t = useI18nContext();
   const totalAssetsFiat = useMemo(
@@ -87,6 +89,7 @@ export function MoneyPotentialEarningsSummary({
             length={SensitiveTextLength.Short}
             position={PopoverPosition.Auto}
             data-testid="money-potential-earnings-projection"
+            onOpen={onProjectionTooltipOpen}
           >
             {t('moneyEarnSectionAccountProjectedBalanceTooltip', [
               String(apyPercent),

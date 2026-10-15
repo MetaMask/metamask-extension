@@ -56,7 +56,7 @@ import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import type { NotificationServicesControllerEnableNotificationsOptions } from '@metamask/notification-services-controller/notification-services';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Immer, Patch } from 'immer';
+import { enablePatches, Immer, Patch } from 'immer';
 import {
   GetAppNameAndVersionResponse,
   AppConfigurationResponse,
@@ -98,6 +98,11 @@ import {
   isTrezorDesktopConnectionMissingError,
 } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
+import {
+  isInE2eTest,
+  getIsSidePanelFeatureEnabled,
+} from '../../shared/lib/environment';
+import { requestWebHidDevices } from '../contexts/hardware-wallets/webConnectionUtils';
 import { ModalType } from '../selectors/subscription/subscription';
 import { getIsBasicFunctionalityConsolidationEnabled } from '../selectors/multichain/basic-functionality';
 import { captureException } from '../../shared/lib/sentry';
@@ -142,7 +147,6 @@ import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
   MetaMetricsEventFragmentPayload,
@@ -217,9 +221,10 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
-import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
+
 import { PendingRedirectRoute } from '../../shared/lib/pending-redirect-state';
 import { keyringTypeToHardwareWalletType } from '../contexts/hardware-wallets/utils';
 import { LedgerHandlerMode } from '../../shared/constants/offscreen-communication';
@@ -229,6 +234,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -1398,25 +1404,12 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const inE2eTest =
-          process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
-        let connectedDevices: HIDDevice[] = [];
-        if (!inE2eTest) {
-          connectedDevices = await window.navigator.hid.requestDevice({
-            // The types for web hid were provided by @types/w3c-web-hid and may
-            // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
-            // string and this integration with Navigator.hid works before
-            // TypeScript. As a note, on the next declaration we convert the
-            // LEDGER_USB_VENDOR_ID to a number for a different API so....
-            // TODO: Get David Walsh's opinion here
-            filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
-          });
-        }
+        const inE2eTest = isInE2eTest();
+        const connectedDevices = inE2eTest
+          ? []
+          : await requestWebHidDevices(HardwareWalletType.Ledger);
         const userApprovedWebHidConnection =
-          inE2eTest ||
-          connectedDevices.some(
-            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-          );
+          inE2eTest || connectedDevices.length > 0;
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
@@ -1902,12 +1895,14 @@ export async function addTransaction(
  * @param txMeta - The transaction metadata
  * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
  * @param loadingIndicatorMessage - Message to show during loading
+ * @param signingAccountAddress - Account that signs funding transactions
  * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
  */
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  signingAccountAddress?: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1917,14 +1912,16 @@ export function updateAndApproveTx(
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
-      txMeta.txParams.from,
+      signingAccountAddress ?? txMeta.txParams.from,
     );
 
-    if (isHardwareAccount(fromAccount)) {
+    if (isUiHardwareAccount(fromAccount)) {
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareWalletTransaction(
         dispatch,
+        getState,
         txMeta,
+        dontShowLoadingIndicator,
         loadingIndicatorMessage,
         keyringType,
       );
@@ -1984,18 +1981,45 @@ async function approveTransaction(
  * with the recreated transaction ID in metadata.
  *
  * @param dispatch - Redux dispatch function
+ * @param getState - Returns current Redux state
  * @param txMeta - The transaction metadata
+ * @param dontShowLoadingIndicator - Whether to skip showing loading indicator.
+ * Callers that render their own signing UI must pass true; the global overlay
+ * stays up until signing completes and would cover that UI (e.g. the QR code a
+ * QR hardware wallet must scan to finish signing).
  * @param loadingIndicatorMessage - Message to show during signing
  * @param keyringType - The keyring type for the hardware wallet account
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
 async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
+  getState: () => MetaMaskReduxState,
   txMeta: TransactionMeta,
+  dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
   keyringType: string,
 ): Promise<TransactionMeta | null> {
-  dispatch(showLoadingIndication(loadingIndicatorMessage));
+  if (!dontShowLoadingIndicator) {
+    dispatch(showLoadingIndication(loadingIndicatorMessage));
+  }
+
+  let stopListeningForSigning = async () => undefined;
+  const payQuoteCount =
+    getState().metamask.transactionData?.[txMeta.id]?.quotes?.length ?? 0;
+  if (payQuoteCount > 0) {
+    stopListeningForSigning = await listenForHardwareSigningCompletion({
+      transactionId: txMeta.id,
+      expectedQuoteCount: payQuoteCount,
+      getState: async () => {
+        const state = await forceUpdateMetamaskState(dispatch);
+        return {
+          batchTransactionCounts: state.batchTransactionCounts ?? {},
+          transactions: state.transactions ?? [],
+        };
+      },
+      onComplete: () => dispatch(hideLoadingIndication()),
+    }).catch(() => async () => undefined);
+  }
 
   const walletType =
     keyringTypeToHardwareWalletType(keyringType) ?? HardwareWalletType.Ledger;
@@ -2023,6 +2047,7 @@ async function approveHardwareWalletTransaction(
     // Rethrow the properly typed error for hook to handle
     throw hwError;
   } finally {
+    await stopListeningForSigning().catch(() => undefined);
     dispatch(hideLoadingIndication());
   }
 }
@@ -4016,7 +4041,7 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
 }
 
-export function setShowTestNetworks(value: boolean) {
+export function setShowTestNetworksPreference(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
@@ -6108,6 +6133,21 @@ export function getGasFeeTimeEstimate(
   ]);
 }
 
+/**
+ * Closes the notification window remotely from the browser action popup.
+ * This is different from `attemptCloseNotificationPopup` which closes the
+ * current window (used by notification to close itself).
+ */
+export async function closeNotificationFromPopup(): Promise<void> {
+  if (getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP) {
+    console.warn(
+      'closeNotificationFromPopup: Can only be called from popup context',
+    );
+    return;
+  }
+  await submitRequestToBackground('closeNotificationPopup');
+}
+
 export async function attemptCloseNotificationPopup() {
   // Check if the current window is NOT a popup - if confirmed, we should not close it
   try {
@@ -7590,6 +7630,8 @@ export async function setLastInteractedConfirmationInfo(
     [info],
   );
 }
+enablePatches();
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],

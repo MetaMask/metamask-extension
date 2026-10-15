@@ -34,6 +34,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { showBuyTabOpenedToast } from '../../../helpers/utils/show-buy-tab-opened-toast';
 import FundingMethodItem from './funding-method-item';
 
 type FundingMethodModalProps = Omit<
@@ -107,11 +108,19 @@ export const FundingMethodModal = ({
   ]);
 
   const handleBuyCryptoClick = useCallback(async () => {
-    const opened = await goToBuy({ chainId: chainId as Hex | CaipChainId });
+    const destination = await goToBuy({
+      chainId: chainId as Hex | CaipChainId,
+    });
     // The ramps gate can block the buy (e.g. service disruption, unsupported
     // region) and show its own modal; don't report a buy click in that case.
-    if (!opened) {
+    if (!destination) {
       return;
+    }
+    if (destination === 'portfolio') {
+      showBuyTabOpenedToast(
+        t('buyTabOpenedToastText'),
+        t('buyTabOpenedToastDescription'),
+      );
     }
     trackEvent(
       createEventBuilder(MetaMetricsEventName.NavBuyButtonClicked)
@@ -128,7 +137,7 @@ export const FundingMethodModal = ({
         })
         .build(),
     );
-  }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy]);
+  }, [chainId, symbol, trackEvent, createEventBuilder, goToBuy, t]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>

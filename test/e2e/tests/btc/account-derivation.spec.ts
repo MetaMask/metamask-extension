@@ -32,7 +32,7 @@ async function mockBtcAccountDerivationMocks(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockTokensV3Assets(mockServer),
   ];
 }
@@ -86,7 +86,7 @@ describe('Bitcoin account derivation', function (this: Suite) {
         const addressList = new AccountAddressListPage(driver);
 
         await homepage.checkPageIsLoaded();
-        await homepage.clickOnReceiveButton();
+        await homepage.clickOnReceiveButton('default');
 
         await addressList.checkPageIsLoaded();
         await addressList.checkNetworkAddressIsDisplayed(

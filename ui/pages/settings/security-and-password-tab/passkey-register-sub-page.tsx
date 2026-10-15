@@ -38,6 +38,7 @@ import {
   verifyPassword,
 } from '../../../store/actions';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
+import { PASSKEY_STAGES } from '../../../../shared/constants/passkey';
 import { SECOND } from '../../../../shared/constants/time';
 import { useDispatch } from '../../../store/hooks';
 import { usePasskeyPRFSupport } from '../../../hooks/usePasskeyPRFSupport';
@@ -153,7 +154,7 @@ export default function PasskeyRegisterSubPage() {
     }
 
     const enrollmentStartedAt = Date.now();
-    let currentStep = 'register';
+    let currentStep: string = PASSKEY_STAGES.REGISTER;
     trackEvent(
       createEventBuilder(MetaMetricsEventName.PasskeySetup)
         .addCategory(MetaMetricsEventCategory.Settings)
@@ -170,7 +171,7 @@ export default function PasskeyRegisterSubPage() {
         password: walletPassword,
         onStageChange: (stage) => {
           currentStep = stage;
-          if (stage === 'verify') {
+          if (stage === PASSKEY_STAGES.VERIFY) {
             setRegisterStepStatus('success');
             setVerifyStepStatus('loading');
             registrationSucceeded = true;
@@ -181,7 +182,7 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus('success');
       setWalletPassword('');
 
-      currentStep = 'complete';
+      currentStep = PASSKEY_STAGES.COMPLETE;
       const derivationMethod = getPasskeyDerivationMethod({
         metamask: newMetamaskState,
       });

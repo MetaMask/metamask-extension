@@ -73,12 +73,20 @@ export const PERPS_CONSTANTS = {
 export const PERPS_COLLATERAL_SYMBOL = 'USDC';
 
 /**
- * Minimum USD notional for market / reduce-only orders on HyperLiquid (mainnet and testnet).
+ * Minimum USD notional for market, limit and reduce-only orders on HyperLiquid (mainnet and testnet).
  * Partial closes below this amount fail with ORDER_SIZE_MIN; full closes omit this check.
  * Duplicates TRADING_DEFAULTS.amount in @metamask/perps-controller until a shared export exists.
  * @see TRADING_DEFAULTS.amount in @metamask/perps-controller hyperLiquidConfig
  */
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
+
+/**
+ * A tradeable balance below this rounds to `0.00 USDC` in the displayed
+ * available-to-trade row, so a disabled Insufficient funds button reads as a
+ * bug. Treat it as unfunded and offer Add funds instead. This is a display
+ * threshold, not an order-minimum one — see `PERPS_MIN_MARKET_ORDER_USD`.
+ */
+export const PERPS_UNFUNDED_BALANCE_THRESHOLD_USDC = 0.01;
 
 /**
  * Market sorting configuration

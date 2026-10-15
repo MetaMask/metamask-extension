@@ -17,6 +17,7 @@ import {
   getAssetImageUrl,
   fetchAssetMetadata,
   toAssetId,
+  toNormalizedCaipAssetId,
   fetchAssetMetadataForAssetIds,
   getNativeAssetId,
   isNativeCaipAssetId,
@@ -233,6 +234,34 @@ describe('asset-utils', () => {
       expect(toAssetId(`sep41:${contractId}`, chainId)).toBe(
         `${chainId}/sep41:${contractId}`,
       );
+    });
+  });
+
+  describe('toNormalizedCaipAssetId', () => {
+    const usdcAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const normalizedUsdcId =
+      'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+    it('returns a normalized CAIP-19 id for a caip chain id and address', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, 'eip155:1')).toBe(
+        normalizedUsdcId,
+      );
+    });
+
+    it('returns undefined for decimal chain ids that would make toAssetId throw', () => {
+      expect(toNormalizedCaipAssetId(usdcAddress, '1')).toBeUndefined();
+    });
+
+    it('returns undefined when the address is missing', () => {
+      expect(toNormalizedCaipAssetId(undefined, '0x1')).toBeUndefined();
+    });
+
+    it('normalizes an existing CAIP-19 asset id without a chain id', () => {
+      expect(
+        toNormalizedCaipAssetId(
+          'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        ),
+      ).toBe(normalizedUsdcId);
     });
   });
 

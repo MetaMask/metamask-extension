@@ -26,6 +26,7 @@ import useRampsNavigation from '../../../hooks/ramps/useRampsNavigation/useRamps
 import { isQuoteExpiredOrInvalid, getDestChainId } from '../utils/quote';
 import { type BridgeAlert } from '../prepare/types';
 import { useDispatch } from '../../../store/hooks';
+import { ARC_NATIVE_CAIP_CHAIN_ID } from '../../../components/app/assets/enablement/arc';
 import { useSecurityAlerts } from './useSecurityAlerts';
 import { useAssetSecurityData } from './useAssetSecurityData';
 
@@ -230,11 +231,18 @@ export const useBridgeAlerts = () => {
       });
     }
 
+    const hasArcInsufficientNativeReserve = Boolean(
+      fromChain?.chainId === ARC_NATIVE_CAIP_CHAIN_ID &&
+      insufficientNativeReserveError &&
+      insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
+        '0',
+    );
+
     if (
       !isLoading &&
       activeQuote &&
       !isInsufficientBalance &&
-      isInsufficientGasForQuote
+      (isInsufficientGasForQuote || hasArcInsufficientNativeReserve)
     ) {
       categorizeAlert({
         id: 'insufficient-gas',
@@ -308,6 +316,7 @@ export const useBridgeAlerts = () => {
     if (
       !isInsufficientBalance &&
       !isInsufficientGasForQuote &&
+      !hasArcInsufficientNativeReserve &&
       insufficientNativeReserveError &&
       insufficientNativeReserveError.minimumNativeBalanceToBeKeptInAccount !==
         '0'

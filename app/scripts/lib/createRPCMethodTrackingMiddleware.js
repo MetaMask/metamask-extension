@@ -264,10 +264,12 @@ export default function createRPCMethodTrackingMiddleware({
       : MetaMetricsEventCategory.InpageProvider;
 
     let invokedMethod = method;
+    let invokedMethodParams = params;
     let multichainApiRequestScope;
     // if the request is through the multichain api, the method is nested in the params
     if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
       invokedMethod = params?.request?.method;
+      invokedMethodParams = params?.request?.params;
       multichainApiRequestScope = params?.scope;
     }
 
@@ -353,10 +355,10 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
-        if (isValidAddress(req?.params?.[1])) {
-          data = req?.params?.[0];
+        if (isValidAddress(invokedMethodParams?.[1])) {
+          data = invokedMethodParams?.[0];
         } else {
-          data = req?.params?.[1];
+          data = invokedMethodParams?.[1];
         }
 
         if (req.securityAlertResponse?.providerRequestsCount) {

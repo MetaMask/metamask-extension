@@ -261,6 +261,9 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
@@ -285,7 +288,16 @@
         "marketCap": "number",
         "totalVolume": "number",
         "dilutedMarketCap": "number",
+        "allTimeHigh": "number",
+        "allTimeLow": "number",
+        "circulatingSupply": "number",
         "pricePercentChange1d": "number",
+        "pricePercentChange1h": "number",
+        "pricePercentChange7d": "number",
+        "pricePercentChange14d": "number",
+        "pricePercentChange30d": "number",
+        "pricePercentChange200d": "number",
+        "pricePercentChange1y": "number",
         "lastUpdated": "number"
       }
     },
@@ -317,7 +329,13 @@
     "consentDecisionMade": "boolean",
     "hasSeenOnboardingCompletionPage": "boolean",
     "configs": {
-      "networks": "object"
+      "networks": "object",
+      "eventsConfig": {
+        "events": {},
+        "schemaVersion": "string",
+        "timestamp": "number",
+        "version": "string"
+      }
     },
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
@@ -380,7 +398,6 @@
       "verifiedSnaps": {}
     },
     "databaseUnavailable": "boolean",
-    "dataCollectionForMarketing": "boolean",
     "defaultHomeActiveTabName": "null",
     "depositInProgress": "boolean",
     "depositRequests": [],
@@ -424,6 +441,7 @@
         "tron:2494104990": "boolean"
       }
     },
+    "enrolledCredentials": [],
     "nativeAssetIdentifiers": {
       "eip155:1": "string",
       "eip155:11155111": "string",
@@ -441,6 +459,13 @@
     "error": "null",
     "estimatedGasFeeTimeBounds": {},
     "etag": "null",
+    "eventsConfigEtag": "null",
+    "eventsConfig": {
+      "events": {},
+      "schemaVersion": "string",
+      "timestamp": "number",
+      "version": "string"
+    },
     "events": {
       "cronjob-npm:@metamask/tron-wallet-snap-0": {
         "date": "string",
@@ -722,6 +747,7 @@
     "logs": {},
     "lastWithdrawResult": "null",
     "manageInstitutionalWallets": "boolean",
+    "marketingConsentDecisionMade": "boolean",
     "marketData": {
       "*": {}
     },
@@ -821,6 +847,7 @@
     },
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
+    "moneyEarnBannerDismissedTokenKeys": [],
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -878,6 +905,7 @@
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",
+    "optedInToMarketing": "boolean",
     "orderBookPreferences": {
       "currency": "string",
       "metric": "string"
@@ -892,6 +920,7 @@
     "outdatedBrowserWarningLastShown": "null",
     "overrideContentSecurityPolicyHeader": "boolean",
     "passkeyAutoUnlockSuppressed": "boolean",
+    "lastShownPrfMigrationReminderAt": "null",
     "paymentMethods": {
       "data": [],
       "error": "null",
@@ -926,6 +955,7 @@
       "defaultAddressScope": "string",
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
+      "hasLinkedSocialLoginProfile": "boolean",
       "hideZeroBalanceTokens": "boolean",
       "isBasicFunctionalityConsolidatedEnabled": "boolean",
       "basicFunctionalityMigrationNotification": "null",
@@ -1274,7 +1304,7 @@
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": "boolean",
     "useTransactionSimulations": "boolean",
-    "version": "null",
+    "version": "string",
     "versionInfo": [],
     "visibleCandleCount": "number",
     "watchEthereumAccountEnabled": "boolean",
@@ -1325,6 +1355,9 @@
       "isOpen": "boolean",
       "title": "string"
     }
+  },
+  "sendMaxValue": {
+    "maxValueMode": {}
   },
   "smartAccounts": {
     "toggleStates": {}

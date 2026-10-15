@@ -34,7 +34,10 @@
     "AnalyticsController": {
       "analyticsId": null,
       "consentDecisionMade": false,
+      "marketingCampaignCookieId": null,
+      "marketingConsentDecisionMade": false,
       "optedIn": false,
+      "optedInToMarketing": false,
       "preConsentEventQueue": {
         "00000000-0000-4000-8000-000000000000": {
           "eventName": "App Installed",
@@ -49,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 227,
+      "currentMigrationVersion": 232,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -72,12 +75,14 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": null,
       "newPrivacyPolicyToastShownDate": 1764061390419,
       "onboardingDate": 1764061390455,
       "outdatedBrowserWarningLastShown": null,
+      "lastShownPrfMigrationReminderAt": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "perpsTabBadgeSeen": false,
@@ -126,9 +131,11 @@
     },
     "ConfigRegistryController": {
       "configs": {
-        "networks": {}
+        "networks": {},
+        "eventsConfig": null
       },
       "etag": null,
+      "eventsConfigEtag": null,
       "lastFetched": null,
       "version": null
     },
@@ -159,10 +166,6 @@
     "KeyringController": {},
     "LoggingController": {
       "logs": {}
-    },
-    "MetaMetricsController": {
-      "dataCollectionForMarketing": null,
-      "marketingCampaignCookieId": null
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
@@ -2014,6 +2017,7 @@
         "dismissSmartAccountSuggestionEnabled": false,
         "featureNotificationsEnabled": false,
         "gasSponsorshipOptOutByChainId": {},
+        "hasLinkedSocialLoginProfile": false,
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": false,
         "privacyMode": false,
@@ -2250,6 +2254,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 227
+    "version": 232
   }
 }

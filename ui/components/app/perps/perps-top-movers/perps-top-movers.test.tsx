@@ -119,23 +119,7 @@ describe('PerpsTopMovers', () => {
       expect(track.parentElement).toHaveClass('pl-4', 'pr-4');
     });
 
-    it('splits the ranked pills evenly across two rows', () => {
-      renderSection(
-        Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
-          createMarket(`SYM${index}`, `+${index}.00%`),
-        ),
-      );
-
-      const rowCounts = [0, 1].map(
-        (rowIndex) =>
-          screen.getByTestId(`perps-top-movers-list-row-${rowIndex}`)
-            .childElementCount,
-      );
-
-      expect(rowCounts).toStrictEqual([4, 4]);
-    });
-
-    it('keeps each pill row on one line so a narrow popup can scroll instead of wrapping', () => {
+    it('wraps the ranked pills onto as many lines as they need', () => {
       renderSection(
         Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
           createMarket(`SYM${index}`, `+${index}.00%`),
@@ -144,42 +128,66 @@ describe('PerpsTopMovers', () => {
 
       const list = screen.getByTestId('perps-top-movers-list');
 
-      expect(list).toHaveClass('overflow-x-auto');
-      expect(list).not.toHaveClass('px-4');
-      expect(list.firstElementChild).toHaveClass('w-max', 'px-4');
-      expect(screen.getByTestId('perps-top-movers-list-row-0')).toHaveClass(
-        'w-max',
-        'flex-nowrap',
-      );
-      expect(screen.getByTestId('perps-top-movers-list-row-0')).not.toHaveClass(
-        'flex-wrap',
-      );
+      expect(list).toHaveClass('flex', 'flex-wrap');
+      expect(list).not.toHaveClass('flex-nowrap');
+      expect(list.childElementCount).toBe(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
     });
 
-    it('keeps the ranking order when splitting an odd number of pills', () => {
+    it('never puts the pills in a sideways scroller a desktop cannot slide', () => {
+      renderSection(
+        Array.from({ length: PERPS_CONSTANTS.TOP_MOVERS_LIMIT }, (_, index) =>
+          createMarket(`SYM${index}`, `+${index}.00%`),
+        ),
+      );
+
+      const list = screen.getByTestId('perps-top-movers-list');
+
+      expect(list).not.toHaveClass('overflow-x-auto');
+      expect(list).not.toHaveClass('w-max');
+      expect(list).not.toHaveClass('flex-nowrap');
+      expect(
+        screen.queryByTestId('perps-top-movers-list-row-0'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('lets every pill keep its own content width', () => {
+      renderSection();
+
+      screen.getAllByTestId(/^perps-top-movers-pill-/u).forEach((pill) => {
+        expect(pill).toHaveClass('w-auto');
+        expect(pill).not.toHaveClass('w-full');
+      });
+    });
+
+    it('keeps the ranking order across the grid', () => {
       renderSection([
         createMarket('AAA', '+9.00%'),
         createMarket('BBB', '+5.00%'),
         createMarket('CCC', '+1.00%'),
       ]);
 
-      expect(
-        screen.getByTestId('perps-top-movers-list-row-0'),
-      ).toHaveTextContent('AAA');
-      expect(
-        screen.getByTestId('perps-top-movers-list-row-0'),
-      ).toHaveTextContent('BBB');
-      expect(
-        screen.getByTestId('perps-top-movers-list-row-1'),
-      ).toHaveTextContent('CCC');
+      expect(getPillSymbols()).toStrictEqual(['AAA', 'BBB', 'CCC']);
     });
 
-    it('renders the loading skeleton while market data is loading', () => {
+    it('renders a wrapping skeleton while market data loads', () => {
       renderSection([], true);
 
-      expect(
-        screen.getByTestId('perps-top-movers-skeleton'),
-      ).toBeInTheDocument();
+      const skeleton = screen.getByTestId('perps-top-movers-skeleton');
+
+      expect(skeleton).toBeInTheDocument();
+      expect(skeleton).toHaveClass('flex', 'flex-wrap');
+      // One placeholder per ranked slot, so the section does not reflow when
+      // the live ranking lands.
+      expect(skeleton.childElementCount).toBe(PERPS_CONSTANTS.TOP_MOVERS_LIMIT);
+      // ...each the same 36px a real pill measures. A shorter placeholder makes
+      // the whole section jump upward the moment the ranking lands, which is the
+      // reflow this skeleton exists to prevent. `PerpsTopMoverPill` keeps its
+      // half of this contract via the `h-auto`/`py-1.5` assertion in
+      // perps-top-mover-pill.test.tsx.
+      Array.from(skeleton.children).forEach((placeholder) => {
+        expect(placeholder).toHaveClass('h-9');
+      });
+      expect(skeleton).not.toHaveClass('overflow-x-auto');
       expect(
         screen.queryByTestId('perps-top-movers-list'),
       ).not.toBeInTheDocument();
