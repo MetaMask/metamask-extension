@@ -263,8 +263,14 @@ const OnboardingFlowContent = () => {
   ]);
 
   useEffect(() => {
+    // Completed visits stay mounted for completion, passkey migration, and
+    // reminders. A journey opened there is closed as abandoned on tab removal.
+    if (completedOnboarding) {
+      return;
+    }
+
     startJourney();
-  }, [startJourney]);
+  }, [completedOnboarding, startJourney]);
 
   const handleCreateNewAccount = async (password: string) => {
     try {

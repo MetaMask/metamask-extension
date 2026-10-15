@@ -69,7 +69,8 @@ export type OnboardingControllerGetIsSocialLoginFlowAction = {
  * Start or resume the onboarding journey associated with a browser tab.
  *
  * @param request - The onboarding tab and current step.
- * @returns The opaque ID used to parent child traces.
+ * @returns The opaque ID used to parent child traces, or undefined when no
+ * journey should be opened.
  */
 export type OnboardingControllerStartOnboardingJourneyAction = {
   type: `OnboardingController:startOnboardingJourney`;

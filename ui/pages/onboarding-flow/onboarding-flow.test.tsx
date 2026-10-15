@@ -396,6 +396,7 @@ describe('Onboarding Flow', () => {
         replace: true,
       });
     });
+    expect(mockStartJourney).not.toHaveBeenCalled();
   });
 
   describe('Create Password', () => {

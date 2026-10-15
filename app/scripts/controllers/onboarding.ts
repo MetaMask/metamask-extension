@@ -31,6 +31,11 @@ export type OnboardingControllerState = {
   firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
   hasSeenOnboardingCompletionPage: boolean;
+  /**
+   * True after a journey ends successfully. Later mounts must not open another
+   * trace for the same profile.
+   */
+  onboardingJourneyEnded: boolean;
   onboardingTabs?: Record<string, string>;
 };
 
@@ -42,6 +47,7 @@ export const getDefaultOnboardingControllerState = () => ({
   firstTimeFlowType: null,
   completedOnboarding: false,
   hasSeenOnboardingCompletionPage: false,
+  onboardingJourneyEnded: false,
 });
 
 const defaultTransientState = {
@@ -84,6 +90,12 @@ const controllerMetadata: StateMetadata<OnboardingControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
+  },
+  onboardingJourneyEnded: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
   },
   onboardingTabs: {
     includeInStateLogs: true,
@@ -322,15 +334,26 @@ export class OnboardingController extends BaseController<
   /**
    * Start or resume the onboarding journey associated with a browser tab.
    *
+   * A tab with a live journey is resumed. A new journey is not opened after
+   * this profile has finished onboarding or already ended a journey
+   * successfully.
+   *
    * @param request - The onboarding tab and current step.
-   * @returns The opaque ID used to parent child traces.
+   * @returns The opaque ID used to parent child traces, or undefined when no
+   * journey should be opened.
    */
-  startOnboardingJourney(request: OnboardingJourneyTraceRequest): string {
+  startOnboardingJourney(
+    request: OnboardingJourneyTraceRequest,
+  ): string | undefined {
     const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
 
     if (currentJourney) {
       currentJourney.lastStep = request.lastStep;
       return currentJourney.traceId;
+    }
+
+    if (this.state.completedOnboarding || this.state.onboardingJourneyEnded) {
+      return undefined;
     }
 
     const traceId = crypto.randomUUID();
@@ -392,15 +415,33 @@ export class OnboardingController extends BaseController<
         perf_fix: 'trace-registry-v1',
       },
     });
+
+    if (request.success) {
+      this.update((state) => {
+        state.onboardingJourneyEnded = true;
+      });
+    }
   }
 
   /**
    * Reset the onboarding controller state.
    */
   resetOnboarding(): void {
+    // Drop in-progress journeys so the next attempt starts a new trace.
+    // Clearing onboardingJourneyEnded alone would resume the tab's old journey.
+    for (const [tabId, journey] of [...this.#onboardingJourneysByTabId]) {
+      this.endOnboardingJourney({
+        ...(tabId === undefined ? {} : { tabId }),
+        lastStep: journey.lastStep,
+        success: false,
+        abandoned: true,
+      });
+    }
+
     this.update((state) => {
       state.completedOnboarding = false;
       state.hasSeenOnboardingCompletionPage = false;
+      state.onboardingJourneyEnded = false;
       state.firstTimeFlowType = null;
       state.seedPhraseBackedUp = null;
       state.onboardingTabs = {};

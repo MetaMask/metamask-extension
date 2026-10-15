@@ -163,6 +163,136 @@ describe('OnboardingController', () => {
       );
     });
 
+    it('does not open a new journey after a successful end', () => {
+      const addTabRemovedListener = jest.fn();
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({
+        addTabRemovedListener,
+        bufferedTrace,
+        bufferedEndTrace,
+      });
+      const tabRemovedListener = addTabRemovedListener.mock.calls[0][0] as (
+        tabId: number,
+      ) => void;
+
+      controller.startOnboardingJourney({
+        tabId: '1',
+        lastStep: 'welcome',
+      });
+      controller.endOnboardingJourney({
+        tabId: '1',
+        lastStep: 'metametrics',
+        success: true,
+      });
+      bufferedTrace.mockClear();
+      bufferedEndTrace.mockClear();
+
+      expect(
+        controller.startOnboardingJourney({
+          tabId: '1',
+          lastStep: 'metametrics',
+        }),
+      ).toBeUndefined();
+      expect(bufferedTrace).not.toHaveBeenCalled();
+
+      tabRemovedListener(1);
+
+      expect(bufferedEndTrace).not.toHaveBeenCalled();
+      expect(controller.state.onboardingJourneyEnded).toBe(true);
+    });
+
+    it('does not open a journey when onboarding is already complete', () => {
+      const addTabRemovedListener = jest.fn();
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({
+        addTabRemovedListener,
+        bufferedTrace,
+        bufferedEndTrace,
+      });
+      const tabRemovedListener = addTabRemovedListener.mock.calls[0][0] as (
+        tabId: number,
+      ) => void;
+
+      controller.completeOnboarding();
+
+      expect(
+        controller.startOnboardingJourney({
+          tabId: '1',
+          lastStep: 'completion',
+        }),
+      ).toBeUndefined();
+      expect(bufferedTrace).not.toHaveBeenCalled();
+
+      tabRemovedListener(1);
+
+      expect(bufferedEndTrace).not.toHaveBeenCalled();
+    });
+
+    it('opens a new journey after an abandoned end', () => {
+      const addTabRemovedListener = jest.fn();
+      const bufferedTrace = jest.fn();
+      const controller = setupController({
+        addTabRemovedListener,
+        bufferedTrace,
+      });
+      const tabRemovedListener = addTabRemovedListener.mock.calls[0][0] as (
+        tabId: number,
+      ) => void;
+
+      const firstTraceId = controller.startOnboardingJourney({
+        tabId: '1',
+        lastStep: 'welcome',
+      });
+      tabRemovedListener(1);
+
+      const secondTraceId = controller.startOnboardingJourney({
+        tabId: '2',
+        lastStep: 'welcome',
+      });
+
+      expect(secondTraceId).toEqual(expect.any(String));
+      expect(secondTraceId).not.toBe(firstTraceId);
+      expect(bufferedTrace).toHaveBeenCalledTimes(2);
+      expect(controller.state.onboardingJourneyEnded).toBe(false);
+    });
+
+    it('ends an in-progress journey and allows a new one after reset', () => {
+      const bufferedTrace = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({
+        bufferedTrace,
+        bufferedEndTrace,
+      });
+
+      const traceId = controller.startOnboardingJourney({
+        tabId: '1',
+        lastStep: 'welcome',
+      });
+      controller.resetOnboarding();
+
+      expect(bufferedEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: traceId,
+          data: expect.objectContaining({
+            success: false,
+            abandoned: true,
+          }),
+        }),
+      );
+      expect(controller.state.onboardingJourneyEnded).toBe(false);
+
+      const nextTraceId = controller.startOnboardingJourney({
+        tabId: '1',
+        lastStep: 'welcome',
+      });
+
+      expect(nextTraceId).toEqual(expect.any(String));
+      expect(nextTraceId).not.toBe(traceId);
+      expect(bufferedTrace).toHaveBeenCalledTimes(2);
+    });
+
     it('does not end a completed journey when its tab is removed', () => {
       const addTabRemovedListener = jest.fn();
       const bufferedEndTrace = jest.fn();
@@ -242,6 +372,7 @@ describe('OnboardingController', () => {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
           "hasSeenOnboardingCompletionPage": false,
+          "onboardingJourneyEnded": false,
           "seedPhraseBackedUp": null,
         }
       `);
@@ -261,6 +392,7 @@ describe('OnboardingController', () => {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
           "hasSeenOnboardingCompletionPage": false,
+          "onboardingJourneyEnded": false,
           "onboardingTabs": {},
           "seedPhraseBackedUp": null,
         }
@@ -281,6 +413,7 @@ describe('OnboardingController', () => {
           "completedOnboarding": false,
           "firstTimeFlowType": null,
           "hasSeenOnboardingCompletionPage": false,
+          "onboardingJourneyEnded": false,
           "seedPhraseBackedUp": null,
         }
       `);

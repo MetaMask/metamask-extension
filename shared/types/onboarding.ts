@@ -8,6 +8,11 @@ export type OnboardingControllerState = {
   firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
   hasSeenOnboardingCompletionPage: boolean;
+  /**
+   * True after a journey ends successfully. Later mounts must not open another
+   * trace for the same profile.
+   */
+  onboardingJourneyEnded: boolean;
   onboardingTabs?: Record<string, string>;
 };
 

@@ -48,6 +48,7 @@ const MOCK_STATE: OnboardingState = {
     firstTimeFlowType: FirstTimeFlowType.import,
     completedOnboarding: true,
     hasSeenOnboardingCompletionPage: true,
+    onboardingJourneyEnded: false,
     onboardingTabs: {
       welcome: 'welcome',
       createPassword: 'createPassword',
