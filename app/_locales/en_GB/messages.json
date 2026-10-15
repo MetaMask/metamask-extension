@@ -1796,7 +1796,7 @@
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "arcUsageNoticeDescription": {
-    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with Arc team."
+    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with the Arc team."
   },
   "arcUsageNoticeTitle": {
     "message": "Notice"
@@ -2002,6 +2002,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Basic functionality is on"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "We've updated our settings"
@@ -5916,8 +5919,28 @@
   "moneyConvertYourCrypto": {
     "message": "Convert your crypto"
   },
+  "moneyEarnApy": {
+    "message": "Earn $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Add $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Earn with your Money account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Earn on your crypto"
@@ -6077,6 +6100,10 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyStartEarning": {
+    "message": "Start earning",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Unable to add funds. Try again."
@@ -6591,6 +6618,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "To use OpenSea to see your NFTs, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -12475,6 +12506,9 @@
   },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "turn on basic functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."
