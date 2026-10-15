@@ -18,7 +18,6 @@ import { TraceName } from '../../../../shared/lib/trace';
 import type {
   OnboardingJourneyTraceEndData,
   OnboardingJourneyTraceEndRequest,
-  OnboardingJourneyTraceId,
   OnboardingJourneyTraceRequest,
 } from '../../../../shared/types/onboarding';
 
@@ -59,57 +58,58 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
   const lastStepRef = useRef(getOnboardingTraceStep(pathname));
   const hasStartedRef = useRef(false);
   const hasEndedRef = useRef(false);
-  const startJourneyPromiseRef = useRef<
-    Promise<OnboardingJourneyTraceId | undefined>
-  >(Promise.resolve(undefined));
+  const startJourneyPromiseRef = useRef<Promise<string | undefined>>(
+    Promise.resolve(undefined),
+  );
 
-  const startJourney = useCallback(() => {
+  const startJourney = useCallback(async () => {
     if (hasStartedRef.current) {
       return;
     }
 
     hasStartedRef.current = true;
 
-    const startJourneyPromise =
-      callOnboardingTraceService<OnboardingJourneyTraceId>(
-        'startOnboardingJourney',
-        {
-          lastStep: lastStepRef.current,
-        },
-      );
+    const startJourneyPromise = callOnboardingTraceService<string>(
+      'startOnboardingJourney',
+      {
+        lastStep: lastStepRef.current,
+      },
+    );
     startJourneyPromiseRef.current = startJourneyPromise;
 
-    startJourneyPromise.then((traceId) => {
-      if (!traceId) {
-        return;
-      }
-
-      // Child screens read this shared ref when starting their own traces.
-      // Only the opaque trace identity crosses the UI/background RPC boundary;
-      // a live Sentry span cannot be passed through it.
-      onboardingParentContextRef.current = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _name: TraceName.OnboardingJourneyOverall,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _id: traceId,
-      };
-    });
-  }, [onboardingParentContextRef]);
-
-  const endJourney = useCallback((data: OnboardingJourneyTraceEndData) => {
-    if (!hasStartedRef.current || hasEndedRef.current) {
+    // Wait for the trace ID to be resolved from the previous promise.
+    const traceId = await startJourneyPromise;
+    if (!traceId) {
       return;
     }
 
-    hasEndedRef.current = true;
+    // Child screens read this shared ref when starting their own traces.
+    // Only the opaque trace identity crosses the UI/background RPC boundary;
+    // a live Sentry span cannot be passed through it.
+    onboardingParentContextRef.current = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _name: TraceName.OnboardingJourneyOverall,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _id: traceId,
+    };
+  }, [onboardingParentContextRef]);
 
-    startJourneyPromiseRef.current.then(() => {
+  const endJourney = useCallback(
+    async (data: OnboardingJourneyTraceEndData) => {
+      if (!hasStartedRef.current || hasEndedRef.current) {
+        return;
+      }
+
+      hasEndedRef.current = true;
+
+      await startJourneyPromiseRef.current;
       callOnboardingTraceService('endOnboardingJourney', {
         lastStep: lastStepRef.current,
         ...data,
       });
-    });
-  }, []);
+    },
+    [],
+  );
 
   useEffect(() => {
     const lastStep = getOnboardingTraceStep(pathname);
@@ -119,11 +119,12 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       return;
     }
 
-    startJourneyPromiseRef.current?.then(() => {
+    (async () => {
+      await startJourneyPromiseRef.current;
       callOnboardingTraceService('updateOnboardingJourney', {
         lastStep,
       });
-    });
+    })();
   }, [pathname]);
 
   return useMemo(

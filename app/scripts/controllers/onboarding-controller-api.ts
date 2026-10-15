@@ -1,6 +1,5 @@
 import type {
   OnboardingJourneyTraceEndRequest,
-  OnboardingJourneyTraceId,
   OnboardingJourneyTraceRequest,
 } from '../../../shared/types/onboarding';
 import type { OnboardingController } from './onboarding';
@@ -31,7 +30,7 @@ export function getOnboardingControllerApi(
   setFirstTimeFlowType: OnboardingController['setFirstTimeFlowType'];
   startOnboardingJourney: (
     request: OnboardingJourneyTraceRequest,
-  ) => OnboardingJourneyTraceId | undefined;
+  ) => string | undefined;
   updateOnboardingJourney: (request: OnboardingJourneyTraceRequest) => void;
   endOnboardingJourney: (request: OnboardingJourneyTraceEndRequest) => void;
 } {

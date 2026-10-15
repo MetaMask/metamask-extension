@@ -10,7 +10,6 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import type {
-  OnboardingJourneyTraceId,
   OnboardingJourneyTraceControllerEndRequest,
   OnboardingJourneyTraceControllerRequest,
 } from '../../../shared/types/onboarding';
@@ -51,7 +50,7 @@ const defaultTransientState = {
 
 type OnboardingJourney = {
   lastStep: string;
-  traceId: OnboardingJourneyTraceId;
+  traceId: string;
 };
 
 /**
@@ -327,7 +326,7 @@ export class OnboardingController extends BaseController<
    */
   startOnboardingJourney(
     request: OnboardingJourneyTraceControllerRequest,
-  ): OnboardingJourneyTraceId {
+  ): string {
     const currentJourney = this.#onboardingJourneysByTabId.get(request.tabId);
 
     if (currentJourney) {
