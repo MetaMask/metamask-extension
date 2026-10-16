@@ -1,10 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { program, Option } from 'commander';
 import { getGitHubToken } from '../.github/scripts/shared/github-token.mts';
-import {
-  downloadBuilds,
-  type DownloadBuildsOptions,
-} from '../development/download-builds';
+import { downloadBuilds, type DownloadBuildsOptions } from './download-builds';
 
 function getBranch(): string {
   try {
@@ -17,11 +14,12 @@ function getBranch(): string {
   }
 }
 
-interface DownloadBuildsArgs extends DownloadBuildsOptions {
+type DownloadBuildsArgs = DownloadBuildsOptions & {
   githubToken: string;
-}
+};
 
 program
+  .name('download-builds')
   .addOption(
     new Option('-o, --owner <string>', 'owner of the repository')
       .default('metamask')
