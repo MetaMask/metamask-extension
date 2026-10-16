@@ -5,7 +5,6 @@ import {
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 import {
   AvatarToken,
@@ -30,10 +29,8 @@ import {
   NFT_STANDARDS,
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
-import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { getUseCurrencyRateCheck } from '../../../../../selectors';
-import { AccountTypeLabel } from '../account-type-label';
 import { getAvatarTokenSrc } from '../../../../../components/app/assets/asset-list/cells/asset-cell-badge';
 import { SecurityBadge } from '../../../../../components/app/security-trust/security-trust-inline-badge';
 
@@ -170,8 +167,6 @@ const TokenAsset = ({
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
-  const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
-
   const assetImage = chainId
     ? getAvatarTokenSrc({
         chainId: chainId as Hex,
@@ -265,11 +260,6 @@ const TokenAsset = ({
           </DSBox>
           <SecurityBadge value={safetyResult} />
           {tag ? <DSBox className="shrink-0">{tag}</DSBox> : null}
-          {typeLabel ? (
-            <DSBox className="shrink-0" style={dimmedStyle}>
-              <AccountTypeLabel label={typeLabel} />
-            </DSBox>
-          ) : null}
         </DSBox>
         <Text
           variant={TextVariant.bodySmMedium}

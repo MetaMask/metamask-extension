@@ -67,6 +67,55 @@ describe('MoneyEarnings', () => {
     ).toBeInTheDocument();
   });
 
+  it('omits the lifetime row when lifetime earnings are unavailable', () => {
+    renderWithLocalization(
+      <MoneyEarnings
+        monthlyEarnings="+$1.23"
+        isMonthlyLoading={false}
+        isLifetimeLoading={false}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).toHaveTextContent('+$1.23');
+    expect(
+      screen.queryByTestId('money-earnings-lifetime'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the lifetime skeleton while unavailable lifetime earnings load', () => {
+    renderWithLocalization(
+      <MoneyEarnings
+        monthlyEarnings="+$1.23"
+        isMonthlyLoading={false}
+        isLifetimeLoading
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-earnings-monthly-value'),
+    ).toHaveTextContent('+$1.23');
+    expect(
+      screen.getByTestId('money-earnings-lifetime-skeleton'),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps a zero lifetime earnings row visible', () => {
+    renderWithLocalization(
+      <MoneyEarnings
+        monthlyEarnings="+$1.23"
+        lifetimeEarnings="$0.00"
+        isMonthlyLoading={false}
+        isLifetimeLoading={false}
+      />,
+    );
+
+    expect(
+      screen.getByTestId('money-earnings-lifetime-value'),
+    ).toHaveTextContent('$0.00');
+  });
+
   it('does not use the success color for non-positive earnings', () => {
     renderWithLocalization(
       <MoneyEarnings
