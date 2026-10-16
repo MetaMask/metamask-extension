@@ -73,6 +73,7 @@ import type { MetaMetricsDataDeletionState } from '../../app/scripts/controllers
 import type { EncryptionPublicKeyControllerState } from '../../app/scripts/controllers/encryption-public-key';
 import type { DecryptMessageControllerState } from '../../app/scripts/controllers/decrypt-message';
 import type { OnboardingControllerState } from '../../app/scripts/controllers/onboarding';
+import type { NetworkPolicyControllerState } from '../../app/scripts/controllers/network-policy/network-policy-controller.types';
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
 
@@ -246,6 +247,7 @@ export type ControllerStatePropertiesEnumerated = {
   fcmToken: NotificationServicesPushController.NotificationServicesPushControllerState['fcmToken'];
   isUpdatingFCMToken: NotificationServicesPushController.NotificationServicesPushControllerState['isUpdatingFCMToken'];
   completedOnboarding: OnboardingControllerState['completedOnboarding'];
+  postOnboardingNetworkDomains: NetworkPolicyControllerState['postOnboardingNetworkDomains'];
   hasSeenOnboardingCompletionPage: OnboardingControllerState['hasSeenOnboardingCompletionPage'];
   onboardingJourneyEnded: OnboardingControllerState['onboardingJourneyEnded'];
   firstTimeFlowType: OnboardingControllerState['firstTimeFlowType'];
@@ -387,6 +389,7 @@ export type ControllerStateTypesMerged = AccountsControllerState &
   NotificationServicesController.NotificationServicesControllerState &
   NotificationServicesPushController.NotificationServicesPushControllerState &
   OnboardingControllerState &
+  NetworkPolicyControllerState &
   PasskeyControllerState &
   PermissionControllerState<PermissionConstraint> &
   PermissionLogControllerState &

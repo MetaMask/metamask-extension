@@ -114,6 +114,19 @@ export const schema = {
       description: 'The build type to create.',
       type: 'string',
     },
+    test: {
+      description:
+        'Whether to package fixed local fixture requests for test builds.',
+      type: 'boolean',
+    },
+    networkPolicyExtensionId: {
+      description:
+        'The target signing ID for packaged network rules outside the Chrome Web Store.',
+      type: 'string',
+      pattern: '^[a-p]{32}$',
+      minLength: 32,
+      maxLength: 32,
+    },
     setBuildId: {
       description:
         'Whether to set a build ID in the emitted manifest. The build ID is a hash of the build contents that can be used to identify the build and detect when it has changed.',

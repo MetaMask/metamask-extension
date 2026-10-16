@@ -20,6 +20,7 @@ import {
   updateNetwork,
 } from '../../../store/actions';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { submitRequestToBackground } from '../../../store/background-connection';
 import { NetworksForm } from './networks-form';
 
 const mockTrackEvent = jest.fn();
@@ -49,6 +50,13 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
+    if (method === 'validateRpcEndpoint') {
+      const chainIdsByUrl = {
+        'https://bsc-dataseed.binance.org/': '0x38',
+        'https://rpc.flashbots.net/': '0x1',
+      };
+      return Promise.resolve(chainIdsByUrl[args[0]]);
+    }
     if (method === 'isPublicEndpointUrl') {
       const url = args[0];
       // Return true for Infura URLs, false for everything else
@@ -175,23 +183,22 @@ describe('NetworkForm Component', () => {
           chainId: 137,
         },
       ]);
-
-    nock('https://bsc-dataseed.binance.org:443', {
-      encodedQueryParams: true,
-    })
-      .post('/')
-      .reply(200, { jsonrpc: '2.0', result: '0x38' });
-
-    nock('https://rpc.flashbots.net:443', {
-      encodedQueryParams: true,
-    })
-      .post('/')
-      .reply(200, { jsonrpc: '2.0', result: '0x1' });
   });
 
   afterEach(() => {
     nock.cleanAll();
     delete process.env.QUICKNODE_BSC_URL;
+  });
+
+  it('validates the selected RPC endpoint through the background', async () => {
+    renderComponent(propNetworkDisplay);
+
+    await waitFor(() => {
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'validateRpcEndpoint',
+        ['https://mainnet.infura.io/v3/'],
+      );
+    });
   });
 
   it('should render add new network form correctly', async () => {
@@ -487,9 +494,11 @@ describe('NetworkForm Component', () => {
       },
     });
 
-    expect(
-      await screen.queryByTestId('network-form-ticker-suggestion'),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('network-form-ticker-suggestion'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('warns when the chain id is already saved', () => {

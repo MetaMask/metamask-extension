@@ -6,16 +6,35 @@ import {
 
 export const CHAIN_ID_MOCK = '0x123';
 
+type ControllerInitRequest = Omit<
+  MessengerClientInitRequest<
+    BaseRestrictedControllerMessenger,
+    BaseRestrictedControllerMessenger
+  >,
+  'controllerMessenger' | 'initMessenger'
+>;
+
 export function buildControllerInitRequestMock(): jest.Mocked<
-  Omit<
-    MessengerClientInitRequest<
-      BaseRestrictedControllerMessenger,
-      BaseRestrictedControllerMessenger
-    >,
-    'controllerMessenger' | 'initMessenger'
-  >
+  ControllerInitRequest &
+    Required<
+      Pick<
+        ControllerInitRequest,
+        'networkPolicy' | 'socialOnboardingNetworkPolicy'
+      >
+    >
 > {
   return {
+    networkPolicy: {
+      update: jest.fn().mockResolvedValue(undefined),
+      allowRpcValidation: jest
+        .fn()
+        .mockResolvedValue(jest.fn().mockResolvedValue(undefined)),
+    },
+    socialOnboardingNetworkPolicy: {
+      beginSocialOnboarding: jest.fn().mockResolvedValue(undefined),
+      endSocialOnboarding: jest.fn().mockResolvedValue(undefined),
+    },
+    applyNetworkPolicyDomains: jest.fn(async (_domains, commit) => commit()),
     currentMigrationVersion: 0,
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     // @ts-expect-error: Partial mock.

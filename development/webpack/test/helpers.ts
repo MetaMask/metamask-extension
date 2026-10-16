@@ -115,9 +115,11 @@ export function mockWebpack(
           await fn(compilation.assets);
           done();
         },
-        tap(_: unknown, fn: (assets: Assets) => void) {
+        tap(options: { stage?: number }, fn: (assets: Assets) => void) {
           fn(compilation.assets);
-          done();
+          // ManifestPlugin's REPORT-stage guards run before its final Infinity
+          // move/zip hook. A guard must not resolve async packaging early.
+          if (options.stage === Infinity) done();
         },
       },
     },
