@@ -188,7 +188,7 @@ Once you have your test build ready, choose the browser for your e2e tests:
   - Note: If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
 - For Chrome, run `yarn test:e2e:chrome`.
 
-These scripts support additional options for debugging. Use `--help`to see all available options.
+These scripts support additional options for debugging. Use `--help` to see all available options.
 
 Specs that have been migrated from Selenium to Playwright (`*.pw.spec.ts`, see [test/e2e/playwright/README.md](test/e2e/playwright/README.md)) run through their own runner:
 
