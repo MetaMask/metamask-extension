@@ -11,9 +11,11 @@
  * --current <path-to-benchmark-json-directory>
  *
  * Exit codes:
- * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold
- * 1 — at least one allowlisted metric exceeded its fail threshold;
- * non-allowlisted breaches are degraded to warnings and do not block
+ * 0 — no allowlisted (GATED_METRICS) metric exceeded its fail threshold, and
+ * every allowlisted metric of each entry present produced a value
+ * 1 — at least one allowlisted metric exceeded its fail threshold, or produced
+ * no value in an entry the artifact contains; non-allowlisted breaches are
+ * degraded to warnings and do not block
  * 2 — usage error or fatal crash
  */
 
@@ -21,7 +23,10 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { parseArgs } from 'util';
 
-import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
+import {
+  BENCHMARK_PLATFORMS,
+  THRESHOLD_SEVERITY,
+} from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
   ComparisonKey,
@@ -74,6 +79,83 @@ export async function loadCurrentBenchmarks(
 async function loadBaseline(): Promise<HistoricalBaselineReference> {
   const result = await fetchHistoricalPerformanceDataFromMain();
   return result?.baseline ?? {};
+}
+
+/**
+ * Whether the browser recorded a web vital as unsupported in every iteration.
+ *
+ * The collector writes a web vital as `null` when its observer did not fire,
+ * which on Firefox is how `cls` appears: `LayoutShift` is not implemented there.
+ * A null on Chrome is not that. Chrome supports every web vital the suite
+ * collects, so a null there means collection failed, and it stays a failure.
+ *
+ * @param artifactName - Artifact filename without extension.
+ * @param results - The benchmark entry.
+ * @param metricId - The metric to check.
+ * @returns True when every recorded iteration holds `null` for the metric.
+ */
+function isUnsupportedByBrowser(
+  artifactName: string,
+  results: BenchmarkResults,
+  metricId: string,
+): boolean {
+  if (parseArtifactName(artifactName)?.browser === BENCHMARK_PLATFORMS.CHROME) {
+    return false;
+  }
+  const runs = results.webVitals?.runs ?? [];
+  return (
+    runs.length > 0 &&
+    runs.every(
+      (run) =>
+        metricId in run && (run as Record<string, unknown>)[metricId] === null,
+    )
+  );
+}
+
+/**
+ * Gated metrics that a benchmark entry should carry and does not.
+ *
+ * `runComparison` iterates what the artifact contains, so a gated metric the
+ * artifact lacks is never compared, never breaches a threshold, and lets the
+ * gate exit 0. The check is scoped per entry because `GATED_METRICS` spans every
+ * preset: a gated `swap.*` metric is required only where the artifact has a
+ * `swap` entry.
+ *
+ * It runs on loaded artifacts rather than inside `runComparison`, whose unit
+ * test fixtures carry one metric per entry and would all read as incomplete.
+ *
+ * @param benchmarks - The loaded benchmark artifacts.
+ * @returns `missing`: gated metrics with no value. `unsupported`: gated web
+ * vitals the browser recorded as unsupported in every iteration, which are
+ * reported and do not fail. Both as `<artifact>:<benchmark>.<metricId>`.
+ */
+export function findMissingGatedMetrics(benchmarks: LoadedBenchmark[]): {
+  missing: string[];
+  unsupported: string[];
+} {
+  const missing: string[] = [];
+  const unsupported: string[] = [];
+  for (const { name, data } of benchmarks) {
+    for (const [entryName, results] of Object.entries(data)) {
+      const prefix = `${entryName}.`;
+      for (const key of GATED_METRICS) {
+        if (!key.startsWith(prefix)) {
+          continue;
+        }
+        const metricId = key.slice(prefix.length);
+        if (results.p75?.[metricId] !== undefined) {
+          continue;
+        }
+        const label = `${name}:${entryName}.${metricId}`;
+        if (isUnsupportedByBrowser(name, results, metricId)) {
+          unsupported.push(label);
+        } else {
+          missing.push(label);
+        }
+      }
+    }
+  }
+  return { missing, unsupported };
 }
 
 /**
@@ -419,7 +501,24 @@ async function main(): Promise<void> {
   const result = runComparison(benchmarks, baseline);
   printReport(result);
 
-  process.exit(result.anyFailed ? 1 : 0);
+  // A gated metric missing from the artifact was never compared above, so without
+  // this check it could not fail the run.
+  const { missing, unsupported } = findMissingGatedMetrics(benchmarks);
+  for (const key of unsupported) {
+    console.log(`n/a  ${key}: not supported by this browser`);
+  }
+  if (missing.length > 0) {
+    console.log('\n───────────────────────────────────────');
+    console.error(
+      `FAIL: ${missing.length} gated metric(s) produced no value. ` +
+        `A gated metric that is absent is a failure, not a pass.`,
+    );
+    for (const key of missing) {
+      console.error(`      missing: ${key}`);
+    }
+  }
+
+  process.exit(result.anyFailed || missing.length > 0 ? 1 : 0);
 }
 
 if (require.main === module) {
