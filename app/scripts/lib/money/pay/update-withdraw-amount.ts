@@ -1,6 +1,7 @@
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
+import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
@@ -27,6 +28,18 @@ export type WithdrawPaymentToken = {
   chainId: Hex;
 };
 
+/**
+ * How Pay routes a withdrawal to its recipient.
+ */
+export type WithdrawRoute = {
+  /** Whether the recipient only receives the output and never signs. */
+  isRecipientOnly?: boolean;
+  /** Selected Pay receive token, if any. */
+  paymentToken?: WithdrawPaymentToken;
+};
+
+const HARDWARE_KEYRING_TYPES: string[] = Object.values(HardwareKeyringType);
+
 const LOG_TAG = '[Money Account]';
 
 /**
@@ -35,9 +48,9 @@ const LOG_TAG = '[Money Account]';
  * the redeemed mUSD (typically the Pay account override or, when unset, the
  * currently selected EVM account). Superseded intents resolve `false`.
  *
- * A quoted withdrawal is bridged by the money account, so the transfer then
- * keeps the mUSD on the money account and Pay sends the output to the
- * recipient. The recipient never signs.
+ * When the recipient only receives (see `isHardwareWithdrawRecipient`), a
+ * quoted withdrawal is bridged by the money account, so the transfer keeps
+ * the mUSD on the money account and Pay sends the output to the recipient.
  *
  * Confirm patches the returned hexes onto the approval clone because the UI
  * bridge can strip nested calldata from the store copy.
@@ -46,7 +59,7 @@ const LOG_TAG = '[Money Account]';
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable mUSD amount.
  * @param recipientOverride - Address that receives the redeemed mUSD, if set.
- * @param paymentToken - Selected Pay receive token, if any.
+ * @param route - How Pay routes the withdrawal to the recipient.
  * @returns Encoded nested calldata, or `false` when this intent did not commit.
  */
 export async function updateMoneyAccountWithdrawAmount(
@@ -54,7 +67,7 @@ export async function updateMoneyAccountWithdrawAmount(
   transactionId: string,
   amountHuman: string,
   recipientOverride?: Hex,
-  paymentToken?: WithdrawPaymentToken,
+  route?: WithdrawRoute,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   pruneStaleAmountCommits(messenger);
 
@@ -71,28 +84,49 @@ export async function updateMoneyAccountWithdrawAmount(
   return await commitWithdrawAmount({
     amountRaw,
     messenger,
-    paymentToken,
     recipientOverride,
+    route,
     transaction,
   });
 }
 
 /**
- * Re-encodes an already funded withdrawal when the receive token changes
- * whether it is quoted, so the transfer target matches the new route. Leaves
- * placeholder or unchanged batches alone.
+ * Whether a withdrawal recipient should only receive the output. Hardware and
+ * QR accounts need a device to sign, so the money account signs instead.
+ *
+ * @param messenger - Messenger used to look up the recipient account.
+ * @param recipient - Account that receives the withdrawal.
+ * @returns Whether the recipient is a hardware or QR account.
+ */
+export function isHardwareWithdrawRecipient(
+  messenger: MoneyPayMessenger,
+  recipient: string,
+): boolean {
+  const account = messenger.call(
+    'AccountsController:getAccountByAddress',
+    recipient,
+  );
+  return HARDWARE_KEYRING_TYPES.includes(
+    account?.metadata?.keyring?.type ?? '',
+  );
+}
+
+/**
+ * Re-encodes an already funded withdrawal when the route changes the transfer
+ * target (a new receive token or recipient). Leaves placeholder or unchanged
+ * batches alone.
  *
  * @param messenger - Messenger used to encode and commit.
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param recipientOverride - Address that receives the redeemed mUSD, if set.
- * @param paymentToken - Selected Pay receive token, if any.
+ * @param route - How Pay routes the withdrawal to the recipient.
  * @returns Whether the transfer was re-encoded.
  */
 export async function syncMoneyAccountWithdrawTransfer(
   messenger: MoneyPayMessenger,
   transactionId: string,
   recipientOverride?: Hex,
-  paymentToken?: WithdrawPaymentToken,
+  route?: WithdrawRoute,
 ): Promise<boolean> {
   const transaction = getTransactionMeta(messenger, transactionId);
   if (getMoneyAccountFlow(transaction) !== MoneyAccountFlow.Withdraw) {
@@ -109,8 +143,8 @@ export async function syncMoneyAccountWithdrawTransfer(
   const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
   const target = getTransferTarget({
     moneyAccountAddress: context.moneyAccountAddress,
-    paymentToken,
     recipient,
+    route,
     transaction,
   });
 
@@ -121,8 +155,8 @@ export async function syncMoneyAccountWithdrawTransfer(
   const result = await commitWithdrawAmount({
     amountRaw: transfer.amountRaw,
     messenger,
-    paymentToken,
     recipientOverride,
+    route,
     transaction,
   });
 
@@ -132,14 +166,14 @@ export async function syncMoneyAccountWithdrawTransfer(
 async function commitWithdrawAmount({
   amountRaw,
   messenger,
-  paymentToken,
   recipientOverride,
+  route,
   transaction,
 }: {
   amountRaw: bigint;
   messenger: MoneyPayMessenger;
-  paymentToken?: WithdrawPaymentToken;
   recipientOverride?: Hex;
+  route?: WithdrawRoute;
   transaction: TransactionMeta;
 }): Promise<MoneyAccountWithdrawAmountUpdate | false> {
   const { id: transactionId } = transaction;
@@ -150,8 +184,8 @@ async function commitWithdrawAmount({
     const updates = await encodeWithdrawCalldata({
       amount: amountRaw,
       messenger,
-      paymentToken,
       recipient,
+      route,
       transaction,
     });
 
@@ -210,29 +244,30 @@ function resolveWithdrawRecipient(
 }
 
 /**
- * Picks the nested transfer target. Only a same-chain mUSD receive token is
- * paid out directly. Any other token is quoted and bridged from the money
- * account, so the mUSD must stay there.
+ * Picks the nested transfer target. A recipient that only receives is paid
+ * directly for a same-chain mUSD receive token. Any other token is quoted and
+ * bridged from the money account, so the mUSD must stay there.
  *
  * @param options - Options bag.
  * @param options.moneyAccountAddress - Money account that sends the batch.
- * @param options.paymentToken - Selected Pay receive token, if any.
  * @param options.recipient - Account that receives the withdrawal.
+ * @param options.route - How Pay routes the withdrawal to the recipient.
  * @param options.transaction - The withdrawal transaction.
  * @returns The address the nested mUSD transfer pays.
  */
 function getTransferTarget({
   moneyAccountAddress,
-  paymentToken,
   recipient,
+  route,
   transaction,
 }: {
   moneyAccountAddress: Hex;
-  paymentToken?: WithdrawPaymentToken;
   recipient: Hex;
+  route?: WithdrawRoute;
   transaction: TransactionMeta;
 }): Hex {
-  if (!paymentToken) {
+  const paymentToken = route?.paymentToken;
+  if (!route?.isRecipientOnly || !paymentToken) {
     return recipient;
   }
 
@@ -277,22 +312,22 @@ function getTransfer(
  * @param options - Options bag.
  * @param options.amount - Withdrawal amount in mUSD base units.
  * @param options.messenger - Messenger used to resolve vault context.
- * @param options.paymentToken - Selected Pay receive token, if any.
  * @param options.recipient - Account that receives the withdrawal.
+ * @param options.route - How Pay routes the withdrawal to the recipient.
  * @param options.transaction - The withdrawal transaction.
  * @returns Nested calldata updates for the withdraw and transfer calls.
  */
 async function encodeWithdrawCalldata({
   amount,
   messenger,
-  paymentToken,
   recipient,
+  route,
   transaction,
 }: {
   amount: bigint;
   messenger: MoneyPayMessenger;
-  paymentToken?: WithdrawPaymentToken;
   recipient: Hex;
+  route?: WithdrawRoute;
   transaction: TransactionMeta;
 }): Promise<
   {
@@ -314,8 +349,8 @@ async function encodeWithdrawCalldata({
     moneyAccountAddress,
     recipient: getTransferTarget({
       moneyAccountAddress,
-      paymentToken,
       recipient,
+      route,
       transaction,
     }),
     provider,
