@@ -1,3 +1,7 @@
+import {
+  AddressScanResultType,
+  type AddressScanResult,
+} from '@metamask/phishing-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SolMethod } from '@metamask/keyring-api';
 import { base58 } from 'ethers/lib/utils';
@@ -155,6 +159,71 @@ const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
   [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
   [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };
+
+const addressScanErrorResult: AddressScanResult = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  result_type: AddressScanResultType.ErrorResult,
+  label: '',
+};
+
+export function isEvmAddressScanChainId(chainId: CaipChainId) {
+  try {
+    const { namespace } = parseCaipChainId(chainId);
+    if (namespace !== KnownCaipNamespace.Eip155) {
+      return false;
+    }
+    return convertChainIdToBlockAidChainName(chainId) !== null;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchEvmAddressScan(
+  chainId: CaipChainId,
+  address: string,
+): Promise<AddressScanResult> {
+  if (
+    !isSecurityAlertsAPIEnabled() ||
+    !address ||
+    !isEvmAddressScanChainId(chainId)
+  ) {
+    return addressScanErrorResult;
+  }
+
+  const chain = convertChainIdToBlockAidChainName(chainId);
+
+  if (!chain) {
+    return addressScanErrorResult;
+  }
+
+  try {
+    const response = await fetch(getUrl('address/evm/scan'), {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chain,
+        address: address.toLowerCase(),
+      }),
+    });
+
+    if (!response.ok) {
+      return addressScanErrorResult;
+    }
+
+    const scanResult = (await response.json()) as AddressScanResult;
+
+    return {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      result_type: scanResult.result_type,
+      label: scanResult.label ?? '',
+    };
+  } catch {
+    return addressScanErrorResult;
+  }
+}
 
 export function convertChainIdToBlockAidChainName(
   chainId: CaipChainId,

@@ -54,6 +54,12 @@ jest.mock('../../../hooks/useGetDisplayName', () => ({
   useGetDisplayName: jest.fn(() => mockGetDisplayName),
 }));
 
+const mockResolveAddressLabel = jest.fn((_params: unknown): string => '');
+
+jest.mock('../../../hooks/useResolveAddressLabel', () => ({
+  useResolveAddressLabel: () => mockResolveAddressLabel,
+}));
+
 const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
   typeof useGetDisplayName
 >;
@@ -87,6 +93,7 @@ describe('useActivityRowContent', () => {
       address ? '0x11111...11111' : '',
     );
     mockUseGetDisplayName.mockReturnValue(mockGetDisplayName);
+    mockResolveAddressLabel.mockReturnValue('');
   });
 
   it('derives the activation title and subtitle from the token symbol', () => {
@@ -352,6 +359,70 @@ describe('useActivityRowContent', () => {
     expect(result.current.subtitle).toBe(
       'activity_receive_success_description|Bob',
     );
+  });
+
+  describe('resolved contract names', () => {
+    const contractAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    const buildContractActivity = () =>
+      ({
+        type: 'contractInteraction',
+        chainId: 'eip155:42161',
+        status: 'success',
+        timestamp: 1,
+        hash: '0xabc',
+        data: {
+          from: '0x2222222222222222222222222222222222222222',
+          to: contractAddress,
+        },
+      }) as ActivityListItem;
+
+    it('uses the resolved name in contract interaction subtitles', () => {
+      mockResolveAddressLabel.mockReturnValue('MetaMask Swaps');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildContractActivity()),
+      );
+
+      expect(mockResolveAddressLabel).toHaveBeenCalledWith({
+        address: contractAddress,
+        chainId: 'eip155:42161',
+      });
+      expect(result.current.subtitle).toBe(
+        'activity_contractInteraction_success_description|MetaMask Swaps',
+      );
+    });
+
+    it('falls back to the shortened address when nothing resolves', () => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(buildContractActivity()),
+      );
+
+      expect(result.current.subtitle).toBe(
+        'activity_contractInteraction_success_description|0xc42ed...d8813',
+      );
+    });
+
+    it('uses the resolved name in send subtitles', () => {
+      mockResolveAddressLabel.mockReturnValue('Relay');
+
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent({
+          type: 'send',
+          chainId: 'eip155:1',
+          status: 'success',
+          timestamp: 1,
+          hash: '0xabc',
+          data: {
+            from: '0x2222222222222222222222222222222222222222',
+            to: contractAddress,
+          },
+        } as ActivityListItem),
+      );
+
+      expect(result.current.subtitle).toBe(
+        'activity_send_success_description|Relay',
+      );
+    });
   });
 
   describe('money account rows', () => {

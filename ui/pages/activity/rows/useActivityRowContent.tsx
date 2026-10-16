@@ -16,6 +16,7 @@ import { ActivityAvatar } from '../../../components/app/activity-list-item-avata
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
+import { useResolveAddressLabel } from '../../../hooks/useResolveAddressLabel';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -113,6 +114,7 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
   const { chainId } = getChainDisplay(activity.chainId);
   const formatAsFiat = useFormatAsFiat(chainId);
   const formatDisplayName = useGetDisplayName();
+  const resolveAddressLabel = useResolveAddressLabel();
   const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
@@ -125,12 +127,13 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
         const { token, from, to } = activity.data;
         const address = activity.type === 'receive' ? from : to;
         const symbol = token?.symbol ?? '';
-
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [symbol]),
           subtitle: t(labelKeys.description.key, [
-            formatDisplayName(address) || t('unknown'),
+            resolveAddressLabel({ address, chainId: activity.chainId }) ||
+              formatDisplayName(address) ||
+              t('unknown'),
           ]),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
@@ -364,7 +367,9 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key),
           subtitle: t(labelKeys.description.key, [
-            shortenAddress(to) || 'Contract',
+            resolveAddressLabel({ address: to, chainId: activity.chainId }) ||
+              shortenAddress(to) ||
+              'Contract',
           ]),
           primaryAmount: formatTokenAmount(token),
           primaryDirection: token?.direction,
