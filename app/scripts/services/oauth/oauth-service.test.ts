@@ -15,11 +15,8 @@ import { ENVIRONMENT } from '../../../../shared/constants/build';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import ExtensionPlatform from '../../platforms/extension';
-import {
-  getOAuthTraceTags,
-  OAuthServiceMessenger,
-  WebAuthenticator,
-} from './types';
+import { OAuthServiceMessenger, WebAuthenticator } from './types';
+import { getOAuthTraceTags } from './utils';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';

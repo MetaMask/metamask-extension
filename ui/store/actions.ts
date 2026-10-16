@@ -222,10 +222,8 @@ import {
 } from '../../shared/types';
 
 /* eslint-disable import-x/no-restricted-paths */
-import {
-  getOAuthTraceTags,
-  OAuthLoginResult,
-} from '../../app/scripts/services/oauth/types';
+import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { getOAuthTraceTags } from '../../app/scripts/services/oauth/utils';
 /* eslint-enable import-x/no-restricted-paths */
 import { isHardwareAccount as isUiHardwareAccount } from '../components/app/rewards/utils/isHardwareAccount';
 import { isHardwareAccount } from '../../shared/lib/accounts';

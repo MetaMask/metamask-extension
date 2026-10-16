@@ -29,29 +29,6 @@ export type OAuthTraceTags = {
   is_rehydration: OAuthTraceRehydrationValue;
 };
 
-/**
- * Build the shared dimensions for OAuth-related traces.
- *
- * @param authConnection - The OAuth provider used for the login.
- * @param isRehydration - Whether the login is rehydrating an existing wallet.
- * @returns The provider and rehydration trace dimensions.
- */
-export function getOAuthTraceTags(
-  authConnection: AuthConnection,
-  isRehydration: boolean | null,
-): OAuthTraceTags {
-  let rehydrationValue: OAuthTraceRehydrationValue = 'unknown';
-  if (isRehydration !== null) {
-    rehydrationValue = isRehydration ? 'true' : 'false';
-  }
-
-  return {
-    provider: authConnection,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    is_rehydration: rehydrationValue,
-  };
-}
-
 export type ServiceName = typeof SERVICE_NAME;
 
 export type {

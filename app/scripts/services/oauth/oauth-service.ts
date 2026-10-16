@@ -33,9 +33,9 @@ import {
   SERVICE_NAME,
   ServiceName,
   WebAuthenticator,
-  getOAuthTraceTags,
 } from './types';
 import { loadOAuthConfig } from './config';
+import { getOAuthTraceTags } from './utils';
 
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
@@ -575,9 +575,9 @@ export class OAuthService {
 
       let launchDispatched = false;
       // Synchronous dispatch errors are caught here. The provider response arrives through the callback.
-      try {
+      // prettier-ignore
+      try { // NOSONAR
         this.#webAuthenticator.launchWebAuthFlow(
-          // NOSONAR
           { interactive: true, url: authUrl },
           (responseUrl) => {
             if (!responseUrl) {
