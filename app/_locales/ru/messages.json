@@ -6241,9 +6241,6 @@
   "networkNameBitcoin": {
     "message": "Биткойн"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "Нативный SegWit биткойна"
-  },
   "networkNameDefinition": {
     "message": "Имя, связанное с этой сетью."
   },

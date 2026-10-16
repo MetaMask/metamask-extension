@@ -240,6 +240,40 @@ describe('Privacy Settings Onboarding View', () => {
       expect(setUse4ByteResolutionStub).not.toHaveBeenCalled();
     });
 
+    it('locks the Basic Functionality toggle on for social login', () => {
+      const socialLoginStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        },
+      });
+      const { getByTestId } = renderWithProvider(
+        <PrivacySettings />,
+        socialLoginStore,
+      );
+
+      fireEvent.click(getByTestId('category-item-General'));
+      const setting = getByTestId('basic-functionality-toggle');
+      const toggle = setting.querySelector('input[type=checkbox]');
+
+      expect(toggle).toHaveAttribute('value', 'true');
+      expect(setting.querySelector('.toggle-button--disabled')).not.toBeNull();
+
+      fireEvent.click(toggle as HTMLElement);
+
+      expect(mockOpenBasicFunctionalityModal).not.toHaveBeenCalled();
+    });
+
+    it('lets secret recovery phrase users change the Basic Functionality toggle', () => {
+      const { getByTestId } = renderWithProvider(<PrivacySettings />, store);
+
+      fireEvent.click(getByTestId('category-item-General'));
+      const setting = getByTestId('basic-functionality-toggle');
+
+      expect(setting.querySelector('.toggle-button--disabled')).toBeNull();
+    });
+
     it('keeps the security category for social-login MetaMetrics settings', () => {
       const updatedMockStore = configureMockStore([thunk])({
         ...mockStore,

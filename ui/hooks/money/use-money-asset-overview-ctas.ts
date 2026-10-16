@@ -1,0 +1,280 @@
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
+import type { Hex } from '@metamask/utils';
+import { captureException } from '../../../shared/lib/sentry';
+import type { TokenWithFiatAmount } from '../../components/app/assets/types';
+import { moneyFormatUsd } from '../../helpers/money/format';
+import {
+  MoneyButtonIntent,
+  MoneyButtonType,
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../pages/money/constants/money-events';
+import {
+  getMoneyTokenKey,
+  selectMoneyAssetOverviewBalanceCtaEnabled,
+  selectMoneyEarnBannerEnabled,
+} from '../../selectors/money/money-account-feature-flags';
+import { selectMoneyEarnBannerDismissedTokenKeys } from '../../selectors/money/persisted-state';
+import type { RouteMessenger } from '../../messengers/route-messenger';
+import { useMessenger } from '../useMessenger';
+import { useTrackOnce } from '../useTrackOnce';
+import { calculateMoneyProjectedEarnings } from './money-deposit-token-utils';
+import {
+  useMoneyDepositCtaEligibility,
+  type MoneyDepositCtaToken,
+} from './use-money-deposit-cta-eligibility';
+import { useMoneyAccountDeposit } from './useMoneyAccountDeposit';
+import { useMoneyAccountInfo } from './useMoneyAccountInfo';
+import { useMoneyAnalytics } from './useMoneyAnalytics';
+import { useMoneyVaultApy } from './useMoneyVaultApy';
+
+export const MONEY_EARN_BANNER_CTA_LABEL_KEY = 'moneyEarnBannerCta';
+export const MONEY_START_EARNING_LABEL_KEY = 'moneyStartEarning';
+
+type MoneyEarnBannerMessenger = RouteMessenger<
+  'AppStateController:addMoneyEarnBannerDismissedTokenKey',
+  never
+>;
+
+export type MoneyAssetOverviewToken = MoneyDepositCtaToken &
+  Pick<TokenWithFiatAmount, 'balance' | 'symbol'>;
+
+/**
+ * Shared eligibility, deposit, and analytics plumbing for one token details
+ * Money CTA surface.
+ *
+ * @param token - The token whose details page is shown.
+ * @param isFlagEnabled - The surface's own feature flag.
+ * @param componentName - The surface's analytics component name.
+ */
+function useMoneyAssetOverviewCta(
+  token: MoneyAssetOverviewToken,
+  isFlagEnabled: boolean,
+  componentName: MoneyComponentName,
+) {
+  const { hasMoneyAccount } = useMoneyAccountInfo();
+  const { getEligibleFiatAmountUsd } = useMoneyDepositCtaEligibility();
+  const fiatAmountUsd = getEligibleFiatAmountUsd(token);
+  const isEligible =
+    isFlagEnabled && hasMoneyAccount && fiatAmountUsd !== undefined;
+
+  const vaultApy = useMoneyVaultApy({ enabled: isEligible });
+  const { initiateDeposit, isLoading: isDepositLoading } =
+    useMoneyAccountDeposit();
+  const analytics = useMoneyAnalytics({
+    screenName: MoneyScreenName.AssetDetail,
+    componentName,
+  });
+
+  const tokenProperties = useMemo(
+    () => ({
+      tokenSymbol: token.symbol,
+      tokenChainId: token.chainId,
+      tokenPositionInList: 1,
+      tokensInList: 1,
+      tokenHasBalance: Number(token.balance) > 0,
+    }),
+    [token.balance, token.chainId, token.symbol],
+  );
+
+  const deposit = useCallback(() => {
+    initiateDeposit({
+      preferredPaymentToken: {
+        address: token.address as Hex,
+        chainId: token.chainId as Hex,
+      },
+    });
+  }, [initiateDeposit, token.address, token.chainId]);
+
+  return {
+    isEligible,
+    fiatAmountUsd,
+    vaultApy,
+    analytics,
+    tokenProperties,
+    deposit,
+    isDepositLoading,
+  };
+}
+
+/**
+ * The dismissible "Earn up to X% APY" banner on token details. Dismissal is
+ * persisted per token.
+ *
+ * @param token - The token whose details page is shown.
+ * @returns Visibility, the APY to show (if known), and click handlers.
+ */
+export function useMoneyEarnBanner(token: MoneyAssetOverviewToken) {
+  const messenger = useMessenger<MoneyEarnBannerMessenger>();
+  const isFlagEnabled = useSelector(selectMoneyEarnBannerEnabled);
+  const dismissedTokenKeys = useSelector(
+    selectMoneyEarnBannerDismissedTokenKeys,
+  );
+  const tokenKey = getMoneyTokenKey(token.chainId, token.address);
+  const isDismissed = dismissedTokenKeys.includes(tokenKey);
+  const {
+    isEligible,
+    vaultApy,
+    analytics,
+    tokenProperties,
+    deposit,
+    isDepositLoading,
+  } = useMoneyAssetOverviewCta(
+    token,
+    isFlagEnabled && !isDismissed,
+    MoneyComponentName.EarnBanner,
+  );
+  const { trackTokenButtonClicked, trackTokenSurfaceClicked } = analytics;
+
+  const onBannerClick = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
+    trackTokenSurfaceClicked({
+      ...tokenProperties,
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    deposit();
+  }, [deposit, isDepositLoading, tokenProperties, trackTokenSurfaceClicked]);
+
+  const onCtaClick = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
+    trackTokenButtonClicked({
+      ...tokenProperties,
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: MONEY_EARN_BANNER_CTA_LABEL_KEY,
+      labelSubstitutions: [token.symbol],
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    deposit();
+  }, [
+    deposit,
+    isDepositLoading,
+    token.symbol,
+    tokenProperties,
+    trackTokenButtonClicked,
+  ]);
+
+  const onDismiss = useCallback(() => {
+    trackTokenButtonClicked({
+      ...tokenProperties,
+      buttonType: MoneyButtonType.Icon,
+      buttonIntent: MoneyButtonIntent.Dismiss,
+    });
+    messenger
+      .call('AppStateController:addMoneyEarnBannerDismissedTokenKey', tokenKey)
+      .catch(captureException);
+  }, [messenger, tokenKey, tokenProperties, trackTokenButtonClicked]);
+
+  const { apyPercent, apyPercentFormatted } = vaultApy;
+
+  return {
+    isVisible: isEligible,
+    apyPercentFormatted:
+      apyPercent !== undefined && apyPercent > 0
+        ? apyPercentFormatted
+        : undefined,
+    onBannerClick,
+    onCtaClick,
+    onDismiss,
+  };
+}
+
+/**
+ * The Money earn CTA in the token details "Your balance" section: projected
+ * earnings, the APY on the balance row, and a "Start earning" button. Shown
+ * as loading until an APY is available, as the copy cannot be shown without
+ * it.
+ *
+ * @param token - The token whose details page is shown.
+ * @param options - Hook options.
+ * @param options.enabled - Whether the page is showing the "Your balance"
+ * section the CTA renders in.
+ * @returns The values to display (`undefined` when hidden or loading),
+ * whether the APY is loading, and handlers.
+ */
+export function useMoneyAssetOverviewBalanceCta(
+  token: MoneyAssetOverviewToken,
+  { enabled }: { enabled: boolean },
+) {
+  const isFlagEnabled = useSelector(selectMoneyAssetOverviewBalanceCtaEnabled);
+  const {
+    isEligible,
+    fiatAmountUsd,
+    vaultApy,
+    analytics,
+    tokenProperties,
+    deposit,
+    isDepositLoading,
+  } = useMoneyAssetOverviewCta(
+    token,
+    enabled && isFlagEnabled,
+    MoneyComponentName.AssetOverviewBalanceCta,
+  );
+  const { trackComponentViewed, trackTokenButtonClicked, trackTooltipClicked } =
+    analytics;
+  const { apyDecimal, apyPercent, apyPercentFormatted, vaultApyQuery } =
+    vaultApy;
+
+  const projectedEarningsFormatted = useMemo(
+    () =>
+      fiatAmountUsd === undefined || apyDecimal === undefined
+        ? undefined
+        : `+${moneyFormatUsd(
+            new BigNumber(
+              calculateMoneyProjectedEarnings(
+                fiatAmountUsd,
+                apyDecimal,
+              ).toString(),
+            ),
+          )}`,
+    [apyDecimal, fiatAmountUsd],
+  );
+
+  const onStartEarning = useCallback(() => {
+    if (isDepositLoading) {
+      return;
+    }
+    trackTokenButtonClicked({
+      ...tokenProperties,
+      buttonType: MoneyButtonType.Text,
+      buttonIntent: MoneyButtonIntent.AddMoney,
+      labelKey: MONEY_START_EARNING_LABEL_KEY,
+      redirectTarget: MoneyScreenName.MoneyDeposit,
+    });
+    deposit();
+  }, [deposit, isDepositLoading, tokenProperties, trackTokenButtonClicked]);
+
+  const onProjectionTooltipOpen = useCallback(() => {
+    trackTooltipClicked({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  }, [trackTooltipClicked]);
+
+  const display = useMemo(
+    () =>
+      isEligible &&
+      apyPercent !== undefined &&
+      apyPercent > 0 &&
+      apyPercentFormatted !== undefined &&
+      projectedEarningsFormatted !== undefined
+        ? { apyPercent, apyPercentFormatted, projectedEarningsFormatted }
+        : undefined,
+    [apyPercent, apyPercentFormatted, isEligible, projectedEarningsFormatted],
+  );
+
+  useTrackOnce(display !== undefined, trackComponentViewed);
+
+  const isLoading =
+    isEligible && display === undefined && vaultApyQuery.isLoading;
+
+  return { display, isLoading, onStartEarning, onProjectionTooltipOpen };
+}

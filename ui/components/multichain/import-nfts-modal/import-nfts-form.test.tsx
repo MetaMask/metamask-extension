@@ -64,6 +64,14 @@ jest.mock('../../ui/toast/toast', () => ({
   ToastContent: ({ title }: { title: React.ReactNode }) => title,
 }));
 
+const mockGetIsBasicFunctionalityConsolidationEnabled = jest.fn(() => false);
+
+jest.mock('../../../selectors/multichain/feature-flags', () => ({
+  ...jest.requireActual('../../../selectors/multichain/feature-flags'),
+  getIsBasicFunctionalityConsolidationEnabled: () =>
+    mockGetIsBasicFunctionalityConsolidationEnabled(),
+}));
+
 const mockAddNftVerifyOwnership = jest.mocked(addNftVerifyOwnership);
 
 const mockUseNavigate = jest.fn();
@@ -82,6 +90,85 @@ describe('ImportNftsPage', () => {
     store = configureMockStore([thunk])(mockStateWithTestNetworks);
     mockToastSuccess.mockClear();
     mockToastError.mockClear();
+    mockGetIsBasicFunctionalityConsolidationEnabled.mockReturnValue(false);
+  });
+
+  describe('NFT detection notice', () => {
+    const createStoreWithPreferences = ({
+      useExternalServices,
+      openSeaEnabled,
+    }: {
+      useExternalServices: boolean;
+      openSeaEnabled: boolean;
+    }) =>
+      configureMockStore([thunk])({
+        ...mockStateWithTestNetworks,
+        metamask: {
+          ...mockStateWithTestNetworks.metamask,
+          useExternalServices,
+          openSeaEnabled,
+        },
+      });
+
+    it('shows the notice on any network when basic functionality is off', () => {
+      mockGetIsBasicFunctionalityConsolidationEnabled.mockReturnValue(true);
+      store = createStoreWithPreferences({
+        useExternalServices: false,
+        openSeaEnabled: true,
+      });
+
+      renderWithProvider(<ImportNftsPage />, store);
+
+      expect(
+        screen.getByRole('button', {
+          name: messages.turnOnBasicFunctionality.message,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it('hides the notice when basic functionality is on', () => {
+      mockGetIsBasicFunctionalityConsolidationEnabled.mockReturnValue(true);
+      store = createStoreWithPreferences({
+        useExternalServices: true,
+        openSeaEnabled: false,
+      });
+
+      renderWithProvider(<ImportNftsPage />, store);
+
+      expect(
+        screen.queryByRole('button', {
+          name: messages.turnOnBasicFunctionality.message,
+        }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the legacy notice when Ethereum is picked in the form even if the wallet is on another network', () => {
+      store = createStoreWithPreferences({
+        useExternalServices: true,
+        openSeaEnabled: false,
+      });
+
+      renderWithProvider(<ImportNftsPage />, store);
+
+      expect(
+        screen.queryByText(
+          messages.selectEnableDisplayMediaPrivacyPreference.message,
+        ),
+      ).not.toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByTestId('test-import-tokens-drop-down-custom-import'),
+      );
+      fireEvent.click(
+        screen.getByTestId(`network-list-item-${CHAIN_IDS.MAINNET}`),
+      );
+
+      expect(
+        screen.getByText(
+          messages.selectEnableDisplayMediaPrivacyPreference.message,
+        ),
+      ).toBeInTheDocument();
+    });
   });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
