@@ -23,6 +23,7 @@ export enum TraceName {
   AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BackgroundPoll = 'Background Poll',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
   ConnectPage = 'Connect Page',
@@ -469,6 +470,31 @@ function finalizeOnboardingMachineTime(span?: Span | null): void {
   }
 
   onboardingMachineTimeByKey = new Map();
+}
+
+/**
+ * Run one background polling cycle in its own root trace, so periodic work
+ * does not accumulate under the long-lived service-worker pageload trace.
+ *
+ * @param controllerName - The polling controller, recorded as the `controller` tag.
+ * @param fn - The polling cycle to trace.
+ * @returns The result of the polling cycle.
+ */
+export function traceBackgroundPoll<ResultType>(
+  controllerName: string,
+  fn: () => ResultType,
+): ResultType {
+  return trace(
+    {
+      name: TraceName.BackgroundPoll,
+      op: 'background.poll',
+      tags: {
+        controller: controllerName,
+      },
+      root: true,
+    },
+    fn,
+  );
 }
 
 /**

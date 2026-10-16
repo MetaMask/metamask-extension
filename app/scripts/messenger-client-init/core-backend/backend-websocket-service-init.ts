@@ -5,7 +5,7 @@ import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/core-backend';
-import { trace } from '../../../../shared/lib/trace';
+import { trace, TraceRequest } from '../../../../shared/lib/trace';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 /**
@@ -53,7 +53,10 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
       'wss://gateway.api.cx.metamask.io/v1',
     // Inject the Sentry-backed trace function from extension platform
     // @ts-expect-error: Types of `TraceRequest` are not the same.
-    traceFn: trace,
+    traceFn: (request, fn) => {
+      const rootRequest = { ...request, root: true } as TraceRequest;
+      return fn ? trace(rootRequest, fn) : trace(rootRequest);
+    },
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
