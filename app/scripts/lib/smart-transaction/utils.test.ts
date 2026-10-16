@@ -47,7 +47,9 @@ describe('toAccountHardwareType', () => {
     expect(toAccountHardwareType('Ledger Hardware')).toBe('Ledger');
   });
 
-  it.each([undefined, '', 'OneKey Hardware', 'Ledger'])('omits %s', (label) => {
-    expect(toAccountHardwareType(label)).toBeUndefined();
+  it('omits labels that are not known keyring types', () => {
+    for (const label of [undefined, '', 'OneKey Hardware', 'Ledger']) {
+      expect(toAccountHardwareType(label)).toBeUndefined();
+    }
   });
 });
