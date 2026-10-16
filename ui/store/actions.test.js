@@ -38,6 +38,7 @@ import {
 } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
 import { createMockNotificationPreferences } from '../hooks/metamask-notifications/mocks';
+import * as actionConstants from './actionConstants';
 import * as actions from './actions';
 import { setBackgroundConnection } from './background-connection';
 import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
