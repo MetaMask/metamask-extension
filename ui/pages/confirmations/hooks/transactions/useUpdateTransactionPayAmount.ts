@@ -24,14 +24,24 @@ export function useUpdateTransactionPayAmount() {
   const updateTransactionPayAmount = useCallback(
     (amountHuman: string) => {
       if (transactionType === TransactionType.moneyAccountDeposit) {
-        return updateMoneyAccountDepositAmount(transactionId, amountHuman);
+        return updateMoneyAccountDepositAmount(
+          transactionId,
+          amountHuman,
+        ).catch((error) => {
+          console.error('Failed to update money account deposit amount', error);
+        });
       }
       if (transactionType === TransactionType.moneyAccountWithdraw) {
         return updateMoneyAccountWithdrawAmount(
           transactionId,
           amountHuman,
           accountOverride,
-        );
+        ).catch((error) => {
+          console.error(
+            'Failed to update money account withdrawal amount',
+            error,
+          );
+        });
       }
       return updateTokenAmount(amountHuman);
     },

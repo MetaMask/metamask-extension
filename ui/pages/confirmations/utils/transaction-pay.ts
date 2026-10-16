@@ -15,6 +15,10 @@ import {
   hasTransactionType,
   isPostQuoteWithdrawTransaction,
 } from '../../../../shared/lib/transactions.utils';
+import {
+  getMoneyAccountFlow,
+  MoneyAccountFlow,
+} from '../../../../shared/lib/money/money-account-flow';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -289,12 +293,7 @@ export function isTokenBlocked(
 export function getSupportedTransactionType(
   transactionMeta: TransactionMeta | undefined,
 ): TransactionType | undefined {
-  if (
-    hasTransactionType(transactionMeta, [
-      TransactionType.moneyAccountDeposit,
-      TransactionType.moneyAccountWithdraw,
-    ])
-  ) {
+  if (getMoneyAccountFlow(transactionMeta) !== MoneyAccountFlow.None) {
     return transactionMeta?.transactionType;
   }
 
@@ -303,4 +302,25 @@ export function getSupportedTransactionType(
   }
 
   return undefined;
+}
+
+export function applyMoneyAccountOverride(
+  transactionId: string,
+  moneyAddress: Hex,
+  transactionMeta: TransactionMeta,
+): void {
+  const isWithdrawLike = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
+  ]);
+
+  setPaymentOverride(transactionId, {
+    paymentOverride: PaymentOverride.MoneyAccount,
+    ...(isWithdrawLike ? { atomic: false } : { refundTo: moneyAddress }),
+  });
+}
+
+export function clearPaymentOverride(transactionId: string): void {
+  setPaymentOverride(transactionId, {
+    paymentOverride: undefined,
+  });
 }
