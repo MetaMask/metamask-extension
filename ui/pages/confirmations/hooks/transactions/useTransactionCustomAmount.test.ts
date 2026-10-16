@@ -27,7 +27,7 @@ import {
   MAX_LENGTH,
 } from './useTransactionCustomAmount';
 import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
-import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
+import * as useUpdateTransactionPayAmountModule from './useUpdateTransactionPayAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
 jest.mock('../tokens/useTokenFiatRates');
@@ -42,7 +42,7 @@ jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   })),
 }));
 jest.mock('./useDepositPrefill');
-jest.mock('./useUpdateTokenAmount');
+jest.mock('./useUpdateTransactionPayAmount');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
@@ -193,10 +193,12 @@ function runHook({
       isLiveBalance: livePayTokenBalanceRaw !== undefined,
       isBalanceUsdKnown: Number(payTokenBalanceUsd) > 0,
     });
-  jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
-    updateTokenAmount: updateTokenAmountMock,
-    isUpdating: false,
-  });
+  jest
+    .mocked(useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount)
+    .mockReturnValue({
+      updateTokenAmount: updateTokenAmountMock,
+      isUpdating: false,
+    });
   useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
@@ -2278,7 +2280,9 @@ describe('useTransactionCustomAmount', () => {
       // by creating a new mock and rerendering
       const newUpdateTokenAmountMock = jest.fn();
       jest
-        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mocked(
+          useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount,
+        )
         .mockReturnValue({
           updateTokenAmount: newUpdateTokenAmountMock,
           isUpdating: false,
@@ -2319,7 +2323,9 @@ describe('useTransactionCustomAmount', () => {
       for (let i = 0; i < 5; i++) {
         const newMock = jest.fn();
         jest
-          .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+          .mocked(
+            useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount,
+          )
           .mockReturnValue({
             updateTokenAmount: newMock,
             isUpdating: false,

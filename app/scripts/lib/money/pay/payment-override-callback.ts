@@ -15,7 +15,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import { getDelegationTransaction } from '../../transaction/delegation';
-import { parseMusdHumanAmount } from './amount-commit';
+import { parseMusdHumanAmount } from '../../confirmations/utils/pay-amount-commit';
 import {
   getMoneyPayContext,
   type PaymentOverrideMessenger,

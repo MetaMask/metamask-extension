@@ -8,7 +8,7 @@ import {
   getTransactionMeta,
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
-} from './amount-commit';
+} from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
 export type { MoneyAccountWithdrawAmountUpdate };

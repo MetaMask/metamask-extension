@@ -15,7 +15,7 @@ import {
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
   toMusdAmountHex,
-} from './amount-commit';
+} from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
 const LOG_TAG = '[Money Account]';

@@ -52,7 +52,7 @@ import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
 import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 import { useTransactionCustomAmountPercentageMetrics } from './useTransactionCustomAmountPercentageMetrics';
-import { useUpdateTokenAmount } from './useUpdateTokenAmount';
+import { useUpdateTransactionPayAmount } from './useUpdateTransactionPayAmount';
 
 export const MAX_LENGTH = 28;
 const DEBOUNCE_DELAY = 500;
@@ -132,7 +132,7 @@ export function useTransactionCustomAmount({
   );
 
   const { updateTokenAmount: updateTokenAmountCallback } =
-    useUpdateTokenAmount();
+    useUpdateTransactionPayAmount();
   const totals = useTransactionPayTotals();
 
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
