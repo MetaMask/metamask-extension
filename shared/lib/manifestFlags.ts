@@ -1,5 +1,4 @@
 import { Json } from '@metamask/utils';
-import browser from 'webextension-polyfill';
 
 /**
  * Flags that we use to control runtime behavior of the extension. Typically
@@ -153,8 +152,7 @@ export type ManifestFlags = {
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface
-interface WebExtensionManifestWithFlags
-  extends browser.Manifest.WebExtensionManifest {
+interface WebExtensionManifestWithFlags extends chrome.runtime.Manifest {
   _flags?: ManifestFlags;
 }
 
@@ -165,15 +163,17 @@ interface WebExtensionManifestWithFlags
  */
 export function getManifestFlags(): ManifestFlags {
   // If this is running in a unit test, there's no manifest, so just return an empty object
-  if (
-    process.env.JEST_WORKER_ID === undefined ||
-    !browser.runtime.getManifest
-  ) {
+  if (process.env.JEST_WORKER_ID === undefined) {
+    return {};
+  }
+
+  const extension = globalThis.browser ?? globalThis.chrome;
+  if (!extension?.runtime?.getManifest) {
     return {};
   }
 
   return (
-    (browser.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
+    (extension.runtime.getManifest() as WebExtensionManifestWithFlags)._flags ||
     {}
   );
 }
