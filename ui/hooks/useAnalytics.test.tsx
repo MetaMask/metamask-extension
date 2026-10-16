@@ -10,7 +10,7 @@ import { trackAnalyticsEvent } from '../store/actions';
 import { useAnalytics } from './useAnalytics';
 
 jest.mock('./useSegmentContext', () => ({
-  useSegmentContext: jest.fn(() => ({})),
+  useGetSegmentContext: jest.fn(() => () => ({})),
 }));
 
 jest.mock('../store/actions', () => ({
