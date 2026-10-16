@@ -36,10 +36,7 @@ describe('Test Snap get preferences', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'getPreferencesConnectButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'getPreferencesConnectButton',
-          'Reconnect to Preferences Snap',
+          { expectedMessage: 'Reconnect to Preferences Snap' },
         );
 
         // Click submit button, delayed needed processing and validate the results

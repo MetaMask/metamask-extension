@@ -31,10 +31,7 @@ describe('Test Snap Background Events', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
         // ISO 8601 date string
@@ -89,11 +86,7 @@ describe('Test Snap Background Events', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
         // ISO 8601 duration string
@@ -151,10 +144,7 @@ describe('Test Snap Background Events', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectBackgroundEventsButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectBackgroundEventsButton',
-          'Reconnect to Background Events Snap',
+          { expectedMessage: 'Reconnect to Background Events Snap' },
         );
 
         const futureDate = new Date(Date.now() + 5000).toISOString();

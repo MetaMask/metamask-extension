@@ -30,11 +30,8 @@ describe('Test Snap Cronjob', function () {
           'connectCronJobsButton',
           {
             withExtraScreen: true,
+            expectedMessage: 'Reconnect to Cronjobs Snap',
           },
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectCronJobsButton',
-          'Reconnect to Cronjobs Snap',
         );
 
         await driver.delay(largeDelayMs);

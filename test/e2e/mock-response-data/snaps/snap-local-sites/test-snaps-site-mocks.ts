@@ -65,7 +65,7 @@ export async function serveTestSnapsFromLocalhost(
         localPath = url.pathname;
       }
 
-      const localUrl = `http://localhost:${port}${localPath}${url.search}`;
+      const localUrl = `http://127.0.0.1:${port}${localPath}${url.search}`;
 
       try {
         const response = await fetch(localUrl);

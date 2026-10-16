@@ -32,10 +32,7 @@ describe('Test Snap Get Locale', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectGetLocaleButton',
-        );
-        await testSnaps.checkInstallationComplete(
-          'connectGetLocaleButton',
-          'Reconnect to Localization Snap',
+          { expectedMessage: 'Reconnect to Localization Snap' },
         );
 
         await testSnaps.clickButton('sendGetLocaleHelloButton');
