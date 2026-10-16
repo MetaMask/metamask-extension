@@ -134,6 +134,9 @@ describe('useActivityRowContent', () => {
       },
     } as ActivityListItem;
 
+    mockFormatTokenAmount.mockReturnValue('formatted source amount');
+    mockFormatAsFiat.mockReturnValue('formatted source fiat');
+
     const { result } = renderHookWithProvider(() =>
       useActivityRowContent(activity),
     );
@@ -142,6 +145,38 @@ describe('useActivityRowContent', () => {
       'activity_swapIncomplete_success_title|ETH',
     );
     expect(result.current.subtitle).toBe('activity_swap_success_description');
+    expect(result.current.primaryAmount?.props.children).toBe(
+      'formatted source amount',
+    );
+    expect(result.current.secondaryAmount).toBe('formatted source fiat');
+  });
+
+  it('omits amounts for an incomplete swap with a zero source placeholder', () => {
+    const activity = {
+      type: 'swap',
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      status: 'success',
+      timestamp: 1,
+      hash: 'signature',
+      data: {
+        from: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+        sourceToken: {
+          direction: 'out',
+          symbol: 'SOL',
+          amount: '0',
+          assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
+      },
+    } as ActivityListItem;
+
+    const { result } = renderHookWithProvider(() =>
+      useActivityRowContent(activity),
+    );
+
+    expect(result.current.primaryAmount).toBeUndefined();
+    expect(result.current.secondaryAmount).toBeUndefined();
+    expect(mockFormatTokenAmount).not.toHaveBeenCalled();
+    expect(mockFormatAsFiat).not.toHaveBeenCalled();
   });
 
   it('uses a clean swap title with the token pair as subtitle', () => {
@@ -168,6 +203,8 @@ describe('useActivityRowContent', () => {
       },
     } as ActivityListItem;
 
+    mockFormatTokenAmount.mockReturnValue('formatted amount');
+
     const { result } = renderHookWithProvider(() =>
       useActivityRowContent(activity),
     );
@@ -176,6 +213,9 @@ describe('useActivityRowContent', () => {
       'activity_swap_success_title',
     );
     expect(result.current.subtitle).toBe('ETH → USDC');
+    expect(result.current.primaryAmount?.props.children).toBe(
+      'formatted amount',
+    );
   });
 
   it('names the provider in the ramp order subtitle', () => {

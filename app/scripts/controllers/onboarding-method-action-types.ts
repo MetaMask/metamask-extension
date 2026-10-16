@@ -66,6 +66,42 @@ export type OnboardingControllerGetIsSocialLoginFlowAction = {
 };
 
 /**
+ * Start or resume the onboarding journey associated with a browser tab.
+ *
+ * A tab with a live journey is resumed. A new journey is not opened after
+ * this profile has finished onboarding or already ended a journey
+ * successfully.
+ *
+ * @param request - The onboarding tab and current step.
+ * @returns The opaque ID used to parent child traces, or undefined when no
+ * journey should be opened.
+ */
+export type OnboardingControllerStartOnboardingJourneyAction = {
+  type: `OnboardingController:startOnboardingJourney`;
+  handler: OnboardingController['startOnboardingJourney'];
+};
+
+/**
+ * Update the last known onboarding step for a browser tab.
+ *
+ * @param request - The onboarding tab and current step.
+ */
+export type OnboardingControllerUpdateOnboardingJourneyAction = {
+  type: `OnboardingController:updateOnboardingJourney`;
+  handler: OnboardingController['updateOnboardingJourney'];
+};
+
+/**
+ * End the onboarding journey associated with a browser tab.
+ *
+ * @param request - The onboarding tab, result, and last step.
+ */
+export type OnboardingControllerEndOnboardingJourneyAction = {
+  type: `OnboardingController:endOnboardingJourney`;
+  handler: OnboardingController['endOnboardingJourney'];
+};
+
+/**
  * Reset the onboarding controller state.
  */
 export type OnboardingControllerResetOnboardingAction = {
@@ -83,4 +119,7 @@ export type OnboardingControllerMethodActions =
   | OnboardingControllerSetFirstTimeFlowTypeAction
   | OnboardingControllerRegisterOnboardingAction
   | OnboardingControllerGetIsSocialLoginFlowAction
+  | OnboardingControllerStartOnboardingJourneyAction
+  | OnboardingControllerUpdateOnboardingJourneyAction
+  | OnboardingControllerEndOnboardingJourneyAction
   | OnboardingControllerResetOnboardingAction;

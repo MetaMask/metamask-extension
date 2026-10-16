@@ -25,15 +25,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           .withKeyringControllerMultiSRP()
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withSnapsPrivacyWarningAlreadyShown()
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })
@@ -85,15 +76,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           .withPreferencesController({
             preferences: { showFiatInTestnets: true },
             useCurrencyRateCheck: true,
-          })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
           })
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .withShowNativeTokenAsMainBalanceDisabled()

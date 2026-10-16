@@ -188,16 +188,7 @@ type BridgeChainTokenMap = Partial<
 >;
 
 // We usually use the native asset as "from" token. In some chains we want to override that.
-export const BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN: BridgeChainTokenMap = {
-  [toEvmCaipChainId(CHAIN_IDS.ARC)]: {
-    // USDC on Arc
-    address: '0x3600000000000000000000000000000000000000',
-    symbol: 'USDC',
-    decimals: 6,
-    name: 'USDC',
-    assetId: `${toEvmCaipChainId(CHAIN_IDS.ARC)}/erc20:${toChecksumHexAddress('0x3600000000000000000000000000000000000000')}`,
-  },
-};
+export const BRIDGE_CHAINID_TO_DEFAULT_FROM_TOKEN: BridgeChainTokenMap = {};
 
 // This is actually for defining a default "toToken" when opening Bridge view
 export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
@@ -348,12 +339,3 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: BridgeChainTokenMap = {
     assetId: `${MultichainNetworks.STELLAR}/asset:USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN`,
   },
 } as const;
-
-export const BRIDGE_ASSET_PICKER_HIDDEN_ASSETS = new Set([
-  // Arc blockchain: Two USDC - one native, one ERC20. Hiding native for convenience.
-  // Both the legacy erc20:0x0 placeholder and the current slip44:5042 ID are
-  // listed because persisted balance state may still carry the legacy ID
-  // until the pending state migration for the slip44 rollout lands.
-  'eip155:5042/erc20:0x0000000000000000000000000000000000000000',
-  'eip155:5042/slip44:5042',
-]);
