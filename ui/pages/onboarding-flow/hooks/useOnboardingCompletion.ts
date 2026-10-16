@@ -29,11 +29,9 @@ import {
   getOptedIn,
   getDeferredDeepLink,
   getAccountTypeForOnboardingMetrics,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
-import {
-  getExternalServicesOwnedPreferences,
-  getIsBasicFunctionalityForcedOnDuringOnboarding,
-} from '../../../selectors/multichain/basic-functionality';
+import { getExternalServicesOwnedPreferences } from '../../../selectors/multichain/basic-functionality';
 import {
   getCompletedOnboarding,
   getHasSeenOnboardingCompletionPage,
@@ -78,9 +76,7 @@ export function useOnboardingCompletion() {
   const isOptedIn = useSelector(getOptedIn);
   const accountTypeForMetrics = useSelector(getAccountTypeForOnboardingMetrics);
   const deferredDeepLink = useSelector(getDeferredDeepLink);
-  const isBasicFunctionalityForcedOn = useSelector(
-    getIsBasicFunctionalityForcedOnDuringOnboarding,
-  );
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityToggleEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
 
@@ -281,7 +277,9 @@ export function useOnboardingCompletion() {
         // consolidated experience is on. Remote flags are not reliable during
         // onboarding, so this uses the build-time consolidation gate.
         const basicFunctionalityEnabled =
-          isBasicFunctionalityForcedOn || externalServicesOnboardingToggleState;
+          isBasicFunctionalityToggleEnabled && isSocialLoginFlow
+            ? true
+            : externalServicesOnboardingToggleState;
 
         await dispatch(
           isBasicFunctionalityToggleEnabled
@@ -350,11 +348,11 @@ export function useOnboardingCompletion() {
       externalServicesOnboardingToggleState,
       externalServicesOwnedPreferences,
       firstTimeFlowType,
-      isBasicFunctionalityForcedOn,
       isBasicFunctionalityToggleEnabled,
       isOnboardingCompleted,
       isOptedIn,
       isSidePanelEnabled,
+      isSocialLoginFlow,
       isUnlocked,
       trackEvent,
     ],
