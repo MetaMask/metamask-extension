@@ -26,11 +26,18 @@ jobs:
         # and must stay in sync with benchmark-command (startupPowerUserHome uses extra flags).
         #
         # Startup + interaction + user journeys: chrome/firefox × webpack × preset (test build: build-test-webpack / build-test-mv2-webpack).
-        browser: [chrome]
+        browser: [chrome, firefox]
         buildType: [webpack]
-        pageType: [startupStandardHome]
-        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
-    runs-on: ubuntu-latest
+        pageType:
+          - startupStandardHome
+          - startupPowerUserHome
+          - interactionUserActions
+          - userJourneyOnboardingImport
+          - userJourneyOnboardingNew
+          - userJourneyAssets
+          - userJourneyTransactions
+          - userJourneyAccountManagement
+    runs-on: namespace-profile-metamask-ci-linux
     timeout-minutes: 30
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -72,7 +79,7 @@ jobs:
       - name: Calibrate runner
         run: >-
           yarn tsx test/e2e/benchmarks/runner-calibration.ts
-          --out "test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json"
+          --out "test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json"
         shell: bash
 
       - name: Run the benchmark
@@ -81,15 +88,15 @@ jobs:
         timeout-minutes: 25
         id: run-benchmark
         run: >-
-          ${{ format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}-{3}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType, matrix.index) }}
+          ${{ matrix.pageType == 'startupPowerUserHome' && format('yarn test:e2e:benchmark --preset startupPowerUserHome --browserLoads 15 --pageLoads 7 --out test-artifacts/benchmarks/benchmark-{0}-{1}-startupPowerUserHome.json --retries 2', matrix.browser, matrix.buildType) || format('yarn test:e2e:benchmark --preset {2} --out test-artifacts/benchmarks/benchmark-{0}-{1}-{2}.json --retries 2', matrix.browser, matrix.buildType, matrix.pageType) }}
         shell: bash
 
       - name: Send benchmark results to Sentry
         run: |
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
-            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json" \
-            --calibration "test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json" \
+            --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
+            --calibration "test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json" \
             --browser "${{ matrix.browser }}" \
             --buildType "${{ matrix.buildType }}"
         shell: bash
@@ -117,8 +124,8 @@ jobs:
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
           path: |
-            test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json
-            test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json
+            test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
+            test-artifacts/benchmarks/runner-calibration-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
           retention-days: 7
           if-no-files-found: ignore
 
