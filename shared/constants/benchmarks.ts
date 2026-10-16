@@ -57,6 +57,17 @@ export type RatingDistribution = {
   null: number;
 };
 
+/** One retained observation: the value and the iteration that produced it. */
+export type MetricSample = {
+  iteration: number;
+  value: number;
+};
+
+/** Per-metric retained observations, in iteration order, before filtering */
+export type MetricSamples = {
+  [key: string]: MetricSample[];
+};
+
 /** Per-metric statistics (mean, percentiles, etc.) */
 export type TimerStatistics = {
   id: string;
@@ -73,6 +84,13 @@ export type TimerStatistics = {
   outliers: number;
   trimmedCount?: number;
   dataQuality: 'good' | 'poor' | 'unreliable';
+  /**
+   * Every observation this metric was computed from, in iteration order, before
+   * sanity, IQR and z-score filtering. The aggregates above are not sufficient
+   * statistics for a dip test, a rank-based interval or a missingness model, so
+   * the values are kept rather than re-derived.
+   */
+  values?: MetricSample[];
 };
 
 /** Per-metric aggregated web vitals with full statistical analysis */
@@ -111,6 +129,8 @@ export type BenchmarkResults = {
   p95: StatisticalResult;
   trimmedCount?: StatisticalResult;
   outliers?: StatisticalResult;
+  /** Per-metric observations behind `mean` and the percentiles, before filtering */
+  values?: MetricSamples;
   webVitals?: WebVitalsSummary;
 };
 
