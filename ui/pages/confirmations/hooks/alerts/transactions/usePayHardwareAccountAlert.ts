@@ -11,19 +11,16 @@ import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
 import { isHardwareAccount } from '../../../../../components/app/rewards/utils/isHardwareAccount';
 import { PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES } from '../../../constants/pay';
 import { useIsPayHardwareBlocked } from '../../pay/useIsPayHardwareBlocked';
-import { useWithdrawHardwareQuoteSigner } from '../../pay/useWithdrawHardwareQuoteSigner';
 import { useTransactionMetadataRequestOptional } from '../../transactions/useTransactionMetadataRequest';
 import { useTransactionPayingAccount } from '../../transactions/useTransactionPayingAccount';
 
 /**
- * Blocking alert for a hardware account that a Pay flow would ask to sign
- * when that flow forbids hardware wallets.
+ * Blocking alert for a hardware account already funding a Pay flow
+ * that forbids hardware wallets.
  *
  * Account-picker filtering and this backstop share
  * `useIsPayHardwareBlocked`, while the account lookup follows the effective
- * payer (`getTransactionPayingAccount`). Withdraws are signed by
- * `txParams.from`, so a hardware recipient is only blocked when a Pay quote
- * would make it sign (`useWithdrawHardwareQuoteSigner`).
+ * payer (`accountOverride ?? txParams.from`).
  *
  * @returns The blocking alert, or an empty array.
  */
@@ -32,7 +29,6 @@ export function usePayHardwareAccountAlert(): Alert[] {
   const transactionMeta = useTransactionMetadataRequestOptional();
   const isHardwareBlocked = useIsPayHardwareBlocked();
   const payingAccount = useTransactionPayingAccount();
-  const withdrawHardwareQuoteSigner = useWithdrawHardwareQuoteSigner();
 
   const account = useSelector((state) =>
     payingAccount
@@ -46,13 +42,12 @@ export function usePayHardwareAccountAlert(): Alert[] {
     transactionMeta,
     PAY_QR_HARDWARE_BLOCKED_TRANSACTION_TYPES,
   );
-  const shouldAlertPayer =
+  const shouldAlert =
     isHardwareWallet &&
     (isHardwareBlocked || (isQrWallet && isQrHardwareBlocked));
-  const shouldAlertWithdrawRecipient = Boolean(withdrawHardwareQuoteSigner);
 
   return useMemo(() => {
-    if (!shouldAlertPayer && !shouldAlertWithdrawRecipient) {
+    if (!shouldAlert) {
       return [];
     }
 
@@ -61,12 +56,10 @@ export function usePayHardwareAccountAlert(): Alert[] {
         key: AlertsName.PayHardwareAccount,
         field: RowAlertKey.PayWith,
         reason: t('alertPayHardwareAccountTitle'),
-        message: shouldAlertPayer
-          ? t('alertPayHardwareAccountMessage')
-          : t('alertPayHardwareWithdrawRecipientMessage'),
+        message: t('alertPayHardwareAccountMessage'),
         severity: Severity.Danger,
         isBlocking: true,
       },
     ];
-  }, [shouldAlertPayer, shouldAlertWithdrawRecipient, t]);
+  }, [shouldAlert, t]);
 }

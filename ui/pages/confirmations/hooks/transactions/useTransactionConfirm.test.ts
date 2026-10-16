@@ -38,7 +38,6 @@ import { useTransactionConfirm } from './useTransactionConfirm';
 const mockGetEnvironmentType = jest.fn();
 const mockUseIsHardwareWalletAccount = jest.fn();
 const mockUseTransactionPayingAccount = jest.fn();
-const mockUseWithdrawHardwareQuoteSigner = jest.fn();
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment-type'),
@@ -82,9 +81,6 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('./useMoneyAccountWithdrawConfirm');
 jest.mock('./useTransactionPayingAccount', () => ({
   useTransactionPayingAccount: () => mockUseTransactionPayingAccount(),
-}));
-jest.mock('../pay/useWithdrawHardwareQuoteSigner', () => ({
-  useWithdrawHardwareQuoteSigner: () => mockUseWithdrawHardwareQuoteSigner(),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -240,7 +236,6 @@ describe('useTransactionConfirm', () => {
     );
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
-    mockUseWithdrawHardwareQuoteSigner.mockReturnValue(undefined);
     mockPrepareWithdrawTransaction.mockResolvedValue(null);
     useMoneyAccountWithdrawConfirmMock.mockReturnValue({
       prepareWithdrawTransaction: mockPrepareWithdrawTransaction,
@@ -1006,26 +1001,6 @@ describe('useTransactionConfirm', () => {
         moneyAccount,
       );
       expect(mockNavigateToHwSigningPage).not.toHaveBeenCalled();
-    });
-
-    it('refuses to approve when a quote would make a hardware recipient sign', async () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
-      mockUseWithdrawHardwareQuoteSigner.mockReturnValue(
-        '0x2222222222222222222222222222222222222222',
-      );
-
-      const { onTransactionConfirm } = runHook({
-        type: TransactionType.moneyAccountWithdraw,
-      });
-
-      const result = await onTransactionConfirm();
-
-      expect(result).toBe(false);
-      expect(mockPrepareWithdrawTransaction).not.toHaveBeenCalled();
-      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
-      consoleErrorSpy.mockRestore();
     });
 
     it('does not prepare a withdraw for other transaction types', async () => {
