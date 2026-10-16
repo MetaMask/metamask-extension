@@ -36,7 +36,6 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getIsBasicFunctionalityConsolidationEnabledInBuild } from '../../../../shared/lib/environment';
-import { getIsBasicFunctionalityForcedOnDuringOnboarding } from '../../../selectors/multichain/basic-functionality';
 
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
@@ -107,9 +106,8 @@ export default function PrivacySettings() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const isBasicFunctionalityConsolidationEnabled =
     getIsBasicFunctionalityConsolidationEnabledInBuild();
-  const isBasicFunctionalityForcedOn = useSelector(
-    getIsBasicFunctionalityForcedOnDuringOnboarding,
-  );
+  const isSocialLoginBasicFunctionalityLocked =
+    isSocialLoginFlow && isBasicFunctionalityConsolidationEnabled;
   const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
     useState(use4ByteResolution);
   const [turnOnTokenDetection, setTurnOnTokenDetection] =
@@ -403,9 +401,9 @@ export default function PrivacySettings() {
                   <Setting
                     dataTestId="basic-functionality-toggle"
                     value={externalServicesOnboardingToggleState}
-                    disabled={isBasicFunctionalityForcedOn}
+                    disabled={isSocialLoginBasicFunctionalityLocked}
                     setValue={(toggledValue) => {
-                      if (isBasicFunctionalityForcedOn) {
+                      if (isSocialLoginBasicFunctionalityLocked) {
                         return;
                       }
                       if (toggledValue) {
