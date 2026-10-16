@@ -22,6 +22,7 @@ describe('getAuthenticationControllerMessenger', () => {
         actions: expect.arrayContaining([
           'AuthenticatedUserStorageService:getNotificationPreferences',
           'AuthenticatedUserStorageService:putNotificationPreferences',
+          'AnalyticsController:getState',
           'NotificationServicesPushController:addPushNotificationLinks',
         ]),
       }),

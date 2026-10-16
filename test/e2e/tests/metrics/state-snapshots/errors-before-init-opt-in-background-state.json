@@ -112,6 +112,7 @@
     "GatorPermissionsController": "object",
     "KeyringController": { "vault": "string" },
     "LoggingController": { "logs": "object" },
+    "MarketingConsentController": { "pendingMarketingConsent": null },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
