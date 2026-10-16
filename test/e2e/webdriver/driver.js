@@ -1239,6 +1239,20 @@ class Driver {
   }
 
   /**
+   * Waits until the element is visible, then reports whether it is enabled.
+   * A disabled control returns false. `findClickableElement` is the wrong
+   * probe here: on Selenium it waits until the control becomes enabled, and
+   * on Playwright it only checks visibility.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<boolean>} True when the visible element is enabled.
+   */
+  async isElementEnabled(rawLocator) {
+    const element = await this.findVisibleElement(rawLocator);
+    return element.isEnabled();
+  }
+
+  /**
    * Retrieves the content of the clipboard.
    *
    * @returns {Promise<string>} promise that resolves to the clipboard content

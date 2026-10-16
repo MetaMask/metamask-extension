@@ -242,14 +242,18 @@ class NetworksPage {
   async deleteNetwork(chainId: string): Promise<void> {
     console.log(`Delete network ${chainId} from network list`);
     await this.openNetworkListOptions(chainId);
+    // The options row can close before the delete item receives the click.
+    await this.driver.waitForSelector(this.deleteNetworkButton);
     await this.driver.clickElement(this.deleteNetworkButton);
-    await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
+    // The design-system Modal root stays hidden to Playwright even while the
+    // dialog content is on screen. Wait for the delete button instead.
+    await this.driver.waitForSelector(this.confirmDeleteNetworkButton);
     // Ensure drawer overlay is not present to avoid ElementClickInterceptedError
     await this.driver.assertElementNotPresent(this.drawerOverlay, {
       waitAtLeastGuard: 200,
     });
     await this.driver.clickElement(this.confirmDeleteNetworkButton);
-    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkModal);
+    await this.driver.assertElementNotPresent(this.confirmDeleteNetworkButton);
   }
 
   /**
