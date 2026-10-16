@@ -42,11 +42,19 @@ import { isHardwareWalletErrorModalRoute } from './utils';
  * This restricts auto-shown errors to transaction, signing, and bridge pages.
  * Manually triggered errors (via showErrorModal) are not affected.
  */
+type ShowErrorModalOptions = {
+  /**
+   * Readiness check run when the user retries, for flows targeting a device
+   * other than the selected account's.
+   */
+  ensureDeviceReady?: () => Promise<boolean>;
+};
+
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
    */
-  showErrorModal: (error: unknown) => void;
+  showErrorModal: (error: unknown, options?: ShowErrorModalOptions) => void;
 
   /**
    * Manually dismiss the error modal
@@ -190,7 +198,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * Show error modal (internal implementation)
    */
   const showErrorModalInternal = useCallback(
-    (error: unknown, skipFilters = false) => {
+    (error: unknown, skipFilters = false, options?: ShowErrorModalOptions) => {
       // For user rejections/cancellations: dismiss any open modal and close the popup
       // unless explicitly forced (manual calls can show these errors)
       if (!skipFilters && isUserRejection(error)) {
@@ -223,6 +231,7 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
         onRetry: handleRetry,
         onCancel: handleCancel,
         onRepairDevice: openRepairPage,
+        ensureDeviceReady: options?.ensureDeviceReady,
         isOpen: true,
       };
       dispatch(showModal(modalPayload));
@@ -242,12 +251,12 @@ const HardwareWalletErrorMonitor = ({ children }: { children: ReactNode }) => {
    * This allows components to manually trigger the error modal
    */
   const showErrorModal = useCallback(
-    (error: unknown) => {
+    (error: unknown, options?: ShowErrorModalOptions) => {
       if (isErrorModalSuppressed) {
         return;
       }
       // When called manually, we skip the filters (allow user cancellations, duplicates, etc.)
-      showErrorModalInternal(error, true);
+      showErrorModalInternal(error, true, options);
     },
     [isErrorModalSuppressed, showErrorModalInternal],
   );

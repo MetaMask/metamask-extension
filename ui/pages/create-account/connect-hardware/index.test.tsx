@@ -38,6 +38,30 @@ import ConnectHardwareForm, {
 
 const mockTrackEvent = jest.fn();
 
+const mockShowErrorModal = jest.fn();
+const mockDismissErrorModal = jest.fn();
+jest.mock(
+  '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+  () => ({
+    ...jest.requireActual(
+      '../../../contexts/hardware-wallets/HardwareWalletErrorProvider',
+    ),
+    useHardwareWalletError: () => ({
+      showErrorModal: mockShowErrorModal,
+      dismissErrorModal: mockDismissErrorModal,
+    }),
+  }),
+);
+
+const mockEnsureDeviceReady = jest.fn();
+jest.mock('../../../contexts/hardware-wallets/adapters/factory', () => ({
+  createAdapterForHardwareWalletType: () => ({
+    connect: () => Promise.resolve(),
+    ensureDeviceReady: mockEnsureDeviceReady,
+    destroy: () => undefined,
+  }),
+}));
+
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',
@@ -99,9 +123,11 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
 
 const mockUseNavigate = jest.fn();
 let mockLocationKey = 'default';
+let mockSearch = '';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
+  useSearchParams: () => [new URLSearchParams(mockSearch)],
   useLocation: () => ({
     pathname: '/test',
     key: mockLocationKey,
@@ -191,6 +217,8 @@ describe('ConnectHardwareForm', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocationKey = 'default';
+    mockSearch = '';
+    mockEnsureDeviceReady.mockResolvedValue(true);
     mockCheckHardwareStatus.mockResolvedValue(false);
   });
 
@@ -533,6 +561,215 @@ describe('ConnectHardwareForm', () => {
       });
 
       expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+    });
+  });
+
+  describe('device query param', () => {
+    it('connects to the requested device on mount without requesting WebHID access', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+      });
+      expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
+      expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+        HardwareDeviceNames.ledger,
+        0,
+        DEFAULT_HD_PATH,
+        false,
+        expect.any(Function),
+      );
+    });
+
+    it('shows the device selection with the error when the connection fails', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockRejectedValue(new Error('Device not found'));
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(screen.getByText('Device not found')).toBeInTheDocument();
+      });
+      expect(
+        screen.getByTestId('connect-hardware-wallet-ledger'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows the recovery modal instead of connecting when the device is not ready', async () => {
+      const deviceError = createHardwareWalletError(
+        ErrorCode.AuthenticationDeviceLocked,
+        HardwareWalletType.Ledger,
+        'Device is locked',
+      );
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockEnsureDeviceReady.mockRejectedValue(deviceError);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalledWith(deviceError, {
+          ensureDeviceReady: expect.any(Function),
+        });
+      });
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+      expect(
+        screen.getByTestId('connect-hardware-wallet-ledger'),
+      ).toBeInTheDocument();
+    });
+
+    it('lists the accounts once a retry from the recovery modal finds the device ready', async () => {
+      mockSearch = `device=${HardwareDeviceNames.trezor}`;
+      mockEnsureDeviceReady.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.DeviceDisconnected,
+          HardwareWalletType.Trezor,
+          'Trezor device not found',
+        ),
+      );
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalled();
+      });
+      const { ensureDeviceReady } = mockShowErrorModal.mock.calls[0][1];
+
+      // Still not ready
+      expect(await ensureDeviceReady()).toBe(false);
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      let isReady;
+      await act(async () => {
+        isReady = await ensureDeviceReady();
+      });
+
+      expect(isReady).toBe(true);
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+      });
+      expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+        HardwareDeviceNames.trezor,
+        0,
+        DEFAULT_HD_PATH,
+        false,
+        expect.any(Function),
+      );
+    });
+
+    it('dismisses the recovery modal when leaving the page', async () => {
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockEnsureDeviceReady.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.DeviceDisconnected,
+          HardwareWalletType.Ledger,
+          'Ledger device not found',
+        ),
+      );
+      const mockStore = configureMockStore([thunk])(createMockState());
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(mockShowErrorModal).toHaveBeenCalled();
+      });
+      const { ensureDeviceReady } = mockShowErrorModal.mock.calls[0][1];
+      unmount();
+
+      expect(mockDismissErrorModal).toHaveBeenCalledTimes(1);
+
+      // A retry from a modal left behind does not connect.
+      mockEnsureDeviceReady.mockResolvedValue(true);
+      await ensureDeviceReady();
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the page closes while the check is running', async () => {
+      let resolveReady: (isReady: boolean) => void = () => undefined;
+      mockEnsureDeviceReady.mockReturnValue(
+        new Promise((resolve) => {
+          resolveReady = resolve;
+        }),
+      );
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      const mockStore = configureMockStore([thunk])(createMockState());
+      const { unmount } = renderWithProvider(
+        <ConnectHardwareForm />,
+        mockStore,
+      );
+
+      unmount();
+      await act(async () => {
+        resolveReady(true);
+      });
+
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+      expect(mockShowErrorModal).not.toHaveBeenCalled();
+      expect(mockDismissErrorModal).not.toHaveBeenCalled();
+    });
+
+    it('connects to devices without a connection state without checking them', async () => {
+      mockSearch = `device=${HardwareDeviceNames.qr}`;
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      await waitFor(() => {
+        expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+          HardwareDeviceNames.qr,
+          0,
+          DEFAULT_HD_PATH,
+          false,
+          expect.any(Function),
+        );
+      });
+      expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
+    });
+
+    it('does not override a device picked while the check is running', async () => {
+      let resolveReady: (isReady: boolean) => void = () => undefined;
+      mockEnsureDeviceReady.mockReturnValue(
+        new Promise((resolve) => {
+          resolveReady = resolve;
+        }),
+      );
+      mockSearch = `device=${HardwareDeviceNames.ledger}`;
+      mockConnectHardware.mockResolvedValue(MOCK_ACCOUNTS);
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      connectToDevice(tEn('trezor'));
+      await waitFor(() => {
+        expect(screen.getAllByTestId('hw-account-list__item')).toHaveLength(5);
+      });
+
+      await act(async () => {
+        resolveReady(true);
+      });
+
+      expect(mockConnectHardwareAction).toHaveBeenCalledTimes(1);
+      expect(mockConnectHardwareAction).toHaveBeenCalledWith(
+        HardwareDeviceNames.trezor,
+        0,
+        DEFAULT_HD_PATH,
+        true,
+        expect.any(Function),
+      );
+    });
+
+    it('ignores unknown devices', () => {
+      mockSearch = 'device=unknown';
+      const mockStore = configureMockStore([thunk])(createMockState());
+      renderWithProvider(<ConnectHardwareForm />, mockStore);
+
+      expect(mockConnectHardwareAction).not.toHaveBeenCalled();
+      expect(screen.getByText(tEn('hardwareWallets'))).toBeInTheDocument();
     });
   });
 

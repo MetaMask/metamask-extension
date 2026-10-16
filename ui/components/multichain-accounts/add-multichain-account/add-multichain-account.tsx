@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AccountWalletId } from '@metamask/account-api';
 import {
   Box,
@@ -19,6 +20,13 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import { useDispatch } from '../../../store/hooks';
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 
 import {
   endTrace,
@@ -29,19 +37,28 @@ import {
 
 export type AddMultichainAccountProps = {
   walletId: AccountWalletId;
+  /**
+   * When set, the button opens the account selector for this hardware device
+   * instead of creating the next account of the wallet.
+   */
+  hardwareDevice?: HardwareDeviceNames;
 };
 
 export const AddMultichainAccount = ({
   walletId,
+  hardwareDevice,
 }: AddMultichainAccountProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    isAccountTreeSyncingInProgress,
+    isAccountTreeSyncingInProgress: isSyncing,
     loadingMessage: accountOperationLoadingMessage,
   } = useAccountsOperationsLoadingStates();
+  // Account tree syncing only affects HD wallets.
+  const isAccountTreeSyncingInProgress = !hardwareDevice && isSyncing;
 
   const isLoadingState = isLoading || isAccountTreeSyncingInProgress;
 
@@ -62,8 +79,34 @@ export const AddMultichainAccount = ({
     t,
   ]);
 
+  const handleConnectHardwareWalletClick = () => {
+    const query = `device=${hardwareDevice}`;
+    const environmentType = getEnvironmentType();
+
+    // Same as the "Add wallet" flow, hardware wallets are connected from an
+    // expanded tab as the popup and side panel cannot prompt for devices.
+    if (
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL
+    ) {
+      globalThis.platform.openExtensionInBrowser?.(
+        CONNECT_HARDWARE_ROUTE,
+        query,
+        environmentType === ENVIRONMENT_TYPE_SIDEPANEL,
+      );
+      return;
+    }
+
+    navigate(`${CONNECT_HARDWARE_ROUTE}?${query}`);
+  };
+
   const handleCreateMultichainAccountClick = async () => {
     if (isLoadingState) {
+      return;
+    }
+
+    if (hardwareDevice) {
+      handleConnectHardwareWalletClick();
       return;
     }
 
@@ -94,7 +137,11 @@ export const AddMultichainAccount = ({
       }}
       padding={4}
       onClick={handleCreateMultichainAccountClick}
-      data-testid={`add-multichain-account-button`}
+      data-testid={
+        hardwareDevice
+          ? 'add-hardware-wallet-account-button'
+          : 'add-multichain-account-button'
+      }
       key={`add-multichain-account-button-${walletId}`}
     >
       <Box
