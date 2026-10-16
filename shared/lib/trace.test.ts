@@ -19,6 +19,7 @@ const TRACEPARENT_MOCK = `00-${TRACE_ID_MOCK}-${SPAN_ID_MOCK}-01`;
 
 jest.replaceProperty(global, 'sentry', {
   withIsolationScope: jest.fn(),
+  startNewTrace: jest.fn(),
   startSpan: jest.fn(),
   startSpanManual: jest.fn(),
   setMeasurement: jest.fn(),
@@ -31,6 +32,7 @@ const {
   startSpan,
   startSpanManual,
   withIsolationScope,
+  startNewTrace,
   getActiveSpan,
   continueTrace,
 } = global.sentry as typeof Sentry;
@@ -57,6 +59,7 @@ describe('Trace', () => {
   const startSpanMock = jest.mocked(startSpan);
   const startSpanManualMock = jest.mocked(startSpanManual);
   const withIsolationScopeMock = jest.mocked(withIsolationScope);
+  const startNewTraceMock = jest.mocked(startNewTrace);
   const setMeasurementMock = jest.mocked(setMeasurement);
   const getActiveSpanMock = jest.mocked(getActiveSpan);
   const continueTraceMock = jest.mocked(continueTrace);
@@ -69,12 +72,18 @@ describe('Trace', () => {
       startSpan: startSpanMock,
       startSpanManual: startSpanManualMock,
       withIsolationScope: withIsolationScopeMock,
+      startNewTrace: startNewTraceMock,
       setMeasurement: setMeasurementMock,
       getActiveSpan: getActiveSpanMock,
       continueTrace: continueTraceMock,
     };
 
     startSpanMock.mockImplementation((_, fn) => fn({} as Sentry.Span));
+
+    // Pass-through: run the wrapped callback so root traces still create spans.
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    startNewTraceMock.mockImplementation((fn: any) => fn());
 
     startSpanManualMock.mockImplementation((_, fn) =>
       fn({} as Sentry.Span, () => {
@@ -491,8 +500,8 @@ describe('Trace', () => {
     });
   });
 
-  describe('getActiveSpan fallback', () => {
-    it('inherits from active span when no parentContext provided', () => {
+  describe('active-span fallback (opt-in via allowActiveSpanFallback)', () => {
+    it('does not inherit from the active span when the flag is absent', () => {
       const activeSpanMock = {
         spanContext: jest.fn().mockReturnValue({
           traceId: 'abc123',
@@ -504,28 +513,89 @@ describe('Trace', () => {
 
       trace({ name: NAME_MOCK }, () => true);
 
-      expect(getActiveSpanMock).toHaveBeenCalledTimes(1);
+      // The span must start as a root, not grafted onto the ambient span, and
+      // the ambient span must not even be looked up.
       expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+        expect.any(Function),
+      );
+      expect(startSpanMock).not.toHaveBeenCalledWith(
         expect.objectContaining({
           parentSpan: activeSpanMock,
         }),
         expect.any(Function),
       );
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('does not call getActiveSpan when parentContext is provided', () => {
+    it('inherits the active span and forces a transaction only when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      trace({ name: NAME_MOCK, id: ID_MOCK }, () => true);
+
+      // Asserted as a pair: the flag, and nothing else, is what separates the
+      // inheriting call from the rooting one.
+      const [optedIn] = startSpanMock.mock.calls[0];
+      const [optedOut] = startSpanMock.mock.calls[1];
+
+      expect(optedIn).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+      expect(optedOut).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: null,
+        }),
+      );
+      expect(optedOut).not.toHaveProperty('forceTransaction');
+    });
+
+    it('lets an explicit parentContext win over the flag, without consulting getActiveSpan', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
       trace(
-        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        {
+          name: NAME_MOCK,
+          parentContext: PARENT_CONTEXT_MOCK,
+          allowActiveSpanFallback: true,
+        },
         () => true,
       );
 
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
       expect(getActiveSpanMock).not.toHaveBeenCalled();
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
 
-    it('uses null parentSpan when no active span and no parentContext', () => {
+    it('roots the span when the flag is set but no active span exists', () => {
       getActiveSpanMock.mockReturnValue(undefined);
 
-      trace({ name: NAME_MOCK }, () => true);
+      expect(() => {
+        trace({ name: NAME_MOCK, allowActiveSpanFallback: true }, () => true);
+      }).not.toThrow();
 
       expect(startSpanMock).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -533,6 +603,124 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('still honours an explicitly provided parentContext', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      expect(startSpanMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parentSpan: PARENT_CONTEXT_MOCK,
+        }),
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('forceTransaction', () => {
+    it('is absent when an active span exists but the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent when a parentContext is provided', () => {
+      trace(
+        { name: NAME_MOCK, parentContext: PARENT_CONTEXT_MOCK },
+        () => true,
+      );
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('is absent on the manually-ended (startSpanManual) path when the flag is not set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+    });
+
+    it('is true on the manually-ended (startSpanManual) path when the flag is set', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, id: ID_MOCK, allowActiveSpanFallback: true });
+
+      const [spanOptions] = startSpanManualMock.mock.calls[0];
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({
+          parentSpan: activeSpanMock,
+          forceTransaction: true,
+        }),
+      );
+    });
+
+    it('does not inherit from the active span when root is true, even with allowActiveSpanFallback', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn().mockReturnValue({
+          traceId: 'abc123',
+          spanId: 'def456',
+        }),
+      } as unknown as Sentry.Span;
+
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace(
+        { name: NAME_MOCK, root: true, allowActiveSpanFallback: true },
+        () => true,
+      );
+
+      expect(getActiveSpanMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions).toStrictEqual(
+        expect.objectContaining({ parentSpan: null }),
+      );
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
+    });
+
+    it('starts a new trace (fresh propagation context) when root is true', () => {
+      trace({ name: NAME_MOCK, root: true }, () => true);
+
+      // startNewTrace resets the propagation-context trace id, so the op roots
+      // its own trace instead of inheriting the ambient (e.g. SW pageload) one.
+      // withIsolationScope alone would clone the same trace id — severing the
+      // parent span but leaving the op in the mega-trace (grouped by trace id).
+      expect(startNewTraceMock).toHaveBeenCalledTimes(1);
+      expect(startNewTraceMock).toHaveBeenCalledWith(expect.any(Function));
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not start a new trace when root is not set', () => {
+      trace({ name: NAME_MOCK }, () => true);
+
+      expect(startNewTraceMock).not.toHaveBeenCalled();
+      expect(withIsolationScopeMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -656,6 +844,67 @@ describe('Trace', () => {
         }),
         expect.any(Function),
       );
+    });
+
+    // Regression test for MetaMask-planning#7569.
+    //
+    // The case above covers a map-lookup HIT. This covers the MISS: an
+    // in-process parent whose span is not in `tracesByKey` (it ended, or was
+    // never registered). `resolveParentSpan` returns `null` for that, which is
+    // the same value it returns for "no parent intended" — so `startSpan`
+    // cannot tell the two apart, sees the serialized ids, and routes to
+    // `continueTrace` with `parentSpan: undefined`. That promotes the span to a
+    // segment, and a segment is a billed transaction.
+    //
+    // Measured consequence: ~44.6% of extension transactions carry a
+    // `parent_span` id while being billed as roots, across 25 families.
+    //
+    it('does not promote an unresolvable in-process parent to a segment', () => {
+      continueTraceMock.mockImplementation((_opts, fn) => fn());
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      // No pending trace is created, so the map lookup misses.
+      trace(
+        {
+          name: TraceName.Middleware,
+          parentContext: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _name: TraceName.Transaction,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _id: 'absent-from-map',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _traceId: 'trace123',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            _spanId: 'span456',
+          },
+        },
+        () => true,
+      );
+
+      // A parent was named. Failing to resolve it locally must not silently
+      // convert the span into a billed root.
+      expect(continueTraceMock).not.toHaveBeenCalled();
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions.forceTransaction).toBeUndefined();
+    });
+
+    // `undefined` and `null` are different statements; only the first may be
+    // promoted to a transaction. See MetaMask/MetaMask-planning#7569.
+    it('does not promote a null parentContext to a segment', () => {
+      const activeSpanMock = {
+        spanContext: jest.fn(),
+      } as unknown as Sentry.Span;
+      getActiveSpanMock.mockReturnValue(activeSpanMock);
+
+      trace({ name: NAME_MOCK, parentContext: null }, () => true);
+
+      const [spanOptions] = startSpanMock.mock.calls[0];
+      expect(spanOptions.parentSpan).toBe(activeSpanMock);
+      expect(spanOptions).not.toHaveProperty('forceTransaction');
     });
   });
 
