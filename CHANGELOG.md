@@ -9,29 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.54.0]
 
-### Uncategorized
-
-- Upsert get_fees_error to Transaction events (#46825)
-- Show earn section and banner in stablecoin token details page (#47056)
-- Ensure that money menu is aligned with general burger menu (#47071)
-- Sets tempo nativeCurrency to USD (#47074)
-- Hid fiat values in the send asset picker when Basic Functionality is turned off (#47022)
-- Hid auto connect errors during swap (#46766)
-- Deduplicates native token result(s) on Manage Tokens view when duplicated (#47038)
-- Upgraded Bitcoin wallet Snap to 3.2.0 (#47052)
-- Moved Import NFT from a modal to a full page (#47027)
-- Don't display 0x0 placeholder hash in money account details screens (#47035)
-- Matched the Add contact network dropdown border to the other form fields (#47037)
-- Reordered the notification settings so the Agentic CLI section appears above the Marketing section (#47023)
-- Clicking the Money balance on the home screen now opens the Money page, and the mUSD label was removed from that card (#46901)
-- Simplified the locked device error modal into a single unlock description instead of multi-step recovery instructions (#46936)
-- Showed the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
-- @metamask/delegation-deployments from ^2.0.0 to ^2.1.0 (#46777)
-- Show Arc USDC balance and details from native asset in swap asset picker (#46840)
-- Restricted deep-link handling to configured hosts instead of their subdomains (#46748)
-
 ### Added
 
+- Added an earn section and banner to stablecoin token details (#47056)
 - Added sentry tag to lifetime earnings API call failures (#47078)
 - Added deep links to notification settings and supported preference sections (#46753)
 - Added a Perps outage banner with help-center and support links on home, market, trade, close, and market list (#46864)
@@ -44,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Recorded the smart transaction get-fees error on transaction events when fee lookup fails (#46825)
+- Updated Bitcoin wallet support to version 3.2.0 (#47052)
+- Moved Import NFT from a modal to a full page (#47027)
+- Moved the Agentic CLI notification settings above the Marketing section (#47023)
+- Updated the home Money balance card so clicking the balance opens the Money page, and removed the mUSD label (#46901)
+- Simplified the locked hardware wallet error to a single unlock message (#46936)
+- Opened the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
+- Updated delegation deployments from 2.0.0 to 2.1.0 (#46777)
 - Updated the Import NFT banner to point to Basic Functionality when NFT media is controlled by that setting (#47044)
 - Improved money account styling (#47026)
 - Changed bump @metamask/stellar-wallet-snap to ^1.2.0 (#47084)
@@ -58,6 +46,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Money menu alignment with the main menu when a scrollbar is visible (#47071)
+- Fixed Tempo's native currency so affected networks use USD instead of pathUSD (#47074)
+- Fixed the Send flow so fiat values stay hidden when Basic Functionality is turned off (#47022)
+- Fixed a locked hardware wallet opening an error as soon as the swap quote screen loaded (#46766)
+- Fixed duplicate native token rows on the Manage Tokens page (#47038)
+- Fixed Money account details showing a 0x0 placeholder hash (#47035)
+- Fixed the Add contact network dropdown border so it matches the other fields (#47037)
+- Fixed Arc USDC balance and token details in the Swap asset picker (#46840)
+- Fixed deep-link handling so only the configured hosts are accepted, not their subdomains (#46748)
 - Fixed the home balance flashing "Fund your wallet" or a zero balance while assets are loading for the first time (#47105)
 - Fixed grammar in the Arc usage notice (#47112)
 - Fixed a bug that was causing Tron energy and bandwidth values to display incorrectly when the data was unavailable; A warning is now shown instead (#47046)
