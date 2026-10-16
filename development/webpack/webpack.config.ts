@@ -145,6 +145,10 @@ const manifestPlugin = new ManifestPlugin({
   ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
+  test: args.test,
+  networkPolicyExtensionId: variables.get('NETWORK_POLICY_EXTENSION_ID') as
+    | string
+    | undefined,
   description: commitHash
     ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
     : null,

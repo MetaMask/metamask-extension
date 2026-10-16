@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../context/confirm';
 import type { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { DEPRECATED_NETWORKS } from '../../../../../shared/constants/network';
+import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
+import { isManifestV3 } from '../../../../../shared/lib/mv3.utils';
 import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../../components/multichain/networks-form/use-safe-chains';
@@ -14,6 +17,7 @@ import {
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { EMPTY_ARRAY } from '../../../../selectors/shared';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
+import type { MetaMaskReduxState } from '../../../../store/types';
 
 const ROUTEMESH_RPC_ORIGIN = 'https://lb.routeme.sh';
 
@@ -35,6 +39,18 @@ export function useAddEthereumChainAlerts() {
   const { currentConfirmation } = useConfirmContext<AddEthereumChainContext>();
   const pendingApproval = currentConfirmation;
   const chainId = pendingApproval?.requestData?.chainId;
+  const isNetworkRestricted = useSelector((state: MetaMaskReduxState) => {
+    const { completedOnboarding, firstTimeFlowType, useExternalServices } =
+      state.metamask;
+    const isSeedless =
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport;
+    return (
+      isManifestV3 &&
+      (completedOnboarding !== true ||
+        (useExternalServices === false && !isSeedless))
+    );
+  });
 
   const matchedChain = useMemo(() => {
     if (!safeChains || !chainId) {
@@ -164,6 +180,14 @@ export function useAddEthereumChainAlerts() {
         });
       }
 
+      // A dapp supplies this URL. In restricted mode the explicit approval
+      // action validates it through the background broker before saving it.
+      // Rendering a confirmation must not grant network access to that URL.
+      if (isNetworkRestricted) {
+        setAlerts(nextAlerts);
+        return;
+      }
+
       try {
         const endpointChainId = (await jsonRpcRequest(
           requestData.rpcUrl,
@@ -204,7 +228,7 @@ export function useAddEthereumChainAlerts() {
     };
 
     validate();
-  }, [chainId, matchedChain, pendingApproval, t]);
+  }, [chainId, isNetworkRestricted, matchedChain, pendingApproval, t]);
 
   return pendingApproval ? alerts : EMPTY_ARRAY;
 }

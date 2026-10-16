@@ -85,6 +85,21 @@ const createMockedHandler = () => {
     getNetworkConfigurationByChainId: jest.fn(),
     setActiveNetwork: jest.fn(),
     requestUserApproval: jest.fn().mockResolvedValue('approval-id'),
+    validateRpcEndpoint: jest.fn(async (url: string) => {
+      if (
+        new URL(url).hostname === 'mainnet.infura.io' ||
+        url === 'https://eth.llamarpc.com'
+      ) {
+        return CHAIN_IDS.MAINNET;
+      }
+      if (url.includes('optimism')) {
+        return CHAIN_IDS.OPTIMISM;
+      }
+      if (url === 'https://custom.network') {
+        return NON_INFURA_CHAIN_ID;
+      }
+      return CHAIN_IDS.LINEA_MAINNET;
+    }),
     getCaveat: jest.fn(),
     addNetwork: jest.fn().mockResolvedValue({
       defaultRpcEndpointIndex: 0,
@@ -137,6 +152,61 @@ describe('addEthereumChainHandler', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('RPC endpoint validation', () => {
+    const request: AddEthereumChainRequest = {
+      origin: 'https://dapp.example',
+      params: [
+        {
+          chainId: NON_INFURA_CHAIN_ID,
+          chainName: 'Custom Network',
+          rpcUrls: ['https://custom.network'],
+          nativeCurrency: { symbol: 'CUST', decimals: 18 },
+        },
+      ],
+    };
+
+    it('validates the dapp endpoint only after explicit user approval', async () => {
+      const { handler, mocks } = createMockedHandler();
+
+      await handler(request);
+
+      const approve = jest.mocked(mocks.requestUserApproval);
+      const validate = jest.mocked(mocks.validateRpcEndpoint);
+      expect(validate).toHaveBeenCalledWith('https://custom.network');
+      expect(approve.mock.invocationCallOrder[0]).toBeLessThan(
+        validate.mock.invocationCallOrder[0],
+      );
+      expect(validate.mock.invocationCallOrder[0]).toBeLessThan(
+        jest.mocked(mocks.addNetwork).mock.invocationCallOrder[0],
+      );
+    });
+
+    it('never grants validation access after the user rejects the request', async () => {
+      const { handler, mocks } = createMockedHandler();
+      jest
+        .mocked(mocks.requestUserApproval)
+        .mockRejectedValueOnce(new Error('User rejected the request'));
+
+      await handler(request);
+
+      expect(mocks.validateRpcEndpoint).not.toHaveBeenCalled();
+      expect(mocks.addNetwork).not.toHaveBeenCalled();
+    });
+
+    it('does not save an RPC endpoint whose chain ID differs from the approved chain', async () => {
+      const { handler, mocks, end } = createMockedHandler();
+      jest.mocked(mocks.validateRpcEndpoint).mockResolvedValueOnce('0x1');
+
+      await handler(request);
+
+      expect(end).toHaveBeenCalledWith(
+        expect.objectContaining({ code: -32602 }),
+      );
+      expect(mocks.addNetwork).not.toHaveBeenCalled();
+      expect(mocks.updateNetwork).not.toHaveBeenCalled();
+    });
   });
 
   it('should validate the request params', async () => {

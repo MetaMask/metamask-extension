@@ -24,10 +24,8 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   infuraProjectId,
 } from '../../../shared/constants/network';
-import {
-  isRpcRateLimitError,
-  jsonRpcRequest,
-} from '../../../shared/lib/rpc.utils';
+import { isRpcRateLimitError } from '../../../shared/lib/rpc.utils';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useSafeChains } from '../../components/multichain/networks-form/use-safe-chains';
 import {
@@ -199,7 +197,9 @@ export const AddRpcUrlPageForm = ({
       validationRequestIdRef.current === requestId &&
       latestUrlRef.current.trim() === trimmedUrl;
 
-    jsonRpcRequest(templateInfuraRpc(trimmedUrl), 'eth_chainId')
+    submitRequestToBackground<string>('validateRpcEndpoint', [
+      templateInfuraRpc(trimmedUrl),
+    ])
       .then(() => {
         if (isCurrentValidation()) {
           setRpcValidationError(undefined);

@@ -2,7 +2,7 @@ import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { join, resolve } from 'node:path';
 import { Open } from 'unzipper';
-import { sources, type Compilation } from 'webpack';
+import { sources, Compilation } from 'webpack';
 import {
   BUNDLE_SIZE_DEBUG_FILE,
   BUNDLE_SIZE_SUMMARY_FILE,
@@ -23,6 +23,10 @@ import {
   ENVIRONMENTS,
 } from '../utils/constants';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import {
+  NETWORK_POLICY_RULESET_ID,
+  NETWORK_POLICY_RULES_PATH,
+} from '../utils/plugins/ManifestPlugin/network-policy';
 import { getLatestCommit } from '../utils/git';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
@@ -1212,6 +1216,147 @@ describe('ManifestPlugin', () => {
     });
   });
 
+  describe('packaged network policy', () => {
+    it('forwards the explicit store signing ID to both packaged rule scopes', async () => {
+      const extensionId = 'abcdefghijklmnopabcdefghijklmnop';
+      const { compiler, compilation, promise } = mockWebpack([], [], []);
+      compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+      const plugin = new ManifestPlugin({
+        browsers: ['chrome'],
+        manifest_version: 3,
+        version: '1.0.0.0',
+        versionName: '1.0.0',
+        description: null,
+        buildType: 'main',
+        networkPolicyExtensionId: extensionId,
+        transform: (manifest) => ({
+          ...manifest,
+          minimum_chrome_version: '145',
+          permissions: ['declarativeNetRequestWithHostAccess'],
+          declarative_net_request: {
+            rule_resources: [
+              {
+                id: NETWORK_POLICY_RULESET_ID,
+                enabled: true,
+                path: NETWORK_POLICY_RULES_PATH,
+              },
+            ],
+          },
+        }),
+        zip: false,
+      });
+
+      plugin.apply(compiler);
+      await promise;
+
+      const rules = compilation.assets[`chrome/${NETWORK_POLICY_RULES_PATH}`];
+      assert(rules);
+      const packagedRules = JSON.parse(rules.source().toString());
+      assert.strictEqual(packagedRules.length, 2);
+      assert.deepStrictEqual(packagedRules[0].condition.initiatorDomains, [
+        extensionId,
+      ]);
+      assert.deepStrictEqual(packagedRules[1].condition.topDomains, [
+        extensionId,
+      ]);
+    });
+
+    it('rejects an invalid target signing ID in plugin options', () => {
+      assert.throws(
+        () =>
+          new ManifestPlugin({
+            browsers: ['chrome'],
+            manifest_version: 3,
+            version: '1.0.0.0',
+            versionName: '1.0.0',
+            description: null,
+            buildType: 'main',
+            networkPolicyExtensionId: `${'a'.repeat(32)}\n`,
+            zip: false,
+          }),
+        /networkPolicyExtensionId/u,
+      );
+    });
+
+    for (const zip of [false, true] as const) {
+      it(`packages the scoped startup rules in the Chrome ${zip ? 'zip' : 'directory'}`, async () => {
+        const { compiler, compilation, promise } = mockWebpack([], [], []);
+        compiler.context = join(__dirname, 'fixtures/ManifestPlugin/empty');
+        const plugin = new ManifestPlugin({
+          browsers: ['chrome', 'firefox'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          transform: (manifest, browser) =>
+            browser === 'chrome'
+              ? {
+                  ...manifest,
+                  key: CHROME_MANIFEST_KEY_NON_PRODUCTION,
+                  minimum_chrome_version: '145',
+                  permissions: ['declarativeNetRequestWithHostAccess'],
+                  declarative_net_request: {
+                    rule_resources: [
+                      {
+                        id: NETWORK_POLICY_RULESET_ID,
+                        enabled: true,
+                        path: NETWORK_POLICY_RULES_PATH,
+                      },
+                    ],
+                  },
+                }
+              : manifest,
+          zip,
+          ...(zip
+            ? {
+                zipOptions: {
+                  level: 1 as const,
+                  outFilePath: '[browser].zip',
+                  mtime: DEFAULT_ZIP_MTIME,
+                  excludeExtensions: [],
+                },
+              }
+            : {}),
+        });
+
+        plugin.apply(compiler);
+        await promise;
+
+        const rules = compilation.assets[`chrome/${NETWORK_POLICY_RULES_PATH}`];
+        assert(rules, 'Chrome must package the enabled startup rule asset');
+        assert.deepStrictEqual(
+          JSON.parse(rules.source().toString())[0].condition.initiatorDomains,
+          ['hebhblbkkdabgoldnojllkipeoacjioc'],
+        );
+        assert.deepStrictEqual(
+          JSON.parse(rules.source().toString())[1].condition.topDomains,
+          ['hebhblbkkdabgoldnojllkipeoacjioc'],
+        );
+        assert.strictEqual(
+          compilation.assets[`firefox/${NETWORK_POLICY_RULES_PATH}`],
+          undefined,
+        );
+        if (zip) {
+          const chromeEntries = await readZipEntries(
+            compilation.assets['chrome.zip'],
+          );
+          const firefoxEntries = await readZipEntries(
+            compilation.assets['firefox.zip'],
+          );
+          assert.strictEqual(
+            chromeEntries.get(NETWORK_POLICY_RULES_PATH)?.toString(),
+            rules.source().toString(),
+          );
+          assert.strictEqual(
+            firefoxEntries.has(NETWORK_POLICY_RULES_PATH),
+            false,
+          );
+        }
+      });
+    }
+  });
+
   describe('build type overrides', () => {
     const context = join(__dirname, 'fixtures/ManifestPlugin/build-types');
 
@@ -1652,6 +1797,23 @@ describe('ManifestPlugin', () => {
         assert.ok(entries.notification, 'should have notification HTML entry');
         assert.ok(entries.home, 'should have home HTML entry');
         assert.ok(entries.offscreen, 'should include offscreen.html for MV3');
+        assert.ok(entries['rpc-endpoint-validation']);
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'rpc-endpoint-validation' }),
+          false,
+        );
+        assert.strictEqual(
+          plugin.isIsolatedHtmlEntry('rpc-endpoint-validation'),
+          true,
+        );
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'rpc-endpoint-validation-runtime' }),
+          false,
+        );
+        assert.strictEqual(
+          plugin.isIsolatedHtmlEntry('rpc-endpoint-validation-runtime'),
+          true,
+        );
         assert.ok(
           entries['trezor-usb-permissions'],
           'should include trezor-usb-permissions.html',
@@ -1698,6 +1860,142 @@ describe('ManifestPlugin', () => {
           scriptKeys.length,
           uniqueScriptKeys.length,
           'should not have duplicate script entries',
+        );
+      });
+    });
+
+    describe('RPC validation bundle isolation', () => {
+      const runtimeFile =
+        'rpc-endpoint-validation-runtime.0123456789abcdef0123.js';
+      const brokerHtml = `<script src="${runtimeFile}" defer></script>`;
+
+      function createPlugin() {
+        return new ManifestPlugin({
+          browsers: ['chrome'],
+          manifest_version: 3,
+          version: '1.0.0.0',
+          versionName: '1.0.0',
+          description: null,
+          buildType: 'main',
+          zip: false,
+          html,
+        });
+      }
+
+      it('accepts the single script asset used by the rendered broker HTML', async () => {
+        const { compiler, compilation, promise } = mockWebpack(
+          ['rpc-endpoint-validation.html', runtimeFile],
+          [brokerHtml, '/* self-contained validation runtime */'],
+          [null, null],
+        );
+        compiler.context = entrypointsContext;
+        compilation.entrypoints.set(
+          'rpc-endpoint-validation-runtime',
+          mockEntrypoint(runtimeFile),
+        );
+        const stages: (number | undefined)[] = [];
+        const originalTap = compilation.hooks.processAssets.tap;
+        compilation.hooks.processAssets.tap = new Proxy(originalTap, {
+          apply(target, thisArgument: unknown, argumentsList: unknown[]): void {
+            const [options] = argumentsList;
+            if (
+              typeof options === 'object' &&
+              options !== null &&
+              'stage' in options
+            ) {
+              stages.push(
+                typeof options.stage === 'number' ? options.stage : undefined,
+              );
+            }
+            Reflect.apply(target, thisArgument, argumentsList);
+          },
+        });
+        const plugin = createPlugin();
+
+        plugin.apply(compiler);
+        await promise;
+
+        assert.ok(stages.includes(Compilation.PROCESS_ASSETS_STAGE_REPORT));
+        assert.ok(compilation.assets[`chrome/${runtimeFile}`]);
+        assert.strictEqual(
+          plugin.canBeChunked({ name: 'rpc-endpoint-validation-runtime' }),
+          false,
+        );
+        assert.strictEqual(
+          plugin.isIsolatedHtmlEntry('rpc-endpoint-validation-runtime'),
+          true,
+        );
+      });
+
+      it('rejects a rendered broker page that loads shared UI chunks', () => {
+        const { compiler, compilation } = mockWebpack(
+          ['rpc-endpoint-validation.html', runtimeFile, 'runtime.shared.js'],
+          [
+            `<script src="runtime.shared.js"></script>${brokerHtml}`,
+            '/* validation runtime */',
+            '/* shared runtime */',
+          ],
+          [null, null, null],
+        );
+        compiler.context = entrypointsContext;
+        // The actual script entry can be correct while the HTML still imports
+        // another runtime. Inspect the rendered document as well as getFiles.
+        compilation.entrypoints.set(
+          'rpc-endpoint-validation-runtime',
+          mockEntrypoint(runtimeFile),
+        );
+
+        assert.throws(
+          () => createPlugin().apply(compiler),
+          /exactly one self-contained runtime bundle/u,
+        );
+      });
+
+      it('rejects a split actual script entry even when the HTML contains one script', () => {
+        const { compiler, compilation } = mockWebpack(
+          ['rpc-endpoint-validation.html', runtimeFile, 'runtime.shared.js'],
+          [brokerHtml, '/* validation runtime */', '/* shared runtime */'],
+          [null, null, null],
+        );
+        compiler.context = entrypointsContext;
+        compilation.entrypoints.set(
+          'rpc-endpoint-validation-runtime',
+          mockEntrypoint('runtime.shared.js', runtimeFile),
+        );
+
+        assert.throws(
+          () => createPlugin().apply(compiler),
+          /exactly one self-contained runtime bundle/u,
+        );
+      });
+
+      it('rejects a broker script renamed by an HTML entry collision', () => {
+        const collidedScript =
+          'rpc-endpoint-validation-runtime.1.0123456789abcdef0123.js';
+        const { compiler } = mockWebpack(
+          ['rpc-endpoint-validation.html', collidedScript],
+          [`<script src="${collidedScript}"></script>`, '/* script */'],
+          [null, null],
+        );
+        compiler.context = entrypointsContext;
+
+        assert.throws(
+          () => createPlugin().apply(compiler),
+          /exactly one self-contained runtime bundle/u,
+        );
+      });
+
+      it('rejects a broker page without its referenced runtime asset', () => {
+        const { compiler } = mockWebpack(
+          ['rpc-endpoint-validation.html'],
+          [brokerHtml],
+          [null],
+        );
+        compiler.context = entrypointsContext;
+
+        assert.throws(
+          () => createPlugin().apply(compiler),
+          /exactly one self-contained runtime bundle/u,
         );
       });
     });

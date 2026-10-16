@@ -59,11 +59,16 @@ export class OAuthService {
 
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
+  #socialOnboardingNetworkPolicy: OAuthServiceOptions['socialOnboardingNetworkPolicy'];
+
+  #loginInProgress = false;
+
   constructor({
     messenger,
     webAuthenticator,
     platform,
     trackEvent,
+    socialOnboardingNetworkPolicy,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -71,6 +76,7 @@ export class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
     this.#trackEvent = trackEvent;
+    this.#socialOnboardingNetworkPolicy = socialOnboardingNetworkPolicy;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -105,27 +111,46 @@ export class OAuthService {
   async startOAuthLogin(
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
-    // create the login handler for the given social login type
-    // this is to get the Jwt Token in the exchange for the Authorization Code
-    const loginHandler = createLoginHandler(
-      authConnection,
-      this.#config,
-      this.#webAuthenticator,
-    );
+    if (this.#loginInProgress) {
+      throw new Error('Social login is already in progress');
+    }
 
-    // get the user location to determine if the user is in US region
-    // the location value will be used later to determine if Marketing Opt-in should be enabled by default
-    this.#messenger
-      .call('GeolocationController:getGeolocation')
-      .catch((error) => {
-        log.error('Error getting user location:', error);
-      });
+    this.#loginInProgress = true;
+    try {
+      // Install the browser rules before starting any onboarding request.
+      await this.#socialOnboardingNetworkPolicy?.beginSocialOnboarding(
+        authConnection,
+      );
+      const loginHandler = createLoginHandler(
+        authConnection,
+        this.#config,
+        this.#webAuthenticator,
+      );
 
-    const oAuthLoginResult = await this.#handleOAuthLogin(
-      loginHandler,
-      authConnection,
-    );
-    return oAuthLoginResult;
+      // Marketing opt-in defaults use this location. A lookup failure must not
+      // prevent the user from authenticating.
+      this.#messenger
+        .call('GeolocationController:getGeolocation')
+        .catch((error) => {
+          log.error('Error getting user location:', error);
+        });
+
+      const [oAuthLoginResult] = await Promise.all([
+        this.#handleOAuthLogin(loginHandler, authConnection),
+        this.#messenger.call(
+          'SeedlessOnboardingController:preloadToprfNodeDetails',
+        ),
+      ]);
+
+      // Keep the selected path open for authentication and backup/restore.
+      // Completion, reset or closing the onboarding UI revokes it.
+      return oAuthLoginResult;
+    } catch (error) {
+      await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
+      throw error;
+    } finally {
+      this.#loginInProgress = false;
+    }
   }
 
   /**
