@@ -1,15 +1,19 @@
 #!/usr/bin/env tsx
 import { createServer, type Server } from 'node:http';
 import { promises as fs } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { Builder } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import firefox from 'selenium-webdriver/firefox';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { isHeadless } from '../../helpers/env';
 
 const CALIBRATION_SAMPLES = 6;
 const WARMUP_SAMPLES = 1;
+const WEBDRIVER_TIMEOUT_MS = 30_000;
+const PINNED_GECKODRIVER_VERSION = '0.36.0';
 
 type CalibrationSample = {
   navigationLoadMs: number;
@@ -137,15 +141,63 @@ async function closeServer(server: Server): Promise<void> {
   });
 }
 
-export async function main(): Promise<void> {
-  const argv = await yargs(hideBin(process.argv))
-    .option('out', {
-      type: 'string',
-      demandOption: true,
-      description: 'Path to write runner calibration JSON',
-    })
-    .parse();
-  const { server, url } = await startFixtureServer();
+function resolveFirefoxPaths(): {
+  browserPath?: string;
+  driverPath?: string;
+} {
+  try {
+    const seleniumManager = path.join(
+      path.dirname(require.resolve('selenium-webdriver')),
+      'bin',
+      process.platform === 'darwin' ? 'macos' : 'linux',
+      'selenium-manager',
+    );
+    const output = execFileSync(
+      seleniumManager,
+      [
+        '--browser',
+        'firefox',
+        '--driver',
+        'geckodriver',
+        '--driver-version',
+        PINNED_GECKODRIVER_VERSION,
+        '--output',
+        'json',
+        '--avoid-stats',
+      ],
+      { encoding: 'utf8', timeout: WEBDRIVER_TIMEOUT_MS },
+    );
+    const { result } = JSON.parse(output);
+    return {
+      browserPath: process.env.FIREFOX_BINARY || result?.browser_path,
+      driverPath: process.env.GECKODRIVER_PATH || result?.driver_path,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Unable to resolve Firefox and geckodriver ${PINNED_GECKODRIVER_VERSION}: ${message}`,
+    );
+  }
+}
+
+async function buildDriver() {
+  if (process.env.SELENIUM_BROWSER === 'firefox') {
+    const { browserPath, driverPath } = resolveFirefoxPaths();
+    const options = new firefox.Options();
+    if (browserPath) {
+      options.setBinary(browserPath);
+    }
+    if (isHeadless('SELENIUM')) {
+      options.addArguments('-headless');
+    }
+
+    return await new Builder()
+      .forBrowser('firefox')
+      .setFirefoxOptions(options)
+      .setFirefoxService(new firefox.ServiceBuilder(driverPath))
+      .build();
+  }
+
   const chromeArguments = [
     '--disable-gpu',
     '--disable-dev-shm-usage',
@@ -156,13 +208,29 @@ export async function main(): Promise<void> {
     chromeArguments.push('--headless=new');
   }
   const options = new chrome.Options().addArguments(chromeArguments);
-  const driver = await new Builder()
+  return await new Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
     .setChromeService(new chrome.ServiceBuilder())
     .build();
+}
+
+export async function main(): Promise<void> {
+  const argv = await yargs(hideBin(process.argv))
+    .option('out', {
+      type: 'string',
+      demandOption: true,
+      description: 'Path to write runner calibration JSON',
+    })
+    .parse();
+  const { server, url } = await startFixtureServer();
+  const driver = await buildDriver();
 
   try {
+    await driver.manage().setTimeouts({
+      pageLoad: WEBDRIVER_TIMEOUT_MS,
+      script: WEBDRIVER_TIMEOUT_MS,
+    });
     const samples: CalibrationSample[] = [];
     for (let index = 0; index < CALIBRATION_SAMPLES; index += 1) {
       await driver.get(`${url}/?sample=${index}`);
