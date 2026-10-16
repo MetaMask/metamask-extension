@@ -34,7 +34,7 @@ describe('trace root and parentContext (real SDK)', () => {
     );
   }
 
-  function underParent<T>(fn: () => T): T {
+  function underParent<ResultType>(fn: () => ResultType): ResultType {
     return trace({ name: TraceName.Transaction }, (span) => {
       parent = span as Sentry.Span;
       return fn();
