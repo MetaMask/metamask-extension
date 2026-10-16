@@ -1,4 +1,5 @@
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { MetaMetricsHardwareWalletDeviceType } from '../../../../shared/constants/metametrics';
 import {
   CLIENT_ID_EXTENSION_CHROME,
   CLIENT_ID_EXTENSION_FIREFOX,
@@ -12,6 +13,32 @@ export const getClientForTransactionMetadata = (): string =>
 
 export const getClientVersionForTransactionMetadata = (): string =>
   process.env.METAMASK_VERSION ?? '';
+
+/**
+ * Maps a keyring type to the hardware name Segment expects.
+ * Segment `device_type` expects `Ledger`, `Trezor`, `QR Hardware`, or `Lattice`.
+ * The keyring type is a longer label, such as `Ledger Hardware`.
+ * Unknown labels, including OneKey, are omitted.
+ *
+ * @param value - Keyring type, such as `Ledger Hardware`.
+ * @returns The Segment value, or undefined when the signer is not a known hardware wallet.
+ */
+export const toAccountHardwareType = (
+  value?: string,
+): MetaMetricsHardwareWalletDeviceType | undefined => {
+  switch (value) {
+    case 'Ledger Hardware':
+      return MetaMetricsHardwareWalletDeviceType.Ledger;
+    case 'Trezor Hardware':
+      return MetaMetricsHardwareWalletDeviceType.Trezor;
+    case 'QR Hardware Wallet Device':
+      return MetaMetricsHardwareWalletDeviceType.QrHardware;
+    case 'Lattice Hardware':
+      return MetaMetricsHardwareWalletDeviceType.Lattice;
+    default:
+      return undefined;
+  }
+};
 
 /**
  * Sanitizes transaction origin for analytics.
