@@ -642,7 +642,6 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
-      // Reads Analytics, Authentication and Keyring state on construction.
       MarketingConsentController: MarketingConsentControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
@@ -942,7 +941,7 @@ export default class MetamaskController extends EventEmitter {
     setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
-    this.marketingConsentController.init();
+    this.marketingConsentController.initialize();
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
