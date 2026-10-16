@@ -1,0 +1,8 @@
+# actionlint 1.7.12's bundled schema for actions/create-github-app-token@v3
+# lists app-id only. That action also accepts client-id, which is the
+# credential this workflow uses (vars.APP_CLIENT_ID).
+paths:
+  .github/workflows/draft-segment-schema-pr.yml:
+    ignore:
+      - 'missing input "app-id" which is required by action "actions/create-github-app-token@v3"'
+      - 'input "client-id" is not defined in action "actions/create-github-app-token@v3"'
