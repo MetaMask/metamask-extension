@@ -41,6 +41,29 @@ describe('jsonRpcRequest', () => {
   });
 
   describe('successful responses', () => {
+    it('uses a supplied RPC probe transport', async () => {
+      const probe = jest
+        .fn()
+        .mockResolvedValue(makeHttpResponse({ result: '0x1' }));
+
+      const result = await jsonRpcRequest(RPC_URL, 'eth_chainId', [], {
+        fetch: probe,
+      });
+
+      expect(result).toBe('0x1');
+      expect(getMockFetch()).not.toHaveBeenCalled();
+      expect(probe).toHaveBeenCalledWith(
+        RPC_URL,
+        expect.objectContaining({ method: 'POST' }),
+      );
+      const requestBody = JSON.parse(probe.mock.calls[0][1].body);
+      expect(requestBody).toMatchObject({
+        jsonrpc: '2.0',
+        method: 'eth_chainId',
+        params: [],
+      });
+    });
+
     it('returns the result field from the JSON-RPC response', async () => {
       getMockFetch().mockReturnValue(makeHttpResponse({ result: 'success' }));
 

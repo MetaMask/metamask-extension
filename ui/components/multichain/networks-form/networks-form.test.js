@@ -194,6 +194,44 @@ describe('NetworkForm Component', () => {
     delete process.env.QUICKNODE_BSC_URL;
   });
 
+  it('validates a newly selected RPC through the trusted policy probe', async () => {
+    const originalPolicy = globalThis.metamaskFetchPolicy;
+    const probeRpcEndpoint = jest.fn().mockResolvedValue({
+      status: 200,
+      json: async () => ({ jsonrpc: '2.0', result: '0x1' }),
+    });
+    globalThis.metamaskFetchPolicy = {
+      getPolicy: jest.fn(),
+      update: jest.fn(),
+      probeRpcEndpoint,
+    };
+    try {
+      renderComponent({
+        ...propNetworkDisplay,
+        networkFormState: {
+          ...propNetworkDisplay.networkFormState,
+          rpcUrls: {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [{ url: 'https://new-rpc.example' }],
+          },
+        },
+      });
+
+      await waitFor(() => expect(probeRpcEndpoint).toHaveBeenCalled());
+
+      expect(probeRpcEndpoint).toHaveBeenCalledWith(
+        'https://new-rpc.example',
+        expect.objectContaining({ method: 'POST' }),
+      );
+      expect(JSON.parse(probeRpcEndpoint.mock.calls[0][1].body)).toMatchObject({
+        method: 'eth_chainId',
+        params: [],
+      });
+    } finally {
+      globalThis.metamaskFetchPolicy = originalPolicy;
+    }
+  });
+
   it('should render add new network form correctly', async () => {
     const { queryByText } = renderComponent({
       ...propNetworkDisplay,

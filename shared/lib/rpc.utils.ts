@@ -55,6 +55,7 @@ export function isRpcRateLimitError(error: unknown): boolean {
  * @param rpcParams - The RPC method params.
  * @param options - Optional extra headers (e.g. Authorization).
  * @param options.headers - Optional HTTP headers to include in the request.
+ * @param options.fetch - Optional transport for a trusted RPC validation probe.
  * @returns Returns the result of the RPC method call,
  * or throws an error in case of failure.
  */
@@ -62,7 +63,7 @@ export async function jsonRpcRequest(
   rpcUrl: string,
   rpcMethod: string,
   rpcParams: unknown[] = [],
-  options: { headers?: Record<string, string> } = {},
+  options: { headers?: Record<string, string>; fetch?: typeof fetch } = {},
 ): Promise<unknown> {
   let fetchUrl = rpcUrl;
   const headers: Record<string, string> = {
@@ -79,7 +80,7 @@ export async function jsonRpcRequest(
     headers.Authorization = `Basic ${encodedAuth}`;
     fetchUrl = `${origin}${pathname}${search}`;
   }
-  const httpResponse = await fetchWithTimeout(fetchUrl, {
+  const httpResponse = await (options.fetch ?? fetchWithTimeout)(fetchUrl, {
     method: 'POST',
     body: JSON.stringify({
       id: Date.now().toString(),

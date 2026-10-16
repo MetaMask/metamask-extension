@@ -378,6 +378,7 @@ import { RewardsDataServiceInit } from './messenger-client-init/rewards-data-ser
 import { RewardsControllerInit } from './messenger-client-init/rewards-controller-init';
 import { QrSyncControllerInit } from './messenger-client-init/qr-sync';
 import { getRootMessenger } from './lib/messenger';
+import { initializeFetchPolicy } from './lib/initialize-fetch-policy';
 import { MessengerSubscriptions } from './lib/MessengerSubscriptions';
 import { ProfileMetricsControllerInit } from './messenger-client-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metrics-service-init';
@@ -469,6 +470,11 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
+    initializeFetchPolicy({
+      messenger: controllerMessenger,
+      state: initState,
+      infuraProjectId: opts.infuraProjectId,
+    });
     const version = process.env.METAMASK_VERSION;
     this.featureFlags = opts.featureFlags;
 
@@ -3113,12 +3119,18 @@ export default class MetamaskController extends EventEmitter {
         this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
           this.seedlessOnboardingController,
         ),
-      authenticate: this.seedlessOnboardingController.authenticate.bind(
-        this.seedlessOnboardingController,
-      ),
-      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
+      authenticate: async (...args) => {
+        try {
+          return await this.seedlessOnboardingController.authenticate(...args);
+        } catch (error) {
+          globalThis.metamaskFetchPolicy?.update({ onboardingPath: null });
+          throw error;
+        }
+      },
+      resetOAuthLoginState: (...args) => {
+        globalThis.metamaskFetchPolicy?.update({ onboardingPath: null });
+        return this.seedlessOnboardingController.clearState(...args);
+      },
       createSeedPhraseBackup: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:createSeedPhraseBackup',

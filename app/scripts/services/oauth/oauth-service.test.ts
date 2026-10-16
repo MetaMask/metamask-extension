@@ -133,11 +133,18 @@ beforeEach(() => {
 });
 
 describe('OAuthService - startOAuthLogin', () => {
+  const originalFetchPolicy = globalThis.metamaskFetchPolicy;
+  const updateFetchPolicy = jest.fn();
+
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
   });
 
   beforeEach(() => {
+    globalThis.metamaskFetchPolicy = {
+      update: updateFetchPolicy,
+      getPolicy: jest.fn(),
+    };
     mockBrowserRuntime.lastError = undefined;
 
     // mock the fetch call to auth-server
@@ -160,6 +167,7 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   afterEach(() => {
+    globalThis.metamaskFetchPolicy = originalFetchPolicy;
     mockBrowserRuntime.lastError = undefined;
     jest.clearAllMocks();
   });
@@ -173,6 +181,13 @@ describe('OAuthService - startOAuthLogin', () => {
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
+
+    expect(updateFetchPolicy).toHaveBeenCalledWith({
+      onboardingPath: 'social',
+    });
+    expect(updateFetchPolicy.mock.invocationCallOrder[0]).toBeLessThan(
+      jest.mocked(global.fetch).mock.invocationCallOrder[0],
+    );
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
@@ -424,6 +439,10 @@ describe('OAuthService - startOAuthLogin', () => {
     await expect(
       oauthService.startOAuthLogin(AuthConnection.Telegram),
     ).rejects.toThrow(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+
+    expect(updateFetchPolicy).toHaveBeenLastCalledWith({
+      onboardingPath: null,
+    });
 
     expect(captureException).not.toHaveBeenCalled();
     expect(mockPlatform.closeTab).not.toHaveBeenCalled();

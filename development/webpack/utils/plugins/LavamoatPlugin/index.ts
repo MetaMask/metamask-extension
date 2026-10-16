@@ -43,6 +43,7 @@ const getScuttleGlobalThisExceptions = (args: Args) => [
   // globals used by the browser to generate notifications
   'Image',
   'fetch',
+  'metamaskFetchPolicy',
   'AbortController',
   'OffscreenCanvas',
   /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,

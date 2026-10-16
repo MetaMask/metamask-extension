@@ -15,6 +15,7 @@ import type {
   StorageKind,
 } from '../shared/lib/stores/persistence-manager';
 import type { SentryRemoteRates } from '../shared/lib/sentry-remote-rates';
+import type { FetchPolicyApi } from '../app/scripts/lib/fetch-policy';
 
 type StateHooks = {
   getSentryRemoteRates?: () => SentryRemoteRates;
@@ -125,6 +126,8 @@ type StateHooks = {
 };
 
 declare global {
+  var metamaskFetchPolicy: FetchPolicyApi | undefined;
+
   /**
    * Debug helper to log encrypted vault state
    */

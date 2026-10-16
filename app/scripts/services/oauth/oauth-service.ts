@@ -113,6 +113,10 @@ export class OAuthService {
       this.#webAuthenticator,
     );
 
+    // This method is invoked by the user's social-login selection. Merely
+    // rendering onboarding must not enable these domains.
+    globalThis.metamaskFetchPolicy?.update({ onboardingPath: 'social' });
+
     // get the user location to determine if the user is in US region
     // the location value will be used later to determine if Marketing Opt-in should be enabled by default
     this.#messenger
@@ -121,11 +125,12 @@ export class OAuthService {
         log.error('Error getting user location:', error);
       });
 
-    const oAuthLoginResult = await this.#handleOAuthLogin(
-      loginHandler,
-      authConnection,
-    );
-    return oAuthLoginResult;
+    try {
+      return await this.#handleOAuthLogin(loginHandler, authConnection);
+    } catch (error) {
+      globalThis.metamaskFetchPolicy?.update({ onboardingPath: null });
+      throw error;
+    }
   }
 
   /**

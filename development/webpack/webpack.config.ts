@@ -40,6 +40,7 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
+import { FetchPolicyPlugin } from './utils/plugins/FetchPolicyPlugin';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { getDevServerOptions, injectEntryScripts } from './utils/dev-server';
@@ -182,6 +183,7 @@ const manifestPlugin = new ManifestPlugin({
 });
 
 const plugins: WebpackPluginInstance[] = [
+  new FetchPolicyPlugin(args.test),
   manifestPlugin,
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({

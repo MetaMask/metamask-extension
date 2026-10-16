@@ -518,7 +518,9 @@ export const NetworksForm = ({
       return true;
     };
 
-    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
+    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId', [], {
+      fetch: globalThis.metamaskFetchPolicy?.probeRpcEndpoint,
+    })
       .then((response) => {
         if (!cancelled) {
           setFetchedChainId(response as string);
