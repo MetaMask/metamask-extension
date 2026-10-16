@@ -935,7 +935,11 @@
   "previewBuilds": {
     "@metamask/wallet": {
       "type": "non-breaking",
-      "previewVersion": "17.1.0-preview-bcc46779f"
+      "previewVersion": "17.1.0-preview-2d5c9da"
+    },
+    "@metamask/base-controller": {
+      "type": "non-breaking",
+      "previewVersion": "10.0.0-preview-2d5c9da"
     }
   }
 }
