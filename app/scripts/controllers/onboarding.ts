@@ -429,7 +429,7 @@ export class OnboardingController extends BaseController<
   resetOnboarding(): void {
     // Drop in-progress journeys so the next attempt starts a new trace.
     // Clearing onboardingJourneyEnded alone would resume the tab's old journey.
-    for (const [tabId, journey] of [...this.#onboardingJourneysByTabId]) {
+    for (const [tabId, journey] of this.#onboardingJourneysByTabId) {
       this.endOnboardingJourney({
         ...(tabId === undefined ? {} : { tabId }),
         lastStep: journey.lastStep,
