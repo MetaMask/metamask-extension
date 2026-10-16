@@ -47,6 +47,8 @@ import {
 } from '../../../helpers/constants/routes';
 import { transitionBack } from '../../ui/transition';
 import {
+  MetaMetricsAccountHiddenLocation,
+  MetaMetricsAccountRemovedLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -76,10 +78,15 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { EMPTY_ARRAY } from '../../../selectors/shared';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { getAccountGroupDisplayBalance } from '../../../helpers/utils/account-group-balance';
-import { isPrivateKeyWallet } from '../../../helpers/utils/account-wallet';
+import {
+  getAccountWalletMetricProps,
+  isPrivateKeyWallet,
+  type AccountWalletMetricProps,
+} from '../../../helpers/utils/account-wallet';
 import { VirtualizedList } from '../../ui/virtualized-list/virtualized-list';
 import { useDispatch } from '../../../store/hooks';
 import { useDisconnectAccountGroup } from '../../../hooks/useDisconnectAccountGroup';
+import { useTrackAccountHidden } from '../hooks/useTrackAccountHidden';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
@@ -215,6 +222,7 @@ export const MultichainAccountList = ({
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const { privacyMode } = useSelector(getPreferences);
   const internalAccountsById = useSelector(getInternalAccountsObject);
+  const trackAccountHidden = useTrackAccountHidden();
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -231,7 +239,7 @@ export const MultichainAccountList = ({
     groupId: AccountGroupId;
     accountName: string;
     address?: string;
-    walletType?: AccountWalletType;
+    metricProps: AccountWalletMetricProps;
   } | null>(null);
 
   // Optimistic visibility so a hide/reveal shows on the cell before Redux
@@ -312,9 +320,8 @@ export const MultichainAccountList = ({
         createEventBuilder(MetaMetricsEventName.AccountRemoved)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountToDelete?.walletType,
+            ...accountToDelete.metricProps,
+            location: MetaMetricsAccountRemovedLocation.ManageAccounts,
           })
           .build(),
       );
@@ -348,6 +355,12 @@ export const MultichainAccountList = ({
         }
 
         await dispatch(setAccountGroupHidden(accountGroupId, nextHidden));
+
+        trackAccountHidden(
+          accountGroupId,
+          nextHidden,
+          MetaMetricsAccountHiddenLocation.ManageAccounts,
+        );
       } finally {
         // A later toggle owns the override until its own write settles, so only
         // the most recent write hands the account back to the tree.
@@ -358,7 +371,7 @@ export const MultichainAccountList = ({
         }
       }
     },
-    [disconnectAccountGroup, dispatch, wallets],
+    [disconnectAccountGroup, dispatch, trackAccountHidden, wallets],
   );
 
   const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
@@ -555,7 +568,7 @@ export const MultichainAccountList = ({
                       groupId: groupId as AccountGroupId,
                       accountName: groupData.metadata.name,
                       address,
-                      walletType: wallet?.type,
+                      metricProps: getAccountWalletMetricProps(wallet),
                     });
                   }
                 : undefined

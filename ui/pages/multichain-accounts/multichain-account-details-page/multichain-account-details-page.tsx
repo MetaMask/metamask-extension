@@ -56,9 +56,11 @@ import { MultichainAccountEditModal } from '../../../components/multichain-accou
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
 import {
+  MetaMetricsAccountRemovedLocation,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getAccountWalletMetricProps } from '../../../helpers/utils/account-wallet';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useDispatch } from '../../../store/hooks';
@@ -149,9 +151,8 @@ export const MultichainAccountDetailsPage = () => {
         createEventBuilder(MetaMetricsEventName.AccountRemoved)
           .addCategory(MetaMetricsEventCategory.Accounts)
           .addProperties({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: wallet?.type,
+            ...getAccountWalletMetricProps(wallet),
+            location: MetaMetricsAccountRemovedLocation.AccountDetails,
           })
           .build(),
       );
@@ -163,7 +164,7 @@ export const MultichainAccountDetailsPage = () => {
     trackEvent,
     createEventBuilder,
     navigate,
-    wallet?.type,
+    wallet,
     accountsWithAddresses,
   ]);
 
