@@ -52,7 +52,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 232,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -2254,6 +2254,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 232
+    "version": 233
   }
 }
