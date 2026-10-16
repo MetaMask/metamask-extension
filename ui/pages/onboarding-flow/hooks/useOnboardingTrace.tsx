@@ -75,21 +75,23 @@ function useOnboardingTraceLifecycle(): OnboardingTraceContextValue {
       .catch(() => undefined);
     startJourneyPromiseRef.current = startJourneyPromise;
 
-    // Wait for the trace ID to be resolved from the previous promise.
-    const traceId = await startJourneyPromise;
-    if (!traceId) {
-      return;
-    }
-
     // Child screens read this shared ref when starting their own traces.
-    // Only the opaque trace identity crosses the UI/background RPC boundary;
-    // a live Sentry span cannot be passed through it.
+    // Publish the journey name before the id arrives so those spans can attach
+    // while the background call is still in flight. Only the opaque trace
+    // identity crosses the UI/background RPC boundary; a live Sentry span
+    // cannot be passed through it.
     onboardingParentContextRef.current = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       _name: TraceName.OnboardingJourneyOverall,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      _id: traceId,
     };
+
+    const traceId = await startJourneyPromise;
+    const parentContext = onboardingParentContextRef.current;
+    if (!traceId || !parentContext || !('_name' in parentContext)) {
+      return;
+    }
+
+    parentContext._id = traceId;
   }, [getJourneyRequest, messenger, onboardingParentContextRef]);
 
   const endJourney = useCallback(

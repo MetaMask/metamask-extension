@@ -125,6 +125,36 @@ describe('useOnboardingTrace', () => {
     });
   });
 
+  it('publishes the journey name before the trace id resolves', async () => {
+    let resolveJourney: (traceId: string | undefined) => void = () => undefined;
+    startOnboardingJourney.mockReturnValue(
+      new Promise((resolve) => {
+        resolveJourney = resolve;
+      }),
+    );
+
+    const { result } = renderHook(() => useOnboardingTrace(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.startJourney();
+    });
+
+    expect(onboardingParentContext.current).toEqual({
+      _name: TraceName.OnboardingJourneyOverall,
+    });
+
+    await act(async () => {
+      resolveJourney('journey-id');
+    });
+
+    expect(onboardingParentContext.current).toEqual({
+      _name: TraceName.OnboardingJourneyOverall,
+      _id: 'journey-id',
+    });
+  });
+
   it('includes the UI tab ID in tracing requests', async () => {
     const { result } = renderHook(() => useOnboardingTrace(), {
       wrapper: createWrapper('/onboarding/welcome', 42),
