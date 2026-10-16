@@ -254,6 +254,7 @@ async function main() {
   const namespaceActionsResultsHostname = getHostname(
     process.env.NAMESPACE_ACTIONS_RESULTS_URL,
   );
+  const runnerProvider = process.env.NSC_INSTANCE_ID ? 'namespace' : 'github';
 
   const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
@@ -264,6 +265,7 @@ async function main() {
     'ci.runnerName': process.env.RUNNER_NAME || 'unknown',
     'ci.runnerOs': process.env.RUNNER_OS || 'unknown',
     'ci.runnerArch': process.env.RUNNER_ARCH || 'unknown',
+    'ci.runnerProvider': runnerProvider,
     'ci.nscInstanceId': process.env.NSC_INSTANCE_ID || 'unknown',
     'ci.nscInstanceUrl': process.env.NSC_INSTANCE_URL || 'unknown',
     'ci.nscProfileTag': process.env.NSC_PROFILE_TAG || 'unknown',
@@ -313,7 +315,7 @@ async function main() {
       // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
       const type = benchmark.benchmarkType || BENCHMARK_TYPE.BENCHMARK;
-      const message = `benchmark.startupStandardHome.namespace`;
+      const message = `benchmark.startupStandardHome.${runnerProvider}`;
 
       // Skip if mean is empty
       if (Object.keys(benchmark.mean).length === 0) {
