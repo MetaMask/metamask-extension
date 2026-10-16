@@ -69,6 +69,12 @@ jobs:
         if: ${{ matrix.browser == 'firefox' }}
         run: .github/scripts/pin-geckodriver.sh
 
+      - name: Calibrate runner
+        run: >-
+          yarn tsx test/e2e/benchmarks/runner-calibration.ts
+          --out "test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json"
+        shell: bash
+
       - name: Run the benchmark
         # Job timeouts propogate to later jobs, step timeouts just cause job failure.
         # This must be set below the job timeout so that the job itself does not timeout.
@@ -83,6 +89,7 @@ jobs:
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results "test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json" \
+            --calibration "test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json" \
             --browser "${{ matrix.browser }}" \
             --buildType "${{ matrix.buildType }}"
         shell: bash
@@ -109,7 +116,9 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
-          path: test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json
+          path: |
+            test-artifacts/benchmarks/benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}-${{ matrix.index }}.json
+            test-artifacts/benchmarks/runner-calibration-${{ matrix.index }}.json
           retention-days: 7
           if-no-files-found: ignore
 

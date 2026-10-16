@@ -45,6 +45,18 @@ const WEB_VITALS_METRICS = [
   { key: 'cls', ratingKey: 'clsRating' },
 ] as const;
 
+type RunnerCalibration = {
+  sampleCount: number;
+  metrics: Record<
+    string,
+    {
+      mean: number;
+      median: number;
+      p90: number;
+    }
+  >;
+};
+
 function getHostname(value: string | undefined): string | null {
   if (!value) {
     return null;
@@ -164,6 +176,10 @@ async function main() {
       demandOption: true,
       description: 'Path to benchmark results JSON file',
     })
+    .option('calibration', {
+      type: 'string',
+      description: 'Optional path to runner calibration JSON file',
+    })
     .option('browser', {
       type: 'string',
       default: 'chrome',
@@ -189,6 +205,11 @@ async function main() {
     string,
     BenchmarkResults | UserActionResult
   >;
+  const calibration = argv.calibration
+    ? (JSON.parse(
+        await fs.readFile(argv.calibration, 'utf-8'),
+      ) as RunnerCalibration)
+    : undefined;
 
   // Check if results are empty
   const resultEntries = Object.entries(results);
@@ -259,12 +280,24 @@ async function main() {
       getHostnameLabel(namespaceActionsResultsHostname, 1) || 'unknown',
   };
 
+  const calibrationAttributes = calibration
+    ? Object.fromEntries(
+        Object.entries(calibration.metrics).flatMap(([metric, summary]) => [
+          [`runnerCalibration.${metric}.mean`, summary.mean],
+          [`runnerCalibration.${metric}.median`, summary.median],
+          [`runnerCalibration.${metric}.p90`, summary.p90],
+        ]),
+      )
+    : {};
+
   const runnerDiagnostics = {
     ...baseCiAttributes,
     'ci.hostname': os.hostname(),
     'ci.cpuModel': os.cpus()[0]?.model || 'unknown',
     'ci.cpuCount': os.cpus().length,
     'ci.totalMemoryGb': Math.round(os.totalmem() / 1024 ** 3),
+    'runnerCalibration.sampleCount': calibration?.sampleCount || 0,
+    ...calibrationAttributes,
   };
 
   console.log(
@@ -340,6 +373,8 @@ async function main() {
       // Timer data: structured logs (existing path, unchanged)
       Sentry.logger.info(message, {
         ...baseCiAttributes,
+        ...calibrationAttributes,
+        'runnerCalibration.sampleCount': calibration?.sampleCount || 0,
         'ci.persona': benchmark.persona || BENCHMARK_PERSONA.STANDARD,
         'ci.testTitle': benchmark.testTitle,
         ...allMetrics,
