@@ -49,6 +49,13 @@ describe('Transaction.utils', function () {
       expect(() => parseStandardTokenTransactionData()).not.toThrow();
     });
 
+    it.each(['', '0x', '0x123456', '0x12345678', 'invalid'])(
+      'returns undefined for calldata without a matching function: %s',
+      (data) => {
+        expect(parseStandardTokenTransactionData(data)).toBeUndefined();
+      },
+    );
+
     it('decodes Permit2 function', () => {
       const result = parseStandardTokenTransactionData(
         buildPermit2ApproveTransactionData(
