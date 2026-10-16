@@ -91,7 +91,7 @@ describe('MfaSettings', () => {
       { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
     ]);
 
-    expect(screen.getByText('a@b.co')).toBeInTheDocument();
+    expect(screen.getByText('a•••@b.co')).toBeInTheDocument();
     expect(
       screen.queryByTestId(MfaSettingsTestIds.EMAIL_BUTTON),
     ).not.toBeInTheDocument();

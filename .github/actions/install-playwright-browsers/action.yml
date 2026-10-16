@@ -41,4 +41,8 @@ runs:
     - name: Install browsers (cache miss only)
       if: steps.pw-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: yarn playwright install ${{ inputs.browsers }}
+      env:
+        INPUTS_BROWSERS: ${{ inputs.browsers }}
+      run: |
+        IFS=' ' read -ra browsers_array <<< "${INPUTS_BROWSERS}"
+        yarn playwright install "${browsers_array[@]}"
