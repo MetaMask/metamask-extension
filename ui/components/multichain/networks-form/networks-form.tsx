@@ -62,7 +62,10 @@ import {
 } from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -272,6 +275,7 @@ export const NetworksForm = ({
     };
   }, [isChainlistOpen]);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
@@ -566,9 +570,14 @@ export const NetworksForm = ({
         };
 
         if (existingNetwork) {
+          // Passing a replacement index makes NetworkController switch to that
+          // RPC. Only do that for the network that is already selected.
+          const isEditingSelectedNetwork = existingNetwork.rpcEndpoints?.some(
+            (endpoint) => endpoint.networkClientId === selectedNetworkClientId,
+          );
           const options = {
             replacementSelectedRpcEndpointIndex:
-              chainIdHex === existingNetwork.chainId
+              chainIdHex === existingNetwork.chainId && isEditingSelectedNetwork
                 ? rpcUrls?.defaultRpcEndpointIndex
                 : undefined,
           };
