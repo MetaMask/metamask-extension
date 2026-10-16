@@ -307,6 +307,7 @@ import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
+import { setOnboardingNetworkDomains } from './lib/network-request-policy';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -385,10 +386,6 @@ import { UserTraitsServiceInit } from './messenger-client-init/user-traits-servi
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { SentryTracingServiceInit } from './messenger-client-init/sentry-tracing-service-init';
 import { SentinelApiServiceInit } from './messenger-client-init/sentinel-api-service-init';
-import { RpcEndpointValidationServiceInit } from './messenger-client-init/rpc-endpoint-validation-service-init';
-import { NetworkPolicyControllerInit } from './messenger-client-init/network-policy-controller-init';
-import { initializeNetworkPolicy } from './lib/initialize-network-policy';
-import { initializeNetworkPolicyFailover } from './lib/initialize-network-policy-failover';
 import { ChompApiServiceInit } from './messenger-client-init/chomp-api-service-init';
 import { MoneyAccountApiDataServiceInit } from './messenger-client-init/money-account-api-data-service-init';
 import { MoneyAccountAvailabilityServiceInit } from './messenger-client-init/money-account-availability-service-init';
@@ -445,12 +442,6 @@ function isKeyringV2NotSupportedError(error) {
 }
 
 export default class MetamaskController extends EventEmitter {
-  #networkPolicy;
-
-  #networkPolicyAuthority;
-
-  #socialOnboardingNetworkPolicy;
-
   /**
    * @param {object} opts
    */
@@ -461,11 +452,6 @@ export default class MetamaskController extends EventEmitter {
       isFirstMetaMaskControllerSetup,
       controllerMessenger = getRootMessenger(),
     } = opts;
-    const {
-      networkPolicy,
-      socialOnboardingNetworkPolicy,
-      ...controllerOptions
-    } = opts;
 
     this.defaultMaxListeners = 20;
 
@@ -474,24 +460,13 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
       { maxWait: SECOND }, // Force flush to avoid indefinite sync starvation
     );
-    this.opts = controllerOptions;
-    this.#networkPolicyAuthority = networkPolicy;
-    this.#socialOnboardingNetworkPolicy = socialOnboardingNetworkPolicy;
+    this.opts = opts;
     this.requestSafeReload =
       opts.requestSafeReload ?? (() => Promise.resolve());
     this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    if (networkPolicy) {
-      this.#networkPolicy = initializeNetworkPolicy({
-        messenger: controllerMessenger,
-        state: initState,
-        infuraProjectId: opts.infuraProjectId,
-        updateNetworkPolicy: networkPolicy.update,
-        onError: captureException,
-      });
-    }
     const version = process.env.METAMASK_VERSION;
     this.featureFlags = opts.featureFlags;
 
@@ -655,8 +630,6 @@ export default class MetamaskController extends EventEmitter {
       DeFiPositionsControllerV2: DeFiPositionsControllerV2Init,
       DelegationController: DelegationControllerInit,
       OAuthService: OAuthServiceInit,
-      NetworkPolicyController: NetworkPolicyControllerInit,
-      RpcEndpointValidationService: RpcEndpointValidationServiceInit,
       NetworkConnectionBannerController: NetworkConnectionBannerControllerInit,
       ShieldSubscriptionService: ShieldSubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
@@ -832,21 +805,6 @@ export default class MetamaskController extends EventEmitter {
     this.configRegistryController = this.wallet.getInstance(
       'ConfigRegistryController',
     );
-    if (networkPolicy) {
-      initializeNetworkPolicyFailover({
-        messenger: controllerMessenger,
-        networkController: this.networkController,
-        state: {
-          OnboardingController: this.onboardingController.state,
-          PreferencesController: this.preferencesController.state,
-          NetworkController: this.networkController.state,
-          SeedlessOnboardingController: this.seedlessOnboardingController.state,
-          NetworkPolicyController:
-            messengerClientsByName.NetworkPolicyController.state,
-        },
-        infuraProjectId: opts.infuraProjectId,
-      });
-    }
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -2831,9 +2789,16 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this.#addNetwork.bind(this),
-      updateNetwork: this.#updateNetwork.bind(this),
-      removeNetwork: this.#removeNetwork.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
+      updateNetwork: this.networkController.updateNetwork.bind(
+        this.networkController,
+      ),
+      removeNetwork: this.multichainNetworkController.removeNetwork.bind(
+        this.multichainNetworkController,
+      ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -2843,16 +2808,10 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
       // PreferencesController
-      toggleExternalServices: (useExternal, ownedPreferences) =>
-        this.#runWithNetworkPolicy(
-          () =>
-            this.controllerMessenger.call(
-              'LegacyBackgroundApiService:toggleExternalServices',
-              useExternal,
-              ownedPreferences,
-            ),
-          { PreferencesController: { useExternalServices: useExternal } },
-        ),
+      toggleExternalServices: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:toggleExternalServices',
+      ),
       addToken: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:addToken',
@@ -2864,29 +2823,14 @@ export default class MetamaskController extends EventEmitter {
       setPreference: preferencesController.setPreference.bind(
         preferencesController,
       ),
-      consolidateBasicFunctionality: () =>
-        this.#runWithNetworkPolicy(
-          () =>
-            this.controllerMessenger.call(
-              'PreferencesController:consolidateBasicFunctionality',
-            ),
-          // Consolidation can disable external services. Enforce the restrictive
-          // outcome before its synchronous controller listeners start requests.
-          { PreferencesController: { useExternalServices: false } },
-        ),
-      toggleBasicFunctionality: (useBasicFunctionality) =>
-        this.#runWithNetworkPolicy(
-          () =>
-            this.controllerMessenger.call(
-              'PreferencesController:toggleBasicFunctionality',
-              useBasicFunctionality,
-            ),
-          {
-            PreferencesController: {
-              useExternalServices: useBasicFunctionality,
-            },
-          },
-        ),
+      consolidateBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:consolidateBasicFunctionality',
+      ),
+      toggleBasicFunctionality: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'PreferencesController:toggleBasicFunctionality',
+      ),
 
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
@@ -3168,34 +3112,25 @@ export default class MetamaskController extends EventEmitter {
         this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
           this.seedlessOnboardingController,
         ),
-      authenticate: (...args) =>
-        this.#runSocialOnboardingOperation(() =>
-          this.seedlessOnboardingController.authenticate(...args),
-        ),
+      authenticate: this.seedlessOnboardingController.authenticate.bind(
+        this.seedlessOnboardingController,
+      ),
       resetOAuthLoginState: async () => {
-        await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
-        return this.#runWithNetworkPolicy(() =>
-          this.seedlessOnboardingController.clearState(),
-        );
+        await setOnboardingNetworkDomains([]);
+        return this.seedlessOnboardingController.clearState();
       },
-      createSeedPhraseBackup: (...args) =>
-        this.#runSocialOnboardingOperation(() =>
-          this.controllerMessenger.call(
-            'LegacyBackgroundApiService:createSeedPhraseBackup',
-            ...args,
-          ),
-        ),
+      createSeedPhraseBackup: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:createSeedPhraseBackup',
+      ),
       storeKeyringEncryptionKey:
         this.seedlessOnboardingController.storeKeyringEncryptionKey.bind(
           this.seedlessOnboardingController,
         ),
-      restoreSocialBackupAndGetSeedPhrase: (...args) =>
-        this.#runSocialOnboardingOperation(() =>
-          this.controllerMessenger.call(
-            'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
-            ...args,
-          ),
-        ),
+      restoreSocialBackupAndGetSeedPhrase: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:restoreSocialBackupAndGetSeedPhrase',
+      ),
       syncSeedPhrases: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:syncSeedPhrases',
@@ -3318,31 +3253,14 @@ export default class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp:
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
-      completeOnboarding: () =>
-        this.#runWithNetworkPolicy(
-          async () => {
-            const result = onboardingController.completeOnboarding();
-            await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
-            return result;
-          },
-          { OnboardingController: { completedOnboarding: true } },
-        ),
+      completeOnboarding:
+        onboardingController.completeOnboarding.bind(onboardingController),
       setHasSeenOnboardingCompletionPage:
         onboardingController.setHasSeenOnboardingCompletionPage.bind(
           onboardingController,
         ),
-      setFirstTimeFlowType: async (type) => {
-        if (
-          type !== FirstTimeFlowType.socialCreate &&
-          type !== FirstTimeFlowType.socialImport
-        ) {
-          await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
-        }
-        return this.#runWithNetworkPolicy(
-          () => onboardingController.setFirstTimeFlowType(type),
-          { OnboardingController: { firstTimeFlowType: type } },
-        );
-      },
+      setFirstTimeFlowType:
+        onboardingController.setFirstTimeFlowType.bind(onboardingController),
 
       // alert controller
       setAlertEnabledness:
@@ -3869,88 +3787,11 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:lookupSelectedNetworks',
       ),
-      resetWallet: async (...args) => {
-        await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
-        return this.#runWithNetworkPolicy(
-          () =>
-            this.controllerMessenger.call(
-              'LegacyBackgroundApiService:resetWallet',
-              ...args,
-            ),
-          { OnboardingController: { completedOnboarding: false } },
-        );
-      },
+      resetWallet: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:resetWallet',
+      ),
     };
-  }
-
-  #addNetwork(fields, options) {
-    return this.#runWithNetworkPolicy(
-      () =>
-        this.controllerMessenger.call(
-          'LegacyBackgroundApiService:addNetwork',
-          fields,
-          options,
-        ),
-      () => ({
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            ...this.networkController.state.networkConfigurationsByChainId,
-            [fields.chainId]: fields,
-          },
-        },
-      }),
-    );
-  }
-
-  #updateNetwork(chainId, fields, options) {
-    return this.#runWithNetworkPolicy(
-      () => this.networkController.updateNetwork(chainId, fields, options),
-      () => {
-        const networks = {
-          ...this.networkController.state.networkConfigurationsByChainId,
-        };
-        const previous = networks[chainId];
-        delete networks[chainId];
-        networks[fields.chainId ?? chainId] = { ...previous, ...fields };
-        return {
-          NetworkController: { networkConfigurationsByChainId: networks },
-        };
-      },
-    );
-  }
-
-  #removeNetwork(chainId) {
-    return this.#runWithNetworkPolicy(
-      () => this.multichainNetworkController.removeNetwork(chainId),
-      () => {
-        const networks = {
-          ...this.networkController.state.networkConfigurationsByChainId,
-        };
-        if (chainId.startsWith('eip155:')) {
-          delete networks[`0x${BigInt(chainId.split(':')[1]).toString(16)}`];
-        }
-        return {
-          NetworkController: { networkConfigurationsByChainId: networks },
-        };
-      },
-    );
-  }
-
-  async #runWithNetworkPolicy(operation, prospectiveState) {
-    if (this.#networkPolicy) {
-      return this.#networkPolicy.runWithPolicy(operation, prospectiveState);
-    }
-    // Firefox retains its existing controller behavior without Chrome DNR.
-    return operation();
-  }
-
-  async #runSocialOnboardingOperation(operation) {
-    try {
-      return await operation();
-    } catch (error) {
-      await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
-      throw error;
-    }
   }
 
   rejectOriginPendingApprovals(origin) {
@@ -5253,10 +5094,6 @@ export default class MetamaskController extends EventEmitter {
    */
   setupCommonMiddlewareHooks(origin) {
     return {
-      validateRpcEndpoint: (url) =>
-        this.messengerClientsByName.RpcEndpointValidationService.validateRpcEndpoint(
-          url,
-        ),
       // Miscellaneous
       getProviderState: this.getProviderState.bind(this),
       handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
@@ -5299,8 +5136,13 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this.#addNetwork.bind(this),
-      updateNetwork: this.#updateNetwork.bind(this),
+      addNetwork: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:addNetwork',
+      ),
+      updateNetwork: this.networkController.updateNetwork.bind(
+        this.networkController,
+      ),
       setActiveNetwork: async (networkClientId) => {
         // if the origin has the CAIP-25 permission
         // we set per dapp network selection state
@@ -7145,20 +6987,6 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       requestSafeReload: this.requestSafeReload.bind(this),
-      networkPolicy: this.#networkPolicyAuthority,
-      socialOnboardingNetworkPolicy: this.#socialOnboardingNetworkPolicy,
-      applyNetworkPolicyDomains: async (domains, commit) => {
-        if (!this.#networkPolicy) {
-          throw new Error(
-            'Network domain policy requires Chrome Manifest V3 enforcement',
-          );
-        }
-        await this.#networkPolicy.runWithPolicy(commit, {
-          NetworkPolicyController: {
-            postOnboardingNetworkDomains: domains,
-          },
-        });
-      },
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,

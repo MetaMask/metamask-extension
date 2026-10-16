@@ -29,7 +29,6 @@ export function getOAuthServiceMessenger(
       'SeedlessOnboardingController:getState',
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
-      'SeedlessOnboardingController:preloadToprfNodeDetails',
       'GeolocationController:getGeolocation',
       'SentryTracingService:bufferedTrace',
       'SentryTracingService:bufferedEndTrace',

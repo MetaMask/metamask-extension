@@ -17,7 +17,7 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { submitRequestToBackground } from '../../../../store/background-connection';
+import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
 import { isValidASCIIURL, toPunycodeURL } from '../../utils/confirm';
 
 const UNRECOGNIZED_CHAIN = {
@@ -360,10 +360,7 @@ function getValues(pendingApproval, t, actions, navigate, data) {
     onSubmit: async () => {
       let endpointChainId;
       try {
-        endpointChainId = await submitRequestToBackground(
-          'validateRpcEndpoint',
-          [customRpcUrl],
-        );
+        endpointChainId = await jsonRpcRequest(customRpcUrl, 'eth_chainId');
       } catch (err) {
         console.error(
           `Request for method 'eth_chainId on ${customRpcUrl} failed`,

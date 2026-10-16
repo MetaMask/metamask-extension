@@ -1,4 +1,3 @@
-import { it as jestIt } from '@jest/globals';
 import { isRpcRateLimitError, jsonRpcRequest } from './rpc.utils';
 
 jest.mock('./fetch-with-timeout', () => {
@@ -202,27 +201,6 @@ describe('jsonRpcRequest', () => {
   });
 
   describe('isRpcRateLimitError', () => {
-    jestIt.each([
-      { data: { httpStatus: 429 } },
-      { data: { code: -32005 } },
-      { data: { code: -32029 } },
-    ])('recognizes sanitized broker metadata: %j', (error: unknown) => {
-      expect(isRpcRateLimitError(error)).toBe(true);
-    });
-
-    jestIt.each([
-      null,
-      '429',
-      { data: null },
-      { data: { httpStatus: '429', code: '-32005' } },
-      { data: { httpStatus: 500, code: -32000 } },
-    ])(
-      'rejects unrelated or malformed broker metadata: %j',
-      (error: unknown) => {
-        expect(isRpcRateLimitError(error)).toBe(false);
-      },
-    );
-
     it('returns false for errors that did not come from jsonRpcRequest', () => {
       expect(isRpcRateLimitError(new Error('429'))).toBe(false);
       expect(isRpcRateLimitError(undefined)).toBe(false);

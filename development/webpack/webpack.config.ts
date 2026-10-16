@@ -138,6 +138,7 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  test: args.test,
   html: [
     { directory: join('html', 'ui'), category: 'ui' },
     { directory: join('html', 'background'), category: 'background' },
@@ -145,10 +146,6 @@ const manifestPlugin = new ManifestPlugin({
   ],
   web_accessible_resources: webAccessibleResources,
   manifest_version: MANIFEST_VERSION,
-  test: args.test,
-  networkPolicyExtensionId: variables.get('NETWORK_POLICY_EXTENSION_ID') as
-    | string
-    | undefined,
   description: commitHash
     ? `${args.type} build for ${args.mode} from git id: ${commitHash.substring(0, 8)}`
     : null,

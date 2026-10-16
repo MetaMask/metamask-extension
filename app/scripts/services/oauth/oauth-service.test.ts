@@ -60,11 +60,6 @@ const mockGetOnboardingControllerState = jest.fn().mockReturnValue({
   completedOnboarding: false,
 });
 const mockGetAccessToken = jest.fn().mockResolvedValue('mock-access-token');
-const mockPreloadToprfNodeDetails = jest.fn().mockResolvedValue(undefined);
-const mockSocialOnboardingNetworkPolicy = {
-  beginSocialOnboarding: jest.fn().mockResolvedValue(undefined),
-  endSocialOnboarding: jest.fn().mockResolvedValue(undefined),
-};
 
 function getMessenger(): OAuthServiceTestMessenger {
   const rootMessenger: RootMessenger = new Messenger({
@@ -82,10 +77,6 @@ function getMessenger(): OAuthServiceTestMessenger {
   rootMessenger.registerActionHandler(
     'SeedlessOnboardingController:getAccessToken',
     mockGetAccessToken,
-  );
-  rootMessenger.registerActionHandler(
-    'SeedlessOnboardingController:preloadToprfNodeDetails',
-    mockPreloadToprfNodeDetails,
   );
   rootMessenger.registerActionHandler(
     'SentryTracingService:bufferedTrace',
@@ -107,7 +98,6 @@ function getMessenger(): OAuthServiceTestMessenger {
       'GeolocationController:getGeolocation',
       'OnboardingController:getState',
       'SeedlessOnboardingController:getAccessToken',
-      'SeedlessOnboardingController:preloadToprfNodeDetails',
       'SentryTracingService:bufferedTrace',
       'SentryTracingService:bufferedEndTrace',
     ],
@@ -175,165 +165,12 @@ describe('OAuthService - startOAuthLogin', () => {
     jest.clearAllMocks();
   });
 
-  it('waits for browser policy installation before starting onboarding requests', async () => {
-    let authorize: () => void = () => undefined;
-    mockSocialOnboardingNetworkPolicy.beginSocialOnboarding.mockImplementationOnce(
-      () =>
-        new Promise<void>((resolve) => {
-          authorize = resolve;
-        }),
-    );
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
-    });
-
-    const login = oauthService.startOAuthLogin(AuthConnection.Google);
-
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
-    expect(mockPreloadToprfNodeDetails).not.toHaveBeenCalled();
-    expect(launchWebAuthFlowSpy).not.toHaveBeenCalled();
-    expect(fetch).not.toHaveBeenCalled();
-
-    authorize();
-    await login;
-
-    expect(
-      mockSocialOnboardingNetworkPolicy.beginSocialOnboarding,
-    ).toHaveBeenCalledWith(AuthConnection.Google);
-    expect(mockPreloadToprfNodeDetails).toHaveBeenCalledTimes(1);
-    expect(mockGetGeolocation).toHaveBeenCalledTimes(1);
-    expect(
-      mockSocialOnboardingNetworkPolicy.endSocialOnboarding,
-    ).not.toHaveBeenCalled();
-  });
-
-  it('does not start requests when browser policy installation fails', async () => {
-    mockSocialOnboardingNetworkPolicy.beginSocialOnboarding.mockRejectedValueOnce(
-      new Error('Rules unavailable'),
-    );
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
-    });
-
-    await expect(
-      oauthService.startOAuthLogin(AuthConnection.Google),
-    ).rejects.toThrow('Rules unavailable');
-
-    expect(mockGetGeolocation).not.toHaveBeenCalled();
-    expect(mockPreloadToprfNodeDetails).not.toHaveBeenCalled();
-    expect(launchWebAuthFlowSpy).not.toHaveBeenCalled();
-    expect(fetch).not.toHaveBeenCalled();
-    expect(
-      mockSocialOnboardingNetworkPolicy.endSocialOnboarding,
-    ).toHaveBeenCalledTimes(1);
-  });
-
-  it('revokes the selected onboarding path when TOPRF preloading fails', async () => {
-    mockPreloadToprfNodeDetails.mockRejectedValueOnce(
-      new Error('TOPRF failed'),
-    );
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
-    });
-
-    await expect(
-      oauthService.startOAuthLogin(AuthConnection.Google),
-    ).rejects.toThrow('TOPRF failed');
-
-    expect(
-      mockSocialOnboardingNetworkPolicy.endSocialOnboarding,
-    ).toHaveBeenCalledTimes(1);
-  });
-
-  it('revokes the selected onboarding path when the OAuth exchange fails', async () => {
-    jest
-      .mocked(fetch)
-      .mockRejectedValueOnce(new Error('OAuth exchange failed'));
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
-    });
-
-    await expect(
-      oauthService.startOAuthLogin(AuthConnection.Google),
-    ).rejects.toThrow();
-
-    expect(
-      mockSocialOnboardingNetworkPolicy.endSocialOnboarding,
-    ).toHaveBeenCalledTimes(1);
-  });
-
-  it('rejects overlapping login attempts without revoking the active attempt', async () => {
-    let authorize: () => void = () => undefined;
-    mockSocialOnboardingNetworkPolicy.beginSocialOnboarding.mockImplementationOnce(
-      () =>
-        new Promise<void>((resolve) => {
-          authorize = resolve;
-        }),
-    );
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
-    });
-    const login = oauthService.startOAuthLogin(AuthConnection.Google);
-
-    await expect(
-      oauthService.startOAuthLogin(AuthConnection.Apple),
-    ).rejects.toThrow('Social login is already in progress');
-
-    expect(
-      mockSocialOnboardingNetworkPolicy.beginSocialOnboarding,
-    ).toHaveBeenCalledTimes(1);
-    expect(
-      mockSocialOnboardingNetworkPolicy.endSocialOnboarding,
-    ).not.toHaveBeenCalled();
-
-    authorize();
-    await login;
-  });
-
-  it('starts Firefox OAuth without a Chrome DNR authority', async () => {
-    const oauthService = new OAuthService({
-      messenger,
-      webAuthenticator: mockWebAuthenticator,
-      platform: mockPlatform,
-      trackEvent: mockTrackEvent,
-    });
-
-    await oauthService.startOAuthLogin(AuthConnection.Google);
-
-    expect(launchWebAuthFlowSpy).toHaveBeenCalled();
-    expect(mockGetGeolocation).toHaveBeenCalled();
-    expect(
-      mockSocialOnboardingNetworkPolicy.beginSocialOnboarding,
-    ).not.toHaveBeenCalled();
-  });
-
   it('should start the OAuth login process with `Google`', async () => {
     const oauthService = new OAuthService({
       messenger,
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -396,7 +233,6 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
@@ -621,7 +457,6 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     const result = await oauthService.startOAuthLogin(AuthConnection.Telegram);
@@ -733,7 +568,6 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Telegram);
@@ -766,7 +600,6 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await expect(
@@ -797,7 +630,6 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await expect(
@@ -846,7 +678,6 @@ describe('OAuthService - startOAuthLogin', () => {
         }),
       },
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       platform: mockPlatform,
     });
 
@@ -884,7 +715,6 @@ describe('OAuthService - startOAuthLogin', () => {
         }),
       },
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       platform: mockPlatform,
     });
 
@@ -920,7 +750,6 @@ describe('OAuthService - startOAuthLogin', () => {
         }),
       },
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       platform: mockPlatform,
     });
 
@@ -948,7 +777,6 @@ describe('OAuthService - startOAuthLogin', () => {
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
         trackEvent: mockTrackEvent,
-        socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       });
 
       await messenger.call(
@@ -1002,7 +830,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -1061,7 +888,6 @@ describe('OAuthService - getNewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await expect(
@@ -1098,7 +924,6 @@ describe('OAuthService - getNewRefreshToken', () => {
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
         trackEvent: mockTrackEvent,
-        socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       });
 
       const result = await messenger.call('OAuthService:getNewRefreshToken', {
@@ -1140,7 +965,6 @@ describe('OAuthService - renewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -1191,7 +1015,6 @@ describe('OAuthService - renewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await expect(
@@ -1224,7 +1047,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -1270,7 +1092,6 @@ describe('OAuthService - revokeRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       platform: mockPlatform,
       trackEvent: mockTrackEvent,
-      socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
     });
 
     await expect(
@@ -1307,7 +1128,6 @@ describe('OAuthService - revokeRefreshToken', () => {
         webAuthenticator: mockWebAuthenticator,
         platform: mockPlatform,
         trackEvent: mockTrackEvent,
-        socialOnboardingNetworkPolicy: mockSocialOnboardingNetworkPolicy,
       });
 
       const result = await messenger.call('OAuthService:renewRefreshToken', {

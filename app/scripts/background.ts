@@ -141,17 +141,11 @@ import type {
 import type { InstallLifecycleDependencies } from './lib/lifecycle/install-lifecycle';
 import type { ActiveTabTrackerController } from './lib/active-tab/active-tab-tracker';
 import type { BadgeManagerController } from './lib/badge/badge-manager';
-import { createNetworkPolicyCoordinator } from './lib/network-policy-coordinator';
-import type { NetworkPolicyCoordinator } from './lib/network-policy-coordinator';
-import type { NetworkPolicyEnforcement } from './lib/network-policy-enforcement';
-import { deriveNetworkPolicy } from './lib/initialize-network-policy';
-import { createNetworkPolicySession } from './lib/network-policy-session';
-
-let networkPolicy: NetworkPolicyCoordinator | undefined;
-let activeNetworkPolicySession:
-  | ReturnType<typeof createNetworkPolicySession>
-  | undefined;
-const networkPolicyUiPorts = new Set<Runtime.Port>();
+import {
+  initializeNetworkRequestPolicy,
+  refreshNetworkRequestPolicy,
+  setOnboardingNetworkDomains,
+} from './lib/network-request-policy';
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
@@ -551,12 +545,8 @@ browser.runtime.onConnectExternal.addListener(async (port: Runtime.Port) => {
 /**
  * Loads persisted state, constructs the controller, and wires platform listeners.
  * @param backup
- * @param controllerNetworkPolicy
  */
-async function initialize(
-  backup: Backup | null,
-  controllerNetworkPolicy?: NetworkPolicyCoordinator,
-) {
+async function initialize(backup: Backup | null) {
   // Initialize install type early so it's cached for MetaMetrics user traits
   // This is fire-and-forget - we don't await it to avoid blocking initialization
   initInstallType();
@@ -586,13 +576,12 @@ async function initialize(
   });
 
   const initState = initData.data;
-  if (controllerNetworkPolicy) {
-    await controllerNetworkPolicy.update(
-      deriveNetworkPolicy({
-        state: initState,
-        infuraProjectId: globalThis.INFURA_PROJECT_ID,
-      }),
+  if (isManifestV3) {
+    await initializeNetworkRequestPolicy(
+      browser.runtime.id,
+      browser.declarativeNetRequest,
     );
+    await refreshNetworkRequestPolicy(initState);
   }
   const initLangCode = await getFirstPreferredLangCode();
 
@@ -632,7 +621,6 @@ async function initialize(
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
-    controllerNetworkPolicy,
   );
 
   const initializedController = requireController();
@@ -694,7 +682,6 @@ async function initialize(
  * @param offscreenPromise
  * @param preinstalledSnaps
  * @param cronjobControllerStorageManager
- * @param controllerNetworkPolicy
  */
 export function setupController(
   initState: MetaMaskStateType,
@@ -704,14 +691,11 @@ export function setupController(
   offscreenPromise: Promise<void> | null,
   preinstalledSnaps: PreinstalledSnapsList,
   cronjobControllerStorageManager: CronjobControllerStorageManager,
-  controllerNetworkPolicy?: NetworkPolicyCoordinator,
 ) {
   //
   // MetaMask Controller
   //
   controller = new MetamaskController({
-    networkPolicy: controllerNetworkPolicy,
-    socialOnboardingNetworkPolicy: controllerNetworkPolicy,
     infuraProjectId: globalThis.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
@@ -739,6 +723,14 @@ export function setupController(
   });
 
   const metamaskController = controller;
+  if (isManifestV3) {
+    const refresh = () =>
+      refreshNetworkRequestPolicy(metamaskController.store.getState()).catch(
+        log.error,
+      );
+    metamaskController.store.subscribe(refresh);
+    refresh();
+  }
 
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {
@@ -785,6 +777,7 @@ export function setupController(
   ) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
+      setOnboardingNetworkDomains([]).catch(log.error);
       metamaskController.onClientClosed();
       // otherwise we want to only remove the polling tokens for the environment type that has closed
     } else {
@@ -833,16 +826,6 @@ export function setupController(
       parsePortInfo(remotePort);
 
     if (isMetaMaskUIPort) {
-      if (networkPolicy) {
-        const portNetworkPolicy = networkPolicy;
-        networkPolicyUiPorts.add(remotePort);
-        remotePort.onDisconnect.addListener(() => {
-          networkPolicyUiPorts.delete(remotePort);
-          if (networkPolicyUiPorts.size === 0) {
-            portNetworkPolicy.endSocialOnboarding().catch(log.error);
-          }
-        });
-      }
       const portStream = new ExtensionPortStream(remotePort);
 
       /**
@@ -1160,20 +1143,9 @@ function setupSentryGetStateGlobal(store: MetaMaskControllerStore) {
  * @param backup
  */
 async function initBackground(backup: Backup | null) {
-  activeNetworkPolicySession?.revoke();
-  const policySession = networkPolicy
-    ? createNetworkPolicySession(networkPolicy)
-    : undefined;
-  activeNetworkPolicySession = policySession;
   installOnNavigateToTabListener();
   try {
-    await networkPolicy?.endSocialOnboarding();
-    await networkPolicy?.update({
-      mode: 'blocked',
-      allowedDomains: [],
-      allowedRpcUrls: [],
-    });
-    await initialize(backup, policySession?.policy);
+    await initialize(backup);
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if ('offscreen' in browser && browser.offscreen) {
@@ -1207,21 +1179,8 @@ async function initBackground(backup: Backup | null) {
     log.info('MetaMask initialization complete.');
     resolveInitialization();
   } catch (error) {
-    policySession?.revoke();
-    if (activeNetworkPolicySession !== policySession) {
-      log.error(error);
-      return;
-    }
-    try {
-      await networkPolicy?.update({
-        mode: 'blocked',
-        allowedDomains: [],
-        allowedRpcUrls: [],
-      });
-    } finally {
-      log.error(error);
-      rejectInitialization(error);
-    }
+    log.error(error);
+    rejectInitialization(error);
   }
 }
 /**
@@ -1300,38 +1259,12 @@ async function initOrRestoreBackground() {
     }
   }
 
-  await initBackground(null);
+  initBackground(null);
 }
 
-/**
- * Start the background with Chrome MV3's private browser enforcement handle.
- * Firefox starts without network policy enforcement.
- *
- * @param enforcement - The authority captured by the background entry point.
- */
-export async function startBackground(
-  enforcement?: NetworkPolicyEnforcement,
-): Promise<void> {
-  networkPolicy =
-    isManifestV3 && enforcement
-      ? createNetworkPolicyCoordinator(enforcement)
-      : undefined;
-  try {
-    if (isManifestV3 && !networkPolicy) {
-      throw new Error('Chrome background requires network policy enforcement');
-    }
-    await initOrRestoreBackground();
-  } catch (error) {
-    await networkPolicy?.update({
-      mode: 'blocked',
-      allowedDomains: [],
-      allowedRpcUrls: [],
-    });
-    log.error('initOrRestoreBackground failed', error);
-    rejectInitialization(error);
-    throw error;
-  }
-}
+initOrRestoreBackground().catch((error) => {
+  log.error('initOrRestoreBackground failed', error);
+});
 
 if (process.env.IN_TEST) {
   // listen for test messages from the background

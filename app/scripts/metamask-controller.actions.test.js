@@ -14,7 +14,6 @@ import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import browser from 'webextension-polyfill';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { HardwareKeyringNames } from '../../shared/constants/hardware-wallets';
-import { createMockNetworkPolicyOptions } from '../../test/lib/mock-network-policy';
 import MetaMaskController from './metamask-controller';
 
 jest.mock('./messenger-client-init/perps-controller-init', () => ({
@@ -126,7 +125,6 @@ const TEST_SEED =
 
 describe('MetaMaskController', function () {
   let metamaskController;
-  let networkPolicyOptions;
   const noop = () => undefined;
 
   beforeAll(async function () {
@@ -166,9 +164,7 @@ describe('MetaMaskController', function () {
       .get('/geolocation')
       .reply(200, 'US')
       .persist();
-    networkPolicyOptions = createMockNetworkPolicyOptions();
     metamaskController = new MetaMaskController({
-      ...networkPolicyOptions,
       showUserConfirmation: noop,
       encryptor: mockEncryptor,
       initLangCode: 'en_US',
@@ -372,200 +368,6 @@ describe('MetaMaskController', function () {
         'LegacyBackgroundApiService:resetWallet',
         true,
       );
-    });
-  });
-
-  describe('network policy', function () {
-    it('preserves Firefox actions and rejects unsupported policy configuration without DNR authority', async function () {
-      const firefoxController = new MetaMaskController({
-        ...metamaskController.opts,
-        controllerMessenger: new Messenger({
-          namespace: MOCK_ANY_NAMESPACE,
-          captureException: jest.fn(),
-        }),
-      });
-      const callSpy = jest
-        .spyOn(firefoxController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-
-      await firefoxController.getApi().toggleBasicFunctionality(false);
-
-      expect(callSpy).toHaveBeenCalledWith(
-        'PreferencesController:toggleBasicFunctionality',
-        false,
-      );
-      await expect(
-        firefoxController.messengerClientApi.configurePostOnboardingNetworkDomains(
-          ['allowed.example'],
-        ),
-      ).rejects.toThrow(
-        'Network domain policy requires Chrome Manifest V3 enforcement',
-      );
-    });
-
-    it('waits for browser restrictions before a dapp network-add hook starts work', async function () {
-      const fields = {
-        chainId: '0x123',
-        name: 'Candidate network',
-        nativeCurrency: 'ETH',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [{ type: 'custom', url: 'https://new-rpc.example/rpc' }],
-      };
-      let finishUpdate;
-      networkPolicyOptions.networkPolicy.update.mockImplementationOnce(
-        () =>
-          new Promise((resolve) => {
-            finishUpdate = resolve;
-          }),
-      );
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-
-      const result = metamaskController
-        .setupCommonMiddlewareHooks('https://dapp.example')
-        .addNetwork(fields);
-      await Promise.resolve();
-
-      expect(callSpy).not.toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:addNetwork',
-        fields,
-        undefined,
-      );
-      finishUpdate();
-      await result;
-      expect(callSpy).toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:addNetwork',
-        fields,
-        undefined,
-      );
-    });
-
-    it('waits for browser restrictions before toggling external services', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-      let completeUpdate;
-      networkPolicyOptions.networkPolicy.update.mockImplementationOnce(
-        () =>
-          new Promise((resolve) => {
-            completeUpdate = resolve;
-          }),
-      );
-
-      const result = metamaskController.getApi().toggleExternalServices(false);
-      await Promise.resolve();
-
-      expect(callSpy).not.toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:toggleExternalServices',
-        false,
-        undefined,
-      );
-      completeUpdate();
-      await result;
-      expect(callSpy).toHaveBeenCalledWith(
-        'LegacyBackgroundApiService:toggleExternalServices',
-        false,
-        undefined,
-      );
-    });
-
-    it('restricts browser requests before the Basic Functionality toggle mutates preferences', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-      let completeUpdate;
-      networkPolicyOptions.networkPolicy.update.mockImplementationOnce(
-        () =>
-          new Promise((resolve) => {
-            completeUpdate = resolve;
-          }),
-      );
-
-      const result = metamaskController
-        .getApi()
-        .toggleBasicFunctionality(false);
-      await Promise.resolve();
-
-      expect(callSpy).not.toHaveBeenCalledWith(
-        'PreferencesController:toggleBasicFunctionality',
-        false,
-      );
-      completeUpdate();
-      await result;
-      expect(callSpy).toHaveBeenCalledWith(
-        'PreferencesController:toggleBasicFunctionality',
-        false,
-      );
-    });
-
-    it('waits for restrictive enforcement before consolidating Basic Functionality', async function () {
-      const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockResolvedValue(undefined);
-      let completeUpdate;
-      networkPolicyOptions.networkPolicy.update.mockImplementationOnce(
-        () =>
-          new Promise((resolve) => {
-            completeUpdate = resolve;
-          }),
-      );
-
-      const result = metamaskController
-        .getApi()
-        .consolidateBasicFunctionality();
-      await Promise.resolve();
-      expect(callSpy).not.toHaveBeenCalledWith(
-        'PreferencesController:consolidateBasicFunctionality',
-      );
-      completeUpdate();
-      await result;
-      expect(callSpy).toHaveBeenCalledWith(
-        'PreferencesController:consolidateBasicFunctionality',
-      );
-    });
-
-    it('applies the next onboarding flow policy before changing controller state', async function () {
-      const setFlow = jest.spyOn(
-        metamaskController.onboardingController,
-        'setFirstTimeFlowType',
-      );
-      let completeUpdate;
-      networkPolicyOptions.networkPolicy.update.mockImplementationOnce(
-        () =>
-          new Promise((resolve) => {
-            completeUpdate = resolve;
-          }),
-      );
-      const result = metamaskController.getApi().setFirstTimeFlowType('create');
-      // The method first revokes social authorization, then queues enforcement.
-      await Promise.resolve();
-      await Promise.resolve();
-      expect(setFlow).not.toHaveBeenCalled();
-      completeUpdate();
-      await result;
-      expect(setFlow).toHaveBeenCalledWith('create');
-    });
-
-    it('keeps policy capabilities out of the public options object', function () {
-      expect(metamaskController.opts).not.toHaveProperty('networkPolicy');
-      expect(metamaskController.opts).not.toHaveProperty(
-        'socialOnboardingNetworkPolicy',
-      );
-    });
-
-    it('revokes the onboarding grant after TOPRF authentication fails', async function () {
-      jest
-        .spyOn(metamaskController.seedlessOnboardingController, 'authenticate')
-        .mockRejectedValueOnce(new Error('Authentication failed'));
-
-      await expect(
-        metamaskController.getApi().authenticate({}),
-      ).rejects.toThrow('Authentication failed');
-
-      expect(
-        networkPolicyOptions.socialOnboardingNetworkPolicy.endSocialOnboarding,
-      ).toHaveBeenCalledTimes(1);
     });
   });
 });

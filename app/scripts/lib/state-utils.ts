@@ -44,9 +44,6 @@ const REMOVE_KEYS = [
   'snapStates',
   'unencryptedSnapStates',
 
-  // NetworkPolicyController - private policy configuration
-  'postOnboardingNetworkDomains',
-
   // RewardsController - sensitive tokens
   'rewardsSubscriptionTokens',
 ];

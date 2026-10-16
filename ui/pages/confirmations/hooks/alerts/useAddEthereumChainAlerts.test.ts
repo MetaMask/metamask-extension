@@ -1,11 +1,8 @@
-import { it as jestIt } from '@jest/globals';
 import { renderHook, waitFor } from '@testing-library/react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as confirmContext from '../../context/confirm';
 import * as safeChains from '../../../../components/multichain/networks-form/use-safe-chains';
 import * as rpcUtils from '../../../../../shared/lib/rpc.utils';
-import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
-import * as mv3Utils from '../../../../../shared/lib/mv3.utils';
 import { useAddEthereumChainAlerts } from './useAddEthereumChainAlerts';
 
 const mockSafeChains = [
@@ -31,26 +28,6 @@ const mockSafeChains = [
 
 const mockUseConfirmContext = jest.fn();
 const mockJsonRpcRequest = jest.fn();
-const mockUseSelector = jest.fn();
-
-type NetworkPolicyUiState = {
-  completedOnboarding: boolean;
-  useExternalServices: boolean;
-  firstTimeFlowType?: FirstTimeFlowType;
-  authConnection?: string;
-  preferences?: { hasLinkedSocialLoginProfile: boolean };
-};
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: (selector: unknown) => mockUseSelector(selector),
-}));
-
-jest.mock('../../../../../shared/lib/mv3.utils', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest's ESM marker preserves the mocked module identity.
-  __esModule: true,
-  isManifestV3: true,
-}));
 
 const renderHookWithWait = async () => {
   const hookResult = renderHook(() => useAddEthereumChainAlerts());
@@ -63,16 +40,6 @@ const renderHookWithWait = async () => {
 
 describe('useAddEthereumChainAlerts', () => {
   beforeEach(() => {
-    mockJsonRpcRequest.mockReset();
-    mockUseSelector.mockImplementation((selector) =>
-      selector({
-        metamask: {
-          completedOnboarding: true,
-          useExternalServices: true,
-          firstTimeFlowType: FirstTimeFlowType.create,
-        },
-      }),
-    );
     jest
       .spyOn(confirmContext, 'useConfirmContext')
       .mockImplementation(mockUseConfirmContext);
@@ -99,140 +66,6 @@ describe('useAddEthereumChainAlerts', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
-
-  it('retains existing automatic RPC checks on Firefox without DNR', async () => {
-    jest.replaceProperty(mv3Utils, 'isManifestV3', false);
-    mockUseSelector.mockImplementation((selector) =>
-      selector({
-        metamask: {
-          completedOnboarding: true,
-          useExternalServices: false,
-          firstTimeFlowType: FirstTimeFlowType.create,
-        },
-      }),
-    );
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: {
-        requestData: {
-          chainId: '0x1',
-          chainName: 'Ethereum',
-          rpcUrl: 'https://unapproved.example/rpc',
-          ticker: 'ETH',
-        },
-      },
-    });
-
-    renderHook(() => useAddEthereumChainAlerts());
-
-    await waitFor(() => {
-      expect(mockJsonRpcRequest).toHaveBeenCalledWith(
-        'https://unapproved.example/rpc',
-        'eth_chainId',
-      );
-    });
-  });
-
-  jestIt.each([
-    {
-      completedOnboarding: false,
-      useExternalServices: true,
-      firstTimeFlowType: FirstTimeFlowType.socialCreate,
-      authConnection: 'google',
-    },
-    {
-      completedOnboarding: true,
-      useExternalServices: false,
-      firstTimeFlowType: FirstTimeFlowType.create,
-    },
-    {
-      completedOnboarding: true,
-      useExternalServices: false,
-      firstTimeFlowType: FirstTimeFlowType.import,
-      authConnection: 'google',
-      preferences: { hasLinkedSocialLoginProfile: true },
-    },
-    {
-      completedOnboarding: true,
-      useExternalServices: false,
-      firstTimeFlowType: FirstTimeFlowType.restore,
-      authConnection: 'google',
-    },
-    {
-      completedOnboarding: true,
-      useExternalServices: false,
-      authConnection: 'google',
-    },
-  ])(
-    'keeps local warnings without contacting an unapproved RPC (%j)',
-    (metamask: NetworkPolicyUiState) => {
-      mockUseSelector.mockImplementation((selector) => selector({ metamask }));
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          requestData: {
-            chainId: '0x1',
-            chainName: 'Unexpected Ethereum',
-            rpcUrl: 'https://unapproved.example/rpc',
-            ticker: 'ETH',
-          },
-        },
-      });
-
-      const { result } = renderHook(() => useAddEthereumChainAlerts());
-
-      expect(mockJsonRpcRequest).not.toHaveBeenCalled();
-      expect(result.current).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ key: 'mismatchedNetworkName' }),
-          expect.objectContaining({ key: 'mismatchedRpcUrl' }),
-        ]),
-      );
-      expect(result.current).not.toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ key: 'errorWhileConnectingToRPC' }),
-        ]),
-      );
-    },
-  );
-
-  jestIt.each([
-    { firstTimeFlowType: FirstTimeFlowType.socialCreate },
-    { firstTimeFlowType: FirstTimeFlowType.socialImport },
-  ])(
-    'retains automatic checks for a social wallet (%j)',
-    async (
-      socialState: Pick<
-        NetworkPolicyUiState,
-        'firstTimeFlowType' | 'authConnection'
-      >,
-    ) => {
-      mockUseSelector.mockImplementation((selector) =>
-        selector({
-          metamask: {
-            completedOnboarding: true,
-            useExternalServices: false,
-            ...socialState,
-          },
-        }),
-      );
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: {
-          requestData: {
-            chainId: '0x1',
-            chainName: 'Ethereum',
-            rpcUrl: 'https://mainnet.infura.io/v3/abc',
-            ticker: 'ETH',
-          },
-        },
-      });
-
-      await renderHookWithWait();
-
-      expect(mockJsonRpcRequest).toHaveBeenCalledWith(
-        'https://mainnet.infura.io/v3/abc',
-        'eth_chainId',
-      );
-    },
-  );
 
   it('returns empty array when there is no current confirmation', () => {
     mockUseConfirmContext.mockReturnValue({

@@ -1,4 +1,6 @@
 import log from 'loglevel';
+import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
+import { getEnvUrls } from '@metamask/profile-sync-controller/sdk';
 import {
   createSentryError,
   isUserCancelledLoginError,
@@ -21,6 +23,8 @@ import {
 } from '../../../../shared/constants/onboarding';
 import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
+import { isProduction } from '../../../../shared/lib/environment';
+import { setOnboardingNetworkDomains } from '../../lib/network-request-policy';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -65,16 +69,11 @@ export class OAuthService {
 
   #trackEvent: OAuthServiceOptions['trackEvent'];
 
-  #socialOnboardingNetworkPolicy: OAuthServiceOptions['socialOnboardingNetworkPolicy'];
-
-  #loginInProgress = false;
-
   constructor({
     messenger,
     webAuthenticator,
     platform,
     trackEvent,
-    socialOnboardingNetworkPolicy,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -82,7 +81,6 @@ export class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#platform = platform;
     this.#trackEvent = trackEvent;
-    this.#socialOnboardingNetworkPolicy = socialOnboardingNetworkPolicy;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -119,46 +117,50 @@ export class OAuthService {
     authConnection: AuthConnection,
     parentTraceContext?: SerializedTraceContext,
   ): Promise<OAuthLoginResult> {
-    if (this.#loginInProgress) {
-      throw new Error('Social login is already in progress');
-    }
+    // create the login handler for the given social login type
+    // this is to get the Jwt Token in the exchange for the Authorization Code
+    const loginHandler = createLoginHandler(
+      authConnection,
+      this.#config,
+      this.#webAuthenticator,
+    );
 
-    this.#loginInProgress = true;
-    try {
-      // Install the browser rules before starting any onboarding request.
-      await this.#socialOnboardingNetworkPolicy?.beginSocialOnboarding(
-        authConnection,
-      );
-      const loginHandler = createLoginHandler(
-        authConnection,
-        this.#config,
-        this.#webAuthenticator,
-      );
+    const nodeDomain =
+      this.#config.web3AuthNetwork === Web3AuthNetwork.Devnet
+        ? 'dev-node.web3auth.io'
+        : 'node.web3auth.io';
+    const telegram =
+      authConnection === AuthConnection.Telegram
+        ? Object.values(getEnvUrls(this.#config.profileSyncEnv)).filter(
+            (value): value is string =>
+              typeof value === 'string' && value.startsWith('https://'),
+          )
+        : [];
+    await setOnboardingNetworkDomains([
+      new URL(this.#config.authServerUrl).hostname,
+      'api.web3auth.io',
+      nodeDomain,
+      `geolocation.${isProduction() ? '' : 'dev-'}api.cx.metamask.io`,
+      ...telegram.map((url) => new URL(url).hostname),
+    ]);
 
-      // Marketing opt-in defaults use this location. A lookup failure must not
-      // prevent the user from authenticating.
-      this.#messenger
-        .call('GeolocationController:getGeolocation')
-        .catch((error) => {
-          log.error('Error getting user location:', error);
-        });
+    // get the user location to determine if the user is in US region
+    // the location value will be used later to determine if Marketing Opt-in should be enabled by default
+    this.#messenger
+      .call('GeolocationController:getGeolocation')
+      .catch((error) => {
+        log.error('Error getting user location:', error);
+      });
 
-      const [oAuthLoginResult] = await Promise.all([
-        this.#handleOAuthLogin(loginHandler, authConnection, parentTraceContext),
-        this.#messenger.call(
-          'SeedlessOnboardingController:preloadToprfNodeDetails',
-        ),
-      ]);
-
-      // Keep the selected path open for authentication and backup/restore.
-      // Completion, reset or closing the onboarding UI revokes it.
-      return oAuthLoginResult;
-    } catch (error) {
-      await this.#socialOnboardingNetworkPolicy?.endSocialOnboarding();
+    const oAuthLoginResult = await this.#handleOAuthLogin(
+      loginHandler,
+      authConnection,
+      parentTraceContext,
+    ).catch(async (error) => {
+      await setOnboardingNetworkDomains([]);
       throw error;
-    } finally {
-      this.#loginInProgress = false;
-    }
+    });
+    return oAuthLoginResult;
   }
 
   /**

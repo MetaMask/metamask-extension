@@ -298,11 +298,13 @@ export function startOAuthLogin(
 
     try {
       const oauthTraceTags = getOAuthTraceTags(authConnection, isRehydration);
-      const oauth2LoginResult =
-        await submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+      const [oauth2LoginResult] = await Promise.all([
+        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
           authConnection,
           ...(parentTraceContext ? [parentTraceContext] : []),
-        ]);
+        ]),
+      ]);
+      await submitRequestToBackground('preloadToprfNodeDetails');
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -4662,21 +4664,6 @@ export function setIpfsGateway(
       // TODO: Stop suppressing this error (either log or re-throw)
     }
   };
-}
-
-/**
- * Replace the extension's post-onboarding network domains. The background
- * acknowledges only after browser enforcement is active; SRP privacy mode
- * continues to permit only its saved RPC endpoints.
- *
- * @param domains - Wildcard access or the complete exact-hostname allowlist.
- */
-export async function configurePostOnboardingNetworkDomains(
-  domains: '*' | string[],
-): Promise<void> {
-  await submitRequestToBackground('configurePostOnboardingNetworkDomains', [
-    domains,
-  ]);
 }
 
 export function toggleExternalServices(

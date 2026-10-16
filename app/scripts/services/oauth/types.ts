@@ -2,7 +2,6 @@ import {
   Web3AuthNetwork,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
-  SeedlessOnboardingControllerPreloadToprfNodeDetailsAction,
 } from '@metamask/seedless-onboarding-controller';
 import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
@@ -18,7 +17,6 @@ import type {
 } from '../sentry/sentry-tracing-service-method-action-types';
 import ExtensionPlatform from '../../platforms/extension';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
-import type { SocialOnboardingNetworkPolicy } from '../../lib/social-onboarding-network-policy';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
@@ -49,7 +47,6 @@ export type OAuthServiceAction =
   | OAuthServiceMethodActions
   | SeedlessOnboardingControllerGetStateAction
   | SeedlessOnboardingControllerGetAccessTokenAction
-  | SeedlessOnboardingControllerPreloadToprfNodeDetailsAction
   | OnboardingControllerGetStateAction
   | GeolocationControllerGetGeolocationAction
   | SentryTracingServiceBufferedTraceAction
@@ -150,9 +147,6 @@ export type OAuthServiceMessenger = Messenger<
 >;
 
 export type OAuthServiceOptions = {
-  /** Private Chrome authority for the user's selected social onboarding path. */
-  socialOnboardingNetworkPolicy?: SocialOnboardingNetworkPolicy;
-
   /**
    * The messenger used to communicate with other services and controllers.
    */

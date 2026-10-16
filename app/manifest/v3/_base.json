@@ -57,9 +57,9 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "network_policy_default",
+        "id": "network_request_policy",
         "enabled": true,
-        "path": "network-policy-rules.json"
+        "path": "network-request-rules.json"
       }
     ]
   },

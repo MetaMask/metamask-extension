@@ -31,15 +31,6 @@ In the case that a new release has sensitive changes that cannot be fully verifi
 
 While we develop on the `main` branch, our production builds are created from the release branch HEAD using the [`publish-release-from-release-head.yml`](../.github/workflows/publish-release-from-release-head.yml) workflow. This workflow builds, tags, and publishes from the release branch before it is merged to `stable`.
 
-Chromium packages contain startup network rules scoped to a single extension ID.
-The default production ID is the Chrome Web Store ID for the build type. Before
-publishing to a store that uses a different signing ID, such as a separate Opera
-or Edge distribution, build a separate package with
-`NETWORK_POLICY_EXTENSION_ID=<that-store-extension-id>`. Do not publish the
-Chrome Web Store ZIP unchanged to a different signing ID. Verify the packaged
-rules and the signed installation use the same ID; unknown or re-signed packages
-must also be built for their actual ID. See [extension network policy](./network-policy.md).
-
 ## Publishing
 
 1. Publish to chrome store.

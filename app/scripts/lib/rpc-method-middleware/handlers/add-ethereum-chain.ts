@@ -77,7 +77,6 @@ export type AddEthereumChainHooks = Pick<
     network: UpdateNetworkFields,
     options?: ReplaceSelectedRpcEndpointOptions,
   ) => Promise<NetworkConfiguration>;
-  validateRpcEndpoint: (url: string) => Promise<string>;
 };
 
 type AddEthereumChainConstraint = MethodHandler<
@@ -103,7 +102,6 @@ export const addEthereumChainHandler = {
     setTokenNetworkFilter: true,
     setEnabledNetworks: true,
     getEnabledNetworks: true,
-    validateRpcEndpoint: true,
   },
 } satisfies AddEthereumChainConstraint;
 
@@ -131,7 +129,6 @@ async function addEthereumChainImplementation(
     setTokenNetworkFilter,
     setEnabledNetworks,
     getEnabledNetworks,
-    validateRpcEndpoint,
   }: AddEthereumChainHooks,
 ): Promise<void> {
   let validParams;
@@ -199,16 +196,6 @@ async function addEthereumChainImplementation(
           ticker,
         },
       });
-
-      // The dapp's URL must not receive a network exception before the user
-      // approves it. The broker checks only eth_chainId and cannot send caller
-      // data or follow redirects while the endpoint is still unsaved.
-      const endpointChainId = await validateRpcEndpoint(firstValidRPCUrl);
-      if (endpointChainId.toLowerCase() !== chainId.toLowerCase()) {
-        throw rpcErrors.invalidParams({
-          message: 'RPC endpoint returned a different chain ID.',
-        });
-      }
 
       if (existingNetwork) {
         // A network for this chain id already exists.

@@ -1,4 +1,3 @@
-import { it as jestIt } from '@jest/globals';
 import React from 'react';
 import {
   act,
@@ -8,15 +7,16 @@ import {
   waitFor,
 } from '@testing-library/react';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { JsonRpcRequestError } from '../../../shared/lib/rpc.utils';
 import { useSafeChains } from '../../components/multichain/networks-form/use-safe-chains';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 
-const mockSubmitRequestToBackground = jest.fn();
+const mockJsonRpcRequest = jest.fn();
 
-jest.mock('../../store/background-connection', () => ({
-  submitRequestToBackground: (...args: unknown[]) =>
-    mockSubmitRequestToBackground(...args),
+jest.mock('../../../shared/lib/rpc.utils', () => ({
+  ...jest.requireActual('../../../shared/lib/rpc.utils'),
+  jsonRpcRequest: (...args: unknown[]) => mockJsonRpcRequest(...args),
 }));
 
 jest.mock('../../hooks/useI18nContext', () => ({
@@ -35,7 +35,7 @@ describe('AddRpcUrlPageForm', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.clearAllMocks();
-    mockSubmitRequestToBackground.mockResolvedValue('0x1');
+    mockJsonRpcRequest.mockResolvedValue('0x1');
     useI18nContextMock.mockReturnValue((key: string) => key);
     mockUseSafeChains.mockReturnValue({ safeChains: [] });
   });
@@ -45,7 +45,7 @@ describe('AddRpcUrlPageForm', () => {
   });
 
   it('keeps Add URL disabled while RPC validation is pending', () => {
-    mockSubmitRequestToBackground.mockReturnValue(new Promise(() => undefined));
+    mockJsonRpcRequest.mockReturnValue(new Promise(() => undefined));
     render(<AddRpcUrlPageForm onAdded={() => undefined} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
@@ -57,7 +57,7 @@ describe('AddRpcUrlPageForm', () => {
 
   it('disables Add URL when RPC validation fails', async () => {
     const onAdded = jest.fn();
-    mockSubmitRequestToBackground.mockRejectedValue(new Error('invalid rpc'));
+    mockJsonRpcRequest.mockRejectedValue(new Error('invalid rpc'));
     render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
     fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
@@ -79,37 +79,33 @@ describe('AddRpcUrlPageForm', () => {
     expect(onAdded).not.toHaveBeenCalled();
   });
 
-  jestIt.each([{ httpStatus: 429 }, { code: -32029 }])(
-    'reports the transported rate limit (%j)',
-    async (data: { httpStatus?: number; code?: number }) => {
-      const onAdded = jest.fn();
-      mockSubmitRequestToBackground.mockRejectedValue({
-        code: -32603,
-        message: 'RPC endpoint validation failed.',
-        data,
-      });
-      render(<AddRpcUrlPageForm onAdded={onAdded} />);
+  it('reports a rate limit instead of an incorrect URL when the provider throttles validation', async () => {
+    const onAdded = jest.fn();
+    mockJsonRpcRequest.mockRejectedValue(
+      new JsonRpcRequestError('public rate limit exceeded', {
+        code: -32029,
+        httpStatus: 429,
+      }),
+    );
+    render(<AddRpcUrlPageForm onAdded={onAdded} />);
 
-      fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
-        target: { value: 'https://lb.routeme.sh/rpc/evm/30' },
-      });
-      fireEvent.blur(screen.getByTestId('rpc-url-input-test'));
+    fireEvent.change(screen.getByTestId('rpc-url-input-test'), {
+      target: { value: 'https://lb.routeme.sh/rpc/evm/30' },
+    });
+    fireEvent.blur(screen.getByTestId('rpc-url-input-test'));
 
-      await act(async () => {
-        jest.advanceTimersByTime(500);
-      });
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+    });
 
-      expect(await screen.findByText('rpcUrlRateLimited')).toBeInTheDocument();
-      expect(
-        screen.queryByText('failedToFetchChainId'),
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
+    expect(await screen.findByText('rpcUrlRateLimited')).toBeInTheDocument();
+    expect(screen.queryByText('failedToFetchChainId')).not.toBeInTheDocument();
+    expect(screen.getByTestId('page-container-footer-next')).toBeDisabled();
 
-      fireEvent.click(screen.getByTestId('page-container-footer-next'));
+    fireEvent.click(screen.getByTestId('page-container-footer-next'));
 
-      expect(onAdded).not.toHaveBeenCalled();
-    },
-  );
+    expect(onAdded).not.toHaveBeenCalled();
+  });
 
   it('enables Add URL when RPC validation succeeds', async () => {
     const onAdded = jest.fn();
@@ -126,9 +122,9 @@ describe('AddRpcUrlPageForm', () => {
     await waitFor(() =>
       expect(screen.getByTestId('page-container-footer-next')).toBeEnabled(),
     );
-    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-      'validateRpcEndpoint',
-      ['https://rpc.example.com/'],
+    expect(mockJsonRpcRequest).toHaveBeenCalledWith(
+      'https://rpc.example.com/',
+      'eth_chainId',
     );
 
     fireEvent.click(screen.getByTestId('page-container-footer-next'));
@@ -152,7 +148,7 @@ describe('AddRpcUrlPageForm', () => {
     fireEvent.blur(screen.getByTestId('rpc-url-input-test'));
 
     expect(screen.getByText('urlErrorMsg')).toBeInTheDocument();
-    expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    expect(mockJsonRpcRequest).not.toHaveBeenCalled();
   });
 
   it('shows a required error on submit when the URL is empty, and not on blur', () => {

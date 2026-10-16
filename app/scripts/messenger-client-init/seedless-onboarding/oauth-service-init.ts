@@ -9,11 +9,10 @@ export const OAuthServiceInit: MessengerClientInitFunction<
   OAuthService,
   OAuthServiceMessenger
 > = (request) => {
-  const { controllerMessenger, socialOnboardingNetworkPolicy } = request;
+  const { controllerMessenger } = request;
 
   const messengerClient = new OAuthService({
     messenger: controllerMessenger,
-    socialOnboardingNetworkPolicy,
     webAuthenticator: webAuthenticatorFactory(),
     platform: new ExtensionPlatform(),
 

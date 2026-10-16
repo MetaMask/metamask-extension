@@ -10,9 +10,6 @@ import { Browser } from 'webextension-polyfill';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import ExtensionPlatform from '../platforms/extension';
-import type { NetworkPolicyEnforcement } from '../lib/network-policy-enforcement';
-import type { SocialOnboardingNetworkPolicy } from '../lib/social-onboarding-network-policy';
-import type { NetworkPolicyDomainPolicyApplier } from '../controllers/network-policy/network-policy-controller.types';
 // This import is only used for the type.
 // eslint-disable-next-line import-x/no-restricted-paths
 import type { MetaMaskReduxState } from '../../../ui/store/store';
@@ -68,18 +65,6 @@ export type MessengerClientInitRequest<
   ControllerMessengerType extends BaseRestrictedControllerMessenger,
   InitMessengerType extends void | BaseRestrictedControllerMessenger = void,
 > = {
-  /** Private Chrome MV3 request enforcement, absent on Firefox. */
-  networkPolicy?: Pick<
-    NetworkPolicyEnforcement,
-    'update' | 'allowRpcValidation'
-  >;
-
-  /** Private authority for the user's selected social onboarding path. */
-  socialOnboardingNetworkPolicy?: SocialOnboardingNetworkPolicy;
-
-  /** Enforce prospective domain changes before committing private policy state. */
-  applyNetworkPolicyDomains: NetworkPolicyDomainPolicyApplier;
-
   /**
    * Required controller messenger instance.
    * Generated using the callback specified in `getControllerMessengerCallback`.

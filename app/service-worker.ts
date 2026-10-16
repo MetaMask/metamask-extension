@@ -2,11 +2,6 @@
 
 import './scripts/load/bootstrap';
 import { APP_INIT_LIVENESS_METHOD } from '../shared/constants/ui-initialization';
-import { RPC_VALIDATION_PORT } from '../shared/lib/rpc-endpoint-validation';
-import {
-  networkPolicyBootstrapReady,
-  networkPolicyEnforcement,
-} from './scripts/lib/install-network-policy';
 import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
@@ -45,15 +40,7 @@ async function runImportScripts() {
 
   const startImportScriptsTime = performance.now();
 
-  // Chrome must load these script chunks during service-worker installation.
-  // Starting the import after an asynchronous DNR update is too late. The
-  // background exposes startup separately so its controllers still wait for
-  // browser policy initialization.
-  const [{ startBackground }] = await Promise.all([
-    import('./scripts/background'),
-    networkPolicyBootstrapReady,
-  ]);
-  await startBackground(networkPolicyEnforcement);
+  await import('./scripts/background');
 
   const endImportScriptsTime = performance.now();
 
@@ -71,9 +58,6 @@ self.addEventListener('install', runImportScripts);
 // listen for connection events from other contexts, and respond to liveness
 // checks, and ping them to let them know we're listening.
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === RPC_VALIDATION_PORT) {
-    return;
-  }
   console.log(
     'MetaMask service worker: Received connection from port',
     port.name,
