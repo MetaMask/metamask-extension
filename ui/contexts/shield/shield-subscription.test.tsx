@@ -1,5 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
-import { render, waitFor } from '@testing-library/react';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useSyncExternalStore,
+} from 'react';
+import { act, render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
 import * as useSubscription from '../../hooks/subscription/useSubscription';
@@ -252,8 +257,18 @@ describe('ShieldSubscriptionProvider', () => {
 
     it('accesses current values even with stable callback', async () => {
       let isBasicFunctionalityEnabled = false;
+      // Like the real `useSelector`, re-render subscribers when state changes.
+      const listeners = new Set<() => void>();
+      let stateVersion = 0;
 
       mockUseSelector.mockImplementation((selector) => {
+        useSyncExternalStore(
+          (listener) => {
+            listeners.add(listener);
+            return () => listeners.delete(listener);
+          },
+          () => stateVersion,
+        );
         if (selector === selectors.getUseExternalServices) {
           return isBasicFunctionalityEnabled;
         }
@@ -293,7 +308,7 @@ describe('ShieldSubscriptionProvider', () => {
         return <div data-testid="consumer">Consumer</div>;
       };
 
-      const { rerender } = render(
+      render(
         <ShieldSubscriptionProvider>
           <TestConsumer />
         </ShieldSubscriptionProvider>,
@@ -306,12 +321,10 @@ describe('ShieldSubscriptionProvider', () => {
       });
 
       isBasicFunctionalityEnabled = true;
-
-      rerender(
-        <ShieldSubscriptionProvider>
-          <TestConsumer />
-        </ShieldSubscriptionProvider>,
-      );
+      act(() => {
+        stateVersion += 1;
+        listeners.forEach((listener) => listener());
+      });
 
       await evaluateFnRef.current?.('wallet_home');
 
