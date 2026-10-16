@@ -67,7 +67,8 @@ export const BackendWebSocketServiceInit: MessengerClientInitFunction<
           'RemoteFeatureFlagController:getState',
         )?.remoteFeatureFlags?.backendWebSocketConnection;
 
-        return resolveFlag(manifestFlag ?? remoteFlag);
+        const isEnabled = resolveFlag(manifestFlag ?? remoteFlag);
+        return isEnabled;
       } catch (error) {
         // If feature flag check fails, default to NOT connecting for safer startup
         console.warn(
