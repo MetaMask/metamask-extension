@@ -647,7 +647,7 @@ function startTrace(request: TraceRequest): TraceContext {
     return span;
   };
 
-  return startSpan(request, (spanOptions) =>
+  return startSpan({ ...request, startTime }, (spanOptions) =>
     sentryStartSpanManual(spanOptions, callback),
   );
 }

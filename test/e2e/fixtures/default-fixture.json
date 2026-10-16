@@ -188,7 +188,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 232,
+      "currentMigrationVersion": 233,
       "firstTimeInfo": {},
       "installAttribution": null,
       "previousAppVersion": "",
@@ -207,6 +207,7 @@
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": [],
       "musdConversionDismissedCtaKeys": [],
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
@@ -1328,6 +1329,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 232
+    "version": 233
   }
 }

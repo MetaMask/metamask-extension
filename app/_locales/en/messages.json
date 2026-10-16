@@ -1796,7 +1796,7 @@
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
   "arcUsageNoticeDescription": {
-    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with Arc team."
+    "message": "Welcome to Arc! To facilitate and verify your usage of Arc chain, we may share information with the Arc team."
   },
   "arcUsageNoticeTitle": {
     "message": "Notice"
@@ -2002,6 +2002,9 @@
   },
   "basicConfigurationModalHeadingOn": {
     "message": "Turn on basic functionality"
+  },
+  "basicFunctionalityIsOn": {
+    "message": "Basic functionality is on"
   },
   "basicFunctionalityMigrationModalTitle": {
     "message": "We've updated our settings"
@@ -5552,7 +5555,7 @@
     "message": "Continue"
   },
   "mfaEmailEntryDescription": {
-    "message": "We'll send a verification code to this address."
+    "message": "We’ll use your email to verify your account and send you occasional account updates."
   },
   "mfaEmailEntryInvalid": {
     "message": "Enter a valid email address."
@@ -5561,7 +5564,10 @@
     "message": "Email address"
   },
   "mfaEmailEntryTitle": {
-    "message": "Enter your email"
+    "message": "Verify your email"
+  },
+  "mfaErrorCodeExpired": {
+    "message": "Your verification code expired, get a new code."
   },
   "mfaErrorCooldown": {
     "message": "Too many requests. Wait a moment and try again."
@@ -5576,7 +5582,7 @@
     "message": "Something went wrong. Try again."
   },
   "mfaErrorInvalidCode": {
-    "message": "That code is incorrect. Try again."
+    "message": "That code isn’t right. Check it and try again."
   },
   "mfaErrorInvalidPasskey": {
     "message": "Your passkey couldn't be verified. Try again."
@@ -5612,10 +5618,19 @@
     "message": "Get started"
   },
   "mfaIntroDescription": {
-    "message": "We’ll set up a few ways to confirm it’s you. You’ll use them to approve important actions, and if you lose access to one, you can use another."
+    "message": "We’ll set up a few ways to confirm it’s you. If you lose access to one method, you can use another."
+  },
+  "mfaIntroEmailDescription": {
+    "message": "Get a 6-digit code sent to your inbox"
   },
   "mfaIntroListTitle": {
     "message": "You’ll set up"
+  },
+  "mfaIntroPasskeyDescription": {
+    "message": "Confirm with your device or password manager"
+  },
+  "mfaIntroPasskeyDone": {
+    "message": "Saved to this device"
   },
   "mfaIntroTitle": {
     "message": "Set up 2-step verification"
@@ -5627,11 +5642,17 @@
     "message": "Passkey"
   },
   "mfaOtpDescription": {
-    "message": "We sent a 6-digit code to your email."
+    "message": "We sent a 6-digit code to your email. Enter it below to verify your email."
   },
   "mfaOtpDescriptionWithEmail": {
-    "message": "We sent a 6-digit code to $1.",
+    "message": "We sent a 6-digit code to $1. Enter it below to verify your email.",
     "description": "$1 is the email address the code was sent to"
+  },
+  "mfaOtpGetNewCode": {
+    "message": "Get new code"
+  },
+  "mfaOtpPaste": {
+    "message": "Paste"
   },
   "mfaOtpResend": {
     "message": "Resend code"
@@ -5650,23 +5671,23 @@
   "mfaOtpSending": {
     "message": "Sending code..."
   },
-  "mfaOtpSubmit": {
-    "message": "Verify"
-  },
   "mfaOtpTitle": {
-    "message": "Enter the code"
-  },
-  "mfaPasskeyContinue": {
-    "message": "Continue"
-  },
-  "mfaPasskeyDescription": {
-    "message": "Your device will ask you to confirm."
+    "message": "Enter your verification code"
   },
   "mfaPasskeyTitleSetup": {
     "message": "Create a passkey"
   },
   "mfaPasskeyTitleVerify": {
     "message": "Use your passkey"
+  },
+  "mfaPickerEmailOtp": {
+    "message": "Get a verification code"
+  },
+  "mfaPickerOr": {
+    "message": "or"
+  },
+  "mfaPickerPasskey": {
+    "message": "Verify with Passkey"
   },
   "mfaPickerTitle": {
     "message": "Confirm with 2-step verification"
@@ -5687,13 +5708,7 @@
     "message": "Set up"
   },
   "mfaSettingsTitle": {
-    "message": "Verification methods"
-  },
-  "mfaSuccessDone": {
-    "message": "Done"
-  },
-  "mfaSuccessTitle": {
-    "message": "You're all set"
+    "message": "2-step verification"
   },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
@@ -5904,8 +5919,28 @@
   "moneyConvertYourCrypto": {
     "message": "Convert your crypto"
   },
+  "moneyEarnApy": {
+    "message": "Earn $1 APY",
+    "description": "Token details balance row label. $1 is the Money account vault APY including the percent sign, e.g. \"6%\""
+  },
   "moneyEarnApyTitle": {
     "message": "Earn up to $1 APY"
+  },
+  "moneyEarnBalanceDescription": {
+    "message": "Add your $1 to your Money account and earn up to $2 in one year.",
+    "description": "Token details balance section. $1 is the token symbol, e.g. USDC. $2 is the projected USD earnings, e.g. +$74.34"
+  },
+  "moneyEarnBannerCta": {
+    "message": "Add $1",
+    "description": "Token details Money earn banner CTA. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerDescription": {
+    "message": "Add $1 to your Money account—no lockups or minimums.",
+    "description": "Token details Money earn banner body. $1 is the token symbol, e.g. USDC"
+  },
+  "moneyEarnBannerTitleNoApy": {
+    "message": "Earn with your Money account",
+    "description": "Token details Money earn banner title when the APY is unavailable"
   },
   "moneyEarnOnCrypto": {
     "message": "Earn on your crypto"
@@ -6065,6 +6100,10 @@
   },
   "moneySend": {
     "message": "Send"
+  },
+  "moneyStartEarning": {
+    "message": "Start earning",
+    "description": "Token details balance section button that opens a Money account deposit"
   },
   "moneyToastDepositFailedBody": {
     "message": "Unable to add funds. Try again."
@@ -6579,6 +6618,10 @@
   },
   "newCustomTokenAdded": {
     "message": "“$1” was successfully added!"
+  },
+  "newNFTDetectedInImportNFTsBasicFunctionalityMsg": {
+    "message": "To use OpenSea to see your NFTs, $1.",
+    "description": "$1 is the inline action that turns on basic functionality"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Assets"
@@ -12393,6 +12436,18 @@
     "message": "This is your daily allowance based on your staked TRX. You get $1 bandwidth for free daily.",
     "description": "$1 is the maximum bandwidth value"
   },
+  "tronDailyResourcesLoading": {
+    "message": "Loading daily resource usage…",
+    "description": "Announced to screen readers while Tron energy and bandwidth data is loading"
+  },
+  "tronDailyResourcesUnavailableDescription": {
+    "message": "Your energy and bandwidth information is temporarily unavailable. It will update automatically.",
+    "description": "Description of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
+  "tronDailyResourcesUnavailableTitle": {
+    "message": "Couldn't load resources",
+    "description": "Title of the warning shown when Tron energy and bandwidth data is unavailable"
+  },
   "tronEnergy": {
     "message": "Energy"
   },
@@ -12451,6 +12506,9 @@
   },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnBasicFunctionality": {
+    "message": "turn on basic functionality"
   },
   "turnOnMetamaskNotificationsError": {
     "message": "There was an error in creating the notifications. Please try again later."

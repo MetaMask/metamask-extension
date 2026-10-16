@@ -178,12 +178,12 @@ describe('Trace', () => {
 
       expect(startSpanManualMock).toHaveBeenCalledTimes(1);
       expect(startSpanManualMock).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           name: NAME_MOCK,
           parentSpan: PARENT_CONTEXT_MOCK,
           attributes: DATA_MOCK,
           op: 'custom',
-        },
+        }),
         expect.any(Function),
       );
 
@@ -225,6 +225,33 @@ describe('Trace', () => {
 
       expect(setMeasurementMock).toHaveBeenCalledTimes(1);
       expect(setMeasurementMock).toHaveBeenCalledWith('tag3', 123, 'none');
+    });
+
+    it('uses the performance timestamp for a default manual start time', () => {
+      const performanceNowSpy = jest
+        .spyOn(globalThis.performance, 'now')
+        .mockReturnValue(500);
+      const startTime = globalThis.performance.timeOrigin + 500;
+      const id = 'default-start-time';
+      const spanMock = {
+        end: jest.fn(),
+      } as unknown as Sentry.Span;
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id });
+
+      expect(startSpanManualMock).toHaveBeenCalledWith(
+        expect.objectContaining({ startTime }),
+        expect.any(Function),
+      );
+
+      endTrace({ name: NAME_MOCK, id, timestamp: startTime });
+      performanceNowSpy.mockRestore();
     });
 
     it('supports no global Sentry object', () => {
@@ -386,6 +413,34 @@ describe('Trace', () => {
 
       expect(spanEndMock).toHaveBeenCalledTimes(1);
       expect(spanEndMock).toHaveBeenCalledWith(123);
+    });
+
+    it('uses the performance timestamp for a default manual end time', () => {
+      const performanceNowSpy = jest
+        .spyOn(globalThis.performance, 'now')
+        .mockReturnValueOnce(100)
+        .mockReturnValueOnce(200);
+      const { timeOrigin } = globalThis.performance;
+      const startTime = timeOrigin + 100;
+      const endTime = timeOrigin + 200;
+      const spanEndMock = jest.fn();
+      const spanMock = { end: spanEndMock } as unknown as Sentry.Span;
+      const id = 'default-end-time';
+
+      startSpanManualMock.mockImplementationOnce((_, fn) =>
+        fn(spanMock, () => {
+          // Intentionally empty
+        }),
+      );
+
+      trace({ name: NAME_MOCK, id });
+      endTrace({ name: NAME_MOCK, id });
+
+      expect(spanEndMock).toHaveBeenCalledWith(endTime);
+      expect(endTime).toBeGreaterThanOrEqual(startTime);
+      expect(performanceNowSpy).toHaveBeenCalledTimes(2);
+
+      performanceNowSpy.mockRestore();
     });
 
     it('does not end Sentry span if name and ID does not match', () => {
