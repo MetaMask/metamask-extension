@@ -1,0 +1,9 @@
+{
+  "completionFile": "trace-selectors/completed.txt",
+  "output": "trace-selectors/output/selector-usage-trace-assets-migration.md",
+  "roots": [
+    {
+      "file": "shared/lib/selectors/assets-migration.ts"
+    }
+  ]
+}
