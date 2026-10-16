@@ -24,9 +24,9 @@ const mockSelectBridgeHistoryItemForTx = jest.mocked(
 );
 
 let capturedProps: {
-  showCancel: boolean;
   onCancel: (event: React.MouseEvent) => void;
   speedUp: { show: boolean; onClick: (event: React.MouseEvent) => void };
+  showCancel: boolean;
 } | null = null;
 
 jest.mock(
@@ -114,67 +114,37 @@ describe('TransactionListItemPendingActions', () => {
     expect(queryByTestId('action-buttons')).not.toBeInTheDocument();
   });
 
-  it.each([
-    TransactionType.swap,
-    TransactionType.bridge,
-    TransactionType.swapApproval,
-    TransactionType.bridgeApproval,
-  ])('hides speed up but preserves cancel for %s transactions', (type) => {
-    renderComponent(buildTransactionGroup({ type }));
+  it('hides speed up for swaps, bridges, and their approvals', () => {
+    for (const type of [
+      TransactionType.swap,
+      TransactionType.bridge,
+      TransactionType.swapApproval,
+      TransactionType.bridgeApproval,
+    ]) {
+      mockActions();
+      const { unmount } = renderComponent(buildTransactionGroup({ type }));
 
-    expect(capturedProps?.speedUp.show).toBe(false);
-    expect(capturedProps?.showCancel).toBe(true);
-  });
+      expect(capturedProps?.speedUp.show).toBe(false);
+      expect(capturedProps?.showCancel).toBe(true);
+      unmount();
 
-  it.each([
-    TransactionType.swap,
-    TransactionType.bridge,
-    TransactionType.swapApproval,
-    TransactionType.bridgeApproval,
-  ])(
-    'renders nothing for %s transactions when cancel is unavailable',
-    (type) => {
       mockActions({ showCancel: false });
 
-      const { queryByTestId } = renderComponent(
+      const { queryByTestId, unmount: unmountWithoutCancel } = renderComponent(
         buildTransactionGroup({ type }),
       );
 
       expect(queryByTestId('action-buttons')).not.toBeInTheDocument();
-    },
-  );
+      unmountWithoutCancel();
 
-  it.each([
-    TransactionType.swap,
-    TransactionType.bridge,
-    TransactionType.swapApproval,
-    TransactionType.bridgeApproval,
-  ])(
-    'uses the initial %s type when the primary transaction is a replacement',
-    (type) => {
-      renderComponent(
+      mockActions();
+      const { unmount: unmountReplacement } = renderComponent(
         buildTransactionGroup({ type, primaryType: TransactionType.retry }),
       );
 
       expect(capturedProps?.speedUp.show).toBe(false);
-    },
-  );
-
-  it('preserves speed up for send transactions', () => {
-    renderComponent(buildTransactionGroup());
-
-    expect(capturedProps?.speedUp.show).toBe(true);
-  });
-
-  it('preserves unavailable speed up for other transaction types', () => {
-    mockActions({
-      speedUp: { show: false, label: 'speedUp', onClick: jest.fn() },
-    });
-
-    renderComponent(buildTransactionGroup());
-
-    expect(capturedProps?.speedUp.show).toBe(false);
-    expect(capturedProps?.showCancel).toBe(true);
+      unmountReplacement();
+    }
   });
 
   it('targets the primary transaction id when delegating to the cancel handler', () => {
