@@ -105,10 +105,7 @@ describe('useNotifications', () => {
       await result.current.enableNotifications();
     });
 
-    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith({
-      hasMarketingConsent: true,
-      productAnnouncementEnabled: false,
-    });
+    expect(actions.enableMetamaskNotifications).toHaveBeenCalledWith();
   });
 
   it('applies fetched notification list data after listNotifications resolves', async () => {
