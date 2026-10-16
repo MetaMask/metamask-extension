@@ -405,7 +405,7 @@ describe('compare-benchmarks', () => {
       expect(result.comparisons).toHaveLength(0);
     });
 
-    it('skips entries from failed benchmark runs (missing p75/p95)', () => {
+    it('fails entries from failed benchmark runs', () => {
       const benchmarks = [
         {
           name: 'benchmark-chrome-webpack-startupStandardHome',
@@ -417,8 +417,12 @@ describe('compare-benchmarks', () => {
 
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
+      expect(result.anyFailed).toBe(true);
+      expect(result.failedBenchmarkNames).toStrictEqual([
+        'startupStandardHome [benchmark-chrome-webpack-startupStandardHome]',
+      ]);
       expect(console.warn).toHaveBeenCalledWith(
-        expect.stringContaining('missing p75/p95'),
+        expect.stringContaining('Browser crashed'),
       );
     });
   });
@@ -455,6 +459,26 @@ describe('loadCurrentBenchmarks', () => {
     expect(results).toHaveLength(1);
     expect(results[0].name).toBe('benchmark-chrome');
     expect(results[0].data).toStrictEqual(payload);
+  });
+
+  it('ignores co-located runner calibration artifacts', async () => {
+    const payload: Record<string, BenchmarkResults> = {
+      standardHome: makeBenchmarkResults('uiStartup'),
+    };
+
+    mockReaddir.mockResolvedValue([
+      'benchmark-chrome-webpack-startupStandardHome.json',
+      'runner-calibration-chrome-webpack-startupStandardHome.json',
+    ]);
+    mockReadFile.mockResolvedValue(JSON.stringify(payload));
+
+    const results = await loadCurrentBenchmarks('/tmp/benchmarks');
+
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe(
+      'benchmark-chrome-webpack-startupStandardHome',
+    );
+    expect(mockReadFile).toHaveBeenCalledTimes(1);
   });
 
   it('returns an empty array when no JSON files are present', async () => {

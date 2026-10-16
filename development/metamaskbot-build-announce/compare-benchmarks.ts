@@ -48,7 +48,7 @@ type LoadedBenchmark = {
 };
 
 /**
- * Loads all benchmark JSON files from a directory.
+ * Loads benchmark result JSON files from a directory.
  *
  * @param dirPath - Path to directory containing benchmark JSON files.
  */
@@ -56,7 +56,10 @@ export async function loadCurrentBenchmarks(
   dirPath: string,
 ): Promise<LoadedBenchmark[]> {
   const entries = await fs.readdir(dirPath);
-  const jsonFiles = entries.filter((f) => f.endsWith('.json'));
+  const jsonFiles = entries.filter(
+    (fileName) =>
+      fileName.startsWith('benchmark-') && fileName.endsWith('.json'),
+  );
 
   const results: LoadedBenchmark[] = [];
   for (const file of jsonFiles) {
@@ -85,8 +88,13 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
 export function runComparison(
   benchmarks: LoadedBenchmark[],
   baseline: HistoricalBaselineReference,
-): { comparisons: BenchmarkEntryComparison[]; anyFailed: boolean } {
+): {
+  comparisons: BenchmarkEntryComparison[];
+  anyFailed: boolean;
+  failedBenchmarkNames: string[];
+} {
   const comparisons: BenchmarkEntryComparison[] = [];
+  const failedBenchmarkNames: string[] = [];
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
@@ -94,9 +102,16 @@ export function runComparison(
 
     for (const [entryName, results] of Object.entries(data)) {
       if (!results.p75 || !results.p95) {
+        const { error } = results as { error?: unknown };
         console.warn(
-          `Skipping "${entryName}" in "${name}": missing p75/p95 (benchmark likely failed).`,
+          `Failing "${entryName}" in "${name}": ${
+            typeof error === 'string'
+              ? error
+              : 'missing p75/p95 benchmark results'
+          }`,
         );
+        failedBenchmarkNames.push(`${entryName} [${name}]`);
+        anyFailed = true;
         continue;
       }
 
@@ -143,7 +158,7 @@ export function runComparison(
     }
   }
 
-  return { comparisons, anyFailed };
+  return { comparisons, anyFailed, failedBenchmarkNames };
 }
 
 function violationIcon(severity: ThresholdSeverity): string {
@@ -310,10 +325,12 @@ function formatName(comparison: BenchmarkEntryComparison): string {
  * @param result - Comparison results.
  * @param result.comparisons
  * @param result.anyFailed
+ * @param result.failedBenchmarkNames
  */
 export function printReport(result: {
   comparisons: BenchmarkEntryComparison[];
   anyFailed: boolean;
+  failedBenchmarkNames?: string[];
 }): void {
   console.log('\n═══════════════════════════════════════');
   console.log('  Performance Benchmark Quality Gate');
@@ -326,6 +343,7 @@ export function printReport(result: {
   }));
 
   const failed = withLines.filter((w) => w.comparison.absoluteFailed);
+  const failedBenchmarkNames = result.failedBenchmarkNames ?? [];
   const warned = withLines.filter(
     (w) =>
       !w.comparison.absoluteFailed &&
@@ -350,6 +368,10 @@ export function printReport(result: {
       const details = line.details ? ` | ${line.details}` : '';
       console.log(`      ${line.icon} ${line.metric}${details}`);
     }
+  }
+
+  for (const failedBenchmarkName of failedBenchmarkNames) {
+    console.log(`\nFAIL  ${failedBenchmarkName}`);
   }
 
   // Show warned entries with details
@@ -378,7 +400,7 @@ export function printReport(result: {
     }
   }
 
-  const failCount = failed.length;
+  const failCount = failed.length + failedBenchmarkNames.length;
   const warnCount = warned.length;
 
   console.log('\n───────────────────────────────────────');
