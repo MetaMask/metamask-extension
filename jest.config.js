@@ -10,6 +10,7 @@ module.exports = {
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/development/eslint-rules/**/*.js',
     '<rootDir>/development/metamaskbot-build-announce/**/*.(js|ts|mts)',
+    '<rootDir>/development/download-builds.ts',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
