@@ -68,7 +68,7 @@ export const useTrackAccountHidden = (): TrackAccountHidden => {
             location,
           })
           .build(),
-      );
+      ).catch(() => undefined);
     },
     [createEventBuilder, store, trackEvent],
   );
