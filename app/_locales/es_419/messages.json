@@ -6245,9 +6245,6 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin SegWit nativo"
-  },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
   },
