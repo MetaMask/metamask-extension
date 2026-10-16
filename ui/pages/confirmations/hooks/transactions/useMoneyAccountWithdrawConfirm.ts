@@ -69,7 +69,9 @@ function readTransactionFromStore(
  */
 export function useMoneyAccountWithdrawConfirm() {
   const dispatch = useDispatch();
-  const accountOverride = useTransactionAccountOverride();
+  // Withdraws store the recipient in Pay's account override. It is only
+  // encoded into the transfer calldata and never signs.
+  const recipient = useTransactionAccountOverride();
 
   /**
    * Encodes (when needed) and returns the funded withdraw transaction to
@@ -114,7 +116,7 @@ export function useMoneyAccountWithdrawConfirm() {
       const rawUpdate = await updateMoneyAccountWithdrawAmount(
         transactionMeta.id,
         amountHuman as string,
-        accountOverride,
+        recipient,
       );
       const update = asFundedWithdrawUpdate(rawUpdate);
       if (update) {
@@ -159,7 +161,7 @@ export function useMoneyAccountWithdrawConfirm() {
       );
       return null;
     },
-    [accountOverride, dispatch],
+    [dispatch, recipient],
   );
 
   return { prepareWithdrawTransaction };

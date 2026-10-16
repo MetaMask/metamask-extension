@@ -38,6 +38,7 @@ import { useTransactionConfirm } from './useTransactionConfirm';
 const mockGetEnvironmentType = jest.fn();
 const mockUseIsHardwareWalletAccount = jest.fn();
 const mockUseTransactionPayingAccount = jest.fn();
+const mockUseWithdrawHardwareQuoteSigner = jest.fn();
 
 jest.mock('../../../../../shared/lib/environment-type', () => ({
   ...jest.requireActual('../../../../../shared/lib/environment-type'),
@@ -81,6 +82,9 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('./useMoneyAccountWithdrawConfirm');
 jest.mock('./useTransactionPayingAccount', () => ({
   useTransactionPayingAccount: () => mockUseTransactionPayingAccount(),
+}));
+jest.mock('../pay/useWithdrawHardwareQuoteSigner', () => ({
+  useWithdrawHardwareQuoteSigner: () => mockUseWithdrawHardwareQuoteSigner(),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -236,6 +240,7 @@ describe('useTransactionConfirm', () => {
     );
     mockIsHardwareWalletError.mockReturnValue(false);
     mockIsUserRejectedHardwareWalletError.mockReturnValue(false);
+    mockUseWithdrawHardwareQuoteSigner.mockReturnValue(undefined);
     mockPrepareWithdrawTransaction.mockResolvedValue(null);
     useMoneyAccountWithdrawConfirmMock.mockReturnValue({
       prepareWithdrawTransaction: mockPrepareWithdrawTransaction,
@@ -977,6 +982,50 @@ describe('useTransactionConfirm', () => {
       const approved = updateAndApproveTxMock.mock.calls[0][0];
       expect(approved.id).toBe('prepared-id');
       expect(approved.txParams.data).toBe('0xbatchdata');
+    });
+
+    it('signs with the money account, not the hardware recipient', async () => {
+      const moneyAccount = TRANSACTION_META_MOCK.txParams.from;
+      mockPrepareWithdrawTransaction.mockResolvedValue({
+        ...TRANSACTION_META_MOCK,
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(true);
+      expect(mockUseIsHardwareWalletAccount).toHaveBeenCalledWith(moneyAccount);
+      expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+        expect.any(Object),
+        true,
+        '',
+        moneyAccount,
+      );
+      expect(mockNavigateToHwSigningPage).not.toHaveBeenCalled();
+    });
+
+    it('refuses to approve when a quote would make a hardware recipient sign', async () => {
+      const consoleErrorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => undefined);
+      mockUseWithdrawHardwareQuoteSigner.mockReturnValue(
+        '0x2222222222222222222222222222222222222222',
+      );
+
+      const { onTransactionConfirm } = runHook({
+        type: TransactionType.moneyAccountWithdraw,
+      });
+
+      const result = await onTransactionConfirm();
+
+      expect(result).toBe(false);
+      expect(mockPrepareWithdrawTransaction).not.toHaveBeenCalled();
+      expect(updateAndApproveTxMock).not.toHaveBeenCalled();
+      consoleErrorSpy.mockRestore();
     });
 
     it('does not prepare a withdraw for other transaction types', async () => {

@@ -14,6 +14,7 @@ import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useGasSponsorshipPreference } from '../gas/useGasSponsorshipPreference';
+import { useWithdrawHardwareQuoteSigner } from '../pay/useWithdrawHardwareQuoteSigner';
 import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
@@ -40,6 +41,7 @@ export function useTransactionConfirm() {
     TransactionType.moneyAccountWithdraw,
   ]);
   const { prepareWithdrawTransaction } = useMoneyAccountWithdrawConfirm();
+  const withdrawHardwareQuoteSigner = useWithdrawHardwareQuoteSigner();
   const payingAccount = useTransactionPayingAccount();
   const isPayingWithHardwareWallet = useIsHardwareWalletAccount(payingAccount);
 
@@ -90,6 +92,16 @@ export function useTransactionConfirm() {
     // execute the previous quote. The footer blocks the click; this covers
     // any other confirm path.
     if (isAmountPending) {
+      return false;
+    }
+
+    // Withdraws are signed by `txParams.from` only. Never approve a quote that
+    // would make a hardware recipient sign.
+    if (withdrawHardwareQuoteSigner) {
+      console.error(
+        'Withdraw quote requires a hardware recipient signature, refusing to approve',
+        { transactionId: transactionMeta.id },
+      );
       return false;
     }
 
@@ -219,6 +231,7 @@ export function useTransactionConfirm() {
     transactionMeta,
     t,
     updateSwapWithQuoteDetailsIfRequired,
+    withdrawHardwareQuoteSigner,
   ]);
 
   return {

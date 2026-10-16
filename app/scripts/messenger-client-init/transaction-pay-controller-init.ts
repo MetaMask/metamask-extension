@@ -105,14 +105,10 @@ function getApi(
       );
       return result;
     },
-    createMoneyAccountWithdrawTransaction: async (accountOverride: Hex) => {
+    createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedAccountOverride(
-        messengerClient,
-        result.transactionId,
-        accountOverride,
-      );
+      seedAccountOverride(messengerClient, result.transactionId, recipient);
       return result;
     },
     setTransactionPayIsMaxAmount: (

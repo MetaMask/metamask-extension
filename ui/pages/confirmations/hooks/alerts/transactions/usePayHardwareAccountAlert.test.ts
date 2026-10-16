@@ -1,6 +1,7 @@
 import { Hex } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { TransactionType } from '@metamask/transaction-controller';
+import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { waitFor } from '@testing-library/react';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import {
@@ -48,27 +49,33 @@ function buildAccount(address: string, id: string, keyringType: string) {
   };
 }
 
+type QuoteMock = { strategy: TransactionPayStrategy; request: { from: Hex } };
+
 function buildState({
   senderKeyringType,
   payerKeyringType,
   flag,
   transactionId,
+  quotes,
 }: {
-  senderKeyringType: string;
+  senderKeyringType?: string;
   payerKeyringType?: string;
   flag: PayHardwareFlag;
   transactionId?: string;
+  quotes?: QuoteMock[];
 }) {
-  const accounts = {
-    [SENDER_ACCOUNT_ID]: buildAccount(
+  const accounts = {} as Record<string, ReturnType<typeof buildAccount>>;
+  const accountIdByAddress = {} as Record<string, string>;
+
+  // The Money Account is not an internal account, so withdraw tests omit it.
+  if (senderKeyringType) {
+    accounts[SENDER_ACCOUNT_ID] = buildAccount(
       CONTRACT_INTERACTION_SENDER_ADDRESS,
       SENDER_ACCOUNT_ID,
       senderKeyringType,
-    ),
-  } as Record<string, ReturnType<typeof buildAccount>>;
-  const accountIdByAddress = {
-    [CONTRACT_INTERACTION_SENDER_ADDRESS]: SENDER_ACCOUNT_ID,
-  } as Record<string, string>;
+    );
+    accountIdByAddress[CONTRACT_INTERACTION_SENDER_ADDRESS] = SENDER_ACCOUNT_ID;
+  }
 
   if (payerKeyringType) {
     accounts[PAYER_ACCOUNT_ID] = buildAccount(
@@ -81,7 +88,12 @@ function buildState({
 
   return {
     metamask: {
-      internalAccounts: { accounts, selectedAccount: SENDER_ACCOUNT_ID },
+      internalAccounts: {
+        accounts,
+        selectedAccount: senderKeyringType
+          ? SENDER_ACCOUNT_ID
+          : PAYER_ACCOUNT_ID,
+      },
       accountIdByAddress,
       remoteFeatureFlags: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -91,7 +103,7 @@ function buildState({
       ...(payerKeyringType && transactionId
         ? {
             transactionData: {
-              [transactionId]: { accountOverride: PAYER_ADDRESS },
+              [transactionId]: { accountOverride: PAYER_ADDRESS, quotes },
             },
           }
         : {}),
@@ -104,11 +116,13 @@ function runHook({
   senderKeyringType = KeyringTypes.ledger,
   payerKeyringType,
   flag = false,
+  quotes,
 }: {
   transactionType: TransactionType;
-  senderKeyringType?: string;
+  senderKeyringType?: string | null;
   payerKeyringType?: string;
   flag?: PayHardwareFlag;
+  quotes?: QuoteMock[];
 }) {
   const transaction = {
     ...genUnapprovedContractInteractionConfirmation({
@@ -120,10 +134,11 @@ function runHook({
   const state = getMockConfirmStateForTransaction(
     transaction,
     buildState({
-      senderKeyringType,
+      senderKeyringType: senderKeyringType ?? undefined,
       payerKeyringType,
       flag,
       transactionId: transaction.id,
+      quotes,
     }),
   );
 
@@ -140,6 +155,12 @@ const EXPECTED_ALERT = {
   message: "Hardware wallets aren't supported.\nSwitch wallets to continue.",
   severity: Severity.Danger,
   isBlocking: true,
+};
+
+const EXPECTED_WITHDRAW_RECIPIENT_ALERT = {
+  ...EXPECTED_ALERT,
+  message:
+    "Hardware wallets can't receive this token.\nChoose a different token or account.",
 };
 
 const FLAG_OFF: PayHardwareFlag = { enabled: false };
@@ -192,6 +213,100 @@ describe('usePayHardwareAccountAlert', () => {
         senderKeyringType: KeyringTypes.ledger,
         payerKeyringType: 'HD Key Tree',
         flag: FLAG_OFF,
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
+    });
+  });
+
+  describe('moneyAccountWithdraw — only the Money Account signs', () => {
+    const HARDWARE_KEYRING_TYPES = [
+      KeyringTypes.ledger,
+      KeyringTypes.trezor,
+      KeyringTypes.lattice,
+      KeyringTypes.qr,
+      KeyringTypes.oneKey,
+    ];
+    const SOFTWARE_KEYRING_TYPES = [
+      KeyringTypes.hd,
+      KeyringTypes.simple,
+      KeyringTypes.snap,
+    ];
+    const RECIPIENT_QUOTE: QuoteMock = {
+      strategy: TransactionPayStrategy.Relay,
+      request: { from: PAYER_ADDRESS },
+    };
+
+    for (const keyringType of HARDWARE_KEYRING_TYPES) {
+      it(`returns no alert for a direct withdraw to a ${keyringType} recipient`, async () => {
+        const { result } = runHook({
+          transactionType: TransactionType.moneyAccountWithdraw,
+          senderKeyringType: null,
+          payerKeyringType: keyringType,
+          flag: FLAG_OFF,
+        });
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([]);
+        });
+      });
+
+      it(`returns an alert when a quote would make a ${keyringType} recipient sign`, async () => {
+        const { result } = runHook({
+          transactionType: TransactionType.moneyAccountWithdraw,
+          senderKeyringType: null,
+          payerKeyringType: keyringType,
+          flag: FLAG_OFF,
+          quotes: [RECIPIENT_QUOTE],
+        });
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([
+            EXPECTED_WITHDRAW_RECIPIENT_ALERT,
+          ]);
+        });
+      });
+    }
+
+    for (const keyringType of SOFTWARE_KEYRING_TYPES) {
+      it(`returns no alert for a quoted withdraw to a ${keyringType} recipient`, async () => {
+        const { result } = runHook({
+          transactionType: TransactionType.moneyAccountWithdraw,
+          senderKeyringType: null,
+          payerKeyringType: keyringType,
+          flag: FLAG_OFF,
+          quotes: [RECIPIENT_QUOTE],
+        });
+        await waitFor(() => {
+          expect(result.current).toStrictEqual([]);
+        });
+      });
+    }
+
+    it('returns no alert for a no-op quote to a hardware recipient', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountWithdraw,
+        senderKeyringType: null,
+        payerKeyringType: KeyringTypes.ledger,
+        flag: FLAG_OFF,
+        quotes: [{ ...RECIPIENT_QUOTE, strategy: TransactionPayStrategy.None }],
+      });
+      await waitFor(() => {
+        expect(result.current).toStrictEqual([]);
+      });
+    });
+
+    it('returns no alert when the quote is signed by the Money Account', async () => {
+      const { result } = runHook({
+        transactionType: TransactionType.moneyAccountWithdraw,
+        senderKeyringType: null,
+        payerKeyringType: KeyringTypes.ledger,
+        flag: FLAG_OFF,
+        quotes: [
+          {
+            ...RECIPIENT_QUOTE,
+            request: { from: CONTRACT_INTERACTION_SENDER_ADDRESS as Hex },
+          },
+        ],
       });
       await waitFor(() => {
         expect(result.current).toStrictEqual([]);
