@@ -1,6 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getTrendingTokens, searchTokens } from '@metamask/assets-controllers';
 
@@ -8,16 +7,11 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import { DISCOVER_SEARCH_CHAIN_IDS } from './constants';
 import { useDiscoverCryptoSearch } from './useDiscoverCryptoSearch';
 
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-}));
-
 jest.mock('@metamask/assets-controllers', () => ({
   getTrendingTokens: jest.fn(),
   searchTokens: jest.fn(),
 }));
 
-const mockUseSelector = jest.mocked(useSelector);
 const mockGetTrendingTokens = jest.mocked(getTrendingTokens);
 const mockSearchTokens = jest.mocked(searchTokens);
 
@@ -41,7 +35,6 @@ describe('useDiscoverCryptoSearch', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSelector.mockReturnValue(false);
     mockGetTrendingTokens.mockResolvedValue([]);
   });
 
@@ -69,7 +62,7 @@ describe('useDiscoverCryptoSearch', () => {
 
     expect(mockGetTrendingTokens).toHaveBeenCalledWith(
       expect.objectContaining({
-        chainIds: expect.arrayContaining([MultichainNetworks.BITCOIN]),
+        chainIds: DISCOVER_SEARCH_CHAIN_IDS,
         includeTokenSecurityData: true,
       }),
     );
@@ -78,8 +71,7 @@ describe('useDiscoverCryptoSearch', () => {
     expect(result.current.data[0].symbol).toBe('ETH');
   });
 
-  it('includes Stellar in trending chain IDs when Stellar support is enabled', async () => {
-    mockUseSelector.mockReturnValue(true);
+  it('includes Stellar in trending chain IDs', async () => {
     mockGetTrendingTokens.mockResolvedValue([]);
 
     const { result } = renderHook(
@@ -92,24 +84,6 @@ describe('useDiscoverCryptoSearch', () => {
     });
 
     expect(mockGetTrendingTokens.mock.calls[0][0].chainIds).toContain(
-      MultichainNetworks.STELLAR,
-    );
-  });
-
-  it('excludes Stellar in trending chain IDs when Stellar support is off', async () => {
-    mockUseSelector.mockReturnValue(false);
-    mockGetTrendingTokens.mockResolvedValue([]);
-
-    const { result } = renderHook(
-      () => useDiscoverCryptoSearch({ query: '' }),
-      { wrapper: createWrapper() },
-    );
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
-    expect(mockGetTrendingTokens.mock.calls[0][0].chainIds).not.toContain(
       MultichainNetworks.STELLAR,
     );
   });

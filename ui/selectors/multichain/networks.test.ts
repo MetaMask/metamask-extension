@@ -159,7 +159,7 @@ const mockState: TestState = {
       bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
       tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
       tronTestnetsEnabled: false,
-      stellarAccounts: { enabled: false, minimumVersion: '13.6.0' },
+      stellarAccounts: { enabled: true, minimumVersion: '13.6.0' },
     },
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
