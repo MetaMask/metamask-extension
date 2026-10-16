@@ -166,33 +166,28 @@ const addressScanErrorResult: AddressScanResult = {
   label: '',
 };
 
-export function isEvmAddressScanChainId(chainId: CaipChainId) {
+function getEvmAddressScanChain(chainId: CaipChainId) {
   try {
     const { namespace } = parseCaipChainId(chainId);
-    if (namespace !== KnownCaipNamespace.Eip155) {
-      return false;
-    }
-    return convertChainIdToBlockAidChainName(chainId) !== null;
+    return namespace === KnownCaipNamespace.Eip155
+      ? convertChainIdToBlockAidChainName(chainId)
+      : null;
   } catch {
-    return false;
+    return null;
   }
+}
+
+export function isEvmAddressScanChainId(chainId: CaipChainId) {
+  return getEvmAddressScanChain(chainId) !== null;
 }
 
 export async function fetchEvmAddressScan(
   chainId: CaipChainId,
   address: string,
 ): Promise<AddressScanResult> {
-  if (
-    !isSecurityAlertsAPIEnabled() ||
-    !address ||
-    !isEvmAddressScanChainId(chainId)
-  ) {
-    return addressScanErrorResult;
-  }
+  const chain = getEvmAddressScanChain(chainId);
 
-  const chain = convertChainIdToBlockAidChainName(chainId);
-
-  if (!chain) {
+  if (!isSecurityAlertsAPIEnabled() || !address || !chain) {
     return addressScanErrorResult;
   }
 

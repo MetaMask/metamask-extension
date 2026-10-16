@@ -3,11 +3,14 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AddressScanResultType } from '@metamask/phishing-controller';
 import { fetchEvmAddressScan } from '#shared/lib/bridge-utils/security-alerts-api.util';
-import { useResolveAddressLabel } from './useResolveAddressLabel';
+import { useAddressLabel } from './useAddressLabel';
+
+let mockIsSecurityAlertsAPIEnabled = true;
 
 jest.mock('#shared/lib/bridge-utils/security-alerts-api.util', () => ({
   ...jest.requireActual('#shared/lib/bridge-utils/security-alerts-api.util'),
   fetchEvmAddressScan: jest.fn(),
+  isSecurityAlertsAPIEnabled: jest.fn(() => mockIsSecurityAlertsAPIEnabled),
 }));
 
 let mockIsExternalServicesEnabled = true;
@@ -39,10 +42,11 @@ function createWrapper() {
   };
 }
 
-describe('useResolveAddressLabel', () => {
+describe('useAddressLabel', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsExternalServicesEnabled = true;
+    mockIsSecurityAlertsAPIEnabled = true;
   });
 
   it('returns an empty string until the scan resolves, then the label', async () => {
@@ -53,8 +57,7 @@ describe('useResolveAddressLabel', () => {
     });
 
     const { result } = renderHook(
-      () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper: createWrapper() },
     );
 
@@ -74,8 +77,7 @@ describe('useResolveAddressLabel', () => {
     });
 
     const { result } = renderHook(
-      () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper: createWrapper() },
     );
 
@@ -87,8 +89,34 @@ describe('useResolveAddressLabel', () => {
     mockIsExternalServicesEnabled = false;
 
     const { result } = renderHook(
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current).toBe('');
+    expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
+  });
+
+  it('does not fetch when the security alerts API is disabled', () => {
+    mockIsSecurityAlertsAPIEnabled = false;
+
+    const { result } = renderHook(
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current).toBe('');
+    expect(mockFetchEvmAddressScan).not.toHaveBeenCalled();
+  });
+
+  it('does not fetch when disabled by the caller', () => {
+    const { result } = renderHook(
       () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+        useAddressLabel({
+          address: relayAddress,
+          chainId: arbitrum,
+          enabled: false,
+        }),
       { wrapper: createWrapper() },
     );
 
@@ -105,15 +133,13 @@ describe('useResolveAddressLabel', () => {
     const wrapper = createWrapper();
 
     const first = renderHook(
-      () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper },
     );
     await waitFor(() => expect(first.result.current).toBe('Relay'));
 
     const second = renderHook(
-      () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper },
     );
 
@@ -123,7 +149,7 @@ describe('useResolveAddressLabel', () => {
 
   it('does not fetch without an address', () => {
     const { result } = renderHook(
-      () => useResolveAddressLabel()({ chainId: arbitrum }),
+      () => useAddressLabel({ address: '', chainId: arbitrum }),
       { wrapper: createWrapper() },
     );
 
@@ -134,7 +160,7 @@ describe('useResolveAddressLabel', () => {
   it('does not fetch for non-EVM chains', () => {
     const { result } = renderHook(
       () =>
-        useResolveAddressLabel()({
+        useAddressLabel({
           address: 'So11111111111111111111111111111111111111112',
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         }),
@@ -154,13 +180,12 @@ describe('useResolveAddressLabel', () => {
     const wrapper = createWrapper();
 
     renderHook(
-      () =>
-        useResolveAddressLabel()({ address: relayAddress, chainId: arbitrum }),
+      () => useAddressLabel({ address: relayAddress, chainId: arbitrum }),
       { wrapper },
     );
     renderHook(
       () =>
-        useResolveAddressLabel()({
+        useAddressLabel({
           address: relayAddress.toUpperCase().replace('0X', '0x'),
           chainId: arbitrum,
         }),
