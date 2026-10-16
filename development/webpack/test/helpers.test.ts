@@ -190,3 +190,32 @@ describe('./utils/helpers.ts', () => {
     }
   });
 });
+
+describe('toWebpackSourceName', () => {
+  const { toWebpackSourceName } = helpers;
+
+  it('names files under the context with a ./ prefix', () => {
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/app/scripts/x.ts'),
+      'webpack://./scripts/x.ts',
+    );
+  });
+
+  it('names files outside the context with a ../ prefix', () => {
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/ui/x.tsx'),
+      'webpack://../ui/x.tsx',
+    );
+    assert.strictEqual(
+      toWebpackSourceName('/project/app', '/project/node_modules/pkg/i.js'),
+      'webpack://../node_modules/pkg/i.js',
+    );
+  });
+
+  it('falls back to the absolute path when there is no context', () => {
+    assert.strictEqual(
+      toWebpackSourceName(undefined, '/project/app/x.ts'),
+      '/project/app/x.ts',
+    );
+  });
+});

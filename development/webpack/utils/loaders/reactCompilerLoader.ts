@@ -1,6 +1,5 @@
 import type { RuleSetUseItem } from 'webpack';
 import {
-  reactCompilerLoader,
   type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
@@ -73,23 +72,15 @@ export type ReactCompilerLoaderConfig = {
   target: ReactCompilerLoaderOption['target'];
   verbose: boolean;
   debug: 'all' | 'critical' | 'none';
-  /**
-   * When true, uses the wrapper loader so the same source works in
-   * thread-loader workers and the emitted CJS build. Verbose mode also uses
-   * the wrapper for logging and buildInfo tracking.
-   */
-  threadLoaderEnabled: boolean;
 };
 
 /**
  * Get the React Compiler loader configuration.
  *
- * Uses the wrapper loader when thread-loader is active or when verbose logging
- * is requested. Falls back to the direct `react-compiler-webpack` loader
- * otherwise (e.g. LavaMoat policy generation where the wrapper isn't
- * resolvable). While worker builds still cannot record buildInfo stats, using
- * the wrapper there keeps the loader path consistent across the direct `tsx`
- * and emitted `.webpack` CJS execution paths.
+ * Always uses the wrapper loader. Besides stats collection (only possible when
+ * thread-loader is off) and verbose logging, the wrapper names the input file
+ * relative to the build context inside Babel's source map, which every build
+ * needs for reproducible module hashes. See `toWebpackSourceName`.
  *
  * @param config - Configuration options for the React Compiler loader.
  * @param config.target - The target version of the React Compiler.
@@ -103,25 +94,18 @@ export type ReactCompilerLoaderConfig = {
 export function getReactCompilerLoader(
   config: ReactCompilerLoaderConfig,
 ): RuleSetUseItem {
-  const { target, verbose, debug, threadLoaderEnabled } = config;
+  const { target, verbose, debug } = config;
 
   const reactCompilerOptions = {
     target,
     panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
-  const useWrapper = threadLoaderEnabled || verbose;
-
-  return useWrapper
-    ? {
-        loader: getWrapperPath(),
-        options: {
-          ...defineReactCompilerLoaderOption(reactCompilerOptions),
-          __verbose: verbose,
-        },
-      }
-    : {
-        loader: reactCompilerLoader,
-        options: defineReactCompilerLoaderOption(reactCompilerOptions),
-      };
+  return {
+    loader: getWrapperPath(),
+    options: {
+      ...defineReactCompilerLoaderOption(reactCompilerOptions),
+      __verbose: verbose,
+    },
+  };
 }
