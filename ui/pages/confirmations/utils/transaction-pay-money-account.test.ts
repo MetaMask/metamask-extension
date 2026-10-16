@@ -25,7 +25,7 @@ describe('money account payment override helpers', () => {
     it('sets MoneyAccount override and refundTo for deposit flows', () => {
       applyMoneyAccountOverride('tx-1', moneyAddress, {
         id: 'tx-1',
-        type: TransactionType.perpsDeposit,
+        type: TransactionType.moneyAccountDeposit,
       } as never);
 
       expect(setPaymentOverrideMock).toHaveBeenCalledWith('tx-1', {
@@ -37,7 +37,7 @@ describe('money account payment override helpers', () => {
     it('sets MoneyAccount override without refundTo and with atomic false for withdraw flows', () => {
       applyMoneyAccountOverride('tx-2', moneyAddress, {
         id: 'tx-2',
-        type: TransactionType.perpsWithdraw,
+        type: TransactionType.moneyAccountWithdraw,
       } as never);
 
       expect(setPaymentOverrideMock).toHaveBeenCalledWith('tx-2', {

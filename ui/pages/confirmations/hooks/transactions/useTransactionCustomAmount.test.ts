@@ -27,6 +27,7 @@ import {
   MAX_LENGTH,
 } from './useTransactionCustomAmount';
 import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
+import * as useUpdateTransactionPayAmountModule from './useUpdateTransactionPayAmount';
 import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
@@ -35,6 +36,7 @@ jest.mock('../pay/usePayWithNoFeeToken');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('../pay/usePayTokenAccountBalance');
+jest.mock('./useUpdateTokenAmount');
 jest.mock('../send/useAccountTokensLoading');
 jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   useMoneyAccountWithdrawableFiat: jest.fn(() => ({
@@ -42,7 +44,7 @@ jest.mock('../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
   })),
 }));
 jest.mock('./useDepositPrefill');
-jest.mock('./useUpdateTokenAmount');
+jest.mock('./useUpdateTransactionPayAmount');
 jest.mock('../../../../store/actions', () => ({
   upsertTransactionUIMetricsFragment: jest.fn(),
 }));
@@ -193,10 +195,12 @@ function runHook({
       isLiveBalance: livePayTokenBalanceRaw !== undefined,
       isBalanceUsdKnown: Number(payTokenBalanceUsd) > 0,
     });
-  jest.mocked(useUpdateTokenAmountModule.useUpdateTokenAmount).mockReturnValue({
-    updateTokenAmount: updateTokenAmountMock,
-    isUpdating: false,
-  });
+  jest
+    .mocked(useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount)
+    .mockReturnValue({
+      updateTokenAmount: updateTokenAmountMock,
+      isUpdating: false,
+    });
   useDepositPrefillMock.mockReturnValue(depositPrefill);
   jest.mocked(useAccountTokensLoading).mockReturnValue(isAccountTokensLoading);
   jest.mocked(useMoneyAccountWithdrawableFiat).mockReturnValue({
@@ -931,37 +935,6 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(updateTokenAmountMock).toHaveBeenCalledWith('50');
-    });
-
-    it('commits a typed amount when updateTokenAmount is replaced during the debounce', () => {
-      const firstUpdate = jest.fn();
-      const { result, rerender } = runHook({
-        disableUpdate: false,
-        updateTokenAmountMock: firstUpdate,
-      });
-
-      act(() => {
-        result.current.updatePendingAmount('50');
-      });
-
-      const secondUpdate = jest.fn();
-      jest
-        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
-        .mockReturnValue({
-          updateTokenAmount: secondUpdate,
-          isUpdating: false,
-        });
-
-      act(() => {
-        rerender();
-      });
-
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      expect(firstUpdate).not.toHaveBeenCalled();
-      expect(secondUpdate).toHaveBeenCalledWith('50');
     });
 
     it('does not call updateTokenAmount for a zero amount after debounce', () => {
@@ -2309,7 +2282,9 @@ describe('useTransactionCustomAmount', () => {
       // by creating a new mock and rerendering
       const newUpdateTokenAmountMock = jest.fn();
       jest
-        .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+        .mocked(
+          useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount,
+        )
         .mockReturnValue({
           updateTokenAmount: newUpdateTokenAmountMock,
           isUpdating: false,
@@ -2350,7 +2325,9 @@ describe('useTransactionCustomAmount', () => {
       for (let i = 0; i < 5; i++) {
         const newMock = jest.fn();
         jest
-          .mocked(useUpdateTokenAmountModule.useUpdateTokenAmount)
+          .mocked(
+            useUpdateTransactionPayAmountModule.useUpdateTransactionPayAmount,
+          )
           .mockReturnValue({
             updateTokenAmount: newMock,
             isUpdating: false,

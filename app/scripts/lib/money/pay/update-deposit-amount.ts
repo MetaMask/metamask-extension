@@ -8,14 +8,13 @@ import {
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
 import {
-  beginAmountCommit,
-  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
   toMusdAmountHex,
-} from './amount-commit';
+  withAmountCommitIntent,
+} from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
 const LOG_TAG = '[Money Account]';
@@ -53,16 +52,6 @@ export async function getMoneyAccountAmountData(
   return { updates: await encodeDepositCalldata(messenger, amountRaw) };
 }
 
-/**
- * Commits a new deposit amount: writes `requiredAssets` immediately so Pay
- * can requote, then re-encodes nested approve + deposit calldata. Superseded
- * intents resolve `false`.
- *
- * @param messenger - Messenger used to encode and commit.
- * @param transactionId - Id of the Money Account deposit transaction.
- * @param amountHuman - Exact human-readable mUSD amount.
- * @returns Whether this intent committed transaction metadata.
- */
 export async function updateMoneyAccountDepositAmount(
   messenger: MoneyPayMessenger,
   transactionId: string,
@@ -80,55 +69,28 @@ export async function updateMoneyAccountDepositAmount(
     return false;
   }
 
-  const isCurrent = beginAmountCommit(transactionId);
+  return withAmountCommitIntent<boolean>(
+    messenger,
+    transactionId,
+    async (isCurrent) => {
+      const { updates } = await getMoneyAccountAmountData(messenger, {
+        amount: amountRaw.toString(10),
+        transaction,
+      });
 
-  try {
-    // Pay watches `requiredAssets`, not nested calldata. Write the new amount
-    // before the vault encode so a slow or failing
-    // `buildMoneyAccountDepositBatch` cannot leave the quote stuck on the
-    // previous value.
-    if (!isCurrent()) {
-      return false;
-    }
+      if (!isCurrent() || !updates.length) {
+        return false;
+      }
 
-    const requiredAssetAmount = toMusdAmountHex(amountRaw);
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      [],
-      'Money Account deposit: update amount',
-      requiredAssetAmount,
-    );
-
-    const { updates } = await getMoneyAccountAmountData(messenger, {
-      amount: amountRaw.toString(10),
-      transaction,
-    });
-
-    if (!isCurrent()) {
-      return false;
-    }
-
-    if (!updates.length) {
-      return true;
-    }
-
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      updates,
-      'Money Account deposit: update amount',
-      requiredAssetAmount,
-    );
-    return true;
-  } catch (error) {
-    if (!isCurrent()) {
-      return false;
-    }
-    throw error;
-  } finally {
-    clearAmountCommitIfCurrent(transactionId, isCurrent);
-  }
+      return commitTransactionPayUpdates(
+        messenger,
+        transactionId,
+        updates,
+        'Money Account deposit: update amount',
+        toMusdAmountHex(amountRaw),
+      );
+    },
+  );
 }
 
 /**

@@ -11,10 +11,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
-import {
-  hasTransactionType,
-  isPostQuoteWithdrawTransaction,
-} from '../../../../shared/lib/transactions.utils';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -24,6 +21,27 @@ const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
 
 function toAddressWord(address: string): string {
   return address.toLowerCase().replace(/^0x/u, '').padStart(64, '0');
+}
+
+export function commitTransactionUpdate({
+  transaction,
+  note,
+  requiredAssetAmount,
+}: {
+  transaction: TransactionMeta;
+  note: string;
+  requiredAssetAmount?: Hex;
+}): TransactionMeta {
+  const nextTransaction = structuredClone(transaction);
+
+  if (
+    requiredAssetAmount !== undefined &&
+    nextTransaction.requiredAssets?.[0]
+  ) {
+    nextTransaction.requiredAssets[0].amount = requiredAssetAmount;
+  }
+
+  return nextTransaction;
 }
 
 /**
@@ -117,7 +135,7 @@ export function getTokenTransferData(
   );
 
   const nestedCall =
-    nestedCallIndex === undefined
+    nestedCallIndex === undefined || nestedCallIndex === -1
       ? undefined
       : nestedTransactions?.[nestedCallIndex];
 
@@ -257,43 +275,29 @@ export function isTokenBlocked(
   );
 }
 
-/**
- * Selects Money Account as the payment method for a confirmation.
- * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
- * money account address. Perps/Predict withdraws to Money Account run
- * non-atomically so the post-Relay transfer is submitted after the quote.
- *
- * @param transactionId - Confirmation transaction id.
- * @param moneyAccountAddress - Derived money account address, when known.
- * @param transactionMeta - Current confirmation metadata.
- */
 export function applyMoneyAccountOverride(
   transactionId: string,
-  moneyAccountAddress: string | undefined,
-  transactionMeta: TransactionMeta | undefined,
+  moneyAddress: Hex | undefined,
+  transactionMeta: TransactionMeta,
 ): void {
-  const isPerpsOrPredictWithdraw = hasTransactionType(transactionMeta, [
+  if (!moneyAddress) {
+    return;
+  }
+
+  const isWithdrawLike = hasTransactionType(transactionMeta, [
+    TransactionType.moneyAccountWithdraw,
     TransactionType.perpsWithdraw,
     TransactionType.predictWithdraw,
   ]);
-  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
 
   setPaymentOverride(transactionId, {
-    ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
     paymentOverride: PaymentOverride.MoneyAccount,
-    ...(!isPostQuoteWithdraw && moneyAccountAddress
-      ? { refundTo: moneyAccountAddress as Hex }
-      : {}),
+    ...(isWithdrawLike ? { atomic: false } : { refundTo: moneyAddress }),
   }).catch((error) => {
     console.error('Failed to apply money account payment override', error);
   });
 }
 
-/**
- * Clears a Money Account (or other) payment override on the confirmation.
- *
- * @param transactionId - Confirmation transaction id.
- */
 export function clearPaymentOverride(transactionId: string): void {
   setPaymentOverride(transactionId, {
     paymentOverride: undefined,
