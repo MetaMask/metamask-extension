@@ -20,27 +20,16 @@ const { getOrBuildXpi } = require('../helpers/xpi');
 const PINNED_GECKODRIVER_VERSION = '0.36.0';
 
 /**
- * Resolve the geckodriver binary to use.
+ * Resolve the Firefox browser and geckodriver binaries to use.
  *
- * Resolution order:
- * 1. `GECKODRIVER_PATH` env var, if set. CI sets this via
- *    `.github/scripts/pin-geckodriver.sh` (also usable as a manual override to
- *    test a different driver version).
- * 2. The pinned {@link PINNED_GECKODRIVER_VERSION}, resolved (and downloaded +
- *    cached cross-platform) via the `selenium-manager` binary that ships with
- *    `selenium-webdriver`. This is the fallback that fixes local runs without
- *    requiring any env var.
- * 3. `undefined` on failure, so Selenium Manager falls back to its default
- *    auto-resolution rather than hard-failing.
+ * Selenium Manager downloads and caches Firefox when it is unavailable on the
+ * runner. Namespace images do not include Firefox, so resolving only
+ * geckodriver leaves Selenium unable to create a session.
  *
- * @returns {string|undefined} Absolute path to the geckodriver binary, or
- * `undefined` to defer to Selenium Manager's default resolution.
+ * @returns {{browserPath?: string, driverPath?: string}} Absolute paths when
+ * available. Environment overrides take precedence.
  */
-function resolveGeckodriverPath() {
-  if (process.env.GECKODRIVER_PATH) {
-    return process.env.GECKODRIVER_PATH;
-  }
-
+function resolveFirefoxPaths() {
   try {
     const platform =
       // eslint-disable-next-line no-nested-ternary
@@ -63,24 +52,33 @@ function resolveGeckodriverPath() {
     const output = execFileSync(
       seleniumManager,
       [
+        '--browser',
+        'firefox',
         '--driver',
         'geckodriver',
         '--driver-version',
         PINNED_GECKODRIVER_VERSION,
         '--output',
         'json',
+        '--avoid-stats',
       ],
       { encoding: 'utf8' },
     );
 
     const { result } = JSON.parse(output);
-    return result?.driver_path || undefined;
+    return {
+      browserPath: process.env.FIREFOX_BINARY || result?.browser_path,
+      driverPath: process.env.GECKODRIVER_PATH || result?.driver_path,
+    };
   } catch (error) {
     console.warn(
-      `Could not resolve pinned geckodriver ${PINNED_GECKODRIVER_VERSION}; ` +
-        `falling back to Selenium Manager's default driver resolution. ${error}`,
+      `Could not resolve Firefox and pinned geckodriver ${PINNED_GECKODRIVER_VERSION}; ` +
+        `falling back to Selenium Manager's default resolution. ${error}`,
     );
-    return undefined;
+    return {
+      browserPath: process.env.FIREFOX_BINARY,
+      driverPath: process.env.GECKODRIVER_PATH,
+    };
   }
 }
 
@@ -125,6 +123,11 @@ class FirefoxDriver {
   static async build({ responsive, port, constrainWindowSize, proxyPort }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
+    const { browserPath, driverPath } = resolveFirefoxPaths();
+
+    if (browserPath) {
+      options.setBinary(browserPath);
+    }
 
     const proxyServerURL = getProxyServerURL(proxyPort);
 
@@ -160,7 +163,7 @@ class FirefoxDriver {
     const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
     const service = process.env.FIREFOX_SNAP
       ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
-      : new firefox.ServiceBuilder(resolveGeckodriverPath());
+      : new firefox.ServiceBuilder(driverPath);
 
     // Firefox 153 restricts WebDriver navigation to privileged pages (most
     // `about:` pages, `chrome://`, `resource://`) unless system access is
