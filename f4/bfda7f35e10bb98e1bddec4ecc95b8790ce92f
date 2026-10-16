@@ -1,0 +1,19 @@
+.github/workflows/update-e2e-fixtures.yml
+  s_1c2616b5a2ded2::t_efb7acd15e3aa2 122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f4bfda7f35e10bb98e1bddec4ecc95b8790ce92f",
+  "prompts": {},
+  "sessions": {
+    "s_1c2616b5a2ded2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ec1a8bd65ffeK6IjPbbWjE4fpy",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
