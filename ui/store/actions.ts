@@ -234,6 +234,7 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -1918,6 +1919,7 @@ export function updateAndApproveTx(
       const keyringType = fromAccount?.metadata?.keyring?.type ?? '';
       return approveHardwareWalletTransaction(
         dispatch,
+        getState,
         txMeta,
         dontShowLoadingIndicator,
         loadingIndicatorMessage,
@@ -1979,6 +1981,7 @@ async function approveTransaction(
  * with the recreated transaction ID in metadata.
  *
  * @param dispatch - Redux dispatch function
+ * @param getState - Returns current Redux state
  * @param txMeta - The transaction metadata
  * @param dontShowLoadingIndicator - Whether to skip showing loading indicator.
  * Callers that render their own signing UI must pass true; the global overlay
@@ -1990,6 +1993,7 @@ async function approveTransaction(
  */
 async function approveHardwareWalletTransaction(
   dispatch: MetaMaskReduxDispatch,
+  getState: () => MetaMaskReduxState,
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
@@ -1997,6 +2001,24 @@ async function approveHardwareWalletTransaction(
 ): Promise<TransactionMeta | null> {
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
+  }
+
+  let stopListeningForSigning = async () => undefined;
+  const payQuoteCount =
+    getState().metamask.transactionData?.[txMeta.id]?.quotes?.length ?? 0;
+  if (payQuoteCount > 0) {
+    stopListeningForSigning = await listenForHardwareSigningCompletion({
+      transactionId: txMeta.id,
+      expectedQuoteCount: payQuoteCount,
+      getState: async () => {
+        const state = await forceUpdateMetamaskState(dispatch);
+        return {
+          batchTransactionCounts: state.batchTransactionCounts ?? {},
+          transactions: state.transactions ?? [],
+        };
+      },
+      onComplete: () => dispatch(hideLoadingIndication()),
+    }).catch(() => async () => undefined);
   }
 
   const walletType =
@@ -2025,6 +2047,7 @@ async function approveHardwareWalletTransaction(
     // Rethrow the properly typed error for hook to handle
     throw hwError;
   } finally {
+    await stopListeningForSigning().catch(() => undefined);
     dispatch(hideLoadingIndication());
   }
 }

@@ -6241,9 +6241,6 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
-  },
   "networkNameDefinition": {
     "message": "Το όνομα που συνδέεται με αυτό το δίκτυο."
   },
