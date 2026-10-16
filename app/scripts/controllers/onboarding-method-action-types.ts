@@ -68,6 +68,10 @@ export type OnboardingControllerGetIsSocialLoginFlowAction = {
 /**
  * Start or resume the onboarding journey associated with a browser tab.
  *
+ * A tab with a live journey is resumed. A new journey is not opened after
+ * this profile has finished onboarding or already ended a journey
+ * successfully.
+ *
  * @param request - The onboarding tab and current step.
  * @returns The opaque ID used to parent child traces, or undefined when no
  * journey should be opened.

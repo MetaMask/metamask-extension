@@ -7,6 +7,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/lib/environment';
 import { TraceName } from '../../../shared/lib/trace';
 import {
   OnboardingController,
@@ -14,14 +15,25 @@ import {
   getDefaultOnboardingControllerState,
 } from './onboarding';
 
+jest.mock('../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../shared/lib/environment'),
+  getIsSeedlessOnboardingFeatureEnabled: jest.fn(() => false),
+}));
+
+const isSeedlessOnboardingEnabled = jest.mocked(
+  getIsSeedlessOnboardingFeatureEnabled,
+);
+
 function setupController({
   addTabRemovedListener = jest.fn(),
   bufferedTrace = jest.fn(),
   bufferedEndTrace = jest.fn(),
+  observeTabRemoval = true,
 }: {
   addTabRemovedListener?: jest.Mock;
   bufferedTrace?: jest.Mock;
   bufferedEndTrace?: jest.Mock;
+  observeTabRemoval?: boolean;
 } = {}): OnboardingController {
   const messenger = new Messenger<
     MockAnyNamespace,
@@ -52,7 +64,7 @@ function setupController({
   const onboardingController = new OnboardingController({
     messenger: onboardingControllerMessenger,
     state: getDefaultOnboardingControllerState(),
-    platform: { addTabRemovedListener } as never,
+    platform: (observeTabRemoval ? { addTabRemovedListener } : {}) as never,
   });
   return onboardingController;
 }
@@ -91,6 +103,104 @@ describe('OnboardingController', () => {
     const tabId = '123';
     await controller.registerOnboarding(location, tabId);
     expect(controller.state.onboardingTabs?.[location]).toBe(tabId);
+  });
+
+  it('marks onboarding complete', () => {
+    const controller = setupController();
+
+    expect(controller.completeOnboarding()).toBe(true);
+    expect(controller.state.completedOnboarding).toBe(true);
+  });
+
+  it('constructs when the platform does not observe tab removal', () => {
+    expect(() => setupController({ observeTabRemoval: false })).not.toThrow();
+  });
+
+  describe('registerOnboarding', () => {
+    it('ignores registration after onboarding is complete', async () => {
+      const controller = setupController();
+      controller.completeOnboarding();
+
+      await controller.registerOnboarding('example.com', '123');
+
+      expect(controller.state.onboardingTabs).toEqual({});
+    });
+
+    it('keeps the existing registration when the same tab registers again', async () => {
+      const controller = setupController();
+      await controller.registerOnboarding('example.com', '123');
+      const { onboardingTabs } = controller.state;
+
+      await controller.registerOnboarding('example.com', '123');
+
+      expect(controller.state.onboardingTabs).toBe(onboardingTabs);
+    });
+
+    it('replaces the tab registered for a location', async () => {
+      const controller = setupController();
+      await controller.registerOnboarding('example.com', '123');
+
+      await controller.registerOnboarding('example.com', '456');
+
+      expect(controller.state.onboardingTabs).toEqual({
+        'example.com': '456',
+      });
+    });
+  });
+
+  describe('getIsSocialLoginFlow', () => {
+    afterEach(() => {
+      isSeedlessOnboardingEnabled.mockReset();
+      isSeedlessOnboardingEnabled.mockReturnValue(false);
+    });
+
+    it('returns false when seedless onboarding is disabled', () => {
+      isSeedlessOnboardingEnabled.mockReturnValue(false);
+      const controller = setupController();
+      controller.setFirstTimeFlowType(FirstTimeFlowType.socialCreate);
+
+      expect(controller.getIsSocialLoginFlow()).toBe(false);
+    });
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([FirstTimeFlowType.socialCreate, FirstTimeFlowType.socialImport])(
+      'returns true for %s when seedless onboarding is enabled',
+      (flowType: FirstTimeFlowType) => {
+        isSeedlessOnboardingEnabled.mockReturnValue(true);
+        const controller = setupController();
+        controller.setFirstTimeFlowType(flowType);
+
+        expect(controller.getIsSocialLoginFlow()).toBe(true);
+      },
+    );
+
+    it('returns false for a non-social flow when seedless onboarding is enabled', () => {
+      isSeedlessOnboardingEnabled.mockReturnValue(true);
+      const controller = setupController();
+      controller.setFirstTimeFlowType(FirstTimeFlowType.create);
+
+      expect(controller.getIsSocialLoginFlow()).toBe(false);
+    });
+  });
+
+  it('clears onboarding progress when onboarding is reset', async () => {
+    const controller = setupController();
+    controller.setSeedPhraseBackedUp(true);
+    controller.setFirstTimeFlowType(FirstTimeFlowType.import);
+    controller.setHasSeenOnboardingCompletionPage(true);
+    await controller.registerOnboarding('example.com', '123');
+    controller.completeOnboarding();
+
+    controller.resetOnboarding();
+
+    expect(controller.state).toMatchObject({
+      completedOnboarding: false,
+      hasSeenOnboardingCompletionPage: false,
+      onboardingJourneyEnded: false,
+      firstTimeFlowType: null,
+      seedPhraseBackedUp: null,
+      onboardingTabs: {},
+    });
   });
 
   describe('onboarding journey tracing', () => {
@@ -354,6 +464,97 @@ describe('OnboardingController', () => {
       expect(bufferedEndTrace.mock.calls[1][0].data.last_step).toBe(
         'create-password',
       );
+    });
+
+    it('updates the last step of a live journey', () => {
+      const addTabRemovedListener = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({
+        addTabRemovedListener,
+        bufferedEndTrace,
+      });
+      const tabRemovedListener = addTabRemovedListener.mock.calls[0][0] as (
+        tabId: number,
+      ) => void;
+
+      controller.startOnboardingJourney({
+        tabId: '1',
+        lastStep: 'welcome',
+      });
+      controller.updateOnboardingJourney({
+        tabId: '1',
+        lastStep: 'create-password',
+      });
+
+      tabRemovedListener(1);
+
+      expect(bufferedEndTrace.mock.calls[0][0].data.last_step).toBe(
+        'create-password',
+      );
+    });
+
+    it('ignores a journey update when that tab has no journey', () => {
+      const bufferedTrace = jest.fn();
+      const controller = setupController({ bufferedTrace });
+
+      controller.updateOnboardingJourney({
+        tabId: 'missing',
+        lastStep: 'welcome',
+      });
+
+      expect(bufferedTrace).not.toHaveBeenCalled();
+    });
+
+    it('ignores ending a journey that is not open', () => {
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({ bufferedEndTrace });
+
+      controller.endOnboardingJourney({
+        tabId: 'missing',
+        lastStep: 'welcome',
+        success: false,
+      });
+
+      expect(bufferedEndTrace).not.toHaveBeenCalled();
+    });
+
+    it('ends a journey that has no tab id when onboarding is reset', () => {
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({ bufferedEndTrace });
+      const traceId = controller.startOnboardingJourney({
+        lastStep: 'welcome',
+      });
+
+      controller.resetOnboarding();
+
+      expect(bufferedEndTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: traceId,
+          data: expect.objectContaining({
+            success: false,
+            abandoned: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            last_step: 'welcome',
+          }),
+        }),
+      );
+    });
+
+    it('ignores removal of a tab that has no journey', () => {
+      const addTabRemovedListener = jest.fn();
+      const bufferedEndTrace = jest.fn();
+      const controller = setupController({
+        addTabRemovedListener,
+        bufferedEndTrace,
+      });
+      const tabRemovedListener = addTabRemovedListener.mock.calls[0][0] as (
+        tabId: number,
+      ) => void;
+
+      tabRemovedListener(99);
+
+      expect(bufferedEndTrace).not.toHaveBeenCalled();
+      expect(controller.state.onboardingJourneyEnded).toBe(false);
     });
   });
 
