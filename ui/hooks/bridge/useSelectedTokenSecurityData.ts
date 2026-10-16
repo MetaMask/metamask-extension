@@ -66,9 +66,7 @@ export function useSelectedTokenSecurityData(
     const assetIdsByKey = new Map<CaipAssetType, CaipAssetType>();
 
     tokens.forEach((token) => {
-      const hasSecurityData =
-        token.isVerified !== undefined || token.securityData !== undefined;
-      if (!hasSecurityData) {
+      if (!token.securityData?.type) {
         assetIdsByKey.set(
           getTokenSecurityAssetKey(token.assetId),
           token.assetId,
@@ -79,12 +77,10 @@ export function useSelectedTokenSecurityData(
     return [...assetIdsByKey.values()];
   }, [fromToken, toToken]);
 
-  const fetchKey = `${useExternalServices}:${assetIds.join('|')}`;
-  // Keyed cache: ignore stale entries when the fetch key changes (no render reset).
-  const [securityDataCache, setSecurityDataCache] = useState<{
-    key: string;
-    data: SelectedTokenSecurityDataByAssetId;
-  }>({ key: fetchKey, data: EMPTY_SECURITY_DATA });
+  // Results accumulate by asset ID, so a pending or failed follow-up request
+  // never hides data already fetched for a token.
+  const [securityDataByAssetId, setSecurityDataByAssetId] =
+    useState<SelectedTokenSecurityDataByAssetId>(EMPTY_SECURITY_DATA);
 
   useEffect(() => {
     if (!useExternalServices || assetIds.length === 0) {
@@ -111,23 +107,17 @@ export function useSelectedTokenSecurityData(
             return result;
           }, {});
 
-        setSecurityDataCache({ key: fetchKey, data: nextSecurityData });
+        setSecurityDataByAssetId((previous) => ({
+          ...previous,
+          ...nextSecurityData,
+        }));
       })
-      .catch(() => {
-        if (isCurrentRequest) {
-          setSecurityDataCache({ key: fetchKey, data: EMPTY_SECURITY_DATA });
-        }
-      });
+      .catch(() => undefined);
 
     return () => {
       isCurrentRequest = false;
     };
-  }, [assetIds, useExternalServices, fetchKey]);
-
-  const securityDataByAssetId =
-    securityDataCache.key === fetchKey
-      ? securityDataCache.data
-      : EMPTY_SECURITY_DATA;
+  }, [assetIds, useExternalServices]);
 
   return useExternalServices ? securityDataByAssetId : EMPTY_SECURITY_DATA;
 }
