@@ -62,7 +62,6 @@ import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions
 import * as environment from '../../shared/lib/environment';
 import * as metamaskControllerUtils from '../../shared/lib/metamask-controller-utils';
 import { trace, endTrace, TraceName } from '../../shared/lib/trace';
-import { createMockNetworkPolicyOptions } from '../../test/lib/mock-network-policy';
 import * as utils from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -578,7 +577,6 @@ describe('MetaMaskController', () => {
       });
 
       const _controller = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         initLangCode: 'en_US',
         browser: browserPolyfillMock,
         getRequestAccountTabIds: () => ({}),
@@ -616,7 +614,6 @@ describe('MetaMaskController', () => {
       jest.spyOn(TokenListController.prototype, 'stop');
 
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: {
@@ -916,7 +913,6 @@ describe('MetaMaskController', () => {
         jest.spyOn(LoggingController.prototype, 'add');
 
         const localController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           initLangCode: 'en_US',
           browser: browserPolyfillMock,
           getRequestAccountTabIds: () => ({}),
@@ -955,7 +951,6 @@ describe('MetaMaskController', () => {
 
         // eslint-disable-next-line no-new
         new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           initLangCode: 'en_US',
           platform: {
             openExtensionInBrowser: openExtensionInBrowserMock,
@@ -2368,7 +2363,6 @@ describe('MetaMaskController', () => {
       let localMetaMaskController;
       beforeEach(() => {
         localMetaMaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState: {
@@ -2718,7 +2712,6 @@ describe('MetaMaskController', () => {
       let localMetamaskController;
       beforeEach(() => {
         localMetamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState: {
@@ -3444,7 +3437,6 @@ describe('MetaMaskController', () => {
 
       beforeEach(() => {
         localMetamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState: {
@@ -3590,7 +3582,6 @@ describe('MetaMaskController', () => {
     describe('RampsController wiring', () => {
       it('always assigns rampsController and background API', () => {
         const controller = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState: cloneDeep(firstTimeState),
@@ -3634,7 +3625,6 @@ describe('MetaMaskController', () => {
     describe('NetworkController state', () => {
       it('fixes selectedNetworkClientId from network controller state if it is invalid', () => {
         metamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState: {
@@ -3709,7 +3699,6 @@ describe('MetaMaskController', () => {
         const initState = cloneDeep(firstTimeState);
         delete initState.NetworkController;
         metamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState,
@@ -3780,7 +3769,6 @@ describe('MetaMaskController', () => {
         delete initState.NetworkController;
 
         metamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState,
@@ -3835,7 +3823,6 @@ describe('MetaMaskController', () => {
         );
 
         metamaskController = new MetaMaskController({
-          ...createMockNetworkPolicyOptions(),
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
           initState,
@@ -4361,7 +4348,6 @@ describe('MetaMaskController', () => {
 
   describe('onFeatureFlagResponseReceived', () => {
     const metamaskController = new MetaMaskController({
-      ...createMockNetworkPolicyOptions(),
       showUserConfirmation: noop,
       encryptor: mockEncryptor,
       initState: cloneDeep(firstTimeState),
@@ -4436,7 +4422,6 @@ describe('MetaMaskController', () => {
       browserPolyfillMock.storage.session.set.mockReset();
 
       const metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -4473,7 +4458,6 @@ describe('MetaMaskController', () => {
       browserPolyfillMock.storage.session.set.mockReset();
 
       const metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -4517,7 +4501,6 @@ describe('MetaMaskController', () => {
       );
 
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -4707,7 +4690,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(async () => {
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -4840,7 +4822,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(() => {
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -4979,7 +4960,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(async () => {
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
@@ -5141,7 +5121,6 @@ describe('MetaMaskController', () => {
 
     beforeEach(async () => {
       metamaskController = new MetaMaskController({
-        ...createMockNetworkPolicyOptions(),
         showUserConfirmation: noop,
         encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),

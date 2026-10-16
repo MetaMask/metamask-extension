@@ -139,8 +139,6 @@ import { DataDeletionService } from '../services/data-deletion-service';
 import { UserTraitsService } from '../services/user-traits-service';
 import { LegacyBackgroundApiService } from '../services/legacy-background-api-service';
 import { SentryTracingService } from '../services/sentry/sentry-tracing-service';
-import { RpcEndpointValidationService } from '../services/rpc-endpoint-validation-service';
-import { NetworkPolicyController } from '../controllers/network-policy/network-policy-controller';
 
 /**
  * Union of all messenger clients (controllers and services) supporting or required by modular initialization.
@@ -166,7 +164,6 @@ export type MessengerClient =
   | CronjobController
   | CurrencyRateController
   | DataDeletionService
-  | RpcEndpointValidationService
   | UserTraitsService
   | DecryptMessageController
   | DecryptMessageManager
@@ -198,7 +195,6 @@ export type MessengerClient =
   | MultichainRoutingService
   | NameController
   | NetworkController
-  | NetworkPolicyController
   | NetworkOrderController
   | NotificationServicesController
   | NotificationServicesPushController
@@ -310,7 +306,6 @@ export type MessengerClientFlatState = AccountOrderController['state'] &
   MultichainNetworkController['state'] &
   NameController['state'] &
   NetworkController['state'] &
-  NetworkPolicyController['state'] &
   NetworkOrderController['state'] &
   OnboardingController['state'] &
   PasskeyController['state'] &

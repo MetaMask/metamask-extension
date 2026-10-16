@@ -19,7 +19,6 @@ describe('State Utils', () => {
         snapStates: true,
         unencryptedSnapStates: true,
         vault: true,
-        postOnboardingNetworkDomains: ['private.example'],
         test2: false,
       };
 

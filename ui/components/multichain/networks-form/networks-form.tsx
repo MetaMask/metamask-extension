@@ -56,7 +56,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../shared/lib/network.utils';
-import { isRpcRateLimitError } from '../../../../shared/lib/rpc.utils';
+import {
+  isRpcRateLimitError,
+  jsonRpcRequest,
+} from '../../../../shared/lib/rpc.utils';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -515,12 +518,10 @@ export const NetworksForm = ({
       return true;
     };
 
-    submitRequestToBackground<string>('validateRpcEndpoint', [
-      templateInfuraRpc(selectedRpcUrl),
-    ])
+    jsonRpcRequest(templateInfuraRpc(selectedRpcUrl), 'eth_chainId')
       .then((response) => {
         if (!cancelled) {
-          setFetchedChainId(response);
+          setFetchedChainId(response as string);
         }
       })
       .catch((err) => {

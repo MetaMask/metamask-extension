@@ -5,7 +5,7 @@ import path from 'node:path';
 import {
   sources,
   ProgressPlugin,
-  Compilation,
+  type Compilation,
   type Compiler,
   type Asset,
   type EntryOptions,
@@ -28,10 +28,7 @@ import {
 import { schema } from './schema';
 import type { BundleSizeCategory, ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
-import {
-  createPackagedNetworkPolicyRules,
-  NETWORK_POLICY_RULES_PATH,
-} from './network-policy';
+import { createNetworkRequestRules } from './network-request-policy';
 
 const { CachedSource, RawSource } = sources;
 
@@ -49,8 +46,6 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
-const RPC_VALIDATION_HTML_ENTRY = 'rpc-endpoint-validation';
-const RPC_VALIDATION_SCRIPT_ENTRY = 'rpc-endpoint-validation-runtime';
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -113,7 +108,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   private manifestSources: Map<Browser, sources.RawSource> = new Map();
 
-  private networkPolicySources: Map<Browser, sources.RawSource> = new Map();
+  private networkRequestSources = new Map<Browser, sources.RawSource>();
 
   private watchedFiles: string[] = [];
 
@@ -200,7 +195,7 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   /**
-   * Emits each browser-specific manifest and its startup network policy.
+   * Emits each browser-specific manifest into its final output location.
    *
    * @param compilation - The active compilation.
    * @param browsers - The browsers being built.
@@ -210,6 +205,13 @@ export class ManifestPlugin<Z extends boolean> {
     browsers: readonly Browser[],
   ): void {
     browsers.forEach((browser) => {
+      const rules = this.networkRequestSources.get(browser);
+      if (rules) {
+        compilation.emitAsset(
+          path.posix.join(browser, 'network-request-rules.json'),
+          rules,
+        );
+      }
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       compilation.emitAsset(
         path.posix.join(browser, 'manifest.json'),
@@ -219,17 +221,6 @@ export class ManifestPlugin<Z extends boolean> {
           contentType: 'application/json',
         },
       );
-      const networkPolicySource = this.networkPolicySources.get(browser);
-      if (networkPolicySource) {
-        compilation.emitAsset(
-          path.posix.join(browser, NETWORK_POLICY_RULES_PATH),
-          networkPolicySource,
-          {
-            javascriptModule: false,
-            contentType: 'application/json',
-          },
-        );
-      }
     });
   }
 
@@ -408,9 +399,7 @@ export class ManifestPlugin<Z extends boolean> {
     ).length;
 
     let filesProcessed = 0;
-    const totalWork =
-      browsers.length * (zipEligibleAssetCount + 1) +
-      this.networkPolicySources.size;
+    const totalWork = browsers.length * (zipEligibleAssetCount + 1);
     const reportProgress =
       ProgressPlugin.getReporter(compilation.compiler) ?? noop;
     const zipBuilders = browsers.map((browser) => {
@@ -423,22 +412,24 @@ export class ManifestPlugin<Z extends boolean> {
         );
       };
 
-      const builder = createBrowserZipBuilder({
-        compressionOptions,
-        excludeExtensions,
-        manifest,
-        mtime,
-        onAssetAdded,
-      });
-      const networkPolicySource = this.networkPolicySources.get(browser);
-      if (networkPolicySource) {
-        builder.addAsset(NETWORK_POLICY_RULES_PATH, networkPolicySource);
-      }
       return {
         browser,
-        builder,
+        builder: createBrowserZipBuilder({
+          compressionOptions,
+          excludeExtensions,
+          manifest,
+          mtime,
+          onAssetAdded,
+        }),
       };
     });
+
+    for (const { browser, builder } of zipBuilders) {
+      const rules = this.networkRequestSources.get(browser);
+      if (rules) {
+        builder.addAsset('network-request-rules.json', rules);
+      }
+    }
 
     for (const assetName of assetNames) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
@@ -600,7 +591,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   private prepareManifests(compiler: Compiler): void {
     this.watchedFiles = [];
-    this.networkPolicySources.clear();
+    this.networkRequestSources.clear();
 
     const root = path.join(compiler.context, '../');
     const manifestOverridesPath = path.join(root, '.manifest-overrides.json');
@@ -700,19 +691,25 @@ export class ManifestPlugin<Z extends boolean> {
         manifest = transform(manifest, browser);
       }
 
-      if (browser === 'chrome') {
-        const networkPolicyRules = createPackagedNetworkPolicyRules(
-          manifest,
-          this.options.buildType,
-          this.options.test,
-          this.options.networkPolicyExtensionId,
+      if (
+        browser === 'chrome' &&
+        manifest.manifest_version === 3 &&
+        manifest.declarative_net_request?.rule_resources?.some(
+          ({ id }) => id === 'network_request_policy',
+        )
+      ) {
+        this.networkRequestSources.set(
+          browser,
+          new RawSource(
+            JSON.stringify(
+              createNetworkRequestRules(
+                manifest,
+                this.options.buildType,
+                this.options.test ?? false,
+              ),
+            ),
+          ),
         );
-        if (networkPolicyRules) {
-          this.networkPolicySources.set(
-            browser,
-            new RawSource(JSON.stringify(networkPolicyRules, null, 2)),
-          );
-        }
       }
 
       // Add the manifest file to manifests
@@ -776,15 +773,6 @@ export class ManifestPlugin<Z extends boolean> {
     );
     addToSetMap(this.bundleSizeCategoriesByHtmlResource, filePath, category);
     entries[parsedFileName] = { import: [filePath], ...opts };
-    if (parsedFileName === RPC_VALIDATION_HTML_ENTRY) {
-      // Sharing the UI runtime would give unrelated consumers the probe tab's
-      // temporary grant. HtmlBundler names the imported script separately from
-      // the HTML entry; both names must be isolated, without a basename clash.
-      this.selfContainedScripts.add(parsedFileName);
-      this.isolatedHtmlEntries.add(parsedFileName);
-      this.selfContainedScripts.add(RPC_VALIDATION_SCRIPT_ENTRY);
-      this.isolatedHtmlEntries.add(RPC_VALIDATION_SCRIPT_ENTRY);
-    }
     if (this.isWebAccessibleHtml(filename)) {
       this.isolatedHtmlEntries.add(parsedFileName);
 
@@ -1007,58 +995,6 @@ export class ManifestPlugin<Z extends boolean> {
         this.moveAssets(compilation, assets, options);
         this.emitBundleSizeStatsAssets(compilation, bundleSizeStats);
       });
-    }
-    // HtmlBundler renders at OPTIMIZE_TRANSFER - 1. Inspect its final HTML at
-    // REPORT, before our Infinity-stage move/zip can publish a shared runtime.
-    compilation.hooks.processAssets.tap(
-      {
-        name: `${NAME}:RpcValidationIsolation`,
-        stage: Compilation.PROCESS_ASSETS_STAGE_REPORT,
-      },
-      () => this.assertRpcValidationIsolation(compilation),
-    );
-  }
-
-  private assertRpcValidationIsolation(compilation: Compilation): void {
-    const errorMessage =
-      'RPC endpoint validation must load exactly one self-contained runtime bundle';
-    const runtimeEntry = compilation.entrypoints.get(
-      RPC_VALIDATION_SCRIPT_ENTRY,
-    );
-    if (
-      runtimeEntry &&
-      runtimeEntry.getFiles().filter(isJavaScriptAsset).length !== 1
-    ) {
-      throw new Error(errorMessage);
-    }
-    for (const [assetName, asset] of Object.entries(compilation.assets)) {
-      if (
-        path.posix.basename(assetName) !== `${RPC_VALIDATION_HTML_ENTRY}.html`
-      ) {
-        continue;
-      }
-      const scripts =
-        asset
-          .source()
-          .toString()
-          .match(/<script\b[^>]*>/giu) ?? [];
-      const scriptSource = scripts[0]?.match(
-        /\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/iu,
-      );
-      const scriptPath =
-        scriptSource?.[1] ?? scriptSource?.[2] ?? scriptSource?.[3];
-      if (
-        scripts.length !== 1 ||
-        !scriptPath ||
-        !/^(?:\.\/)?rpc-endpoint-validation-runtime(?:\.[a-z0-9]+)?\.js$/u.test(
-          scriptPath,
-        ) ||
-        !compilation.getAsset(
-          path.posix.join(path.posix.dirname(assetName), scriptPath),
-        )
-      ) {
-        throw new Error(errorMessage);
-      }
     }
   }
 }

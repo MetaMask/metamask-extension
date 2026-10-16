@@ -93,15 +93,7 @@ export type BaseManifestPluginOptions<Zip extends boolean> = {
    * The build type of the build being created.
    */
   buildType: string;
-
-  /** Whether to compile fixed local fixture requests for test builds. */
   test?: boolean;
-
-  /**
-   * The signing ID used to scope startup network rules for a keyless package
-   * published outside the Chrome Web Store. Must match a manifest key, if set.
-   */
-  networkPolicyExtensionId?: string;
 
   /**
    * Whether to set a build ID in the emitted manifest. The build ID is a hash

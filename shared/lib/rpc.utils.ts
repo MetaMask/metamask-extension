@@ -37,25 +37,13 @@ export class JsonRpcRequestError extends Error {
  * @returns True if the provider rate limited the request.
  */
 export function isRpcRateLimitError(error: unknown): boolean {
-  if (error === null || typeof error !== 'object') {
+  if (!(error instanceof JsonRpcRequestError)) {
     return false;
   }
-  // Background RPC serializes Error instances. The isolated validation broker
-  // deliberately returns only these numeric fields inside JSON-RPC error data.
-  let details: { httpStatus?: unknown; code?: unknown } | undefined;
-  if (error instanceof JsonRpcRequestError) {
-    details = error;
-  } else if (
-    'data' in error &&
-    error.data !== null &&
-    typeof error.data === 'object'
-  ) {
-    details = error.data as { httpStatus?: unknown; code?: unknown };
-  }
+
   return (
-    details?.httpStatus === TOO_MANY_REQUESTS_STATUS ||
-    (typeof details?.code === 'number' &&
-      RATE_LIMIT_ERROR_CODES.includes(details.code))
+    error.httpStatus === TOO_MANY_REQUESTS_STATUS ||
+    (error.code !== undefined && RATE_LIMIT_ERROR_CODES.includes(error.code))
   );
 }
 

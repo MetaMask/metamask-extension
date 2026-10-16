@@ -191,8 +191,6 @@ import { getComplianceControllerMessenger } from './compliance-controller-messen
 import { getComplianceServiceMessenger } from './compliance-service-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
-import { getRpcEndpointValidationServiceMessenger } from './rpc-endpoint-validation-service-messenger';
-import { getNetworkPolicyControllerMessenger } from './network-policy-controller-messenger';
 import { getUserTraitsServiceMessenger } from './user-traits-service-messenger';
 import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 import { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
@@ -269,8 +267,6 @@ export {
 } from './permission-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
-export { getRpcEndpointValidationServiceMessenger } from './rpc-endpoint-validation-service-messenger';
-export { getNetworkPolicyControllerMessenger } from './network-policy-controller-messenger';
 export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export { getSentinelApiServiceMessenger } from './sentinel-api-service-messenger';
 export { getSentryTracingServiceMessenger } from './sentry-tracing-service-messenger';
@@ -427,14 +423,6 @@ export const MESSENGER_FACTORIES = {
   },
   DataDeletionService: {
     getMessenger: getDataDeletionServiceMessenger,
-    getInitMessenger: noop,
-  },
-  RpcEndpointValidationService: {
-    getMessenger: getRpcEndpointValidationServiceMessenger,
-    getInitMessenger: noop,
-  },
-  NetworkPolicyController: {
-    getMessenger: getNetworkPolicyControllerMessenger,
     getInitMessenger: noop,
   },
   DecryptMessageController: {
