@@ -4097,6 +4097,47 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setDataCollectionForMarketing with waitForAus', () => {
+    it('saves consent through MarketingConsentController and refreshes local state', async () => {
+      const store = mockStore();
+      const setConsent = sinon.stub().resolves('analytics-id');
+      const messengerCall = sinon.stub().resolves();
+      const getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection({
+        setDataCollectionForMarketing: setConsent,
+        messengerCall,
+        getStatePatches,
+      });
+
+      await store.dispatch(
+        actions.setDataCollectionForMarketing(true, { waitForAus: true }),
+      );
+
+      expect(
+        messengerCall.calledOnceWith(
+          'MarketingConsentController:setMarketingConsent',
+          [true],
+        ),
+      ).toBe(true);
+      expect(setConsent.notCalled).toBe(true);
+      expect(getStatePatches.calledOnce).toBe(true);
+    });
+
+    it('refreshes local state when AUS does not save the change', async () => {
+      const store = mockStore();
+      const messengerCall = sinon.stub().rejects(new Error('AUS error'));
+      const getStatePatches = sinon.stub().resolves([]);
+      setBackgroundConnection({ messengerCall, getStatePatches });
+
+      await expect(
+        store.dispatch(
+          actions.setDataCollectionForMarketing(false, { waitForAus: true }),
+        ),
+      ).rejects.toThrow('AUS error');
+      expect(getStatePatches.calledOnce).toBe(true);
+    });
+  });
+
   describe('#enableMetamaskNotifications', () => {
     it('calls enableMetamaskNotifications in the background with options', async () => {
       const store = mockStore();

@@ -406,7 +406,7 @@
     "@metamask/approval-controller": "^9.0.0",
     "@metamask/assets-controller": "^19.0.0",
     "@metamask/assets-controllers": "^112.0.2",
-    "@metamask/authenticated-user-storage": "^4.0.0",
+    "@metamask/authenticated-user-storage": "^4.1.0",
     "@metamask/base-controller": "^10.0.0",
     "@metamask/base-data-service": "^2.1.0",
     "@metamask/bitcoin-wallet-snap": "^3.2.0",
@@ -463,6 +463,7 @@
     "@metamask/keyring-utils": "^5.0.0",
     "@metamask/logging-controller": "^9.0.0",
     "@metamask/logo": "^4.0.0",
+    "@metamask/marketing-consent-controller": "npm:@metamask-previews/marketing-consent-controller@0.0.0-preview-9bee3d25c",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^3.0.0",
@@ -878,6 +879,12 @@
     "yargs-parser": "^21.1.1",
     "yazl": "^3.3.1"
   },
+  "previewBuilds": {
+    "@metamask/notification-services-controller": {
+      "type": "breaking",
+      "previewVersion": "29.0.3-preview-9bee3d25c"
+    }
+  },
   "engines": {
     "node": ">=24.13.0",
     "yarn": "^4.14.1"
@@ -886,6 +893,7 @@
     "allowScripts": {
       "$root$": true,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail#2.0.0": false,
+      "@metamask/notification-services-controller>firebase>@firebase/util": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@google/genai>protobufjs": false,
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,

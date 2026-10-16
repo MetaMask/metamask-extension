@@ -2204,7 +2204,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -4378,6 +4378,7 @@ export function setParticipateInMetaMetrics(
 
 export function setDataCollectionForMarketing(
   dataCollectionPreference: boolean,
+  { waitForAus = false }: { waitForAus?: boolean } = {},
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4386,6 +4387,20 @@ export function setDataCollectionForMarketing(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDataCollectionForMarketing`);
+    if (waitForAus) {
+      // Applies the choice locally and resolves once AUS has saved it. On
+      // failure the controller re-applies the AUS value, so refresh either way.
+      try {
+        await submitRequestToBackground('messengerCall', [
+          'MarketingConsentController:setMarketingConsent',
+          [dataCollectionPreference],
+        ]);
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
+      }
+      return;
+    }
+    // MarketingConsentController picks up the change and saves it to AUS.
     await submitRequestToBackground('setDataCollectionForMarketing', [
       dataCollectionPreference,
     ]);
