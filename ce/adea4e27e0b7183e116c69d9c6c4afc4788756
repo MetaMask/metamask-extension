@@ -1,0 +1,25 @@
+package.json
+  s_1c2616b5a2ded2::t_630916ce677881 162
+README.md
+  s_1c2616b5a2ded2::t_630916ce677881 171
+development/download-builds-cli.ts
+  s_1c2616b5a2ded2::t_aa9908b502c89b 17,19
+  s_1c2616b5a2ded2::t_c718793a9768ca 4
+  s_1c2616b5a2ded2::t_630916ce677881 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ceadea4e27e0b7183e116c69d9c6c4afc4788756",
+  "prompts": {},
+  "sessions": {
+    "s_1c2616b5a2ded2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_ec1a8bd65ffeK6IjPbbWjE4fpy",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
