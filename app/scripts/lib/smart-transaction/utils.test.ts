@@ -1,4 +1,4 @@
-import { sanitizeOrigin } from './utils';
+import { sanitizeOrigin, toAccountHardwareType } from './utils';
 
 describe('sanitizeOrigin', () => {
   it('extracts hostname from URL with path', () => {
@@ -39,5 +39,17 @@ describe('sanitizeOrigin', () => {
 
   it('returns undefined for empty string input', () => {
     expect(sanitizeOrigin('')).toBeUndefined();
+  });
+});
+
+describe('toAccountHardwareType', () => {
+  it('maps Ledger Hardware to Ledger', () => {
+    expect(toAccountHardwareType('Ledger Hardware')).toBe('Ledger');
+  });
+
+  it('omits labels that are not known keyring types', () => {
+    for (const label of [undefined, '', 'OneKey Hardware', 'Ledger']) {
+      expect(toAccountHardwareType(label)).toBeUndefined();
+    }
   });
 });
