@@ -66,21 +66,6 @@ type DownloadPolling = {
   pollSeconds: number;
 };
 
-const artifacts: Record<BuildType, Record<Browser, string>> = {
-  main: { chrome: 'build-dist-webpack', firefox: 'build-dist-mv2-webpack' },
-  beta: { chrome: 'build-beta-webpack', firefox: 'build-beta-mv2-webpack' },
-  experimental: {
-    chrome: 'build-experimental-webpack',
-    firefox: 'build-experimental-mv2-webpack',
-  },
-  flask: { chrome: 'build-flask-webpack', firefox: 'build-flask-mv2-webpack' },
-  test: { chrome: 'build-test-webpack', firefox: 'build-test-mv2-webpack' },
-  'test-flask': {
-    chrome: 'build-test-flask-webpack',
-    firefox: 'build-test-flask-mv2-webpack',
-  },
-};
-
 /**
  * Downloads canonical branch/commit builds, preserving donor provenance for release testing.
  * Branch-only calls use the latest run of the requested workflow, regardless of unrelated tests.
@@ -110,8 +95,8 @@ export async function downloadBuilds(
     {
       repository,
       ref,
-      artifactNames: browsers.map(
-        (browser) => artifacts[options.buildType][browser],
+      artifactNames: browsers.map((browser) =>
+        getBuildArtifactName(options.buildType, browser),
       ),
       waitSeconds,
       pollSeconds,
@@ -135,6 +120,12 @@ export async function downloadBuilds(
     await writeFile(options.metadata, `${JSON.stringify(metadata, null, 2)}\n`);
   }
   return metadata;
+}
+
+function getBuildArtifactName(buildType: BuildType, browser: Browser): string {
+  const variant = buildType === 'main' ? 'dist' : buildType;
+  const manifestSuffix = browser === 'firefox' ? '-mv2' : '';
+  return `build-${variant}${manifestSuffix}-webpack`;
 }
 
 async function resolveRequestedRef(
@@ -198,19 +189,12 @@ async function downloadSelectedBrowserBuilds(
   for (const browser of browsers) {
     const url = links[browser];
     polling.log(`Downloading ${browser} from ${url}`);
-    const buffer = await downloadPublishedBuildZip(url, polling);
+    const response = await waitForBuildZipPublication(url, polling);
+    const buffer = Buffer.from(await response.arrayBuffer());
     await installBrowserBuild(buffer, destination, browser, version);
     downloads[browser] = url;
   }
   return downloads;
-}
-
-async function downloadPublishedBuildZip(
-  url: string,
-  polling: DownloadPolling,
-): Promise<Buffer> {
-  const response = await waitForBuildZipPublication(url, polling);
-  return Buffer.from(await response.arrayBuffer());
 }
 
 async function waitForBuildZipPublication(

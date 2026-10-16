@@ -9,6 +9,7 @@ import {
 } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { buffer } from 'node:stream/consumers';
 import { ZipFile } from 'yazl';
 import { downloadBuilds, type DownloadBuildsOptions } from './download-builds';
 
@@ -22,13 +23,8 @@ function buildZip(version = '13.53.0'): Promise<Buffer> {
     'manifest.json',
   );
   zip.addBuffer(Buffer.from('new build'), 'home.html');
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    zip.outputStream.on('data', (chunk: Buffer) => chunks.push(chunk));
-    zip.outputStream.on('end', () => resolve(Buffer.concat(chunks)));
-    zip.outputStream.on('error', reject);
-    zip.end();
-  });
+  zip.end();
+  return buffer(zip.outputStream);
 }
 
 /* eslint-disable @typescript-eslint/naming-convention -- GitHub API response fields use snake_case. */

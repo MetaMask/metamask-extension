@@ -180,12 +180,12 @@ function findMissingArtifactNames(
   requiredNames: string[],
   artifacts: Artifact[],
 ): string[] {
-  const availableNames = new Set(
-    artifacts
-      .filter((artifact) => !artifact.expired)
-      .map((artifact) => artifact.name),
+  return requiredNames.filter(
+    (name) =>
+      !artifacts.some(
+        (artifact) => artifact.name === name && !artifact.expired,
+      ),
   );
-  return requiredNames.filter((name) => !availableNames.has(name));
 }
 
 function assertArtifactsHaveNotExpired(
