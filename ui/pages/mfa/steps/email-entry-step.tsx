@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import {
+  Box,
+  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
   TextField,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -13,7 +18,8 @@ import StepLayout, {
   type StepProps,
 } from './step-layout';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/u;
+// No leading, trailing or repeated dot in the local part.
+const EMAIL_PATTERN = /^[^\s@.]+(?:\.[^\s@.]+)*@[^\s@.]+(?:\.[^\s@.]+)+$/u;
 
 const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
   const t = useI18nContext();
@@ -49,30 +55,35 @@ const EmailEntryStep = ({ step, state, onAction }: StepProps<'emailEntry'>) => {
         </Button>
       }
     >
-      <TextField
-        value={email}
-        onChange={(event) => {
-          setEmail(event.target.value);
-          setShowInvalid(false);
-        }}
-        placeholder={t('mfaEmailEntryPlaceholder')}
-        isError={showInvalid || state.error !== undefined}
-        autoFocus
-        inputProps={{
-          ...INPUT_A11Y_PROPS,
-          autoComplete: 'email',
-          inputMode: 'email',
-          onKeyDown: (event) => {
-            if (event.key === 'Enter') {
-              submit();
-            }
-          },
-        }}
-        data-testid={MfaFlowTestIds.EMAIL_INPUT}
-      />
-      {showInvalid ? (
-        <StepMessage isError>{t('mfaEmailEntryInvalid')}</StepMessage>
-      ) : null}
+      <Box flexDirection={BoxFlexDirection.Column} gap={2} paddingTop={4}>
+        <TextField
+          value={email}
+          startAccessory={
+            <Icon name={IconName.Mail} color={IconColor.IconAlternative} />
+          }
+          onChange={(event) => {
+            setEmail(event.target.value);
+            setShowInvalid(false);
+          }}
+          placeholder={t('mfaEmailEntryPlaceholder')}
+          isError={showInvalid || state.error !== undefined}
+          autoFocus
+          inputProps={{
+            ...INPUT_A11Y_PROPS,
+            autoComplete: 'email',
+            inputMode: 'email',
+            onKeyDown: (event) => {
+              if (event.key === 'Enter') {
+                submit();
+              }
+            },
+          }}
+          data-testid={MfaFlowTestIds.EMAIL_INPUT}
+        />
+        {showInvalid ? (
+          <StepMessage isError>{t('mfaEmailEntryInvalid')}</StepMessage>
+        ) : null}
+      </Box>
     </StepLayout>
   );
 };

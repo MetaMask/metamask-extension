@@ -43,15 +43,6 @@ describe('Add wallet', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true })
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
-          .withCurrencyController({
-            currencyRates: {
-              ETH: {
-                conversionDate: Date.now(),
-                conversionRate: MOCK_ETH_CONVERSION_RATE,
-                usdConversionRate: MOCK_ETH_CONVERSION_RATE,
-              },
-            },
-          })
           .withAssetsController({
             assetsPrice: getMockAssetsPrice(MOCK_ETH_CONVERSION_RATE),
           })

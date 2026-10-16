@@ -2320,7 +2320,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
     }
 
     mockList.push(
-      await mockTokensV2SupportedNetworks(mockServer),
+      ...(await mockTokensV2SupportedNetworks(mockServer)),
       await mockTokensV3Assets(mockServer),
       await mockAccountsApi(mockServer),
       await mockGetMultipleAccounts(mockServer),

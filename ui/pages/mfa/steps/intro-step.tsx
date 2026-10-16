@@ -6,19 +6,51 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  FontWeight,
   Icon,
   IconColor,
   IconName,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import type { MfaMethod } from '../../../hooks/identity/mfa/engine/types';
+import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { getMethodLabelKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { MfaShield, type StepProps } from './step-layout';
 
+/* eslint-disable @typescript-eslint/naming-convention -- the server's codes */
+const METHOD_ICONS: Record<MfaMethod, IconName> = {
+  email_otp: IconName.Mail,
+  passkey: IconName.Key,
+};
+/* eslint-enable @typescript-eslint/naming-convention */
+
 const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
   const t = useI18nContext();
+
+  /**
+   * What a method's row says: how it works, or what is set up already.
+   *
+   * @param method - The method.
+   * @param isDone - Whether it is set up already.
+   * @returns The row's description.
+   */
+  const getDescription = (
+    method: MfaMethod,
+    isDone: boolean,
+  ): string | undefined => {
+    if (method === 'passkey') {
+      return t(isDone ? 'mfaIntroPasskeyDone' : 'mfaIntroPasskeyDescription');
+    }
+    if (isDone) {
+      return step.email ? maskEmail(step.email) : undefined;
+    }
+    return t('mfaIntroEmailDescription');
+  };
+
   return (
     <StepLayout
       top={<MfaShield />}
@@ -38,23 +70,58 @@ const IntroStep = ({ step, state, reason, onAction }: StepProps<'intro'>) => {
         </Button>
       }
     >
-      <Text variant={TextVariant.BodyMd}>{t('mfaIntroListTitle')}</Text>
-      {step.missing.map((method) => (
+      <Box flexDirection={BoxFlexDirection.Column} gap={3} paddingTop={3}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('mfaIntroListTitle')}
+        </Text>
         <Box
-          key={method}
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={3}
+          flexDirection={BoxFlexDirection.Column}
+          className="bg-muted rounded-3xl"
         >
-          <Icon
-            name={method === 'email_otp' ? IconName.Mail : IconName.SecurityKey}
-            color={IconColor.IconAlternative}
-          />
-          <Text variant={TextVariant.BodyMd}>
-            {t(getMethodLabelKey(method))}
-          </Text>
+          {step.methods.map((method) => {
+            const isDone = !step.missing.includes(method);
+            const description = getDescription(method, isDone);
+            return (
+              <Box
+                key={method}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                gap={3}
+                paddingHorizontal={4}
+                paddingVertical={3}
+                className="min-h-14"
+                data-testid={`${MfaFlowTestIds.INTRO_METHOD}-${method}${
+                  isDone ? '-done' : ''
+                }`}
+              >
+                <Icon name={METHOD_ICONS[method]} />
+                <Box flexDirection={BoxFlexDirection.Column} className="flex-1">
+                  <Text
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
+                  >
+                    {t(getMethodLabelKey(method))}
+                  </Text>
+                  {description ? (
+                    <Text
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                    >
+                      {description}
+                    </Text>
+                  ) : null}
+                </Box>
+                {isDone ? (
+                  <Icon
+                    name={IconName.Check}
+                    color={IconColor.SuccessDefault}
+                  />
+                ) : null}
+              </Box>
+            );
+          })}
         </Box>
-      ))}
+      </Box>
     </StepLayout>
   );
 };

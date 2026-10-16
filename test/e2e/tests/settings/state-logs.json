@@ -7,7 +7,9 @@
     "stage": "string",
     "warning": "null"
   },
-  "activeTab": {},
+  "activeTab": {
+    "id": "number"
+  },
   "appState": {
     "accountDetail": {
       "privateKey": "string"
@@ -261,6 +263,9 @@
         "image": "string"
       }
     },
+    "assetsLoadingStatus": {
+      "*": "string"
+    },
     "assetsMetadata": {
       "*": {
         "name": "string",
@@ -285,7 +290,16 @@
         "marketCap": "number",
         "totalVolume": "number",
         "dilutedMarketCap": "number",
+        "allTimeHigh": "number",
+        "allTimeLow": "number",
+        "circulatingSupply": "number",
         "pricePercentChange1d": "number",
+        "pricePercentChange1h": "number",
+        "pricePercentChange7d": "number",
+        "pricePercentChange14d": "number",
+        "pricePercentChange30d": "number",
+        "pricePercentChange200d": "number",
+        "pricePercentChange1y": "number",
         "lastUpdated": "number"
       }
     },
@@ -835,6 +849,7 @@
     },
     "musdConversionEducationSeen": "boolean",
     "perpsTabBadgeSeen": "boolean",
+    "moneyEarnBannerDismissedTokenKeys": [],
     "musdConversionDismissedCtaKeys": [],
     "names": {
       "ethereumAddress": {}
@@ -889,6 +904,7 @@
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
+    "onboardingJourneyEnded": "boolean",
     "onboardingTabs": {},
     "openSeaEnabled": "boolean",
     "optedIn": "boolean",

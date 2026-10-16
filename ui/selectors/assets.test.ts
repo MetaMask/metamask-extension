@@ -41,6 +41,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   selectAccountGroupBalanceIsLoadedForEmptyState,
+  selectIsAssetsLoadingForSelectedAccountGroup,
   getAssetsByAccountGroupId,
   getAssetsBySelectedAccountGroup,
   getAssetsBySelectedAccountGroupIncludingHidden,
@@ -83,6 +84,9 @@ jest.mock('@metamask/assets-controller', () => ({
     mockCalculateBalanceForAllWalletsFromUnified(...args),
   calculateBalanceChangeForAccountGroup: (...args: unknown[]) =>
     mockCalculateBalanceChangeForAccountGroupFromUnified(...args),
+  getIsAssetsLoadingForSelectedAccountGroup: jest.requireActual(
+    '@metamask/assets-controller',
+  ).getIsAssetsLoadingForSelectedAccountGroup,
   // The getter selectors fall back to this default state; return empty maps so
   // the "missing → empty" getter expectations hold in tests.
   getDefaultAssetsControllerState: () => ({
@@ -1533,6 +1537,57 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const result = selectAccountGroupBalanceIsLoadedForEmptyState(state);
 
     expect(result).toBe(true);
+  });
+
+  it('returns true for first load while an account in the selected group is loading', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithLoading = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsLoadingStatus: { account1: 'loading' as const },
+      },
+    };
+
+    expect(selectIsAssetsLoadingForSelectedAccountGroup(stateWithLoading)).toBe(
+      true,
+    );
+  });
+
+  it('returns false for first load once the selected group has loaded', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithLoaded = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsLoadingStatus: { account1: 'loaded' as const },
+      },
+    };
+
+    expect(selectIsAssetsLoadingForSelectedAccountGroup(stateWithLoaded)).toBe(
+      false,
+    );
+  });
+
+  it('returns false for first load when only accounts outside the selected group are loading', () => {
+    const state = createMockStateWithEVMNetworks();
+    const stateWithOtherLoading = {
+      ...state,
+      metamask: {
+        ...state.metamask,
+        assetsLoadingStatus: { 'other-account': 'loading' as const },
+      },
+    };
+
+    expect(
+      selectIsAssetsLoadingForSelectedAccountGroup(stateWithOtherLoading),
+    ).toBe(false);
+  });
+
+  it('returns false for first load when no loading status is set', () => {
+    const state = createMockStateWithEVMNetworks();
+
+    expect(selectIsAssetsLoadingForSelectedAccountGroup(state)).toBe(false);
   });
 
   it('should return true for loaded state when a non-EVM mainnet zero balance record exists', () => {
