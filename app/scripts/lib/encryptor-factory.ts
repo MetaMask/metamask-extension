@@ -61,7 +61,7 @@ const encryptWithDetailFactory =
  * number of iterations, unless existing key derivation options are passed in.
  *
  * @param iterations - The number of iterations to use for the PBKDF2 algorithm.
- * @returns A function that generates a key with a potentially overriden number of iterations.
+ * @returns A function that generates a key with a potentially overridden number of iterations.
  */
 const keyFromPasswordFactory =
   (iterations: number) =>

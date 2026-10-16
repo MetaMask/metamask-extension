@@ -188,7 +188,7 @@ describe('encryptorFactory', () => {
       );
     });
 
-    it('should call browser-passworder.keyFromPassword with overriden opts', async () => {
+    it('should call browser-passworder.keyFromPassword with overridden opts', async () => {
       const encryptor = encryptorFactory(mockIterations);
 
       const mockResult = {
