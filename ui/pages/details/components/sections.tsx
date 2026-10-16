@@ -70,17 +70,23 @@ export function MetadataSection({
         <>
           <Row
             label={t('from')}
-            value={<AccountName address={addressRows?.from} />}
+            value={
+              <AccountName address={addressRows?.from} chainId={item.chainId} />
+            }
           />
           <Row
             label={t('to')}
-            value={<AccountName address={addressRows?.to} />}
+            value={
+              <AccountName address={addressRows?.to} chainId={item.chainId} />
+            }
           />
         </>
       ) : (
         <Row
           label={t('account')}
-          value={<AccountName address={accountAddress} />}
+          value={
+            <AccountName address={accountAddress} chainId={item.chainId} />
+          }
         />
       )}
 
