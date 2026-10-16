@@ -446,9 +446,9 @@ describe('submitSmartTransactionHook', () => {
           } as SmartTransaction);
         });
         await submitSmartTransactionHook(request);
-        const metadata =
+        const { metadata } =
           submitSignedTransactionsSpy.mock.calls[0][0]
-            .signedTransactionsWithMetadata[0].metadata;
+            .signedTransactionsWithMetadata[0];
         expect(metadata).not.toHaveProperty('accountHardwareType');
       },
     );
@@ -482,9 +482,9 @@ describe('submitSmartTransactionHook', () => {
         });
         const result = await submitSmartTransactionHook(request);
         expect(result).toEqual({ transactionHash: txHash });
-        const metadata =
+        const { metadata } =
           submitSignedTransactionsSpy.mock.calls[0][0]
-            .signedTransactionsWithMetadata[0].metadata;
+            .signedTransactionsWithMetadata[0];
         expect(metadata).not.toHaveProperty('accountHardwareType');
       },
     );
