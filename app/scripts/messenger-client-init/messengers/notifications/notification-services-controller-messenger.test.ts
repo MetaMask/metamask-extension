@@ -20,6 +20,7 @@ describe('getAuthenticationControllerMessenger', () => {
     expect(delegateSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         actions: expect.arrayContaining([
+          'AuthenticatedUserStorageService:invalidateQueries',
           'AuthenticatedUserStorageService:getNotificationPreferences',
           'AuthenticatedUserStorageService:putNotificationPreferences',
           'AnalyticsController:getState',
