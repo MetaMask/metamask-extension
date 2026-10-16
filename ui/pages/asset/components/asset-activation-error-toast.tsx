@@ -1,9 +1,7 @@
-import { Box } from '@metamask/design-system-react';
+import { Box, Icon, IconColor, IconName } from '@metamask/design-system-react';
 import React from 'react';
 
-import { Icon, IconName } from '../../../components/component-library';
 import { Toast } from '../../../components/multichain/toast/toast';
-import { IconColor } from '../../../helpers/constants/design-system';
 
 export const ASSET_ACTIVATION_ERROR_TOAST_DURATION_MS = 5000;
 
@@ -31,7 +29,7 @@ export const AssetActivationErrorToast = ({
     <Box marginTop={3} data-testid={`asset-activation-error-container`}>
       <Toast
         startAdornment={
-          <Icon name={IconName.Danger} color={IconColor.errorDefault} />
+          <Icon name={IconName.Danger} color={IconColor.ErrorDefault} />
         }
         text={message}
         onClose={onClose}
