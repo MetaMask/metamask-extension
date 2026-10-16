@@ -1,5 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+import { createContext, Script } from 'node:vm';
 import type { Chunk } from 'webpack';
 import type { Args } from '../utils/cli';
 import {
@@ -21,7 +25,159 @@ const mockArgs = {
 const mockChunk = (name: string | undefined): Chunk =>
   ({ name }) as unknown as Chunk;
 
+type ModuleId = string | number;
+
+function createPolicyRequire({
+  idmap,
+  packages,
+  contextModuleIds = [],
+}: {
+  idmap: [string, ModuleId[]][];
+  packages: Record<string, boolean>;
+  contextModuleIds?: ModuleId[];
+}) {
+  const pluginPath = require.resolve('@lavamoat/webpack');
+  const requireFromLavaMoat = createRequire(pluginPath);
+  const runtimePath = join(dirname(pluginPath), 'runtime', 'runtime.js');
+  const lavamoat = {
+    root: '$root$',
+    idmap,
+    policy: { resources: { source: { packages } } },
+    options: {
+      lockdown: {
+        consoleTaming: 'unsafe',
+        errorTaming: 'unsafe',
+        errorTrapping: 'none',
+        reporting: 'none',
+      },
+    },
+    ENUM: requireFromLavaMoat('./ENUM.json'),
+    endowmentsToolkit: requireFromLavaMoat(
+      'lavamoat-core/src/endowmentsToolkit',
+    ),
+    unenforceable: [],
+    externals: {},
+    ctxm: contextModuleIds,
+    kch: [],
+    defaultExport: undefined as
+      | undefined
+      | ((
+          resourceId: string,
+          runtimeKit: { __webpack_require__: (id: ModuleId) => ModuleId },
+        ) => { RH: { __webpack_require__: (id: ModuleId) => ModuleId } }),
+  };
+  // Use a fresh SES realm so lockdown does not affect the test runner.
+  const context = createContext({ LAVAMOAT: lavamoat, LOCKDOWN_SHIMS: [] });
+  new Script(
+    readFileSync(requireFromLavaMoat.resolve('ses'), 'utf8'),
+  ).runInContext(context);
+  new Script(readFileSync(runtimePath, 'utf8')).runInContext(context);
+  const requiredModules: ModuleId[] = [];
+  const runtime = lavamoat.defaultExport?.('source', {
+    __webpack_require__: (id) => {
+      requiredModules.push(id);
+      return id;
+    },
+  });
+  assert.ok(runtime, 'the LavaMoat runtime is installed');
+  return { policyRequire: runtime.RH.__webpack_require__, requiredModules };
+}
+
 describe('LavamoatPlugin', () => {
+  describe('runtime package lookup', () => {
+    it('loads a module from an allowed package', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [['allowed', [42]]],
+        packages: { allowed: true },
+      });
+
+      assert.strictEqual(policyRequire(42), 42);
+      assert.deepStrictEqual(requiredModules, [42]);
+    });
+
+    it('rejects a module from a denied package before executing it', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [['denied', [42]]],
+        packages: { denied: false },
+      });
+
+      assert.throws(() => policyRequire(42), /denied/u);
+      assert.deepStrictEqual(requiredModules, []);
+    });
+
+    it('allows imports within the referring package', () => {
+      const { policyRequire } = createPolicyRequire({
+        idmap: [['source', [42]]],
+        packages: {},
+      });
+
+      assert.strictEqual(policyRequire(42), 42);
+    });
+
+    it('distinguishes number IDs from string IDs', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [
+          ['allowed', [42]],
+          ['denied', ['42']],
+        ],
+        packages: { allowed: true },
+      });
+
+      assert.strictEqual(policyRequire(42), 42);
+      assert.throws(() => policyRequire('42'), /denied/u);
+      assert.deepStrictEqual(requiredModules, [42]);
+    });
+
+    it('preserves the first package assignment for duplicate IDs', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [
+          ['denied', [42, 42]],
+          ['allowed', [42]],
+        ],
+        packages: { allowed: true },
+      });
+
+      assert.throws(() => policyRequire(42), /denied/u);
+      assert.deepStrictEqual(requiredModules, []);
+    });
+
+    it('rejects unknown module IDs', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [['allowed', [42]]],
+        packages: { allowed: true },
+      });
+
+      assert.throws(() => policyRequire('missing'), /not a known dependency/u);
+      assert.deepStrictEqual(requiredModules, []);
+    });
+
+    it('treats object property names as ordinary module IDs', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [['denied', ['__proto__', 'constructor']]],
+        packages: {},
+      });
+
+      for (const id of ['__proto__', 'constructor', 'toString']) {
+        assert.throws(() => policyRequire(id));
+      }
+      assert.deepStrictEqual(requiredModules, []);
+    });
+
+    it('retains the rejection of unrecognized context modules', () => {
+      const { policyRequire, requiredModules } = createPolicyRequire({
+        idmap: [],
+        packages: {},
+        contextModuleIds: ['context-module'],
+      });
+
+      assert.throws(
+        () => policyRequire('context-module'),
+        /load a module dynamically from a dependency it has not been allowed/u,
+      );
+      assert.deepStrictEqual(requiredModules, []);
+    });
+  });
+
   describe('lavamoatUnsafeLayerRule', () => {
     it('excludes background entry from the unsafe LavaMoat exclude-loader', () => {
       const { exclude } = lavamoatUnsafeLayerRule;
