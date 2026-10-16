@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import { cloneDeep } from 'lodash';
 import { MUSD_DECIMALS } from '@metamask/money-account-utils';
 import {
   TransactionStatus,

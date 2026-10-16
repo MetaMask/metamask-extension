@@ -258,46 +258,28 @@ export function isTokenBlocked(
 }
 
 /**
- * Selects Money Account as the payment method for a confirmation.
- * Sets `paymentOverride` and, for deposit flows, refunds leftover funds to the
- * money account address. Perps/Predict withdraws to Money Account run
- * non-atomically so the post-Relay transfer is submitted after the quote.
+ * Returns the transaction type if present and supported by the current pay
+ * flow. Presently used to keep the confirmation hooks aligned with the token
+ * selection logic above.
  *
- * @param transactionId - Confirmation transaction id.
- * @param moneyAccountAddress - Derived money account address, when known.
- * @param transactionMeta - Current confirmation metadata.
+ * @param transactionMeta - Current confirmation transaction.
+ * @returns The matching transaction type, if available.
  */
-export function applyMoneyAccountOverride(
-  transactionId: string,
-  moneyAccountAddress: string | undefined,
+export function getSupportedTransactionType(
   transactionMeta: TransactionMeta | undefined,
-): void {
-  const isPerpsOrPredictWithdraw = hasTransactionType(transactionMeta, [
-    TransactionType.perpsWithdraw,
-    TransactionType.predictWithdraw,
-  ]);
-  const isPostQuoteWithdraw = isPostQuoteWithdrawTransaction(transactionMeta);
+): TransactionType | undefined {
+  if (
+    hasTransactionType(transactionMeta, [
+      TransactionType.moneyAccountDeposit,
+      TransactionType.moneyAccountWithdraw,
+    ])
+  ) {
+    return transactionMeta?.transactionType;
+  }
 
-  setPaymentOverride(transactionId, {
-    ...(isPerpsOrPredictWithdraw ? { atomic: false } : {}),
-    paymentOverride: PaymentOverride.MoneyAccount,
-    ...(!isPostQuoteWithdraw && moneyAccountAddress
-      ? { refundTo: moneyAccountAddress as Hex }
-      : {}),
-  }).catch((error) => {
-    console.error('Failed to apply money account payment override', error);
-  });
-}
+  if (isPostQuoteWithdrawTransaction(transactionMeta)) {
+    return transactionMeta?.transactionType;
+  }
 
-/**
- * Clears a Money Account (or other) payment override on the confirmation.
- *
- * @param transactionId - Confirmation transaction id.
- */
-export function clearPaymentOverride(transactionId: string): void {
-  setPaymentOverride(transactionId, {
-    paymentOverride: undefined,
-  }).catch((error) => {
-    console.error('Failed to clear payment override', error);
-  });
+  return undefined;
 }
