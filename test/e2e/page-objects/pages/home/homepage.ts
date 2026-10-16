@@ -397,6 +397,7 @@ class HomePage {
       0,
       'Blocking error toast monitor poll did not run',
     );
+    await this.checkNoErrorToastIsDisplayed();
     const seen = (await this.driver.executeScript(
       getRecordedBlockingErrorToasts,
     )) as string[];
@@ -405,7 +406,6 @@ class HomePage {
         text.includes('cryptocurrencies') || text.includes('unsupported'),
     );
     assert.deepEqual(priceApiToasts, []);
-    await this.checkNoErrorToastIsDisplayed();
   }
 
   async checkNoErrorToastIsDisplayed(): Promise<void> {
