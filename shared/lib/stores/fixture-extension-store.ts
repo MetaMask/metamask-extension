@@ -1,5 +1,4 @@
 import log from 'loglevel';
-import browser from 'webextension-polyfill';
 import getFetchWithTimeout from '../fetch-with-timeout';
 import { getManifestFlags } from '../manifestFlags';
 import { PLATFORM_FIREFOX } from '../../constants/app';
@@ -54,6 +53,7 @@ async function setStorageServiceData(
     // reliability concerns as chromium, additionally, Firefox has modes that
     // might block IndexedDB access entirely, so we just don't even bother with
     // it at all.
+    const { default: browser } = await import('webextension-polyfill');
     await browser.storage.local.set(storageServiceData);
     return;
   }
