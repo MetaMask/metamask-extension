@@ -1,6 +1,6 @@
 import { normalizeMarketFilter } from '../../../constants/perps';
 import {
-  DEFAULT_ROUTE,
+  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
   Route,
@@ -12,7 +12,7 @@ import {
  *
  * Supported URL formats:
  *
- * Home (wallet home with Perps tab selected):
+ * Home (navigates to the dedicated perps home page):
  * - https://link.metamask.io/perps
  * - https://link.metamask.io/perps?screen=tabs
  * - https://link.metamask.io/perps?screen=home
@@ -70,9 +70,7 @@ export const perps = new Route({
         return { path: PERPS_MARKET_LIST_ROUTE, query };
       }
       default: {
-        const query = new URLSearchParams();
-        query.set('tab', 'perps');
-        return { path: DEFAULT_ROUTE, query };
+        return { path: PERPS_HOME_PAGE_ROUTE, query: new URLSearchParams() };
       }
     }
   },

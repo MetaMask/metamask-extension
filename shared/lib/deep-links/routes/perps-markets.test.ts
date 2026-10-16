@@ -1,5 +1,5 @@
 import { perpsMarkets } from './perps-markets';
-import { DEFAULT_ROUTE, type Destination } from './route';
+import { PERPS_HOME_PAGE_ROUTE, type Destination } from './route';
 
 function assertPathDestination(
   result: Destination,
@@ -8,19 +8,19 @@ function assertPathDestination(
 }
 
 describe('perpsMarketsRoute', () => {
-  it('navigates to the home route with the perps tab selected', () => {
+  it('navigates to the perps home page', () => {
     const result = perpsMarkets.handler(new URLSearchParams());
 
     assertPathDestination(result);
-    expect(result.path).toBe(DEFAULT_ROUTE);
-    expect(result.query.get('tab')).toBe('perps');
+    expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+    expect(result.query.toString()).toBe('');
   });
 
   it('ignores any params', () => {
     const result = perpsMarkets.handler(new URLSearchParams({ foo: 'bar' }));
 
     assertPathDestination(result);
-    expect(result.path).toBe(DEFAULT_ROUTE);
-    expect(result.query.get('tab')).toBe('perps');
+    expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+    expect(result.query.toString()).toBe('');
   });
 });
