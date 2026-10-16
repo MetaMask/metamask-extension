@@ -352,9 +352,8 @@ class SmartTransactionHook {
             );
             const signedTx: SignedTransactionWithMetadata = { tx: tx.signedTx };
             if (transactionMeta) {
-              signedTx.metadata = await this.#getSentinelMetadata(
-                transactionMeta,
-              );
+              signedTx.metadata =
+                await this.#getSentinelMetadata(transactionMeta);
             }
             return signedTx;
           }),
