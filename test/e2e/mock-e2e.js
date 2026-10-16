@@ -2369,7 +2369,7 @@ async function setupMocking(
     });
   }
 
-  // AUS marketing consent (marketing-consent sync coordinator).
+  // AUS marketing consent (MarketingConsentController).
   // GET responds 404 (no stored consent) so reconciliation deterministically
   // seeds AUS with the local value; without this mock the real endpoint
   // rejects the request, and consecutive failures open the AUS service's

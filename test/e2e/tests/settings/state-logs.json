@@ -924,6 +924,7 @@
       "selected": "null"
     },
     "pendingRedirectRoute": "null",
+    "pendingMarketingConsent": "null",
     "pendingApprovalCount": "number",
     "pendingApprovals": {},
     "pendingRevocations": [],

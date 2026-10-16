@@ -2223,7 +2223,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -4406,6 +4406,20 @@ export function setDataCollectionForMarketing(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setDataCollectionForMarketing`);
+    if (waitForAus) {
+      // Applies the choice locally and resolves once AUS has saved it. On
+      // failure the controller re-applies the AUS value, so refresh either way.
+      try {
+        await submitRequestToBackground('messengerCall', [
+          'MarketingConsentController:setMarketingConsent',
+          [dataCollectionPreference],
+        ]);
+      } finally {
+        await forceUpdateMetamaskState(dispatch);
+      }
+      return;
+    }
+    // MarketingConsentController picks up the change and saves it to AUS.
     await submitRequestToBackground('setDataCollectionForMarketing', [
       dataCollectionPreference,
     ]);
@@ -4413,16 +4427,6 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
-    if (waitForAus) {
-      try {
-        await submitRequestToBackground('messengerCall', [
-          'MarketingConsentSync:waitForMarketingConsentSync',
-          [dataCollectionPreference],
-        ]);
-      } finally {
-        await forceUpdateMetamaskState(dispatch);
-      }
-    }
   };
 }
 
