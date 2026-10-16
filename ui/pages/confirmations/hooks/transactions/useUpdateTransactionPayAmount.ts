@@ -1,18 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import {
   updateMoneyAccountDepositAmount,
   updateMoneyAccountWithdrawAmount,
 } from '../../../../store/controller-actions/transaction-pay-controller';
+import { useTransactionMetadataRequest } from './useTransactionMetadataRequest';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
 
 export function useUpdateTransactionPayAmount() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useTransactionMetadataRequest();
   const { updateTokenAmount } = useUpdateTokenAmount();
   const accountOverride = useTransactionAccountOverride();
   const transactionId = useMemo(

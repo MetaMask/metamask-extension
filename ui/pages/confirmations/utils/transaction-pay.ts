@@ -135,7 +135,7 @@ export function getTokenTransferData(
   );
 
   const nestedCall =
-    nestedCallIndex === undefined
+    nestedCallIndex === undefined || nestedCallIndex === -1
       ? undefined
       : nestedTransactions?.[nestedCallIndex];
 
@@ -293,11 +293,15 @@ export function applyMoneyAccountOverride(
   setPaymentOverride(transactionId, {
     paymentOverride: PaymentOverride.MoneyAccount,
     ...(isWithdrawLike ? { atomic: false } : { refundTo: moneyAddress }),
+  }).catch((error) => {
+    console.error('Failed to apply money account payment override', error);
   });
 }
 
 export function clearPaymentOverride(transactionId: string): void {
   setPaymentOverride(transactionId, {
     paymentOverride: undefined,
+  }).catch((error) => {
+    console.error('Failed to clear payment override', error);
   });
 }
