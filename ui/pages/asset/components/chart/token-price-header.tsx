@@ -25,6 +25,13 @@ export type TokenPriceHeaderProps = {
   timestamp?: number;
   /** Whether data is currently loading */
   loading?: boolean;
+  /**
+   * Ambient color override for the percent change text.
+   * When provided, replaces the default SuccessDefault/ErrorDefault color
+   * with the ambient direction color (e.g. custom green or orange).
+   * Mirrors mobile's ambient price color A/B test.
+   */
+  ambientColor?: string;
 };
 
 /**
@@ -82,6 +89,99 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
 };
 
 /**
+ * Renders the price section based on loading state and data availability.
+ * @param options0
+ * @param options0.price
+ * @param options0.loading
+ * @param options0.formattedPrice
+ */
+const PriceDisplay = ({
+  price,
+  loading,
+  formattedPrice,
+}: {
+  price?: number;
+  loading: boolean;
+  formattedPrice: string;
+}) => {
+  if (loading && price === undefined) {
+    return <PriceLoading />;
+  }
+  if (!loading && price === undefined) {
+    return <PriceEmptyState />;
+  }
+  return (
+    <Box marginBottom={1} style={{ opacity: loading ? loadingOpacity : 1 }}>
+      <Text
+        data-testid="asset-hovered-price"
+        variant={TextVariant.DisplayMd}
+        fontWeight={FontWeight.Medium}
+      >
+        {formattedPrice}
+      </Text>
+    </Box>
+  );
+};
+
+/**
+ * Renders the percent change section based on loading state and data availability.
+ * @param options0
+ * @param options0.percentChange
+ * @param options0.loading
+ * @param options0.formattedPercent
+ * @param options0.ambientColor
+ * @param options0.timestamp
+ */
+const PercentChangeDisplay = ({
+  percentChange,
+  loading,
+  formattedPercent,
+  ambientColor,
+  timestamp,
+}: {
+  percentChange?: number;
+  loading: boolean;
+  formattedPercent: string;
+  ambientColor?: string;
+  timestamp?: number;
+}) => {
+  if (loading && percentChange === undefined) {
+    return <PercentChangeLoading />;
+  }
+  if (!loading && percentChange === undefined) {
+    return <PercentChangeEmptyState />;
+  }
+  return (
+    <Box
+      style={{ opacity: loading ? loadingOpacity : 1 }}
+      className="flex"
+      flexDirection={BoxFlexDirection.Row}
+    >
+      <Text
+        data-testid="asset-price-percent-change"
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={ambientColor ? undefined : getPercentChangeColor(percentChange)}
+        style={ambientColor ? { color: ambientColor } : undefined}
+      >
+        {formattedPercent || '-'}
+      </Text>
+      {timestamp !== undefined && (
+        <Box marginLeft={2}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
+          >
+            {getDynamicShortDate(timestamp)}
+          </Text>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+/**
  * A pure display component that shows the price of an asset along with
  * the percentage change. This component is data-agnostic and can be used
  * with both legacy historical price data and OHLCV data.
@@ -97,6 +197,7 @@ const getPercentChangeColor = (value: number | undefined): TextColor => {
  * @param options.currency - Currency code for formatting (e.g., 'USD')
  * @param options.timestamp - Timestamp for the price (shown as formatted date)
  * @param options.loading - Whether data is currently loading
+ * @param options.ambientColor - Ambient color override for percent change text
  * @returns The rendered TokenPriceHeader component
  */
 const TokenPriceHeader = ({
@@ -105,21 +206,10 @@ const TokenPriceHeader = ({
   currency,
   timestamp,
   loading = false,
+  ambientColor,
 }: TokenPriceHeaderProps) => {
   const { formatCurrencyTokenPrice, formatNumber } = useFormatters();
 
-  // Determine what to show based on loading state and data availability
-  const shouldShowPriceLoading = loading && price === undefined;
-  const shouldShowPriceEmptyState = !loading && price === undefined;
-  const shouldShowPriceMuted = loading && price !== undefined;
-  const shouldShowPrice = !loading && price !== undefined;
-
-  const shouldShowPercentLoading = loading && percentChange === undefined;
-  const shouldShowPercentEmptyState = !loading && percentChange === undefined;
-  const shouldShowPercentMuted = loading && percentChange !== undefined;
-  const shouldShowPercent = !loading && percentChange !== undefined;
-
-  // Format percentage for display
   const formattedPercent =
     typeof percentChange === 'number' && !Number.isNaN(percentChange)
       ? formatNumber(percentChange / 100, {
@@ -130,56 +220,23 @@ const TokenPriceHeader = ({
         })
       : '';
 
+  const formattedPrice =
+    price === undefined ? '' : formatCurrencyTokenPrice(price, currency);
+
   return (
     <Box marginLeft={4} marginRight={4}>
-      {/* Price display */}
-      {shouldShowPriceLoading && <PriceLoading />}
-      {shouldShowPriceEmptyState && <PriceEmptyState />}
-      {(shouldShowPrice || shouldShowPriceMuted) && (
-        <Box
-          marginBottom={1}
-          style={{ opacity: shouldShowPriceMuted ? loadingOpacity : 1 }}
-        >
-          <Text
-            data-testid="asset-hovered-price"
-            variant={TextVariant.DisplayMd}
-            fontWeight={FontWeight.Medium}
-          >
-            {formatCurrencyTokenPrice(price, currency)}
-          </Text>
-        </Box>
-      )}
-
-      {/* Percentage change display */}
-      {shouldShowPercentLoading && <PercentChangeLoading />}
-      {shouldShowPercentEmptyState && <PercentChangeEmptyState />}
-      {(shouldShowPercent || shouldShowPercentMuted) && (
-        <Box
-          style={{ opacity: loading ? loadingOpacity : 1 }}
-          className="flex"
-          flexDirection={BoxFlexDirection.Row}
-        >
-          <Text
-            data-testid="asset-price-percent-change"
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={getPercentChangeColor(percentChange)}
-          >
-            {formattedPercent || '-'}
-          </Text>
-          {timestamp !== undefined && (
-            <Box marginLeft={2}>
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextAlternative}
-              >
-                {getDynamicShortDate(timestamp)}
-              </Text>
-            </Box>
-          )}
-        </Box>
-      )}
+      <PriceDisplay
+        price={price}
+        loading={loading}
+        formattedPrice={formattedPrice}
+      />
+      <PercentChangeDisplay
+        percentChange={percentChange}
+        loading={loading}
+        formattedPercent={formattedPercent}
+        ambientColor={ambientColor}
+        timestamp={timestamp}
+      />
     </Box>
   );
 };

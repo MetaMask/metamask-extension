@@ -869,6 +869,139 @@ describe('AdvancedChartIframe', () => {
     });
   });
 
+  describe('SET_THEME_COLORS (ambient theming)', () => {
+    const renderReadyWithColors = (colorProps: Record<string, string>) => {
+      const result = render(
+        <AdvancedChartIframe {...defaultProps} {...colorProps} />,
+      );
+
+      act(() => {
+        result.container
+          .querySelector('iframe')
+          ?.dispatchEvent(new Event('load'));
+      });
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({ type: 'CHART_READY' }),
+          }),
+        );
+      });
+
+      return result;
+    };
+
+    it('sends SET_THEME_COLORS when color override props are provided', async () => {
+      renderReadyWithColors({
+        lineColorOverride: '#00881A',
+        successColorOverride: '#00881A',
+        errorColorOverride: '#FA4B00',
+      });
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_THEME_COLORS',
+            payload: {
+              lineColor: '#00881A',
+              successColor: '#00881A',
+              errorColor: '#FA4B00',
+              currentPriceColor: '#00881A',
+              volumeSuccessColor: '#00881A',
+              volumeErrorColor: '#FA4B00',
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+
+    it('does not send SET_THEME_COLORS when no color overrides', async () => {
+      const result = render(<AdvancedChartIframe {...defaultProps} />);
+
+      act(() => {
+        result.container
+          .querySelector('iframe')
+          ?.dispatchEvent(new Event('load'));
+      });
+
+      act(() => {
+        window.dispatchEvent(
+          new MessageEvent('message', {
+            origin: CHART_ORIGIN,
+            data: JSON.stringify({ type: 'CHART_READY' }),
+          }),
+        );
+      });
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_THEME_COLORS'),
+        expect.any(String),
+      );
+    });
+
+    it('does not send SET_THEME_COLORS before chart is ready', () => {
+      render(
+        <AdvancedChartIframe
+          {...defaultProps}
+          lineColorOverride="#00881A"
+          successColorOverride="#00881A"
+          errorColorOverride="#FA4B00"
+        />,
+      );
+
+      expect(postMessageSpy).not.toHaveBeenCalledWith(
+        expect.stringContaining('SET_THEME_COLORS'),
+        expect.any(String),
+      );
+    });
+
+    it('re-sends SET_THEME_COLORS when color props change', async () => {
+      const { rerender } = renderReadyWithColors({
+        lineColorOverride: '#00881A',
+        successColorOverride: '#00881A',
+        errorColorOverride: '#FA4B00',
+      });
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          expect.stringContaining('SET_THEME_COLORS'),
+          CHART_ORIGIN,
+        );
+      });
+
+      postMessageSpy.mockClear();
+
+      rerender(
+        <AdvancedChartIframe
+          {...defaultProps}
+          lineColorOverride="#FA4B00"
+          successColorOverride="#00881A"
+          errorColorOverride="#FA4B00"
+        />,
+      );
+
+      await waitFor(() => {
+        expect(postMessageSpy).toHaveBeenCalledWith(
+          JSON.stringify({
+            type: 'SET_THEME_COLORS',
+            payload: {
+              lineColor: '#FA4B00',
+              successColor: '#00881A',
+              errorColor: '#FA4B00',
+              currentPriceColor: '#FA4B00',
+              volumeSuccessColor: '#00881A',
+              volumeErrorColor: '#FA4B00',
+            },
+          }),
+          CHART_ORIGIN,
+        );
+      });
+    });
+  });
+
   describe('Integration Scenarios', () => {
     it('handles complete lifecycle: load → ready → data → type change', async () => {
       const mockOnReady = jest.fn();
