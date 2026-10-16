@@ -421,7 +421,9 @@ describe('MultichainAccountMenu', () => {
     });
 
     const hideOption = document.querySelectorAll(menuItemSelector)[4];
-    fireEvent.click(hideOption);
+    await act(async () => {
+      fireEvent.click(hideOption);
+    });
 
     expect(mockDisconnectAccountGroup).toHaveBeenCalledWith(accountGroupId);
   });
@@ -462,7 +464,9 @@ describe('MultichainAccountMenu', () => {
     );
 
     const revealOption = document.querySelectorAll(menuItemSelector)[4];
-    fireEvent.click(revealOption);
+    await act(async () => {
+      fireEvent.click(revealOption);
+    });
 
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
       accountGroupId,
