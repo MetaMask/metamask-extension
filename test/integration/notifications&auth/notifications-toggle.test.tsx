@@ -189,9 +189,11 @@ describe('Notifications Toggle', () => {
     await clickElement(selectors.marketingConsentSheetConfirm);
 
     await waitFor(() => {
-      const setDataCollectionForMarketingCall =
+      const setMarketingConsentCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'setDataCollectionForMarketing',
+          (call) =>
+            call[0] === 'messengerCall' &&
+            call[1]?.[0] === 'MarketingConsentController:setMarketingConsent',
         );
 
       const putNotificationPreferencesCall =
@@ -204,10 +206,10 @@ describe('Notifications Toggle', () => {
           (call) => call[0] === 'fetchAndUpdateMetamaskNotifications',
         );
 
-      expect(setDataCollectionForMarketingCall?.[0]).toBe(
-        'setDataCollectionForMarketing',
-      );
-      expect(setDataCollectionForMarketingCall?.[1]).toStrictEqual([true]);
+      expect(setMarketingConsentCall?.[1]).toStrictEqual([
+        'MarketingConsentController:setMarketingConsent',
+        [true],
+      ]);
 
       expect(putNotificationPreferencesCall?.[0]).toBe(
         'putNotificationPreferences',
