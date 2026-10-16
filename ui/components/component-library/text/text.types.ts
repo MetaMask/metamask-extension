@@ -117,7 +117,7 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    */
   fontStyle?: FontStyle;
   /**
-   * The font family of the Text component. Should use the FontFamily enum
+   * The font family of the Text component. Use `FontFamily.Default` (Inter).
    */
   fontFamily?: FontFamily;
   /**

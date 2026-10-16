@@ -6,6 +6,7 @@ import {
   ButtonSize,
   ButtonVariant,
   Text,
+  TextAlign,
   TextVariant,
   TextColor,
   IconColor,
@@ -267,7 +268,13 @@ export default function CreationSuccessful() {
       )}
       {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
       {!isFromSettingsSRPBackup && (
-        <Text className="title">{t('yourWalletIsReady')}</Text>
+        <Text
+          variant={TextVariant.DisplayMd}
+          textAlign={TextAlign.Center}
+          className="title"
+        >
+          {t('yourWalletIsReady')}
+        </Text>
       )}
       {renderDoneButton()}
       {!isFromSettingsSRPBackup && (

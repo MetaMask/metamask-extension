@@ -12,7 +12,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  FontFamily,
   FontWeight,
   Text,
   TextVariant,
@@ -261,9 +260,8 @@ const ShieldEntryModal = ({
           height={BlockSize.Full}
         >
           <Text
-            fontFamily={FontFamily.Hero}
-            fontWeight={FontWeight.Regular}
-            className="shield-entry-modal__title text-center text-accent04-light mb-3"
+            variant={TextVariant.DisplayMd}
+            className="text-center text-accent04-light mb-3"
           >
             {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')

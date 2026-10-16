@@ -34,3 +34,12 @@
 @import 'react-tippy/dist/tippy';
 @import '@metamask/design-tokens/dist/styles';
 
+/*
+  Design tokens still name accent and hero families as MM Sans and MM Poly.
+  Those font files are not shipped; both tokens resolve to Inter.
+*/
+:root {
+  --font-family-accent: var(--font-family-default);
+  --font-family-hero: var(--font-family-default);
+}
+
