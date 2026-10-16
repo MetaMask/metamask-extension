@@ -1,0 +1,59 @@
+import { createHash } from 'node:crypto';
+import type { Manifest } from '../../helpers';
+
+/**
+ * Package extension-scoped denies, active before background/UI JavaScript.
+ * @param manifest
+ * @param buildType
+ * @param test
+ */
+export function createNetworkRequestRules(
+  manifest: Manifest,
+  buildType: string,
+  test: boolean,
+): chrome.declarativeNetRequest.Rule[] {
+  const extensionId = manifest.key
+    ? createHash('sha256')
+        .update(Buffer.from(manifest.key, 'base64'))
+        .digest('hex')
+        .slice(0, 32)
+        .replace(/[0-9a-f]/gu, (digit) =>
+          String.fromCharCode(97 + parseInt(digit, 16)),
+        )
+    : (
+        {
+          main: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
+          beta: 'pbbkamfgmaedccnfkmjcofcecjhfgldn',
+          flask: 'ljfoeinjpaedjfecbmggjgodbgkmjkjk',
+        } as Record<string, string>
+      )[buildType];
+  if (!extensionId) {
+    throw new Error(
+      'A Chrome signing ID is required for network request rules',
+    );
+  }
+  return ['initiatorDomains', 'topDomains'].flatMap((scope, index) => {
+    const condition = {
+      regexFilter: '^(https?|wss?)://',
+      [scope]: [extensionId],
+    };
+    const rules: chrome.declarativeNetRequest.Rule[] = [
+      {
+        id: 1000000 + index,
+        priority: 1,
+        action: { type: 'block' },
+        condition,
+      },
+    ];
+    if (test) {
+      // Test fixtures and the browser-test socket need local infrastructure.
+      rules.push({
+        id: 1000010 + index,
+        priority: 3,
+        action: { type: 'allow' },
+        condition: { ...condition, requestDomains: ['localhost'] },
+      });
+    }
+    return rules;
+  });
+}

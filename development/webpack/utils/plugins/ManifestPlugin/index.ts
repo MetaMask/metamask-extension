@@ -28,6 +28,7 @@ import {
 import { schema } from './schema';
 import type { BundleSizeCategory, ManifestPluginOptions } from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
+import { createNetworkRequestRules } from './network-request-policy';
 
 const { CachedSource, RawSource } = sources;
 
@@ -106,6 +107,8 @@ export class ManifestPlugin<Z extends boolean> {
   manifests: Map<Browser, Manifest> = new Map();
 
   private manifestSources: Map<Browser, sources.RawSource> = new Map();
+
+  private networkRequestSources = new Map<Browser, sources.RawSource>();
 
   private watchedFiles: string[] = [];
 
@@ -202,6 +205,13 @@ export class ManifestPlugin<Z extends boolean> {
     browsers: readonly Browser[],
   ): void {
     browsers.forEach((browser) => {
+      const rules = this.networkRequestSources.get(browser);
+      if (rules) {
+        compilation.emitAsset(
+          path.posix.join(browser, 'network-request-rules.json'),
+          rules,
+        );
+      }
       const manifest = this.manifestSources.get(browser) as sources.RawSource;
       compilation.emitAsset(
         path.posix.join(browser, 'manifest.json'),
@@ -414,6 +424,13 @@ export class ManifestPlugin<Z extends boolean> {
       };
     });
 
+    for (const { browser, builder } of zipBuilders) {
+      const rules = this.networkRequestSources.get(browser);
+      if (rules) {
+        builder.addAsset('network-request-rules.json', rules);
+      }
+    }
+
     for (const assetName of assetNames) {
       const assetDetails = compilation.getAsset(assetName) as Readonly<Asset>;
       const extName = path.extname(assetName);
@@ -574,6 +591,7 @@ export class ManifestPlugin<Z extends boolean> {
 
   private prepareManifests(compiler: Compiler): void {
     this.watchedFiles = [];
+    this.networkRequestSources.clear();
 
     const root = path.join(compiler.context, '../');
     const manifestOverridesPath = path.join(root, '.manifest-overrides.json');
@@ -671,6 +689,27 @@ export class ManifestPlugin<Z extends boolean> {
       // allow the user to `transform` the manifest
       if (transform) {
         manifest = transform(manifest, browser);
+      }
+
+      if (
+        browser === 'chrome' &&
+        manifest.manifest_version === 3 &&
+        manifest.declarative_net_request?.rule_resources?.some(
+          ({ id }) => id === 'network_request_policy',
+        )
+      ) {
+        this.networkRequestSources.set(
+          browser,
+          new RawSource(
+            JSON.stringify(
+              createNetworkRequestRules(
+                manifest,
+                this.options.buildType,
+                this.options.test ?? false,
+              ),
+            ),
+          ),
+        );
       }
 
       // Add the manifest file to manifests

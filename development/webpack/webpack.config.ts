@@ -138,6 +138,7 @@ const cache = args.cache
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
 
 const manifestPlugin = new ManifestPlugin({
+  test: args.test,
   html: [
     { directory: join('html', 'ui'), category: 'ui' },
     { directory: join('html', 'background'), category: 'background' },

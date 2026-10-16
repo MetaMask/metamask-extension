@@ -305,6 +305,7 @@ import { PerpsStreamBridge } from './controllers/perps/perps-stream-bridge';
 import { PPOMControllerInit } from './messenger-client-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './messenger-client-init/smart-transactions/smart-transactions-controller-init';
 import { initMessengerClients } from './messenger-client-init/utils';
+import { setOnboardingNetworkDomains } from './lib/network-request-policy';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -3116,9 +3117,10 @@ export default class MetamaskController extends EventEmitter {
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
-      resetOAuthLoginState: this.seedlessOnboardingController.clearState.bind(
-        this.seedlessOnboardingController,
-      ),
+      resetOAuthLoginState: async () => {
+        await setOnboardingNetworkDomains([]);
+        return this.seedlessOnboardingController.clearState();
+      },
       createSeedPhraseBackup: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'LegacyBackgroundApiService:createSeedPhraseBackup',

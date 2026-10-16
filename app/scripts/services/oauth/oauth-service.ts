@@ -1,4 +1,6 @@
 import log from 'loglevel';
+import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
+import { getEnvUrls } from '@metamask/profile-sync-controller/sdk';
 import {
   createSentryError,
   isUserCancelledLoginError,
@@ -17,6 +19,8 @@ import {
 } from '../../../../shared/constants/onboarding';
 import { createEventBuilder } from '../../controllers/analytics';
 import ExtensionPlatform from '../../platforms/extension';
+import { isProduction } from '../../../../shared/lib/environment';
+import { setOnboardingNetworkDomains } from '../../lib/network-request-policy';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -113,6 +117,25 @@ export class OAuthService {
       this.#webAuthenticator,
     );
 
+    const nodeDomain =
+      this.#config.web3AuthNetwork === Web3AuthNetwork.Devnet
+        ? 'dev-node.web3auth.io'
+        : 'node.web3auth.io';
+    const telegram =
+      authConnection === AuthConnection.Telegram
+        ? Object.values(getEnvUrls(this.#config.profileSyncEnv)).filter(
+            (value): value is string =>
+              typeof value === 'string' && value.startsWith('https://'),
+          )
+        : [];
+    await setOnboardingNetworkDomains([
+      new URL(this.#config.authServerUrl).hostname,
+      'api.web3auth.io',
+      nodeDomain,
+      `geolocation.${isProduction() ? '' : 'dev-'}api.cx.metamask.io`,
+      ...telegram.map((url) => new URL(url).hostname),
+    ]);
+
     // get the user location to determine if the user is in US region
     // the location value will be used later to determine if Marketing Opt-in should be enabled by default
     this.#messenger
@@ -124,7 +147,10 @@ export class OAuthService {
     const oAuthLoginResult = await this.#handleOAuthLogin(
       loginHandler,
       authConnection,
-    );
+    ).catch(async (error) => {
+      await setOnboardingNetworkDomains([]);
+      throw error;
+    });
     return oAuthLoginResult;
   }
 

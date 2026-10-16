@@ -141,6 +141,11 @@ import type {
 import type { InstallLifecycleDependencies } from './lib/lifecycle/install-lifecycle';
 import type { ActiveTabTrackerController } from './lib/active-tab/active-tab-tracker';
 import type { BadgeManagerController } from './lib/badge/badge-manager';
+import {
+  initializeNetworkRequestPolicy,
+  refreshNetworkRequestPolicy,
+  setOnboardingNetworkDomains,
+} from './lib/network-request-policy';
 
 // MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
@@ -571,6 +576,13 @@ async function initialize(backup: Backup | null) {
   });
 
   const initState = initData.data;
+  if (isManifestV3) {
+    await initializeNetworkRequestPolicy(
+      browser.runtime.id,
+      browser.declarativeNetRequest,
+    );
+    await refreshNetworkRequestPolicy(initState);
+  }
   const initLangCode = await getFirstPreferredLangCode();
 
   let isFirstMetaMaskControllerSetup: boolean | undefined;
@@ -711,6 +723,14 @@ export function setupController(
   });
 
   const metamaskController = controller;
+  if (isManifestV3) {
+    const refresh = () =>
+      refreshNetworkRequestPolicy(metamaskController.store.getState()).catch(
+        log.error,
+      );
+    metamaskController.store.subscribe(refresh);
+    refresh();
+  }
 
   // Wire up the callback to notify the UI when set operations fail
   persistenceManager.setOnSetFailed((errorType) => {
@@ -757,6 +777,7 @@ export function setupController(
   ) => {
     // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
     if (isClientOpen === false) {
+      setOnboardingNetworkDomains([]).catch(log.error);
       metamaskController.onClientClosed();
       // otherwise we want to only remove the polling tokens for the environment type that has closed
     } else {
