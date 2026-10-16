@@ -56,7 +56,7 @@ jest.mock('../../../hooks/useGetDisplayName', () => ({
 
 const mockResolveAddressLabel = jest.fn((_params: unknown): string => '');
 
-jest.mock('../../../hooks/useResolveAddressLabel', () => ({
+jest.mock('#ui/hooks/useResolveAddressLabel', () => ({
   useResolveAddressLabel: () => mockResolveAddressLabel,
 }));
 

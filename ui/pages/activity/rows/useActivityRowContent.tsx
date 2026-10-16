@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import cn from 'clsx';
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { useResolveAddressLabel } from '#ui/hooks/useResolveAddressLabel';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { getChainIdFromAssetId } from '../../../../shared/lib/asset-utils';
@@ -16,7 +17,6 @@ import { ActivityAvatar } from '../../../components/app/activity-list-item-avata
 import type { ActivityListItemAvatarTokens } from '../../../components/app/activity-list-item-avatar';
 import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
 import { useGetDisplayName } from '../../../hooks/useGetDisplayName';
-import { useResolveAddressLabel } from '../../../hooks/useResolveAddressLabel';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // eslint-disable-next-line import-x/no-restricted-paths

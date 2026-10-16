@@ -2,13 +2,11 @@ import React from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AddressScanResultType } from '@metamask/phishing-controller';
-import { fetchEvmAddressScan } from '../../shared/lib/bridge-utils/security-alerts-api.util';
+import { fetchEvmAddressScan } from '#shared/lib/bridge-utils/security-alerts-api.util';
 import { useResolveAddressLabel } from './useResolveAddressLabel';
 
-jest.mock('../../shared/lib/bridge-utils/security-alerts-api.util', () => ({
-  ...jest.requireActual(
-    '../../shared/lib/bridge-utils/security-alerts-api.util',
-  ),
+jest.mock('#shared/lib/bridge-utils/security-alerts-api.util', () => ({
+  ...jest.requireActual('#shared/lib/bridge-utils/security-alerts-api.util'),
   fetchEvmAddressScan: jest.fn(),
 }));
 

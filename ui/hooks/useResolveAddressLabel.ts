@@ -9,7 +9,7 @@ import type { CaipChainId } from '@metamask/utils';
 import {
   fetchEvmAddressScan,
   isEvmAddressScanChainId,
-} from '../../shared/lib/bridge-utils/security-alerts-api.util';
+} from '#shared/lib/bridge-utils/security-alerts-api.util';
 import { getUseExternalServices } from '../selectors';
 
 function getQueryOptions(chainId: CaipChainId, address: string) {
