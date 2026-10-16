@@ -18,6 +18,7 @@ export {
   SETTINGS_ROUTE,
   PRIVACY_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  MMPAY_DAPP_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
 export { default as ZENDESK_URLS } from '../../../../ui/helpers/constants/zendesk-url';

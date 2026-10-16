@@ -7,6 +7,7 @@ import { nfts } from './nfts';
 import { notifications } from './notifications';
 import { notificationsSettings } from './notifications-settings';
 import { onboarding } from './onboarding';
+import { mmpay } from './mmpay';
 import { money } from './money';
 import { musd } from './musd';
 import { perps } from './perps';
@@ -61,6 +62,7 @@ addRoute(notificationsSettings);
 addRoute(onboarding);
 addRoute(swap);
 addRoute(money);
+addRoute(mmpay); // MMPay dApp PoC
 addRoute(musd);
 addRoute(perps);
 addRoute(perpsAsset);
