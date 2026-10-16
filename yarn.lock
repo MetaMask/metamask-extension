@@ -9431,9 +9431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/money-account-api-data-service@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/money-account-api-data-service@npm:2.1.0"
+"@metamask/money-account-api-data-service@npm:^2.1.0, @metamask/money-account-api-data-service@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/money-account-api-data-service@npm:2.2.0"
   dependencies:
     "@metamask/base-data-service": "npm:^2.1.0"
     "@metamask/controller-utils": "npm:^13.0.0"
@@ -9441,7 +9441,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^12.0.0"
     "@tanstack/query-core": "npm:^5.103.2"
-  checksum: 10/fefe550cd81d1015dad2d5365bec98ee82cc354a3f1884db0c4286434d2d2a297e58d8bb7357a9902a603e4405ad45243f20947e82373c76285ef61960fa1566
+  checksum: 10/69b76f5110cbe5afb5d67cbd696a96271a9e267bffdde1d8ec4861d8cf64bceac751b7072a9f1feec1a4d8f9c3db26ac8695b3801d9728010bb9563b6bc552dd
   languageName: node
   linkType: hard
 
@@ -36140,7 +36140,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/mobile-wallet-protocol-core": "npm:^0.4.0"
     "@metamask/mobile-wallet-protocol-dapp-client": "npm:^0.3.0"
-    "@metamask/money-account-api-data-service": "npm:^2.1.0"
+    "@metamask/money-account-api-data-service": "npm:^2.2.0"
     "@metamask/money-account-balance-service": "npm:^3.1.2"
     "@metamask/money-account-controller": "npm:^0.3.3"
     "@metamask/money-account-upgrade-controller": "npm:^4.0.0"
