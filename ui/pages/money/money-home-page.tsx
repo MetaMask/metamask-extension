@@ -12,6 +12,7 @@ import {
   IconColor,
   IconName,
   IconSize,
+  SensitiveText,
   Skeleton,
   Text,
   TextColor,
@@ -437,13 +438,14 @@ export function MoneyHomePage() {
 
         <div className="flex flex-col items-center gap-2 px-4 pt-2 mb-5">
           <div className="flex w-full max-w-[784px] flex-col gap-1 sm:items-center">
-            <Text
+            <SensitiveText
               variant={TextVariant.DisplayLg}
               fontWeight={FontWeight.Medium}
+              isHidden={privacyMode}
               data-testid="money-balance"
             >
               {balanceDisplay}
-            </Text>
+            </SensitiveText>
             {isLastKnownBalance ? (
               <Text
                 variant={TextVariant.BodyXs}
@@ -558,6 +560,7 @@ export function MoneyHomePage() {
                     lifetimeEarnings={lifetimeEarnings}
                     isMonthlyLoading={isMonthlyEarningsLoading}
                     isLifetimeLoading={isLifetimeEarningsLoading}
+                    privacyMode={privacyMode}
                     onMonthlyTooltipOpen={handleMonthlyEarningsTooltipOpen}
                     onLifetimeTooltipOpen={handleLifetimeEarningsTooltipOpen}
                   />
