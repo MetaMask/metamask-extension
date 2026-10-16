@@ -47,10 +47,7 @@ describe('toAccountHardwareType', () => {
     expect(toAccountHardwareType('Ledger Hardware')).toBe('Ledger');
   });
 
-  it.each([undefined, '', 'OneKey Hardware', 'Ledger'])(
-    'omits %s',
-    (label) => {
-      expect(toAccountHardwareType(label)).toBeUndefined();
-    },
-  );
+  it.each([undefined, '', 'OneKey Hardware', 'Ledger'])('omits %s', (label) => {
+    expect(toAccountHardwareType(label)).toBeUndefined();
+  });
 });
