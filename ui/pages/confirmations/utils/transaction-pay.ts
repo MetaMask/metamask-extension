@@ -293,8 +293,12 @@ export function isTokenBlocked(
 export function getSupportedTransactionType(
   transactionMeta: TransactionMeta | undefined,
 ): TransactionType | undefined {
-  if (getMoneyAccountFlow(transactionMeta) !== undefined) {
-    return transactionMeta?.type;
+  const flow = getMoneyAccountFlow(transactionMeta);
+  if (flow === MoneyAccountFlow.Deposit) {
+    return TransactionType.moneyAccountDeposit;
+  }
+  if (flow === MoneyAccountFlow.Withdraw) {
+    return TransactionType.moneyAccountWithdraw;
   }
 
   if (isPostQuoteWithdrawTransaction(transactionMeta)) {
