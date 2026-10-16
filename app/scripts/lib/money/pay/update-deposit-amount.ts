@@ -8,13 +8,12 @@ import {
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
 import {
-  beginAmountCommit,
-  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
   toMusdAmountHex,
+  withAmountCommitIntent,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
@@ -70,33 +69,28 @@ export async function updateMoneyAccountDepositAmount(
     return false;
   }
 
-  const isCurrent = beginAmountCommit(transactionId);
+  return withAmountCommitIntent<boolean>(
+    messenger,
+    transactionId,
+    async (isCurrent) => {
+      const { updates } = await getMoneyAccountAmountData(messenger, {
+        amount: amountRaw.toString(10),
+        transaction,
+      });
 
-  try {
-    const { updates } = await getMoneyAccountAmountData(messenger, {
-      amount: amountRaw.toString(10),
-      transaction,
-    });
+      if (!isCurrent() || !updates.length) {
+        return false;
+      }
 
-    if (!isCurrent() || !updates.length) {
-      return false;
-    }
-
-    return commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      updates,
-      'Money Account deposit: update amount',
-      toMusdAmountHex(amountRaw),
-    );
-  } catch (error) {
-    if (!isCurrent()) {
-      return false;
-    }
-    throw error;
-  } finally {
-    clearAmountCommitIfCurrent(transactionId, isCurrent);
-  }
+      return commitTransactionPayUpdates(
+        messenger,
+        transactionId,
+        updates,
+        'Money Account deposit: update amount',
+        toMusdAmountHex(amountRaw),
+      );
+    },
+  );
 }
 
 /**

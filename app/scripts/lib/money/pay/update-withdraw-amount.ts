@@ -2,12 +2,11 @@ import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
-  beginAmountCommit,
-  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
   pruneStaleAmountCommits,
+  withAmountCommitIntent,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
@@ -48,42 +47,37 @@ export async function updateMoneyAccountWithdrawAmount(
     return false;
   }
 
-  const isCurrent = beginAmountCommit(transactionId);
+  return withAmountCommitIntent<MoneyAccountWithdrawAmountUpdate>(
+    messenger,
+    transactionId,
+    async (isCurrent) => {
+      const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
+      const updates = await encodeWithdrawCalldata(
+        messenger,
+        amountRaw,
+        recipient,
+      );
 
-  try {
-    const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
-    const updates = await encodeWithdrawCalldata(
-      messenger,
-      amountRaw,
-      recipient,
-    );
+      if (!isCurrent()) {
+        return false;
+      }
 
-    if (!isCurrent()) {
-      return false;
-    }
+      commitTransactionPayUpdates(
+        messenger,
+        transactionId,
+        updates,
+        'Money Account withdraw: update amount',
+      );
 
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      updates,
-      'Money Account withdraw: update amount',
-    );
-
-    const committed = getTransactionMeta(messenger, transactionId);
-    const transactionData = committed?.txParams?.data as Hex | undefined;
-    return {
-      withdrawData: updates[0].data,
-      transferData: updates[1].data,
-      ...(transactionData ? { transactionData } : {}),
-    };
-  } catch (error) {
-    if (!isCurrent()) {
-      return false;
-    }
-    throw error;
-  } finally {
-    clearAmountCommitIfCurrent(transactionId, isCurrent);
-  }
+      const committed = getTransactionMeta(messenger, transactionId);
+      const transactionData = committed?.txParams?.data as Hex | undefined;
+      return {
+        withdrawData: updates[0].data,
+        transferData: updates[1].data,
+        ...(transactionData ? { transactionData } : {}),
+      };
+    },
+  );
 }
 
 /**
