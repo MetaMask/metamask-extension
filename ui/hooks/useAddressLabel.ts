@@ -1,18 +1,24 @@
-import { useSelector } from 'react-redux';
-import { queryOptions, useQuery } from '@tanstack/react-query';
 import {
   AddressScanResultType,
   type AddressScanResult,
 } from '@metamask/phishing-controller';
+import { useSelector } from 'react-redux';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 import type { CaipChainId } from '@metamask/utils';
 import {
   fetchEvmAddressScan,
-  isEvmAddressScanChainId,
+  hasEvmChainName,
   isSecurityAlertsAPIEnabled,
 } from '#shared/lib/bridge-utils/security-alerts-api.util';
 import { getUseExternalServices } from '../selectors';
 
-function extractLabel({ result_type: resultType, label }: AddressScanResult) {
+function extractLabel(scan: AddressScanResult | null) {
+  if (!scan) {
+    return '';
+  }
+
+  const { result_type: resultType, label = '' } = scan;
+
   return resultType === AddressScanResultType.Malicious ||
     resultType === AddressScanResultType.ErrorResult
     ? ''
@@ -42,7 +48,7 @@ export function useAddressLabel({
       Boolean(address) &&
       isExternalServicesEnabled &&
       isSecurityAlertsAPIEnabled() &&
-      isEvmAddressScanChainId(chainId),
+      hasEvmChainName(chainId),
     select: extractLabel,
   });
 

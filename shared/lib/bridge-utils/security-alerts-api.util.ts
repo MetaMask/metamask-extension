@@ -1,7 +1,4 @@
-import {
-  AddressScanResultType,
-  type AddressScanResult,
-} from '@metamask/phishing-controller';
+import type { AddressScanResult } from '@metamask/phishing-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SolMethod } from '@metamask/keyring-api';
 import { base58 } from 'ethers/lib/utils';
@@ -140,7 +137,7 @@ export function getTokenFeatureTitleDescriptionIds(
   return { ...tokenFeature, titleId, descriptionId };
 }
 
-const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
+const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string> = {
   [CHAIN_IDS.MAINNET]: 'ethereum',
   [CHAIN_IDS.LINEA_MAINNET]: 'linea',
   [CHAIN_IDS.POLYGON]: 'polygon',
@@ -154,41 +151,31 @@ const CHAIN_ID_TO_SECURITY_API_NAME: Record<string, string | null> = {
   [CHAIN_IDS.MONAD]: 'monad',
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
-  [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
-  [MultichainNetworks.BITCOIN_SIGNET]: null, // not supported
-  [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
-  [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };
 
-const addressScanErrorResult: AddressScanResult = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  result_type: AddressScanResultType.ErrorResult,
-  label: '',
-};
-
-function getEvmAddressScanChain(chainId: CaipChainId) {
+function getEvmAddressChainName(chainId: CaipChainId) {
   try {
     const { namespace } = parseCaipChainId(chainId);
     return namespace === KnownCaipNamespace.Eip155
       ? convertChainIdToBlockAidChainName(chainId)
-      : null;
+      : undefined;
   } catch {
-    return null;
+    return undefined;
   }
 }
 
-export function isEvmAddressScanChainId(chainId: CaipChainId) {
-  return getEvmAddressScanChain(chainId) !== null;
+export function hasEvmChainName(chainId: CaipChainId) {
+  return getEvmAddressChainName(chainId) !== undefined;
 }
 
 export async function fetchEvmAddressScan(
   chainId: CaipChainId,
   address: string,
-): Promise<AddressScanResult> {
-  const chain = getEvmAddressScanChain(chainId);
+): Promise<AddressScanResult | null> {
+  const chain = getEvmAddressChainName(chainId);
 
   if (!isSecurityAlertsAPIEnabled() || !address || !chain) {
-    return addressScanErrorResult;
+    return null;
   }
 
   try {
@@ -206,35 +193,25 @@ export async function fetchEvmAddressScan(
     });
 
     if (!response.ok) {
-      return addressScanErrorResult;
+      return null;
     }
 
-    const scanResult = (await response.json()) as AddressScanResult;
-
-    return {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      result_type: scanResult.result_type,
-      label: scanResult.label ?? '',
-    };
+    return (await response.json()) as AddressScanResult;
   } catch {
-    return addressScanErrorResult;
+    return null;
   }
 }
 
-export function convertChainIdToBlockAidChainName(
-  chainId: CaipChainId,
-): string | null {
+export function convertChainIdToBlockAidChainName(chainId: CaipChainId) {
   try {
     const { namespace, reference } = parseCaipChainId(chainId);
-    const name =
-      CHAIN_ID_TO_SECURITY_API_NAME[
-        namespace === KnownCaipNamespace.Eip155
-          ? decimalToPrefixedHex(reference)
-          : chainId
-      ];
-    return name ?? null;
+    return CHAIN_ID_TO_SECURITY_API_NAME[
+      namespace === KnownCaipNamespace.Eip155
+        ? decimalToPrefixedHex(reference)
+        : chainId
+    ];
   } catch {
-    return null;
+    return undefined;
   }
 }
 
