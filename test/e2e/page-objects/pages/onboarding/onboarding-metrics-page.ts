@@ -85,10 +85,18 @@ class OnboardingMetricsPage {
    * Ensures the marketing data-collection checkbox is checked, without
    * assuming its initial state: US users are checked by default once the
    * geolocation lookup settles, so an unconditional click could uncheck it.
+   *
+   * We check for the *checked* state (the default under the E2E geolocation
+   * mock) rather than the unchecked state so the lookup succeeds instantly in
+   * the common case.
    */
   async ensureDataCollectionForMarketingIsChecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    if (await this.driver.isElementPresent(this.marketingUnchecked)) {
+    const isCurrentlyChecked = await this.driver.isElementPresentAndVisible(
+      this.marketingChecked,
+      1000,
+    );
+    if (!isCurrentlyChecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
     }
     await this.validateDataCollectionForMarketingIsChecked();
@@ -98,10 +106,18 @@ class OnboardingMetricsPage {
    * Ensures the marketing data-collection checkbox is unchecked. US users
    * are checked by default once the geolocation lookup settles, so the
    * checkbox must be explicitly unchecked in that case.
+   *
+   * We check for the *checked* state (the default under the E2E geolocation
+   * mock) rather than the unchecked state so the lookup succeeds instantly in
+   * the common case.
    */
   async ensureDataCollectionForMarketingIsUnchecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    if (await this.driver.isElementPresent(this.marketingChecked)) {
+    const isCurrentlyChecked = await this.driver.isElementPresentAndVisible(
+      this.marketingChecked,
+      1000,
+    );
+    if (isCurrentlyChecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
       await this.driver.waitForSelector(this.marketingUnchecked);
     }
