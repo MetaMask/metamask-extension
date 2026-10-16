@@ -150,7 +150,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               time and (2) consent to the collection, use, disclosure and other
               handling of information as described in our{' '}
               <ButtonLink
-                href="https://consensys.io/privacy-policy/"
+                href="https://metamask.com/privacy-policy/"
                 target="_blank"
                 rel="noopener noreferrer"
                 color={TextColor.primaryDefault}
@@ -1162,13 +1162,13 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               “Privacy Policy” means the privacy policy located at{' '}
               <ButtonLink
-                href="https://consensys.io/privacy-policy"
+                href="https://metamask.com/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
                 color={TextColor.primaryDefault}
                 variant={TextVariant.bodySm}
               >
-                https://consensys.io/privacy-policy
+                https://metamask.com/privacy-policy
               </ButtonLink>{' '}
               (and any successor or related locations designated by us), as it
               may be updated by us from time to time.
