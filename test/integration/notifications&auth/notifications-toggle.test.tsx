@@ -196,9 +196,9 @@ describe('Notifications Toggle', () => {
             call[1]?.[0] === 'MarketingConsentController:setMarketingConsent',
         );
 
-      const putNotificationPreferencesCall =
+      const updateNotificationPreferencesCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) => call[0] === 'putNotificationPreferences',
+          (call) => call[0] === 'updateNotificationPreferences',
         );
 
       const fetchAndUpdateMetamaskNotificationsCall =
@@ -211,16 +211,11 @@ describe('Notifications Toggle', () => {
         [true],
       ]);
 
-      expect(putNotificationPreferencesCall?.[0]).toBe(
-        'putNotificationPreferences',
-      );
-      expect(putNotificationPreferencesCall?.[1]?.[0]).toMatchObject({
-        marketing: {
-          pushNotificationsEnabled: false,
-          inAppNotificationsEnabled: true,
-        },
-      });
-      expect(putNotificationPreferencesCall?.[1]?.[1]).toBe('extension');
+      // Only the changed field is sent; NotificationServicesController
+      // merges it over the stored preferences.
+      expect(updateNotificationPreferencesCall?.[1]).toStrictEqual([
+        { marketing: { inAppNotificationsEnabled: true } },
+      ]);
 
       expect(fetchAndUpdateMetamaskNotificationsCall?.[0]).toBe(
         'fetchAndUpdateMetamaskNotifications',
