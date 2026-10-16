@@ -83,42 +83,41 @@ class OnboardingMetricsPage {
 
   /**
    * Ensures the marketing data-collection checkbox is checked, without
-   * assuming its initial state: social login users in the US are checked by
-   * default once the geolocation lookup settles, so an unconditional click
-   * could uncheck it.
+   * assuming its initial state: US users are checked by default once the
+   * geolocation lookup settles, so an unconditional click could uncheck it.
    *
-   * We check for the *unchecked* state (the default for everyone else)
-   * rather than the checked state so the lookup succeeds instantly in the
-   * common case.
+   * We check for the *checked* state (the default under the E2E geolocation
+   * mock) rather than the unchecked state so the lookup succeeds instantly in
+   * the common case.
    */
   async ensureDataCollectionForMarketingIsChecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
-      this.marketingUnchecked,
+    const isCurrentlyChecked = await this.driver.isElementPresentAndVisible(
+      this.marketingChecked,
       1000,
     );
-    if (isCurrentlyUnchecked) {
+    if (!isCurrentlyChecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
     }
     await this.validateDataCollectionForMarketingIsChecked();
   }
 
   /**
-   * Ensures the marketing data-collection checkbox is unchecked. Social login
-   * users in the US are checked by default once the geolocation lookup
-   * settles, so the checkbox must be explicitly unchecked in that case.
+   * Ensures the marketing data-collection checkbox is unchecked. US users
+   * are checked by default once the geolocation lookup settles, so the
+   * checkbox must be explicitly unchecked in that case.
    *
-   * We check for the *unchecked* state (the default for everyone else)
-   * rather than the checked state so the lookup succeeds instantly in the
-   * common case.
+   * We check for the *checked* state (the default under the E2E geolocation
+   * mock) rather than the unchecked state so the lookup succeeds instantly in
+   * the common case.
    */
   async ensureDataCollectionForMarketingIsUnchecked(): Promise<void> {
     await this.waitForMarketingPreferenceReady();
-    const isCurrentlyUnchecked = await this.driver.isElementPresentAndVisible(
-      this.marketingUnchecked,
+    const isCurrentlyChecked = await this.driver.isElementPresentAndVisible(
+      this.marketingChecked,
       1000,
     );
-    if (!isCurrentlyUnchecked) {
+    if (isCurrentlyChecked) {
       await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
       await this.driver.waitForSelector(this.marketingUnchecked);
     }
@@ -145,8 +144,7 @@ class OnboardingMetricsPage {
 
   async skipMetricAndContinue(): Promise<void> {
     await this.driver.clickElement(this.dataParticipateInMetaMetricsCheckbox);
-    // Marketing defaults to checked for social login users in the US (the
-    // E2E geolocation mock).
+    // Marketing defaults to checked in the US (the E2E geolocation mock).
     await this.ensureDataCollectionForMarketingIsUnchecked();
     await this.driver.clickElement(this.continueButton);
   }
@@ -161,8 +159,8 @@ class OnboardingMetricsPage {
 
   /**
    * Waits until the geolocation lookup settles and the marketing checkbox
-   * becomes interactive: for social login users, the continue button is
-   * disabled while the lookup that decides the US default is pending.
+   * becomes interactive: the continue button is disabled while the lookup
+   * that decides the US default is pending.
    */
   private async waitForMarketingPreferenceReady(): Promise<void> {
     await this.driver.waitForSelector(this.continueEnabled);
