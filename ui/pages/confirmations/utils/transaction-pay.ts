@@ -311,6 +311,8 @@ export function applyMoneyAccountOverride(
 ): void {
   const isWithdrawLike = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
+    TransactionType.perpsWithdraw,
+    TransactionType.predictWithdraw,
   ]);
 
   setPaymentOverride(transactionId, {
