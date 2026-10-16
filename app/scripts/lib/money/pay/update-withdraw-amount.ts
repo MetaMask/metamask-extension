@@ -2,12 +2,9 @@ import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
-  beginAmountCommit,
-  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
-  pruneStaleAmountCommits,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
@@ -19,7 +16,7 @@ const LOG_TAG = '[Money Account]';
  * Re-encodes the nested withdraw + transfer calls for a new human amount and
  * writes them onto the transaction. The recipient is the address that receives
  * the redeemed mUSD (typically the Pay account override or, when unset, the
- * currently selected EVM account). Superseded intents resolve `false`.
+ * currently selected EVM account).
  *
  * Confirm patches the returned hexes onto the approval clone because the UI
  * bridge can strip nested calldata from the store copy.
@@ -28,7 +25,7 @@ const LOG_TAG = '[Money Account]';
  * @param transactionId - Id of the Money Account withdrawal transaction.
  * @param amountHuman - Exact human-readable mUSD amount.
  * @param recipientOverride - Address that receives the redeemed mUSD, if set.
- * @returns Encoded nested calldata, or `false` when this intent did not commit.
+ * @returns Encoded nested calldata, or `false` when no update occurred.
  */
 export async function updateMoneyAccountWithdrawAmount(
   messenger: MoneyPayMessenger,
@@ -36,8 +33,6 @@ export async function updateMoneyAccountWithdrawAmount(
   amountHuman: string,
   recipientOverride?: Hex,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
-  pruneStaleAmountCommits(messenger);
-
   const amountRaw = parseMusdHumanAmount(amountHuman);
   if (amountRaw === undefined) {
     return false;
@@ -48,42 +43,23 @@ export async function updateMoneyAccountWithdrawAmount(
     return false;
   }
 
-  const isCurrent = beginAmountCommit(transactionId);
+  const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
+  const updates = await encodeWithdrawCalldata(messenger, amountRaw, recipient);
 
-  try {
-    const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
-    const updates = await encodeWithdrawCalldata(
-      messenger,
-      amountRaw,
-      recipient,
-    );
+  commitTransactionPayUpdates(
+    messenger,
+    transactionId,
+    updates,
+    'Money Account withdraw: update amount',
+  );
 
-    if (!isCurrent()) {
-      return false;
-    }
-
-    commitTransactionPayUpdates(
-      messenger,
-      transactionId,
-      updates,
-      'Money Account withdraw: update amount',
-    );
-
-    const committed = getTransactionMeta(messenger, transactionId);
-    const transactionData = committed?.txParams?.data as Hex | undefined;
-    return {
-      withdrawData: updates[0].data,
-      transferData: updates[1].data,
-      ...(transactionData ? { transactionData } : {}),
-    };
-  } catch (error) {
-    if (!isCurrent()) {
-      return false;
-    }
-    throw error;
-  } finally {
-    clearAmountCommitIfCurrent(transactionId, isCurrent);
-  }
+  const committed = getTransactionMeta(messenger, transactionId);
+  const transactionData = committed?.txParams?.data as Hex | undefined;
+  return {
+    withdrawData: updates[0].data,
+    transferData: updates[1].data,
+    ...(transactionData ? { transactionData } : {}),
+  };
 }
 
 /**

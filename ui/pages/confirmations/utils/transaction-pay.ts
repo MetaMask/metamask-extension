@@ -11,14 +11,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
 import { isTestNetwork } from '../../../helpers/utils/network-helper';
-import {
-  hasTransactionType,
-  isPostQuoteWithdrawTransaction,
-} from '../../../../shared/lib/transactions.utils';
-import {
-  getMoneyAccountFlow,
-  MoneyAccountFlow,
-} from '../../../../shared/lib/money/money-account-flow';
+import { hasTransactionType } from '../../../../shared/lib/transactions.utils';
 import { updateAtomicBatchData } from '../../../store/controller-actions/transaction-controller';
 import { setPaymentOverride } from '../../../store/controller-actions/transaction-pay-controller';
 import type { BlockedPayTokensListConfig } from '../selectors/feature-flags';
@@ -280,32 +273,6 @@ export function isTokenBlocked(
       blocked.address.toLowerCase() === address.toLowerCase() &&
       blocked.chainId.toLowerCase() === chainId.toLowerCase(),
   );
-}
-
-/**
- * Returns the transaction type if present and supported by the current pay
- * flow. Presently used to keep the confirmation hooks aligned with the token
- * selection logic above.
- *
- * @param transactionMeta - Current confirmation transaction.
- * @returns The matching transaction type, if available.
- */
-export function getSupportedTransactionType(
-  transactionMeta: TransactionMeta | undefined,
-): TransactionType | undefined {
-  const flow = getMoneyAccountFlow(transactionMeta);
-  if (flow === MoneyAccountFlow.Deposit) {
-    return TransactionType.moneyAccountDeposit;
-  }
-  if (flow === MoneyAccountFlow.Withdraw) {
-    return TransactionType.moneyAccountWithdraw;
-  }
-
-  if (isPostQuoteWithdrawTransaction(transactionMeta)) {
-    return transactionMeta?.type;
-  }
-
-  return undefined;
 }
 
 export function applyMoneyAccountOverride(

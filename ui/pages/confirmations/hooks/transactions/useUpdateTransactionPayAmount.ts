@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import { getSupportedTransactionType } from '../../utils/transaction-pay';
+import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import {
   updateMoneyAccountDepositAmount,
   updateMoneyAccountWithdrawAmount,
@@ -19,33 +19,56 @@ export function useUpdateTransactionPayAmount() {
     () => transactionMeta?.id ?? '',
     [transactionMeta?.id],
   );
-  const transactionType = getSupportedTransactionType(transactionMeta);
+  const latestAmountRef = useRef<string>('');
+  const transactionMetaRef = useRef(transactionMeta);
+  const accountOverrideRef = useRef(accountOverride);
+
+  useEffect(() => {
+    transactionMetaRef.current = transactionMeta;
+    accountOverrideRef.current = accountOverride;
+  }, [transactionMeta, accountOverride]);
 
   const updateTransactionPayAmount = useCallback(
     (amountHuman: string) => {
-      if (transactionType === TransactionType.moneyAccountDeposit) {
+      latestAmountRef.current = amountHuman;
+      if (
+        hasTransactionType(transactionMetaRef.current, [
+          TransactionType.moneyAccountDeposit,
+        ])
+      ) {
         return updateMoneyAccountDepositAmount(
           transactionId,
           amountHuman,
         ).catch((error) => {
-          console.error('Failed to update money account deposit amount', error);
+          if (latestAmountRef.current === amountHuman) {
+            console.error(
+              'Failed to update money account deposit amount',
+              error,
+            );
+          }
         });
       }
-      if (transactionType === TransactionType.moneyAccountWithdraw) {
+      if (
+        hasTransactionType(transactionMetaRef.current, [
+          TransactionType.moneyAccountWithdraw,
+        ])
+      ) {
         return updateMoneyAccountWithdrawAmount(
           transactionId,
           amountHuman,
-          accountOverride,
+          accountOverrideRef.current,
         ).catch((error) => {
-          console.error(
-            'Failed to update money account withdrawal amount',
-            error,
-          );
+          if (latestAmountRef.current === amountHuman) {
+            console.error(
+              'Failed to update money account withdrawal amount',
+              error,
+            );
+          }
         });
       }
       return updateTokenAmount(amountHuman);
     },
-    [transactionType, transactionId, accountOverride, updateTokenAmount],
+    [transactionId, updateTokenAmount],
   );
 
   return {
