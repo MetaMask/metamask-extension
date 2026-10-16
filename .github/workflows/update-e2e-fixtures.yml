@@ -119,7 +119,7 @@ jobs:
       # run when CI reuses compatible build inputs. Wait for that run's artifact.
       - name: Find dist artifact run
         id: find-dist
-        run: node "$RUNNER_TEMP/resolve-build-run.mts" --repo "$REPO" --wait-seconds 1200
+        run: node "$RUNNER_TEMP/resolve-build-run.mts" --repo "$REPO" --wait-seconds 600
         env:
           REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
