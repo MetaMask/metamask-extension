@@ -9,7 +9,7 @@ import type { MessengerClientInitFunction } from './types';
  * (held by AnalyticsController) in sync with Authenticated User Storage.
  *
  * Construction doesn't call other controllers. `MetamaskController` calls
- * `init()` once every controller is registered, which reads
+ * `initialize()` once every controller is registered, which reads
  * AnalyticsController, AuthenticationController and KeyringController state
  * and starts syncing.
  *
