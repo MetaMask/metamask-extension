@@ -127,6 +127,21 @@ describe('createEvent', () => {
       expect(result.properties.utm_term).toBe('crypto-wallet');
     });
 
+    it('should handle referral as a standard attribution property', () => {
+      const url = new URL(
+        'https://example.com/test?referral=ABC123&customParam=secret-value',
+      );
+      const signature = MISSING;
+
+      const result = createEvent({ signature, url });
+
+      expect(result.properties.referral).toBe('ABC123');
+      expect(result.sensitiveProperties).toStrictEqual({
+        customParam: 'secret-value',
+      });
+      expect(result.sensitiveProperties).not.toHaveProperty('referral');
+    });
+
     it('should handle non-UTM parameters as sensitive', () => {
       const url = new URL(
         'https://example.com/test?' +

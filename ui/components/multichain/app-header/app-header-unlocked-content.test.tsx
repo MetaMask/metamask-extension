@@ -97,19 +97,18 @@ describe('AppHeaderUnlockedContent trace', () => {
 });
 
 describe('Default address section', () => {
-  it('renders the default address when feature flag and preference is on', async () => {
-    const stateWithFlagOn = {
+  it('renders the default address when the preference is on', async () => {
+    const stateWithPreferenceOn = {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: true,
         },
       },
     };
-    const store = configureStore(stateWithFlagOn);
+    const store = configureStore(stateWithPreferenceOn);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(<AppHeaderUnlockedContent menuRef={menuRef} />, store);
 
@@ -125,7 +124,6 @@ describe('Default address section', () => {
       ...mockDefaultState,
       metamask: {
         ...mockDefaultState.metamask,
-        remoteFeatureFlags: { extensionUxDefaultAddressVersioned: true },
         preferences: {
           ...mockDefaultState.metamask.preferences,
           showDefaultAddress: false,

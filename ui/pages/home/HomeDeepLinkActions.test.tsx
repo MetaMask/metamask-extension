@@ -332,6 +332,24 @@ describe('HomeDeepLinkActions', () => {
     expect(qrCode).toBeNull();
   });
 
+  it('ignores predict QR deeplink params from a configured subdomain', () => {
+    const { Wrapper, store } = createWrapper({
+      pathname: DEFAULT_ROUTE,
+      search: `?${new URLSearchParams({
+        [HomeQueryParams.PredictDeeplinkUrl]:
+          'https://links.link.metamask.com/predict',
+      }).toString()}`,
+      isNetworkMenuOpen: false,
+    });
+
+    render(<HomeDeepLinkActions />, { wrapper: Wrapper });
+
+    const qrCode = (
+      store.getState() as { appState: { homeDeepLinkQrCode: unknown } }
+    ).appState.homeDeepLinkQrCode;
+    expect(qrCode).toBeNull();
+  });
+
   it('ignores predict QR deeplink params that use a nonstandard port', () => {
     const { Wrapper, store } = createWrapper({
       pathname: DEFAULT_ROUTE,

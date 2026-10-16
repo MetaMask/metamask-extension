@@ -33,6 +33,8 @@ export const DEFAULT_TRANSACTION_SAMPLE_RATES: Readonly<
   'Perps User Data Preload': 0.001,
   'Perps Get Market Data With Prices': 0.001,
   'Swap Quote Fetch': SWAP_QUOTE_FETCH_SAMPLE_RATE,
+  'Homepage Ready': 0.001,
+  'Homepage Section Time To Content': 0.001,
 });
 
 /**

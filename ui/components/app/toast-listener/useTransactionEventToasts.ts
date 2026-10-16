@@ -34,7 +34,7 @@ import {
 } from './shared';
 import {
   clearToastPhase,
-  shouldShowFailedToast,
+  setApprovedOrSignedToastPhase,
   shouldShowPendingToast,
   shouldShowTerminalToast,
 } from './toast-lifecycle';
@@ -156,7 +156,7 @@ function handleAccountsControllerTx(tx: Transaction) {
     showPendingToast(toastId);
   } else if (tx.status === 'confirmed' && shouldShowTerminalToast(tx.id)) {
     showSuccessToast(toastId);
-  } else if (tx.status === 'failed' && shouldShowFailedToast(tx.id)) {
+  } else if (tx.status === 'failed' && shouldShowTerminalToast(tx.id)) {
     showFailedToast(toastId);
   }
 }
@@ -199,6 +199,13 @@ export function useTransactionEventToasts(): void {
         to: getDetailsRoute(chainId, hash),
       };
 
+      if (
+        status === TransactionStatus.approved ||
+        status === TransactionStatus.signed
+      ) {
+        setApprovedOrSignedToastPhase(id);
+      }
+
       if (isPendingToastStatus(transactionMeta, status)) {
         if (shouldShowPendingToast(id)) {
           showPendingToast(toastId, props);
@@ -206,17 +213,16 @@ export function useTransactionEventToasts(): void {
       } else if (status === 'confirmed' && shouldShowTerminalToast(id)) {
         showSuccessToast(toastId, props);
       } else if (failedStatuses.has(status)) {
-        if (
-          transactionMeta.replacedById &&
-          isSpeedUpReplacement(transactionMeta.replacedById, transactions)
-        ) {
-          dismissToast(toastId);
-          clearToastPhase(id);
-        } else if (
-          status === TransactionStatus.failed
-            ? shouldShowFailedToast(id)
-            : shouldShowTerminalToast(id)
-        ) {
+        if (transactionMeta.replacedById) {
+          if (
+            isSpeedUpReplacement(transactionMeta.replacedById, transactions)
+          ) {
+            dismissToast(toastId);
+            clearToastPhase(id);
+          } else if (shouldShowTerminalToast(id)) {
+            showFailedToast(toastId, props);
+          }
+        } else if (shouldShowTerminalToast(id)) {
           showFailedToast(toastId, props);
         }
       }

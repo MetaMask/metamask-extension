@@ -28,6 +28,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ACCOUNT_LIST_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  DEFAULT_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
   PREVIOUS_ROUTE,
@@ -126,6 +127,13 @@ export const ChooseNewWalletTypePage = () => {
         null,
         keepWindowOpen,
       );
+      // The side panel stays open while the hardware wallet flow continues
+      // in the expanded tab, so return it to the home screen instead of
+      // leaving it on the add-wallet screen after accounts are selected.
+      // The popup closes itself on handoff and needs no navigation.
+      if (keepWindowOpen) {
+        navigate(DEFAULT_ROUTE);
+      }
     } else {
       navigate(CONNECT_HARDWARE_ROUTE);
     }
