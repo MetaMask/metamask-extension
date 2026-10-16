@@ -24,6 +24,7 @@ import {
   calculateBalanceForAllWallets as calculateBalanceForAllWalletsFromUnified,
   getAggregatedBalanceForAccount,
   getDefaultAssetsControllerState,
+  getIsAssetsLoadingForSelectedAccountGroup,
   type AccountGroupBalance,
   type EnabledNetworkMap,
 } from '@metamask/assets-controller';
@@ -264,6 +265,19 @@ export function getSelectedCurrency(state: {
   metamask?: AssetsControllerState;
 }) {
   return state.metamask?.selectedCurrency ?? defaultState.selectedCurrency;
+}
+
+/**
+ * Returns the per-account first-load status from AssetsController state.
+ *
+ * @param state - Redux state object.
+ * @param state.metamask - MetaMask slice.
+ * @returns Loading status by account id, or undefined when no fetch has started.
+ */
+export function getAssetsLoadingStatus(state: {
+  metamask?: Pick<AssetsControllerState, 'assetsLoadingStatus'>;
+}) {
+  return state.metamask?.assetsLoadingStatus;
 }
 
 /**
@@ -1410,6 +1424,23 @@ export const selectAccountGroupBalanceIsLoadedForEmptyState = createSelector(
 
     return hasLoadedEvmBalance || hasLoadedNonEvmBalance;
   },
+);
+
+/**
+ * Whether AssetsController is still running the first asset load for any
+ * account in the selected account group. Later refreshes are not tracked, so
+ * this only covers the initial load after an account is added or unlocked.
+ *
+ * @param state - Redux state containing the account tree and AssetsController state.
+ * @returns True while the selected account group's first load is in progress.
+ */
+export const selectIsAssetsLoadingForSelectedAccountGroup = createSelector(
+  [getAssetsLoadingStatus, selectAccountTreeStateForBalances],
+  (assetsLoadingStatus, accountTreeState): boolean =>
+    getIsAssetsLoadingForSelectedAccountGroup(
+      { assetsLoadingStatus },
+      accountTreeState,
+    ),
 );
 
 /**

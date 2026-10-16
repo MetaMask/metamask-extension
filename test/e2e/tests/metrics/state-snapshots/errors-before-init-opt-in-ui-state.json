@@ -65,6 +65,7 @@
       "lastShownPrfMigrationReminderAt": null,
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "moneyEarnBannerDismissedTokenKeys": "object",
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -360,6 +361,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 231
+    "version": 233
   }
 }

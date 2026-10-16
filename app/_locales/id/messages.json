@@ -6245,9 +6245,6 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
-  "networkNameBitcoinSegwit": {
-    "message": "SegWit Asli Bitcoin"
-  },
   "networkNameDefinition": {
     "message": "Nama yang dikaitkan dengan jaringan ini."
   },
