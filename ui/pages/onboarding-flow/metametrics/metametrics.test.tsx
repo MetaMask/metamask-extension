@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor, act } from '@testing-library/react';
 import type { Dispatch, Store } from 'redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_REFERRAL_ROUTE } from '../../../helpers/constants/routes';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
   setParticipateInMetaMetrics,
@@ -129,10 +129,9 @@ describe('Onboarding Metametrics Component', () => {
     await clickElement(continueButton);
 
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_REFERRAL_ROUTE, {
+        replace: true,
+      });
     });
   });
 
@@ -177,10 +176,9 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_REFERRAL_ROUTE, {
+        replace: true,
+      });
     });
   });
 
@@ -212,10 +210,9 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_REFERRAL_ROUTE, {
+        replace: true,
+      });
     });
   });
 

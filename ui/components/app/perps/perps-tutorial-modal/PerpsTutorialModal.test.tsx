@@ -238,6 +238,40 @@ describe('PerpsTutorialModal', () => {
     });
   });
 
+  describe('custom content', () => {
+    it('renders children in the tour modal without tutorial chrome', () => {
+      const onClose = jest.fn();
+      const store = createStore(false);
+      renderWithProviders(
+        store,
+        <PerpsTutorialModal isOpen onClose={onClose} testId="custom-tour-modal">
+          <button type="button" data-testid="custom-action">
+            Custom
+          </button>
+        </PerpsTutorialModal>,
+      );
+
+      expect(screen.getByTestId('custom-tour-modal')).toBeInTheDocument();
+      expect(screen.getByTestId('custom-action')).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-tutorial-progress-indicator'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-tutorial-continue-button'),
+      ).not.toBeInTheDocument();
+
+      const closeButton = screen
+        .getByTestId('custom-tour-modal-header')
+        .querySelector('button');
+      fireEvent.click(closeButton as HTMLElement);
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).not.toHaveBeenCalledWith({
+        type: 'perpsTutorial/markTutorialCompleted',
+      });
+    });
+  });
+
   describe('close behavior', () => {
     it('calls onClose callback when modal is closed', () => {
       const onClose = jest.fn();

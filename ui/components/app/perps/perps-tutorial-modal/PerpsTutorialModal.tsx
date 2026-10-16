@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import {
   PERPS_EVENT_PROPERTY,
@@ -43,17 +43,38 @@ import ProgressIndicator from './ProgressIndicator';
 
 type PerpsTutorialModalProps = {
   onClose?: () => void;
+  /**
+   * Replaces the tutorial steps and footer while keeping this modal's chrome.
+   * The referral rebate confirmation uses this so it shares the tour modal.
+   */
+  children?: ReactNode;
+  /**
+   * Controls visibility when `children` is set. Tutorial mode reads Redux.
+   */
+  isOpen?: boolean;
+  /**
+   * Root test id. Defaults to the perps tutorial id.
+   */
+  testId?: string;
 };
 
-const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
-  const isOpen = useSelector(selectTutorialModalOpen);
+const PerpsTutorialModal = ({
+  onClose,
+  children,
+  isOpen: isOpenOverride,
+  testId,
+}: PerpsTutorialModalProps) => {
+  const tutorialModalOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
+  const isCustomContent = children !== undefined && children !== null;
+  const isOpen = isCustomContent ? Boolean(isOpenOverride) : tutorialModalOpen;
+  const modalTestId = testId ?? 'perps-tutorial-modal';
   const dispatch = useDispatch();
   const theme = useTheme();
   const { track } = usePerpsEventTracking();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
-    conditions: isOpen,
+    conditions: isOpen && !isCustomContent,
     properties: {
       [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
         PERPS_EVENT_VALUE.SCREEN_TYPE.TUTORIAL,
@@ -62,7 +83,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   });
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsUiInteraction,
-    conditions: isOpen,
+    conditions: isOpen && !isCustomContent,
     properties: {
       [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
         PERPS_EVENT_VALUE.INTERACTION_TYPE.TUTORIAL_STARTED,
@@ -82,10 +103,12 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   );
 
   const handleClose = useCallback(() => {
-    dispatch(markTutorialCompleted());
-    submitRequestToBackground('perpsMarkTutorialCompleted', []);
+    if (!isCustomContent) {
+      dispatch(markTutorialCompleted());
+      submitRequestToBackground('perpsMarkTutorialCompleted', []);
+    }
     onClose?.();
-  }, [dispatch, onClose]);
+  }, [dispatch, isCustomContent, onClose]);
 
   const handleContinue = useCallback(() => {
     if (isLastStep) {
@@ -132,11 +155,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   }, [activeStep]);
 
   return (
-    <Modal
-      data-testid="perps-tutorial-modal"
-      isOpen={isOpen}
-      onClose={handleClose}
-    >
+    <Modal data-testid={modalTestId} isOpen={isOpen} onClose={handleClose}>
       <ModalOverlay />
       <ModalContent
         alignItems={AlignItems.center}
@@ -146,7 +165,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height: modalHeight,
+            ...(isCustomContent ? {} : { height: modalHeight }),
             alignItems: 'center',
             justifyContent: 'center',
           },
@@ -154,7 +173,7 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
       >
         <ModalHeader
           data-theme={theme === 'light' ? ThemeType.light : ThemeType.dark}
-          data-testid="perps-tutorial-modal-header"
+          data-testid={`${modalTestId}-header`}
           closeButtonProps={{
             className: 'absolute z-10',
             style: {
@@ -166,16 +185,22 @@ const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
           onClose={handleClose}
         />
         <ModalBody className="w-full h-full pt-6 pb-4 flex flex-col">
-          <ProgressIndicator
-            totalSteps={TUTORIAL_STEPS_ORDER.length}
-            currentStep={currentStepIndex + 1}
-          />
-          {renderContent()}
-          <TutorialFooter
-            onContinue={handleContinue}
-            onSkip={handleSkip}
-            isLastStep={isLastStep}
-          />
+          {isCustomContent ? (
+            children
+          ) : (
+            <>
+              <ProgressIndicator
+                totalSteps={TUTORIAL_STEPS_ORDER.length}
+                currentStep={currentStepIndex + 1}
+              />
+              {renderContent()}
+              <TutorialFooter
+                onContinue={handleContinue}
+                onSkip={handleSkip}
+                isLastStep={isLastStep}
+              />
+            </>
+          )}
         </ModalBody>
       </ModalContent>
     </Modal>
