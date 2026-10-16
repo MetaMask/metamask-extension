@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   Box,
   Text,
@@ -12,42 +12,25 @@ import {
 } from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAnalytics } from '../../../hooks/useAnalytics';
-import { useSegmentContext } from '../../../hooks/useSegmentContext';
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../../shared/lib/build-types';
-import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal, {
+  useOpenSupport,
+} from '../../../components/app/modals/visit-support-data-consent-modal';
 import { Divider } from '../shared';
 import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function AboutInfo(): React.ReactElement {
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
 
   const {
     value: isVisitSupportDataConsentModalOpen,
     toggle: toggleVisitSupportDataConsentModal,
   } = useBoolean();
+  // Both "Visit our support center" and "Contact us" open the same support
+  // site, so both go through the data sharing consent flow (as on mobile).
+  const openSupport = useOpenSupport(toggleVisitSupportDataConsentModal);
 
   const version = process.env.METAMASK_VERSION ?? '';
-
-  const handleContactUsClick = useCallback(() => {
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          url: SUPPORT_LINK,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
-    );
-  }, [createEventBuilder, segmentContext.page?.title, trackEvent]);
 
   function renderInfoLinks(): React.ReactElement {
     const privacyUrl = 'https://metamask.io/privacy.html';
@@ -115,10 +98,7 @@ export default function AboutInfo(): React.ReactElement {
         </Box>
         <Divider />
         <Box {...linkItemProps}>
-          <TextButton
-            onClick={toggleVisitSupportDataConsentModal}
-            {...linkProps}
-          >
+          <TextButton onClick={openSupport} {...linkProps}>
             {t('supportCenter')}
           </TextButton>
         </Box>
@@ -130,15 +110,12 @@ export default function AboutInfo(): React.ReactElement {
           </TextButton>
         </Box>
         <Box {...linkItemProps}>
-          <TextButton asChild {...linkProps}>
-            <a
-              href={SUPPORT_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleContactUsClick}
-            >
-              {t('contactUs')}
-            </a>
+          <TextButton
+            onClick={openSupport}
+            data-testid="about-tab-contact-us-button"
+            {...linkProps}
+          >
+            {t('contactUs')}
           </TextButton>
         </Box>
       </Box>

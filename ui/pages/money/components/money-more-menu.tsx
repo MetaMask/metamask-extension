@@ -16,7 +16,9 @@ import {
   PopoverPosition,
   PopoverRole,
 } from '../../../components/component-library';
-import VisitSupportDataConsentModal from '../../../components/app/modals/visit-support-data-consent-modal';
+import VisitSupportDataConsentModal, {
+  useOpenSupport,
+} from '../../../components/app/modals/visit-support-data-consent-modal';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMoneyAnalytics } from '../../../hooks/money/useMoneyAnalytics';
@@ -70,6 +72,7 @@ export function MoneyMoreMenu() {
     setTrue: openSupportModal,
     setFalse: closeSupportModal,
   } = useBoolean();
+  const openSupport = useOpenSupport(openSupportModal);
   const { trackButtonClicked } = useMoneyAnalytics({
     screenName: MoneyScreenName.MoneyHome,
   });
@@ -106,8 +109,8 @@ export function MoneyMoreMenu() {
       redirectTarget: MONEY_URLS.METAMASK_SUPPORT,
     });
     closeMenu();
-    openSupportModal();
-  }, [closeMenu, openSupportModal, trackSurfaceClicked]);
+    openSupport();
+  }, [closeMenu, openSupport, trackSurfaceClicked]);
 
   const navigateToHowItWorks = useCallback(() => {
     trackSurfaceClicked({

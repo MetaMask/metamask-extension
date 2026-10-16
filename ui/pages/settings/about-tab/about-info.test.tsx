@@ -66,14 +66,12 @@ describe('AboutInfo', () => {
       expect(websiteLink).toHaveAttribute('href', 'https://metamask.io/');
     });
 
-    it('should have correct href for "Contact us" link', () => {
-      const contactUsLink = getByRole('link', {
-        name: messages.contactUs.message,
-      });
-      expect(contactUsLink).toHaveAttribute(
-        'href',
-        'https://support.metamask.io/?utm_source=extension',
-      );
+    it('should trigger support modal when click "Contact us"', () => {
+      const contactUsButton = getByText(messages.contactUs.message);
+      fireEvent.click(contactUsButton);
+      expect(
+        getByTestId('visit-support-data-consent-modal'),
+      ).toBeInTheDocument();
     });
   });
 });

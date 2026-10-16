@@ -961,6 +961,7 @@
       "basicFunctionalityMigrationNotification": "null",
       "basicFunctionalityMigrationNotificationDismissed": "boolean",
       "privacyMode": "boolean",
+      "shouldShowSupportConsent": "boolean",
       "showDefaultAddress": "boolean",
       "showConfirmationAdvancedDetails": "boolean",
       "showExtensionInFullSizeView": "boolean",
@@ -972,6 +973,7 @@
       "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsMigrationApplied": "boolean",
       "smartTransactionsOptInStatus": "boolean",
+      "supportDataSharingPreference": "null",
       "tokenNetworkFilter": {
         "0x539": "boolean"
       },

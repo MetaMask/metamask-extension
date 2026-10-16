@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Box } from '@metamask/design-system-react';
+import { Box, Checkbox } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { openWindow } from '../../../../helpers/utils/window';
 import {
   Modal,
   ModalOverlay,
@@ -19,20 +18,13 @@ import {
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
+import { useDispatch } from '../../../../store/hooks';
 import {
-  MetaMetricsContextProp,
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
-import { useAnalytics } from '../../../../hooks/useAnalytics';
-import { useSegmentContext } from '../../../../hooks/useSegmentContext';
-import {
-  buildSupportLinkWithUserData,
-  type SupportLinkUserData,
-} from '../../../../../shared/lib/build-support-link';
-import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
-import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
-import { getCustomerServiceToken } from '../../../../store/actions';
+  getCustomerServiceToken,
+  setShouldShowSupportConsent,
+  setSupportDataSharingPreference,
+} from '../../../../store/actions';
+import { useSupportLinks } from './use-support-consent';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
@@ -43,53 +35,43 @@ const VisitSupportDataConsentModal = ({
   isOpen,
   onClose,
 }: VisitSupportDataConsentModalProps) => {
-  const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
-  const { trackEvent, createEventBuilder } = useAnalytics();
-  const segmentContext = useSegmentContext();
-  const { customerId: shieldCustomerId } = useUserSubscriptions();
+  const dispatch = useDispatch();
+  const { openSupportLink, openSupportLinkWithoutUserData } = useSupportLinks();
   const [isLoading, setIsLoading] = useState(false);
+  const [savePreference, setSavePreference] = useState(true);
   const wasCancelledRef = useRef(false);
 
-  const openSupportLink = useCallback(
-    (customerServiceToken?: string) => {
-      const params: SupportLinkUserData = {
-        version,
-        customerServiceToken,
-        shieldCustomerId,
-      };
-      const supportLinkWithUserId = buildSupportLinkWithUserData(
-        SUPPORT_LINK as string,
-        params,
-      );
-
-      trackEvent(
-        createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-          .addCategory(MetaMetricsEventCategory.Settings)
-          .addProperties({
-            url: supportLinkWithUserId,
-            [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-          })
-          .build(),
-      );
-      openWindow(supportLinkWithUserId);
+  const persistPreference = useCallback(
+    (shareData: boolean) => {
+      if (!savePreference) {
+        return;
+      }
+      // Saving is best effort: support must still open if the background is
+      // unreachable (e.g. from the error page).
+      Promise.all([
+        dispatch(setSupportDataSharingPreference(shareData)),
+        dispatch(setShouldShowSupportConsent(false)),
+      ]).catch(() => undefined);
     },
-    [
-      version,
-      shieldCustomerId,
-      trackEvent,
-      createEventBuilder,
-      segmentContext.page?.title,
-    ],
+    [dispatch, savePreference],
   );
+
+  // The modal may stay mounted between opens (e.g. in the app header), so the
+  // checkbox is reset on every close to be selected by default on the next
+  // open, matching mobile where the sheet is remounted each time.
+  const closeModal = useCallback(() => {
+    setSavePreference(true);
+    onClose();
+  }, [onClose]);
 
   const handleModalClose = useCallback(() => {
     // Escape / outside-click during Accept must cancel sharing, matching Reject.
     if (isLoading) {
       wasCancelledRef.current = true;
     }
-    onClose();
-  }, [isLoading, onClose]);
+    closeModal();
+  }, [isLoading, closeModal]);
 
   const handleClickContactSupportButton = useCallback(async () => {
     if (isLoading) {
@@ -103,36 +85,27 @@ const VisitSupportDataConsentModal = ({
       if (wasCancelledRef.current) {
         return;
       }
-      onClose();
+      persistPreference(true);
+      closeModal();
       openSupportLink(customerServiceToken);
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, onClose, openSupportLink]);
+  }, [isLoading, closeModal, openSupportLink, persistPreference]);
 
   const handleClickNoShare = useCallback(() => {
     if (isLoading) {
       return;
     }
 
-    onClose();
-
-    trackEvent(
-      createEventBuilder(MetaMetricsEventName.SupportLinkClicked)
-        .addCategory(MetaMetricsEventCategory.Settings)
-        .addProperties({
-          url: SUPPORT_LINK,
-          [MetaMetricsContextProp.PageTitle]: segmentContext.page?.title,
-        })
-        .build(),
-    );
-    openWindow(SUPPORT_LINK as string);
+    persistPreference(false);
+    closeModal();
+    openSupportLinkWithoutUserData();
   }, [
     isLoading,
-    onClose,
-    trackEvent,
-    createEventBuilder,
-    segmentContext.page?.title,
+    closeModal,
+    openSupportLinkWithoutUserData,
+    persistPreference,
   ]);
 
   return (
@@ -153,6 +126,15 @@ const VisitSupportDataConsentModal = ({
           <Text variant={TextVariant.bodyMd}>
             {t('visitSupportDataConsentModalDescription')}
           </Text>
+          <Checkbox
+            id="visit-support-data-consent-modal-save-preference"
+            data-testid="visit-support-data-consent-modal-save-preference-checkbox"
+            className="mt-4"
+            label={t('visitSupportDataConsentModalSavePreference')}
+            isSelected={savePreference}
+            isDisabled={isLoading}
+            onChange={() => setSavePreference((current) => !current)}
+          />
         </ModalBody>
 
         <ModalFooter>

@@ -1072,6 +1072,7 @@
         "hideZeroBalanceTokens": false,
         "isBasicFunctionalityConsolidatedEnabled": true,
         "privacyMode": false,
+        "shouldShowSupportConsent": true,
         "showConfirmationAdvancedDetails": false,
         "showDefaultAddress": true,
         "showExtensionInFullSizeView": false,
@@ -1083,6 +1084,7 @@
         "skipDeepLinkInterstitial": false,
         "smartTransactionsMigrationApplied": false,
         "smartTransactionsOptInStatus": true,
+        "supportDataSharingPreference": null,
         "tokenNetworkFilter": {
           "0x539": true
         },

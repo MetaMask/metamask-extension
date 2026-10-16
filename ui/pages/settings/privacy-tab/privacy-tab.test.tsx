@@ -77,6 +77,9 @@ describe('PrivacyTab', () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId('ipfs-gateway-toggle')).toBeInTheDocument();
     expect(
+      screen.getByTestId('remember-support-preference-toggle'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByText(messages.thirdPartyApis.message),
     ).not.toBeInTheDocument();
     expect(

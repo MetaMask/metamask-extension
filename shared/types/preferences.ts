@@ -12,6 +12,8 @@ export type Preferences = {
   basicFunctionalityMigrationNotification: 'modal' | 'toast' | null;
   basicFunctionalityMigrationNotificationDismissed: boolean;
   privacyMode: boolean;
+  /** `true` asks for support data sharing consent every time; `false` applies `supportDataSharingPreference`. */
+  shouldShowSupportConsent: boolean;
   showConfirmationAdvancedDetails: boolean;
   showDefaultAddress: boolean;
   showExtensionInFullSizeView: boolean;
@@ -23,6 +25,8 @@ export type Preferences = {
   skipDeepLinkInterstitial: boolean;
   smartTransactionsOptInStatus: boolean;
   smartTransactionsMigrationApplied: boolean;
+  /** The saved support data sharing choice; `null` until the user saves one. */
+  supportDataSharingPreference: boolean | null;
   tokenNetworkFilter: Record<string, boolean>;
   tokenSortConfig: {
     key: string;
