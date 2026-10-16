@@ -350,6 +350,7 @@ async function main(): Promise<void> {
 
   // Run benchmarks and collect results
   const allResults: Record<string, unknown> = {};
+  let failedBenchmarkCount = 0;
 
   for (const filePath of filesToRun) {
     const fileName = path.basename(filePath, path.extname(filePath));
@@ -370,6 +371,7 @@ async function main(): Promise<void> {
     } catch (error) {
       console.error(`❌ Error running ${fileName}:`, error);
       allResults[resultKey] = { error: String(error) };
+      failedBenchmarkCount += 1;
     }
   }
 
@@ -393,6 +395,10 @@ async function main(): Promise<void> {
 
   console.log('\n📊 Benchmark Results:');
   console.log(outputStr);
+
+  if (failedBenchmarkCount > 0) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch((error) => {
