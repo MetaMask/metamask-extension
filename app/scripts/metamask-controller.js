@@ -85,6 +85,8 @@ import {
   walletGetAccountUpgradeStatus,
 } from '@metamask/eip-7702-internal-rpc-middleware';
 
+import { walletPay } from '@metamask/transaction-pay-middleware';
+
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
@@ -1146,6 +1148,35 @@ export default class MetamaskController extends EventEmitter {
           });
         },
       ),
+    });
+
+    const walletPayMessenger = new Messenger({
+      namespace: 'TransactionPayMiddleware',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: walletPayMessenger,
+      actions: [
+        'NetworkController:findNetworkClientIdByChainId',
+        'PerpsController:getState',
+        'PerpsController:refreshEligibility',
+        'RemoteFeatureFlagController:getState',
+        'TransactionController:addTransaction',
+      ],
+    });
+
+    this.walletPayMiddleware = createScaffoldMiddleware({
+      wallet_pay: createAsyncMiddleware(async (req, res) => {
+        await walletPay(
+          req,
+          res,
+          {
+            getPermittedAccountsForOrigin: async () =>
+              this.getPermittedAccounts(req.origin),
+          },
+          walletPayMessenger,
+        );
+      }),
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -5643,6 +5674,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
+
+    engine.push(this.walletPayMiddleware);
 
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(this.eip7702Middleware);
