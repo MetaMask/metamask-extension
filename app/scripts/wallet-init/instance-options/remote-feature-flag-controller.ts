@@ -5,6 +5,7 @@ import {
   ClientType,
   DistributionType,
   EnvironmentType,
+  type FeatureFlags,
 } from '@metamask/remote-feature-flag-controller';
 import {
   ENVIRONMENT,
@@ -14,6 +15,42 @@ import { getBaseSemVerVersion } from '../../../../shared/lib/feature-flags/versi
 import type { WalletInitMessenger } from '../types';
 
 const REMOTE_FEATURE_FLAG_FETCH_INTERVAL = 15 * 60 * 1000;
+
+/**
+ * Local simulation of a remote flag transition for
+ * `networkAssetsSnapsMigrationStellar`. The first fetch is enabled (`stage` 1).
+ * Each later forced fetch flips the stage and publishes
+ * `RemoteFeatureFlagController:stateChange`.
+ *
+ * Active only in development builds. Remove this once the stateChange check is done.
+ */
+const SIMULATE_STELLAR_MIGRATION_FLAG_TRANSITION =
+  process.env.NODE_ENV === 'development';
+
+const STELLAR_MIGRATION_FLAG = 'networkAssetsSnapsMigrationStellar';
+
+/** How often the simulated flag flips after the first fetch. */
+const SIMULATED_FLIP_INTERVAL_MS = 30_000;
+
+/**
+ * Resolved `networkAssetsSnapsMigrationStellar` value.
+ *
+ * This is the shape stored in `remoteFeatureFlags` after version gating.
+ * `AccountsApiDataSource` only runs its `stateChange` handler when
+ * `parseSnapsAssetsMigrationStage` changes, and that parser reads `stage` here
+ * (or under `value`). A `versions` wrapper that does not resolve parses as
+ * stage 0 both times, so the handler never runs.
+ *
+ * @param stage - Rollout stage. Fetches alternate between `1` (enabled) and `0` (disabled).
+ * @returns The feature flag value subscribers read.
+ */
+function stellarMigrationFlag(stage: 0 | 1): FeatureFlags[string] {
+  return {
+    featureVersion: '1',
+    minimumSnapVersion: '1.20.0',
+    stage,
+  };
+}
 
 type MetaMaskBuildType = 'flask' | 'main' | 'beta' | 'experimental';
 
@@ -87,6 +124,90 @@ type RemoteFeatureFlagControllerInstanceOptions =
   WalletOptions['instanceOptions']['remoteFeatureFlagController'];
 
 /**
+ * Client config service that serves `networkAssetsSnapsMigrationStellar` as
+ * enabled, then flips it every 30 seconds. Other flags still come from the real
+ * client-config response when that request succeeds.
+ *
+ * The first successful fetch starts the flip interval. On a new install that
+ * fetch is the one triggered when onboarding completes.
+ *
+ * @param messenger - Root messenger used to force each follow-up fetch.
+ * @returns A client config service the controller can fetch through.
+ */
+export function createStellarMigrationFlagTransitionService(
+  messenger: WalletInitMessenger,
+): RemoteFeatureFlagControllerInstanceOptions['clientConfigApiService'] {
+  const realService = getRemoteFeatureFlagClientConfigApiService();
+  let enabled = true;
+  let flipIntervalStarted = false;
+
+  const forceUpdate = () => {
+    // `updateRemoteFeatureFlags` returns before fetching while the controller
+    // is disabled, so no stateChange is published. Enable it first, and drop a
+    // persisted local override that would hide the stage change.
+    try {
+      messenger.call('RemoteFeatureFlagController:enable');
+    } catch (error: unknown) {
+      console.error(
+        'Failed to enable remote feature flag controller for simulation:',
+        error,
+      );
+    }
+    try {
+      messenger.call(
+        'RemoteFeatureFlagController:removeFlagOverride',
+        STELLAR_MIGRATION_FLAG,
+      );
+    } catch (error: unknown) {
+      console.error('Failed to clear stellar migration flag override:', error);
+    }
+    messenger
+      .call('RemoteFeatureFlagController:updateRemoteFeatureFlags', true)
+      .catch((error: unknown) => {
+        console.error(
+          'Failed to simulate remote feature flag state change:',
+          error,
+        );
+      });
+  };
+
+  return {
+    async fetchRemoteFeatureFlags() {
+      const stage = enabled ? 1 : 0;
+      enabled = !enabled;
+
+      let remoteFeatureFlags: FeatureFlags = {};
+      try {
+        const response = await realService.fetchRemoteFeatureFlags();
+        remoteFeatureFlags = response.remoteFeatureFlags;
+      } catch (error: unknown) {
+        console.error(
+          'Remote feature flag fetch failed; simulating the stellar migration flag only:',
+          error,
+        );
+      }
+
+      if (!flipIntervalStarted) {
+        flipIntervalStarted = true;
+        setInterval(forceUpdate, SIMULATED_FLIP_INTERVAL_MS);
+      }
+
+      console.info(
+        `[remote-feature-flag simulation] ${stage === 1 ? 'enabled' : 'disabled'} (stage ${stage})`,
+      );
+
+      return {
+        remoteFeatureFlags: {
+          ...remoteFeatureFlags,
+          [STELLAR_MIGRATION_FLAG]: stellarMigrationFlag(stage),
+        },
+        cacheTimestamp: Date.now(),
+      };
+    },
+  };
+}
+
+/**
  * Build the extension's `RemoteFeatureFlagController` instance options. The
  * `disabled` value is the initial value only (set once at construction); the
  * dynamic enable/disable orchestration lives in `setupRemoteFeatureFlagToggle`.
@@ -111,8 +232,12 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
   state: Record<string, Record<string, Json>>;
 }): RemoteFeatureFlagControllerInstanceOptions {
   return {
-    clientConfigApiService: getRemoteFeatureFlagClientConfigApiService(),
+    clientConfigApiService: SIMULATE_STELLAR_MIGRATION_FLAG_TRANSITION
+      ? createStellarMigrationFlagTransitionService(messenger)
+      : getRemoteFeatureFlagClientConfigApiService(),
     // Apply default feature flag values here.
+    // Do not pin networkAssetsSnapsMigrationStellar in overrideFeatureFlags:
+    // client overrides win over every fetch, so later flips would not apply.
     defaultFeatureFlags: {
       // Example:
       // 'feature-flag-name': true,
@@ -157,7 +282,10 @@ export function getRemoteFeatureFlagControllerInstanceOptions({
     prevClientVersion: state.AppMetadataController?.currentAppVersion as
       | string
       | undefined,
-    fetchInterval: REMOTE_FEATURE_FLAG_FETCH_INTERVAL,
+    // The 30s flip calls `updateRemoteFeatureFlags(true)`, which skips this
+    // cache. Unforced callers (opening the UI) still wait for `fetchInterval`,
+    // so match it to the flip interval while the simulation is on.
+    fetchInterval: SIMULATED_FLIP_INTERVAL_MS,
     disabled:
       state.OnboardingController?.completedOnboarding !== true ||
       state.PreferencesController?.useExternalServices === false,
