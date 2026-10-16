@@ -23,6 +23,7 @@ import {
   trackUnifiedSwapBridgeEvent,
   setIsSrcAssetPickerOpen,
   setIsDestAssetPickerOpen,
+  setToTokenSecurityData,
   setWasTxDeclined,
 } from '../../../ducks/bridge/actions';
 import {
@@ -74,7 +75,6 @@ import type { BridgeToken } from '../../../ducks/bridge/types';
 import { useLatestBalance } from '../../../hooks/bridge/useLatestBalance';
 import { useSelectedTokenSecurityData } from '../../../hooks/bridge/useSelectedTokenSecurityData';
 import { MarketClosedModal } from '../../../components/app/assets/market-closed-modal';
-import { isArcTokenUSDC } from '../../../components/app/assets/enablement/arc';
 import {
   MultichainBridgeQuoteCard,
   MultichainBridgeQuoteCardSkeleton,
@@ -84,6 +84,7 @@ import { useBridgeAlerts } from '../hooks/useBridgeAlerts';
 import { useSecurityAlerts } from '../hooks/useSecurityAlerts';
 import { useGasIncludedSupport } from '../hooks/useGasIncludedSupport';
 import { getTokenSecurityAssetKey } from '../utils/token-security';
+import { calculateMaxAmountWithReserve } from '../utils/minimum-reserve';
 import { useDispatch } from '../../../store/hooks';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getCurrencySymbol } from '../../../helpers/utils/common.util';
@@ -118,6 +119,19 @@ const PrepareBridgePage = ({
     fromToken,
     toToken,
   );
+  const toTokenSecurityData =
+    selectedTokenSecurityData[getTokenSecurityAssetKey(toToken.assetId)];
+
+  useEffect(() => {
+    if (toTokenSecurityData) {
+      dispatch(
+        setToTokenSecurityData({
+          assetId: toToken.assetId,
+          ...toTokenSecurityData,
+        }),
+      );
+    }
+  }, [dispatch, toTokenSecurityData, toToken.assetId]);
 
   const fromChains = useSelector(getFromChains);
   const toChain = useSelector(getToChain);
@@ -162,9 +176,7 @@ const PrepareBridgePage = ({
     useGasIncludedSupport();
 
   const shouldShowMaxButton =
-    fromToken &&
-    // Always show for non-native tokens. Arc ERC20 USDC considered as native.
-    (isNativeAddress(fromToken.assetId) || isArcTokenUSDC(fromToken.assetId))
+    fromToken && isNativeAddress(fromToken.assetId)
       ? !isSolanaChainId(fromToken.chainId) &&
         (gasIncluded || gasIncluded7702 || nativeGasIncluded)
       : true;
@@ -503,7 +515,15 @@ const PrepareBridgePage = ({
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
-                  dispatch(setFromTokenInputValue(value));
+                  dispatch(
+                    setFromTokenInputValue(
+                      calculateMaxAmountWithReserve({
+                        balanceAmount: value,
+                        caipAssetId: fromToken?.assetId,
+                        decimals: fromToken?.decimals ?? 0,
+                      }),
+                    ),
+                  );
                 }
               : undefined
           }
@@ -650,11 +670,7 @@ const PrepareBridgePage = ({
               dispatch(setIsDestAssetPickerOpen(isOpen))
             }
             token={toToken}
-            tokenSecurityData={
-              selectedTokenSecurityData[
-                getTokenSecurityAssetKey(toToken.assetId)
-              ]
-            }
+            tokenSecurityData={toTokenSecurityData}
             secondaryDisplay={destinationSecondaryDisplay}
             amountInputPrefix={
               isDestinationFiatPrimary ? getCurrencySymbol(currency) : undefined

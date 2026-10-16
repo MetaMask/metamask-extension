@@ -2,6 +2,7 @@ import React, { type ReactNode } from 'react';
 import {
   Box,
   BoxFlexDirection,
+  FontWeight,
   Text,
   TextColor,
   TextVariant,
@@ -67,7 +68,8 @@ export const StepMessage = ({
 }) => (
   <Text
     asChild
-    variant={TextVariant.BodyMd}
+    variant={TextVariant.BodySm}
+    fontWeight={FontWeight.Medium}
     color={isError ? TextColor.ErrorDefault : TextColor.TextAlternative}
   >
     <p
@@ -85,10 +87,46 @@ export const MfaShield = () => (
   <img
     src="./images/mfa-shield.png"
     alt=""
-    width={64}
-    height={67}
+    width={88}
+    height={88}
     className="self-center"
   />
+);
+
+/**
+ * The step's title and description, centred under an image (the intro and
+ * picker shield, the failure icon).
+ *
+ * @param props - The header's props.
+ * @param props.title - The title.
+ * @param props.description - The line under it, if any.
+ * @param props.isCentered - Whether an image sits above it.
+ */
+export const StepHeader = ({
+  title,
+  description,
+  isCentered,
+}: Pick<StepLayoutProps, 'title' | 'description'> & {
+  isCentered: boolean;
+}) => (
+  <Box
+    flexDirection={BoxFlexDirection.Column}
+    gap={2}
+    className={isCentered ? 'text-center' : undefined}
+  >
+    <Text asChild variant={TextVariant.HeadingLg}>
+      <h2 id={STEP_TITLE_ID}>{title}</h2>
+    </Text>
+    {description ? (
+      <Text
+        asChild
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
+      >
+        <p id={STEP_DESCRIPTION_ID}>{description}</p>
+      </Text>
+    ) : null}
+  </Box>
 );
 
 export const StepError = ({ code }: { code: MfaFlowErrorCode }) => {
@@ -114,18 +152,11 @@ const StepLayout = ({
       className="flex-1 overflow-y-auto"
     >
       {top}
-      <Text asChild variant={TextVariant.HeadingLg}>
-        <h2 id={STEP_TITLE_ID}>{title}</h2>
-      </Text>
-      {description ? (
-        <Text
-          asChild
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-        >
-          <p id={STEP_DESCRIPTION_ID}>{description}</p>
-        </Text>
-      ) : null}
+      <StepHeader
+        title={title}
+        description={description}
+        isCentered={top !== undefined}
+      />
       {children}
       {error ? <StepError code={error} /> : null}
     </Box>

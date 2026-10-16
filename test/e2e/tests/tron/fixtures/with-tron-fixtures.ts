@@ -22,6 +22,7 @@ import {
   mockFiatExchangeRates,
   mockTronFeatureFlags,
   mockTronGetReward,
+  mockTronPriceSupportedNetworks,
 } from '../mocks/common-tron';
 import { proxyTronBlockchainCalls } from '../mocks/local-tron-node-mocks';
 
@@ -250,7 +251,8 @@ async function mockTronFixtureApis(
   ].filter((v, i, arr) => arr.indexOf(v) === i);
 
   return [
-    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTronPriceSupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     await mockAccountsApiV2WithTron(mockServer),
     await mockTronFixtureAccountsApiV5(mockServer, accounts, tronNode),
     await mockTronFeatureFlags(mockServer),

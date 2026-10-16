@@ -34,6 +34,11 @@ const POST_SEND_RAW_BALANCE = '0xc350';
 const RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 function mockCommonApis(mockServer: Mockttp) {
+  const supportedNetworks = {
+    fullSupport: ['eip155:1', 'eip155:1337'],
+    partialSupport: [],
+  };
+
   return Promise.all([
     mockServer
       .forGet(
@@ -54,12 +59,13 @@ function mockCommonApis(mockServer: Mockttp) {
         partialSupport: [],
       }),
     mockServer
-      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
+      .forGet('https://token.api.cx.metamask.io/v2/supportedNetworks')
       .always()
-      .thenJson(200, {
-        fullSupport: ['eip155:1', 'eip155:1337'],
-        partialSupport: [],
-      }),
+      .thenJson(200, supportedNetworks),
+    mockServer
+      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, supportedNetworks),
     mockServer
       .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
       .always()
