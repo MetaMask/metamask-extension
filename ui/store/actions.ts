@@ -7394,20 +7394,27 @@ export function getNotificationPreferences(): ThunkAction<
 }
 
 /**
- * Writes notification preferences to Authenticated User Storage.
+ * Saves a change to notification preferences through
+ * NotificationServicesController, which merges it over the stored
+ * preferences and rejects turning a marketing channel on without marketing
+ * consent.
  *
- * @param preferences - The complete notification preferences object to persist.
- * @returns A thunk action that writes notification preferences.
+ * @param update - The sections and fields to change.
+ * @returns A thunk action that resolves to the saved preferences.
  */
-export function putNotificationPreferences(
-  preferences: NotificationPreferences,
-): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+export function updateNotificationPreferences(
+  update: NotificationServicesController.NotificationPreferencesUpdate,
+): ThunkAction<
+  Promise<NotificationPreferences>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
     try {
-      await submitRequestToBackground('putNotificationPreferences', [
-        preferences,
-        'extension',
-      ]);
+      return (await submitRequestToBackground('updateNotificationPreferences', [
+        update,
+      ])) as NotificationPreferences;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
