@@ -530,60 +530,80 @@ export class OAuthService {
         });
       }
 
-      return new Promise((resolve, reject) => {
-        let providerInteractionTraceEnded = false;
-        const endProviderInteractionTrace = (success: boolean): void => {
-          if (providerInteractionTraceEnded) {
-            return;
-          }
-
-          providerInteractionTraceEnded = true;
-          this.#messenger.call('SentryTracingService:bufferedEndTrace', {
-            name: TraceName.OnboardingOAuthProviderInteraction,
-            data: { success },
-          });
-        };
-
-        this.#messenger.call('SentryTracingService:bufferedTrace', {
-          name: TraceName.OnboardingOAuthProviderInteraction,
-          op: TraceOperation.OnboardingSecurityOp,
-          tags: oauthTraceTags,
-          ...(parentTraceContext && { parentContext: parentTraceContext }),
-        });
-
-        let launchDispatched = false;
-        try {
-          this.#webAuthenticator.launchWebAuthFlow(
-            { interactive: true, url: authUrl },
-            (responseUrl) => {
-              if (!responseUrl) {
-                endProviderInteractionTrace(false);
-                reject(this.#getAuthFlowError());
-                return;
-              }
-
-              try {
-                loginHandler.validateState(responseUrl);
-                endProviderInteractionTrace(true);
-                resolve(responseUrl);
-              } catch (error) {
-                endProviderInteractionTrace(false);
-                reject(error);
-              }
-            },
-          );
-          launchDispatched = true;
-        } catch (error) {
-          endProviderInteractionTrace(false);
-          reject(error);
-        } finally {
-          endLaunchTrace(launchDispatched);
-        }
+      return this.#launchWebAuthFlow({
+        authUrl,
+        loginHandler,
+        oauthTraceTags,
+        parentTraceContext,
+        endLaunchTrace,
       });
     } catch (error) {
       endLaunchTrace(false);
       throw error;
     }
+  }
+
+  /**
+   * Launches the standard browser web authentication flow.
+   *
+   * @param options - The web authentication flow options.
+   * @param options.authUrl - The authentication URL.
+   * @param options.loginHandler - The login handler.
+   * @param options.oauthTraceTags - The OAuth trace tags.
+   * @param options.parentTraceContext - The optional parent trace context.
+   * @param options.endLaunchTrace - Ends the launch trace.
+   * @returns The validated OAuth response URL.
+   */
+  #launchWebAuthFlow({
+    authUrl,
+    loginHandler,
+    oauthTraceTags,
+    parentTraceContext,
+    endLaunchTrace,
+  }: {
+    authUrl: string;
+    loginHandler: BaseLoginHandler;
+    oauthTraceTags: OAuthTraceTags;
+    parentTraceContext?: SerializedTraceContext;
+    endLaunchTrace: (success: boolean) => void;
+  }): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const endProviderInteractionTrace = this.#startProviderInteractionTrace(
+        oauthTraceTags,
+        parentTraceContext,
+      );
+
+      let launchDispatched = false;
+      // Synchronous dispatch errors are caught here. The provider response arrives through the callback.
+      try {
+        this.#webAuthenticator.launchWebAuthFlow(
+          // NOSONAR
+          { interactive: true, url: authUrl },
+          (responseUrl) => {
+            if (!responseUrl) {
+              endProviderInteractionTrace(false);
+              reject(this.#getAuthFlowError());
+              return;
+            }
+
+            try {
+              loginHandler.validateState(responseUrl);
+              endProviderInteractionTrace(true);
+              resolve(responseUrl);
+            } catch (error) {
+              endProviderInteractionTrace(false);
+              reject(error);
+            }
+          },
+        );
+        launchDispatched = true;
+      } catch (error) {
+        endProviderInteractionTrace(false);
+        reject(error);
+      } finally {
+        endLaunchTrace(launchDispatched);
+      }
+    });
   }
 
   /**
@@ -626,25 +646,10 @@ export class OAuthService {
       const confirmedTabId: number = openedTabId;
       endLaunchTrace(true);
 
-      let providerInteractionTraceEnded = false;
-      const endProviderInteractionTrace = (success: boolean): void => {
-        if (providerInteractionTraceEnded) {
-          return;
-        }
-
-        providerInteractionTraceEnded = true;
-        this.#messenger.call('SentryTracingService:bufferedEndTrace', {
-          name: TraceName.OnboardingOAuthProviderInteraction,
-          data: { success },
-        });
-      };
-
-      this.#messenger.call('SentryTracingService:bufferedTrace', {
-        name: TraceName.OnboardingOAuthProviderInteraction,
-        op: TraceOperation.OnboardingSecurityOp,
-        tags: oauthTraceTags,
-        ...(parentTraceContext && { parentContext: parentTraceContext }),
-      });
+      const endProviderInteractionTrace = this.#startProviderInteractionTrace(
+        oauthTraceTags,
+        parentTraceContext,
+      );
 
       const redirectUrl = await new Promise<string>((resolve, reject) => {
         const platform = this.#platform;
@@ -797,5 +802,39 @@ export class OAuthService {
 
       return false;
     }
+  }
+
+  /**
+   * Starts the provider interaction trace and returns a function that ends it once.
+   *
+   * @param oauthTraceTags - The OAuth trace tags.
+   * @param parentTraceContext - The optional parent trace context.
+   * @returns A function that ends the provider interaction trace.
+   */
+  #startProviderInteractionTrace(
+    oauthTraceTags: OAuthTraceTags,
+    parentTraceContext?: SerializedTraceContext,
+  ): (success: boolean) => void {
+    let providerInteractionTraceEnded = false;
+    const endProviderInteractionTrace = (success: boolean): void => {
+      if (providerInteractionTraceEnded) {
+        return;
+      }
+
+      providerInteractionTraceEnded = true;
+      this.#messenger.call('SentryTracingService:bufferedEndTrace', {
+        name: TraceName.OnboardingOAuthProviderInteraction,
+        data: { success },
+      });
+    };
+
+    this.#messenger.call('SentryTracingService:bufferedTrace', {
+      name: TraceName.OnboardingOAuthProviderInteraction,
+      op: TraceOperation.OnboardingSecurityOp,
+      tags: oauthTraceTags,
+      ...(parentTraceContext && { parentContext: parentTraceContext }),
+    });
+
+    return endProviderInteractionTrace;
   }
 }
