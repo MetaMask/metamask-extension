@@ -29,6 +29,8 @@ export function getNotificationServicesControllerMessenger(
       // Authenticated User Storage Actions
       'AuthenticatedUserStorageService:getNotificationPreferences',
       'AuthenticatedUserStorageService:putNotificationPreferences',
+      // Marketing notifications follow marketing consent
+      'AnalyticsController:getState',
       // Push Actions
       'NotificationServicesPushController:addPushNotificationLinks',
       'NotificationServicesPushController:enablePushNotifications',

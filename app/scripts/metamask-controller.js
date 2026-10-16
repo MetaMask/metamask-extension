@@ -324,6 +324,7 @@ import {
 import { AuthenticationControllerInit } from './messenger-client-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './messenger-client-init/identity/user-storage-controller-init';
 import { AuthenticatedUserStorageServiceInit } from './messenger-client-init/authenticated-user-storage-service-init';
+import { MarketingConsentControllerInit } from './messenger-client-init/marketing-consent-controller-init';
 import { DeFiPositionsControllerInit } from './messenger-client-init/defi-positions/defi-positions-controller-init';
 import { DeFiPositionsControllerV2Init } from './messenger-client-init/defi-positions/defi-positions-controller-v2-init';
 import { NotificationServicesControllerInit } from './messenger-client-init/notifications/notification-services-controller-init';
@@ -398,7 +399,6 @@ import { MoneyAccountBalanceServiceInit } from './messenger-client-init/money-ac
 import { MoneyAccountControllerInit } from './messenger-client-init/money-account-controller-init';
 import { MoneyAccountUpgradeControllerInit } from './messenger-client-init/money-account-upgrade-controller-init';
 import { initializeWallet } from './wallet-init/initialization';
-import { setupMarketingConsentSync } from './wallet-init/marketing-consent-sync';
 import { ExtensionConnectivityAdapter } from './controllers/connectivity';
 import { getTransactionControllerApi } from './wallet-init/instance-options/transaction-controller';
 
@@ -642,6 +642,8 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
       AuthenticatedUserStorageService: AuthenticatedUserStorageServiceInit,
+      // Reads Analytics, Authentication and Keyring state on construction.
+      MarketingConsentController: MarketingConsentControllerInit,
       NotificationServicesController: NotificationServicesControllerInit,
       NotificationServicesPushController:
         NotificationServicesPushControllerInit,
@@ -784,9 +786,6 @@ export default class MetamaskController extends EventEmitter {
     this.userStorageController = messengerClientsByName.UserStorageController;
     this.authenticatedUserStorageService =
       messengerClientsByName.AuthenticatedUserStorageService;
-    this.marketingConsentSync = setupMarketingConsentSync({
-      messenger: this.controllerMessenger,
-    });
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
@@ -6442,7 +6441,7 @@ export default class MetamaskController extends EventEmitter {
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
       // Consent may have changed on another device since the last read.
-      this.marketingConsentSync.refreshMarketingConsent();
+      this.controllerMessenger.call('MarketingConsentController:refresh');
     } else {
       this.controllerMessenger.call('BackendWebSocketService:disconnect');
     }
