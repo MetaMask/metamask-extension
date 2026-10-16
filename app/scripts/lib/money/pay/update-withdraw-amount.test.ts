@@ -1,3 +1,4 @@
+import { Interface } from '@ethersproject/abi';
 import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import {
   TransactionStatus,
@@ -5,7 +6,10 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { updateMoneyAccountWithdrawAmount } from './update-withdraw-amount';
+import {
+  syncMoneyAccountWithdrawTransfer,
+  updateMoneyAccountWithdrawAmount,
+} from './update-withdraw-amount';
 import {
   createMoneyPayMessengerMock,
   MONEY_ACCOUNT_ADDRESS_MOCK,
@@ -27,21 +31,40 @@ const WITHDRAW_DATA = '0xaaa1' as Hex;
 const TRANSFER_DATA = '0xbbb2' as Hex;
 const WITHDRAW_DATA_2 = '0xccc3' as Hex;
 const TRANSFER_DATA_2 = '0xddd4' as Hex;
+const MUSD_RECEIVE_TOKEN = {
+  address: VAULT_CONFIG_MOCK.underlyingToken,
+  chainId: VAULT_CONFIG_MOCK.chainId,
+};
+const BRIDGED_RECEIVE_TOKEN = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Hex,
+  chainId: '0x1' as Hex,
+};
 
-function createWithdrawTransaction(): TransactionMeta {
+function encodeTransfer(to: Hex, amount: bigint): Hex {
+  return new Interface([
+    'function transfer(address to, uint256 amount)',
+  ]).encodeFunctionData('transfer', [to, amount]) as Hex;
+}
+
+function createWithdrawTransaction({
+  transferData,
+  type = TransactionType.moneyAccountWithdraw,
+}: { transferData?: Hex; type?: TransactionType } = {}): TransactionMeta {
   return {
     id: TRANSACTION_ID,
+    chainId: VAULT_CONFIG_MOCK.chainId,
     status: TransactionStatus.unapproved,
     nestedTransactions: [
       {
         to: VAULT_CONFIG_MOCK.tellerAddress,
         value: '0x0',
-        type: TransactionType.moneyAccountWithdraw,
+        type,
       },
       {
         to: VAULT_CONFIG_MOCK.underlyingToken,
         value: '0x0',
         type: TransactionType.tokenMethodTransfer,
+        ...(transferData ? { data: transferData } : {}),
       },
     ],
   } as unknown as TransactionMeta;
@@ -180,6 +203,38 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     );
   });
 
+  it('keeps the mUSD on the money account when the receive token is quoted', async () => {
+    const { messenger } = setup();
+
+    await updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1',
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ recipient: MONEY_ACCOUNT_ADDRESS_MOCK }),
+    );
+  });
+
+  it('pays the recipient directly when the receive token is mUSD on the vault chain', async () => {
+    const { messenger } = setup();
+
+    await updateMoneyAccountWithdrawAmount(
+      messenger,
+      TRANSACTION_ID,
+      '1',
+      HARDWARE_RECIPIENT,
+      MUSD_RECEIVE_TOKEN,
+    );
+
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ recipient: HARDWARE_RECIPIENT }),
+    );
+  });
+
   it('returns false for a zero amount without encoding', async () => {
     const { messenger, updateTransaction } = setup();
 
@@ -269,5 +324,133 @@ describe('updateMoneyAccountWithdrawAmount', () => {
     });
     await expect(first).resolves.toBe(false);
     expect(updateTransaction).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('syncMoneyAccountWithdrawTransfer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    buildWithdrawBatchMock.mockResolvedValue({
+      withdrawTx: {
+        params: {
+          to: VAULT_CONFIG_MOCK.tellerAddress,
+          data: WITHDRAW_DATA_2,
+          value: '0x0',
+        },
+        type: TransactionType.moneyAccountWithdraw,
+      },
+      transferTx: {
+        params: {
+          to: VAULT_CONFIG_MOCK.underlyingToken,
+          data: TRANSFER_DATA_2,
+          value: '0x0',
+        },
+        type: TransactionType.tokenMethodTransfer,
+      },
+    });
+  });
+
+  it('re-encodes the same amount to the money account when the token becomes quoted', async () => {
+    const { messenger, updateTransaction } = setup({
+      transactions: [
+        createWithdrawTransaction({
+          transferData: encodeTransfer(HARDWARE_RECIPIENT, 2_500_000n),
+        }),
+      ],
+    });
+
+    const result = await syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    expect(result).toBe(true);
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        amount: 2_500_000n,
+        recipient: MONEY_ACCOUNT_ADDRESS_MOCK,
+      }),
+    );
+    expect(updateTransaction).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-encodes to the recipient when the token becomes direct', async () => {
+    const { messenger } = setup({
+      transactions: [
+        createWithdrawTransaction({
+          transferData: encodeTransfer(MONEY_ACCOUNT_ADDRESS_MOCK, 1_000_000n),
+        }),
+      ],
+    });
+
+    const result = await syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      MUSD_RECEIVE_TOKEN,
+    );
+
+    expect(result).toBe(true);
+    expect(buildWithdrawBatchMock).toHaveBeenCalledWith(
+      expect.objectContaining({ recipient: HARDWARE_RECIPIENT }),
+    );
+  });
+
+  it('leaves the batch alone when the transfer target already matches', async () => {
+    const { messenger, updateTransaction } = setup({
+      transactions: [
+        createWithdrawTransaction({
+          transferData: encodeTransfer(MONEY_ACCOUNT_ADDRESS_MOCK, 1_000_000n),
+        }),
+      ],
+    });
+
+    const result = await syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    expect(result).toBe(false);
+    expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
+    expect(updateTransaction).not.toHaveBeenCalled();
+  });
+
+  it('leaves an unfunded placeholder alone', async () => {
+    const { messenger } = setup();
+
+    const result = await syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    expect(result).toBe(false);
+    expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
+  });
+
+  it('ignores transactions that are not Money Account withdrawals', async () => {
+    const { messenger } = setup({
+      transactions: [
+        createWithdrawTransaction({
+          transferData: encodeTransfer(HARDWARE_RECIPIENT, 1_000_000n),
+          type: TransactionType.contractInteraction,
+        }),
+      ],
+    });
+
+    const result = await syncMoneyAccountWithdrawTransfer(
+      messenger,
+      TRANSACTION_ID,
+      HARDWARE_RECIPIENT,
+      BRIDGED_RECEIVE_TOKEN,
+    );
+
+    expect(result).toBe(false);
+    expect(buildWithdrawBatchMock).not.toHaveBeenCalled();
   });
 });

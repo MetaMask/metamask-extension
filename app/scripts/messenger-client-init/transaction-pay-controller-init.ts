@@ -26,7 +26,11 @@ import {
   getMoneyAccountAmountData,
   updateMoneyAccountDepositAmount,
 } from '../lib/money/pay/update-deposit-amount';
-import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
+import {
+  syncMoneyAccountWithdrawTransfer,
+  updateMoneyAccountWithdrawAmount,
+  type WithdrawPaymentToken,
+} from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
 import type {
   MoneyPayMessenger,
@@ -108,7 +112,7 @@ function getApi(
     createMoneyAccountWithdrawTransaction: async (recipient: Hex) => {
       const result =
         await createMoneyAccountWithdrawTransaction(moneyPayMessenger);
-      seedAccountOverride(messengerClient, result.transactionId, recipient);
+      seedWithdrawPayConfig(messengerClient, result.transactionId, recipient);
       return result;
     },
     setTransactionPayIsMaxAmount: (
@@ -225,15 +229,14 @@ function getApi(
       amountHuman: string,
       recipientOverride?: Hex,
     ) => {
-      const resolvedRecipient =
-        recipientOverride ??
-        messengerClient.state?.transactionData?.[transactionId]
-          ?.accountOverride;
+      const transactionData =
+        messengerClient.state?.transactionData?.[transactionId];
       return updateMoneyAccountWithdrawAmount(
         moneyPayMessenger,
         transactionId,
         amountHuman,
-        resolvedRecipient,
+        recipientOverride ?? transactionData?.accountOverride,
+        getWithdrawPaymentToken(transactionData),
       );
     },
     setTransactionPayPaymentOverride: (
@@ -274,28 +277,61 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
+    updateTransactionPaymentToken: async (
+      request: Parameters<TransactionPayController['updatePaymentToken']>[0],
+    ) => {
+      messengerClient.updatePaymentToken(request);
+
+      const { transactionId } = request;
+      const transactionData =
+        messengerClient.state?.transactionData?.[transactionId];
+
+      // A withdraw transfer target depends on whether the new token is quoted.
+      try {
+        await syncMoneyAccountWithdrawTransfer(
+          moneyPayMessenger,
+          transactionId,
+          transactionData?.accountOverride,
+          getWithdrawPaymentToken(transactionData),
+        );
+      } catch (error) {
+        console.error('Money Account withdraw: transfer sync failed', error);
+      }
+    },
   };
 }
 
+function getWithdrawPaymentToken(
+  transactionData:
+    | TransactionPayController['state']['transactionData'][string]
+    | undefined,
+): WithdrawPaymentToken | undefined {
+  const paymentToken = transactionData?.paymentToken;
+  return paymentToken
+    ? { address: paymentToken.address, chainId: paymentToken.chainId }
+    : undefined;
+}
+
 /**
- * Seeds Pay's funding/destination account. Money Account batches execute
- * `from` the money account, so without this override the confirmation From
- * row and Pay quotes fall back to that address instead of the user's
+ * Seeds Pay's withdraw recipient. Without this override the confirmation
+ * account row falls back to the money account instead of the user's
  * currently selected EVM account.
+ *
+ * The recipient only receives the output. Quotes are requested and submitted
+ * from the money account, so a hardware or QR recipient never signs.
  *
  * @param messengerClient - TransactionPayController to write config on.
  * @param transactionId - Created transaction id.
- * @param accountOverride - Currently selected EVM account address.
+ * @param recipient - Account that receives the withdrawal.
  */
-function seedAccountOverride(
+function seedWithdrawPayConfig(
   messengerClient: TransactionPayController,
   transactionId: string,
-  accountOverride: Hex,
+  recipient: Hex,
 ): void {
   messengerClient.setTransactionConfig(transactionId, (config) => {
-    config.accountOverride = accountOverride;
+    config.accountOverride = recipient;
+    config.isAccountOverrideRecipientOnly = true;
   });
 }
 
