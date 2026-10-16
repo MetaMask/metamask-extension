@@ -1209,10 +1209,11 @@
     },
     "@metamask/base-controller": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
-        "immer": true
+        "@metamask/base-controller>immer": true
       }
     },
     "@metamask/base-data-service": {
@@ -3677,6 +3678,7 @@
         "@metamask/accounts-controller": true,
         "@metamask/wallet>@metamask/address-book-controller": true,
         "@metamask/wallet>@metamask/approval-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/wallet>@metamask/claims-controller": true,
         "@metamask/client-controller": true,
@@ -6211,6 +6213,11 @@
       }
     },
     "@metamask/assets-controllers>immer": {
+      "globals": {
+        "Iterator": true
+      }
+    },
+    "@metamask/base-controller>immer": {
       "globals": {
         "Iterator": true
       }
