@@ -163,7 +163,7 @@ jest.mock('../../../hooks/useDisconnectAccountGroup', () => ({
 }));
 
 jest.mock('../../../hooks/useAnalytics', () => {
-  const mockTrackEvent = jest.fn();
+  const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
   return {
     useAnalytics: () => ({

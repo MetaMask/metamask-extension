@@ -31,7 +31,7 @@ jest.mock('../../../../shared/lib/trace', () => {
   };
 });
 
-const mockTrackEvent = jest.fn();
+const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../hooks/useAnalytics', () => {
   const { createEventBuilder } = jest.requireActual(
     '../../../../shared/lib/analytics/create-event-builder',

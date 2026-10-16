@@ -12,7 +12,7 @@ import {
 import { useTrackAccountHidden } from './useTrackAccountHidden';
 
 jest.mock('../../../hooks/useAnalytics', () => {
-  const mockTrackEvent = jest.fn();
+  const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
 
   return {
     useAnalytics: () => ({
