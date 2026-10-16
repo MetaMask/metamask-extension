@@ -9,6 +9,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
+import { resetTrackErrorAsAnalyticsStateForTesting } from '../../../../shared/lib/analytics/track-error-as-analytics';
 import ClearMetaMetricsData from './clear-metametrics-data';
 
 const mockTrackEvent = jest.fn();
@@ -47,6 +48,10 @@ jest.mock('../../../ducks/app/app.ts', () => {
 });
 
 describe('ClearMetaMetricsData', () => {
+  beforeEach(() => {
+    resetTrackErrorAsAnalyticsStateForTesting();
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -93,16 +98,21 @@ describe('ClearMetaMetricsData', () => {
     fireEvent.click(getByText(messages.delete.message));
 
     await waitFor(() => {
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        name: MetaMetricsEventName.ErrorOccured,
-        properties: {
-          category: MetaMetricsEventCategory.Settings,
-        },
-        sensitiveProperties: {},
-        options: {
-          excludeMetaMetricsId: true,
-        },
-      });
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+    });
+    const errorEvent = mockTrackEvent.mock.calls[0][0];
+    expect(errorEvent.name).toBe(MetaMetricsEventName.ErrorOccured);
+    expect(errorEvent.properties).toMatchObject({
+      category: MetaMetricsEventCategory.Settings,
+      severity: 'error',
+    });
+    expect(errorEvent.properties).toMatchObject({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_message: 'Deletion failed',
+    });
+    expect(errorEvent.options).toMatchObject({
+      excludeMetaMetricsId: true,
     });
   });
 

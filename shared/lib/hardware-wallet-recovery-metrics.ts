@@ -6,9 +6,9 @@ import {
   MetaMetricsHardwareWalletRecoveryErrorType,
   MetaMetricsHardwareWalletRecoveryLocation,
 } from '../constants/metametrics';
+import { sanitizeErrorMessage } from './sanitize-error-message';
 
 const UNKNOWN_DEVICE_MODEL = 'N/A';
-const MAX_ERROR_MESSAGE_LENGTH = 500;
 
 /**
  * Canonical Segment `properties` keys produced by {@link buildHardwareWalletRecoverySegmentProperties}.
@@ -122,25 +122,11 @@ function getErrorMessage(error: unknown): string {
     error &&
     typeof error === 'object' &&
     'message' in error &&
-    typeof (error as { message: unknown }).message === 'string'
+    typeof error.message === 'string'
   ) {
-    return (error as { message: string }).message;
+    return error.message;
   }
   return '';
-}
-
-/**
- * Normalizes whitespace and caps length for Segment `error_message`.
- *
- * @param message - Raw error text.
- * @returns Sanitized message safe to send in analytics.
- */
-function sanitizeErrorMessage(message: string): string {
-  const trimmed = message.replace(/\s+/gu, ' ').trim();
-  if (trimmed.length <= MAX_ERROR_MESSAGE_LENGTH) {
-    return trimmed;
-  }
-  return `${trimmed.slice(0, MAX_ERROR_MESSAGE_LENGTH)}…`;
 }
 
 /**
