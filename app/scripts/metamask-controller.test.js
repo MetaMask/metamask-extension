@@ -11,6 +11,7 @@ import {
   PHISHING_CONFIG_BASE_URL,
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
+  RequestSourceFlow,
 } from '@metamask/phishing-controller';
 import {
   EthAccountType,
@@ -2902,7 +2903,19 @@ describe('MetaMaskController', () => {
           await waitForAllPromises();
           await new Promise((resolve) => setTimeout(resolve, 0));
 
-          expect(scanUrlSpy).toHaveBeenCalledWith('http://mycrypto.com');
+          expect(scanUrlSpy).toHaveBeenCalledWith(
+            'http://mycrypto.com',
+            RequestSourceFlow.DappConnection,
+          );
+
+          await localMetamaskController
+            .getApi()
+            .scanUrlForPhishing('http://mycrypto.com');
+
+          expect(scanUrlSpy).toHaveBeenCalledWith(
+            'http://mycrypto.com',
+            RequestSourceFlow.RevealSrp,
+          );
           streamTest.end();
         } finally {
           process.env.SECURITY_ALERTS_API_ENABLED =

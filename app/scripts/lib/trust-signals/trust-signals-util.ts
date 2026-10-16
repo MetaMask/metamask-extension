@@ -1,4 +1,5 @@
 import { JsonRpcRequest } from '@metamask/utils';
+import { RequestSourceFlow } from '@metamask/phishing-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
 
@@ -16,16 +17,6 @@ export function isEthSendTransactionMethod(method: string): boolean {
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
   return isEthSendTransactionMethod(req.method);
-}
-
-export function isEip7715AdvancedPermissionsRequest(
-  req: JsonRpcRequest,
-): boolean {
-  return (
-    req.method === MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS ||
-    req.method === MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS ||
-    req.method === MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS
-  );
 }
 
 export function hasValidTransactionParams(
@@ -184,56 +175,79 @@ export function getWrappedRequestMethod(
 }
 
 /**
- * Build the EIP-1193 gate for origin scanning.
+ * Build the EIP-1193 request-source classifier for origin scans.
  *
  * @param getPermittedAccounts - Returns the accounts an origin may use
+ * @returns The request-source flow, or undefined if the request needs no scan
  */
-export function createEip1193OriginScanGate(
+export function getEip1193OriginScanFlow(
   getPermittedAccounts: (origin: string) => string[],
 ) {
-  return (req: JsonRpcRequest & { origin?: string }): boolean =>
-    isEthSendTransaction(req) ||
-    isWalletSendCalls(req) ||
-    isEthSignTypedData(req) ||
-    isConnected(req, getPermittedAccounts) ||
-    connectScreenHasBeenPrompted(req) ||
-    isEip7715AdvancedPermissionsRequest(req);
+  return (
+    req: JsonRpcRequest & { origin?: string },
+  ): RequestSourceFlow | undefined => {
+    if (
+      isEthSendTransaction(req) ||
+      isWalletSendCalls(req) ||
+      isEthSignTypedData(req)
+    ) {
+      return RequestSourceFlow.Confirmations;
+    }
+
+    if (req.method === MESSAGE_TYPE.WALLET_REQUEST_EXECUTION_PERMISSIONS) {
+      return RequestSourceFlow.Confirmations;
+    }
+
+    if (
+      req.method === MESSAGE_TYPE.WALLET_GET_SUPPORTED_EXECUTION_PERMISSIONS ||
+      req.method === MESSAGE_TYPE.WALLET_GET_GRANTED_EXECUTION_PERMISSIONS
+    ) {
+      return RequestSourceFlow.RpcTrustSignals;
+    }
+
+    if (connectScreenHasBeenPrompted(req)) {
+      return RequestSourceFlow.DappConnection;
+    }
+
+    if (isConnected(req, getPermittedAccounts)) {
+      return RequestSourceFlow.RpcTrustSignals;
+    }
+
+    return undefined;
+  };
 }
 
 /**
- * Build the Multichain API gate for origin scanning. Authored independently of
- * the EIP-1193 gate rather than derived from it, since none of those method
- * names exist on this transport.
- *
- * Action requests are matched on the method wrapped inside `wallet_invokeMethod`
- * rather than on `wallet_invokeMethod` itself. A granted `eip155` scope permits
- * nearly the entire RPC surface, so gating on the outer method alone would scan
- * the origin on routine polling reads.
+ * Build the Multichain API request-source classifier for origin scans.
  *
  * @param hasCaip25Permission - Whether the origin holds a CAIP-25 permission
+ * @returns The request-source flow, or undefined if the request needs no scan
  */
-export function createCaipOriginScanGate(
+export function getCaipOriginScanFlow(
   hasCaip25Permission: (origin: string) => boolean,
 ) {
-  return (req: JsonRpcRequest & { origin?: string }): boolean => {
-    if (
-      isWalletCreateSession(req) ||
-      isCaipConnected(req, hasCaip25Permission)
-    ) {
-      return true;
-    }
-
+  return (
+    req: JsonRpcRequest & { origin?: string },
+  ): RequestSourceFlow | undefined => {
     const wrappedMethod = getWrappedRequestMethod(req);
 
-    // No EIP-7715 case here, unlike the EIP-1193 gate: those methods are absent
-    // from every CAIP-25 scope's method list, so `wallet_invokeMethod` rejects
-    // them as unauthorized before this gate ever sees them. Add them here if a
-    // scope ever grants them.
-    return Boolean(
+    if (
       wrappedMethod &&
       (isEthSendTransactionMethod(wrappedMethod) ||
         isEthSignTypedDataMethod(wrappedMethod) ||
-        isWalletSendCallsMethod(wrappedMethod)),
-    );
+        isWalletSendCallsMethod(wrappedMethod))
+    ) {
+      return RequestSourceFlow.Confirmations;
+    }
+
+    if (isWalletCreateSession(req)) {
+      return RequestSourceFlow.DappConnection;
+    }
+
+    if (isCaipConnected(req, hasCaip25Permission)) {
+      return RequestSourceFlow.RpcTrustSignals;
+    }
+
+    return undefined;
   };
 }
