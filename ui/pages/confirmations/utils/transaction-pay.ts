@@ -293,12 +293,12 @@ export function isTokenBlocked(
 export function getSupportedTransactionType(
   transactionMeta: TransactionMeta | undefined,
 ): TransactionType | undefined {
-  if (getMoneyAccountFlow(transactionMeta) !== MoneyAccountFlow.None) {
-    return transactionMeta?.transactionType;
+  if (getMoneyAccountFlow(transactionMeta) !== undefined) {
+    return transactionMeta?.type;
   }
 
   if (isPostQuoteWithdrawTransaction(transactionMeta)) {
-    return transactionMeta?.transactionType;
+    return transactionMeta?.type;
   }
 
   return undefined;
@@ -306,9 +306,13 @@ export function getSupportedTransactionType(
 
 export function applyMoneyAccountOverride(
   transactionId: string,
-  moneyAddress: Hex,
+  moneyAddress: Hex | undefined,
   transactionMeta: TransactionMeta,
 ): void {
+  if (!moneyAddress) {
+    return;
+  }
+
   const isWithdrawLike = hasTransactionType(transactionMeta, [
     TransactionType.moneyAccountWithdraw,
     TransactionType.perpsWithdraw,

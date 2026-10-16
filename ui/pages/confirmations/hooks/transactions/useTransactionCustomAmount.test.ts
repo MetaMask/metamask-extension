@@ -28,6 +28,7 @@ import {
 } from './useTransactionCustomAmount';
 import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import * as useUpdateTransactionPayAmountModule from './useUpdateTransactionPayAmount';
+import * as useUpdateTokenAmountModule from './useUpdateTokenAmount';
 
 jest.mock('../../../../store/controller-actions/transaction-pay-controller');
 jest.mock('../tokens/useTokenFiatRates');
