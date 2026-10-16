@@ -4,7 +4,10 @@ import { type TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import {
   selectIsTransactionPayLoadingByTransactionId,
+  selectSolanaPayExecutionByTransactionId,
+  selectSolanaPayQuoteByTransactionId,
   selectTransactionPayIsMaxAmountByTransactionId,
+  selectTransactionPaySourceByTransactionId,
   selectTransactionPayIsPostQuoteByTransactionId,
   selectTransactionPayQuoteErrorByTransactionId,
   selectTransactionPayQuotesByTransactionId,
@@ -23,13 +26,34 @@ export function useTransactionPayQuotes() {
   return useTransactionPayData(selectTransactionPayQuotesByTransactionId);
 }
 
+export function useSolanaPayQuote() {
+  const quote = useTransactionPayData(selectSolanaPayQuoteByTransactionId);
+  const source = useTransactionPayData(
+    selectTransactionPaySourceByTransactionId,
+  );
+  return source?.sourceAccountId.startsWith('solana:') ? quote : undefined;
+}
+
 export function useTransactionPayQuoteError() {
   return useTransactionPayData(selectTransactionPayQuoteErrorByTransactionId);
 }
 
 export function useTransactionPayHasExecutableQuote() {
   const quotes = useTransactionPayQuotes();
+  const solanaPayQuote = useSolanaPayQuote();
+  const solanaExecution = useTransactionPayData(
+    selectSolanaPayExecutionByTransactionId,
+  );
 
+  if (solanaPayQuote) {
+    const hasRequiredProductAction =
+      !solanaExecution?.atomicProductActionRequired ||
+      solanaPayQuote.route.atomicProductActionIncluded;
+    return (
+      solanaPayQuote.preflight.affordability.isAffordable &&
+      hasRequiredProductAction
+    );
+  }
   return (
     quotes?.some((quote) => quote.strategy !== TransactionPayStrategy.None) ??
     false

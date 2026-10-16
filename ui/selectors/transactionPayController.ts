@@ -1,9 +1,21 @@
 import { createSelector } from 'reselect';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
+import type { TransactionControllerState } from '@metamask/transaction-controller';
+import { selectTransactionById } from './transactionController';
 
 export type TransactionPayState = {
-  metamask: TransactionPayControllerState;
+  metamask: TransactionPayControllerState & TransactionControllerState;
 };
+
+export const selectTransactionPaySourceByTransactionId = createSelector(
+  selectTransactionById,
+  (transaction) => transaction?.metamaskPay?.source,
+);
+
+export const selectSolanaPayExecutionByTransactionId = createSelector(
+  selectTransactionById,
+  (transaction) => transaction?.metamaskPay?.solanaExecution,
+);
 
 export const selectTransactionDataByTransactionId = createSelector(
   (state: TransactionPayState) => state,
@@ -25,6 +37,11 @@ export const selectIsTransactionPayLoadingByTransactionId = createSelector(
 export const selectTransactionPayQuotesByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.quotes,
+);
+
+export const selectSolanaPayQuoteByTransactionId = createSelector(
+  selectTransactionDataByTransactionId,
+  (transactionData) => transactionData?.solanaPayQuote,
 );
 
 export const selectTransactionPayQuoteErrorByTransactionId = createSelector(

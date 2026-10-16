@@ -1,7 +1,9 @@
 import {
+  PaymentOverride,
   TransactionPayController,
   TransactionPayControllerMessenger,
 } from '@metamask/transaction-pay-controller';
+import { SolScope } from '@metamask/keyring-api';
 import {
   TransactionType,
   type TransactionMeta,
@@ -82,10 +84,17 @@ function getInitRequestMock(
 }
 
 describe('TransactionPayControllerInit', () => {
-  it('initializes the controller', () => {
+  beforeEach(() => {
+    jest
+      .mocked(TransactionPayController.prototype.recoverSolanaPayStatus)
+      .mockResolvedValue({});
+  });
+
+  it('initializes the controller and starts recovery', () => {
     const { messengerClient } =
       TransactionPayControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(TransactionPayController);
+    expect(messengerClient.recoverSolanaPayStatus).toHaveBeenCalledTimes(1);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -99,6 +108,13 @@ describe('TransactionPayControllerInit', () => {
       getPaymentOverrideData: expect.any(Function),
       getStrategy: expect.any(Function),
       messenger: expect.any(Object),
+      solana: expect.objectContaining({
+        getPreflight: expect.any(Function),
+        signAndSendTransaction: expect.any(Function),
+        getTransactionStatus: expect.any(Function),
+        submitNonAtomicFollowUp: expect.any(Function),
+        getNonAtomicFollowUpStatus: expect.any(Function),
+      }),
       state: undefined,
     });
   });
@@ -125,6 +141,82 @@ describe('TransactionPayControllerInit', () => {
       expect.objectContaining({ isSubsidized: true }),
       transaction,
     );
+  });
+
+  describe('api.setSolanaPaySource', () => {
+    it('persists the account-scoped intent before requesting the quote', async () => {
+      const { api, messengerClient } =
+        TransactionPayControllerInit(getInitRequestMock());
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+      Object.defineProperty(messengerClient, 'state', {
+        value: { transactionData: {} },
+      });
+      jest.mocked(messengerClient.getSolanaPayQuote).mockResolvedValue({
+        providerQuote: {
+          details: { currencyOut: { amount: '100' } },
+        },
+      } as never);
+
+      await api.setSolanaPaySource(
+        'tx-1',
+        'wallet-account-id',
+        `${SolScope.Mainnet}:solana-address`,
+        `${SolScope.Mainnet}/slip44:501`,
+        '1000000000',
+      );
+
+      expect(messengerClient.setPaySource).toHaveBeenCalledWith({
+        transactionId: 'tx-1',
+        source: {
+          sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+          sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+        },
+      });
+      expect(messengerClient.getSolanaPayQuote).toHaveBeenCalledWith({
+        sourceAmountRaw: '1000000000',
+        sourceWalletAccountId: 'wallet-account-id',
+        transactionId: 'tx-1',
+      });
+    });
+
+    it('preserves the Money Account non-atomic follow-up contract before quoting', async () => {
+      const transaction = {
+        id: 'tx-1',
+        type: TransactionType.moneyAccountDeposit,
+      } as TransactionMeta;
+      const { api, messengerClient } = TransactionPayControllerInit(
+        getInitRequestMock([transaction]),
+      );
+      if (!api) {
+        throw new Error('Expected init result to expose an api');
+      }
+
+      await api.setSolanaPaySource(
+        'tx-1',
+        'wallet-account-id',
+        `${SolScope.Mainnet}:solana-address`,
+        `${SolScope.Mainnet}/slip44:501`,
+        '1000000000',
+      );
+
+      expect(messengerClient.setTransactionConfig).toHaveBeenCalledWith(
+        'tx-1',
+        expect.any(Function),
+      );
+      const update = jest.mocked(messengerClient.setTransactionConfig).mock
+        .calls[0][1];
+      const config: {
+        atomic?: boolean;
+        paymentOverride?: PaymentOverride;
+      } = {};
+      update(config);
+      expect(config).toStrictEqual({
+        atomic: false,
+        paymentOverride: PaymentOverride.MoneyAccount,
+      });
+    });
   });
 
   describe('api.setTransactionPayPostQuote', () => {
