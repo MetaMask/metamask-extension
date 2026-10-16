@@ -2,9 +2,12 @@ import { buildMoneyAccountWithdrawBatch } from '@metamask/money-account-utils';
 import { isStrictHexString, type Hex } from '@metamask/utils';
 import type { MoneyAccountWithdrawAmountUpdate } from '../../../../../shared/lib/money/withdraw-amount-commit';
 import {
+  beginAmountCommit,
+  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
+  pruneStaleAmountCommits,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
 
@@ -33,6 +36,8 @@ export async function updateMoneyAccountWithdrawAmount(
   amountHuman: string,
   recipientOverride?: Hex,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
+  pruneStaleAmountCommits(messenger);
+
   const amountRaw = parseMusdHumanAmount(amountHuman);
   if (amountRaw === undefined) {
     return false;
@@ -43,23 +48,42 @@ export async function updateMoneyAccountWithdrawAmount(
     return false;
   }
 
-  const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
-  const updates = await encodeWithdrawCalldata(messenger, amountRaw, recipient);
+  const isCurrent = beginAmountCommit(transactionId);
 
-  commitTransactionPayUpdates(
-    messenger,
-    transactionId,
-    updates,
-    'Money Account withdraw: update amount',
-  );
+  try {
+    const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
+    const updates = await encodeWithdrawCalldata(
+      messenger,
+      amountRaw,
+      recipient,
+    );
 
-  const committed = getTransactionMeta(messenger, transactionId);
-  const transactionData = committed?.txParams?.data as Hex | undefined;
-  return {
-    withdrawData: updates[0].data,
-    transferData: updates[1].data,
-    ...(transactionData ? { transactionData } : {}),
-  };
+    if (!isCurrent()) {
+      return false;
+    }
+
+    commitTransactionPayUpdates(
+      messenger,
+      transactionId,
+      updates,
+      'Money Account withdraw: update amount',
+    );
+
+    const committed = getTransactionMeta(messenger, transactionId);
+    const transactionData = committed?.txParams?.data as Hex | undefined;
+    return {
+      withdrawData: updates[0].data,
+      transferData: updates[1].data,
+      ...(transactionData ? { transactionData } : {}),
+    };
+  } catch (error) {
+    if (!isCurrent()) {
+      return false;
+    }
+    throw error;
+  } finally {
+    clearAmountCommitIfCurrent(transactionId, isCurrent);
+  }
 }
 
 /**
