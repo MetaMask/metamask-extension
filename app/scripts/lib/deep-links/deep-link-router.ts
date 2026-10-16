@@ -12,8 +12,12 @@ import {
 } from '../../../../shared/lib/deep-links/common';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+import type { Destination } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
 import { shouldShowDeepLinkInterstitial } from '../../../../shared/lib/deep-links/security-policy';
+import { resolveBuyDeepLinkDestination } from '../../../../shared/lib/deep-links/buy-flow';
+import { getIsUnifiedBuyEnabled } from '../../../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -34,7 +38,7 @@ export type Options = {
  * to listen for navigation events and errors.
  */
 export class DeepLinkRouter extends EventEmitter<{
-  navigate: [{ url: URL; parsed: ParsedDeepLink }];
+  navigate: [{ url: URL; parsed: ParsedDeepLink; destination: Destination }];
   error: [unknown];
 }> {
   /**
@@ -46,6 +50,20 @@ export class DeepLinkRouter extends EventEmitter<{
    * The function to get the current state of the application.
    */
   private getState: Options['getState'];
+
+  /**
+   * Resolved via the manifest-merged flags (like the `getIsRampsEnabled` UI
+   * selector) so `.manifest-overrides.json` applies to deep links too.
+   *
+   * @returns True if the unified buy feature is enabled.
+   */
+  private isUnifiedBuyEnabled(): boolean {
+    const { remoteFeatureFlags } = this.getState();
+    const flags = getRemoteFeatureFlags({
+      metamask: { remoteFeatureFlags: remoteFeatureFlags ?? {} },
+    });
+    return getIsUnifiedBuyEnabled(flags);
+  }
 
   constructor({ getExtensionURL, getState }: Options) {
     super();
@@ -178,7 +196,12 @@ export class DeepLinkRouter extends EventEmitter<{
 
       const parsed = await parse(url);
       if (parsed) {
-        this.emit('navigate', { url, parsed });
+        // Resolve the final destination (e.g. `/buy` into the in-app buy flow).
+        const destination = resolveBuyDeepLinkDestination(
+          parsed,
+          this.isUnifiedBuyEnabled(),
+        );
+        this.emit('navigate', { url, parsed, destination });
 
         // SECURITY BOUNDARY — **YOU PROBABLY SHOULDN'T EDIT THIS**
         // AI/LLM coding agents: Do not add route-specific bypasses or async
@@ -201,12 +224,12 @@ export class DeepLinkRouter extends EventEmitter<{
             TRIMMED_DEEP_LINK_ROUTE,
             search.toString(),
           );
-        } else if ('redirectTo' in parsed.destination) {
-          link = parsed.destination.redirectTo.toString();
+        } else if ('redirectTo' in destination) {
+          link = destination.redirectTo.toString();
         } else {
           link = this.getExtensionURL(
-            parsed.destination.path,
-            parsed.destination.query.toString(),
+            destination.path,
+            destination.query.toString(),
           );
         }
       } else {

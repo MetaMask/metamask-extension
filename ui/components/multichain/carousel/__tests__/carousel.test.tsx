@@ -17,9 +17,20 @@ jest.mock('../../../../../shared/lib/environment', () => ({
   isProduction: jest.fn().mockReturnValue(false),
 }));
 
-// Mock Redux hooks
+let mockIsRampsEnabled = false;
+jest.mock('../../../../selectors/ramps-feature-flags', () => ({
+  getIsRampsEnabled: jest.fn(),
+}));
+
+// Mock Redux hooks: the ramps flag, else a stubbed selected account.
 jest.mock('react-redux', () => ({
-  useSelector: jest.fn(() => ({ address: '0x123' })), // Mock selected account
+  useSelector: jest.fn((selector: unknown) =>
+    selector ===
+    jest.requireMock('../../../../selectors/ramps-feature-flags')
+      .getIsRampsEnabled
+      ? mockIsRampsEnabled
+      : { address: '0x123' },
+  ),
 }));
 
 const mockUseNavigate = jest.fn();
@@ -109,6 +120,7 @@ describe('Carousel', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsRampsEnabled = false;
     process.env.CONTENTFUL_ACCESS_SPACE_ID = 'test-space';
     process.env.CONTENTFUL_ACCESS_TOKEN = 'test-token';
     fetchSpy = jest.spyOn(globalThis, 'fetch');
@@ -219,6 +231,24 @@ describe('Carousel', () => {
     expect(onSlideClickMock).toHaveBeenCalledWith('download-mobile-slide');
     await flushPromises();
     expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+  });
+
+  it('navigates in-app for a /buy slide href when the unified buy flag is on', async () => {
+    mockIsRampsEnabled = true;
+    const slides = [
+      { ...mockSlides[0], href: 'https://link.metamask.io/buy?amount=100' },
+    ];
+
+    render(<Carousel {...defaultProps} slides={slides} />);
+
+    fireEvent.click(screen.getByTestId('carousel-slide-test-slide-1'));
+
+    await waitFor(() =>
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/ramps/buy-deeplink-entry?amount=100',
+      ),
+    );
     expect(global.platform.openTab).not.toHaveBeenCalled();
   });
 

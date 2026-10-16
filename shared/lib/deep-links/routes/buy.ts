@@ -1,14 +1,10 @@
-import { BaseUrl } from '../../../constants/urls';
+import { getBuyPortfolioRedirectDestination } from '../buy-flow';
 import { Route } from './route';
 
 export const buy = new Route({
   pathname: '/buy',
   getTitle: (_: URLSearchParams) => 'deepLink_theBuyPage',
   handler: function handler(params: URLSearchParams) {
-    const buyUrl = new URL('/buy', BaseUrl.Portfolio);
-    params.forEach((value, key) => buyUrl.searchParams.append(key, value));
-    return {
-      redirectTo: buyUrl,
-    };
+    return getBuyPortfolioRedirectDestination(params);
   },
 });
