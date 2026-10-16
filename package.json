@@ -177,7 +177,7 @@
   "resolutions": {
     "@metamask/config-registry-controller": "^5.0.0",
     "@metamask/eth-sig-util": "^9.0.0",
-    "@metamask/network-controller": "36.0.0",
+    "@metamask/network-controller": "^37.1.0",
     "@metamask/transaction-controller": "72.2.0",
     "@metamask/bridge-controller@npm:^82.0.2": "82.0.2",
     "reselect@npm:^5.1.1": "5.1.1",
@@ -482,7 +482,7 @@
     "@metamask/multichain-transactions-controller": "^7.1.2",
     "@metamask/name-controller": "^9.1.0",
     "@metamask/network-connection-banner-controller": "^0.2.0",
-    "@metamask/network-controller": "^36.0.0",
+    "@metamask/network-controller": "^37.1.0",
     "@metamask/network-enablement-controller": "^6.0.0",
     "@metamask/notification-services-controller": "^29.0.1",
     "@metamask/object-multiplex": "^2.0.0",
@@ -529,7 +529,7 @@
     "@metamask/tron-wallet-snap": "^4.1.0",
     "@metamask/user-operation-controller": "^41.2.5",
     "@metamask/utils": "^12.0.0",
-    "@metamask/wallet": "^17.1.0",
+    "@metamask/wallet": "^18.0.0",
     "@mui/material": "^5.18.0",
     "@mui/system": "^5.18.0",
     "@mui/x-date-pickers": "^7.29.4",
@@ -931,15 +931,5 @@
       }
     },
     "version": "v0.3.0"
-  },
-  "previewBuilds": {
-    "@metamask/wallet": {
-      "type": "non-breaking",
-      "previewVersion": "17.1.0-preview-2d5c9da"
-    },
-    "@metamask/base-controller": {
-      "type": "non-breaking",
-      "previewVersion": "10.0.0-preview-2d5c9da"
-    }
   }
 }
