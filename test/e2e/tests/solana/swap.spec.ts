@@ -576,7 +576,8 @@ describe('Swap on Solana', function () {
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
         await activityTab.checkCompletedBridgeTransactionActivity(1);
-        await activityTab.checkTxAmountInActivity('+0.1669 USDC', 1);
+        await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.1669 USDC');
       },
     );
   });
@@ -623,8 +624,8 @@ describe('Swap on Solana', function () {
 
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);
-        await activityTab.checkTxAmountInActivity('+0.005904 SOL', 1);
         await activityTab.checkWaitForTransactionStatus('confirmed');
+        await activityTab.checkTransactionAmount('+0.005904 SOL');
         await activityTab.checkTransactionActivityByText('Swapped');
       },
     );
