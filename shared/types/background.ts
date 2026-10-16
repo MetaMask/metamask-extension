@@ -83,6 +83,7 @@ export type ControllerStatePropertiesEnumerated = {
   customAssets: AssetsControllerState['customAssets'];
   assetPreferences: AssetsControllerState['assetPreferences'];
   selectedCurrency: AssetsControllerState['selectedCurrency'];
+  assetsLoadingStatus?: AssetsControllerState['assetsLoadingStatus'];
   internalAccounts: AccountsControllerState['internalAccounts'];
   accountIdByAddress: AccountsControllerState['accountIdByAddress'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
