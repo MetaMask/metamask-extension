@@ -26,6 +26,27 @@ function toAddressWord(address: string): string {
   return address.toLowerCase().replace(/^0x/u, '').padStart(64, '0');
 }
 
+export function commitTransactionUpdate({
+  transaction,
+  note,
+  requiredAssetAmount,
+}: {
+  transaction: TransactionMeta;
+  note: string;
+  requiredAssetAmount?: Hex;
+}): TransactionMeta {
+  const nextTransaction = structuredClone(transaction);
+
+  if (
+    requiredAssetAmount !== undefined &&
+    nextTransaction.requiredAssets?.[0]
+  ) {
+    nextTransaction.requiredAssets[0].amount = requiredAssetAmount;
+  }
+
+  return nextTransaction;
+}
+
 /**
  * Replace every occurrence of `oldAddress` (encoded as a 32-byte ABI word)
  * inside the `data` of each nested transaction with `newAddress`, and persist
