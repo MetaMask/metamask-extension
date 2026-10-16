@@ -36,16 +36,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-const mockGetIsBasicFunctionalityConsolidationEnabledInBuild = jest.fn(
-  () => true,
-);
-
-jest.mock('../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../shared/lib/environment'),
-  getIsBasicFunctionalityConsolidationEnabledInBuild: () =>
-    mockGetIsBasicFunctionalityConsolidationEnabledInBuild(),
-}));
-
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn(),
@@ -495,64 +485,7 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
-  describe('marketing toggle without a regional default', () => {
-    function expectNoRegionalDefault(firstTimeFlowType: FirstTimeFlowType) {
-      const { getAllByRole, getByTestId } = renderWithProvider(
-        <OnboardingMetametrics />,
-        configureStore({
-          ...mockState,
-          metamask: { ...mockState.metamask, firstTimeFlowType },
-        }),
-      );
-
-      expect(getAllByRole('checkbox')[1]).not.toBeChecked();
-      expect(getAllByRole('checkbox')[1]).toBeEnabled();
-      expect(getByTestId('metametrics-i-agree')).toBeEnabled();
-      expect(submitRequestToBackground).not.toHaveBeenCalled();
-    }
-
-    it('leaves marketing unchecked and enabled without requesting geolocation when creating a wallet', () => {
-      expectNoRegionalDefault(FirstTimeFlowType.create);
-    });
-
-    it('leaves marketing unchecked and enabled without requesting geolocation when importing a wallet', () => {
-      expectNoRegionalDefault(FirstTimeFlowType.import);
-    });
-
-    it('leaves marketing unchecked for social login when Basic Functionality is not forced on', () => {
-      mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValueOnce(
-        false,
-      );
-
-      expectNoRegionalDefault(FirstTimeFlowType.socialCreate);
-    });
-  });
-
-  describe('marketing toggle default by region (social login)', () => {
-    beforeEach(() => {
-      store = configureStore({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
-        },
-      });
-    });
-
-    it('requests geolocation for social import too', () => {
-      store = configureStore({
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialImport,
-        },
-      });
-
-      renderWithProvider(<OnboardingMetametrics />, store);
-
-      expect(submitRequestToBackground).toHaveBeenCalledWith('getGeolocation');
-    });
-
+  describe('marketing toggle default by region', () => {
     it('disables marketing consent and continue while geolocation is pending', () => {
       const { getAllByRole, getByTestId } = renderWithProvider(
         <OnboardingMetametrics />,
@@ -568,7 +501,6 @@ describe('Onboarding Metametrics Component', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
           marketingConsentDecisionMade: true,
           optedInToMarketing: true,
         },
@@ -589,7 +521,6 @@ describe('Onboarding Metametrics Component', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          firstTimeFlowType: FirstTimeFlowType.socialCreate,
           marketingConsentDecisionMade: true,
           optedInToMarketing: false,
         },
