@@ -44,6 +44,8 @@ export function tronAssetsTestConfig(
 ): Parameters<typeof withTronFixtures>[0] {
   return {
     accounts,
+    // Read-only flows: static mocks instead of a local java-tron node.
+    localNode: false,
     fixtures: buildTronAssetsFixture().build(),
     manifestFlags: TRON_ASSETS_MANIFEST_FLAGS,
     title,
