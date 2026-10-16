@@ -8,9 +8,10 @@ import type { MessengerClientInitFunction } from './types';
  * Initialize the MarketingConsentController, which keeps marketing consent
  * (held by AnalyticsController) in sync with Authenticated User Storage.
  *
- * It reads AnalyticsController, AuthenticationController and
- * KeyringController state on construction, so it must be initialized after
- * them.
+ * Construction doesn't call other controllers. `MetamaskController` calls
+ * `init()` once every controller is registered, which reads
+ * AnalyticsController, AuthenticationController and KeyringController state
+ * and starts syncing.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.

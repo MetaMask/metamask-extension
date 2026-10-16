@@ -766,6 +766,8 @@ export default class MetamaskController extends EventEmitter {
     this.delegationController = messengerClientsByName.DelegationController;
     this.notificationServicesController =
       messengerClientsByName.NotificationServicesController;
+    this.marketingConsentController =
+      messengerClientsByName.MarketingConsentController;
     this.notificationServicesPushController =
       messengerClientsByName.NotificationServicesPushController;
     this.deFiPositionsController =
@@ -931,6 +933,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     this.notificationServicesController.init();
+    this.marketingConsentController.init();
     this.snapController.init();
     this.cronjobController.init();
     this.moneyAccountUpgradeController.init();
