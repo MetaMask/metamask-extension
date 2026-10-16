@@ -199,6 +199,7 @@ export async function fetchEvmAddressScan(
   try {
     const response = await fetch(getUrl('address/evm/scan'), {
       method: 'POST',
+      priority: 'low',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
