@@ -4064,21 +4064,27 @@ describe('Actions', () => {
     });
   });
 
-  describe('#putNotificationPreferences', () => {
-    it('calls putNotificationPreferences in the background with the extension client type', async () => {
+  describe('#updateNotificationPreferences', () => {
+    it('sends the update to the background and returns the saved preferences', async () => {
       const store = mockStore();
       const preferences = createMockNotificationPreferences();
-      const putNotificationPreferencesStub = sinon.stub().resolves();
+      const update = { perps: { pushNotificationsEnabled: false } };
+      const updateNotificationPreferencesStub = sinon
+        .stub()
+        .resolves(preferences);
 
       setBackgroundConnection({
-        putNotificationPreferences: putNotificationPreferencesStub,
+        updateNotificationPreferences: updateNotificationPreferencesStub,
       });
 
-      await store.dispatch(actions.putNotificationPreferences(preferences));
+      const saved = await store.dispatch(
+        actions.updateNotificationPreferences(update),
+      );
 
-      expect(
-        putNotificationPreferencesStub.calledOnceWith(preferences, 'extension'),
-      ).toBe(true);
+      expect(updateNotificationPreferencesStub.calledOnceWith(update)).toBe(
+        true,
+      );
+      expect(saved).toStrictEqual(preferences);
     });
   });
 
