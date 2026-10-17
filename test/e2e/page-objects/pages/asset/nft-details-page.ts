@@ -65,8 +65,7 @@ class NFTDetailsPage {
     '[data-testid="nft-remove-success-toast"]';
 
   private readonly showNftImageButton = {
-    text: 'Show',
-    tag: 'button',
+    css: '.nft-default__button',
   };
 
   private readonly showNftImageMessage = {
