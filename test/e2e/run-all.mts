@@ -10,6 +10,10 @@ import {
   getTestPathsForTestDir,
   runningOnGitHubActions,
 } from './run-all-shared.mts';
+import {
+  ensureStellarQuickstartImage,
+  specNeedsStellarQuickstartImage,
+} from './seeder/stellar/node';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -239,6 +243,13 @@ async function main(): Promise<void> {
     myTestList = testPaths;
   }
   console.log('My test list:', myTestList);
+
+  if (
+    process.env.GITHUB_ACTIONS === 'true' &&
+    myTestList.some((testPath) => specNeedsStellarQuickstartImage(testPath))
+  ) {
+    await ensureStellarQuickstartImage();
+  }
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let i = 0; i < myTestList.length; i++) {

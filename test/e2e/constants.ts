@@ -301,6 +301,36 @@ export const EXPECTED_TRON_ADDRESSES_BY_INDEX = [
   string,
 ];
 
+/* Default Stellar address created using test SRP (Account 1 / groupIndex 0) */
+export const DEFAULT_STELLAR_ADDRESS =
+  'GDEM2RN4QLPSSPGSPSKSEQ3XXFGM4X4BRH4X4EOPABHAXBVV6OQ6YE6K';
+
+/**
+ * Stellar addresses derived from `E2E_SRP` for HD accounts 1-8 (SEP-0005 /
+ * BIP44 path `m/44'/148'/i'`). Used by Stellar account-derivation E2E to
+ * verify derivation across the first 8 accounts. Index 0 matches
+ * `DEFAULT_STELLAR_ADDRESS`.
+ */
+export const EXPECTED_STELLAR_ADDRESSES_BY_INDEX = [
+  DEFAULT_STELLAR_ADDRESS,
+  'GBIIXG2ZPGFMANK4XIF6MMWJXMX4F4BQHIIAJ5GOAB5DXBDQPJ6IRVJK',
+  'GBDJSQAXWNQF55G6QY6AF4GWKOINELOND7A7RHZPBXBPEV3YSY5M7LVU',
+  'GDPNP4TNVFBEFMKSDXLNRNKFYV36F47HW5NZE5V54NLNKMM7YG6U4EB7',
+  'GDITOO3CRSM7PBZ5QFDC5XVPUNMD6OORG5DLWKQEFX2KHARPDUCXDB3K',
+  'GDWV5EGEYBBKFPKVG6RJUQLVSVOSL4GHK464VUCRG2C2FWCEWFDNHKSM',
+  'GDTLZ7XGSBUUIAQLRNUU563QAFK5ZQBU6SNTVKI5URSYVD3S7SSY5WW4',
+  'GA7IGKAWLCE7YKKLTITQL7WBV65XKMHK7GBZBVCHPYN5SBX655JQZL65',
+] as const satisfies readonly [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+];
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
