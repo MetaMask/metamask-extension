@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import type { Store } from 'redux';
-import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import { captureMessage } from '../../../shared/lib/sentry';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { useEnabledAdvancedPermissions } from './useEnabledAdvancedPermissions';
@@ -29,8 +28,6 @@ const createWrapper =
 
 describe('useEnabledAdvancedPermissions', () => {
   let originalGatorEnabledPermissionTypes: string | undefined;
-  let getManifestFlagsMock: jest.SpyInstance;
-
   const restoreGatorEnabledPermissionTypes = () => {
     if (originalGatorEnabledPermissionTypes === undefined) {
       delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
@@ -48,13 +45,9 @@ describe('useEnabledAdvancedPermissions', () => {
 
   beforeEach(() => {
     jest.mocked(captureMessage).mockClear();
-    getManifestFlagsMock = jest
-      .spyOn(manifestFlags, 'getManifestFlags')
-      .mockReturnValue({});
   });
 
   afterEach(() => {
-    getManifestFlagsMock.mockRestore();
     restoreGatorEnabledPermissionTypes();
   });
 
@@ -76,19 +69,12 @@ describe('useEnabledAdvancedPermissions', () => {
     expect(result.current).toStrictEqual(['native-token-stream']);
   });
 
-  it('applies manifest flag overrides', () => {
+  it('uses the effective controller flags', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
-    getManifestFlagsMock.mockReturnValue({
-      remoteFeatureFlags: {
-        [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
-          permissions: ['native-token-stream'],
-        },
-      },
-    });
 
     const store = createStore({
       [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
-        permissions: [],
+        permissions: ['native-token-stream'],
       },
     });
 
