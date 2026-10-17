@@ -8,7 +8,7 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   MONEY_HOME_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import type { MoneyAccountAvailability } from '../../../hooks/money/use-money-account-availability';
@@ -167,11 +167,8 @@ describe('BottomNavBar', () => {
       );
     });
 
-    it('marks Perps as active on the /perps-home route', () => {
-      const { getByTestId } = renderBottomNavBar(
-        baseState,
-        PERPS_HOME_PAGE_ROUTE,
-      );
+    it('marks Perps as active on the /perps route', () => {
+      const { getByTestId } = renderBottomNavBar(baseState, PERPS_ROUTE);
 
       expect(getByTestId('bottom-nav-perps')).toHaveAttribute(
         'aria-current',
@@ -227,7 +224,7 @@ describe('BottomNavBar', () => {
       const { getByTestId } = renderBottomNavBar();
 
       fireEvent.click(getByTestId('bottom-nav-perps'));
-      expect(mockNavigate).toHaveBeenCalledWith(PERPS_HOME_PAGE_ROUTE, {
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ROUTE, {
         state: { stayOnHomePage: true },
       });
     });

@@ -1,5 +1,5 @@
 import { perpsMarkets } from './perps-markets';
-import { PERPS_HOME_PAGE_ROUTE, type Destination } from './route';
+import { PERPS_ROUTE, type Destination } from './route';
 
 function assertPathDestination(
   result: Destination,
@@ -12,7 +12,7 @@ describe('perpsMarketsRoute', () => {
     const result = perpsMarkets.handler(new URLSearchParams());
 
     assertPathDestination(result);
-    expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+    expect(result.path).toBe(PERPS_ROUTE);
     expect(result.query.toString()).toBe('');
   });
 
@@ -20,7 +20,7 @@ describe('perpsMarketsRoute', () => {
     const result = perpsMarkets.handler(new URLSearchParams({ foo: 'bar' }));
 
     assertPathDestination(result);
-    expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+    expect(result.path).toBe(PERPS_ROUTE);
     expect(result.query.toString()).toBe('');
   });
 });

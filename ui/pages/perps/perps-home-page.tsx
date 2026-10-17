@@ -16,7 +16,7 @@ import { PERPS_HOME_TAB_ROUTE } from '../../hooks/perps/usePerpsHomeRoute';
 export const PerpsHomePage = () => {
   // Check if the bottom nav bar is enabled for this user.
   // If not, redirect to the home page with the perps tab selected.
-  // This handles the case where a deep link navigates to /perps-home but the
+  // This handles the case where a deep link navigates to /perps but the
   // user doesn't have the bottom nav bar, which would leave them stuck.
   const { variant } = useABTest(
     BOTTOM_NAV_AB_TEST_KEY,

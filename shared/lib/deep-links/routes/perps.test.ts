@@ -1,8 +1,8 @@
 import { perps } from './perps';
 import {
-  PERPS_HOME_PAGE_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_ROUTE,
   type Destination,
 } from './route';
 
@@ -18,7 +18,7 @@ describe('perpsRoute', () => {
       const result = perps.handler(new URLSearchParams());
 
       assertPathDestination(result);
-      expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+      expect(result.path).toBe(PERPS_ROUTE);
       expect(result.query.toString()).toBe('');
     });
 
@@ -26,7 +26,7 @@ describe('perpsRoute', () => {
       const result = perps.handler(new URLSearchParams({ foo: 'bar' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+      expect(result.path).toBe(PERPS_ROUTE);
       expect(result.query.toString()).toBe('');
     });
   });
@@ -36,7 +36,7 @@ describe('perpsRoute', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'tabs' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+      expect(result.path).toBe(PERPS_ROUTE);
       expect(result.query.toString()).toBe('');
     });
   });
@@ -46,7 +46,7 @@ describe('perpsRoute', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'home' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+      expect(result.path).toBe(PERPS_ROUTE);
       expect(result.query.toString()).toBe('');
     });
   });
@@ -56,7 +56,7 @@ describe('perpsRoute', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'markets' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(PERPS_HOME_PAGE_ROUTE);
+      expect(result.path).toBe(PERPS_ROUTE);
       expect(result.query.toString()).toBe('');
     });
   });

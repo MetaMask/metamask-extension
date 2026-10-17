@@ -3,6 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { navigateDeepLinkToDestination } from '../../page-objects/flows/deep-link.flow';
+import { BOTTOM_NAV_AB_TEST_KEY } from '../../../../shared/lib/ab-testing/configs/bottom-nav-bar';
 import {
   bytesToB64,
   generateECDSAKeyPair,
@@ -21,15 +22,67 @@ const PERPS_FEATURE_FLAGS = {
   },
 };
 
+const CONTROL_PERPS_FEATURE_FLAGS = {
+  remoteFeatureFlags: {
+    ...PERPS_FEATURE_FLAGS.remoteFeatureFlags,
+    [BOTTOM_NAV_AB_TEST_KEY]: 'control',
+  },
+};
+
+const TREATMENT_PERPS_FEATURE_FLAGS = {
+  remoteFeatureFlags: {
+    ...PERPS_FEATURE_FLAGS.remoteFeatureFlags,
+    [BOTTOM_NAV_AB_TEST_KEY]: 'treatment',
+  },
+};
+
+async function getPerpsHomeConfig({
+  title,
+  deepLinkPublicKey,
+  variant,
+}: {
+  title?: string;
+  deepLinkPublicKey: string;
+  variant: 'control' | 'treatment';
+}) {
+  const manifestFlags =
+    variant === 'treatment'
+      ? TREATMENT_PERPS_FEATURE_FLAGS
+      : CONTROL_PERPS_FEATURE_FLAGS;
+  const config = await getConfig({
+    title,
+    deepLinkPublicKey,
+    manifestFlags,
+  });
+
+  return {
+    ...config,
+    fixtures: {
+      ...config.fixtures,
+      data: {
+        ...config.fixtures.data,
+        RemoteFeatureFlagController: {
+          ...config.fixtures.data.RemoteFeatureFlagController,
+          remoteFeatureFlags: {
+            ...(config.fixtures.data.RemoteFeatureFlagController
+              ?.remoteFeatureFlags ?? {}),
+            [BOTTOM_NAV_AB_TEST_KEY]: variant,
+          },
+        },
+      },
+    },
+  };
+}
+
 /**
- * Creates a lightweight page class that asserts the extension's hash URL
- * contains the expected path after navigation. Used instead of waiting for
+ * Creates a lightweight page class that asserts the extension's hash URL has
+ * the expected destination after navigation. Used instead of waiting for
  * specific DOM elements that require full feature setup (e.g. perps streams).
  *
- * @param expectedPath - The path segment that must appear in the URL hash,
- * e.g. '/perps/market/' or '/perps/market-list'.
+ * @param expectedPath - The exact path expected in the URL hash.
+ * @param expectedSearch - The exact query string expected in the URL hash.
  */
-function urlContainsPath(expectedPath: string) {
+function urlMatchesDestination(expectedPath: string, expectedSearch = '') {
   return class {
     private readonly driver: Driver;
 
@@ -41,7 +94,14 @@ function urlContainsPath(expectedPath: string) {
       await this.driver.waitUntil(
         async () => {
           const url = await this.driver.getCurrentUrl();
-          return new URL(url).hash.includes(expectedPath);
+          const destination = new URL(
+            new URL(url).hash.slice(1),
+            'https://extension.invalid',
+          );
+          return (
+            destination.pathname === expectedPath &&
+            destination.search === expectedSearch
+          );
         },
         { timeout: 10000, interval: 500 },
       );
@@ -51,8 +111,8 @@ function urlContainsPath(expectedPath: string) {
 
 describe('Deep Link - /perps Route', function () {
   /**
-   * Home-navigation routes: all resolve to the wallet home page with the Perps
-   * tab selected — no feature flag required.
+   * In the control bucket, home-navigation routes resolve to the wallet home
+   * page with the Perps tab selected.
    */
   const homeRoutes = ['/perps', '/perps-markets'];
 
@@ -65,7 +125,11 @@ describe('Deep Link - /perps Route', function () {
         );
 
         await withFixtures(
-          await getConfig({ title: this.test?.fullTitle(), deepLinkPublicKey }),
+          await getPerpsHomeConfig({
+            title: this.test?.fullTitle(),
+            deepLinkPublicKey,
+            variant: 'control',
+          }),
           async ({ driver }: { driver: Driver }) => {
             await driver.navigate();
             const loginPage = new LoginPage(driver);
@@ -87,13 +151,51 @@ describe('Deep Link - /perps Route', function () {
               preparedUrl,
               locked,
               shouldRenderCheckbox(signed),
-              HomePage,
+              urlMatchesDestination('/', '?tab=perps'),
             );
           },
         );
       });
     },
   );
+
+  homeRoutes.forEach((route) => {
+    it(`navigates ${route} to the canonical route in the bottom-nav treatment`, async function () {
+      const keyPair = await generateECDSAKeyPair();
+      const deepLinkPublicKey = bytesToB64(
+        await crypto.subtle.exportKey('raw', keyPair.publicKey),
+      );
+
+      await withFixtures(
+        await getPerpsHomeConfig({
+          title: this.test?.fullTitle(),
+          deepLinkPublicKey,
+          variant: 'treatment',
+        }),
+        async ({ driver }: { driver: Driver }) => {
+          await driver.navigate();
+          const loginPage = new LoginPage(driver);
+          await loginPage.checkPageIsLoaded();
+          await loginPage.loginToHomepage();
+          await new HomePage(driver).checkPageIsLoaded();
+
+          const preparedUrl = await prepareDeepLinkUrl({
+            route,
+            signed: 'signed with sig_params',
+            privateKey: keyPair.privateKey,
+          });
+
+          await navigateDeepLinkToDestination(
+            driver,
+            preparedUrl,
+            'unlocked',
+            shouldRenderCheckbox('signed with sig_params'),
+            urlMatchesDestination('/perps'),
+          );
+        },
+      );
+    });
+  });
 
   /**
    * Market detail routes: /perps?screen=asset and /perps-asset.
@@ -139,7 +241,7 @@ describe('Deep Link - /perps Route', function () {
               preparedUrl,
               locked,
               shouldRenderCheckbox(signed),
-              urlContainsPath('/perps/market/BTC'),
+              urlMatchesDestination('/perps/market/BTC'),
             );
           },
         );
@@ -191,7 +293,10 @@ describe('Deep Link - /perps Route', function () {
               preparedUrl,
               locked,
               shouldRenderCheckbox(signed),
-              urlContainsPath('/perps/market-list'),
+              urlMatchesDestination(
+                '/perps/market-list',
+                route.includes('tab=crypto') ? '?filter=crypto' : '',
+              ),
             );
           },
         );

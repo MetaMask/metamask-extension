@@ -1,4 +1,4 @@
-import { PERPS_HOME_PAGE_ROUTE, Route } from './route';
+import { PERPS_ROUTE, Route } from './route';
 
 /**
  * Deeplink alias for the Perps home page.
@@ -13,6 +13,6 @@ export const perpsMarkets = new Route({
   pathname: '/perps-markets',
   getTitle: (_: URLSearchParams) => 'deepLink_thePerpsPage',
   handler: function handler(_params: URLSearchParams) {
-    return { path: PERPS_HOME_PAGE_ROUTE, query: new URLSearchParams() };
+    return { path: PERPS_ROUTE, query: new URLSearchParams() };
   },
 });

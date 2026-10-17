@@ -19,6 +19,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_ROUTE,
   PREVIOUS_ROUTE,
 } from '../../helpers/constants/routes';
 
@@ -260,6 +261,7 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsHomeRoute = jest.fn(() => PERPS_ROUTE);
 const mockPerpsTrack = jest.fn();
 const mockAboutRef = jest.fn();
 const mockUsePerpsMarketAboutTracking = jest.fn(
@@ -276,6 +278,7 @@ const mockPerpsScreenViewedOptions: {
 }[] = [];
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
+  usePerpsHomeRoute: () => mockUsePerpsHomeRoute(),
   usePerpsEventTracking: (options?: {
     eventName?: unknown;
     properties?: Record<string, unknown>;
@@ -1245,10 +1248,9 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        { pathname: '/', search: 'tab=perps' },
-        { replace: true },
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(PERPS_ROUTE, {
+        replace: true,
+      });
 
       Object.defineProperty(window.history, 'length', {
         value: originalLength,

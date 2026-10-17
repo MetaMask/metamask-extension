@@ -4,7 +4,7 @@ import HomePage from '../home/homepage';
  * Shared position-card helpers for Perps surfaces that list open positions.
  *
  * Screen: not a route by itself — mixed into `PerpsTab` (and subclasses) on
- * `#/perps` / `#/perps-home`.
+ * `#/perps`.
  * Owns: waiting for and clicking `position-card-*` rows and size/text
  * assertions on those cards.
  * Boundaries: everything outside the positions list (balance dropdown,

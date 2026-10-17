@@ -4,7 +4,7 @@ import { PerpsPositionsBase } from '../perps/perps-positions-base';
  * The Perps home tab: balance, positions, watchlist, explore markets, and
  * tutorial entry points.
  *
- * Screen: `#/perps` / `#/perps-home`, reached from the account overview via
+ * Screen: `#/perps`, reached from the account overview via
  * `navigateToPerpsHome()`.
  * Owns: the balance header with persistent Add funds / Withdraw buttons,
  * position cards (via `PerpsPositionsBase`), watchlist, explore-markets and
