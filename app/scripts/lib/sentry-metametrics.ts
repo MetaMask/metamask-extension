@@ -3,7 +3,7 @@ import {
   Event as SentryEvent,
   EventHint,
   Integration,
-} from '@sentry/types';
+} from '@sentry/core';
 
 import type { AnalyticsParticipation } from './sentry-get-state';
 
