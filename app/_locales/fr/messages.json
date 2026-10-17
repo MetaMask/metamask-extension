@@ -1738,9 +1738,6 @@
     "message": "Approuvé le $1 pour $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Bienvenue sur Arc ! Afin de faciliter et de vérifier votre utilisation de la chaîne Arc, nous pouvons être amenés à partager certaines informations avec l'équipe Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Avis"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask prend en charge les frais de réseau liés à cette transaction. Cela inclut l'activation unique d'un compte intelligent."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Ce réseau spécifique exige que vous mainteniez une réserve de $1 $2 sur votre compte.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",

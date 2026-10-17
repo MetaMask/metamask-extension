@@ -1738,9 +1738,6 @@
     "message": "Одобрено $1 для $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Добро пожаловать в Arc! Чтобы обеспечить и проверить ваше использование сети Arc, мы можем передавать информацию команде Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Уведомление"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask покрывает комиссию сети за эту транзакцию. Сюда входит однократная активация смарт-счета."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Эта конкретная сеть требует поддержания резерва в размере $1 $2 на вашем счете.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 ч",

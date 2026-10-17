@@ -1738,9 +1738,6 @@
     "message": "$2 için $1 üzerinde onaylandı",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arc'a hoş geldiniz! Arc zincirini kullanımınızı kolaylaştırmak ve doğrulamak amacıyla Arc ekibi ile bilgi paylaşabiliriz."
-  },
   "arcUsageNoticeTitle": {
     "message": "Uyarı"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask bu işlem için ağ ücretini karşılamaktadır. Buna tek seferlik akıllı hesap aktivasyonu da dahildir."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Bu ağ için hesabınızda $1 $2 rezerv bulunmalıdır.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
