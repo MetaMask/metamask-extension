@@ -1,0 +1,19 @@
+# Firefox / MV2 builds used by E2E Firefox.
+
+name: Builds MV2
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  run-builds:
+    uses: ./.github/workflows/run-build-group.yml
+    with:
+      group: mv2
+      group-name: Builds MV2
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit

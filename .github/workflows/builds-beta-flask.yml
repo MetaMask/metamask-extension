@@ -1,0 +1,19 @@
+# Beta and Flask production builds. Not on the PR E2E critical path.
+
+name: Builds beta/flask
+
+on:
+  workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+
+jobs:
+  run-builds:
+    uses: ./.github/workflows/run-build-group.yml
+    with:
+      group: beta-flask
+      group-name: Builds beta/flask
+      builds-from-run: ${{ inputs.builds-from-run }}
+    secrets: inherit
