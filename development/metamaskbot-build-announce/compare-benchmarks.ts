@@ -24,6 +24,7 @@ import { parseArgs } from 'util';
 import { THRESHOLD_SEVERITY } from '../../shared/constants/benchmarks';
 import type {
   ThresholdSeverity,
+  ThresholdViolation,
   ComparisonKey,
   BenchmarkResults,
 } from '../../shared/constants/benchmarks';
@@ -75,6 +76,25 @@ async function loadBaseline(): Promise<HistoricalBaselineReference> {
   const result = await fetchHistoricalPerformanceDataFromMain();
   return result?.baseline ?? {};
 }
+
+/**
+ * Render the CV-adaptive widening that produced a violation's effective ceiling.
+ *
+ * `ThresholdViolation.threshold` is the fully-adjusted value, so a reader sees a
+ * limit without being told it was widened, by how much, or from what. Returns an
+ * empty string when no widening applied, leaving the existing line unchanged.
+ *
+ * @param violation - the violation whose ceiling is being reported
+ * @returns a parenthetical suffix, or '' when no CV adjustment was applied
+ */
+const describeCvAdjustment = (violation: ThresholdViolation): string => {
+  const { cvAdjustment } = violation;
+  if (cvAdjustment === undefined) {
+    return '';
+  }
+  const base = violation.threshold / cvAdjustment;
+  return `, widened x${cvAdjustment.toFixed(3)} by CV from ${Math.round(base)}ms`;
+};
 
 /**
  * Runs comparison for all loaded benchmarks.
@@ -259,9 +279,14 @@ export function buildMetricLines(
             const violation = comparison.absoluteViolations.find(
               (v) => v.metricId === metric && v.percentile === pKey,
             );
+            // Name the tier and the widening. `violation` already carries both
+            // `severity` and `cvAdjustment`; printing only the number left a
+            // reader unable to tell a warn ceiling from a fail ceiling, or a
+            // base ceiling from one this run's own variance widened -- which is
+            // the information needed to decide whether a red is about the PR.
             details.push(
               violation
-                ? `${pKey}: ${formatValue(violation.value)} (absolute ceiling exceeded, limit ${formatValue(violation.threshold)})`
+                ? `${pKey}: ${formatValue(violation.value)} (${violation.severity} ceiling exceeded, limit ${formatValue(violation.threshold)}${describeCvAdjustment(violation)})`
                 : `${pKey}: ${formatValue(rel.current)} (absolute ceiling exceeded)`,
             );
           } else {
