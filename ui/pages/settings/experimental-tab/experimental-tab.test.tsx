@@ -38,12 +38,13 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
-  it('renders one toggle option when build type is main', () => {
+  it('renders two toggle options when build type is main', () => {
     mockIsFlask.mockReturnValue(false);
-    const { getAllByRole } = render();
+    const { getAllByRole, getByTestId } = render();
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(1);
+    expect(toggle).toHaveLength(2);
+    expect(getByTestId('watch-account-toggle')).toBeInTheDocument();
   });
 
   it('renders two toggle options when build type is flask', () => {

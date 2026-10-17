@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { isExperimental, isFlask } from '../../../../shared/lib/build-types';
 import {
   getFeatureNotificationsEnabled,
   getIsAddSnapAccountEnabled,
@@ -71,10 +70,7 @@ const ExperimentalTab = () => {
     }
 
     result.push({ id: 'keyring-snaps', component: KeyringSnapsItem });
-
-    if (isFlask() || isExperimental()) {
-      result.push({ id: 'watch-account', component: WatchAccountItem });
-    }
+    result.push({ id: 'watch-account', component: WatchAccountItem });
 
     return result;
   }, []);
