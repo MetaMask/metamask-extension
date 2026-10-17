@@ -88,7 +88,10 @@ class OnboardingPasswordPage {
   ): Promise<void> {
     console.log('Create password for wallet');
     await this.fillWalletPassword(password, password);
-    await this.driver.clickElementAndWaitToDisappear(this.createPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.createPasswordButton,
+      15000,
+    );
   }
 
   /**
@@ -105,6 +108,10 @@ class OnboardingPasswordPage {
     await this.driver.fill(this.newPasswordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, confirmPassword);
     await this.driver.clickElement(this.passwordTerms);
+  }
+
+  async isPageLoaded(): Promise<boolean> {
+    return await this.driver.isElementPresentAndVisible(this.page, 200);
   }
 }
 

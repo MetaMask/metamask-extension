@@ -19,8 +19,9 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import BigNumber from 'bignumber.js';
 import { getImageForChainId } from '../../../selectors/multichain';
-import { useFormatters } from '../../../hooks/useFormatters';
+import { moneyFormatUsd } from '../../../helpers/money/format';
 import type { MoneyDepositToken } from '../../../hooks/money/money-deposit-token-utils';
 import { calculateMoneyProjectedEarnings } from '../../../hooks/money/money-deposit-token-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -30,6 +31,8 @@ type MoneyPotentialEarningsTokenRowProps = {
   apyDecimal: number;
   hasNoFee: boolean;
   privacyMode: boolean;
+  onAddClick: (token: MoneyDepositToken) => void;
+  isAddDisabled?: boolean;
 };
 
 export function MoneyPotentialEarningsTokenRow({
@@ -37,20 +40,19 @@ export function MoneyPotentialEarningsTokenRow({
   apyDecimal,
   hasNoFee,
   privacyMode,
+  onAddClick,
+  isAddDisabled = false,
 }: MoneyPotentialEarningsTokenRowProps) {
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const projectedEarnings = calculateMoneyProjectedEarnings(
     token.moneyFiatAmountUsd,
     apyDecimal,
   );
-  const formattedBalance = formatCurrencyWithMinThreshold(
-    token.moneyFiatAmountUsd,
-    'USD',
+  const formattedBalance = moneyFormatUsd(
+    new BigNumber(token.moneyFiatAmountUsd.toString()),
   );
-  const formattedProjection = formatCurrencyWithMinThreshold(
-    projectedEarnings,
-    'USD',
+  const formattedProjection = moneyFormatUsd(
+    new BigNumber(projectedEarnings.toString()),
   );
   const networkImage = token.networkImage ?? getImageForChainId(token.chainId);
 
@@ -142,7 +144,13 @@ export function MoneyPotentialEarningsTokenRow({
         </Box>
       </Box>
 
-      <Button variant={ButtonVariant.Secondary} size={ButtonSize.Md} disabled>
+      <Button
+        variant={ButtonVariant.Secondary}
+        size={ButtonSize.Md}
+        disabled={isAddDisabled}
+        onClick={() => onAddClick(token)}
+        data-testid="money-potential-earnings-token-add"
+      >
         {t('moneyAdd')}
       </Button>
     </Box>

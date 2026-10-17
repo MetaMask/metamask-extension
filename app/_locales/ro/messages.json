@@ -224,9 +224,6 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasLimitTooLow": {
-    "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
-  },
   "gasUsed": {
     "message": "Suma gaz folosită"
   },
@@ -405,9 +402,6 @@
   "privateKey": {
     "message": "Cheie privată",
     "description": "select this type of file to use to import an account"
-  },
-  "privateKeyWarning": {
-    "message": "Avertisment: nu dezvăluiți niciodată această cheie. Oricine are cheile dvs. private poate fura orice activ din contul dvs."
   },
   "privateNetwork": {
     "message": "Rețea privată"

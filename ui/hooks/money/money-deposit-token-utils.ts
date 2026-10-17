@@ -2,7 +2,6 @@ import { formatChainIdToHex } from '@metamask/bridge-controller';
 import type { Hex } from '@metamask/utils';
 import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/chain-ids';
-import { StablecoinsByChainId } from '../../../shared/constants/swaps';
 import { MUSD_TOKEN_ADDRESS } from '../../components/app/musd/constants';
 import type { BlockedPayTokensListConfig } from '../../pages/confirmations/selectors/feature-flags';
 import type { Asset } from '../../pages/confirmations/types/send';
@@ -55,28 +54,6 @@ const addressesEqual = (
   second: string | undefined,
 ): boolean =>
   Boolean(first && second && first.toLowerCase() === second.toLowerCase());
-
-const OPTIMISTIC_STABLECOIN_SYMBOLS = new Set([
-  'DAI',
-  'MUSD',
-  'USDC',
-  'USDS',
-  'USDT',
-]);
-
-function isOptimisticStablecoin(
-  token: Pick<MoneyDepositToken, 'address' | 'chainId' | 'symbol'>,
-): boolean {
-  const knownAddresses = StablecoinsByChainId[token.chainId];
-  const hasKnownAddress = [...(knownAddresses ?? [])].some((address) =>
-    addressesEqual(address, token.address),
-  );
-
-  return (
-    hasKnownAddress ||
-    OPTIMISTIC_STABLECOIN_SYMBOLS.has(token.symbol.toUpperCase())
-  );
-}
 
 /**
  * Calculates projected earnings for a fiat principal and APY.
@@ -153,62 +130,90 @@ function getUsdFiatAmount({
   );
 }
 
+export type MoneyDepositEligibilityOptions = Omit<
+  FilterMoneyDepositTokensOptions,
+  'assets'
+>;
+
 /**
- * Filters and sorts wallet assets that can fund a Money account.
+ * Resolves the USD value of a wallet asset if it can fund a Money account.
  *
- * @param options - Wallet assets and Money deposit configuration.
- * @param options.assets
+ * @param asset - The wallet asset.
+ * @param options - Money deposit configuration.
  * @param options.blockedTokens
  * @param options.minBalance
  * @param options.currentCurrency
  * @param options.currencyRates
  * @param options.networkConfigurations
+ * @returns The asset's USD value, or `undefined` when it is not an EVM asset,
+ * is blocked, or is below the minimum balance.
+ */
+export function getMoneyDepositFiatAmountUsd(
+  asset: Pick<Asset, 'accountType' | 'address' | 'chainId' | 'fiat'>,
+  {
+    blockedTokens,
+    minBalance,
+    currentCurrency,
+    currencyRates,
+    networkConfigurations,
+  }: MoneyDepositEligibilityOptions,
+): number | undefined {
+  const fiatAmount = Number(asset.fiat?.balance);
+  const chainId = String(asset.chainId ?? '');
+  if (
+    !asset.accountType?.includes('eip155') ||
+    !chainId ||
+    !asset.address ||
+    !Number.isFinite(fiatAmount) ||
+    isTokenBlocked(asset, blockedTokens)
+  ) {
+    return undefined;
+  }
+
+  const moneyFiatAmountUsd = getUsdFiatAmount({
+    fiatAmount,
+    chainId: formatChainIdToHex(chainId),
+    currentCurrency: asset.fiat?.currency ?? currentCurrency,
+    currencyRates,
+    networkConfigurations,
+  });
+  if (
+    moneyFiatAmountUsd === undefined ||
+    !Number.isFinite(moneyFiatAmountUsd) ||
+    moneyFiatAmountUsd <= 0 ||
+    moneyFiatAmountUsd < minBalance
+  ) {
+    return undefined;
+  }
+
+  return moneyFiatAmountUsd;
+}
+
+/**
+ * Filters and sorts wallet assets that can fund a Money account.
+ *
+ * @param options - Wallet assets and Money deposit configuration.
+ * @param options.assets
  * @returns Deposit-eligible EVM assets, normalized to USD.
  */
 export function filterMoneyDepositTokens({
   assets,
-  blockedTokens,
-  minBalance,
-  currentCurrency,
-  currencyRates,
-  networkConfigurations,
+  ...eligibilityOptions
 }: FilterMoneyDepositTokensOptions): MoneyDepositToken[] {
   return assets
     .flatMap((asset) => {
-      const fiatAmount = Number(asset.fiat?.balance);
-      const chainId = String(asset.chainId ?? '');
-      const { address } = asset;
-      if (
-        !asset.accountType?.includes('eip155') ||
-        !chainId ||
-        !address ||
-        !Number.isFinite(fiatAmount) ||
-        isTokenBlocked(asset, blockedTokens)
-      ) {
-        return [];
-      }
-
-      const chainIdHex = formatChainIdToHex(chainId);
-      const moneyFiatAmountUsd = getUsdFiatAmount({
-        fiatAmount,
-        chainId: chainIdHex,
-        currentCurrency: asset.fiat?.currency ?? currentCurrency,
-        currencyRates,
-        networkConfigurations,
-      });
-      if (
-        moneyFiatAmountUsd === undefined ||
-        !Number.isFinite(moneyFiatAmountUsd) ||
-        moneyFiatAmountUsd <= 0 ||
-        moneyFiatAmountUsd < minBalance
-      ) {
+      const moneyFiatAmountUsd = getMoneyDepositFiatAmountUsd(
+        asset,
+        eligibilityOptions,
+      );
+      if (moneyFiatAmountUsd === undefined) {
         return [];
       }
 
       return [
         {
-          address: address as Hex,
-          chainId: chainIdHex,
+          address: asset.address as Hex,
+          chainId: formatChainIdToHex(String(asset.chainId)),
           decimals: asset.decimals ?? 0,
           image: asset.image ?? '',
           networkImage: asset.networkImage,
@@ -302,7 +307,7 @@ export function parseMoneySubsidizedRoutes(
  * @returns Whether the token is Monad mUSD or has a subsidized route to it.
  */
 export function isNoFeeMoneyDepositToken(
-  token: Pick<MoneyDepositToken, 'address' | 'chainId' | 'symbol'>,
+  token: Pick<MoneyDepositToken, 'address' | 'chainId'>,
   routes: MoneySubsidizedRoute[],
 ): boolean {
   const target = {
@@ -316,17 +321,11 @@ export function isNoFeeMoneyDepositToken(
     return true;
   }
 
-  const hasSubsidizedRoute = routes.some(
+  return routes.some(
     (route) =>
       addressesEqual(route.sourceChain, token.chainId) &&
       addressesEqual(route.sourceToken, token.address) &&
       addressesEqual(route.targetChain, target.chainId) &&
       addressesEqual(route.targetToken, target.address),
   );
-
-  if (hasSubsidizedRoute) {
-    return true;
-  }
-
-  return isOptimisticStablecoin(token);
 }

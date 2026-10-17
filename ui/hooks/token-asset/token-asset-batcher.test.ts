@@ -1,18 +1,31 @@
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
+import { apiClient } from '../../helpers/api-client';
 import { fetchTokenAsset } from './token-asset-batcher';
 
 jest.mock('@metamask/assets-controllers', () => ({
   fetchTokenAssets: jest.fn(),
 }));
 
+jest.mock('../../helpers/api-client', () => ({
+  apiClient: {
+    tokens: {
+      fetchTokenV2SupportedNetworks: jest.fn(),
+    },
+  },
+}));
+
 const mockFetchTokenAssets = jest.mocked(fetchTokenAssets);
+const mockFetchSupportedNetworks = jest.mocked(
+  apiClient.tokens.fetchTokenV2SupportedNetworks,
+);
 
 const usdcAssetId =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CaipAssetType;
 const wethAssetId =
   'eip155:1/erc20:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' as CaipAssetType;
+const sepoliaEthAssetId = 'eip155:11155111/slip44:60' as CaipAssetType;
 
 const createTokenAsset = (assetId: CaipAssetType): TokenAsset =>
   ({
@@ -25,6 +38,10 @@ const createTokenAsset = (assetId: CaipAssetType): TokenAsset =>
 describe('token-asset-batcher', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchSupportedNetworks.mockResolvedValue({
+      fullSupport: ['eip155:1'],
+      partialSupport: [],
+    });
   });
 
   it('batches concurrent fetches into one request', async () => {
@@ -51,6 +68,27 @@ describe('token-asset-batcher', () => {
     mockFetchTokenAssets.mockResolvedValue([]);
 
     await expect(fetchTokenAsset(usdcAssetId)).resolves.toBeNull();
+  });
+
+  it('resolves null without calling the API for a chain the Token API does not support', async () => {
+    await expect(fetchTokenAsset(sepoliaEthAssetId)).resolves.toBeNull();
+    expect(mockFetchTokenAssets).not.toHaveBeenCalled();
+  });
+
+  it('requests only the assets on supported chains', async () => {
+    mockFetchTokenAssets.mockResolvedValue([createTokenAsset(usdcAssetId)]);
+
+    const [usdc, sepoliaEth] = await Promise.all([
+      fetchTokenAsset(usdcAssetId),
+      fetchTokenAsset(sepoliaEthAssetId),
+    ]);
+
+    expect(mockFetchTokenAssets).toHaveBeenCalledTimes(1);
+    expect(mockFetchTokenAssets).toHaveBeenCalledWith([usdcAssetId], {
+      includeTokenSecurityData: true,
+    });
+    expect(usdc?.assetId).toBe(usdcAssetId);
+    expect(sepoliaEth).toBeNull();
   });
 
   it('resolves tokens from successful chunks when a later chunk fails', async () => {

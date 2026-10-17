@@ -27,7 +27,10 @@ function Mascot({
   const mascotContainerRef = useRef(null);
   const directionTargetMapRef = useRef(null);
   const animationEventEmitterRef = useRef(animationEventEmitter);
-  animationEventEmitterRef.current = animationEventEmitter;
+
+  useEffect(() => {
+    animationEventEmitterRef.current = animationEventEmitter;
+  }, [animationEventEmitter]);
   const prevFollowMouseRef = useRef(followMouse);
   // Capture the sizing/follow props at first render so we don't make them reactive dependencies of the mount effect.
   const initialLogoOptionsRef = useRef({ followMouse, width, height });

@@ -10,9 +10,11 @@ import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransacti
 import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionMetadataRequestOptional } from '../../../hooks/transactions/useTransactionMetadataRequest';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertsName } from '../../../hooks/alerts/constants';
 import { useMoneyAccountWithdrawableFiat } from '../../../../../hooks/money/useMoneyAccountWithdrawableFiat';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
@@ -24,8 +26,12 @@ jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
   selectIsMoneyAccountTransactionEnabled: jest.fn(() => false),
 }));
+jest.mock('../../../hooks/pay/useIsMoneyAccountPerpsNavigation', () => ({
+  useIsMoneyAccountPerpsNavigation: jest.fn(() => false),
+}));
 jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
+jest.mock('../../../hooks/transactions/useTransactionMetadataRequest');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useAlerts');
 jest.mock('../../../../../hooks/money/useMoneyAccountWithdrawableFiat', () => ({
@@ -156,6 +162,9 @@ describe('PayWithRow', () => {
   );
   const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useTransactionMetadataRequestOptionalMock = jest.mocked(
+    useTransactionMetadataRequestOptional,
+  );
   const useAlertsMock = jest.mocked(useAlerts);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
   const useMoneyAccountWithdrawableFiatMock = jest.mocked(
@@ -196,6 +205,7 @@ describe('PayWithRow', () => {
         },
       },
     } as never);
+    useTransactionMetadataRequestOptionalMock.mockReturnValue(undefined);
 
     isHardwareAccountMock.mockReturnValue(false);
   });
@@ -439,6 +449,42 @@ describe('PayWithRow', () => {
     expect(screen.getByTestId('pay-with-balance')).toHaveTextContent(
       '($12.34)',
     );
+  });
+
+  it('hides the token select for money account perps deposits', () => {
+    jest.mocked(useIsMoneyAccountPerpsNavigation).mockReturnValue(true);
+    const store = mockStore(getMockState());
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: 'test-id',
+      type: TransactionType.perpsDeposit,
+      chainId: CHAIN_ID_MOCK,
+      txParams: {
+        from: FROM_ADDRESS_MOCK,
+      },
+    } as never);
+
+    renderWithProvider(<PayWithRow />, store, '/?payWithOption=money_account');
+
+    expect(screen.queryByTestId('pay-with-row')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('pay-with-pill')).not.toBeInTheDocument();
+  });
+
+  it('shows the token select when Money Account pay is not enabled for perps deposit', () => {
+    jest.mocked(useIsMoneyAccountPerpsNavigation).mockReturnValue(false);
+    const store = mockStore(getMockState());
+    useTransactionMetadataRequestOptionalMock.mockReturnValue({
+      id: 'test-id',
+      type: TransactionType.perpsDeposit,
+      chainId: CHAIN_ID_MOCK,
+      txParams: {
+        from: FROM_ADDRESS_MOCK,
+      },
+    } as never);
+
+    renderWithProvider(<PayWithRow />, store, '/?payWithOption=money_account');
+
+    expect(screen.getByTestId('pay-with-row')).toBeInTheDocument();
+    expect(screen.getByTestId('pay-with-pill')).toBeInTheDocument();
   });
 });
 

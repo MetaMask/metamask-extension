@@ -70,6 +70,9 @@ export const AvatarGroup = ({
           return (
             <Box
               borderRadius={BorderRadius.full}
+              // Avatars are inline elements, so a block wrapper would reserve
+              // extra baseline space below them and push them off-center.
+              display={Display.Flex}
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >

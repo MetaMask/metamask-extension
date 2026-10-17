@@ -1,0 +1,60 @@
+import React from 'react';
+
+/**
+ * Local copy of the MMDS `sentiment-satisfied` icon.
+ *
+ * MMDS does not publish this glyph yet — `IconName.SentimentSatisfied` is
+ * undefined on `@metamask/design-system-react`, and `Icon` has no fallback
+ * for an unknown name, so referencing it crashes the Memecoins chip.
+ *
+ * Delete this component and switch the call sites back to
+ * `IconName.SentimentSatisfied` once the design system ships it.
+ *
+ * The path is the unmodified 24x24 SVG export of the `sentiment-satisfied`
+ * node from the MMDS Components Figma file, with the frame background rect
+ * removed. Do not hand-edit; re-export from Figma instead.
+ */
+const SENTIMENT_SATISFIED_PATH =
+  'M15.5 11C15.9167 11 16.2708 10.8542 16.5625 10.5625C16.8542 10.2708 17 9.91667 17 9.5C17 9.08333 16.8542 8.72917 16.5625 8.4375C16.2708 8.14583 15.9167 8 15.5 8C15.0833 8 14.7292 8.14583 14.4375 8.4375C14.1458 8.72917 14 9.08333 14 9.5C14 9.91667 14.1458 10.2708 14.4375 10.5625C14.7292 10.8542 15.0833 11 15.5 11ZM8.5 11C8.91667 11 9.27083 10.8542 9.5625 10.5625C9.85417 10.2708 10 9.91667 10 9.5C10 9.08333 9.85417 8.72917 9.5625 8.4375C9.27083 8.14583 8.91667 8 8.5 8C8.08333 8 7.72917 8.14583 7.4375 8.4375C7.14583 8.72917 7 9.08333 7 9.5C7 9.91667 7.14583 10.2708 7.4375 10.5625C7.72917 10.8542 8.08333 11 8.5 11ZM12 17.5C13.1333 17.5 14.1625 17.1792 15.0875 16.5375C16.0125 15.8958 16.6833 15.05 17.1 14H15.45C15.0833 14.6167 14.5958 15.1042 13.9875 15.4625C13.3792 15.8208 12.7167 16 12 16C11.2833 16 10.6208 15.8208 10.0125 15.4625C9.40417 15.1042 8.91667 14.6167 8.55 14H6.9C7.31667 15.05 7.9875 15.8958 8.9125 16.5375C9.8375 17.1792 10.8667 17.5 12 17.5ZM12 22C10.6167 22 9.31667 21.7375 8.1 21.2125C6.88333 20.6875 5.825 19.975 4.925 19.075C4.025 18.175 3.3125 17.1167 2.7875 15.9C2.2625 14.6833 2 13.3833 2 12C2 10.6167 2.2625 9.31667 2.7875 8.1C3.3125 6.88333 4.025 5.825 4.925 4.925C5.825 4.025 6.88333 3.3125 8.1 2.7875C9.31667 2.2625 10.6167 2 12 2C13.3833 2 14.6833 2.2625 15.9 2.7875C17.1167 3.3125 18.175 4.025 19.075 4.925C19.975 5.825 20.6875 6.88333 21.2125 8.1C21.7375 9.31667 22 10.6167 22 12C22 13.3833 21.7375 14.6833 21.2125 15.9C20.6875 17.1167 19.975 18.175 19.075 19.075C18.175 19.975 17.1167 20.6875 15.9 21.2125C14.6833 21.7375 13.3833 22 12 22ZM12 20C14.2333 20 16.125 19.225 17.675 17.675C19.225 16.125 20 14.2333 20 12C20 9.76667 19.225 7.875 17.675 6.325C16.125 4.775 14.2333 4 12 4C9.76667 4 7.875 4.775 6.325 6.325C4.775 7.875 4 9.76667 4 12C4 14.2333 4.775 16.125 6.325 17.675C7.875 19.225 9.76667 20 12 20Z';
+
+/** Matches MMDS `IconSize.Md` (`w-5` / 20px). */
+export const PERPS_SENTIMENT_ICON_SIZE_MD = 20;
+/** Matches MMDS `IconSize.Sm` (`w-4` / 16px). */
+export const PERPS_SENTIMENT_ICON_SIZE_SM = 16;
+
+export type PerpsSentimentSatisfiedIconProps = {
+  /** Rendered width/height in px. Defaults to the MMDS `Sm` icon size. */
+  size?: number;
+  /** Extra classes; use `text-*` tokens so the fill follows `currentColor`. */
+  className?: string;
+};
+
+/**
+ * PerpsSentimentSatisfiedIcon renders the unpublished MMDS sentiment-satisfied
+ * glyph for the Memecoins category.
+ *
+ * @param options0 - Component props.
+ * @param options0.size - Rendered width/height in px.
+ * @param options0.className - Extra classes, including colour tokens.
+ * @returns The local sentiment-satisfied SVG.
+ */
+export const PerpsSentimentSatisfiedIcon = ({
+  size = PERPS_SENTIMENT_ICON_SIZE_SM,
+  className,
+}: PerpsSentimentSatisfiedIconProps) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+      data-testid="perps-sentiment-satisfied-icon"
+    >
+      <path d={SENTIMENT_SATISFIED_PATH} />
+    </svg>
+  );
+};
+
+export default PerpsSentimentSatisfiedIcon;

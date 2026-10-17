@@ -56,11 +56,10 @@ export function getMoneyAccountDepositIntent(
 /**
  * Clears the recorded intent for a deposit batch.
  *
- * Currently only called when deposit setup fails before submission
- * (`useMoneyAccountDeposit`'s catch path). Terminal-state clearing
- * (confirmed, failed, dropped, rejected) belongs with the toast/status work
- * that reads this intent and has not landed yet — see
- * `docs/money-account-integration.md`.
+ * Called when deposit setup fails before submission
+ * (`useMoneyAccountDeposit`'s catch path) and when the toast for a terminal
+ * state (confirmed, failed, dropped, rejected) is raised
+ * (`useMoneyAccountToasts`), after the intent has been captured for its copy.
  *
  * @param batchId - The batch id of the deposit.
  */

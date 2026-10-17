@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { readResolvedAssetActionsLayout } from './asset-actions-layout';
 
 const SECTION_TITLES = [
   'Your balance',
@@ -29,8 +30,13 @@ class AssetDetailsPage {
 
   private driver: Driver;
 
+  private readonly nativeBuyButton = '[data-testid="coin-overview-buy"]';
+
   private readonly nativeOverflowBatchSellInMenu =
     '[data-testid="coin-overview-batchSell"]';
+
+  private readonly nativeOverflowBuyInMenu =
+    '[data-testid="coin-overview-more-buy"]';
 
   /**
    * Native coin overflow when `batchSell` remote flag is enabled (latest UI):
@@ -45,6 +51,9 @@ class AssetDetailsPage {
   /** Legacy sole-overflow layout when batch sell is disabled. */
   private readonly nativeOverflowSoleAction =
     '[data-testid="coin-overview-default"]';
+
+  private readonly nativeOverflowSwapInMenu =
+    '[data-testid="coin-overview-more-swap"]';
 
   private readonly nativeReceiveButton =
     '[data-testid="coin-overview-default"], [data-testid="coin-overview-more"]';
@@ -90,17 +99,31 @@ class AssetDetailsPage {
     this.driver = driver;
   }
 
+  /**
+   * Verifies the native CTAs against the layout the asset page settled on. On a
+   * Perps asset the row is Long / Short plus Send, so Swap counts as available
+   * from the More menu rather than the row.
+   *
+   * @param options - Expected availability per action.
+   * @param options.swap - Whether Swap must be reachable.
+   * @param options.send - Whether Send must be on the row.
+   * @param options.receive - Whether the overflow entry point must be present.
+   */
   async checkActionButtons(options: {
     swap?: boolean;
     send?: boolean;
     receive?: boolean;
   }): Promise<void> {
+    const layout = await readResolvedAssetActionsLayout(this.driver);
+
     if (options.send === true) {
       await this.driver.waitForSelector(this.nativeSendButton);
     } else if (options.send === false) {
       await this.driver.assertElementNotPresent(this.nativeSendButton);
     }
-    if (options.swap === true) {
+    if (options.swap === true && layout.type === 'perps') {
+      await this.checkNativeActionInMoreMenu(this.nativeOverflowSwapInMenu);
+    } else if (options.swap === true) {
       await this.driver.waitForSelector(this.nativeSwapButton);
     } else if (options.swap === false) {
       await this.driver.assertElementNotPresent(this.nativeSwapButton);
@@ -147,6 +170,35 @@ class AssetDetailsPage {
 
   async checkDailyResourcesSectionIsAbsent(): Promise<void> {
     await this.driver.assertElementNotPresent(this.tronDailyResourcesSection);
+  }
+
+  /**
+   * Opens the More menu, asserts an action moved there by the Perps row, then
+   * closes it so the dropdown does not cover later assertions.
+   *
+   * @param selector - Test id selector of the menu entry.
+   */
+  private async checkNativeActionInMoreMenu(selector: string): Promise<void> {
+    await this.driver.clickElement(this.nativeOverflowMoreButton);
+    await this.driver.waitForSelector(selector);
+    await this.driver.clickElement(this.nativeOverflowMoreButton);
+    await this.driver.assertElementNotPresent(selector);
+  }
+
+  /**
+   * Asserts Buy is reachable: a primary button on the standard row, or a More
+   * menu entry once the Perps row replaced Buy / Swap with Long / Short.
+   */
+  async checkNativeBuyIsAvailable(): Promise<void> {
+    console.log('Verify the buy/sell action is available');
+    const layout = await readResolvedAssetActionsLayout(this.driver);
+
+    if (layout.type === 'perps') {
+      await this.checkNativeActionInMoreMenu(this.nativeOverflowBuyInMenu);
+      return;
+    }
+
+    await this.driver.waitForSelector(this.nativeBuyButton);
   }
 
   /**

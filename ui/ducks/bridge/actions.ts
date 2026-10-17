@@ -55,6 +55,7 @@ import { BridgeMissingNetworkConfigError } from './errors';
 const {
   setFromToken: setFromTokenAction,
   setToToken: setToTokenAction,
+  setToTokenSecurityData,
   setFromTokenInputValue,
   resetInputFields,
   rehydrateBridgeStore,
@@ -72,6 +73,7 @@ export {
   resetInputFields,
   rehydrateBridgeStore,
   setFromTokenInputValue,
+  setToTokenSecurityData,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,

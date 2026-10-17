@@ -62,7 +62,7 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
 
   async clickStartNowButton(): Promise<void> {
     console.log('Clicking Start now button');
-    await this.clickFooterConfirmButton();
+    await this.clickFooterButton({ button: 'confirm' });
   }
 }
 

@@ -1,6 +1,7 @@
 import {
   BridgeController,
   BridgeControllerMessenger,
+  UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
@@ -46,6 +47,7 @@ function getInitRequestMock(): jest.Mocked<
 
 describe('BridgeControllerInit', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     process.env.METAMASK_VERSION = 'MOCK_VERSION';
   });
 
@@ -74,37 +76,57 @@ describe('BridgeControllerInit', () => {
     });
   });
 
-  it('correctly sets up trackMetaMetricsFn', () => {
-    BridgeControllerInit(getInitRequestMock());
-    const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
-    const { trackMetaMetricsFn } = constructorOptions;
-    const properties = {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      error_message: 'Snap request failed',
-    };
+  describe('trackMetaMetricsFn', () => {
+    it('forwards Failed failure telemetry including hash presence', () => {
+      BridgeControllerInit(getInitRequestMock());
+      const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
+      const { trackMetaMetricsFn } = constructorOptions;
+      const properties = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: 'Snap request failed',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_code: 'unknown',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        failure_phase: 'broadcast',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        source_hash_present: false,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        destination_hash_present: false,
+        provider: 'rango_sunswap',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id_source: 'tron:728126428',
+      };
 
-    trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, properties as never);
+      trackMetaMetricsFn(
+        UnifiedSwapBridgeEventName.Failed,
+        properties as never,
+      );
 
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: UnifiedSwapBridgeEventName.Failed,
-        properties: expect.objectContaining(properties),
-      }),
-    );
-  });
+      expect(trackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: UnifiedSwapBridgeEventName.Failed,
+          properties: expect.objectContaining({
+            ...properties,
+            category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
+            actionId: expect.any(String),
+          }),
+        }),
+      );
+    });
 
-  it('handles trackMetaMetricsFn with no properties', () => {
-    BridgeControllerInit(getInitRequestMock());
-    const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
-    const { trackMetaMetricsFn } = constructorOptions;
+    it('handles trackMetaMetricsFn with no properties', () => {
+      BridgeControllerInit(getInitRequestMock());
+      const constructorOptions = jest.mocked(BridgeController).mock.calls[0][0];
+      const { trackMetaMetricsFn } = constructorOptions;
 
-    trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, {} as never);
+      trackMetaMetricsFn(UnifiedSwapBridgeEventName.Failed, {} as never);
 
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: UnifiedSwapBridgeEventName.Failed,
-        properties: expect.any(Object),
-      }),
-    );
+      expect(trackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: UnifiedSwapBridgeEventName.Failed,
+          properties: expect.any(Object),
+        }),
+      );
+    });
   });
 });

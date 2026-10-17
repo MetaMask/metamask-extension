@@ -1,11 +1,19 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { useMoneyAccountBalance } from '../../../../hooks/money/useMoneyAccountBalance';
 import type { UseMoneyAccountBalanceResult } from '../../../../hooks/money/useMoneyAccountBalance';
+import { useMoneyAnalytics } from '../../../../hooks/money/useMoneyAnalytics';
+import { createMoneyAnalyticsMock } from '../../../../hooks/money/useMoneyAnalytics.mock';
+import {
+  MoneyComponentName,
+  MoneyScreenName,
+  MoneyTooltipName,
+  MoneyTooltipType,
+} from '../../../../pages/money/constants/money-events';
 import { BalanceProjection } from './balance-projection';
 
 jest.mock('../../../../hooks/money/useMoneyAccountBalance', () => ({
@@ -16,6 +24,12 @@ jest.mock('../../../../contexts/route-messenger', () => ({
   RouteMessengerProvider: ({ children }: { children: React.ReactNode }) =>
     children,
 }));
+
+const mockMoneyAnalytics = createMoneyAnalyticsMock();
+jest.mock('../../../../hooks/money/useMoneyAnalytics', () => ({
+  useMoneyAnalytics: jest.fn(),
+}));
+const mockUseMoneyAnalytics = jest.mocked(useMoneyAnalytics);
 
 const useMoneyAccountBalanceMock = jest.mocked(useMoneyAccountBalance);
 
@@ -45,6 +59,7 @@ function renderProjection(amountFiat: string) {
 describe('BalanceProjection', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockUseMoneyAnalytics.mockReturnValue(mockMoneyAnalytics);
   });
 
   it('renders the projected balance for $1,000 at 4% APY over 1 year', () => {
@@ -67,7 +82,9 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('balance-projection-apy-pitch'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Earn 6.9% APY')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('balance-projection-apy-pitch'),
+    ).toHaveTextContent('Earn 6.9% APY');
   });
 
   it('renders the APY pitch when the amount is empty', () => {
@@ -78,26 +95,82 @@ describe('BalanceProjection', () => {
     expect(
       screen.getByTestId('balance-projection-apy-pitch'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Earn 4% APY')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('balance-projection-apy-pitch'),
+    ).toHaveTextContent('Earn 4% APY');
   });
 
-  it('renders the info button on the APY pitch', () => {
+  it('shows the APY tooltip when the pitch is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('0');
 
+    const trigger = screen.getByTestId(
+      'balance-projection-apy-pitch-info-trigger',
+    );
+    expect(trigger).toHaveTextContent('4% APY');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+    });
+
     expect(
-      screen.getByTestId('balance-projection-apy-pitch-info-button'),
+      screen.getByText(messages.moneyAccountApyTooltip.message),
     ).toBeInTheDocument();
   });
 
-  it('renders the info button next to the projected balance', () => {
+  it('tracks the APY tooltip when the pitch APY text is hovered', async () => {
+    mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
+
+    renderProjection('0');
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('balance-projection-apy-pitch-info-trigger'),
+      );
+    });
+
+    expect(mockUseMoneyAnalytics).toHaveBeenCalledWith({
+      screenName: MoneyScreenName.MoneyDeposit,
+    });
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.Apy,
+      tooltipType: MoneyTooltipType.Info,
+    });
+  });
+
+  it('tracks the earn-on-crypto tooltip when the projected balance is hovered', async () => {
+    mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
+
+    renderProjection('1000');
+    await act(async () => {
+      fireEvent.mouseEnter(
+        screen.getByTestId('balance-projection-info-trigger'),
+      );
+    });
+
+    expect(mockMoneyAnalytics.trackTooltipClicked).toHaveBeenCalledWith({
+      tooltipName: MoneyTooltipName.EarnOnYourCrypto,
+      tooltipType: MoneyTooltipType.Info,
+      componentName: MoneyComponentName.BalanceProjection,
+    });
+  });
+
+  it('shows the projection tooltip when the projected balance is hovered', async () => {
     mockBalance({ apyDecimal: 0.04, apyPercent: 4 });
 
     renderProjection('1000');
 
+    const trigger = screen.getByTestId('balance-projection-info-trigger');
+    expect(trigger).toHaveTextContent('$1,040.00');
+
+    await act(async () => {
+      fireEvent.mouseEnter(trigger);
+    });
+
     expect(
-      screen.getByTestId('balance-projection-info-button'),
+      screen.getByText(
+        messages.moneyAccountProjectedBalanceTooltip.message.replace('$1', '4'),
+      ),
     ).toBeInTheDocument();
   });
 

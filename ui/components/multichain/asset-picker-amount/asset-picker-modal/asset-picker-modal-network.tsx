@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -41,7 +41,7 @@ import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
-import { getShowTestNetworks } from '../../../../selectors/selectors';
+import { getShouldShowTestNetworks } from '../../../../selectors';
 import { getNetworkSections } from '../../../../helpers/utils/network-sections';
 
 // TODO use MultichainNetworkConfiguration type
@@ -99,7 +99,7 @@ export const AssetPickerModalNetwork = ({
   const { balanceByChainId } = useMultichainBalances();
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const showTestnets = useSelector(getShowTestNetworks);
+  const showTestnets = useSelector(getShouldShowTestNetworks);
   const currency = useSelector(getCurrentCurrency);
   // Use the networks prop if it is provided, otherwise use all available networks
   // Sort the networks by balance in descending order
@@ -141,8 +141,13 @@ export const AssetPickerModalNetwork = ({
     return initialState;
   });
 
-  // Reset checkedChainIds if selectedChainIds change in parent component
-  useEffect(() => {
+  // Sync checkedChainIds when parent network selection changes (string key avoids unstable array refs).
+  const networksSyncKey = `${networksList?.map(({ chainId }) => chainId).join('|') ?? ''}:${selectedChainIds?.join('|') ?? ''}`;
+  const [prevNetworksSyncKey, setPrevNetworksSyncKey] =
+    useState(networksSyncKey);
+
+  if (networksSyncKey !== prevNetworksSyncKey) {
+    setPrevNetworksSyncKey(networksSyncKey);
     if (networksList) {
       const updatedState: Record<string, boolean> = {};
 
@@ -154,7 +159,7 @@ export const AssetPickerModalNetwork = ({
 
       setCheckedChainIds(updatedState);
     }
-  }, [networksList, selectedChainIds]);
+  }
 
   const handleToggleNetwork = useCallback((chainId: string) => {
     setCheckedChainIds((prev) => ({

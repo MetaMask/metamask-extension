@@ -9,7 +9,7 @@ import {
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
@@ -33,8 +33,6 @@ export const NetworkManager = () => {
   const t = useI18nContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') ?? '';
-  const viewRef = useRef(view);
-  viewRef.current = view;
 
   const { initialTab } = useNetworkManagerInitialTab();
   const handleNewNetwork = () => {
@@ -121,10 +119,10 @@ export const NetworkManager = () => {
   const handleClose = useCallback(() => {
     dispatch(hideModal());
     dispatch(setEditedNetwork());
-    if (viewRef.current) {
+    if (view) {
       setSearchParams({});
     }
-  }, [dispatch, setSearchParams]);
+  }, [dispatch, setSearchParams, view]);
 
   const handleGoHome = () => {
     setSearchParams({});

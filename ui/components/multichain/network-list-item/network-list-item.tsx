@@ -171,11 +171,15 @@ export const NetworkListItem = ({
 
   // Safety: Reset closing flag whenever menu opens
   // (handles edge cases like rapid toggling)
-  useEffect(() => {
+  const [prevNetworkOptionsMenuOpen, setPrevNetworkOptionsMenuOpen] = useState(
+    networkOptionsMenuOpen,
+  );
+  if (networkOptionsMenuOpen !== prevNetworkOptionsMenuOpen) {
+    setPrevNetworkOptionsMenuOpen(networkOptionsMenuOpen);
     if (networkOptionsMenuOpen) {
       setIsMenuClosing(false);
     }
-  }, [networkOptionsMenuOpen]);
+  }
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();

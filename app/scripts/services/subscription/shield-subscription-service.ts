@@ -236,7 +236,15 @@ export class ShieldSubscriptionService {
 
       // Track the shield opt in rewards event if the reward account id and reward points are provided
       if (rewardAccountId) {
-        this.#trackShieldOptInRewardsEvent('create_new_subscription');
+        const rewardsSubscriptionId = this.#messenger.call(
+          'RewardsController:getActualSubscriptionId',
+          rewardAccountId,
+        );
+        this.#trackShieldOptInRewardsEvent(
+          'create_new_subscription',
+          undefined,
+          rewardsSubscriptionId,
+        );
       }
       return subscriptions;
     } catch (error) {
@@ -343,10 +351,15 @@ export class ShieldSubscriptionService {
         rewardAccountId,
       });
 
-      if (rewardAccountId && rewardPoints) {
+      if (rewardAccountId) {
+        const rewardsSubscriptionId = this.#messenger.call(
+          'RewardsController:getActualSubscriptionId',
+          rewardAccountId,
+        );
         this.#trackShieldOptInRewardsEvent(
           'link_existing_subscription',
           rewardPoints,
+          rewardsSubscriptionId,
         );
       }
     } catch (err) {
@@ -365,10 +378,9 @@ export class ShieldSubscriptionService {
       let succeeded = false;
       let cancelled = false;
       // Set up a listener to watch for navigation on that specific tab
-      const onTabUpdatedListener = (
-        tabId: number,
-        changeInfo: { url: string },
-      ) => {
+      const onTabUpdatedListener: Parameters<
+        ExtensionPlatform['addTabUpdatedListener']
+      >[0] = (tabId, changeInfo) => {
         // We only care about updates to our specific checkout tab
         if (tabId === openedTab.id) {
           if (changeInfo.url?.startsWith(params.cancelUrl)) {
@@ -459,7 +471,10 @@ export class ShieldSubscriptionService {
           {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            has_sufficient_crypto_balance: true,
+            has_sufficient_crypto_funds: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
           },
         );
       }
@@ -512,6 +527,9 @@ export class ShieldSubscriptionService {
           {
             error: errorMessage,
             cause: cause?.message ?? '',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
           },
         );
       } else {
@@ -832,6 +850,7 @@ export class ShieldSubscriptionService {
   #trackShieldOptInRewardsEvent(
     rewardsOptInType: 'create_new_subscription' | 'link_existing_subscription',
     rewardPoints?: number,
+    rewardsSubscriptionId?: string | null,
   ) {
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
 
@@ -841,9 +860,6 @@ export class ShieldSubscriptionService {
 
     const claimedRewardPoints =
       rewardPoints ?? shieldSubscriptionMetricsProps?.rewardPoints;
-    if (!claimedRewardPoints) {
-      return;
-    }
 
     trackEvent(
       createEventBuilder(MetaMetricsEventName.ShieldOptInRewards)
@@ -861,6 +877,9 @@ export class ShieldSubscriptionService {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           rewards_opt_in_type: rewardsOptInType,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          rewards_subscription_id: rewardsSubscriptionId,
         })
         .build(),
     );

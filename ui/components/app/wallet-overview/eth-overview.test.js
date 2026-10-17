@@ -387,6 +387,36 @@ describe('EthOverview', () => {
       ).not.toBeInTheDocument();
     });
 
+    it('should show a balance skeleton instead of the empty state while assets are first loading', async () => {
+      const mockedStoreWithAssetsLoading = {
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: mockEvmAccount1.address, balance: '0x0' },
+            },
+          },
+          tokenBalances: {},
+          balances: {},
+          assetsLoadingStatus: { [mockEvmAccount1.id]: 'loading' },
+        },
+      };
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithAssetsLoading,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      expect(queryByTestId(ETH_OVERVIEW_BALANCE_SKELETON)).toBeInTheDocument();
+      expect(
+        queryByTestId(ETH_OVERVIEW_BALANCE_EMPTY_STATE),
+      ).not.toBeInTheDocument();
+    });
+
     it('should show the cached primary balance', async () => {
       const mockedStoreWithCachedBalance = {
         ...mockStore,

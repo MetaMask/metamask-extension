@@ -135,7 +135,9 @@ describe('Send ERC20 - Mainnet', function () {
         await tokenTransferTransactionConfirmation.checkNetworkParagraph();
         await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
-        await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
+        await tokenTransferTransactionConfirmation.clickFooterButton({
+          button: 'confirm',
+        });
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityTab = new ActivityTab(driver);

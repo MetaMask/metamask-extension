@@ -3,7 +3,8 @@ import {
   type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { onchainItem } from '../types/money-activity';
+import { onchainItem, accountsApiItem } from '../types/money-activity';
+import type { AccountsApiActivity } from '../types/money-activity';
 import {
   buildMoneyActivityBuckets,
   isMoneyActivityDeposit,
@@ -18,6 +19,27 @@ function makeTx(extra: Record<string, unknown>): TransactionMeta {
     time: 1,
     ...extra,
   } as unknown as TransactionMeta;
+}
+
+function makeCardActivity(
+  kind: AccountsApiActivity['kind'],
+  hash: string,
+): AccountsApiActivity {
+  const base = {
+    hash: hash as `0x${string}`,
+    time: 1,
+    chainId: '0x8f' as const,
+    token: {
+      address: '0xtoken' as `0x${string}`,
+      symbol: 'mUSD',
+      decimals: 6,
+    },
+    amount: '1000000',
+  };
+  if (kind === 'card') {
+    return { ...base, kind, paidTo: '0xmerchant' as `0x${string}` };
+  }
+  return { ...base, kind, receivedFrom: '0xfrom' as `0x${string}` };
 }
 
 describe('isMoneyActivityDeposit', () => {
@@ -121,5 +143,59 @@ describe('buildMoneyActivityBuckets', () => {
     expect(
       buckets[MoneyActivityFilter.Transfers].map((item) => item.id),
     ).toStrictEqual(['sent']);
+  });
+
+  it('keeps visible Pay txs in All even when they are not Deposits or Sends', () => {
+    const payFromMoney = onchainItem(
+      makeTx({
+        id: 'pay-from-money',
+        type: TransactionType.contractInteraction,
+        metamaskPay: { tokenAddress: '0xmusd', chainId: '0x8f' },
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([payFromMoney]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual(['pay-from-money']);
+    expect(buckets[MoneyActivityFilter.Deposits]).toStrictEqual([]);
+    expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
+    expect(buckets[MoneyActivityFilter.Card]).toStrictEqual([]);
+  });
+
+  it('puts card, cashback, and refund rows in Card only', () => {
+    const card = accountsApiItem(makeCardActivity('card', '0xcard'));
+    const cashback = accountsApiItem(makeCardActivity('cashback', '0xback'));
+    const refund = accountsApiItem(makeCardActivity('refund', '0xrefund'));
+    const deposit = onchainItem(
+      makeTx({
+        id: 'deposit',
+        type: TransactionType.moneyAccountDeposit,
+      }),
+    );
+
+    const buckets = buildMoneyActivityBuckets([
+      card,
+      cashback,
+      refund,
+      deposit,
+    ]);
+
+    expect(
+      buckets[MoneyActivityFilter.All].map((item) => item.id),
+    ).toStrictEqual([
+      'card:0xcard',
+      'cashback:0xback',
+      'refund:0xrefund',
+      'deposit',
+    ]);
+    expect(
+      buckets[MoneyActivityFilter.Card].map((item) => item.id),
+    ).toStrictEqual(['card:0xcard', 'cashback:0xback', 'refund:0xrefund']);
+    expect(
+      buckets[MoneyActivityFilter.Deposits].map((item) => item.id),
+    ).toStrictEqual(['deposit']);
+    expect(buckets[MoneyActivityFilter.Transfers]).toStrictEqual([]);
   });
 });

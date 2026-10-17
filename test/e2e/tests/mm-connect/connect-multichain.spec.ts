@@ -152,7 +152,10 @@ describe('MM Connect — Multichain E2E', function (this: Suite) {
           // Handle the signing dialog in the extension.
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const signingConfirmation = new Confirmation(driver);
-          await signingConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+          await signingConfirmation.clickFooterButton({
+            button: 'confirm',
+            waitUntil: 'windowClose',
+          });
 
           // Back in test dapp: validate result is a hex signature string
           await testDapp.switchTo();

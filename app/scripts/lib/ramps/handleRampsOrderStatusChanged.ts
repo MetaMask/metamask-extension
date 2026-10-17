@@ -24,6 +24,14 @@ type RampsOrderStatusChangedEventPayload =
 // orders, so a restarted worker won't re-emit for an already-terminal order.
 const emittedTerminalOrders = new Set<string>();
 
+// Dedupe set for `ramps-transaction-confirmed`, same lifetime reasoning as
+// `emittedTerminalOrders`. The same order can be resolved from a callback more
+// than once — the buy-flow checkout watcher and the order-details re-entry
+// watcher ("View on <provider>" → provider's "Return to MetaMask") can both
+// resolve the same still-pending order — and the event describes the first
+// non-terminal observation only.
+const emittedConfirmedOrders = new Set<string>();
+
 // Maps canonical order keys to the checkout session id that originated the
 // order. Populated when the checkout watcher resolves an order from the
 // callback URL (which has the session id in scope); read when a later
@@ -149,6 +157,10 @@ export function trackRampsTerminalOrder(
  * `emitOrderConfirmedAnalyticsFromCallback` in metamask-mobile
  * `ramps-controller/event-handlers/analytics.ts`.
  *
+ * Deduped per order key: the checkout watcher and the order-details re-entry
+ * watcher can both resolve the same still-pending order, and only the first
+ * observation emits.
+ *
  * No-ops for terminal orders (those emit via `trackRampsTerminalOrder` instead).
  *
  * @param order - The callback-resolved order to evaluate.
@@ -174,6 +186,10 @@ export function trackRampsTransactionConfirmed(
     checkoutSessionByOrderKey.set(orderKey, checkoutSessionId);
   }
 
+  if (orderKey && emittedConfirmedOrders.has(orderKey)) {
+    return;
+  }
+
   trackEvent(
     createEventBuilder(MetaMetricsEventName.RampsTransactionConfirmed)
       .addCategory(MetaMetricsEventCategory.Ramps)
@@ -186,6 +202,10 @@ export function trackRampsTransactionConfirmed(
       )
       .build(),
   );
+
+  if (orderKey) {
+    emittedConfirmedOrders.add(orderKey);
+  }
 }
 
 /**

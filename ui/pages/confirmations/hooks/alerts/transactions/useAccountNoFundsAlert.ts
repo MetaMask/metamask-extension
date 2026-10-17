@@ -16,6 +16,7 @@ import { useTransactionPayAvailableTokens } from '../../pay/useTransactionPayAva
 import { ACCOUNT_RESELECT_EMPTY_TIMEOUT_MS } from '../../pay/useAutomaticTransactionPayToken';
 import { useIsTransactionPayLoading } from '../../pay/useTransactionPayData';
 import { useTransactionPayToken } from '../../pay/useTransactionPayToken';
+import { useAccountTokensLoading } from '../../send/useAccountTokensLoading';
 import { useTransactionAccountOverride } from '../../transactions/useTransactionAccountOverride';
 import { AlertsName } from '../constants';
 
@@ -29,6 +30,7 @@ export function useAccountNoFundsAlert(): Alert[] {
   const availableTokens = useTransactionPayAvailableTokens();
   const { payToken } = useTransactionPayToken();
   const isLoading = useIsTransactionPayLoading();
+  const isAssetsLoading = useAccountTokensLoading();
   const accountOverride = useTransactionAccountOverride();
   const from = currentConfirmation?.txParams?.from;
   const accountKey = `${from ?? ''}:${accountOverride ?? ''}`;
@@ -58,7 +60,10 @@ export function useAccountNoFundsAlert(): Alert[] {
     waitingAccountKey === accountKey && !hasTokens;
 
   useEffect(() => {
-    if (!isWaitingForAccountTokens) {
+    // Do not start the empty-account settle timer while the override group's
+    // first asset fetch is still in flight — otherwise a never-activated
+    // account can show "no funds" before on-chain balances arrive.
+    if (!isWaitingForAccountTokens || isAssetsLoading) {
       return;
     }
 
@@ -78,13 +83,14 @@ export function useAccountNoFundsAlert(): Alert[] {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [accountKey, isWaitingForAccountTokens]);
+  }, [accountKey, isAssetsLoading, isWaitingForAccountTokens]);
 
   return useMemo(() => {
     if (
       !isMoneyAccountDeposit ||
       hasTokens ||
       isLoading ||
+      isAssetsLoading ||
       isWaitingForAccountTokens
     ) {
       return [];
@@ -102,6 +108,7 @@ export function useAccountNoFundsAlert(): Alert[] {
     ];
   }, [
     hasTokens,
+    isAssetsLoading,
     isLoading,
     isMoneyAccountDeposit,
     isWaitingForAccountTokens,

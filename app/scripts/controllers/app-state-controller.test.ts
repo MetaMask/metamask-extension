@@ -86,6 +86,21 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setLastShownPrfMigrationReminderAt', () => {
+    it('sets lastShownPrfMigrationReminderAt', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBeNull();
+
+        const timestamp = Date.now();
+        controller.setLastShownPrfMigrationReminderAt(timestamp);
+
+        expect(controller.state.lastShownPrfMigrationReminderAt).toBe(
+          timestamp,
+        );
+      });
+    });
+  });
+
   describe('setOutdatedBrowserWarningLastShown', () => {
     it('sets the last shown time', async () => {
       await withController(({ controller }) => {
@@ -531,6 +546,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setArcUsageNoticeShown', () => {
+    it('defaults arcUsageNoticeShown to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.arcUsageNoticeShown).toBe(false);
+      });
+    });
+
+    it('sets arcUsageNoticeShown to true', async () => {
+      await withController(({ controller }) => {
+        controller.setArcUsageNoticeShown();
+
+        expect(controller.state.arcUsageNoticeShown).toBe(true);
+      });
+    });
+  });
+
   describe('setShieldPausedToastLastClickedOrClosed', () => {
     it('set the shieldPausedToastLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
@@ -815,6 +846,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -830,11 +862,14 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -904,6 +939,7 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -919,9 +955,12 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -989,6 +1028,7 @@ describe('AppStateController', () => {
             ),
           ).toMatchInlineSnapshot(`
             {
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
@@ -1001,9 +1041,11 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1063,6 +1105,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
+              "arcUsageNoticeShown": false,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -1078,11 +1121,14 @@ describe('AppStateController', () => {
                 "origin": "https://example.com",
                 "timestamp": 1000,
               },
+              "lastPerpsDepositEntryPoint": null,
               "lastQrScanCompletedSuccessfully": null,
+              "lastShownPrfMigrationReminderAt": null,
               "lastUpdatedAt": null,
               "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "lastVisitedRoute": null,
+              "moneyEarnBannerDismissedTokenKeys": [],
               "musdConversionDismissedCtaKeys": [],
               "musdConversionEducationSeen": false,
               "newPrivacyPolicyToastClickedOrClosed": null,
@@ -1119,6 +1165,20 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('addMoneyEarnBannerDismissedTokenKey', () => {
+    it('adds each token key once', async () => {
+      await withController(async ({ controller }) => {
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+        controller.addMoneyEarnBannerDismissedTokenKey('0xe708:0xdef');
+        controller.addMoneyEarnBannerDismissedTokenKey('0x1:0xabc');
+
+        expect(
+          controller.state.moneyEarnBannerDismissedTokenKeys,
+        ).toStrictEqual(['0x1:0xabc', '0xe708:0xdef']);
+      });
     });
   });
 

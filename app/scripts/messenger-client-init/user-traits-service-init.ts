@@ -21,6 +21,7 @@ export const UserTraitsServiceInit: MessengerClientInitFunction<
 > = ({ controllerMessenger }) => {
   const messengerClient = new UserTraitsService({
     messenger: controllerMessenger,
+    getStorageKind: () => globalThis.stateHooks?.getStorageKind?.(),
   });
 
   return {

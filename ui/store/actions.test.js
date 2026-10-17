@@ -6,6 +6,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { stringToBytes } from '@metamask/utils';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -35,6 +36,7 @@ import { createMockNotificationPreferences } from '../hooks/metamask-notificatio
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { listenForHardwareSigningCompletion } from './hardware-wallet-signing';
 
 const toSerializedSeedPhraseBuffer = (seedPhrase) => ({
   type: 'Buffer',
@@ -53,6 +55,11 @@ jest.mock(
     }),
   }),
 );
+
+jest.mock('./hardware-wallet-signing', () => ({
+  ...jest.requireActual('./hardware-wallet-signing'),
+  listenForHardwareSigningCompletion: jest.fn(),
+}));
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -139,6 +146,7 @@ describe('Actions', () => {
     background.abortTransactionSigning = sinon.stub();
     background.getTokenStandardAndDetailsByChain = sinon.stub();
     background.toggleExternalServices = sinon.stub();
+    background.toggleBasicFunctionality = sinon.stub();
     background.setUseMultiAccountBalanceChecker = sinon.stub();
     background.setUseTransactionSimulations = sinon.stub();
     background.setSecurityAlertsEnabled = sinon.stub();
@@ -912,6 +920,132 @@ describe('Actions', () => {
     });
   });
 
+  describe('#updateAndApproveTx QR account', () => {
+    const qrAccountAddress = '0xQrAddress';
+    const qrAccountId = 'b3f1a0c2-7d4e-4f6a-9b8c-1d2e3f4a5b6c';
+    const txMeta = {
+      id: 'tx-1',
+      txParams: { from: qrAccountAddress, to: '0xTo', value: '0x0' },
+    };
+
+    const getQrAccountState = () => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        internalAccounts: {
+          ...defaultState.metamask.internalAccounts,
+          accounts: {
+            ...defaultState.metamask.internalAccounts.accounts,
+            [qrAccountId]: {
+              address: qrAccountAddress,
+              id: qrAccountId,
+              metadata: {
+                name: 'Keystone',
+                keyring: { type: 'QR Hardware Wallet Device' },
+              },
+              options: {},
+              methods: ETH_EOA_METHODS,
+              type: EthAccountType.Eoa,
+            },
+          },
+        },
+        accountIdByAddress: {
+          ...defaultState.metamask.accountIdByAddress,
+          [qrAccountAddress]: qrAccountId,
+        },
+      },
+    });
+
+    const getLoadingActionTypes = (store) =>
+      store
+        .getActions()
+        .map(({ type }) => type)
+        .filter(
+          (type) =>
+            type === 'SHOW_LOADING_INDICATION' ||
+            type === 'HIDE_LOADING_INDICATION',
+        );
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('does not show the loading indicator for a hardware wallet when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore(getQrAccountState());
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.updateAndApproveTx(txMeta, true, ''));
+
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(1);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('shows the loading indicator for a hardware wallet when dontShowLoadingIndicator is false', async () => {
+      const store = mockStore(getQrAccountState());
+
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          txMeta,
+          false,
+          'Confirm with your hardware wallet',
+        ),
+      );
+
+      expect(store.getActions()).toContainEqual({
+        type: 'SHOW_LOADING_INDICATION',
+        payload: 'Confirm with your hardware wallet',
+      });
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'SHOW_LOADING_INDICATION',
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+
+    it('does not show the loading indicator for a software account when dontShowLoadingIndicator is true', async () => {
+      const store = mockStore();
+      const resolvePendingApproval = sinon.stub().resolves();
+      const approveHardwareWalletTransaction = sinon.stub().resolves();
+
+      background.getApi.returns({
+        resolvePendingApproval,
+        approveHardwareWalletTransaction,
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.updateAndApproveTx(
+          {
+            ...txMeta,
+            txParams: { ...txMeta.txParams, from: '0xFirstAddress' },
+          },
+          true,
+          '',
+        ),
+      );
+
+      expect(resolvePendingApproval.callCount).toStrictEqual(1);
+      expect(approveHardwareWalletTransaction.callCount).toStrictEqual(0);
+      expect(getLoadingActionTypes(store)).toStrictEqual([
+        'HIDE_LOADING_INDICATION',
+      ]);
+    });
+  });
+
   describe('#getLedgerAppConfiguration', () => {
     afterEach(() => {
       sinon.restore();
@@ -1202,6 +1336,67 @@ describe('Actions', () => {
 
       expect(mockRequestDevice.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    // Added for coverage requirement.
+    it('skips the WebHID device picker during E2E test runs', async () => {
+      const store = mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          ledgerTransportType: 'webhid',
+        },
+      });
+
+      const originalInTest = process.env.IN_TEST;
+      const originalJestWorkerId = process.env.JEST_WORKER_ID;
+      process.env.IN_TEST = 'true';
+      process.env.JEST_WORKER_ID = 'undefined';
+
+      const mockRequestDevice = sinon.stub();
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...window.navigator,
+          hid: {
+            requestDevice: mockRequestDevice,
+          },
+        },
+        writable: true,
+      });
+
+      try {
+        const connectHardware = background.connectHardware.resolves([
+          { address: '0xLedgerAddress' },
+        ]);
+
+        setBackgroundConnection(background);
+
+        const accounts = await store.dispatch(
+          actions.connectHardware(
+            HardwareDeviceNames.ledger,
+            0,
+            `m/44'/60'/0'/0`,
+            true,
+            translateHardwareMessage,
+          ),
+        );
+
+        // E2E runs bypass the picker entirely and proceed to the background.
+        expect(mockRequestDevice.callCount).toStrictEqual(0);
+        expect(connectHardware.callCount).toStrictEqual(1);
+        expect(accounts).toStrictEqual([{ address: '0xLedgerAddress' }]);
+      } finally {
+        if (originalInTest === undefined) {
+          delete process.env.IN_TEST;
+        } else {
+          process.env.IN_TEST = originalInTest;
+        }
+        if (originalJestWorkerId === undefined) {
+          delete process.env.JEST_WORKER_ID;
+        } else {
+          process.env.JEST_WORKER_ID = originalJestWorkerId;
+        }
+      }
     });
 
     it('translates Trezor Suite Desktop missing errors during connect', async () => {
@@ -1528,6 +1723,91 @@ describe('Actions', () => {
       expect(background.setAddSnapAccountEnabled.getCall(1).args).toStrictEqual(
         [false],
       );
+    });
+  });
+
+  describe('#updateAndApproveTx hardware wallet signing', () => {
+    const LEDGER_ADDRESS = '0x2222222222222222222222222222222222222222';
+    const txMeta = {
+      id: 'pay-tx',
+      chainId: CHAIN_IDS.MAINNET,
+      status: TransactionStatus.unapproved,
+      txParams: { from: LEDGER_ADDRESS },
+    };
+
+    function createLedgerStore(transactionData = {}) {
+      return mockStore({
+        ...defaultState,
+        metamask: {
+          ...defaultState.metamask,
+          internalAccounts: {
+            ...defaultState.metamask.internalAccounts,
+            accounts: {
+              ...defaultState.metamask.internalAccounts.accounts,
+              'ledger-account': {
+                address: LEDGER_ADDRESS,
+                id: 'ledger-account',
+                metadata: { keyring: { type: KeyringTypes.ledger } },
+              },
+            },
+          },
+          accountIdByAddress: {
+            ...defaultState.metamask.accountIdByAddress,
+            [LEDGER_ADDRESS]: 'ledger-account',
+          },
+          transactionData,
+        },
+      });
+    }
+
+    beforeEach(() => {
+      background.getApi.returns({
+        approveHardwareWalletTransaction: sinon.stub().resolves(),
+        getStatePatches: sinon.stub().resolves([]),
+      });
+      setBackgroundConnection(background.getApi());
+      jest
+        .mocked(listenForHardwareSigningCompletion)
+        .mockReset()
+        .mockResolvedValue(async () => undefined);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('hides the loading indication once a hardware wallet signs the Pay funding transactions', async () => {
+      const store = createLedgerStore({ [txMeta.id]: { quotes: [{}, {}] } });
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).toHaveBeenCalledWith(
+        expect.objectContaining({
+          transactionId: 'pay-tx',
+          expectedQuoteCount: 2,
+        }),
+      );
+
+      const [{ onComplete }] = jest.mocked(listenForHardwareSigningCompletion)
+        .mock.calls[0];
+      store.clearActions();
+      onComplete();
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('does not wait for funding signatures when the transaction has no Pay quotes', async () => {
+      const store = createLedgerStore();
+
+      await store.dispatch(
+        actions.updateAndApproveTx(txMeta, false, 'Confirm on device'),
+      );
+
+      expect(listenForHardwareSigningCompletion).not.toHaveBeenCalled();
     });
   });
 
@@ -3867,33 +4147,109 @@ describe('Actions', () => {
     });
   });
 
+  describe('#hideMigrationModal', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationModal());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
+  describe('#hideMigrationToast', () => {
+    it('dismisses the Basic Functionality migration notification', async () => {
+      const store = mockStore();
+
+      background.dismissBasicFunctionalityMigrationNotification = sinon.stub();
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.hideMigrationToast());
+
+      expect(
+        background.dismissBasicFunctionalityMigrationNotification.callCount,
+      ).toStrictEqual(1);
+    });
+  });
+
   describe('#toggleBasicFunctionality', () => {
-    it('calls toggleExternalServices and consolidated preference setters', async () => {
+    it('calls the background toggleBasicFunctionality action', async () => {
       const store = mockStore();
 
       setBackgroundConnection(background);
 
       await store.dispatch(actions.toggleBasicFunctionality(false));
 
-      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
-      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
-        false,
-      ]);
-      expect(
-        background.setUseMultiAccountBalanceChecker.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(
-        background.setUseTransactionSimulations.getCall(0).args,
-      ).toStrictEqual([false]);
-      expect(background.setSecurityAlertsEnabled.getCall(0).args).toStrictEqual(
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
         [false],
       );
-      expect(background.setUse4ByteResolution.getCall(0).args).toStrictEqual([
-        false,
+    });
+  });
+
+  describe('#enableBasicFunctionality', () => {
+    const buildStateForConsolidation = (isConsolidated) => ({
+      ...defaultState,
+      metamask: {
+        ...defaultState.metamask,
+        useExternalServices: false,
+        remoteFeatureFlags: {
+          extensionBasicFunctionalityToggle: isConsolidated,
+        },
+        preferences: {
+          ...defaultState.metamask.preferences,
+          isBasicFunctionalityConsolidatedEnabled: isConsolidated,
+        },
+      },
+    });
+
+    it('uses the consolidated toggle when the wallet is consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleBasicFunctionality.getCall(0).args).toStrictEqual(
+        [true],
+      );
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
+    });
+
+    it('uses the legacy toggle when the wallet is not consolidated', async () => {
+      const store = mockStore(buildStateForConsolidation(false));
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.enableBasicFunctionality());
+
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
       ]);
-      expect(
-        background.setUseExternalNameSources.getCall(0).args,
-      ).toStrictEqual([false]);
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(0);
+    });
+
+    it('reads consolidation state when dispatched, not when created', async () => {
+      const unconsolidatedStore = mockStore(buildStateForConsolidation(false));
+      const consolidatedStore = mockStore(buildStateForConsolidation(true));
+
+      setBackgroundConnection(background);
+
+      // Built while the wallet is unconsolidated, dispatched after
+      // consolidation has landed.
+      const thunkAction = actions.enableBasicFunctionality();
+      unconsolidatedStore.getState();
+      await consolidatedStore.dispatch(thunkAction);
+
+      expect(background.toggleBasicFunctionality.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.callCount).toStrictEqual(0);
     });
   });
 
@@ -4025,6 +4381,90 @@ describe('Actions', () => {
         ),
       ).toBe(true);
       expect(store.getActions()).toStrictEqual([]);
+    });
+  });
+
+  describe('signAndSendSmartTransaction', () => {
+    it('signs and submits ordinary fee variants without changing the transaction shape', async () => {
+      const store = mockStore();
+      const unsignedTransaction = {
+        chainId: '0x1',
+        from: '0x1111111111111111111111111111111111111111',
+        to: '0x2222222222222222222222222222222222222222',
+        data: '0x1234',
+        gas: '0x7530',
+        value: '0x1',
+      };
+      const signedTransactions = ['0xsigned1', '0xsigned2'];
+      const approveTransactionsWithSameNonce = sinon
+        .stub()
+        .resolves(signedTransactions);
+      const submitSignedTransactions = sinon
+        .stub()
+        .resolves({ uuid: 'smart-transaction-uuid' });
+
+      setBackgroundConnection({
+        approveTransactionsWithSameNonce,
+        submitSignedTransactions,
+      });
+
+      const uuid = await store.dispatch(
+        actions.signAndSendSmartTransaction({
+          unsignedTransaction,
+          smartTransactionFees: {
+            fees: [
+              {
+                maxFeePerGas: '100',
+                maxPriorityFeePerGas: '2',
+                gas: '21000',
+                value: '0',
+              },
+              {
+                maxFeePerGas: '200',
+                maxPriorityFeePerGas: '3',
+                gas: '21000',
+                value: '0',
+              },
+            ],
+          },
+        }),
+      );
+
+      expect(approveTransactionsWithSameNonce.getCall(0).args).toStrictEqual([
+        [
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: '64',
+            maxPriorityFeePerGas: '2',
+          },
+          {
+            ...unsignedTransaction,
+            maxFeePerGas: 'c8',
+            maxPriorityFeePerGas: '3',
+          },
+        ],
+      ]);
+      expect(submitSignedTransactions.getCall(0).args).toStrictEqual([
+        {
+          signedTransactions,
+          txParams: unsignedTransaction,
+        },
+      ]);
+      expect(uuid).toBe('smart-transaction-uuid');
+    });
+  });
+
+  describe('cancelSmartTransaction', () => {
+    it('cancels the Smart Transaction by UUID', async () => {
+      const store = mockStore();
+      const cancelSmartTransaction = sinon.stub().resolves();
+      setBackgroundConnection({ cancelSmartTransaction });
+
+      await store.dispatch(actions.cancelSmartTransaction('uuid-to-cancel'));
+
+      expect(cancelSmartTransaction.getCall(0).args).toStrictEqual([
+        'uuid-to-cancel',
+      ]);
     });
   });
 

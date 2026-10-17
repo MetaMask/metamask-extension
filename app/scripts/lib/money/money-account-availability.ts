@@ -8,7 +8,6 @@ import type { Messenger } from '@metamask/messenger';
 import type { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { createProjectLogger, type Hex } from '@metamask/utils';
-import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import type { MoneyAccountAvailability } from '../../../../shared/lib/money/availability';
 import {
   getMoneyAccountGeoBlockedCountries,
@@ -17,6 +16,10 @@ import {
 import { getMoneyAccountVaultConfig } from '../../../../shared/lib/money/vault-config';
 import type { LegacyBackgroundApiServiceAddNetworkAction } from '../../services/legacy-background-api-service-method-action-types';
 import { deriveMoneyAccountAddress } from './get-money-account-address';
+import {
+  createMoneyChainConfigurator,
+  type EnsureMoneyChainConfigured,
+} from './money-chain-config';
 
 const log = createProjectLogger('money-account-availability');
 
@@ -86,10 +89,11 @@ export class MoneyAccountAvailabilityService {
 
   #address?: Promise<Hex>;
 
-  #chainConfiguration?: Promise<void>;
+  readonly #ensureChainConfigured: EnsureMoneyChainConfigured;
 
   constructor({ messenger }: { messenger: MoneyAccountAvailabilityMessenger }) {
     this.#messenger = messenger;
+    this.#ensureChainConfigured = createMoneyChainConfigurator(messenger);
 
     // An unlock can follow a vault restore, which changes the primary seed and
     // therefore the derived address, so the cached value is dropped. A lock
@@ -121,7 +125,7 @@ export class MoneyAccountAvailabilityService {
       }
 
       const address = await this.#getAddress();
-      await this.#ensureChainConfigured(remoteFeatureFlags);
+      await this.#configureChain(remoteFeatureFlags);
 
       return { isAvailable: true, address };
     } catch (error) {
@@ -162,25 +166,6 @@ export class MoneyAccountAvailabilityService {
     return await this.#address;
   }
 
-  async #ensureChainConfigured(
-    remoteFeatureFlags: Record<string, unknown> | undefined,
-  ): Promise<void> {
-    if (this.#chainConfiguration) {
-      return await this.#chainConfiguration;
-    }
-
-    const chainConfiguration = this.#configureChain(remoteFeatureFlags);
-    this.#chainConfiguration = chainConfiguration;
-
-    try {
-      await chainConfiguration;
-    } finally {
-      if (this.#chainConfiguration === chainConfiguration) {
-        this.#chainConfiguration = undefined;
-      }
-    }
-  }
-
   async #configureChain(
     remoteFeatureFlags: Record<string, unknown> | undefined,
   ): Promise<void> {
@@ -189,30 +174,7 @@ export class MoneyAccountAvailabilityService {
       throw new Error('Money Account vault configuration is unavailable');
     }
 
-    const { networkConfigurationsByChainId } = this.#messenger.call(
-      'NetworkController:getState',
-    );
-    if (networkConfigurationsByChainId[vaultConfig.chainId]) {
-      return;
-    }
-
-    const networkConfiguration = FEATURED_RPCS.find(
-      ({ chainId }) => chainId === vaultConfig.chainId,
-    );
-    if (!networkConfiguration) {
-      throw new Error(
-        `Money Account chain ${vaultConfig.chainId} is not a featured network`,
-      );
-    }
-
-    // TODO(MUSD-1270): Move this setup to MoneyAccountUpgradeController
-    // bootstrap when https://consensyssoftware.atlassian.net/browse/MUSD-1270
-    // is implemented.
-    await this.#messenger.call(
-      'LegacyBackgroundApiService:addNetwork',
-      networkConfiguration,
-      { setActive: false },
-    );
+    await this.#ensureChainConfigured(vaultConfig);
   }
 
   /**

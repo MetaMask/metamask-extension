@@ -44,12 +44,46 @@ export async function setPaymentOverride(
 export async function setIsMaxAmount(
   transactionId: string,
   isMaxAmount: boolean,
-  options: { isMoneyAccountDeposit?: boolean } = {},
+  options: {
+    /**
+     * Whether Core may quote this Max atomically. Money-account deposits only:
+     * requires the `atomicMaxEnabled` gate and a matching fixed-spread route.
+     */
+    isAtomicMaxAllowed?: boolean;
+    isMoneyAccountDeposit?: boolean;
+    sourceAccountAddress?: string;
+    /**
+     * Funding-account pay-token balance in base units. Money-account deposits
+     * must supply it: the snapshot the controller would otherwise use as the
+     * Max source amount can be `0` for this flow.
+     */
+    sourceBalanceRaw?: string;
+    sourceChainId?: string;
+    sourceTokenAddress?: string;
+  } = {},
 ): Promise<void> {
   return await submitRequestToBackground('setTransactionPayIsMaxAmount', [
     transactionId,
     isMaxAmount,
     options,
+  ]);
+}
+
+/**
+ * Refreshes the atomic hint for an already-armed Money Account deposit Max,
+ * without disturbing the recorded Max source balance. Used when the
+ * `atomicMaxEnabled` gate changes while Max is active.
+ *
+ * @param transactionId - Confirmation transaction id.
+ * @param isAtomicMaxAllowed - Whether Core may quote this Max atomically.
+ */
+export async function setTransactionPayAtomic(
+  transactionId: string,
+  isAtomicMaxAllowed: boolean,
+): Promise<void> {
+  return await submitRequestToBackground('setTransactionPayAtomic', [
+    transactionId,
+    isAtomicMaxAllowed,
   ]);
 }
 

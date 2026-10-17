@@ -7,6 +7,7 @@ import type {
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MoneyAccountBalanceServiceQueryKeys } from '../../../shared/lib/money/query-keys';
 import { invalidateMoneyAccountBalanceCaches } from '../../helpers/money/invalidate-balance-caches';
+import { reportMoneyQueryErrorOnce } from '../../helpers/money/report-money-error';
 import type { PersistedMoneyBalance } from '../../ducks/money-balance';
 import { useMoneyAccountInfo } from './useMoneyAccountInfo';
 import { useMoneyAccountBalance } from './useMoneyAccountBalance';
@@ -19,6 +20,11 @@ jest.mock('../../helpers/money/invalidate-balance-caches', () => ({
   invalidateMoneyAccountBalanceCaches: jest.fn().mockResolvedValue(undefined),
 }));
 
+jest.mock('../../helpers/money/report-money-error', () => ({
+  ...jest.requireActual('../../helpers/money/report-money-error'),
+  reportMoneyQueryErrorOnce: jest.fn(),
+}));
+
 jest.mock('./useMoneyAccountInfo', () => ({
   useMoneyAccountInfo: jest.fn(),
 }));
@@ -26,6 +32,7 @@ jest.mock('./useMoneyAccountInfo', () => ({
 const mockUseQuery = jest.mocked(useQuery);
 const mockUseMoneyAccountInfo = jest.mocked(useMoneyAccountInfo);
 const mockInvalidateCaches = jest.mocked(invalidateMoneyAccountBalanceCaches);
+const mockReportMoneyQueryErrorOnce = jest.mocked(reportMoneyQueryErrorOnce);
 
 const MONEY_ADDRESS: Hex = '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B';
 const OTHER_ADDRESS: Hex = '0x2D49EA58A4C70b62c8B56DE971310d9e999c8117';
@@ -39,6 +46,7 @@ type QueryStub<Data> = {
   isLoading: boolean;
   isError?: boolean;
   isFetching?: boolean;
+  error?: unknown;
 };
 
 const LOADED_BALANCE: CanonicalMoneyAccountBalanceResponse = {
@@ -302,6 +310,20 @@ describe('useMoneyAccountBalance', () => {
       expect(result.current.withdrawableFiatRaw).toBeUndefined();
     });
 
+    it('forwards the failure to Sentry', () => {
+      const error = new Error('balance down');
+      stubQueries({ ...BALANCE_ERROR, error });
+
+      renderBalanceHook();
+
+      expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+        'fetchBalanceWithFallback',
+        '[Money Account] Balance fetch failed',
+        error,
+        { query: 'fetchBalanceWithFallback' },
+      );
+    });
+
     it('offers the last known balance instead', () => {
       const { result } = renderBalanceHook(undefined, {
         lastKnownBalance: {
@@ -419,6 +441,20 @@ describe('useMoneyAccountBalance', () => {
 
       expect(result.current.apyDecimal).toBe(0.04);
       expect(result.current.apyPercentFormatted).toBe('4%');
+    });
+
+    it('forwards an APY fetch failure to Sentry', () => {
+      const error = new Error('apy down');
+      stubQueries(BALANCE_LOADED, { ...APY_ERROR, error });
+
+      renderBalanceHook();
+
+      expect(mockReportMoneyQueryErrorOnce).toHaveBeenCalledWith(
+        'getVaultApy',
+        '[Money Account] Vault APY fetch failed',
+        error,
+        { query: 'getVaultApy' },
+      );
     });
 
     it('uses the fallback during the first load', () => {

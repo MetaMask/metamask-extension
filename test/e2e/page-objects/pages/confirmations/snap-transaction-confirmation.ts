@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { ClickWaitUntil, FooterButton } from '../../common';
 
 /**
  * Snap-rendered sign-and-send transaction confirmation (snap custom UI
@@ -94,27 +95,43 @@ class SnapTransactionConfirmation {
     await this.driver.waitForSelector(this.securityAlertsError);
   }
 
-  async clickFooterCancelButton() {
-    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
+  /**
+   * Click the snap transaction footer confirm or cancel button.
+   *
+   * Defaults to waiting for the button to disappear, matching the previous
+   * confirm/cancel helpers. Pass `waitUntil: 'windowClose'` to wait for the
+   * window instead.
+   *
+   * @param options - Footer click options
+   * @param options.button - Which footer button to click
+   * @param options.waitUntil - Wait after click. Defaults to `'disappear'`.
+   */
+  async clickFooterButton({
+    button,
+    waitUntil = 'disappear',
+  }: {
+    button: FooterButton;
+    waitUntil?: ClickWaitUntil;
+  }): Promise<void> {
+    const locator =
+      button === 'confirm' ? this.confirmButton : this.cancelButton;
+    await this.clickFooterButtonAndWait(locator, waitUntil);
   }
 
-  async clickFooterCancelButtonAndWaitForWindowToClose() {
-    console.log(
-      'Clicking footer cancel button and waiting for window to close',
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
-  }
-
-  async clickFooterConfirmButton() {
-    console.log('Clicking footer confirm button');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
-  }
-
-  async clickFooterConfirmButtonAndWaitForWindowToClose() {
-    console.log(
-      'Clicking footer confirm button and waiting for window to close',
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+  private async clickFooterButtonAndWait(
+    locator: { testId: string; text: string },
+    waitUntil?: ClickWaitUntil,
+  ): Promise<void> {
+    switch (waitUntil) {
+      case 'windowClose':
+        await this.driver.clickElementAndWaitForWindowToClose(locator);
+        return;
+      case 'disappear':
+        await this.driver.clickElementAndWaitToDisappear(locator);
+        return;
+      default:
+        await this.driver.clickElement(locator);
+    }
   }
 
   private getNetworkDisplayLocator(networkName: string) {

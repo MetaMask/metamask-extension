@@ -283,17 +283,13 @@ describe('BridgeInputGroup', () => {
       { tokenSecurityData: { isVerified: true } },
     );
 
-    expect(
-      getByTestId('bridge-selected-asset-verified-badge'),
-    ).toBeInTheDocument();
+    expect(getByTestId('security-badge')).toBeInTheDocument();
   });
 
   it('leaves the selected asset button unchanged without fetched metadata', () => {
     const { queryByTestId } = renderBridgeInputGroup();
 
-    expect(
-      queryByTestId('bridge-selected-asset-verified-badge'),
-    ).not.toBeInTheDocument();
+    expect(queryByTestId('security-badge')).not.toBeInTheDocument();
   });
 
   it('moves the caret only when the input denomination changes', () => {
@@ -372,6 +368,44 @@ describe('BridgeInputGroup', () => {
       { pathname: SWAP_PATH, search: '' },
       { replace: true, state: { token: undefined } },
     );
+  });
+
+  it('shows only the native representation of Arc USDC', async () => {
+    const nativeArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId: 'eip155:5042/slip44:5042' as CaipAssetType,
+      decimals: 18,
+    };
+    const erc20ArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as CaipAssetType,
+      decimals: 6,
+    };
+    setupFetchMock([], false, [nativeArcUsdc, erc20ArcUsdc]);
+    mockUseVirtualizer.mockReturnValue({
+      getVirtualItems: () =>
+        [nativeArcUsdc, erc20ArcUsdc].map((token, index) => ({
+          index,
+          start: index * 78,
+          key: token.assetId,
+        })),
+      getTotalSize: () => 156,
+      measureElement: () => 78,
+    });
+
+    renderAssetPickerPage();
+
+    expect(
+      await screen.findByTestId(`bridge-asset--${nativeArcUsdc.assetId}`),
+    ).toBeVisible();
+    expect(
+      screen.queryByTestId(`bridge-asset--${erc20ArcUsdc.assetId}`),
+    ).not.toBeInTheDocument();
   });
 
   it('clears picker flags when browser navigation unmounts the page', async () => {

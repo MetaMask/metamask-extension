@@ -25,6 +25,7 @@ import { BridgeTimeRow } from '../../rows/bridge-time-row/bridge-time-row';
 import { TotalRow } from '../../rows/total-row/total-row';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { ReceiveRow } from '../../rows/receive-row/receive-row';
+import { PerpsAccountPickerRow } from '../../rows/perps-account-picker-row';
 import {
   PercentageButtons,
   PercentageButtonsSkeleton,
@@ -160,6 +161,8 @@ export const CustomAmountInfo = React.memo(
     const isAwaitingRequiredToken =
       !disablePay && !primaryRequiredToken && !isWithdraw;
 
+    // disableUpdate only depends on account/hardware/signing alerts, not the
+    // typed amount — evaluate without pending fiat so amount state can load.
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
     const {
@@ -168,6 +171,7 @@ export const CustomAmountInfo = React.memo(
       hasAmount,
       hasInput,
       isDepositPrefillLoading,
+      isQuoteDerivedAmountLoading,
       updatePendingAmount,
       updatePendingAmountPercentage,
     } = useTransactionCustomAmount({
@@ -176,6 +180,27 @@ export const CustomAmountInfo = React.memo(
       disableUpdate,
       prefillMaxOnLoad,
     });
+
+    // Show amount skeleton while deposit prefill recomputes (e.g. token or
+    // account change) so the field does not briefly flash "0", and while a
+    // quote the displayed amount comes from is still loading.
+    // `isDepositPrefillLoading` is already false once prefill settles as
+    // skipped (no funded pay token), so an unfundable deposit shows $0 and a
+    // usable keypad instead of an indefinite skeleton.
+    const showAmountLoader =
+      (isDepositPrefillLoading && !hasAccountNoFunds) ||
+      isQuoteDerivedAmountLoading;
+
+    // While the field is recomputing, `amountFiat` still holds the amount for
+    // the previously selected token / account. Comparing it against the newly
+    // selected one's balance briefly reports "Insufficient funds" for an
+    // amount that is about to be replaced, so withhold it until the field
+    // settles. Amount-independent alerts (no funds, hardware, signing) are
+    // unaffected — they come from the argument-less call above.
+    const { alertContent, alertMessage, hasAlert, hideResults } =
+      useTransactionCustomAmountAlerts({
+        pendingFiatAmount: showAmountLoader ? undefined : amountFiat,
+      });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
     const { isNoFeeToken } = usePayWithNoFeeToken();
@@ -193,10 +218,6 @@ export const CustomAmountInfo = React.memo(
       },
       [updatePendingAmount],
     );
-
-    // Show amount skeleton while deposit prefill recomputes (e.g. token or
-    // account change) so the field does not briefly flash "0".
-    const showAmountLoader = isDepositPrefillLoading && !hasAccountNoFunds;
 
     if (!currentConfirmation || isAwaitingRequiredToken) {
       return (
@@ -220,6 +241,7 @@ export const CustomAmountInfo = React.memo(
           amountHuman={amountHuman}
           currency={currency}
           disablePay={disablePay}
+          hasAlert={hasAlert}
           hasInput={hasInput}
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
@@ -229,7 +251,7 @@ export const CustomAmountInfo = React.memo(
         >
           {children}
         </CenterContainer>
-        <AlertMessage />
+        <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
             disabled={!hasTokens || Boolean(disablePercentageButtons)}
@@ -243,6 +265,7 @@ export const CustomAmountInfo = React.memo(
             disablePay={disablePay}
             displayAccountRow={displayAccountRow}
             hasAmount={hasAmount}
+            hideResults={hideResults}
           />
         )}
       </Box>
@@ -277,6 +300,7 @@ type CenterContainerProps = {
   children?: ReactNode;
   currency?: string;
   disablePay?: boolean;
+  hasAlert?: boolean;
   hasInput: boolean;
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
@@ -293,6 +317,7 @@ function CenterContainer({
   children,
   currency,
   disablePay,
+  hasAlert = false,
   hasInput,
   hasTokens,
   hidePayTokenAmount,
@@ -314,6 +339,7 @@ function CenterContainer({
         autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
+        hasAlert={hasAlert}
         isLoading={isAmountLoading}
         onChange={onAmountChange}
       />
@@ -365,15 +391,16 @@ function BottomContainer({
   disablePay,
   displayAccountRow,
   hasAmount,
+  hideResults,
 }: {
   amountFiat: string;
   disablePay?: boolean;
   displayAccountRow?: boolean;
   hasAmount: boolean;
+  hideResults: boolean;
 }) {
   const t = useI18nContext();
   const isResultReady = useIsResultReady(hasAmount, disablePay);
-  const { hideResults } = useTransactionCustomAmountAlerts();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
@@ -391,6 +418,7 @@ function BottomContainer({
       paddingBottom={4}
     >
       {displayAccountRow && <FromAccountRow showDivider />}
+      <PerpsAccountPickerRow />
       {/* Keep mounted while funding tokens load after account override so the
           selector does not unmount for the reselect wait, then remount. */}
       {disablePay !== true && <PayWithRow />}
@@ -458,8 +486,16 @@ function useIsResultReady(hasAmount: boolean, disablePay?: boolean) {
   return Boolean(disablePay) || isQuotePending || Boolean(quotes?.length);
 }
 
-function AlertMessage() {
-  const { alertMessage } = useTransactionCustomAmountAlerts();
+function AlertMessage({
+  alertContent,
+  alertMessage,
+}: {
+  alertContent?: ReactNode;
+  alertMessage?: string;
+}) {
+  if (alertContent) {
+    return <>{alertContent}</>;
+  }
 
   if (!alertMessage) {
     return null;

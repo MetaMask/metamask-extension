@@ -7,7 +7,10 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
-import { useIsPaidByMetaMask } from '../../../hooks/pay/useIsPaidByMetaMask';
+import {
+  useIsPaidByMetaMask,
+  useSponsoredNetworkFeeFlags,
+} from '../../../hooks/pay/useIsPaidByMetaMask';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { ConfirmInfoRowSize } from '../../../../../components/app/confirm/info/row/row';
 import { TotalRow, TotalRowProps } from './total-row';
@@ -31,6 +34,9 @@ describe('TotalRow', () => {
     useIsTransactionPayLoading,
   );
   const useIsPaidByMetaMaskMock = jest.mocked(useIsPaidByMetaMask);
+  const useSponsoredNetworkFeeFlagsMock = jest.mocked(
+    useSponsoredNetworkFeeFlags,
+  );
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -40,6 +46,10 @@ describe('TotalRow', () => {
 
     useIsTransactionPayLoadingMock.mockReturnValue(false);
     useIsPaidByMetaMaskMock.mockReturnValue(false);
+    useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+      isSourceNetworkSponsored: false,
+      isTargetNetworkSponsored: false,
+    });
   });
 
   it('renders skeleton with label when loading (Default variant)', () => {
@@ -92,6 +102,20 @@ describe('TotalRow', () => {
     expect(totalValue).toHaveTextContent('$123.46');
   });
 
+  it('shows a skeleton while a typed amount has not been committed', () => {
+    const state = getMockPersonalSignConfirmState();
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <TotalRow />,
+      mockStore(state),
+      undefined,
+      undefined,
+      undefined,
+      true,
+    );
+
+    expect(getByTestId('total-row-skeleton')).toBeInTheDocument();
+  });
+
   it('excludes sponsored network gas from the total when paid by MetaMask', () => {
     useIsPaidByMetaMaskMock.mockReturnValue(true);
     useTransactionPayTotalsMock.mockReturnValue({
@@ -107,5 +131,47 @@ describe('TotalRow', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('total-value')).toHaveTextContent('$0.14');
+  });
+
+  it('excludes only sponsored target gas on cross-chain deposits, keeping source gas', () => {
+    useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+      isSourceNetworkSponsored: false,
+      isTargetNetworkSponsored: true,
+    });
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '100.37' },
+      fees: {
+        provider: { usd: '0.14' },
+        metaMask: { usd: '0' },
+        sourceNetwork: { estimate: { usd: '0.20' } },
+        targetNetwork: { usd: '0.03' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    // 100.37 - 0.03 target = 100.34 (source 0.20 and provider stay)
+    expect(getByTestId('total-value')).toHaveTextContent('$100.34');
+  });
+
+  it('excludes source and target gas when both network legs are sponsored', () => {
+    useSponsoredNetworkFeeFlagsMock.mockReturnValue({
+      isSourceNetworkSponsored: true,
+      isTargetNetworkSponsored: true,
+    });
+    useTransactionPayTotalsMock.mockReturnValue({
+      total: { usd: '100.37' },
+      fees: {
+        provider: { usd: '0.14' },
+        metaMask: { usd: '0' },
+        sourceNetwork: { estimate: { usd: '0.20' } },
+        targetNetwork: { usd: '0.03' },
+      },
+    } as TransactionPayTotals);
+
+    const { getByTestId } = render();
+
+    // 100.37 - 0.20 - 0.03 = 100.14
+    expect(getByTestId('total-value')).toHaveTextContent('$100.14');
   });
 });

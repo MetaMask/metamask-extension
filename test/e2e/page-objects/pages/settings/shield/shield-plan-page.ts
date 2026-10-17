@@ -23,6 +23,8 @@ export default class ShieldPlanPage {
     text: symbol,
   });
 
+  private readonly assetPickerModal = '[data-testid="asset-picker-modal"]';
+
   private readonly backButton = '[data-testid="shield-plan-back-button"]';
 
   private readonly continueButton =
@@ -126,10 +128,13 @@ export default class ShieldPlanPage {
     console.log(`Selecting crypto payment token: ${tokenSymbol}`);
     await this.driver.clickElement(this.payWithButton);
     await this.driver.waitForSelector(this.shieldPaymentModal);
-    // The crypto row is disabled until a stablecoin balance loads; wait for it.
     await this.driver.findClickableElement(this.paymentModalCryptoTokenButton);
     await this.driver.clickElement(this.paymentModalCryptoTokenButton);
+    await this.driver.waitForSelector(this.assetPickerModal);
     await this.driver.clickElement(this.assetListItemBySymbol(tokenSymbol));
+    await this.driver.assertElementNotPresent(this.shieldPaymentModal, {
+      findElementGuard: this.page,
+    });
   }
 
   async selectMonthlyPlan(

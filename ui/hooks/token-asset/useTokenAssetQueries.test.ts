@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fetchTokenAssets } from '@metamask/assets-controllers';
 import type { CaipAssetType } from '@metamask/utils';
 import type { TokenAsset } from '@metamask/assets-controllers';
+import { apiClient } from '../../helpers/api-client';
 import { getTokenAssetQueryKey } from './token-asset-query';
 import { useTokenAssetQueries } from './useTokenAssetQueries';
 
@@ -11,7 +12,18 @@ jest.mock('@metamask/assets-controllers', () => ({
   fetchTokenAssets: jest.fn(),
 }));
 
+jest.mock('../../helpers/api-client', () => ({
+  apiClient: {
+    tokens: {
+      fetchTokenV2SupportedNetworks: jest.fn(),
+    },
+  },
+}));
+
 const mockFetchTokenAssets = jest.mocked(fetchTokenAssets);
+const mockFetchSupportedNetworks = jest.mocked(
+  apiClient.tokens.fetchTokenV2SupportedNetworks,
+);
 
 const usdcAssetId =
   'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CaipAssetType;
@@ -40,6 +52,10 @@ describe('useTokenAssetQueries', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchSupportedNetworks.mockResolvedValue({
+      fullSupport: ['eip155:1'],
+      partialSupport: [],
+    });
     mockFetchTokenAssets.mockResolvedValue([]);
   });
 

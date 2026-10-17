@@ -82,6 +82,10 @@ function render({
     message: string;
     isBlocking?: boolean;
   }[],
+  pathname,
+  isMoneyAccountPayEnabled = false,
+  quotes,
+  isAmountPending = false,
 }: {
   isGaslessLoading?: boolean;
   confirmation?:
@@ -98,11 +102,41 @@ function render({
     message: string;
     isBlocking?: boolean;
   }[];
+  pathname?: string;
+  isMoneyAccountPayEnabled?: boolean;
+  isAmountPending?: boolean;
+  quotes?: {
+    strategy: string;
+    request?: {
+      isMaxAmount?: boolean;
+      sourceTokenAmount?: string;
+      targetAmountMinimum?: string;
+    };
+  }[];
 } = {}) {
   const baseState = getMockConfirmStateForTransaction(confirmation);
 
   const state = {
     ...baseState,
+    metamask: {
+      ...baseState.metamask,
+      remoteFeatureFlags: {
+        ...baseState.metamask.remoteFeatureFlags,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        confirmations_pay_extended: {
+          enableMoneyAccountTransactions: {
+            perpsDeposit: isMoneyAccountPayEnabled,
+          },
+        },
+      },
+      ...(quotes
+        ? {
+            transactionData: {
+              [confirmation.id]: { quotes },
+            },
+          }
+        : {}),
+    },
     confirmAlerts: {
       alerts: { [confirmation.id]: alerts },
       confirmed: {},
@@ -115,6 +149,10 @@ function render({
       isGaslessLoading={isGaslessLoading}
     />,
     configureStore(state),
+    pathname,
+    undefined,
+    undefined,
+    isAmountPending,
   );
 }
 
@@ -346,6 +384,29 @@ describe('<SingleActionFooter />', () => {
     );
   });
 
+  it('shows Send label for perpsDeposit from money account', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      pathname: '/?payWithOption=money_account',
+      isMoneyAccountPayEnabled: true,
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.send.message,
+    );
+  });
+
+  it('keeps the Add funds label when Money Account pay is not enabled for perps deposit', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      pathname: '/?payWithOption=money_account',
+    });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      messages.addFunds.message,
+    );
+  });
+
   it('shows Add funds label for moneyAccountDeposit transaction type', () => {
     const { getByTestId } = render({ confirmation: genMoneyAccountDeposit() });
 
@@ -372,6 +433,28 @@ describe('<SingleActionFooter />', () => {
     });
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
+  });
+
+  it('keeps confirm pending while the typed amount has not been committed', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      isAmountPending: true,
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('enables confirm once the typed amount is no longer pending', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsDeposit(),
+      isAmountPending: false,
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeEnabled();
+    expect(button).not.toHaveAttribute('aria-busy', 'true');
   });
 
   it('shows Withdraw label for perpsWithdraw transaction type', () => {

@@ -28,6 +28,7 @@ import {
   usePayWithToken,
   type PayWithDisplayToken,
 } from '../../../hooks/pay/usePayWithToken';
+import { useIsMoneyAccountPerpsNavigation } from '../../../hooks/pay/useIsMoneyAccountPerpsNavigation';
 import { TokenIcon } from '../../token-icon';
 
 export { ConfirmInfoRowSize };
@@ -135,6 +136,7 @@ export function PayWithRow({
   variant = ConfirmInfoRowSize.Small,
 }: PayWithRowProps = {}) {
   const t = useI18nContext();
+  const isMoneyAccountPerpsDeposit = useIsMoneyAccountPerpsNavigation();
   const {
     displayToken,
     balanceUsdFormatted,
@@ -155,6 +157,12 @@ export function PayWithRow({
   const hasAccountNoFunds = alerts.some(
     (alert) => alert.key === AlertsName.AccountNoFunds,
   );
+
+  // Money Account → Perps locks the source of funds, so the token picker stays
+  // hidden — same as mobile `PayWithRow`.
+  if (isMoneyAccountPerpsDeposit) {
+    return null;
+  }
 
   // Same as mobile: skeleton only while funding tokens exist to auto-select
   // from. Without tokens the skeleton never resolves — show the empty

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { debounce } from 'lodash';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -111,48 +110,38 @@ export const useAmountValidation = () => {
     commitAsyncAmountErrorIfCurrent,
   ]);
 
-  const runNonEvmValidationRef = useRef<() => Promise<void>>(async () => {
-    /* noop */
-  });
-
-  runNonEvmValidationRef.current = async () => {
-    const requestKey = validationKey;
-    validationRequestIdRef.current += 1;
-    const requestId = validationRequestIdRef.current;
-
-    if (syncAmountError || !value || !isNonEvmSendType) {
-      commitAsyncAmountErrorIfCurrent(requestId, requestKey, undefined);
-      return;
-    }
-
-    const error = await validateNonEvmAmount(normalizeAmount(value));
-    commitAsyncAmountErrorIfCurrent(requestId, requestKey, error);
-  };
-
-  const debouncedSnapValidation = useMemo(
-    () =>
-      debounce(() => {
-        runNonEvmValidationRef.current().catch(() => undefined);
-      }, AMOUNT_VALIDATION_DEBOUNCE_MS),
-    [],
-  );
-
   useEffect(() => {
     if (!isNonEvmSendType) {
       return;
     }
 
-    debouncedSnapValidation();
+    const timeoutId = setTimeout(() => {
+      const requestKey = validationKey;
+      validationRequestIdRef.current += 1;
+      const requestId = validationRequestIdRef.current;
+
+      if (syncAmountError || !value) {
+        commitAsyncAmountErrorIfCurrent(requestId, requestKey, undefined);
+        return;
+      }
+
+      validateNonEvmAmount(normalizeAmount(value))
+        .then((error) => {
+          commitAsyncAmountErrorIfCurrent(requestId, requestKey, error);
+        })
+        .catch(() => undefined);
+    }, AMOUNT_VALIDATION_DEBOUNCE_MS);
 
     return () => {
-      debouncedSnapValidation.cancel();
+      clearTimeout(timeoutId);
     };
   }, [
     isNonEvmSendType,
-    debouncedSnapValidation,
+    validationKey,
     syncAmountError,
     value,
-    validationKey,
+    validateNonEvmAmount,
+    commitAsyncAmountErrorIfCurrent,
   ]);
 
   const amountError = syncAmountError ?? asyncAmountError;

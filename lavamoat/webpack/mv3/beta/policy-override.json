@@ -171,6 +171,12 @@
       }
     },
     "@metamask/network-controller": {
+      "globals": {
+        "btoa": true,
+        "btoa.bind": false,
+        "fetch": true,
+        "fetch.bind": false
+      },
       "packages": {
         "cockatiel": true
       }

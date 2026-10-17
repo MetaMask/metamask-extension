@@ -13,6 +13,7 @@ import {
   hideLoadingIndication,
   showLoadingIndication,
 } from '../../store/actions';
+import { WEEK } from '../../../shared/constants/time';
 import { usePasskeyUnlock } from './usePasskeyUnlock';
 
 jest.mock('../../store/actions', () => {
@@ -47,17 +48,24 @@ const authenticationResponse: PasskeyAuthenticationResponse = {
 };
 
 type RenderHookOptions = {
+  state?: {
+    metamask?: {
+      passkeyRecord?: unknown;
+      lastShownPrfMigrationReminderAt?: number | null;
+    };
+  };
   uiMessenger?: UIMessenger;
   routeMessenger?: RouteMessenger | false;
 };
 
 function renderHook({
+  state = {},
   uiMessenger = createMockUIMessenger(),
   routeMessenger = createMockRouteMessenger(),
 }: RenderHookOptions = {}) {
   return renderHookWithProviderTyped(
     () => usePasskeyUnlock(),
-    {},
+    state,
     '/',
     undefined,
     jest.fn(),
@@ -101,6 +109,82 @@ describe('usePasskeyUnlock', () => {
     expect(forceUpdateMetamaskState).toHaveBeenCalledWith(store.dispatch);
     expect(showLoadingIndication).toHaveBeenCalledTimes(1);
     expect(hideLoadingIndication).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns migration eligibility and records the reminder timestamp', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(true);
+
+    expect(setLastShownPrfMigrationReminderAt).toHaveBeenCalledWith(
+      expect.any(Number),
+    );
+  });
+
+  it('does not return migration eligibility before the weekly reminder interval', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+          lastShownPrfMigrationReminderAt: Date.now() - WEEK + 1_000,
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(false);
+
+    expect(setLastShownPrfMigrationReminderAt).not.toHaveBeenCalled();
+  });
+
+  it('returns migration eligibility after the weekly reminder interval', async () => {
+    const setLastShownPrfMigrationReminderAt = jest.fn();
+    const { result } = renderHook({
+      state: {
+        metamask: {
+          passkeyRecord: {
+            keyDerivation: { method: 'userHandle' },
+          },
+          lastShownPrfMigrationReminderAt: Date.now() - WEEK,
+        },
+      },
+      routeMessenger: createMockRouteMessenger({
+        'PasskeyController:generateAuthenticationOptions':
+          generateAuthenticationOptions,
+        'LegacyBackgroundApiService:unlockWithPasskey': unlockWithPasskey,
+        'AppStateController:setLastShownPrfMigrationReminderAt':
+          setLastShownPrfMigrationReminderAt,
+      }),
+    });
+
+    await expect(result.current()).resolves.toBe(true);
+
+    expect(setLastShownPrfMigrationReminderAt).toHaveBeenCalledTimes(1);
   });
 
   it('hides loading and preserves unlock errors', async () => {

@@ -10,6 +10,8 @@ import {
 } from '../../../tests/identity/account-syncing/helpers';
 import HeaderNavbar from './header-navbar';
 
+type ReceiveButton = 'default' | 'row';
+
 export type CheckExpectedBalanceOptions = {
   expectedBalance?: string;
   symbol?: string;
@@ -38,6 +40,9 @@ const NON_EVM_ICON_TIMEOUT = 20_000;
  * @see ui/pages/home/home.tsx
  */
 class HomePage {
+  private readonly accountImportedToast =
+    '[data-testid="account-imported-toast"]';
+
   protected readonly activityTab = {
     testId: 'account-overview__activity-tab',
   };
@@ -65,7 +70,7 @@ class HomePage {
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
-  protected readonly buySellButton = { css: 'button', text: 'Buy' };
+  protected readonly buySellButton = '[data-testid$="-overview-buy"]';
 
   private readonly closeSurveyToastBannerButton =
     '.toast-container button[aria-label="Close"]';
@@ -118,11 +123,11 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly receiveButton = { css: 'button', text: 'Receive' };
+  private readonly receiveOnRow = '[data-testid$="-overview-receive"]';
 
   private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
 
-  protected readonly sendButton = { css: 'button', text: 'Send' };
+  protected readonly sendButton = '[data-testid$="-overview-send"]';
 
   private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
 
@@ -132,12 +137,11 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly singleActionButton = '[data-testid$="-overview-default"]';
+
   private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
 
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
-
-  private readonly srpAddedToastCloseButton =
-    '.toast-container button[aria-label="Close"]';
 
   private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
 
@@ -148,7 +152,12 @@ class HomePage {
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
-  protected readonly swapButton = { css: 'button', text: 'Swap' };
+  protected readonly swapButton = '[data-testid$="-overview-swap"]';
+
+  // The generic toaster close button has no data-testid (ButtonIcon only sets
+  // aria-label), so this selector is shared by every toast.
+  private readonly toastCloseButton =
+    '.toast-container button[aria-label="Close"]';
 
   protected readonly tokensTab = {
     testId: 'account-overview__asset-tab',
@@ -157,6 +166,13 @@ class HomePage {
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
+  }
+
+  async checkAccountImportedToastIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector({
+      css: this.accountImportedToast,
+      text: 'Account imported',
+    });
   }
 
   /**
@@ -471,9 +487,10 @@ class HomePage {
     );
   }
 
-  async clickOnReceiveButton(): Promise<void> {
-    await this.driver.waitForSelector(this.receiveButton);
-    await this.driver.clickElement(this.receiveButton);
+  async clickOnReceiveButton(receiveButton: ReceiveButton): Promise<void> {
+    const selector =
+      receiveButton === 'default' ? this.singleActionButton : this.receiveOnRow;
+    await this.driver.clickElement(selector);
   }
 
   async clickOnSendButton(): Promise<void> {
@@ -529,10 +546,14 @@ class HomePage {
     );
   }
 
+  async dismissAccountImportedToast(): Promise<void> {
+    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
+  }
+
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
     // The toast can take some time to appear
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
+    await this.driver.clickElementSafe(this.toastCloseButton, 15_000);
   }
 
   /**
@@ -541,6 +562,19 @@ class HomePage {
   async ensurePageIsReady(): Promise<void> {
     await this.checkPageIsLoaded();
     await this.waitForLoadingOverlayToDisappear();
+  }
+
+  /**
+   * Returns the primary balance text shown on the account overview.
+   *
+   * @param timeout - Max ms to wait for the balance; defaults to `driver.timeout`.
+   */
+  async getBalance(timeout?: number): Promise<string> {
+    const balance = await this.driver.waitForSelector(
+      this.balance,
+      timeout === undefined ? {} : { timeout },
+    );
+    return (await balance.getText()).trim();
   }
 
   async goToActivityList(): Promise<void> {
@@ -602,6 +636,16 @@ class HomePage {
       await this.driver.clickElement(this.bottomNavHomeButton);
     }
     await this.driver.clickElement(this.tokensTab);
+  }
+
+  /**
+   * Navigates to home.html so the current route is left, even when in-page
+   * navigation elements are unavailable (e.g. header in search mode).
+   */
+  async navigateToHome(): Promise<void> {
+    console.log('Navigate to home.html so the current route is left');
+    await this.driver.navigate();
+    await this.checkPageIsLoaded();
   }
 
   async openPortfolioPage(): Promise<void> {
