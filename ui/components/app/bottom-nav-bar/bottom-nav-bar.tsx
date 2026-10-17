@@ -16,7 +16,7 @@ import {
   ACTIVITY_ROUTE,
   DEFAULT_ROUTE,
   MONEY_HOME_ROUTE,
-  PERPS_HOME_PAGE_ROUTE,
+  PERPS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { ScreenViewedEntryPoint } from '../../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../../selectors/perps/feature-flags';
@@ -104,7 +104,7 @@ export function BottomNavBar() {
 
   const handlePerpsClick = useCallback(() => {
     transitionForward(() =>
-      navigate(PERPS_HOME_PAGE_ROUTE, { state: { stayOnHomePage: true } }),
+      navigate(PERPS_ROUTE, { state: { stayOnHomePage: true } }),
     );
   }, [navigate]);
 

@@ -1,8 +1,8 @@
 import { perps } from './perps';
 import {
-  DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
+  PERPS_ROUTE,
   type Destination,
 } from './route';
 
@@ -14,50 +14,50 @@ function assertPathDestination(
 
 describe('perpsRoute', () => {
   describe('default / no screen param', () => {
-    it('navigates to the home route with the perps tab selected', () => {
+    it('navigates to the perps home page', () => {
       const result = perps.handler(new URLSearchParams());
 
       assertPathDestination(result);
-      expect(result.path).toBe(DEFAULT_ROUTE);
-      expect(result.query.get('tab')).toBe('perps');
+      expect(result.path).toBe(PERPS_ROUTE);
+      expect(result.query.toString()).toBe('');
     });
 
     it('ignores unknown params', () => {
       const result = perps.handler(new URLSearchParams({ foo: 'bar' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(DEFAULT_ROUTE);
-      expect(result.query.get('tab')).toBe('perps');
+      expect(result.path).toBe(PERPS_ROUTE);
+      expect(result.query.toString()).toBe('');
     });
   });
 
   describe('screen=tabs', () => {
-    it('navigates to the home route with the perps tab selected', () => {
+    it('navigates to the perps home page', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'tabs' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(DEFAULT_ROUTE);
-      expect(result.query.get('tab')).toBe('perps');
+      expect(result.path).toBe(PERPS_ROUTE);
+      expect(result.query.toString()).toBe('');
     });
   });
 
   describe('screen=home', () => {
-    it('navigates to the home route with the perps tab selected', () => {
+    it('navigates to the perps home page', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'home' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(DEFAULT_ROUTE);
-      expect(result.query.get('tab')).toBe('perps');
+      expect(result.path).toBe(PERPS_ROUTE);
+      expect(result.query.toString()).toBe('');
     });
   });
 
   describe('screen=markets', () => {
-    it('navigates to the home route with the perps tab selected (backwards compat)', () => {
+    it('navigates to the perps home page (backwards compat)', () => {
       const result = perps.handler(new URLSearchParams({ screen: 'markets' }));
 
       assertPathDestination(result);
-      expect(result.path).toBe(DEFAULT_ROUTE);
-      expect(result.query.get('tab')).toBe('perps');
+      expect(result.path).toBe(PERPS_ROUTE);
+      expect(result.query.toString()).toBe('');
     });
   });
 

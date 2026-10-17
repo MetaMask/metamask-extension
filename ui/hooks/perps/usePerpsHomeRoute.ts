@@ -3,13 +3,13 @@ import {
   BOTTOM_NAV_AB_TEST_EXPOSURE_METADATA,
   BOTTOM_NAV_AB_TEST_VARIANTS,
 } from '../../../shared/lib/ab-testing/configs/bottom-nav-bar';
-import { PERPS_HOME_PAGE_ROUTE } from '../../helpers/constants/routes';
+import { PERPS_ROUTE } from '../../helpers/constants/routes';
 import { useABTest } from '../useABTest';
 
 export const PERPS_HOME_TAB_ROUTE = '/?tab=perps';
 
 /**
- * Returns the Perps home route for the current user: `/perps-home` when the
+ * Returns the Perps home route for the current user: `/perps` when the
  * bottom nav bar is enabled, otherwise `/?tab=perps` on the wallet home.
  */
 export function usePerpsHomeRoute(): string {
@@ -20,7 +20,5 @@ export function usePerpsHomeRoute(): string {
     { trackExposure: false },
   );
 
-  return variant.withBottomNavBar
-    ? PERPS_HOME_PAGE_ROUTE
-    : PERPS_HOME_TAB_ROUTE;
+  return variant.withBottomNavBar ? PERPS_ROUTE : PERPS_HOME_TAB_ROUTE;
 }

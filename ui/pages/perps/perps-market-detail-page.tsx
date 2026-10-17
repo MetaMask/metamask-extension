@@ -73,6 +73,7 @@ import {
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
+  usePerpsHomeRoute,
   usePerpsMarketAboutTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
@@ -288,6 +289,7 @@ const PerpsMarketDetailPage = () => {
   const isDark = theme === 'dark';
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const perpsHomeRoute = usePerpsHomeRoute();
   const location = useLocation();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
@@ -856,8 +858,8 @@ const PerpsMarketDetailPage = () => {
       navigate(PREVIOUS_ROUTE);
       return;
     }
-    navigate({ pathname: '/', search: 'tab=perps' }, { replace: true });
-  }, [navigate]);
+    navigate(perpsHomeRoute, { replace: true });
+  }, [navigate, perpsHomeRoute]);
 
   const handleMarketListClick = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
