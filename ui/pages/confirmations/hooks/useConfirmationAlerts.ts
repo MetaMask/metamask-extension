@@ -34,6 +34,7 @@ import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
 import { useSpenderAlerts } from './alerts/useSpenderAlerts';
+import { useTransferRecipientAlerts } from './alerts/useTransferRecipientAlerts';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
@@ -158,6 +159,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
   const spenderAlerts = useSpenderAlerts();
+  const transferRecipientAlerts = useTransferRecipientAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
   const isPayTransaction = hasTransactionType(
@@ -176,6 +178,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
       ...spenderAlerts,
+      ...transferRecipientAlerts,
       ...addEthereumChainAlerts,
     ];
 
@@ -192,5 +195,6 @@ export default function useConfirmationAlerts(): Alert[] {
     signatureAlerts,
     spenderAlerts,
     transactionAlerts,
+    transferRecipientAlerts,
   ]);
 }

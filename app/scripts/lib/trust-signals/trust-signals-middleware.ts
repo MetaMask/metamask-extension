@@ -9,6 +9,7 @@ import { PreferencesController } from '../../controllers/preferences-controller'
 import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
+  parseTransferTransactionData,
 } from '../../../../shared/lib/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
@@ -178,9 +179,33 @@ function scanAddressInBackground(
 }
 
 /**
+ * Run a calldata decoder without letting a throw skip sibling decoders in
+ * {@link scanCallTargets}. `parseStandardTokenTransactionData` already
+ * swallows ABI errors, so this is belt-and-suspenders for the wrappers.
+ *
+ * @param parse - Decoder to invoke
+ * @param logLabel - Describes the decoder in the error log
+ * @returns The decoder result, or undefined if it threw
+ */
+function tryParseCalldata<ParseResult>(
+  parse: () => ParseResult | undefined,
+  logLabel: string,
+): ParseResult | undefined {
+  try {
+    return parse();
+  } catch (error) {
+    console.error(
+      `[createTrustSignalsMiddleware] error parsing ${logLabel}:`,
+      error,
+    );
+    return undefined;
+  }
+}
+
+/**
  * Scans the addresses a single transaction or batched call exposes: its
- * target `to` plus any addresses encoded in calldata (currently the spender
- * of a token approval). Shared by the `eth_sendTransaction` and
+ * target `to` plus any addresses encoded in calldata (approval spenders and
+ * token-transfer recipients). Shared by the `eth_sendTransaction` and
  * `wallet_sendCalls` handlers so decoding logic stays in one place; new
  * calldata decoders should be added here to cover both paths at once.
  *
@@ -215,12 +240,33 @@ function scanCallTargets(
 
   // If the call is a token approval, also scan the spender address.
   if (typeof data === 'string') {
-    const approvalData = parseApprovalTransactionData(data as `0x${string}`);
+    const approvalData = tryParseCalldata(
+      () => parseApprovalTransactionData(data as `0x${string}`),
+      `approval data for ${context}`,
+    );
     const spenderAddress = approvalData?.spender;
     if (spenderAddress) {
       scanAddressInBackground(
         spenderAddress,
         `spender address for ${context} approval`,
+        chainId,
+        appStateController,
+        phishingController,
+      );
+    }
+
+    // If the call is a token transfer, also scan the recipient decoded from
+    // calldata: for transfers `to` is only the token contract; the funds
+    // move to the address inside the calldata. Parsed independently so a
+    // throw in the approval decoder cannot skip this scan.
+    const transferRecipient = tryParseCalldata(
+      () => parseTransferTransactionData(data as `0x${string}`),
+      `transfer data for ${context}`,
+    )?.recipient;
+    if (transferRecipient) {
+      scanAddressInBackground(
+        transferRecipient,
+        `transfer recipient address for ${context}`,
         chainId,
         appStateController,
         phishingController,
