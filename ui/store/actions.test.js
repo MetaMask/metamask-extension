@@ -3870,6 +3870,7 @@ describe('Actions', () => {
         fetchAndUpdateMetamaskNotifications:
           fetchAndUpdateMetamaskNotificationsStub,
         forceUpdateMetamaskState: forceUpdateMetamaskStateStub,
+        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
