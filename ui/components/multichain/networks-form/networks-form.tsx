@@ -46,6 +46,7 @@ import {
   CHAIN_IDS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
+  TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import { getFailoverUrlsForChainId } from '../../../../shared/constants/network-failover';
 import {
@@ -70,6 +71,7 @@ import {
   addNetwork,
   setEditedNetwork,
   setEnabledNetworks,
+  setShowTestNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -657,6 +659,9 @@ export const NetworksForm = ({
               setActive: toggleNetworkMenuAfterSubmit,
             }),
           );
+          if (TEST_CHAINS.includes(networkPayload.chainId)) {
+            await dispatch(setShowTestNetworks(true));
+          }
           if (toggleNetworkMenuAfterSubmit) {
             await dispatch(setEnabledNetworks(networkPayload.chainId));
           }
