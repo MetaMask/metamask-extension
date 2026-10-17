@@ -6535,6 +6535,14 @@
       "comment_id": 6210264821,
       "created_at": "2026-10-16T07:19:19Z",
       "repoId": 42009758
+    },
+    {
+      "id": 180484527,
+      "name": "MarcosRBjunior",
+      "pullRequestNo": 47156,
+      "comment_id": 6228261345,
+      "created_at": "2026-10-17T02:02:35Z",
+      "repoId": 42009758
     }
   ]
 }
