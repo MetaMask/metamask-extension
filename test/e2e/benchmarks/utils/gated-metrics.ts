@@ -1,4 +1,4 @@
-import { METRIC, type MetricKey } from './thresholds';
+import { METRIC, type MetricKey } from './thresholds.ts';
 
 /**
  * `GATED_METRIC_VALUES` — single source of truth for the gate allowlist.
