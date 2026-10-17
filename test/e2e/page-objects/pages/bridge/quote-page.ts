@@ -234,8 +234,22 @@ class BridgeQuotePage {
   async checkExpectedNetworkFeeIsDisplayed(): Promise<void> {
     // The fee element renders empty until the quote's native exchange rate
     // lands, so wait for the formatted amount rather than for the element.
-    await this.driver.waitForSelector(this.networkFeesValue);
-    console.log('Network fee is displayed');
+    const pricePattern = /^\$\d+\.\d{2,4}$/u;
+    await this.driver.waitUntil(
+      async () => {
+        const present = await this.driver.isElementPresentAndVisible(
+          this.networkFeesValue,
+          1000,
+        );
+        if (!present) {
+          return false;
+        }
+        const el = await this.driver.findElement(this.networkFees);
+        return pricePattern.test(await el.getText());
+      },
+      { timeout: this.driver.timeout, interval: 200 },
+    );
+    console.log('Price matches expected format');
   }
 
   async checkGasIncludedIsDisplayed(): Promise<void> {
