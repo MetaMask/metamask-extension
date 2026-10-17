@@ -6,6 +6,7 @@ import {
   type Compilation,
   type StatsOptions,
   type StatsCompilation,
+  type Compiler,
 } from 'webpack';
 import * as helpers from '../utils/helpers';
 import { type Combination, generateCases } from './helpers';
@@ -189,4 +190,413 @@ describe('./utils/helpers.ts', () => {
       });
     }
   });
+
+  describe('suppressDevServerInfoLogs', () => {
+    it('suppresses webpack-dev-server info logs', () => {
+      let infrastructureLog:
+        | ((name: string, type: string, args?: unknown[]) => true | void)
+        | undefined;
+      const compiler = {
+        hooks: {
+          infrastructureLog: {
+            tap: mock.fn((_name, callback) => {
+              infrastructureLog = callback;
+            }),
+          },
+        },
+      } as unknown as Compiler;
+
+      helpers.suppressDevServerInfoLogs(compiler);
+
+      assert(infrastructureLog, 'infrastructure log callback should be set');
+      assert.strictEqual(
+        infrastructureLog('webpack-dev-server', 'info', [
+          'Project is running at:',
+        ]),
+        true,
+      );
+      assert.strictEqual(
+        infrastructureLog('webpack-dev-server', 'warn', ['test warning']),
+        undefined,
+      );
+      assert.strictEqual(
+        infrastructureLog('webpack.Progress', 'status', ['10%', 'building']),
+        undefined,
+      );
+    });
+  });
+
+  describe('logWatchBuildStats', () => {
+    it('logs stats and the watch message after each completed build', () => {
+      const calls: unknown[] = [];
+      let done: Parameters<Compiler['hooks']['done']['tap']>[1] | undefined;
+      const status = mock.fn(() => calls.push('status'));
+      const doneTap = mock.fn((_name, callback) => {
+        done = callback;
+      });
+      const failedTap = mock.fn();
+      const compiler = {
+        hooks: {
+          done: {
+            tap: doneTap,
+          },
+          failed: {
+            tap: failedTap,
+          },
+        },
+        getInfrastructureLogger: mock.fn(() => ({ status })),
+      } as unknown as Compiler;
+      const stats = {
+        endTime: 1000,
+        startTime: 0,
+        hasErrors: mock.fn(() => false),
+        hasWarnings: mock.fn(() => false),
+        compilation: {
+          options: {
+            mode: 'development',
+            stats: 'none',
+          },
+          compiler: {
+            name: 'test-compiler-name',
+          },
+        } as Compilation,
+        toString: mock.fn((_?: unknown) => 'test-stats'),
+      } as unknown as Stats;
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.logWatchBuildStats(compiler, 'test message');
+
+      assert(done, 'done callback should be set');
+      assert.deepStrictEqual(
+        doneTap.mock.calls[0].arguments[0],
+        'MetaMaskWatchBuildLogger',
+      );
+      assert.deepStrictEqual(
+        failedTap.mock.calls[0].arguments[0],
+        'MetaMaskWatchBuildLogger',
+      );
+
+      done(stats);
+      done(stats);
+
+      assert.strictEqual(status.mock.callCount(), 2);
+      assert.match(String(calls[1]), /compiled/u);
+      assert.strictEqual(calls[2], 'test message');
+      assert.match(String(calls[4]), /compiled/u);
+      assert.strictEqual(calls[5], 'test message');
+    });
+
+    it('logs fatal watch errors and the watch message', () => {
+      const calls: unknown[] = [];
+      let failed: Parameters<Compiler['hooks']['failed']['tap']>[1] | undefined;
+      const status = mock.fn(() => calls.push('status'));
+      const compiler = {
+        hooks: {
+          done: {
+            tap: mock.fn(),
+          },
+          failed: {
+            tap: mock.fn((_name, callback) => {
+              failed = callback;
+            }),
+          },
+        },
+        getInfrastructureLogger: mock.fn(() => ({ status })),
+      } as unknown as Compiler;
+      const error = new Error('test error');
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.logWatchBuildStats(compiler, 'test message');
+
+      assert(failed, 'failed callback should be set');
+      failed(error);
+
+      assert.strictEqual(status.mock.callCount(), 1);
+      assert.deepStrictEqual(calls, ['status', error, 'test message']);
+    });
+  });
+
+  describe('setupGracefulWatchShutdown', () => {
+    it('starts shutdown once and leaves cache close running in the background', () => {
+      const exits: number[] = [];
+      const stopDeferred = createDeferred<void>();
+      const stop = mock.fn(() => stopDeferred.promise);
+      const server = { stop } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn();
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      const onShutdownStart = mock.fn();
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart,
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      listener('SIGINT');
+
+      assert.strictEqual(onShutdownStart.mock.callCount(), 1);
+      assert.strictEqual(stop.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 0);
+      assert.deepStrictEqual(exits, []);
+    });
+
+    it('accepts shutdown requests over IPC', async () => {
+      const exits: number[] = [];
+      const server = {
+        stop: mock.fn(async () => undefined),
+      } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          callback();
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, removeListener, signalProcess } = createSignalProcess({
+        hasIpc: true,
+      });
+      const onShutdownStart = mock.fn();
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart,
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('message');
+      assert(listener, 'message listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.strictEqual(onShutdownStart.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert.deepStrictEqual(exits, [0]);
+      assert.strictEqual(removeListener.mock.callCount(), 2);
+      assert.strictEqual(listeners.has('SIGINT'), false);
+      assert.strictEqual(listeners.has('message'), false);
+    });
+
+    it('still closes the compiler when the dev server fails to stop', async () => {
+      const exits: number[] = [];
+      const calls: unknown[] = [];
+      const stopError = new Error('stop failed');
+      const server = {
+        stop: mock.fn(async () => {
+          throw stopError;
+        }),
+      } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      let closeCallback:
+        | ((error?: Error | null | undefined) => void)
+        | undefined;
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          closeCallback = callback;
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert(closeCallback, 'compiler close callback should be set');
+      closeCallback();
+      await waitForAsyncShutdown();
+
+      assert.deepStrictEqual(calls, [stopError]);
+      assert.deepStrictEqual(exits, [1]);
+    });
+
+    it('still stops the server when the shutdown handoff throws', async () => {
+      const exits: number[] = [];
+      const calls: unknown[] = [];
+      const handoffError = new Error('handoff failed');
+      const stop = mock.fn(async () => undefined);
+      const server = { stop } as unknown as Parameters<
+        typeof helpers.setupGracefulWatchShutdown
+      >[0]['server'];
+      const close = mock.fn(
+        (callback: (error?: Error | null | undefined) => void) => {
+          callback();
+        },
+      );
+      const compiler = {
+        close,
+      } as unknown as Compiler;
+      const { listeners, signalProcess } = createSignalProcess();
+      mock.method(console, 'error', (message: unknown) => {
+        calls.push(message);
+      });
+
+      helpers.setupGracefulWatchShutdown({
+        compiler,
+        exit: (code = 0) => exits.push(code),
+        onShutdownStart: () => {
+          throw handoffError;
+        },
+        process: signalProcess,
+        server,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener('SIGINT');
+      await waitForAsyncShutdown();
+
+      assert.deepStrictEqual(calls, [handoffError]);
+      assert.strictEqual(stop.mock.callCount(), 1);
+      assert.strictEqual(close.mock.callCount(), 1);
+      assert.deepStrictEqual(exits, [0]);
+    });
+  });
+
+  describe('getDevServerClientUrl', () => {
+    const parse = (url: string) => {
+      const [base, query] = url.split('?');
+      return { base, params: new URLSearchParams(query) };
+    };
+
+    it('returns the webpack-dev-server client base path', () => {
+      const { base } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(base, 'webpack-dev-server/client/index');
+    });
+
+    it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.get('protocol'), 'ws');
+    });
+
+    it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.has('hostname'), false);
+      assert.strictEqual(params.has('port'), false);
+      assert.strictEqual(params.has('hot'), false);
+      assert.strictEqual(params.has('live-reload'), false);
+    });
+
+    it('maps `host` to the `hostname` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ host: 'localhost' }),
+      );
+      assert.strictEqual(params.get('hostname'), 'localhost');
+    });
+
+    it('forwards a numeric port as a string', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 12345 }));
+      assert.strictEqual(params.get('port'), '12345');
+    });
+
+    it("forwards `port: 'auto'` as the string 'auto'", () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 'auto' }));
+      assert.strictEqual(params.get('port'), 'auto');
+    });
+
+    it('forwards `hot` as a string', () => {
+      const hotTrue = parse(helpers.getDevServerClientUrl({ hot: true }));
+      assert.strictEqual(hotTrue.params.get('hot'), 'true');
+
+      const hotFalse = parse(helpers.getDevServerClientUrl({ hot: false }));
+      assert.strictEqual(hotFalse.params.get('hot'), 'false');
+    });
+
+    it('maps `liveReload` to the `live-reload` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ liveReload: true }),
+      );
+      assert.strictEqual(params.get('live-reload'), 'true');
+      assert.strictEqual(params.has('liveReload'), false);
+    });
+
+    it('combines all fields into a single query string', () => {
+      const url = helpers.getDevServerClientUrl({
+        host: 'localhost',
+        port: 8080,
+        hot: false,
+        liveReload: true,
+      });
+      assert.strictEqual(
+        url,
+        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=8080&hot=false&live-reload=true',
+      );
+    });
+  });
 });
+
+function createDeferred<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
+}
+
+async function waitForAsyncShutdown() {
+  await new Promise<void>((resolve) => {
+    setImmediate(resolve);
+  });
+}
+
+function createSignalProcess({ hasIpc = false } = {}) {
+  const listeners = new Map<string, (...args: unknown[]) => void>();
+  const on = mock.fn(
+    (event: string, listener: (...args: unknown[]) => void) => {
+      listeners.set(event, listener);
+    },
+  );
+  const removeListener = mock.fn(
+    (event: string, listener: (...args: unknown[]) => void) => {
+      if (listeners.get(event) === listener) {
+        listeners.delete(event);
+      }
+    },
+  );
+  const signalProcess = {
+    on,
+    removeListener,
+    ...(hasIpc ? { send: mock.fn() } : {}),
+  } as unknown as NodeJS.Process;
+
+  return { listeners, on, removeListener, signalProcess };
+}

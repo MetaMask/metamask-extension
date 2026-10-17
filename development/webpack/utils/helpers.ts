@@ -1,5 +1,8 @@
+import type { EventEmitter } from 'node:events';
 import { join, sep } from 'node:path';
-import type { EntryObject, Stats } from 'webpack';
+import type { Compiler, EntryObject, Stats } from 'webpack';
+import type WebpackDevServerType from 'webpack-dev-server';
+import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
@@ -75,24 +78,229 @@ export const JAVASCRIPT_FILE_RE = /\.(?:js|mjs|jsx)$/u;
 export const noop = () => undefined;
 
 /**
+ * Suppresses routine webpack-dev-server info logs while leaving warnings and
+ * errors visible.
+ *
+ * webpack-dev-server logs startup and shutdown banners through webpack's
+ * infrastructure logger. Those banners interrupt webpack's progress status
+ * line, so the webpack launcher prints its own concise watch message instead.
+ *
+ * @param compiler - The webpack compiler.
+ */
+export function suppressDevServerInfoLogs(compiler: Compiler): void {
+  compiler.hooks.infrastructureLog.tap(
+    'MetaMaskDevServerInfoLogSuppressor',
+    (name, type) =>
+      name === 'webpack-dev-server' && type === 'info' ? true : undefined,
+  );
+}
+
+/**
+ * Logs watch-mode build stats and writes a line once the build is ready for
+ * more changes.
+ *
+ * webpack-dev-server starts listening before webpack finishes the initial
+ * compilation. Hooking the compiler completion keeps the output aligned with
+ * webpack watch mode: stats first, then the watch-ready line.
+ *
+ * @param compiler - The webpack compiler.
+ * @param message - The message to write.
+ */
+export function logWatchBuildStats(compiler: Compiler, message: string): void {
+  const logBuild = (error?: Error | null, stats?: Stats) => {
+    compiler.getInfrastructureLogger('webpack.Progress').status();
+    logStats(error, stats);
+    console.error(message);
+  };
+
+  compiler.hooks.done.tap('MetaMaskWatchBuildLogger', (stats) => {
+    logBuild(undefined, stats);
+  });
+  compiler.hooks.failed.tap('MetaMaskWatchBuildLogger', (error) => {
+    logBuild(error);
+  });
+}
+
+const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+
+type SignalListener = NodeJS.SignalsListener;
+type SignalProcess = NodeJS.Process;
+
+type GracefulWatchShutdownOptions = {
+  compiler: Compiler;
+  exit?: (code?: number) => void;
+  onShutdownStart?: () => void;
+  process?: SignalProcess;
+  server: WebpackDevServerType;
+  signals?: readonly NodeJS.Signals[];
+};
+
+function listenForShutdownRequests(
+  signalProcess: SignalProcess,
+  signals: readonly NodeJS.Signals[],
+  listener: SignalListener,
+): () => void {
+  const eventEmitter = signalProcess as EventEmitter;
+  const shutdownSignals = new Set<NodeJS.Signals>(signals);
+  const messageListener = (message: unknown) => {
+    if (shutdownSignals.has(message as NodeJS.Signals)) {
+      listener(message as NodeJS.Signals);
+    }
+  };
+
+  signals.forEach((signal) => eventEmitter.on(signal, listener));
+  if (typeof signalProcess.send === 'function') {
+    eventEmitter.on('message', messageListener);
+  }
+
+  return () => {
+    signals.forEach((signal) => eventEmitter.removeListener(signal, listener));
+    if (typeof signalProcess.send === 'function') {
+      eventEmitter.removeListener('message', messageListener);
+    }
+  };
+}
+
+/**
+ * Installs watch-mode shutdown handlers that let webpack finish closing its
+ * persistent cache after the dev server stops accepting work.
+ *
+ * The forked launcher forwards one shutdown request, then exits so the terminal
+ * is released immediately. The child process handles server shutdown and cache
+ * persistence in the background. Repeated shutdown requests are ignored until
+ * `compiler.close()` completes, because interrupting that close can corrupt the
+ * filesystem cache.
+ *
+ * @param options - The watch server, compiler, and optional test hooks.
+ * @param options.compiler - The webpack compiler.
+ * @param options.exit - The process exit function.
+ * @param options.onShutdownStart - Synchronous handoff before async shutdown.
+ * @param options.process - The process to install listeners on.
+ * @param options.server - The webpack dev server.
+ * @param options.signals - Shutdown signals to handle.
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function setupGracefulWatchShutdown({
+  compiler,
+  exit = (code) => process.exit(code),
+  onShutdownStart = noop,
+  process: signalProcess = process,
+  server,
+  signals = CACHE_SHUTDOWN_SIGNALS,
+}: GracefulWatchShutdownOptions): () => void {
+  let isShuttingDown = false;
+  const removeListeners = listenForShutdownRequests(
+    signalProcess,
+    signals,
+    shutdown,
+  );
+
+  function shutdown() {
+    if (isShuttingDown) {
+      return;
+    }
+
+    isShuttingDown = true;
+    try {
+      onShutdownStart();
+    } catch (error) {
+      console.error(error);
+    }
+    closeWatchServerAndCompiler(server, compiler)
+      .then(() => {
+        removeListeners();
+        exit(0);
+      })
+      .catch((error: unknown) => {
+        console.error(error);
+        removeListeners();
+        exit(1);
+      });
+  }
+
+  return removeListeners;
+}
+
+async function closeWatchServerAndCompiler(
+  server: WebpackDevServerType,
+  compiler: Compiler,
+): Promise<void> {
+  const errors: unknown[] = [];
+
+  try {
+    await server.stop();
+  } catch (error) {
+    errors.push(error);
+  }
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      compiler.close((error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+  } catch (error) {
+    errors.push(error);
+  }
+
+  if (errors.length === 1) {
+    throw errors[0];
+  }
+  if (errors.length > 1) {
+    throw new AggregateError(
+      errors,
+      'Failed to gracefully stop webpack watch mode.',
+    );
+  }
+}
+
+/**
  * Temporarily ignores 'SIGINT' and 'SIGTERM' while webpack closes its
  * filesystem cache.
  *
- * In the forked build path, the parent exits before `compiler.close()`
- * completes so webpack can persist the cache in the background. During that
- * handoff the parent can still forward shutdown signals to the child: Ctrl+C
- * becomes 'SIGINT', and process managers or CI can send 'SIGTERM'. Node's
- * default behavior would terminate the child and can leave the cache partially
- * written.
+ * In the forked non-watch build path, `onComplete()` notifies the parent before
+ * `compiler.close()` runs. The parent then unrefs the child and may exit while
+ * webpack is still persisting the cache. If the parent receives a shutdown
+ * signal during that handoff, its exit handler can forward the signal to the
+ * child. Node's default behavior would terminate the child and can leave the
+ * cache partially written.
  *
  * @param process - The process to install signal listeners on.
  * @returns A cleanup function that removes the installed listeners.
  */
-export function ignoreCacheShutdownSignal(process: NodeJS.Process) {
-  const signals = ['SIGINT', 'SIGTERM'] as const;
-  signals.forEach((signal) => process.on(signal, noop));
-  return () => signals.forEach((signal) => process.off(signal, noop));
+export function ignoreCacheShutdownSignal(process: NodeJS.Process): () => void {
+  CACHE_SHUTDOWN_SIGNALS.forEach((signal) => process.on(signal, noop));
+  return () =>
+    CACHE_SHUTDOWN_SIGNALS.forEach((signal) => process.off(signal, noop));
 }
+
+/**
+ * Builds the webpack-dev-server client import URL from a
+ * dev-server config. webpack preserves the query string as `__resourceQuery`,
+ * which the client reads at runtime to know where to connect.
+ *
+ * Only fields that are set are forwarded; anything omitted falls back to
+ * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
+ * included because the extension page origin is `chrome-extension://...`,
+ * so the client cannot auto-detect a WebSocket protocol.
+ *
+ * @param config - The webpack-dev-server configuration.
+ * @returns The import specifier for the dev-server client.
+ */
+export const getDevServerClientUrl = (config: Configuration): string => {
+  const params = new URLSearchParams({ protocol: 'ws' });
+  if (config.host !== undefined) params.set('hostname', config.host);
+  if (config.port !== undefined) params.set('port', config.port.toString());
+  if (config.hot !== undefined) params.set('hot', config.hot.toString());
+  if (config.liveReload !== undefined) {
+    params.set('live-reload', config.liveReload.toString());
+  }
+  return `webpack-dev-server/client/index?${params}`;
+};
 
 /**
  * @param filename
