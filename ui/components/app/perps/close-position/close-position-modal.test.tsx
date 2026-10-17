@@ -47,6 +47,7 @@ jest.mock('../../compliance', () => {
 });
 
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  PRICE_RANGES_MINIMAL_VIEW: [],
   PRICE_RANGES_UNIVERSAL: [],
   formatPerpsFiat: (value: number | string) => {
     const amount = Number(value);

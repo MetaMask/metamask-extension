@@ -14,8 +14,11 @@ import { NetworkManager } from './network-manager';
 
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
+  detectNfts: jest.fn(),
   hideModal: jest.fn(),
   setEditedNetwork: jest.fn(),
+  setNextNonce: jest.fn(),
+  updateCustomNonce: jest.fn(),
 }));
 
 // Mock useDispatch
