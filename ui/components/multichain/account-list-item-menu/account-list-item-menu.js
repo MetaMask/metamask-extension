@@ -5,10 +5,7 @@ import PropTypes from 'prop-types';
 import { IconName, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useEventListener } from '../../../hooks/useEventListener';
-import {
-  getPinnedAccountsList,
-  getHiddenAccountsList,
-} from '../../../selectors';
+import { getPinnedAccountsList } from '../../../selectors';
 
 import { MenuItem } from '../../ui/menu';
 import {
@@ -17,10 +14,7 @@ import {
   PopoverPosition,
   PopoverRole,
 } from '../../component-library';
-import {
-  updateAccountsList,
-  updateHiddenAccountsList,
-} from '../../../store/actions';
+import { updateAccountsList } from '../../../store/actions';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { useDispatch } from '../../../store/hooks';
 
@@ -40,21 +34,20 @@ export const AccountListItemMenu = ({
   const dispatch = useDispatch();
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
-  const hiddenAccountList = useSelector(getHiddenAccountsList);
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
   const accountDetailsItemRef = useRef(null);
-  const hideMenuItemRef = useRef(null);
+  const pinMenuItemRef = useRef(null);
 
   // Checks the MenuItems from the bottom to top to set lastItemRef on the last MenuItem that is not disabled
   useEffect(() => {
-    if (hideMenuItemRef.current) {
-      lastItemRef.current = hideMenuItemRef.current;
+    if (pinMenuItemRef.current) {
+      lastItemRef.current = pinMenuItemRef.current;
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-  }, []);
+  }, [isHidden]);
 
   const handleKeyDown = useCallback(
     (event) => {
@@ -95,27 +88,6 @@ export const AccountListItemMenu = ({
     dispatch(updateAccountsList(updatedPinnedAccountList));
   };
 
-  const handleHidding = (address) => {
-    // If the account is already hidden, we do not add it again
-    // TODO: The controller should handle this logic
-    if (hiddenAccountList.includes(address)) {
-      return;
-    }
-
-    const updatedHiddenAccountList = [...hiddenAccountList, address];
-    if (pinnedAccountList.includes(address)) {
-      handleUnpinning(address);
-    }
-    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
-  };
-
-  const handleUnhidding = (address) => {
-    const updatedHiddenAccountList = hiddenAccountList.filter(
-      (item) => item !== address,
-    );
-    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
-  };
-
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -145,6 +117,7 @@ export const AccountListItemMenu = ({
           />
           {isHidden ? null : (
             <MenuItem
+              ref={pinMenuItemRef}
               data-testid="account-list-menu-pin"
               onClick={() => {
                 isPinned
@@ -159,21 +132,6 @@ export const AccountListItemMenu = ({
               </Text>
             </MenuItem>
           )}
-          <MenuItem
-            ref={hideMenuItemRef}
-            data-testid="account-list-menu-hide"
-            onClick={() => {
-              isHidden
-                ? handleUnhidding(account.address)
-                : handleHidding(account.address);
-              onClose();
-            }}
-            iconNameLegacy={isHidden ? IconName.Eye : IconName.EyeSlash}
-          >
-            <Text variant={TextVariant.BodySm}>
-              {isHidden ? t('showAccount') : t('hideAccount')}
-            </Text>
-          </MenuItem>
         </div>
       </ModalFocus>
     </Popover>

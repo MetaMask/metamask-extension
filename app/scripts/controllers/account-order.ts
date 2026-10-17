@@ -18,7 +18,6 @@ export type AccountAddress = string;
 // State shape for AccountOrderController
 export type AccountOrderControllerState = {
   pinnedAccountList: AccountAddress[];
-  hiddenAccountList: AccountAddress[];
 };
 
 export type AccountOrderControllerGetStateAction = ControllerGetStateAction<
@@ -26,10 +25,7 @@ export type AccountOrderControllerGetStateAction = ControllerGetStateAction<
   AccountOrderControllerState
 >;
 
-const MESSENGER_EXPOSED_METHODS = [
-  'updateAccountsList',
-  'updateHiddenAccountsList',
-] as const;
+const MESSENGER_EXPOSED_METHODS = ['updateAccountsList'] as const;
 
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
@@ -51,18 +47,11 @@ export type AccountOrderControllerMessenger = Messenger<
 // Default state for the controller
 const defaultState = {
   pinnedAccountList: [],
-  hiddenAccountList: [],
 };
 
 // Metadata for the controller state
 const metadata: StateMetadata<AccountOrderControllerState> = {
   pinnedAccountList: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  hiddenAccountList: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -117,19 +106,6 @@ export class AccountOrderController extends BaseController<
   updateAccountsList(accountList: []) {
     this.update((state) => {
       state.pinnedAccountList = accountList;
-      return state;
-    });
-  }
-
-  /**
-   * Hides the accounts list in the state with the provided list of accounts.
-   *
-   * @param accountList - The list of accounts to hide in the state.
-   */
-
-  updateHiddenAccountsList(accountList: []) {
-    this.update((state) => {
-      state.hiddenAccountList = accountList;
       return state;
     });
   }

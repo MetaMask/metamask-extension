@@ -132,7 +132,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
       'AccountsController:updateAccounts',
       'AccountsController:clearState',
-      'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
       'AccountTreeController:reinit',

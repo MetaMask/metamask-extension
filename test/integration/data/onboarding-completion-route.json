@@ -133,7 +133,6 @@
   "gasFeeEstimatesByChainId": {},
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
   "hasDismissedOpenSeaToBlockaidBanner": false,
-  "hiddenAccountList": [],
   "ignoredNfts": [],
   "ignoredTokens": [],
   "interfaces": {},

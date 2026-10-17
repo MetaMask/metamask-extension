@@ -6164,7 +6164,6 @@ describe('LegacyBackgroundApiService', () => {
         const clearSnapState = jest.fn().mockResolvedValue(undefined);
         const clearAccountTreeState = jest.fn();
         const clearAccountsState = jest.fn();
-        const updateHiddenAccountsList = jest.fn();
         const clearUnapprovedTransactions = jest.fn();
         const createWallet = jest.fn().mockResolvedValue(undefined);
         const setIsWalletResetInProgress = jest.fn();
@@ -6197,10 +6196,6 @@ describe('LegacyBackgroundApiService', () => {
           clearAccountsState,
         );
         rootMessenger.registerActionHandler(
-          'AccountOrderController:updateHiddenAccountsList',
-          updateHiddenAccountsList,
-        );
-        rootMessenger.registerActionHandler(
           'TransactionController:clearUnapprovedTransactions',
           clearUnapprovedTransactions,
         );
@@ -6231,7 +6226,6 @@ describe('LegacyBackgroundApiService', () => {
         expect(clearSnapState).toHaveBeenCalled();
         expect(clearAccountTreeState).toHaveBeenCalled();
         expect(clearAccountsState).toHaveBeenCalled();
-        expect(updateHiddenAccountsList).toHaveBeenCalledWith([]);
         expect(clearUnapprovedTransactions).toHaveBeenCalled();
         expect(createWallet).toHaveBeenCalledWith({
           type: 'create',
@@ -8457,7 +8451,6 @@ function getMessenger(
       'SeedlessOnboardingController:syncLatestGlobalPassword',
       'AccountsController:updateAccounts',
       'AccountsController:clearState',
-      'AccountOrderController:updateHiddenAccountsList',
       'AccountTreeController:clearState',
       'AccountTreeController:init',
       'AccountTreeController:reinit',
