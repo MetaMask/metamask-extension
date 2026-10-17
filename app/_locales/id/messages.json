@@ -1738,9 +1738,6 @@
     "message": "Disetujui pada $1 untuk $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Selamat datang di Arc! Untuk memfasilitasi dan memverifikasi penggunaan Anda atas Arc chain, kami dapat membagikan informasi kepada tim Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Pemberitahuan"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask menanggung biaya jaringan untuk transaksi ini. Ini termasuk aktivasi akun cerdas satu kali."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $2 di akun Anda.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 jam",

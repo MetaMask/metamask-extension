@@ -1738,9 +1738,6 @@
     "message": "Inaprubahan sa $1 para sa $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Welcome sa Arc! Upang mapadali at ma-verify ang paggamit mo ng Arc chain, maaari naming ibahagi ang impormasyon sa team ng Arc."
-  },
   "arcUsageNoticeTitle": {
     "message": "Abiso"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "Saklaw ang MetaMask ang bayad sa network para sa transaksyong ito. Kabilang dito ang isang beses na pag-activate sa smart account."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Kailangan ng partikular na network na ito ang pagpapanatili ng reserba na $1 $2 sa iyong account.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 oras",

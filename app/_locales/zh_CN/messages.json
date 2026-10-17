@@ -1738,9 +1738,6 @@
     "message": "于 $1 批准用于 $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "欢迎使用 Arc！为方便并验证您对 Arc 链的使用，我们可能会与 Arc 团队共享信息。"
-  },
   "arcUsageNoticeTitle": {
     "message": "通知"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask 将承担本次交易的网络费用，其中包括一次性智能账户激活。"
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "此特定网络要求您的账户中保留 $1 $2 的储备金。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 小时",

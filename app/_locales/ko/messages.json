@@ -1738,9 +1738,6 @@
     "message": "$2 관련하여 $1에 승인됨",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arc에 오신 것을 환영합니다! Arc 체인의 원활한 이용과 이용 내역 확인을 위해 Arc 팀과 정보를 공유할 수 있습니다."
-  },
   "arcUsageNoticeTitle": {
     "message": "알림"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMask는 스마트 계정을 활성화하는 1회성 비용과 이 거래의 네트워크 수수료를 부담합니다."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "이 특정 네트워크는 계정에 최소 $1 $2의 잔액을 유지해야 합니다.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 시간",

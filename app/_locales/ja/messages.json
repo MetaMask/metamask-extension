@@ -1738,9 +1738,6 @@
     "message": "$1に$2に対して承認済み",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
-  "arcUsageNoticeDescription": {
-    "message": "Arcへようこそ！当社はArcチェーンのご利用を促進、確認するために、Arcチームと情報を共有する場合があります。"
-  },
   "arcUsageNoticeTitle": {
     "message": "お知らせ"
   },
@@ -4258,10 +4255,6 @@
   },
   "gasSponsorshipOptOutTooltip": {
     "message": "MetaMaskは、このトランザクションのネットワーク手数料を負担します。これには、スマートアカウントの初回アクティベーションも含まれます。"
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1時間",
