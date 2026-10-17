@@ -138,6 +138,7 @@ export const MESSAGE_TYPE = {
   ETH_SIGN_TYPED_DATA_V1: 'eth_signTypedData_v1',
   ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
   ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
+  GET_STATE_LOGS: 'metamask_getStateLogs',
   GET_PROVIDER_STATE: 'metamask_getProviderState',
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
@@ -188,6 +189,9 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
 } as const;
+
+// PoC: 1-click state log export
+export const STATE_LOG_EXPORT_APPROVAL_TYPE = 'stateLogExport:userConsent';
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
