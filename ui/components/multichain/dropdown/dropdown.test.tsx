@@ -1,12 +1,13 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { Dropdown, dropdownOptionProps } from './dropdown';
 
 describe('Dropdown', () => {
   const renderDropdown = () =>
     render(
       <div className="relative">
-        <input aria-label="Search" />
+        <input aria-label={messages.search.message} />
         <Dropdown>
           <button type="button" {...dropdownOptionProps}>
             First
@@ -21,7 +22,9 @@ describe('Dropdown', () => {
   it('moves between options with the arrow keys', () => {
     renderDropdown();
 
-    const search = screen.getByRole('textbox', { name: 'Search' });
+    const search = screen.getByRole('textbox', {
+      name: messages.search.message,
+    });
     const first = screen.getByRole('button', { name: 'First' });
     const second = screen.getByRole('button', { name: 'Second' });
     search.focus();
