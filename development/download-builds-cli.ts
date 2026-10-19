@@ -1,17 +1,40 @@
-import { execFileSync } from 'node:child_process';
+import { readFileSync, statSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 import { program, Option } from 'commander';
 import { getGitHubToken } from '../.github/scripts/shared/github-token.mts';
 import { downloadBuilds, type DownloadBuildsOptions } from './download-builds';
 
+const GIT_HEAD_REF_PREFIX = 'ref: refs/heads/';
+// Resolve the repo root from the invoked script path so branch detection works
+// from any cwd. This avoids a PATH-based `git` lookup, which Sonar flags and
+// which would be less deterministic than reading the checked-out repo metadata.
+const SCRIPT_PATH = resolve(process.argv[1] ?? '.');
+const REPO_ROOT = resolve(dirname(SCRIPT_PATH), '..');
+
 function getBranch(): string {
   try {
-    return execFileSync('git', ['symbolic-ref', '--short', 'HEAD'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
+    const gitDir = resolveGitDir(REPO_ROOT);
+    const head = readFileSync(join(gitDir, 'HEAD'), 'utf8').trim();
+    if (head.startsWith(GIT_HEAD_REF_PREFIX)) {
+      return head.slice(GIT_HEAD_REF_PREFIX.length);
+    }
   } catch {
-    return 'main';
+    // Ignore and fall back to the default branch.
   }
+  return 'main';
+}
+
+function resolveGitDir(root: string): string {
+  const dotGitPath = join(root, '.git');
+  const gitMetadata = statSync(dotGitPath);
+  if (gitMetadata.isDirectory()) {
+    return dotGitPath;
+  }
+  const gitdir = readFileSync(dotGitPath, 'utf8').trim();
+  if (!gitdir.startsWith('gitdir: ')) {
+    throw new Error('Unexpected .git file format');
+  }
+  return resolve(root, gitdir.slice('gitdir: '.length).trim());
 }
 
 type DownloadBuildsArgs = DownloadBuildsOptions & {
