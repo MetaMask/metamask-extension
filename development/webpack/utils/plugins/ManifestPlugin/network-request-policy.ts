@@ -1,6 +1,12 @@
 import { createHash } from 'node:crypto';
 import type { Manifest } from '../../helpers';
 
+const CHROME_EXTENSION_IDS: Partial<Record<string, string>> = {
+  main: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
+  beta: 'pbbkamfgmaedccnfkmjcofcecjhfgldn',
+  flask: 'ljfoeinjpaedjfecbmggjgodbgkmjkjk',
+};
+
 /**
  * Package extension-scoped denies, active before background/UI JavaScript.
  * @param manifest
@@ -20,13 +26,7 @@ export function createNetworkRequestRules(
         .replace(/[0-9a-f]/gu, (digit) =>
           String.fromCharCode(97 + parseInt(digit, 16)),
         )
-    : (
-        {
-          main: 'nkbihfbeogaeaoehlefnkodbefgpgknn',
-          beta: 'pbbkamfgmaedccnfkmjcofcecjhfgldn',
-          flask: 'ljfoeinjpaedjfecbmggjgodbgkmjkjk',
-        } as Record<string, string>
-      )[buildType];
+    : CHROME_EXTENSION_IDS[buildType];
   if (!extensionId) {
     throw new Error(
       'A Chrome signing ID is required for network request rules',
