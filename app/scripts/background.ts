@@ -67,6 +67,11 @@ import {
 } from '../../shared/lib/deep-links/metrics';
 import { hasVault } from '../../shared/lib/stores/persistence-manager';
 import type { MetaMaskStateType } from '../../shared/lib/stores/base-store';
+import {
+  getStartupPhase,
+  setStartupPhase,
+  StartupPhase,
+} from '../../shared/lib/telemetry/startup-phase';
 
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, initInstallType } from './lib/util';
@@ -80,11 +85,6 @@ import rawFirstTimeState from './first-time-state';
 import { loadStateFromPersistence } from './lib/startup/load-state-from-persistence';
 import { wireStatePersistence } from './lib/startup/wire-state-persistence';
 import { parsePortInfo } from './lib/parse-port-info';
-import {
-  getStartupPhase,
-  setStartupPhase,
-  StartupPhase,
-} from '../../shared/lib/telemetry/startup-phase';
 import { createEventBuilder, trackEvent } from './controllers/analytics';
 import MetamaskController from './metamask-controller';
 import NotificationManager from './lib/notification-manager';
