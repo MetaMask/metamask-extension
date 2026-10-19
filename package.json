@@ -346,7 +346,7 @@
     "@ledgerhq/device-signer-kit-ethereum/ethers": "^6.15.0",
     "@metamask/profile-sync-controller": "^33.0.0",
     "@metamask/account-tree-controller": "^11.0.0",
-    "@metamask/seedless-onboarding-controller": "file:./seedless-onboarding-controller.tgz"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@12.0.0-preview-64cf2e401"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
