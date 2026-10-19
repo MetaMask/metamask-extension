@@ -64,6 +64,7 @@ import { handlePerpsError } from '../utils/translate-perps-error';
 import { trackPerpsErrorScreenViewed } from '../utils/track-perps-error-screen';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { getPerpsNotionalUsd } from '../../../../hooks/perps/perps-fee-utils';
 import { PerpsFeesDisplay } from '../perps-fees-display';
 import {
   CloseAmountSection,
@@ -77,10 +78,14 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsServiceInterruptionBanner } from '../perps-service-interruption-banner';
 import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 import { useVipTier } from '../../../../hooks/rewards/useVipTier';
-import { getIsPerpsCloseLimitOrderEnabled } from '../../../../selectors/perps/feature-flags';
+import {
+  getIsPerpsCloseLimitOrderEnabled,
+  getIsPerpsServiceInterruptionBannerEnabled,
+} from '../../../../selectors/perps/feature-flags';
 import {
   getCloseLimitReferencePrice,
   isCloseLimitPriceOutsideDeviation,
@@ -345,6 +350,9 @@ export const ClosePositionModal = ({
   const { buildTrackingData } = usePerpsAttribution();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
+  const isServiceInterruptionBannerEnabled = useSelector(
+    getIsPerpsServiceInterruptionBannerEnabled,
+  );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
     conditions: isOpen,
@@ -356,6 +364,8 @@ export const ClosePositionModal = ({
       // Which CTA opened this modal — close vs reduce_exposure.
       [PERPS_EVENT_PROPERTY.BUTTON_CLICKED]: buttonClicked,
       [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]: buttonLocation,
+      [PERPS_EVENT_PROPERTY.OUTAGE_BANNER_SHOWN]:
+        isServiceInterruptionBannerEnabled,
     },
   });
   const { formatNumber, formatPercentWithMinThreshold } = useFormatters();
@@ -475,7 +485,7 @@ export const ClosePositionModal = ({
       : (validCurrentPrice ?? 0);
 
   const closeNotionalUsd = useMemo(
-    () => closeSize * effectivePrice,
+    () => getPerpsNotionalUsd({ size: closeSize, price: effectivePrice }),
     [closeSize, effectivePrice],
   );
 
@@ -521,6 +531,7 @@ export const ClosePositionModal = ({
     symbol: position.symbol,
     orderType: effectiveOrderType,
     isMaker: effectiveOrderType === 'limit',
+    amount: String(closeNotionalUsd),
   });
 
   const liveUnrealizedPnl = useMemo(
@@ -853,6 +864,7 @@ export const ClosePositionModal = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
+          <PerpsServiceInterruptionBanner />
           <OrderEntryHeader
             displayName={displayName}
             displayPrice={headerDisplayPrice}

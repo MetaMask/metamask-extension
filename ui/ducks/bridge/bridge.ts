@@ -20,7 +20,7 @@ import {
   TraceOperation,
 } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, TokenPayload } from './types';
+import type { BridgeState, BridgeToken, TokenPayload } from './types';
 
 const clearSlippageState = (state: BridgeState) => {
   state.slippage = undefined;
@@ -181,6 +181,24 @@ const bridgeSlice = createSlice({
         )
       ) {
         clearSlippageState(state);
+      }
+    },
+    setToTokenSecurityData: (
+      state,
+      {
+        payload,
+      }: {
+        payload: Pick<BridgeToken, 'assetId' | 'isVerified' | 'securityData'>;
+      },
+    ) => {
+      if (
+        state.toToken &&
+        !state.toToken.securityData?.type &&
+        assetIdsMatch(state.toToken.assetId, payload.assetId)
+      ) {
+        state.toToken.securityData = payload.securityData;
+        state.toToken.isVerified =
+          state.toToken.isVerified ?? payload.isVerified;
       }
     },
     setFromTokenInputValue: (

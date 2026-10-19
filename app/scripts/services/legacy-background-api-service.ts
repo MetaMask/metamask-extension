@@ -186,6 +186,7 @@ import {
   SeedlessOnboardingControllerStoreKeyringEncryptionKeyAction,
   SeedlessOnboardingControllerSubmitPasswordAction,
   SeedlessOnboardingControllerUpdateBackupMetadataStateAction,
+  SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction,
   SeedlessOnboardingCheckpoint,
 } from '@metamask/seedless-onboarding-controller';
 import {
@@ -734,6 +735,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerSubmitPasswordAction
   | SeedlessOnboardingControllerResolvePasswordSyncStateAction
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
+  | SeedlessOnboardingControllerIdentifyIncompleteMetadataBackupAction
   | SelectedNetworkControllerGetNetworkClientIdForDomainAction
   | GetSignatureState
   | ShieldControllerClearStateAction
@@ -2483,6 +2485,15 @@ export class LegacyBackgroundApiService {
               .call('SeedlessOnboardingController:revokePendingRefreshTokens')
               .catch((error: Error) => {
                 log.error('error while revoking pending refresh tokens', error);
+              });
+            // Asynchronously track incomplete metadata backup events
+            this.#messenger
+              .call(
+                'SeedlessOnboardingController:identifyIncompleteMetadataBackup',
+                password,
+              )
+              .catch((err) => {
+                log.error('error while tracking incomplete metadata backup', err);
               });
           }
           break;

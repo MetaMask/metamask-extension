@@ -1,4 +1,5 @@
 import {
+  selectEnrolledCredentials,
   selectIsSignedIn,
   selectNeedsProfilePairing,
   selectNeedsSocialPairing,
@@ -72,5 +73,20 @@ describe('Authentication Selectors', () => {
 
   it('selectNeedsSocialPairing defaults to true when the field is absent', () => {
     expect(selectNeedsSocialPairing(mockState)).toBe(true);
+  });
+
+  it('selectEnrolledCredentials returns the persisted credentials', () => {
+    const enrolledCredentials = [
+      { type: 'email_otp' as const, status: 'active' as const, verified: true },
+    ];
+    expect(
+      selectEnrolledCredentials({
+        metamask: { ...mockState.metamask, enrolledCredentials },
+      }),
+    ).toStrictEqual(enrolledCredentials);
+  });
+
+  it('selectEnrolledCredentials defaults to an empty list before the first fetch', () => {
+    expect(selectEnrolledCredentials(mockState)).toStrictEqual([]);
   });
 });

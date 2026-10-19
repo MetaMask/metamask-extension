@@ -69,7 +69,7 @@ export type PerpsTransaction = {
     /** Display amount with sign (e.g., "+$43.99" or "-$400") */
     amount: string;
     /** Numeric amount value */
-    amountNumber: number;
+    amountNumber?: number;
     /** Whether the amount is positive (for styling) */
     isPositive: boolean;
     /** Fill size in asset units */
@@ -79,7 +79,7 @@ export type PerpsTransaction = {
     /** Points earned (if applicable) */
     points: string;
     /** Realized PnL */
-    pnl: string;
+    pnl?: string;
     /** Trading fee */
     fee: string;
     /** Action type (e.g., "Opened", "Closed") */
@@ -89,7 +89,7 @@ export type PerpsTransaction = {
     /** Liquidation info if applicable */
     liquidation?: {
       /** Address of the liquidated user */
-      liquidatedUser: string;
+      liquidatedUser?: string;
       /** Mark price at liquidation */
       markPx: string;
       /** Liquidation method */

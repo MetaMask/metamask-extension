@@ -334,10 +334,7 @@ import { AccountTreeControllerInit } from './messenger-client-init/accounts/acco
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
 import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
 import { OAuthServiceInit } from './messenger-client-init/seedless-onboarding';
-import {
-  getSendBundleSupportedChains,
-  setSentinelApiAuth,
-} from './lib/transaction/sentinel-api';
+import { getSendBundleSupportedChains } from './lib/transaction/sentinel-api';
 import { GatorPermissionsControllerInit } from './messenger-client-init/gator-permissions/gator-permissions-controller-init';
 import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-login-profile';
 
@@ -932,9 +929,6 @@ export default class MetamaskController extends EventEmitter {
         );
       return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
-
-    // Authenticate Sentinel and Transaction API calls via core-backend (AuthenticationController)
-    setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
     this.snapController.init();
