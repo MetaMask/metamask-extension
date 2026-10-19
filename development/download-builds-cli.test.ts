@@ -1,5 +1,4 @@
 /** @jest-environment node */
-import { join } from 'node:path';
 import type { DownloadBuildsOptions } from './download-builds';
 
 type ActionArgs = DownloadBuildsOptions & {
@@ -13,16 +12,11 @@ type MockOptionInstance = {
   choices: jest.Mock;
 };
 
-type MockStats = {
-  isDirectory: () => boolean;
-};
-
+const mockExecFileSync = jest.fn();
 const mockDownloadBuilds = jest.fn();
 const mockGetGitHubToken = jest.fn();
 const mockOctokitRequest = jest.fn();
 const mockOctokitConstructor = jest.fn();
-const mockReadFileSync = jest.fn();
-const mockStatSync = jest.fn();
 const mockOptionInstances: MockOptionInstance[] = [];
 
 let mockActionCallback: ((args: ActionArgs) => Promise<void>) | undefined;
@@ -61,9 +55,8 @@ class MockOptionClass implements MockOptionInstance {
   }
 }
 
-jest.mock('node:fs', () => ({
-  readFileSync: mockReadFileSync,
-  statSync: mockStatSync,
+jest.mock('node:child_process', () => ({
+  execFileSync: mockExecFileSync,
 }));
 
 jest.mock('commander', () => ({
@@ -99,12 +92,13 @@ function getOption(flags: string): MockOptionInstance {
   return option;
 }
 
-describe('download-builds-cli', () => {
-  let cwdSpy: jest.SpiedFunction<typeof process.cwd>;
-  const scriptPath =
-    '/tmp/metamask-extension/development/download-builds-cli.ts';
-  const originalArgv = process.argv;
+function clearBranchEnv(): void {
+  delete process.env.BRANCH;
+  delete process.env.GITHUB_HEAD_REF;
+  delete process.env.GITHUB_REF_NAME;
+}
 
+describe('download-builds-cli', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockOptionInstances.splice(0, mockOptionInstances.length);
@@ -115,28 +109,47 @@ describe('download-builds-cli', () => {
     mockOctokitConstructor.mockImplementation(() => ({
       request: mockOctokitRequest,
     }));
-    mockStatSync.mockReturnValue({
-      isDirectory: () => true,
-    } satisfies MockStats);
-    mockReadFileSync.mockImplementation((path: string) => {
-      if (path.endsWith('/.git/HEAD')) {
-        return 'ref: refs/heads/feature/download-builds\n';
-      }
-      throw new Error(`Unexpected read path: ${path}`);
-    });
-    cwdSpy = jest.spyOn(process, 'cwd').mockReturnValue('/tmp');
-    process.argv = ['node', scriptPath];
+    clearBranchEnv();
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    jest.spyOn(console, 'error').mockImplementation(() => undefined);
     process.exitCode = undefined;
   });
 
   afterEach(() => {
-    process.argv = originalArgv;
     jest.restoreAllMocks();
     process.exitCode = undefined;
   });
 
-  it('uses the current git branch, downloads builds, and falls back to the GitHub token helper', async () => {
+  it('uses the current git branch as the default branch', async () => {
+    mockExecFileSync.mockReturnValue('feature/download-builds\n');
+
+    await importCli();
+
+    expect(mockExecFileSync).toHaveBeenCalledWith(
+      'git',
+      ['symbolic-ref', '--short', 'HEAD'],
+      expect.objectContaining({
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }),
+    );
+    expect(getOption('--branch').default).toHaveBeenCalledWith(
+      'feature/download-builds',
+    );
+  });
+
+  it('falls back to main when git branch detection fails', async () => {
+    mockExecFileSync.mockImplementation(() => {
+      throw new Error('git unavailable');
+    });
+
+    await importCli();
+
+    expect(getOption('--branch').default).toHaveBeenCalledWith('main');
+  });
+
+  it('invokes download builds and uses the fallback GitHub token helper', async () => {
+    mockExecFileSync.mockReturnValue('feature/download-builds\n');
     const metadata = {
       runId: 123,
       requestedCommit: 'requested-sha',
@@ -148,19 +161,6 @@ describe('download-builds-cli', () => {
     mockDownloadBuilds.mockResolvedValue(metadata);
 
     await importCli();
-
-    expect(cwdSpy).toHaveBeenCalledTimes(0);
-    expect(mockStatSync).toHaveBeenCalledWith(
-      join(scriptPath, '..', '..', '.git'),
-    );
-    expect(mockReadFileSync).toHaveBeenCalledWith(
-      join(scriptPath, '..', '..', '.git', 'HEAD'),
-      'utf8',
-    );
-    expect(getOption('--branch').default).toHaveBeenCalledWith(
-      'feature/download-builds',
-    );
-    expect(mockOctokitConstructor).not.toHaveBeenCalled();
 
     await mockActionCallback?.({
       owner: 'metamask',
@@ -201,13 +201,8 @@ describe('download-builds-cli', () => {
     );
   });
 
-  it('falls back to main and reports parse failures', async () => {
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => undefined);
-    mockStatSync.mockImplementation(() => {
-      throw new Error('git unavailable');
-    });
+  it('reports parse failures', async () => {
+    mockExecFileSync.mockReturnValue('feature/download-builds\n');
     mockProgram.parseAsync.mockImplementation(() =>
       Promise.reject(new Error('parse failed')),
     );
@@ -215,12 +210,10 @@ describe('download-builds-cli', () => {
     await importCli();
     await new Promise<void>((resolve) => setImmediate(resolve));
 
-    expect(cwdSpy).toHaveBeenCalledTimes(0);
-    expect(mockStatSync).toHaveBeenCalledWith(
-      join(scriptPath, '..', '..', '.git'),
+    expect(getOption('--branch').default).toHaveBeenCalledWith(
+      'feature/download-builds',
     );
-    expect(getOption('--branch').default).toHaveBeenCalledWith('main');
-    expect(consoleError).toHaveBeenCalledWith('parse failed');
+    expect(console.error).toHaveBeenCalledWith('parse failed');
     expect(process.exitCode).toBe(1);
   });
 });
