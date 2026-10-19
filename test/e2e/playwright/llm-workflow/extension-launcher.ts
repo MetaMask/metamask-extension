@@ -291,6 +291,9 @@ export class MetaMaskExtensionLauncher {
           getE2EDriver(this.extensionPage as Page),
           UI_READY_TIMEOUT_MS,
         );
+        // Reloading lets the UI route to unlock or the completion page from
+        // the real wallet state; Done never navigates the tab when it opens
+        // the side panel, so home is loaded again afterwards.
         await this.navigateToHome();
         await finishOnboarding(driver, DEFAULT_PASSWORD);
         await this.navigateToHome();

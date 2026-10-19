@@ -160,9 +160,7 @@ describe('runSelfOnboarding', () => {
     mockFlow.mockResolvedValue(undefined);
   });
 
-  it('imports the phrase through the e2e onboarding flow, then finishes onboarding', async () => {
-    showScreens('onboarding-complete');
-
+  it('imports the phrase through the e2e onboarding flow', async () => {
     await runSelfOnboarding(driver, `${PHRASE}\n`, PASSWORD);
 
     expect(mockFlow).toHaveBeenCalledWith({
@@ -171,7 +169,8 @@ describe('runSelfOnboarding', () => {
       password: PASSWORD,
       needNavigateToNewPage: false,
     });
-    expect(mockCompleteOnboarding).toHaveBeenCalled();
+    expect(mockWaitForAnyScreen).not.toHaveBeenCalled();
+    expect(mockCompleteOnboarding).not.toHaveBeenCalled();
   });
 
   it('does not start the flow for an invalid phrase', async () => {

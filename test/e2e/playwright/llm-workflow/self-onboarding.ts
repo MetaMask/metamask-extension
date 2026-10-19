@@ -63,9 +63,9 @@ export async function finishOnboarding(
  * Imports `phrase` by walking the onboarding UI with the e2e onboarding flow,
  * so a UI change that breaks it also fails the e2e suite.
  *
- * The completion screen is finished here rather than through
+ * The completion screen is left to `finishOnboarding` rather than
  * `completeImportSRPOnboardingFlow`, whose sidepanel handling uses the raw
- * Selenium driver; the launcher navigates home itself afterwards.
+ * Selenium driver.
  *
  * @param driver - The e2e driver bound to the extension page, which must be
  * on the onboarding welcome screen.
@@ -86,7 +86,6 @@ export async function runSelfOnboarding(
       password,
       needNavigateToNewPage: false,
     });
-    await finishOnboarding(driver, password);
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
     if (message.length > 0 && !message.includes(seedPhrase)) {
