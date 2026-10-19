@@ -108,6 +108,14 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   return isEthSignTypedDataMethod(req.method);
 }
 
+export function isPersonalSignMethod(method: string): boolean {
+  return method === MESSAGE_TYPE.PERSONAL_SIGN;
+}
+
+export function isPersonalSign(req: JsonRpcRequest): boolean {
+  return isPersonalSignMethod(req.method);
+}
+
 export function isConnected(
   req: JsonRpcRequest & { origin?: string },
   getPermittedAccounts: (origin: string) => string[],
@@ -195,6 +203,7 @@ export function createEip1193OriginScanGate(
     isEthSendTransaction(req) ||
     isWalletSendCalls(req) ||
     isEthSignTypedData(req) ||
+    isPersonalSign(req) ||
     isConnected(req, getPermittedAccounts) ||
     connectScreenHasBeenPrompted(req) ||
     isEip7715AdvancedPermissionsRequest(req);
@@ -233,6 +242,7 @@ export function createCaipOriginScanGate(
       wrappedMethod &&
       (isEthSendTransactionMethod(wrappedMethod) ||
         isEthSignTypedDataMethod(wrappedMethod) ||
+        isPersonalSignMethod(wrappedMethod) ||
         isWalletSendCallsMethod(wrappedMethod)),
     );
   };
