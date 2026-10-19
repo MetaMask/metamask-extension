@@ -5,6 +5,9 @@ const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 const { isHeadless } = require('../../helpers/env');
+const {
+  installChromeAtomWorkaround,
+} = require('../helpers/chrome-atom-workaround');
 
 /**
  * Determine the appropriate proxy server value to use
@@ -92,6 +95,7 @@ class ChromeDriver {
     });
 
     options.setBrowserVersion('145');
+    options.enableBidi();
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
@@ -119,6 +123,7 @@ class ChromeDriver {
 
     builder.setChromeService(service);
     const driver = builder.build();
+    installChromeAtomWorkaround(driver);
 
     // Ensure Chrome is cleaned up if anything below fails (extension ID
     // lookup, etc.).  Without this, a partial failure orphans the browser.

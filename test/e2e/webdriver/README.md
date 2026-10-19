@@ -13,6 +13,20 @@ Driver is a custom class designed for handling web automation interactions, serv
 - Error-handling mechanisms to capture and log browser console errors, simplifying the identification and troubleshooting of issues encountered during testing.
 - Capture of screenshots during automated testing in the event of failures, aiding in debugging and issue pinpointing.
 
+## Chrome 145 and hardened extension pages
+
+Chrome Selenium tests run on Chrome 145. ChromeDriver's legacy atoms rely on
+`arguments.callee.caller`, which is unavailable after SES lockdown in this V8
+version. `installChromeAtomWorkaround` in `helpers/chrome-atom-workaround.ts`
+intercepts the specific `reading 'ka'`/`reading 'Aa'` JavaScript errors for element click, clear,
+and send-keys commands. It uses native WebDriver Actions for pointer/keyboard
+input and WebDriver BiDi for file inputs. Option selection follows WebDriver's
+option-specific click algorithm. Other errors propagate normally, and
+click interception remains an error. The workaround applies to the Chrome test
+driver only; it does not modify extension globals, SES, LavaMoat, or network
+policy. Remove it when a compatible upstream ChromeDriver atom replaces the
+legacy helper.
+
 ## Locators
 
 In web automation testing, locators are crucial commands that guide the framework to identify and select [HTML elements](https://www.w3schools.com/html/default.asp) on a webpage for interaction. They play a vital role in executing various actions such as clicking buttons, fill text, or retrieving data from web pages. Gaining a solid understanding of locators is a key step in initiating web testing automation, as they form the foundation for engaging with web elements.
