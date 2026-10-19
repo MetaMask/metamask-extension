@@ -341,7 +341,6 @@ import { registerLinkedSocialLoginProfileSync } from './lib/sync-linked-social-l
 
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
 import { AnalyticsControllerInit } from './messenger-client-init/analytics-controller-init';
-import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
