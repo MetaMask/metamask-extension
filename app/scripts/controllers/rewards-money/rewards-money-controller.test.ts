@@ -208,7 +208,7 @@ describe('RewardsMoneyController', () => {
   });
 
   it('does not restore a pre-registration referral-me read after registration', async () => {
-    let resolveFirstRead: (payload: ReferralMeDto) => void;
+    let resolveFirstRead: (payload: ReferralMeDto) => void = () => undefined;
     const firstRead = new Promise<ReferralMeDto>((resolve) => {
       resolveFirstRead = resolve;
     });
@@ -221,7 +221,7 @@ describe('RewardsMoneyController', () => {
     const pendingRead = controller.getReferralMe();
     await Promise.resolve();
     await controller.registerReferee({ code: 'AB12' });
-    resolveFirstRead?.(buildReferralMe());
+    resolveFirstRead(buildReferralMe());
     await pendingRead;
 
     await expect(controller.getReferralMe()).resolves.toEqual(
