@@ -828,41 +828,50 @@ describe('PersistenceManager', () => {
     });
 
     it('reports the ambient emitting context and activity snapshot on write events', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
       Object.defineProperty(globalThis, 'self', {
         value: { location: { href: 'chrome-extension://abc/popup.html' } },
         configurable: true,
       });
-      manager = new PersistenceManager({
-        getPersistenceWriteSampleRate: () => 1,
-        localStore: new ExtensionStore(),
-        random: () => 0,
-      });
-      manager.setCurrentActivityProvider(() => ({
-        fullscreenCount: 1,
-        notificationIsOpen: false,
-        popupCount: 2,
-        sidePanelCount: 3,
-        startupPhase: StartupPhase.SettingUpController,
-      }));
-      manager.setMetadata({ version: 10, storageKind: 'split' });
-      manager.update('FooController', { foo: 'bar' });
-      const listener = jest.fn();
-      manager.on('splitStateWrite', listener);
+      try {
+        manager = new PersistenceManager({
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setCurrentActivityProvider(() => ({
+          fullscreenCount: 1,
+          notificationIsOpen: false,
+          popupCount: 2,
+          sidePanelCount: 3,
+          startupPhase: StartupPhase.SettingUpController,
+        }));
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', { foo: 'bar' });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
 
-      await manager.persist();
+        await manager.persist();
 
-      expect(listener).toHaveBeenCalledWith(
-        expect.objectContaining({
-          environmentType: 'popup',
-          currentActivity: {
-            fullscreenCount: 1,
-            notificationIsOpen: false,
-            popupCount: 2,
-            sidePanelCount: 3,
-            startupPhase: StartupPhase.SettingUpController,
-          },
-        }),
-      );
+        expect(listener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            environmentType: 'popup',
+            currentActivity: {
+              fullscreenCount: 1,
+              notificationIsOpen: false,
+              popupCount: 2,
+              sidePanelCount: 3,
+              startupPhase: StartupPhase.SettingUpController,
+            },
+          }),
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
     });
 
     it('reports an empty activity when no provider is configured', async () => {
@@ -880,7 +889,6 @@ describe('PersistenceManager', () => {
 
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          environmentType: 'popup',
           currentActivity: {},
         }),
       );
@@ -913,53 +921,62 @@ describe('PersistenceManager', () => {
     });
 
     it('reports sampled write size, frequency, controllers, and idle status without state values', async () => {
+      const previousSelf = Object.getOwnPropertyDescriptor(globalThis, 'self');
       Object.defineProperty(globalThis, 'self', {
         value: { location: { href: 'chrome-extension://abc/popup.html' } },
         configurable: true,
       });
-      manager = new PersistenceManager({
-        getIsIdle: () => true,
-        getPersistenceWriteSampleRate: () => 1,
-        localStore: new ExtensionStore(),
-        random: () => 0,
-      });
-      manager.setMetadata({ version: 10, storageKind: 'split' });
-      manager.update('FooController', {
-        privateValue: 'controller state value',
-      });
-      manager.update('FooController', {
-        privateValue: 'latest controller state value',
-      });
-      manager.update('BarController', { enabled: true });
-      const listener = jest.fn();
-      manager.on('splitStateWrite', listener);
+      try {
+        manager = new PersistenceManager({
+          getIsIdle: () => true,
+          getPersistenceWriteSampleRate: () => 1,
+          localStore: new ExtensionStore(),
+          random: () => 0,
+        });
+        manager.setMetadata({ version: 10, storageKind: 'split' });
+        manager.update('FooController', {
+          privateValue: 'controller state value',
+        });
+        manager.update('FooController', {
+          privateValue: 'latest controller state value',
+        });
+        manager.update('BarController', { enabled: true });
+        const listener = jest.fn();
+        manager.on('splitStateWrite', listener);
 
-      await manager.persist();
+        await manager.persist();
 
-      expect(listener).toHaveBeenCalledTimes(1);
-      const [event] = listener.mock.calls[0];
-      const fooControllerLength = JSON.stringify({
-        privateValue: 'latest controller state value',
-      }).length;
-      const barControllerLength = JSON.stringify({ enabled: true }).length;
-      expect(event).toStrictEqual({
-        currentActivity: {},
-        bytesByController: new Map([
-          ['BarController', barControllerLength],
-          ['FooController', fooControllerLength],
-        ]),
-        coalescedUpdates: 3,
-        environmentType: 'popup',
-        idleStatus: 'idle',
-        measurementDurationMs: expect.any(Number),
-        sampleRate: 1,
-        sizeMeasurementSource: 'json_string_length_estimate',
-        totalBytes: barControllerLength + fooControllerLength,
-        writeDurationMs: expect.any(Number),
-      });
-      expect(JSON.stringify(event)).not.toContain(
-        'latest controller state value',
-      );
+        expect(listener).toHaveBeenCalledTimes(1);
+        const [event] = listener.mock.calls[0];
+        const fooControllerLength = JSON.stringify({
+          privateValue: 'latest controller state value',
+        }).length;
+        const barControllerLength = JSON.stringify({ enabled: true }).length;
+        expect(event).toStrictEqual({
+          currentActivity: {},
+          bytesByController: new Map([
+            ['BarController', barControllerLength],
+            ['FooController', fooControllerLength],
+          ]),
+          coalescedUpdates: 3,
+          environmentType: 'popup',
+          idleStatus: 'idle',
+          measurementDurationMs: expect.any(Number),
+          sampleRate: 1,
+          sizeMeasurementSource: 'json_string_length_estimate',
+          totalBytes: barControllerLength + fooControllerLength,
+          writeDurationMs: expect.any(Number),
+        });
+        expect(JSON.stringify(event)).not.toContain(
+          'latest controller state value',
+        );
+      } finally {
+        if (previousSelf) {
+          Object.defineProperty(globalThis, 'self', previousSelf);
+        } else {
+          delete (globalThis as { self?: unknown }).self;
+        }
+      }
     });
 
     it('uses exact storage byte measurements when available', async () => {
