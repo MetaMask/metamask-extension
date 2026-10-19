@@ -41,6 +41,10 @@ class ChromeDriver {
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
       '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
+      // Chrome 145 starts browser-owned GCM despite disable-background-networking.
+      // Keep it out of extension traffic assertions without allowing its domains.
+      '--gcm-checkin-url=http://127.0.0.1:0',
+      '--gcm-registration-url=http://127.0.0.1:0',
       '--disable-dev-shm-usage',
       '--no-sandbox',
     ];

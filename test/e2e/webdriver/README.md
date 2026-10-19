@@ -27,6 +27,12 @@ driver only; it does not modify extension globals, SES, LavaMoat, or network
 policy. Remove it when a compatible upstream ChromeDriver atom replaces the
 legacy helper.
 
+Chrome's browser-owned GCM check-in can also reach the shared test proxy despite
+`--disable-background-networking`, causing false privacy-test failures. The
+Chrome test profile redirects GCM check-in/registration to an unusable loopback
+endpoint. Extension requests still use their normal destinations and the
+privacy allowlists remain unchanged. See the [upstream investigation](https://github.com/microsoft/playwright/issues/42910).
+
 ## Locators
 
 In web automation testing, locators are crucial commands that guide the framework to identify and select [HTML elements](https://www.w3schools.com/html/default.asp) on a webpage for interaction. They play a vital role in executing various actions such as clicking buttons, fill text, or retrieving data from web pages. Gaining a solid understanding of locators is a key step in initiating web testing automation, as they form the foundation for engaging with web elements.
