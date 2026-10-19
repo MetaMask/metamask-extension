@@ -250,6 +250,9 @@ describe('Privacy Settings Onboarding View', () => {
       expect(
         queryByText(messages.participateInMetaMetrics.message),
       ).toBeInTheDocument();
+      expect(
+        queryByTestId('delete-metametrics-data-button'),
+      ).not.toBeInTheDocument();
       expect(queryByTestId('category-item-Security')).not.toBeInTheDocument();
     });
   });

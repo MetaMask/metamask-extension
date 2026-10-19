@@ -73,7 +73,6 @@ import {
 } from '../../../../shared/constants/network';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
-import DeleteMetaMetricsDataButton from '../../../components/app/delete-metametrics-data-button';
 import MetametricsToggle from '../../../components/app/metametrics-toggle/metametrics-toggle';
 import type { MetaMaskReduxState } from '../../../store/types';
 import { useDispatch } from '../../../store/hooks';
@@ -617,7 +616,6 @@ export default function PrivacySettings() {
                         }
                         fromDefaultSettings
                       />
-                      <DeleteMetaMetricsDataButton defaultPrivacySettings />
                     </>
                   )}
                 </>
@@ -731,9 +729,7 @@ export default function PrivacySettings() {
                               alignItems={BoxAlignItems.Center}
                             >
                               <Icon name={IconName.Add} className="mr-3" />
-                              <Text color={TextColor.PrimaryDefault}>
-                                {t('addANetwork')}
-                              </Text>
+                              <Text>{t('addANetwork')}</Text>
                             </Box>
                           </TextButton>
                         </Box>
