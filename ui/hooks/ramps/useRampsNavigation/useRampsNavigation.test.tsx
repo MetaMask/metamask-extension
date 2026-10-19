@@ -316,6 +316,9 @@ describe('useRampsNavigation goToBuy', () => {
         "navigationCalls": [
           [
             "/ramps/token-selection",
+            {
+              "replace": false,
+            },
           ],
         ],
         "openTabCount": 0,
@@ -346,6 +349,9 @@ describe('useRampsNavigation goToBuy', () => {
         "navigationCalls": [
           [
             "/ramps/token-selection",
+            {
+              "replace": false,
+            },
           ],
         ],
         "openTabCount": 0,
@@ -783,7 +789,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('getRampsTokens', [
       'us',
       'buy',
@@ -865,7 +871,7 @@ describe('useRampsNavigation goToBuy', () => {
 
     const opened = await goToBuy(result, { assetId });
 
-    expect(opened).toBe(true);
+    expect(opened).toBe('native');
     expect(mockBackground).toHaveBeenCalledWith('setRampsSelectedToken', [
       assetId,
     ]);
