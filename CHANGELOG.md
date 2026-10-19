@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed sending with a QR hardware wallet staying on the loading screen, so the QR code could not be scanned (#47088)
+- Fixed Bitcoin transactions that were built with no network fee when the fee estimate was below 1 sat/vB (#47062)
+- Fixed Stellar transactions that were marked successful when the network asked to try again later (#47084)
+- Fixed newly listed Stellar tokens not appearing until the hourly asset sync (#47084)
+- Fixed Stellar token sends that failed to retry after a sequence-number error (#47084)
+- Showed the latest Stellar network fee on confirmation when the fee rose after the transaction was built (#47084)
+- Replaced Blockaid description text on Stellar security alerts with generic security-alert copy (#47084)
 - Showed the basic functionality page instead of Discover search when basic functionality is turned off (#46874)
 - Fixed Arc USDC balances and asset details in the Swap asset picker (#46840)
 - Fixed payment provider tags appearing at the row edge instead of beside the provider name (#46942)
