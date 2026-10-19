@@ -1,4 +1,4 @@
-import { bindHostColorScheme, injectPageStyles, removePageStyles } from './ui';
+import { bindHostColorScheme } from './ui';
 
 describe('bindHostColorScheme', () => {
   let listeners: ((event: MediaQueryListEvent) => void)[];
@@ -63,34 +63,5 @@ describe('bindHostColorScheme', () => {
     expect(host.getAttribute('data-theme')).toBe('dark');
     unbind();
     expect(listeners).toHaveLength(0);
-  });
-});
-
-describe('injectPageStyles', () => {
-  const markerAttr = 'data-mm-cashtag-test-css';
-
-  beforeEach(() => {
-    document
-      .querySelectorAll(`[${markerAttr}]`)
-      .forEach((node) => node.remove());
-  });
-
-  it('inlines the stylesheet once per marker', () => {
-    injectPageStyles('a[data-mm-cashtag] { color: red; }', markerAttr);
-    injectPageStyles('a[data-mm-cashtag] { color: blue; }', markerAttr);
-
-    const styles = document.querySelectorAll<HTMLStyleElement>(
-      `style[${markerAttr}]`,
-    );
-    expect(styles).toHaveLength(1);
-    expect(styles[0].textContent).toBe('a[data-mm-cashtag] { color: red; }');
-  });
-
-  it('removes the stylesheet for the marker', () => {
-    injectPageStyles('a[data-mm-cashtag] { color: red; }', markerAttr);
-
-    removePageStyles(markerAttr);
-
-    expect(document.querySelector(`[${markerAttr}]`)).toBeNull();
   });
 });

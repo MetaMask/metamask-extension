@@ -1,4 +1,4 @@
-/* Injected into the page. Token values scoped to the pill — not the full sheet. */
+/* Applied to the X page via manifest content_scripts. Token values scoped to the pill, not the full sheet. */
 
 a[data-mm-cashtag] {
   --color-border-muted: #b7bbc866;

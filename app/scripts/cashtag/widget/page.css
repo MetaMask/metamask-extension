@@ -1,4 +1,4 @@
-/* Injected into the page: widget position */
+/* Applied to the X page via manifest content_scripts: widget position */
 
 a[interestfor='mm-cashtag-popover'] {
   interest-delay-start: 0;
