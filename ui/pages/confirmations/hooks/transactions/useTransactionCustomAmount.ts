@@ -49,11 +49,9 @@ import {
   MUSD_TOKEN_ADDRESS,
 } from '../../constants/musd';
 import { useAccountTokensLoading } from '../send/useAccountTokensLoading';
-import {
-  DepositPrefillStatus,
-  useDepositPrefillAmount,
-} from './useDepositPrefillAmount';
+import { DepositPrefillStatus, useDepositPrefill } from './useDepositPrefill';
 import { useTransactionAccountOverride } from './useTransactionAccountOverride';
+import { useTransactionCustomAmountPercentageMetrics } from './useTransactionCustomAmountPercentageMetrics';
 import { useUpdateTokenAmount } from './useUpdateTokenAmount';
 
 export const MAX_LENGTH = 28;
@@ -87,6 +85,8 @@ export function useTransactionCustomAmount({
   const { currentConfirmation: transactionMeta, setIsAmountPending } =
     useConfirmContext<TransactionMeta>();
   const { chainId, id: transactionId } = transactionMeta ?? {};
+  const trackPercentageAmount =
+    useTransactionCustomAmountPercentageMetrics(transactionId);
 
   const isMaxAmount = useTransactionPayIsMaxAmount();
   const isQuotesLoading = useIsTransactionPayLoading();
@@ -138,6 +138,18 @@ export function useTransactionCustomAmount({
   const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
     null,
   );
+  // Quote updates recreate `updateTokenAmount`. Reading these from refs lets
+  // the debounce keep a typed amount instead of cancelling it when that
+  // identity changes mid-keystroke.
+  const updateTokenAmountRef = useRef(updateTokenAmountCallback);
+  const disableUpdateRef = useRef(disableUpdate);
+  const transactionIdRef = useRef(transactionId);
+
+  useEffect(() => {
+    updateTokenAmountRef.current = updateTokenAmountCallback;
+    disableUpdateRef.current = disableUpdate;
+    transactionIdRef.current = transactionId;
+  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
   const hasPrefilledMaxRef = useRef(false);
   const userEditedRef = useRef(false);
   // Full-precision human amount from payToken.balanceRaw for money-account
@@ -163,15 +175,13 @@ export function useTransactionCustomAmount({
   >(undefined);
   const hasUserEditedAmount =
     editedTransactionId !== undefined && editedTransactionId === transactionId;
-  const depositPrefill = useDepositPrefillAmount();
+  const depositPrefill = useDepositPrefill();
   const isDepositPrefillEnabled =
     depositPrefill.status !== DepositPrefillStatus.Disabled;
   const isDepositPrefilled =
     depositPrefill.status === DepositPrefillStatus.Prefilled;
   const isDepositPrefillSkipped =
     depositPrefill.status === DepositPrefillStatus.Skipped;
-  const shouldUseDepositPrefill =
-    isMoneyAccountDeposit && isDepositPrefillEnabled;
   const prevDepositHasPrefilledRef = useRef(isDepositPrefilled);
   // The prefill amount is written by an effect, one commit after prefill
   // reports `hasPrefilled`. Without tracking that gap the field paints "$0"
@@ -179,26 +189,27 @@ export function useTransactionCustomAmount({
   const [hasAppliedDepositPrefill, setHasAppliedDepositPrefill] =
     useState(false);
 
-  // Create and update debounced function
+  // Create and update debounced function. Recreate only when the confirmation
+  // changes so a pending amount is not written onto a different transaction.
+  // `updateTokenAmount` identity is intentionally excluded: a quote landing
+  // while the user is still inside the debounce window recreates it, and
+  // cancelling here drops the typed amount so the fee rows stay pending.
   useEffect(() => {
-    // Cancel any existing debounced calls
-    debounceRef.current?.cancel();
-
-    // Create new debounced function
     const debouncedFn = debounce((value: string) => {
       setAmountHumanDebounced(value);
       // Same as mobile: a zero transfer must not update tx data or request
       // quotes. TransactionPayController skips zero required amounts, but
       // writing 0 still kicks the quote pipeline.
-      if (disableUpdate || isZeroHumanAmount(value)) {
+      if (disableUpdateRef.current || isZeroHumanAmount(value)) {
         return;
       }
 
-      updateTokenAmountCallback(value);
+      updateTokenAmountRef.current(value);
       // Emitted only after the debounce actually triggers a quote refresh
       // via updateEditableParams -> TransactionPayController:stateChange.
-      if (transactionId) {
-        upsertTransactionUIMetricsFragment(transactionId, {
+      const id = transactionIdRef.current;
+      if (id) {
+        upsertTransactionUIMetricsFragment(id, {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_quote_requested: true,
@@ -207,14 +218,12 @@ export function useTransactionCustomAmount({
       }
     }, DEBOUNCE_DELAY);
 
-    // Store in ref
     debounceRef.current = debouncedFn;
 
-    // Cleanup: cancel on unmount or when dependencies change
     return () => {
       debouncedFn.cancel();
     };
-  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
+  }, [transactionId]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
   const isInputBased = totals?.isInputBased === true;
@@ -490,11 +499,13 @@ export function useTransactionCustomAmount({
       percentage: number,
       { isPrefill = false }: { isPrefill?: boolean } = {},
     ) => {
-      const isDepositMax =
-        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
+      const isDepositMax = percentage === 100 && isMoneyAccountDeposit;
 
       // Hold Max until the override-account fetch completes, matching prefill.
       // Applying now would send a stale `balanceRaw` while TPC uses live raw.
+      // Applies to every deposit pay token, not just no-fee ones: `setIsMax`
+      // records the source balance for all of them, so a stale raw is wrong
+      // regardless of whether the amount itself comes from the raw path.
       if (isDepositMax && isAccountTokensLoading) {
         pendingDepositMaxRef.current = { isPrefill };
         if (!isPrefill) {
@@ -588,26 +599,11 @@ export function useTransactionCustomAmount({
         );
       }
 
-      if (transactionId) {
-        upsertTransactionUIMetricsFragment(transactionId, {
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: isPrefill
-              ? 'prefilled_max'
-              : `${percentage}%`,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_quote_requested: true,
-            // Record the USD amount prefilled at load so the controller metrics
-            // builder can attach it to the executed transaction events.
-            ...(isPrefill
-              ? {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  mm_pay_prefilled_amount: Number(newAmountFiat),
-                }
-              : {}),
-          },
-        });
-      }
+      trackPercentageAmount({
+        amountFiat: newAmountFiat,
+        isPrefill,
+        percentage,
+      });
 
       setAmountFiat(newAmountFiat);
 
@@ -640,6 +636,7 @@ export function useTransactionCustomAmount({
       payToken?.decimals,
       setIsMax,
       tokenFiatRate,
+      trackPercentageAmount,
       transactionId,
       updateTokenAmountCallback,
     ],
@@ -718,18 +715,7 @@ export function useTransactionCustomAmount({
         return;
       }
 
-      if (transactionId) {
-        upsertTransactionUIMetricsFragment(transactionId, {
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_amount_input_type: 'prefilled_max',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_quote_requested: true,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_prefilled_amount: Number(fiatAmount),
-          },
-        });
-      }
+      trackPercentageAmount({ amountFiat: fiatAmount, isPrefill: true });
 
       updateTokenAmountCallback(newAmountHuman);
     },
@@ -740,7 +726,7 @@ export function useTransactionCustomAmount({
       isMaxAmount,
       setIsMax,
       tokenFiatRate,
-      transactionId,
+      trackPercentageAmount,
       updateTokenAmountCallback,
     ],
   );
@@ -750,7 +736,7 @@ export function useTransactionCustomAmount({
   // `hasPrefilled` is a dependency (matches mobile): balance updates on the
   // same token must not overwrite a committed prefill.
   useEffect(() => {
-    if (!shouldUseDepositPrefill) {
+    if (!isDepositPrefillEnabled) {
       prevDepositHasPrefilledRef.current = isDepositPrefilled;
       return;
     }
@@ -768,9 +754,18 @@ export function useTransactionCustomAmount({
       // Uncapped 100% (stablecoin) submits exact balanceRaw as requiredAssets
       // and arms isMaxAmount like pressing Max. The fiat literal path can
       // ROUND_UP past available balance and yield "No quotes".
-      if (depositPrefill.isUncappedMaxPrefill) {
+      // A 100% prefill from the snapshot balance stays a fiat amount: the
+      // snapshot can belong to another account, so it must not arm Max.
+      const { percentage, isLimitCapped, isUncappedMaxPrefill } =
+        depositPrefill;
+      const isPercentagePrefill =
+        percentage !== undefined &&
+        !isLimitCapped &&
+        (percentage < 100 || isUncappedMaxPrefill);
+
+      if (isPercentagePrefill) {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- apply deposit prefill when hasPrefilled commits
-        updatePendingAmountPercentage(100, { isPrefill: true });
+        updatePendingAmountPercentage(percentage, { isPrefill: true });
       } else {
         applyDepositPrefillAmount(depositPrefill.prefillAmount ?? '0');
       }
@@ -788,7 +783,7 @@ export function useTransactionCustomAmount({
 
     prevDepositHasPrefilledRef.current = isDepositPrefilled;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- see comment above
-  }, [isDepositPrefilled, shouldUseDepositPrefill]);
+  }, [isDepositPrefilled, isDepositPrefillEnabled]);
 
   // Pre-fill the max amount once the balance is known, unless the user has
   // already edited the field. `userEditedRef` is used instead of
@@ -797,7 +792,7 @@ export function useTransactionCustomAmount({
   // Skipped when deposit prefill handles money-account deposits.
   useEffect(() => {
     if (
-      shouldUseDepositPrefill ||
+      isDepositPrefillEnabled ||
       !prefillMaxOnLoad ||
       hasPrefilledMaxRef.current ||
       userEditedRef.current ||
@@ -810,7 +805,7 @@ export function useTransactionCustomAmount({
   }, [
     balanceUsd,
     prefillMaxOnLoad,
-    shouldUseDepositPrefill,
+    isDepositPrefillEnabled,
     updatePendingAmountPercentage,
   ]);
 
@@ -820,19 +815,19 @@ export function useTransactionCustomAmount({
     amountHumanDebounced,
     hasAmount,
     hasInput,
-    isDepositPrefillEnabled: shouldUseDepositPrefill,
+    isDepositPrefillEnabled,
     // Hide the skeleton after a manual edit on the *current* token. A pay
     // token / funding account change clears the edit guard so loading (and
     // the new prefill) can show again. A committed prefill that has not been
     // written to the field yet still counts as loading. A skipped prefill can
     // never commit, so it settles immediately to $0 instead of loading.
     isDepositPrefillLoading:
-      shouldUseDepositPrefill &&
+      isDepositPrefillEnabled &&
       !isDepositPrefillSkipped &&
       (!isDepositPrefilled || !hasAppliedDepositPrefill) &&
       !hasUserEditedAmount,
-    isDepositPrefilled: shouldUseDepositPrefill && isDepositPrefilled,
-    isDepositPrefillSkipped: shouldUseDepositPrefill && isDepositPrefillSkipped,
+    isDepositPrefilled: isDepositPrefillEnabled && isDepositPrefilled,
+    isDepositPrefillSkipped: isDepositPrefillEnabled && isDepositPrefillSkipped,
     isInputChanged,
     isQuoteDerivedAmountLoading: isQuoteDerivedAmount && isQuotesLoading,
     updatePendingAmount,

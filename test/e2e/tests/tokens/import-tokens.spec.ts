@@ -110,7 +110,7 @@ async function importTokensTestMock(mockServer: Mockttp) {
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceApiSupportedNetworks(mockServer),
     // Tokens API – supported networks
-    await mockTokensV2SupportedNetworks(mockServer),
+    ...(await mockTokensV2SupportedNetworks(mockServer)),
     // Token Search API – /tokens/search
     await mockTokenSearch(mockServer),
     // Tokens API – /v3/assets

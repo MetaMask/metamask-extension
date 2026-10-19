@@ -10,10 +10,15 @@ import { convertCaipToHexChainId } from '#shared/lib/network.utils';
 // X cashtag links look like:
 // <a href="/search?q=%24BTC&src=cashtag_click">$BTC</a>
 const cashtagAnchorSelector =
-  'a[href*="src=cashtag_click"][href*="/search?q=%24"], a[href*="src=cashtag_click"][href*="/search?q=$"]';
-// Only inject inside tweet bodies (X uses data-testid="tweet").
-const tweetAncestorSelector = '[data-testid="tweet"]';
-const cashtagHrefPattern = /[?&]q=(?:%24|\$)([A-Z0-9]+)/iu;
+  'a[href*="src=cashtag_click"][href*="/search?q=%24"]';
+
+const cashtagAncestorSelector = [
+  '[data-testid="tweet"]',
+  '[data-testid="UserDescription"]',
+  '[data-testid="sidebarColumn"] [data-testid="UserCell"]',
+].join(', ');
+
+const cashtagHrefPattern = /[?&]q=%24([A-Z0-9]+)/iu;
 
 const { formatCurrency, formatCurrencyCompact, formatCurrencyTokenPrice } =
   createFormatters({
@@ -108,7 +113,7 @@ export function findCashtagAnchors(root: ParentNode) {
   for (const element of root.querySelectorAll<HTMLAnchorElement>(
     cashtagAnchorSelector,
   )) {
-    if (!element.closest(tweetAncestorSelector)) {
+    if (!element.closest(cashtagAncestorSelector)) {
       continue;
     }
     const symbol = symbolFromCashtagAnchor(element);

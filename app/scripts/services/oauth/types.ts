@@ -21,6 +21,14 @@ import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
 
+export type OAuthTraceRehydrationValue = 'true' | 'false' | 'unknown';
+
+export type OAuthTraceTags = {
+  provider: AuthConnection;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  is_rehydration: OAuthTraceRehydrationValue;
+};
+
 export type ServiceName = typeof SERVICE_NAME;
 
 export type {

@@ -1,9 +1,16 @@
 import React from 'react';
+import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import { submitRequestToBackground } from '../../store/background-connection';
 import mockState from '../../../test/data/mock-state.json';
-import PerpsLayout from './perps-layout';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PERPS_TRANSACTION_DETAILS_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+} from '../../helpers/constants/routes';
+import PerpsLayout, { isPerpsOutageBannerRoute } from './perps-layout';
 
 jest.mock('@metamask/perps-controller', () => ({
   ...jest.requireActual('@metamask/perps-controller'),
@@ -103,6 +110,16 @@ const makeStore = (terminalBackendEnabled: boolean) =>
     },
   });
 
+const outageBannerStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    remoteFeatureFlags: {
+      ...mockState.metamask.remoteFeatureFlags,
+      perpsPerpTradingServiceInterruptionBannerEnabled: true,
+    },
+  },
+});
+
 describe('PerpsLayout', () => {
   const mockSubmitRequestToBackground = jest.mocked(submitRequestToBackground);
   const store = makeStore(false);
@@ -196,5 +213,42 @@ describe('PerpsLayout', () => {
       expect.objectContaining({ markets: undefined }),
       expect.anything(),
     );
+  });
+
+  describe('isPerpsOutageBannerRoute', () => {
+    it('includes the market list, market detail, and trade screens', () => {
+      expect(isPerpsOutageBannerRoute(PERPS_MARKET_LIST_ROUTE)).toBe(true);
+      expect(isPerpsOutageBannerRoute('/perps/market/BTC')).toBe(true);
+      expect(isPerpsOutageBannerRoute('/perps/trade/ETH')).toBe(true);
+    });
+
+    it('excludes activity, transaction details, and withdraw', () => {
+      expect(isPerpsOutageBannerRoute(PERPS_ACTIVITY_ROUTE)).toBe(false);
+      expect(isPerpsOutageBannerRoute(PERPS_TRANSACTION_DETAILS_ROUTE)).toBe(
+        false,
+      );
+      expect(isPerpsOutageBannerRoute(PERPS_WITHDRAW_ROUTE)).toBe(false);
+      expect(isPerpsOutageBannerRoute('/perps/market')).toBe(false);
+    });
+  });
+
+  it('shows the outage banner on a covered route when the flag is on', () => {
+    renderWithProvider(<PerpsLayout />, outageBannerStore, '/perps/trade/BTC');
+
+    expect(
+      screen.getByTestId('perps-service-interruption-banner'),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the outage banner on withdraw even when the flag is on', () => {
+    renderWithProvider(
+      <PerpsLayout />,
+      outageBannerStore,
+      PERPS_WITHDRAW_ROUTE,
+    );
+
+    expect(
+      screen.queryByTestId('perps-service-interruption-banner'),
+    ).not.toBeInTheDocument();
   });
 });
