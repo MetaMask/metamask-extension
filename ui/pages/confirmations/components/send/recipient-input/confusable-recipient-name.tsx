@@ -9,6 +9,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import Tooltip from '../../../../../components/ui/tooltip';
+import { getUniqueKeys } from '../../../../../helpers/utils/unique-keys';
 
 type Confusable = {
   point: string;
@@ -45,18 +46,28 @@ export const ConfusableRecipientName = ({
     let prevIndex = 0;
     for (const confusableSlice of confusableList) {
       if (prevIndex !== confusableSlice.index) {
-        splits.push({ str: to.slice(prevIndex, confusableSlice.index) });
+        splits.push({
+          str: to.slice(prevIndex, confusableSlice.index),
+          start: prevIndex,
+        });
       }
       splits.push({
         str: confusableSlice.confusable.point,
+        start: confusableSlice.index,
         confusable: confusableSlice.confusable,
       });
       prevIndex =
         confusableSlice.index + confusableSlice.confusable.point.length;
     }
-    splits.push({ str: to.slice(prevIndex) });
+    splits.push({ str: to.slice(prevIndex), start: prevIndex });
     return splits;
   }, [to, confusableCharacters]);
+
+  const splitKeys = useMemo(
+    () =>
+      getUniqueKeys(nameSplits ?? [], (split) => `${split.start}-${split.str}`),
+    [nameSplits],
+  );
 
   return nameSplits ? (
     <Box display={Display.Inline} className="break-all">
@@ -64,7 +75,7 @@ export const ConfusableRecipientName = ({
         if (split.confusable) {
           return (
             <Tooltip
-              key={index}
+              key={splitKeys[index]}
               position="top"
               tag="span"
               html={
@@ -98,7 +109,7 @@ export const ConfusableRecipientName = ({
           );
         }
         return (
-          <Text key={index} as="span" variant={TextVariant.bodyMd}>
+          <Text key={splitKeys[index]} as="span" variant={TextVariant.bodyMd}>
             {split.str}
           </Text>
         );

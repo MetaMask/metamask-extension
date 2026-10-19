@@ -17,6 +17,13 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
+import { getUniqueKeys } from '../../../../../../../helpers/utils/unique-keys';
+import { getFourBytePrefix } from '../../../../../../../helpers/utils/transactions.util';
+
+// Selector only, so editing call data (e.g. spending cap) keeps the row mounted.
+function getNestedTransactionKey({ to, data }: BatchTransactionParams) {
+  return `${to}-${getFourBytePrefix(data)}`;
+}
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -27,11 +34,16 @@ export function NestedTransactionData() {
     return null;
   }
 
+  const nestedTransactionKeys = getUniqueKeys(
+    nestedTransactions,
+    getNestedTransactionKey,
+  );
+
   return (
     <Box data-testid="batch-txs">
       {nestedTransactions.map((nestedTransaction, index) => (
         <NestedTransaction
-          key={index}
+          key={nestedTransactionKeys[index]}
           index={index}
           nestedTransaction={nestedTransaction}
           chainId={chainId}

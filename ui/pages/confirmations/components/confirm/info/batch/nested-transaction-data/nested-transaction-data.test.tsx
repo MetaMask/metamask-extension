@@ -1,6 +1,6 @@
 import React from 'react';
 import { BatchTransactionParams } from '@metamask/transaction-controller';
-import { waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 
 import {
   DecodedTransactionDataMethod,
@@ -158,6 +158,101 @@ describe('NestedTransaction', () => {
       expect(getByText(messages.amount.message)).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
+  });
+
+  it('keeps the expanded state with its transaction when a transaction is inserted before it', () => {
+    const transactionA = {
+      ...BATCH_TRANSACTION_PARAMS_MOCK,
+      to: '0x1111111111111111111111111111111111111111',
+    } as BatchTransactionParams;
+    const transactionB = {
+      ...BATCH_TRANSACTION_PARAMS_MOCK,
+      to: '0x2222222222222222222222222222222222222222',
+    } as BatchTransactionParams;
+    const transactionC = {
+      ...BATCH_TRANSACTION_PARAMS_MOCK,
+      to: '0x3333333333333333333333333333333333333333',
+    } as BatchTransactionParams;
+
+    const confirmation = genUnapprovedContractInteractionConfirmation({
+      nestedTransactions: [transactionA, transactionB],
+    });
+    const store = configureStore(
+      getMockConfirmStateForTransaction(confirmation),
+    );
+    const { getAllByLabelText } = renderWithConfirmContextProvider(
+      <NestedTransactionData />,
+      store,
+    );
+    const getExpandedStates = () =>
+      getAllByLabelText('expand').map((button) =>
+        button.classList.contains('expanded'),
+      );
+
+    fireEvent.click(getAllByLabelText('expand')[1]);
+    expect(getExpandedStates()).toStrictEqual([false, true]);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            {
+              ...confirmation,
+              nestedTransactions: [transactionC, transactionA, transactionB],
+            },
+          ],
+        },
+      });
+    });
+
+    expect(getExpandedStates()).toStrictEqual([false, false, true]);
+  });
+
+  it('keeps the expanded state when the call data of a transaction is edited', () => {
+    const approveData =
+      '0x095ea7b30000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000000000000000000000000000000000000000000001';
+    const editedApproveData =
+      '0x095ea7b30000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae0000000000000000000000000000000000000000000000000000000000000002';
+
+    const confirmation = genUnapprovedContractInteractionConfirmation({
+      nestedTransactions: [
+        BATCH_TRANSACTION_PARAMS_MOCK,
+        { ...BATCH_TRANSACTION_PARAMS_MOCK, data: approveData },
+      ],
+    });
+    const store = configureStore(
+      getMockConfirmStateForTransaction(confirmation),
+    );
+    const { getAllByLabelText } = renderWithConfirmContextProvider(
+      <NestedTransactionData />,
+      store,
+    );
+
+    fireEvent.click(getAllByLabelText('expand')[1]);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            {
+              ...confirmation,
+              nestedTransactions: [
+                BATCH_TRANSACTION_PARAMS_MOCK,
+                { ...BATCH_TRANSACTION_PARAMS_MOCK, data: editedApproveData },
+              ],
+            },
+          ],
+        },
+      });
+    });
+
+    expect(
+      getAllByLabelText('expand').map((button) =>
+        button.classList.contains('expanded'),
+      ),
+    ).toStrictEqual([false, true]);
   });
 
   it('does not render if no nested transactions', () => {

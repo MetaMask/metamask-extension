@@ -37,6 +37,7 @@ import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { hasTransactionData } from '../../../../../../../../shared/lib/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
+import { getUniqueKeys } from '../../../../../../../helpers/utils/unique-keys';
 
 export const TransactionData = ({
   data,
@@ -91,6 +92,7 @@ export const TransactionData = ({
   const { data: decodeData, source } = value;
   const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
+  const methodKeys = getUniqueKeys(decodeData, (method) => method.name);
 
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
@@ -102,7 +104,7 @@ export const TransactionData = ({
             APPROVAL_METHOD_NAMES.includes(method.name);
           if (isBatchedApproval) {
             return (
-              <React.Fragment key={index}>
+              <React.Fragment key={methodKeys[index]}>
                 <BatchedApprovalFunction
                   method={method}
                   nestedTransactionIndex={nestedTransactionIndex}
@@ -112,7 +114,7 @@ export const TransactionData = ({
             );
           }
           return (
-            <React.Fragment key={index}>
+            <React.Fragment key={methodKeys[index]}>
               <FunctionContainer
                 method={method}
                 source={source}
@@ -184,12 +186,13 @@ function FunctionContainer({
   chainId: string;
 }) {
   const t = useI18nContext();
+  const paramKeys = getParamKeys(method.params);
 
   const paramRows = (
     <Box paddingLeft={2} data-testid={`advanced-details-${method.name}-params`}>
       {method.params.map((param, paramIndex) => (
         <ParamRow
-          key={paramIndex}
+          key={paramKeys[paramIndex]}
           param={param}
           index={paramIndex}
           source={source}
@@ -227,6 +230,10 @@ function FunctionContainer({
       {paramRows}
     </>
   );
+}
+
+function getParamKeys(params: DecodedTransactionDataParam[]) {
+  return getUniqueKeys(params, (param) => param.name || param.type);
 }
 
 function ParamValue({
@@ -280,10 +287,11 @@ function ParamRow({
   const label = name ? _.startCase(name) : `Param #${index + 1}`;
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
   const dataTestId = `advanced-details-data-param-${index}`;
+  const childKeys = getParamKeys(param.children ?? []);
 
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
-      key={childIndex}
+      key={childKeys[childIndex]}
       param={childParam}
       index={childIndex}
       source={source}
@@ -310,6 +318,11 @@ function UniswapPath({
   pathPools: UniswapPathPool[];
   chainId: string;
 }) {
+  const poolKeys = getUniqueKeys(
+    pathPools,
+    (pool) => `${pool.firstAddress}-${pool.tickSpacing}-${pool.secondAddress}`,
+  );
+
   return (
     <Box
       display={Display.Flex}
@@ -317,7 +330,7 @@ function UniswapPath({
       justifyContent={JustifyContent.flexEnd}
     >
       {pathPools.map((pool, index) => (
-        <>
+        <React.Fragment key={poolKeys[index]}>
           {index === 0 && (
             <ConfirmInfoRowAddress
               address={pool.firstAddress}
@@ -329,7 +342,7 @@ function UniswapPath({
             address={pool.secondAddress}
             chainId={chainId}
           />
-        </>
+        </React.Fragment>
       ))}
     </Box>
   );

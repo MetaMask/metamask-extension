@@ -16,6 +16,7 @@ import {
   BlockSize,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
+import { getUniqueKeys } from '../../../../../../../helpers/utils/unique-keys';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 const SIWESignInfo = () => {
@@ -42,6 +43,7 @@ const SIWESignInfo = () => {
   const hexChainId = toHex(chainId);
   const network =
     (NETWORK_TO_NAME_MAP as Record<string, string>)[hexChainId] ?? hexChainId;
+  const resourceKeys = getUniqueKeys(resources ?? [], (resource) => resource);
 
   return (
     <ConfirmInfoRow
@@ -87,7 +89,10 @@ const SIWESignInfo = () => {
         {resources && (
           <ConfirmInfoRow label={t('siweResources')}>
             {resources.map((resource, index) => (
-              <ConfirmInfoRowText key={`resource-${index}`} text={resource} />
+              <ConfirmInfoRowText
+                key={`resource-${resourceKeys[index]}`}
+                text={resource}
+              />
             ))}
           </ConfirmInfoRow>
         )}

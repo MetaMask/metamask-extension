@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { getUniqueKeys } from '../../../../helpers/utils/unique-keys';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
@@ -192,6 +193,10 @@ function AlertDetails({
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   const customAlertBg = selectedAlert.alertDetailsBackgroundColor;
+  const detailKeys = getUniqueKeys(
+    selectedAlert.alertDetails ?? [],
+    (detail) => detail,
+  );
 
   return (
     <Box
@@ -226,7 +231,10 @@ function AlertDetails({
           <Box asChild paddingLeft={6}>
             <ul className="alert-modal__alert-details">
               {selectedAlert.alertDetails?.map((detail, index) => (
-                <Box asChild key={`${selectedAlert.key}-detail-${index}`}>
+                <Box
+                  asChild
+                  key={`${selectedAlert.key}-detail-${detailKeys[index]}`}
+                >
                   <li>
                     <Text variant={TextVariant.bodyMd}>{detail}</Text>
                   </li>
