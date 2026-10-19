@@ -323,6 +323,11 @@ describe('LegacyBackgroundApiService', () => {
         networkId: '5',
         chainId: '5',
       });
+      const accountAddress = '0xf0d172594caedee459b89ad44c94098e474571b6';
+      const accountId = 'test-account-id';
+      const tokenAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+      const tokenAssetId =
+        'eip155:5/erc20:0x6b175474e89094c44da98b954eedeac495271d0f';
 
       await withService(async ({ rootMessenger }) => {
         rootMessenger.registerActionHandler(
@@ -331,14 +336,39 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'AccountsController:getState',
-          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+          jest.fn().mockReturnValue({
+            internalAccounts: {
+              accounts: {
+                [accountId]: {
+                  id: accountId,
+                  address: accountAddress,
+                  type: EthAccountType.Eoa,
+                },
+              },
+            },
+          }),
         );
+        // Unify mode reads imported tokens from AssetsController, not
+        // TokensController.allTokens.
         rootMessenger.registerActionHandler(
           'AssetsController:getState',
           jest.fn().mockReturnValue({
-            assetsInfo: {},
-            assetsBalance: {},
-            customAssets: {},
+            assetsInfo: {
+              [tokenAssetId]: {
+                type: 'erc20',
+                symbol: 'DAI',
+                name: 'Dai Stablecoin',
+                decimals: 18,
+              },
+            },
+            assetsBalance: {
+              [accountId]: {
+                [tokenAssetId]: { amount: '3' },
+              },
+            },
+            customAssets: {
+              [accountId]: [tokenAssetId],
+            },
           }),
         );
         rootMessenger.registerActionHandler(
@@ -353,25 +383,13 @@ describe('LegacyBackgroundApiService', () => {
         );
         rootMessenger.registerActionHandler(
           'TokensController:getState',
-          jest.fn().mockReturnValue({
-            allTokens: {
-              '0x5': {
-                '0xf0d172594caedee459b89ad44c94098e474571b6': [
-                  {
-                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                    decimals: 18,
-                    symbol: 'DAI',
-                  },
-                ],
-              },
-            },
-          }),
+          jest.fn().mockReturnValue({ allTokens: {} }),
         );
 
         const result = await rootMessenger.call(
           'LegacyBackgroundApiService:getTokenStandardAndDetails',
-          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          '0xf0d172594caedee459b89ad44c94098e474571b6',
+          tokenAddress,
+          accountAddress,
         );
 
         expect(result.standard).toStrictEqual('ERC20');
@@ -432,6 +450,61 @@ describe('LegacyBackgroundApiService', () => {
         expect(result.standard).toStrictEqual('ERC20');
         expect(result.decimals).toStrictEqual('18');
         expect(result.balance).toStrictEqual('333');
+      });
+    });
+
+    it('does not apply STATIC_MAINNET_TOKEN_LIST metadata on non-mainnet chains', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ remoteFeatureFlags: {} }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getState',
+          jest.fn().mockReturnValue({ internalAccounts: { accounts: {} } }),
+        );
+        rootMessenger.registerActionHandler(
+          'AssetsController:getState',
+          jest.fn().mockReturnValue({
+            assetsInfo: {},
+            assetsBalance: {},
+            customAssets: {},
+          }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({ selectedNetworkClientId: 'client' }),
+        );
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({ configuration: { chainId: '0x89' } }),
+        );
+        rootMessenger.registerActionHandler(
+          'TokensController:getState',
+          jest.fn().mockReturnValue({ allTokens: {} }),
+        );
+        const getTokenStandardAndDetails = jest.fn().mockResolvedValue({
+          standard: 'ERC20',
+          decimals: '6',
+          symbol: 'OTHER',
+          balance: 42,
+        });
+        rootMessenger.registerActionHandler(
+          'AssetsContractController:getTokenStandardAndDetails',
+          getTokenStandardAndDetails,
+        );
+
+        // Mainnet DAI address — must not be treated as DAI on Polygon.
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getTokenStandardAndDetails',
+          '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+          '0xf0d172594caedee459b89ad44c94098e474571b6',
+        );
+
+        expect(getTokenStandardAndDetails).toHaveBeenCalled();
+        expect(result.symbol).toStrictEqual('OTHER');
+        expect(result.decimals).toStrictEqual('6');
+        expect(result.balance).toStrictEqual('42');
       });
     });
   });

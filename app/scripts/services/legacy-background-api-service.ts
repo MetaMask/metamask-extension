@@ -1620,8 +1620,14 @@ export class LegacyBackgroundApiService {
 
     const tokens = allTokens?.[currentChainId]?.[userAddress as string] || [];
 
-    const staticTokenListDetails =
-      STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    // Only consult the static mainnet list on mainnet. On other chains a
+    // matching address can belong to a different token, and must not short-
+    // circuit the on-chain lookup (same guard as getTokenStandardAndDetailsByChain).
+    let staticTokenListDetails = {};
+    if (currentChainId === CHAIN_IDS.MAINNET) {
+      staticTokenListDetails =
+        STATIC_MAINNET_TOKEN_LIST[address?.toLowerCase()] || {};
+    }
     const userDefinedTokenDetails =
       tokens.find(({ address: _address }) =>
         isEqualCaseInsensitive(_address, address),
