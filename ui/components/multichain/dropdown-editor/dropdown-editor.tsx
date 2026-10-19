@@ -26,6 +26,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
+import { Dropdown, dropdownOptionProps } from '../dropdown';
 
 export enum DropdownEditorStyle {
   /** When open, the dropdown overlays elements that follow  */
@@ -86,7 +87,7 @@ export const DropdownEditor = <Item,>({
   const closeDropdown = useCallback(() => setIsDropdownOpen(false), []);
 
   const renderDropdownList = () => (
-    <Box
+    <Dropdown
       id={listboxId}
       role="listbox"
       className="max-h-40 overflow-y-auto py-2"
@@ -120,6 +121,7 @@ export const DropdownEditor = <Item,>({
                 `dropdown-editor-option-${index}`
               }
               onClick={selectItem}
+              {...dropdownOptionProps}
             >
               {renderItem(item, true)}
             </button>
@@ -176,7 +178,7 @@ export const DropdownEditor = <Item,>({
         />
         {addButtonText}
       </button>
-    </Box>
+    </Dropdown>
   );
 
   // Call back in a useEffect so it triggers after the opening has rendered
@@ -232,7 +234,7 @@ export const DropdownEditor = <Item,>({
   );
 
   return (
-    <Box className="pt-4">
+    <Box className="pt-4" data-dropdown-root="">
       <Label id={labelId} className="mb-1">
         {title}
       </Label>

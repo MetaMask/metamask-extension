@@ -25,6 +25,10 @@ import {
 } from '../../components/multichain/networks-form/use-safe-chains';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getShouldShowTestNetworks } from '../../selectors';
+import {
+  Dropdown,
+  dropdownOptionProps,
+} from '../../components/multichain/dropdown';
 import { NoSearchResult } from './no-search-result';
 
 export type ChainlistNetwork = SafeChain & {
@@ -190,17 +194,13 @@ export const ChainlistNetworkPicker = ({
   );
 
   const isDropdown = layout === 'dropdown';
-
-  return (
-    <Box
-      className={
-        isDropdown
-          ? 'flex w-full flex-col overflow-y-auto bg-background-default'
-          : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default'
-      }
-      onScroll={isDropdown ? handleChainlistScroll : undefined}
-      style={isDropdown && maxHeight !== undefined ? { maxHeight } : undefined}
-    >
+  const pickerClassName = isDropdown
+    ? 'flex w-full flex-col overflow-y-auto bg-background-default'
+    : 'flex min-h-0 flex-1 flex-col overflow-hidden bg-background-default';
+  const pickerStyle =
+    isDropdown && maxHeight !== undefined ? { maxHeight } : undefined;
+  const picker = (
+    <>
       {showSearchField ? (
         <Box className="px-4 pb-4">
           <TextFieldSearch
@@ -232,6 +232,7 @@ export const ChainlistNetworkPicker = ({
                 className="flex w-full flex-col border-t border-border-muted px-4 py-3 text-left hover:bg-hover"
                 data-testid="networks-page-chainlist-use-typed-name"
                 type="button"
+                {...dropdownOptionProps}
                 onClick={() => onUseTypedName(searchValue.trim())}
               >
                 <Text
@@ -282,6 +283,8 @@ export const ChainlistNetworkPicker = ({
                   className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-hover active:bg-pressed"
                   data-testid="networks-page-chainlist-network"
                   key={`${network.chainId}-${network.name}`}
+                  type="button"
+                  {...dropdownOptionProps}
                   onClick={() =>
                     onSelect(network, searchValue.trim() || undefined)
                   }
@@ -337,6 +340,20 @@ export const ChainlistNetworkPicker = ({
           </>
         )}
       </Box>
-    </Box>
+    </>
   );
+
+  if (isDropdown) {
+    return (
+      <Dropdown
+        className={pickerClassName}
+        onScroll={handleChainlistScroll}
+        style={pickerStyle}
+      >
+        {picker}
+      </Dropdown>
+    );
+  }
+
+  return <Box className={pickerClassName}>{picker}</Box>;
 };

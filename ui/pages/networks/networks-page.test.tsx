@@ -481,6 +481,38 @@ describe('NetworksPage', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('reaches a Chainlist network with the arrow keys', async () => {
+    renderNetworksPage({
+      pathname: `${NETWORKS_ROUTE}?view=add`,
+      remoteFeatureFlags: {
+        extensionUxChainlist: true,
+        extensionUxChainlistV2: true,
+      },
+    });
+
+    const nameInput = screen.getByTestId('network-form-network-name');
+    nameInput.focus();
+
+    await act(async () => {
+      fireEvent.keyDown(nameInput, { key: 'ArrowDown' });
+    });
+    const [firstNetwork, secondNetwork] = screen.getAllByTestId(
+      'networks-page-chainlist-network',
+    );
+    expect(firstNetwork).toHaveFocus();
+    expect(firstNetwork).not.toHaveAttribute('tabindex', '-1');
+
+    await act(async () => {
+      fireEvent.keyDown(firstNetwork, { key: 'ArrowDown' });
+    });
+    expect(secondNetwork).toHaveFocus();
+
+    await userEvent.keyboard('{Enter}');
+
+    expect(nameInput).toHaveValue('Cronos');
+    expect(screen.getByTestId('network-form-chain-id')).toHaveValue('25');
+  });
+
   it('keeps a typed network name when Chainlist has no match', async () => {
     renderNetworksPage({
       pathname: `${NETWORKS_ROUTE}?view=add`,
