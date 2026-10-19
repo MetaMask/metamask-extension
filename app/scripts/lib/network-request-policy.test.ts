@@ -10,6 +10,7 @@ import {
 
 describe('network request policy', () => {
   const updateSessionRules = jest.fn().mockResolvedValue(undefined);
+  const lastAddedRules = () => updateSessionRules.mock.lastCall[0].addRules;
   beforeEach(async () => {
     jest.replaceProperty(process, 'env', { ...process.env, IN_TEST: '' });
     updateSessionRules.mockReset().mockResolvedValue(undefined);
@@ -46,7 +47,7 @@ describe('network request policy', () => {
       addRules: [],
     });
     await updateNetworkRequestDomains(['rpc.example']);
-    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([
+    expect(lastAddedRules()).toEqual([
       {
         id: 1000002,
         priority: 2,
@@ -59,12 +60,10 @@ describe('network request policy', () => {
       },
     ]);
     await updateNetworkRequestDomains('*');
-    expect(updateSessionRules.mock.lastCall[0].addRules).toHaveLength(1);
-    expect(
-      updateSessionRules.mock.lastCall[0].addRules[0].condition.requestDomains,
-    ).toBeUndefined();
+    expect(lastAddedRules()).toHaveLength(1);
+    expect(lastAddedRules()[0].condition.requestDomains).toBeUndefined();
     await updateNetworkRequestDomains([]);
-    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([]);
+    expect(lastAddedRules()).toEqual([]);
   });
 
   it('allows localhost in top-frame rules only for test packages', async () => {
@@ -73,7 +72,7 @@ describe('network request policy', () => {
       updateSessionRules,
       RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
     });
-    expect(updateSessionRules.mock.lastCall[0].addRules[1]).toEqual({
+    expect(lastAddedRules()[1]).toEqual({
       id: 1000011,
       priority: 3,
       action: { type: 'allow' },
@@ -119,11 +118,11 @@ describe('network request policy', () => {
 
   it('permits a selected onboarding path and revokes it on reset', async () => {
     await setOnboardingNetworkDomains(['auth.example']);
-    expect(
-      updateSessionRules.mock.lastCall[0].addRules[0].condition.requestDomains,
-    ).toEqual(['auth.example']);
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'auth.example',
+    ]);
     await setOnboardingNetworkDomains([]);
-    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([]);
+    expect(lastAddedRules()).toEqual([]);
   });
 
   it('restricts SRP privacy mode to saved RPC and failover domains', async () => {
@@ -154,15 +153,16 @@ describe('network request policy', () => {
         },
       },
     });
-    expect(
-      updateSessionRules.mock.lastCall[0].addRules[0].condition.requestDomains,
-    ).toEqual(['fallback.example', 'rpc.example']);
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'fallback.example',
+      'rpc.example',
+    ]);
     await refreshNetworkRequestPolicy({
       OnboardingController: { completedOnboarding: true },
       PreferencesController: { useExternalServices: false },
       NetworkController: { networkConfigurationsByChainId: {} },
     });
-    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([]);
+    expect(lastAddedRules()).toEqual([]);
   });
 
   it.each([
@@ -178,10 +178,7 @@ describe('network request policy', () => {
           useExternalServices: firstTimeFlowType === FirstTimeFlowType.create,
         },
       });
-      expect(
-        updateSessionRules.mock.lastCall[0].addRules[0].condition
-          .requestDomains,
-      ).toBeUndefined();
+      expect(lastAddedRules()[0].condition.requestDomains).toBeUndefined();
     },
   );
 
@@ -195,8 +192,8 @@ describe('network request policy', () => {
       removeRuleIds: [1000002, 1000003],
     });
     await updateNetworkRequestDomains(['rpc.example']);
-    expect(
-      updateSessionRules.mock.lastCall[0].addRules[0].condition.requestDomains,
-    ).toEqual(['rpc.example']);
+    expect(lastAddedRules()[0].condition.requestDomains).toEqual([
+      'rpc.example',
+    ]);
   });
 });

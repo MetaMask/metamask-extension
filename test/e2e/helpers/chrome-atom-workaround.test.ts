@@ -62,9 +62,9 @@ describe('installChromeAtomWorkaround', () => {
     installChromeAtomWorkaround(driver);
     const element = new WebElement(driver, 'element');
     const keyboardActions = () => {
-      const command = execute.mock.calls
-        .map(([call]) => call)
-        .find((call) => call.getName() === Name.ACTIONS);
+      const command = execute.mock.calls.find(
+        ([call]) => call.getName() === Name.ACTIONS,
+      )?.[0];
       return command
         ?.getParameter('actions')
         .find((input: { type: string }) => input.type === 'key').actions;
@@ -170,20 +170,13 @@ describe('installChromeAtomWorkaround', () => {
     );
   });
 
-  it('rejects a covered click instead of clicking the overlay', async () => {
-    const { element } = setup({ clickTarget: 'covered' });
+  it.each([
+    ['covered', error.ElementClickInterceptedError],
+    ['hidden', error.ElementNotInteractableError],
+  ])('rejects %s clicks', async (clickTarget, expectedError) => {
+    const { element } = setup({ clickTarget });
 
-    await expect(element.click()).rejects.toThrow(
-      error.ElementClickInterceptedError,
-    );
-  });
-
-  it('rejects clicks on elements without a size', async () => {
-    const { element } = setup({ clickTarget: 'hidden' });
-
-    await expect(element.click()).rejects.toThrow(
-      error.ElementNotInteractableError,
-    );
+    await expect(element.click()).rejects.toThrow(expectedError);
   });
 
   it('uses native pointer actions for an unobstructed click', async () => {
@@ -207,13 +200,11 @@ describe('installChromeAtomWorkaround', () => {
 
     await element.click();
 
-    const hitTest = execute.mock.calls
-      .map(([command]) => command)
-      .find(
-        (command) =>
-          command.getName() === Name.EXECUTE_SCRIPT &&
-          String(command.getParameter('script')).includes('scrollIntoView'),
-      );
+    const hitTest = execute.mock.calls.find(
+      ([command]) =>
+        command.getName() === Name.EXECUTE_SCRIPT &&
+        String(command.getParameter('script')).includes('scrollIntoView'),
+    )?.[0];
     expect(hitTest?.getParameter('args')).toStrictEqual([
       WebElement.buildId('select'),
     ]);
@@ -224,31 +215,26 @@ describe('installChromeAtomWorkaround', () => {
     ).toBe(false);
   });
 
-  it('uploads files through BiDi using the original shared element reference', async () => {
+  it.each([
+    {
+      action: 'uploads',
+      input: '/tmp/one.json\n/tmp/two.json',
+      files: ['/tmp/one.json', '/tmp/two.json'],
+    },
+    { action: 'clears', input: undefined, files: [] },
+  ])('$action files through BiDi', async ({ input, files }) => {
     const { element, bidiSend } = setup({ inputType: 'file' });
 
-    await element.sendKeys('/tmp/one.json\n/tmp/two.json');
+    await (input === undefined ? element.clear() : element.sendKeys(input));
 
     expect(bidiSend).toHaveBeenCalledWith({
       method: 'input.setFiles',
       params: {
         context: 'window',
         element: { sharedId: 'element' },
-        files: ['/tmp/one.json', '/tmp/two.json'],
+        files,
       },
     });
-  });
-
-  it('clears file selections through BiDi', async () => {
-    const { element, bidiSend } = setup({ inputType: 'file' });
-
-    await element.clear();
-
-    expect(bidiSend).toHaveBeenCalledWith(
-      expect.objectContaining({
-        params: expect.objectContaining({ files: [] }),
-      }),
-    );
   });
 
   it('surfaces a rejected file upload', async () => {

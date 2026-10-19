@@ -2258,15 +2258,17 @@ describe('packaged network request rules', () => {
       'main',
       false,
     );
-    assert.strictEqual(rules.length, 1);
-    assert.deepStrictEqual(
-      rules.map(({ action }) => action.type),
-      ['block'],
-    );
-    assert.deepStrictEqual(rules[0].condition.initiatorDomains, [
-      'nkbihfbeogaeaoehlefnkodbefgpgknn',
+    assert.deepStrictEqual(rules, [
+      {
+        id: 1000000,
+        priority: 1,
+        action: { type: 'block' },
+        condition: {
+          regexFilter: '^(https?|wss?)://',
+          initiatorDomains: ['nkbihfbeogaeaoehlefnkodbefgpgknn'],
+        },
+      },
     ]);
-    assert.ok(rules.every(({ condition }) => !('topDomains' in condition)));
   });
 
   it('adds localhost infrastructure access only in test builds', () => {
@@ -2275,13 +2277,11 @@ describe('packaged network request rules', () => {
       'main',
       true,
     );
-    assert.strictEqual(rules.length, 2);
     assert.deepStrictEqual(
-      rules
-        .filter(({ action }) => action.type === 'allow')
-        .map(({ condition }) => condition.requestDomains),
-      [['localhost']],
+      rules.map(({ action }) => action.type),
+      ['block', 'allow'],
     );
+    assert.deepStrictEqual(rules[1].condition.requestDomains, ['localhost']);
     assert.throws(() =>
       createNetworkRequestRules(
         { manifest_version: 3 } as Manifest,
