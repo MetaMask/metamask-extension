@@ -1,39 +1,44 @@
-import { formatChainIdToCaip, getNativeAssetForChainId } from "@metamask/bridge-controller";
-import { toChecksumHexAddress } from "@metamask/controller-utils";
+import {
+  formatChainIdToCaip,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   createBridgeMockStore,
   MOCK_BITCOIN_ACCOUNT,
   MOCK_EVM_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
-} from "../../../test/data/bridge/mock-bridge-store";
-import { mockTokenData } from "../../../test/data/bridge/mock-token-data";
-import { CHAIN_IDS } from "../../../shared/constants/network";
-import { MultichainNetworks } from "../../../shared/constants/multichain/networks";
-import { getAccountGroupsByAddress } from "../../selectors/multichain-accounts/account-tree";
-import { mockNetworkState } from "../../../test/stub/networks";
+} from '../../../test/data/bridge/mock-bridge-store';
+import { mockTokenData } from '../../../test/data/bridge/mock-token-data';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getBridgeBalancesByChainId,
   getBridgeAssetsByAssetId,
   getBridgeSortedAssets,
-} from "./asset-selectors";
+} from './asset-selectors';
 
 /**
  * This suite seeds AssetsController fields via UNIFIED_BRIDGE_ASSET_STATE.
  * Override the global jest setup mock so migration selectors resolve those
  * fields instead of legacy controller slices.
  */
-jest.mock("../../../shared/lib/assets-unify-state/remote-feature-flag", () => ({
-  ...jest.requireActual("../../../shared/lib/assets-unify-state/remote-feature-flag"),
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
   isAssetsUnifyStateFeatureEnabled: () => true,
 }));
 
 const ETH_RATE = 2524.25;
-const ETH_MAINNET = "eip155:1/slip44:60";
-const ETH_LINEA = "eip155:59144/slip44:60";
-const ETH_OPTIMISM = "eip155:10/slip44:60";
-const UNI = toChecksumHexAddress("0x1f9840a85d5af5bf1d1762f925bdaddc4201f984");
-const LINK = toChecksumHexAddress("0x514910771af9ca656af840dff83e8264ecf986ca");
-const COMP = toChecksumHexAddress("0xc00e94cb662c3520282e6f5717214004a7f26888");
+const ETH_MAINNET = 'eip155:1/slip44:60';
+const ETH_LINEA = 'eip155:59144/slip44:60';
+const ETH_OPTIMISM = 'eip155:10/slip44:60';
+const UNI = toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984');
+const LINK = toChecksumHexAddress('0x514910771af9ca656af840dff83e8264ecf986ca');
+const COMP = toChecksumHexAddress('0xc00e94cb662c3520282e6f5717214004a7f26888');
 const UNI_MAINNET = `eip155:1/erc20:${UNI}`;
 const LINK_MAINNET = `eip155:1/erc20:${LINK}`;
 const UNI_LINEA = `eip155:59144/erc20:${UNI}`;
@@ -41,13 +46,13 @@ const LINK_LINEA = `eip155:59144/erc20:${LINK}`;
 const COMP_LINEA = `eip155:59144/erc20:${COMP}`;
 const LINK_OPTIMISM = `eip155:10/erc20:${LINK}`;
 const COMP_OPTIMISM = `eip155:10/erc20:${COMP}`;
-const SOL_NATIVE = "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501";
+const SOL_NATIVE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 const SOL_USDC =
-  "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-const BTC_NATIVE = "bip122:000000000019d6689c085ae165831e93/slip44:0";
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const BTC_NATIVE = 'bip122:000000000019d6689c085ae165831e93/slip44:0';
 
 const fungible = (price: number, lastUpdated = 1) => ({
-  assetPriceType: "fungible" as const,
+  assetPriceType: 'fungible' as const,
   price,
   usdPrice: price,
   lastUpdated,
@@ -58,36 +63,36 @@ const fungible = (price: number, lastUpdated = 1) => ({
  * plus createBridgeMockStore Solana/BTC balances and conversion rates.
  */
 const UNIFIED_BRIDGE_ASSET_STATE = {
-  selectedCurrency: "usd",
+  selectedCurrency: 'usd',
   assetsInfo: {
     ...mockTokenData.assetsInfo,
     [SOL_NATIVE]: {
-      type: "native",
+      type: 'native',
       decimals: 18,
-      symbol: "SOL",
-      name: "Solana",
+      symbol: 'SOL',
+      name: 'Solana',
     },
     [SOL_USDC]: {
-      type: "spl",
+      type: 'spl',
       decimals: 6,
-      symbol: "USDC",
-      name: "USDC",
+      symbol: 'USDC',
+      name: 'USDC',
     },
     [BTC_NATIVE]: {
-      type: "native",
+      type: 'native',
       decimals: 18,
-      symbol: "BTC",
-      name: "Bitcoin",
+      symbol: 'BTC',
+      name: 'Bitcoin',
     },
   },
   assetsBalance: {
     ...mockTokenData.assetsBalance,
     [MOCK_SOLANA_ACCOUNT.id]: {
-      [SOL_NATIVE]: { amount: "1.530" },
-      [SOL_USDC]: { amount: "2.043238" },
+      [SOL_NATIVE]: { amount: '1.530' },
+      [SOL_USDC]: { amount: '2.043238' },
     },
     [MOCK_BITCOIN_ACCOUNT.id]: {
-      [BTC_NATIVE]: { amount: ".001" },
+      [BTC_NATIVE]: { amount: '.001' },
     },
   },
   assetsPrice: {
@@ -108,9 +113,9 @@ const UNIFIED_BRIDGE_ASSET_STATE = {
   },
 };
 
-describe("Bridge asset selectors", () => {
-  describe("getBridgeAssetsWithBalance", () => {
-    it("returns all assets with balance for the given account group and selected asset", () => {
+describe('Bridge asset selectors', () => {
+  describe('getBridgeAssetsWithBalance', () => {
+    it('returns all assets with balance for the given account group and selected asset', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -162,10 +167,15 @@ describe("Bridge asset selectors", () => {
         },
       });
 
-      const [accountGroup] = getAccountGroupsByAddress(state, [MOCK_EVM_ACCOUNT.address]);
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
       const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
       const balanceByAssetId = getBridgeAssetsByAssetId(state, accountGroup.id);
-      const balanceByChainId = getBridgeBalancesByChainId(state, accountGroup.id);
+      const balanceByChainId = getBridgeBalancesByChainId(
+        state,
+        accountGroup.id,
+      );
 
       expect(assetsWithBalance).toMatchInlineSnapshot(`
         [
@@ -392,8 +402,9 @@ describe("Bridge asset selectors", () => {
       `);
     });
 
-    it("uses allTokens as fallback when token is absent from tokensChainsCache", () => {
-      const FALLBACK_TOKEN_ADDRESS = "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+    it('uses allTokens as fallback when token is absent from tokensChainsCache', () => {
+      const FALLBACK_TOKEN_ADDRESS =
+        '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       const FALLBACK_ASSET_ID = `eip155:1/erc20:${toChecksumHexAddress(FALLBACK_TOKEN_ADDRESS)}`;
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -417,11 +428,11 @@ describe("Bridge asset selectors", () => {
           assetsInfo: {
             ...UNIFIED_BRIDGE_ASSET_STATE.assetsInfo,
             [FALLBACK_ASSET_ID]: {
-              type: "erc20",
+              type: 'erc20',
               decimals: 18,
-              symbol: "FALL",
-              name: "Fallback Token",
-              image: "https://example.com/fall.png",
+              symbol: 'FALL',
+              name: 'Fallback Token',
+              image: 'https://example.com/fall.png',
             },
           },
           assetsBalance: {
@@ -433,7 +444,7 @@ describe("Bridge asset selectors", () => {
                   Record<string, { amount: string }>
                 >
               )[MOCK_EVM_ACCOUNT.id],
-              [FALLBACK_ASSET_ID]: { amount: "1" },
+              [FALLBACK_ASSET_ID]: { amount: '1' },
             },
           },
           tokensChainsCache: {
@@ -445,7 +456,9 @@ describe("Bridge asset selectors", () => {
         },
       });
 
-      const [accountGroup] = getAccountGroupsByAddress(state, [MOCK_EVM_ACCOUNT.address]);
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
       const assetsWithBalance = getBridgeSortedAssets(state, accountGroup.id);
 
       const fallbackAsset = assetsWithBalance.find((a) =>
@@ -453,16 +466,16 @@ describe("Bridge asset selectors", () => {
       );
       expect(fallbackAsset).toBeDefined();
       expect(fallbackAsset).toMatchObject({
-        symbol: "FALL",
-        name: "Fallback Token",
+        symbol: 'FALL',
+        name: 'Fallback Token',
         decimals: 18,
-        iconUrl: "https://example.com/fall.png",
-        balance: "1",
+        iconUrl: 'https://example.com/fall.png',
+        balance: '1',
         chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
       });
     });
 
-    it("includes a native asset with its balance in the picker", () => {
+    it('includes a native asset with its balance in the picker', () => {
       const nativeAsset = getNativeAssetForChainId(CHAIN_IDS.ARC);
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -485,7 +498,7 @@ describe("Bridge asset selectors", () => {
           // Unify-on: seed AssetsController fields (not legacy accountsByChainId).
           assetsInfo: {
             [nativeAsset.assetId]: {
-              type: "native",
+              type: 'native',
               decimals: nativeAsset.decimals,
               symbol: nativeAsset.symbol,
               name: nativeAsset.name,
@@ -493,12 +506,12 @@ describe("Bridge asset selectors", () => {
           },
           assetsBalance: {
             [MOCK_EVM_ACCOUNT.id]: {
-              [nativeAsset.assetId]: { amount: "123" },
+              [nativeAsset.assetId]: { amount: '123' },
             },
           },
           assetsPrice: {
             [nativeAsset.assetId]: {
-              assetPriceType: "fungible" as const,
+              assetPriceType: 'fungible' as const,
               price: 1,
               usdPrice: 1,
               lastUpdated: 1,
@@ -507,13 +520,15 @@ describe("Bridge asset selectors", () => {
         },
       });
 
-      const [accountGroup] = getAccountGroupsByAddress(state, [MOCK_EVM_ACCOUNT.address]);
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        MOCK_EVM_ACCOUNT.address,
+      ]);
 
       expect(getBridgeSortedAssets(state, accountGroup.id)).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             assetId: nativeAsset.assetId,
-            balance: "123",
+            balance: '123',
             decimals: nativeAsset.decimals,
             symbol: nativeAsset.symbol,
           }),
@@ -521,7 +536,7 @@ describe("Bridge asset selectors", () => {
       );
     });
 
-    it("returns empty results when accountGroupId is undefined", () => {
+    it('returns empty results when accountGroupId is undefined', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -547,7 +562,9 @@ describe("Bridge asset selectors", () => {
       });
 
       // Simulate the caller pattern: accountGroup is undefined when address has no matching group
-      const [accountGroup] = getAccountGroupsByAddress(state, ["non-existent-address"]);
+      const [accountGroup] = getAccountGroupsByAddress(state, [
+        'non-existent-address',
+      ]);
       expect(accountGroup).toBeUndefined();
 
       expect(getBridgeSortedAssets(state, accountGroup?.id)).toEqual([]);
