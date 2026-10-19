@@ -12,8 +12,6 @@ import type { MoneyPayMessenger } from '../../money/pay/pay-context';
 
 const MUSD_UNIT = 10 ** MUSD_DECIMALS;
 
-const latestIntentByTransactionId = new Map<string, number>();
-
 export function parseMusdHumanAmount(
   amountHuman: string,
   roundingMode: number = BigNumber.ROUND_UP,
@@ -39,39 +37,6 @@ export function parseMusdHumanAmount(
 
 export function toMusdAmountHex(amount: bigint): Hex {
   return `0x${amount.toString(16)}` as Hex;
-}
-
-export function beginAmountCommit(transactionId: string): () => boolean {
-  const intent = (latestIntentByTransactionId.get(transactionId) ?? 0) + 1;
-  latestIntentByTransactionId.set(transactionId, intent);
-  return () => latestIntentByTransactionId.get(transactionId) === intent;
-}
-
-export function clearAmountCommitIfCurrent(
-  transactionId: string,
-  isCurrent: () => boolean,
-): void {
-  if (isCurrent()) {
-    latestIntentByTransactionId.delete(transactionId);
-  }
-}
-
-export function pruneStaleAmountCommits(messenger: MoneyPayMessenger): void {
-  if (latestIntentByTransactionId.size === 0) {
-    return;
-  }
-
-  const { transactions } = messenger.call('TransactionController:getState');
-  const transactionsById = new Map(
-    transactions.map((transaction) => [transaction.id, transaction]),
-  );
-
-  for (const transactionId of latestIntentByTransactionId.keys()) {
-    const transaction = transactionsById.get(transactionId);
-    if (!transaction || transaction.status !== TransactionStatus.unapproved) {
-      latestIntentByTransactionId.delete(transactionId);
-    }
-  }
 }
 
 export function getTransactionMeta(
@@ -199,52 +164,5 @@ function applyNestedAndParentCalldata(
     if (nested) {
       nested.data = data;
     }
-  }
-}
-
-/**
- * Common wrapper for amount update flows. Handles prune, transaction lookup,
- * generation-based superseding (isCurrent), try/catch/finally, and error suppression for superseded intents.
- * Reduces duplication between deposit and withdraw.
- *
- * @param messenger - Messenger for state and calls.
- * @param transactionId - The tx id.
- * @param amountHuman - The typed amount.
- * @param performUpdate - Callback that does the encode/commit using isCurrent and amountRaw. Returns the result or false if superseded inside.
- * @returns The result from performUpdate, or false if superseded or invalid amount/tx.
- */
-export async function withAmountCommitIntent<UpdateResult>(
-  messenger: MoneyPayMessenger,
-  transactionId: string,
-  amountHuman: string,
-  performUpdate: (
-    isCurrent: () => boolean,
-    amountRaw: bigint,
-    transaction: TransactionMeta,
-  ) => Promise<UpdateResult | false>,
-): Promise<UpdateResult | false> {
-  pruneStaleAmountCommits(messenger);
-
-  const amountRaw = parseMusdHumanAmount(amountHuman);
-  if (amountRaw === undefined) {
-    return false as UpdateResult;
-  }
-
-  const transaction = getTransactionMeta(messenger, transactionId);
-  if (!transaction) {
-    return false as UpdateResult;
-  }
-
-  const isCurrent = beginAmountCommit(transactionId);
-
-  try {
-    return await performUpdate(isCurrent, amountRaw, transaction);
-  } catch (error) {
-    if (!isCurrent()) {
-      return false as UpdateResult;
-    }
-    throw error;
-  } finally {
-    clearAmountCommitIfCurrent(transactionId, isCurrent);
   }
 }

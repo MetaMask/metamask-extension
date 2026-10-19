@@ -3,22 +3,22 @@ import type {
   GetAmountDataRequest,
   GetAmountDataResponse,
 } from '@metamask/transaction-pay-controller';
-import type { TransactionMeta } from '@metamask/transaction-controller';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../../../shared/lib/money/money-account-flow';
 import {
-  beginAmountCommit,
-  clearAmountCommitIfCurrent,
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
-  pruneStaleAmountCommits,
   toMusdAmountHex,
-  withAmountCommitIntent,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
+import {
+  beginAmountCommit,
+  clearAmountCommitIfCurrent,
+  pruneStaleAmountCommits,
+} from './amount-commit-intent';
 
 const LOG_TAG = '[Money Account]';
 
@@ -41,14 +41,8 @@ export async function getMoneyAccountAmountData(
     return { updates: [] };
   }
 
-  let amountRaw: bigint;
-  try {
-    amountRaw = BigInt(amount);
-  } catch {
-    return { updates: [] };
-  }
-
-  if (amountRaw <= 0n) {
+  const amountRaw = parseMusdAmount(amount);
+  if (amountRaw === undefined) {
     return { updates: [] };
   }
 
@@ -60,33 +54,54 @@ export async function updateMoneyAccountDepositAmount(
   transactionId: string,
   amountHuman: string,
 ): Promise<boolean> {
-  return withAmountCommitIntent<boolean>(
-    messenger,
-    transactionId,
-    amountHuman,
-    async (
-      isCurrent: () => boolean,
-      amountRaw: bigint,
-      transaction: TransactionMeta,
-    ) => {
-      const { updates } = await getMoneyAccountAmountData(messenger, {
-        amount: amountRaw.toString(10),
-        transaction,
-      });
+  pruneStaleAmountCommits(messenger);
 
-      if (!isCurrent() || !updates.length) {
-        return false;
-      }
+  const amountRaw = parseMusdHumanAmount(amountHuman);
+  if (amountRaw === undefined) {
+    return false;
+  }
 
-      return commitTransactionPayUpdates(
-        messenger,
-        transactionId,
-        updates,
-        'Money Account deposit: update amount',
-        toMusdAmountHex(amountRaw),
-      );
-    },
-  );
+  const transaction = getTransactionMeta(messenger, transactionId);
+  if (!transaction) {
+    return false;
+  }
+
+  const isCurrent = beginAmountCommit(transactionId);
+
+  try {
+    const { updates } = await getMoneyAccountAmountData(messenger, {
+      amount: amountRaw.toString(10),
+      transaction,
+    });
+
+    if (!isCurrent() || !updates.length) {
+      return false;
+    }
+
+    return commitTransactionPayUpdates(
+      messenger,
+      transactionId,
+      updates,
+      'Money Account deposit: update amount',
+      toMusdAmountHex(amountRaw),
+    );
+  } catch (error) {
+    if (!isCurrent()) {
+      return false;
+    }
+    throw error;
+  } finally {
+    clearAmountCommitIfCurrent(transactionId, isCurrent);
+  }
+}
+
+function parseMusdAmount(amount: string): bigint | undefined {
+  try {
+    const parsed = BigInt(amount);
+    return parsed > 0n ? parsed : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

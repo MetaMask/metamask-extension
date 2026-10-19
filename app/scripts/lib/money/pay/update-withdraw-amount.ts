@@ -6,10 +6,13 @@ import {
   commitTransactionPayUpdates,
   getTransactionMeta,
   parseMusdHumanAmount,
-  pruneStaleAmountCommits,
-  withAmountCommitIntent,
 } from '../../confirmations/utils/pay-amount-commit';
 import { getMoneyPayContext, type MoneyPayMessenger } from './pay-context';
+import {
+  beginAmountCommit,
+  clearAmountCommitIfCurrent,
+  pruneStaleAmountCommits,
+} from './amount-commit-intent';
 
 export type { MoneyAccountWithdrawAmountUpdate };
 
@@ -36,42 +39,54 @@ export async function updateMoneyAccountWithdrawAmount(
   amountHuman: string,
   recipientOverride?: Hex,
 ): Promise<MoneyAccountWithdrawAmountUpdate | false> {
-  return withAmountCommitIntent<MoneyAccountWithdrawAmountUpdate>(
-    messenger,
-    transactionId,
-    amountHuman,
-    async (
-      isCurrent: () => boolean,
-      amountRaw: bigint,
-      transaction: TransactionMeta,
-    ) => {
-      const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
-      const updates = await encodeWithdrawCalldata(
-        messenger,
-        amountRaw,
-        recipient,
-      );
+  pruneStaleAmountCommits(messenger);
 
-      if (!isCurrent()) {
-        return false;
-      }
+  const amountRaw = parseMusdHumanAmount(amountHuman);
+  if (amountRaw === undefined) {
+    return false;
+  }
 
-      commitTransactionPayUpdates(
-        messenger,
-        transactionId,
-        updates,
-        'Money Account withdraw: update amount',
-      );
+  const transaction = getTransactionMeta(messenger, transactionId);
+  if (!transaction) {
+    return false;
+  }
 
-      const committed = getTransactionMeta(messenger, transactionId);
-      const transactionData = committed?.txParams?.data as Hex | undefined;
-      return {
-        withdrawData: updates[0].data,
-        transferData: updates[1].data,
-        ...(transactionData ? { transactionData } : {}),
-      };
-    },
-  );
+  const isCurrent = beginAmountCommit(transactionId);
+
+  try {
+    const recipient = resolveWithdrawRecipient(messenger, recipientOverride);
+    const updates = await encodeWithdrawCalldata(
+      messenger,
+      amountRaw,
+      recipient,
+    );
+
+    if (!isCurrent()) {
+      return false;
+    }
+
+    commitTransactionPayUpdates(
+      messenger,
+      transactionId,
+      updates,
+      'Money Account withdraw: update amount',
+    );
+
+    const committed = getTransactionMeta(messenger, transactionId);
+    const transactionData = committed?.txParams?.data as Hex | undefined;
+    return {
+      withdrawData: updates[0].data,
+      transferData: updates[1].data,
+      ...(transactionData ? { transactionData } : {}),
+    };
+  } catch (error) {
+    if (!isCurrent()) {
+      return false;
+    }
+    throw error;
+  } finally {
+    clearAmountCommitIfCurrent(transactionId, isCurrent);
+  }
 }
 
 /**
