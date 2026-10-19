@@ -37,9 +37,8 @@ describe('Snap Account Signatures', function (this: Suite) {
           },
           fixtures: new FixtureBuilderV2()
             .withSnapsPrivacyWarningAlreadyShown()
-            // Rewards follows basic functionality. Keep it off so silent auth
-            // does not run during snap account setup.
-            .withUseBasicFunctionalityDisabled()
+            // Leave basic functionality on. Turning it off disables snaps, and
+            // login then times out waiting for the Bitcoin account icon.
             .build(),
           testSpecificMock: (mockServer: Mockttp) =>
             mockSnapSimpleKeyringAndSite(mockServer, 8081),
