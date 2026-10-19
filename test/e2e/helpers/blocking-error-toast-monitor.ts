@@ -1,6 +1,7 @@
 /**
- * Browser-side toast monitor used by homepage E2E to catch blocking error
- * toasts that auto-dismiss before a later assertion.
+ * Browser-side toast monitor used by the HyperEVM unsupported-crypto E2E
+ * helper to catch blocking error toasts that auto-dismiss before a later
+ * assertion.
  *
  * Serialized into the page via WebDriver `executeScript`, so this function
  * must stay self-contained (no closed-over imports).

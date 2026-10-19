@@ -21,6 +21,10 @@ import { prepareCustomNetwork } from '../../helpers/custom-network-harness';
 import LoginPage from '../../page-objects/pages/onboarding/login-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokensTab from '../../page-objects/pages/home/tokens-tab';
+import {
+  checkNoBlockingErrorToastWasObserved,
+  startMonitoringBlockingErrorToast,
+} from './blocking-error-toast';
 
 function isSpotPriceRequestForAsset(url: string, assetId: string): boolean {
   try {
@@ -88,9 +92,9 @@ describe('HyperEVM unsupported crypto handling', function () {
         const tokensTab = new TokensTab(driver);
 
         // Watch for auto-dismissing toasts before homepage waits can hide them.
-        await homePage.startMonitoringBlockingErrorToast();
+        await startMonitoringBlockingErrorToast(driver);
         await loginPage.loginToHomepage();
-        await homePage.startMonitoringBlockingErrorToast();
+        await startMonitoringBlockingErrorToast(driver);
 
         await homePage.checkPageIsLoaded();
         await tokensTab.checkTokenListIsDisplayed();
@@ -109,7 +113,7 @@ describe('HyperEVM unsupported crypto handling', function () {
           );
         }
 
-        await homePage.checkNoBlockingErrorToastWasObserved();
+        await checkNoBlockingErrorToastWasObserved(driver, homePage);
       },
     );
   });
