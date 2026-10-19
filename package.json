@@ -793,7 +793,7 @@
     "html-bundler-webpack-plugin": "patch:html-bundler-webpack-plugin@npm%3A4.23.2#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.23.2-c360a7b7fc.patch",
     "http-server": "^14.1.1",
     "https-browserify": "^1.0.0",
-    "husky": "^9",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.3.1",
     "jest-clean-console-reporter": "^0.3.0",
