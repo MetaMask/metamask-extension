@@ -7,6 +7,10 @@ import type {
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
+import type {
+  SwapTraceRequest,
+  SwapRelatedTraceName,
+} from '@metamask/bridge-controller';
 
 /**
  * The supported trace names.
@@ -25,6 +29,11 @@ export enum TraceName {
   BackgroundConnect = 'Background Connect',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
   BridgeViewLoaded = 'Bridge View Loaded',
+  BridgeTransactionApprovalCompleted = 'Bridge Transaction Approval Completed',
+  BridgeTransactionCompleted = 'Bridge Transaction Completed',
+  SwapOperationCompleted = 'Swap Operation Completed',
+  SwapTransactionApprovalCompleted = 'Swap Transaction Approval Completed',
+  SwapTransactionCompleted = 'Swap Transaction Completed',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -347,12 +356,26 @@ export function annotateTrace(
   }
 }
 
-export function trace<ResultType>(
-  request: TraceRequest,
+type GenericTraceName = TraceRequest['name'];
+
+/**
+ * Overloads the {@link TraceRequest} type for swap-related trace names.
+ * The {@link SwapTraceRequest} type defines required properties for swap-related traces
+ */
+type TraceRequestFor<TName extends GenericTraceName> = [TName] extends [
+  SwapRelatedTraceName<TraceName>,
+]
+  ? SwapTraceRequest<TName>
+  : Omit<TraceRequest, 'name'> & { name: TName };
+
+export function trace<ResultType, TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
   fn: TraceCallback<ResultType>,
 ): ResultType;
 
-export function trace(request: TraceRequest): TraceContext;
+export function trace<TName extends GenericTraceName>(
+  request: TraceRequestFor<TName>,
+): TraceContext;
 
 /**
  * Create a Sentry transaction to analyse the duration of a code flow.
