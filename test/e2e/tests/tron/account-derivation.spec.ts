@@ -5,8 +5,8 @@ import { login } from '../../page-objects/flows/login.flow';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import {
   waitUntilAccountTreeSyncIdle,
-  addNHdAccountsForTronDerivation,
-} from '../../page-objects/flows/tron-account-derivation.flow';
+  addNHdAccountsForDerivation,
+} from '../../page-objects/flows/account-derivation.flow';
 import { EXPECTED_TRON_ADDRESSES_BY_INDEX } from '../../constants';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -182,7 +182,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
 
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addNHdAccountsForDerivation(driver, 8);
 
         await selectTronNetwork(driver);
 
@@ -226,7 +226,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addNHdAccountsForDerivation(driver, 8);
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
@@ -304,7 +304,7 @@ describe('Tron account derivation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
         await selectTronNetwork(driver);
-        await addNHdAccountsForTronDerivation(driver, 8);
+        await addNHdAccountsForDerivation(driver, 8);
 
         const homepage = new HomePage(driver);
         const accountList = new AccountListPage(driver);
