@@ -248,9 +248,15 @@ describe('AcceptInviteSheet', () => {
     await act(async () => undefined);
     expect(onClose).not.toHaveBeenCalled();
     expect(view.getByTestId('money-referral-invite')).toBeInTheDocument();
-    expect(view.getByText('Referral code')).toBeInTheDocument();
-    expect(view.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
-    expect(view.getByRole('button', { name: 'Not now' })).toBeInTheDocument();
+    expect(
+      view.getByText(messages.rewardsMoneyReferralCodeLabel.message),
+    ).toBeInTheDocument();
+    expect(
+      view.getByRole('button', { name: messages.continue.message }),
+    ).toBeInTheDocument();
+    expect(
+      view.getByRole('button', { name: messages.musdEducationNotNow.message }),
+    ).toBeInTheDocument();
     expect(view.queryByText('Invite title')).not.toBeInTheDocument();
     expect(view.queryByText('Invite body')).not.toBeInTheDocument();
     expect(trackedTypes()).not.toContain('viewed');

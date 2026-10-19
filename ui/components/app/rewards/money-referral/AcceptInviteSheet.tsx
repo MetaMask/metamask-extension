@@ -281,7 +281,7 @@ const AcceptInviteSheetContent = ({
     return null;
   }
 
-  const copy = inviteCopy(referralMe?.localized_text, t);
+  const copy = inviteCopy(referralMe?.localized_text, (key) => t(key));
   const fieldError =
     errorMessage ||
     (isRejectedCode ? t('rewardsMoneyReferralCodeError') : '') ||
