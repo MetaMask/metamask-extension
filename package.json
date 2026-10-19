@@ -465,7 +465,7 @@
     "@metamask/keyring-utils": "^5.0.0",
     "@metamask/logging-controller": "^10.0.0",
     "@metamask/logo": "^4.0.0",
-    "@metamask/marketing-consent-controller": "npm:@metamask-previews/marketing-consent-controller@0.0.0-preview-9bee3d25c",
+    "@metamask/marketing-consent-controller": "npm:@metamask-previews/marketing-consent-controller@0.0.0-preview-7ef511c85",
     "@metamask/message-manager": "^14.0.0",
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^3.0.0",
@@ -884,7 +884,7 @@
   "previewBuilds": {
     "@metamask/notification-services-controller": {
       "type": "breaking",
-      "previewVersion": "29.0.3-preview-9bee3d25c"
+      "previewVersion": "29.0.3-preview-7ef511c85"
     }
   },
   "engines": {
