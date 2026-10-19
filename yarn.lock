@@ -10376,9 +10376,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:12.0.0"
+"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@12.0.0-preview-64cf2e401":
+  version: 12.0.0-preview-64cf2e401
+  resolution: "@metamask-previews/seedless-onboarding-controller@npm:12.0.0-preview-64cf2e401"
   dependencies:
     "@metamask/analytics-controller": "npm:^4.0.0"
     "@metamask/auth-network-utils": "npm:^0.3.0"
@@ -10389,11 +10389,10 @@ __metadata:
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/toprf-secure-backup": "npm:^1.1.0"
     "@metamask/utils": "npm:^12.0.0"
-    "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.7"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/290517239aa8ab2063335aa08337466dc7f01c7f6711980f4bc456f10cce8b8c24e6667811cecc536b3c1cb9e1eb9b350dace24b51ffb6e0ff42b5565852e880
+  checksum: 10/354d01074f76ec626828bcb0b4de63aae7f9848bc62b0db5652ac9dd6ed298f61887cf711589770076e73d605ec9f67bcd349788f7c30e36278de1aec54ca355
   languageName: node
   linkType: hard
 

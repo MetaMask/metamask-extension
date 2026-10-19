@@ -2493,7 +2493,10 @@ export class LegacyBackgroundApiService {
                 password,
               )
               .catch((err) => {
-                log.error('error while tracking incomplete metadata backup', err);
+                log.error(
+                  'error while tracking incomplete metadata backup',
+                  err,
+                );
               });
           }
           break;

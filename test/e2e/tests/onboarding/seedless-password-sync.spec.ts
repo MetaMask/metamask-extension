@@ -132,11 +132,12 @@ describe('Seedless Onboarding (Social Login) password sync and recovery', functi
     const keyringVault = (
       fixtureBuilder.build().data.KeyringController as { vault: string }
     ).vault;
-    const { state, authPubKey } =
-      await createSeedlessLocalPasswordPendingState({
+    const { state, authPubKey } = await createSeedlessLocalPasswordPendingState(
+      {
         keyringVault,
         userEmail: MOCK_GOOGLE_ACCOUNT,
-      });
+      },
+    );
     fixtureBuilder.withSeedlessOnboardingController(state);
 
     await withFixtures(
