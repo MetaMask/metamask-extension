@@ -8,9 +8,8 @@ import { DestinationAccountPickerModal } from './destination-account-picker-moda
 
 setBackgroundConnection({
   tokenBalancesStartPolling: jest.fn(),
-  addPollingTokenToAppState: jest.fn(),
+  messengerCall: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
-  removePollingTokenFromAppState: jest.fn(),
 } as never);
 
 describe('DestinationAccountPickerModal', () => {

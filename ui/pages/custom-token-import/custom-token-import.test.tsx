@@ -85,7 +85,7 @@ jest.mock('../../components/ui/toast/toast', () => ({
   }) => <div data-testid={dataTestId}>{title}</div>,
 }));
 
-// The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`.
+// The page kicks off real on-chain probes through `LegacyBackgroundApiService:getTokenStandardAndDetailsByChain`.
 // Replace it with a deterministic stub so the unit test never reaches the background script.
 jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');

@@ -116,11 +116,11 @@ const createQuoteResponseV1 = (overrides?: {
 });
 
 const advancedDetailsMockedRequests = {
-  getGasFeeTimeEstimate: {
+  'GasFeeController:getTimeEstimate': {
     lowerTimeBound: new Date().getTime(),
     upperTimeBound: new Date().getTime(),
   },
-  getNextNonce: '9',
+  'LegacyBackgroundApiService:getNextNonce': '9',
 };
 
 const setupSubmitRequestToBackgroundMocks = (
@@ -342,7 +342,8 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'upsertTransactionUIMetricsFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_cta_displayed === 'true',
         );
 
@@ -357,7 +358,8 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCallSwapOpened =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'upsertTransactionUIMetricsFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
       expect(metricsCallSwapOpened).toBeDefined();
@@ -449,7 +451,8 @@ describe('DappSwapComparisonBanner', () => {
       const metricsCall =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
-            call[0] === 'upsertTransactionUIMetricsFragment' &&
+            call[0] ===
+              'LegacyBackgroundApiService:upsertTransactionUIMetricsFragment' &&
             call[1]?.[1]?.properties?.swap_mm_opened === 'true',
         );
 

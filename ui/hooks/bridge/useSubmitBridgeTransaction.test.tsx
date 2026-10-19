@@ -245,7 +245,7 @@ describe('ui/hooks/bridge/useSubmitBridgeTransaction', () => {
         submitIntent: submitIntentSpy,
         getLocation: jest.fn().mockResolvedValue('Main View'),
         getStatePatches: jest.fn(),
-        setEnabledAllPopularNetworks: jest.fn(),
+        messengerCall: jest.fn(),
         resetState: () => mockResetState(),
       } as never);
     });

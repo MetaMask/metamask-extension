@@ -127,7 +127,7 @@ jest.mock('../../send/asset', () => ({
 
 const CHAIN_ID_MOCK = '0x1';
 
-// `PayWithModal` calls `useDispatch()` for the perpsWithdraw `addToken`
+// `PayWithModal` calls `useDispatch()` for the perpsWithdraw `LegacyBackgroundApiService:addToken`
 // import path, so the component needs a redux store at render time. The
 // non-perpsWithdraw test cases never actually dispatch — a default mock-state
 // store is enough to satisfy the hook.
@@ -421,7 +421,7 @@ describe('PayWithModal', () => {
       } as ReturnType<typeof useConfirmContext>);
 
       findNetworkClientIdByChainIdMock.mockResolvedValue('arbitrum-client');
-      // `addToken` is a thunk; `dispatch(thunk)` returns whatever the thunk
+      // `LegacyBackgroundApiService:addToken` is a thunk; `dispatch(thunk)` returns whatever the thunk
       // returns. The component awaits the dispatch, so a resolved jest.fn
       // wrapped as a thunk-returning jest.fn is enough.
       addTokenMock.mockReturnValue(jest.fn().mockResolvedValue(undefined));

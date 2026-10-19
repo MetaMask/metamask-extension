@@ -6,7 +6,7 @@ import {
   setTheme,
 } from './utils';
 
-describe('setTheme', () => {
+describe('PreferencesController:setTheme', () => {
   beforeEach(() => {
     document.documentElement.removeAttribute('data-theme');
   });

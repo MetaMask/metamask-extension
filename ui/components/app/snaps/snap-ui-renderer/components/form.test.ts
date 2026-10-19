@@ -44,13 +44,13 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       1,
-      'updateInterfaceState',
+      'SnapInterfaceController:updateInterfaceState',
       [MOCK_INTERFACE_ID, { form: { input: 'abc' } }],
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -73,7 +73,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       3,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -93,7 +93,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       4,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -142,13 +142,13 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       1,
-      'updateInterfaceState',
+      'SnapInterfaceController:updateInterfaceState',
       [MOCK_INTERFACE_ID, { form: { input: 'abc' } }],
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -171,13 +171,13 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       3,
-      'updateInterfaceState',
+      'SnapInterfaceController:updateInterfaceState',
       [MOCK_INTERFACE_ID, { form: { checkbox: true, input: 'abc' } }],
     );
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       4,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -204,7 +204,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       5,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -224,7 +224,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       6,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -280,7 +280,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       5,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',
@@ -300,7 +300,7 @@ describe('SnapUIForm', () => {
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       6,
-      'handleSnapRequest',
+      'SnapController:handleRequest',
       [
         {
           handler: 'onUserInput',

@@ -95,7 +95,7 @@ describe('useEIP7702Account', () => {
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
       async (code: Hex | undefined) => {
-        // @ts-expect-error Intentionally forcing `getCode` to return nothing.
+        // @ts-expect-error Intentionally forcing `LegacyBackgroundApiService:getCode` to return nothing.
         getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);

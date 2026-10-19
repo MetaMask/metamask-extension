@@ -402,8 +402,10 @@ describe('AssetPage', () => {
     });
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
-      getTokenSymbol: jest.fn(),
-      getBearerToken: jest.fn().mockResolvedValue('mock-bearer-token'),
+      'LegacyBackgroundApiService:getTokenSymbol': jest.fn(),
+      'AuthenticationController:getBearerToken': jest
+        .fn()
+        .mockResolvedValue('mock-bearer-token'),
     } as never);
   });
 

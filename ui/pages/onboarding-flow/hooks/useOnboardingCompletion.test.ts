@@ -96,24 +96,36 @@ const mockSetHasSeenOnboardingCompletionPage = jest
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
 const backgroundConnectionMock = new Proxy(
   {
-    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
-    setIsBackupAndSyncFeatureEnabled: mockSetIsBackupAndSyncFeatureEnabled,
-    toggleExternalServices: mockToggleExternalServices,
-    toggleBasicFunctionality: mockToggleBasicFunctionality,
-    setPreference: mockSetPreference,
-    setUseMultiAccountBalanceChecker: mockSetUseMultiAccountBalanceChecker,
-    setUseTokenDetection: mockSetUseTokenDetection,
-    setUseCurrencyRateCheck: mockSetUseCurrencyRateCheck,
-    setUseAddressBarEnsResolution: mockSetUseAddressBarEnsResolution,
-    setUsePhishDetect: mockSetUsePhishDetect,
-    setOpenSeaEnabled: mockSetOpenSeaEnabled,
-    setUseNftDetection: mockSetUseNftDetection,
-    setUseSafeChainsListValidation: mockSetUseSafeChainsListValidation,
-    setHasSeenOnboardingCompletionPage: mockSetHasSeenOnboardingCompletionPage,
-    completeOnboarding: mockCompleteOnboarding,
+    'AppStateController:removeDeferredDeepLink': mockRemoveDeferredDeepLink,
+    'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+      mockSetIsBackupAndSyncFeatureEnabled,
+    'LegacyBackgroundApiService:toggleExternalServices':
+      mockToggleExternalServices,
+    'PreferencesController:toggleBasicFunctionality':
+      mockToggleBasicFunctionality,
+    'PreferencesController:setPreference': mockSetPreference,
+    'PreferencesController:setUseMultiAccountBalanceChecker':
+      mockSetUseMultiAccountBalanceChecker,
+    'PreferencesController:setUseTokenDetection': mockSetUseTokenDetection,
+    'PreferencesController:setUseCurrencyRateCheck':
+      mockSetUseCurrencyRateCheck,
+    'PreferencesController:setUseAddressBarEnsResolution':
+      mockSetUseAddressBarEnsResolution,
+    'PreferencesController:setUsePhishDetect': mockSetUsePhishDetect,
+    'PreferencesController:setOpenSeaEnabled': mockSetOpenSeaEnabled,
+    'PreferencesController:setUseNftDetection': mockSetUseNftDetection,
+    'PreferencesController:setUseSafeChainsListValidation':
+      mockSetUseSafeChainsListValidation,
+    'OnboardingController:setHasSeenOnboardingCompletionPage':
+      mockSetHasSeenOnboardingCompletionPage,
+    'OnboardingController:completeOnboarding': mockCompleteOnboarding,
   },
   {
     get: (target, prop) => {
+      if (prop === 'messengerCall') {
+        return (actionType: string, args: unknown[] = []) =>
+          target[actionType as keyof typeof target]?.(...args);
+      }
       if (prop in target) {
         return target[prop as keyof typeof target];
       }
