@@ -12,6 +12,7 @@ import { toast } from '../../../components/ui/toast/toast';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
+import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
 import { removeMfaCredential } from '../../../hooks/identity/mfa/removeMfaCredential';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaEmailDetails from './mfa-email-details';
@@ -32,6 +33,11 @@ jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
 
 jest.mock('../../../hooks/identity/mfa/bindings', () => ({
   extensionMfaControllerAdapter: { refreshEnrolledCredentials: jest.fn() },
+}));
+
+jest.mock('../../../hooks/identity/mfa/engine/planner', () => ({
+  ...jest.requireActual('../../../hooks/identity/mfa/engine/planner'),
+  isMethodSupported: jest.fn(),
 }));
 
 jest.mock('../../../hooks/identity/mfa/removeMfaCredential', () => ({
@@ -81,6 +87,8 @@ describe('MfaEmailDetails', () => {
     mockStartMfaFlow.mockResolvedValue({ credentials: [], token });
     mockRefresh.mockResolvedValue([]);
     mockRemove.mockResolvedValue();
+    // Passkeys don't run on the extension yet; most tests assume they do.
+    jest.mocked(isMethodSupported).mockReturnValue(true);
   });
 
   it('describes the email and what it protects', () => {
@@ -122,6 +130,20 @@ describe('MfaEmailDetails', () => {
     fireEvent.click(screen.getByText(messages.gotIt.message));
     expect(
       screen.queryByTestId(MfaSettingsTestIds.LAST_METHOD_MODAL),
+    ).not.toBeInTheDocument();
+    expect(mockStartMfaFlow).not.toHaveBeenCalled();
+  });
+
+  it('sends the user to mobile when no other method runs here', () => {
+    jest.mocked(isMethodSupported).mockReturnValue(false);
+    renderDetails([email, passkey]);
+
+    fireEvent.click(screen.getByTestId(MfaSettingsTestIds.REMOVE_BUTTON));
+    expect(
+      screen.getByText(messages.mfaSettingsRemoveElsewhereTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(MfaSettingsTestIds.CONFIRM_BUTTON),
     ).not.toBeInTheDocument();
     expect(mockStartMfaFlow).not.toHaveBeenCalled();
   });

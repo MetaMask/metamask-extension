@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -29,6 +29,7 @@ const MfaSettings = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { credentials, enroll } = useMfa();
+  const [isEnrolling, setIsEnrolling] = useState(false);
   const hasEmail = credentials.some(
     ({ type, status }) => type === 'email_otp' && status === 'active',
   );
@@ -44,10 +45,13 @@ const MfaSettings = () => {
       transitionForward(() => navigate(MFA_SETTINGS_EMAIL_ROUTE));
       return;
     }
+    setIsEnrolling(true);
     enroll({
       method: 'email_otp',
       reason: { operation: 'settings.addEmail' },
-    }).catch(() => undefined);
+    })
+      .catch(() => undefined)
+      .finally(() => setIsEnrolling(false));
   };
 
   return (
@@ -69,11 +73,13 @@ const MfaSettings = () => {
         alignItems={BoxAlignItems.Center}
         paddingVertical={3}
         paddingHorizontal={4}
-        className="w-full hover:bg-background-default-hover"
+        className="w-full border-0 bg-transparent text-left text-inherit cursor-pointer hover:bg-background-default-hover disabled:cursor-default"
       >
         <button
           type="button"
           onClick={openEmail}
+          disabled={isEnrolling}
+          aria-busy={isEnrolling}
           data-testid={MfaSettingsTestIds.EMAIL_ROW}
         >
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>

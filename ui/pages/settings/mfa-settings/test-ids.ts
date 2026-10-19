@@ -7,6 +7,7 @@ export const MfaSettingsTestIds = {
   CONFIRM_MODAL: 'mfa-settings-confirm-modal',
   CONFIRM_BUTTON: 'mfa-settings-confirm-button',
   LAST_METHOD_MODAL: 'mfa-settings-last-method-modal',
+  ELSEWHERE_MODAL: 'mfa-settings-elsewhere-modal',
   QA_PRESETS: 'mfa-settings-qa-presets',
   QA_RESULT: 'mfa-settings-qa-result',
 } as const;

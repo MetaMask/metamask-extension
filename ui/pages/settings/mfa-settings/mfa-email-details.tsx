@@ -32,27 +32,51 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMfa } from '../../../hooks/identity/mfa';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
+import { isMethodSupported } from '../../../hooks/identity/mfa/engine/planner';
 import { maskEmail } from '../../../hooks/identity/mfa/mask-email';
 import { removeMfaCredential } from '../../../hooks/identity/mfa/removeMfaCredential';
 import { getMfaUsedFor } from './mfa-used-for';
 import { MfaSettingsTestIds } from './test-ids';
 
+const MODALS = {
+  confirm: {
+    title: 'mfaSettingsRemoveEmail',
+    description: 'mfaSettingsRemoveEmailDescription',
+    testId: MfaSettingsTestIds.CONFIRM_MODAL,
+  },
+  lastMethod: {
+    title: 'mfaSettingsLastEmailTitle',
+    description: 'mfaSettingsLastEmailDescription',
+    testId: MfaSettingsTestIds.LAST_METHOD_MODAL,
+  },
+  elsewhere: {
+    title: 'mfaSettingsRemoveElsewhereTitle',
+    description: 'mfaSettingsRemoveElsewhereDescription',
+    testId: MfaSettingsTestIds.ELSEWHERE_MODAL,
+  },
+};
+
 /**
  * The email method: when it was added, what it protects, and its removal.
- * Removing the last method is refused; otherwise the user confirms, then
- * proves it's them with another method.
+ * Removing the last method is refused, and so is removing it here when the
+ * other methods only run on mobile; otherwise the user confirms, then proves
+ * it's them with another method.
  */
 const MfaEmailDetails = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { credentials, verifyOrEnroll } = useMfa();
   const isSocialLogin = useSelector(getIsSocialLoginFlow);
-  const [modal, setModal] = useState<'confirm' | 'lastMethod'>();
+  const [modal, setModal] = useState<'confirm' | 'lastMethod' | 'elsewhere'>();
   const [isRemoving, setIsRemoving] = useState(false);
 
   const active = credentials.filter(({ status }) => status === 'active');
   const email = active.find(({ type }) => type === 'email_otp');
   const others = active.filter((other) => other !== email);
+  // Only methods this client can run may prove it's the user.
+  const verifyWith = [...new Set(others.map(({ type }) => type))].filter(
+    (method) => isMethodSupported(method, 'extension'),
+  );
 
   if (email?.type !== 'email_otp') {
     return null;
@@ -60,7 +84,6 @@ const MfaEmailDetails = () => {
 
   const remove = async () => {
     setModal(undefined);
-    const verifyWith = [...new Set(others.map(({ type }) => type))];
     setIsRemoving(true);
     try {
       const { token } = await verifyOrEnroll({
@@ -83,6 +106,14 @@ const MfaEmailDetails = () => {
     } finally {
       setIsRemoving(false);
     }
+  };
+
+  const openRemoval = () => {
+    if (others.length === 0) {
+      setModal('lastMethod');
+      return;
+    }
+    setModal(verifyWith.length ? 'confirm' : 'elsewhere');
   };
 
   const isConfirm = modal === 'confirm';
@@ -144,7 +175,7 @@ const MfaEmailDetails = () => {
         isDanger
         isFullWidth
         isLoading={isRemoving}
-        onClick={() => setModal(others.length ? 'confirm' : 'lastMethod')}
+        onClick={openRemoval}
         data-testid={MfaSettingsTestIds.REMOVE_BUTTON}
       >
         {t('mfaSettingsRemoveEmail')}
@@ -153,11 +184,7 @@ const MfaEmailDetails = () => {
         <Modal
           isOpen
           onClose={() => setModal(undefined)}
-          data-testid={
-            isConfirm
-              ? MfaSettingsTestIds.CONFIRM_MODAL
-              : MfaSettingsTestIds.LAST_METHOD_MODAL
-          }
+          data-testid={MODALS[modal].testId}
         >
           <ModalOverlay />
           <ModalContent>
@@ -173,22 +200,14 @@ const MfaEmailDetails = () => {
               >
                 <IconAlert severity={IconAlertSeverity.Danger} />
                 <Text variant={TextVariant.HeadingMd}>
-                  {t(
-                    isConfirm
-                      ? 'mfaSettingsRemoveEmail'
-                      : 'mfaSettingsLastEmailTitle',
-                  )}
+                  {t(MODALS[modal].title)}
                 </Text>
               </Box>
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
               >
-                {t(
-                  isConfirm
-                    ? 'mfaSettingsRemoveEmailDescription'
-                    : 'mfaSettingsLastEmailDescription',
-                )}
+                {t(MODALS[modal].description)}
               </Text>
             </Box>
             <ModalFooter>

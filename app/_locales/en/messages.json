@@ -5710,6 +5710,12 @@
   "mfaSettingsNotice": {
     "message": "The methods here can only protect your Money transactions, but cannot recover your entire wallet."
   },
+  "mfaSettingsRemoveElsewhereDescription": {
+    "message": "Your other methods only work in the MetaMask mobile app. Remove your email from there."
+  },
+  "mfaSettingsRemoveElsewhereTitle": {
+    "message": "Email can’t be removed here"
+  },
   "mfaSettingsRemoveEmail": {
     "message": "Remove email"
   },

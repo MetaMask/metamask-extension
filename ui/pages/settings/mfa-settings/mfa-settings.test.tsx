@@ -78,6 +78,19 @@ describe('MfaSettings', () => {
     );
   });
 
+  it('ignores clicks while email is being set up', async () => {
+    mockStartMfaFlow.mockReturnValue(new Promise(() => undefined));
+    renderSettings();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+    });
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toBeDisabled();
+    fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+
+    expect(mockStartMfaFlow).toHaveBeenCalledTimes(1);
+  });
+
   it('offers to add an email whose setup is not finished', () => {
     renderSettings([
       {
