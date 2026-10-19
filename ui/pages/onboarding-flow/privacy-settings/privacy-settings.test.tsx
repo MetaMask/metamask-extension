@@ -315,7 +315,7 @@ describe('Privacy Settings Onboarding View', () => {
   });
 
   describe('IPFS', () => {
-    it('should handle proper IPFS input', () => {
+    it('accepts a valid IPFS input without showing a validation message', () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <PrivacySettings />,
         store,
@@ -333,10 +333,9 @@ describe('Privacy Settings Onboarding View', () => {
 
       fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
-      const validIpfsUrl = queryByText(
-        messages.onboardingAdvancedPrivacyIPFSValid.message,
-      );
-      expect(validIpfsUrl).toBeInTheDocument();
+      expect(
+        queryByText(messages.onboardingAdvancedPrivacyIPFSValid.message),
+      ).not.toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
       fireEvent.click(backButton as HTMLElement);

@@ -474,17 +474,12 @@ export default function PrivacySettings() {
                               handleIPFSChange(e.target.value);
                             }}
                           />
-                          {ipfsURL ? (
+                          {ipfsError ? (
                             <Text
                               variant={TextVariant.BodySm}
-                              color={
-                                ipfsError
-                                  ? TextColor.ErrorDefault
-                                  : TextColor.SuccessDefault
-                              }
+                              color={TextColor.ErrorDefault}
                             >
-                              {ipfsError ||
-                                t('onboardingAdvancedPrivacyIPFSValid')}
+                              {ipfsError}
                             </Text>
                           ) : null}
                         </Box>
