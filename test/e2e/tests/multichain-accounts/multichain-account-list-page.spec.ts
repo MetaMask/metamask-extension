@@ -68,5 +68,4 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       },
     );
   });
-
 });
