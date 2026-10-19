@@ -71,8 +71,8 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
-      BRANCH: ${{ steps.branch.outputs.BRANCH }}
+      COMMIT_SHA: ${{ steps.pr.outputs.COMMIT_SHA }}
+      BRANCH: ${{ steps.pr.outputs.BRANCH }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -85,44 +85,37 @@ jobs:
           permissions: |
             actions: read
             statuses: read
-            contents: write
-            pull_requests: write
+            contents: read
+            pull_requests: read
+
+      - name: Get pull request metadata
+        id: pr
+        run: |
+          echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
+          echo "COMMIT_SHA=$(gh pr view "${PR_NUMBER}" --json headRefOid --jq '.headRefOid')" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+          PR_NUMBER: ${{ github.event.issue.number }}
 
       # Keep the default-branch helper when the PR predates its introduction.
       - name: Preserve canonical build resolver
         run: cp .github/scripts/shared/resolve-build-run.mts "$RUNNER_TEMP/resolve-build-run.mts"
 
-      - name: Checkout pull request
-        run: gh pr checkout "${PR_NUMBER}"
+      # Resolve the artifact before any PR-controlled setup can run so the
+      # copied resolver cannot be replaced first.
+      - name: Find dist artifact run
+        id: find-dist
+        run: node "$RUNNER_TEMP/resolve-build-run.mts" --repo "$REPO" --ref "$PR_HEAD_SHA" --wait-seconds 600
         env:
+          REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_HEAD_SHA: ${{ steps.pr.outputs.COMMIT_SHA }}
 
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Get branch name
-        id: branch
-        run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
-        env:
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
-          PR_NUMBER: ${{ github.event.issue.number }}
-
-      # Follow the PR head's builds-from-run status, which may point to a donor
-      # run when CI reuses compatible build inputs. Wait for that run's artifact.
-      - name: Find dist artifact run
-        id: find-dist
-        run: node "$RUNNER_TEMP/resolve-build-run.mts" --repo "$REPO" --wait-seconds 600
-        env:
-          REPO: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
 
       - name: Download dist artifact
         run: gh run download "$RUN_ID" --repo "$REPO" --name build-dist-webpack --dir build-dist-webpack
@@ -134,7 +127,7 @@ jobs:
       - name: Upload dist artifact
         uses: actions/upload-artifact@v6
         with:
-          name: dist-${{ steps.commit-sha.outputs.COMMIT_SHA }}
+          name: dist-${{ steps.pr.outputs.COMMIT_SHA }}
           path: build-dist-webpack
           if-no-files-found: error
           # Allow workflow re-runs to replace the artifact from a prior attempt.
