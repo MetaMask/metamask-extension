@@ -2252,24 +2252,21 @@ describe('ManifestPlugin', () => {
 });
 
 describe('packaged network request rules', () => {
-  it('blocks only extension initiators and top-level documents', () => {
+  it('packages only extension initiator conditions supported by Chrome 123', () => {
     const rules = createNetworkRequestRules(
       { manifest_version: 3 } as Manifest,
       'main',
       false,
     );
-    assert.strictEqual(rules.length, 2);
+    assert.strictEqual(rules.length, 1);
     assert.deepStrictEqual(
       rules.map(({ action }) => action.type),
-      ['block', 'block'],
+      ['block'],
     );
     assert.deepStrictEqual(rules[0].condition.initiatorDomains, [
       'nkbihfbeogaeaoehlefnkodbefgpgknn',
     ]);
-    assert.deepStrictEqual(
-      rules[1].condition.topDomains,
-      rules[0].condition.initiatorDomains,
-    );
+    assert.ok(rules.every(({ condition }) => !('topDomains' in condition)));
   });
 
   it('adds localhost infrastructure access only in test builds', () => {
@@ -2278,12 +2275,12 @@ describe('packaged network request rules', () => {
       'main',
       true,
     );
-    assert.strictEqual(rules.length, 4);
+    assert.strictEqual(rules.length, 2);
     assert.deepStrictEqual(
       rules
         .filter(({ action }) => action.type === 'allow')
         .map(({ condition }) => condition.requestDomains),
-      [['localhost'], ['localhost']],
+      [['localhost']],
     );
     assert.throws(() =>
       createNetworkRequestRules(

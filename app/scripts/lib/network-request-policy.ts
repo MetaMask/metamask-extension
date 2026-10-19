@@ -27,10 +27,54 @@ let publish: (domains: Domains) => Promise<void> = async () => undefined;
  */
 export function initializeNetworkRequestPolicy(
   extensionId: string,
-  dnr: Pick<DeclarativeNetRequest.Static, 'updateSessionRules'>,
+  dnr: Pick<DeclarativeNetRequest.Static, 'updateSessionRules'> & {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Native Chrome API spelling.
+    RuleConditionKeys?: Partial<Record<'TOP_DOMAINS', string>>;
+  },
 ): Promise<void> {
-  let pending = Promise.resolve();
-  let previous = '';
+  // Chrome 145+ exposes this enum specifically for condition feature detection.
+  // Never submit an unsupported top-only rule: an ignored condition could make
+  // it match ordinary browser traffic instead of just extension frames.
+  const topDomains = dnr.RuleConditionKeys?.TOP_DOMAINS === 'topDomains';
+  const scopes = ['initiatorDomains', ...(topDomains ? ['topDomains'] : [])];
+  // The polyfill's types predate this native condition.
+  const frameCondition: DeclarativeNetRequest.Rule['condition'] & {
+    topDomains: string[];
+  } = { regexFilter: '^(https?|wss?)://', topDomains: [extensionId] };
+  const frameRules: DeclarativeNetRequest.Rule[] = topDomains
+    ? [
+        {
+          id: 1000001,
+          priority: 1,
+          action: { type: 'block' },
+          condition: frameCondition,
+        },
+      ]
+    : [];
+  if (topDomains && process.env.IN_TEST) {
+    frameRules.push({
+      id: 1000011,
+      priority: 3,
+      action: { type: 'allow' },
+      condition: {
+        ...frameCondition,
+        requestDomains: ['localhost'],
+      },
+    });
+  }
+  // Install the frame guard and revoke stale grants atomically, before any
+  // controllers (and therefore Snap sandboxes) start. The static initiator
+  // guard is already active before background/UI JavaScript on every version.
+  let pending = dnr
+    .updateSessionRules({
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003],
+      addRules: frameRules,
+    })
+    .catch(async (error) => {
+      await dnr.updateSessionRules({ removeRuleIds: [1000002, 1000003] });
+      throw error;
+    });
+  let previous = '[]';
   state = {};
   onboardingDomains = [];
   publish = (domains) => {
@@ -45,7 +89,7 @@ export function initializeNetworkRequestPolicy(
         const addRules: DeclarativeNetRequest.Rule[] =
           snapshot !== '*' && snapshot.length === 0
             ? []
-            : ['initiatorDomains', 'topDomains'].map((scope, index) => ({
+            : scopes.map((scope, index) => ({
                 id: 1000002 + index,
                 priority: 2,
                 action: { type: 'allow' },
@@ -70,7 +114,7 @@ export function initializeNetworkRequestPolicy(
     pending = result;
     return result;
   };
-  return updateNetworkRequestDomains([]);
+  return pending;
 }
 
 /**

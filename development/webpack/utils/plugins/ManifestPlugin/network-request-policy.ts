@@ -32,28 +32,28 @@ export function createNetworkRequestRules(
       'A Chrome signing ID is required for network request rules',
     );
   }
-  return ['initiatorDomains', 'topDomains'].flatMap((scope, index) => {
-    const condition = {
-      regexFilter: '^(https?|wss?)://',
-      [scope]: [extensionId],
-    };
-    const rules: chrome.declarativeNetRequest.Rule[] = [
-      {
-        id: 1000000 + index,
-        priority: 1,
-        action: { type: 'block' },
-        condition,
-      },
-    ];
-    if (test) {
-      // Test fixtures and the browser-test socket need local infrastructure.
-      rules.push({
-        id: 1000010 + index,
-        priority: 3,
-        action: { type: 'allow' },
-        condition: { ...condition, requestDomains: ['localhost'] },
-      });
-    }
-    return rules;
-  });
+  // Only package conditions understood by every supported Chrome version.
+  // The background installs top-frame rules after native feature detection.
+  const condition = {
+    regexFilter: '^(https?|wss?)://',
+    initiatorDomains: [extensionId],
+  };
+  const rules: chrome.declarativeNetRequest.Rule[] = [
+    {
+      id: 1000000,
+      priority: 1,
+      action: { type: 'block' },
+      condition,
+    },
+  ];
+  if (test) {
+    // Test fixtures and the browser-test socket need local infrastructure.
+    rules.push({
+      id: 1000010,
+      priority: 3,
+      action: { type: 'allow' },
+      condition: { ...condition, requestDomains: ['localhost'] },
+    });
+  }
+  return rules;
 }

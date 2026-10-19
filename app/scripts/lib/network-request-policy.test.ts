@@ -11,22 +11,97 @@ import {
 describe('network request policy', () => {
   const updateSessionRules = jest.fn().mockResolvedValue(undefined);
   beforeEach(async () => {
+    jest.replaceProperty(process, 'env', { ...process.env, IN_TEST: '' });
     updateSessionRules.mockReset().mockResolvedValue(undefined);
     await initializeNetworkRequestPolicy('a'.repeat(32), {
       updateSessionRules,
+      RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
     });
   });
+  afterEach(() => jest.restoreAllMocks());
 
   it('clears stale grants at startup', () => {
     expect(updateSessionRules).toHaveBeenCalledWith({
-      removeRuleIds: [1000002, 1000003],
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003],
+      addRules: [
+        {
+          id: 1000001,
+          priority: 1,
+          action: { type: 'block' },
+          condition: {
+            regexFilter: '^(https?|wss?)://',
+            topDomains: ['a'.repeat(32)],
+          },
+        },
+      ],
+    });
+  });
+
+  it('uses only initiator-scoped rules when the native capability is absent', async () => {
+    await initializeNetworkRequestPolicy('a'.repeat(32), {
+      updateSessionRules,
+    });
+    expect(updateSessionRules.mock.lastCall[0]).toEqual({
+      removeRuleIds: [1000001, 1000011, 1000002, 1000003],
       addRules: [],
+    });
+    await updateNetworkRequestDomains(['rpc.example']);
+    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([
+      {
+        id: 1000002,
+        priority: 2,
+        action: { type: 'allow' },
+        condition: {
+          regexFilter: '^(https?|wss?)://',
+          initiatorDomains: ['a'.repeat(32)],
+          requestDomains: ['rpc.example'],
+        },
+      },
+    ]);
+    await updateNetworkRequestDomains('*');
+    expect(updateSessionRules.mock.lastCall[0].addRules).toHaveLength(1);
+    expect(
+      updateSessionRules.mock.lastCall[0].addRules[0].condition.requestDomains,
+    ).toBeUndefined();
+    await updateNetworkRequestDomains([]);
+    expect(updateSessionRules.mock.lastCall[0].addRules).toEqual([]);
+  });
+
+  it('allows localhost in top-frame rules only for test packages', async () => {
+    jest.replaceProperty(process, 'env', { ...process.env, IN_TEST: 'true' });
+    await initializeNetworkRequestPolicy('a'.repeat(32), {
+      updateSessionRules,
+      RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
+    });
+    expect(updateSessionRules.mock.lastCall[0].addRules[1]).toEqual({
+      id: 1000011,
+      priority: 3,
+      action: { type: 'allow' },
+      condition: {
+        regexFilter: '^(https?|wss?)://',
+        topDomains: ['a'.repeat(32)],
+        requestDomains: ['localhost'],
+      },
+    });
+  });
+
+  it('revokes stale grants and rejects startup when installing the frame guard fails', async () => {
+    updateSessionRules.mockRejectedValueOnce(new Error('DNR failed'));
+    await expect(
+      initializeNetworkRequestPolicy('a'.repeat(32), {
+        updateSessionRules,
+        RuleConditionKeys: { TOP_DOMAINS: 'topDomains' },
+      }),
+    ).rejects.toThrow('DNR failed');
+    expect(updateSessionRules.mock.lastCall[0]).toEqual({
+      removeRuleIds: [1000002, 1000003],
     });
   });
 
   it.each([[], ['rpc.example'], '*'] as const)(
     'publishes %j with extension-only scopes',
     async (domains) => {
+      await updateNetworkRequestDomains('*');
       await updateNetworkRequestDomains(domains === '*' ? '*' : [...domains]);
       const { addRules } = updateSessionRules.mock.lastCall[0];
       expect(addRules).toHaveLength(domains.length ? 2 : 0);
