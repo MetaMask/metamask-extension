@@ -499,11 +499,13 @@ export function useTransactionCustomAmount({
       percentage: number,
       { isPrefill = false }: { isPrefill?: boolean } = {},
     ) => {
-      const isDepositMax =
-        percentage === 100 && isMoneyAccountDeposit && isNoFeePayToken;
+      const isDepositMax = percentage === 100 && isMoneyAccountDeposit;
 
       // Hold Max until the override-account fetch completes, matching prefill.
       // Applying now would send a stale `balanceRaw` while TPC uses live raw.
+      // Applies to every deposit pay token, not just no-fee ones: `setIsMax`
+      // records the source balance for all of them, so a stale raw is wrong
+      // regardless of whether the amount itself comes from the raw path.
       if (isDepositMax && isAccountTokensLoading) {
         pendingDepositMaxRef.current = { isPrefill };
         if (!isPrefill) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { useAddressLabel } from '#ui/hooks/useAddressLabel';
 import type {
   ActivityListItem,
   MoneyAccountActivityItem,
@@ -46,13 +47,17 @@ jest.mock('../../../components/app/chain-badge/chain-badge', () => ({
   ),
 }));
 
-const mockGetDisplayName = jest.fn((address?: string): string =>
-  address ? '0x11111...11111' : '',
-);
+const mockGetDisplayName = jest.fn((_address: string): string => '');
 
 jest.mock('../../../hooks/useGetDisplayName', () => ({
   useGetDisplayName: jest.fn(() => mockGetDisplayName),
+  shortenDisplayAddress: (address: string) =>
+    address ? '0x11111...11111' : '',
 }));
+
+jest.mock('#ui/hooks/useAddressLabel');
+
+const mockUseAddressLabel = jest.mocked(useAddressLabel);
 
 const mockUseGetDisplayName = useGetDisplayName as jest.MockedFunction<
   typeof useGetDisplayName
@@ -83,9 +88,7 @@ describe('useActivityRowContent', () => {
     mockFormatTokenAmount.mockReset();
     mockFormatAsFiat.mockReset();
     mockFormatCurrencyWithMinThreshold.mockClear();
-    mockGetDisplayName.mockImplementation((address?: string) =>
-      address ? '0x11111...11111' : '',
-    );
+    mockGetDisplayName.mockReturnValue('');
     mockUseGetDisplayName.mockReturnValue(mockGetDisplayName);
   });
 
@@ -328,70 +331,82 @@ describe('useActivityRowContent', () => {
     expect(mockFormatCurrencyWithMinThreshold).toHaveBeenCalledWith(100, 'USD');
   });
 
-  it('shows the display name in send To: subtitles', () => {
-    const toAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    mockGetDisplayName.mockReturnValue('Alice');
+  describe('address subtitles', () => {
+    const labelledAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    const otherAddress = '0x2222222222222222222222222222222222222222';
 
-    const activity = {
-      type: 'send',
-      chainId: 'eip155:1',
-      status: 'success',
-      timestamp: 1,
-      hash: '0xabc',
-      data: {
-        from: '0x2222222222222222222222222222222222222222',
-        to: toAddress,
-        token: {
-          direction: 'out',
-          symbol: 'ETH',
-          amount: '1',
-          decimals: 18,
-          assetId: 'eip155:1/slip44:60',
-        },
-      },
-    } as ActivityListItem;
+    const renderSubtitle = (activity: ActivityListItem) => {
+      const { result } = renderHookWithProvider(() =>
+        useActivityRowContent(activity),
+      );
+      return render(<>{result.current.subtitle}</>).container;
+    };
 
-    const { result } = renderHookWithProvider(() =>
-      useActivityRowContent(activity),
-    );
+    beforeEach(() => {
+      mockUseAddressLabel.mockImplementation(({ address }) =>
+        address === labelledAddress ? 'Relay' : '',
+      );
+    });
 
-    expect(mockGetDisplayName).toHaveBeenCalledWith(toAddress);
-    expect(result.current.subtitle).toBe(
-      'activity_send_success_description|Alice',
-    );
-  });
+    it('shows the label of the send recipient', () => {
+      const container = renderSubtitle({
+        type: 'send',
+        chainId: 'eip155:1',
+        status: 'success',
+        timestamp: 1,
+        hash: '0xabc',
+        data: { from: otherAddress, to: labelledAddress },
+      } as ActivityListItem);
 
-  it('shows the display name in receive From: subtitles', () => {
-    const fromAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    mockGetDisplayName.mockReturnValue('Bob');
+      expect(container).toHaveTextContent(
+        'activity_send_success_description|Relay',
+      );
+    });
 
-    const activity = {
-      type: 'receive',
-      chainId: 'eip155:1',
-      status: 'success',
-      timestamp: 1,
-      hash: '0xabc',
-      data: {
-        from: fromAddress,
-        to: '0x2222222222222222222222222222222222222222',
-        token: {
-          direction: 'in',
-          symbol: 'ETH',
-          amount: '1',
-          decimals: 18,
-          assetId: 'eip155:1/slip44:60',
-        },
-      },
-    } as ActivityListItem;
+    it('shows the label of the receive sender', () => {
+      const container = renderSubtitle({
+        type: 'receive',
+        chainId: 'eip155:1',
+        status: 'success',
+        timestamp: 1,
+        hash: '0xabc',
+        data: { from: labelledAddress, to: otherAddress },
+      } as ActivityListItem);
 
-    const { result } = renderHookWithProvider(() =>
-      useActivityRowContent(activity),
-    );
+      expect(container).toHaveTextContent(
+        'activity_receive_success_description|Relay',
+      );
+    });
 
-    expect(mockGetDisplayName).toHaveBeenCalledWith(fromAddress);
-    expect(result.current.subtitle).toBe(
-      'activity_receive_success_description|Bob',
-    );
+    it('shows the label of the contract being interacted with', () => {
+      const container = renderSubtitle({
+        type: 'contractInteraction',
+        chainId: 'eip155:42161',
+        status: 'success',
+        timestamp: 1,
+        hash: '0xabc',
+        data: { from: otherAddress, to: labelledAddress },
+      } as ActivityListItem);
+
+      expect(container).toHaveTextContent(
+        'activity_contractInteraction_success_description|Relay',
+      );
+    });
+
+    it('falls back to "Contract" when a contract interaction has no address', () => {
+      const container = renderSubtitle({
+        type: 'contractInteraction',
+        chainId: 'eip155:1',
+        status: 'success',
+        timestamp: 1,
+        hash: '0xabc',
+        data: { from: otherAddress, to: '' },
+      } as ActivityListItem);
+
+      expect(container).toHaveTextContent(
+        'activity_contractInteraction_success_description|contract',
+      );
+    });
   });
 
   describe('money account rows', () => {
