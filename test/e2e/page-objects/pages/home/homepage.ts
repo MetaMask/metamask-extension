@@ -13,7 +13,7 @@ import {
   getBlockingErrorToastHeartbeat,
   getRecordedBlockingErrorToasts,
   installBlockingErrorToastMonitor,
-} from './blocking-error-toast-monitor';
+} from '../../../helpers/blocking-error-toast-monitor';
 import HeaderNavbar from './header-navbar';
 
 type ReceiveButton = 'default' | 'row';
