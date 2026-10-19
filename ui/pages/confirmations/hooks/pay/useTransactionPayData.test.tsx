@@ -2,10 +2,15 @@ import { renderHook } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import {
   TransactionPayStrategy,
   TransactionPayQuote,
+  type SolanaPayQuote,
+  type TransactionData,
   TransactionPayRequiredToken,
   TransactionPaySourceAmount,
   type TransactionPayTotals,
@@ -69,24 +74,30 @@ const STATE_MOCK = {
 };
 
 function createWrapper(
-  stateOverrides?: Partial<
-    (typeof STATE_MOCK)['metamask']['transactionData'][typeof TRANSACTION_ID_MOCK]
-  >,
+  stateOverrides?: Partial<TransactionData>,
   transactionType?: TransactionType,
   isAmountPending = false,
+  metamaskPay?: TransactionMeta['metamaskPay'],
 ) {
-  const state = stateOverrides
-    ? {
-        metamask: {
-          transactionData: {
-            [TRANSACTION_ID_MOCK]: {
-              ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
-              ...stateOverrides,
-            },
-          },
+  const state = {
+    metamask: {
+      ...STATE_MOCK.metamask,
+      transactions: [
+        {
+          id: TRANSACTION_ID_MOCK,
+          metamaskPay,
+          time: 0,
+          type: transactionType,
         },
-      }
-    : STATE_MOCK;
+      ],
+      transactionData: {
+        [TRANSACTION_ID_MOCK]: {
+          ...STATE_MOCK.metamask.transactionData[TRANSACTION_ID_MOCK],
+          ...stateOverrides,
+        },
+      },
+    },
+  };
 
   const store = mockStore(state);
 
@@ -144,6 +155,65 @@ describe('useTransactionPayData', () => {
       );
 
       expect(result.current).toBe(false);
+    });
+
+    it('returns false when Core reports a required product action was omitted', () => {
+      const metamaskPay = {
+        source: {
+          sourceAccountId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
+          sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
+        solanaExecution: { atomicProductActionRequired: true },
+      } as unknown as TransactionMeta['metamaskPay'];
+      const solanaPayQuote = {
+        preflight: { affordability: { isAffordable: true } },
+        route: { atomicProductActionIncluded: false },
+      } as SolanaPayQuote;
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(
+            { solanaPayQuote },
+            TransactionType.perpsDeposit,
+            false,
+            metamaskPay,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(false);
+    });
+
+    it('returns true when Core includes the required exact-output product action', () => {
+      const metamaskPay = {
+        source: {
+          sourceAccountId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:solana-address',
+          sourceAssetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        },
+        solanaExecution: { atomicProductActionRequired: true },
+      } as unknown as TransactionMeta['metamaskPay'];
+      const solanaPayQuote = {
+        preflight: { affordability: { isAffordable: true } },
+        route: {
+          atomicProductActionIncluded: true,
+          tradeType: 'EXACT_OUTPUT',
+        },
+      } as SolanaPayQuote;
+      const { result } = renderHook(
+        () => useTransactionPayHasExecutableQuote(),
+        {
+          wrapper: createWrapper(
+            { solanaPayQuote },
+            TransactionType.predictDeposit,
+            false,
+            metamaskPay,
+          ),
+        },
+      );
+
+      expect(result.current).toBe(true);
     });
 
     it('returns false when quotes are unavailable', () => {

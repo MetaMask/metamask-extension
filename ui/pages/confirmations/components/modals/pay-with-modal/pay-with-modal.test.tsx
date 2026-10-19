@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { SolScope } from '@metamask/keyring-api';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -10,7 +11,11 @@ import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToke
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayBlockedTokens } from '../../../hooks/pay/useTransactionPayBlockedTokens';
 import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
-import { getAvailableTokens } from '../../../utils/transaction-pay';
+import {
+  getAvailableTokens,
+  getSolanaSourceAmount,
+} from '../../../utils/transaction-pay';
+import { setSolanaPaySource } from '../../../../../store/controller-actions/transaction-pay-controller';
 import {
   useMusdConversionTokens,
   useMusdPaymentToken,
@@ -30,6 +35,10 @@ jest.mock('../../../hooks/pay/useTransactionPayBlockedTokens');
 jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../hooks/pay/usePayWithSections');
 jest.mock('../../../utils/transaction-pay');
+jest.mock(
+  '../../../../../store/controller-actions/transaction-pay-controller',
+  () => ({ setSolanaPaySource: jest.fn() }),
+);
 jest.mock('../../../../../hooks/musd');
 jest.mock('../../../selectors/feature-flags', () => ({
   ...jest.requireActual('../../../selectors/feature-flags'),
@@ -115,6 +124,22 @@ jest.mock('../../send/asset', () => ({
           Select Disabled Token
         </button>
         <button
+          data-testid="select-solana-token"
+          onClick={() =>
+            onAssetSelect?.({
+              accountAddress: 'solana-address',
+              accountId: 'solana-wallet-account-id',
+              accountType: 'solana:data-account',
+              assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              decimals: 9,
+              isNative: true,
+            })
+          }
+        >
+          Select Solana Token
+        </button>
+        <button
           data-testid="select-perps-withdraw-token"
           onClick={() => onAssetSelect?.(PERPS_WITHDRAW_TOKEN)}
         >
@@ -146,6 +171,8 @@ describe('PayWithModal', () => {
     useTransactionPayBlockedTokens,
   );
   const getAvailableTokensMock = jest.mocked(getAvailableTokens);
+  const getSolanaSourceAmountMock = jest.mocked(getSolanaSourceAmount);
+  const setSolanaPaySourceMock = jest.mocked(setSolanaPaySource);
   const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
   const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
@@ -167,6 +194,8 @@ describe('PayWithModal', () => {
     usePayWithSectionsMock.mockReturnValue({ sections: [] });
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
+    getSolanaSourceAmountMock.mockReturnValue('500000000');
+    setSolanaPaySourceMock.mockResolvedValue();
     useTransactionPayBlockedTokensMock.mockReturnValue({
       chainIds: [],
       tokens: [],
@@ -270,6 +299,38 @@ describe('PayWithModal', () => {
     const closeButton = screen.getByLabelText(messages.close.message);
     fireEvent.click(closeButton);
 
+    expect(onCloseMock).toHaveBeenCalled();
+  });
+
+  it('selects a Solana source with its account and asset identity', async () => {
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: {
+        id: 'transaction-id',
+        txParams: {
+          from: '0x1234567890123456789012345678901234567890',
+        },
+      },
+    } as ReturnType<typeof useConfirmContext>);
+    useTransactionPayRequiredTokensMock.mockReturnValue([
+      {
+        address: '0x0000000000000000000000000000000000000001',
+        amountUsd: '75',
+        chainId: '0x1',
+      },
+    ] as unknown as ReturnType<typeof useTransactionPayRequiredTokens>);
+    renderModal({ isOpen: true, onClose: onCloseMock });
+
+    fireEvent.click(screen.getByTestId('select-solana-token'));
+
+    await waitFor(() =>
+      expect(setSolanaPaySourceMock).toHaveBeenCalledWith({
+        transactionId: 'transaction-id',
+        sourceWalletAccountId: 'solana-wallet-account-id',
+        sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+        sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+        sourceAmountRaw: '500000000',
+      }),
+    );
     expect(onCloseMock).toHaveBeenCalled();
   });
 

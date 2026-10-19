@@ -1,3 +1,4 @@
+import { SolScope } from '@metamask/keyring-api';
 import {
   TransactionMeta,
   TransactionType,
@@ -7,6 +8,7 @@ import type { Hex } from '@metamask/utils';
 import {
   PaymentOverride,
   type TransactionPayRequiredToken,
+  type TransactionPaySource,
   type TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
@@ -155,35 +157,44 @@ export function getTokenAddress(
 
 export function getAvailableTokens({
   payToken,
+  paySource,
   requiredTokens,
   tokens,
   blockedTokens,
 }: {
   payToken?: TransactionPaymentToken;
+  paySource?: TransactionPaySource;
   requiredTokens?: TransactionPayRequiredToken[];
   tokens: Asset[];
   blockedTokens?: BlockedPayTokensListConfig;
 }): Asset[] {
   return tokens
     .filter((token) => {
+      const isEvmAccount = token.accountType?.includes('eip155');
+      const isSolanaAccount =
+        token.accountType?.includes('solana') &&
+        token.assetId?.startsWith(`${SolScope.Mainnet}/`) &&
+        Boolean(token.accountId);
       if (
         (token.standard !== AssetStandard.ERC20 &&
           token.standard !== AssetStandard.Native) ||
-        !token.accountType?.includes('eip155')
+        (!isEvmAccount && !isSolanaAccount)
       ) {
         return false;
       }
 
-      // MetaMask Pay can't source funds from testnets (quotes route through
-      // bridges/swaps that don't support them), so exclude testnet tokens
-      // from both the Pay-with list and the auto-selected default.
-      if (token.chainId && isTestNetwork(token.chainId as Hex)) {
+      // MetaMask Pay can't source funds from EVM testnets (quotes route through
+      // bridges/swaps that don't support them), so exclude those tokens from
+      // both the Pay-with list and the auto-selected default.
+      if (
+        isEvmAccount &&
+        token.chainId &&
+        isTestNetwork(token.chainId as Hex)
+      ) {
         return false;
       }
 
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
+      const isSelected = isPayTokenSelected(token, payToken, paySource);
 
       if (isSelected) {
         return true;
@@ -204,9 +215,7 @@ export function getAvailableTokens({
     })
     .map((token) => {
       const blocked = isTokenBlocked(token, blockedTokens);
-      const isSelected =
-        payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
-        payToken?.chainId === token.chainId;
+      const isSelected = isPayTokenSelected(token, payToken, paySource);
 
       return {
         ...token,
@@ -215,6 +224,44 @@ export function getAvailableTokens({
       };
     })
     .sort((a, b) => Number(a.disabled) - Number(b.disabled));
+}
+
+function isPayTokenSelected(
+  token: Asset,
+  payToken?: TransactionPaymentToken,
+  paySource?: TransactionPaySource,
+): boolean {
+  if (
+    paySource?.sourceAccountId ===
+      `${String(token.chainId)}:${token.accountAddress}` &&
+    paySource?.sourceAssetId === token.assetId
+  ) {
+    return true;
+  }
+  return (
+    payToken?.address.toLowerCase() === token.address?.toLowerCase() &&
+    payToken?.chainId === token.chainId
+  );
+}
+
+/**
+ * Converts a destination USD amount to exact-input Solana atomic units.
+ *
+ * @param token - Account-scoped SOL or SPL source asset.
+ * @param amountUsd - Destination amount in USD.
+ * @returns Source amount in atomic units, rounded up.
+ */
+export function getSolanaSourceAmount(token: Asset, amountUsd: string): string {
+  const balance = new BigNumber(token.balance ?? 0);
+  const rate =
+    token.fiat?.conversionRate ??
+    (balance.gt(0)
+      ? new BigNumber(token.fiat?.balance ?? 0).dividedBy(balance).toNumber()
+      : 0);
+  return new BigNumber(amountUsd || 0)
+    .dividedBy(rate || 1)
+    .times(new BigNumber(10).pow(token.decimals ?? 0))
+    .toFixed(0, BigNumber.ROUND_CEIL);
 }
 
 /**

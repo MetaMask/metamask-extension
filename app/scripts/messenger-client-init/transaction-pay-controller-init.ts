@@ -5,11 +5,18 @@ import {
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import {
+  KnownCaipNamespace,
+  toCaipChainId,
+  type CaipAccountId,
+  type CaipAssetType,
+  type Hex,
+} from '@metamask/utils';
 import {
   getMoneyAccountFlow,
   MoneyAccountFlow,
 } from '../../../shared/lib/money/money-account-flow';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   type DelegationMessenger,
   getDelegationTransaction,
@@ -28,6 +35,7 @@ import {
 } from '../lib/money/pay/update-deposit-amount';
 import { updateMoneyAccountWithdrawAmount } from '../lib/money/pay/update-withdraw-amount';
 import { subscribePersistPayMetadata } from '../lib/money/pay/persist-pay-metadata';
+import { createSolanaPayCallbacks } from '../lib/money/pay/solana-pay-callbacks';
 import type {
   MoneyPayMessenger,
   PaymentOverrideMessenger,
@@ -75,10 +83,15 @@ export const TransactionPayControllerInit: MessengerClientInitFunction<
       ),
     getStrategy,
     messenger: controllerMessenger,
+    solana: createSolanaPayCallbacks(initMessenger, request.infuraProjectId),
     state: persistedState.TransactionPayController,
   });
 
   subscribePersistPayMetadata(controllerMessenger);
+
+  messengerClient.recoverSolanaPayStatus().catch((error) => {
+    console.error('Failed to recover Solana Pay status', error);
+  });
 
   const api = getApi(messengerClient, initMessenger as MoneyPayMessenger);
 
@@ -278,8 +291,67 @@ function getApi(
         }
       });
     },
-    updateTransactionPaymentToken:
-      messengerClient.updatePaymentToken.bind(messengerClient),
+    setSolanaPaySource: async (
+      transactionId: string,
+      sourceWalletAccountId: string,
+      sourceAccountId: CaipAccountId,
+      sourceAssetId: CaipAssetType,
+      sourceAmountRaw: string,
+    ) => {
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === transactionId);
+      if (getMoneyAccountFlow(transaction) === MoneyAccountFlow.Deposit) {
+        messengerClient.setTransactionConfig(transactionId, (config) => {
+          config.atomic = false;
+          config.paymentOverride = PaymentOverride.MoneyAccount;
+        });
+      }
+      messengerClient.setPaySource({
+        transactionId,
+        source: { sourceAccountId, sourceAssetId },
+      });
+      return await messengerClient.getSolanaPayQuote({
+        sourceAmountRaw,
+        sourceWalletAccountId,
+        transactionId,
+      });
+    },
+    updateTransactionPaymentToken: (request: {
+      transactionId: string;
+      tokenAddress: Hex;
+      chainId: Hex;
+    }) => {
+      messengerClient.updatePaymentToken(request);
+      const transaction = moneyPayMessenger
+        .call('TransactionController:getState')
+        .transactions.find(({ id }) => id === request.transactionId);
+      const source = transaction?.metamaskPay?.source;
+      if (
+        !source?.sourceAccountId.startsWith('solana:') ||
+        transaction?.metamaskPay?.solanaExecution
+      ) {
+        return;
+      }
+      const accountAddress =
+        messengerClient.state.transactionData[request.transactionId]
+          ?.accountOverride ?? transaction?.txParams.from;
+      const sourceAssetId = toAssetId(request.tokenAddress, request.chainId);
+      if (!accountAddress || !sourceAssetId) {
+        return;
+      }
+      const sourceChainId = toCaipChainId(
+        KnownCaipNamespace.Eip155,
+        Number.parseInt(request.chainId, 16).toString(),
+      );
+      messengerClient.setPaySource({
+        transactionId: request.transactionId,
+        source: {
+          sourceAccountId: `${sourceChainId}:${accountAddress}`,
+          sourceAssetId,
+        },
+      });
+    },
   };
 }
 

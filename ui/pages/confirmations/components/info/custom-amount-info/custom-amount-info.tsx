@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { type TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../../components/component-library';
 import {
@@ -54,6 +55,10 @@ import { usePayWithNoFeeToken } from '../../../hooks/pay/usePayWithNoFeeToken';
 import { useAccountNoFundsAlert } from '../../../hooks/alerts/transactions/useAccountNoFundsAlert';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  selectSolanaPayExecutionByTransactionId,
+  type TransactionPayState,
+} from '../../../../../selectors/transactionPayController';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
@@ -144,6 +149,13 @@ export const CustomAmountInfo = React.memo(
     useTransactionPayMetrics();
 
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+    const solanaExecution = useSelector((state: TransactionPayState) =>
+      selectSolanaPayExecutionByTransactionId(
+        state,
+        currentConfirmation?.id ?? '',
+      ),
+    );
+    const isAmountLocked = Boolean(solanaExecution);
     const availableTokens = useTransactionPayAvailableTokens();
     const accountNoFundsAlert = useAccountNoFundsAlert();
     const hasAccountNoFunds = accountNoFundsAlert.length > 0;
@@ -203,6 +215,9 @@ export const CustomAmountInfo = React.memo(
       });
 
     const { isNative: isNativePayToken, payToken } = useTransactionPayToken();
+    const hasSolanaPaySource = availableTokens.some(
+      (token) => token.isSelected && token.accountType?.includes('solana'),
+    );
     const { isNoFeeToken } = usePayWithNoFeeToken();
     const isNoFeePayToken = Boolean(
       payToken && isNoFeeToken(payToken.address, String(payToken.chainId)),
@@ -210,7 +225,9 @@ export const CustomAmountInfo = React.memo(
     // Withdraw always offers Max. Deposit shows Max only for fixed-spread
     // ("No fee") tokens; other deposit tokens and native deposit tokens keep
     // 90% so a gas/fee buffer remains.
-    const showMax = isWithdraw || (isNoFeePayToken && !isNativePayToken);
+    const showMax =
+      !hasSolanaPaySource &&
+      (isWithdraw || (isNoFeePayToken && !isNativePayToken));
 
     const handleAmountChange = useCallback(
       (value: string) => {
@@ -246,6 +263,7 @@ export const CustomAmountInfo = React.memo(
           hasTokens={hasTokens}
           hidePayTokenAmount={hidePayTokenAmount}
           isAmountLoading={showAmountLoader}
+          isAmountLocked={isAmountLocked}
           onAmountChange={handleAmountChange}
           overrideCenterContent={overrideCenterContent}
         >
@@ -254,7 +272,9 @@ export const CustomAmountInfo = React.memo(
         <AlertMessage alertContent={alertContent} alertMessage={alertMessage} />
         {displayPercentageButtons && (
           <PercentageButtons
-            disabled={!hasTokens || Boolean(disablePercentageButtons)}
+            disabled={
+              !hasTokens || Boolean(disablePercentageButtons) || isAmountLocked
+            }
             hasMax={showMax}
             onPercentageClick={updatePendingAmountPercentage}
           />
@@ -305,6 +325,7 @@ type CenterContainerProps = {
   hasTokens: boolean;
   hidePayTokenAmount?: boolean;
   isAmountLoading?: boolean;
+  isAmountLocked?: boolean;
   onAmountChange: (value: string) => void;
   overrideCenterContent?: (amountHuman: string, hasInput: boolean) => ReactNode;
 };
@@ -322,6 +343,7 @@ function CenterContainer({
   hasTokens,
   hidePayTokenAmount,
   isAmountLoading = false,
+  isAmountLocked = false,
   onAmountChange,
   overrideCenterContent,
 }: CenterContainerProps) {
@@ -338,7 +360,7 @@ function CenterContainer({
         amountFiat={amountFiat}
         autoFocus={autoFocusAmount}
         currency={currency}
-        disabled={!hasTokens}
+        disabled={!hasTokens || isAmountLocked}
         hasAlert={hasAlert}
         isLoading={isAmountLoading}
         onChange={onAmountChange}

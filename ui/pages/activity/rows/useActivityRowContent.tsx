@@ -335,10 +335,23 @@ export function useActivityRowContent(activity: ActivityRowProps['data']) {
             : undefined;
         const hasTokenAmount = Boolean(token?.amount);
 
+        let payOutcomeSubtitle = t(labelKeys.description.key);
+        if (
+          activity.type === 'moneyAccountDeposit' &&
+          activity.payOutcome === 'refunded'
+        ) {
+          payOutcomeSubtitle = t('solanaPayActivityRefunded');
+        } else if (
+          activity.type === 'moneyAccountDeposit' &&
+          activity.payOutcome === 'unknown'
+        ) {
+          payOutcomeSubtitle = t('solanaPayActivityUnknown');
+        }
+
         return {
           avatarTokens: [token?.assetId],
           title: t(labelKeys.title.key, [token?.symbol ?? '']),
-          subtitle: t(labelKeys.description.key),
+          subtitle: payOutcomeSubtitle,
           primaryAmount: hasTokenAmount ? formatTokenAmount(token) : peggedFiat,
           primaryDirection: token?.direction,
           secondaryAmount: hasTokenAmount

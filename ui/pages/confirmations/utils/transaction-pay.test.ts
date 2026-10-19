@@ -1,7 +1,9 @@
+import { SolScope } from '@metamask/keyring-api';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type {
   TransactionPayRequiredToken,
+  TransactionPaySource,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -11,6 +13,7 @@ import {
   getTokenTransferData,
   getTokenAddress,
   getAvailableTokens,
+  getSolanaSourceAmount,
   isTokenBlocked,
   replaceAccountInNestedTransactions,
 } from './transaction-pay';
@@ -143,6 +146,18 @@ describe('transaction-pay utils', () => {
     });
   });
 
+  describe('getSolanaSourceAmount', () => {
+    it('converts the destination USD amount to atomic source units', () => {
+      const token = createMockAsset({
+        balance: '2',
+        decimals: 9,
+        fiat: { balance: 300, conversionRate: 150, currency: 'USD' },
+      });
+
+      expect(getSolanaSourceAmount(token, '75')).toBe('500000000');
+    });
+  });
+
   describe('getTokenAddress', () => {
     it('returns to address from nested transaction when token transfer data exists', () => {
       const transactionMeta = {
@@ -226,6 +241,32 @@ describe('transaction-pay utils', () => {
         '0xnative',
         TOKEN_ADDRESS_MOCK,
       ]);
+    });
+
+    it('includes account-scoped Solana mainnet assets and marks the exact source selected', () => {
+      const solanaAsset = createMockAsset({
+        accountAddress: 'solana-address',
+        accountId: 'internal-account-id',
+        accountType: 'solana:data-account' as Asset['accountType'],
+        assetId: `${SolScope.Mainnet}/slip44:501`,
+        chainId: SolScope.Mainnet,
+        standard: AssetStandard.Native,
+      });
+      const paySource = {
+        sourceAccountId: `${SolScope.Mainnet}:solana-address`,
+        sourceAssetId: `${SolScope.Mainnet}/slip44:501`,
+      } as TransactionPaySource;
+
+      const result = getAvailableTokens({ tokens: [solanaAsset], paySource });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual(
+        expect.objectContaining({
+          accountId: 'internal-account-id',
+          assetId: `${SolScope.Mainnet}/slip44:501`,
+          isSelected: true,
+        }),
+      );
     });
 
     it('filters out tokens without eip155 account type', () => {

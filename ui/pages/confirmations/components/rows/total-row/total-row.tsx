@@ -14,6 +14,7 @@ import {
 import { ConfirmInfoRowText } from '../../../../../components/app/confirm/info/row/text';
 import {
   useIsTransactionPayLoading,
+  useSolanaPayQuote,
   useTransactionPayTotals,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useConfirmContext } from '../../../context/confirm';
@@ -43,10 +44,24 @@ export function TotalRow({
   // pending, that quote is the previous amount, so show the skeleton.
   const isLoading = isPayLoading || isAmountPending;
   const totals = useTransactionPayTotals();
+  const solanaPayQuote = useSolanaPayQuote();
   const isPaidByMetaMask = useIsPaidByMetaMask();
   const sponsoredNetworkFees = useSponsoredNetworkFeeFlags();
 
   const totalUsd = useMemo(() => {
+    if (solanaPayQuote) {
+      const sourceTotal = formatFiat(
+        new BigNumber(
+          solanaPayQuote.providerQuote.details.currencyIn.amountUsd,
+        ).toNumber(),
+      );
+      const additionalSol = new BigNumber(solanaPayQuote.preflight.totalFeeRaw)
+        .plus(solanaPayQuote.preflight.rentDebitRaw)
+        .dividedBy(1_000_000_000);
+      return additionalSol.gt(0)
+        ? `${sourceTotal} + ${additionalSol.toFixed()} SOL`
+        : sourceTotal;
+    }
     if (!totals?.total) {
       return '';
     }
@@ -58,7 +73,13 @@ export function TotalRow({
         sponsoredNetworkFees,
       ).toNumber(),
     );
-  }, [totals, formatFiat, isPaidByMetaMask, sponsoredNetworkFees]);
+  }, [
+    totals,
+    formatFiat,
+    isPaidByMetaMask,
+    sponsoredNetworkFees,
+    solanaPayQuote,
+  ]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;

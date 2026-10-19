@@ -333,40 +333,68 @@ export const selectNonEvmActivityItems = createSelector(
     getAssetsMetadata,
     getInternalAccountsObject,
     selectBridgeHistory,
+    selectLocalTransactions,
   ],
-  (transactions, assetsMetadata, internalAccountsById, getBridgeHistory) =>
-    transactions.map((transaction) => {
-      const subjectAddress =
-        internalAccountsById?.[transaction.account]?.address;
-      const activity = mapKeyringTransaction({
-        // Unified assets caused Snap token movements with empty or placeholder units.
-        transaction: patchKeyringTransaction(transaction, assetsMetadata),
-        subjectAddress,
+  (
+    transactions,
+    assetsMetadata,
+    internalAccountsById,
+    getBridgeHistory,
+    localTransactionGroups,
+  ) => {
+    const sourceTransactionIds = new Set(
+      localTransactionGroups.flatMap(
+        ({ initialTransaction, primaryTransaction }) =>
+          [initialTransaction, primaryTransaction]
+            .map((transaction) => getSolanaSourceTransactionId(transaction))
+            .filter((id): id is string => Boolean(id)),
+      ),
+    );
+
+    return transactions
+      .filter((transaction) => !sourceTransactionIds.has(transaction.id))
+      .map((transaction) => {
+        const subjectAddress =
+          internalAccountsById?.[transaction.account]?.address;
+        const activity = mapKeyringTransaction({
+          // Unified assets caused Snap token movements with empty or placeholder units.
+          transaction: patchKeyringTransaction(transaction, assetsMetadata),
+          subjectAddress,
+        });
+
+        const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
+        const { quote } = bridgeHistoryEntry ?? {};
+
+        if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
+          const tokens = getSwapTokens(bridgeHistoryEntry);
+          const status = getBridgeActivityStatus(bridgeHistoryEntry);
+          const fees = 'fees' in activity.data ? activity.data.fees : undefined;
+
+          return {
+            ...activity,
+            type: 'bridge',
+            ...(status ? { status } : {}),
+            data: {
+              from: subjectAddress,
+              ...tokens,
+              ...(fees === undefined ? {} : { fees }),
+            },
+          } as ActivityListItem;
+        }
+
+        return activity;
       });
-
-      const bridgeHistoryEntry = getBridgeHistory({ hash: transaction.id });
-      const { quote } = bridgeHistoryEntry ?? {};
-
-      if (quote && isCrossChain(quote.srcChainId, quote.destChainId)) {
-        const tokens = getSwapTokens(bridgeHistoryEntry);
-        const status = getBridgeActivityStatus(bridgeHistoryEntry);
-        const fees = 'fees' in activity.data ? activity.data.fees : undefined;
-
-        return {
-          ...activity,
-          type: 'bridge',
-          ...(status ? { status } : {}),
-          data: {
-            from: subjectAddress,
-            ...tokens,
-            ...(fees === undefined ? {} : { fees }),
-          },
-        } as ActivityListItem;
-      }
-
-      return activity;
-    }),
+  },
 );
+
+function getSolanaSourceTransactionId(
+  transaction: TransactionMeta,
+): string | undefined {
+  const execution = transaction.metamaskPay?.solanaExecution;
+  return execution && 'sourceTransactionId' in execution
+    ? execution.sourceTransactionId
+    : undefined;
+}
 
 export const selectNonEvmActivityItemsById = createSelector(
   selectNonEvmActivityItems,
