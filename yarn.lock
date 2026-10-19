@@ -8043,13 +8043,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:@metamask-previews/core-backend@12.1.0-preview-6c5c11696":
-  version: 12.1.0-preview-6c5c11696
-  resolution: "@metamask-previews/core-backend@npm:12.1.0-preview-6c5c11696"
+"@metamask/core-backend@npm:12.2.0, @metamask/core-backend@npm:^12.2.0":
+  version: 12.2.0
+  resolution: "@metamask/core-backend@npm:12.2.0"
   dependencies:
     "@metamask/account-tree-controller": "npm:^11.0.1"
     "@metamask/controller-utils": "npm:^13.0.0"
-    "@metamask/keyring-controller": "npm:^28.1.0"
+    "@metamask/keyring-controller": "npm:^28.2.0"
     "@metamask/messenger": "npm:^3.0.0"
     "@metamask/profile-sync-controller": "npm:^34.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^7.0.0"
@@ -8058,7 +8058,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     cockatiel: "npm:^3.2.1"
     uuid: "npm:^11.1.1"
-  checksum: 10/e6fa20ab44679f6129fd49b12c6445b439c209509741dc753e97aef203b8f6bf5d4308928618dcf9319a4d1c09429beb8f8ab34ab5971cfbcc8d1cd9929646f5
+  checksum: 10/5189b5b0307a7e906175ed9134519f438a4116c6b899596ceadd58f8a9507578928ad668d3dc62fb2ed42ca890f237c219f52432ea997336f6b0a7b23afcc0b7
   languageName: node
   linkType: hard
 
@@ -9090,6 +9090,30 @@ __metadata:
     lodash-es: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
   checksum: 10/16acf77b7967b31b49c61521182aadd47307654ccad066ffdcc6cfb326c16f1eed63eb39df638a4a2e87c57e95fb08cd0e1d84799a2a567102cc8be66335ba5c
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@npm:^28.2.0":
+  version: 28.2.0
+  resolution: "@metamask/keyring-controller@npm:28.2.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^13.0.0"
+    "@metamask/eth-hd-keyring": "npm:^15.0.0"
+    "@metamask/eth-sig-util": "npm:^9.0.0"
+    "@metamask/eth-simple-keyring": "npm:^13.0.0"
+    "@metamask/keyring-api": "npm:^24.3.0"
+    "@metamask/keyring-internal-api": "npm:^12.1.2"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^12.0.0"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.2"
+    immer: "npm:^11.1.18"
+    lodash-es: "npm:^4.18.1"
+    ulid: "npm:^2.4.0"
+  checksum: 10/c0e51ce79bc57a7139abcbea6e411c9bd691c781974c9cd964e8710e979169f54ad81a918b95656e5330e28b5680c285ba614af5d06d007d142fbaff7ee6ee9e
   languageName: node
   linkType: hard
 
@@ -27918,7 +27942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-wallet@npm:^1.0.1":
+"ethereumjs-wallet@npm:^1.0.1, ethereumjs-wallet@npm:^1.0.2":
   version: 1.0.2
   resolution: "ethereumjs-wallet@npm:1.0.2"
   dependencies:
@@ -36042,7 +36066,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.3.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.3.0"
-    "@metamask/core-backend": "npm:^11.0.0"
+    "@metamask/core-backend": "npm:^12.2.0"
     "@metamask/delegation-controller": "npm:^3.0.2"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^2.1.0"
@@ -47381,6 +47405,15 @@ __metadata:
   bin:
     ulid: ./bin/cli.js
   checksum: 10/11d7dd35072b863effb1249f66fb03070142a625610f00e5afd99af7e909b5de9cc7ebca6ede621a6bb1b7479b2489d6f064db6742b55c14bff6496ac60f290f
+  languageName: node
+  linkType: hard
+
+"ulid@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "ulid@npm:2.4.0"
+  bin:
+    ulid: bin/cli.js
+  checksum: 10/409ad0a703ea9f25d2a35cf790b767030a2c7b5ca0df6acb73669628156ab63bb97925a3fd7aaaf0b2384d39bd3ed2f7cd2c2de9f1171df6bc79b8c097865d92
   languageName: node
   linkType: hard
 
