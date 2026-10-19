@@ -17,7 +17,10 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
+import {
+  mockRewardsOptOut,
+  mockSnapSimpleKeyringAndSite,
+} from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
@@ -40,8 +43,10 @@ describe('Snap Account Signatures', function (this: Suite) {
             // Leave basic functionality on. Turning it off disables snaps, and
             // login then times out waiting for the Bitcoin account icon.
             .build(),
-          testSpecificMock: (mockServer: Mockttp) =>
-            mockSnapSimpleKeyringAndSite(mockServer, 8081),
+          testSpecificMock: async (mockServer: Mockttp) => [
+            ...(await mockSnapSimpleKeyringAndSite(mockServer, 8081)),
+            ...(await mockRewardsOptOut(mockServer)),
+          ],
           title,
         },
         async ({ driver }: { driver: Driver }) => {

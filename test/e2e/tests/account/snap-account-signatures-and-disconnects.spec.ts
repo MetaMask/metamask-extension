@@ -14,7 +14,10 @@ import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
+import {
+  mockRewardsOptOut,
+  mockSnapSimpleKeyringAndSite,
+} from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
@@ -29,8 +32,10 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
           // Leave basic functionality on. Turning it off disables snaps, and
           // login then times out waiting for the Bitcoin account icon.
           .build(),
-        testSpecificMock: (mockServer: Mockttp) =>
-          mockSnapSimpleKeyringAndSite(mockServer, 8081),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockSnapSimpleKeyringAndSite(mockServer, 8081)),
+          ...(await mockRewardsOptOut(mockServer)),
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
