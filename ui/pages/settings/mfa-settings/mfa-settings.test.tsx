@@ -12,8 +12,15 @@ import { MfaFlowError } from '../../../hooks/identity/mfa/engine/errors';
 import { startMfaFlow } from '../../../hooks/identity/mfa/engine/activeFlow';
 import { extensionMfaControllerAdapter } from '../../../hooks/identity/mfa/bindings';
 import { isMfaKitEnabled } from '../../../hooks/identity/mfa/isMfaKitEnabled';
+import { MFA_SETTINGS_EMAIL_ROUTE } from '../../../helpers/constants/routes';
 import { MfaSettingsTestIds } from './test-ids';
 import MfaSettings from './mfa-settings';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('../../../hooks/identity/mfa/engine/activeFlow', () => ({
   startMfaFlow: jest.fn(),
@@ -51,13 +58,16 @@ describe('MfaSettings', () => {
     jest.mocked(isMfaKitEnabled).mockReturnValue(true);
   });
 
-  it('refreshes the methods and offers to set up email', async () => {
+  it('refreshes the methods and offers to add email', async () => {
     renderSettings();
     await act(async () => undefined);
 
     expect(mockAdapter.refreshEnrolledCredentials).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
     await act(async () => {
-      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_BUTTON));
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
     });
     expect(mockStartMfaFlow).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -68,7 +78,7 @@ describe('MfaSettings', () => {
     );
   });
 
-  it('offers to finish a pending email setup', () => {
+  it('offers to add an email whose setup is not finished', () => {
     renderSettings([
       {
         type: 'email_otp',
@@ -78,23 +88,24 @@ describe('MfaSettings', () => {
       },
     ]);
 
-    expect(
-      screen.getByText(messages.mfaSettingsEmailPending.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.mfaSettingsFinishSetup.message),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW)).toHaveTextContent(
+      messages.mfaSettingsAdd.message,
+    );
   });
 
-  it('shows an active email without a setup button', () => {
+  it('opens an active email', async () => {
     renderSettings([
       { type: 'email_otp', status: 'active', email: 'a@b.co', verified: true },
     ]);
 
-    expect(screen.getByText('a•••@b.co')).toBeInTheDocument();
     expect(
-      screen.queryByTestId(MfaSettingsTestIds.EMAIL_BUTTON),
-    ).not.toBeInTheDocument();
+      screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW),
+    ).not.toHaveTextContent(messages.mfaSettingsAdd.message);
+    await act(async () => {
+      fireEvent.click(screen.getByTestId(MfaSettingsTestIds.EMAIL_ROW));
+    });
+    expect(mockNavigate).toHaveBeenCalledWith(MFA_SETTINGS_EMAIL_ROUTE);
+    expect(mockStartMfaFlow).not.toHaveBeenCalled();
   });
 
   it('shows how a QA preset settled', async () => {
@@ -121,14 +132,6 @@ describe('MfaSettings', () => {
     expect(screen.getByTestId(MfaSettingsTestIds.QA_RESULT)).toHaveTextContent(
       'Verification session cleared',
     );
-  });
-
-  it('shows an email linked to the sign-in without its address', () => {
-    renderSettings([{ type: 'email_otp', status: 'active', verified: true }]);
-
-    expect(
-      screen.getByText(messages.mfaSettingsEmailLinked.message),
-    ).toBeInTheDocument();
   });
 
   it('hides the QA presets in production', () => {

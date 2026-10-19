@@ -14,6 +14,7 @@ import {
   DEVELOPER_TOOLS_ROUTE,
   MANAGE_WALLET_RECOVERY_ROUTE,
   MFA_SETTINGS_ROUTE,
+  MFA_SETTINGS_EMAIL_ROUTE,
   EXPERIMENTAL_ROUTE,
   LANGUAGE_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
@@ -237,6 +238,13 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
           parentPath: SECURITY_AND_PASSWORD_ROUTE,
           component: mmLazy(() => import('./mfa-settings/mfa-settings.tsx')),
         },
+        [MFA_SETTINGS_EMAIL_ROUTE]: {
+          labelKey: 'mfaMethodEmail',
+          parentPath: MFA_SETTINGS_ROUTE,
+          component: mmLazy(
+            () => import('./mfa-settings/mfa-email-details.tsx'),
+          ),
+        },
       }
     : {}),
   [MANAGE_WALLET_RECOVERY_ROUTE]: {
@@ -244,7 +252,9 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () =>
-        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
+        import(
+          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
+        ),
     ),
   },
   [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
