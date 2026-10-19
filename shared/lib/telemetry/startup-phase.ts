@@ -98,7 +98,8 @@ let flavor: StartupFlavor = StartupFlavor.Cold;
 /**
  * Deduce cold / warm / repair from the session flavor key.
  *
- * - `repair` → repair
+ * - `repair` + fresh SW (`phase === unknown`) → warm (stale leftover key)
+ * - `repair` + same SW (`phase !== unknown`) → repair
  * - `warm` + `phase === unknown` → warm (MV3 SW warm restart)
  * - otherwise → cold
  * - MV2: no session. Unknown → cold, else → repair
@@ -115,7 +116,10 @@ async function deduceFlavor(): Promise<StartupFlavor> {
     ]);
     const sessionFlavor = sessionData?.[STARTUP_FLAVOR_SESSION_KEY];
     if (sessionFlavor === StartupFlavor.Repair) {
-      return StartupFlavor.Repair;
+      // Leftover key after a failed repair vs same-SW repair continuation.
+      return phase === StartupPhase.Unknown
+        ? StartupFlavor.Warm
+        : StartupFlavor.Repair;
     }
     if (
       sessionFlavor === StartupFlavor.Warm &&

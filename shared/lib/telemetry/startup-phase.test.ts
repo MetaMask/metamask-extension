@@ -170,7 +170,9 @@ describe('startup-phase', () => {
     });
 
     it('falls back to cold when session read rejects', async () => {
-      mockStorageSessionGet.mockRejectedValueOnce(new Error('session unavailable'));
+      mockStorageSessionGet.mockRejectedValueOnce(
+        new Error('session unavailable'),
+      );
       const { getStartupPhase, setStartupPhase } =
         await import('./startup-phase');
 
@@ -178,6 +180,19 @@ describe('startup-phase', () => {
         setStartupPhase(StartupPhase.Initializing),
       ).resolves.toBeUndefined();
       expect(getStartupPhase()).toBe('initializing');
+    });
+
+    it('treats leftover session repair on a fresh SW as warm', async () => {
+      sessionStore.startupFlavor = StartupFlavor.Repair;
+      const { getStartupPhase, setStartupPhase } =
+        await import('./startup-phase');
+
+      await setStartupPhase(StartupPhase.Initializing);
+      expect(getStartupPhase()).toBe('reinitializing');
+
+      await setStartupPhase(StartupPhase.SettingUpController);
+      expect(getStartupPhase()).toBe('resetting-up-controller');
+      expect(sessionStore.startupFlavor).toBe(StartupFlavor.Warm);
     });
   });
 });
