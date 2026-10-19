@@ -1,31 +1,35 @@
 import React from 'react';
 import {
+  AvatarIcon,
+  AvatarIconSeverity,
+  AvatarIconSize,
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconColor,
   IconName,
-  IconSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getErrorMessageKey } from '../labels';
+import { getSpecificErrorMessageKey } from '../labels';
 import { MfaFlowTestIds } from '../test-ids';
 import StepLayout, { type StepProps } from './step-layout';
 
 const FailureStep = ({ step, state, onAction }: StepProps<'failure'>) => {
   const t = useI18nContext();
+  const specificKey = getSpecificErrorMessageKey(step.code);
   return (
     <StepLayout
       top={
-        <Icon
-          name={IconName.Danger}
-          color={IconColor.ErrorDefault}
-          size={IconSize.Xl}
+        <AvatarIcon
+          iconName={IconName.Danger}
+          severity={AvatarIconSeverity.Danger}
+          size={AvatarIconSize.Xl}
+          className="self-center"
         />
       }
       title={t('mfaFailureTitle')}
-      description={t(getErrorMessageKey(step.code))}
+      // The title already says something went wrong; only a specific
+      // reason adds to it.
+      description={specificKey ? t(specificKey) : undefined}
       footer={
         <>
           {step.canRetry ? (

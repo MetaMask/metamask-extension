@@ -64,6 +64,7 @@
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
     "lastVisitedRoute": null,
+    "moneyEarnBannerDismissedTokenKeys": "object",
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -253,6 +254,7 @@
     "completedOnboarding": true,
     "firstTimeFlowType": "import",
     "hasSeenOnboardingCompletionPage": true,
+    "onboardingJourneyEnded": true,
     "onboardingTabs": "object",
     "seedPhraseBackedUp": null
   },

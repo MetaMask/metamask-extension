@@ -35,6 +35,21 @@ const mockUseLocation = jest.fn();
 
 const mockTrackUnifiedSwapBridgeEvent = jest.fn();
 
+/**
+ * Bridge fixtures seed AssetsController fields via createBridgeMockStore.
+ * Override the global jest setup mock so migration selectors resolve those
+ * fields instead of legacy controller slices.
+ */
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: () => true,
+  }),
+);
+
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
   return {
@@ -370,6 +385,44 @@ describe('BridgeInputGroup', () => {
     );
   });
 
+  it('shows only the native representation of Arc USDC', async () => {
+    const nativeArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId: 'eip155:5042/slip44:5042' as CaipAssetType,
+      decimals: 18,
+    };
+    const erc20ArcUsdc = {
+      name: 'USDC',
+      symbol: 'USDC',
+      chainId: 'eip155:5042',
+      assetId:
+        'eip155:5042/erc20:0x3600000000000000000000000000000000000000' as CaipAssetType,
+      decimals: 6,
+    };
+    setupFetchMock([], false, [nativeArcUsdc, erc20ArcUsdc]);
+    mockUseVirtualizer.mockReturnValue({
+      getVirtualItems: () =>
+        [nativeArcUsdc, erc20ArcUsdc].map((token, index) => ({
+          index,
+          start: index * 78,
+          key: token.assetId,
+        })),
+      getTotalSize: () => 156,
+      measureElement: () => 78,
+    });
+
+    renderAssetPickerPage();
+
+    expect(
+      await screen.findByTestId(`bridge-asset--${nativeArcUsdc.assetId}`),
+    ).toBeVisible();
+    expect(
+      screen.queryByTestId(`bridge-asset--${erc20ArcUsdc.assetId}`),
+    ).not.toBeInTheDocument();
+  });
+
   it('clears picker flags when browser navigation unmounts the page', async () => {
     setupFetchMock();
     const setDestinationPickerOpenSpy = jest.spyOn(
@@ -570,7 +623,7 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
@@ -609,11 +662,13 @@ describe('BridgeInputGroup', () => {
                 assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 balance: '1.530',
                 chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                decimals: 18,
+                decimals: 9,
                 iconUrl:
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
                 name: 'Solana',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'SOL',
                 tokenFiatAmount: 210.8493,
               },
@@ -628,6 +683,8 @@ describe('BridgeInputGroup', () => {
                   'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
                 name: 'USDC',
                 rwaData: undefined,
+                isVerified: undefined,
+                securityData: undefined,
                 symbol: 'USDC',
                 tokenFiatAmount: 2.04284978478,
               },
