@@ -86,6 +86,7 @@ export const swapQuoteFetchTrace = {
         ...(destChainIdInCaip && { dest_chain_id: destChainIdInCaip }),
         /* eslint-enable @typescript-eslint/naming-convention */
       },
+      tags: { feature: 'swap' },
       startTime: Date.now(),
     });
     activeTraceId = id;
