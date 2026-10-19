@@ -831,6 +831,31 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       return;
     }
 
+    // Snapshot activity before any awaits so init / UI changes during size
+    // measurement cannot skew the write's reported context.
+    const isIdle = this.#getIsIdle();
+    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
+    if (isIdle === true) {
+      idleStatus = 'idle';
+    } else if (isIdle === false) {
+      idleStatus = 'active';
+    }
+
+    // Best-effort: missing/throwing provider → empty activity, write still emits.
+    let currentActivity: CurrentActivity = {};
+    if (this.#getCurrentActivity) {
+      try {
+        currentActivity = this.#getCurrentActivity();
+      } catch {
+        // Keep empty snapshot.
+      }
+    }
+
+    const href = globalThis.self?.location?.href;
+    const environmentType = (
+      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
+    ) as EnvironmentType | 'unknown';
+
     let bytesByController: Map<string, number> | undefined;
     let sizeMeasurementSource: SplitStateWriteEvent['sizeMeasurementSource'] =
       'json_string_length_estimate';
@@ -867,29 +892,6 @@ export class PersistenceManager extends EventEmitter<PersistenceManagerEventMap>
       }
       sizeMeasurementSource = 'json_string_length_estimate';
     }
-
-    const isIdle = this.#getIsIdle();
-    let idleStatus: SplitStateWriteEvent['idleStatus'] = 'unknown';
-    if (isIdle === true) {
-      idleStatus = 'idle';
-    } else if (isIdle === false) {
-      idleStatus = 'active';
-    }
-
-    // Best-effort: missing/throwing provider → empty activity, write still emits.
-    let currentActivity: CurrentActivity = {};
-    if (this.#getCurrentActivity) {
-      try {
-        currentActivity = this.#getCurrentActivity();
-      } catch {
-        // Keep empty snapshot.
-      }
-    }
-
-    const href = globalThis.self?.location?.href;
-    const environmentType = (
-      href !== undefined && href !== '' ? getEnvironmentType(href) : 'unknown'
-    ) as EnvironmentType | 'unknown';
 
     this.emit('splitStateWrite', {
       bytesByController,
