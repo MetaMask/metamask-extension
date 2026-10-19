@@ -60,29 +60,32 @@ jest.mock('../../hooks/bridge/useTokenSearchResults', () => ({
   }),
 }));
 
+const messengerCallMock = jest.fn((actionType: string) => {
+  switch (actionType) {
+    case 'NetworkController:getNetworkConfigurationByNetworkClientId':
+      return Promise.resolve({ chainId: '0x1' });
+    case 'LegacyBackgroundApiService:isRelaySupported':
+    case 'LegacyBackgroundApiService:isSendBundleSupported':
+      return Promise.resolve(true);
+    default:
+      return Promise.resolve(undefined);
+  }
+});
+
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
   getStatePatches: jest.fn(),
-  messengerCall: jest.fn().mockResolvedValue('pollingToken'),
+  messengerCall: messengerCallMock,
   resetSwapsState: jest.fn(),
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
   gasFeeStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-  'NetworkController:getNetworkConfigurationByNetworkClientId': jest
-    .fn()
-    .mockResolvedValue({ chainId: '0x1' }),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  'LegacyBackgroundApiService:isRelaySupported': jest
-    .fn()
-    .mockResolvedValue(true),
-  'LegacyBackgroundApiService:isSendBundleSupported': jest
-    .fn()
-    .mockResolvedValue(true),
 } as never);
 
 const mockUseNavigate = jest.fn();

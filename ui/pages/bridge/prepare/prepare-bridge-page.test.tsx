@@ -813,7 +813,6 @@ describe('PrepareBridgePage', () => {
       updateBridgeQuoteRequestParams: jest.fn(),
       trackUnifiedSwapBridgeEvent: jest.fn(),
       messengerCall: jest.fn(),
-      'MultichainNetworkController:setActiveNetwork': jest.fn(),
     } as never;
 
     beforeEach(() => {

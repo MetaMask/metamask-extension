@@ -94,43 +94,42 @@ const mockSetHasSeenOnboardingCompletionPage = jest
   .fn()
   .mockResolvedValue(undefined);
 const mockCompleteOnboarding = jest.fn().mockResolvedValue(true);
-const backgroundConnectionMock = new Proxy(
-  {
-    'AppStateController:removeDeferredDeepLink': mockRemoveDeferredDeepLink,
-    'UserStorageController:setIsBackupAndSyncFeatureEnabled':
-      mockSetIsBackupAndSyncFeatureEnabled,
-    'LegacyBackgroundApiService:toggleExternalServices':
-      mockToggleExternalServices,
-    'PreferencesController:toggleBasicFunctionality':
-      mockToggleBasicFunctionality,
-    'PreferencesController:setPreference': mockSetPreference,
-    'PreferencesController:setUseMultiAccountBalanceChecker':
-      mockSetUseMultiAccountBalanceChecker,
-    'PreferencesController:setUseTokenDetection': mockSetUseTokenDetection,
-    'PreferencesController:setUseCurrencyRateCheck':
-      mockSetUseCurrencyRateCheck,
-    'PreferencesController:setUseAddressBarEnsResolution':
-      mockSetUseAddressBarEnsResolution,
-    'PreferencesController:setUsePhishDetect': mockSetUsePhishDetect,
-    'PreferencesController:setOpenSeaEnabled': mockSetOpenSeaEnabled,
-    'PreferencesController:setUseNftDetection': mockSetUseNftDetection,
-    'PreferencesController:setUseSafeChainsListValidation':
-      mockSetUseSafeChainsListValidation,
-    'OnboardingController:setHasSeenOnboardingCompletionPage':
-      mockSetHasSeenOnboardingCompletionPage,
-    'OnboardingController:completeOnboarding': mockCompleteOnboarding,
-  },
-  {
-    get: (target, prop) => {
-      if (prop === 'messengerCall') {
-        return (actionType: string, args: unknown[] = []) =>
-          target[actionType as keyof typeof target]?.(...args);
-      }
-      if (prop in target) {
-        return target[prop as keyof typeof target];
-      }
-      return jest.fn().mockResolvedValue(undefined);
-    },
+const messengerCallMock = jest.fn(
+  (actionType: string, args: unknown[] = []) => {
+    switch (actionType) {
+      case 'AppStateController:removeDeferredDeepLink':
+        return mockRemoveDeferredDeepLink(...args);
+      case 'UserStorageController:setIsBackupAndSyncFeatureEnabled':
+        return mockSetIsBackupAndSyncFeatureEnabled(...args);
+      case 'LegacyBackgroundApiService:toggleExternalServices':
+        return mockToggleExternalServices(...args);
+      case 'PreferencesController:toggleBasicFunctionality':
+        return mockToggleBasicFunctionality(...args);
+      case 'PreferencesController:setPreference':
+        return mockSetPreference(...args);
+      case 'PreferencesController:setUseMultiAccountBalanceChecker':
+        return mockSetUseMultiAccountBalanceChecker(...args);
+      case 'PreferencesController:setUseTokenDetection':
+        return mockSetUseTokenDetection(...args);
+      case 'PreferencesController:setUseCurrencyRateCheck':
+        return mockSetUseCurrencyRateCheck(...args);
+      case 'PreferencesController:setUseAddressBarEnsResolution':
+        return mockSetUseAddressBarEnsResolution(...args);
+      case 'PreferencesController:setUsePhishDetect':
+        return mockSetUsePhishDetect(...args);
+      case 'PreferencesController:setOpenSeaEnabled':
+        return mockSetOpenSeaEnabled(...args);
+      case 'PreferencesController:setUseNftDetection':
+        return mockSetUseNftDetection(...args);
+      case 'PreferencesController:setUseSafeChainsListValidation':
+        return mockSetUseSafeChainsListValidation(...args);
+      case 'OnboardingController:setHasSeenOnboardingCompletionPage':
+        return mockSetHasSeenOnboardingCompletionPage(...args);
+      case 'OnboardingController:completeOnboarding':
+        return mockCompleteOnboarding(...args);
+      default:
+        return Promise.resolve(undefined);
+    }
   },
 );
 
@@ -186,7 +185,10 @@ describe('useOnboardingCompletion', () => {
       false,
     );
     mockUseNavigate.mockClear();
-    setBackgroundConnection(backgroundConnectionMock as never);
+    setBackgroundConnection({
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      messengerCall: messengerCallMock,
+    } as never);
     (useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock).mockReturnValue(
       false,
     );

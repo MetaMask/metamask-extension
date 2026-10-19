@@ -7,10 +7,10 @@ import { createMockNotificationPreferences } from './mocks';
 
 const mockDispatch = jest.fn();
 const mockGetNotificationPreferences = jest.fn(() => ({
-  type: 'AuthenticatedUserStorageService:getNotificationPreferences',
+  type: 'getNotificationPreferences',
 }));
 const mockPutNotificationPreferences = jest.fn((preferences) => ({
-  type: 'AuthenticatedUserStorageService:putNotificationPreferences',
+  type: 'putNotificationPreferences',
   preferences,
 }));
 
@@ -56,17 +56,11 @@ describe('useNotificationPreferences', () => {
     };
 
     mockDispatch.mockImplementation((action) => {
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:getNotificationPreferences'
-      ) {
+      if (action.type === 'getNotificationPreferences') {
         return Promise.resolve(preferences);
       }
 
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:putNotificationPreferences'
-      ) {
+      if (action.type === 'putNotificationPreferences') {
         return Promise.resolve();
       }
 
@@ -119,17 +113,11 @@ describe('useNotificationPreferences', () => {
     });
 
     mockDispatch.mockImplementation((action) => {
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:getNotificationPreferences'
-      ) {
+      if (action.type === 'getNotificationPreferences') {
         return Promise.resolve(preferences);
       }
 
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:putNotificationPreferences'
-      ) {
+      if (action.type === 'putNotificationPreferences') {
         putPayloads.push(action.preferences);
         return putPayloads.length === 1 ? firstPut : Promise.resolve();
       }
@@ -211,17 +199,11 @@ describe('useNotificationPreferences', () => {
     const persistError = new Error('Failed to persist preferences');
 
     mockDispatch.mockImplementation((action) => {
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:getNotificationPreferences'
-      ) {
+      if (action.type === 'getNotificationPreferences') {
         return Promise.resolve(preferences);
       }
 
-      if (
-        action.type ===
-        'AuthenticatedUserStorageService:putNotificationPreferences'
-      ) {
+      if (action.type === 'putNotificationPreferences') {
         return Promise.reject(persistError);
       }
 

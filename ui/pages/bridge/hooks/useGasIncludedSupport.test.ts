@@ -210,20 +210,13 @@ describe.each([
                           .spyOn(sharedKeyringSelectors, 'isHardwareWallet')
                           .mockReturnValue(isUsingHardwareWallet);
                         const messengerCallMock = jest.fn(
-                          async (
-                            messengerActionType: string,
-                            args: unknown[] = [],
-                          ) => {
+                          async (messengerActionType: string) => {
                             if (
                               messengerActionType ===
                               'LegacyBackgroundApiService:getSentinelNetworkFlags'
                             ) {
-                              const [chainId] = args;
                               return MOCK_NETWORK_FLAGS[
-                                Number.parseInt(
-                                  String(chainId),
-                                  16,
-                                ) as keyof typeof MOCK_NETWORK_FLAGS
+                                fromChainId as unknown as keyof typeof MOCK_NETWORK_FLAGS
                               ];
                             }
 
