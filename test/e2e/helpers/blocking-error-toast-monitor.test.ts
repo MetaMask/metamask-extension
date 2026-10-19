@@ -3,7 +3,7 @@ import {
   getBlockingErrorToastHeartbeat,
   getRecordedBlockingErrorToasts,
   installBlockingErrorToastMonitor,
-} from '../page-objects/pages/home/blocking-error-toast-monitor';
+} from './blocking-error-toast-monitor';
 
 function flushPoll(): void {
   jest.advanceTimersByTime(BLOCKING_ERROR_TOAST_POLL_INTERVAL_MS);
