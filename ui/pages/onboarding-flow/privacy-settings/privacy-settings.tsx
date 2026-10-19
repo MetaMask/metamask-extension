@@ -84,7 +84,6 @@ const ANIMATION_TIME = 500;
 type SettingsCategory = {
   id: 'privacy' | 'backup-and-sync' | 'networks';
   title: string;
-  subtitle: string;
 };
 
 export default function PrivacySettings() {
@@ -230,17 +229,14 @@ export default function PrivacySettings() {
     {
       id: 'privacy',
       title: t('privacy'),
-      subtitle: t('onboardingPrivacyCategoryDescription'),
     },
     {
       id: 'backup-and-sync',
       title: t('backupAndSync'),
-      subtitle: t('onboardingBackupAndSyncCategoryDescription'),
     },
     {
       id: 'networks',
       title: t('networks'),
-      subtitle: t('onboardingNetworksCategoryDescription'),
     },
   ];
 
@@ -355,13 +351,6 @@ export default function PrivacySettings() {
                             aria-hidden
                           />
                         </Box>
-                        <Text
-                          className="description"
-                          variant={TextVariant.BodyMd}
-                          color={TextColor.TextAlternative}
-                        >
-                          {item.subtitle}
-                        </Text>
                       </button>
                     </Box>
                   ))}
@@ -378,7 +367,7 @@ export default function PrivacySettings() {
             <Box
               className="privacy-settings__header"
               marginTop={2}
-              marginBottom={6}
+              marginBottom={4}
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
               alignItems={BoxAlignItems.Center}
@@ -476,7 +465,7 @@ export default function PrivacySettings() {
                           />
                           {ipfsError ? (
                             <Text
-                              variant={TextVariant.BodySm}
+                              variant={TextVariant.BodyMd}
                               color={TextColor.ErrorDefault}
                             >
                               {ipfsError}
@@ -551,7 +540,7 @@ export default function PrivacySettings() {
                         description={
                           <>
                             <Text
-                              variant={TextVariant.BodySm}
+                              variant={TextVariant.BodyMd}
                               color={TextColor.TextAlternative}
                             >
                               {t('ensDomainsSettingDescriptionIntroduction')}
@@ -565,7 +554,7 @@ export default function PrivacySettings() {
                             >
                               <ul>
                                 <Text
-                                  variant={TextVariant.BodySm}
+                                  variant={TextVariant.BodyMd}
                                   asChild
                                   color={TextColor.TextAlternative}
                                 >
@@ -574,7 +563,7 @@ export default function PrivacySettings() {
                                   </li>
                                 </Text>
                                 <Text
-                                  variant={TextVariant.BodySm}
+                                  variant={TextVariant.BodyMd}
                                   asChild
                                   color={TextColor.TextAlternative}
                                 >
@@ -585,7 +574,7 @@ export default function PrivacySettings() {
                               </ul>
                             </Box>
                             <Text
-                              variant={TextVariant.BodySm}
+                              variant={TextVariant.BodyMd}
                               color={TextColor.TextAlternative}
                             >
                               {t('ensDomainsSettingDescriptionOutroduction')}
@@ -698,13 +687,13 @@ export default function PrivacySettings() {
                                   />
                                   <Box className="text-left" marginLeft={3}>
                                     <Text
-                                      variant={TextVariant.BodySm}
+                                      variant={TextVariant.BodyMd}
                                       fontWeight={FontWeight.Medium}
                                     >
                                       {network.name}
                                     </Text>
                                     <Text
-                                      variant={TextVariant.BodyXs}
+                                      variant={TextVariant.BodyMd}
                                       color={TextColor.TextAlternative}
                                     >
                                       {

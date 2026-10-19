@@ -276,7 +276,7 @@ export const BackupAndSyncToggle = ({
 
   return (
     <Box
-      marginTop={isOnboarding ? 3 : 4}
+      marginTop={isOnboarding ? 0 : 4}
       marginBottom={isOnboarding ? 3 : 4}
       paddingLeft={isOnboarding ? 0 : 4}
       paddingRight={isOnboarding ? 0 : 4}
@@ -311,7 +311,7 @@ export const BackupAndSyncToggle = ({
         )}
       </Box>
       <Text
-        variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+        variant={TextVariant.BodyMd}
         color={TextColor.TextAlternative}
         asChild
         className="w-full"
@@ -320,7 +320,7 @@ export const BackupAndSyncToggle = ({
           {t('backupAndSyncEnableDescription', [
             <Text
               asChild
-              variant={isOnboarding ? TextVariant.BodySm : TextVariant.BodyMd}
+              variant={TextVariant.BodyMd}
               key="privacy-link"
               color={TextColor.InfoDefault}
             >

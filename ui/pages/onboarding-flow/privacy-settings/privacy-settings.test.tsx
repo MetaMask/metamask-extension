@@ -272,7 +272,7 @@ describe('Privacy Settings Onboarding View', () => {
     mockGetIsBasicFunctionalityConsolidationEnabledInBuild.mockReturnValue(
       true,
     );
-    const { getAllByText, getByTestId, getByText } = renderWithProvider(
+    const { getByTestId, getByText } = renderWithProvider(
       <PrivacySettings />,
       store,
     );
@@ -292,8 +292,8 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(getByTestId('category-back-button'));
     fireEvent.click(getByTestId('category-item-Networks'));
     expect(
-      getAllByText(messages.onboardingAdvancedPrivacyNetworkTitle.message),
-    ).toHaveLength(2);
+      getByText(messages.onboardingAdvancedPrivacyNetworkTitle.message),
+    ).toBeInTheDocument();
   });
 
   describe('Social Login Flow', () => {
