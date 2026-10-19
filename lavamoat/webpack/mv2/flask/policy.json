@@ -5506,6 +5506,11 @@
         "storybook>recast>tiny-invariant": true
       }
     },
+    "css-loader": {
+      "globals": {
+        "btoa": true
+      }
+    },
     "currency-formatter": {
       "packages": {
         "currency-formatter>accounting": true,
@@ -7530,7 +7535,7 @@
     },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
-        "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
+        "remote-redux-devtools>socketcluster-client>component-emitter": true
       }
     },
     "remote-redux-devtools>socketcluster-client>sc-formatter": {

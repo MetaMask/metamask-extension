@@ -102,6 +102,33 @@ describe('SentryTracingService', () => {
     expect(span.end).toHaveBeenCalledWith(123);
   });
 
+  it('preserves serialized parent context while buffering', () => {
+    const parentSpan = { end: jest.fn() } as unknown as Sentry.Span;
+    const childSpan = { end: jest.fn() } as unknown as Sentry.Span;
+
+    startSpanManualMock
+      .mockImplementationOnce((_, fn) => fn(parentSpan, () => undefined))
+      .mockImplementationOnce((_, fn) => fn(childSpan, () => undefined));
+
+    service.bufferedTrace({ name: NAME_MOCK, id: 'parent' });
+    service.bufferedTrace({
+      name: TraceName.Middleware,
+      id: 'child',
+      parentContext: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _name: NAME_MOCK,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        _id: 'parent',
+      },
+    });
+
+    service.trackTracesAfterMetricsOptIn();
+
+    expect(startSpanManualMock.mock.calls[1][0]).toEqual(
+      expect.objectContaining({ parentSpan }),
+    );
+  });
+
   it('clears buffered traces without tracking them', () => {
     service.bufferedTrace({ name: NAME_MOCK });
     service.clearTracesAfterMetricsOptIn();
