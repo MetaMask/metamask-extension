@@ -1,0 +1,22 @@
+.github/workflows/update-e2e-fixtures.yml
+  s_734193f3849d77::t_8a9d970329ac4f 88-89
+  s_734193f3849d77::t_6b5c25c4af25cf 130
+  s_734193f3849d77::t_b90f38e6dc3abb 74-75,91-98,104-108,110,112
+  s_734193f3849d77::t_59eb15ea5468b6 90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "874621214fff406d09c778c5cf90a8af7653c236",
+  "prompts": {},
+  "sessions": {
+    "s_734193f3849d77": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_eaf080937ffeTC8FNldce7xtUX",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
