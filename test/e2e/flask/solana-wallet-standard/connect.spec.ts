@@ -154,11 +154,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
           await addAccounts({
             driver,
             count: 1,
-            onBeforeAdd: () =>
-              new HomePage(driver).checkExpectedBalanceIsDisplayed('25'),
             onAfterAdd: ({ label }) =>
               new AccountListPage(driver).checkAccountDisplayedInAccountList(
                 label,
@@ -205,11 +204,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
           await addAccounts({
             driver,
             count: 1,
-            onBeforeAdd: () =>
-              new HomePage(driver).checkExpectedBalanceIsDisplayed('25'),
             onAfterAdd: ({ label }) =>
               new AccountListPage(driver).checkAccountDisplayedInAccountList(
                 label,
@@ -295,11 +293,10 @@ describe('Solana Wallet Standard - e2e tests', function () {
         },
         async ({ driver }) => {
           await login(driver);
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
           await addAccounts({
             driver,
             count: 1,
-            onBeforeAdd: () =>
-              new HomePage(driver).checkExpectedBalanceIsDisplayed('25'),
             onAfterAdd: ({ label }) =>
               new AccountListPage(driver).checkAccountDisplayedInAccountList(
                 label,

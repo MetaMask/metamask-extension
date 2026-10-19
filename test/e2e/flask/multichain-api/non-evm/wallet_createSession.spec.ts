@@ -68,11 +68,10 @@ describe('Multichain API - Non EVM', function () {
         },
         async ({ driver, extensionId }) => {
           await login(driver);
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('25');
           await addAccounts({
             driver,
             count: 1,
-            onBeforeAdd: () =>
-              new HomePage(driver).checkExpectedBalanceIsDisplayed('25'),
             onAfterAdd: ({ label }) =>
               new AccountListPage(driver).checkAccountDisplayedInAccountList(
                 label,
