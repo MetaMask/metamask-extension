@@ -8,9 +8,9 @@ import type { RewardsMoneyDataService } from './rewards-money-data-service';
 /**
  * Loads the signed-in profile's referral persona, copy, and excluded regions.
  *
- * A busy pod answers `503` with `Retry-After` of 5 seconds or less. This
- * waits that long and tries once more, so a shed does not close the invite
- * sheet. A `429` is not retried: its window is 30 seconds.
+ * A `503` or `429` whose `Retry-After` is at most 5 seconds is waited out
+ * once, with jitter, and tried again. A longer wait, including a statement
+ * timeout's 30 seconds, is left for the UI's one-shot refetch.
  *
  * @returns The referral-me payload.
  */
@@ -21,6 +21,8 @@ export type RewardsMoneyDataServiceGetReferralMeAction = {
 
 /**
  * Public code check. Never attaches Authorization.
+ *
+ * A short `503` or `429` is waited out once, the same as the other reads.
  *
  * @param code - The referral code to validate.
  * @returns Whether the server accepts the code.
