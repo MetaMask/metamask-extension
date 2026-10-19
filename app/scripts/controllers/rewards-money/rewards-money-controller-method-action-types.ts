@@ -29,6 +29,10 @@ export type RewardsMoneyControllerValidateReferralCodeAction = {
 
 /**
  * Registers the session profile as a referee for `code`.
+ * Clears that profile's cached referral-me payload after the write, so a
+ * later ordinary read cannot observe its pre-registration roles. Advancing
+ * the generation also prevents a pre-registration read already in flight
+ * from putting its stale payload back.
  *
  * @param params - The referral code.
  */
