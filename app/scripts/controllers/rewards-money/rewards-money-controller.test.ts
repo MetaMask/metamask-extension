@@ -190,6 +190,46 @@ describe('RewardsMoneyController', () => {
     );
   });
 
+  it('invalidates the current profile referral-me cache after registration', async () => {
+    const beforeRegistration = buildReferralMe();
+    const afterRegistration = buildReferralMe({ roles: ['REFEREE'] });
+    getReferralMe
+      .mockResolvedValueOnce(beforeRegistration)
+      .mockResolvedValueOnce(afterRegistration);
+    registerReferee.mockResolvedValue(undefined);
+
+    await controller.getReferralMe();
+    await controller.registerReferee({ code: 'AB12' });
+
+    await expect(controller.getReferralMe()).resolves.toEqual(
+      afterRegistration,
+    );
+    expect(getReferralMe).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not restore a pre-registration referral-me read after registration', async () => {
+    let resolveFirstRead: (payload: ReferralMeDto) => void;
+    const firstRead = new Promise<ReferralMeDto>((resolve) => {
+      resolveFirstRead = resolve;
+    });
+    const afterRegistration = buildReferralMe({ roles: ['REFEREE'] });
+    getReferralMe
+      .mockReturnValueOnce(firstRead)
+      .mockResolvedValueOnce(afterRegistration);
+    registerReferee.mockResolvedValue(undefined);
+
+    const pendingRead = controller.getReferralMe();
+    await Promise.resolve();
+    await controller.registerReferee({ code: 'AB12' });
+    resolveFirstRead?.(buildReferralMe());
+    await pendingRead;
+
+    await expect(controller.getReferralMe()).resolves.toEqual(
+      afterRegistration,
+    );
+    expect(getReferralMe).toHaveBeenCalledTimes(2);
+  });
+
   it('drops a referral-me write when the session changes mid-read', async () => {
     getReferralMe.mockImplementation(async () => {
       profileId = 'profile-2';

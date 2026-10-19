@@ -210,10 +210,10 @@ describe('useAcceptMoneyReferralCode', () => {
     }
   });
 
-  it.each([
+  it.each<[429 | 503, string, 'yes' | 'no']>([
     [429, 'rewardsMoneyReferralTooManyTries', 'yes'],
     [503, 'rewardsMoneyReferralSomethingWentWrong', 'no'],
-  ] as const)(
+  ])(
     'rethrows a %s from validate instead of calling register',
     async (status, message, cooling) => {
       const store = configureStore({ reducer: (state = {}) => state });

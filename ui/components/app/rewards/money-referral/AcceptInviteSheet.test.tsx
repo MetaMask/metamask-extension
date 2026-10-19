@@ -1,4 +1,5 @@
 import React from 'react';
+import { it } from '@jest/globals';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { act, fireEvent, render } from '@testing-library/react';
@@ -73,6 +74,10 @@ const mockT = (key: string) =>
         'Referral code couldn’t be validated.',
       rewardsMoneyReferralTooManyTries:
         messages.rewardsMoneyReferralTooManyTries.message,
+      rewardsMoneyReferralCodeLabel:
+        messages.rewardsMoneyReferralCodeLabel.message,
+      musdEducationNotNow: messages.musdEducationNotNow.message,
+      continue: messages.continue.message,
     }) as Record<string, string>
   )[key] ?? key;
 
@@ -208,6 +213,7 @@ describe('AcceptInviteSheet', () => {
       '#money-referral-code',
     ) as HTMLInputElement;
     expect(input.value).toBe('AB12');
+    expect(input).not.toHaveAttribute('aria-describedby');
     expect(document.body).toHaveTextContent('Invite title');
 
     fireEvent.change(input, { target: { value: 'zz-99' } });
@@ -219,7 +225,15 @@ describe('AcceptInviteSheet', () => {
     mockValidation.isRejectedCode = true;
     renderSheet({ initialCode: 'BADCODE' });
 
-    expect(document.body).toHaveTextContent('Invalid referral code');
+    const input = document.querySelector(
+      '[data-testid="money-referral-code-input"]',
+    );
+    const error = document.getElementById('money-referral-code-error');
+    expect(error).toHaveTextContent('Invalid referral code');
+    expect(input).toHaveAttribute(
+      'aria-describedby',
+      'money-referral-code-error',
+    );
     expect(
       document.querySelector('[data-testid="money-referral-accept"]'),
     ).toBeDisabled();
@@ -234,10 +248,15 @@ describe('AcceptInviteSheet', () => {
     await act(async () => undefined);
     expect(onClose).not.toHaveBeenCalled();
     expect(view.getByTestId('money-referral-invite')).toBeInTheDocument();
+    expect(view.getByText('Referral code')).toBeInTheDocument();
+    expect(view.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
+    expect(view.getByRole('button', { name: 'Not now' })).toBeInTheDocument();
+    expect(view.queryByText('Invite title')).not.toBeInTheDocument();
+    expect(view.queryByText('Invite body')).not.toBeInTheDocument();
     expect(trackedTypes()).not.toContain('viewed');
   });
 
-  it.each(['REFERRER', 'REFEREE'] as const)(
+  it.each<'REFERRER' | 'REFEREE'>(['REFERRER', 'REFEREE'])(
     'auto-dismisses a %s without a viewed event',
     async (role) => {
       mockReferralState.referralMe = buildReferralMe({
@@ -354,9 +373,14 @@ describe('AcceptInviteSheet', () => {
       });
 
       expect(acceptButton).toBeDisabled();
-      expect(
-        view.getByText(messages.rewardsMoneyReferralTooManyTries.message),
-      ).toBeInTheDocument();
+      const rateLimitError = view.getByText(
+        messages.rewardsMoneyReferralTooManyTries.message,
+      );
+      expect(rateLimitError).toHaveAttribute('id', 'money-referral-code-error');
+      expect(view.getByTestId('money-referral-code-input')).toHaveAttribute(
+        'aria-describedby',
+        'money-referral-code-error',
+      );
 
       await act(async () => {
         jest.advanceTimersByTime(2000);

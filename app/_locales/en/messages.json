@@ -9677,6 +9677,9 @@
   "rewardsMoneyReferralCodeError": {
     "message": "Invalid referral code"
   },
+  "rewardsMoneyReferralCodeLabel": {
+    "message": "Referral code"
+  },
   "rewardsMoneyReferralCodeUnknownError": {
     "message": "Referral code couldn’t be validated."
   },
