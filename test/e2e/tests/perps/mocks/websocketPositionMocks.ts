@@ -565,7 +565,7 @@ const WS_MOCK_DEFAULT_USER = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 
 const MOCK_L1_FILL_HASH = `0x${'b'.repeat(64)}`;
 
-export type PushUserFillsClosePositionSnapshotOpts = {
+export type PushUserFillsCloseFillOpts = {
   user?: string;
   coin: string;
   px: string;
@@ -581,39 +581,39 @@ export type PushUserFillsClosePositionSnapshotOpts = {
 };
 
 /**
- * Pushes a `userFills` WebSocket snapshot so the Hyperliquid subscription client
- * delivers an `OrderFill[]` payload to the UI (same path as production fills).
- * Use after a simulated close (full or partial) to assert Activity / Recent activity.
+ * Pushes a single streaming `userFills` update (no `isSnapshot`), matching how
+ * Hyperliquid delivers a fill after the initial subscription snapshot. Send it
+ * before `pushPositionClosed` / `pushPositionUpdate`, as the venue reports the
+ * fill ahead of (or with) the clearinghouse update that changes the position.
  *
- * Shape matches `@nktkas/hyperliquid` `UserFillsEvent` (user + fills + isSnapshot).
+ * The fill is also stored as the pending snapshot so a re-subscribe still
+ * delivers it.
+ *
+ * Shape matches `@nktkas/hyperliquid` `UserFillsEvent` (user + fills).
  *
  * @param server - The LocalWebSocketServer for the perps service
- * @param server.sendMessage
+ * @param server.sendMessage - Sends a raw JSON string on the perps WS.
  * @param opts - Wire fill fields for one close (or partial-close) fill
  */
-export function pushUserFillsClosePositionSnapshot(
+export function pushUserFillsCloseFill(
   server: { sendMessage: (msg: string) => void },
-  opts: PushUserFillsClosePositionSnapshotOpts,
+  opts: PushUserFillsCloseFillOpts,
 ): void {
   const user = opts.user ?? WS_MOCK_DEFAULT_USER;
-  const now = Date.now();
-  const oid = opts.oid ?? 8_881_001;
-  const tid = opts.tid ?? 8_881_002;
-
   const fill = {
     coin: opts.coin,
     px: opts.px,
     sz: opts.sz,
     side: opts.side,
-    time: now,
+    time: Date.now(),
     startPosition: opts.startPosition,
     dir: opts.dir,
     closedPnl: '12.50',
     hash: MOCK_L1_FILL_HASH,
-    oid,
+    oid: opts.oid ?? 8_881_001,
     crossed: true,
     fee: '1.25',
-    tid,
+    tid: opts.tid ?? 8_881_002,
     feeToken: 'USDC',
     twapId: null,
   };
@@ -622,11 +622,7 @@ export function pushUserFillsClosePositionSnapshot(
   server.sendMessage(
     JSON.stringify({
       channel: 'userFills',
-      data: {
-        user,
-        isSnapshot: true,
-        fills: [fill],
-      },
+      data: { user, fills: [fill] },
     }),
   );
 }

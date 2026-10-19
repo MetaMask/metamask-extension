@@ -35,7 +35,7 @@ const WS_DEFAULT_LEDGER_DEPOSIT = {
 
 /**
  * Fills returned by the default `userFills` subscribe / POST mocks.
- * `pushUserFillsClosePositionSnapshot` updates this so a home remount
+ * `pushUserFillsCloseFill` updates this so a home remount
  * re-subscribe still delivers the close fill.
  */
 let pendingUserFills: object[] = [];
@@ -482,7 +482,7 @@ export const DEFAULT_HYPERLIQUID_WS_MOCKS: WebSocketMessageMock[] = [
     logMessage: 'Hyperliquid WS candleSnapshot POST received',
   },
   {
-    // Prefer pending close-fill snapshots (set by pushUserFillsClosePositionSnapshot)
+    // Prefer pending close-fill snapshots (set by pushUserFillsCloseFill)
     // over the generic POST catch-all that returns {}.
     messageIncludes: ['"method":"post"', '"type":"userFills"'],
     dynamicResponse: (message: string) => {

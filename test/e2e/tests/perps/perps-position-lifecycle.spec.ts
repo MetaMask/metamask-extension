@@ -32,7 +32,7 @@ import {
   WS_USER_WITH_FUNDED_ACCOUNT,
   pushPositionUpdate,
   pushPositionClosed,
-  pushUserFillsClosePositionSnapshot,
+  pushUserFillsCloseFill,
 } from './mocks/websocketPositionMocks';
 
 describe('Perps Position Lifecycle', function (this: Suite) {
@@ -89,7 +89,17 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         // ─── Close the position ─────────────────────────────────────────
         await marketDetailPage.closePosition();
 
-        // Simulate the HyperLiquid WS push with zero positions after close fill
+        // Simulate the HyperLiquid WS fill, then the push with zero positions
+        pushUserFillsCloseFill(perpsServer, {
+          coin: 'AVAX',
+          px: '25.05',
+          sz: '4.0',
+          side: 'A',
+          dir: 'Close Long',
+          startPosition: '4.0',
+          oid: 4_010_001,
+          tid: 4_010_002,
+        });
         pushPositionClosed(perpsServer);
 
         // After full close the trade CTA buttons (Long / Short) should reappear
@@ -97,17 +107,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          pushUserFills: () =>
-            pushUserFillsClosePositionSnapshot(perpsServer, {
-              coin: 'AVAX',
-              px: '25.05',
-              sz: '4.0',
-              side: 'A',
-              dir: 'Close Long',
-              startPosition: '4.0',
-              oid: 4_010_001,
-              tid: 4_010_002,
-            }),
           expectedTitleContains: 'Closed long',
         });
       },
@@ -160,23 +159,22 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         // ─── Close the position ─────────────────────────────────────────
         await marketDetailPage.closePosition();
 
+        pushUserFillsCloseFill(perpsServer, {
+          coin: 'AVAX',
+          px: '25.05',
+          sz: '4.0',
+          side: 'B',
+          dir: 'Close Short',
+          startPosition: '-4.0',
+          oid: 4_011_001,
+          tid: 4_011_002,
+        });
         pushPositionClosed(perpsServer);
 
         await marketDetailPage.waitForTradeCtaButtons();
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          pushUserFills: () =>
-            pushUserFillsClosePositionSnapshot(perpsServer, {
-              coin: 'AVAX',
-              px: '25.05',
-              sz: '4.0',
-              side: 'B',
-              dir: 'Close Short',
-              startPosition: '-4.0',
-              oid: 4_011_001,
-              tid: 4_011_002,
-            }),
           expectedTitleContains: 'Closed short',
         });
       },
@@ -210,6 +208,16 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
+        pushUserFillsCloseFill(perpsServer, {
+          coin: 'ETH',
+          px: '2850.0',
+          sz: '1.25',
+          side: 'A',
+          dir: 'Close Long',
+          startPosition: '2.5',
+          oid: 5_010_001,
+          tid: 5_010_002,
+        });
         pushPositionUpdate(perpsServer, {
           coin: 'ETH',
           szi: '1.25',
@@ -227,17 +235,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          pushUserFills: () =>
-            pushUserFillsClosePositionSnapshot(perpsServer, {
-              coin: 'ETH',
-              px: '2850.0',
-              sz: '1.25',
-              side: 'A',
-              dir: 'Close Long',
-              startPosition: '2.5',
-              oid: 5_010_001,
-              tid: 5_010_002,
-            }),
           expectedTitleContains: 'Closed long',
         });
 
@@ -278,6 +275,16 @@ describe('Perps Position Lifecycle', function (this: Suite) {
         const perpsServer = WebSocketRegistry.getServer(
           WEBSOCKET_SERVICES.perps,
         );
+        pushUserFillsCloseFill(perpsServer, {
+          coin: 'ETH',
+          px: '2850.0',
+          sz: '0.25',
+          side: 'A',
+          dir: 'Close Long',
+          startPosition: '2.5',
+          oid: 5_020_001,
+          tid: 5_020_002,
+        });
         pushPositionUpdate(perpsServer, {
           coin: 'ETH',
           szi: '2.25',
@@ -295,17 +302,6 @@ describe('Perps Position Lifecycle', function (this: Suite) {
 
         await assertPerpsActivityShowsCloseFill({
           driver,
-          pushUserFills: () =>
-            pushUserFillsClosePositionSnapshot(perpsServer, {
-              coin: 'ETH',
-              px: '2850.0',
-              sz: '0.25',
-              side: 'A',
-              dir: 'Close Long',
-              startPosition: '2.5',
-              oid: 5_020_001,
-              tid: 5_020_002,
-            }),
           expectedTitleContains: 'Closed long',
         });
 
